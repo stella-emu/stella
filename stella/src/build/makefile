@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.52 2004-05-24 17:49:43 stephena Exp $
+## $Id: makefile,v 1.53 2004-06-25 13:33:11 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -148,7 +148,7 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
             CartF8.o CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o \
-            CartMB.o Console.o Control.o Driving.o \
+            CartMB.o CartUA.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
@@ -212,6 +212,9 @@ Cart4K.o: $(CORE)/Cart4K.cxx $(CORE)/Cart4K.hxx
 CartAR.o: $(CORE)/CartAR.cxx $(CORE)/CartAR.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartAR.cxx
 
+CartCV.o: $(CORE)/CartCV.cxx $(CORE)/CartCV.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartCV.cxx
+
 CartDPC.o: $(CORE)/CartDPC.cxx $(CORE)/CartDPC.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartDPC.cxx
 
@@ -245,14 +248,14 @@ CartFASC.o: $(CORE)/CartFASC.cxx $(CORE)/CartFASC.hxx
 CartFE.o: $(CORE)/CartFE.cxx $(CORE)/CartFE.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartFE.cxx
 
-CartMC.o: $(CORE)/CartMC.cxx $(CORE)/CartMC.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartMC.cxx
-
 CartMB.o: $(CORE)/CartMB.cxx $(CORE)/CartMB.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartMB.cxx
 
-CartCV.o: $(CORE)/CartCV.cxx $(CORE)/CartCV.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartCV.cxx
+CartMC.o: $(CORE)/CartMC.cxx $(CORE)/CartMC.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartMC.cxx
+
+CartUA.o: $(CORE)/CartUA.cxx $(CORE)/CartUA.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/CartUA.cxx
 
 M6532.o: $(CORE)/M6532.cxx $(CORE)/M6532.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/M6532.cxx
