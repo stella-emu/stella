@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SnapSDL.cxx,v 1.2 2002-02-23 16:05:52 stephena Exp $
+// $Id: SnapSDL.cxx,v 1.3 2002-03-05 22:39:47 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -26,6 +26,7 @@
 
 SnapshotSDL::SnapshotSDL()
 {
+  palette = (Uint32*) NULL;
 }
 
 SnapshotSDL::~SnapshotSDL()
@@ -174,4 +175,10 @@ int SnapshotSDL::IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *src)
 
   png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
   return result;
+}
+
+
+void SnapshotSDL::setPalette(Uint32 *palette)
+{
+  this->palette = palette;
 }

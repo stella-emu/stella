@@ -13,39 +13,30 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SnapSDL.hxx,v 1.2 2002-03-05 22:39:47 stephena Exp $
+// $Id: RectList.hxx,v 1.1 2002-03-05 22:39:47 stephena Exp $
 //============================================================================
 
-#ifndef SNAPSHOTSDL_HXX
-#define SNAPSHOTSDL_HXX
+#ifndef RECT_LIST_HXX
+#define RECT_LIST_HXX
 
 #include <SDL.h>
-#include <png.h>
 
-
-class SnapshotSDL
+class RectList
 {
   public:
-    SnapshotSDL();
-    ~SnapshotSDL();
+    RectList(Uint32 size = 512);
+    ~RectList();
 
-    int savePNG(SDL_Surface *surface, const char *file);
-    void setPalette(Uint32 *palette);
+    void add(SDL_Rect* rect);
+
+    SDL_Rect* rects();
+    Uint32 numRects();
+    void start();
 
   private:
-    static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
+    Uint32 currentSize, currentRect;
 
-    static void png_io_flush(png_structp ctx);
-
-    static void png_user_warn(png_structp ctx, png_const_charp str);
-
-    static void png_user_error(png_structp ctx, png_const_charp str);
-
-    int png_colortype_from_surface(SDL_Surface *surface);
-
-    int IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *src);
-
-    Uint32 *palette;
+    SDL_Rect* rectArray;
 };
 
 #endif

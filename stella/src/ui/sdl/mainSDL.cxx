@@ -13,20 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.10 2002-02-23 16:05:52 stephena Exp $
+// $Id: mainSDL.cxx,v 1.11 2002-03-05 22:39:47 stephena Exp $
 //============================================================================
 
-#include <assert.h>
 #include <fstream>
 #include <iostream>
-#include <strstream>
 #include <string>
 #include <algorithm>
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include <unistd.h>
-#include <string>
+#include <time.h>
 #include <sys/time.h>
 
 #include <SDL.h>
@@ -40,6 +36,15 @@
 #include "System.hxx"
 #include "SndUnix.hxx"
 #include "SnapSDL.hxx"
+#include "RectList.hxx"
+
+// Hack for SDL < 1.2.0
+#ifndef SDL_ENABLE
+  #define SDL_ENABLE 1
+#endif
+#ifndef SDL_DISABLE
+  #define SDL_DISABLE 0
+#endif
 
 
 SDL_Joystick* theLeftJoystick;
@@ -49,6 +54,8 @@ SDL_Joystick* theRightJoystick;
 bool setupDisplay();
 bool setupJoystick();
 bool createScreen(int width, int height);
+void recalculate8BitPalette();
+void setupPalette();
 void cleanup();
 
 void updateDisplay(MediaSource& mediaSource);
@@ -81,8 +88,11 @@ static int mouseX = 0;
 static bool x11Available = false;
 static SDL_SysWMinfo info;
 static int sdlflags;
-static SnapshotSDL* snapshot;
+static RectList* rectList;
 
+#ifdef HAVE_PNG
+  static SnapshotSDL* snapshot;
+#endif
 
 struct Switches
 {
@@ -221,15 +231,17 @@ uInt32 thePaddleMode = 0;
 // An alternate properties file to use
 string theAlternateProFile = "";
 
-// The path to save snapshot files
-string theSnapShotDir = "";
+#ifdef HAVE_PNG
+  // The path to save snapshot files
+  string theSnapShotDir = "";
 
-// What the snapshot should be called (romname or md5sum)
-string theSnapShotName = "";
+  // What the snapshot should be called (romname or md5sum)
+  string theSnapShotName = "";
 
-// Indicates whether to generate multiple snapshots or keep
-// overwriting the same file.  Set to true by default.
-bool theMultipleSnapShotFlag = true;
+  // Indicates whether to generate multiple snapshots or keep
+  // overwriting the same file.  Set to true by default.
+  bool theMultipleSnapShotFlag = true;
+#endif 
 
 
 /**
@@ -256,9 +268,6 @@ bool setupDisplay()
   sdlflags |= theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
   sdlflags |= theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
 
-  // Always use an 8-bit screen since the Atari 2600 had less than 256 colors
-  bpp = 8;
-
   // Get the desired width and height of the display
   theWidth = theConsole->mediaSource().width();
   theHeight = theConsole->mediaSource().height();
@@ -266,6 +275,7 @@ bool setupDisplay()
   // Get the maximum size of a window for THIS screen
   // Must be called after display and screen are known, as well as
   // theWidth and theHeight
+  // Defaults to 3 on systems without X11, maximum of 4 on any system.
   theMaxWindowSize = maxWindowSizeForScreen();
 
   // If theWindowSize is not 0, then it must have been set on the commandline
@@ -285,6 +295,31 @@ bool setupDisplay()
       theWindowSize = 2;
   }
 
+#ifdef HAVE_PNG
+  // Take care of the snapshot stuff.  Must be done before the screen is
+  // created.
+  snapshot = new SnapshotSDL();
+
+  if(theSnapShotDir == "")
+    theSnapShotDir = getenv("HOME");
+  if(theSnapShotName == "")
+    theSnapShotName = "romname";
+#endif
+
+  // Set up the rectangle list to be used in updateDisplay
+  rectList = new RectList();
+  if(!rectList)
+  {
+    cerr << "ERROR: Unable to get memory for SDL rects" << endl;
+    return false;
+  }
+
+  // Set the window title and icon
+  char name[512];
+  sprintf(name, "Stella: \"%s\"", 
+      theConsole->properties().get("Cartridge.Name").c_str());
+  SDL_WM_SetCaption(name, "stella");
+
   // Figure out the desired size of the window
   int width = theWidth * 2 * theWindowSize;
   int height = theHeight * theWindowSize;
@@ -292,12 +327,7 @@ bool setupDisplay()
   // Create the screen
   if(!createScreen(width, height))
     return false;
-
-  // set the window title and icon name
-  char name[512];
-  sprintf(name, "Stella: \"%s\"", 
-      theConsole->properties().get("Cartridge.Name").c_str());
-  SDL_WM_SetCaption(name, "stella");
+  setupPalette();
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
   if(theUseFullScreenFlag)
@@ -319,16 +349,6 @@ bool setupDisplay()
   if(theCenterWindowFlag && !theUseFullScreenFlag)
     centerWindow();
 
-  // Take care of the snapshot stuff
-  snapshot = new SnapshotSDL();
-
-  // By default, snapshot dir is HOME and name is ROMNAME, assuming that
-  // they haven't been specified on the commandline
-  if(theSnapShotDir == "")
-    theSnapShotDir = getenv("HOME");
-  if(theSnapShotName == "")
-    theSnapShotName = "romname";
-
   return true;
 }
 
@@ -342,7 +362,6 @@ bool setupJoystick()
   if(SDL_NumJoysticks() <= 0)
   {
     cout << "No joysticks present, use the keyboard.\n";
-    SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
     theLeftJoystick = theRightJoystick = 0;
     return true;
   }
@@ -366,18 +385,34 @@ bool setupJoystick()
 /**
   This routine is called whenever the screen needs to be recreated.
   It updates the global screen variable.  When this happens, the
-  palette has to be recalculated as well.
+  8-bit palette needs to be recalculated.
 */
 bool createScreen(int w, int h)
 {
-  screen = SDL_SetVideoMode(w, h, bpp, sdlflags);
+  screen = SDL_SetVideoMode(w, h, 0, sdlflags);
   if(screen == NULL)
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
 
-  // Now set the screen palette
+  bpp = screen->format->BitsPerPixel;
+  if(bpp == 8)
+    recalculate8BitPalette();
+
+  return true;
+}
+
+
+/**
+  Recalculates palette of an 8-bit (256 color) screen.
+*/
+void recalculate8BitPalette()
+{
+  if(bpp != 8)
+    return;
+
+  // Map 2600 colors to the current screen
   const uInt32* gamePalette = theConsole->mediaSource().palette();
   SDL_Color colors[256];
   for(uInt32 i = 0; i < 256; i += 2)
@@ -407,7 +442,53 @@ bool createScreen(int w, int h)
     palette[i] = palette[i+1] = SDL_MapRGB(format, r, g, b);
   }
 
-  return true;
+#ifdef HAVE_PNG
+  // Make sure that snapshots use this new palette
+  if(snapshot)
+    snapshot->setPalette(palette);
+#endif
+}
+
+
+/**
+  Set up the palette for a screen with > 8 bits
+*/
+void setupPalette()
+{
+  if(bpp == 8)
+    return;
+
+  const uInt32* gamePalette = theConsole->mediaSource().palette();
+  for(uInt32 i = 0; i < 256; i += 2)
+  {
+    Uint8 r, g, b;
+
+    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16);
+    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8);
+    b = (Uint8) (gamePalette[i] & 0x000000ff);
+
+    switch(bpp)
+    {
+      case 15:
+        palette[i] = palette[i+1] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+        break;
+
+      case 16:
+        palette[i] = palette[i+1] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+        break;
+
+      case 24:
+      case 32:
+        palette[i] = palette[i+1] = (r << 16) | (g << 8) | b;
+        break;
+    }
+  }
+
+#ifdef HAVE_PNG
+  // Make sure that snapshots use this new palette
+  if(snapshot)
+    snapshot->setPalette(palette);
+#endif
 }
 
 
@@ -589,6 +670,9 @@ void updateDisplay(MediaSource& mediaSource)
     uInt16 x, y, width, height;
   } rectangles[2][160];
 
+  // Start a new reclist on each display update
+  rectList->start();
+
   // This array represents the rectangles that need displaying
   // on the current scanline we're processing
   Rectangle* currentRectangles = rectangles[0];
@@ -599,9 +683,6 @@ void updateDisplay(MediaSource& mediaSource)
 
   // Indicates the number of active rectangles
   uInt16 activeCount = 0;
-
-  // Used by SDL to update parts of the screen
-  SDL_Rect rect;
 
   // This update procedure requires theWidth to be a multiple of four.  
   // This is validated when the properties are loaded.
@@ -671,11 +752,15 @@ void updateDisplay(MediaSource& mediaSource)
       else if(current.x >= active.x)
       {
         // Flush the active rectangle
-        rect.x = active.x * 2 * screenMultiple;
-        rect.y = active.y * screenMultiple;
-        rect.w = active.width * 2 * screenMultiple;
-        rect.h = active.height * screenMultiple;
-        SDL_FillRect(screen, &rect, palette[active.color]);
+        SDL_Rect temp;
+
+        temp.x = active.x * 2 * screenMultiple;
+        temp.y = active.y * screenMultiple;
+        temp.w = active.width * 2 * screenMultiple;
+        temp.h = active.height * screenMultiple;
+
+        rectList->add(&temp);
+        SDL_FillRect(screen, &temp, palette[active.color]);
 
         ++activeIndex;
       }
@@ -686,11 +771,14 @@ void updateDisplay(MediaSource& mediaSource)
     {
       Rectangle& active = activeRectangles[s];
 
-      rect.x = active.x * 2 * screenMultiple;
-      rect.y = active.y * screenMultiple;
-      rect.w = active.width * 2 * screenMultiple;
-      rect.h = active.height * screenMultiple;
-      SDL_FillRect(screen, &rect, palette[active.color]);
+      SDL_Rect temp;
+      temp.x = active.x * 2 * screenMultiple;
+      temp.y = active.y * screenMultiple;
+      temp.w = active.width * 2 * screenMultiple;
+      temp.h = active.height * screenMultiple;
+
+      rectList->add(&temp);
+      SDL_FillRect(screen, &temp, palette[active.color]);
     }
 
     // We can now make the current rectangles into the active rectangles
@@ -708,14 +796,18 @@ void updateDisplay(MediaSource& mediaSource)
   {
     Rectangle& active = activeRectangles[t];
 
-    rect.x = active.x * 2 * screenMultiple;
-    rect.y = active.y * screenMultiple;
-    rect.w = active.width * 2 * screenMultiple;
-    rect.h = active.height * screenMultiple;
-    SDL_FillRect(screen, &rect, palette[active.color]);
+    SDL_Rect temp;
+    temp.x = active.x * 2 * screenMultiple;
+    temp.y = active.y * screenMultiple;
+    temp.w = active.width * 2 * screenMultiple;
+    temp.h = active.height * screenMultiple;
+
+    rectList->add(&temp);
+    SDL_FillRect(screen, &temp, palette[active.color]);
   }
 
-  SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
+  // Now update all the rectangles at once
+  SDL_UpdateRects(screen, rectList->numRects(), rectList->rects());
 
   // The frame doesn't need to be completely redrawn anymore
   theRedrawEntireFrameFlag = false;
@@ -888,10 +980,6 @@ void handleEvents()
     {
       doQuit();
     }
-    else if(event.type == SDL_VIDEOEXPOSE)
-    {
-      theRedrawEntireFrameFlag = true;
-    }
 
     // Read joystick events and modify event states
     if(theLeftJoystick)
@@ -1037,14 +1125,12 @@ void handleEvents()
 */
 void takeSnapshot()
 {
+#ifdef HAVE_PNG
   if(!snapshot)
   {
     cerr << "Snapshot support disabled.\n";
     return;
   }
-
-  int width  = screen->w;
-  int height = screen->h;
 
   // Now find the correct name for the snapshot
   string filename = theSnapShotDir;
@@ -1094,6 +1180,9 @@ void takeSnapshot()
     cerr << "Snapshot saved as " << filename << endl;
   else
     cerr << "Couldn't create snapshot " << filename << endl;
+#else
+  cerr << "Snapshot mode not supported.\n";
+#endif
 }
 
 
@@ -1134,7 +1223,7 @@ uInt32 maxWindowSizeForScreen()
   }
 
   if(found)
-    return multiplier;
+    return (multiplier > 4 ? 4 : multiplier);
   else
     return 1;
 }
@@ -1155,18 +1244,20 @@ void usage()
     "",
     "  -fps <number>           Display the given number of frames per second",
     "  -owncmap                Install a private colormap",
-    "  -winsize <size>         Makes initial window be 'size' times normal",
+    "  -zoom <size>            Makes window be 'size' times normal (1 - 4)",
     "  -fullscreen             Play the game in fullscreen mode",
     "  -grabmouse              Keeps the mouse in the game window",
     "  -hidecursor             Hides the mouse cursor in the game window",
     "  -center                 Centers the game window onscreen",
-    "  -volume <number>        Set the volume from 0 to 100",
+    "  -volume <number>        Set the volume (0 - 100)",
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
     "  -showinfo               Shows some game info on exit",
+#ifdef HAVE_PNG
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
     "  -sssingle               Generate single snapshot instead of many",
+#endif
     "  -pro <props file>       Use the given properties file instead of stella.pro",
     "",
     0
@@ -1295,7 +1386,7 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theShowInfoFlag = true;
     }
-    else if(string(argv[i]) == "-winsize")
+    else if(string(argv[i]) == "-zoom")
     {
       uInt32 size = atoi(argv[++i]);
       theWindowSize = size;
@@ -1311,6 +1402,7 @@ void handleCommandLineArguments(int argc, char* argv[])
 
       theDesiredVolume = volume;
     }
+#ifdef HAVE_PNG
     else if(string(argv[i]) == "-ssdir")
     {
       theSnapShotDir = argv[++i];
@@ -1323,6 +1415,7 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theMultipleSnapShotFlag = false;
     }
+#endif
     else if(string(argv[i]) == "-pro")
     {
       theAlternateProFile = argv[++i];
@@ -1467,7 +1560,7 @@ void parseRCOptions(istream& in)
       else if(option == 0)
         theShowInfoFlag = false;
     }
-    else if(key == "winsize")
+    else if(key == "zoom")
     {
       // They're setting the initial window size
       // Don't do bounds checking here, it will be taken care of later
@@ -1485,6 +1578,7 @@ void parseRCOptions(istream& in)
 
       theDesiredVolume = volume;
     }
+#ifdef HAVE_PNG
     else if(key == "ssdir")
     {
       theSnapShotDir = value;
@@ -1501,6 +1595,7 @@ void parseRCOptions(istream& in)
       else if(option == 0)
         theMultipleSnapShotFlag = true;
     }
+#endif
   }
 }
 
@@ -1513,8 +1608,13 @@ void cleanup()
   if(theConsole)
     delete theConsole;
 
+#ifdef HAVE_PNG
   if(snapshot)
     delete snapshot;
+#endif
+
+  if(rectList)
+    delete rectList;
 
   if(SDL_JoystickOpened(0))
     SDL_JoystickClose(theLeftJoystick);
@@ -1588,6 +1688,7 @@ int main(int argc, char* argv[])
   gettimeofday(&startingTime, 0);
 
   uInt32 numberOfFrames = 0;
+  uInt32 frameTime = 1000000 / theDesiredFrameRate;
   for( ; ; ++numberOfFrames)
   {
     // Exit if the user wants to quit
@@ -1613,10 +1714,9 @@ int main(int argc, char* argv[])
       uInt32 delta = (uInt32)((after.tv_sec - before.tv_sec) * 1000000 +
           (after.tv_usec - before.tv_usec));
 
-      if(delta > (1000000 / theDesiredFrameRate))
-      {
+      if(delta > frameTime)
         break;
-      }
+//else SDL_Delay(1);
     }
   }
 

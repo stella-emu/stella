@@ -16,7 +16,7 @@
 ;display = <display>
 ;fps     = <number>
 ;owncmap = <0|1>
-;winsize = <size>
+;zoom = <size>
 ;grabmouse <0|1>
 ;hidecursor <0|1>
 ;center  = <0|1>

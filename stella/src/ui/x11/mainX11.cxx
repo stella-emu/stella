@@ -13,17 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.10 2002-02-23 16:05:52 stephena Exp $
+// $Id: mainX11.cxx,v 1.11 2002-03-05 22:39:47 stephena Exp $
 //============================================================================
 
-#include <assert.h>
 #include <fstream>
 #include <iostream>
-#include <strstream>
 #include <string>
 #include <algorithm>
 #include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 #include <signal.h>
@@ -603,10 +600,12 @@ void handleEvents()
       {
         resizeWindow(0);
       }
+#if 0
       else if((key == XK_F11) && (event.type == KeyPress))
       {
         toggleFullscreen();
       }
+#endif
       else if((key == XK_F12) && (event.type == KeyPress))
       {
         takeSnapshot();
@@ -698,10 +697,6 @@ void handleEvents()
         // togglePause();
         cerr << "todo: Pause on minimize.\n";
       }
-    }
-    else if(event.type == ClientMessage)
-    {
-      cerr << "todo: detect and deal with WM_DELETE_WINDOW message\n";
     }
   }
 
@@ -846,7 +841,7 @@ void doQuit()
   A '1' argument indicates that the window should increase in size, while '0'
   indicates that the windows should decrease in size.
   Can't resize in fullscreen mode.  Will only resize up to the maximum size
-  for the '-winsize' argument.
+  for the '-zoom' argument.
 */
 void resizeWindow(int mode)
 {
@@ -927,11 +922,7 @@ void centerWindow()
 */
 void toggleFullscreen()
 {
-#if 0
-  // code not yet written
-#else
   cerr << "Fullscreen mode not supported.\n";
-#endif
 }
 
 /**
@@ -1028,6 +1019,7 @@ bool createCursors()
   the 'ssname' argument.  If that name exists, they are named as "Name"_x.png,
   where x starts with 1 and increases if the previous name already exists.
   All spaces in filenames are converted to underscore '_'.
+  If theMultipleSnapShotFlag is false, then consecutive images are overwritten.
 */
 void takeSnapshot()
 {
@@ -1143,12 +1135,12 @@ void usage()
     "  -display <display>      Connect to the designated X display",
     "  -fps <number>           Display the given number of frames per second",
     "  -owncmap                Install a private colormap",
-    "  -winsize <size>         Makes initial window be 'size' times normal",
+    "  -zoom <size>            Makes window be 'size' times normal (1 - 4)",
 //    "  -fullscreen             Play the game in fullscreen mode",
     "  -grabmouse              Keeps the mouse in the game window",
     "  -hidecursor             Hides the mouse cursor in the game window",
     "  -center                 Centers the game window onscreen",
-    "  -volume <number>        Set the volume from 0 to 100",
+    "  -volume <number>        Set the volume (0 - 100)",
 #ifdef LINUX_JOYSTICK
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
@@ -1291,7 +1283,7 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theShowInfoFlag = true;
     }
-    else if(string(argv[i]) == "-winsize")
+    else if(string(argv[i]) == "-zoom")
     {
       uInt32 size = atoi(argv[++i]);
       theWindowSize = size;
@@ -1467,7 +1459,7 @@ void parseRCOptions(istream& in)
       else if(option == 0)
         theShowInfoFlag = false;
     }
-    else if(key == "winsize")
+    else if(key == "zoom")
     {
       // They're setting the initial window size
       // Don't do bounds checking here, it will be taken care of later
@@ -1597,8 +1589,7 @@ int main(int argc, char* argv[])
   gettimeofday(&startingTime, 0);
 
   uInt32 numberOfFrames = 0;
-//  uInt32 delayFactor = int(60.0 / float(theDesiredFrameRate) * 9500);
-
+  uInt32 frameTime = 1000000 / theDesiredFrameRate;
   for( ; ; ++numberOfFrames)
   {
     // Exit if the user wants to quit
@@ -1624,16 +1615,8 @@ int main(int argc, char* argv[])
       uInt32 delta = (uInt32)((after.tv_sec - before.tv_sec) * 1000000 +
           (after.tv_usec - before.tv_usec));
 
-      if(delta > (1000000 / theDesiredFrameRate))
-      {
+      if(delta > frameTime)
         break;
-      }
-/*      else 
-      { 
-        after.tv_sec = 0; 
-        after.tv_usec = delayFactor - delta; 
-        select(0,  NULL,  NULL, NULL, &after); 
-      }*/
     }
   }
 
@@ -1658,4 +1641,5 @@ int main(int argc, char* argv[])
 
   // Cleanup time ...
   cleanup();
+  return 0;
 }

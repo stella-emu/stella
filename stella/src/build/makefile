@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.8 2002-02-17 04:41:41 stephena Exp $
+## $Id: makefile,v 1.9 2002-03-05 22:39:47 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -53,8 +53,9 @@ OPTIMIZATIONS    =
 # LINUX_JOYSTICK = 1
 
 ### to include support for saving snapshots in png format
-### (X version requires Imlib)
+### (X version requires Imlib, SDL version requires libpng)
 # X11_SNAPSHOT = 1
+# SDL_SNAPSHOT = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -71,6 +72,7 @@ OPTS.X11   =
 LIBS.X11   =
 CFLAGS.X11 =
 
+OBJS.SDL   =
 OPTS.SDL   =
 LIBS.SDL   = `sdl-config --libs`
 CFLAGS.SDL = `sdl-config --cflags`
@@ -111,6 +113,12 @@ ifdef X11_SNAPSHOT
 OPTS.X11 += -DHAVE_IMLIB
 LIBS.X11 += `imlib-config --libs`
 CFLAGS.X11 += `imlib-config --cflags`
+endif
+
+ifdef SDL_SNAPSHOT
+OBJS.SDL += SnapSDL.o
+OPTS.SDL += -DHAVE_PNG
+LIBS.SDL += -lpng
 endif
 
 default:
@@ -173,10 +181,10 @@ linux-sdl:
           OPTIONS+="$(OPTS.SDL)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.SDL)" \
-          LDLIBS="-lX11 -lXext -lpng" \
+          LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SndUnix.o SnapSDL.o"
-
+          OBJS="mainSDL.o SndUnix.o RectList.o" \
+          OBJS+="$(OBJS.SDL)"
 bsdi-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
@@ -384,6 +392,9 @@ mainSDL.o: $(UI)/sdl/mainSDL.cxx
 
 SnapSDL.o: $(UI)/sdl/SnapSDL.cxx $(UI)/sdl/SnapSDL.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SnapSDL.cxx
+
+RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx
 
 SndUnix.o: $(UI)/sound/SndUnix.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/sound/SndUnix.cxx
