@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
+// $Id: mainX11.cxx,v 1.3 2002-01-10 19:22:58 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -67,14 +67,16 @@ Window theWindow;
 Colormap thePrivateColormap;
 Cursor normalCursor;
 Cursor blankCursor;
+uInt32 eventMask;
 
 // A graphic context for each of the 2600's colors
 GC theGCTable[256];
 
 // function prototypes
-void setupDisplay();
-void setupJoystick();
-void createCursors();
+bool setupDisplay();
+bool setupJoystick();
+bool createCursors();
+void cleanup();
 
 void updateDisplay(MediaSource& mediaSource);
 void handleEvents();
@@ -230,9 +232,10 @@ uInt32 thePaddleMode = 0;
 
 /**
   This routine should be called once the console is created to setup
-  the X11 connection and open a window for us to use
+  the X11 connection and open a window for us to use.  Return false if any
+  operation fails, otherwise return true.
 */
-void setupDisplay()
+bool setupDisplay()
 {
   // Open a connection to the X server
   if(theDisplayName == "")
@@ -243,8 +246,8 @@ void setupDisplay()
   // Verify that the connection was made
   if(theDisplay == NULL)
   {
-    cerr << "ERROR: Cannot open X Windows display...\n";
-    exit(1);
+    cerr << "ERROR: Couldn't open X Windows display...\n";
+    return false;
   }
 
   theScreen = DefaultScreen(theDisplay);
@@ -284,10 +287,16 @@ void setupDisplay()
   theWindow = XCreateSimpleWindow(theDisplay, rootWindow, 0, 0,
       width, height, CopyFromParent, CopyFromParent, 
       BlackPixel(theDisplay, theScreen));
+  if(!theWindow)
+    return false;
 
   // Create normal and blank cursors.  This must be called AFTER
   // theDisplay and theWindow are defined
-  createCursors();
+  if(!createCursors())
+  {
+    cerr << "ERROR: Couldn't create cursors.\n";
+    return false;
+  }
 
   // If requested create a private colormap for the window
   if(theUsePrivateColormapFlag)
@@ -305,8 +314,7 @@ void setupDisplay()
   char name[512];
   sprintf(name, "Stella: \"%s\"", 
       theConsole->properties().get("Cartridge.Name").c_str());
-
-  XSetStandardProperties(theDisplay, theWindow, name, "xstella", None, 0, 0, &hints);
+  XmbSetWMProperties(theDisplay, theWindow, name, "stella", 0, 0, &hints, None, None);
 
   // Allocate colors in the default colormap
   const uInt32* palette = theConsole->mediaSource().palette();
@@ -349,14 +357,15 @@ void setupDisplay()
     XNextEvent(theDisplay, &event);
   } while (event.type != Expose);
 
-  uInt32 mask = ExposureMask | KeyPressMask | KeyReleaseMask | PropertyChangeMask;
+  eventMask = ExposureMask | KeyPressMask | KeyReleaseMask | PropertyChangeMask |
+              StructureNotifyMask;
 
   // If we're using the mouse for paddle emulation then enable mouse events
   if(((theConsole->properties().get("Controller.Left") == "Paddles") ||
       (theConsole->properties().get("Controller.Right") == "Paddles"))
     && (thePaddleMode != 4)) 
   {
-    mask |= (PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
+    eventMask |= (PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
   }
 
   // Keep mouse in game window if grabmouse is selected
@@ -365,7 +374,7 @@ void setupDisplay()
   // Show or hide the cursor depending on the 'hidecursor' argument
   showCursor(!theHideCursorFlag);
 
-  XSelectInput(theDisplay, theWindow, mask);
+  XSelectInput(theDisplay, theWindow, eventMask);
 
   // If imlib snapshots are enabled, set up some imlib stuff
 #ifdef IMLIB2_SNAPSHOT
@@ -378,19 +387,23 @@ void setupDisplay()
   else
     imlib_context_set_colormap(DefaultColormap(theDisplay, theScreen));
 #endif
+
+  return true;
 }
 
 /**
   This routine should be called once setupDisplay is called
   to create the joystick stuff
 */
-void setupJoystick()
+bool setupJoystick()
 {
 #ifdef LINUX_JOYSTICK
   // Open the joystick devices
   theLeftJoystickFd = open("/dev/js0", O_RDONLY | O_NONBLOCK);
   theRightJoystickFd = open("/dev/js1", O_RDONLY | O_NONBLOCK);
 #endif
+
+  return true;
 }
 
 /**
@@ -537,9 +550,7 @@ void handleEvents()
 {
   XEvent event;
 
-  while(XCheckWindowEvent(theDisplay, theWindow, 
-      ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask |
-      ButtonReleaseMask | PointerMotionMask | PropertyChangeMask, &event))
+  while(XCheckWindowEvent(theDisplay, theWindow, eventMask, &event))
   {
     char buffer[20];
     KeySym key;
@@ -644,19 +655,17 @@ void handleEvents()
     {
       theRedrawEntireFrameFlag = true;
     }
-    else if(event.type == PropertyNotify)
+    else if(event.type == UnmapNotify)
     {
-      XWindowAttributes attr;
-      XGetWindowAttributes(theDisplay, theWindow, &attr);
-
-      if(attr.map_state == IsUnmapped)
+      if(!thePauseIndicator)
       {
-        if(!thePauseIndicator)
-        {
-          togglePause();
-          cerr << "todo: Pause on minimize.\n";
-        }
+        // togglePause();
+        cerr << "todo: Pause on minimize.\n";
       }
+    }
+    else if(event.type == ClientMessage)
+    {
+      cerr << "todo: detect and deal with WM_DELETE_WINDOW message\n";
     }
   }
 
@@ -840,7 +849,7 @@ void resizeWindow(int mode)
 
   theRedrawEntireFrameFlag = true;
 
-  // A resize may mean that the window is no longer centered
+  // A resize probably means that the window is no longer centered
   isCentered = false;
 
   if(theCenterWindowFlag)
@@ -939,12 +948,12 @@ void grabMouse(bool grab)
 
 /**
   Creates a normal and blank cursor which may be needed if hidecursor or
-  fullscreen is toggled.
+  fullscreen is toggled.  Return false on any errors, otherwise true.
 */
-void createCursors()
+bool createCursors()
 {
   if(!theDisplay || !theWindow)
-    return;
+    return false;
 
   Pixmap cursormask;
   XGCValues xgc;
@@ -961,11 +970,18 @@ void createCursors()
   dummycolour.flags = 04;
   blankCursor = XCreatePixmapCursor(theDisplay, cursormask, cursormask,
                                     &dummycolour, &dummycolour, 0, 0);
+  if(!blankCursor)
+    return false;
+
   XFreeGC(theDisplay, gc);
   XFreePixmap(theDisplay, cursormask);
 
   // Now create the normal cursor
   normalCursor = XCreateFontCursor(theDisplay, XC_left_ptr);
+  if(!normalCursor)
+    return false;
+
+  return true;
 }
 
 /**
@@ -1381,6 +1397,34 @@ void parseRCOptions(istream& in)
   }
 }
 
+/**
+  Does general cleanup in case any operation failed (or at end of program).
+*/
+void cleanup()
+{
+  if(theConsole)
+    delete theConsole;
+
+  if(normalCursor)
+    XFreeCursor(theDisplay, normalCursor);
+  if(blankCursor)
+    XFreeCursor(theDisplay, blankCursor);
+
+  // If we're using a private colormap then let's free it to be safe
+  if(theUsePrivateColormapFlag && theDisplay)
+  {
+     XFreeColormap(theDisplay, thePrivateColormap);
+  }
+
+#ifdef LINUX_JOYSTICK
+  // Close the joystick devices
+  if(theLeftJoystickFd)
+    close(theLeftJoystickFd);
+  if(theRightJoystickFd)
+    close(theRightJoystickFd);
+#endif
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
@@ -1424,8 +1468,16 @@ int main(int argc, char* argv[])
   delete[] image;
 
   // Setup X window and joysticks
-  setupDisplay();
-  setupJoystick();
+  if(!setupDisplay())
+  {
+    cerr << "ERROR: Couldn't set up display.\n";
+    cleanup();
+  }
+  if(!setupJoystick())
+  {
+    cerr << "ERROR: Couldn't set up joysticks.\n";
+    cleanup();
+  }
 
   // Get the starting time in case we need to print statistics
   timeval startingTime;
@@ -1488,22 +1540,5 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
-  delete theConsole;
-
-  XFreeCursor(theDisplay, normalCursor);
-  XFreeCursor(theDisplay, blankCursor);
-
-  // If we're using a private colormap then let's free it to be safe
-  if(theUsePrivateColormapFlag)
-  {
-     XFreeColormap(theDisplay, thePrivateColormap);
-  }
-
-#ifdef LINUX_JOYSTICK
-  // Close the joystick devices
-  if(theLeftJoystickFd)
-    close(theLeftJoystickFd);
-  if(theRightJoystickFd)
-    close(theRightJoystickFd);
-#endif
+  cleanup();
 }
