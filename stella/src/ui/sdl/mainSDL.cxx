@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.16 2002-03-28 05:13:13 bwmott Exp $
+// $Id: mainSDL.cxx,v 1.17 2002-03-28 18:20:35 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -202,8 +202,6 @@ bool setupDisplay()
   Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK;
   if(SDL_Init(initflags) < 0)
     return false;
-
-  atexit(doQuit);
 
   // Check which system we are running under
   x11Available = false;
@@ -1250,8 +1248,8 @@ bool setupProperties(PropertiesSet& set)
   }
   else
   {
-    cerr << "ERROR: Couldn't find stella.pro file." << endl;
-    return false;
+    set.load("", &Console::defaultProperties(), false);
+    return true;
   }
 }
 
@@ -1298,12 +1296,17 @@ void cleanup()
   if(rectList)
     delete rectList;
 
-  if(SDL_JoystickOpened(0))
-    SDL_JoystickClose(theLeftJoystick);
-  if(SDL_JoystickOpened(1))
-    SDL_JoystickClose(theRightJoystick);
+  if(SDL_WasInit(SDL_INIT_EVERYTHING))
+  {
+    if(SDL_JoystickOpened(0))
+      SDL_JoystickClose(theLeftJoystick);
+    if(SDL_JoystickOpened(1))
+      SDL_JoystickClose(theRightJoystick);
 
-  SDL_Quit();
+    SDL_Quit();
+  }
+
+  exit(0);
 }
 
 

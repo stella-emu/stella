@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.17 2002-03-28 05:13:13 bwmott Exp $
+// $Id: mainX11.cxx,v 1.18 2002-03-28 18:20:35 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1144,8 +1144,8 @@ bool setupProperties(PropertiesSet& set)
   }
   else
   {
-    cerr << "ERROR: Couldn't find stella.pro file." << endl;
-    return false;
+    set.load("", &Console::defaultProperties(), false);
+    return true;
   }
 }
 
@@ -1205,6 +1205,8 @@ void cleanup()
   if(theRightJoystickFd)
     close(theRightJoystickFd);
 #endif
+
+  exit(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1381,7 +1383,6 @@ int main(int argc, char* argv[])
 
   // Cleanup time ...
   cleanup();
-  return 0;
 }
 
 /**
