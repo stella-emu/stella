@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.6 2005-03-14 04:08:15 stephena Exp $
+// $Id: Dialog.cxx,v 1.7 2005-03-15 22:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,7 +40,8 @@ Dialog::Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
     : GuiObject(instance, x, y, w, h),
       _mouseWidget(0),
       _focusedWidget(0),
-      _visible(true)
+      _visible(true),
+      _openCount(0)
 {
 }
 
@@ -70,6 +71,12 @@ void Dialog::open()
   _result = 0;
   _visible = true;
 
+  // Keep count of how many times this dialog was opened
+  // Load the config only on the first open (ie, since close was last called)
+  if(_openCount++ == 0)
+    loadConfig();
+cerr << "_openCount = " << _openCount << endl;
+
   Widget* w = _firstWidget;
 
   // Search for the first objects that wantsFocus() (if any) and give it the focus
@@ -93,6 +100,8 @@ void Dialog::close()
 
   releaseFocus();
   instance()->menu().removeDialog();
+
+  _openCount = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

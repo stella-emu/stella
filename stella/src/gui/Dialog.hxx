@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
+// $Id: Dialog.hxx,v 1.6 2005-03-15 22:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class Menu;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.6 2005-03-15 22:28:05 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -53,15 +53,16 @@ class Dialog : public GuiObject
     virtual void open();
     virtual void close();
     virtual void drawDialog();
-
-    virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
-    virtual void handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers);
+    virtual void loadConfig() {}
+    virtual void saveConfig() {}
 
   protected:
     virtual void draw();
     void releaseFocus();
 
     virtual void handleTickle(); // Called periodically (in every guiloop() )
+    virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
+    virtual void handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers);
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
@@ -80,6 +81,7 @@ class Dialog : public GuiObject
     Widget* _mouseWidget;
     Widget* _focusedWidget;
     bool    _visible;
+    uInt32  _openCount;
 
   private:
     int _result;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.1 2005-03-14 04:08:15 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.2 2005-03-15 22:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -108,9 +108,6 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
   addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #endif
 
-  // Set the items according to current settings
-  loadConfig();
-
 // FIXME - get list of video drivers from OSystem
 //  const Common::LanguageDescription *l = Common::g_languages;
 //  for (; l->code; ++l) {
@@ -126,6 +123,7 @@ VideoDialog::~VideoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::loadConfig()
 {
+cerr << "VideoDialog::loadConfig()\n";
   string s;
   bool b;
   uInt32 i;

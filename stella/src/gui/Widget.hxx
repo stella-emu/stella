@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
+// $Id: Widget.hxx,v 1.6 2005-03-15 22:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,8 @@
 #define WIDGET_HXX
 
 class Dialog;
+
+#include <assert.h>
 
 #include "StellaFont.hxx"
 #include "FrameBuffer.hxx"
@@ -42,7 +44,7 @@ enum {
 };
 
 enum {
-  kStaticTextWidget ='TEXT',
+  kStaticTextWidget = 'TEXT',
   kEditTextWidget   = 'EDIT',
   kButtonWidget     = 'BTTN',
   kCheckboxWidget   = 'CHKB',
@@ -62,7 +64,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
+  @version $Id: Widget.hxx,v 1.6 2005-03-15 22:28:05 stephena Exp $
 */
 class Widget : public GuiObject
 {
