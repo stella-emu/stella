@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.8 2003-09-30 18:46:12 stephena Exp $
+// $Id: UserInterface.cxx,v 1.9 2003-10-01 19:01:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -37,10 +37,19 @@
 #define XBOXOFFSET 8  // 4 pixels to the left and right of text
 #define YBOXOFFSET 8  // 4 pixels to the top and bottom of text
 
+#define UPARROW    24 // Indicates more lines above
+#define DOWNARROW  25 // Indicates more lines below
+#define LEFTARROW  26 // Left arrow for indicating current line
+#define RIGHTARROW 27 // Left arrow for indicating current line
+
+#define LEFTMARKER  17 // Indicates item being remapped
+#define RIGHTMARKER 16 // Indicates item being remapped
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
     : myConsole(console),
       myMediaSource(mediasrc),
+      myFrameRate(0),
       myCurrentWidget(W_NONE),
       myRemapEventSelectedFlag(false),
       mySelectedEvent(Event::NoType),
@@ -56,6 +65,8 @@ UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
       myMessageText(""),
       myInfoMenuWidth(0)
 {
+  myFrameRate = myConsole->settings().getInt("framerate");
+
   myXStart = atoi(myConsole->properties().get("Display.XStart").c_str());
   myWidth = atoi(myConsole->properties().get("Display.Width").c_str());
   myYStart = atoi(myConsole->properties().get("Display.YStart").c_str());
@@ -118,6 +129,13 @@ void UserInterface::showMainMenu(bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::showMessage(const string& message)
+{
+  myMessageText = message;
+  myMessageTime = myFrameRate << 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
   if(myCurrentWidget == W_NONE || state != 1)
@@ -166,6 +184,10 @@ cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "' selected for remappin
       break;  // REMAP_MENU
 
     case INFO_MENU:
+      if(key == StellaEvent::KCODE_ESCAPE)
+        myCurrentWidget = MAIN_MENU;
+
+    case FONTS_MENU:
       if(key == StellaEvent::KCODE_ESCAPE)
         myCurrentWidget = MAIN_MENU;
 
@@ -225,86 +247,44 @@ cerr << "stick = " << stick << ", button = " << code << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::update()
 {
-  // I know this method is hideous :)
-  uInt32 x, y, width, height, i;
+  switch(myCurrentWidget)
+  {
+    case W_NONE:
+      break;
+
+    case MAIN_MENU:
+      drawMainMenu();
+      break;
+
+    case REMAP_MENU:
+      drawRemapMenu();
+      break;
+
+    case INFO_MENU:
+      drawInfoMenu();
+      break;
+
+    case FONTS_MENU:
+      drawFontsMenu();
+      break;
+
+    default:
+      break;
+  }
 
   // A message is a special case of interface element
-  // It can overwrite even a menu, so we should check for that first
+  // It can overwrite even a menu
   if(myMessageTime > 0)
   {
-    width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
-    height = LINEOFFSET + FONTHEIGHT;
-    x = (myWidth >> 1) - (width >> 1);
-    y = myHeight - height - LINEOFFSET/2;
+    uInt32 width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
+    uInt32 height = LINEOFFSET + FONTHEIGHT;
+    uInt32 x = (myWidth >> 1) - (width >> 1);
+    uInt32 y = myHeight - height - LINEOFFSET/2;
 
     // Draw the bounded box and text
     drawBoundedBox(x, y, width, height);
     drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText);
     myMessageTime--;
-
-    return;
-  }
-
-  switch(myCurrentWidget)
-  {
-    case W_NONE:
-      return;
-      break;  // NONE
-
-    case MAIN_MENU:
-      width  = 16*FONTWIDTH + 2*FONTWIDTH;
-      height = myMainMenuItems*LINEOFFSET + 2*FONTHEIGHT;
-      x = (myWidth >> 1) - (width >> 1);
-      y = (myHeight >> 1) - (height >> 1);
-
-      // Draw the bounded box and text
-      drawBoundedBox(x, y, width, height);
-      for(i = 0; i < myMainMenuItems; i++)
-        drawText(x + XBOXOFFSET, LINEOFFSET*i + y + YBOXOFFSET, ourMainMenu[i].action);
-
- // FIXME - change the '~' to an arrow on each end of the line
-      // Now draw the selection arrow around the currently selected item
-      drawText(x + 2, LINEOFFSET*myMainMenuIndex + y + YBOXOFFSET, "~");
-
-      break;  // MAIN_MENU
-
-    case REMAP_MENU:
-      width  = 16*FONTWIDTH + 2*FONTWIDTH;  // FIXME - change 16 to maximum in new framebuffer (~ 40)
-      height = myMaxLines*LINEOFFSET + 2*FONTHEIGHT;
-      x = (myWidth >> 1) - (width >> 1);
-      y = (myHeight >> 1) - (height >> 1);
-
-      // Draw the bounded box and text
-      drawBoundedBox(x, y, width, height);
-      for(i = myRemapMenuLowIndex; i < myRemapMenuHighIndex; i++)
-      {
-        drawText(x + XBOXOFFSET, LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET,
-                 ourRemapMenu[i].action);
-        drawText(x + XBOXOFFSET+100, LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET,
-                 ourRemapMenu[i].key);
-      }
-
- // FIXME - change the '~' to an arrow on each end of the line
-      // Now draw the selection arrow around the currently selected item
-      drawText(x + 2, LINEOFFSET*(myRemapMenuIndex-myRemapMenuLowIndex) + y + YBOXOFFSET, "~");
-
-      break;  // REMAP_MENU
-
-    case INFO_MENU:
-      width  = myInfoMenuWidth*FONTWIDTH + 2*FONTWIDTH;
-      height = 6*LINEOFFSET + 2*FONTHEIGHT;
-      x = (myWidth >> 1) - (width >> 1);
-      y = (myHeight >> 1) - (height >> 1);
-
-      // Draw the bounded box and text
-      drawBoundedBox(x, y, width, height);
-      for(i = 0; i < 6; i++)
-        drawText(x + XBOXOFFSET, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i]);
-
-      break;  // INFO_MENU
-
-    default:
-      break;
   }
 }
 
@@ -461,10 +441,124 @@ void UserInterface::movePageDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::showMessage(const string& message)
+inline void UserInterface::drawMainMenu()
 {
-  myMessageText = message;
-  myMessageTime = 2 * myConsole->settings().getInt("framerate");
+  uInt32 x, y, width, height, i, xpos, ypos;
+
+  width  = 16*FONTWIDTH + 2*FONTWIDTH;
+  height = myMainMenuItems*LINEOFFSET + 2*FONTHEIGHT;
+  x = (myWidth >> 1) - (width >> 1);
+  y = (myHeight >> 1) - (height >> 1);
+
+  // Draw the bounded box and text, leaving a little room for arrows
+  xpos = x + XBOXOFFSET;
+  drawBoundedBox(x-2, y-2, width+3, height+3);
+  for(i = 0; i < myMainMenuItems; i++)
+    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourMainMenu[i].action);
+
+  // Now draw the selection arrow around the currently selected item
+  ypos = LINEOFFSET*myMainMenuIndex + y + YBOXOFFSET;
+  drawChar(x, ypos, LEFTARROW);
+  drawChar(width - x, ypos, RIGHTARROW);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void UserInterface::drawRemapMenu()
+{
+  uInt32 x, y, width, height, i, xpos, ypos;
+
+  width  = 16*FONTWIDTH + 2*FONTWIDTH;  // FIXME - change 16 to maximum in new framebuffer (~ 40)
+  height = myMaxLines*LINEOFFSET + 2*FONTHEIGHT;
+  x = (myWidth >> 1) - (width >> 1);
+  y = (myHeight >> 1) - (height >> 1);
+
+// FIXME - change 100 to left bound of key strings in new frmaebuffer
+  // Draw the bounded box and text, leaving a little room for arrows
+  drawBoundedBox(x-2, y-2, width+3, height+3);
+  for(i = myRemapMenuLowIndex; i < myRemapMenuHighIndex; i++)
+  {
+    drawText(x + XBOXOFFSET, LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET,
+             ourRemapMenu[i].action);
+    drawText(x + XBOXOFFSET+100, LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET,
+             ourRemapMenu[i].key);
+  }
+
+  // Normally draw an arrow indicating the current line,
+  // otherwise highlight the currently selected item for remapping
+  if(!myRemapEventSelectedFlag)
+  {
+    ypos = LINEOFFSET*(myRemapMenuIndex-myRemapMenuLowIndex) + y + YBOXOFFSET;
+    drawChar(x, ypos, LEFTARROW);
+    drawChar(width - x, ypos, RIGHTARROW);
+  }
+  else
+  {
+// FIXME - draw "<|  |>" around key being changed
+//  Can't be done until the framebuffer has been updated and I know exactly 
+//  where the item will be located on the line.
+   // cerr << "draw brackets around '" << ourRemapMenu[myRemapMenuIndex].key << "'\n";
+   drawText(x + 2, LINEOFFSET*(myRemapMenuIndex-myRemapMenuLowIndex) + y + YBOXOFFSET, ">");
+  }
+
+  // Finally, indicate that there are more items to the top or bottom
+  xpos = (width >> 1) - FONTWIDTH/2;
+  if(myRemapMenuHighIndex - myMaxLines > 0)
+    drawChar(xpos, y, UPARROW);
+
+  if(myRemapMenuLowIndex + myMaxLines < myRemapMenuItems)
+    drawChar(xpos, height - FONTWIDTH/2, DOWNARROW);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void UserInterface::drawInfoMenu()
+{
+  uInt32 x, y, width, height, i, xpos, ypos;
+
+  width  = myInfoMenuWidth*FONTWIDTH + 2*FONTWIDTH;
+  height = 6*LINEOFFSET + 2*FONTHEIGHT;
+  x = (myWidth >> 1) - (width >> 1);
+  y = (myHeight >> 1) - (height >> 1);
+
+  // Draw the bounded box and text
+  xpos = x + XBOXOFFSET;
+  drawBoundedBox(x, y, width, height);
+  for(i = 0; i < 6; i++)
+    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void UserInterface::drawFontsMenu()
+{
+  uInt32 xorig, yorig, width, height, xpos, ypos;
+
+  width  = 16*FONTWIDTH + 2*FONTWIDTH;
+  height = myMaxLines*LINEOFFSET;
+  xorig  = (myWidth >> 1) - (width >> 1);
+  yorig  = (myHeight >> 1) - (height >> 1);
+
+  // Draw the bounded box and text
+  xpos = xorig + XBOXOFFSET;
+  ypos = yorig + YBOXOFFSET;
+  drawBoundedBox(xorig, yorig, width, height);
+
+  uInt8* buffer = myMediaSource->currentFrameBuffer();
+
+  for(uInt32 lines = 0; lines < 256; lines+=16)
+  {
+    for(uInt32 x = 0; x < 16; x++)
+    {
+      for(uInt32 y = 0; y < FONTHEIGHT; y++)
+      {
+        for(uInt32 z = 0; z < FONTWIDTH; z++)
+        {
+          uInt32 letter = lines + x;
+          if((ourFontData[(letter << 3) + y] >> z) & 1)
+            buffer[(y + ypos)*myWidth + (x<<3) + z + xpos] = FGCOLOR;
+        }
+      }
+    }
+    ypos += LINEOFFSET;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -507,6 +601,24 @@ void UserInterface::drawText(uInt32 xorig, uInt32 yorig, const string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
+{
+  if(c >= 256 )
+    return;
+
+  uInt8* buffer = myMediaSource->currentFrameBuffer();
+
+  for(uInt32 y = 0; y < FONTHEIGHT; y++)
+  {
+    for(uInt32 z = 0; z < FONTWIDTH; z++)
+    {
+      if((ourFontData[(c << 3) + y] >> z) & 1)
+        buffer[(y + yorig)*myWidth + z + xorig] = FGCOLOR;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::loadRemapMenu()
 {
   // Fill the remap menu with the current key and joystick mappings
@@ -527,7 +639,7 @@ void UserInterface::loadRemapMenu()
     }
     for(uInt32 j = 0; j < myJoyTableSize; ++j)
     {
-      if(myJoyTable[j] == event)
+      if(myJoyTable[j] == event)  // FIXME - don't label axis as button
       {
         ostringstream joyevent;
         uInt32 stick  = j / StellaEvent::LastJCODE;
@@ -590,9 +702,10 @@ const uInt8 UserInterface::ourFontData[2048] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::MainMenuItem UserInterface::ourMainMenu[2] = {
+UserInterface::MainMenuItem UserInterface::ourMainMenu[3] = {
   { REMAP_MENU,  "Key Remapping"    },
-  { INFO_MENU,   "Game Information" }
+  { INFO_MENU,   "Game Information" },
+  { FONTS_MENU,  "Character Set"    }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.hxx,v 1.6 2003-09-30 01:22:45 stephena Exp $
+// $Id: UserInterface.hxx,v 1.7 2003-10-01 19:01:02 stephena Exp $
 //============================================================================
 
 #ifndef USERINTERFACE_HXX
@@ -31,7 +31,7 @@ class MediaSource;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: UserInterface.hxx,v 1.6 2003-09-30 01:22:45 stephena Exp $
+  @version $Id: UserInterface.hxx,v 1.7 2003-10-01 19:01:02 stephena Exp $
 */
 class UserInterface
 {
@@ -74,7 +74,7 @@ class UserInterface
 
   private:
     // Enumeration representing the different types of user interface widgets
-    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU };
+    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU, FONTS_MENU };
 
     Widget currentSelectedWidget();
     Event::Type currentSelectedEvent();
@@ -91,11 +91,26 @@ class UserInterface
     // Move the list down 1 page and put the cursor at the top
     void movePageDown();
 
+    // Draw the main menu
+    void drawMainMenu();
+
+    // Draw the remap menu
+    void drawRemapMenu();
+
+    // Draw the info menu
+    void drawInfoMenu();
+
+    // Draw the fonts menu
+    void drawFontsMenu();
+
     // Draw a bounded box at the specified coordinates
     void drawBoundedBox(uInt32 x, uInt32 y, uInt32 width, uInt32 height);
 
     // Draw message text at specified coordinates
     void drawText(uInt32 x, uInt32 y, const string& message);
+
+    // Draw character 'c' at specified coordinates
+    void drawChar(uInt32 x, uInt32 y, uInt32 c);
 
     // scan the mapping arrays and update the remap menu
     void loadRemapMenu();
@@ -117,6 +132,9 @@ class UserInterface
 
     // The Mediasource for the system
     MediaSource* myMediaSource;
+
+    // Indicates the current framerate of the system
+    uInt32 myFrameRate;
 
     // Structure used for main menu items
     struct MainMenuItem
@@ -174,7 +192,7 @@ class UserInterface
     string ourPropertiesInfo[6];
 
     // Holds static strings for the main menu
-    static MainMenuItem ourMainMenu[2];
+    static MainMenuItem ourMainMenu[3];
 
     // Holds static strings for the remap menu
     static RemapMenuItem ourRemapMenu[57];
