@@ -12,7 +12,7 @@
 #include "GlobalData.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
-#include "SettingsWin32.hxx"
+#include "Settings.hxx"
 #include "GameList.h"
 
 class CCyberstellaView : public CFormView
@@ -77,7 +77,7 @@ private:
     // members
     PropertiesSet* m_pPropertiesSet;
     Sound* pSound;
-    SettingsWin32* pSettings;
+    Settings* pSettings;
     bool m_bIsPause;
 };
 

@@ -51,10 +51,10 @@ BOOL AboutDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-  m_hlMail_JSM.SubclassDlgItem(IDC_EMAIL_JEFFMILL, this);
+  m_hlMail_JSM.SubclassDlgItem(IDC_EMAIL_MAINTAINER, this);
 	m_hlMail_JSM.SetURL( _T("mailto:stephena@users.sourceforge.net?Subject=Cyberstella") );
 
-	m_hlWWW_JSM.SubclassDlgItem(IDC_WEB_JEFFMILL, this);
+	m_hlWWW_JSM.SubclassDlgItem(IDC_WEB_MAINTAINER, this);
 	m_hlWWW_JSM.SetURL( _T("http://minbar.org") );
 
 	m_hlMail_Stella.SubclassDlgItem(IDC_EMAIL_STELLA, this);
