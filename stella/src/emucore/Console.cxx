@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.12 2003-09-06 21:17:48 stephena Exp $
+// $Id: Console.cxx,v 1.13 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -47,7 +47,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
     Settings& rcsettings, PropertiesSet& propertiesSet, Frontend& frontend,
-    uInt32 sampleRate, const Properties* userDefinedProperties)
+    uInt32 sampleRate)
     : mySettings(rcsettings),
       myPropSet(propertiesSet),
       myFrontend(frontend)
@@ -75,11 +75,10 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Search for the properties based on MD5
   myPropSet.getMD5(md5, myProperties);
 
+#ifdef DEVELOPER_SUPPORT
   // Merge any user-defined properties
-  if(userDefinedProperties != 0)
-  {
-    myProperties.merge(*userDefinedProperties);
-  }
+  myProperties.merge(mySettings.userDefinedProperties);
+#endif
 
   // Make sure the MD5 value of the cartridge is set in the properties
   if(myProperties.get("Cartridge.MD5") == "")
@@ -204,7 +203,7 @@ const Properties& Console::properties() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Settings& Console::settings() const
+Settings& Console::settings() const
 {
   return mySettings;
 }
@@ -253,6 +252,7 @@ const Properties& Console::defaultProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Properties Console::ourDefaultProperties;
 
+#ifdef DEVELOPER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
@@ -436,7 +436,7 @@ void Console::changeHeight(const uInt32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::saveProperties(string& filename, bool merge)
+void Console::saveProperties(string filename, bool merge)
 {
   string message;
 
@@ -472,3 +472,4 @@ void Console::saveProperties(string& filename, bool merge)
     }
   }
 }
+#endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrontendUNIX.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
+// $Id: FrontendUNIX.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #ifndef FRONTEND_UNIX_HXX
@@ -29,7 +29,7 @@ class Console;
   and events.
 
   @author  Stephen Anthony
-  @version $Id: FrontendUNIX.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
+  @version $Id: FrontendUNIX.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
 */
 class FrontendUNIX : public Frontend
 {
@@ -117,11 +117,11 @@ class FrontendUNIX : public Frontend
     virtual string systemConfigFilename();
 
     /**
-      Returns the UNIX filename representing a system config file.
+      Returns the filename representing the users home directory.
 
-      @return      The full path and filename of the system config file.
+      @return      The full path and filename of the home directory.
     */
-    string userHomeDir() { return myHomeDir; }
+    virtual string userHomeDir() { return myHomeDir; }
 
   private:
     bool myPauseIndicator;

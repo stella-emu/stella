@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.45 2003-09-06 21:17:48 stephena Exp $
+// $Id: mainSDL.cxx,v 1.46 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -131,12 +131,6 @@ static Sound* sound = (Sound*) NULL;
 
 // Pointer to the frontend object or the null pointer
 static Frontend* frontend = (Frontend*) NULL;
-
-// Indicates if the user wants to quit
-//static bool theQuitIndicator = false;
-
-// Indicates if the emulator should be paused
-//static bool thePauseIndicator = false;
 
 // Indicates if the mouse should be grabbed
 static bool theGrabMouseIndicator = false;
@@ -261,7 +255,6 @@ StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK] = {
     StellaEvent::JSTICK_0, StellaEvent::JSTICK_1,
     StellaEvent::JSTICK_2, StellaEvent::JSTICK_3
 };
-
 StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
     StellaEvent::JBUTTON_0, StellaEvent::JBUTTON_1, StellaEvent::JBUTTON_2, 
     StellaEvent::JBUTTON_3, StellaEvent::JBUTTON_4, StellaEvent::JBUTTON_5, 
@@ -907,7 +900,6 @@ void handleEvents()
         // update the palette
         setupPalette();
       }
-
       else if(key == SDLK_END)        // End decreases XStart
       {                               // Alt-End decreases Width
         if(mod & KMOD_ALT)
@@ -952,11 +944,11 @@ void handleEvents()
       {
         if(theConsole->settings().theMergePropertiesFlag)  // Attempt to merge with propertiesSet
         {
-          theConsole->saveProperties(homePropertiesFile, true);
+          theConsole->saveProperties(theConsole->frontend().userPropertiesFilename(), true);
         }
         else  // Save to file in home directory
         {
-          string newPropertiesFile = homeDir + "/" + \
+          string newPropertiesFile = theConsole->frontend().userHomeDir() + "/" + \
             theConsole->properties().get("Cartridge.Name") + ".pro";
           replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
           theConsole->saveProperties(newPropertiesFile);
@@ -1050,13 +1042,13 @@ void handleEvents()
       {
         if(!frontend->pause())
         {
-          frontend->setPauseEvent();
+          theConsole->eventHandler().sendEvent(Event::Pause, 1);
         }
       }
     }
     else if(event.type == SDL_QUIT)
     {
-      frontend->setQuitEvent();
+      theConsole->eventHandler().sendEvent(Event::Quit, 1);
     }
 
 #ifdef HAVE_JOYSTICK
@@ -1120,71 +1112,6 @@ void handleEvents()
 
       theConsole->eventHandler().sendJoyEvent(stick, code, state);
     }
-/*
-    if(theRightJoystick)
-    {
-      if(((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
-          && (event.jbutton.which == 1))
-      {
-        button = event.jbutton.button;
-        state = event.jbutton.state;
-        state = (state == SDL_PRESSED) ? 1 : 0;
-
-        if(button == 0)  // fire button
-        {
-          theEvent.set(Event::JoystickOneFire, state ? 
-              1 : keyboardEvent.get(Event::JoystickOneFire));
-
-          // If we're using real paddles then set paddle event as well
-          if(theConsole->settings().thePaddleMode == 4)
-            theEvent.set(Event::PaddleTwoFire, state);
-        }
-        else if(button == 1)  // booster button
-        {
-          theEvent.set(Event::BoosterGripOneTrigger, state ? 
-              1 : keyboardEvent.get(Event::BoosterGripOneTrigger));
-
-          // If we're using real paddles then set paddle event as well
-          if(theConsole->settings().thePaddleMode == 4)
-            theEvent.set(Event::PaddleThreeFire, state);
-        }
-      }
-      else if((event.type == SDL_JOYAXISMOTION) && (event.jaxis.which == 1))
-      {
-        axis = event.jaxis.axis;
-        value = event.jaxis.value;
-
-        if(axis == 0)  // x-axis
-        {
-          theEvent.set(Event::JoystickOneLeft, (value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneLeft));
-          theEvent.set(Event::JoystickOneRight, (value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneRight));
-
-          // If we're using real paddles then set paddle events as well
-          if(theConsole->settings().thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleTwoResistance, r);
-          }
-        }
-        else if(axis == 1)  // y-axis
-        {
-          theEvent.set(Event::JoystickOneUp, (value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneUp));
-          theEvent.set(Event::JoystickOneDown, (value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneDown));
-
-          // If we're using real paddles then set paddle events as well
-          if(theConsole->settings().thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleThreeResistance, r);
-          }
-        }
-      }
-    }
-*/
 #endif
   }
 }
@@ -1529,7 +1456,7 @@ int main(int argc, char* argv[])
   // Create a sound object for playing audio
   if(settings.theSoundDriver == "0")
   {
-    // if sound has been disabled, we still need a sound object
+    // even if sound has been disabled, we still need a sound object
     sound = new Sound();
     if(settings.theShowInfoFlag)
       cout << "Sound disabled.\n";
@@ -1570,15 +1497,9 @@ int main(int argc, char* argv[])
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
-  // Create the 2600 game console for users or developers
-#ifdef DEVELOPER_SUPPORT
-  theConsole = new Console(image, size, filename, 
-      settings, propertiesSet, *frontend, sound->getSampleRate(),
-      &settings.userDefinedProperties);
-#else
-  theConsole = new Console(image, size, filename, 
-      settings, propertiesSet, *frontend, sound->getSampleRate());
-#endif
+  // Create the 2600 game console
+  theConsole = new Console(image, size, filename, settings, propertiesSet,
+                           *frontend, sound->getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -1703,9 +1624,6 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
-//// FIXME ... put this in the eventhandler and activate on QUIT event
-  settings.save();
-//////////////////////////////
   cleanup();
   return 0;
 }

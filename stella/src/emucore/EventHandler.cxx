@@ -13,9 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.4 2003-09-06 21:17:48 stephena Exp $
+// $Id: EventHandler.cxx,v 1.5 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
+#include <algorithm>
 #include <sstream>
 
 #include "Console.hxx"
@@ -23,6 +24,7 @@
 #include "EventHandler.hxx"
 #include "Frontend.hxx"
 #include "MediaSrc.hxx"
+#include "Settings.hxx"
 #include "StellaEvent.hxx"
 #include "System.hxx"
 #include "bspf.hxx"
@@ -47,18 +49,18 @@ EventHandler::EventHandler(Console* console)
 
   // Erase the Message array 
   for(Int32 i = 0; i < Event::LastType; ++i)
-    myMessageTable[i] = "";
+    ourMessageTable[i] = "";
 
   // Set unchanging messages
-  myMessageTable[Event::ConsoleColor]            = "Color Mode";
-  myMessageTable[Event::ConsoleBlackWhite]       = "BW Mode";
-  myMessageTable[Event::ConsoleLeftDifficultyA]  = "Left Difficulty A";
-  myMessageTable[Event::ConsoleLeftDifficultyB]  = "Left Difficulty B";
-  myMessageTable[Event::ConsoleRightDifficultyA] = "Right Difficulty A";
-  myMessageTable[Event::ConsoleRightDifficultyB] = "Right Difficulty B";
+  ourMessageTable[Event::ConsoleColor]            = "Color Mode";
+  ourMessageTable[Event::ConsoleBlackWhite]       = "BW Mode";
+  ourMessageTable[Event::ConsoleLeftDifficultyA]  = "Left Difficulty A";
+  ourMessageTable[Event::ConsoleLeftDifficultyB]  = "Left Difficulty B";
+  ourMessageTable[Event::ConsoleRightDifficultyA] = "Right Difficulty A";
+  ourMessageTable[Event::ConsoleRightDifficultyB] = "Right Difficulty B";
 
-  setDefaultKeymap();
-  setDefaultJoymap();
+  setKeymap();
+  setJoymap();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,12 +122,13 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
     }
     else if(event == Event::Quit)
     {
+      myConsole->settings().save();
       myConsole->frontend().setQuitEvent();
       return;
     }
 
-    if(myMessageTable[event] != "")
-      myMediaSource->showMessage(myMessageTable[event], 120);
+    if(ourMessageTable[event] != "")
+      myMediaSource->showMessage(ourMessageTable[event], 120);
   }
 
   // Otherwise, pass it to the emulation core
@@ -173,12 +176,13 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
     }
     else if(event == Event::Quit)
     {
+      myConsole->settings().save();
       myConsole->frontend().setQuitEvent();
       return;
     }
 
-    if(myMessageTable[event] != "")
-      myMediaSource->showMessage(myMessageTable[event], 120);
+    if(ourMessageTable[event] != "")
+      myMediaSource->showMessage(ourMessageTable[event], 120);
   }
 
   // Otherwise, pass it to the emulation core
@@ -186,9 +190,103 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::sendEvent(Event::Type type, Int32 value)
+void EventHandler::sendEvent(Event::Type event, Int32 state)
 {
-  myEvent->set(type, value);
+  // Take care of special events that aren't technically part of
+  // the emulation core
+  if(event == Event::Pause && state == 1)
+  {
+    myConsole->frontend().setPauseEvent();
+    return;
+  }
+  else if(event == Event::Quit && state == 1)
+  {
+    myConsole->settings().save();
+    myConsole->frontend().setQuitEvent();
+    return;
+  }
+
+  myEvent->set(event, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setKeymap()
+{
+  // Since istringstream swallows whitespace, we have to make the
+  // delimiters be spaces
+  string list = myConsole->settings().theKeymapList;
+  replace(list.begin(), list.end(), ':', ' ');
+
+  if(isValidList(list, StellaEvent::LastKCODE))
+  {
+    Event::Type event;
+    istringstream buf(list);
+    string key;
+
+    // Fill the keymap table with events
+    for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
+    {
+      buf >> key;
+      myKeyTable[i] = (Event::Type) atoi(key.c_str());
+    }
+  }
+  else
+    setDefaultKeymap();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setJoymap()
+{
+  // Since istringstream swallows whitespace, we have to make the
+  // delimiters be spaces
+  string list = myConsole->settings().theJoymapList;
+  replace(list.begin(), list.end(), ':', ' ');
+
+  if(isValidList(list, StellaEvent::LastJSTICK*StellaEvent::LastJCODE))
+  {
+    Event::Type event;
+    istringstream buf(list);
+    string key;
+
+    // Fill the joymap table with events
+    for(Int32 i = 0; i < StellaEvent::LastJSTICK; ++i)
+    {
+      for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
+      {
+        buf >> key;
+        myJoyTable[i][j] = (Event::Type) atoi(key.c_str());
+      }
+    }
+  }
+  else
+    setDefaultJoymap();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EventHandler::getKeymap()
+{
+  ostringstream buf;
+
+  // Iterate through the keymap table and create a colon-separated list
+  for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
+    buf << myKeyTable[i] << ":";
+
+  myKeymapString = buf.str();
+  return myKeymapString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EventHandler::getJoymap()
+{
+  ostringstream buf;
+
+  // Iterate through the joymap table and create a colon-separated list
+  for(Int32 i = 0; i < StellaEvent::LastJSTICK; ++i)
+    for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
+      buf << myJoyTable[i][j] << ":";
+
+  myJoymapString = buf.str();
+  return myJoymapString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,6 +372,20 @@ void EventHandler::setDefaultJoymap()
   myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_LEFT]  = Event::JoystickOneLeft;
   myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_RIGHT] = Event::JoystickOneRight;
   myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JBUTTON_0]   = Event::JoystickOneFire;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::isValidList(string list, uInt32 length)
+{
+  // Rudimentary check to see if the list contains 'length' keys
+  istringstream buf(list);
+  string key;
+  uInt32 i = 0;
+
+  while(buf >> key)
+    i++;
+
+  return (i == length);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

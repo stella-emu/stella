@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.4 2003-09-06 21:17:48 stephena Exp $
+// $Id: EventHandler.hxx,v 1.5 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -40,7 +40,7 @@ class MediaSource;
   unchanged to the remap class, where key remapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.4 2003-09-06 21:17:48 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.5 2003-09-07 18:30:28 stephena Exp $
 */
 class EventHandler
 {
@@ -97,24 +97,28 @@ class EventHandler
     void setMediaSource(MediaSource* mediaSource);
 
     /**
-      Set the keymapping from the settings object.
+      Get the current keymapping being used
 
-      @param keymap   The keymap in comma-separated string form
+      @return  The keymap list in string form
     */
-    void setKeyMap(string& keymap);
+    string getKeymap();
 
-#if 0
     /**
-      Set the keymapping from the settings object.
+      Get the current joymapping being used
 
-      @param keymap   The keymap in comma-separated string form
+      @return  The joymap list in string form
     */
-    void getKeyMap(string& keymap);
-#endif
+    string getJoymap();
+
 
   private:
+    void setKeymap();
+    void setJoymap();
     void setDefaultKeymap();
     void setDefaultJoymap();
+
+    bool isValidList(string list, uInt32 length);
+
     void saveState();
     void changeState();
     void loadState();
@@ -127,7 +131,7 @@ class EventHandler
     Event::Type myJoyTable[StellaEvent::LastJSTICK][StellaEvent::LastJCODE];
 
     // Array of messages for each Event
-    string myMessageTable[Event::LastType];
+    string ourMessageTable[Event::LastType];
 
     // Global Console object
     Console* myConsole;
@@ -143,6 +147,12 @@ class EventHandler
 
     // Indicates the current pause status
     bool myPauseStatus;
+
+    // The current keymap in string form
+    string myKeymapString;
+
+    // The current joymap in string form
+    string myJoymapString;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
+// $Id: Settings.cxx,v 1.2 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -32,6 +32,8 @@ Settings::Settings(const string& infile, const string& outfile)
     : mySettingsInputFilename(infile),
       mySettingsOutputFilename(outfile)
 {
+  theKeymapList = "";
+  theJoymapList = "";
   theUseFullScreenFlag = false;
   theGrabMouseFlag = false;
   theCenterWindowFlag = false;
@@ -415,6 +417,14 @@ void Settings::handleRCFile()
 
       theSoundDriver = value;
     }
+    else if(key == "keymap")
+    {
+      theKeymapList = value;
+    }
+    else if(key == "joymap")
+    {
+      theJoymapList = value;
+    }
 #ifdef DEVELOPER_SUPPORT
     else if(key == "Dmerge")
     {
@@ -457,6 +467,8 @@ void Settings::save()
 #ifdef DEVELOPER_SUPPORT
       << "Dmerge = " << theMergePropertiesFlag << endl
 #endif
+      << "keymap = " << myConsole->eventHandler().getKeymap() << endl
+      << "joymap = " << myConsole->eventHandler().getJoymap() << endl
       << endl;
 
   out.close();

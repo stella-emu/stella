@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
+// $Id: Settings.hxx,v 1.2 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -38,6 +38,12 @@ class Settings
     void setConsole(Console* console);
 
   public:
+    // The keymap to use
+    string theKeymapList;
+
+    // The joymap to use
+    string theJoymapList;
+
     // Indicates whether to use fullscreen
     bool theUseFullScreenFlag;
 

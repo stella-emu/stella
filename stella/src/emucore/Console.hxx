@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.8 2003-09-06 21:17:48 stephena Exp $
+// $Id: Console.hxx,v 1.9 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -39,7 +39,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.8 2003-09-06 21:17:48 stephena Exp $
+  @version $Id: Console.hxx,v 1.9 2003-09-07 18:30:28 stephena Exp $
 */
 class Console
 {
@@ -54,11 +54,10 @@ class Console
       @param rcsettings The settings object to use
       @param profiles The game profiles object to use
       @param sampleRate The rate to create audio samples at
-      @param userDefinedProperties User properties that should override the defaults
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
         Settings& rcsettings, PropertiesSet& propertiesSet, Frontend& frontend,
-        uInt32 sampleRate, const Properties* userDefinedProperties = 0);
+        uInt32 sampleRate);
 
     /**
       Create a new console object by copying another one
@@ -112,7 +111,7 @@ class Console
 
       @return The settings for this console
     */
-    const Settings& settings() const;
+    Settings& settings() const;
 
     /**
       Get the console switches
@@ -161,9 +160,10 @@ class Console
     */
     static const Properties& defaultProperties();
 
+#ifdef DEVELOPER_SUPPORT
   public:
     /**
-      Toggle between NTSC and PAL mode.  The GUI's may need to reload their palette.
+      Toggle between NTSC and PAL mode.  The frontends may need to reload their palette.
     */
     void toggleFormat();
 
@@ -206,7 +206,8 @@ class Console
       @param merge Whether or not to merge the changes into the
                    main properties file.
     */
-    void saveProperties(string& filename, bool merge = false);
+    void saveProperties(string filename, bool merge = false);
+#endif
 
   private:
     // Pointers to the left and right controllers

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Frontend.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
+// $Id: Frontend.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
 //============================================================================
 
 #ifndef FRONTEND_HXX
@@ -27,7 +27,7 @@ class Console;
   This class provides an interface for accessing frontend specific data.
 
   @author  Stephen Anthony
-  @version $Id: Frontend.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
+  @version $Id: Frontend.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
 */
 class Frontend
 {
@@ -123,6 +123,13 @@ class Frontend
     */
     virtual string systemConfigFilename() = 0;
 
+    /**
+      This method should be called to get the filename of the users
+      base home directory.
+
+      @return String representing the full path of the home directory.
+    */
+    virtual string userHomeDir() = 0;
 
   private:
     // Copy constructor isn't supported by this class so make it private
