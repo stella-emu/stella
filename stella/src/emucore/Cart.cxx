@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.2 2001-12-30 18:43:30 bwmott Exp $
+// $Id: Cart.cxx,v 1.3 2002-01-18 16:03:48 estolberg Exp $
 //============================================================================
 
 #include <assert.h>
@@ -34,11 +34,13 @@
 #include "CartFASC.hxx"
 #include "CartFE.hxx"
 #include "CartMC.hxx"
+#include "CartMB.hxx"
+#include "CartCV.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge* Cartridge::create(const uInt8* image, uInt32 size, 
+Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     const Properties& properties)
 {
   Cartridge* cartridge = 0;
@@ -83,6 +85,10 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeFE(image);
   else if(type == "MC")
     cartridge = new CartridgeMC(image, size);
+  else if(type == "MB")
+    cartridge = new CartridgeMB(image);
+  else if(type == "CV")
+    cartridge = new CartridgeCV(image, size);
   else
   {
     // TODO: At some point this should be handled in a better way...
@@ -178,6 +184,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else if(size == 32768)
     {
       type = "F4SC";
+    }
+    else if(size == 65536)
+    {
+      type = "MB";
     }
     else if(size == 131072)
     {

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.5 2002-01-16 15:09:21 stephena Exp $
+## $Id: makefile,v 1.6 2002-01-18 16:04:46 estolberg Exp $
 ##============================================================================
 
 ##============================================================================
@@ -24,11 +24,11 @@
 ##============================================================================
 
 ### for normal optimization, full warnings
-OPTIMIZATIONS    = -O -Wall
+# OPTIMIZATIONS    = -O -Wall
 ### for common optimizations, full warnings except unused vars
 # OPTIMIZATIONS    = -O2 -Wall -Wno-unused
 ### this should work with all compilers 
-# OPTIMIZATIONS    =
+OPTIMIZATIONS    =
 ### to get full optimization under gcc/x Intel based OS's..
 # OPTIMIZATIONS    = -O3 -mcpu=pentiumpro -march=pentiumpro -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
@@ -209,8 +209,8 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4SC.o CartF6.o CartF6SC.o CartF8.o \
-            CartF8SC.o CartFASC.o CartFE.o CartMC.o Console.o \
-            Control.o Driving.o \
+            CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o CartMB.o \
+            Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o TIA.o \
             $(M6502_OBJS)
@@ -318,6 +318,12 @@ CartFE.o: $(CORE)/CartFE.cxx
 
 CartMC.o: $(CORE)/CartMC.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartMC.cxx
+
+CartMB.o: $(CORE)/CartMB.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartMB.cxx
+
+CartCV.o: $(CORE)/CartCV.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartCV.cxx
 
 M6532.o: $(CORE)/M6532.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/M6532.cxx
