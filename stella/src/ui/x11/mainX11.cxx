@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.33 2002-11-13 16:19:21 stephena Exp $
+// $Id: mainX11.cxx,v 1.34 2002-12-01 02:13:14 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -43,6 +43,10 @@
 #include "Sound.hxx"
 #include "System.hxx"
 #include "Settings.hxx"
+
+#ifdef SOUND_ALSA
+  #include "SoundALSA.hxx"
+#endif
 
 #ifdef SOUND_OSS
   #include "SoundOSS.hxx"
@@ -1577,6 +1581,10 @@ int main(int argc, char* argv[])
     // if sound has been disabled, we still need a sound object
     sound = new Sound();
   }
+#ifdef SOUND_ALSA
+  else if(settings->theSoundDriver == "alsa")
+    sound = new SoundALSA();
+#endif
 #ifdef SOUND_OSS
   else if(settings->theSoundDriver == "oss")
     sound = new SoundOSS();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.38 2002-11-13 16:19:21 stephena Exp $
+// $Id: mainSDL.cxx,v 1.39 2002-12-01 02:13:13 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -40,6 +40,10 @@
 #include "System.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
+
+#ifdef SOUND_ALSA
+  #include "SoundALSA.hxx"
+#endif
 
 #ifdef SOUND_OSS
   #include "SoundOSS.hxx"
@@ -1704,6 +1708,10 @@ int main(int argc, char* argv[])
     // if sound has been disabled, we still need a sound object
     sound = new Sound();
   }
+#ifdef SOUND_ALSA
+  else if(settings->theSoundDriver == "alsa")
+    sound = new SoundALSA();
+#endif
 #ifdef SOUND_OSS
   else if(settings->theSoundDriver == "oss")
     sound = new SoundOSS();
