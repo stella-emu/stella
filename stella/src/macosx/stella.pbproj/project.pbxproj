@@ -212,6 +212,8 @@
 				2DE2DF350627AE07006BEC99,
 				2DE2DF360627AE07006BEC99,
 				2DE2DF370627AE07006BEC99,
+				2DA07EFB068D186B00BF7A51,
+				2DA07EFC068D186B00BF7A51,
 				2DE2DF380627AE07006BEC99,
 				2DE2DF390627AE07006BEC99,
 				2DE2DF3A0627AE07006BEC99,
@@ -480,6 +482,7 @@
 				2D7B4F70063B51DB00579B93,
 				2DDA34050665817D00CDD299,
 				2D11C9AC0667003F00724063,
+				2DA07EFE068D186B00BF7A51,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -561,6 +564,7 @@
 				2D7B4F71063B51DB00579B93,
 				2DDA34040665817D00CDD299,
 				2D11C9AB0667003F00724063,
+				2DA07EFD068D186B00BF7A51,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1031,6 +1035,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "m4 ../emucore/m6502/src/M6502Low.m4 ../emucore/m6502/src/M6502.m4 > M6502Low.ins\nm4 ../emucore/m6502/src/M6502Hi.m4 ../emucore/m6502/src/M6502.m4 > M6502Hi.ins\n";
+		};
+		2DA07EFB068D186B00BF7A51 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartUA.cxx;
+			path = /Users/markg/stellacvs/stella/src/emucore/CartUA.cxx;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2DA07EFC068D186B00BF7A51 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartUA.hxx;
+			path = /Users/markg/stellacvs/stella/src/emucore/CartUA.hxx;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2DA07EFD068D186B00BF7A51 = {
+			fileRef = 2DA07EFB068D186B00BF7A51;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DA07EFE068D186B00BF7A51 = {
+			fileRef = 2DA07EFC068D186B00BF7A51;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		2DD8799F063A2131008FF2A2 = {
 			fileEncoding = 30;
