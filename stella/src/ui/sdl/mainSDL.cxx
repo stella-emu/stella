@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.17 2002-03-28 18:20:35 stephena Exp $
+// $Id: mainSDL.cxx,v 1.18 2002-03-28 23:11:20 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1305,8 +1305,6 @@ void cleanup()
 
     SDL_Quit();
   }
-
-  exit(0);
 }
 
 
@@ -1319,6 +1317,7 @@ int main(int argc, char* argv[])
   {
     cerr << "ERROR: Couldn't create settings." << endl;
     cleanup();
+    return 0;
   }
 
   // Load in any user defined settings from an RC file
@@ -1329,6 +1328,7 @@ int main(int argc, char* argv[])
   {
     usage();
     cleanup();
+    return 0;
   }
 
   // Get a pointer to the file which contains the cartridge ROM
@@ -1340,6 +1340,7 @@ int main(int argc, char* argv[])
   {
     cerr << "ERROR: Couldn't open " << file << "..." << endl;
     cleanup();
+    return 0;
   }
 
   uInt8* image = new uInt8[512 * 1024];
@@ -1353,6 +1354,7 @@ int main(int argc, char* argv[])
   {
     delete[] image;
     cleanup();
+    return 0;
   }
 
   // Create a sound object for use with the console
@@ -1373,11 +1375,13 @@ int main(int argc, char* argv[])
   {
     cerr << "ERROR: Couldn't set up display.\n";
     cleanup();
+    return 0;
   }
   if(!setupJoystick())
   {
     cerr << "ERROR: Couldn't set up joysticks.\n";
     cleanup();
+    return 0;
   }
 
 #ifdef EXPERIMENTAL_TIMING
@@ -1484,6 +1488,7 @@ int main(int argc, char* argv[])
 
   // Cleanup time ...
   cleanup();
+  return 0;
 }
 
 
