@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.5 2002-11-11 02:55:15 stephena Exp $
+// $Id: Settings.cxx,v 1.6 2002-11-11 22:14:56 stephena Exp $
 //============================================================================
 
 #ifdef DEVELOPER_SUPPORT
@@ -388,5 +388,15 @@ void Settings::handleRCFile(istream& in)
       else if(option == 0)
         theMultipleSnapShotFlag = true;
     }
+#ifdef DEVELOPER_SUPPORT
+    else if(key == "Dmerge")
+    {
+      uInt32 option = atoi(value.c_str());
+      if(option == 1)
+        theMergePropertiesFlag = true;
+      else if(option == 0)
+        theMergePropertiesFlag = false;
+    }
+#endif
   }
 }
