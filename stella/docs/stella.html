@@ -19,6 +19,7 @@
 		<li><a href="#Installation">Installation</a></li>
 		<li><a href="#Games">Games</a></li>
 		<li><a href="#Starting">Starting A Game</a></li>
+		<li><a href="#Settings">Settings File</a></li>
 		<li><a href="#Keyboard">Keyboard Layout</a></li>
 		<li><a href="#Properties">Game Properties</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
@@ -28,7 +29,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - June 2004</b></center>
+	<center><b>February 1999 - July 2004</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -209,70 +210,57 @@
 
 	<h2><b>New in Release 1.4</b></h2>
 
-	<p>FIXME - add feature list</p>
-<!--
 	<ul>
-		<li>Improved TIA sound system so that games with digitized audio work</li>
-		<li>Added saving and loading of game state to the core; X11, SDL, and DOS
-			versions current support saving and loading game state</li>
-		<li>Added support for F4 bankswitching method</li>
-		<li>Pitfall II DPC sound emulation completed</li>
-		<li>Fixed a bug which caused the difficulty switches to operate backwards</li>
-		<li>Changed DPC auto-detection to use file size so that Pitfall II mods work</li>
-		<li>Modified RIOT timer emulation so that startup values are random</li>
-		<li>Added 3F bankswitching auto-detection routine so that homebrews and
-			demos work without a stella.pro entry</li>
-		<li>Updated the TIA message boxes so they look a little nicer</li>
-		<li>Latest stella.pro file included in distribution</li>
-		<li>Added some <b>developer</b> options to the core, and the ability to change
-			game width, height, xstart, ystart, etc. while the emulation is running.  Added
-			ability to switch between NTSC and PAL at runtime, and the ability to save the
-			current properties to a file or to merge the changes into the stella.pro file;
-			X11 and SDL versions supported for now</li>
-		<li>Added save/load state ability to the core; X11 and SDL versions supported for now</li>
-		<li>External sound server for the X11 and SDL versions no longer required, as all
-			sound code is now integrated into the core</li>
-		<li>Changed the locations of the users' config files for the X11 and SDL versions; the users'
-			stellarc file is now located in "<i>$HOME/.stella/stellarc</i>", state files
-			are located in "<i>$HOME/.stella/state/</i>" and the stella.pro file is located
-			in "<i>$HOME/.stella/stella.pro</i>"
-		<li>Changed the way options are supplied on the commandline.  Now all commandline
-			options take <b>exactly</b> the same arguments as in the INI file</li>
-		<li>Added "<i>-accurate</i>" command line option to choose between accurate
-			(CPU-intensive) timing or less accurate (CPU-friendly) timing to X11 and SDL
-			versions.  This is the final version of what was considered experimental timing code
-			in Stella 1.2</li>
-		<li>Added "<i>-sound</i>" command line option to choose which sound backend to use
-			(alsa, oss, sdl) with the X11 and SDL versions</li>
-		<li>Added the following <b>developer</b> command line options to the X11 and SDL
-			versions, which are only activated in <b>developer</b> builds:
-			<ul>
-				<li><i>-Dformat</i></li>
-				<li><i>-Dwidth</i></li>
-				<li><i>-Dheight</i></li>
-				<li><i>-Dxstart</i></li>
-				<li><i>-Dystart</i></li>
-				<li><i>-Dmerge</i></li>
-			</ul></li>
-		<li>Fixed window resize bug in the X11 port</li>
-		<li>Added "<i>-nosound</i>" command line option to the DOS port to disable audio</li>
-  		<li>DOS port supports a "<i>-vsync</i>" option to synchronize emulation with the
-			video blank of the video card</li>
-  		<li>Changed VGA code in the DOS port to use a 60Hz 320x200 and a 60Hz
-			320x240 graphics mode</li>
-		<li>DOS port has been updated to run better under Windows NT, 2000, and XP.
-			There are still issues with the sound, however, it is usable.</li>
-		<li>DOS port is using a new Sound Blaster driver created by Matt Conte which
-			supports auto-detection of sound cards.</li>
-		<li>DOS port supports a STELLA_HOME environment variable that defines
-			the location of config files.</li>
-		<li>In the DOS port the stella.pro file is searched for first in the
-			current working director and then in the <i>%STELLA_HOME%</i> directory
-		<li>In the DOS port the ROM image is searched for first using the
-			specified path, then in <i>%STELLA_HOME%/ROMS</i>, and finally
-			in <i>%STELLA_HOME%</i></li>
+		<li>Codebase ported to SDL.  The DOS and X11 ports have been discontinued.</li>
+		<li>Sound code ported to SDL.  For the Linux versions, ALSA and OSS sound
+			support has been discontinued.</li>
+		<li>The Linux, MacOSX and Windows ports are now based on the same codebase and
+			are actively maintained.  That means simultaneous (and hopefully
+			more frequent) releases.</li>
+		<li>A new Windows port has been created, with the GUI based on StellaX.
+			This is the first new release for Windows since Stella 1.2.</li>
+		<li>A new Mac OSX port has been created by Mark Grebe.  This is the first new
+			release for Mac OSX	since Stella 1.2.</li>
+		<li>Added OpenGL rendering support.</li>
+		<li>Added more refined in-game GUI.</li>
+		<li>Added event remapping.  Emulation keys can now be remapped to the keyboard
+			or up to 4 joysticks.</li>
+		<li>Added native Stelladaptor support.  Joysticks, paddles, and driving controllers
+			have been tested.</li>
+		<li>Digital sound support (used in games like Quadrun and Pitfall2) has been
+			greatly improved.  Sound generation is now more tightly synchronized with
+			video updates.</li>
+		<li>Added support for UA Limited style bankswitching (Funky Fish and Pleiades).</li>
+		<li>Switched to using <i>high compatibility M6502 mode</i> by default.
+		<li>The meaning of the "<i>-sound</i>" command line option has been changed.
+			This option now accepts either 'true' or 'false (1 or 0) to enable/disable
+			sound.</li>
+		<li>Changed sound mixer functionality.  The system volume/mixer settings will
+			never be changed; volume changes in Stella will only affect the emulation
+			itself.</li>
+		<li>Added "<i>-video</i>" command line option.  This option accepts either 'soft'
+			or 'gl', to use software/OpenGL rendering.</li>
+		<li>Added "<i>-gl_filter</i>" command line option.  This option accepts either
+			'nearest' or 'linear', to use GL_NEAREST or GL_LINEAR filtering.</li>
+		<li>Added "<i>-gl_aspect</i>" command line option.  This option accepts a decimal
+			value specifying how much to scale the width of the emulation image (useful
+			for giving an authentic 'square-looking' 4:3 mode).</li>
+		<li>Added "<i>-fragsize</i>" command line option.  This option accepts the
+			size to use for sound fragments.  Linux/MacOSX works well with 512,
+			Windows seems to need 2048.  This value must be a power of two.</li>
+		<li>Modified "<i>-volume</i>" command line option.  If you specify '-1',
+			Stella will use the system volume.</li>
+		<li>Renamed the "<i>-pro</i>" command line option to "<i>-altpro</i>".</li>
+		<li>Renamed the "<i>-fps</i>" command line option to "<i>-framerate</i>".</li>
+		<li>Removed the "<i>-center</i>" command line option.  Stella now automatically
+			centers the window when possible.</li>
+		<li>Removed the "<i>-paddle real</i>" command line option, since it never really
+			worked correctly (and Stelladaptor support adds that functionality
+			anyway).</li>
+		<li>Removed all command line options relating to the X11 port
+			(owncmap, display).</li>
 	</ul>
--->
+
 	<p>
 	<h2><b>Features</b></h2>
 
@@ -331,7 +319,7 @@
 		<li>486/120 MHz required; 586/166 MHz highly recommended
 		<li>SDL version 1.2.0 or greater
 		<li>Joysticks or gamepads are highly recommended
-		<li>Mouse required for paddle emulation using the mouse
+		<li>Mouse or Stelladaptor required for paddle emulation
 	</ul>
 
 	<p>
@@ -381,8 +369,7 @@
 	<hr>
 
 	<p>Once you have a Stella distribution you should follow the instructions for
-	your operating system given below. If your operating system isn't listed then
-	see the installation instructions included with the distribution for your system.</p>
+	your operating system given below.</p>
 
 	<p>
 	<h2><b>Linux/UNIX</b></h2>
@@ -413,7 +400,7 @@
 	<p>If you're using the binary RPM's or source SRPM's, consult your distribution on
 	how to proceed.</p>
 
-	<p>If you have a supported joystick and driver installed and SDL can see the device,
+	<p>If you have a supported joystick and driver installed and SDL can access the device,
 	you can play games using joysticks.  For additional information about the Linux
 	joystick driver see the following web site:
 	<a href="http://atrey.karlin.mff.cuni.cz/~vojtech/input">
@@ -511,13 +498,18 @@
 
 	<p>The Linux version of Stella uses command line arguments to specify the game
 	you'd like to play as well as other options.  To see the list of available
-	arguments, simply run stella without any options or filename.  To run Stella
-	use a command line of the following format:</p>
+	arguments, simply run stella without any options or filename.</p>
+
+	<p>The KDE frontend <a href="http://kstella.sourceforge.net">KStella</a> can
+	also be used, which provides a graphical, point-and-click interface for changing
+	most Stella options.</p>
+
+	<p>To run Stella from the commandline, use the following format:</p>
 
 	<pre>   stella [options ...] filename.bin</pre>
 
-	<p><b>Options</b> (0 indicates false, 1 indicates true, others are self-explanatory)
-		The words 'true' and 'false' can also be used.</p>
+	<p><b>Options</b> ('0' or 'false' indicates false, '1' or 'true' indicates true,
+		others are self-explanatory):</p>
 
 	<table BORDER=2>
 		<tr>
@@ -546,7 +538,13 @@
 
 		<tr>
 			<td><pre>-sound &lt;0|1&gt;</pre></td>
-			<td>Enable or disable sound.</td>
+			<td>Disable or enable sound.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-fragsize &lt;number&gt;</pre></td>
+			<td>Specify the sound fragment size to use.  Linux/Mac seems to work
+				with 512, Windows may need 2048.</td>
 		</tr>
 
 		<tr>
@@ -581,9 +579,8 @@
 		</tr>
 
 		<tr>
-			<td><pre>-paddle &lt;0|1|2|3|real&gt;</pre></td>
-			<td>Indicates which paddle the mouse should emulate or that real Atari
-				2600 paddles are being used (defaults to paddle 0).</td>
+			<td><pre>-paddle &lt;0|1|2|3&gt;</pre></td>
+			<td>Indicates which paddle the mouse should emulate (defaults to paddle 0).</td>
 		</tr>
 
 		<tr>
@@ -598,7 +595,9 @@
 
 		<tr>
 			<td><pre>-accurate &lt;0|1&gt;</pre></td>
-			<td>Accurate game timing (uses more CPU).</td>
+			<td>Accurate game timing (uses more CPU).  This setting seems to work
+				better with the Linux 2.4 kernel.  Newer kernels, Mac and Windows
+				should probably not use this.</td>
 		</tr>
 
 		<tr>
@@ -656,34 +655,46 @@
 
 	</table>
 
-	<p><b>Emulator Game Shells</b></p>
+	<p>
+	<h2><b>Macintosh</b></h2>
 
-	<p><a href="http://kstella.sourceforge.net">KStella</a>, which concentrates on
-	Stella only and includes manuals, snapshots, cartridge labels, etc.</p>
+	<p>The Mac version of Stella is a native Cocoa-based application.</p>
+	<p> FIXME - add more info</p>
 
-	<p><b>INI File</b></p>
+	<p>
+	<h2><b>Windows</b></h2>
 
-	<p>This version of Stella has support for INI files.  This file can contain your
-	default options, and eliminates the need to specify them on the command line.  Any
-	options specified on the command line will override those in the INI file.</p>
+	<p>The Windows version of Stella is either commandline based or can use a GUI.
+	If you wish to use the commandline version, the options are the same as for the
+	Linux version (described above).</p>
 
-	<p>Stella searches for an INI file in two places.  First, it will look for
-	<i>stellarc</i> in your $HOME/.stella directory.  Then, it will look for <i>stellarc</i>
-	in the <i>/etc</i> directory.</p>
+	<p> FIXME - add more info about GUI StellaX launcher</p>
 
-	<p>The syntax for the INI file is very straightforward.  Any line starting with
+	<br><br>
+	<p><h1>
+	<a name="Settings">6. Settings File</a></h1>
+	<hr>
+
+	<p>Stella will remember when you change a setting either at the command line
+	or while the emulation is running, and use the settings the next time
+	you start the emulator.  The settings are saved in a text file which can
+	be edited outside of Stella.  This file can contain your default options,
+	and eliminates the need to specify them on the command line.  Any
+	options specified on the command line will override those in the settings file.</p>
+
+	<p>The syntax for the settings file is very straightforward.  Any line starting with
 	a ';' character is considered a comment and is ignored.  Other lines must be of
 	the form: <b>command = value</b>, where <i>command</i> is the same as that
 	specified on the command line (without the '-' character), and <i>value</i>
 	is dependent on the command.</p>
 
-	<p>For example, the following table illustrates how command line and INI entries
+	<p>For example, the following table illustrates how command line and settings entries
 	are similar:</p>
 
 	<table BORDER=2>
 		<tr>
 			<th>Command Line</th>
-			<th>INI File</th>
+			<th>Settings File</th>
 		</tr>
 
 		<tr>
@@ -702,27 +713,28 @@
 		</tr>
 	</table>
 
-	<p>See the sample stellarc file for more information.</p>
+	<p>The settings file has a special name/location depending on which version of Stella
+	you use:</p>
+
+	<p>
+	<h2><b>Linux/UNIX</b></h2>
+	<p>The Linux and UNIX version of Stella searches for the <i>stellarc</i> file in
+	two places.  First, it will look for <i>stellarc</i> in your $HOME/.stella directory.
+	Then, it will look for <i>stellarc</i> in the <i>/etc</i> directory.</p>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
-
-	<p>The Mac version of Stella is a native Cocoa-based application.</p>
-	<p> FIXME - add more info</p>
+	<p>FIXME ...</p>
 
 	<p>
 	<h2><b>Windows</b></h2>
-
-	<p>The Windows version of Stella is either commandline based or can use a GUI.
-	If you wish to use the commandline version, the options are the same as for the
-	Linux version (described above).</p>
-
-	<p> FIXME - add more info about GUI StellaX launcher</p>
-
+	<p>The Windows version of Stella looks for the <i>stella.ini</i> file in the same
+	directory containing the application.  Future versions of Stella for Windows may look in
+	user-specific locations	(C:\Documents and Settings\...).</p>
 
 	<br><br>
 	<p><h1>
-	<a name="Keyboard">6. Keyboard Layout</a></h1>
+	<a name="Keyboard">7. Keyboard Layout</a></h1>
 	<hr>
 
 	<p>The Atari 2600 console controls and controllers are mapped to the computer's
@@ -740,8 +752,13 @@
 		</tr>
 
 		<tr>
-			<td>Exit emulator/submenu</td>
-			<td>Escape (Alt-F4 for Windows)</td>
+			<td>Exit emulator</td>
+			<td>Escape (Cmd-Q for Macintosh)</td>
+		</tr>
+
+		<tr>
+			<td>Exit submenu (in menu mode)</td>
+			<td>Escape</td>
 		</tr>
 
 		<tr>
@@ -1306,35 +1323,29 @@
 
 	<br><br><br>
 	<p><h1>
-	<a name="Properties">7. Game Properties</a></h1>
+	<a name="Properties">8. Game Properties</a></h1>
 	<hr>
 
 	<p>Stella uses game properties to specify the "best" emulator settings for a
 	game. As of Version 1.2 of Stella, there are no longer any properties built-in.
-	You must download the latest <b>stella.pro</b> file from the maintainer,
-	Erik Kovach, <a href="http://home.earthlink.net/~voch/atari">here</a>.</p>
+	You must use the included <b>stella.pro</b> file.  Otherwise, the emulator
+	will try to guess the best settings for the game.</p>
 
 	<p>
 	<h2><b>Linux/Unix</b></h2>
-
 	<p>The Linux and Unix versions of Stella looks for the property file
-	<i>stella.pro</i> in your <i>$HOME/.stella</i> directory.  If this file is not found there, 
-	Stella will look for a <i>stella.pro</i> file in the <i>/etc/</i> directory.
-	If the file isn't found in either place, then the emulator wil try to
-	guess the best settings for the game.</p>
+	in your <i>$HOME/.stella</i> directory.  If this file is not found there, 
+	Stella will look in the <i>/etc/</i> directory.
 
 	<p>
 	<h2><b>Macintosh</b></h2>
-
-	<p>The Mac version of Stella looks for the property file in the $HOME directory.</p>
 	<p> FIXME - check to see where the Mac port looks for the properties file.</p>
 
 	<p>
 	<h2><b>Windows</b></h2>
-
-	<p>The Windows version of Stella looks for the property file in the directory
-	containing the application.  In the future, support may be added for storing the
-	property file in the users profile (Windows 2000 and higher).</p>
+	<p>The Windows version of Stella looks for the property file in the same directory
+	containing the application.  Future versions of Stella for Windows may look in
+	user-specific locations	(C:\Documents and Settings\...).</p>
 
 	<p>
 	<h2><b>Property File</b></h2>
@@ -1509,36 +1520,34 @@
 
 	<br><br>
 	<p><h1>
-	<a name="Adaptor">8. Stelladaptor Support</a></h1>
+	<a name="Adaptor">9. Stelladaptor Support</a></h1>
 	<hr>
 
-	<p>Stella supports real Atari 2600 joysticks and paddles using the
-	<a href="http://www.pixelspast.com/products">Stelladaptor</a> device.
-	The 1.4 release of Stella does not yet support driving controllers connected
-	to a Stelladaptor.</p>
+	<p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
+	using the <a href="http://www.pixelspast.com/products">Stelladaptor</a> device.</p>
 
 	<p>Stella can use up to <b>two</b> Stelladaptors; any extra ones are ignored.
-	Stelladaptor devices will be automatically detected and configured.  The
-	detection and configuration is as follows:
+	Stelladaptor devices will be automatically detected and configured.  Devices
+	can be plugged/unplugged while the emulation is running; Stella will detect the
+	change and act accordingly.</p>
+
+	<p>The detection and configuration is as follows:
 
 	<ul>
-		<li>The first Stelladaptor found will act as either the left physical
-			joystick or paddles 1 & 2.  Basically, whatever controller you plug
-			into it will behave as if it were plugged in to the <b>left game
-			port</b> on a real Atari.</li>
+		<li>The first Stelladaptor found will act as the <b>left game port</b>
+		on a real Atari.  Depending on the device, Stella will detect it as
+		either the left joystick, paddles 1 & 2, or the left driving controller.</li>
 
-		<li>The second Stelladaptor found will act as either the right physical
-			joystick or paddles 3 & 4.  Basically, whatever controller you plug
-			into it will behave as if it were plugged in to the <b>right game
-			port</b> on a real Atari.</li>
+		<li>The second Stelladaptor found will act as the <b>right game port</b>
+		on a real Atari.  Depending on the device, Stella will detect it as
+		either the right joystick, paddles 3 & 4, or the right driving controller.</li>
 
 		<li>Any other Stelladaptors will be ignored.</li>
 	</ul>
 
-
 	<br><br>
 	<p><h1>
-	<a name="Acknowledgments">9. Acknowledgments</a></h1>
+	<a name="Acknowledgments">10. Acknowledgments</a></h1>
 	<hr>
 
 	<p>Bradford W. Mott started developing Stella during the fall of 1995 and since
@@ -1554,7 +1563,8 @@
 			<td>Ported Stella 1.1 to SDL.  Added extra command line options to X11/SDL
 			versions.  Added INI file support, faster startup, snapshot support,
 			and pause functionality to core.  Converted Stella 1.1 manual to HTML.
-			Current maintainer for the X11 and SDL versions.</td>
+			Ported codebase to SDL for Windows/MacOSX.  Added OpenGL support and
+			Stelladaptor support. Current maintainer for the Linux and Windows versions.</td>
 		</tr>
 
 		<tr>
@@ -1605,6 +1615,12 @@
 		<tr>
 			<td VALIGN="TOP">Aaron&nbsp;Giles</td>
 			<td>Author of the Power Macintosh version of Stella until release 1.1</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">Mark&nbsp;Grebe</td>
+			<td>Author of the Macintosh OSX version of Stella starting with the
+			1.4 release.  Helped with Stelladaptor support.</td>
 		</tr>
 
 		<tr>
@@ -1708,7 +1724,7 @@
 
 		<tr>
 			<td VALIGN="TOP">John&nbsp;Stiles</td>
-			<td>Current maintainer of the Macintosh Stella port</td>
+			<td>Maintained the Macintosh version of Stella until release 1.2</td>
 		</tr>
 
 		<tr>
@@ -1745,7 +1761,7 @@
 			<td VALIGN="TOP">Brian&nbsp;Watson</td>
 			<td>Helped with getting the illegal CPU instruction support working with Stella.
 			Brian also submitted a number of other changes, such as debugger support, which
-			will be integrated into the 1.3 release of Stella.</td>
+			will be integrated into the 1.5 release of Stella.</td>
 		</tr>
 
 		<tr>
@@ -1762,7 +1778,7 @@
 
 	<br><br>
 	<p><h1>
-	<a name="License">10. License and Disclaimer</a></h1>
+	<a name="License">11. License and Disclaimer</a></h1>
 	<hr>
 
 	<p>
