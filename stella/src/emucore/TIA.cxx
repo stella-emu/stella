@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.14 2002-05-14 15:22:28 stephena Exp $
+// $Id: TIA.cxx,v 1.15 2002-08-17 15:29:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -560,9 +560,15 @@ bool TIA::pause(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::drawMessageText()
 {
+  // Set up the correct coordinates to draw the surrounding box
+  uInt32 xBoxOffSet = 2 + myFrameXStart;
+  uInt32 yBoxOffSet = myFrameHeight - 18;
+  uInt32 boxToTextXOffSet = 2;
+  uInt32 boxToTextYOffSet = 4;
+
   // Set up the correct coordinates to print the message
-  uInt32 xOffSet = 10 + myFrameXStart;
-  uInt32 yOffSet = myFrameHeight - 30;
+  uInt32 xTextOffSet = xBoxOffSet + boxToTextXOffSet;
+  uInt32 yTextOffSet = yBoxOffSet + boxToTextYOffSet;
 
   // Used to indicate the current x/y position of a pixel
   uInt32 xPos, yPos;
@@ -570,14 +576,47 @@ void TIA::drawMessageText()
   // The actual font data for a letter
   uInt32 data;
 
-  // The index into the palette to color the current text
-  uInt8 fontColor = 68;
+  // The index into the palette to color the current text and background
+  uInt8 fontColor, backColor;
+
+  // Palette index depends on whether we are in NTSC or PAL mode
+  if(myConsole.properties().get("Display.Format") == "PAL")
+  {
+    fontColor = 10;
+    backColor = 0;
+  }
+  else
+  {
+    fontColor = 10;
+    backColor = 0;
+  }
 
   // Clip the length if its wider than the screen
   uInt8 length = myMessageText.length();
-  if(((length * 5) + xOffSet) >= myFrameWidth)
-    length = (myFrameWidth - xOffSet) / 5;
+  if(((length * 5) + xTextOffSet) >= myFrameWidth)
+    length = (myFrameWidth - xTextOffSet) / 5;
 
+  // Reset the offsets to center the message
+  uInt32 boxWidth  = (5 * length) + boxToTextXOffSet;
+  uInt32 boxHeight = 8 + (2 * (yTextOffSet - yBoxOffSet));
+  xBoxOffSet = (myFrameWidth >> 1) - (boxWidth >> 1);
+  xTextOffSet = xBoxOffSet + boxToTextXOffSet;
+
+  // First, draw the surrounding box
+  for(uInt32 x = 0; x < boxWidth; ++x)
+  {
+    for(uInt32 y = 0; y < boxHeight; ++y)
+    {
+      uInt32 position = ((yBoxOffSet + y) * myFrameWidth) + x + xBoxOffSet;
+
+      if((x == 0) || (x == boxWidth - 1) || (y == 0) || (y == boxHeight - 1))
+        myCurrentFrameBuffer[position] = fontColor;
+      else
+        myCurrentFrameBuffer[position] = backColor;
+    }
+  }
+
+  // Then, draw the text
   for(uInt8 x = 0; x < length; ++x)
   {
     char letter = myMessageText[x];
@@ -588,7 +627,7 @@ void TIA::drawMessageText()
       data = ourFontData[(int)letter - 48 + 26];
     else   // unknown character or space
     {
-      xOffSet += 3;
+      xTextOffSet += 3;
       continue;
     }
 
@@ -604,13 +643,13 @@ void TIA::drawMessageText()
 
       if((data >> y) & 1)
       {
-        uInt32 position = (yPos + yOffSet) * myFrameWidth + (4 - xPos) + xOffSet;
+        uInt32 position = (yPos + yTextOffSet) * myFrameWidth + (4 - xPos) + xTextOffSet;
         myCurrentFrameBuffer[position] = fontColor;
       }
     }
 
     // move left to the next character
-    xOffSet += 5;
+    xTextOffSet += 5;
   }
 }
 
