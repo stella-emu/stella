@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.2 2005-01-04 19:59:13 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.3 2005-01-04 20:06:20 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -173,7 +173,7 @@ uInt32 FrameBufferSDL::maxWindowSizeForScreen()
 
   // If screenwidth or height could not be found, use default zoom value
   if(sWidth == 0 || sHeight == 0)
-    return 2;
+    return 4;
 
   bool found = false;
   while(!found && (multiplier > 0))
