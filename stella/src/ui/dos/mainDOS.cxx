@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.4 2002-01-16 15:09:21 stephena Exp $
+// $Id: mainDOS.cxx,v 1.5 2002-04-10 04:09:59 bwmott Exp $
 //============================================================================
 
 #include <go32.h>
@@ -23,10 +23,10 @@
 #include <dos.h>
 #include <pc.h>
 
+#include <fstream>
+#include <iostream>
+#include <strstream>
 #include <assert.h>
-#include <fstream.h>
-#include <iostream.h>
-#include <strstream.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -679,7 +679,7 @@ int main(int argc, char* argv[])
 
   // Open the cartridge image and read it in
   ifstream in;
-  in.open(file, ios::in | ios::nocreate | ios::binary); 
+  in.open(file, ios::in | ios::binary); 
   if(!in)
   {
     cerr << "ERROR: Couldn't open " << file << "..." << endl;
@@ -687,7 +687,7 @@ int main(int argc, char* argv[])
   }
 
   uInt8* image = new uInt8[512 * 1024];
-  in.read(image, 512 * 1024);
+  in.read((char*)image, 512 * 1024);
   uInt32 size = in.gcount();
   in.close();
 

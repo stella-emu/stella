@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.20 2002-04-09 16:06:28 stephena Exp $
+// $Id: mainX11.cxx,v 1.21 2002-04-10 04:09:59 bwmott Exp $
 //============================================================================
 
 #include <fstream>
@@ -1243,7 +1243,7 @@ int main(int argc, char* argv[])
   }
 
   uInt8* image = new uInt8[512 * 1024];
-  in.read(image, 512 * 1024);
+  in.read((char*)image, 512 * 1024);
   uInt32 size = in.gcount();
   in.close();
 
