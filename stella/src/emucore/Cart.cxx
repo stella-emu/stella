@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+// $Id: Cart.cxx,v 1.2 2001-12-30 18:43:30 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -23,6 +23,7 @@
 #include "Cart3F.hxx"
 #include "Cart4K.hxx"
 #include "CartAR.hxx"
+#include "CartDPC.hxx"
 #include "CartE0.hxx"
 #include "CartE7.hxx"
 #include "CartF4SC.hxx"
@@ -60,6 +61,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new Cartridge4K(image);
   else if(type == "AR")
     cartridge = new CartridgeAR(image, size);
+  else if(type == "DPC")
+    cartridge = new CartridgeDPC(image, size);
   else if(type == "E0")
     cartridge = new CartridgeE0(image);
   else if(type == "E7")
@@ -129,6 +132,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     {"3b76242691730b2dd22ec0ceab351bc6", "E7"},    // He-Man
     {"ac7c2260378975614192ca2bc3d20e0b", "FE"},    // Decathlon
     {"4f618c2429138e0280969193ed6c107e", "FE"},    // Robot Tank
+    {"6d842c96d5a01967be9680080dd5be54", "DPC"},   // Pitfall II
     {(char*)0,                           (char*)0}
   };
 

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+## $Id: makefile,v 1.2 2001-12-30 18:43:30 bwmott Exp $
 ##============================================================================
 
 ##============================================================================
@@ -124,9 +124,9 @@ solaris-x:
 ###############################################################################
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
-CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartE0.o \
-            CartE7.o CartF4SC.o CartF6.o CartF6SC.o CartF8.o CartF8SC.o \
-            CartFASC.o CartFE.o CartMC.o Console.o \
+CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
+            CartE0.o CartE7.o CartF4SC.o CartF6.o CartF6SC.o CartF8.o \
+            CartF8SC.o CartFASC.o CartFE.o CartMC.o Console.o \
             Control.o DefProps.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o TIA.o \
@@ -204,6 +204,9 @@ Cart4K.o: $(CORE)/Cart4K.cxx
 
 CartAR.o: $(CORE)/CartAR.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartAR.cxx
+
+CartDPC.o: $(CORE)/CartDPC.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartDPC.cxx
 
 CartE0.o: $(CORE)/CartE0.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartE0.cxx
