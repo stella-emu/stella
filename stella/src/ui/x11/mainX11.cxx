@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.15 2002-03-20 00:03:24 stephena Exp $
+// $Id: mainX11.cxx,v 1.16 2002-03-21 22:50:36 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -39,76 +39,68 @@
 #include "PropsSet.hxx"
 #include "SndUnix.hxx"
 #include "System.hxx"
+#include "Settings.hxx"
 
 #ifdef HAVE_PNG
   #include "Snapshot.hxx"
-
-  static Snapshot* snapshot;
-
-  // The path to save snapshot files
-  string theSnapShotDir = "";
-
-  // What the snapshot should be called (romname or md5sum)
-  string theSnapShotName = "";
-
-  // Indicates whether to generate multiple snapshots or keep
-  // overwriting the same file.  Set to true by default.
-  bool theMultipleSnapShotFlag = true;
 #endif
 
 #ifdef LINUX_JOYSTICK
   #include <unistd.h>
   #include <fcntl.h>
   #include <linux/joystick.h>
-
-  // File descriptors for the joystick devices
-  int theLeftJoystickFd;
-  int theRightJoystickFd;
 #endif
 
-#define HAVE_GETTIMEOFDAY
-
-// Globals for X windows stuff
-Display* theDisplay;
-string theDisplayName = "";
-int theScreen;
-Visual* theVisual;
-Window theWindow;
-Colormap thePrivateColormap;
-Cursor normalCursor;
-Cursor blankCursor;
-uInt32 eventMask;
-Atom wm_delete_window;
+#define HAVE_GETTIMEOFDAY 1
 
 // A graphic context for each of the 2600's colors
-GC theGCTable[256];
+static GC theGCTable[256];
 
 // function prototypes
-bool setupDisplay();
-bool setupJoystick();
-bool createCursors();
-void cleanup();
+static bool setupDisplay();
+static bool setupJoystick();
+static bool createCursors();
+static void cleanup();
 
-void updateDisplay(MediaSource& mediaSource);
-void handleEvents();
+static void updateDisplay(MediaSource& mediaSource);
+static void handleEvents();
 
-void doQuit();
-void resizeWindow(int mode);
-void centerWindow();
-void showCursor(bool show);
-void grabMouse(bool grab);
-void toggleFullscreen();
-void takeSnapshot();
-void togglePause();
-uInt32 maxWindowSizeForScreen();
-uInt32 getTicks();
+static void doQuit();
+static void resizeWindow(int mode);
+static void centerWindow();
+static void showCursor(bool show);
+static void grabMouse(bool grab);
+static void toggleFullscreen();
+static void takeSnapshot();
+static void togglePause();
+static uInt32 maxWindowSizeForScreen();
+static uInt32 getTicks();
 
-bool setupProperties(PropertiesSet& set);
-void handleCommandLineArguments(int argc, char* argv[]);
-void handleRCFile();
-void parseRCOptions(istream& in);
-void usage();
+static bool setupProperties(PropertiesSet& set);
+static void handleRCFile();
+static void usage();
 
+// Globals for X windows stuff
+static Display* theDisplay;
+static string theDisplayName = "";
+static int theScreen;
+static Visual* theVisual;
+static Window theWindow;
+static Colormap thePrivateColormap;
+static Cursor normalCursor;
+static Cursor blankCursor;
+static uInt32 eventMask;
+static Atom wm_delete_window;
+
+#ifdef HAVE_PNG
+  static Snapshot* snapshot;
+#endif
+
+#ifdef LINUX_JOYSTICK
+  // File descriptors for the joystick devices
+  static int theLeftJoystickFd;
+  static int theRightJoystickFd;
+#endif
 
 // Global event stuff
 struct Switches
@@ -180,73 +172,30 @@ static Switches list[] = {
   { XK_F8,          Event::ConsoleRightDifficultyB }
 };
 
+// Event objects to use
+static Event theEvent;
 static Event keyboardEvent;
 
-// Default window size of 0, meaning it must be set somewhere else
-uInt32 theWindowSize = 0;
-
-// Indicates the maximum window size for the current screen
-uInt32 theMaxWindowSize;
-
-// Indicates the width and height of the game display based on properties
-uInt32 theHeight;
-uInt32 theWidth;
-
 // Pointer to the console object or the null pointer
-Console* theConsole;
+static Console* theConsole;
 
-// Event object to use
-Event theEvent;
+// Pointer to the settings object or the null pointer
+static Settings* settings;
 
 // Indicates if the user wants to quit
-bool theQuitIndicator = false;
+static bool theQuitIndicator = false;
 
 // Indicates if the emulator should be paused
-bool thePauseIndicator = false;
+static bool thePauseIndicator = false;
 
 // Indicates if the entire frame should be redrawn
-bool theRedrawEntireFrameFlag = true;
-
-// Indicates whether to use fullscreen
-bool theUseFullScreenFlag = false;
-
-// Indicates whether mouse can leave the game window
-bool theGrabMouseFlag = false;
-
-// Indicates whether to center the game window
-bool theCenterWindowFlag = false;
-
-// Indicates whether to show some game info on program exit
-bool theShowInfoFlag = false;
-
-// Indicates whether to show cursor in the game window
-bool theHideCursorFlag = false;
-
-// Indicates whether to allocate colors from a private color map
-bool theUsePrivateColormapFlag = false;
+static bool theRedrawEntireFrameIndicator = true;
 
 // Indicates whether the game is currently in fullscreen
-bool isFullscreen = false;
+static bool isFullscreen = false;
 
 // Indicates whether the window is currently centered
-bool isCentered = false;
-
-// Indicates what the desired volume is
-uInt32 theDesiredVolume = 75;
-
-// Indicates what the desired frame rate is
-uInt32 theDesiredFrameRate = 60;
-
-// Indicate which paddle mode we're using:
-//   0 - Mouse emulates paddle 0
-//   1 - Mouse emulates paddle 1
-//   2 - Mouse emulates paddle 2
-//   3 - Mouse emulates paddle 3
-//   4 - Use real Atari 2600 paddles
-uInt32 thePaddleMode = 0;
-
-// An alternate properties file to use
-string theAlternateProFile = "";
+static bool isCentered = false;
 
 /**
   This routine should be called once the console is created to setup
@@ -273,34 +222,34 @@ bool setupDisplay()
   Window rootWindow = RootWindow(theDisplay, theScreen);
 
   // Get the desired width and height of the display
-  theWidth = theConsole->mediaSource().width();
-  theHeight = theConsole->mediaSource().height();
+  settings->theWidth  = theConsole->mediaSource().width();
+  settings->theHeight = theConsole->mediaSource().height();
 
   // Get the maximum size of a window for THIS screen
   // Must be called after display and screen are known, as well as
   // theWidth and theHeight
-  theMaxWindowSize = maxWindowSizeForScreen();
+  settings->theMaxWindowSize = maxWindowSizeForScreen();
 
   // If theWindowSize is not 0, then it must have been set on the commandline
   // Now we check to see if it is within bounds
-  if(theWindowSize != 0)
+  if(settings->theWindowSize != 0)
   {
-    if(theWindowSize < 1)
-      theWindowSize = 1;
-    else if(theWindowSize > theMaxWindowSize)
-      theWindowSize = theMaxWindowSize;
+    if(settings->theWindowSize < 1)
+      settings->theWindowSize = 1;
+    else if(settings->theWindowSize > settings->theMaxWindowSize)
+      settings->theWindowSize = settings->theMaxWindowSize;
   }
   else  // theWindowSize hasn't been set so we do the default
   {
-    if(theMaxWindowSize < 2)
-      theWindowSize = 1;
+    if(settings->theMaxWindowSize < 2)
+      settings->theWindowSize = 1;
     else
-      theWindowSize = 2;
+      settings->theWindowSize = 2;
   }
 
   // Figure out the desired size of the window
-  int width = theWidth * 2 * theWindowSize;
-  int height = theHeight * theWindowSize;
+  int width  = settings->theWidth  * settings->theWindowSize * 2;
+  int height = settings->theHeight * settings->theWindowSize;
 
   theWindow = XCreateSimpleWindow(theDisplay, rootWindow, 0, 0,
       width, height, CopyFromParent, CopyFromParent, 
@@ -317,7 +266,7 @@ bool setupDisplay()
   }
 
   // If requested create a private colormap for the window
-  if(theUsePrivateColormapFlag)
+  if(settings->theUsePrivateColormapFlag)
   {
     thePrivateColormap = XCreateColormap(theDisplay, theWindow, 
         theVisual, AllocNone);
@@ -345,7 +294,7 @@ bool setupDisplay()
     color.blue = (palette[t] & 0x000000ff) << 8;
     color.flags = DoRed | DoGreen | DoBlue;
 
-    if(theUsePrivateColormapFlag)
+    if(settings->theUsePrivateColormapFlag)
       XAllocColor(theDisplay, thePrivateColormap, &color);
     else
       XAllocColor(theDisplay, DefaultColormap(theDisplay, theScreen), &color);
@@ -361,7 +310,7 @@ bool setupDisplay()
   XSetWMProtocols(theDisplay, theWindow, &wm_delete_window, 1);
 
   // If requested install a private colormap for the window
-  if(theUsePrivateColormapFlag)
+  if(settings->theUsePrivateColormapFlag)
   {
     XSetWindowColormap(theDisplay, theWindow, thePrivateColormap);
   }
@@ -370,7 +319,7 @@ bool setupDisplay()
   XMapWindow(theDisplay, theWindow);
 
   // Center the window if centering is selected and not fullscreen
-  if(theCenterWindowFlag)// && !theUseFullScreenFlag)
+  if(settings->theCenterWindowFlag)// && !theUseFullScreenFlag)
     centerWindow();
 
   XEvent event;
@@ -385,16 +334,16 @@ bool setupDisplay()
   // If we're using the mouse for paddle emulation then enable mouse events
   if(((theConsole->properties().get("Controller.Left") == "Paddles") ||
       (theConsole->properties().get("Controller.Right") == "Paddles"))
-    && (thePaddleMode != 4)) 
+    && (settings->thePaddleMode != 4)) 
   {
     eventMask |= (PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
   }
 
   // Keep mouse in game window if grabmouse is selected
-  grabMouse(theGrabMouseFlag);
+  grabMouse(settings->theGrabMouseFlag);
 
   // Show or hide the cursor depending on the 'hidecursor' argument
-  showCursor(!theHideCursorFlag);
+  showCursor(!settings->theHideCursorFlag);
 
   XSelectInput(theDisplay, theWindow, eventMask);
 
@@ -402,10 +351,10 @@ bool setupDisplay()
   // Take care of the snapshot stuff.
   snapshot = new Snapshot();
 
-  if(theSnapShotDir == "")
-    theSnapShotDir = getenv("HOME");
-  if(theSnapShotName == "")
-    theSnapShotName = "romname";
+  if(settings->theSnapShotDir == "")
+    settings->theSnapShotDir = getenv("HOME");
+  if(settings->theSnapShotName == "")
+    settings->theSnapShotName = "romname";
 #endif
 
   return true;
@@ -433,7 +382,10 @@ void updateDisplay(MediaSource& mediaSource)
 {
   uInt8* currentFrame = mediaSource.currentFrameBuffer();
   uInt8* previousFrame = mediaSource.previousFrameBuffer();
-  uInt16 screenMultiple = (uInt16)theWindowSize;
+  uInt16 screenMultiple = (uInt16) settings->theWindowSize;
+
+  uInt32 width  = settings->theWidth;
+  uInt32 height = settings->theHeight;
 
   struct Rectangle
   {
@@ -452,10 +404,9 @@ void updateDisplay(MediaSource& mediaSource)
   // Indicates the number of active rectangles
   uInt16 activeCount = 0;
 
-
   // This update procedure requires theWidth to be a multiple of four.  
   // This is validated when the properties are loaded.
-  for(uInt16 y = 0; y < theHeight; ++y)
+  for(uInt16 y = 0; y < height; ++y)
   {
     // Indicates the number of current rectangles
     uInt16 currentCount = 0;
@@ -464,10 +415,10 @@ void updateDisplay(MediaSource& mediaSource)
     uInt32* current = (uInt32*)(currentFrame); 
     uInt32* previous = (uInt32*)(previousFrame);
 
-    for(uInt16 x = 0; x < theWidth; x += 4, ++current, ++previous)
+    for(uInt16 x = 0; x < width; x += 4, ++current, ++previous)
     {
       // Has something changed in this set of four pixels?
-      if((*current != *previous) || theRedrawEntireFrameFlag)
+      if((*current != *previous) || theRedrawEntireFrameIndicator)
       {
         uInt8* c = (uInt8*)current;
         uInt8* p = (uInt8*)previous;
@@ -476,7 +427,7 @@ void updateDisplay(MediaSource& mediaSource)
         for(uInt16 i = 0; i < 4; ++i, ++c, ++p)
         {
           // See if this pixel has changed
-          if((*c != *p) || theRedrawEntireFrameFlag)
+          if((*c != *p) || theRedrawEntireFrameIndicator)
           {
             // Can we extend a rectangle or do we have to create a new one?
             if((currentCount != 0) && 
@@ -545,8 +496,8 @@ void updateDisplay(MediaSource& mediaSource)
     activeRectangles = tmp;
     activeCount = currentCount;
  
-    currentFrame += theWidth;
-    previousFrame += theWidth;
+    currentFrame  += width;
+    previousFrame += width;
   }
 
   // Flush any rectangles that are still active
@@ -560,7 +511,7 @@ void updateDisplay(MediaSource& mediaSource)
   }
 
   // The frame doesn't need to be completely redrawn anymore
-  theRedrawEntireFrameFlag = false;
+  theRedrawEntireFrameIndicator = false;
 }
 
 /**
@@ -614,8 +565,8 @@ void handleEvents()
         // don't change grabmouse in fullscreen mode
         if(!isFullscreen)
         {
-          theGrabMouseFlag = !theGrabMouseFlag;
-          grabMouse(theGrabMouseFlag);
+          settings->theGrabMouseFlag = !settings->theGrabMouseFlag;
+          grabMouse(settings->theGrabMouseFlag);
         }
       }
       else if((key == XK_h) && (event.type == KeyPress))
@@ -623,8 +574,8 @@ void handleEvents()
         // don't change hidecursor in fullscreen mode
         if(!isFullscreen)
         {
-          theHideCursorFlag = !theHideCursorFlag;
-          showCursor(!theHideCursorFlag);
+          settings->theHideCursorFlag = !settings->theHideCursorFlag;
+          showCursor(!settings->theHideCursorFlag);
         }
       }
       else
@@ -644,46 +595,46 @@ void handleEvents()
     else if(event.type == MotionNotify)
     {
       Int32 resistance = 0;
-      uInt32 width = theWidth * 2 * theWindowSize;
+      uInt32 width = settings->theWidth * settings->theWindowSize * 2;
 
       int x = width - event.xmotion.x;
       resistance = (Int32)((1000000.0 * x) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
-      if(thePaddleMode == 0)
+      if(settings->thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroResistance, resistance);
-      else if(thePaddleMode == 1)
+      else if(settings->thePaddleMode == 1)
         theEvent.set(Event::PaddleOneResistance, resistance);
-      else if(thePaddleMode == 2)
+      else if(settings->thePaddleMode == 2)
         theEvent.set(Event::PaddleTwoResistance, resistance);
-      else if(thePaddleMode == 3)
+      else if(settings->thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeResistance, resistance);
     }
     else if(event.type == ButtonPress) 
     {
-      if(thePaddleMode == 0)
+      if(settings->thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroFire, 1);
-      else if(thePaddleMode == 1)
+      else if(settings->thePaddleMode == 1)
         theEvent.set(Event::PaddleOneFire, 1);
-      else if(thePaddleMode == 2)
+      else if(settings->thePaddleMode == 2)
         theEvent.set(Event::PaddleTwoFire, 1);
-      else if(thePaddleMode == 3)
+      else if(settings->thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeFire, 1);
     }
     else if(event.type == ButtonRelease)
     {
-      if(thePaddleMode == 0)
+      if(settings->thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroFire, 0);
-      else if(thePaddleMode == 1)
+      else if(settings->thePaddleMode == 1)
         theEvent.set(Event::PaddleOneFire, 0);
-      else if(thePaddleMode == 2)
+      else if(settings->thePaddleMode == 2)
         theEvent.set(Event::PaddleTwoFire, 0);
-      else if(thePaddleMode == 3)
+      else if(settings->thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeFire, 0);
     }
     else if(event.type == Expose)
     {
-      theRedrawEntireFrameFlag = true;
+      theRedrawEntireFrameIndicator = true;
     }
     else if(event.type == UnmapNotify)
     {
@@ -711,7 +662,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickZeroFire));
 
           // If we're using real paddles then set paddle event as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
             theEvent.set(Event::PaddleZeroFire, event.value);
         }
         else if(event.number == 1)
@@ -720,7 +671,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::BoosterGripZeroTrigger));
 
           // If we're using real paddles then set paddle event as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
             theEvent.set(Event::PaddleOneFire, event.value);
         }
       }
@@ -734,7 +685,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickZeroRight));
 
           // If we're using real paddles then set paddle events as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
             theEvent.set(Event::PaddleZeroResistance, r);
@@ -748,7 +699,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickZeroDown));
 
           // If we're using real paddles then set paddle events as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
             theEvent.set(Event::PaddleOneResistance, r);
@@ -773,7 +724,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickOneFire));
 
           // If we're using real paddles then set paddle event as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
             theEvent.set(Event::PaddleTwoFire, event.value);
         }
         else if(event.number == 1)
@@ -782,7 +733,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::BoosterGripOneTrigger));
 
           // If we're using real paddles then set paddle event as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
             theEvent.set(Event::PaddleThreeFire, event.value);
         }
       }
@@ -796,7 +747,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickOneRight));
 
           // If we're using real paddles then set paddle events as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
             theEvent.set(Event::PaddleTwoResistance, r);
@@ -810,7 +761,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickOneDown));
 
           // If we're using real paddles then set paddle events as well
-          if(thePaddleMode == 4)
+          if(settings->thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
             theEvent.set(Event::PaddleThreeResistance, r);
@@ -844,22 +795,22 @@ void resizeWindow(int mode)
 
   if(mode == 1)   // increase size
   {
-    if(theWindowSize == theMaxWindowSize)
-      theWindowSize = 1;
+    if(settings->theWindowSize == settings->theMaxWindowSize)
+      settings->theWindowSize = 1;
     else
-      theWindowSize++;
+      settings->theWindowSize++;
   }
   else   // decrease size
   {
-    if(theWindowSize == 1)
-      theWindowSize = theMaxWindowSize;
+    if(settings->theWindowSize == 1)
+      settings->theWindowSize = settings->theMaxWindowSize;
     else
-      theWindowSize--;
+      settings->theWindowSize--;
   }
 
   // Figure out the desired size of the window
-  int width = theWidth * 2 * theWindowSize;
-  int height = theHeight * theWindowSize;
+  int width  = settings->theWidth  * settings->theWindowSize * 2;
+  int height = settings->theHeight * settings->theWindowSize;
 
   XWindowChanges wc;
   wc.width = width;
@@ -872,12 +823,12 @@ void resizeWindow(int mode)
   hints.min_height = hints.max_height = hints.height = height;
   XSetWMNormalHints(theDisplay, theWindow, &hints);
 
-  theRedrawEntireFrameFlag = true;
+  theRedrawEntireFrameIndicator = true;
 
   // A resize probably means that the window is no longer centered
   isCentered = false;
 
-  if(theCenterWindowFlag)
+  if(settings->theCenterWindowFlag)
     centerWindow();
 }
 
@@ -893,8 +844,8 @@ void centerWindow()
 
   w = DisplayWidth(theDisplay, theScreen);
   h = DisplayHeight(theDisplay, theScreen);
-  x = (w - (theWidth * 2 * theWindowSize)) / 2;
-  y = (h - (theHeight * theWindowSize)) / 2;
+  x = (w - (settings->theWidth * settings->theWindowSize * 2)) / 2;
+  y = (h - (settings->theHeight * settings->theWindowSize)) / 2;
 
   XWindowChanges wc;
   wc.x = x;
@@ -1025,14 +976,14 @@ void takeSnapshot()
   }
 
   // Now find the correct name for the snapshot
-  string filename = theSnapShotDir;
-  if(theSnapShotName == "romname")
+  string filename = settings->theSnapShotDir;
+  if(settings->theSnapShotName == "romname")
     filename = filename + "/" + theConsole->properties().get("Cartridge.Name");
-  else if(theSnapShotName == "md5sum")
+  else if(settings->theSnapShotName == "md5sum")
     filename = filename + "/" + theConsole->properties().get("Cartridge.MD5");
   else
   {
-    cerr << "ERROR: unknown name " << theSnapShotName
+    cerr << "ERROR: unknown name " << settings->theSnapShotName
          << " for snapshot type" << endl;
     return;
   }
@@ -1041,7 +992,7 @@ void takeSnapshot()
   replace(filename.begin(), filename.end(), ' ', '_');
 
   // Check whether we want multiple snapshots created
-  if(theMultipleSnapShotFlag)
+  if(settings->theMultipleSnapShotFlag)
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
@@ -1066,7 +1017,7 @@ void takeSnapshot()
     filename = filename + ".png";
 
   // Now save the snapshot file
-  snapshot->savePNG(filename, theConsole->mediaSource(), theWindowSize);
+  snapshot->savePNG(filename, theConsole->mediaSource(), settings->theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;
@@ -1085,14 +1036,14 @@ uInt32 maxWindowSizeForScreen()
   int screenWidth  = DisplayWidth(theDisplay, theScreen);
   int screenHeight = DisplayHeight(theDisplay, theScreen);
 
-  uInt32 multiplier = screenWidth / (theWidth * 2);
+  uInt32 multiplier = screenWidth / (settings->theWidth * 2);
   bool found = false;
 
   while(!found && (multiplier > 0))
   {
     // Figure out the desired size of the window
-    int width = theWidth * 2 * multiplier;
-    int height = theHeight * multiplier;
+    int width  = settings->theWidth  * multiplier * 2;
+    int height = settings->theHeight * multiplier;
 
     if((width < screenWidth) && (height < screenHeight))
       found = true;
@@ -1167,16 +1118,16 @@ bool setupProperties(PropertiesSet& set)
 
   // Check to see if the user has specified an alternate .pro file.
   // If it exists, use it.
-  if(theAlternateProFile != "")
+  if(settings->theAlternateProFile != "")
   {
-    if(access(theAlternateProFile.c_str(), R_OK) == 0)
+    if(access(settings->theAlternateProFile.c_str(), R_OK) == 0)
     {
-      set.load(theAlternateProFile, &Console::defaultProperties(), false);
+      set.load(settings->theAlternateProFile, &Console::defaultProperties(), false);
       return true;
     }
     else
     {
-      cerr << "ERROR: Couldn't find \"" << theAlternateProFile <<
+      cerr << "ERROR: Couldn't find \"" << settings->theAlternateProFile <<
               "\" properties file." << endl;
       return false;
     }
@@ -1200,118 +1151,6 @@ bool setupProperties(PropertiesSet& set)
 }
 
 /**
-  Should be called to parse the command line arguments
-
-  @param argc The count of command line arguments
-  @param argv The command line arguments
-*/
-void handleCommandLineArguments(int argc, char* argv[])
-{
-  // Make sure we have the correct number of command line arguments
-  if(argc < 2)
-    usage();
-
-  for(Int32 i = 1; i < (argc - 1); ++i)
-  {
-    // See which command line switch they're using
-    if(string(argv[i]) == "-fps")
-    {
-      // They're setting the desired frame rate
-      Int32 rate = atoi(argv[++i]);
-      if((rate < 1) || (rate > 300))
-      {
-        rate = 60;
-      }
-
-      theDesiredFrameRate = rate;
-    }
-    else if(string(argv[i]) == "-paddle")
-    {
-      // They're trying to set the paddle emulation mode
-      if(string(argv[i + 1]) == "real")
-      {
-        thePaddleMode = 4;
-      }
-      else
-      {
-        thePaddleMode = atoi(argv[i + 1]);
-        if((thePaddleMode < 0) || (thePaddleMode > 3))
-        {
-          usage();
-        }
-      }
-      ++i;
-    }
-    else if(string(argv[i]) == "-owncmap")
-    {
-      theUsePrivateColormapFlag = true;
-    }
-    else if(string(argv[i]) == "-display")
-    {
-      theDisplayName = argv[++i];
-    }
-    else if(string(argv[i]) == "-fullscreen")
-    {
-      theUseFullScreenFlag = true;
-    }
-    else if(string(argv[i]) == "-grabmouse")
-    {
-      theGrabMouseFlag = true;
-    }
-    else if(string(argv[i]) == "-hidecursor")
-    {
-      theHideCursorFlag = true;
-    }
-    else if(string(argv[i]) == "-center")
-    {
-      theCenterWindowFlag = true;
-    }
-    else if(string(argv[i]) == "-showinfo")
-    {
-      theShowInfoFlag = true;
-    }
-    else if(string(argv[i]) == "-zoom")
-    {
-      uInt32 size = atoi(argv[++i]);
-      theWindowSize = size;
-    }
-    else if(string(argv[i]) == "-volume")
-    {
-      // They're setting the desired volume
-      Int32 volume = atoi(argv[++i]);
-      if(volume < 0)
-        volume = 0;
-      if(volume > 100)
-        volume = 100;
-
-      theDesiredVolume = volume;
-    }
-#ifdef HAVE_PNG
-    else if(string(argv[i]) == "-ssdir")
-    {
-      theSnapShotDir = argv[++i];
-    }
-    else if(string(argv[i]) == "-ssname")
-    {
-      theSnapShotName = argv[++i];
-    }
-    else if(string(argv[i]) == "-sssingle")
-    {
-      theMultipleSnapShotFlag = false;
-    }
-#endif
-    else if(string(argv[i]) == "-pro")
-    {
-      theAlternateProFile = argv[++i];
-    }
-    else
-    {
-      cout << "Undefined option " << argv[i] << endl;
-    }
-  }
-}
-
-/**
   Should be called to determine if an rc file exists.  First checks if there
   is a user specified file ".stellarc" and then if there is a system-wide
   file "/etc/stellarc".
@@ -1324,164 +1163,12 @@ void handleRCFile()
   if(access(homeRCFile.c_str(), R_OK) == 0 )
   {
     ifstream homeStream(homeRCFile.c_str());
-    parseRCOptions(homeStream);
+    settings->handleRCFile(homeStream);
   }
   else if(access("/etc/stellarc", R_OK) == 0 )
   {
     ifstream systemStream("/etc/stellarc");
-    parseRCOptions(systemStream);
-  }
-}
-
-/**
-  Parses each line of the given rcfile and sets options accordingly.
-
-  @param in The file to parse for options
-*/
-void parseRCOptions(istream& in)
-{
-  string line, key, value;
-  uInt32 equalPos;
-
-  while(getline(in, line))
-  {
-    // Strip all whitespace and tabs from the line
-    uInt32 garbage;
-    while((garbage = line.find(" ")) != string::npos)
-      line.erase(garbage, 1);
-    while((garbage = line.find("\t")) != string::npos)
-      line.erase(garbage, 1);
-
-    // Ignore commented and empty lines
-    if((line.length() == 0) || (line[0] == ';'))
-      continue;
-
-    // Search for the equal sign and discard the line if its not found
-    if((equalPos = line.find("=")) == string::npos)
-      continue;
-
-    key   = line.substr(0, equalPos);
-    value = line.substr(equalPos + 1, line.length() - key.length() - 1);
-
-    // Check for absent key or value
-    if((key.length() == 0) || (value.length() == 0))
-      continue;
-
-    // Now set up the options by key
-    if(key == "fps")
-    {
-      // They're setting the desired frame rate
-      uInt32 rate = atoi(value.c_str());
-      if((rate < 1) || (rate > 300))
-      {
-        rate = 60;
-      }
-
-      theDesiredFrameRate = rate;
-    }
-    else if(key == "paddle")
-    {
-      // They're trying to set the paddle emulation mode
-      uInt32 pMode;
-      if(value == "real")
-      {
-        thePaddleMode = 4;
-      }
-      else
-      {
-        pMode = atoi(value.c_str());
-        if((pMode > 0) && (pMode < 4))
-          thePaddleMode = pMode;
-      }
-    }
-    else if(key == "owncmap")
-    {
-      uInt32 option = atoi(value.c_str());
-      if(option == 1)
-        theUsePrivateColormapFlag = true;
-      else if(option == 0)
-        theUsePrivateColormapFlag = false;
-    }
-    else if(key == "display")
-    {
-      theDisplayName = value;
-    }
-    else if(key == "fullscreen")
-    {
-      uInt32 option = atoi(value.c_str());
-      if(option == 1)
-        theUseFullScreenFlag = true;
-      else if(option == 0)
-        theUseFullScreenFlag = false;
-    }
-    else if(key == "grabmouse")
-    {
-      uInt32 option = atoi(value.c_str());
-      if(option == 1)
-        theGrabMouseFlag = true;
-      else if(option == 0)
-        theGrabMouseFlag = false;
-    }
-    else if(key == "hidecursor")
-    {
-      uInt32 option = atoi(value.c_str());
-      if(option == 1)
-        theHideCursorFlag = true;
-      else if(option == 0)
-        theHideCursorFlag = false;
-    }
-    else if(key == "center")
-    {
-      uInt32 option = atoi(value.c_str());
-      if(option == 1)
-        theCenterWindowFlag = true;
-      else if(option == 0)
-        theCenterWindowFlag = false;
-    }
-    else if(key == "showinfo")
-    {
-      uInt32 option = atoi(value.c_str());
-      if(option == 1)
-        theShowInfoFlag = true;
-      else if(option == 0)
-        theShowInfoFlag = false;
-    }
-    else if(key == "zoom")
-    {
-      // They're setting the initial window size
-      // Don't do bounds checking here, it will be taken care of later
-      uInt32 size = atoi(value.c_str());
-      theWindowSize = size;
-    }
-    else if(key == "volume")
-    {
-      // They're setting the desired volume
-      uInt32 volume = atoi(value.c_str());
-      if(volume < 0)
-        volume = 0;
-      if(volume > 100)
-        volume = 100;
-
-      theDesiredVolume = volume;
-    }
-#ifdef HAVE_PNG
-    else if(key == "ssdir")
-    {
-      theSnapShotDir = value;
-    }
-    else if(key == "ssname")
-    {
-      theSnapShotName = value;
-    }
-    else if(key == "sssingle")
-    {
-      uInt32 option = atoi(value.c_str());
-      if(option == 1)
-        theMultipleSnapShotFlag = false;
-      else if(option == 0)
-        theMultipleSnapShotFlag = true;
-    }
-#endif
+    settings->handleRCFile(systemStream);
   }
 }
 
@@ -1492,6 +1179,9 @@ void cleanup()
 {
   if(theConsole)
     delete theConsole;
+
+  if(settings)
+    delete settings;
 
 #ifdef HAVE_PNG
   if(snapshot)
@@ -1504,7 +1194,7 @@ void cleanup()
     XFreeCursor(theDisplay, blankCursor);
 
   // If we're using a private colormap then let's free it to be safe
-  if(theUsePrivateColormapFlag && theDisplay)
+  if(settings->theUsePrivateColormapFlag && theDisplay)
   {
      XFreeColormap(theDisplay, thePrivateColormap);
   }
@@ -1521,11 +1211,23 @@ void cleanup()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
+  // First create some settings for the emulator
+  settings = new Settings();
+  if(!settings)
+  {
+    cerr << "ERROR: Couldn't create settings." << endl;
+    cleanup();
+  }
+
   // Load in any user defined settings from an RC file
   handleRCFile();
 
   // Handle the command line arguments
-  handleCommandLineArguments(argc, argv);
+  if(!settings->handleCommandLineArgs(argc, argv))
+  {
+    usage();
+    cleanup();
+  }
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
@@ -1535,7 +1237,7 @@ int main(int argc, char* argv[])
   if(!in)
   {
     cerr << "ERROR: Couldn't open " << file << "..." << endl;
-    exit(1);
+    cleanup();
   }
 
   uInt8* image = new uInt8[512 * 1024];
@@ -1548,11 +1250,11 @@ int main(int argc, char* argv[])
   if(!setupProperties(propertiesSet))
   {
     delete[] image;
-    exit(1);
+    cleanup();
   }
 
   // Create a sound object for use with the console
-  SoundUnix sound(theDesiredVolume);
+  SoundUnix sound(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
@@ -1620,7 +1322,7 @@ int main(int argc, char* argv[])
   // Set up timing stuff
   uInt32 startTime, frameTime, delta;
   uInt32 numberOfFrames = 0;
-  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) theDesiredFrameRate);
+  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
 
   // Set the base for the timers
   frameTime = 0;
@@ -1662,7 +1364,7 @@ int main(int argc, char* argv[])
   }
 #endif
 
-  if(theShowInfoFlag)
+  if(settings->theShowInfoFlag)
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;
