@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.36 2002-12-05 16:46:14 stephena Exp $
+// $Id: mainX11.cxx,v 1.37 2002-12-15 04:10:56 bwmott Exp $
 //============================================================================
 
 #include <fstream>
@@ -985,16 +985,16 @@ void resizeWindow(int mode)
   int width  = settings->theWidth  * settings->theWindowSize * 2;
   int height = settings->theHeight * settings->theWindowSize;
 
-  XWindowChanges wc;
-  wc.width = width;
-  wc.height = height;
-  XConfigureWindow(theDisplay, theWindow, CWWidth | CWHeight, &wc);
-
   XSizeHints hints;
   hints.flags = PSize | PMinSize | PMaxSize;
   hints.min_width = hints.max_width = hints.width = width;
   hints.min_height = hints.max_height = hints.height = height;
   XSetWMNormalHints(theDisplay, theWindow, &hints);
+
+  XWindowChanges wc;
+  wc.width = width;
+  wc.height = height;
+  XConfigureWindow(theDisplay, theWindow, CWWidth | CWHeight, &wc);
 
   theRedrawEntireFrameIndicator = true;
 
