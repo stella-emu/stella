@@ -58,6 +58,15 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_FOLDER              ICON    DISCARDABLE     "res\\DIR.ICO"
 #endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -78,8 +87,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "STELLA.ICO"
-IDR_CYBERSTYPE          ICON    DISCARDABLE     "res\\CyberstellaDoc.ico"
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\STELLA.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -158,70 +166,62 @@ END
 
 IDD_CYBERSTELLA_FORM DIALOGEX 0, 0, 409, 169
 STYLE WS_CHILD
-FONT 8, "MS Shell Dlg"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "&Files found in:",-1,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,7,7,44,8
     CONTROL         "List1",IDC_ROMLIST,"SysListView32",LVS_REPORT | 
-                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | 
-                    WS_BORDER | WS_TABSTOP,7,19,395,143,WS_EX_STATICEDGE
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,7,19,395,143,WS_EX_CLIENTEDGE
     RTEXT           "<status>",IDC_ROMCOUNT,322,7,80,8,SS_NOPREFIX
     CONTROL         "Static",IDC_ROMPATH,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,57,7,254,8
 END
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 390, 176
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 390, 133
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Information"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "You must own legal copies of all ROM images you are using.  Neither Jeff Miller nor the rest of the Stella team can tell you where to find ROM images so DON'T ASK.  All requests will either be deleted or sent to the appropriate authorities.",
-                    -1,7,7,376,18,SS_NOPREFIX
-    LTEXT           "If you have a question or a problem, please try one of these contacts:",
-                    -1,7,93,376,8,SS_NOPREFIX
-    LTEXT           "Jeff Miller:",-1,7,109,32,8,SS_NOPREFIX
-    LTEXT           "miller@zipcon.net",IDC_EMAIL_JEFFMILL,73,109,56,8,
+    LTEXT           "You must own legal copies of all ROM images you are using.  Neither Manuel Polik nor the rest of the Stella team can tell you where to find ROM images so DON'T ASK.  All requests will either be deleted or sent to the appropriate authorities.",
+                    -1,7,27,376,18,SS_NOPREFIX
+    LTEXT           "If you have a question or a problem with Cyberstella, please try one of these contacts:",
+                    -1,7,58,376,8,SS_NOPREFIX
+    LTEXT           "Manuel Polik:",-1,7,76,62,8,SS_NOPREFIX
+    LTEXT           "cybergoth@nexgo.de",IDC_EMAIL_JEFFMILL,73,76,103,8,
                     SS_NOPREFIX | SS_NOTIFY
     LTEXT           "http://www.emuunlim.com/stellax/",IDC_WEB_JEFFMILL,178,
-                    109,110,8,SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "Stella dev team:",-1,7,121,52,8,SS_NOPREFIX
-    LTEXT           "stella@csc.ncsu.edu",IDC_EMAIL_STELLA,73,121,67,8,
+                    76,110,8,SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "Stella dev team:",-1,7,88,52,8,SS_NOPREFIX
+    LTEXT           "stella@csc.ncsu.edu",IDC_EMAIL_STELLA,73,88,67,8,
                     SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "http://stella.atari.org",IDC_WEB_STELLA,178,121,65,8,
+    LTEXT           "http://stella.atari.org",IDC_WEB_STELLA,178,88,65,8,
                     SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "StellaX is free software.  It may not be sold or offered as part of a collection for sale without permission from Jeff Miller.  When distributing StellaX, the original distribution (the .zip file) must not be altered.",
-                    -1,7,32,376,19,SS_NOPREFIX
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,81,376,1
-    LTEXT           "TIPS: F12 will create a screen shot of the current game screen.  Open up stella.ini in notepad to see configurable options.",
-                    -1,7,56,376,18
-    PUSHBUTTON      "&Continue",IDC_CONTINUE,136,144,118,14
+    LTEXT           "Cyberstella is free software.  It may not be sold or offered as part of a collection for sale without permission from Manuel Polik.  When distributing Cyberstella, the original distribution (the .zip file) must not be altered.",
+                    -1,7,7,376,19,SS_NOPREFIX
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,50,375,1
+    PUSHBUTTON      "&Continue",IDC_CONTINUE,136,111,118,14
 END
 
-IDD_CONFIG_PAGE DIALOG DISCARDABLE  0, 0, 390, 149
+IDD_CONFIG_PAGE DIALOG DISCARDABLE  0, 0, 390, 112
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cyberstella Configuration"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "&ROM (.bin) file path:",-1,7,10,64,8
-    EDITTEXT        IDC_ROMPATH,82,7,246,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "&Browse...",IDC_BROWSE,333,7,50,14
-    LTEXT           "Set this to the path where your .bin rom files are located.",
-                    -1,7,25,376,8
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,39,376,1
-    LTEXT           "Mouse should emulate &paddle:",-1,7,49,97,8
-    COMBOBOX        IDC_PADDLE,109,46,48,82,CBS_DROPDOWNLIST | WS_VSCROLL | 
+    LTEXT           "Mouse should emulate &paddle:",-1,7,10,97,8
+    COMBOBOX        IDC_PADDLE,109,7,48,82,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,66,374,1
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,27,374,1
     CONTROL         "&Auto select video mode",IDC_AUTO_SELECT_VIDEOMODE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,90,10
-    LTEXT           "If this is not checked, then a standard video mode (640x480) will be used.  Otherwise, StellaX will use the video mode which it believes will work best.  You should only uncheck this if you are having video problems while running StellaX.",
-                    -1,7,84,376,18
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,108,373,1
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,34,90,10
+    LTEXT           "If this is not checked, then a standard video mode (640x480) will be used.  Otherwise, Cyberstella will use the video mode which it believes will work best.  You should only uncheck this if you are having video problems while running Cyberstella.",
+                    -1,7,45,376,18
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,69,373,1
     CONTROL         "Disable &Sound",IDC_SOUND,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,7,116,62,10
+                    WS_TABSTOP,7,77,62,10
     CONTROL         "Disable &Joysticks",IDC_JOYSTICK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,7,130,70,10
-    PUSHBUTTON      "&Continue",IDC_CONTINUE,265,128,118,14
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,96,70,10
+    PUSHBUTTON      "&Continue",IDC_CONTINUE,265,92,118,14
 END
 
 
@@ -289,7 +289,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 383
         TOPMARGIN, 7
-        BOTTOMMARGIN, 169
+        BOTTOMMARGIN, 126
     END
 
     IDD_CONFIG_PAGE, DIALOG
@@ -297,7 +297,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 383
         TOPMARGIN, 7
-        BOTTOMMARGIN, 142
+        BOTTOMMARGIN, 106
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -445,11 +445,11 @@ BEGIN
     IDS_DSCSBFAILED         "IDirectSound::CreateSoundBuffer failed"
     IDS_DSSCLFAILED         "IDirectSound::SetCooperativeLevel failed"
     IDS_FILEFILTER          "Stella Files (*.bin)|*.bin|All Files (*.*)|*.*||"
-    IDS_FILENAME            "Filename"
     IDS_MANUFACTURER        "Manufacturer"
     IDS_MIKE                """I've heard some folks discussing the possibility of writing an 2600 emulator in a high level language - forget it, not possible."" -- Mike Livesay on rec.games.video.classic"
     IDS_NAME                "Name"
     IDS_NODIRECTDRAW        "DirectDraw does not appear to be installed on this system!"
+    IDS_FILE                "File"
     IDS_RARITY              "Rarity"
 END
 

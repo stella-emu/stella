@@ -4,7 +4,6 @@
 #include "pch.hxx"
 #include "Cyberstella.h"
 #include "StellaConfig.h"
-#include "BrowseForFolder.hxx"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,7 +37,6 @@ void StellaConfig::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(StellaConfig, CDialog)
 	//{{AFX_MSG_MAP(StellaConfig)
 	ON_WM_CLOSE()
-	ON_BN_CLICKED(IDC_BROWSE, OnBrowse)
 	ON_BN_CLICKED(IDC_CONTINUE, OnContinue)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -51,10 +49,6 @@ BOOL StellaConfig::OnInitDialog()
 	CDialog::OnInitDialog();
 
     int i;
-
-    // Set up ROMPATH
-	((CEdit*)GetDlgItem(IDC_ROMPATH))->SetLimitText(MAX_PATH);
-    ((CEdit*)GetDlgItem(IDC_ROMPATH))->SetWindowText(m_pGlobalData->romDir);
 
     // Set up PADDLE
     CString paddle = "Paddle%d";
@@ -93,7 +87,6 @@ BOOL StellaConfig::DestroyWindow()
 void StellaConfig::retrieveData() 
 {
     // Apply changes
-    ((CEdit*)GetDlgItem(IDC_ROMPATH))->GetWindowText(m_pGlobalData->romDir);
     m_pGlobalData->iPaddleMode = ((CComboBox*)GetDlgItem(IDC_PADDLE))->GetCurSel();
     m_pGlobalData->bNoSound = ((CButton*)GetDlgItem(IDC_SOUND))->GetCheck();
     m_pGlobalData->bAutoSelectVideoMode = ((CButton*)GetDlgItem(IDC_AUTO_SELECT_VIDEOMODE))->GetCheck();
@@ -101,18 +94,6 @@ void StellaConfig::retrieveData()
 
     // Set modify flag
     m_pGlobalData->bIsModified = true;
-}
-
-void StellaConfig::OnBrowse() 
-{
-    CBrowseForFolder bff;
-    bff.SetFlags(BIF_RETURNONLYFSDIRS);
-    if (bff.SelectFolder())
-    {
-        ((CEdit*)GetDlgItem(IDC_ROMPATH))->SetWindowText(bff.GetSelectedFolder());
-    }
-    // Set Focus to Continue Button
-    ((CWnd*)GetDlgItem(IDC_CONTINUE))->SetFocus();
 }
 
 void StellaConfig::OnContinue() 

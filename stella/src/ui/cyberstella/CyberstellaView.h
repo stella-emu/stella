@@ -10,8 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include "GlobalData.hxx"
-#include "ListData.hxx"
 #include "PropsSet.hxx"
+#include "GameList.h"
 
 class CCyberstellaView : public CFormView
 {
@@ -22,13 +22,14 @@ protected: // create from serialization only
 public:
 	//{{AFX_DATA(CCyberstellaView)
 	enum { IDD = IDD_CYBERSTELLA_FORM };
-	CListCtrl	m_List;
+	GameList m_List;
 	//}}AFX_DATA
 
 // Attributes
 public:
 	CCyberstellaDoc* GetDocument();
     CGlobalData* m_pGlobalData;
+    CImageList m_imglist;
 
 // Operations
 public:
@@ -58,21 +59,14 @@ protected:
 	//{{AFX_MSG(CCyberstellaView)
 	afx_msg void OnConfig();
 	afx_msg void OnPlay();
+	afx_msg void OnDestroy();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
 private:
     // methods
-    PropertiesSet& GetPropertiesSet() const {return *m_pPropertiesSet;}
-    static int CALLBACK ListViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort );
-    DWORD PopulateRomList();
-    void ClearList();
     void togglePause();
-    DWORD ReadRomData(CListData* pListData) const;
-    DWORD Initialize();
-    HRESULT PlayROM( HWND hwnd, LPCTSTR ctszPathName, 
-                     LPCTSTR pszFriendlyName, 
-                     CGlobalData* rGlobalData );
+    void Initialize();
     // members
     PropertiesSet* m_pPropertiesSet;
     bool m_bIsPause;

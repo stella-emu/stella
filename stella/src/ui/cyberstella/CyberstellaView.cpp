@@ -7,8 +7,6 @@
 #include "CyberstellaDoc.h"
 #include "CyberstellaView.h"
 #include "StellaConfig.h"
-#include "MD5.hxx"
-#include "PropsSet.hxx"
 #include "Console.hxx"
 #include "SoundWin32.hxx"
 
@@ -22,7 +20,7 @@ static char THIS_FILE[] = __FILE__;
 // Undefining USE_FS will use the (untested) windowed mode
 //
 
-//#define USE_FS
+#define USE_FS
 
 #ifdef USE_FS
 #include "DirectXFullScreen.hxx"
@@ -42,6 +40,7 @@ BEGIN_MESSAGE_MAP(CCyberstellaView, CFormView)
 	//{{AFX_MSG_MAP(CCyberstellaView)
 	ON_BN_CLICKED(IDC_CONFIG, OnConfig)
 	ON_BN_CLICKED(IDC_PLAY, OnPlay)
+	ON_WM_DESTROY()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -88,89 +87,25 @@ void CCyberstellaView::OnInitialUpdate()
 	GetParentFrame()->RecalcLayout();
 	ResizeParentToFit();
 
-    DWORD dwRet;
+    // Init ListControl, parse stella.pro
+    Initialize();
 
-    HWND hwnd = *this;
-
-    dwRet = Initialize();
-    if ( dwRet != ERROR_SUCCESS )
-    {
-        MessageBoxFromWinError( dwRet, _T("CStellaX::Initialize") );
-        AfxGetMainWnd()->SendMessage(WM_CLOSE, 0, 0);
-    }
-
-    const int nMaxString = 256;
-    TCHAR psz[nMaxString + 1];
-
-    // LVS_EX_ONECLICKACTIVATE was causing a/vs in kernel32
-
-    ::SendMessage( m_List, 
-                   LVM_SETEXTENDEDLISTVIEWSTYLE,
-                   0,
-                   LVS_EX_FULLROWSELECT );
-
-    RECT rc;
-    ::GetClientRect( m_List, &rc );
-
-    LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
-    int cx = lTotalWidth / CListData::GetColumnCount();
-
-    for (int i = 0; i < CListData::GetColumnCount(); ++i)
-    {
-        
-        LoadString(GetModuleHandle(NULL), 
-        CListData::GetColumnNameIdForColumn( i ), 
-        psz, nMaxString );
-
-        LV_COLUMN lvc;
-        lvc.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
-        lvc.fmt = LVCFMT_LEFT;
-        lvc.cx = cx;
-        lvc.pszText = psz;
-        ListView_InsertColumn( m_List, i, &lvc );
-    }
-
-    DWORD dwError = PopulateRomList();
-    if ( dwError != ERROR_SUCCESS )
-    {
-        MessageBoxFromWinError( dwError, _T("PopulateRomList") );
-        AfxGetMainWnd()->SendMessage(WM_CLOSE, 0, 0);
-    }
-
-    // if items added, select first item and enable play button
-
-    int nCount = ListView_GetItemCount( m_List );
-    if (nCount != 0)
-    {
-        m_List.SortItems(ListViewCompareFunc, 0);
-        ListView_SetItemState( m_List, 0, LVIS_SELECTED | LVIS_FOCUSED,
-        LVIS_SELECTED | LVIS_FOCUSED );
-    }
-    else
-    {
-        ::EnableWindow(::GetDlgItem( hwnd, IDC_PLAY), FALSE );
-    }
-
-    //
     // Show status text
-    //
-
-    TCHAR pszStatus[256 + 1];
-    LoadString(GetModuleHandle(NULL), IDS_STATUSTEXT, pszStatus, 256);
-    wsprintf( psz, pszStatus, nCount );
-    SetDlgItemText(IDC_ROMCOUNT, psz );
+    CString status;
+    status.Format(IDS_STATUSTEXT, m_List.GetItemCount());
+    SetDlgItemText(IDC_ROMCOUNT,status);
 
     //
     // Show rom path
     //
 
-    SetDlgItemText(IDC_ROMPATH, m_pGlobalData->romDir);
+    //ToDo: SetDlgItemText(IDC_ROMPATH, m_pGlobalData->romDir);
 
     //
     // Set default button
     //
 
-    ::SendMessage( hwnd, DM_SETDEFID, IDC_PLAY, 0 );
+    ::SendMessage( *this, DM_SETDEFID, IDC_PLAY, 0 );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -194,356 +129,40 @@ CCyberstellaDoc* CCyberstellaView::GetDocument() // non-debug version is inline
 }
 #endif //_DEBUG
 
-////////////////////////////
-// Listview compare function
-int CALLBACK CCyberstellaView::ListViewCompareFunc(LPARAM lParam1, LPARAM lParam2, 
-                                           LPARAM lParamSort)
-{
-    CCyberstellaView* pThis = reinterpret_cast<CCyberstellaView*>( lParamSort );
-
-    //
-    // I assume that the metadata for column 0 is always available,
-    // while other column metadata requires a call to ReadRomData
-    //
-
-    int nSortCol = lParamSort;
-
-    CListData* pItem1 = reinterpret_cast<CListData*>( lParam1 );
-    if ( ! pItem1->IsPopulated() && nSortCol != 0 )
-    {
-        pThis->ReadRomData( pItem1 );
-    }
-
-    CListData* pItem2 = reinterpret_cast<CListData*>( lParam2 );  
-    if ( ! pItem2->IsPopulated() && nSortCol != 0 )
-    {
-        pThis->ReadRomData( pItem2 );
-    }
-
-    LPCTSTR pszItem1 = pItem1->GetTextForColumn( nSortCol );
-    LPCTSTR pszItem2 = pItem2->GetTextForColumn( nSortCol );
-
-    //
-    // put blank items last
-    //
-
-    if ( pszItem1 == NULL || pszItem1[0] == _T('\0') )
-    {
-        return 1;
-    }
-
-    if ( pszItem2 == NULL || pszItem2[0] == _T('\0') )
-    {
-        return -1;
-    }
-    
-    //
-    // Compare the specified column. 
-    //
-
-    return lstrcmpi( pszItem1, pszItem2 );
-}
-
 void CCyberstellaView::OnConfig() 
 {
     StellaConfig dlg(m_pGlobalData);
     dlg.DoModal();
 }
 
-DWORD CCyberstellaView::PopulateRomList()
-{
-    DWORD dwRet;
-
-    ClearList();
-
-    TCHAR pszPath[ MAX_PATH ];
-    lstrcpy( pszPath, m_pGlobalData->romDir);
-    lstrcat( pszPath, _T("\\*.bin") );
-
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = FindFirstFile( pszPath, &ffd );
-
-    ListView_SetItemCount(m_List, 100);
-
-    int iItem = 0;
-
-    BOOL fDone = (hFind == INVALID_HANDLE_VALUE);
-    while (!fDone)
-    {
-        //
-        // File metadata will be read in ReadRomData()
-        //
-
-        CListData* pListData  = new CListData;
-        if( pListData == NULL )
-        {
-            return ERROR_NOT_ENOUGH_MEMORY;
-        }
-
-        dwRet = pListData->Initialize();
-        if ( dwRet != ERROR_SUCCESS )
-        {
-            return dwRet;
-        }
-
-        if ( ! pListData->m_strFileName.Set( ffd.cFileName ) )
-        {
-            return FALSE;
-        }
-
-        LV_ITEM lvi;
-        lvi.mask = LVIF_TEXT | LVIF_PARAM;
-        lvi.iItem = iItem++;
-        lvi.iSubItem = 0;
-        lvi.pszText = ffd.cFileName;
-        lvi.lParam = (LPARAM)pListData;
-		m_List.InsertItem (&lvi);
-
-        //TODO: Display the Rest
-        /*int nItem = ListView_InsertItem(m_List, &lvi);
-        ASSERT( nItem != -1 );
-        ListView_SetItemText(m_List, nItem, 
-            CListData::FILENAME_COLUMN, LPSTR_TEXTCALLBACK );
-        ListView_SetItemText(m_List, nItem, 
-            CListData::MANUFACTURER_COLUMN, LPSTR_TEXTCALLBACK);
-        ListView_SetItemText(m_List, nItem, 
-            CListData::RARITY_COLUMN, LPSTR_TEXTCALLBACK );*/
-
-        // go to the next rom file
-        fDone = !FindNextFile(hFind, &ffd);
-    }
-
-    if ( hFind != INVALID_HANDLE_VALUE )
-    {
-        VERIFY( ::FindClose( hFind ) );
-    }
-    return ERROR_SUCCESS;
-}
-
-void CCyberstellaView::ClearList()
-{
-    int nCount = ListView_GetItemCount(m_List);
-
-    for (int i = 0; i < nCount; ++i)
-    {
-        ListView_DeleteItem(m_List,0);
-    }
-
-    ListView_DeleteAllItems(m_List);
-}
-
-DWORD CCyberstellaView::ReadRomData(CListData* pListData) const
-{
-    // TODO: Move this method to ListData class (?)
-    if ( pListData == NULL )
-    {
-        ASSERT( FALSE );
-        return ERROR_BAD_ARGUMENTS;
-    }
-
-    // attempt to read the rom file
-    TCHAR pszPath[MAX_PATH + 1];
-    lstrcpy( pszPath, m_pGlobalData->romDir);
-    lstrcat( pszPath, _T("\\") );
-    lstrcat( pszPath, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
-
-    HANDLE hFile;
-    
-    hFile = CreateFile( pszPath, 
-                        GENERIC_READ, 
-                        FILE_SHARE_READ, 
-                        NULL, 
-                        OPEN_EXISTING, 
-                        FILE_ATTRIBUTE_NORMAL,
-                        NULL );
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        return GetLastError();
-    }
-
-    DWORD dwFileSize = ::GetFileSize( hFile, NULL );
-
-    BYTE* pImage = new BYTE[dwFileSize];
-    if ( pImage == NULL )
-    {
-        return ERROR_NOT_ENOUGH_MEMORY;
-    }
-    
-    DWORD dwRead;
-
-    if ( ::ReadFile( hFile, pImage, dwFileSize, &dwRead, NULL ) )
-    {
-        // Read the file, now check the md5
-        
-        std::string md5 = MD5( pImage, dwFileSize );
-        
-        // search through the properties set for this MD5
-
-        PropertiesSet& propertiesSet = GetPropertiesSet();
-        Properties properties;
-        propertiesSet.getMD5(md5, properties);
-
-        if ( ! pListData->m_strManufacturer.Set( 
-            properties.get("Cartridge.Manufacturer").c_str() ) )
-        {
-            return ERROR_NOT_ENOUGH_MEMORY;
-        }
-
-        if ( ! pListData->m_strName.Set( 
-            properties.get("Cartridge.Name").c_str() ) )
-        {
-            return ERROR_NOT_ENOUGH_MEMORY;
-        }
-
-        if (! pListData->m_strRarity.Set( 
-            properties.get("Cartridge.Rarity").c_str() ) )
-        {
-            return ERROR_NOT_ENOUGH_MEMORY;
-        }
-
-        if ( ! pListData->m_strNote.Set( 
-            properties.get("Cartridge.Note").c_str() ) )
-        {
-            return ERROR_NOT_ENOUGH_MEMORY;
-        }
-    }
-    
-    delete[] pImage;
-    
-    VERIFY( ::CloseHandle( hFile ) );
-
-    pListData->m_fPopulated = TRUE;
-
-    return ERROR_SUCCESS;
-}
-
 void CCyberstellaView::OnPlay() 
 {
-    CListData* pListData;
-    int nItem;
+    EnableWindow(FALSE);
 
-    nItem = (int)::SendMessage( m_List,
-                                    LVM_GETNEXTITEM, 
-                                    (WPARAM)-1,
-                                    MAKELPARAM( LVNI_SELECTED, 0 ) );
-    ASSERT( nItem != -1 );
-    if ( nItem == -1 )
-    {
-        ::MessageBox( GetModuleHandle(NULL), 
-                      *this, 
-                      IDS_NO_ITEM_SELECTED );
-        return;
-    }
+    CString fileName = m_List.getCurrentFile();
 
-    pListData = (CListData*)m_List.GetItemData(nItem);
-
-    TCHAR pszPathName[ MAX_PATH + 1 ];
-    lstrcpy( pszPathName, m_pGlobalData->romDir);
-    lstrcat( pszPathName, _T("\\") );
-    lstrcat( pszPathName, 
-             pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
-
-    // Play the game!
-
-    ::EnableWindow(*this, FALSE );
-
-    PlayROM( *this, 
-                            pszPathName,
-                            pListData->GetTextForColumn( CListData::NAME_COLUMN ),
-                            m_pGlobalData);
-
-    ::EnableWindow( *this, TRUE );
-
-    // Set focus back to the rom list
-
-    ::SetFocus(m_List);
-}
-
-//  Toggles pausing of the emulator
-void CCyberstellaView::togglePause()
-{
-    m_bIsPause = !m_bIsPause;
-
-    //TODO: theConsole->mediaSource().pause(m_bIsPause);
-}
-
-DWORD CCyberstellaView::Initialize()
-{
-    TRACE( "CStellaXMain::SetupProperties" );
-
-    // Create a properties set for us to use
-
-    if ( m_pPropertiesSet )
-    {
-        return ERROR_SUCCESS;
-    }
-
-    m_pPropertiesSet = new PropertiesSet(); 
-    if ( m_pPropertiesSet == NULL )
-    {
-        return ERROR_NOT_ENOUGH_MEMORY;
-    }
-
-    // Try to load the file stella.pro file
-    string filename( "stella.pro" );
-    
-    // See if we can open the file and load properties from it
-    ifstream stream(filename.c_str()); 
-    if(stream)
-    {
-        // File was opened so load properties from it
-        stream.close();
-        m_pPropertiesSet->load(filename, &Console::defaultProperties());
-    }
-    else
-    {
-        m_pPropertiesSet->load("", &Console::defaultProperties());
-    }
-
-    return ERROR_SUCCESS;
-}
-
-HRESULT CCyberstellaView::PlayROM(HWND hwnd,
-    LPCTSTR pszPathName,
-    LPCTSTR pszFriendlyName,
-    CGlobalData* rGlobalData)
-{
-    UNUSED_ALWAYS( hwnd );
-
-    HRESULT hr = S_OK;
-
-    TRACE("CStellaXMain::PlayROM");
-
-    //
-    // show wait cursor while loading
-    //
-
-    HCURSOR hcur = ::SetCursor( ::LoadCursor( NULL, IDC_WAIT ) );
-
-    //
-    // setup objects used here
-    //
-
-    BYTE* pImage = NULL;
-    LPCTSTR pszFileName = NULL;
+    // Safety Bail Out
+    if(fileName.GetLength() <= 0)   return;
 
 #ifdef USE_FS
     CDirectXFullScreen* pwnd = NULL;
 #else
     CDirectXWindow* pwnd = NULL;
 #endif
+
+    BYTE* pImage = NULL;
+    LPCTSTR pszFileName = NULL;
     Console* pConsole = NULL;
     Sound* pSound = NULL;
     Event rEvent;
 
-    //
-    // Load the rom file
-    //
+    // show wait cursor while loading
+    HCURSOR hcur = ::SetCursor(::LoadCursor(NULL, IDC_WAIT));
 
+    // Load the rom file
     HANDLE hFile;
     DWORD dwImageSize;
-
-    hFile = ::CreateFile( pszPathName, 
+    hFile = ::CreateFile( fileName, 
                           GENERIC_READ, 
                           FILE_SHARE_READ, 
                           NULL, 
@@ -552,8 +171,6 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
                           NULL );
     if (hFile == INVALID_HANDLE_VALUE)
     {
-        HINSTANCE hInstance = (HINSTANCE)::GetWindowLong( hwnd, GWL_HINSTANCE );
-
         DWORD dwLastError = ::GetLastError();
 
         TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
@@ -561,7 +178,7 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
 
         // ::MessageBoxFromGetLastError( pszPathName );
         TCHAR pszFormat[ 1024 ];
-        LoadString( hInstance,
+        LoadString(GetModuleHandle(NULL),
                     IDS_ROM_LOAD_FAILED,
                     pszFormat, 1023 );
 
@@ -580,18 +197,17 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
         wsprintf( pszError, 
                   pszFormat, 
                   pszCurrentDirectory,
-                  pszPathName, 
+                  fileName, 
                   dwLastError,
                   pszLastError );
 
-        ::MessageBox( hwnd, 
+        ::MessageBox( *this, 
                       pszError, 
                       _T("Error"),
                       MB_OK | MB_ICONEXCLAMATION );
 
         ::LocalFree( pszLastError );
 
-        hr = HRESULT_FROM_WIN32( ::GetLastError() ); 
         goto exit;
     }
 
@@ -600,7 +216,6 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
     pImage = new BYTE[dwImageSize + 1];
     if ( pImage == NULL )
     {
-        hr = E_OUTOFMEMORY;
         goto exit;
     }
 
@@ -609,9 +224,8 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
     {
         VERIFY( ::CloseHandle( hFile ) );
 
-        MessageBoxFromGetLastError( pszPathName );
+        MessageBoxFromGetLastError(fileName);
 
-        hr = HRESULT_FROM_WIN32( ::GetLastError() );
         goto exit;
     }
 
@@ -622,7 +236,7 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
     // (Will be initialized once we have a window handle below)
     //
 
-    if (rGlobalData->bNoSound)
+    if (m_pGlobalData->bNoSound)
     {
         TRACE("Creating Sound driver");
         pSound = new Sound;
@@ -634,7 +248,6 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
     }
     if ( pSound == NULL )
     {
-        hr = E_OUTOFMEMORY;
         goto exit;
     }
 
@@ -642,14 +255,14 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
     // get just the filename
     //
 
-    pszFileName = _tcsrchr( pszPathName, _T('\\') );
+    pszFileName = _tcsrchr( fileName, _T('\\') );
     if ( pszFileName )
     {
         ++pszFileName;
     }
     else
     {
-        pszFileName = pszPathName;
+        pszFileName = fileName;
     }
 
     try
@@ -664,36 +277,36 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
                                 *pSound );
         if ( pConsole == NULL )
         {
-            hr = E_OUTOFMEMORY;
             goto exit;
         }
     }
     catch (...)
     {
 
-        ::MessageBox(rGlobalData->instance,
+        ::MessageBox(GetModuleHandle(NULL),
             NULL, IDS_CANTSTARTCONSOLE);
 
         goto exit;
     }
 
 #ifdef USE_FS
-    pwnd = new CDirectXFullScreen( rGlobalData,
+    pwnd = new CDirectXFullScreen( m_pGlobalData,
                                    pConsole, 
                                    rEvent );
 #else
-    pwnd = new CDirectXWindow( rGlobalData,
+    pwnd = new CDirectXWindow( m_pGlobalData,
                                pConsole,
                                rEvent );
 #endif
     if ( pwnd == NULL )
     {
-        hr = E_OUTOFMEMORY;
         goto exit;
     }
 
+    HRESULT hr;
+
 #ifdef USE_FS
-    if (rGlobalData->bAutoSelectVideoMode)
+    if (m_pGlobalData->bAutoSelectVideoMode)
     {
         hr = pwnd->Initialize( );
     }
@@ -706,7 +319,7 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
         hr = pwnd->Initialize( FORCED_VIDEO_CX, FORCED_VIDEO_CY );
     }
 #else
-    hr = pwnd->Initialize( hwnd, pszFriendlyName );
+    hr = pwnd->Initialize(*this, m_List.getCurrentName());
 #endif
     if ( FAILED(hr) )
     {
@@ -714,7 +327,7 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
         goto exit;
     }
 
-    if (!rGlobalData->bNoSound)
+    if (!m_pGlobalData->bNoSound)
     {
         //
         // 060499: Pass pwnd->GetHWND() in instead of hwnd as some systems
@@ -736,11 +349,11 @@ HRESULT CCyberstellaView::PlayROM(HWND hwnd,
     ::SetCursor( hcur );
     hcur = NULL;
 
-    ::ShowWindow( hwnd, SW_HIDE );
+    ::ShowWindow( *this, SW_HIDE );
 
     (void)pwnd->Run();
 
-    ::ShowWindow( hwnd, SW_SHOW );
+    ::ShowWindow( *this, SW_SHOW );
 
 exit:
 
@@ -755,5 +368,69 @@ exit:
     delete pSound;
     delete pImage;
 
-    return hr;
+    EnableWindow(TRUE);
+
+    // Set focus back to the rom list
+    m_List.SetFocus();
+}
+
+//  Toggles pausing of the emulator
+void CCyberstellaView::togglePause()
+{
+    m_bIsPause = !m_bIsPause;
+
+    //TODO: theConsole->mediaSource().pause(m_bIsPause);
+}
+
+void CCyberstellaView::Initialize()
+{
+    // Create a properties set for us to use
+    m_pPropertiesSet = new PropertiesSet(); 
+
+	// Set up the image list.
+    HICON hFolder, hAtari;
+
+    m_imglist.Create ( 16, 16, ILC_COLOR16 | ILC_MASK, 4, 1 );
+
+    hFolder = reinterpret_cast<HICON>(
+                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_FOLDER),
+                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
+    hAtari = reinterpret_cast<HICON>(
+                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME),
+                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
+
+    m_imglist.Add (hFolder);
+    m_imglist.Add (hAtari);
+
+    m_List.SetImageList (&m_imglist, LVSIL_SMALL);
+
+    // Init ListCtrl
+    m_List.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+    m_List.insertColumns();
+    m_List.setPropertiesSet(m_pPropertiesSet);
+
+    // Try to load the file stella.pro file
+    string filename( "stella.pro" );
+    
+    // See if we can open the file and load properties from it
+    ifstream stream(filename.c_str()); 
+    if(stream)
+    {
+        // File was opened so load properties from it
+        stream.close();
+        m_pPropertiesSet->load(filename, &Console::defaultProperties());
+    }
+    else
+    {
+        m_pPropertiesSet->load("", &Console::defaultProperties());
+    }
+
+    // Fill our game list
+    m_List.populateRomList();
+}
+
+void CCyberstellaView::OnDestroy() 
+{
+	CFormView::OnDestroy();
+    m_List.deleteItemsAndProperties();
 }

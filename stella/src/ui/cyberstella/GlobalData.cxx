@@ -11,7 +11,6 @@ CGlobalData::CGlobalData(HINSTANCE hInstance)
               ,bIsModified(FALSE)
               ,rs("GlobalData")
 {
-    rs.Bind(romDir, "rom dir", "ROMS");
     rs.Bind(desiredFrameRate, "desired frame rate", 60);
     rs.Bind(bShowFPS, "Show FPS", false);
     rs.Bind(bNoSound, "No Sound", false);

@@ -21,7 +21,6 @@ public:
     Event::Type PaddleFireEvent( void ) const;
     
     // Data Members in Registry
-    CString romDir;
     int iPaddleMode;
     BOOL bNoSound;
     BOOL bJoystickIsDisabled;

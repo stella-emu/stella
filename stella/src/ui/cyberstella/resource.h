@@ -7,6 +7,7 @@
 #define IDD_CONFIG_PAGE                 108
 #define IDR_MAINFRAME                   128
 #define IDR_CYBERSTYPE                  129
+#define IDI_FOLDER                      133
 #define IDS_ALREADYRUNNING              200
 #define IDS_BADARGUMENT                 201
 #define IDS_CW_FAILED                   208
@@ -22,6 +23,7 @@
 #define IDS_MIKE                        279
 #define IDS_NAME                        280
 #define IDS_NODIRECTDRAW                281
+#define IDS_FILE                        282
 #define IDS_RARITY                      284
 #define IDS_STATUSTEXT                  289
 #define IDS_STELLA                      290
@@ -58,7 +60,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           101

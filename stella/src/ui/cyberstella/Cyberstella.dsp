@@ -100,10 +100,6 @@ SOURCE=.\AudioStream.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\BrowseForFolder.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\CRegBinding.cpp
 # End Source File
 # Begin Source File
@@ -140,15 +136,15 @@ SOURCE=.\DirectXWindow.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\GameList.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\GlobalData.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=.\HyperLink.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ListData.cxx
 # End Source File
 # Begin Source File
 
@@ -184,10 +180,6 @@ SOURCE=.\AudioStream.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\BrowseForFolder.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\CRegBinding.h
 # End Source File
 # Begin Source File
@@ -220,15 +212,15 @@ SOURCE=.\DirectXWindow.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\GameList.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\GlobalData.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=.\HyperLink.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ListData.hxx
 # End Source File
 # Begin Source File
 
@@ -260,15 +252,19 @@ SOURCE=.\Timer.hxx
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\res\Cyberstella.ico
-# End Source File
-# Begin Source File
-
 SOURCE=.\res\Cyberstella.rc2
 # End Source File
 # Begin Source File
 
-SOURCE=.\res\CyberstellaDoc.ico
+SOURCE=.\Dir.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\res\Dir.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\res\Stella.ico
 # End Source File
 # Begin Source File
 
