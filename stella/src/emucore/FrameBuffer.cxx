@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.6 2003-11-19 15:57:10 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -617,6 +617,19 @@ void FrameBuffer::loadRemapMenu()
         ourRemapMenu[i].key = key;
     }
   }
+
+  // Save the new bindings
+  ostringstream keybuf, joybuf;
+
+  // Iterate through the keymap table and create a colon-separated list
+  for(uInt32 i = 0; i < StellaEvent::LastKCODE; ++i)
+    keybuf << myKeyTable[i] << ":";
+  myConsole->settings().setString("keymap", keybuf.str());
+
+  // Iterate through the joymap table and create a colon-separated list
+  for(uInt32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    joybuf << myJoyTable[i] << ":";
+  myConsole->settings().setString("joymap", joybuf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

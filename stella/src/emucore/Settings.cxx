@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.13 2003-11-24 01:14:38 stephena Exp $
+// $Id: Settings.cxx,v 1.14 2003-11-24 14:51:06 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -141,20 +141,12 @@ bool Settings::loadCommandLine(Int32 argc, char** argv)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
-//  if(!myConsole)
-//    return;
-// FIXME - there should not be a dependency on Console
-
   ofstream out(mySettingsOutputFilename.c_str());
   if(!out || !out.is_open())
   {
     cout << "Error: Couldn't save settings file\n";
     return;
   }
-
-  // Make sure that any modifications to key remapping is saved
-//  set("keymap", myConsole->eventHandler().getKeymap());
-//  set("joymap", myConsole->eventHandler().getJoymap());
 
   out << ";  Stella configuration file" << endl
       << ";" << endl

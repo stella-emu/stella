@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.12 2003-11-06 22:22:32 stephena Exp $
+// $Id: EventHandler.hxx,v 1.13 2003-11-24 14:51:06 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -41,7 +41,7 @@ class MediaSource;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.12 2003-11-06 22:22:32 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.13 2003-11-24 14:51:06 stephena Exp $
 */
 class EventHandler
 {
@@ -98,20 +98,6 @@ class EventHandler
     void setMediaSource(MediaSource* mediaSource);
 
     /**
-      Get the current keymapping being used in string form
-
-      @return  The keymap list in string form
-    */
-    string getKeymap();
-
-    /**
-      Get the current joymapping being used in string form
-
-      @return  The joymap list in string form
-    */
-    string getJoymap();
-
-    /**
       Enable/disable remapping mode.
 
       @param status  The toggle for enable/disable
@@ -119,12 +105,12 @@ class EventHandler
     void enableRemapping(bool status) { myRemapEnabledFlag = status; }
 
     /**
-      This method indicated whether a pause event has been received.
+      This method indicates whether a pause event has been received.
     */
     bool doPause() { return myPauseStatus; }
 
     /**
-      This method indicated whether a quit event has been received.
+      This method indicates whether a quit event has been received.
     */
     bool doQuit() { return myQuitStatus; }
 

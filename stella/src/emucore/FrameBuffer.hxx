@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.6 2003-11-19 15:57:10 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.6 2003-11-19 15:57:10 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
 */
 class FrameBuffer
 {
@@ -120,6 +120,12 @@ class FrameBuffer
       @param status  Toggle pause based on status
     */
     void pause(bool status);
+
+    /**
+      Indicates that a redraw should be done, since the window contents
+      are dirty.
+    */
+    void refresh() { theRedrawEntireFrameIndicator = true; }
 
   public:
     //////////////////////////////////////////////////////////////////////

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.22 2003-11-19 15:57:10 stephena Exp $
+// $Id: EventHandler.cxx,v 1.23 2003-11-24 14:51:05 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -213,32 +213,6 @@ void EventHandler::setJoymap()
   }
   else
     setDefaultJoymap();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::getKeymap()
-{
-  ostringstream buf;
-
-  // Iterate through the keymap table and create a colon-separated list
-  for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
-    buf << myKeyTable[i] << ":";
-
-  myKeymapString = buf.str();
-  return myKeymapString;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::getJoymap()
-{
-  ostringstream buf;
-
-  // Iterate through the joymap table and create a colon-separated list
-  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
-    buf << myJoyTable[i] << ":";
-
-  myJoymapString = buf.str();
-  return myJoymapString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

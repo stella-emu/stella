@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.5 2003-11-17 17:43:39 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.6 2003-11-24 14:51:06 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -59,9 +59,7 @@ void FrameBufferSDL::toggleFullscreen()
   isFullscreen = !isFullscreen;
 
   // Update the settings
-  ostringstream tmp;
-  tmp << isFullscreen;
-  myConsole->settings().set("fullscreen", tmp.str());
+  myConsole->settings().setBool("fullscreen", isFullscreen);
 
   if(isFullscreen)
     mySDLFlags |= SDL_FULLSCREEN;
@@ -118,9 +116,7 @@ void FrameBufferSDL::resize(int mode)
     return;
 
   // Update the settings
-  ostringstream tmp;
-  tmp << theZoomLevel;
-  myConsole->settings().set("zoom", tmp.str());
+  myConsole->settings().setInt("zoom", theZoomLevel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,9 +131,7 @@ void FrameBufferSDL::showCursor(bool show)
     SDL_ShowCursor(SDL_DISABLE);
 
   // Update the settings
-  ostringstream tmp;
-  tmp << !show;
-  myConsole->settings().set("hidecursor", tmp.str());
+  myConsole->settings().setBool("hidecursor", !show);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,9 +146,7 @@ void FrameBufferSDL::grabMouse(bool grab)
     SDL_WM_GrabInput(SDL_GRAB_OFF);
 
   // Update the settings
-  ostringstream tmp;
-  tmp << grab;
-  myConsole->settings().set("grabmouse", tmp.str());
+  myConsole->settings().setBool("grabmouse", grab);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
