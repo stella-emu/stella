@@ -1,0 +1,82 @@
+===============================================================================
+
+     SSSS    tt          lll  lll
+    SS  SS   tt           ll   ll
+    SS     tttttt  eeee   ll   ll   aaaa
+     SSSS    tt   ee  ee  ll   ll      aa
+        SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+    SS  SS   tt   ee      ll   ll  aa  aa
+     SSSS     ttt  eeeee llll llll  aaaaa
+
+===============================================================================
+                     Release 1.1 for DOS, Linux, and Unix 
+===============================================================================
+
+The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most 
+popular home video game system of the early 1980's.  Now you can enjoy all of 
+your favorite Atari 2600 games on your PC thanks to Stella! 
+
+Stella is a multi-platform Atari 2600 VCS emulator written in C++.  Stella 
+allows you to play most of the games written for the Atari 2600 including 
+Supercharger games.
+
+This is the 1.1 release of Stella for DOS, Linux, and Unix.  Distributions
+for other operating systems will appear as they become available.  The three 
+distributions currently available are:
+
+  * Binary distribution for Linux (stella-1.1-linux-x86.tar.gz)
+
+  * Binary distribution for DOS (st11.zip)
+
+  * Source code distribution for Unix and DOS (stella-1.1-src.tar.gz)
+
+A few 2600 ROM images, BIN files, are included with these distributions.
+BEYOND THESE FILES NONE OF THE DISTRIBUTIONS CONTAIN ANY 2600 ROM IMAGES.
+PLEASE DON'T WRITE ASKING FOR ROMS BECAUSE THEY ARE COPYRIGHTED!  If you 
+own any of the Atari 2600 Action Packs by Activision you can use the ROM 
+images from them with Stella. 
+
+New in this Release
+===================
+
+  * DOS and Linux versions support real Atari 2600 paddles using a
+    special PC game port adaptor
+
+  * Linux version uses the new 1.2.x joystick driver API
+
+  * Added support for the "-display" option to the X Window version
+
+  * Added support for private colormaps to the X Window version
+
+  * Fixed a few bugs in the Supercharger emulation
+
+    - A major bug in the ROM loading routine was fixed
+
+    - Multi-loading in "Escape from the Mindmaster" works correctly
+
+    - All Supercharger games load and execute at this point
+
+  * Added a small hack to the TIA code to fix a display problem in "Escape
+    from the Mindmaster"
+
+  * Improved TIA emulation to support the RESPx multi-sprite trick
+
+Distribution Site
+================= 
+
+The Stella distributions can be obtained from the Stella home page at:
+
+  http://stella.atari.org
+
+If for some reason you are unable to connect to this page please try 
+again later or try http://www4.ncsu.edu/~bwmott/2600/.
+
+Contacts
+========
+
+If you have any questions regarding Stella send mail to:
+
+  Bradford W. Mott (bwmott@acm.org)
+
+Have Fun!
+

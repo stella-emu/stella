@@ -1,0 +1,39 @@
+===============================================================================
+
+     SSSS    tt          lll  lll
+    SS  SS   tt           ll   ll
+    SS     tttttt  eeee   ll   ll   aaaa
+     SSSS    tt   ee  ee  ll   ll      aa
+        SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+    SS  SS   tt   ee      ll   ll  aa  aa
+     SSSS     ttt  eeeee llll llll  aaaaa
+
+===============================================================================
+                         To Do List - October 2, 1998
+===============================================================================
+
+If you would like to contribute to Stella's development then find something
+on the list below and send email to Bradford Mott at bwmott@acm.org.
+
+  * Provide suggestions for improving Stella
+
+  * Provide suggestions for improving the Stella Users Manual
+
+  * Port Stella to other operating systems:
+     
+    - Atari ST/TT/Falcon
+    - Mac (680x0)
+    - Others...
+
+  * Port the OSS stella-sound program, for Linux, to other versions of Unix
+
+  * Add a built-in game menu to the DOS version of Stella
+
+  * Find out if the Pro Audio Spectrum sound card is supported by the
+    DOS version of Stella (if not then add support for this card)
+
+  * Add support for real Atari controllers to the DOS version of Stella
+    (this will involve hardware as well as software)
+
+  * Add a debugger to Stella for game developers
+
