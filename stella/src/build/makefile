@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.12 2002-03-20 00:03:24 stephena Exp $
+## $Id: makefile,v 1.13 2002-03-21 22:48:54 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -37,7 +37,6 @@ OPTIMIZATIONS    =
 # OPTIMIZATIONS    = -O3 -mcpu=athlon -march=athlon -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
 #	-malign-functions=2 -malign-jumps=2 -malign-loops=2
-
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -89,7 +88,7 @@ SRC	= ..
 CORE	= $(SRC)/emucore
 UI	= $(SRC)/ui
 
-INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src
+INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(UI)/common
 
 CXXFLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
 
@@ -117,11 +116,11 @@ endif
 
 ifdef SNAPSHOT_SUPPORT
 OBJS.X11 += Snapshot.o
-OPTS.X11 += -DHAVE_PNG=1 -I$(UI)/common
+OPTS.X11 += -DHAVE_PNG=1
 LIBS.X11 += -lpng
 
 OBJS.SDL += Snapshot.o
-OPTS.SDL += -DHAVE_PNG=1 -I$(UI)/common
+OPTS.SDL += -DHAVE_PNG=1
 LIBS.SDL += -lpng
 endif
 
@@ -229,7 +228,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o CartMB.o \
             Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
-            Props.o PropsSet.o Random.o Sound.o Switches.o TIA.o \
+            Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)
@@ -372,6 +371,8 @@ Switches.o: $(CORE)/Switches.cxx
 Sound.o: $(CORE)/Sound.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Sound.cxx
 
+Settings.o: $(UI)/common/Settings.cxx $(UI)/common/Settings.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Settings.cxx
 
 Terminal.o: $(UI)/x11/Terminal.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/Terminal.cxx
