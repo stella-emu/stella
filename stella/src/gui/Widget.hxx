@@ -13,7 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.1 2005-02-27 23:41:19 stephena Exp $
+// $Id: Widget.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+//
+//   Based on code from ScummVM - Scumm Interpreter
+//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef WIDGET_HXX
@@ -24,12 +27,23 @@ class Dialog;
 #include "GuiObject.hxx"
 #include "bspf.hxx"
 
+enum {
+	WIDGET_ENABLED		= 1 << 0,
+	WIDGET_INVISIBLE	= 1 << 1,
+	WIDGET_HILITED		= 1 << 2,
+	WIDGET_BORDER		= 1 << 3,
+	WIDGET_INV_BORDER	= 1 << 4,
+	WIDGET_CLEARBG		= 1 << 5,
+	WIDGET_WANT_TICKLE	= 1 << 7,
+	WIDGET_TRACK_MOUSE	= 1 << 8,
+	WIDGET_RETAIN_FOCUS	= 1 << 9
+};
 
 /**
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.1 2005-02-27 23:41:19 stephena Exp $
+  @version $Id: Widget.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -48,8 +62,8 @@ class Widget : public GuiObject
     virtual void handleMouseLeft(uInt32 button) {}
     virtual void handleMouseMoved(uInt32 x, uInt32 y, uInt32 button) {}
     virtual void handleMouseWheel(uInt32 x, uInt32 y, uInt32 direction) {}
-//FIXME    virtual bool handleKeyDown(uint16 ascii, int keycode, int modifiers) { return false; }	// Return true if the event was handled
-//FIXME    virtual bool handleKeyUp(uint16 ascii, int keycode, int modifiers) { return false; }	// Return true if the event was handled
+    virtual bool handleKeyDown(uInt16 ascii, int keycode, int modifiers) { return false; }
+    virtual bool handleKeyUp(uInt16 ascii, int keycode, int modifiers) { return false; }
     virtual void handleTickle() {}
 
     void draw();
@@ -71,12 +85,12 @@ class Widget : public GuiObject
     virtual void receivedFocusWidget() {}
     virtual void lostFocusWidget() {}
 
-    virtual Widget *findWidget(uInt32 x, uInt32 y) { return this; }
+    virtual Widget* findWidget(uInt32 x, uInt32 y) { return this; }
 
     void releaseFocus() { assert(_boss); _boss->releaseFocus(); }
 
     // By default, delegate unhandled commands to the boss
-    void handleCommand(CommandSender *sender, uint32 cmd, uint32 data)
+    void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
          { assert(_boss); _boss->handleCommand(sender, cmd, data); }
 
   protected:
@@ -88,7 +102,7 @@ class Widget : public GuiObject
     bool       _hasFocus;
 
   public:
-    static Widget *findWidgetInChain(Widget *start, uInt32 x, uInt32 y);
+    static Widget* findWidgetInChain(Widget* start, uInt32 x, uInt32 y);
 };
 
 
@@ -97,21 +111,16 @@ class StaticTextWidget : public Widget
 {
   public:
     StaticTextWidget(GuiObject* boss, uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                     const String &text, TextAlignment align);
+                     const string& text);
     void setValue(uInt32 value);
     void setLabel(const string& label)  { _label = label; }
     const string& getLabel() const      { return _label; }
-    void setAlign(TextAlignment align)  { _align = align; }
-    TextAlignment getAlign() const      { return _align; }
 
   protected:
     void drawWidget(bool hilite);
 
   protected:
-//	typedef Graphics::TextAlignment TextAlignment;
-
     string _label;
-//    TextAlignment _align;
 };
 
 
@@ -122,8 +131,8 @@ class ButtonWidget : public StaticTextWidget
     ButtonWidget(GuiObject* boss, uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                  const string& label, uInt32 cmd = 0, uInt8 hotkey = 0);
 
-    void setCmd(uint32 cmd)  { _cmd = cmd; }
-    uint32 getCmd() const    { return _cmd; }
+    void setCmd(uInt32 cmd)  { _cmd = cmd; }
+    uInt32 getCmd() const    { return _cmd; }
 
     void handleMouseUp(uInt32 x, uInt32 y, uInt32 button, uInt32 clickCount);
     void handleMouseEntered(uInt32 button) { setFlags(WIDGET_HILITED); draw(); }

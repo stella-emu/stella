@@ -13,35 +13,88 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.1 2005-02-27 23:41:19 stephena Exp $
+// $Id: Menu.cxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
 
+#include "OSystem.hxx"
+#include "Dialog.hxx"
+#include "OptionsDialog.hxx"
+#include "Stack.hxx"
 #include "bspf.hxx"
-
 #include "Menu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Menu::Menu()
+Menu::Menu(OSystem* osystem)
+    : myOSystem(osystem),
+      myOptionsDialog(NULL)
 {
+#ifdef DEBUG
   cerr << "Menu::Menu()\n";
+#endif
+
+  myOSystem->attach(this);  
+
+  // Create a stack to hold the various dialog boxes
+
+  // Create the top-level menu
+  myOptionsDialog = new OptionsDialog(myOSystem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Menu::~Menu()
 {
+#ifdef DEBUG
   cerr << "Menu::~Menu()\n";
-}
+#endif
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Menu::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
-{
-  cerr << "Menu::handleKeyEvent()\n";
+  delete myOptionsDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Menu::draw()
 {
+#ifdef DEBUG
   cerr << "Menu::draw()\n";
+#endif
+
+  // Draw all the dialogs on the stack
+  for(Int32 i = 0; i < myDialogStack.size(); i++)
+    myDialogStack[i]->drawDialog();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Menu::addDialog(Dialog* d)
+{
+  myDialogStack.push(d);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Menu::removeDialog()
+{
+  if(!myDialogStack.empty())
+    myDialogStack.pop();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Menu::reset()
+{
+  // Pop all items from the stack, and then add the base menu
+  for(Int32 i = 0; i < myDialogStack.size(); i++)
+    myDialogStack.pop();
+
+  myDialogStack.push(myOptionsDialog);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Menu::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
+{
+  // Send the event to the dialog box on the top of the stack
+  Dialog* activeDialog = myDialogStack.top();
+
+  if(state == 1)
+    activeDialog->handleKeyDown(key, mod);
+  else
+    activeDialog->handleKeyUp(key, mod);
 }

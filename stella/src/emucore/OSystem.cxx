@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.4 2005-02-22 20:19:32 stephena Exp $
+// $Id: OSystem.cxx,v 1.5 2005-03-10 22:59:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -25,18 +25,28 @@
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
+#include "Menu.hxx"
+//#include "Browser.hxx"
 #include "bspf.hxx"
 #include "OSystem.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
+  : myMenu(NULL)
+//    myBrowser(NULL)
 {
+  // Create gui-related classes
+  myMenu = new Menu(this);
+//  myBrowser = new Browser(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
 cerr << "OSystem::~OSystem()\n";
+  delete myMenu;
+//  delete myBrowser;
+
   // Remove any game console that is currently attached
   detachConsole();
 }

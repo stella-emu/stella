@@ -13,7 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.1 2005-02-27 23:41:19 stephena Exp $
+// $Id: GuiObject.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+//
+//   Based on code from ScummVM - Scumm Interpreter
+//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef GUI_OBJECT_HXX
@@ -21,20 +24,26 @@
 
 class Widget;
 
+#include "Command.hxx"
 #include "bspf.hxx"
 
 /**
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.1 2005-02-27 23:41:19 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
 */
-class GuiObject
+class GuiObject : public CommandReceiver
 {
-  //friend class Widget;
+  friend class Widget;
 
   public:
-    GuiObject(int x, int y, int w, int h) : _x(x), _y(y), _w(w), _h(h), _firstWidget(0) { }
+    GuiObject(int x, int y, int w, int h)
+        : _x(x),
+          _y(y),
+          _w(w),
+          _h(h),
+          _firstWidget(0) { }
 
     virtual Int16  getAbsX() const     { return _x; }
     virtual Int16  getAbsY() const     { return _y; }
@@ -44,7 +53,6 @@ class GuiObject
     virtual uInt16 getHeight() const   { return _h; }
 
     virtual bool isVisible() const = 0;
-
     virtual void draw() = 0;
 
   protected:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.17 2005-02-27 23:41:19 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.18 2005-03-10 22:59:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -26,6 +26,7 @@
 #include "Settings.hxx"
 #include "MediaSrc.hxx"
 #include "FrameBuffer.hxx"
+#include "Menu.hxx"
 #include "OSystem.hxx"
 
 #include "stella.xpm"   // The Stella icon
@@ -231,15 +232,15 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:  // FIXME - this whole thing will disappear into the gui().menu class
     {
-      // Only update the screen if it's been invalidated
-      // or the menus have changed  
+      // Only update the screen if it's been invalidated or the menus have changed  
       if(theMenuChangedIndicator || theRedrawEntireFrameIndicator)
       {
         drawMediaSource();
 
         // Then overlay any menu items
-        // FIXME myOSystem->gui().menu().draw();
+        myOSystem->menu().draw();
 
+/*
         switch(myCurrentWidget)
         {
           case W_NONE:
@@ -256,7 +257,7 @@ void FrameBuffer::update()
           default:
             break;
         }
-
+*/
         // Now the screen is up to date
         theRedrawEntireFrameIndicator = false;
 

@@ -13,13 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.hxx,v 1.1 2005-02-27 23:41:19 stephena Exp $
+// $Id: Menu.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
 //============================================================================
 
 #ifndef MENU_HXX
 #define MENU_HXX
 
+class Dialog;
+class OSystem;
+class OptionsDialog;
+
+#include "Stack.hxx"
 #include "bspf.hxx"
+
+typedef FixedStack<Dialog *> DialogStack;
 
 /**
   The base class for all menus in Stella.
@@ -28,7 +35,7 @@
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: Menu.hxx,v 1.1 2005-02-27 23:41:19 stephena Exp $
+  @version $Id: Menu.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
 */
 class Menu
 {
@@ -36,7 +43,7 @@ class Menu
     /**
       Create a new menu stack
     */
-    Menu();
+    Menu(OSystem* osystem);
 
     /**
       Destructor
@@ -60,8 +67,25 @@ class Menu
     */
     void draw();
 
-  private:
+    /**
+      Add a dialog box to the stack
+    */
+    void addDialog(Dialog* d);
 
+    /**
+      Remove the topmost dialog box from the stack
+    */
+    void removeDialog();
+
+    /**
+      Reset dialog stack to the main configuration menu
+    */
+    void reset();
+
+  private:
+    OSystem* myOSystem;
+    OptionsDialog* myOptionsDialog;
+    DialogStack myDialogStack;
 };
 
 #endif

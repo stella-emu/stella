@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.62 2005-02-27 23:41:17 stephena Exp $
+## $Id: makefile,v 1.63 2005-03-10 22:59:39 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -41,7 +41,7 @@ OPTIMIZATIONS  =
 
 ### to build on SMP (or distcc-based) machines
 ### change to number of CPU's you have
- NUMBER_CPU = 3
+ NUMBER_CPU = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -61,9 +61,10 @@ SMP      =
 SRC      = ..
 CORE     = $(SRC)/emucore
 COMMON   = $(SRC)/common
+GUI      = $(SRC)/gui
 
 INCLUDES  = -I. -I$(CORE) -I$(CORE)/m6502/src \
-            -I$(CORE)/m6502/src/bspf/src -I$(COMMON) -I$(SRC)/unix -I$(SRC)/win32
+            -I$(CORE)/m6502/src/bspf/src -I$(COMMON) -I$(GUI) -I$(SRC)/unix -I$(SRC)/win32
 
 ## set some sane optimizations if none have been provided
 ifndef OPTIMIZATIONS
@@ -152,7 +153,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
-            OSystem.o \
+            OSystem.o Menu.o Widget.o Dialog.o OptionsDialog.o\
             $(M6502_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
@@ -350,3 +351,15 @@ NullDev.o: $(CORE)/m6502/src/NullDev.cxx $(CORE)/m6502/src/NullDev.hxx
 
 System.o: $(CORE)/m6502/src/System.cxx $(CORE)/m6502/src/System.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/System.cxx
+
+Menu.o: $(GUI)/Menu.cxx $(GUI)/Menu.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Menu.cxx
+
+Widget.o: $(GUI)/Widget.cxx $(GUI)/Widget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Widget.cxx
+
+Dialog.o: $(GUI)/Dialog.cxx $(GUI)/Dialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Dialog.cxx
+
+OptionsDialog.o: $(GUI)/OptionsDialog.cxx $(GUI)/OptionsDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/OptionsDialog.cxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.3 2005-02-22 18:41:12 stephena Exp $
+// $Id: OSystem.hxx,v 1.4 2005-03-10 22:59:40 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -24,6 +24,8 @@ class FrameBuffer;
 class Sound;
 class Settings;
 class PropertiesSet;
+class Menu;
+class Browser;
 
 #include "Console.hxx"
 #include "bspf.hxx"
@@ -35,7 +37,7 @@ class PropertiesSet;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.3 2005-02-22 18:41:12 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.4 2005-03-10 22:59:40 stephena Exp $
 */
 class OSystem
 {
@@ -99,6 +101,20 @@ class OSystem
     void detachConsole(void) { delete myConsole; myConsole = NULL; }
 
     /**
+      Adds the specified settings menu yo the system.
+
+      @param menu The menu object to add 
+    */
+    void attach(Menu* menu) { myMenu = menu; }
+
+    /**
+      Adds the specified ROM browser to the system.
+
+      @param browser The browser object to add 
+    */
+    void attach(Browser* browser) { myBrowser = browser; }
+
+    /**
       Get the event handler of the system
 
       @return The event handler
@@ -139,6 +155,20 @@ class OSystem
       @return The console object
     */
     Console& console(void) const { return *myConsole; }
+
+    /**
+      Get the settings menu of the system.
+
+      @return The settings menu object
+    */
+    Menu& menu(void) const { return *myMenu; }
+
+    /**
+      Get the ROM browser of the system.
+
+      @return The browser object
+    */
+    Browser& browser(void) const { return *myBrowser; }
 
     /**
       Set the base directory for all configuration files
@@ -254,6 +284,12 @@ class OSystem
 
     // Pointer to the (currently defined) Console object
     Console* myConsole;
+
+    // Pointer to the Menu object
+    Menu* myMenu;
+
+    // Pointer to the Browser object
+    Browser* myBrowser;
 
   private:
     string myBaseDir;

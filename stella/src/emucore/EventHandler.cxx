@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.35 2005-02-27 23:41:18 stephena Exp $
+// $Id: EventHandler.cxx,v 1.36 2005-03-10 22:59:40 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -28,6 +28,7 @@
 #include "FrameBuffer.hxx"
 #include "Sound.hxx"
 #include "OSystem.hxx"
+#include "Menu.hxx"
 #include "bspf.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
@@ -111,14 +112,14 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
     if(myState == S_EMULATE)
     {
       myState = S_MENU;
-      myOSystem->frameBuffer().showMenu(true);  // FIXME - move this into gui class
+      myOSystem->frameBuffer().refresh();
       myOSystem->sound().mute(true);
       return;
     }
     else if(myState == S_MENU)
     {
       myState = S_EMULATE;
-      myOSystem->frameBuffer().showMenu(false);  // FIXME - move this into gui class
+      myOSystem->frameBuffer().refresh();
       myOSystem->sound().mute(false);
       return;
     }
@@ -137,11 +138,11 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       break;
 
     case S_MENU:
-//FIXME      myOSystem->gui().menu().handleKeyEvent(key, mod, state);
+      myOSystem->menu().handleKeyEvent(key, mod, state);
       break;
 
     case S_BROWSER:
-//FIXME      myOSystem->gui().browser().handleKeyEvent(key, mod, state);
+//FIXME      myOSystem->browser().handleKeyEvent(key, mod, state);
       break;
 
     case S_DEBUGGER:
@@ -209,6 +210,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
     {
       myExitGameFlag = true;
       myOSystem->sound().mute(true);
+      myOSystem->settings().saveConfig();
       return;
     }
     else if(event == Event::Quit)
