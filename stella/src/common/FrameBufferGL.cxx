@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.11 2005-02-13 19:17:01 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.12 2005-02-18 23:33:32 markgrebe Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -184,6 +184,7 @@ bool FrameBufferGL::init()
   }
 
   // Get the valid OpenGL screenmodes
+  myScreenmodeCount = 0;
   myScreenmode = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
   if((myScreenmode != (SDL_Rect**) -1) && (myScreenmode != (SDL_Rect**) 0))
     for(uInt32 i = 0; myScreenmode[i]; ++i)
