@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.2 2002-01-10 20:03:05 stephena Exp $
+// $Id: mainDOS.cxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
 //============================================================================
 
 #include <go32.h>
@@ -600,8 +600,7 @@ void usage()
 }
 
 /**
-  Setup the properties set by loading builtin defaults and then a
-  set of user specific ones from the file $HOME/.stella.pro
+  Setup the properties set by loading from the file stella.pro
 
   @param set The properties set to setup
 */
@@ -610,24 +609,8 @@ void setupProperties(PropertiesSet& set)
   // Try to load the file stella.pro file
   string filename = "stella.pro";
 
-  // See if we can open the file
-  ifstream stream(filename.c_str()); 
-  if(stream)
-  {
-    // File was opened so load properties from it
-    set.load(stream, &Console::defaultProperties());
-  }
-  else
-  {
-    // Couldn't open the file so use the builtin properties file
-    strstream builtin;
-    for(const char** p = defaultPropertiesFile(); *p != 0; ++p)
-    {
-      builtin << *p << endl;
-    }
-
-    set.load(builtin, &Console::defaultProperties());
-  }
+  // File was opened so load properties from it
+  set.load(filename, &Console::defaultProperties(), false);
 }
 
 /**

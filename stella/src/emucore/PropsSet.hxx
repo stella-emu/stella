@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
+// $Id: PropsSet.hxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIESSET_HXX
 #define PROPERTIESSET_HXX
 
+#include <fstream>
 #include <string>
 
 #include "bspf.hxx"
@@ -54,19 +55,21 @@ class PropertiesSet
       Get the property from the set with the given MD5.
 
       @param md5 The md5 of the property to get
-      @return The property with the given MD5, or 0 if not found
+      @param properties The property with the given MD5, or
+             the default property if not found
     */
-    Properties* getMD5(string md5);
+    void getMD5(string md5, Properties& properties);
 
     /** 
-      Load properties from the specified input stream.  Use the given 
+      Load properties from the specified file.  Use the given 
       defaults properties as the defaults for any properties loaded.
 
-      @param in The input stream to use
+      @param string The input file to use
       @param defaults The default properties to use
+      @param useList Flag to indicate storing properties in memory (default true)
     */
-    void load(istream& in, const Properties* defaults);
- 
+    void load(string filename, const Properties* defaults, bool useList = true);
+
     /**
       Save properties to the specified output stream 
 
@@ -130,5 +133,14 @@ class PropertiesSet
 
     // The size of the properties bst (i.e. the number of properties in it)
     uInt32 mySize;
+
+    // Whether to construct an in-memory list or rescan the file each time
+    bool useMemList;
+
+    // The file stream for the stella.pro file
+    ifstream proStream;
+
+    // The default properties set
+    const Properties* defProps;
 };
 #endif

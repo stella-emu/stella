@@ -78,7 +78,7 @@ DWORD CStellaXMain::Initialize(
         return ERROR_SUCCESS;
     }
 
-    m_pPropertiesSet = new PropertiesSet("Cartridge.Name"); 
+    m_pPropertiesSet = new PropertiesSet(); 
     if ( m_pPropertiesSet == NULL )
     {
         return ERROR_NOT_ENOUGH_MEMORY;
@@ -89,12 +89,13 @@ DWORD CStellaXMain::Initialize(
 
     string filename( "stella.pro" );
     
-    // See if we can open the file
+    // See if we can open the file and load properties from it
     ifstream stream(filename.c_str()); 
     if(stream)
     {
         // File was opened so load properties from it
-        m_pPropertiesSet->load(stream, &Console::defaultProperties());
+        stream.close();
+        m_pPropertiesSet->load(filename, &Console::defaultProperties());
     }
     else
     {
@@ -115,24 +116,6 @@ DWORD CStellaXMain::Initialize(
 
             m_pPropertiesSet->insert( properties );
         }
-#else
-        // @@ REVIEW: This is REALLY SLOW!
-
-        // Couldn't open the file so use the builtin properties file
-        strstream builtin;
-        for(const char** p = defaultPropertiesFile(); *p != 0; ++p)
-        {
-            builtin << *p << endl;
-        }
-
-#ifdef _DEBUG
-    DWORD dwStartTick = ::GetTickCount();
-#endif
-        m_pPropertiesSet->load( builtin, &Console::defaultProperties() );
-#ifdef _DEBUG
-    TRACE( "Elapsed ticks for load = %ld", ::GetTickCount()-dwStartTick );
-#endif
-
 #endif
     }
 

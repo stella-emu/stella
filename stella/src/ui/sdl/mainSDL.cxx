@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.2 2002-01-10 19:53:33 stephena Exp $
+// $Id: mainSDL.cxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -1144,8 +1144,7 @@ void usage()
 
 /**
   Setup the properties set by first checking for a user file ".stella.pro",
-  then a system-wide file "/etc/stella.pro", or finally a default
-  properties set.
+  then a system-wide file "/etc/stella.pro".
 
   @param set The properties set to setup
 */
@@ -1153,25 +1152,15 @@ void setupProperties(PropertiesSet& set)
 {
   string homePropertiesFile = getenv("HOME");
   homePropertiesFile += "/.stella.pro";
+  string systemPropertiesFile = "/etc/stella.pro";
 
   if(access(homePropertiesFile.c_str(), R_OK) == 0)
   {
-    ifstream homeStream(homePropertiesFile.c_str());
-    set.load(homeStream, &Console::defaultProperties());
+    set.load(homePropertiesFile, &Console::defaultProperties(), false);
   }
-  else if(access("/etc/stella.pro", R_OK) == 0)
+  else if(access(systemPropertiesFile.c_str(), R_OK) == 0)
   {
-    ifstream systemStream("/etc/stella.pro");
-    set.load(systemStream, &Console::defaultProperties());
-  }
-  else
-  {
-    strstream builtin;
-    for(const char** p = defaultPropertiesFile(); *p != 0; ++p)
-    {
-      builtin << *p << endl;
-    }
-    set.load(builtin, &Console::defaultProperties());
+    set.load(systemPropertiesFile, &Console::defaultProperties(), false);
   }
 }
 

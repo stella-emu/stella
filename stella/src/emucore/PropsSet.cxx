@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
+// $Id: PropsSet.cxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -25,47 +25,86 @@ PropertiesSet::PropertiesSet()
 {
   root = 0;
   mySize = 0;
+  useMemList = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::~PropertiesSet()
 {
   deleteNode(root);
+  proStream.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Properties* PropertiesSet::getMD5(string md5)
+void PropertiesSet::getMD5(string md5, Properties &properties)
 {
-  // Make sure tree isn't empty
-  if(root == 0)
-    return 0;
-
-  // Else, do a BST search for the node with the given md5
-  TreeNode *current = root;
   bool found = false;
 
-  while(current)
+  if(useMemList)
   {
-    string currentMd5 = current->props->get("Cartridge.MD5");
-
-    if(currentMd5 == md5)
+    // Make sure tree isn't empty
+    if(root == 0)
     {
-      found = true;
-      break;
+      properties = defProps;
+      return;
     }
+
+    // Else, do a BST search for the node with the given md5
+    TreeNode *current = root;
+
+    while(current)
+    {
+      string currentMd5 = current->props->get("Cartridge.MD5");
+
+      if(currentMd5 == md5)
+      {
+        found = true;
+        break;
+      }
+      else
+      {
+        if(md5 < currentMd5)
+          current = current->left;
+        else 
+           current = current->right;
+      }
+    }
+
+    if(found)
+      properties = *(current->props);
     else
-    {
-      if(md5 < currentMd5)
-        current = current->left;
-      else 
-         current = current->right;
-    }
+      properties = defProps;
   }
-
-  if(found)
-    return current->props;
   else
-    return 0;
+  {
+    // Loop reading properties until required properties found
+    for(;;)
+    {
+      // Make sure the stream is still good or we're done 
+      if(!proStream)
+      {
+        break;
+      }
+
+      // Get the property list associated with this profile
+      Properties currentProperties(defProps);
+      currentProperties.load(proStream);
+
+      // If the stream is still good then insert the properties
+      if(proStream)
+      {
+        string currentMd5 = currentProperties.get("Cartridge.MD5");
+
+        if(currentMd5 == md5)
+        {
+          properties = currentProperties;
+          return;
+        }
+      }
+    }
+
+    properties = defProps;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,25 +152,33 @@ void PropertiesSet::deleteNode(TreeNode *node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(istream& in, const Properties* defaults)
+void PropertiesSet::load(string filename, const Properties* defaults, bool useList)
 {
-  // Loop reading properties
-  for(;;)
+  useMemList = useList;
+  defProps   = defaults;
+
+  proStream.open(filename.c_str());
+
+  if(useMemList)
   {
-    // Make sure the stream is still good or we're done 
-    if(!in)
+    // Loop reading properties
+    for(;;)
     {
-      break;
-    }
+      // Make sure the stream is still good or we're done 
+      if(!proStream)
+      {
+        break;
+      }
 
-    // Get the property list associated with this profile
-    Properties properties(defaults);
-    properties.load(in);
+      // Get the property list associated with this profile
+      Properties properties(defProps);
+      properties.load(proStream);
 
-    // If the stream is still good then insert the properties
-    if(in)
-    {
-      insert(properties);
+      // If the stream is still good then insert the properties
+      if(proStream)
+      {
+        insert(properties);
+      }
     }
   }
 }

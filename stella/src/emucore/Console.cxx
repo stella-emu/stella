@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
+// $Id: Console.cxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -49,15 +49,12 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   myMediaSource = 0;
   mySwitches = 0;
   mySystem = 0;
-  myProperties = defaultProperties();
 
   // Get the MD5 message-digest for the ROM image
   string md5 = MD5(image, size);
 
   // Search for the properties based on MD5
-  const Properties* properties = propertiesSet.getMD5(md5);
-  if(properties)
-    myProperties = properties;
+  propertiesSet.getMD5(md5, myProperties);
 
   // TODO: At some point I belive we'll need to set the properties'
   // MD5 value so the user will be able to edit it.  

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DefProps.cxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: DefProps.cxx,v 1.2 2002-01-16 02:14:25 stephena Exp $
 //============================================================================
 
 #include "DefProps.hxx"
@@ -23,7 +23,6 @@
   using a sed script
 */
 static const char* theScript[] = {
-  #include "DefProps.def"
   0
 };
 

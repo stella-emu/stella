@@ -709,55 +709,31 @@ DWORD CMainDlg::ReadRomData(
         // search through the properties set for this MD5
 
         PropertiesSet& propertiesSet = m_stella.GetPropertiesSet();
+        Properties properties;
+        propertiesSet.getMD5(md5, properties);
 
-        uInt32 setSize = propertiesSet.size();
-        
-        for (uInt32 i = 0; i < setSize; ++i)
+        if ( ! pListData->m_strManufacturer.Set( 
+            properties.get("Cartridge.Manufacturer").c_str() ) )
         {
-            if (propertiesSet.get(i).get("Cartridge.MD5") == md5)
-            {
-                // got it!
-                break;
-            }
+            return ERROR_NOT_ENOUGH_MEMORY;
         }
-        
-        if (i != setSize)
+
+        if ( ! pListData->m_strName.Set( 
+            properties.get("Cartridge.Name").c_str() ) )
         {
-            const Properties& properties = propertiesSet.get(i);
-            
-            if ( ! pListData->m_strManufacturer.Set( 
-                properties.get("Cartridge.Manufacturer").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! pListData->m_strName.Set( 
-                properties.get("Cartridge.Name").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if (! pListData->m_strRarity.Set( 
-                properties.get("Cartridge.Rarity").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! pListData->m_strNote.Set( 
-                properties.get("Cartridge.Note").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
+            return ERROR_NOT_ENOUGH_MEMORY;
         }
-        else
-        {
-            //
-            // Any output here should be appended to the emucore\stella.pro file
-            //
 
-            TRACE( "\"Cartridge.MD5\" \"%s\"\n\"Cartridge.Name\" \"%s\"\n\"\"\n", 
-                   md5.c_str(), 
-                   pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
+        if (! pListData->m_strRarity.Set( 
+            properties.get("Cartridge.Rarity").c_str() ) )
+        {
+            return ERROR_NOT_ENOUGH_MEMORY;
+        }
+
+        if ( ! pListData->m_strNote.Set( 
+            properties.get("Cartridge.Note").c_str() ) )
+        {
+            return ERROR_NOT_ENOUGH_MEMORY;
         }
     }
     
