@@ -21,6 +21,7 @@
 		<li><a href="#Starting">Starting A Game</a></li>
 		<li><a href="#Settings">Settings File</a></li>
 		<li><a href="#Keyboard">Keyboard Layout</a></li>
+		<li><a href="#Remapping">Event Remapping</a></li>
 		<li><a href="#Properties">Game Properties</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
 		<li><a href="#Acknowledgments">Acknowledgments</a></li>
@@ -230,8 +231,12 @@
 		<li>Digital sound support (used in games like Quadrun and Pitfall2) has been
 			greatly improved.  Sound generation is now more tightly synchronized with
 			video updates.</li>
+		<li>Added support for switchable palettes.  Currently you can switch between the
+			current Stella palette, original Stella palette (pre-1.2 versions), and
+			the z26 palette.</li>
 		<li>Added support for UA Limited style bankswitching (Funky Fish and Pleiades).</li>
-		<li>Switched to using <i>high compatibility M6502 mode</i> by default.
+		<li>Switched to using <i>high compatibility M6502 mode</i> by default. This
+			means old state saves from previous Stella versions will no longer work.</li>
 		<li>The meaning of the "<i>-sound</i>" command line option has been changed.
 			This option now accepts either 'true' or 'false (1 or 0) to enable/disable
 			sound.</li>
@@ -245,6 +250,9 @@
 		<li>Added "<i>-gl_aspect</i>" command line option.  This option accepts a decimal
 			value specifying how much to scale the width of the emulation image (useful
 			for giving an authentic 'square-looking' 4:3 mode).</li>
+		<li>Added "<i>-gl_fsmax</i>" command line option.  This option accepts either
+			'true' or 'false, and specifies to use the maximum possible resolution when
+			in fullscreen OpenGL mode (useful for Linux and for Windows on laptops).</li>
 		<li>Added "<i>-fragsize</i>" command line option.  This option accepts the
 			size to use for sound fragments.  Linux/MacOSX works well with 512,
 			Windows seems to need 2048.  This value must be a power of two.</li>
@@ -266,30 +274,38 @@
 
 	<ul>
 		<li>High speed emulation using optimized C++ code</li>
-		<li>Supports high quality sound emulation using Ron Fries' TIA Sound Emulation library
-		<li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard or joysticks
-		<li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard
-		<li>Emulates one Atari 2600 Paddle Controller using your computer's mouse
+		<li>Supports high quality sound emulation using Ron Fries' TIA Sound Emulation
+			library</li>
+		<li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard
+			or joysticks</li>
+		<li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard</li>
+		<li>Emulates one Atari 2600 Paddle Controller using your computer's mouse</li>
 		<li>Support for real Atari 2600 controllers using the
-			<a href="http://www.pixelspast.com/products">Stelladaptor</a>
-		<li>Emulates the Atari 2600 Driving Controllers using your computer's keyboard or joysticks
-		<li>Emulates the CBS Booster-Grip Controller using your computer's keyboard or joysticks
-		<li>Supports cartridges using Atari's standard 2K and 4K format
-		<li>Supports cartridges using Atari's 8K, 16K, and 32K bank-switching schemes
-		<li>Supports cartridges using Activision's 8K bank-switching scheme (Robot Tank and Decathlon)
-		<li>Supports cartridges using CBS Electronics' 12K bank-switching scheme
-		<li>Supports cartridges using Chris Wilkson's Megacart 128K bank-switching scheme
-		<li>Supports cartridges using Commavid bank-switching scheme
-		<li>Supports cartridges using M-Network's 16K bank-switching scheme
-		<li>Supports cartridges using Parker Brothers' 8K bank-switching scheme
-		<li>Supports cartridges using Tigervision's bank-switching scheme with up to 512K ROM
-		<li>Supports Supercharger single-load and multi-load games 
-		<li>Supports property file for setting the properties associated with games
-		<li>Supports user specified frame rate
-		<li>Supports the NTSC and PAL television palettes
-		<li>Supports several "undocumented features" of the TIA graphics chip used by some games
-		<li>TIA emulation supports full collision checking
-		<li>Linux version of Stella works with the KStella frontend by Stephen Anthony
+			<a href="http://www.pixelspast.com/products">Stelladaptor</a></li>
+		<li>Emulates the Atari 2600 Driving Controllers using your computer's keyboard
+			or joysticks</li>
+		<li>Emulates the CBS Booster-Grip Controller using your computer's keyboard or
+			joysticks</li>
+		<li>Supports cartridges using Atari's standard 2K and 4K format</li>
+		<li>Supports cartridges using Atari's 8K, 16K, and 32K bank-switching schemes</li>
+		<li>Supports cartridges using Activision's 8K bank-switching scheme
+			(Robot Tank and Decathlon)</li>
+		<li>Supports cartridges using CBS Electronics' 12K bank-switching scheme</li>
+		<li>Supports cartridges using Chris Wilkson's Megacart 128K bank-switching
+			scheme</li>
+		<li>Supports cartridges using Commavid bank-switching scheme</li>
+		<li>Supports cartridges using M-Network's 16K bank-switching scheme</li>
+		<li>Supports cartridges using Parker Brothers' 8K bank-switching scheme</li>
+		<li>Supports cartridges using Tigervision's bank-switching scheme with up to
+			512K ROM</li>
+		<li>Supports Supercharger single-load and multi-load games</li>
+		<li>Supports property file for setting the properties associated with games</li>
+		<li>Supports user specified frame rate</li>
+		<li>Supports the NTSC and PAL television palettes</li>
+		<li>Supports several "undocumented features" of the TIA graphics chip used by
+			some games</li>
+		<li>TIA emulation supports full collision checking</li>
+		<li>Linux version of Stella works with the KStella frontend by Stephen Anthony</li>
 	</ul>
 
 	<br><br>
@@ -305,120 +321,131 @@
 	stella.pro file.  It is no longer optional as it was for past versions.</p>
 
 	<p>
-	<h2><b>Linux/UNIX</b></h2>
+	<h2><b>General (required for all versions of Stella)</b></h2>
+	<ul>
+		<li>Enough RAM for the OS + 16MB RAM for the emulation; 32MB highly recommended</li>
+		<li>15 bit color minimum; 16 bit color graphics card highly recommended</li>
+		<li>SDL version 1.2.0 or greater</li>
+		<li>Latest versions of the libpng and zlib libraries</li>
+		<li>Joysticks or gamepads are highly recommended</li>
+		<li>Mouse or Stelladaptor with real paddles required for paddle emulation</li>
+		<li>Some ROM images (no, we won't tell you where to find them)</li>
+	</ul>
 
+	<p>
+	<h2><b>Linux/UNIX</b></h2>
 	<p>The Linux version of Stella is designed to work on a Linux Workstation with
 	the following:</p>
-
 	<ul>
-		<li>Linux Kernel 2.0.x
-		<li>X Window System
-		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling the Stella source code; GNU C++ compiler version 3.2.x or later is highly recommended
-		<li>16 MB of RAM required; 32 MB highly recommended
-		<li>15 bit color minimum; 16 bit color graphics card highly recommended
-		<li>486/120 MHz required; 586/166 MHz highly recommended
-		<li>SDL version 1.2.0 or greater
-		<li>Joysticks or gamepads are highly recommended
-		<li>Mouse or Stelladaptor required for paddle emulation
+		<li>Linux Kernel 2.4.x, Linux Kernel 2.6.x is highly recommended</li>
+		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling
+			the Stella source code; GNU C++ compiler version 3.2.x or later is highly
+			recommended</li>
+		<li>486/120 MHz required; 586/166 MHz highly recommended (Stella <b>may</b>
+			compile on other architectures, but it hasn't been tested)</li>
 	</ul>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
 
 <p>FIXME</p>
-<!--
-	<p>The MacLinux version of Stella is designed to work on a Linux Workstation with
-	the following:</p>
 
-	<ul>
-		<li>Linux Kernel 2.0.x
-		<li>X Window System
-		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling the Stella source code; GNU C++ compiler version 3.2.x or later is highly recommended
-		<li>16 MB of RAM required; 32 MB highly recommended
-		<li>15 bit color minimum; 16 bit color graphics card highly recommended
-		<li>486/120 MHz required; 586/166 MHz highly recommended
-		<li>SDL version 1.2.0 or greater
-		<li>Joysticks or gamepads are highly recommended
-		<li>Mouse required for paddle emulation using the mouse
-	</ul>
--->
 	<p>
 	<h2><b>Windows</b></h2>
 
-<p>FIXME</p>
-<!--
-	<p>The Linux version of Stella is designed to work on a Linux Workstation with
+	<p>The Windows version of Stella is designed to work on Windows 95/98/ME/2000/XP with
 	the following:</p>
 
 	<ul>
-		<li>Linux Kernel 2.0.x
-		<li>X Window System
-		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling the Stella source code; GNU C++ compiler version 3.2.x or later is highly recommended
-		<li>16 MB of RAM required; 32 MB highly recommended
-		<li>15 bit color minimum; 16 bit color graphics card highly recommended
-		<li>486/120 MHz required; 586/166 MHz highly recommended
-		<li>SDL version 1.2.0 or greater
-		<li>Joysticks or gamepads are highly recommended
-		<li>Mouse required for paddle emulation using the mouse
+		<li>Visual C++ 7 compiler is required to compile the StellaX GUI frontend</li>
+		<li>Visual C++ 7 or MinGW compiler is required to compile the Stella
+			executable</li>
+		<li>486/120 MHz required; 586/166 MHz highly recommended</li>
 	</ul>
--->
 
 	<br><br>
 	<p><h1>
 	<a name="Installation">3. Installation</a></h1>
 	<hr>
+	<p>Stella is distributed in both source and binary form.  Once you have a Stella
+	distribution you should follow the instructions for	your operating system given
+	below.</p>
 
-	<p>Once you have a Stella distribution you should follow the instructions for
-	your operating system given below.</p>
+	<p>If you have a supported joystick and driver installed and SDL can access the device,
+	you can play games using joysticks.</p>
+
+	<p>Currently, sound is supported using SDL.  As long as SDL can see your sound card,
+	Stella will be able to produce sound.</p>
 
 	<p>
 	<h2><b>Linux/UNIX</b></h2>
-
-	<p>The Linux versions of Stella are distributed in both executable and source code
-	form, and in compressed tar files as well as (S)RPM's.
-
-	<p>If you're compiling the source from a compressed tar file, follow these instructions:
 	<ul>
-		<li>Extract files from the distribution:
-			<pre>   tar jxvf stella-release-src.tar.bz2</pre></li>
-
-		<li>Change directories to the stella-<i>release</i>/src/build directory</li>
-
-		<li>Edit the <b>makefile</b> to meet your needs</li>
-
-		<li>Build the executable with the following command:
-			<pre>   make linux (or make linux-gl)</pre></li>
-
-		<li>Copy the executable to a directory that's in your path:
-			<pre>   cp stella /usr/local/bin</pre></li>
-
-		<li>Copy the supplied stella.pro properties file to the system-wide location:
-			<pre>   cp stella.pro /etc</pre> or to your home directory:
-			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
+		<li><b>Compressed tarball</b> (stella-<i>release</i>-src.tar.gz)</li>
+		<ol>
+			<li>Extract files from the distribution:
+				<pre>   tar zxvf stella-release-src.tar.gz</pre></li>
+			<li>Change directories to the stella-<i>release</i>/src/build directory</li>
+			<li>Edit the <b>makefile</b> to meet your needs</li>
+			<li>Build the executable with the following command:
+				<pre>   make linux (or make linux-gl)</pre></li>
+			<li>Copy the executable to a directory that's in your path:
+				<pre>   cp stella /usr/local/bin</pre></li>
+			<li>Copy the supplied stella.pro properties file to the system-wide location:
+				<pre>   cp stella.pro /etc</pre> or to your home directory:
+				<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
+		</ol>
+		<li><b>Source RPM</b> (stella-<i>release</i>.src.rpm)</li>
+		<ol>
+			<li>Rebuild the archive with the following command:
+				<pre>   rpmbuild --rebuild stella-<i>release</i>.src.rpm</pre></li>
+			<li>Follow the instructions under <i>Binary RPM</i> to install
+				the stella-<i>release</i>.ix86.rpm file</li>
+		</ol>
+		<li><b>Binary RPM</b> (stella-<i>release</i>.ix86.rpm)</li>
+		<ol>
+			<li>Install the binary RPM with the following command:
+				<pre>   rpm -Uvh stella-<i>release</i>.ix86.rpm</pre></li>
+		</ol>
 	</ul>
-
-	<p>If you're using the binary RPM's or source SRPM's, consult your distribution on
-	how to proceed.</p>
-
-	<p>If you have a supported joystick and driver installed and SDL can access the device,
-	you can play games using joysticks.  For additional information about the Linux
-	joystick driver see the following web site:
-	<a href="http://atrey.karlin.mff.cuni.cz/~vojtech/input">
-	Linux Input Drivers</a>.</p>
-
-	<p>Currently, sound is supported using SDL.  As long as SDL can see your sound card, Stella
-	will be able to produce sound.</p>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
-
 	<p>FIXME - add info for Mac</p>
 
 	<p>
 	<h2><b>Windows</b></h2>
-
-	<p>FIXME - add info for Windows</p>
-
+	<ul>
+		<li><b>Compressed tarball</b> (stella-<i>release</i>-src.tar.gz)</li>
+		<ol>
+			<li>Extract files from the distribution using <b>Winzip</b>,
+				<b>Total Commander</b>, or some other archiving program that supports
+				gzipped tar files</li>
+			<li>If compiling the Stella executable using MinGW:</li>
+			<ul>
+				<li>Change directories to the stella-<i>release</i>/src/build
+					directory</li>
+				<li>Edit the <b>makefile</b> to meet your needs</li>
+				<li>Build the executable with the following command:
+					<pre>   make win32 (or make win32-gl)</pre></li>
+				<li>Copy the <b>Stella</b> (commandline executable) and <b>stella.pro</b>
+					files to some directory</li>
+			</ul>
+			<li>If compiling using Visual C++ 7:</li>
+			<ul>
+				<li>Open the <b>stella-<i>release</i>/src/win32/Stella_Emulator.sln</b>
+					file using Visual C++ 7</li>
+				<li>Build both Stella.exe (commandline emulator) and StellaX.exe
+					(GUI frontend)</li>
+				<li>Copy the <b>Stella.exe</b>, <b>StellaX.exe</b> and <b>stella.pro</b> files
+					to some directory</li>
+			</ul>
+		</ol>
+		<li><b>Binary ZIP file</b> (stella-<i>release</i>-win32.zip)</li>
+		<ol>
+			<li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b>
+				and copy that directory somewhere</li>
+		</ol>
+	</ul>
 
 	<br><br>
 	<p><h1>
@@ -537,6 +564,13 @@
 		</tr>
 
 		<tr>
+			<td><pre>-gl_fsmax &lt;0|1&gt;</pre></td>
+			<td>Use the maximum possible resolution when switching to fullscreen OpenGL
+				mode.  Under Linux (and Windows on laptops), this is usually the current
+				desktop resolution, so a video-mode switch can be avoided.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-sound &lt;0|1&gt;</pre></td>
 			<td>Disable or enable sound.</td>
 		</tr>
@@ -590,7 +624,7 @@
 
 		<tr>
 			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
-			<td>Shows some game info.</td>
+			<td>Shows some game info when the program exits.</td>
 		</tr>
 
 		<tr>
@@ -618,39 +652,9 @@
 		</tr>
 
 		<tr>
-			<td><pre>-Dwidth &lt;number&gt;</pre></td>
-			<td>Sets the "Display.Width" property.  Its value must be in the range specified
-				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
-				included</i>)</td>
-		</tr>
-		<tr>
-			<td><pre>-Dheight &lt;number&gt;</pre></td>
-			<td>Sets the "Display.Height" property.  Its value must be in the range specified
-				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
-				included</i>)</td>
-		</tr>
-		<tr>
-			<td><pre>-Dxstart &lt;number&gt;</pre></td>
-			<td>Sets the "Display.XStart" property.  Its value must be in the range specified
-				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
-				included</i>)</td>
-		</tr>
-		<tr>
-			<td><pre>-Dystart &lt;number&gt;</pre></td>
-			<td>Sets the "Display.YStart" property.  Its value must be in the range specified
-				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
-				included</i>)</td>
-		</tr>
-		<tr>
-			<td><pre>-Dformat &lt;NTSC|PAL&gt;</pre></td>
-			<td>Sets the "Display.Format" property (<i>If DEVELOPER support is
-				included</i>)</td>
-		</tr>
-		<tr>
 			<td><pre>-mergeprops &lt;0|1&gt;</pre></td>
 			<td>Save the current properties to a separate file in the users' home directory,
-				or merge them into the users' stella.pro file
-				(<i>If DEVELOPER support is included</i>)</td>
+				or merge them into the users' stella.pro file.</td>
 		</tr>
 
 	</table>
@@ -665,10 +669,14 @@
 	<h2><b>Windows</b></h2>
 
 	<p>The Windows version of Stella is either commandline based or can use a GUI.
-	If you wish to use the commandline version, the options are the same as for the
-	Linux version (described above).</p>
-
-	<p> FIXME - add more info about GUI StellaX launcher</p>
+	<ul>
+		<li>If using the commandline version (Stella.exe), the options are the same as
+			for the Linux version (described above).
+		<li>If using the GUI version (StellaX.exe), the 'Config' page contains some of
+			the options as listed for the Linux version (described above).  The other
+			options can be selected from within the emulation itself (see
+			<b>Section 7 - <a href="#Keyboard">Keyboard Layout</a></b>).</li>
+	</ul>
 
 	<br><br>
 	<p><h1>
@@ -741,7 +749,9 @@
 	keyboard as shown in the following tables.</p>
 
 	<p>As of Stella 1.4, most of these events can be remapped to other keys on your keyboard
-	or buttons on your joystick.  The tables below show the default settings.</p>
+	or buttons on your joystick (see <b>Section 8 -
+	<a href="#Remapping">Event Remapping</a></b>).  The tables below show the default
+	settings.</p>
 
 	<p><b>Console Controls</b></p>
 
@@ -752,17 +762,17 @@
 		</tr>
 
 		<tr>
-			<td>Exit emulator</td>
+			<td>Exit emulator (can't be remapped)</td>
 			<td>Escape (Cmd-Q for Macintosh)</td>
 		</tr>
 
 		<tr>
-			<td>Exit submenu (in menu mode)</td>
+			<td>Exit submenu in menu mode (can't be remapped)</td>
 			<td>Escape</td>
 		</tr>
 
 		<tr>
-			<td>Enter/exit menu mode</td>
+			<td>Enter/exit menu mode (can't be remapped)</td>
 			<td>Tab</td>
 		</tr>
 
@@ -1219,7 +1229,7 @@
 		</tr>
 	</table>
 
-	<p><b>Developer Keys (cannot be remapped)</b></p>
+	<p><b>Developer Keys (can't be remapped)</b></p>
 
 	<p>The following keys are activated only if <b>developer</b> support has
 	been included:</p>
@@ -1269,20 +1279,9 @@
 			<td>Set "Display.Width" to next <i>smaller</i> value</td>
 			<td>Control + Home</td>
 		</tr>
-
-		<tr>
-			<td>Toggle "Display.Format" between <i>NTSC</i> and <i>PAL</i></td>
-			<td>Control + f</td>
-		</tr>
-
-		<tr>
-			<td>Save (or merge) the current properties</td>
-			<td>Control + s</td>
-		</tr>
-
 	</table>
 
-	<p><b>Other Keys (cannot be remapped)</b></p>
+	<p><b>Other Keys (can't be remapped)</b></p>
 
 	<table BORDER=2>
 		<tr>
@@ -1319,11 +1318,50 @@
 			<td>Toggle OpenGL filtering modes</td>
 			<td>Alt + f</td>
 		</tr>
+
+		<tr>
+			<td>Toggle display format between <i>NTSC</i> and <i>PAL</i></td>
+			<td>Control + f</td>
+		</tr>
+
+		<tr>
+			<td>Save (or merge) the current properties</td>
+			<td>Control + s</td>
+		</tr>
+
 	</table>
 
 	<br><br><br>
 	<p><h1>
-	<a name="Properties">8. Game Properties</a></h1>
+	<a name="Remapping">8. Event Remapping</a></h1>
+	<hr>
+
+	<p>This version of Stella has event remapping.  Almost every event in the emulator
+	can be remapped to another key on the keyboard or to buttons on up to four
+	joysticks/gamepads (see <b>Section 7 - <a href="#Keyboard">Keyboard Layout</a></b>
+	for those event which can/cannot be remapped).</p>
+
+	<p>To remap an event:
+	<ol>
+		<li>Enter menu mode be pressing <b>Tab</b>.</li>
+		<li>Press Cursor Up/Down to move up/down one line at a time,
+			or PageUp/PageDown to move up/down 5 lines at a time.  The arrows on
+			the left and right sides of the menu indicate which item is currently
+			selected.</li>
+		<li>Select <u>Event Remapping</u> and press <b>Enter</b>.</li>
+		<li>Move up/down to select the event you want to remap and press <b>Enter</b>
+			to change the mapping, or <b>Escape</b> to go to the parent menu.</li>
+		<li>Triangle brackets will appear around the event to be remapped.  At this
+			point you can press any keyboard key or gamepad button to set that key/button
+			to this event.  Or you can press <b>Escape</b> to erase the mapping for this
+			event.</li>
+		<li>Return to step 4 to remap another event, press <b>Escape</b> to move to the
+			parent menu, or press <b>Tab</b> again to exit menu mode.</li>
+	</ol>
+
+	<br><br><br>
+	<p><h1>
+	<a name="Properties">9. Game Properties</a></h1>
 	<hr>
 
 	<p>Stella uses game properties to specify the "best" emulator settings for a
@@ -1520,7 +1558,7 @@
 
 	<br><br>
 	<p><h1>
-	<a name="Adaptor">9. Stelladaptor Support</a></h1>
+	<a name="Adaptor">10. Stelladaptor Support</a></h1>
 	<hr>
 
 	<p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
@@ -1547,7 +1585,7 @@
 
 	<br><br>
 	<p><h1>
-	<a name="Acknowledgments">10. Acknowledgments</a></h1>
+	<a name="Acknowledgments">11. Acknowledgments</a></h1>
 	<hr>
 
 	<p>Bradford W. Mott started developing Stella during the fall of 1995 and since
@@ -1778,7 +1816,7 @@
 
 	<br><br>
 	<p><h1>
-	<a name="License">11. License and Disclaimer</a></h1>
+	<a name="License">12. License and Disclaimer</a></h1>
 	<hr>
 
 	<p>
