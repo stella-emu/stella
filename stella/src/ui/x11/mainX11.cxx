@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.11 2002-03-05 22:39:47 stephena Exp $
+// $Id: mainX11.cxx,v 1.12 2002-03-10 01:29:55 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -40,10 +40,10 @@
 #include "SndUnix.hxx"
 #include "System.hxx"
 
-#ifdef HAVE_IMLIB
-  #include <Imlib.h>
+#ifdef HAVE_PNG
+  #include "Snapshot.hxx"
 
-  ImlibData* imlibData;
+  static Snapshot* snapshot;
 
   // The path to save snapshot files
   string theSnapShotDir = "";
@@ -395,12 +395,10 @@ bool setupDisplay()
 
   XSelectInput(theDisplay, theWindow, eventMask);
 
-  // If imlib snapshots are enabled, set up some imlib stuff
-#ifdef HAVE_IMLIB
-  imlibData = Imlib_init(theDisplay);
+#ifdef HAVE_PNG
+  // Take care of the snapshot stuff.
+  snapshot = new Snapshot();
 
-  // By default, snapshot dir is HOME and name is ROMNAME, assuming that
-  // they haven't been specified on the commandline
   if(theSnapShotDir == "")
     theSnapShotDir = getenv("HOME");
   if(theSnapShotName == "")
@@ -600,12 +598,6 @@ void handleEvents()
       {
         resizeWindow(0);
       }
-#if 0
-      else if((key == XK_F11) && (event.type == KeyPress))
-      {
-        toggleFullscreen();
-      }
-#endif
       else if((key == XK_F12) && (event.type == KeyPress))
       {
         takeSnapshot();
@@ -1023,16 +1015,10 @@ bool createCursors()
 */
 void takeSnapshot()
 {
-#ifdef HAVE_IMLIB
-  // Figure out the actual size of the window
-  int width = theWidth * 2 * theWindowSize;
-  int height = theHeight * theWindowSize;
-
-  ImlibImage* image = Imlib_create_image_from_drawable(imlibData, theWindow,
-              0, 0, 0, width, height);
-  if(image == NULL)
+#ifdef HAVE_PNG
+  if(!snapshot)
   {
-    cerr << "Could not create snapshot!!\n";
+    cerr << "Snapshot support disabled.\n";
     return;
   }
 
@@ -1078,8 +1064,7 @@ void takeSnapshot()
     filename = filename + ".png";
 
   // Now save the snapshot file
-  Imlib_save_image(imlibData, image, (char*)filename.c_str(), NULL);
-  Imlib_kill_image(imlibData, image);
+  snapshot->savePNG(filename, theConsole->mediaSource(), theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;
@@ -1148,7 +1133,7 @@ void usage()
     "  -paddle <0|1|2|3>       Indicates which paddle the mouse should emulate",
 #endif
     "  -showinfo               Shows some game info on exit",
-#ifdef HAVE_IMLIB
+#ifdef HAVE_PNG
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
     "  -sssingle               Generate single snapshot instead of many",
@@ -1299,7 +1284,7 @@ void handleCommandLineArguments(int argc, char* argv[])
 
       theDesiredVolume = volume;
     }
-#ifdef HAVE_IMLIB
+#ifdef HAVE_PNG
     else if(string(argv[i]) == "-ssdir")
     {
       theSnapShotDir = argv[++i];
@@ -1477,7 +1462,7 @@ void parseRCOptions(istream& in)
 
       theDesiredVolume = volume;
     }
-#ifdef HAVE_IMLIB
+#ifdef HAVE_PNG
     else if(key == "ssdir")
     {
       theSnapShotDir = value;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.11 2002-03-05 22:39:47 stephena Exp $
+// $Id: mainSDL.cxx,v 1.12 2002-03-10 01:29:55 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -35,8 +35,11 @@
 #include "PropsSet.hxx"
 #include "System.hxx"
 #include "SndUnix.hxx"
-#include "SnapSDL.hxx"
 #include "RectList.hxx"
+
+#ifdef HAVE_PNG
+  #include "Snapshot.hxx"
+#endif
 
 // Hack for SDL < 1.2.0
 #ifndef SDL_ENABLE
@@ -91,7 +94,7 @@ static int sdlflags;
 static RectList* rectList;
 
 #ifdef HAVE_PNG
-  static SnapshotSDL* snapshot;
+  static Snapshot* snapshot;
 #endif
 
 struct Switches
@@ -296,9 +299,8 @@ bool setupDisplay()
   }
 
 #ifdef HAVE_PNG
-  // Take care of the snapshot stuff.  Must be done before the screen is
-  // created.
-  snapshot = new SnapshotSDL();
+  // Take care of the snapshot stuff.
+  snapshot = new Snapshot();
 
   if(theSnapShotDir == "")
     theSnapShotDir = getenv("HOME");
@@ -441,12 +443,6 @@ void recalculate8BitPalette()
 
     palette[i] = palette[i+1] = SDL_MapRGB(format, r, g, b);
   }
-
-#ifdef HAVE_PNG
-  // Make sure that snapshots use this new palette
-  if(snapshot)
-    snapshot->setPalette(palette);
-#endif
 }
 
 
@@ -483,12 +479,6 @@ void setupPalette()
         break;
     }
   }
-
-#ifdef HAVE_PNG
-  // Make sure that snapshots use this new palette
-  if(snapshot)
-    snapshot->setPalette(palette);
-#endif
 }
 
 
@@ -1174,7 +1164,7 @@ void takeSnapshot()
     filename = filename + ".png";
 
   // Now save the snapshot file
-  snapshot->savePNG(screen, filename.c_str());
+  snapshot->savePNG(filename, theConsole->mediaSource(), theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;

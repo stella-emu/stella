@@ -13,24 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SnapSDL.hxx,v 1.2 2002-03-05 22:39:47 stephena Exp $
+// $Id: Snapshot.hxx,v 1.1 2002-03-10 01:29:54 stephena Exp $
 //============================================================================
 
-#ifndef SNAPSHOTSDL_HXX
-#define SNAPSHOTSDL_HXX
+#ifndef SNAPSHOT_HXX
+#define SNAPSHOT_HXX
 
-#include <SDL.h>
 #include <png.h>
+#include <string>
 
+#include "MediaSrc.hxx"
 
-class SnapshotSDL
+class Snapshot
 {
   public:
-    SnapshotSDL();
-    ~SnapshotSDL();
+    Snapshot();
+    ~Snapshot();
 
-    int savePNG(SDL_Surface *surface, const char *file);
-    void setPalette(Uint32 *palette);
+    int savePNG(string filename, MediaSource& mediaSource, int multiplier = 1);
 
   private:
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
@@ -41,11 +41,8 @@ class SnapshotSDL
 
     static void png_user_error(png_structp ctx, png_const_charp str);
 
-    int png_colortype_from_surface(SDL_Surface *surface);
-
-    int IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *src);
-
-    Uint32 *palette;
+    // The PNG palette
+    png_colorp palette;
 };
 
 #endif

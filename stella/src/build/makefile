@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.9 2002-03-05 22:39:47 stephena Exp $
+## $Id: makefile,v 1.10 2002-03-10 01:29:54 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -53,9 +53,9 @@ OPTIMIZATIONS    =
 # LINUX_JOYSTICK = 1
 
 ### to include support for saving snapshots in png format
-### (X version requires Imlib, SDL version requires libpng)
-# X11_SNAPSHOT = 1
-# SDL_SNAPSHOT = 1
+### (requires PNG library)
+### Only X11 and SDL ports supported for now
+# SNAPSHOT_SUPPORT = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -68,6 +68,7 @@ LD	= g++
 LDFLAGS = 
 LDLIBS	= 
 
+OBJS.X11   =
 OPTS.X11   =
 LIBS.X11   =
 CFLAGS.X11 =
@@ -109,15 +110,13 @@ ifdef LINUX_JOYSTICK
 OPTS.X11 += -DLINUX_JOYSTICK
 endif
 
-ifdef X11_SNAPSHOT
-OPTS.X11 += -DHAVE_IMLIB
-LIBS.X11 += `imlib-config --libs`
-CFLAGS.X11 += `imlib-config --cflags`
-endif
+ifdef SNAPSHOT_SUPPORT
+OBJS.X11 += Snapshot.o
+OPTS.X11 += -DHAVE_PNG -I$(UI)/common
+LIBS.X11 += -lpng
 
-ifdef SDL_SNAPSHOT
-OBJS.SDL += SnapSDL.o
-OPTS.SDL += -DHAVE_PNG
+OBJS.SDL += Snapshot.o
+OPTS.SDL += -DHAVE_PNG -I$(UI)/common
 LIBS.SDL += -lpng
 endif
 
@@ -171,7 +170,8 @@ linux-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SndUnix.o"
+          OBJS="mainX11.o SndUnix.o" \
+          OBJS+="$(OBJS.X11)"
 
 linux-sdl:
 	make stella.sdl \
@@ -390,11 +390,11 @@ mainX11.o: $(UI)/x11/mainX11.cxx
 mainSDL.o: $(UI)/sdl/mainSDL.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
 
-SnapSDL.o: $(UI)/sdl/SnapSDL.cxx $(UI)/sdl/SnapSDL.hxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SnapSDL.cxx
-
 RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx
+
+Snapshot.o: $(UI)/common/Snapshot.cxx $(UI)/common/Snapshot.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Snapshot.cxx
 
 SndUnix.o: $(UI)/sound/SndUnix.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/sound/SndUnix.cxx
