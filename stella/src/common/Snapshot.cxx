@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+// $Id: Snapshot.cxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -68,10 +68,10 @@ string Snapshot::savePNG(string filename)
   png_structp png_ptr = 0;
   png_infop info_ptr  = 0;
 
-  // Get actual screen dimensions. which are not always the same
+  // Get actual image dimensions. which are not always the same
   // as the framebuffer dimensions
-  uInt32 width  = myFrameBuffer.winWidth();
-  uInt32 height = myFrameBuffer.winHeight();
+  uInt32 width  = myFrameBuffer.imageWidth();
+  uInt32 height = myFrameBuffer.imageHeight();
 
   ofstream* out = new ofstream(filename.c_str(), ios_base::binary);
   if(!out)

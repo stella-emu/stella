@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -35,7 +35,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -93,6 +93,16 @@ class FrameBufferSDL : public FrameBuffer
     uInt32 maxWindowSizeForScreen();
 
     /**
+      This routine is called to get the width of the onscreen image.
+    */
+    uInt32 imageWidth() { return myDimensions.w; }
+
+    /**
+      This routine is called to get the height of the onscreen image.
+    */
+    uInt32 imageHeight() { return myDimensions.h; }
+
+    /**
       Set the title and icon for the main SDL window.
     */
     void setWindowAttributes();
@@ -142,6 +152,10 @@ class FrameBufferSDL : public FrameBuffer
 
     // Used to get window-manager specifics
     SDL_SysWMinfo myWMInfo;
+
+    // Indicates the width/height and origin x/y of the onscreen image
+    // (these may be different than the screen/window dimensions)
+    SDL_Rect myDimensions;
 
     // Indicates if we are running under X11
     bool x11Available;

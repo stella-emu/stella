@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
 */
 class FrameBufferSoft : public FrameBufferSDL
 {
@@ -68,16 +68,6 @@ class FrameBufferSoft : public FrameBufferSDL
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
       { return SDL_MapRGB(myScreen->format, r, g, b); }
-
-    /**
-      This routine is called to get the width of the onscreen image.
-    */
-    virtual uInt32 winWidth() { return myScreen->w; }
-
-    /**
-      This routine is called to get the height of the onscreen image.
-    */
-    virtual uInt32 winHeight()  { return myScreen->h; }
 
     /**
       This routine is called to get the specified scanline data.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {
@@ -73,16 +73,6 @@ class FrameBufferGL : public FrameBufferSDL
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
       { return SDL_MapRGB(myTexture->format, r, g, b); }
-
-    /**
-      This routine is called to get the width of the onscreen image.
-    */
-    virtual uInt32 winWidth() { return (uInt32) (myWidth  * theZoomLevel * theAspectRatio); }
-
-    /**
-      This routine is called to get the height of the onscreen image.
-    */
-    virtual uInt32 winHeight() { return myHeight * theZoomLevel; }
 
     /**
       This routine is called to get the specified scanline data.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.8 2004-06-20 23:30:48 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.9 2004-06-23 00:15:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.8 2004-06-20 23:30:48 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.9 2004-06-23 00:15:32 stephena Exp $
 */
 class FrameBuffer
 {
@@ -196,12 +196,12 @@ class FrameBuffer
     /**
       This routine is called to get the width of the onscreen image.
     */
-    virtual uInt32 winWidth() = 0;
+    virtual uInt32 imageWidth() = 0;
 
     /**
       This routine is called to get the height of the onscreen image.
     */
-    virtual uInt32 winHeight() = 0;
+    virtual uInt32 imageHeight() = 0;
 
     /**
       This routine is called to get the specified scanline data.
