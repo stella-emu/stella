@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.2 2004-07-14 06:54:17 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "Menus.h"
@@ -276,6 +276,26 @@ static Menus *sharedInstance = nil;
 - (IBAction)yStartMinus:(id)sender
 {
 	[self pushKeyEvent:SDLK_PAGEDOWN:NO];
+}
+
+- (IBAction)widthPlus:(id)sender
+{
+	[self pushKeyEvent:SDLK_END:YES];
+}
+
+- (IBAction)widthMinus:(id)sender
+{
+	[self pushKeyEvent:SDLK_HOME:YES];
+}
+
+- (IBAction)heightPlus:(id)sender
+{
+	[self pushKeyEvent:SDLK_PAGEUP:YES];
+}
+
+- (IBAction)heightMinus:(id)sender
+{
+	[self pushKeyEvent:SDLK_PAGEDOWN:YES];
 }
 
 - (BOOL)validateMenuItem:(id <NSMenuItem>)menuItem

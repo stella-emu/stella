@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.2 2004-07-14 06:54:17 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
@@ -43,5 +43,9 @@
 - (IBAction)xStartMinus:(id)sender;
 - (IBAction)yStartPlus:(id)sender;
 - (IBAction)yStartMinus:(id)sender;
+- (IBAction)widthPlus:(id)sender;
+- (IBAction)widthMinus:(id)sender;
+- (IBAction)heightPlus:(id)sender;
+- (IBAction)heightMinus:(id)sender;
 
 @end

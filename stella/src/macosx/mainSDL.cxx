@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.2 2004-07-10 13:20:36 stephena Exp $
+// $Id: mainSDL.cxx,v 1.3 2004-07-14 06:54:17 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -469,6 +469,28 @@ void handleEvents()
           theConsole->toggleFormat();
           theDisplay->setupPalette();
         }
+#ifdef DEVELOPER_SUPPORT
+        else if(key == SDLK_END)       // Command-Shift-End increases Width
+        {
+          theConsole->changeWidth(1);
+          theDisplay->resize(0);
+        }
+        else if(key == SDLK_HOME)      // Command-Shift-Home decreases Width
+        {
+          theConsole->changeWidth(0);
+          theDisplay->resize(0);
+        }
+        else if(key == SDLK_PAGEUP)    // Command-Shift-PageUp increases Height
+        {
+          theConsole->changeHeight(1);
+          theDisplay->resize(0);
+        }
+        else if(key == SDLK_PAGEDOWN)  // Command-Shift-PageDown decreases Height
+        {
+          theConsole->changeHeight(0);
+          theDisplay->resize(0);
+        }
+#endif
 	  }
       else if((mod & KMOD_META) && !(mod & KMOD_SHIFT))
       {
