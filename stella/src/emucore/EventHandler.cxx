@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.29 2004-07-28 23:54:39 stephena Exp $
+// $Id: EventHandler.cxx,v 1.30 2005-02-18 21:26:31 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -427,6 +427,7 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a Snapshot object and save the PNG
+  myConsole->frameBuffer().refresh(true);
   Snapshot snapshot(myConsole->frameBuffer());
   string result = snapshot.savePNG(filename);
   myConsole->frameBuffer().showMessage(result);

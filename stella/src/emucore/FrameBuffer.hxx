@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.12 2004-07-28 23:54:39 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.13 2005-02-18 21:26:31 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.12 2004-07-28 23:54:39 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.13 2005-02-18 21:26:31 stephena Exp $
 */
 class FrameBuffer
 {
@@ -124,8 +124,16 @@ class FrameBuffer
     /**
       Indicates that a redraw should be done, since the window contents
       are dirty.
+
+      @param now  Determine if the refresh should be done right away or in
+                  the next frame
     */
-    void refresh() { theRedrawEntireFrameIndicator = true; }
+    void refresh(bool now = false)
+    {
+      theRedrawEntireFrameIndicator = true;
+      if(now)
+        drawMediaSource();
+    }
 
   public:
     //////////////////////////////////////////////////////////////////////
