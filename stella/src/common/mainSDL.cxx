@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.16 2004-08-17 01:17:08 stephena Exp $
+// $Id: mainSDL.cxx,v 1.17 2004-09-14 16:10:27 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -824,6 +824,18 @@ int main(int argc, char* argv[])
   // Request that the SDL window be centered, if possible
   putenv("SDL_VIDEO_CENTERED=1");
 
+  // Set the SDL_VIDEODRIVER environment variable, if possible
+  if(theSettings->getString("video_driver") != "")
+  {
+    ostringstream buf;
+    buf << "SDL_VIDEODRIVER=" << theSettings->getString("video_driver");
+    putenv((char*) buf.str().c_str());
+
+    buf.str("");
+    buf << "Using SDL video driver = " << theSettings->getString("video_driver") << ".";
+    ShowInfo(buf.str());
+  }
+
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
 
@@ -846,20 +858,20 @@ int main(int argc, char* argv[])
   if(videodriver == "soft")
   {
     theDisplay = new FrameBufferSoft();
-    ShowInfo("Using software mode for video.");
+    ShowInfo("Using software mode for video rendering.");
   }
 #ifdef DISPLAY_OPENGL
   else if(videodriver == "gl")
   {
     theDisplay = new FrameBufferGL();
     theUseOpenGLFlag = true;
-    ShowInfo("Using OpenGL mode for video.");
+    ShowInfo("Using OpenGL mode for video rendering.");
   }
 #endif
   else   // a driver that doesn't exist was requested, so use software mode
   {
     theDisplay = new FrameBufferSoft();
-    ShowInfo("Using software mode for video.");
+    ShowInfo("Using software mode for video rendering.");
   }
 
   if(!theDisplay)

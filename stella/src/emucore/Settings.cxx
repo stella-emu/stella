@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.29 2004-08-17 01:17:08 stephena Exp $
+// $Id: Settings.cxx,v 1.30 2004-09-14 16:10:28 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -33,6 +33,7 @@ Settings::Settings()
 
   // Now fill it with options that are common to all versions of Stella
   set("video", "soft");
+  set("video_driver", "");
 #ifdef DISPLAY_OPENGL
   set("gl_filter", "nearest");
   set("gl_aspect", "2");
@@ -171,37 +172,38 @@ void Settings::usage()
     << endl
     << "Valid options are:" << endl
     << endl
-    << "  -video      <type>         Type is one of the following:\n"
-    << "               soft            SDL software mode\n"
+    << "  -video        <type>         Type is one of the following:\n"
+    << "                 soft            SDL software mode\n"
   #ifdef DISPLAY_OPENGL
-    << "               gl              SDL OpenGL mode\n"
+    << "                 gl              SDL OpenGL mode\n"
+    << "  -video_driver <type>         SDL Video driver (see manual).\n"
     << endl
-    << "  -gl_filter  <type>         Type is one of the following:\n"
-    << "               nearest         Normal scaling (GL_NEAREST)\n"
-    << "               linear          Blurred scaling (GL_LINEAR)\n"
-    << "  -gl_aspect  <number>       Scale the width by the given amount\n"
-    << "  -gl_fsmax   <1|0>          Use the largest available screenmode in fullscreen OpenGL\n"
+    << "  -gl_filter    <type>         Type is one of the following:\n"
+    << "                 nearest         Normal scaling (GL_NEAREST)\n"
+    << "                 linear          Blurred scaling (GL_LINEAR)\n"
+    << "  -gl_aspect    <number>       Scale the width by the given amount\n"
+    << "  -gl_fsmax     <1|0>          Use the largest available screenmode in fullscreen OpenGL\n"
     << endl
   #endif
-    << "  -sound      <1|0>          Enable sound generation\n"
-    << "  -fragsize   <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -framerate  <number>       Display the given number of frames per second\n"
-    << "  -zoom       <size>         Makes window be 'size' times normal\n"
-    << "  -fullscreen <1|0>          Play the game in fullscreen mode\n"
-    << "  -grabmouse  <1|0>          Keeps the mouse in the game window\n"
-    << "  -hidecursor <1|0>          Hides the mouse cursor in the game window\n"
-    << "  -volume     <number>       Set the volume (0 - 100)\n"
-    << "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
-    << "  -altpro     <props file>   Use the given properties file instead of stella.pro\n"
-    << "  -showinfo   <1|0>          Shows some game info\n"
-    << "  -accurate   <1|0>          Accurate game timing (uses more CPU)\n"
+    << "  -sound        <1|0>          Enable sound generation\n"
+    << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
+    << "  -framerate    <number>       Display the given number of frames per second\n"
+    << "  -zoom         <size>         Makes window be 'size' times normal\n"
+    << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
+    << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
+    << "  -hidecursor   <1|0>          Hides the mouse cursor in the game window\n"
+    << "  -volume       <number>       Set the volume (0 - 100)\n"
+    << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
+    << "  -altpro       <props file>   Use the given properties file instead of stella.pro\n"
+    << "  -showinfo     <1|0>          Shows some game info\n"
+    << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #ifdef SNAPSHOT_SUPPORT
-    << "  -ssdir      <path>         The directory to save snapshot files to\n"
-    << "  -ssname     <name>         How to name the snapshot (romname or md5sum)\n"
-    << "  -sssingle   <1|0>          Generate single snapshot instead of many\n"
+    << "  -ssdir        <path>         The directory to save snapshot files to\n"
+    << "  -ssname       <name>         How to name the snapshot (romname or md5sum)\n"
+    << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
   #endif
-    << "  -mergeprops <1|0>          Merge changed properties into properties file,\n"
-    << "                             or save into a separate file\n"
+    << "  -mergeprops   <1|0>          Merge changed properties into properties file,\n"
+    << "                               or save into a separate file\n"
     << endl;
 #endif
 }
