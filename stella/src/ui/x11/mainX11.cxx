@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.22 2002-04-10 23:51:18 stephena Exp $
+// $Id: mainX11.cxx,v 1.23 2002-04-18 17:18:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -52,6 +52,7 @@
 #endif
 
 #define HAVE_GETTIMEOFDAY 1
+#define MESSAGE_INTERVAL 2
 
 // A graphic context for each of the 2600's colors
 static GC theGCTable[256];
@@ -81,6 +82,10 @@ static bool setupProperties(PropertiesSet& set);
 static void handleRCFile();
 static void usage();
 
+static void loadState();
+static void saveState();
+static void changeState();
+
 // Globals for X windows stuff
 static Display* theDisplay = (Display*) NULL;
 static string theDisplayName = "";
@@ -108,69 +113,70 @@ struct Switches
 {
   KeySym scanCode;
   Event::Type eventCode;
+  string message;
 };
 
 static Switches list[] = {
-  { XK_1,           Event::KeyboardZero1 },
-  { XK_2,           Event::KeyboardZero2 },
-  { XK_3,           Event::KeyboardZero3 },
-  { XK_q,           Event::KeyboardZero4 },
-  { XK_w,           Event::KeyboardZero5 },
-  { XK_e,           Event::KeyboardZero6 },
-  { XK_a,           Event::KeyboardZero7 },
-  { XK_s,           Event::KeyboardZero8 },
-  { XK_d,           Event::KeyboardZero9 },
-  { XK_z,           Event::KeyboardZeroStar },
-  { XK_x,           Event::KeyboardZero0 },
-  { XK_c,           Event::KeyboardZeroPound },
+  { XK_1,           Event::KeyboardZero1,            "" },
+  { XK_2,           Event::KeyboardZero2,            "" },
+  { XK_3,           Event::KeyboardZero3,            "" },
+  { XK_q,           Event::KeyboardZero4,            "" },
+  { XK_w,           Event::KeyboardZero5,            "" },
+  { XK_e,           Event::KeyboardZero6,            "" },
+  { XK_a,           Event::KeyboardZero7,            "" },
+  { XK_s,           Event::KeyboardZero8,            "" },
+  { XK_d,           Event::KeyboardZero9,            "" },
+  { XK_z,           Event::KeyboardZeroStar,         "" },
+  { XK_x,           Event::KeyboardZero0,            "" },
+  { XK_c,           Event::KeyboardZeroPound,        "" },
 
-  { XK_8,           Event::KeyboardOne1 },
-  { XK_9,           Event::KeyboardOne2 },
-  { XK_0,           Event::KeyboardOne3 },
-  { XK_i,           Event::KeyboardOne4 },
-  { XK_o,           Event::KeyboardOne5 },
-  { XK_p,           Event::KeyboardOne6 },
-  { XK_k,           Event::KeyboardOne7 },
-  { XK_l,           Event::KeyboardOne8 },
-  { XK_semicolon,   Event::KeyboardOne9 },
-  { XK_comma,       Event::KeyboardOneStar },
-  { XK_period,      Event::KeyboardOne0 },
-  { XK_slash,       Event::KeyboardOnePound },
+  { XK_8,           Event::KeyboardOne1,            "" },
+  { XK_9,           Event::KeyboardOne2,            "" },
+  { XK_0,           Event::KeyboardOne3,            "" },
+  { XK_i,           Event::KeyboardOne4,            "" },
+  { XK_o,           Event::KeyboardOne5,            "" },
+  { XK_p,           Event::KeyboardOne6,            "" },
+  { XK_k,           Event::KeyboardOne7,            "" },
+  { XK_l,           Event::KeyboardOne8,            "" },
+  { XK_semicolon,   Event::KeyboardOne9,            "" },
+  { XK_comma,       Event::KeyboardOneStar,         "" },
+  { XK_period,      Event::KeyboardOne0,            "" },
+  { XK_slash,       Event::KeyboardOnePound,        "" },
 
-  { XK_Down,        Event::JoystickZeroDown },
-  { XK_Up,          Event::JoystickZeroUp },
-  { XK_Left,        Event::JoystickZeroLeft },
-  { XK_Right,       Event::JoystickZeroRight },
-  { XK_space,       Event::JoystickZeroFire }, 
-  { XK_Return,      Event::JoystickZeroFire }, 
-  { XK_Control_L,   Event::JoystickZeroFire }, 
-  { XK_z,           Event::BoosterGripZeroTrigger },
-  { XK_x,           Event::BoosterGripZeroBooster },
+  { XK_Down,        Event::JoystickZeroDown,        "" },
+  { XK_Up,          Event::JoystickZeroUp,          "" },
+  { XK_Left,        Event::JoystickZeroLeft,        "" },
+  { XK_Right,       Event::JoystickZeroRight,       "" },
+  { XK_space,       Event::JoystickZeroFire,        "" },
+  { XK_Return,      Event::JoystickZeroFire,        "" },
+  { XK_Control_L,   Event::JoystickZeroFire,        "" },
+  { XK_z,           Event::BoosterGripZeroTrigger,  "" },
+  { XK_x,           Event::BoosterGripZeroBooster,  "" },
 
-  { XK_w,           Event::JoystickZeroUp },
-  { XK_s,           Event::JoystickZeroDown },
-  { XK_a,           Event::JoystickZeroLeft },
-  { XK_d,           Event::JoystickZeroRight },
-  { XK_Tab,         Event::JoystickZeroFire }, 
-  { XK_1,           Event::BoosterGripZeroTrigger },
-  { XK_2,           Event::BoosterGripZeroBooster },
+  { XK_w,           Event::JoystickZeroUp,          "" },
+  { XK_s,           Event::JoystickZeroDown,        "" },
+  { XK_a,           Event::JoystickZeroLeft,        "" },
+  { XK_d,           Event::JoystickZeroRight,       "" },
+  { XK_Tab,         Event::JoystickZeroFire,        "" },
+  { XK_1,           Event::BoosterGripZeroTrigger,  "" },
+  { XK_2,           Event::BoosterGripZeroBooster,  "" },
 
-  { XK_l,           Event::JoystickOneDown },
-  { XK_o,           Event::JoystickOneUp },
-  { XK_k,           Event::JoystickOneLeft },
-  { XK_semicolon,   Event::JoystickOneRight },
-  { XK_j,           Event::JoystickOneFire }, 
-  { XK_n,           Event::BoosterGripOneTrigger },
-  { XK_m,           Event::BoosterGripOneBooster },
+  { XK_l,           Event::JoystickOneDown,         "" },
+  { XK_o,           Event::JoystickOneUp,           "" },
+  { XK_k,           Event::JoystickOneLeft,         "" },
+  { XK_semicolon,   Event::JoystickOneRight,        "" },
+  { XK_j,           Event::JoystickOneFire,         "" },
+  { XK_n,           Event::BoosterGripOneTrigger,   "" },
+  { XK_m,           Event::BoosterGripOneBooster,   "" },
 
-  { XK_F1,          Event::ConsoleSelect },
-  { XK_F2,          Event::ConsoleReset },
-  { XK_F3,          Event::ConsoleColor },
-  { XK_F4,          Event::ConsoleBlackWhite },
-  { XK_F5,          Event::ConsoleLeftDifficultyA },
-  { XK_F6,          Event::ConsoleLeftDifficultyB },
-  { XK_F7,          Event::ConsoleRightDifficultyA },
-  { XK_F8,          Event::ConsoleRightDifficultyB }
+  { XK_F1,          Event::ConsoleSelect,           "" },
+  { XK_F2,          Event::ConsoleReset,            "" },
+  { XK_F3,          Event::ConsoleColor,            "Color Mode" },
+  { XK_F4,          Event::ConsoleBlackWhite,       "BW Mode" },
+  { XK_F5,          Event::ConsoleLeftDifficultyA,  "Left Difficulty A" },
+  { XK_F6,          Event::ConsoleLeftDifficultyB,  "Left Difficulty B" },
+  { XK_F7,          Event::ConsoleRightDifficultyA, "Right Difficulty A" },
+  { XK_F8,          Event::ConsoleRightDifficultyB, "Right Difficulty B" }
 };
 
 // Event objects to use
@@ -197,6 +203,9 @@ static bool isFullscreen = false;
 
 // Indicates whether the window is currently centered
 static bool isCentered = false;
+
+// Indicates the current state to use for state saving
+static uInt32 currentState = 0;
 
 /**
   This routine should be called once the console is created to setup
@@ -573,6 +582,18 @@ void handleEvents()
       {
         resizeWindow(0);
       }
+      else if((key == XK_F9) && (event.type == KeyPress))
+      {
+        saveState();
+      }
+      else if((key == XK_F10) && (event.type == KeyPress))
+      {
+        changeState();
+      }
+      else if((key == XK_F11) && (event.type == KeyPress))
+      {
+        loadState();
+      }
       else if((key == XK_F12) && (event.type == KeyPress))
       {
         takeSnapshot();
@@ -609,6 +630,10 @@ void handleEvents()
                 (event.type == KeyPress) ? 1 : 0);
             keyboardEvent.set(list[i].eventCode, 
                 (event.type == KeyPress) ? 1 : 0);
+
+            if((event.type == KeyPress) && (list[i].message != ""))
+              theConsole->mediaSource().showMessage(list[i].message,
+                  MESSAGE_INTERVAL * settings->theDesiredFrameRate);
           }
         }
       }
@@ -911,6 +936,74 @@ void togglePause()
   // Show a different palette depending on pause state
   setupPalette();
   theRedrawEntireFrameIndicator = true;
+}
+
+/**
+  Saves state of the current game in the current slot.
+*/
+void saveState()
+{
+#if 0
+  // Do a state save using the MediaSource
+  // ...
+
+  // Print appropriate message
+  char buf[40];
+  if(true) // if the state saved correctly
+    snprintf(buf, 39, "State %d saved", currentState);
+  else
+    snprintf(buf, 39, "Error saving state %d", currentState);
+
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#else
+  cerr << "State saving not yet implemented\n";
+#endif
+}
+
+/**
+  Changes the current state slot.
+*/
+void changeState()
+{
+  if(currentState == 9)
+    currentState = 0;
+  else
+    ++currentState;
+
+#if 0
+  // Print appropriate message
+  char buf[40];
+  snprintf(buf, 39, "Changed to state slot %d", currentState);
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#endif
+}
+
+/**
+  Loads state from the current slot for the current game.
+*/
+void loadState()
+{
+#if 0
+  // Do a state load using the MediaSource
+  // ...
+
+  // Print appropriate message
+  char buf[40];
+  if(true) // if the state loaded correctly
+    snprintf(buf, 39, "State %d loaded", currentState);
+  else
+    snprintf(buf, 39, "Error loading state %d", currentState);
+
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#else
+  cerr << "State loading not yet implemented\n";
+#endif
 }
 
 /**

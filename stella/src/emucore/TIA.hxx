@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.4 2002-03-28 05:10:17 bwmott Exp $
+// $Id: TIA.hxx,v 1.5 2002-04-18 17:18:48 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -21,6 +21,8 @@
 
 class Console;
 class System;
+
+#include <string>
 
 #include "bspf.hxx"
 #include "Device.hxx"
@@ -38,7 +40,7 @@ class System;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.4 2002-03-28 05:10:17 bwmott Exp $
+  @version $Id: TIA.hxx,v 1.5 2002-04-18 17:18:48 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -116,6 +118,12 @@ class TIA : public Device , public MediaSource
     virtual bool pause(bool state);
 
     /**
+      Inserts the given message into the framebuffer for the given
+      number of frames.
+    */
+    virtual void showMessage(string& message, Int32 duration);
+
+    /**
       Answers the current frame buffer
 
       @return Pointer to the current frame buffer
@@ -190,6 +198,9 @@ class TIA : public Device , public MediaSource
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
 
+    // Draw message to framebuffer
+	void drawMessageText();
+
   private:
     // Console the TIA is associated with
     const Console& myConsole;
@@ -199,6 +210,12 @@ class TIA : public Device , public MediaSource
 
     // Indicates whether the emulation is paused or not
     bool myPauseState;
+
+	// message timer
+	Int32 myMessageTime;
+
+    // message text
+    string myMessageText;
 
   private:
     // Indicates the CPU cycle when a TIA sound register was last updated
@@ -433,6 +450,9 @@ class TIA : public Device , public MediaSource
     // this array are always shades of grey.  This is used to implement
     // the PAL color loss effect.
     static const uInt32 ourPALPalette[256];
+
+    // Table of bitmapped fonts.  Holds A..Z and 0..9.
+    static const uInt32 ourFontData[36];
 
   private:
     // Copy constructor isn't supported by this class so make it private

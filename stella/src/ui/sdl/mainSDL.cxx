@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.21 2002-04-10 23:51:18 stephena Exp $
+// $Id: mainSDL.cxx,v 1.22 2002-04-18 17:18:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -51,6 +51,7 @@
 #endif
 
 #define HAVE_GETTIMEOFDAY 1
+#define MESSAGE_INTERVAL 2
 
 // function prototypes
 static bool setupDisplay();
@@ -78,6 +79,10 @@ static bool setupProperties(PropertiesSet& set);
 static void handleRCFile();
 static void usage();
 
+static void loadState();
+static void saveState();
+static void changeState();
+
 // Globals for the SDL stuff
 static SDL_Surface* screen = (SDL_Surface*) NULL;
 static Uint32 palette[256];
@@ -101,69 +106,70 @@ struct Switches
 {
   SDLKey scanCode;
   Event::Type eventCode;
+  string message;
 };
 
 static Switches list[] = {
-    { SDLK_1,           Event::KeyboardZero1 },
-    { SDLK_2,           Event::KeyboardZero2 },
-    { SDLK_3,           Event::KeyboardZero3 },
-    { SDLK_q,           Event::KeyboardZero4 },
-    { SDLK_w,           Event::KeyboardZero5 },
-    { SDLK_e,           Event::KeyboardZero6 },
-    { SDLK_a,           Event::KeyboardZero7 },
-    { SDLK_s,           Event::KeyboardZero8 },
-    { SDLK_d,           Event::KeyboardZero9 },
-    { SDLK_z,           Event::KeyboardZeroStar },
-    { SDLK_x,           Event::KeyboardZero0 },
-    { SDLK_c,           Event::KeyboardZeroPound },
+    { SDLK_1,           Event::KeyboardZero1,            "" },
+    { SDLK_2,           Event::KeyboardZero2,            "" },
+    { SDLK_3,           Event::KeyboardZero3,            "" },
+    { SDLK_q,           Event::KeyboardZero4,            "" },
+    { SDLK_w,           Event::KeyboardZero5,            "" },
+    { SDLK_e,           Event::KeyboardZero6,            "" },
+    { SDLK_a,           Event::KeyboardZero7,            "" },
+    { SDLK_s,           Event::KeyboardZero8,            "" },
+    { SDLK_d,           Event::KeyboardZero9,            "" },
+    { SDLK_z,           Event::KeyboardZeroStar,         "" },
+    { SDLK_x,           Event::KeyboardZero0,            "" },
+    { SDLK_c,           Event::KeyboardZeroPound,        "" },
 
-    { SDLK_8,           Event::KeyboardOne1 },
-    { SDLK_9,           Event::KeyboardOne2 },
-    { SDLK_0,           Event::KeyboardOne3 },
-    { SDLK_i,           Event::KeyboardOne4 },
-    { SDLK_o,           Event::KeyboardOne5 },
-    { SDLK_p,           Event::KeyboardOne6 },
-    { SDLK_k,           Event::KeyboardOne7 },
-    { SDLK_l,           Event::KeyboardOne8 },
-    { SDLK_SEMICOLON,   Event::KeyboardOne9 },
-    { SDLK_COMMA,       Event::KeyboardOneStar },
-    { SDLK_PERIOD,      Event::KeyboardOne0 },
-    { SDLK_SLASH,       Event::KeyboardOnePound },
+    { SDLK_8,           Event::KeyboardOne1,             "" },
+    { SDLK_9,           Event::KeyboardOne2,             "" },
+    { SDLK_0,           Event::KeyboardOne3,             "" },
+    { SDLK_i,           Event::KeyboardOne4,             "" },
+    { SDLK_o,           Event::KeyboardOne5,             "" },
+    { SDLK_p,           Event::KeyboardOne6,             "" },
+    { SDLK_k,           Event::KeyboardOne7,             "" },
+    { SDLK_l,           Event::KeyboardOne8,             "" },
+    { SDLK_SEMICOLON,   Event::KeyboardOne9,             "" },
+    { SDLK_COMMA,       Event::KeyboardOneStar,          "" },
+    { SDLK_PERIOD,      Event::KeyboardOne0,             "" },
+    { SDLK_SLASH,       Event::KeyboardOnePound,         "" },
 
-    { SDLK_UP,          Event::JoystickZeroUp },
-    { SDLK_DOWN,        Event::JoystickZeroDown },
-    { SDLK_LEFT,        Event::JoystickZeroLeft },
-    { SDLK_RIGHT,       Event::JoystickZeroRight },
-    { SDLK_SPACE,       Event::JoystickZeroFire }, 
-    { SDLK_RETURN,      Event::JoystickZeroFire }, 
-    { SDLK_LCTRL,       Event::JoystickZeroFire }, 
-    { SDLK_z,           Event::BoosterGripZeroTrigger },
-    { SDLK_x,           Event::BoosterGripZeroBooster },
+    { SDLK_UP,          Event::JoystickZeroUp,           "" },
+    { SDLK_DOWN,        Event::JoystickZeroDown,         "" },
+    { SDLK_LEFT,        Event::JoystickZeroLeft,         "" },
+    { SDLK_RIGHT,       Event::JoystickZeroRight,        "" },
+    { SDLK_SPACE,       Event::JoystickZeroFire,         "" },
+    { SDLK_RETURN,      Event::JoystickZeroFire,         "" },
+    { SDLK_LCTRL,       Event::JoystickZeroFire,         "" },
+    { SDLK_z,           Event::BoosterGripZeroTrigger,   "" },
+    { SDLK_x,           Event::BoosterGripZeroBooster,   "" },
 
-    { SDLK_w,           Event::JoystickZeroUp },
-    { SDLK_s,           Event::JoystickZeroDown },
-    { SDLK_a,           Event::JoystickZeroLeft },
-    { SDLK_d,           Event::JoystickZeroRight },
-    { SDLK_TAB,         Event::JoystickZeroFire }, 
-    { SDLK_1,           Event::BoosterGripZeroTrigger },
-    { SDLK_2,           Event::BoosterGripZeroBooster },
+    { SDLK_w,           Event::JoystickZeroUp,           "" },
+    { SDLK_s,           Event::JoystickZeroDown,         "" },
+    { SDLK_a,           Event::JoystickZeroLeft,         "" },
+    { SDLK_d,           Event::JoystickZeroRight,        "" },
+    { SDLK_TAB,         Event::JoystickZeroFire,         "" },
+    { SDLK_1,           Event::BoosterGripZeroTrigger,   "" },
+    { SDLK_2,           Event::BoosterGripZeroBooster,   "" },
 
-    { SDLK_o,           Event::JoystickOneUp },
-    { SDLK_l,           Event::JoystickOneDown },
-    { SDLK_k,           Event::JoystickOneLeft },
-    { SDLK_SEMICOLON,   Event::JoystickOneRight },
-    { SDLK_j,           Event::JoystickOneFire }, 
-    { SDLK_n,           Event::BoosterGripOneTrigger },
-    { SDLK_m,           Event::BoosterGripOneBooster },
+    { SDLK_o,           Event::JoystickOneUp,            "" },
+    { SDLK_l,           Event::JoystickOneDown,          "" },
+    { SDLK_k,           Event::JoystickOneLeft,          "" },
+    { SDLK_SEMICOLON,   Event::JoystickOneRight,         "" },
+    { SDLK_j,           Event::JoystickOneFire,          "" },
+    { SDLK_n,           Event::BoosterGripOneTrigger,    "" },
+    { SDLK_m,           Event::BoosterGripOneBooster,    "" },
 
-    { SDLK_F1,          Event::ConsoleSelect },
-    { SDLK_F2,          Event::ConsoleReset },
-    { SDLK_F3,          Event::ConsoleColor },
-    { SDLK_F4,          Event::ConsoleBlackWhite },
-    { SDLK_F5,          Event::ConsoleLeftDifficultyA },
-    { SDLK_F6,          Event::ConsoleLeftDifficultyB },
-    { SDLK_F7,          Event::ConsoleRightDifficultyA },
-    { SDLK_F8,          Event::ConsoleRightDifficultyB }
+    { SDLK_F1,          Event::ConsoleSelect,            "" },
+    { SDLK_F2,          Event::ConsoleReset,             "" },
+    { SDLK_F3,          Event::ConsoleColor,             "Color Mode" },
+    { SDLK_F4,          Event::ConsoleBlackWhite,        "BW Mode" },
+    { SDLK_F5,          Event::ConsoleLeftDifficultyA,   "Left Difficulty A" },
+    { SDLK_F6,          Event::ConsoleLeftDifficultyB,   "Left Difficulty B" },
+    { SDLK_F7,          Event::ConsoleRightDifficultyA,  "Right Difficulty A" },
+    { SDLK_F8,          Event::ConsoleRightDifficultyB,  "Right Difficulty B" }
   };
 
 // Event objects to use
@@ -190,6 +196,10 @@ static bool isFullscreen = false;
 
 // Indicates whether the window is currently centered
 static bool isCentered = false;
+
+// Indicates the current state to use for state saving
+static uInt32 currentState = 0;
+
 
 
 /**
@@ -608,6 +618,77 @@ void grabMouse(bool grab)
 
 
 /**
+  Saves state of the current game in the current slot.
+*/
+void saveState()
+{
+#if 0
+  // Do a state save using the MediaSource
+  // ...
+
+  // Print appropriate message
+  char buf[40];
+  if(true) // if the state saved correctly
+    snprintf(buf, 39, "State %d saved", currentState);
+  else
+    snprintf(buf, 39, "Error saving state %d", currentState);
+
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#else
+  cerr << "State saving not yet implemented\n";
+#endif
+}
+
+
+/**
+  Changes the current state slot.
+*/
+void changeState()
+{
+  if(currentState == 9)
+    currentState = 0;
+  else
+    ++currentState;
+
+#if 0
+  // Print appropriate message
+  char buf[40];
+  snprintf(buf, 39, "Changed to state slot %d", currentState);
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#endif
+}
+
+
+/**
+  Loads state from the current slot for the current game.
+*/
+void loadState()
+{
+#if 0
+  // Do a state load using the MediaSource
+  // ...
+
+  // Print appropriate message
+  char buf[40];
+  if(true) // if the state loaded correctly
+    snprintf(buf, 39, "State %d loaded", currentState);
+  else
+    snprintf(buf, 39, "Error loading state %d", currentState);
+
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#else
+  cerr << "State loading not yet implemented\n";
+#endif
+}
+
+
+/**
   This routine should be called anytime the display needs to be updated
 */
 void updateDisplay(MediaSource& mediaSource)
@@ -809,6 +890,18 @@ void handleEvents()
       {
         toggleFullscreen();
       }
+      else if(key == SDLK_F9)
+      {
+        saveState();
+      }
+      else if(key == SDLK_F10)
+      {
+        changeState();
+      }
+      else if(key == SDLK_F11)
+      {
+        loadState();
+      }
       else if(key == SDLK_F12)
       {
         takeSnapshot();
@@ -843,6 +936,9 @@ void handleEvents()
           {
             theEvent.set(list[i].eventCode, 1);
             keyboardEvent.set(list[i].eventCode, 1);
+            if(list[i].message != "")
+              theConsole->mediaSource().showMessage(list[i].message,
+                  MESSAGE_INTERVAL * settings->theDesiredFrameRate);
           }
         }
       }
