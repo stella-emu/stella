@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.16 2003-09-25 16:20:33 stephena Exp $
+// $Id: Console.cxx,v 1.17 2003-09-26 22:39:36 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -259,14 +259,12 @@ void Console::toggleFormat()
 
   if(format == "NTSC")
   {
-    message = "PAL Mode";
-    myMediaSource->showMessage(message, 120);
+    myUserInterface->showMessage("PAL Mode");
     myProperties.set("Display.Format", "PAL");
   }
   else if(format == "PAL")
   {
-    message = "NTSC Mode";
-    myMediaSource->showMessage(message, 120);
+    myUserInterface->showMessage("NTSC Mode");
     myProperties.set("Display.Format", "NTSC");
   }
 }
@@ -284,14 +282,12 @@ void Console::changeXStart(const uInt32 direction)
     xstart += 4;
     if(xstart > 80)
     {
-      message = "XStart at maximum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("XStart at maximum");
       return;
     }
     else if((width + xstart) > 160)
     {
-      message = "XStart no effect";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("XStart no effect");
       return;
     }
   }
@@ -300,8 +296,7 @@ void Console::changeXStart(const uInt32 direction)
     xstart -= 4;
     if(xstart < 0)
     {
-      message = "XStart at minimum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("XStart at minimum");
       return;
     }
   }
@@ -312,7 +307,7 @@ void Console::changeXStart(const uInt32 direction)
 
   message = "XStart ";
   message += strval.str();
-  myMediaSource->showMessage(message, 120);
+  myUserInterface->showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -327,8 +322,7 @@ void Console::changeYStart(const uInt32 direction)
     ystart++;
     if(ystart > 64)
     {
-      message = "YStart at maximum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("YStart at maximum");
       return;
     }
   }
@@ -337,8 +331,7 @@ void Console::changeYStart(const uInt32 direction)
     ystart--;
     if(ystart < 0)
     {
-      message = "YStart at minimum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("YStart at minimum");
       return;
     }
   }
@@ -349,7 +342,7 @@ void Console::changeYStart(const uInt32 direction)
 
   message = "YStart ";
   message += strval.str();
-  myMediaSource->showMessage(message, 120);
+  myUserInterface->showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,14 +358,12 @@ void Console::changeWidth(const uInt32 direction)
     width += 4;
     if((width > 160) || ((width % 4) != 0))
     {
-      message = "Width at maximum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("Width at maximum");
       return;
     }
     else if((width + xstart) > 160)
     {
-      message = "Width no effect";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("Width no effect");
       return;
     }
   }
@@ -381,8 +372,7 @@ void Console::changeWidth(const uInt32 direction)
     width -= 4;
     if(width < 80)
     {
-      message = "Width at minimum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("Width at minimum");
       return;
     }
   }
@@ -393,7 +383,7 @@ void Console::changeWidth(const uInt32 direction)
 
   message = "Width ";
   message += strval.str();
-  myMediaSource->showMessage(message, 120);
+  myUserInterface->showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -408,8 +398,7 @@ void Console::changeHeight(const uInt32 direction)
     height++;
     if(height > 256)
     {
-      message = "Height at maximum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("Height at maximum");
       return;
     }
   }
@@ -418,8 +407,7 @@ void Console::changeHeight(const uInt32 direction)
     height--;
     if(height < 100)
     {
-      message = "Height at minimum";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("Height at minimum");
       return;
     }
   }
@@ -430,27 +418,19 @@ void Console::changeHeight(const uInt32 direction)
 
   message = "Height ";
   message += strval.str();
-  myMediaSource->showMessage(message, 120);
+  myUserInterface->showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::saveProperties(string filename, bool merge)
 {
-  string message;
-
   // Merge the current properties into the PropertiesSet file
   if(merge)
   {
     if(myPropSet.merge(myProperties, filename))
-    {
-      message = "Properties merged";
-      myMediaSource->showMessage(message, 120);
-    }
+      myUserInterface->showMessage("Properties merged");
     else
-    {
-      message = "Properties not merged";
-      myMediaSource->showMessage(message, 120);
-    }
+      myUserInterface->showMessage("Properties not merged");
   }
   else  // Save to the specified file directly
   {
@@ -460,13 +440,11 @@ void Console::saveProperties(string filename, bool merge)
     {
       myProperties.save(out);
       out.close();
-      message = "Properties saved";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("Properties saved");
     }
     else
     {
-      message = "Properties not saved";
-      myMediaSource->showMessage(message, 120);
+      myUserInterface->showMessage("Properties not saved");
     }
   }
 }

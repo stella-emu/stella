@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.hxx,v 1.3 2003-09-26 17:35:05 stephena Exp $
+// $Id: UserInterface.hxx,v 1.4 2003-09-26 22:39:36 stephena Exp $
 //============================================================================
 
 #ifndef USERINTERFACE_HXX
@@ -31,7 +31,7 @@ class MediaSource;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: UserInterface.hxx,v 1.3 2003-09-26 17:35:05 stephena Exp $
+  @version $Id: UserInterface.hxx,v 1.4 2003-09-26 22:39:36 stephena Exp $
 */
 class UserInterface
 {
@@ -71,14 +71,13 @@ class UserInterface
     void sendJoymap(Event::Type table[StellaEvent::LastJSTICK][StellaEvent::LastJCODE]);
 
   public:
-    bool drawPending() { return myCurrentWidget != NONE; }
     void showMainMenu(bool show);
-    void showMessage(string& message);
+    void showMessage(const string& message);
     void update();
 
   private:
     // Enumeration representing the different types of user interface widgets
-    enum Widget { NONE, MAIN_MENU, REMAP_MENU, INFO_MENU, MESSAGE };
+    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU, MESSAGE };
 
     Widget currentSelectedWidget();
     Event::Type currentSelectedEvent();
@@ -88,6 +87,9 @@ class UserInterface
 
     // Draw a bounded box centered horizontally
     void drawBoundedBox(uInt32 width, uInt32 height);
+
+    // Draw message text at specified coordinates
+    void drawText(const string& message, uInt32 x, uInt32 y);
 
   private:
     // The Console for the system
@@ -116,6 +118,12 @@ class UserInterface
 
     // Message text
     string myMessageText;
+
+    // Holds information about the current selected ROM image
+    string ourPropertiesInfo[6];
+
+    // The width of the information menu, determined by the longest string
+    uInt32 myInfoMenuWidth;
 };
 
 #endif

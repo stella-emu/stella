@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.12 2003-09-26 17:35:05 stephena Exp $
+// $Id: EventHandler.cxx,v 1.13 2003-09-26 22:39:36 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -157,7 +157,7 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     }
 
     if(ourMessageTable[event] != "")
-      myConsole->mediaSource().showMessage(ourMessageTable[event], 120);
+      myConsole->gui().showMessage(ourMessageTable[event]);
   }
 
   // Otherwise, pass it to the emulation core
@@ -361,8 +361,7 @@ void EventHandler::saveState()
   else if(result == 3)
     buf << "Invalid state " << myCurrentState << " file";
 
-  string message = buf.str();
-  myConsole->mediaSource().showMessage(message, 120);
+  myConsole->gui().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -376,8 +375,8 @@ void EventHandler::changeState()
   // Print appropriate message
   ostringstream buf;
   buf << "Changed to slot " << myCurrentState;
-  string message = buf.str();
-  myConsole->mediaSource().showMessage(message, 120);
+
+  myConsole->gui().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -397,25 +396,20 @@ void EventHandler::loadState()
   else if(result == 3)
     buf << "Invalid state " << myCurrentState << " file";
 
-  string message = buf.str();
-  myConsole->mediaSource().showMessage(message, 120);
+  myConsole->gui().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::takeSnapshot()
 {
 #ifdef SNAPSHOT_SUPPORT
-  string message, filename;
-
   // Now save the snapshot file
-  filename = myConsole->settings().snapshotFilename();
+  string filename = myConsole->settings().snapshotFilename();
   myConsole->snapshot().savePNG(filename, myConsole->mediaSource(),
       myConsole->settings().getInt("zoom"));
 
-  message = "Snapshot saved";
-  myConsole->mediaSource().showMessage(message, 120);
+  myConsole->gui().showMessage("Snapshot saved");
 #else
-  string message = "Snapshots unsupported";
-  myConsole->mediaSource().showMessage(message, 120);
+  myConsole->gui().showMessage("Snapshots unsupported");
 #endif
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.4 2002-10-09 04:38:11 bwmott Exp $
+// $Id: MediaSrc.hxx,v 1.5 2003-09-26 22:39:36 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -29,7 +29,7 @@ class MediaSource;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.4 2002-10-09 04:38:11 bwmott Exp $
+  @version $Id: MediaSrc.hxx,v 1.5 2003-09-26 22:39:36 stephena Exp $
 */
 class MediaSource
 {
@@ -62,12 +62,6 @@ class MediaSource
       @return Status of the pause, success (true) or failure (false)
     */
     virtual bool pause(bool state) = 0;
-
-    /**
-      Inserts the given message into the framebuffer for the given
-      number of frames.
-    */
-    virtual void showMessage(string& message, Int32 duration) = 0;
 
     /**
       Answers the current frame buffer

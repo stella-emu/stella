@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.3 2003-09-26 17:35:05 stephena Exp $
+// $Id: UserInterface.cxx,v 1.4 2003-09-26 22:39:36 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -23,16 +23,65 @@
 #include "MediaSrc.hxx"
 #include "UserInterface.hxx"
 
+// Eventually, these may become variables
+#define FGCOLOR    10
+#define BGCOLOR    0
+#define FONTWIDTH  8
+#define FONTHEIGHT 8
+
+#define YOFFSET    12 // FONTHEIGHT + 2 pixels on top and bottom
+#define XBOXOFFSET  8 // 4 pixels to the left and right of text
+#define YBOXOFFSET  8 // 4 pixels to the top and bottom of text
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
     : myConsole(console),
       myMediaSource(mediasrc),
-      myCurrentWidget(NONE),
+      myCurrentWidget(W_NONE),
       myRemapEventSelectedFlag(false),
       mySelectedEvent(Event::NoType),
       myMessageTime(0),
-      myMessageText("")
+      myMessageText(""),
+      myInfoMenuWidth(0)
 {
+  myXStart = atoi(myConsole->properties().get("Display.XStart").c_str());
+  myWidth = atoi(myConsole->properties().get("Display.Width").c_str());
+  myYStart = atoi(myConsole->properties().get("Display.YStart").c_str());
+  myHeight = atoi(myConsole->properties().get("Display.Height").c_str());
+
+  // Make sure the starting x and width values are reasonable
+  if((myXStart + myWidth) > 160)
+  {
+    // Values are illegal so reset to default values
+    myXStart = 0;
+    myWidth = 160;
+  }
+
+  // Fill the properties info array with game information
+  string info;
+  info = "NAME:         " + myConsole->properties().get("Cartridge.Name");
+  ourPropertiesInfo[0] = info;
+  if(info.length() > myInfoMenuWidth) myInfoMenuWidth = info.length();
+
+  info = "MANUFACTURER: " + myConsole->properties().get("Cartridge.Manufacturer");
+  ourPropertiesInfo[1] = info;
+  if(info.length() > myInfoMenuWidth) myInfoMenuWidth = info.length();
+
+  info = "RARITY:       " + myConsole->properties().get("Cartridge.Rarity");
+  ourPropertiesInfo[2] = info;
+  if(info.length() > myInfoMenuWidth) myInfoMenuWidth = info.length();
+
+  info = "MD5SUM:       " + myConsole->properties().get("Cartridge.MD5");
+  ourPropertiesInfo[3] = info;
+  if(info.length() > myInfoMenuWidth) myInfoMenuWidth = info.length();
+
+  info = "MODEL NO:     " + myConsole->properties().get("Cartridge.ModelNo");
+  ourPropertiesInfo[4] = info;
+  if(info.length() > myInfoMenuWidth) myInfoMenuWidth = info.length();
+
+  info = "TYPE:         " + myConsole->properties().get("Cartridge.Type");
+  ourPropertiesInfo[5] = info;
+  if(info.length() > myInfoMenuWidth) myInfoMenuWidth = info.length();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,54 +92,64 @@ UserInterface::~UserInterface(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::showMainMenu(bool show)
 {
-  myCurrentWidget = show ? MAIN_MENU : NONE;
+  myCurrentWidget = show ? MAIN_MENU : W_NONE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
-  if(myCurrentWidget == NONE || state != 1)
+  if(myCurrentWidget == W_NONE || state != 1)
     return;
-  else if(myCurrentWidget == MAIN_MENU)
-  {
-    if(key == StellaEvent::KCODE_RETURN)
-      myCurrentWidget = currentSelectedWidget();
-    else if(key == StellaEvent::KCODE_UP)
-      moveCursorUp();
-    else if(key == StellaEvent::KCODE_DOWN)
-      moveCursorDown();
-  }
-  else if(myCurrentWidget == REMAP_MENU)
-  {
-    if(myRemapEventSelectedFlag)
-    {
-      if(key == StellaEvent::KCODE_ESCAPE)
-        // associate nothing with the selected event
-cerr << "delete binding for " << mySelectedEvent << endl;
-      else
-        // associate this stellaevent with the selected event
-cerr << "add binding " << key << " for " << mySelectedEvent << endl;
 
-      myRemapEventSelectedFlag = false;
-    }
-    else if(key == StellaEvent::KCODE_RETURN)
-    {
-cerr << "event selected for remapping\n";
-      mySelectedEvent = currentSelectedEvent();
-      myRemapEventSelectedFlag = true;
-    }
-    else if(key == StellaEvent::KCODE_UP)
-      moveCursorUp();
-    else if(key == StellaEvent::KCODE_DOWN)
-      moveCursorDown();
-    else if(key == StellaEvent::KCODE_ESCAPE)
-      myCurrentWidget = MAIN_MENU;
-  }
-  else if(myCurrentWidget == INFO_MENU)
+  // Check which type of widget is pending
+  switch(myCurrentWidget)
   {
-cerr << "key received while in info menu\n";
-    if(key == StellaEvent::KCODE_ESCAPE)
-      myCurrentWidget = MAIN_MENU;
+    case MAIN_MENU:
+      if(key == StellaEvent::KCODE_RETURN)
+        myCurrentWidget = currentSelectedWidget();
+      else if(key == StellaEvent::KCODE_UP)
+        moveCursorUp();
+      else if(key == StellaEvent::KCODE_DOWN)
+        moveCursorDown();
+
+      break;  // MAIN_MENU
+
+    case REMAP_MENU:
+      if(myRemapEventSelectedFlag)
+      {
+        if(key == StellaEvent::KCODE_ESCAPE)
+          // associate nothing with the selected event
+  cerr << "delete binding for " << mySelectedEvent << endl;
+        else
+          // associate this stellaevent with the selected event
+  cerr << "add binding " << key << " for " << mySelectedEvent << endl;
+
+        myRemapEventSelectedFlag = false;
+      }
+      else if(key == StellaEvent::KCODE_RETURN)
+      {
+  cerr << "event selected for remapping\n";
+        mySelectedEvent = currentSelectedEvent();
+        myRemapEventSelectedFlag = true;
+      }
+      else if(key == StellaEvent::KCODE_UP)
+        moveCursorUp();
+      else if(key == StellaEvent::KCODE_DOWN)
+        moveCursorDown();
+      else if(key == StellaEvent::KCODE_ESCAPE)
+        myCurrentWidget = MAIN_MENU;
+
+      break;  // REMAP_MENU
+
+    case INFO_MENU:
+      cerr << "key received while in info menu\n";
+      if(key == StellaEvent::KCODE_ESCAPE)
+        myCurrentWidget = MAIN_MENU;
+
+      break;  // INFO_MENU
+
+    default:
+      break;
   }
 }
 
@@ -103,44 +162,54 @@ void UserInterface::sendJoyEvent(StellaEvent::JoyStick stick,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::update()
 {
-  uInt8* frontbuffer = myMediaSource->currentFrameBuffer();
+  uInt32 width, height;
 
-  if(myCurrentWidget == NONE)
+  switch(myCurrentWidget)
   {
-    return;  // this shouldn't happen
-  }
-  else if(myCurrentWidget == MAIN_MENU)
-  {
-    ; // draw main menu
-  }
-  else if(myCurrentWidget == REMAP_MENU)
-  {
-    ; // draw remap menu
-  }
-  else if(myCurrentWidget == INFO_MENU)
-  {
+    case W_NONE:
+      return;  // this shouldn't happen
+cerr << "W_NONE\n";
+      break;  // NONE
 
-// FIXME - this will disappear soon ...
-  // First, draw the surrounding box
-  for(uInt32 x = 0; x < 100; ++x)
-  {
-    for(uInt32 y = 0; y < 100; ++y)
-    {
-      uInt32 position = ((20 + y) * myMediaSource->width()) + x + 20;
+    case MAIN_MENU:
+      // draw main menu
+cerr << "MAIN_MENU\n";
+      break;  // MAIN_MENU
 
-      if((x == 0) || (x == 200 - 1) || (y == 0) || (y == 200 - 1))
-        frontbuffer[position] = 10;
-      else
-        frontbuffer[position] = 0;
-    }
-  }
+    case REMAP_MENU:
+      // draw remap menu
+cerr << "REMAP_MENU\n";
+      break;  // REMAP_MENU
+
+    case INFO_MENU:
+      // Calculate the bounds for the box
+      width  = myInfoMenuWidth * FONTWIDTH + XBOXOFFSET;
+      height = 6 * YOFFSET + YBOXOFFSET;
+      drawBoundedBox(width, height);
+      drawText("HELLO", width, height);
+
+      break;  // INFO_MENU
+
+    case MESSAGE:
+      if(myMessageTime > 0)
+      {
+        drawText(myMessageText, 0, 0); // FIXME - change to draw bounding box and text at correct coords
+        myMessageTime--;
+cerr << "MESSAGE = " << myMessageText << ": " << myMessageTime << endl;
+      }
+
+      break;  // MESSAGE
+
+    default:
+cerr << "NOT DEFINED\n";
+      break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UserInterface::Widget UserInterface::currentSelectedWidget()
 {
-  return REMAP_MENU; // FIXME
+  return INFO_MENU; // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,19 +230,48 @@ void UserInterface::moveCursorDown()
 cerr << "cursor down\n";
 }
 
-
-/*
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::drawMessageText(string& message)
+void UserInterface::showMessage(const string& message)
+{
+  myCurrentWidget = MESSAGE;
+
+  myMessageText = message;
+  myMessageTime = 120; // FIXME - changes to 2 * framerate
+
+  // Make message uppercase, since there are no lowercase fonts defined
+  uInt32 length = myMessageText.length();
+  for(uInt32 i = 0; i < length; ++i)
+    myMessageText[i] = toupper(myMessageText[i]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::drawBoundedBox(uInt32 width, uInt32 height)
+{
+  // Center the box horizontally
+  uInt32 xBoxOffSet = (myWidth >> 1) - (width >> 1);
+  uInt32 yBoxOffSet = (myHeight >> 1) - (height >> 1);
+
+  uInt8* buffer = myMediaSource->currentFrameBuffer();
+  for(uInt32 x = 0; x < width; ++x)
+  {
+    for(uInt32 y = 0; y < height; ++y)
+    {
+      uInt32 position = ((yBoxOffSet + y) * myWidth) + x + xBoxOffSet;
+
+      if((x == 0) || (x == width - 1) || (y == 0) || (y == height - 1))
+        buffer[position] = FGCOLOR;
+      else
+        buffer[position] = BGCOLOR;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::drawText(const string& message, uInt32 xorig, uInt32 yorig)
 {
   // First, get access to the framebuffer
   uInt8* buffer = myMediaSource->currentFrameBuffer();
-
-  // Make message uppercase, since there are no lowercase fonts defined
-  uInt8 length = message.length();
-  for(uInt32 i = 0; i < length; ++i)
-    message[i] = toupper(message[i]);
-
+/*
   // Set up the correct coordinates to draw the surrounding box
   uInt32 xBoxOffSet = 2 + myXStart;
   uInt32 yBoxOffSet = myHeight - 18;
@@ -198,7 +296,7 @@ void UserInterface::drawMessageText(string& message)
   backColor = 0;
 
   // Clip the length if its wider than the screen
-//  uInt8 length = message.length();
+  uInt8 length = message.length();
   if(((length * 5) + xTextOffSet) >= myWidth)
     length = (myWidth - xTextOffSet) / 5;
 
@@ -220,8 +318,18 @@ void UserInterface::drawMessageText(string& message)
       else
         buffer[position] = backColor;
     }
-  }
+  }*/
 
+  // Used to indicate the current x/y position of a pixel
+  uInt32 xPos, yPos;
+
+  // The actual font data for a letter
+  uInt32 data;
+
+uInt32 xTextOffSet = xorig + 4;
+uInt32 yTextOffSet = yorig + 4;
+
+  uInt8 length = message.length();
   // Then, draw the text
   for(uInt8 x = 0; x < length; ++x)
   {
@@ -233,7 +341,7 @@ void UserInterface::drawMessageText(string& message)
       data = ourFontData[(int)letter - 48 + 26];
     else   // unknown character or space
     {
-      xTextOffSet += 3;
+      xTextOffSet += 4;
       continue;
     }
 
@@ -250,7 +358,7 @@ void UserInterface::drawMessageText(string& message)
       if((data >> y) & 1)
       {
         uInt32 position = (yPos + yTextOffSet) * myWidth + (4 - xPos) + xTextOffSet;
-        buffer[position] = fontColor;
+        buffer[position] = FGCOLOR;
       }
     }
 
@@ -258,7 +366,6 @@ void UserInterface::drawMessageText(string& message)
     xTextOffSet += 5;
   }
 }
-*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt32 UserInterface::ourFontData[36] = { 
@@ -316,16 +423,4 @@ const uInt32 UserInterface::ourFontData[36] = {
         frontbuffer[position] = backbuffer[position] = 0;
     }
   }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::showMessage(string& message, Int32 duration)
-{
-  myMessageText = message;
-  myMessageTime = duration;
-
-  // Make message uppercase, since there are no lowercase fonts defined
-  uInt32 length = myMessageText.length();
-  for(uInt32 i = 0; i < length; ++i)
-    myMessageText[i] = toupper(myMessageText[i]);
-}
 */
