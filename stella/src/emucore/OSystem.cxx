@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.3 2005-02-22 18:41:12 stephena Exp $
+// $Id: OSystem.cxx,v 1.4 2005-02-22 20:19:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -36,6 +36,9 @@ OSystem::OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
+cerr << "OSystem::~OSystem()\n";
+  // Remove any game console that is currently attached
+  detachConsole();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

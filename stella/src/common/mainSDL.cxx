@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.24 2005-02-22 18:40:56 stephena Exp $
+// $Id: mainSDL.cxx,v 1.25 2005-02-22 20:19:24 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -57,6 +57,8 @@
   #error Unsupported platform!
 #endif
 
+static void mainGameLoop();
+static Console* CreateConsole(const string& romfile);
 static void Cleanup();
 static bool SetupJoystick();
 static void HandleEvents();
@@ -787,171 +789,43 @@ void SetupProperties(PropertiesSet& set)
 
 
 /**
-  Does general Cleanup in case any operation failed (or at end of program).
+  Creates a new game console for the specified game.
 */
-void Cleanup()
+
+Console* CreateConsole(const string& romfile)
 {
-#ifdef JOYSTICK_SUPPORT
-  if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
+  Console* console = (Console*) NULL;
+
+  // Open the cartridge image and read it in
+  ifstream in(romfile.c_str(), ios_base::binary);
+  if(!in)
+    cerr << "ERROR: Couldn't open " << romfile << "..." << endl;
+  else
   {
-    for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
-    {
-      if(SDL_JoystickOpened(i))
-        SDL_JoystickClose(theJoysticks[i].stick);
-    }
-  }
-#endif
+    uInt8* image = new uInt8[512 * 1024];
+    in.read((char*)image, 512 * 1024);
+    uInt32 size = in.gcount();
+    in.close();
 
-  if(theSound)
-    delete theSound;
-
-  if(theDisplay)
-    delete theDisplay;
-
-  if(theEventHandler)
-    delete theEventHandler;
-
-  if(theOSystem)
-  {
+    // Remove old console from the OSystem
     theOSystem->detachConsole();
-    delete theOSystem;
+
+    // Create an instance of the 2600 game console
+    console = new Console(image, size, theOSystem);
+
+    // Free the image since we don't need it any longer
+    delete[] image;
   }
 
-  if(SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO)
-    SDL_Quit();
+  return console;
 }
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int main(int argc, char* argv[])
+/**
+  Runs the main game loop until the current game exits.
+*/
+void mainGameLoop()
 {
-  uInt8* image = NULL;
-
-  // Create the parent OSystem object and settings
-#if defined(UNIX)
-  theOSystem = new OSystemUNIX();
-  theSettings = new SettingsUNIX(theOSystem);
-#elif defined(WIN32)
-  theOSystem = new OSystemWin32();
-  theSettings = new SettingsWin32(theOSystem);
-#else
-  #error Unsupported platform!
-#endif
-  if(!theSettings)
-  {
-    Cleanup();
-    return 0;
-  }
-  theSettings->loadConfig();
-
-  // Take care of commandline arguments
-  if(!theSettings->loadCommandLine(argc, argv))
-  {
-    Cleanup();
-    return 0;
-  }
-
-  // Create the event handler for the system
-  theEventHandler = new EventHandler(theOSystem);
-
-  // Cache some settings so they don't have to be repeatedly searched for
-  thePaddleMode = theSettings->getInt("paddle");
-  theShowInfoFlag = theSettings->getBool("showinfo");
-  theGrabMouseIndicator = theSettings->getBool("grabmouse");
-  theHideCursorIndicator = theSettings->getBool("hidecursor");
-
-  // Create a properties set for us to use and set it up
-  PropertiesSet propertiesSet;
-  SetupProperties(propertiesSet);
-  theOSystem->attach(&propertiesSet);
-
-  // Check to see if the 'listroms' argument was given
-  // If so, list the roms and immediately exit
-  if(theSettings->getBool("listrominfo"))
-  {
-    propertiesSet.print();
-    Cleanup();
-    return 0;
-  }
-
-  // Request that the SDL window be centered, if possible
-  putenv("SDL_VIDEO_CENTERED=1");
-
-  // Set the SDL_VIDEODRIVER environment variable, if possible
-  if(theSettings->getString("video_driver") != "")
-  {
-    ostringstream buf;
-    buf << "SDL_VIDEODRIVER=" << theSettings->getString("video_driver");
-    putenv((char*) buf.str().c_str());
-
-    buf.str("");
-    buf << "Video driver: " << theSettings->getString("video_driver");
-    ShowInfo(buf.str());
-  }
-
-  // Create an SDL window
-  string videodriver = theSettings->getString("video");
-  if(videodriver == "soft")
-    theDisplay = new FrameBufferSoft(theOSystem);
-#ifdef DISPLAY_OPENGL
-  else if(videodriver == "gl")
-    theDisplay = new FrameBufferGL(theOSystem);
-#endif
-  else   // a driver that doesn't exist was requested, so use software mode
-    theDisplay = new FrameBufferSoft(theOSystem);
-
-  if(!theDisplay)
-  {
-    cerr << "ERROR: Couldn't set up display.\n";
-    delete[] image;
-    Cleanup();
-    return 0;
-  }
-
-  // Create a sound object for playing audio, even if sound has been disabled
-  if(theSettings->getBool("sound"))
-    theSound = new SoundSDL(theOSystem);
-  else
-    theSound = new Sound(theOSystem);
-
-  // Get a pointer to the file which contains the cartridge ROM
-  const char* file = argv[argc - 1];
-
-  // Open the cartridge image and read it in
-  ifstream in(file, ios_base::binary);
-  if(!in)
-  {
-    cerr << "ERROR: Couldn't open " << file << "..." << endl;
-    Cleanup();
-    return 0;
-  }
-
-  image = new uInt8[512 * 1024];
-  in.read((char*)image, 512 * 1024);
-  uInt32 size = in.gcount();
-  in.close();
-
-  // Create an instance of the 2600 game console
-  Console* theConsole = (Console*) NULL;
-  theConsole = new Console(image, size, theOSystem);
-
-  // Free the image since we don't need it any longer
-  delete[] image;
-
-  // Print message about the framerate
-  ostringstream message;
-  message << "Framerate:  " << theSettings->getInt("framerate");
-  ShowInfo(message.str());
-
-  // Setup the SDL joysticks
-  // This must be done after the console is created
-  if(!SetupJoystick())
-  {
-    cerr << "ERROR: Couldn't set up joysticks.\n";
-    Cleanup();
-    return 0;
-  }
-
   // These variables are common to both timing options
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
@@ -1040,6 +914,181 @@ int main(int argc, char* argv[])
     cout << endl;
     cout << "Cartridge MD5:  " << theOSystem->console().properties().get("Cartridge.MD5");
     cout << endl << endl;
+  }
+}
+
+
+/**
+  Does general Cleanup in case any operation failed (or at end of program).
+*/
+void Cleanup()
+{
+#ifdef JOYSTICK_SUPPORT
+  if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
+  {
+    for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
+    {
+      if(SDL_JoystickOpened(i))
+        SDL_JoystickClose(theJoysticks[i].stick);
+    }
+  }
+#endif
+
+  if(theSound)
+    delete theSound;
+
+  if(theDisplay)
+    delete theDisplay;
+
+  if(theEventHandler)
+    delete theEventHandler;
+
+  if(theOSystem)
+    delete theOSystem;
+
+  if(SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO)
+    SDL_Quit();
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int main(int argc, char* argv[])
+{
+  // Create the parent OSystem object and settings
+#if defined(UNIX)
+  theOSystem = new OSystemUNIX();
+  theSettings = new SettingsUNIX(theOSystem);
+#elif defined(WIN32)
+  theOSystem = new OSystemWin32();
+  theSettings = new SettingsWin32(theOSystem);
+#else
+  #error Unsupported platform!
+#endif
+  if(!theSettings)
+  {
+    Cleanup();
+    return 0;
+  }
+  theSettings->loadConfig();
+
+  // Take care of commandline arguments
+  if(!theSettings->loadCommandLine(argc, argv))
+  {
+    Cleanup();
+    return 0;
+  }
+
+  // Create the event handler for the system
+  theEventHandler = new EventHandler(theOSystem);
+
+  // Cache some settings so they don't have to be repeatedly searched for
+  thePaddleMode = theSettings->getInt("paddle");
+  theShowInfoFlag = theSettings->getBool("showinfo");
+  theGrabMouseIndicator = theSettings->getBool("grabmouse");
+  theHideCursorIndicator = theSettings->getBool("hidecursor");
+  bool theRomLauncherFlag = true;//theSettings->getBool("romlauncher");
+
+  // Create a properties set for us to use and set it up
+  PropertiesSet propertiesSet;
+  SetupProperties(propertiesSet);
+  theOSystem->attach(&propertiesSet);
+
+  // Check to see if the 'listroms' argument was given
+  // If so, list the roms and immediately exit
+  if(theSettings->getBool("listrominfo"))
+  {
+    propertiesSet.print();
+    Cleanup();
+    return 0;
+  }
+
+  // Request that the SDL window be centered, if possible
+  putenv("SDL_VIDEO_CENTERED=1");
+
+  // Set the SDL_VIDEODRIVER environment variable, if possible
+  if(theSettings->getString("video_driver") != "")
+  {
+    ostringstream buf;
+    buf << "SDL_VIDEODRIVER=" << theSettings->getString("video_driver");
+    putenv((char*) buf.str().c_str());
+
+    buf.str("");
+    buf << "Video driver: " << theSettings->getString("video_driver");
+    ShowInfo(buf.str());
+  }
+
+  // Create an SDL window
+  string videodriver = theSettings->getString("video");
+  if(videodriver == "soft")
+    theDisplay = new FrameBufferSoft(theOSystem);
+#ifdef DISPLAY_OPENGL
+  else if(videodriver == "gl")
+    theDisplay = new FrameBufferGL(theOSystem);
+#endif
+  else   // a driver that doesn't exist was requested, so use software mode
+    theDisplay = new FrameBufferSoft(theOSystem);
+
+  if(!theDisplay)
+  {
+    cerr << "ERROR: Couldn't set up display.\n";
+    Cleanup();
+    return 0;
+  }
+
+  // Create a sound object for playing audio, even if sound has been disabled
+  if(theSettings->getBool("sound"))
+    theSound = new SoundSDL(theOSystem);
+  else
+    theSound = new Sound(theOSystem);
+
+  // Setup the SDL joysticks (must be done after FrameBuffer is created)
+  if(!SetupJoystick())
+  {
+    cerr << "ERROR: Couldn't set up joysticks.\n";
+    Cleanup();
+    return 0;
+  }
+
+  // Print message about the framerate
+  ostringstream message;
+  message << "Framerate:  " << theSettings->getInt("framerate");
+  ShowInfo(message.str());
+
+  //// Main loop ////
+  // Load a ROM and start the main game loop
+  // If the game is given from the commandline, exiting game means exit emulator
+  // If the game is loaded from the ROM launcher, exiting game means show launcher
+  string romfile = "";
+  Console* theConsole  = (Console*) NULL;
+////
+  ostringstream rom;
+  rom << argv[argc - 1];
+  romfile = rom.str();
+////
+  if(theRomLauncherFlag)
+  {
+    for(;;)
+    {
+//      theOSystem->gui().showRomLauncher();
+      cerr << "GUI not yet written, run game again (y or n): ";
+      char runagain;
+      cin >> runagain;
+      if(runagain == 'n')
+        break;
+      else
+      {
+cerr << "Attempting to open " << romfile << endl;
+        theConsole = CreateConsole(romfile);
+        mainGameLoop();
+      }
+    }
+  }
+  else
+  {
+    ostringstream romfile;
+    romfile << argv[argc - 1];
+    theConsole = CreateConsole(romfile.str());
+    mainGameLoop();
   }
 
   // Cleanup time ...
