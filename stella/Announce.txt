@@ -27,7 +27,7 @@ distributions currently available are:
 
   * Binary distribution in RPM format for Linux (stella-1.4-1.i586.rpm)
 
-  * Binary distribution for Mac OSX (StellaOSX1.4.dmg)
+  * Binary distribution for Mac OSX (StellaOSX1.4.dmg.gz)
 
   * Binary distribution for Windows (stella-1.4-win32.zip)
 
