@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.3 2002-10-09 04:38:11 bwmott Exp $
+// $Id: Console.hxx,v 1.4 2002-11-09 23:29:51 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,7 +36,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.3 2002-10-09 04:38:11 bwmott Exp $
+  @version $Id: Console.hxx,v 1.4 2002-11-09 23:29:51 stephena Exp $
 */
 class Console
 {
@@ -51,9 +51,11 @@ class Console
       @param event The event object to use
       @param profiles The game profiles object to use
       @param sampleRate The rate to create audio samples at
+      @param userDefinedProperties User properties that should override the defaults
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
-        const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate);
+        const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate,
+        const Properties* userDefinedProperties = 0);
 
     /**
       Create a new console object by copying another one
@@ -131,6 +133,54 @@ class Console
       @return The default properties object
     */
     static const Properties& defaultProperties();
+
+#ifdef DEVELOPER_SUPPORT
+  public:
+    /**
+      Toggle between NTSC and PAL mode.  The GUI's may need to reload their palette.
+    */
+    void toggleFormat();
+
+    /**
+      Change the "Display.XStart" variable.  Currently, a system reset is issued
+      after the change.  GUI's may need to resize their viewports.
+
+      @param direction A 1 indicates increase, 0 indicates decrease.
+    */
+    void changeXStart(const uInt32 direction);
+
+    /**
+      Change the "Display.XStart" variable.  Currently, a system reset is issued
+      after the change.  GUI's may need to resize their viewports.
+
+      @param direction A 1 indicates increase, 0 indicates decrease.
+    */
+    void changeYStart(const uInt32 direction);
+
+    /**
+      Change the "Display.XStart" variable.  Currently, a system reset is issued
+      after the change.  GUI's may need to resize their viewports.
+
+      @param direction A 1 indicates increase, 0 indicates decrease.
+    */
+    void changeWidth(const uInt32 direction);
+
+    /**
+      Change the "Display.XStart" variable.  Currently, a system reset is issued
+      after the change.  GUI's may need to resize their viewports.
+
+      @param direction A 1 indicates increase, 0 indicates decrease.
+    */
+    void changeHeight(const uInt32 direction);
+
+    /**
+      Save a copy of the current properties.
+      after the change.
+
+      @param filename Filename to save the properties into.
+    */
+    void saveProperties(const string& filename);
+#endif
 
   private:
     // Pointers to the left and right controllers

@@ -13,10 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.4 2002-10-09 04:38:11 bwmott Exp $
+// $Id: Console.cxx,v 1.5 2002-11-09 23:29:51 stephena Exp $
 //============================================================================
 
 #include <assert.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
 #include "Booster.hxx"
 #include "Cart.hxx"
 #include "Console.hxx"
@@ -37,11 +41,10 @@
 #include "System.hxx"
 #include "TIA.hxx"
 
-#include <iostream>
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
-    const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate) 
+    const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate,
+    const Properties* userDefinedProperties)
     : myEvent(event)
 {
   myControllers[0] = 0;
@@ -56,9 +59,11 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Search for the properties based on MD5
   propertiesSet.getMD5(md5, myProperties);
 
-  // TODO: At some point I belive we'll need to set the properties'
-  // MD5 value so the user will be able to edit it.  
-  // myProperties.save(cout);
+  // Merge any user-defined properties
+  if(userDefinedProperties != 0)
+  {
+    myProperties.merge(*userDefinedProperties);
+  }
 
   // Setup the controllers based on properties
   string left = myProperties.get("Controller.Left");
@@ -207,3 +212,208 @@ const Properties& Console::defaultProperties()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Properties Console::ourDefaultProperties;
+
+
+#ifdef DEVELOPER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleFormat()
+{
+  string format = myProperties.get("Display.Format");
+  string message;
+
+  if(format == "NTSC")
+  {
+    message = "PAL Mode";
+    myMediaSource->showMessage(message, 120);
+    myProperties.set("Display.Format", "PAL");
+  }
+  else if(format == "PAL")
+  {
+    message = "NTSC Mode";
+    myMediaSource->showMessage(message, 120);
+    myProperties.set("Display.Format", "NTSC");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeXStart(const uInt32 direction)
+{
+  Int32 xstart = atoi(myProperties.get("Display.XStart").c_str());
+  uInt32 width = atoi(myProperties.get("Display.Width").c_str());
+  ostringstream strval;
+  string message;
+
+  if(direction == 1)    // increase XStart
+  {
+    xstart += 4;
+    if(xstart > 80)
+    {
+      message = "XStart at maximum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+    else if((width + xstart) > 160)
+    {
+      message = "XStart no effect";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+  else if(direction == 0)  // decrease XStart
+  {
+    xstart -= 4;
+    if(xstart < 0)
+    {
+      message = "XStart at minimum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+
+  strval << xstart;
+  myProperties.set("Display.XStart", strval.str());
+  mySystem->reset();
+
+  message = "XStart ";
+  message += strval.str();
+  myMediaSource->showMessage(message, 120);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeYStart(const uInt32 direction)
+{
+  Int32 ystart = atoi(myProperties.get("Display.YStart").c_str());
+  ostringstream strval;
+  string message;
+
+  if(direction == 1)    // increase YStart
+  {
+    ystart++;
+    if(ystart > 64)
+    {
+      message = "YStart at maximum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+  else if(direction == 0)  // decrease YStart
+  {
+    ystart--;
+    if(ystart < 0)
+    {
+      message = "YStart at minimum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+
+  strval << ystart;
+  myProperties.set("Display.YStart", strval.str());
+  mySystem->reset();
+
+  message = "YStart ";
+  message += strval.str();
+  myMediaSource->showMessage(message, 120);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeWidth(const uInt32 direction)
+{
+  uInt32 xstart = atoi(myProperties.get("Display.XStart").c_str());
+  Int32 width   = atoi(myProperties.get("Display.Width").c_str());
+  ostringstream strval;
+  string message;
+
+  if(direction == 1)    // increase Width
+  {
+    width += 4;
+    if((width > 160) || ((width % 4) != 0))
+    {
+      message = "Width at maximum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+    else if((width + xstart) > 160)
+    {
+      message = "Width no effect";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+  else if(direction == 0)  // decrease Width
+  {
+    width -= 4;
+    if(width < 80)
+    {
+      message = "Width at minimum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+
+  strval << width;
+  myProperties.set("Display.Width", strval.str());
+  mySystem->reset();
+
+  message = "Width ";
+  message += strval.str();
+  myMediaSource->showMessage(message, 120);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeHeight(const uInt32 direction)
+{
+  Int32 height = atoi(myProperties.get("Display.Height").c_str());
+  ostringstream strval;
+  string message;
+
+  if(direction == 1)    // increase Height
+  {
+    height++;
+    if(height > 256)
+    {
+      message = "Height at maximum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+  else if(direction == 0)  // decrease Height
+  {
+    height--;
+    if(height < 100)
+    {
+      message = "Height at minimum";
+      myMediaSource->showMessage(message, 120);
+      return;
+    }
+  }
+
+  strval << height;
+  myProperties.set("Display.Height", strval.str());
+  mySystem->reset();
+
+  message = "Height ";
+  message += strval.str();
+  myMediaSource->showMessage(message, 120);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::saveProperties(const string& filename)
+{
+  string message;
+  ofstream out(filename.c_str(), ios::out);
+
+  if(out && out.is_open())
+  {
+    myProperties.save(out);
+    out.close();
+    message = "Properties saved";
+    myMediaSource->showMessage(message, 120);
+  }
+  else
+  {
+    message = "Properties not saved";
+    myMediaSource->showMessage(message, 120);
+  }
+}
+#endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
+// $Id: Props.cxx,v 1.3 2002-11-09 23:29:51 stephena Exp $
 //============================================================================
 
 #include "Props.hxx"
@@ -258,5 +258,22 @@ void Properties::copy(const Properties& properties)
   for(uInt32 i = 0; i < mySize; ++i)
   {
     myProperties[i] = properties.myProperties[i];
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::merge(const Properties& properties)
+{
+  // Merge each property from properties if it isn't -1
+  for(uInt32 i = 0; i < properties.mySize; ++i)
+  {
+    if(properties.myProperties[i].value != "-1")
+    {
+      cerr << "Properties::merge ==> changing " << properties.myProperties[i].key
+           << " from value " << get(properties.myProperties[i].key) << " to "
+           << properties.myProperties[i].value << endl;
+
+      set(properties.myProperties[i].key, properties.myProperties[i].value);
+    }
   }
 }
