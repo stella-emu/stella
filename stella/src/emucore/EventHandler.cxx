@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.25 2004-05-28 22:07:57 stephena Exp $
+// $Id: EventHandler.cxx,v 1.26 2004-06-13 04:57:17 bwmott Exp $
 //============================================================================
 
 #include <algorithm>
@@ -92,7 +92,7 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
   {
     myMenuStatus = !myMenuStatus;
     myConsole->frameBuffer().showMenu(myMenuStatus);
-    myConsole->sound().pause(myMenuStatus);
+    myConsole->sound().mute(myMenuStatus);
     return;
   }
 
@@ -149,7 +149,7 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     {
       myPauseStatus = !myPauseStatus;
       myConsole->frameBuffer().pause(myPauseStatus);
-      myConsole->sound().pause(myPauseStatus);
+      myConsole->sound().mute(myPauseStatus);
       return;
     }
     else if(event == Event::Quit)
