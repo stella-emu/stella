@@ -33,7 +33,7 @@ distributions currently available are:
 
   * Source code distribution for Linux, Mac OSX and Windows (stella-1.4.2-src.tar.gz)
 
-  * Source code in SRPM format for Linux RPM-based systems (stella-1.4.1-1plf.src.rpm)
+  * Source code in SRPM format for Linux RPM-based systems (stella-1.4.2-1plf.src.rpm)
 
 PLEASE DO NOT WRITE ASKING FOR ROM IMAGES TO USE WITH STELLA! ALL SUCH
 REQUESTS WILL BE IGNORED!

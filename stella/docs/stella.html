@@ -234,10 +234,16 @@
 			information).  Basically, it eliminates the need to set the SDL_VIDEODRIVER
 			environment variable.</li>
 
+		<li>Made sure screen is refreshed before taking a snapshot.  This eliminates
+			the problem with new snapshots containing the text "Snapshot saved".</li>
+
 		<li>For the Windows port; added <i>windib</i> and <i>directx</i> as options for
 			'video_driver' when using software rendering.  The 'windib' option is now
 			the default, and in many cases it's up to 10 times faster than using
 			'directx'.</li>
+
+		<li>For the OSX port; added 'Cmd-R' key to reload the currently loaded ROM.</li>
+
 	</ul>
 
 	<p>
