@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.64 2003-12-04 22:22:53 stephena Exp $
+// $Id: mainSDL.cxx,v 1.65 2003-12-05 19:51:09 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -43,6 +43,9 @@
 
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
+
+  // Indicates whether to use OpenGL mode
+  static bool theUseOpenGLFlag;
 #endif
 
 #ifdef SOUND_ALSA
@@ -57,11 +60,9 @@
   #include "SoundSDL.hxx"
 #endif
 
-#ifdef UNIX
+#if defined(UNIX)
   #include "SettingsUNIX.hxx"
-#endif
-
-#ifdef WIN32
+#elif defined(WIN32) 
   #include "SettingsWin32.hxx"
 #endif
 
@@ -343,7 +344,7 @@ void handleEvents()
         else if(key == SDLK_RETURN)
           theDisplay->toggleFullscreen();
 #ifdef DISPLAY_OPENGL
-        else if(key == SDLK_f)
+        else if(key == SDLK_f && theUseOpenGLFlag)
           ((FrameBufferGL*)theDisplay)->toggleFilter();
 #endif
 #ifdef DEVELOPER_SUPPORT
@@ -666,10 +667,9 @@ void cleanup()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
-#ifdef UNIX
+#if defined(UNIX)
   theSettings = new SettingsUNIX();
-#endif
-#ifdef WIN32
+#elif defined(WIN32) 
   theSettings = new SettingsWin32();
 #endif
   if(!theSettings)
@@ -693,8 +693,11 @@ int main(int argc, char* argv[])
   theShowInfoFlag = theSettings->getBool("showinfo");
 
   // Request that the SDL window be centered, if possible
-  // This will probably only work under Linux
+#if defined(UNIX)
+  setenv("SDL_VIDEO_CENTERED", "1", 1);
+#else
   putenv("SDL_VIDEO_CENTERED");
+#endif
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
@@ -734,6 +737,7 @@ int main(int argc, char* argv[])
   else if(videodriver == "gl")
   {
     theDisplay = new FrameBufferGL();
+    theUseOpenGLFlag = true;
     if(theShowInfoFlag)
       cout << "Using OpenGL mode for video.\n";
   }

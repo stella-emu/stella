@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.5 2003-11-18 15:04:17 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.6 2003-12-05 19:51:09 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -73,11 +73,6 @@ SettingsUNIX::SettingsUNIX()
   set("hidecursor", "false");
   set("volume", "-1");
   set("accurate", "true");
-#ifdef SNAPSHOT_SUPPORT
-  set("ssname", "romname");
-  set("ssdir", "./");
-  set("ssingle", "false");
-#endif
   set("joyleft", "0");
   set("joyright", "1");
 }

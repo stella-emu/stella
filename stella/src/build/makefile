@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.46 2003-12-04 22:22:53 stephena Exp $
+## $Id: makefile,v 1.47 2003-12-05 19:51:08 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -23,7 +23,14 @@
 ## Comment a line out to disable that option, remove comment to enable it.
 ##============================================================================
 
-OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wunused
+### add your own compiler optimizations here
+### if none are provided, the defaults will be used
+OPTIMIZATIONS  =  
+
+### which system the SDL version is being compiled on
+### you should only enable one at a time
+SYSTEM_SDL = linux
+#SYSTEM_SDL = windows
 
 ### which sound drivers to compile for the SDL version
 ### OSS is most compatible, SDL for platforms where OSS not available
@@ -40,19 +47,17 @@ SOUND_SDL  = 1
  JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
-### (requires PNG library) FIXME
-### Only SDL port supported for now FIXME
-# SNAPSHOT_SUPPORT = 1
+### (requires PNG library)
+ SNAPSHOT_SUPPORT = 1
 
 ### comment this out if your system doesn't
 ### have the gettimeofday function
-#HAVE_GETTIMEOFDAY = 1
+# HAVE_GETTIMEOFDAY = 1
 
 ### to include support for game developers
 ### enables some extra commandline options that allow the user
 ### to override some emulation defaults
-### Only SDL port supported for now
- DEVELOPER_SUPPORT = 1
+# DEVELOPER_SUPPORT = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -79,7 +84,7 @@ OPTS.SDL   =
 LIBS.SDL   = `sdl-config --libs`
 CFLAGS.SDL = `sdl-config --cflags`
 
-OPTS.DOS   = -DDOS=1
+OPTS.DOS   = -DDOS
 
 SRC	= ..
 CORE	= $(SRC)/emucore
@@ -88,62 +93,94 @@ COMMON  = $(SRC)/ui/common
 
 INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(COMMON)
 
-FLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
+## set some sane optimizations if none have been provided
+ifndef OPTIMIZATIONS
+  ifdef CXXFLAGS
+    OPTIMIZATIONS = $(CXXFLAGS)
+  else
+    OPTIMIZATIONS = -O2 -march=i386
+  endif
+endif
+
+FLAGS = $(OPTIMIZATIONS) -Wall -Wunused $(INCLUDES) $(SYS_INCLUDES)
 
 ## set the user-defined options
 ifdef BSPF_BOOL
-OPTS.DOS += -DBSPF_BOOL=1   
+  OPTS.DOS += -DBSPF_BOOL   
 endif
 
 ifdef SHOW_TIMING
-OPTS.SDL += -DSHOW_TIMING=1
-OPTS.DOS += -DSHOW_TIMING=1
+  OPTS.SDL += -DSHOW_TIMING
+  OPTS.DOS += -DSHOW_TIMING
 endif
 
 ifdef DEBUG
-OPTS.SDL += -DDEBUG=1
-OPTS.DOS += -DDEBUG=1
+  OPTS.SDL += -DDEBUG
+  OPTS.DOS += -DDEBUG
 endif
 
 ifdef JOYSTICK_SUPPORT
-OPTS.SDL += -DHAVE_JOYSTICK=1
+  OPTS.SDL += -DHAVE_JOYSTICK
 endif
 
 ifdef SNAPSHOT_SUPPORT
-OBJS.SDL += Snapshot.o
-OPTS.SDL += -DSNAPSHOT_SUPPORT=1
-LIBS.SDL += -lpng -lz
+  OBJS.SDL += Snapshot.o
+  OPTS.SDL += -DSNAPSHOT_SUPPORT
+  LIBS.SDL += -lpng -lz
 endif
 
 ifdef HAVE_GETTIMEOFDAY
-OPTS.SDL += -DHAVE_GETTIMEOFDAY=1
+ OPTS.SDL += -DHAVE_GETTIMEOFDAY
 endif
 
 ifdef DEVELOPER_SUPPORT
-OPTS.SDL += -DDEVELOPER_SUPPORT=1
-OPTS.DOS += -DDEVELOPER_SUPPORT=1
+  OPTS.SDL += -DDEVELOPER_SUPPORT
+  OPTS.DOS += -DDEVELOPER_SUPPORT
 endif
 
-ifeq ($(sounD_OSS), 1)
-  OPTS.SDL += -DSOUND_OSS=1
+ifeq ($(SOUND_OSS), 1)
+  OPTS.SDL += -DSOUND_OSS
   OBJS.SDL += SoundOSS.o
 endif
 
 ifeq ($(SOUND_SDL), 1)
-  OPTS.SDL += -DSOUND_SDL=1
+  OPTS.SDL += -DSOUND_SDL
   OBJS.SDL += SoundSDL.o
 endif
 
 ifeq ($(SOUND_ALSA), 1)
-  OPTS.SDL += -DSOUND_ALSA=1
+  OPTS.SDL += -DSOUND_ALSA
   OBJS.SDL += SoundALSA.o
   LIBS.SDL += -lasound
 endif
 
-ifeq ($(OPENGL_SUPPORT), 1)
-  OPTS.SDL += -DDISPLAY_OPENGL=1
-  OBJS.SDL += FrameBufferGL.o
-  LIBS.SDL += -lopengl32
+##============================================================================
+## Now figure out what has to be built for SDL
+##============================================================================
+ifeq ($(SYSTEM_SDL), linux)
+  CFLAGS.SDL += -L/usr/X11R6/lib
+  OPTS.SDL   += -DBSPF_UNIX -DUNIX
+  LIBS.SDL   += -lX11 -lXext
+  OBJS.SDL   += SettingsUNIX.o
+
+  ifeq ($(OPENGL_SUPPORT), 1)
+    OPTS.SDL += -DDISPLAY_OPENGL
+    OBJS.SDL += FrameBufferGL.o
+    LIBS.SDL += -lGL
+  endif
+endif
+
+ifeq ($(SYSTEM_SDL), windows)
+  CFLAGS.SDL += ""
+  OPTS.SDL   += -DBSPF_WIN32 -DWIN32
+  LIBS.SDL   += ""
+  OBJS.SDL   += SettingsWin32.o
+
+  ifeq ($(OPENGL_SUPPORT), 1)
+    OPTS.SDL += -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST
+    OBJS.SDL += FrameBufferGL.o
+    LIBS.SDL += -lopengl32
+  endif
 endif
 
 
@@ -154,9 +191,8 @@ default:
 	@echo ""
 	@echo "<version> is one of:"
 	@echo ""
-	@echo "  dos                  DOS version using DJGPP"
-	@echo "  linux-sdl            Linux SDL version"
-	@echo "  win32-sdl            Windows SDL version"
+	@echo "  dos       DOS version using DJGPP"
+	@echo "  sdl       SDL version (edit makefile for version)"
 	@echo ""
 	@echo "Hopefully new versions will be added soon!"
 	@echo ""
@@ -166,36 +202,19 @@ dos:
           LD="gxx" \
           CXX="gcc" \
           INCLUDES="$(INCLUDES) -I$(UI)/dos -I$(UI)/sound" \
-          OPTIONS="-DBSPF_DOS=1" \
+          OPTIONS="-DBSPF_DOS" \
           OPTIONS+="$(OPTS.DOS)" \
           LDFLAGS="" \
           LDLIBS="" \
           OBJS="mainDOS.o PCJoys.o SndDOS.o dos_sb.o vga.o"
 
-linux-sdl:
+sdl:
 	make stella.sdl \
           INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
-          SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
-          OPTIONS+="$(OPTS.SDL)" \
-          LDFLAGS="-L/usr/X11R6/lib" \
-          LDFLAGS+="$(CFLAGS.SDL)" \
-          LDLIBS="-lX11 -lXext" \
-          LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SettingsUNIX.o FrameBufferSDL.o FrameBufferSoft.o" \
-          OBJS+="$(OBJS.SDL)"
-
-win32-sdl:
-	make stella.sdl \
-          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
-          SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX=1 -DWIN32" \
-          OPTIONS+="$(OPTS.SDL)" \
-          LDFLAGS="" \
-          LDFLAGS+="$(CFLAGS.SDL)" \
-          LDLIBS="" \
-          LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SettingsWin32.o FrameBufferSDL.o FrameBufferSoft.o" \
+          OPTIONS="$(OPTS.SDL)" \
+          LDFLAGS="$(CFLAGS.SDL)" \
+          LDLIBS="$(LIBS.SDL)" \
+          OBJS="mainSDL.o FrameBufferSDL.o FrameBufferSoft.o" \
           OBJS+="$(OBJS.SDL)"
 
 
