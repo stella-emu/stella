@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.10 2002-12-15 05:13:19 bwmott Exp $
+// $Id: Console.cxx,v 1.11 2003-09-04 16:50:48 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -27,6 +27,7 @@
 #include "Control.hxx"
 #include "Driving.hxx"
 #include "Event.hxx"
+#include "EventHandler.hxx"
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
 #include "M6502Low.hxx"
@@ -37,15 +38,16 @@
 #include "Paddles.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "Settings.hxx" 
 #include "Switches.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
-    const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate,
+    Settings& rcsettings, PropertiesSet& propertiesSet, uInt32 sampleRate,
     const Properties* userDefinedProperties)
-    : myEvent(event),
+    : mySettings(rcsettings),
       myPropSet(propertiesSet)
 {
   myControllers[0] = 0;
@@ -53,6 +55,14 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   myMediaSource = 0;
   mySwitches = 0;
   mySystem = 0;
+  myEvent = 0;
+
+  // Inform the settings object about the console
+  mySettings.setConsole(this);
+
+  // Create an event handler which will collect and dispatch events
+  myEventHandler = new EventHandler(this);
+  myEvent = myEventHandler->event();
 
   // Get the MD5 message-digest for the ROM image
   string md5 = MD5(image, size);
@@ -79,49 +89,49 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Construct left controller
   if(left == "Booster-Grip")
   {
-    myControllers[0] = new BoosterGrip(Controller::Left, myEvent);
+    myControllers[0] = new BoosterGrip(Controller::Left, *myEvent);
   }
   else if(left == "Driving")
   {
-    myControllers[0] = new Driving(Controller::Left, myEvent);
+    myControllers[0] = new Driving(Controller::Left, *myEvent);
   }
   else if((left == "Keyboard") || (left == "Keypad"))
   {
-    myControllers[0] = new Keyboard(Controller::Left, myEvent);
+    myControllers[0] = new Keyboard(Controller::Left, *myEvent);
   }
   else if(left == "Paddles")
   {
-    myControllers[0] = new Paddles(Controller::Left, myEvent);
+    myControllers[0] = new Paddles(Controller::Left, *myEvent);
   }
   else
   {
-    myControllers[0] = new Joystick(Controller::Left, myEvent);
+    myControllers[0] = new Joystick(Controller::Left, *myEvent);
   }
   
   // Construct right controller
   if(right == "Booster-Grip")
   {
-    myControllers[1] = new BoosterGrip(Controller::Right, myEvent);
+    myControllers[1] = new BoosterGrip(Controller::Right, *myEvent);
   }
   else if(right == "Driving")
   {
-    myControllers[1] = new Driving(Controller::Right, myEvent);
+    myControllers[1] = new Driving(Controller::Right, *myEvent);
   }
   else if((right == "Keyboard") || (right == "Keypad"))
   {
-    myControllers[1] = new Keyboard(Controller::Right, myEvent);
+    myControllers[1] = new Keyboard(Controller::Right, *myEvent);
   }
   else if(right == "Paddles")
   {
-    myControllers[1] = new Paddles(Controller::Right, myEvent);
+    myControllers[1] = new Paddles(Controller::Right, *myEvent);
   }
   else
   {
-    myControllers[1] = new Joystick(Controller::Right, myEvent);
+    myControllers[1] = new Joystick(Controller::Right, *myEvent);
   }
 
   // Create switches for the console
-  mySwitches = new Switches(myEvent, myProperties);
+  mySwitches = new Switches(*myEvent, myProperties);
 
   // Now, we can construct the system and components
   mySystem = new System(13, 6);
@@ -149,13 +159,16 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Remember what my media source is
   myMediaSource = tia;
 
+  // Let the event handler know about the mediasource
+  myEventHandler->setMediaSource(myMediaSource);
+
   // Reset, the system to its power-on state
   mySystem->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const Console& console)
-    : myEvent(console.myEvent),
+    : mySettings(console.mySettings),
       myPropSet(console.myPropSet)
 {
   // TODO: Write this method
@@ -169,12 +182,19 @@ Console::~Console()
   delete mySwitches;
   delete myControllers[0];
   delete myControllers[1];
+  delete myEventHandler;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Properties& Console::properties() const
 {
   return myProperties;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Settings& Console::settings() const
+{
+  return mySettings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.1 2003-09-03 20:10:58 stephena Exp $
+// $Id: EventHandler.hxx,v 1.2 2003-09-04 16:50:48 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -22,7 +22,10 @@
 #include "bspf.hxx"
 #include "Event.hxx"
 #include "StellaEvent.hxx"
-#include "MediaSrc.hxx"
+
+class Console;
+class MediaSource;
+
 
 /**
   This class takes care of event remapping and dispatching for the
@@ -37,7 +40,7 @@
   unchanged to the remap class, where key remapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.1 2003-09-03 20:10:58 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.2 2003-09-04 16:50:48 stephena Exp $
 */
 class EventHandler
 {
@@ -45,7 +48,7 @@ class EventHandler
     /**
       Create a new event handler object
     */
-    EventHandler();
+    EventHandler(Console* console);
  
     /**
       Destructor
@@ -72,7 +75,23 @@ class EventHandler
 
       @param mediaSource   The mediasource
     */
-    void setMediaSource(MediaSource& mediaSource);
+    void setMediaSource(MediaSource* mediaSource);
+
+    /**
+      Set the keymapping from the settings object.
+
+      @param keymap   The keymap in comma-separated string form
+    */
+    void setKeyMap(string& keymap);
+
+#if 0
+    /**
+      Set the keymapping from the settings object.
+
+      @param keymap   The keymap in comma-separated string form
+    */
+    void getKeyMap(string& keymap);
+#endif
 
   private:
     void setDefaultKeyMapping();
@@ -87,6 +106,9 @@ class EventHandler
 
     // Array of key events
     KeyEvent keyTable[StellaEvent::LastKCODE];
+
+    // Global Console object
+    Console* myConsole;
 
     // Global Event object
     Event* myEvent;

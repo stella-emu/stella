@@ -13,8 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.9 2003-02-25 03:12:55 stephena Exp $
+// $Id: Settings.cxx,v 1.10 2003-09-04 16:50:48 stephena Exp $
 //============================================================================
+
+#include <fstream>
+
+#include "Console.hxx"
+#include "EventHandler.hxx"
 
 #ifdef DEVELOPER_SUPPORT
   #include "Props.hxx"
@@ -23,7 +28,9 @@
 #include "Settings.hxx"
 
 
-Settings::Settings()
+Settings::Settings(const string& infile, const string& outfile)
+    : mySettingsInputFilename(infile),
+      mySettingsOutputFilename(outfile)
 {
   theUseFullScreenFlag = false;
   theGrabMouseFlag = false;
@@ -39,11 +46,8 @@ Settings::Settings()
   theAlternateProFile = "";
   theSnapShotDir = "";
   theSnapShotName = "";
-  theWindowSize = 0;
-  theMaxWindowSize = 0;
-  theHeight = 0;
-  theWidth = 0;
   theSoundDriver = "oss";
+  theWindowSize = 0;
 
 #ifdef DEVELOPER_SUPPORT
   userDefinedProperties.set("Display.Format", "-1");
@@ -54,10 +58,17 @@ Settings::Settings()
 
   theMergePropertiesFlag = false;
 #endif
+
+  handleRCFile();
 }
 
 Settings::~Settings()
 {
+}
+
+void Settings::setConsole(Console* console)
+{
+  myConsole = console;
 }
 
 bool Settings::handleCommandLineArgs(int argc, char* argv[])
@@ -247,10 +258,14 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
   return true;
 }
 
-void Settings::handleRCFile(istream& in)
+void Settings::handleRCFile()
 {
   string line, key, value;
   uInt32 equalPos;
+
+  ifstream in(mySettingsInputFilename.c_str());
+  if(!in || !in.is_open())
+    return;
 
   while(getline(in, line))
   {
@@ -411,4 +426,38 @@ void Settings::handleRCFile(istream& in)
     }
 #endif
   }
+
+  in.close();
+}
+
+void Settings::save()
+{
+  if(!myConsole)
+    return;
+
+  ofstream out(mySettingsOutputFilename.c_str());
+  if(!out || !out.is_open())
+    return;
+
+  out << "fps = " << theDesiredFrameRate << endl
+      << "paddle = " << thePaddleMode << endl
+      << "owncmap = " << theUsePrivateColormapFlag << endl
+      << "fullscreen = " << theUseFullScreenFlag << endl
+      << "grabmouse = " << theGrabMouseFlag << endl
+      << "hidecursor = " << theHideCursorFlag << endl
+      << "center = " << theCenterWindowFlag << endl
+      << "showinfo = " << theShowInfoFlag << endl
+      << "accurate = " << theAccurateTimingFlag << endl
+      << "zoom = " << theWindowSize << endl
+      << "volume = " << theDesiredVolume << endl
+      << "ssdir = " << theSnapShotDir << endl
+      << "ssname = " << theSnapShotName << endl
+      << "sssingle = " << theMultipleSnapShotFlag << endl
+      << "sound = " << theSoundDriver << endl
+#ifdef DEVELOPER_SUPPORT
+      << "Dmerge = " << theMergePropertiesFlag << endl
+#endif
+      << endl;
+
+  out.close();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.7 2003-02-25 03:12:55 stephena Exp $
+// $Id: Settings.hxx,v 1.8 2003-09-04 16:50:48 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -25,14 +25,17 @@
   #include "Props.hxx"
 #endif
 
+class Console;
+
 class Settings
 {
   public:
-    Settings();
+    Settings(const string& infile, const string& outfile);
     ~Settings();
 
     bool handleCommandLineArgs(int ac, char* av[]);
-    void handleRCFile(istream& in);
+    void save();
+    void setConsole(Console* console);
 
   public:
     // Indicates whether to use fullscreen
@@ -84,18 +87,11 @@ class Settings
     // What the snapshot should be called (romname or md5sum)
     string theSnapShotName;
 
-    // Current size of the window
-    uInt32 theWindowSize;
-
-    // Indicates the maximum window size for the current screen
-    uInt32 theMaxWindowSize;
-
-    // Indicates the width and height of the game display based on properties
-    uInt32 theHeight;
-    uInt32 theWidth;
-
     // Indicates which sound driver to use at run-time
     string theSoundDriver;
+
+    // The size of the window/screen
+    uInt32 theWindowSize;
 
 #ifdef DEVELOPER_SUPPORT
     // User-modified properties
@@ -105,6 +101,18 @@ class Settings
     // merge into the propertiesset file for future use
     bool theMergePropertiesFlag;
 #endif
+
+  private:
+    void handleRCFile();
+
+    // The full pathname of the settings file for input
+    string mySettingsInputFilename;
+
+    // The full pathname of the settings file for output
+    string mySettingsOutputFilename;
+
+    // The global Console object
+    Console* myConsole;
 };
 
 #endif

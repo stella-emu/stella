@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.6 2002-11-11 02:46:34 stephena Exp $
+// $Id: Console.hxx,v 1.7 2003-09-04 16:50:48 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -22,8 +22,10 @@
 class Console;
 class Controller;
 class Event;
+class EventHandler;
 class MediaSource;
 class PropertiesSet;
+class Settings;
 class Sound;
 class Switches;
 class System;
@@ -36,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.6 2002-11-11 02:46:34 stephena Exp $
+  @version $Id: Console.hxx,v 1.7 2003-09-04 16:50:48 stephena Exp $
 */
 class Console
 {
@@ -48,13 +50,13 @@ class Console
       @param image The ROM image of the game to emulate
       @param size The size of the ROM image  
       @param filename The name of the file that contained the ROM image
-      @param event The event object to use
+      @param rcsettings The settings object to use
       @param profiles The game profiles object to use
       @param sampleRate The rate to create audio samples at
       @param userDefinedProperties User properties that should override the defaults
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
-        const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate,
+        Settings& rcsettings, PropertiesSet& propertiesSet, uInt32 sampleRate,
         const Properties* userDefinedProperties = 0);
 
     /**
@@ -98,6 +100,13 @@ class Console
     const Properties& properties() const;
 
     /**
+      Get the settings of the console
+
+      @return The settings for this console
+    */
+    const Settings& settings() const;
+
+    /**
       Get the console switches
 
       @return The console switches
@@ -115,6 +124,16 @@ class Console
     System& system() const
     {
       return *mySystem;
+    }
+
+    /**
+      Get the event handler of the console
+
+      @return The event handler
+    */
+    EventHandler& eventHandler() const
+    {
+      return *myEventHandler;
     }
 
   public:
@@ -185,8 +204,8 @@ class Console
     // Pointers to the left and right controllers
     Controller* myControllers[2];
 
-    // Reference to the event object to use
-    const Event& myEvent;
+    // Pointer to the event object to use
+    Event* myEvent;
 
     // Pointer to the media source object 
     MediaSource* myMediaSource;
@@ -200,8 +219,14 @@ class Console
     // Pointer to the 6502 based system being emulated 
     System* mySystem;
 
+    // Reference to the Settings object
+    Settings& mySettings;
+
     // Reference to the PropertiesSet object
     PropertiesSet& myPropSet;
+
+    // Pointer to the EventHandler object
+    EventHandler* myEventHandler;
 
   private:
     // Default properties to use for properties objects

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.42 2003-09-03 20:10:58 stephena Exp $
+// $Id: mainSDL.cxx,v 1.43 2003-09-04 16:50:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -112,6 +112,7 @@ static bool x11Available = false;
 static SDL_SysWMinfo info;
 static int sdlflags;
 static RectList* rectList = (RectList*) NULL;
+static uInt32 theWidth, theHeight, theMaxWindowSize, theWindowSize;
 
 #ifdef HAVE_JOYSTICK
   static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
@@ -226,7 +227,6 @@ static Switches list[] = {
   };
 
 // Pointer to the event handler object or the null pointer
-static EventHandler* theEventHandler;
 static Event theEvent;
 static Event keyboardEvent;
 
@@ -234,7 +234,7 @@ static Event keyboardEvent;
 static Console* theConsole = (Console*) NULL;
 
 // Pointer to the settings object or the null pointer
-static Settings* settings = (Settings*) NULL;
+//static Settings* settings = (Settings*) NULL;
 
 // Pointer to the sound object or the null pointer
 static Sound* sound = (Sound*) NULL;
@@ -244,6 +244,12 @@ static bool theQuitIndicator = false;
 
 // Indicates if the emulator should be paused
 static bool thePauseIndicator = false;
+
+// Indicates if the mouse should be grabbed
+static bool theGrabMouseIndicator = false;
+
+// Indicates if the mouse cursor should be hidden
+static bool theHideCursorIndicator = false;
 
 // Indicates if the entire frame should be redrawn
 static bool theRedrawEntireFrameIndicator = true;
@@ -284,45 +290,47 @@ bool setupDisplay()
     if(info.subsystem == SDL_SYSWM_X11)
       x11Available = true;
 
-  sdlflags = SDL_HWSURFACE;
-  sdlflags |= settings->theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
-  sdlflags |= settings->theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
+  sdlflags = SDL_SWSURFACE;
+  sdlflags |= theConsole->settings().theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
+  sdlflags |= theConsole->settings().theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
 
   // Get the desired width and height of the display
-  settings->theWidth  = theConsole->mediaSource().width();
-  settings->theHeight = theConsole->mediaSource().height();
+  theWidth  = theConsole->mediaSource().width();
+  theHeight = theConsole->mediaSource().height();
 
   // Get the maximum size of a window for THIS screen
   // Must be called after display and screen are known, as well as
   // theWidth and theHeight
   // Defaults to 3 on systems without X11, maximum of 4 on any system.
-  settings->theMaxWindowSize = maxWindowSizeForScreen();
+  theMaxWindowSize = maxWindowSizeForScreen();
 
   // If theWindowSize is not 0, then it must have been set on the commandline
   // Now we check to see if it is within bounds
-  if(settings->theWindowSize != 0)
+  if(theConsole->settings().theWindowSize != 0)
   {
-    if(settings->theWindowSize < 1)
-      settings->theWindowSize = 1;
-    else if(settings->theWindowSize > settings->theMaxWindowSize)
-      settings->theWindowSize = settings->theMaxWindowSize;
+    if(theConsole->settings().theWindowSize < 1)
+      theWindowSize = 1;
+    else if(theConsole->settings().theWindowSize > theMaxWindowSize)
+      theWindowSize = theMaxWindowSize;
+    else
+      theWindowSize = theConsole->settings().theWindowSize;
   }
   else  // theWindowSize hasn't been set so we do the default
   {
-    if(settings->theMaxWindowSize < 2)
-      settings->theWindowSize = 1;
+    if(theMaxWindowSize < 2)
+      theWindowSize = 1;
     else
-      settings->theWindowSize = 2;
+      theWindowSize = 2;
   }
 
 #ifdef HAVE_PNG
   // Take care of the snapshot stuff.
   snapshot = new Snapshot();
 
-  if(settings->theSnapShotDir == "")
-    settings->theSnapShotDir = homeDir;
-  if(settings->theSnapShotName == "")
-    settings->theSnapShotName = "romname";
+  if(theConsole->settings().theSnapShotDir == "")
+    theConsole->settings().theSnapShotDir = homeDir;
+  if(theConsole->settings().theSnapShotName == "")
+    theConsole->settings().theSnapShotName = "romname";
 #endif
 
   // Set up the rectangle list to be used in updateDisplay
@@ -344,7 +352,9 @@ bool setupDisplay()
   setupPalette();
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  if(settings->theUseFullScreenFlag)
+  theGrabMouseIndicator  = theConsole->settings().theGrabMouseFlag;
+  theHideCursorIndicator = theConsole->settings().theHideCursorFlag;
+  if(theConsole->settings().theUseFullScreenFlag)
   {
     grabMouse(true);
     showCursor(false);
@@ -353,14 +363,14 @@ bool setupDisplay()
   else
   {
     // Keep mouse in game window if grabmouse is selected
-    grabMouse(settings->theGrabMouseFlag);
+    grabMouse(theGrabMouseIndicator);
 
     // Show or hide the cursor depending on the 'hidecursor' argument
-    showCursor(!settings->theHideCursorFlag);
+    showCursor(!theHideCursorIndicator);
   }
 
   // Center the window if centering is selected and not fullscreen
-  if(settings->theCenterWindowFlag && !settings->theUseFullScreenFlag)
+  if(theConsole->settings().theCenterWindowFlag && !theConsole->settings().theUseFullScreenFlag)
     centerWindow();
 
   return true;
@@ -376,7 +386,7 @@ bool setupJoystick()
 #ifdef HAVE_JOYSTICK
   if(SDL_NumJoysticks() <= 0)
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "No joysticks present, use the keyboard.\n";
     theLeftJoystick = theRightJoystick = 0;
     return true;
@@ -384,25 +394,25 @@ bool setupJoystick()
 
   if((theLeftJoystick = SDL_JoystickOpen(0)) != NULL)
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Left joystick is a " << SDL_JoystickName(0) <<
         " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
   }
   else
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Left joystick not present, use keyboard instead.\n";
   }
 
   if((theRightJoystick = SDL_JoystickOpen(1)) != NULL)
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Right joystick is a " << SDL_JoystickName(1) <<
         " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
   }
   else
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Right joystick not present, use keyboard instead.\n";
   }
 #endif
@@ -418,8 +428,8 @@ bool setupJoystick()
 */
 bool createScreen()
 {
-  int w = settings->theWidth  * settings->theWindowSize * 2;
-  int h = settings->theHeight * settings->theWindowSize;
+  int w = theWidth  * theWindowSize * 2;
+  int h = theHeight * theWindowSize;
 
   screen = SDL_SetVideoMode(w, h, 0, sdlflags);
   if(screen == NULL)
@@ -550,29 +560,29 @@ void resizeWindow(int mode)
   // this is a special case of allowing a resize while in fullscreen mode
   if(mode == -1)
   {
-    settings->theWidth         = theConsole->mediaSource().width();
-    settings->theHeight        = theConsole->mediaSource().height();
-    settings->theMaxWindowSize = maxWindowSizeForScreen();
+    theWidth         = theConsole->mediaSource().width();
+    theHeight        = theConsole->mediaSource().height();
+    theMaxWindowSize = maxWindowSizeForScreen();
   }
   else if(mode == 1)   // increase size
   {
     if(isFullscreen)
       return;
 
-    if(settings->theWindowSize == settings->theMaxWindowSize)
-      settings->theWindowSize = 1;
+    if(theWindowSize == theMaxWindowSize)
+      theWindowSize = 1;
     else
-      settings->theWindowSize++;
+      theWindowSize++;
   }
   else if(mode == 0)   // decrease size
   {
     if(isFullscreen)
       return;
 
-    if(settings->theWindowSize == 1)
-      settings->theWindowSize = settings->theMaxWindowSize;
+    if(theWindowSize == 1)
+      theWindowSize = theMaxWindowSize;
     else
-      settings->theWindowSize--;
+      theWindowSize--;
   }
 
   if(!createScreen())
@@ -581,7 +591,7 @@ void resizeWindow(int mode)
   // A resize may mean that the window is no longer centered
   isCentered = false;
 
-  if(settings->theCenterWindowFlag)
+  if(theConsole->settings().theCenterWindowFlag)
     centerWindow();
 }
 
@@ -625,8 +635,8 @@ void centerWindow()
 */
 void toggleFullscreen()
 {
-  int width  = settings->theWidth  * settings->theWindowSize * 2;
-  int height = settings->theHeight * settings->theWindowSize;
+  int width  = theWidth  * theWindowSize * 2;
+  int height = theHeight * theWindowSize;
 
   isFullscreen = !isFullscreen;
   if(isFullscreen)
@@ -644,10 +654,10 @@ void toggleFullscreen()
   }
   else    // now in windowed mode
   {
-    grabMouse(settings->theGrabMouseFlag);
-    showCursor(!settings->theHideCursorFlag);
+    grabMouse(theGrabMouseIndicator);
+    showCursor(!theHideCursorIndicator);
 
-    if(settings->theCenterWindowFlag)
+    if(theConsole->settings().theCenterWindowFlag)
         centerWindow();
   }
 }
@@ -723,7 +733,7 @@ void saveState()
 
   string message = buf.str();
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
+    theConsole->settings().theDesiredFrameRate);
 }
 
 
@@ -752,7 +762,7 @@ void changeState(int direction)
   buf << "Changed to slot " << currentState;
   string message = buf.str();
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
+    theConsole->settings().theDesiredFrameRate);
 }
 
 
@@ -780,7 +790,7 @@ void loadState()
 
   string message = buf.str();
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
+    theConsole->settings().theDesiredFrameRate);
 }
 
 
@@ -791,10 +801,10 @@ void updateDisplay(MediaSource& mediaSource)
 {
   uInt8* currentFrame = mediaSource.currentFrameBuffer();
   uInt8* previousFrame = mediaSource.previousFrameBuffer();
-  uInt16 screenMultiple = (uInt16) settings->theWindowSize;
+  uInt16 screenMultiple = (uInt16) theWindowSize;
 
-  uInt32 width  = settings->theWidth;
-  uInt32 height = settings->theHeight;
+  uInt32 width  = theWidth;
+  uInt32 height = theHeight;
 
   struct Rectangle
   {
@@ -1014,8 +1024,8 @@ void handleEvents()
         // don't change grabmouse in fullscreen mode
         if(!isFullscreen)
         {
-          settings->theGrabMouseFlag = !settings->theGrabMouseFlag;
-          grabMouse(settings->theGrabMouseFlag);
+          theGrabMouseIndicator = !theGrabMouseIndicator;
+          grabMouse(theGrabMouseIndicator);
         }
       }
       else if(key == SDLK_h)
@@ -1023,8 +1033,8 @@ void handleEvents()
         // don't change hidecursor in fullscreen mode
         if(!isFullscreen)
         {
-          settings->theHideCursorFlag = !settings->theHideCursorFlag;
-          showCursor(!settings->theHideCursorFlag);
+          theHideCursorIndicator = !theHideCursorIndicator;
+          showCursor(!theHideCursorIndicator);
         }
       }
 #ifdef DEVELOPER_SUPPORT
@@ -1083,7 +1093,7 @@ void handleEvents()
       {
         if(mod & KMOD_ALT)
         {
-          if(settings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
+          if(theConsole->settings().theMergePropertiesFlag)  // Attempt to merge with propertiesSet
           {
             theConsole->saveProperties(homePropertiesFile, true);
           }
@@ -1103,7 +1113,7 @@ void handleEvents()
         {
           if(list[i].scanCode == key)
           {
-            theEventHandler->sendKeyEvent(list[i].keyCode,
+            theConsole->eventHandler().sendKeyEvent(list[i].keyCode,
               StellaEvent::KSTATE_PRESSED);
           }
         }
@@ -1118,7 +1128,7 @@ void handleEvents()
       { 
         if(list[i].scanCode == key)
         {
-          theEventHandler->sendKeyEvent(list[i].keyCode,
+          theConsole->eventHandler().sendKeyEvent(list[i].keyCode,
             StellaEvent::KSTATE_RELEASED);
         }
       }
@@ -1127,18 +1137,18 @@ void handleEvents()
     {
       int resistance = 0, x = 0;
       float fudgeFactor = 1000000.0;
-      Int32 width   = settings->theWidth * settings->theWindowSize * 2;
+      Int32 width   = theWidth * theWindowSize * 2;
 
       // Grabmouse and hidecursor introduce some lag into the mouse movement,
       // so we need to fudge the numbers a bit
-      if(settings->theGrabMouseFlag && settings->theHideCursorFlag)
+      if(theGrabMouseIndicator && theHideCursorIndicator)
       {
         mouseX = (int)((float)mouseX + (float)event.motion.xrel
-                 * 1.5 * (float) settings->theWindowSize);
+                 * 1.5 * (float) theWindowSize);
       }
       else
       {
-        mouseX = mouseX + event.motion.xrel * settings->theWindowSize;
+        mouseX = mouseX + event.motion.xrel * theWindowSize;
       }
 
       // Check to make sure mouseX is within the game window
@@ -1151,35 +1161,35 @@ void handleEvents()
       resistance = (Int32)((fudgeFactor * x) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
-      if(settings->thePaddleMode == 0)
+      if(theConsole->settings().thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroResistance, resistance);
-      else if(settings->thePaddleMode == 1)
+      else if(theConsole->settings().thePaddleMode == 1)
         theEvent.set(Event::PaddleOneResistance, resistance);
-      else if(settings->thePaddleMode == 2)
+      else if(theConsole->settings().thePaddleMode == 2)
         theEvent.set(Event::PaddleTwoResistance, resistance);
-      else if(settings->thePaddleMode == 3)
+      else if(theConsole->settings().thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeResistance, resistance);
     }
     else if(event.type == SDL_MOUSEBUTTONDOWN)
     {
-      if(settings->thePaddleMode == 0)
+      if(theConsole->settings().thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroFire, 1);
-      else if(settings->thePaddleMode == 1)
+      else if(theConsole->settings().thePaddleMode == 1)
         theEvent.set(Event::PaddleOneFire, 1);
-      else if(settings->thePaddleMode == 2)
+      else if(theConsole->settings().thePaddleMode == 2)
         theEvent.set(Event::PaddleTwoFire, 1);
-      else if(settings->thePaddleMode == 3)
+      else if(theConsole->settings().thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeFire, 1);
     }
     else if(event.type == SDL_MOUSEBUTTONUP)
     {
-      if(settings->thePaddleMode == 0)
+      if(theConsole->settings().thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroFire, 0);
-      else if(settings->thePaddleMode == 1)
+      else if(theConsole->settings().thePaddleMode == 1)
         theEvent.set(Event::PaddleOneFire, 0);
-      else if(settings->thePaddleMode == 2)
+      else if(theConsole->settings().thePaddleMode == 2)
         theEvent.set(Event::PaddleTwoFire, 0);
-      else if(settings->thePaddleMode == 3)
+      else if(theConsole->settings().thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeFire, 0);
     }
     else if(event.type == SDL_ACTIVEEVENT)
@@ -1214,7 +1224,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickZeroFire));
 
           // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
             theEvent.set(Event::PaddleZeroFire, state);
         }
         else if(button == 1)  // booster button
@@ -1223,7 +1233,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::BoosterGripZeroTrigger));
 
           // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
             theEvent.set(Event::PaddleOneFire, state);
         }
       }
@@ -1240,7 +1250,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickZeroRight));
 
           // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleZeroResistance, r);
@@ -1254,7 +1264,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickZeroDown));
 
           // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleOneResistance, r);
@@ -1278,7 +1288,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickOneFire));
 
           // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
             theEvent.set(Event::PaddleTwoFire, state);
         }
         else if(button == 1)  // booster button
@@ -1287,7 +1297,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::BoosterGripOneTrigger));
 
           // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
             theEvent.set(Event::PaddleThreeFire, state);
         }
       }
@@ -1304,7 +1314,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickOneRight));
 
           // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleTwoResistance, r);
@@ -1318,7 +1328,7 @@ void handleEvents()
               1 : keyboardEvent.get(Event::JoystickOneDown));
 
           // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
+          if(theConsole->settings().thePaddleMode == 4)
           {
             uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleThreeResistance, r);
@@ -1350,21 +1360,21 @@ void takeSnapshot()
   {
     message = "Snapshots disabled";
     theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+      MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
     return;
   }
 
   // Now find the correct name for the snapshot
-  string path = settings->theSnapShotDir;
+  string path = theConsole->settings().theSnapShotDir;
   string filename;
 
-  if(settings->theSnapShotName == "romname")
+  if(theConsole->settings().theSnapShotName == "romname")
     path = path + "/" + theConsole->properties().get("Cartridge.Name");
-  else if(settings->theSnapShotName == "md5sum")
+  else if(theConsole->settings().theSnapShotName == "md5sum")
     path = path + "/" + theConsole->properties().get("Cartridge.MD5");
   else
   {
-    cerr << "ERROR: unknown name " << settings->theSnapShotName
+    cerr << "ERROR: unknown name " << theConsole->settings().theSnapShotName
          << " for snapshot type" << endl;
     return;
   }
@@ -1373,7 +1383,7 @@ void takeSnapshot()
   replace(path.begin(), path.end(), ' ', '_');
 
   // Check whether we want multiple snapshots created
-  if(settings->theMultipleSnapShotFlag)
+  if(theConsole->settings().theMultipleSnapShotFlag)
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
@@ -1395,24 +1405,24 @@ void takeSnapshot()
     filename = path + ".png";
 
   // Now save the snapshot file
-  snapshot->savePNG(filename, theConsole->mediaSource(), settings->theWindowSize);
+  snapshot->savePNG(filename, theConsole->mediaSource(), theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
   {
     message = "Snapshot saved";
     theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+      MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
   }
   else
   {
     message = "Snapshot not saved";
     theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+      MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
   }
 #else
   string message = "Snapshots unsupported";
   theConsole->mediaSource().showMessage(message,
-    MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+    MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
 #endif
 }
 
@@ -1438,14 +1448,14 @@ uInt32 maxWindowSizeForScreen()
   int screenHeight = DisplayHeight(info.info.x11.display,
       DefaultScreen(theX11Display));
 
-  uInt32 multiplier = screenWidth / (settings->theWidth * 2);
+  uInt32 multiplier = screenWidth / (theWidth * 2);
   bool found = false;
 
   while(!found && (multiplier > 0))
   {
     // Figure out the desired size of the window
-    int width  = settings->theWidth  * multiplier * 2;
-    int height = settings->theHeight * multiplier;
+    int width  = theWidth  * multiplier * 2;
+    int height = theHeight * multiplier;
 
     if((width < screenWidth) && (height < screenHeight))
       found = true;
@@ -1467,7 +1477,7 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "SDL Stella version 1.3",
+    "SDL Stella version 1.4pre",
     "",
     "Usage: stella.sdl [option ...] file",
     "",
@@ -1536,7 +1546,7 @@ void usage()
 
   @param set The properties set to setup
 */
-bool setupProperties(PropertiesSet& set)
+bool setupProperties(PropertiesSet& set, Settings& settings)
 {
   bool useMemList = false;
 
@@ -1544,21 +1554,21 @@ bool setupProperties(PropertiesSet& set)
   // If the user wishes to merge any property modifications to the
   // PropertiesSet file, then the PropertiesSet file MUST be loaded
   // into memory.
-  useMemList = settings->theMergePropertiesFlag;
+  useMemList = settings.theMergePropertiesFlag;
 #endif
 
   // Check to see if the user has specified an alternate .pro file.
   // If it exists, use it.
-  if(settings->theAlternateProFile != "")
+  if(settings.theAlternateProFile != "")
   {
-    if(access(settings->theAlternateProFile.c_str(), R_OK) == 0)
+    if(access(settings.theAlternateProFile.c_str(), R_OK) == 0)
     {
-      set.load(settings->theAlternateProFile, &Console::defaultProperties(), useMemList);
+      set.load(settings.theAlternateProFile, &Console::defaultProperties(), useMemList);
       return true;
     }
     else
     {
-      cerr << "ERROR: Couldn't find \"" << settings->theAlternateProFile
+      cerr << "ERROR: Couldn't find \"" << settings.theAlternateProFile
           << "\" properties file." << endl;
       return false;
     }
@@ -1583,35 +1593,12 @@ bool setupProperties(PropertiesSet& set)
 
 
 /**
-  Should be called to determine if an rc file exists.  First checks if there
-  is a user specified file "$HOME/.stella/stellarc" and then if there is a
-  system-wide file "/etc/stellarc".
-*/
-void handleRCFile()
-{
-  if(access(homeRCFile.c_str(), R_OK) == 0 )
-  {
-    ifstream homeStream(homeRCFile.c_str());
-    settings->handleRCFile(homeStream);
-  }
-  else if(access(systemRCFile.c_str(), R_OK) == 0 )
-  {
-    ifstream systemStream(systemRCFile.c_str());
-    settings->handleRCFile(systemStream);
-  }
-}
-
-
-/**
   Does general cleanup in case any operation failed (or at end of program).
 */
 void cleanup()
 {
   if(theConsole)
     delete theConsole;
-
-  if(settings)
-    delete settings;
 
 #ifdef HAVE_PNG
   if(snapshot)
@@ -1687,19 +1674,17 @@ int main(int argc, char* argv[])
   }
 
   // Create some settings for the emulator
-  settings = new Settings();
-  if(!settings)
-  {
-    cerr << "ERROR: Couldn't create settings." << endl;
-    cleanup();
-    return 0;
-  }
+  string infile   = "";
+  string outfile  = homeRCFile;
+  if(access(homeRCFile.c_str(), R_OK) == 0 )
+    infile = homeRCFile;
+  else if(access(systemRCFile.c_str(), R_OK) == 0 )
+    infile = systemRCFile;
 
-  // Load in any user defined settings from an RC file
-  handleRCFile();
+  Settings settings(infile, outfile);
 
   // Handle the command line arguments
-  if(!settings->handleCommandLineArgs(argc, argv))
+  if(!settings.handleCommandLineArgs(argc, argv))
   {
     usage();
     cleanup();
@@ -1725,16 +1710,7 @@ int main(int argc, char* argv[])
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
-  if(!setupProperties(propertiesSet))
-  {
-    delete[] image;
-    cleanup();
-    return 0;
-  }
-
-  // Create an event handler which will collect and dispatch event.
-  theEventHandler = new EventHandler();
-  if(!theEventHandler)
+  if(!setupProperties(propertiesSet, settings))
   {
     delete[] image;
     cleanup();
@@ -1742,45 +1718,45 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  if(settings->theSoundDriver == "0")
+  if(settings.theSoundDriver == "0")
   {
     // if sound has been disabled, we still need a sound object
     sound = new Sound();
-    if(settings->theShowInfoFlag)
+    if(settings.theShowInfoFlag)
       cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
-  else if(settings->theSoundDriver == "alsa")
+  else if(settings.theSoundDriver == "alsa")
   {
     sound = new SoundALSA();
-    if(settings->theShowInfoFlag)
+    if(settings.theShowInfoFlag)
       cout << "Using ALSA for sound.\n";
   }
 #endif
 #ifdef SOUND_OSS
-  else if(settings->theSoundDriver == "oss")
+  else if(settings.theSoundDriver == "oss")
   {
     sound = new SoundOSS();
-    if(settings->theShowInfoFlag)
+    if(settings.theShowInfoFlag)
       cout << "Using OSS for sound.\n";
   }
 #endif
 #ifdef SOUND_SDL
-  else if(settings->theSoundDriver == "sdl")
+  else if(settings.theSoundDriver == "sdl")
   {
     sound = new SoundSDL();
-    if(settings->theShowInfoFlag)
+    if(settings.theShowInfoFlag)
       cout << "Using SDL for sound.\n";
   }
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {
     cerr << "ERROR: Sound support for "
-         << settings->theSoundDriver << " not available.\n";
+         << settings.theSoundDriver << " not available.\n";
     sound = new Sound();
   }
 
-  sound->setSoundVolume(settings->theDesiredVolume);
+  sound->setSoundVolume(settings.theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
@@ -1788,11 +1764,11 @@ int main(int argc, char* argv[])
   // Create the 2600 game console for users or developers
 #ifdef DEVELOPER_SUPPORT
   theConsole = new Console(image, size, filename, 
-      *(theEventHandler->event()), propertiesSet, sound->getSampleRate(),
-      &settings->userDefinedProperties);
+      settings, propertiesSet, sound->getSampleRate(),
+      &settings.userDefinedProperties);
 #else
   theConsole = new Console(image, size, filename, 
-      *(theEventHandler->event()), propertiesSet, sound->getSampleRate());
+      settings, propertiesSet, sound->getSampleRate());
 #endif
 
   // Free the image since we don't need it any longer
@@ -1812,18 +1788,15 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  // Let the event handler know about the mediasource
-  theEventHandler->setMediaSource(theConsole->mediaSource());
-
   // These variables are common to both timing options
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(settings->theAccurateTimingFlag)   // normal, CPU-intensive timing
+  if(settings.theAccurateTimingFlag)   // normal, CPU-intensive timing
   {
     // Set up accurate timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)settings.theDesiredFrameRate);
 
     // Set the base for the timers
     frameTime = 0;
@@ -1868,7 +1841,7 @@ int main(int argc, char* argv[])
   {
     // Set up less accurate timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theConsole->settings().theDesiredFrameRate);
 
     // Set the base for the timers
     virtualTime = getTicks();
@@ -1905,7 +1878,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(settings->theShowInfoFlag)
+  if(settings.theShowInfoFlag)
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;
@@ -1921,6 +1894,9 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
+//// FIXME ... put this in the eventhandler and activate on QUIT event
+  settings.save();
+//////////////////////////////
   cleanup();
   return 0;
 }

@@ -13,9 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.1 2003-09-03 20:10:58 stephena Exp $
+// $Id: EventHandler.cxx,v 1.2 2003-09-04 16:50:48 stephena Exp $
 //============================================================================
 
+#include "Console.hxx"
 #include "Event.hxx"
 #include "StellaEvent.hxx"
 #include "EventHandler.hxx"
@@ -23,7 +24,8 @@
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::EventHandler()
+EventHandler::EventHandler(Console* console)
+    : myConsole(console)
 {
   // Create the event object which will be used for this handler
   myEvent = new Event();
@@ -42,6 +44,8 @@ EventHandler::EventHandler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::~EventHandler()
 {
+  if(myEvent)
+    delete myEvent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,9 +55,9 @@ Event* EventHandler::event()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setMediaSource(MediaSource& mediaSource)
+void EventHandler::setMediaSource(MediaSource* mediaSource)
 {
-  myMediaSource = &mediaSource;
+  myMediaSource = mediaSource;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
