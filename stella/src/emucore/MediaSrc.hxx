@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.8 2004-07-14 16:15:06 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -29,7 +29,7 @@ class MediaSource;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.8 2004-07-14 16:15:06 stephena Exp $
 */
 class MediaSource
 {
@@ -97,49 +97,6 @@ class MediaSource
       @return The total number of scanlines generated
     */
     virtual uInt32 scanlines() const = 0;
-
-  public:
-#if 0 //FIXME
-    /**
-      Enumeration of the possible audio sample types.
-    */
-    enum AudioSampleType
-    {
-      UNSIGNED_8BIT_MONO_AUDIO
-    };
-
-    /**
-      Dequeues all of the samples in the audio sample queue.
-    */
-    virtual void clearAudioSamples() = 0;
-
-    /**
-      Dequeues up to the specified number of samples from the audio sample
-      queue into the buffer.  If the requested number of samples are not
-      available then all of samples are dequeued.  The method returns the
-      actual number of samples removed from the queue.
-
-      @return The actual number of samples which were dequeued.
-    */
-    virtual uInt32 dequeueAudioSamples(uInt8* buffer, int size) = 0;
-
-    /**
-      Answers the number of samples currently available in the audio
-      sample queue.
-
-      @return The number of samples in the audio sample queue.
-    */ 
-    virtual uInt32 numberOfAudioSamples() const = 0;
-
-    /**
-      Returns the type of audio samples which are being stored in the audio
-      sample queue.  Currently, only unsigned 8-bit audio samples are created,
-      however, in the future this will be extended to support stereo samples.
-
-      @return The type of audio sample stored in the sample queue.
-    */
-    virtual AudioSampleType typeOfAudioSamples() const = 0;
-#endif
 
   private:
     // Copy constructor isn't supported by this class so make it private
