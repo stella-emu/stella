@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.6 2004-08-02 04:08:10 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.7 2005-02-18 01:05:23 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -924,8 +924,8 @@ bool setupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
   string theAlternateProFile = theSettings->getString("altpro");
-  string theUserProFile = theSettings->userPropertiesFilename();
-  string theSystemProFile = theSettings->systemPropertiesFilename();
+  string theUserProFile = theSettings->propertiesInputFilename();
+  string theSystemProFile = theSettings->propertiesOutputFilename();
 
 #ifdef DEVELOPER_SUPPORT
   // If the user wishes to merge any property modifications to the

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.2 2004-08-02 04:08:10 markgrebe Exp $
+// $Id: SettingsMACOSX.cxx,v 1.3 2005-02-18 01:05:23 markgrebe Exp $
 //============================================================================
 
 #include <cassert>
@@ -51,17 +51,25 @@ SettingsMACOSX::SettingsMACOSX()
   if(access(myStateDir.c_str(), R_OK|W_OK|X_OK) != 0 )
     mkdir(myStateDir.c_str(), 0777);
 
-  myUserPropertiesFile   = stelladir + "stella.pro";
-  mySystemPropertiesFile = stelladir + "stella.pro";
-  myUserConfigFile       = "";
-  mySystemConfigFile     = "";
+  string userPropertiesFile   = stelladir + "stella.pro";
+//  mySystemPropertiesFile = stelladir + "stella.pro";
+  string userConfigFile       = "";
+//  mySystemConfigFile     = "";
 
   // Set up the names of the input and output config files
-  mySettingsOutputFilename = myUserConfigFile;
-  mySettingsInputFilename = myUserConfigFile;
-
-  mySnapshotFile = "";
-  myStateFile    = "";
+  myConfigOutputFile = userConfigFile;
+  if (fileExists(userConfigFile))
+     myConfigInputFile = userConfigFile;
+  else
+     myConfigInputFile = "";
+	 
+  myPropertiesOutputFile = userPropertiesFile;
+  if(fileExists(userPropertiesFile))
+     myPropertiesInputFile = userPropertiesFile;
+// Êelse if(fileExists(systemPropertiesFile)
+// Ê ÊmyPropertiesInputFile = systemPropertiesFile;
+  else
+     myPropertiesInputFile = "";	 
 
   // Now create MacOSX specific settings
 #ifdef SNAPSHOT_SUPPORT
@@ -115,9 +123,7 @@ string SettingsMACOSX::stateFilename(const string& md5, uInt32 state)
 {
   ostringstream buf;
   buf << myStateDir << md5 << ".st" << state;
-
-  myStateFile = buf.str();
-  return myStateFile;
+  return  buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
