@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.cxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: Switches.cxx,v 1.2 2002-12-16 06:24:18 bwmott Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -72,20 +72,20 @@ uInt8 Switches::read()
 
   if(myEvent.get(Event::ConsoleRightDifficultyA) != 0)
   {
-    mySwitches &= ~0x80;
+    mySwitches |= 0x80;
   }
   else if(myEvent.get(Event::ConsoleRightDifficultyB) != 0) 
   {
-    mySwitches |= 0x80;
+    mySwitches &= ~0x80;
   }
 
   if(myEvent.get(Event::ConsoleLeftDifficultyA) != 0)
   {
-    mySwitches &= ~0x40;
+    mySwitches |= 0x40;
   }
   else if(myEvent.get(Event::ConsoleLeftDifficultyB) != 0)
   {
-    mySwitches |= 0x40;
+    mySwitches &= ~0x40;
   }
 
   if(myEvent.get(Event::ConsoleSelect) != 0)
