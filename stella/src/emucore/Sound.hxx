@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.14 2005-02-21 02:23:57 stephena Exp $
+// $Id: Sound.hxx,v 1.15 2005-02-22 02:59:54 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -22,7 +22,6 @@
 class OSystem;
 class Serializer;
 class Deserializer;
-class System;
 
 #include "bspf.hxx"
 
@@ -32,7 +31,7 @@ class System;
   to compile Stella with no sound support whatsoever.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: Sound.hxx,v 1.14 2005-02-21 02:23:57 stephena Exp $
+  @version $Id: Sound.hxx,v 1.15 2005-02-22 02:59:54 stephena Exp $
 */
 class Sound
 {
@@ -41,7 +40,7 @@ class Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    Sound(uInt32 fragsize = 512);
+    Sound(OSystem* osystem);
  
     /**
       Destructor
@@ -61,11 +60,9 @@ class Sound
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
 
-      @param osystem   The OSystem
-      @param system    The M6502 system
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    virtual void initialize(OSystem* osystem, System* system, double displayframerate);
+    virtual void initialize(double displayframerate);
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -133,8 +130,8 @@ public:
     // The OSystem for this sound object
     OSystem* myOSystem;
 
-    // The M6502 system for this sound object
-    System* mySystem;
+    // Indicates if the sound device was successfully initialized
+    bool myIsInitializedFlag;
 
     // Indicates the cycle when a sound register was last set
     Int32 myLastRegisterSetCycle;

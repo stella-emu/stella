@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.5 2005-02-21 20:43:28 stephena Exp $
+// $Id: System.cxx,v 1.6 2005-02-22 02:59:54 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -101,7 +101,6 @@ void System::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::attach(Device* device)
 {
-cerr << "System::attach()\n";
   assert(myNumberOfDevices < 100);
 
   // Add device to my collection of devices

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.37 2005-02-21 20:43:22 stephena Exp $
+// $Id: TIA.cxx,v 1.38 2005-02-22 02:59:54 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -265,8 +265,6 @@ void TIA::install(System& system)
 
   uInt16 shift = mySystem->pageShift();
   mySystem->resetCycles();
-cerr << "TIA::install()\n";
-
 
   // All accesses are to this device
   System::PageAccess access;

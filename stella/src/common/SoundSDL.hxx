@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.7 2005-02-13 19:17:02 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.8 2005-02-22 02:59:53 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
 #define SOUNDSDL_HXX
+
+class OSystem;
 
 #include <SDL.h>
 
@@ -29,7 +31,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.7 2005-02-13 19:17:02 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.8 2005-02-22 02:59:53 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -38,7 +40,7 @@ class SoundSDL : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundSDL(uInt32 fragsize);
+    SoundSDL(OSystem* osystem);
  
     /**
       Destructor
@@ -196,9 +198,6 @@ class SoundSDL : public Sound
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
     
-    // Indicates if the sound device was successfully initialized
-    bool myIsInitializedFlag;
-
     // Log base 2 of the selected fragment size
     double myFragmentSizeLogBase2;
 

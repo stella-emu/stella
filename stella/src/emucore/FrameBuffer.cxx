@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.14 2005-02-21 20:42:38 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.15 2005-02-22 02:59:54 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -81,6 +81,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myMenuRedraws(2),
       myInfoMenuWidth(0)
 {
+  // Add the framebuffer to the system
   myOSystem->attach(this);
 }
 

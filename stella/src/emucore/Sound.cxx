@@ -13,18 +13,23 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.15 2005-02-21 02:23:57 stephena Exp $
+// $Id: Sound.cxx,v 1.16 2005-02-22 02:59:54 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
 
+#include "OSystem.hxx"
 #include "Sound.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sound::Sound(uInt32 fragsize)
-    : myLastRegisterSetCycle(0)
+Sound::Sound(OSystem* osystem)
+    : myOSystem(osystem),
+      myIsInitializedFlag(false),
+      myLastRegisterSetCycle(0)
 {
+  // Add the sound object to the system
+  myOSystem->attach(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,10 +49,8 @@ void Sound::mute(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::initialize(OSystem* osystem, System* system, double displayframerate)
+void Sound::initialize(double displayframerate)
 {
-  myOSystem = osystem;
-  mySystem = system;
   myLastRegisterSetCycle = 0;
   myDisplayFrameRate = displayframerate;
 }

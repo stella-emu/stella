@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.22 2005-02-21 20:41:20 stephena Exp $
+// $Id: mainSDL.cxx,v 1.23 2005-02-22 02:59:53 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -923,20 +923,17 @@ int main(int argc, char* argv[])
   // Create a sound object for playing audio
   if(theSettings->getBool("sound"))
   {
-    uInt32 fragsize = theSettings->getInt("fragsize");
-    Int32 volume    = theSettings->getInt("volume");
-    theSound = new SoundSDL(fragsize);
-    theSound->setVolume(volume);
+    theSound = new SoundSDL(theOSystem);
 
     ostringstream message;
-    message << "Sound enabled:" << endl
-            << "  Volume   : " << volume << endl
-            << "  Frag size: " << fragsize << endl;
+    message << "Sound enabled:" << endl;
+//FIXME            << "  Volume   : " << volume << endl
+//            << "  Frag size: " << fragsize << endl;
     ShowInfo(message.str());
   }
   else  // even if sound has been disabled, we still need a sound object
   {
-    theSound = new Sound();
+    theSound = new Sound(theOSystem);
     ShowInfo("Sound disabled");
   }
 
@@ -958,9 +955,8 @@ int main(int argc, char* argv[])
   in.close();
 
   // Create the 2600 game console
-  Console* theConsole = new Console(image, size, theOSystem);
-
-cerr << "got here\n";
+  Console* theConsole = (Console*) NULL;
+  theConsole = new Console(image, size, theOSystem);
 
   // Free the image since we don't need it any longer
   delete[] image;

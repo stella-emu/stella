@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.9 2005-02-21 02:23:48 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.10 2005-02-22 02:59:53 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -32,12 +32,14 @@
 #include "SoundSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL::SoundSDL(uInt32 fragsize)
-    : myIsInitializedFlag(false),
+SoundSDL::SoundSDL(OSystem* osystem)
+    : Sound(osystem),
       myFragmentSizeLogBase2(0),
-      myIsMuted(false),
-      myVolume(100)
+      myIsMuted(false)
 {
+  uInt32 fragsize = myOSystem->settings().getInt("fragsize");
+  myVolume = myOSystem->settings().getInt("volume");
+
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
   {
     cerr << "WARNING: Couldn't initialize SDL audio system! " << endl;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.32 2005-02-21 20:42:07 stephena Exp $
+// $Id: EventHandler.cxx,v 1.33 2005-02-22 02:59:53 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -42,7 +42,6 @@ EventHandler::EventHandler(OSystem* osystem)
       myMenuStatus(false),
       myRemapEnabledFlag(true)
 {
-cerr << "EventHandler::EventHandler()\n";
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
 

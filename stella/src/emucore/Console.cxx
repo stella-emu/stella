@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.40 2005-02-21 20:41:24 stephena Exp $
+// $Id: Console.cxx,v 1.41 2005-02-22 02:59:53 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -173,12 +173,12 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   ostringstream title;
   title << "Stella: \"" << myProperties.get("Cartridge.Name") << "\"";
   myOSystem->frameBuffer().initialize(title.str(),
-                                     myMediaSource->width() << 1,
-                                     myMediaSource->height());
+                                      myMediaSource->width() << 1,
+                                      myMediaSource->height());
 
   // Initialize the sound interface.
   uInt32 soundFrameRate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
-  myOSystem->sound().initialize(myOSystem, mySystem, soundFrameRate);
+  myOSystem->sound().initialize(soundFrameRate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
