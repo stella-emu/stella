@@ -13,91 +13,69 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.2 2003-09-07 18:30:28 stephena Exp $
+// $Id: Settings.hxx,v 1.3 2003-09-11 20:53:51 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
 #define SETTINGS_HXX
 
-#include "bspf.hxx"
-
 #ifdef DEVELOPER_SUPPORT
   #include "Props.hxx"
 #endif
 
+#include "bspf.hxx"
+
 class Console;
 
+
+/**
+  This class provides an interface for accessing frontend specific settings.
+
+  @author  Stephen Anthony
+  @version $Id: Settings.hxx,v 1.3 2003-09-11 20:53:51 stephena Exp $
+*/
 class Settings
 {
   public:
+    /**
+      Create a new settings abstract class
+    */
+    Settings();
     Settings(const string& infile, const string& outfile);
-    ~Settings();
 
-    bool handleCommandLineArgs(int ac, char* av[]);
-    void save();
-    void setConsole(Console* console);
+    /**
+      Destructor
+    */
+    virtual ~Settings();
 
   public:
+    /**
+      This method should be called to display the supported settings.
+
+      @param  message A short message about this version of Stella
+    */
+    virtual void usage(string& message) = 0;
+
+    /**
+      This method should be called to save the current settings to an rc file.
+    */
+    virtual void save() = 0;
+
+    /**
+      This method should be called when the emulation core sets
+      the console object.
+    */
+    virtual void setConsole(Console* console) = 0;
+
+  public:
+    // The following settings are used by the emulation core and are
+    // common among all settings objects
+
     // The keymap to use
     string theKeymapList;
 
     // The joymap to use
     string theJoymapList;
-
-    // Indicates whether to use fullscreen
-    bool theUseFullScreenFlag;
-
-    // Indicates whether mouse can leave the game window
-    bool theGrabMouseFlag;
-
-    // Indicates whether to center the game window
-    bool theCenterWindowFlag;
-
-    // Indicates whether to show some game info on program exit
-    bool theShowInfoFlag;
-
-    // Indicates whether to show cursor in the game window
-    bool theHideCursorFlag;
-
-    // Indicates whether to allocate colors from a private color map
-    bool theUsePrivateColormapFlag;
-
-    // Indicates whether to generate multiple snapshots or keep
-    // overwriting the same file.  Set to true by default.
-    bool theMultipleSnapShotFlag;
-
-    // Indicates whether to use more/less accurate emulation,
-    // resulting in more/less CPU usage.
-    bool theAccurateTimingFlag;
-
-    // Indicates what the desired volume is
-    Int32 theDesiredVolume;
-
-    // Indicates what the desired frame rate is
-    uInt32 theDesiredFrameRate;
-
-    // Indicate which paddle mode we're using:
-    //   0 - Mouse emulates paddle 0
-    //   1 - Mouse emulates paddle 1
-    //   2 - Mouse emulates paddle 2
-    //   3 - Mouse emulates paddle 3
-    //   4 - Use real Atari 2600 paddles
-    uInt32 thePaddleMode;
-
-    // An alternate properties file to use
-    string theAlternateProFile;
-
-    // The path to save snapshot files
-    string theSnapShotDir;
-
-    // What the snapshot should be called (romname or md5sum)
-    string theSnapShotName;
-
-    // Indicates which sound driver to use at run-time
-    string theSoundDriver;
-
-    // The size of the window/screen
-    uInt32 theWindowSize;
 
 #ifdef DEVELOPER_SUPPORT
     // User-modified properties
@@ -109,16 +87,11 @@ class Settings
 #endif
 
   private:
-    void handleRCFile();
+    // Copy constructor isn't supported by this class so make it private
+    Settings(const Settings&);
 
-    // The full pathname of the settings file for input
-    string mySettingsInputFilename;
-
-    // The full pathname of the settings file for output
-    string mySettingsOutputFilename;
-
-    // The global Console object
-    Console* myConsole;
+    // Assignment operator isn't supported by this class so make it private
+    Settings& operator = (const Settings&);
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.39 2003-09-11 00:13:39 stephena Exp $
+// $Id: mainX11.cxx,v 1.40 2003-09-11 20:53:51 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -22,11 +22,12 @@
 #include <string>
 #include <algorithm>
 
-#include <time.h>
 #include <unistd.h>
-#include <signal.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+
+#ifdef HAVE_GETTIMEOFDAY
+  #include <time.h>
+  #include <sys/time.h>
+#endif
 
 #include <X11/Xos.h>
 #include <X11/Xlib.h>
@@ -59,14 +60,16 @@
 #endif
 
 #ifdef HAVE_JOYSTICK
-  #include <unistd.h>
+  #include <sys/types.h>
+  #include <sys/stat.h>
   #include <fcntl.h>
   #include <linux/joystick.h>
 #endif
 
-//#ifdef UNIX
+#ifdef UNIX
   #include "FrontendUNIX.hxx"
-//#endif
+  #include "SettingsUNIX.hxx"
+#endif
 
 // function prototypes
 // FIXME the following will be placed in a Display class eventually ...
@@ -115,23 +118,31 @@ static void changeState(int direction);
 static string theSnapShotDir, theSnapShotName;
 
 #ifdef HAVE_PNG
-  static Snapshot* snapshot;
+  static Snapshot* theSnapshot;
 #endif
 
 #ifdef HAVE_JOYSTICK
   // File descriptors for the joystick devices
   static int theLeftJoystickFd;
   static int theRightJoystickFd;
+  static uInt32 theLeftJoystickNumber;
+  static uInt32 theRightJoystickNumber;
+//  static uInt32 thePaddleNumber;
 #endif
 
 // Pointer to the console object or the null pointer
 static Console* theConsole = (Console*) NULL;
 
 // Pointer to the sound object or the null pointer
-static Sound* sound = (Sound*) NULL;
+static Sound* theSound = (Sound*) NULL;
 
 // Pointer to the frontend object or the null pointer
-static Frontend* frontend = (Frontend*) NULL;
+static Frontend* theFrontend = (Frontend*) NULL;
+
+// Pointer to the settings object or the null pointer
+#ifdef UNIX
+  static SettingsUNIX* theSettings = (SettingsUNIX*) NULL;
+#endif
 
 // Indicates if the mouse should be grabbed
 static bool theGrabMouseIndicator = false;
@@ -315,26 +326,11 @@ bool setupDisplay()
   // theWidth and theHeight
   theMaxWindowSize = maxWindowSizeForScreen();
 
-// FIXME  - add this error checking to the Settings class
-  // If theWindowSize is not 0, then it must have been set on the commandline
-  // Now we check to see if it is within bounds
-  if(theConsole->settings().theWindowSize != 0)
-  {
-    if(theConsole->settings().theWindowSize < 1)
-      theWindowSize = 1;
-    else if(theConsole->settings().theWindowSize > theMaxWindowSize)
-      theWindowSize = theMaxWindowSize;
-    else
-      theWindowSize = theConsole->settings().theWindowSize;
-  }
-  else  // theWindowSize hasn't been set so we do the default
-  {
-    if(theMaxWindowSize < 2)
-      theWindowSize = 1;
-    else
-      theWindowSize = 2;
-  }
-///////////////////////////////
+  // Check to see if window size will fit in the screen
+  if(theSettings->theWindowSize > theMaxWindowSize)
+    theWindowSize = theMaxWindowSize;
+  else
+    theWindowSize = theSettings->theWindowSize;
 
   // Figure out the desired size of the window
   int width  = theWidth  * theWindowSize * 2;
@@ -373,7 +369,7 @@ bool setupDisplay()
   XSetWMProtocols(theDisplay, theWindow, &wm_delete_window, 1);
 
   // If requested install a private colormap for the window
-  if(theConsole->settings().theUsePrivateColormapFlag)
+  if(theSettings->theUsePrivateColormapFlag)
   {
     XSetWindowColormap(theDisplay, theWindow, thePrivateColormap);
   }
@@ -382,7 +378,7 @@ bool setupDisplay()
   XMapWindow(theDisplay, theWindow);
 
   // Center the window if centering is selected and not fullscreen
-  if(theConsole->settings().theCenterWindowFlag)// && !theUseFullScreenFlag)
+  if(theSettings->theCenterWindowFlag)// && !theUseFullScreenFlag)
     centerWindow();
 
   XEvent event;
@@ -397,63 +393,59 @@ bool setupDisplay()
   // If we're using the mouse for paddle emulation then enable mouse events
   if(((theConsole->properties().get("Controller.Left") == "Paddles") ||
       (theConsole->properties().get("Controller.Right") == "Paddles"))
-    && (theConsole->settings().thePaddleMode != 4)) 
+    && (theSettings->thePaddleMode != 4)) 
   {
     eventMask |= (PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
   }
 
+  theGrabMouseIndicator  = theSettings->theGrabMouseFlag;
+  theHideCursorIndicator = theSettings->theHideCursorFlag;
+
   // Keep mouse in game window if grabmouse is selected
   grabMouse(theGrabMouseIndicator);
-
   // Show or hide the cursor depending on the 'hidecursor' argument
   showCursor(!theHideCursorIndicator);
 
   XSelectInput(theDisplay, theWindow, eventMask);
 
-#ifdef HAVE_PNG
-  // Take care of the snapshot stuff.
-  snapshot = new Snapshot();
-
-  if(theConsole->settings().theSnapShotDir == "")
-    theSnapShotDir = homeDir;
-  else
-    theSnapShotDir = theConsole->settings().theSnapShotDir;
-
-  if(theConsole->settings().theSnapShotName == "")
-    theSnapShotName = "romname";
-  else
-    theSnapShotName = theConsole->settings().theSnapShotName;
-#endif
-
   return true;
 }
 
 /**
-  This routine should be called once setupDisplay is called
+  This routine should be called once the display is created
   to create the joystick stuff
 */
 bool setupJoystick()
 {
 #ifdef HAVE_JOYSTICK
-  if((theLeftJoystickFd = open("/dev/js0", O_RDONLY | O_NONBLOCK)) >= 0)
+  ostringstream joyname;
+
+  theLeftJoystickNumber  = theSettings->theLeftJoystickNumber;
+  theRightJoystickNumber = theSettings->theRightJoystickNumber;
+
+  joyname.str("");
+  joyname << "/dev/js" << theLeftJoystickNumber;
+  if((theLeftJoystickFd = open(joyname.str().c_str(), O_RDONLY | O_NONBLOCK)) >= 0)
   {
-    if(theConsole->settings().theShowInfoFlag)
-      cout << "Left joystick found.\n";
+    if(theSettings->theShowInfoFlag)
+      cout << "Left joystick set to " << joyname.str() << "." << endl;
   }
   else
   {
-    if(theConsole->settings().theShowInfoFlag)
+    if(theSettings->theShowInfoFlag)
       cout << "Left joystick not present, use keyboard instead.\n";
   }
 
-  if((theRightJoystickFd = open("/dev/js1", O_RDONLY | O_NONBLOCK)) >= 0)
+  joyname.str("");
+  joyname << "/dev/js" << theRightJoystickNumber;
+  if((theRightJoystickFd = open(joyname.str().c_str(), O_RDONLY | O_NONBLOCK)) >= 0)
   {
-    if(theConsole->settings().theShowInfoFlag)
-      cout << "Right joystick found.\n";
+    if(theSettings->theShowInfoFlag)
+      cout << "Right joystick set to " << joyname.str() << "." << endl;
   }
   else
   {
-    if(theConsole->settings().theShowInfoFlag)
+    if(theSettings->theShowInfoFlag)
       cout << "Right joystick not present, use keyboard instead.\n";
   }
 #endif
@@ -467,7 +459,7 @@ bool setupJoystick()
 void setupPalette()
 {
   // If we're using a private colormap then let's free it to be safe
-  if(theConsole->settings().theUsePrivateColormapFlag && theDisplay)
+  if(theSettings->theUsePrivateColormapFlag && theDisplay)
   {
     if(thePrivateColormap)
       XFreeColormap(theDisplay, thePrivateColormap);
@@ -478,7 +470,7 @@ void setupPalette()
 
   // Make the palette be 75% as bright if pause is selected
   float shade = 1.0;
-  if(frontend->pause())
+  if(theFrontend->pause())
     shade = 0.75;
 
   // Allocate colors in the default colormap
@@ -492,7 +484,7 @@ void setupPalette()
     color.blue = (short unsigned int)(((palette[t] & 0x000000ff) << 8) * shade);
     color.flags = DoRed | DoGreen | DoBlue;
 
-    if(theConsole->settings().theUsePrivateColormapFlag)
+    if(theSettings->theUsePrivateColormapFlag)
       XAllocColor(theDisplay, thePrivateColormap, &color);
     else
       XAllocColor(theDisplay, DefaultColormap(theDisplay, theScreen), &color);
@@ -759,7 +751,7 @@ void handleEvents()
       {
         if(event.xkey.state & Mod1Mask)
         {
-          if(theConsole->settings().theMergePropertiesFlag)  // Attempt to merge with propertiesSet
+          if(theSettings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
           {
             theConsole->saveProperties(theConsole->frontend().userPropertiesFilename(), true);
           }
@@ -793,13 +785,13 @@ void handleEvents()
       resistance = (Int32)((1000000.0 * x) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
-      if(theConsole->settings().thePaddleMode == 0)
+      if(theSettings->thePaddleMode == 0)
         type = Event::PaddleZeroResistance;
-      else if(theConsole->settings().thePaddleMode == 1)
+      else if(theSettings->thePaddleMode == 1)
         type = Event::PaddleOneResistance;
-      else if(theConsole->settings().thePaddleMode == 2)
+      else if(theSettings->thePaddleMode == 2)
         type = Event::PaddleTwoResistance;
-      else if(theConsole->settings().thePaddleMode == 3)
+      else if(theSettings->thePaddleMode == 3)
         type = Event::PaddleThreeResistance;
 
       theConsole->eventHandler().sendEvent(type, resistance);
@@ -811,13 +803,13 @@ void handleEvents()
 
       value = (event.type == ButtonPress) ? 1 : 0;
 
-      if(theConsole->settings().thePaddleMode == 0)
+      if(theSettings->thePaddleMode == 0)
         type = Event::PaddleZeroFire;
-      else if(theConsole->settings().thePaddleMode == 1)
+      else if(theSettings->thePaddleMode == 1)
         type = Event::PaddleOneFire;
-      else if(theConsole->settings().thePaddleMode == 2)
+      else if(theSettings->thePaddleMode == 2)
         type = Event::PaddleTwoFire;
-      else if(theConsole->settings().thePaddleMode == 3)
+      else if(theSettings->thePaddleMode == 3)
         type = Event::PaddleThreeFire;
 
       theConsole->eventHandler().sendEvent(type, value);
@@ -828,7 +820,7 @@ void handleEvents()
     }
     else if(event.type == UnmapNotify)
     {
-      if(!frontend->pause())
+      if(!theFrontend->pause())
       {
         theConsole->eventHandler().sendEvent(Event::Pause, 1);
       }
@@ -846,7 +838,7 @@ void handleEvents()
   if(theLeftJoystickFd >= 0)
   {
     struct js_event event;
-    stick = joyList[0];
+    stick = joyList[theLeftJoystickNumber];
 
     // Process each joystick event that's queued-up
     while(read(theLeftJoystickFd, &event, sizeof(struct js_event)) > 0)
@@ -863,104 +855,22 @@ void handleEvents()
       }
       else if((event.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS)
       {
-        code  = StellaEvent::LastJCODE;
-        state = 1;
-
         axis  = event.number;
         value = event.value;
 
         if(axis == 0)  // x-axis
         {
-          if(value < -16384)
-            code = StellaEvent::JAXIS_LEFT;
-          else if(value > 16384)
-            code = StellaEvent::JAXIS_RIGHT;
-          else
-          {
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT, 0);
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT, 0);
-
-            return;
-          }
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
+            (value < -16384) ? 1 : 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
+            (value > 16384) ? 1 : 0);
         }
         else if(axis == 1)  // y-axis
         {
-          if(value < -16384)
-            code = StellaEvent::JAXIS_UP;
-          else if(value > 16384)
-            code = StellaEvent::JAXIS_DOWN;
-          else
-          {
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP, 0);
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN, 0);
-
-            return;
-          }
-        }
-
-        theConsole->eventHandler().sendJoyEvent(stick, code, state);
-      }
-    }
-  }
-
-/*  // Read joystick events and modify event states
-  if(theLeftJoystickFd >= 0)
-  {
-    struct js_event event;
-
-    // Process each joystick event that's queued-up
-    while(read(theLeftJoystickFd, &event, sizeof(struct js_event)) > 0)
-    {
-      if((event.type & ~JS_EVENT_INIT) == JS_EVENT_BUTTON)
-      {
-        if(event.number == 0)
-        {
-          theEvent.set(Event::JoystickZeroFire, event.value ? 
-              1 : keyboardEvent.get(Event::JoystickZeroFire));
-
-          // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleZeroFire, event.value);
-        }
-        else if(event.number == 1)
-        {
-          theEvent.set(Event::BoosterGripZeroTrigger, event.value ? 
-              1 : keyboardEvent.get(Event::BoosterGripZeroTrigger));
-
-          // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleOneFire, event.value);
-        }
-      }
-      else if((event.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS)
-      {
-        if(event.number == 0)
-        {
-          theEvent.set(Event::JoystickZeroLeft, (event.value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroLeft));
-          theEvent.set(Event::JoystickZeroRight, (event.value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroRight));
-
-          // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleZeroResistance, r);
-          }
-        }
-        else if(event.number == 1)
-        {
-          theEvent.set(Event::JoystickZeroUp, (event.value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroUp));
-          theEvent.set(Event::JoystickZeroDown, (event.value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroDown));
-
-          // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleOneResistance, r);
-          }
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
+            (value < -16384) ? 1 : 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
+            (value > 16384) ? 1 : 0);
         }
       }
     }
@@ -969,64 +879,43 @@ void handleEvents()
   if(theRightJoystickFd >= 0)
   {
     struct js_event event;
+    stick = joyList[theRightJoystickNumber];
 
     // Process each joystick event that's queued-up
     while(read(theRightJoystickFd, &event, sizeof(struct js_event)) > 0)
     {
       if((event.type & ~JS_EVENT_INIT) == JS_EVENT_BUTTON)
       {
-        if(event.number == 0)
-        {
-          theEvent.set(Event::JoystickOneFire, event.value ? 
-              1 : keyboardEvent.get(Event::JoystickOneFire));
+        if(event.number >= StellaEvent::LastJCODE)
+          return;
 
-          // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleTwoFire, event.value);
-        }
-        else if(event.number == 1)
-        {
-          theEvent.set(Event::BoosterGripOneTrigger, event.value ? 
-              1 : keyboardEvent.get(Event::BoosterGripOneTrigger));
+        code  = joyButtonList[event.number];
+        state = event.value;
 
-          // If we're using real paddles then set paddle event as well
-          if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleThreeFire, event.value);
-        }
+        theConsole->eventHandler().sendJoyEvent(stick, code, state);
       }
       else if((event.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS)
       {
-        if(event.number == 0)
-        {
-          theEvent.set(Event::JoystickOneLeft, (event.value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneLeft));
-          theEvent.set(Event::JoystickOneRight, (event.value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneRight));
+        axis  = event.number;
+        value = event.value;
 
-          // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleTwoResistance, r);
-          }
+        if(axis == 0)  // x-axis
+        {
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
+            (value < -16384) ? 1 : 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
+            (value > 16384) ? 1 : 0);
         }
-        else if(event.number == 1)
+        else if(axis == 1)  // y-axis
         {
-          theEvent.set(Event::JoystickOneUp, (event.value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneUp));
-          theEvent.set(Event::JoystickOneDown, (event.value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickOneDown));
-
-          // If we're using real paddles then set paddle events as well
-          if(settings->thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleThreeResistance, r);
-          }
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
+            (value < -16384) ? 1 : 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
+            (value > 16384) ? 1 : 0);
         }
       }
     }
-  }*/
+  }
 #endif
 }
 
@@ -1089,7 +978,7 @@ void resizeWindow(int mode)
   // A resize probably means that the window is no longer centered
   isCentered = false;
 
-  if(theConsole->settings().theCenterWindowFlag)
+  if(theSettings->theCenterWindowFlag)
     centerWindow();
 }
 
@@ -1217,7 +1106,7 @@ void takeSnapshot()
 #ifdef HAVE_PNG
   string message;
 
-  if(!snapshot)
+  if(!theSnapshot)
   {
     message = "Snapshots disabled";
     theConsole->mediaSource().showMessage(message, 120);
@@ -1225,16 +1114,16 @@ void takeSnapshot()
   }
 
   // Now find the correct name for the snapshot
-  string path = settings->theSnapShotDir;
+  string path = theSettings->theSnapShotDir;
   string filename;
 
-  if(settings->theSnapShotName == "romname")
+  if(theSettings->theSnapShotName == "romname")
     path = path + "/" + theConsole->properties().get("Cartridge.Name");
-  else if(settings->theSnapShotName == "md5sum")
+  else if(theSettings->theSnapShotName == "md5sum")
     path = path + "/" + theConsole->properties().get("Cartridge.MD5");
   else
   {
-    cerr << "ERROR: unknown name " << settings->theSnapShotName
+    cerr << "ERROR: unknown name " << theSettings->theSnapShotName
          << " for snapshot type" << endl;
     return;
   }
@@ -1243,7 +1132,7 @@ void takeSnapshot()
   replace(path.begin(), path.end(), ' ', '_');
 
   // Check whether we want multiple snapshots created
-  if(settings->theMultipleSnapShotFlag)
+  if(theSettings->theMultipleSnapShotFlag)
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
@@ -1265,7 +1154,7 @@ void takeSnapshot()
     filename = path + ".png";
 
   // Now save the snapshot file
-  snapshot->savePNG(filename, theConsole->mediaSource(), settings->theWindowSize);
+  theSnapshot->savePNG(filename, theConsole->mediaSource(), theSettings->theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
   {
@@ -1312,70 +1201,6 @@ uInt32 maxWindowSizeForScreen()
     return 1;
 }
 
-/**
-  Display a usage message and exit the program
-*/
-void usage()
-{
-  static const char* message[] = {
-    "",
-    "X Stella version 1.4pre",
-    "",
-    "Usage: stella.x11 [option ...] file",
-    "",
-    "Valid options are:",
-    "",
-    "  -fps        <number>       Display the given number of frames per second",
-    "  -owncmap    <0|1>          Install a private colormap",
-    "  -zoom       <size>         Makes window be 'size' times normal (1 - 4)",
-//    "  -fullscreen <0|1>          Play the game in fullscreen mode",
-    "  -grabmouse  <0|1>          Keeps the mouse in the game window",
-    "  -hidecursor <0|1>          Hides the mouse cursor in the game window",
-    "  -center     <0|1>          Centers the game window onscreen",
-    "  -volume     <number>       Set the volume (0 - 100)",
-#ifdef HAVE_JOYSTICK
-    "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate",
-    "                             or that real Atari 2600 paddles are being used",
-#else
-    "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate",
-#endif
-    "  -showinfo   <0|1>          Shows some game info",
-#ifdef HAVE_PNG
-    "  -ssdir      <path>         The directory to save snapshot files to",
-    "  -ssname     <name>         How to name the snapshot (romname or md5sum)",
-    "  -sssingle   <0|1>          Generate single snapshot instead of many",
-#endif
-    "  -pro        <props file>   Use the given properties file instead of stella.pro",
-    "  -accurate   <0|1>          Accurate game timing (uses more CPU)",
-    "",
-    "  -sound      <type>          Type is one of the following:",
-    "               0                Disables all sound generation",
-#ifdef SOUND_ALSA
-    "               alsa             ALSA version 0.9 driver",
-#endif
-#ifdef SOUND_OSS
-    "               oss              Open Sound System driver",
-#endif
-    "",
-#ifdef DEVELOPER_SUPPORT
-    " DEVELOPER options (see Stella manual for details)",
-    "  -Dformat                    Sets \"Display.Format\"",
-    "  -Dxstart                    Sets \"Display.XStart\"",
-    "  -Dwidth                     Sets \"Display.Width\"",
-    "  -Dystart                    Sets \"Display.YStart\"",
-    "  -Dheight                    Sets \"Display.Height\"",
-    "  -Dmerge     <0|1>           Merge changed properties into properties file,",
-    "                              or save into a separate file",
-#endif
-    0
-  };
-
-  for(uInt32 i = 0; message[i] != 0; ++i)
-  {
-    cout << message[i] << endl;
-  }
-  exit(1);
-}
 
 /**
   Setup the properties set by first checking for a user file
@@ -1384,7 +1209,7 @@ void usage()
 
   @param set The properties set to setup
 */
-bool setupProperties(PropertiesSet& set, Settings& settings)
+bool setupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
 
@@ -1392,25 +1217,25 @@ bool setupProperties(PropertiesSet& set, Settings& settings)
   // If the user wishes to merge any property modifications to the
   // PropertiesSet file, then the PropertiesSet file MUST be loaded
   // into memory.
-  useMemList = settings.theMergePropertiesFlag;
+  useMemList = theSettings->theMergePropertiesFlag;
 #endif
 
   // Check to see if the user has specified an alternate .pro file.
-  if(settings.theAlternateProFile != "")
+  if(theSettings->theAlternateProFile != "")
   {
-    set.load(settings.theAlternateProFile, &Console::defaultProperties(), useMemList);
+    set.load(theSettings->theAlternateProFile, &Console::defaultProperties(), useMemList);
     return true;
   }
 
-  if(frontend->userPropertiesFilename() != "")
+  if(theFrontend->userPropertiesFilename() != "")
   {
-    set.load(frontend->userPropertiesFilename(),
+    set.load(theFrontend->userPropertiesFilename(),
              &Console::defaultProperties(), useMemList);
     return true;
   }
-  else if(frontend->systemPropertiesFilename() != "")
+  else if(theFrontend->systemPropertiesFilename() != "")
   {
-    set.load(frontend->systemPropertiesFilename(),
+    set.load(theFrontend->systemPropertiesFilename(),
              &Console::defaultProperties(), useMemList);
     return true;
   }
@@ -1427,21 +1252,24 @@ bool setupProperties(PropertiesSet& set, Settings& settings)
 */
 void cleanup()
 {
-  if(frontend)
-    delete frontend;
+  if(theSettings)
+    delete theSettings;
+
+  if(theFrontend)
+    delete theFrontend;
 
   if(theConsole)
     delete theConsole;
 
 #ifdef HAVE_PNG
-  if(snapshot)
-    delete snapshot;
+  if(theSnapshot)
+    delete theSnapshot;
 #endif
 
-  if(sound)
+  if(theSound)
   {
-    sound->closeDevice();
-    delete sound;
+    theSound->closeDevice();
+    delete theSound;
   }
 
   if(normalCursor)
@@ -1450,7 +1278,7 @@ void cleanup()
     XFreeCursor(theDisplay, blankCursor);
 
   // If we're using a private colormap then let's free it to be safe
-  if(theConsole->settings().theUsePrivateColormapFlag && theDisplay)
+  if(theSettings->theUsePrivateColormapFlag && theDisplay)
   {
      XFreeColormap(theDisplay, thePrivateColormap);
   }
@@ -1469,10 +1297,10 @@ void cleanup()
 int main(int argc, char* argv[])
 {
   // First set up the frontend to communicate with the emulation core
-//#ifdef UNIX
-  frontend = new FrontendUNIX();
-//#endif
-  if(!frontend)
+#ifdef UNIX
+  theFrontend = new FrontendUNIX();
+#endif
+  if(!theFrontend)
   {
     cerr << "ERROR: Couldn't set up the frontend.\n";
     cleanup();
@@ -1481,21 +1309,44 @@ int main(int argc, char* argv[])
 
   // Create some settings for the emulator
   string infile   = "";
-  string outfile  = frontend->userConfigFilename();
-  if(frontend->userConfigFilename() != "")
-    infile = frontend->userConfigFilename();
-  else if(frontend->systemConfigFilename() != "")
-    infile = frontend->systemConfigFilename();
+  string outfile  = theFrontend->userConfigFilename();
+  if(theFrontend->userConfigFilename() != "")
+    infile = theFrontend->userConfigFilename();
+  else if(theFrontend->systemConfigFilename() != "")
+    infile = theFrontend->systemConfigFilename();
 
-  Settings settings(infile, outfile);
-
-  // Handle the command line arguments
-  if(!settings.handleCommandLineArgs(argc, argv))
+#ifdef UNIX
+  theSettings = new SettingsUNIX(infile, outfile);
+#endif
+  if(!theSettings)
   {
-    usage();
     cleanup();
     return 0;
   }
+
+  // Take care of commandline arguments
+  if(!theSettings->handleCommandLineArgs(argc, argv))
+  {
+    string message = "Stella for X11 version 1.4\n\nUsage: stella.x11 [option ...] file";
+    theSettings->usage(message);
+    cleanup();
+    return 0;
+  }
+
+#ifdef HAVE_PNG
+  // Take care of the snapshot stuff.
+  theSnapshot = new Snapshot();
+
+  if(theSettings->theSnapShotDir == "")
+    theSnapShotDir = theFrontend->userHomeDir();
+  else
+    theSnapShotDir = theSettings->theSnapShotDir;
+
+  if(theSettings->theSnapShotName == "")
+    theSnapShotName = "romname";
+  else
+    theSnapShotName = theSettings->theSnapShotName;
+#endif
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
@@ -1516,7 +1367,7 @@ int main(int argc, char* argv[])
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
-  if(!setupProperties(propertiesSet, settings))
+  if(!setupProperties(propertiesSet))
   {
     delete[] image;
     cleanup();
@@ -1524,44 +1375,44 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  if(settings.theSoundDriver == "0")
+  if(theSettings->theSoundDriver == "0")
   {
     // if sound has been disabled, we still need a sound object
-    sound = new Sound();
-    if(settings.theShowInfoFlag)
+    theSound = new Sound();
+    if(theSettings->theShowInfoFlag)
       cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
-  else if(settings.theSoundDriver == "alsa")
+  else if(theSettings->theSoundDriver == "alsa")
   {
-    sound = new SoundALSA();
-    if(settings.theShowInfoFlag)
+    theSound = new SoundALSA();
+    if(theSettings->theShowInfoFlag)
       cout << "Using ALSA for sound.\n";
   }
 #endif
 #ifdef SOUND_OSS
-  else if(settings.theSoundDriver == "oss")
+  else if(theSettings->theSoundDriver == "oss")
   {
-    sound = new SoundOSS();
-    if(settings.theShowInfoFlag)
+    theSound = new SoundOSS();
+    if(theSettings->theShowInfoFlag)
       cout << "Using OSS for sound.\n";
   }
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {
     cerr << "ERROR: Sound support for "
-         << settings.theSoundDriver << " not available.\n";
-    sound = new Sound();
+         << theSettings->theSoundDriver << " not available.\n";
+    theSound = new Sound();
   }
 
-  sound->setSoundVolume(settings.theDesiredVolume);
+  theSound->setSoundVolume(theSettings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
   // Create the 2600 game console
-  theConsole = new Console(image, size, filename, settings, propertiesSet,
-                           *frontend, sound->getSampleRate());
+  theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
+                           *theFrontend, theSound->getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -1584,12 +1435,12 @@ int main(int argc, char* argv[])
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(theConsole->settings().theAccurateTimingFlag)   // normal, CPU-intensive timing
+  if(theSettings->theAccurateTimingFlag)   // normal, CPU-intensive timing
   {
     // Set up timing stuff
     uInt32 startTime, delta;
     uInt32 timePerFrame = 
-        (uInt32)(1000000.0 / (double)theConsole->settings().theDesiredFrameRate);
+        (uInt32)(1000000.0 / (double)theSettings->theDesiredFrameRate);
 
     // Set the base for the timers
     frameTime = 0;
@@ -1598,7 +1449,7 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(frontend->quit())
+      if(theFrontend->quit())
       {
         break;
       }
@@ -1606,7 +1457,7 @@ int main(int argc, char* argv[])
       // Call handleEvents here to see if user pressed pause
       startTime = getTicks();
       handleEvents();
-      if(frontend->pause())
+      if(theFrontend->pause())
       {
         updateDisplay(theConsole->mediaSource());
         usleep(10000);
@@ -1614,7 +1465,7 @@ int main(int argc, char* argv[])
       }
 
       theConsole->mediaSource().update();
-      sound->updateSound(theConsole->mediaSource());
+      theSound->updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
 
       // Now, waste time if we need to so that we are at the desired frame rate
@@ -1635,7 +1486,7 @@ int main(int argc, char* argv[])
     // Set up timing stuff
     uInt32 startTime, virtualTime, currentTime;
     uInt32 timePerFrame = 
-        (uInt32)(1000000.0 / (double)settings.theDesiredFrameRate);
+        (uInt32)(1000000.0 / (double)theSettings->theDesiredFrameRate);
 
     // Set the base for the timers
     virtualTime = getTicks();
@@ -1645,17 +1496,17 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(frontend->quit())
+      if(theFrontend->quit())
       {
         break;
       }
 
       startTime = getTicks();
       handleEvents();
-      if(!frontend->pause())
+      if(!theFrontend->pause())
       {
         theConsole->mediaSource().update();
-        sound->updateSound(theConsole->mediaSource());
+        theSound->updateSound(theConsole->mediaSource());
       }
       updateDisplay(theConsole->mediaSource());
 
@@ -1672,7 +1523,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(settings.theShowInfoFlag)
+  if(theSettings->theShowInfoFlag)
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;

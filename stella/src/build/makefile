@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.36 2003-09-11 00:13:39 stephena Exp $
+## $Id: makefile,v 1.37 2003-09-11 20:53:51 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -31,8 +31,8 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
 ### comment out all lines to completely disable sound
 ###
 SOUND_ALSA = 1
-#SOUND_OSS  = 1
-#SOUND_SDL  = 1
+SOUND_OSS  = 1
+SOUND_SDL  = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -49,7 +49,7 @@ SOUND_ALSA = 1
 ### to include support for saving snapshots in png format
 ### (requires PNG library)
 ### Only X11 and SDL ports supported for now
-# SNAPSHOT_SUPPORT = 1
+ SNAPSHOT_SUPPORT = 1
 
 ### comment this out if your system doesn't
 ### have the gettimeofday function
@@ -73,7 +73,7 @@ LD	= g++
 LDFLAGS = 
 LDLIBS	= 
 
-OBJS.X11   =
+OBJS.X11   = 
 OPTS.X11   =
 LIBS.X11   =
 CFLAGS.X11 =
@@ -83,7 +83,7 @@ OPTS.SDL   =
 LIBS.SDL   = `sdl-config --libs`
 CFLAGS.SDL = `sdl-config --cflags`
 
-OPTS.DOS   =
+OPTS.DOS   = -DDOS=1
 
 SRC	= ..
 CORE	= $(SRC)/emucore
@@ -193,65 +193,65 @@ unix-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o"
+          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 linux-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o" \
+          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o" \
           OBJS+="$(OBJS.X11)"
 
 linux-sdl:
 	make stella.sdl \
           INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
           OPTIONS+="$(OPTS.SDL)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o RectList.o FrontendUNIX.o" \
+          OBJS="mainSDL.o RectList.o FrontendUNIX.o SettingsUNIX.o" \
           OBJS+="$(OBJS.SDL)"
 
 bsdi-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/X11R6/include" \
-          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o"
+          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 solaris-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/openwin/include" \
-          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/openwin/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o"
+          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 ###############################################################################
@@ -429,6 +429,9 @@ Deserializer.o: $(CORE)/Deserializer.cxx $(CORE)/Deserializer.hxx
 
 Settings.o: $(CORE)/Settings.cxx $(CORE)/Settings.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Settings.cxx
+
+SettingsUNIX.o: $(UI)/common/SettingsUNIX.cxx $(UI)/common/SettingsUNIX.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/SettingsUNIX.cxx
 
 Terminal.o: $(UI)/x11/Terminal.cxx $(UI)/x11/Terminal.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/x11/Terminal.cxx

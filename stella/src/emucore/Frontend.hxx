@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Frontend.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
+// $Id: Frontend.hxx,v 1.4 2003-09-11 20:53:51 stephena Exp $
 //============================================================================
 
 #ifndef FRONTEND_HXX
@@ -27,7 +27,7 @@ class Console;
   This class provides an interface for accessing frontend specific data.
 
   @author  Stephen Anthony
-  @version $Id: Frontend.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
+  @version $Id: Frontend.hxx,v 1.4 2003-09-11 20:53:51 stephena Exp $
 */
 class Frontend
 {
@@ -47,7 +47,7 @@ class Frontend
       This method should be called when the emulation core sets
       the console object.
     */
-        virtual void setConsole(Console* console) = 0;
+    virtual void setConsole(Console* console) = 0;
 
     /**
       This method should be called when the emulation core receives

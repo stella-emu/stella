@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.48 2003-09-11 00:13:39 stephena Exp $
+// $Id: mainSDL.cxx,v 1.49 2003-09-11 20:53:51 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -58,9 +58,10 @@
   #include "Snapshot.hxx"
 #endif
 
-//#ifdef UNIX
+#ifdef UNIX
   #include "FrontendUNIX.hxx"
-//#endif
+  #include "SettingsUNIX.hxx"
+#endif
 
 // Hack for SDL < 1.2.0
 #ifndef SDL_ENABLE
@@ -116,20 +117,29 @@ static string theSnapShotDir, theSnapShotName;
 #ifdef HAVE_JOYSTICK
   static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
   static SDL_Joystick* theRightJoystick = (SDL_Joystick*) NULL;
+  static uInt32 theLeftJoystickNumber;
+  static uInt32 theRightJoystickNumber;
+//  static uInt32 thePaddleNumber;
+
 #endif
 
 #ifdef HAVE_PNG
-  static Snapshot* snapshot;
+  static Snapshot* theSnapshot;
 #endif
 
 // Pointer to the console object or the null pointer
 static Console* theConsole = (Console*) NULL;
 
 // Pointer to the sound object or the null pointer
-static Sound* sound = (Sound*) NULL;
+static Sound* theSound = (Sound*) NULL;
 
 // Pointer to the frontend object or the null pointer
-static Frontend* frontend = (Frontend*) NULL;
+static Frontend* theFrontend = (Frontend*) NULL;
+
+// Pointer to the settings object or the null pointer
+#ifdef UNIX
+  static SettingsUNIX* theSettings = (SettingsUNIX*) NULL;
+#endif
 
 // Indicates if the mouse should be grabbed
 static bool theGrabMouseIndicator = false;
@@ -263,13 +273,32 @@ StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
 
 
 /**
+  Returns number of ticks in microseconds
+*/
+#ifdef HAVE_GETTIMEOFDAY
+inline uInt32 getTicks()
+{
+  timeval now;
+  gettimeofday(&now, 0);
+
+  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
+}
+#else
+inline uInt32 getTicks()
+{
+  return (uInt32) SDL_GetTicks() * 1000;
+}
+#endif
+
+
+/**
   This routine should be called once the console is created to setup
   the SDL window for us to use.  Return false if any operation fails,
   otherwise return true.
 */
 bool setupDisplay()
 {
-  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_TIMER;
+  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
   if(SDL_Init(initflags) < 0)
     return false;
 
@@ -281,8 +310,8 @@ bool setupDisplay()
       x11Available = true;
 
   sdlflags = SDL_SWSURFACE;
-  sdlflags |= theConsole->settings().theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
-  sdlflags |= theConsole->settings().theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
+  sdlflags |= theSettings->theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
+  sdlflags |= theSettings->theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
 
   // Get the desired width and height of the display
   theWidth  = theConsole->mediaSource().width();
@@ -291,43 +320,13 @@ bool setupDisplay()
   // Get the maximum size of a window for THIS screen
   // Must be called after display and screen are known, as well as
   // theWidth and theHeight
-  // Defaults to 3 on systems without X11, maximum of 4 on any system.
   theMaxWindowSize = maxWindowSizeForScreen();
 
-  // If theWindowSize is not 0, then it must have been set on the commandline
-  // Now we check to see if it is within bounds
-  if(theConsole->settings().theWindowSize != 0)
-  {
-    if(theConsole->settings().theWindowSize < 1)
-      theWindowSize = 1;
-    else if(theConsole->settings().theWindowSize > theMaxWindowSize)
-      theWindowSize = theMaxWindowSize;
-    else
-      theWindowSize = theConsole->settings().theWindowSize;
-  }
-  else  // theWindowSize hasn't been set so we do the default
-  {
-    if(theMaxWindowSize < 2)
-      theWindowSize = 1;
-    else
-      theWindowSize = 2;
-  }
-
-#if 0
-//#ifdef HAVE_PNG
-  // Take care of the snapshot stuff.
-  snapshot = new Snapshot();
-
-  if(theConsole->settings().theSnapShotDir == "")
-    theSnapShotDir = homeDir;
+  // Check to see if window size will fit in the screen
+  if(theSettings->theWindowSize > theMaxWindowSize)
+    theWindowSize = theMaxWindowSize;
   else
-    theSnapShotDir = theConsole->settings().theSnapShotDir;
-
-  if(theConsole->settings().theSnapShotName == "")
-    theSnapShotName = "romname";
-  else
-    theSnapShotName = theConsole->settings().theSnapShotName;
-#endif
+    theWindowSize = theSettings->theWindowSize;
 
   // Set up the rectangle list to be used in updateDisplay
   rectList = new RectList();
@@ -348,9 +347,9 @@ bool setupDisplay()
   setupPalette();
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  theGrabMouseIndicator  = theConsole->settings().theGrabMouseFlag;
-  theHideCursorIndicator = theConsole->settings().theHideCursorFlag;
-  if(theConsole->settings().theUseFullScreenFlag)
+  theGrabMouseIndicator  = theSettings->theGrabMouseFlag;
+  theHideCursorIndicator = theSettings->theHideCursorFlag;
+  if(theSettings->theUseFullScreenFlag)
   {
     grabMouse(true);
     showCursor(false);
@@ -366,7 +365,7 @@ bool setupDisplay()
   }
 
   // Center the window if centering is selected and not fullscreen
-  if(theConsole->settings().theCenterWindowFlag && !theConsole->settings().theUseFullScreenFlag)
+  if(theSettings->theCenterWindowFlag && !theSettings->theUseFullScreenFlag)
     centerWindow();
 
   return true;
@@ -380,35 +379,38 @@ bool setupDisplay()
 bool setupJoystick()
 {
 #ifdef HAVE_JOYSTICK
-  if(SDL_NumJoysticks() <= 0)
+  // Initialize the joystick subsystem
+  if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
-    if(theConsole->settings().theShowInfoFlag)
+    if(theSettings->theShowInfoFlag)
       cout << "No joysticks present, use the keyboard.\n";
     theLeftJoystick = theRightJoystick = 0;
     return true;
   }
 
-  if((theLeftJoystick = SDL_JoystickOpen(0)) != NULL)
+  if((theLeftJoystick = SDL_JoystickOpen(theSettings->theLeftJoystickNumber)) != NULL)
   {
-    if(theConsole->settings().theShowInfoFlag)
-      cout << "Left joystick is a " << SDL_JoystickName(0) <<
-        " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
+    if(theSettings->theShowInfoFlag)
+      cout << "Left joystick is a "
+           << SDL_JoystickName(theSettings->theLeftJoystickNumber)
+           << " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
   }
   else
   {
-    if(theConsole->settings().theShowInfoFlag)
+    if(theSettings->theShowInfoFlag)
       cout << "Left joystick not present, use keyboard instead.\n";
   }
 
-  if((theRightJoystick = SDL_JoystickOpen(1)) != NULL)
+  if((theRightJoystick = SDL_JoystickOpen(theSettings->theRightJoystickNumber)) != NULL)
   {
-    if(theConsole->settings().theShowInfoFlag)
-      cout << "Right joystick is a " << SDL_JoystickName(1) <<
-        " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
+    if(theSettings->theShowInfoFlag)
+      cout << "Right joystick is a "
+           << SDL_JoystickName(theSettings->theRightJoystickNumber)
+           << " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
   }
   else
   {
-    if(theConsole->settings().theShowInfoFlag)
+    if(theSettings->theShowInfoFlag)
       cout << "Right joystick not present, use keyboard instead.\n";
   }
 #endif
@@ -500,7 +502,7 @@ void setupPalette()
 
   // Make the palette be 75% as bright if pause is selected
   float shade = 1.0;
-  if(frontend->pause())
+  if(theFrontend->pause())
     shade = 0.75;
 
   const uInt32* gamePalette = theConsole->mediaSource().palette();
@@ -549,7 +551,6 @@ void resizeWindow(int mode)
   {
     theWidth         = theConsole->mediaSource().width();
     theHeight        = theConsole->mediaSource().height();
-    theMaxWindowSize = maxWindowSizeForScreen();
   }
   else if(mode == 1)   // increase size
   {
@@ -578,7 +579,7 @@ void resizeWindow(int mode)
   // A resize may mean that the window is no longer centered
   isCentered = false;
 
-  if(theConsole->settings().theCenterWindowFlag)
+  if(theSettings->theCenterWindowFlag)
     centerWindow();
 }
 
@@ -644,7 +645,7 @@ void toggleFullscreen()
     grabMouse(theGrabMouseIndicator);
     showCursor(!theHideCursorIndicator);
 
-    if(theConsole->settings().theCenterWindowFlag)
+    if(theSettings->theCenterWindowFlag)
         centerWindow();
   }
 }
@@ -941,7 +942,7 @@ void handleEvents()
       }
       else if((mod & KMOD_ALT) && key == SDLK_s)    // Alt-s saves properties to a file
       {
-        if(theConsole->settings().theMergePropertiesFlag)  // Attempt to merge with propertiesSet
+        if(theSettings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
         {
           theConsole->saveProperties(theConsole->frontend().userPropertiesFilename(), true);
         }
@@ -1003,13 +1004,13 @@ void handleEvents()
       resistance = (Int32)((fudgeFactor * x) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
-      if(theConsole->settings().thePaddleMode == 0)
+      if(theSettings->thePaddleMode == 0)
         type = Event::PaddleZeroResistance;
-      else if(theConsole->settings().thePaddleMode == 1)
+      else if(theSettings->thePaddleMode == 1)
         type = Event::PaddleOneResistance;
-      else if(theConsole->settings().thePaddleMode == 2)
+      else if(theSettings->thePaddleMode == 2)
         type = Event::PaddleTwoResistance;
-      else if(theConsole->settings().thePaddleMode == 3)
+      else if(theSettings->thePaddleMode == 3)
         type = Event::PaddleThreeResistance;
 
       theConsole->eventHandler().sendEvent(type, resistance);
@@ -1024,13 +1025,13 @@ void handleEvents()
       else
         value = 0;
 
-      if(theConsole->settings().thePaddleMode == 0)
+      if(theSettings->thePaddleMode == 0)
         type = Event::PaddleZeroFire;
-      else if(theConsole->settings().thePaddleMode == 1)
+      else if(theSettings->thePaddleMode == 1)
         type = Event::PaddleOneFire;
-      else if(theConsole->settings().thePaddleMode == 2)
+      else if(theSettings->thePaddleMode == 2)
         type = Event::PaddleTwoFire;
-      else if(theConsole->settings().thePaddleMode == 3)
+      else if(theSettings->thePaddleMode == 3)
         type = Event::PaddleThreeFire;
 
       theConsole->eventHandler().sendEvent(type, value);
@@ -1039,7 +1040,7 @@ void handleEvents()
     {
       if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
       {
-        if(!frontend->pause())
+        if(!theFrontend->pause())
         {
           theConsole->eventHandler().sendEvent(Event::Pause, 1);
         }
@@ -1074,42 +1075,23 @@ void handleEvents()
     }
     else if(event.type == SDL_JOYAXISMOTION)
     {
-      code  = StellaEvent::LastJCODE;
-      state = 1;
-
       axis = event.jaxis.axis;
       value = event.jaxis.value;
 
       if(axis == 0)  // x-axis
       {
-        if(value < -16384)
-          code = StellaEvent::JAXIS_LEFT;
-        else if(value > 16384)
-          code = StellaEvent::JAXIS_RIGHT;
-        else
-        {
-          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT, 0);
-          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT, 0);
-
-          return;
-        }
+        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
+          (value < -16384) ? 1 : 0);
+        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
+          (value > 16384) ? 1 : 0);
       }
       else if(axis == 1)  // y-axis
       {
-        if(value < -16384)
-          code = StellaEvent::JAXIS_UP;
-        else if(value > 16384)
-          code = StellaEvent::JAXIS_DOWN;
-        else
-        {
-          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP, 0);
-          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN, 0);
-
-          return;
-        }
+        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
+          (value < -16384) ? 1 : 0);
+        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
+          (value > 16384) ? 1 : 0);
       }
-
-      theConsole->eventHandler().sendJoyEvent(stick, code, state);
     }
 #endif
   }
@@ -1131,7 +1113,7 @@ void takeSnapshot()
 #ifdef HAVE_PNG
   string message;
 
-  if(!snapshot)
+  if(!theSnapshot)
   {
     message = "Snapshots disabled";
     theConsole->mediaSource().showMessage(message, 120);
@@ -1157,7 +1139,7 @@ void takeSnapshot()
   replace(path.begin(), path.end(), ' ', '_');
 
   // Check whether we want multiple snapshots created
-  if(theConsole->settings().theMultipleSnapShotFlag)
+  if(theSettings->theMultipleSnapShotFlag)
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
@@ -1179,7 +1161,7 @@ void takeSnapshot()
     filename = path + ".png";
 
   // Now save the snapshot file
-  snapshot->savePNG(filename, theConsole->mediaSource(), theWindowSize);
+  theSnapshot->savePNG(filename, theConsole->mediaSource(), theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
   {
@@ -1242,82 +1224,13 @@ uInt32 maxWindowSizeForScreen()
 
 
 /**
-  Display a usage message and exit the program
-*/
-void usage()
-{
-  static const char* message[] = {
-    "",
-    "SDL Stella version 1.4pre",
-    "",
-    "Usage: stella.sdl [option ...] file",
-    "",
-    "Valid options are:",
-    "",
-    "  -fps        <number>        Display the given number of frames per second",
-    "  -owncmap    <0|1>           Install a private colormap",
-    "  -zoom       <size>          Makes window be 'size' times normal (1 - 4)",
-    "  -fullscreen <0|1>           Play the game in fullscreen mode",
-    "  -grabmouse  <0|1>           Keeps the mouse in the game window",
-    "  -hidecursor <0|1>           Hides the mouse cursor in the game window",
-    "  -center     <0|1>           Centers the game window onscreen",
-    "  -volume     <number>        Set the volume (0 - 100)",
-#ifdef HAVE_JOYSTICK
-    "  -paddle     <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
-    "                              or that real Atari 2600 paddles are being used",
-#else
-    "  -paddle     <0|1|2|3>       Indicates which paddle the mouse should emulate",
-#endif
-    "  -showinfo   <0|1>           Shows some game info",
-#ifdef HAVE_PNG
-    "  -ssdir      <path>          The directory to save snapshot files to",
-    "  -ssname     <name>          How to name the snapshot (romname or md5sum)",
-    "  -sssingle   <0|1>           Generate single snapshot instead of many",
-#endif
-    "  -pro        <props file>    Use the given properties file instead of stella.pro",
-    "  -accurate   <0|1>           Accurate game timing (uses more CPU)",
-    "",
-    "  -sound      <type>          Type is one of the following:",
-    "               0                Disables all sound generation",
-#ifdef SOUND_ALSA
-    "               alsa             ALSA version 0.9 driver",
-#endif
-#ifdef SOUND_OSS
-    "               oss              Open Sound System driver",
-#endif
-#ifdef SOUND_SDL
-    "               sdl              Native SDL driver",
-#endif
-    "",
-#ifdef DEVELOPER_SUPPORT
-    " DEVELOPER options (see Stella manual for details)",
-    "  -Dformat                    Sets \"Display.Format\"",
-    "  -Dxstart                    Sets \"Display.XStart\"",
-    "  -Dwidth                     Sets \"Display.Width\"",
-    "  -Dystart                    Sets \"Display.YStart\"",
-    "  -Dheight                    Sets \"Display.Height\"",
-    "  -Dmerge     <0|1>           Merge changed properties into properties file,",
-    "                              or save into a separate file",
-#endif
-    0
-  };
-
-  for(uInt32 i = 0; message[i] != 0; ++i)
-  {
-    cout << message[i] << endl;
-  }
-  exit(1);
-}
-
-
-/**
   Setup the properties set by first checking for a user file
   "$HOME/.stella/stella.pro", then a system-wide file "/etc/stella.pro".
   Return false if neither file is found, else return true.
 
   @param set The properties set to setup
 */
-bool setupProperties(PropertiesSet& set, Settings& settings)
+bool setupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
 
@@ -1325,25 +1238,25 @@ bool setupProperties(PropertiesSet& set, Settings& settings)
   // If the user wishes to merge any property modifications to the
   // PropertiesSet file, then the PropertiesSet file MUST be loaded
   // into memory.
-  useMemList = settings.theMergePropertiesFlag;
+  useMemList = theSettings->theMergePropertiesFlag;
 #endif
 
   // Check to see if the user has specified an alternate .pro file.
-  if(settings.theAlternateProFile != "")
+  if(theSettings->theAlternateProFile != "")
   {
-    set.load(settings.theAlternateProFile, &Console::defaultProperties(), useMemList);
+    set.load(theSettings->theAlternateProFile, &Console::defaultProperties(), useMemList);
     return true;
   }
 
-  if(frontend->userPropertiesFilename() != "")
+  if(theFrontend->userPropertiesFilename() != "")
   {
-    set.load(frontend->userPropertiesFilename(),
+    set.load(theFrontend->userPropertiesFilename(),
              &Console::defaultProperties(), useMemList);
     return true;
   }
-  else if(frontend->systemPropertiesFilename() != "")
+  else if(theFrontend->systemPropertiesFilename() != "")
   {
-    set.load(frontend->systemPropertiesFilename(),
+    set.load(theFrontend->systemPropertiesFilename(),
              &Console::defaultProperties(), useMemList);
     return true;
   }
@@ -1360,24 +1273,24 @@ bool setupProperties(PropertiesSet& set, Settings& settings)
 */
 void cleanup()
 {
-  if(frontend)
-    delete frontend;
+  if(theSettings)
+    delete theSettings;
+
+  if(theFrontend)
+    delete theFrontend;
 
   if(theConsole)
     delete theConsole;
 
 #ifdef HAVE_PNG
-  if(snapshot)
-    delete snapshot;
+  if(theSnapshot)
+    delete theSnapshot;
 #endif
 
-  if(rectList)
-    delete rectList;
-
-  if(sound)
+  if(theSound)
   {
-    sound->closeDevice();
-    delete sound;
+    theSound->closeDevice();
+    delete theSound;
   }
 
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
@@ -1398,10 +1311,10 @@ void cleanup()
 int main(int argc, char* argv[])
 {
   // First set up the frontend to communicate with the emulation core
-//#ifdef UNIX
-  frontend = new FrontendUNIX();
-//#endif
-  if(!frontend)
+#ifdef UNIX
+  theFrontend = new FrontendUNIX();
+#endif
+  if(!theFrontend)
   {
     cerr << "ERROR: Couldn't set up the frontend.\n";
     cleanup();
@@ -1410,21 +1323,44 @@ int main(int argc, char* argv[])
 
   // Create some settings for the emulator
   string infile   = "";
-  string outfile  = frontend->userConfigFilename();
-  if(frontend->userConfigFilename() != "")
-    infile = frontend->userConfigFilename();
-  else if(frontend->systemConfigFilename() != "")
-    infile = frontend->systemConfigFilename();
+  string outfile  = theFrontend->userConfigFilename();
+  if(theFrontend->userConfigFilename() != "")
+    infile = theFrontend->userConfigFilename();
+  else if(theFrontend->systemConfigFilename() != "")
+    infile = theFrontend->systemConfigFilename();
 
-  Settings settings(infile, outfile);
-
-  // Handle the command line arguments
-  if(!settings.handleCommandLineArgs(argc, argv))
+#ifdef UNIX
+  theSettings = new SettingsUNIX(infile, outfile);
+#endif
+  if(!theSettings)
   {
-    usage();
     cleanup();
     return 0;
   }
+
+  // Take care of commandline arguments
+  if(!theSettings->handleCommandLineArgs(argc, argv))
+  {
+    string message = "Stella for SDL version 1.4\n\nUsage: stella.sdl [option ...] file";
+    theSettings->usage(message);
+    cleanup();
+    return 0;
+  }
+
+#ifdef HAVE_PNG
+  // Take care of the snapshot stuff.
+  theSnapshot = new Snapshot();
+
+  if(theSettings->theSnapShotDir == "")
+    theSnapShotDir = theFrontend->userHomeDir();
+  else
+    theSnapShotDir = theSettings->theSnapShotDir;
+
+  if(theSettings->theSnapShotName == "")
+    theSnapShotName = "romname";
+  else
+    theSnapShotName = theSettings->theSnapShotName;
+#endif
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
@@ -1445,7 +1381,7 @@ int main(int argc, char* argv[])
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
-  if(!setupProperties(propertiesSet, settings))
+  if(!setupProperties(propertiesSet))
   {
     delete[] image;
     cleanup();
@@ -1453,52 +1389,52 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  if(settings.theSoundDriver == "0")
+  if(theSettings->theSoundDriver == "0")
   {
     // even if sound has been disabled, we still need a sound object
-    sound = new Sound();
-    if(settings.theShowInfoFlag)
+    theSound = new Sound();
+    if(theSettings->theShowInfoFlag)
       cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
-  else if(settings.theSoundDriver == "alsa")
+  else if(theSettings->theSoundDriver == "alsa")
   {
-    sound = new SoundALSA();
-    if(settings.theShowInfoFlag)
+    theSound = new SoundALSA();
+    if(theSettings->theShowInfoFlag)
       cout << "Using ALSA for sound.\n";
   }
 #endif
 #ifdef SOUND_OSS
-  else if(settings.theSoundDriver == "oss")
+  else if(theSettings->theSoundDriver == "oss")
   {
-    sound = new SoundOSS();
-    if(settings.theShowInfoFlag)
+    theSound = new SoundOSS();
+    if(theSettings->theShowInfoFlag)
       cout << "Using OSS for sound.\n";
   }
 #endif
 #ifdef SOUND_SDL
-  else if(settings.theSoundDriver == "sdl")
+  else if(theSettings->theSoundDriver == "sdl")
   {
-    sound = new SoundSDL();
-    if(settings.theShowInfoFlag)
+    theSound = new SoundSDL();
+    if(theSettings->theShowInfoFlag)
       cout << "Using SDL for sound.\n";
   }
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {
     cerr << "ERROR: Sound support for "
-         << settings.theSoundDriver << " not available.\n";
-    sound = new Sound();
+         << theSettings->theSoundDriver << " not available.\n";
+    theSound = new Sound();
   }
 
-  sound->setSoundVolume(settings.theDesiredVolume);
+  theSound->setSoundVolume(theSettings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
   // Create the 2600 game console
-  theConsole = new Console(image, size, filename, settings, propertiesSet,
-                           *frontend, sound->getSampleRate());
+  theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
+                           *theFrontend, theSound->getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -1521,11 +1457,11 @@ int main(int argc, char* argv[])
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(settings.theAccurateTimingFlag)   // normal, CPU-intensive timing
+  if(theSettings->theAccurateTimingFlag)   // normal, CPU-intensive timing
   {
     // Set up accurate timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)settings.theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->theDesiredFrameRate);
 
     // Set the base for the timers
     frameTime = 0;
@@ -1534,7 +1470,7 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(frontend->quit())
+      if(theFrontend->quit())
       {
         break;
       }
@@ -1542,7 +1478,7 @@ int main(int argc, char* argv[])
       // Call handleEvents here to see if user pressed pause
       startTime = getTicks();
       handleEvents();
-      if(frontend->pause())
+      if(theFrontend->pause())
       {
         updateDisplay(theConsole->mediaSource());
         SDL_Delay(10);
@@ -1551,7 +1487,7 @@ int main(int argc, char* argv[])
 
       theConsole->mediaSource().update();
       updateDisplay(theConsole->mediaSource());
-      sound->updateSound(theConsole->mediaSource());
+      theSound->updateSound(theConsole->mediaSource());
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -1570,7 +1506,7 @@ int main(int argc, char* argv[])
   {
     // Set up less accurate timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theConsole->settings().theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->theDesiredFrameRate);
 
     // Set the base for the timers
     virtualTime = getTicks();
@@ -1580,17 +1516,17 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(frontend->quit())
+      if(theFrontend->quit())
       {
         break;
       }
 
       startTime = getTicks();
       handleEvents();
-      if(!frontend->pause())
+      if(!theFrontend->pause())
       {
         theConsole->mediaSource().update();
-        sound->updateSound(theConsole->mediaSource());
+        theSound->updateSound(theConsole->mediaSource());
       }
       updateDisplay(theConsole->mediaSource());
 
@@ -1607,7 +1543,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(settings.theShowInfoFlag)
+  if(theSettings->theShowInfoFlag)
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;
@@ -1626,22 +1562,3 @@ int main(int argc, char* argv[])
   cleanup();
   return 0;
 }
-
-
-/**
-  Returns number of ticks in microseconds
-*/
-#ifdef HAVE_GETTIMEOFDAY
-inline uInt32 getTicks()
-{
-  timeval now;
-  gettimeofday(&now, 0);
-
-  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
-}
-#else
-inline uInt32 getTicks()
-{
-  return (uInt32) SDL_GetTicks() * 1000;
-}
-#endif
