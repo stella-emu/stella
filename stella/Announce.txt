@@ -9,27 +9,31 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                     Release 1.3 for DOS, Linux, and Unix 
+                  Release 1.4 for Linux, Mac OSX and Windows
 ===============================================================================
 
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most 
-popular home video game system of the early 1980's. Now you can enjoy all of 
+popular home video game system of the early 1980's.  Now you can enjoy all of 
 your favorite Atari 2600 games on your PC thanks to Stella! 
 
-Stella is a multi-platform Atari 2600 VCS emulator. It allows you to play all
-of your favorite Atari 2600 games again! Stella was originally developed for
+Stella is a multi-platform Atari 2600 VCS emulator.  It allows you to play all
+of your favorite Atari 2600 games again!  Stella was originally developed for
 Linux by Bradford W. Mott, however, it has been ported to a number of other
 platforms.
 
-This is the 1.3 release of Stella for DOS, Linux, and Unix. Distributions
-for other operating systems will appear as they become available. The three 
+This is the 1.4 release of Stella for Linux, Mac OSX and Windows.  Distributions
+for other operating systems will appear as they become available. The
 distributions currently available are:
 
-  * Binary distribution for Linux (stella-1.3-linux-x86.tar.gz)
+  * Binary distribution in RPM format for Linux (stella-1.4-1.i586.rpm)
 
-  * Binary distribution for DOS (st13.zip)
+  * Binary distribution for Mac OSX () FIXME
 
-  * Source code distribution for Linux, Unix, and DOS (stella-1.3-src.tar.gz)
+  * Binary distribution for Windows (stella-1.4-win32.zip)
+
+  * Source code distribution for Linux, Mac OSX and Windows (stella-1.4-src.tar.gz)
+
+  * Source code in SRPM format for Linux RPM-based systems (stella-1.4-1.src.rpm)
 
 PLEASE DO NOT WRITE ASKING FOR ROM IMAGES TO USE WITH STELLA! ALL SUCH
 REQUESTS WILL BE IGNORED!
@@ -37,91 +41,91 @@ REQUESTS WILL BE IGNORED!
 New in this Release
 ===================
 
-  * Improved TIA sound system so that games with digitized audio work
+  * Codebase ported to SDL. The DOS and X11 ports have been discontinued.
 
-  * Added saving and loading of game state to the core; X11, SDL, and DOS
-    versions current support saving and loading game state
+  * Sound code ported to SDL. For the Linux versions, ALSA and OSS sound
+    support has been discontinued.
 
-  * Added support for F4 bankswitching method
+  * The Linux, MacOSX and Windows ports are now based on the same codebase
+    and are actively maintained. That means simultaneous (and hopefully more
+    frequent) releases.
 
-  * Pitfall II DPC sound emulation completed
+  * A new Windows port has been created, with the GUI based on StellaX.
+    This is the first new release for Windows since Stella 1.2.
 
-  * Fixed a bug which caused the difficulty switches to operate backwards
+  * A new Mac OSX port has been created by Mark Grebe. This is the first new
+    release for Mac OSX since Stella 1.2.
 
-  * Changed DPC auto-detection to use file size so that Pitfall II mods work
+  * Added OpenGL rendering support.
 
-  * Modified RIOT timer emulation so that startup values are random
+  * Added more refined in-game GUI.
 
-  * Added 3F bankswitching auto-detection routine so that homebrews and
-    demos work without a stella.pro entry
+  * Added event remapping. Emulation keys can now be remapped to the keyboard
+    or up to 4 joysticks.
 
-  * Updated the TIA message boxes so they look a little nicer
+  * Added native Stelladaptor support. Joysticks, paddles, and driving
+    controllers have been tested.
 
-  * Latest stella.pro file included in distribution
+  * Digital sound support (used in games like Quadrun and Pitfall2) has been
+    greatly improved. Sound generation is now more tightly synchronized with
+    video updates.
 
-  * Added some developer options to the core, and the ability to change game
-    width, height, xstart, ystart, and others while the emulation is running.
-    Added ability to switch between NTSC and PAL at runtime, and the ability
-    to save the current properties to a file or to merge the changes into the
-    stella.pro file; X11 and SDL versions supported for now (compile option)
+  * Added support for switchable palettes. Currently you can switch between
+    the current Stella palette, original Stella palette (pre-1.2 versions),
+    and the z26 palette.
 
-  * External sound server for the X11 and SDL versions no longer required, as
-    all sound code is now integrated into the core
+  * Added support for UA Limited style bankswitching (Funky Fish and Pleiades).
 
-  * Changed locations of the user's config files for the X11 and SDL versions;
-    the user's stellarc file is now located in $HOME/.stella/stellarc, state
-    files are located in $HOME/.stella/state/ and the stella.pro file is
-    located in $HOME/.stella/stella.pro
+  * Switched to using high compatibility M6502 mode by default. This means
+    old state saves from previous Stella versions will no longer work.
 
-  * Changed the way options are supplied on the commandline for the X11 and
-    SDL versions. Now all commandline options take exactly the same arguments
-    as in the INI file.
+  * The meaning of the "-sound" command line option has been changed. This
+    option now accepts either 'true' or 'false (1 or 0) to enable/disable
+    sound.
 
-  * Added "-accurate" command line option to choose between accurate
-    (CPU-intensive) timing or less accurate (CPU-friendly) timing to X11
-    and SDL versions. This is the final version of what was considered
-    experimental timing code in Stella 1.2.
+  * Changed sound mixer functionality. The system volume/mixer settings will
+    never be changed; volume changes in Stella will only affect the
+    emulation itself.
 
-  * Added "-sound" command line option to choose which sound backend to
-    use (alsa, oss, sdl) with the X11 and SDL versions.
+  * Added "-video" command line option. This option accepts either 'soft' or
+    'gl', to use software/OpenGL rendering.
 
-  * Added the developer command line options to the X11 and SDL versions,
-    which are only activated in developer builds: -Dformat, -Dwidth,
-    -Dheight, -Dxstart, -Dystart, -Dmerge
+  * Added "-gl_filter" command line option. This option accepts either
+    'nearest' or 'linear', to use GL_NEAREST or GL_LINEAR filtering.
 
-  * Fixed window resize bug in the X11 port
+  * Added "-gl_aspect" command line option. This option accepts a decimal
+    value specifying how much to scale the width of the emulation image
+    (useful for giving an authentic 'square-looking' 4:3 mode).
 
-  * Added "-nosound" command line option to the DOS port to disable audio
+  * Added "-gl_fsmax" command line option. This option accepts either
+    'true' or 'false, and specifies to use the maximum possible resolution
+    when in fullscreen OpenGL mode (useful for Linux and for Windows on
+    laptops).
 
-  * DOS port supports a "-vsync" option to synchronize emulation with the
-    video blank of the video card
+  * Added "-fragsize" command line option. This option accepts the size to
+    use for sound fragments. Linux/MacOSX works well with 512, Windows seems
+    to need 2048. This value must be a power of two.
 
-  * Changed VGA code in the DOS port to use a 60Hz 320x200 and a 60Hz
-    320x240 graphics mode
+  * Modified "-volume" command line option. If you specify '-1', Stella will
+    use the system volume.
 
-  * DOS port has been updated to run better under Windows NT, 2000, and XP.
-    There are still issues with the sound, however, it is usable.
+  * Renamed the "-pro" command line option to "-altpro".
 
-  * DOS port is using a new Sound Blaster driver created by Matt Conte which
-    supports auto-detection of sound cards.
+  * Renamed the "-fps" command line option to "-framerate".
 
-  * DOS port supports a STELLA_HOME environment variable that defines
-    the location of config files.
+  * Removed the "-center" command line option. Stella now automatically
+    centers the window when possible.
 
-  * In the DOS port the stella.pro file is searched for first in the
-    current working director and then in the $STELLA_HOME directory
+  * Removed the "-paddle real" command line option, since it never really
+    worked correctly (and Stelladaptor support adds that functionality
+    anyway).
 
-  * In the DOS port the ROM image is searched for first using the
-    specified path, then in $STELLA_HOME/ROMS, and finally in $STELLA_HOME
+  * Removed all command line options relating to the X11 port
+    (owncmap, display).
 
 Distribution Site
 ================= 
 
 The Stella distributions can be obtained from the Stella Website at:
 
-  http://stella.atari.org
-
-If for some reason you are unable to connect to the Stella Website using
-the above URL please try http://stella.sourceforge.net.
-
-
+  http://stella.sourceforge.net

@@ -9,11 +9,12 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - November 25, 2003
+                         To Do List - July 17, 2004
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
-on the list below and send email to Bradford Mott at bwmott@acm.org.
+on the list below and send email to Bradford Mott at bwmott@acm.org or
+Stephen Anthony at stephena@users.sourceforge.net.
 
 For all ports:
 
@@ -27,24 +28,16 @@ For all ports:
     - Mac (680x0, PowerPC)
     - Others...
 
-  * Add a debugger to Stella for game developers
+  * Find people to actually do the above ports, and try to more actively
+    recruit people into the Stella project
+
+  * Add a debugger to Stella for game developers or create an external
+    debugger to be used by Stella and z26 (and add hooks into Stella for it)
 
 
-For the Windows port of Stella (Cyberstella):
-
-  * More Columns / Advanced sorting for the GUI
+For the Windows GUI frontend (StellaX)
 
   * Make all dialog boxes resizable for any size text
-
-  * Improve the DirectSound support
-
-  * Add Fullscreen / Windowed mode - Alt-Enter
-
-  * Add a Direct3D version, so we have alpha-blending, hardware stretch, etc.
-
-  * Add commandline options that were in StellaX
-
-  * Add Screenshots in PNG format - F12
 
   * The following features depend on developer availability
 
