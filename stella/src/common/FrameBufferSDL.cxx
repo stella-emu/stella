@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.2 2005-01-04 19:59:13 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -30,7 +30,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL::FrameBufferSDL()
-   :  x11Available(false),
+   :  myWMAvailable(false),
       theZoomLevel(1),
       theMaxZoomLevel(1),
       theAspectRatio(1.0),
@@ -167,28 +167,22 @@ bool FrameBufferSDL::fullScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBufferSDL::maxWindowSizeForScreen()
 {
-  if(!x11Available)
-    return 4;
+  uInt32 sWidth     = screenWidth();
+  uInt32 sHeight    = screenHeight();
+  uInt32 multiplier = sWidth / myWidth;
 
-#ifdef UNIX
-  // Otherwise, lock the screen and get the width and height
-  myWMInfo.info.x11.lock_func();
-  Display* theX11Display = myWMInfo.info.x11.display;
-  myWMInfo.info.x11.unlock_func();
+  // If screenwidth or height could not be found, use default zoom value
+  if(sWidth == 0 || sHeight == 0)
+    return 2;
 
-  int screenWidth  = DisplayWidth(theX11Display, DefaultScreen(theX11Display));
-  int screenHeight = DisplayHeight(theX11Display, DefaultScreen(theX11Display));
-
-  uInt32 multiplier = screenWidth / myWidth;
   bool found = false;
-
   while(!found && (multiplier > 0))
   {
     // Figure out the desired size of the window
-    int width  = (int) (myWidth * multiplier * theAspectRatio);
-    int height = myHeight * multiplier;
+    uInt32 width  = (uInt32) (myWidth * multiplier * theAspectRatio);
+    uInt32 height = myHeight * multiplier;
 
-    if((width < screenWidth) && (height < screenHeight))
+    if((width < sWidth) && (height < sHeight))
       found = true;
     else
       multiplier--;
@@ -198,9 +192,56 @@ uInt32 FrameBufferSDL::maxWindowSizeForScreen()
     return multiplier;
   else
     return 1;
-#endif
+}
 
-  return 4;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameBufferSDL::screenWidth()
+{
+  uInt32 width = 0;
+
+  if(myWMAvailable)
+  {
+#if defined(UNIX)
+    if(myWMInfo.subsystem == SDL_SYSWM_X11)
+    {
+      myWMInfo.info.x11.lock_func();
+      width = DisplayWidth(myWMInfo.info.x11.display,
+                           DefaultScreen(myWMInfo.info.x11.display));
+      myWMInfo.info.x11.unlock_func();
+    }
+#elif defined(WIN32)
+    width = (uInt32) GetSystemMetrics(SM_CXSCREEN);
+#elif defined(MAC_OSX)
+  // FIXME - add OSX Desktop code here (I don't think SDL supports it yet)
+#endif
+  }
+
+  return width;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameBufferSDL::screenHeight()
+{
+  uInt32 height = 0;
+
+  if(myWMAvailable)
+  {
+#if defined(UNIX)
+    if(myWMInfo.subsystem == SDL_SYSWM_X11)
+    {
+      myWMInfo.info.x11.lock_func();
+      height = DisplayHeight(myWMInfo.info.x11.display,
+                             DefaultScreen(myWMInfo.info.x11.display));
+      myWMInfo.info.x11.unlock_func();
+    }
+#elif defined(WIN32)
+    height = (uInt32) GetSystemMetrics(SM_CYSCREEN);
+#elif defined(MAC_OSX)
+  // FIXME - add OSX Desktop code here (I don't think SDL supports it yet)
+#endif
+  }
+
+  return height;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

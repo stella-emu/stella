@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.4 2005-01-04 19:59:13 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -35,7 +35,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.4 2005-01-04 19:59:13 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -103,6 +103,16 @@ class FrameBufferSDL : public FrameBuffer
     uInt32 imageHeight() { return myDimensions.h; }
 
     /**
+      This routine is called to get the width of the system desktop.
+    */
+    uInt32 screenWidth();
+
+    /**
+      This routine is called to get the height of the system desktop.
+    */
+    uInt32 screenHeight();
+
+    /**
       Set the title and icon for the main SDL window.
     */
     void setWindowAttributes();
@@ -157,8 +167,8 @@ class FrameBufferSDL : public FrameBuffer
     // (these may be different than the screen/window dimensions)
     SDL_Rect myDimensions;
 
-    // Indicates if we are running under X11
-    bool x11Available;
+    // Indicates if the system-specific WM information is available
+    bool myWMAvailable;
 
     // Indicates the current zoom level of the SDL screen
     uInt32 theZoomLevel;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.4 2005-01-03 19:16:09 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.5 2005-01-04 19:59:13 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -69,16 +69,12 @@ bool FrameBufferSoft::init()
   if(SDL_Init(initflags) < 0)
     return false;
 
-  // Check which system we are running under
-  x11Available = false;
-#if UNIX && (!__APPLE__)
+  // Get the system-specific WM information
   SDL_VERSION(&myWMInfo.version);
   if(SDL_GetWMInfo(&myWMInfo) > 0)
-    if(myWMInfo.subsystem == SDL_SYSWM_X11)
-      x11Available = true;
-#endif
+    myWMAvailable = true;
 
-  // Get the maximum size of a window for THIS screen
+  // Get the maximum size of a window for the desktop
   theMaxZoomLevel = maxWindowSizeForScreen();
 
   // Check to see if window size will fit in the screen
