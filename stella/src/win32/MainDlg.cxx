@@ -1,579 +1,484 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/12/2000
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
+// Copyright (c) 1995-2000 by Jeff Miller
+// Copyright (c) 2004 by Stephen Anthony
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: MainDlg.cxx,v 1.2 2004-05-27 22:02:35 stephena Exp $
+//============================================================================ 
+
 #include "pch.hxx"
 #include "MainDlg.hxx"
-
 #include "GlobalData.hxx"
-
 #include "PropertySheet.hxx"
 #include "AboutPage.hxx"
 #include "DocPage.hxx"
 #include "ConfigPage.hxx"
-
 #include "resource.h"
 
-#define BKGND_BITMAP_TOP  64
+#define BKGND_BITMAP_TOP     64
 #define BKGND_BITMAP_BOTTOM  355
 
 // NOTE: LVS_OWNERDATA doesn't support LVM_SORTITEMS!
 
-inline LPARAM ListView_GetItemData(
-    HWND hwndList, 
-    int iItem
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+inline LPARAM ListView_GetItemData( HWND hwndList, int iItem )
 {
-    LVITEM lvi;
-    lvi.mask = LVIF_PARAM;
-    lvi.iItem = iItem;
-    lvi.iSubItem = 0;
-    ListView_GetItem(hwndList, &lvi);
-    return lvi.lParam;
+  LVITEM lvi;
+  lvi.mask = LVIF_PARAM;
+  lvi.iItem = iItem;
+  lvi.iSubItem = 0;
+
+  ListView_GetItem(hwndList, &lvi);
+
+  return lvi.lParam;
 }
 
-CMainDlg::CMainDlg(
-    CGlobalData& rGlobalData,
-    HINSTANCE hInstance
-    ) : \
-    m_rGlobalData(rGlobalData),
-    m_hInstance(hInstance)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+CMainDlg::CMainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance )
+        : m_rGlobalData(rGlobalData),
+          m_hInstance(hInstance)
 {
 }
 
-void CMainDlg::ClearList(
-    void
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void CMainDlg::ClearList( void )
 {
-    int nCount = ListView_GetItemCount( m_hwndList );
+  int nCount = ListView_GetItemCount( m_hwndList );
 
-    for (int i = 0; i < nCount; ++i)
-    {
-        delete (CListData*)ListView_GetItemData( m_hwndList, i );
-    }
+  for (int i = 0; i < nCount; ++i)
+    delete (CListData*)ListView_GetItemData( m_hwndList, i );
 
-    ListView_DeleteAllItems( m_hwndList );
+  ListView_DeleteAllItems( m_hwndList );
 }
 
-int CMainDlg::DoModal(
-    HWND hwndParent
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+int CMainDlg::DoModal( HWND hwndParent )
 {
-    return DialogBoxParam( m_hInstance, 
-                           MAKEINTRESOURCE(IDD),
-                           hwndParent, 
-                           StaticDialogFunc, 
-                           (LPARAM)this );
+  return DialogBoxParam( m_hInstance, 
+                         MAKEINTRESOURCE(IDD),
+                         hwndParent, 
+                         StaticDialogFunc, 
+                         (LPARAM)this );
 }
 
-BOOL CALLBACK CMainDlg::StaticDialogFunc(
-    HWND hDlg, 
-    UINT uMsg,
-    WPARAM wParam, 
-    LPARAM lParam
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+BOOL CALLBACK
+CMainDlg::StaticDialogFunc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    CMainDlg* pDlg;
+  CMainDlg* pDlg;
 
-    switch ( uMsg )
-    {
+  switch ( uMsg )
+  {
     case WM_INITDIALOG:
-        pDlg = reinterpret_cast<CMainDlg*>( lParam );
-        pDlg->m_hwnd = hDlg;
-        (void)::SetWindowLong( hDlg, 
-                               DWL_USER,
-                               reinterpret_cast<LONG>( pDlg ) );
-        break;
+      pDlg = reinterpret_cast<CMainDlg*>( lParam );
+      pDlg->m_hwnd = hDlg;
+      (void)::SetWindowLong( hDlg, DWL_USER, reinterpret_cast<LONG>( pDlg ) );
+      break;
 
     default:
-        pDlg = reinterpret_cast<CMainDlg*>( 
-            ::GetWindowLong( hDlg, DWL_USER ) );
-        if ( pDlg == NULL )
-        {
-            return FALSE;
-        }
-        break;
-    }
+      pDlg = reinterpret_cast<CMainDlg*>( ::GetWindowLong( hDlg, DWL_USER ) );
+      if ( pDlg == NULL )
+        return FALSE;
+      break;
+  }
 
-    return pDlg->DialogFunc( uMsg, wParam, lParam );
+  return pDlg->DialogFunc( uMsg, wParam, lParam );
 }
 
-BOOL CALLBACK CMainDlg::DialogFunc(
-    UINT uMsg,
-    WPARAM wParam, 
-    LPARAM lParam
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+BOOL CALLBACK
+CMainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    BOOL b;
+  BOOL b;
 
-    switch (uMsg)
-    {
+  switch (uMsg)
+  {
     case WM_COMMAND:
-        return OnCommand( LOWORD(wParam), (HWND)lParam, HIWORD(wParam) );
+      return OnCommand( LOWORD(wParam), (HWND)lParam, HIWORD(wParam) );
 
     case WM_CTLCOLORSTATIC:
-        b = (BOOL)OnCtlColorStatic( (HDC)wParam, (HWND)lParam );
-        if (b)
-        {
-            return b;
-        }
-        break;
+      b = (BOOL)OnCtlColorStatic( (HDC)wParam, (HWND)lParam );
+      if (b)
+        return b;
+      break;
 
     case WM_ERASEBKGND:
-        if ( OnEraseBkgnd( (HDC)wParam ) )
-        {
-            return TRUE;
-        }
-        break;
+      if ( OnEraseBkgnd( (HDC)wParam ) )
+        return TRUE;
+      break;
 
     case WM_INITDIALOG:
-        return OnInitDialog( );
+      return OnInitDialog( );
 
     case WM_NOTIFY:
-        return OnNotify( (int)wParam, (LPNMHDR)lParam );
+      return OnNotify( (int)wParam, (LPNMHDR)lParam );
 
     case WM_PALETTECHANGED:
-        TRACE( "WM_PALETTECHANGED from maindlg" );
-        return FALSE;
+      TRACE( "WM_PALETTECHANGED from maindlg" );
+      return FALSE;
 
     case WM_QUERYNEWPALETTE:
-        TRACE( "WM_QUERYNEWPALETTE from maindlg" );
-        return FALSE;
+      TRACE( "WM_QUERYNEWPALETTE from maindlg" );
+      return FALSE;
 
-    //
     // Cool caption handlers
-    //
-
     case WM_DESTROY:
-        OnDestroy( );
-        break;
+      OnDestroy( );
+      break;
 
     case WM_DRAWITEM:
-        // Forward this onto the control
-        ::SendMessage( ((LPDRAWITEMSTRUCT)lParam)->hwndItem, WM_DRAWITEM,
-            wParam, lParam );
-        return TRUE;
+      // Forward this onto the control
+      ::SendMessage( ((LPDRAWITEMSTRUCT)lParam)->hwndItem, WM_DRAWITEM, wParam, lParam );
+      return TRUE;
 
     case WM_NCPAINT:
-        // DefWindowProc(hDlg, uMsg, wParam, lParam);
-        OnNcPaint( (HRGN)wParam );
-        return TRUE;
+      // DefWindowProc(hDlg, uMsg, wParam, lParam);
+      OnNcPaint( (HRGN)wParam );
+      return TRUE;
 
     case WM_NCACTIVATE:
-        OnNcActivate( (BOOL)wParam );
-        // When the fActive parameter is FALSE, an application should return 
-        // TRUE to indicate that the system should proceed with the default 
-        // processing
-        SetWindowLong( m_hwnd, DWL_MSGRESULT, TRUE );
-        return TRUE;
+      OnNcActivate( (BOOL)wParam );
+      // When the fActive parameter is FALSE, an application should return 
+      // TRUE to indicate that the system should proceed with the default 
+      // processing
+      SetWindowLong( m_hwnd, DWL_MSGRESULT, TRUE );
+      return TRUE;
 
     case WM_NCLBUTTONDOWN:
-        return OnNcLButtonDown( (INT)wParam, MAKEPOINTS(lParam) );
+      return OnNcLButtonDown( (INT)wParam, MAKEPOINTS(lParam) );
 
     case WM_SYSCOMMAND:
-        // Allow Alt-F4 to close the window
-        if ( wParam == SC_CLOSE )
-        {
-            ::EndDialog( m_hwnd, IDCANCEL );
-        }
-        break;
-    }
+      // Allow Alt-F4 to close the window
+      if ( wParam == SC_CLOSE )
+        ::EndDialog( m_hwnd, IDCANCEL );
+      break;
+  }
 
-    //
-    // Message not handled
-    //
+  // Message not handled
+  return FALSE;
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+BOOL CMainDlg::OnInitDialog( void  )
+{
+  DWORD dwRet;
 
+  HWND hwnd = *this;
+
+  dwRet = m_stella.Initialize();
+  if ( dwRet != ERROR_SUCCESS )
+  {
+    MessageBoxFromWinError( dwRet, _T("CStellaX::Initialize") );
+    SendMessage( hwnd, WM_CLOSE, 0, 0 );
     return FALSE;
+  }
+
+  // Set dialog icon
+  HICON hicon = ::LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_APP));
+  ::SendMessage( hwnd, WM_SETICON, ICON_BIG, (LPARAM)hicon );
+  ::SendMessage( hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hicon );
+
+  // Make the Rom note have bold text
+  HWND hwndCtrl;
+
+  hwndCtrl = ::GetDlgItem( hwnd, IDC_ROMNOTE );
+
+  HFONT hfont = (HFONT)::SendMessage( hwndCtrl, WM_GETFONT, 0, 0 );
+
+  LOGFONT lf;
+  ::GetObject( hfont, sizeof(LOGFONT), &lf );
+  lf.lfWeight = FW_BOLD;
+
+  m_hfontRomNote = ::CreateFontIndirect( &lf );
+  if ( m_hfontRomNote )
+    ::SendMessage( hwndCtrl, WM_SETFONT, (WPARAM)m_hfontRomNote, 0 );
+
+  // Do subclassing
+  m_CoolCaption.OnInitDialog( hwnd );
+  m_header.SubclassDlgItem( hwnd, IDC_ROMLIST );
+  m_btn3d.SubclassDlgItem( hwnd, IDC_TITLE );
+  m_btnPlay.SubclassDlgItem( hwnd, IDC_PLAY );
+  m_btnHelp.SubclassDlgItem( hwnd, IDC_ABOUT );
+  m_btnConfig.SubclassDlgItem( hwnd, IDC_CONFIG );
+  m_btnExit.SubclassDlgItem( hwnd, IDC_EXIT );
+
+  const int nMaxString = 256;
+  TCHAR psz[nMaxString + 1];
+
+  // Initialize the list view
+  m_hwndList = ::GetDlgItem( hwnd, IDC_ROMLIST );
+  ASSERT( m_hwndList );
+
+  // LVS_EX_ONECLICKACTIVATE was causing a/vs in kernel32
+  ::SendMessage( m_hwndList, LVM_SETEXTENDEDLISTVIEWSTYLE,
+                 0, LVS_EX_FULLROWSELECT );
+
+  RECT rc;
+  ::GetClientRect( m_hwndList, &rc );
+
+  LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
+  int cx = lTotalWidth / CListData::GetColumnCount();
+
+  for (int i = 0; i < CListData::GetColumnCount(); ++i)
+  {
+    ::LoadString( m_hInstance, CListData::GetColumnNameIdForColumn( i ), 
+                  psz, nMaxString );
+
+    LV_COLUMN lvc;
+    lvc.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
+    lvc.fmt = LVCFMT_LEFT;
+    lvc.cx = cx;
+    lvc.pszText = psz;
+    ListView_InsertColumn( m_hwndList, i, &lvc );
+  }
+
+  DWORD dwError = PopulateRomList();
+  if ( dwError != ERROR_SUCCESS )
+  {
+    MessageBoxFromWinError( dwError, _T("PopulateRomList") );
+    return FALSE;
+  }
+
+  // if items added, select first item and enable play button
+  int nCount = ListView_GetItemCount( m_hwndList );
+  if (nCount != 0)
+  {
+    m_header.SetSortCol( 0, TRUE );
+    ListView_SortItems( m_hwndList, ListViewCompareFunc, (LPARAM)this ); 
+    ListView_SetItemState( m_hwndList, 0, LVIS_SELECTED | LVIS_FOCUSED,
+                           LVIS_SELECTED | LVIS_FOCUSED );
+  }
+  else
+  {
+    ::EnableWindow(::GetDlgItem( hwnd, IDC_PLAY), FALSE );
+  }
+
+  // Show status text
+  TCHAR pszStatus[256 + 1];
+  LoadString(m_hInstance, IDS_STATUSTEXT, pszStatus, 256);
+  wsprintf( psz, pszStatus, nCount );
+  SetDlgItemText( hwnd, IDC_ROMCOUNT, psz );
+
+  // Show rom path
+  SetDlgItemText( hwnd, IDC_ROMPATH, m_rGlobalData.RomDir() );
+
+  // Set default button
+  ::SendMessage( hwnd, DM_SETDEFID, IDC_PLAY, 0 );
+
+  // return FALSE if SetFocus is called
+  return TRUE;
 }
 
-BOOL CMainDlg::OnInitDialog(
-    void
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
 {
-    DWORD dwRet;
+  UNUSED_ALWAYS( hwndCtl );
+  UNUSED_ALWAYS( codeNotify );
 
-    HWND hwnd = *this;
+  HWND hwnd = *this;
+  CListData* pListData;
 
-    dwRet = m_stella.Initialize();
-    if ( dwRet != ERROR_SUCCESS )
-    {
-        MessageBoxFromWinError( dwRet, _T("CStellaX::Initialize") );
-        SendMessage( hwnd, WM_CLOSE, 0, 0 );
-        return FALSE;
-    }
+  int nItem;
 
-    // Set dialog icon
-
-    HICON hicon = ::LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_APP));
-    ::SendMessage( hwnd, WM_SETICON, ICON_BIG, (LPARAM)hicon );
-    ::SendMessage( hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hicon );
-
-    //
-    // Make the Rom note have bold text
-    //
-
-    HWND hwndCtrl;
-
-    hwndCtrl = ::GetDlgItem( hwnd, IDC_ROMNOTE );
-
-    HFONT hfont = (HFONT)::SendMessage( hwndCtrl, WM_GETFONT, 0, 0 );
-
-    LOGFONT lf;
-    ::GetObject( hfont, sizeof(LOGFONT), &lf );
-    lf.lfWeight = FW_BOLD;
-
-    m_hfontRomNote = ::CreateFontIndirect( &lf );
-    if ( m_hfontRomNote )
-    {
-        ::SendMessage( hwndCtrl, WM_SETFONT, (WPARAM)m_hfontRomNote, 0 );
-    }
-
-    // Do subclassing
-
-    m_CoolCaption.OnInitDialog( hwnd );
-    m_header.SubclassDlgItem( hwnd, IDC_ROMLIST );
-    m_btn3d.SubclassDlgItem( hwnd, IDC_TITLE );
-    m_btnPlay.SubclassDlgItem( hwnd, IDC_PLAY );
-    m_btnHelp.SubclassDlgItem( hwnd, IDC_ABOUT );
-    m_btnConfig.SubclassDlgItem( hwnd, IDC_CONFIG );
-    m_btnExit.SubclassDlgItem( hwnd, IDC_EXIT );
-
-    const int nMaxString = 256;
-    TCHAR psz[nMaxString + 1];
-
-    // Initialize the list view
-
-    m_hwndList = ::GetDlgItem( hwnd, IDC_ROMLIST );
-    ASSERT( m_hwndList );
-
-    // LVS_EX_ONECLICKACTIVATE was causing a/vs in kernel32
-
-    ::SendMessage( m_hwndList, 
-                   LVM_SETEXTENDEDLISTVIEWSTYLE,
-                   0,
-                   LVS_EX_FULLROWSELECT );
-
-    RECT rc;
-    ::GetClientRect( m_hwndList, &rc );
-
-    LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
-    int cx = lTotalWidth / CListData::GetColumnCount();
-
-    for (int i = 0; i < CListData::GetColumnCount(); ++i)
-    {
-        ::LoadString( m_hInstance, 
-                      CListData::GetColumnNameIdForColumn( i ), 
-                      psz, nMaxString );
-
-        LV_COLUMN lvc;
-        lvc.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
-        lvc.fmt = LVCFMT_LEFT;
-        lvc.cx = cx;
-        lvc.pszText = psz;
-        ListView_InsertColumn( m_hwndList, i, &lvc );
-    }
-
-    DWORD dwError = PopulateRomList();
-    if ( dwError != ERROR_SUCCESS )
-    {
-        MessageBoxFromWinError( dwError, _T("PopulateRomList") );
-        return FALSE;
-    }
-
-    // if items added, select first item and enable play button
-
-    int nCount = ListView_GetItemCount( m_hwndList );
-    if (nCount != 0)
-    {
-#ifdef _DEBUG
-            DWORD dwStartTick = ::GetTickCount();
-#endif
-
-            m_header.SetSortCol( 0, TRUE );
-            ListView_SortItems( m_hwndList, 
-                                ListViewCompareFunc, 
-                                (LPARAM)this ); 
-
-#ifdef _DEBUG
-            TRACE("\tElapsed ticks for ListView_SortItems = %ld", ::GetTickCount()-dwStartTick);
-#endif
-
-        ListView_SetItemState( m_hwndList, 0, LVIS_SELECTED | LVIS_FOCUSED,
-            LVIS_SELECTED | LVIS_FOCUSED );
-    }
-    else
-    {
-        ::EnableWindow(::GetDlgItem( hwnd, IDC_PLAY), FALSE );
-    }
-
-    //
-    // Show status text
-    //
-
-    TCHAR pszStatus[256 + 1];
-    LoadString(m_hInstance, IDS_STATUSTEXT, pszStatus, 256);
-    wsprintf( psz, pszStatus, nCount );
-    SetDlgItemText( hwnd, IDC_ROMCOUNT, psz );
-
-    //
-    // Show rom path
-    //
-
-    SetDlgItemText( hwnd, IDC_ROMPATH, m_rGlobalData.RomDir() );
-
-    //
-    // Set default button
-    //
-
-    ::SendMessage( hwnd, DM_SETDEFID, IDC_PLAY, 0 );
-
-    // return FALSE if SetFocus is called
-    return TRUE;
-}
-
-BOOL CMainDlg::OnCommand(
-    int id, 
-    HWND hwndCtl, 
-    UINT codeNotify
-    )
-{
-    UNUSED_ALWAYS( hwndCtl );
-    UNUSED_ALWAYS( codeNotify );
-
-    HWND hwnd = *this;
-    CListData* pListData;
-
-    int nItem;
-
-    switch (id)
-    {
+  switch (id)
+  {
     case IDC_PLAY:
-
-        nItem = (int)::SendMessage( m_hwndList,
-                                    LVM_GETNEXTITEM, 
-                                    (WPARAM)-1,
-                                    MAKELPARAM( LVNI_SELECTED, 0 ) );
-        ASSERT( nItem != -1 );
-        if ( nItem == -1 )
-        {
-            ::MessageBox( m_hInstance, 
-                          hwnd, 
-                          IDS_NO_ITEM_SELECTED );
-            return TRUE;
-        }
-
-#if 0
-        TCHAR pszFile[MAX_PATH + 1];
-
-        // BUGBUG: On Win95b pszFile is coming back empty!
-        LVITEM lvi;
-        lvi.mask = LVIF_TEXT;
-        lvi.iItem = nItem;
-        lvi.iSubItem = CListData::FILENAME_COLUMN;
-        lvi.pszText = pszFile;
-        lvi.cchTextMax = MAX_PATH;
-        ::SendMessage( m_hwndList, LVM_GETITEM, 0, (LPARAM)&lvi );
-#endif
-
-        pListData = (CListData*)ListView_GetItemData( m_hwndList, nItem );
-
-        TCHAR pszPathName[ MAX_PATH + 1 ];
-        lstrcpy( pszPathName, m_rGlobalData.RomDir() );
-        lstrcat( pszPathName, _T("\\") );
-        lstrcat( pszPathName, 
-                 pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
-
-        // Play the game!
-
-        ::EnableWindow( hwnd, FALSE );
-
-        (void)m_stella.PlayROM( hwnd, 
-                                pszPathName,
-                                pListData->GetTextForColumn( CListData::NAME_COLUMN ),
-                                m_rGlobalData );
-
-        ::EnableWindow( hwnd, TRUE );
-
-        // Set focus back to the rom list
-
-        ::SetFocus( m_hwndList );
-
+      nItem = (int)::SendMessage( m_hwndList, LVM_GETNEXTITEM, 
+                                  (WPARAM)-1, MAKELPARAM( LVNI_SELECTED, 0 ) );
+      ASSERT( nItem != -1 );
+      if ( nItem == -1 )
+      {
+        ::MessageBox( m_hInstance, hwnd, IDS_NO_ITEM_SELECTED );
         return TRUE;
+      }
+
+      pListData = (CListData*)ListView_GetItemData( m_hwndList, nItem );
+
+      TCHAR pszPathName[ MAX_PATH + 1 ];
+      lstrcpy( pszPathName, m_rGlobalData.RomDir() );
+      lstrcat( pszPathName, _T("\\") );
+      lstrcat( pszPathName, 
+      pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
+
+      // Play the game!
+      ::EnableWindow( hwnd, FALSE );
+
+      (void)m_stella.PlayROM( hwnd, pszPathName,
+                              pListData->GetTextForColumn( CListData::NAME_COLUMN ),
+                              m_rGlobalData );
+
+      ::EnableWindow( hwnd, TRUE );
+
+      // Set focus back to the rom list
+      ::SetFocus( m_hwndList );
+
+      return TRUE;
+      break; // case IDC_PLAY
 
     case IDC_EXIT:
-        ClearList();
-        ::EndDialog( hwnd, IDCANCEL );
-        return TRUE;
+      ClearList();
+      ::EndDialog( hwnd, IDCANCEL );
+      return TRUE;
+      break; // case IDC_EXIT
 
     case IDC_CONFIG:
-        {
-            CPropertySheet ps( _T("Configure"), hwnd );
+    {
+      CPropertySheet ps( _T("Configure"), hwnd );
 
-            CConfigPage pgConfig( m_rGlobalData );
-            ps.AddPage( &pgConfig );
+      CConfigPage pgConfig( m_rGlobalData );
+      ps.AddPage( &pgConfig );
 
-            (void)ps.DoModal();
-        }
-        return TRUE;
+      (void)ps.DoModal();
+
+      return TRUE;
+      break; // case IDC_CONFIG
+    }
 
     case IDC_ABOUT:
-        {
-            CPropertySheet ps(_T("Help"), hwnd);
+    {
+      CPropertySheet ps(_T("Help"), hwnd);
 
-            CHelpPage pgAbout;
-            ps.AddPage(&pgAbout);
+      CHelpPage pgAbout;
+      ps.AddPage(&pgAbout);
 
-            CDocPage pgDoc;
-            ps.AddPage(&pgDoc);
+      CDocPage pgDoc;
+      ps.AddPage(&pgDoc);
 
-            ps.DoModal();
-        }
-        return TRUE;
+      ps.DoModal();
+      return TRUE;
+      break; // case IDC_ABOUT
     }
+  }
 
-    return FALSE;
+  return FALSE;
 }
 
-BOOL CMainDlg::OnNotify(
-    int idCtrl,
-    LPNMHDR pnmh
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+BOOL CMainDlg::OnNotify( int idCtrl, LPNMHDR pnmh )
 {
-    UNUSED_ALWAYS( idCtrl );
+  UNUSED_ALWAYS( idCtrl );
 
-    switch ( pnmh->code )
-    {
+  switch ( pnmh->code )
+  {
     case LVN_GETDISPINFO:
-        OnGetDispInfo( (NMLVDISPINFO*)pnmh );
-        return TRUE;
+      OnGetDispInfo( (NMLVDISPINFO*)pnmh );
+      return TRUE;
 
     case LVN_COLUMNCLICK:
-        OnColumnClick( (LPNMLISTVIEW)pnmh );
-        return TRUE;
+      OnColumnClick( (LPNMLISTVIEW)pnmh );
+      return TRUE;
 
     case LVN_ITEMCHANGED:
-        OnItemChanged( (LPNMLISTVIEW)pnmh );
-        return TRUE;
+      OnItemChanged( (LPNMLISTVIEW)pnmh );
+      return TRUE;
 
     case NM_DBLCLK:
-        // send out an ok click to play
-        ::SendDlgItemMessage( *this, IDC_PLAY, BM_CLICK, 0, 0 );
-        return TRUE;
-    }
+      // send out an ok click to play
+      ::SendDlgItemMessage( *this, IDC_PLAY, BM_CLICK, 0, 0 );
+      return TRUE;
+  }
 
-    // not handled
+  // not handled
+  return FALSE;
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+static void ScreenToClient( HWND hwnd, LPRECT lpRect )
+{
+  ::ScreenToClient(hwnd, (LPPOINT)lpRect);
+  ::ScreenToClient(hwnd, ((LPPOINT)lpRect)+1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+static void FillSolidRect( HDC hdc, LPCRECT lpRect, COLORREF clr )
+{
+  COLORREF crOld = ::SetBkColor(hdc, clr);
+  ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, lpRect, NULL, 0, NULL);
+  ::SetBkColor(hdc, crOld);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+BOOL CMainDlg::OnEraseBkgnd( HDC hdc )
+{
+  // don't do this in 256 color
+
+  if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
     return FALSE;
-}
 
-static void ScreenToClient(
-    HWND hwnd,
-    LPRECT lpRect
-    )
-{
-    ::ScreenToClient(hwnd, (LPPOINT)lpRect);
-    ::ScreenToClient(hwnd, ((LPPOINT)lpRect)+1);
-}
+  RECT rcWindow;
+  ::GetWindowRect( *this, &rcWindow );
+  ::ScreenToClient( *this, &rcWindow );
 
-static void FillSolidRect(
-    HDC hdc,
-    LPCRECT lpRect, 
-    COLORREF clr
-    )
-{
-    COLORREF crOld = ::SetBkColor(hdc, clr);
-    ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, lpRect, NULL, 0, NULL);
-    ::SetBkColor(hdc, crOld);
-}
+  FillSolidRect( hdc, &rcWindow, ::GetSysColor( COLOR_3DFACE ) );
 
-BOOL CMainDlg::OnEraseBkgnd(
-    HDC hdc
-    )
-{
-    // don't do this in 256 color
+  RECT rc;
+  ::SetRect( &rc, rcWindow.left, BKGND_BITMAP_TOP, rcWindow.right, BKGND_BITMAP_BOTTOM );
 
-    if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
+  long lWidth = rc.right - rc.left;
+  long lHeight = rc.bottom - rc.top;
+
+  HDC hdcMem = CreateCompatibleDC(hdc);
+
+  HBITMAP hbmpTile = LoadBitmap( m_hInstance, MAKEINTRESOURCE(IDB_TILE) );
+
+  BITMAP bm;
+  GetObject(hbmpTile, sizeof(bm), &bm);
+
+  HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcMem, hbmpTile);
+
+  for (long x = 0; x < lWidth; x += bm.bmWidth)
+  {
+    for (long y = 0; y < lHeight; y += bm.bmHeight)
     {
-        return FALSE;
-    }
-
-    RECT rcWindow;
-    ::GetWindowRect( *this, &rcWindow );
-    ::ScreenToClient( *this, &rcWindow );
-
-    FillSolidRect( hdc, &rcWindow, ::GetSysColor( COLOR_3DFACE ) );
-
-    RECT rc;
-    ::SetRect( &rc, rcWindow.left, BKGND_BITMAP_TOP, 
-        rcWindow.right, BKGND_BITMAP_BOTTOM );
-
-    long lWidth = rc.right - rc.left;
-    long lHeight = rc.bottom - rc.top;
-
-    HDC hdcMem = CreateCompatibleDC(hdc);
-
-    HBITMAP hbmpTile = LoadBitmap( m_hInstance, 
-                                   MAKEINTRESOURCE(IDB_TILE) );
-
-    BITMAP bm;
-    GetObject(hbmpTile, sizeof(bm), &bm);
-
-    HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcMem, hbmpTile);
-
-    for (long x = 0; x < lWidth; x += bm.bmWidth)
-    {
-        for (long y = 0; y < lHeight; y += bm.bmHeight)
-        {
-            ::BitBlt( hdc, 
+      ::BitBlt( hdc, 
                 rc.left + x, rc.top + y,
                 ( (rc.left + x + bm.bmWidth) > rc.right ) ? rc.right-(rc.left+x) : bm.bmWidth,
                 ( (rc.top + y + bm.bmHeight) > rc.bottom ) ? rc.bottom-(rc.top+y) : bm.bmHeight,
                 hdcMem, 
                 0, 0, SRCCOPY );
-        }
     }
+  }
 
-    SelectObject(hdcMem, hbmpOld);
+  SelectObject(hdcMem, hbmpOld);
+  DeleteObject(hbmpTile);
+  DeleteDC(hdcMem);
 
-    DeleteObject(hbmpTile);
-
-    DeleteDC(hdcMem);
-
-    return TRUE;
+  return TRUE;
 }
 
-HBRUSH CMainDlg::OnCtlColorStatic(
-    HDC hdcStatic, 
-    HWND hwndStatic
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+HBRUSH CMainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
 {
-    // don't do this in 256 color
+  // don't do this in 256 color
 
-    if (GetDeviceCaps(hdcStatic, RASTERCAPS) & RC_PALETTE)
-    {
-        return FALSE;
-    }
+  if (GetDeviceCaps(hdcStatic, RASTERCAPS) & RC_PALETTE)
+    return FALSE;
 
-    if ((GetWindowLong(hwndStatic, GWL_STYLE) & SS_ICON) == SS_ICON)
-    {
-        return NULL;
-    }
+  if ((GetWindowLong(hwndStatic, GWL_STYLE) & SS_ICON) == SS_ICON)
+    return NULL;
 
-    SetBkMode(hdcStatic, TRANSPARENT);
-    return (HBRUSH)GetStockObject(NULL_BRUSH);
+  SetBkMode(hdcStatic, TRANSPARENT);
+
+  return (HBRUSH)GetStockObject(NULL_BRUSH);
 }
 
-// ---------------------------------------------------------------------------
-
-DWORD CMainDlg::PopulateRomList(
-    void
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+DWORD CMainDlg::PopulateRomList( void )
 {
+  TRACE("CMainDlg::PopulateRomList");
 
-    TRACE("CMainDlg::PopulateRomList");
-
-    DWORD dwRet;
+  DWORD dwRet;
 
 #ifdef _DEBUG
     DWORD dwStartTick = ::GetTickCount();

@@ -1,37 +1,47 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/07/2000
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
+// Copyright (c) 1995-2000 by Jeff Miller
+// Copyright (c) 2004 by Stephen Anthony
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: ConfigPage.hxx,v 1.2 2004-05-27 22:02:35 stephena Exp $
+//============================================================================ 
 
 #ifndef CONFIGPG_H
 #define CONFIGPG_H
-#pragma once
+//FIXME #pragma once
 
 #include "PropertySheet.hxx"
 #include "GlobalData.hxx"
 
 class CConfigPage : public CPropertyPage
 {
-public:
+  public:
+    CConfigPage( CGlobalData& rGlobalData );
 
-CConfigPage( CGlobalData& rGlobalData );
+  protected:
+    virtual BOOL OnInitDialog( HWND hwnd );
+    virtual void OnDestroy();
+    virtual LONG OnApply( LPPSHNOTIFY lppsn );
 
-protected:
+    virtual BOOL OnCommand( WORD /* wNotifyCode */, WORD /* wID */, HWND /* hwndCtl */ );
 
-virtual BOOL OnInitDialog( HWND hwnd );
-virtual void OnDestroy();
-virtual LONG OnApply( LPPSHNOTIFY lppsn );
-
-virtual BOOL OnCommand( WORD /* wNotifyCode */, WORD /* wID */, HWND /* hwndCtl */ );
-
-private:
-
+  private:
     CGlobalData& m_rGlobalData;
     HWND m_hwnd;
 
-CConfigPage( const CConfigPage& );  // no implementation
-void operator=( const CConfigPage& );  // no implementation
-
+    CConfigPage( const CConfigPage& );  // no implementation
+    void operator=( const CConfigPage& );  // no implementation
 };
 
 #endif
