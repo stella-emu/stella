@@ -211,18 +211,33 @@
 
 	<ul>
 		<li><h1>FIXME - Some other stuff from Brad and company</h1></li>
+		<li>Added some <b>developer</b> options to the core, and the ability to change
+			game width, height, xstart, ystart, etc. while the emulation is running.  Added
+			ability to switch between NTSC and PAL at runtime, and the ability to save the
+			current properties to a file; X11 and SDL versions supported for now</li>
 		<li>Added save/load state ability to the core; X11 and SDL versions supported for now</li>
 		<li>External sound server for the X11 and SDL versions no longer required, as all
 			sound code is now integrated into the core</li>
 		<li>Changed the locations of the INI file for the X11 and SDL versions; the users'
 			stellarc file is now located in "<i>$HOME/.stella/stellarc</i>", and the state files
-			are located in "<i>$HOME/.stella/state/</i>"
+			are located in "<i>$HOME/.stella/state/</i>".  The users' stella.pro file is now
+			located in "<i>$HOME/.stella/stella.pro</i>"
 		<li>Changed the way options are supplied on the commandline.  Now all commandline
 			options take <b>exactly</b> the same arguments as in the INI file</li>
 		<li>Made the TIA message boxes look a little nicer</li>
 		<li>Added "<i>-accurate</i>" command line option to choose between accurate
-			(CPU-intensive) emulation or less accurate (CPU-friendly) emulation to X11 and SDL
-			versions</li>
+			(CPU-intensive) timing or less accurate (CPU-friendly) timing to X11 and SDL
+			versions.  This is final version of what was considered experimental timing code
+			in Stella 1.2</li>
+		<li>Added the following <b>developer</b> command line options to the X11 and SDL
+			versions, which are only activated in <b>developer</b> builds:
+			<ul>
+				<li><i>-Dformat</i></li>
+				<li><i>-Dwidth</i></li>
+				<li><i>-Dheight</i></li>
+				<li><i>-Dxstart</i></li>
+				<li><i>-Dystart</i></li>
+			</ul></li>
 	</ul>
 
 <h1> FIXME - possibly delete this next part ...</h1>
@@ -724,6 +739,36 @@
 			<td>Use accurate game timing (and more CPU), or less accurate timing (and
 				less CPU).</td>
 		</tr>
+		<tr>
+			<td><pre>-Dwidth &lt;number&gt;</pre></td>
+			<td>Sets the "Display.Width" property.  Its value must be in the range specified
+				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
+				included</i>)</td>
+		</tr>
+		<tr>
+			<td><pre>-Dheight &lt;number&gt;</pre></td>
+			<td>Sets the "Display.Height" property.  Its value must be in the range specified
+				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
+				included</i>)</td>
+		</tr>
+		<tr>
+			<td><pre>-Dxstart &lt;number&gt;</pre></td>
+			<td>Sets the "Display.XStart" property.  Its value must be in the range specified
+				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
+				included</i>)</td>
+		</tr>
+		<tr>
+			<td><pre>-Dystart &lt;number&gt;</pre></td>
+			<td>Sets the "Display.YStart" property.  Its value must be in the range specified
+				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
+				included</i>)</td>
+		</tr>
+		<tr>
+			<td><pre>-Dformat &lt;NTSC|PAL&gt;</pre></td>
+			<td>Sets the "Display.Format" property (<i>If DEVELOPER support is
+				included</i>)</td>
+		</tr>
+
 	</table>
 
 	<p><b>Emulator Game Shells</b></p>
@@ -844,8 +889,28 @@
 		</tr>
 
 		<tr>
+			<td>F9</td>
+			<td>Save state to current slot (if supported)</td>
+		</tr>
+
+		<tr>
+			<td>F10, Shift + F10</td>
+			<td>Increase/decrease current state slot (if supported)</td>
+		</tr>
+
+		<tr>
+			<td>F11</td>
+			<td>Load state from current slot (if supported)</td>
+		</tr>
+
+		<tr>
 			<td>F12</td>
 			<td>Save snapshot (if supported)</td>
+		</tr>
+
+		<tr>
+			<td>Pause</td>
+			<td>Pause/resume emulation (if supported)</td>
 		</tr>
 	</table>
 
@@ -1236,6 +1301,69 @@
 		</tr>
 	</table>
 
+	<p><b>Developer Keys</b></p>
+
+	<p>The following keys are activated only if <b>developer</b> support has
+	been included:</p>
+
+	<table BORDER=2>
+		<tr>
+			<th>Key</th>
+			<th>Function</th>
+		</tr>
+
+		<tr>
+			<td>PageUp</td>
+			<td>Set "Display.YStart" to next <i>larger</i> value</td>
+		</tr>
+
+		<tr>
+			<td>PageDown</td>
+			<td>Set "Display.YStart" to next <i>smaller</i> value</td>
+		</tr>
+
+		<tr>
+			<td>Alt + PageUp</td>
+			<td>Set "Display.Height" to next <i>larger</i> value</td>
+		</tr>
+
+		<tr>
+			<td>Alt + PageDown</td>
+			<td>Set "Display.Height" to next <i>smaller</i> value</td>
+		</tr>
+
+		<tr>
+			<td>Home</td>
+			<td>Set "Display.XStart" to next <i>larger</i> value</td>
+		</tr>
+
+		<tr>
+			<td>End</td>
+			<td>Set "Display.XStart" to next <i>smaller</i> value</td>
+		</tr>
+
+		<tr>
+			<td>Alt + Home</td>
+			<td>Set "Display.Width" to next <i>larger</i> value</td>
+		</tr>
+
+		<tr>
+			<td>Alt + End</td>
+			<td>Set "Display.Width" to next <i>smaller</i> value</td>
+		</tr>
+
+		<tr>
+			<td>Alt + f</td>
+			<td>Toggle "Display.Format" between <i>NTSC</i> and <i>PAL</i></td>
+		</tr>
+
+		<tr>
+			<td>Alt + s</td>
+			<td>Save the current properties to a file</td>
+		</tr>
+
+	</table>
+
 	<p><b>Other Keys</b></p>
 
 	<p>The following keys are not present in all versions, so they are listed by
@@ -1276,30 +1404,6 @@
 			<td>Alt + Enter</td>
 			<td>Toggle fullscreen/windowed mode</td>
 			<td>SDL</td>
-		</tr>
-
-		<tr>
-			<td>Pause</td>
-			<td>Pause/resume emulation</td>
-			<td>DOS, X11, SDL</td>
-		</tr>
-
-		<tr>
-			<td>F9</td>
-			<td>Save state to current slot</td>
-			<td>X11, SDL</td>
-		</tr>
-
-		<tr>
-			<td>F10, Shift + F10</td>
-			<td>Increase/decrease current state slot (10 possible slots)</td>
-			<td>X11, SDL</td>
-		</tr>
-
-		<tr>
-			<td>F11</td>
-			<td>Load state from current slot</td>
-			<td>X11, SDL</td>
 		</tr>
 	</table>
 
@@ -1463,28 +1567,28 @@
 			<td VALIGN="TOP"><i>Display.XStart:</i></td>
 			<td>This property indicates the horizontal location to start displaying
 			pixels at on a scan-line.  The value of this property must be <i>n</i>
-			such that 0 &lt; <i>n</i> &lt; 80 and <i>n</i> is divisible by 4.</td>
+			such that 0 &lt;= <i>n</i> &lt;= 80 and <i>n</i> is divisible by 4.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.Width:</i></td>
 			<td>This property indicates the number of pixels to display per
 			scan-line.  The value of this property must be <i>n</i> such that
-			80 &lt; <i>n</i> &lt; 160 and <i>n</i> is divisible by 4.</td>
+			80 &lt;= <i>n</i> &lt;= 160 and <i>n</i> is divisible by 4.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.YStart:</i></td>
 			<td>This property indicates the scan-line to start displaying at.
 			The value of this property must be <i>n</i> such that
-			0 &lt; <i>n</i> &lt; 64.</td>
+			0 &lt;= <i>n</i> &lt;= 64.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.Height:</i></td>
 			<td>This property indicates the number of scan-lines to display.
 			The value of this property must be <i>n</i> such that
-			100 &lt; <i>n</i> &lt; 256.</td>
+			100 &lt;= <i>n</i> &lt;= 256.</td>
 		</tr>
 
 		<tr>
