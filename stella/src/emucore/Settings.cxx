@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.24 2004-07-07 22:46:01 stephena Exp $
+// $Id: Settings.cxx,v 1.25 2004-07-09 00:27:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -84,8 +84,6 @@ void Settings::loadConfig()
   {
     // Strip all whitespace and tabs from the line
     uInt32 garbage;
-    while((garbage = line.find(" ")) != string::npos)
-      line.erase(garbage, 1);
     while((garbage = line.find("\t")) != string::npos)
       line.erase(garbage, 1);
 
@@ -97,8 +95,11 @@ void Settings::loadConfig()
     if((equalPos = line.find("=")) == string::npos)
       continue;
 
+    // Split the line into key/value pairs and trim any whitespace
     key   = line.substr(0, equalPos);
     value = line.substr(equalPos + 1, line.length() - key.length() - 1);
+    key   = trim(key);
+    value = trim(value);
 
     // Check for absent key or value
     if((key.length() == 0) || (value.length() == 0))

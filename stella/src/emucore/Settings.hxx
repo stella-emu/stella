@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.15 2004-07-07 22:46:01 stephena Exp $
+// $Id: Settings.hxx,v 1.16 2004-07-09 00:27:39 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -26,7 +26,7 @@
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.15 2004-07-07 22:46:01 stephena Exp $
+  @version $Id: Settings.hxx,v 1.16 2004-07-09 00:27:39 stephena Exp $
 */
 class Settings
 {
@@ -242,6 +242,14 @@ class Settings
 
     // Assignment operator isn't supported by this class so make it private
     Settings& operator = (const Settings&);
+
+    // Trim leading and following whitespace from a string
+    string trim(string& str)
+    {
+      string::size_type first = str.find_first_not_of(' ');
+      return (first == string::npos) ? string() :
+              str.substr(first, str.find_last_not_of(' ')-first+1);
+    }
 
     // Current capacity of the settings array
     unsigned int myCapacity;
