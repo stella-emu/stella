@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.5 2004-08-02 00:28:48 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.6 2004-08-02 04:08:10 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -56,8 +56,9 @@ int stellaMain(int argc, char* argv[]);
 void setPaddleMode(int mode);
 void setLeftJoystickMode(int mode);
 void setRightJoystickMode(int mode);
-void getPrefsSettings(int *gl, int *volume, float *aspect);
-void setPrefsSettings(int gl, int volume, float aspect);
+void getPrefsSettings(int *gl, int *volume, float *aspect, const char **romdir);
+void setPrefsSettings(int gl, int volume, float aspect, const char *romdir);
+void getRomdirSetting(char *romdir);
 char *browseFile(void);
 void prefsStart(void);
 void hideApp(void);
@@ -286,7 +287,7 @@ void setPaddleMode(int mode)
 	theSettings->setInt("paddle",thePaddleMode);
 }
 
-void getPrefsSettings(int *gl, int *volume, float *aspect)
+void getPrefsSettings(int *gl, int *volume, float *aspect, const char **romdir)
 {
   if (theSettings->getString("video") == "gl")
 	*gl = 1;
@@ -298,9 +299,16 @@ void getPrefsSettings(int *gl, int *volume, float *aspect)
 	*volume = 100;
 	
   *aspect = theSettings->getFloat("gl_aspect");
+  
+  *romdir = theSettings->getString("romdir").c_str();
 }
 
-void setPrefsSettings(int gl, int volume, float aspect)
+void getRomdirSetting(char *romdir)
+{
+  strcpy(romdir, theSettings->getString("romdir").c_str());
+}
+
+void setPrefsSettings(int gl, int volume, float aspect, const char *romdir)
 {
   if (gl)
 	theSettings->setString("video","gl");
@@ -311,6 +319,8 @@ void setPrefsSettings(int gl, int volume, float aspect)
   theSound->setVolume(volume);
   
   theSettings->setFloat("gl_aspect",aspect);
+  
+  theSettings->setString("romdir",romdir);
 }
 
 /**

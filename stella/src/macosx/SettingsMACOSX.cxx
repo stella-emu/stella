@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $
+// $Id: SettingsMACOSX.cxx,v 1.2 2004-08-02 04:08:10 markgrebe Exp $
 //============================================================================
 
 #include <cassert>
@@ -41,6 +41,8 @@ void prefsSave(void);
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsMACOSX::SettingsMACOSX()
 {
+  char workingDir[FILENAME_MAX];
+  
   // First set variables that the parent class needs
   myBaseDir = "./";
   string stelladir = myBaseDir;
@@ -65,6 +67,9 @@ SettingsMACOSX::SettingsMACOSX()
 #ifdef SNAPSHOT_SUPPORT
   set("ssdir", "./");
 #endif
+  getwd(workingDir);
+  set("romdir", workingDir);
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -392,7 +392,7 @@
 	<key>CFBundleExecutable</key>
 	<string>StellaOSX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.4</string>
+	<string>1.4.1</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -408,7 +408,7 @@
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>1.4</string>
+	<string>1.4.1</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>

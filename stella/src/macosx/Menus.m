@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.2 2004-07-14 06:54:17 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.3 2004-08-02 04:08:10 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "Menus.h"
@@ -17,8 +17,10 @@
 #define QZ_COMMA		0x2B
 
 extern void setPaddleMode(int mode);
-extern void getPrefsSettings(int *gl, int *volume, float *aspect);
-extern void setPrefsSettings(int gl, int volume, float aspect);
+extern void getPrefsSettings(int *gl, int *volume, float *aspect, const char **romdir);
+extern void setPrefsSettings(int gl, int volume, float aspect, const char *romdir);
+void getRomdirSetting(char *romdir);
+
 
 /*------------------------------------------------------------------------------
 *  releaseCmdKeys - This method fixes an issue when modal windows are used with
@@ -52,22 +54,29 @@ void releaseCmdKeys(NSString *character, int keyCode)
 char *browseFile(void) {
     NSOpenPanel *openPanel = nil;
 	char *fileName;
+	NSString *dirName;
+	char cdirName[FILENAME_MAX];
 	
 	fileName = malloc(FILENAME_MAX);
 	if (fileName == NULL)
 	    return NULL;
 	
+	getRomdirSetting(cdirName);
+	dirName = [NSString stringWithCString:cdirName];
+	
     openPanel = [NSOpenPanel openPanel];
     [openPanel setCanChooseDirectories:NO];
     [openPanel setCanChooseFiles:YES];
     
-    if ([openPanel runModalForDirectory:nil file:nil types:nil] == NSOKButton) {
+    if ([openPanel runModalForDirectory:dirName file:nil types:nil] == NSOKButton) {
 		[[[openPanel filenames] objectAtIndex:0] getCString:fileName];
         releaseCmdKeys(@"o",QZ_o);
+		[dirName release];
 		return fileName;
 		}
     else {
         releaseCmdKeys(@"o",QZ_o);
+		[dirName release];
         return NULL;
 		}
     }
@@ -129,6 +138,22 @@ static Menus *sharedInstance = nil;
 	return(self);
 }
 
+/*------------------------------------------------------------------------------
+* browseDir - Method which allows user to choose a directory.
+*-----------------------------------------------------------------------------*/
+- (NSString *) browseDir {
+    NSOpenPanel *openPanel;
+    
+    openPanel = [NSOpenPanel openPanel];
+    [openPanel setCanChooseDirectories:YES];
+    [openPanel setCanChooseFiles:NO];
+    
+    if ([openPanel runModalForTypes:nil] == NSOKButton)
+        return([[openPanel filenames] objectAtIndex:0]);
+    else
+        return nil;
+    }
+
 - (void)setSpeedLimitMenu:(int)limit
 {
 	if (limit)
@@ -167,20 +192,27 @@ static Menus *sharedInstance = nil;
 {
     int gl, volume;
 	float aspectRatio;
+	const char *romdir;
+	const char *newRomdir;
+	NSString *romDirString;
 	
-	getPrefsSettings(&gl, &volume, &aspectRatio);
+	getPrefsSettings(&gl, &volume, &aspectRatio, &romdir);
+	romDirString = [NSString stringWithCString:romdir];
 	
 	[volumeSlider setIntValue:volume];
 	[videoModeMatrix selectCellWithTag:gl];
 	[aspectRatioField setFloatValue:aspectRatio];
+	[romDirField setStringValue:romDirString];
 
     [NSApp runModalForWindow:[volumeSlider window]];
 	
 	gl = [[videoModeMatrix selectedCell] tag];
 	volume = [volumeSlider intValue];
 	aspectRatio = [aspectRatioField floatValue];
+	romDirString = [romDirField stringValue];
+	newRomdir = [romDirString cString];
 	
-	setPrefsSettings(gl, volume, aspectRatio);
+	setPrefsSettings(gl, volume, aspectRatio, newRomdir);
 }
 
 - (IBAction) prefsOK:(id) sender
@@ -188,6 +220,16 @@ static Menus *sharedInstance = nil;
     [NSApp stopModal];
     [[volumeSlider window] close];
 }
+
+- (IBAction) romdirSelect:(id) sender
+{
+	NSString *directory;
+	
+	directory = [self browseDir];
+	if (directory != nil)
+		[romDirField setStringValue:directory];
+}
+
 - (IBAction)prefsMenu:(id)sender
 {
 	[[Menus sharedInstance] prefsStart];

@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.2 2004-07-14 06:54:17 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.3 2004-08-02 04:08:10 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
@@ -15,11 +15,13 @@
 	IBOutlet id videoModeMatrix;
 	IBOutlet id volumeSlider;
 	IBOutlet id aspectRatioField;
+	IBOutlet id romDirField;
 	int openGlEnabled;
 	int gameMenusEnabled;
 }
 
 + (Menus *)sharedInstance;
+- (NSString *) browseDir;
 - (void)setSpeedLimitMenu:(int)limit;
 - (void)initVideoMenu:(int)openGl;
 - (void)setPaddleMenu:(int)number;
@@ -28,6 +30,7 @@
 - (void)pushKeyEvent:(int)key:(bool)shift;
 - (IBAction) paddleChange:(id) sender;
 - (IBAction) prefsOK:(id) sender;
+- (IBAction) romdirSelect:(id) sender;
 - (IBAction)prefsMenu:(id)sender;
 - (IBAction)biggerScreen:(id)sender;
 - (IBAction)smallerScreen:(id)sender;

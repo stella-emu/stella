@@ -23,6 +23,7 @@
                 prefsMenu = id; 
                 prefsOK = id; 
                 rightJoyChange = id; 
+                romdirSelect = id; 
                 smallerScreen = id; 
                 speedLimit = id; 
                 toggleGlFilter = id; 
@@ -41,6 +42,7 @@
                 filterMenu = id; 
                 limitSpeedMenu = id; 
                 paddlesMenu = id; 
+                romDirField = id; 
                 videoModeMatrix = id; 
                 volumeSlider = id; 
             }; 
