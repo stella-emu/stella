@@ -7,7 +7,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 1.2</b></h4></center>
+	<center><h4><b>Release 1.3</b></h4></center>
 	<br><br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -28,7 +28,7 @@
 
 	<br><br><br><br><br>
 
-	<center><b>February 1999 - April 2002</b></center>
+	<center><b>February 1999 - FIXME (April 2002)</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -207,6 +207,25 @@
         Sega Dreamcast, Unix, and Windows.
 	</p>
 
+	<h2><b>New in Release 1.3</b></h2>
+
+	<ul>
+		<li><h1>FIXME - Some other stuff from Brad and company</h1></li>
+		<li>Added save/load state ability to the core; X11 and SDL versions supported for now</li>
+		<li>External sound server for the X11 and SDL versions no longer required, as all
+			sound code is now integrated into the core</li>
+		<li>Changed the locations of the INI file for the X11 and SDL versions; the users'
+			stellarc file is now located in "<i>$HOME/.stella/stellarc</i>", and the state files
+			are located in "<i>$HOME/.stella/state/</i>"
+		<li>Changed the way options are supplied on the commandline.  Now all commandline
+			options take <b>exactly</b> the same arguments as in the INI file</li>
+		<li>Made the TIA message boxes look a little nicer</li>
+		<li>Added "<i>-accurate</i>" command line option to choose between accurate
+			(CPU-intensive) emulation or less accurate (CPU-friendly) emulation to X11 and SDL
+			versions</li>
+	</ul>
+
+<h1> FIXME - possibly delete this next part ...</h1>
 	<p>
 	<h2><b>New in Release 1.2</b></h2>
 
@@ -417,8 +436,12 @@
 
 		<li>Login as root and change directories to the distribution directory</li>
 
-		<li>Copy the executables to a system directory:
-			<pre>   cp stella.<i>version</i> /usr/local/bin<br>   cp stella-sound /usr/local/bin (if it's included)</pre></li>
+		<li>Copy the executable to a directory that's in your path:
+			<pre>   cp stella.<i>version</i> /usr/local/bin</pre></li>
+
+		<li>Copy the supplied stella.pro properties file to the system-wide location:
+			<pre>   cp stella.pro /etc</pre> or to your home directory:
+			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
 	</ol>
 
 	<p>If you have a joystick driver installed, such as <i>joystick-1.2.13.tar.gz</i>,
@@ -432,8 +455,8 @@
 
 	<p>The Unix version of Stella is distributed as a compressed tar file
 	containing the C++ source code as well as some other files.  The source code
-	can be compiled under most Unix operating systems as well as DOS.  The Unix
-	code was developed with the GNU C++ compiler version 2.96, however, it should
+	can be compiled under most Unix operating systems as well as DOS.  The most recent
+	Unix code was developed with the GNU C++ compiler version 3.2, however, it should
 	compile with other C++ compilers.  The DOS port was developed with DJGPP using
 	GNU C++ version 3.0.4.  You should install the distribution as follows:</p>
 
@@ -448,16 +471,12 @@
 		<li>Type <b>make</b> and follow the on screen instructions to build the
 		preferred <b>stella.<i>version</i></b> executable</li>
 
-		<li>Install <b>stella.<i>version</i></b> in a directory that's in your
-		path (<i>ie, /usr/local/bin</i>)</li>
+		<li>Copy the executable to a directory that's in your path:
+			<pre>   cp stella.<i>version</i> /usr/local/bin</pre></li>
 
-		<li>Change directories to the stella-<i>release</i>/src/ui/sound directory</li>
-
-		<li>Type <b>make</b> and follow the on screen instructions to build the
-		<b>stella-sound</b> executable</li>
-
-		<li>Install <b>stella-sound</b> in a directory that's in your path
-		(<i>ie, /usr/local/bin</i>)</li>
+		<li>Copy the supplied stella.pro properties file to the system-wide location:
+			<pre>   cp stella.pro /etc</pre> or to your home directory:
+			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
 	</ol>
 
 	<p>Currently, sound is supported using the Open Sound System or using OSS
@@ -469,8 +488,8 @@
 	<a href="http://www.alsa-project.org">Advanced Linux Sound Architecture (ALSA)</a>
 	</p>
 
-	<p>If you're a programmer and know how sound works on your favorite version of
-	Unix then please take the time to port <b>stella-sound</b> to your system.</p>
+	<p>Support for the external sound server has been deprecated as of Stella 1.3.  The sound
+	code has been integrated into the core.  Native ALSA support will be coming soon.</p>
 
 	<br><br>
 	<p><h1>
@@ -597,13 +616,10 @@
 	<p>Instead of using the command line to run Stella you may find it easier to
 	use an emulator game shell.  An emulator game shell allows you to pick games
 	from a menu without having to type everything at the command line.  One such
-	game shell is Jim Pragit's "Game Menu" which can be found at the following web
-	site:</p>
-
-	<p><a href="http://members.aol.com/jpsoftco/gamemenu.htm">Game Menu</a></p>
-
-	<p>There are other game shells available, however, you'll have to search for
-	them.</p>
+	game shell is Jim Pragit's "Game Menu".  Other frontends can be found at the
+	<a href="http://www.atariage.com">Atari Age</a> website under
+	<a href="http://www.atariage.com/2600/emulation/index.html?SystemID=2600">
+	2600 - Emulation</a>.</p>
 
 	<p>
 	<h2><b>Linux and Unix</b></h2>
@@ -615,7 +631,7 @@
 
 	<pre>   stella.<i>version</i> [options ...] filename.bin</pre>
 
-	<p><b>Version</b> is either x11 or sdl, depending on which version you compiled.</p>
+	<p><b>Version</b> is either x11 or sdl, depending on which version you compiled/installed.</p>
 
 	<p><b>Options</b> (0 indicates false, 1 indicates true, others are self-explanatory)</p>
 
@@ -720,8 +736,8 @@
 	<p><a href="http://kemulator.sourceforge.net">Kemulator</a>, which concentrates
 	on several different emulators (Super Nintendo, Stella, MESS, etc.)</p>
 
-	<p><a href="http://www.geocities.com/asmsoftware/stellashell.html">Stella Shell</a>,
-	which has been around the longest.</p>
+	<p><a href="http://home.tu-clausthal.de/~ifmar/asmsoftware/stellashell.html">
+	Stella Shell</a>, which has been around the longest.</p>
 
 	<p><b>INI File</b></p>
 
@@ -1267,6 +1283,24 @@
 			<td>Pause/resume emulation</td>
 			<td>DOS, X11, SDL</td>
 		</tr>
+
+		<tr>
+			<td>F9</td>
+			<td>Save state to current slot</td>
+			<td>X11, SDL</td>
+		</tr>
+
+		<tr>
+			<td>F10, Shift + F10</td>
+			<td>Increase/decrease current state slot (10 possible slots)</td>
+			<td>X11, SDL</td>
+		</tr>
+
+		<tr>
+			<td>F11</td>
+			<td>Load state from current slot</td>
+			<td>X11, SDL</td>
+		</tr>
 	</table>
 
 	<br><br><br>
@@ -1290,7 +1324,7 @@
 	<h2><b>Linux and Unix</b></h2>
 
 	<p>The Linux and Unix versions of Stella looks for the property file
-	<i>.stella.pro</i> in your home directory.  If this file is not found there, 
+	<i>stella.pro</i> in your <i>$HOME/.stella</i> directory.  If this file is not found there, 
 	Stella will look for a <i>stella.pro</i> file in the <i>/etc/</i> directory.
 	If the file isn't found in either place, then the emulator wil try to
 	guess the best settings for the game.</p>
@@ -1514,7 +1548,8 @@
 			<td VALIGN="TOP">Stephen&nbsp;Anthony</td>
 			<td>Ported Stella 1.1 to SDL.  Added extra command line options to X11/SDL
 			versions.  Added INI file support, faster startup, snapshot support,
-			and pause functionality to core.  Converted Stella 1.1 manual to HTML</td>
+			and pause functionality to core.  Converted Stella 1.1 manual to HTML.
+			Current maintainer for the X11 and SDL versions.</td>
 		</tr>
 
 		<tr>
