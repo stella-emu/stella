@@ -17,7 +17,7 @@ on the list below and send email to Bradford Mott at bwmott@acm.org.
 
   * Provide suggestions for improving Stella
 
-  * Provide suggestions for improving the Stella Users Manual
+  * Provide suggestions for improving the Stella User's Manual
 
   * Port Stella to other operating systems:
      

@@ -12,6 +12,72 @@
                                Release History
 ===============================================================================
 
+1.1 to 1.2: (April 21, 2002)
+
+  * Improved illegal CPU instruction support. Thrust and Qb will now operate
+    correctly.
+
+  * Improved emulation of undefined TIA reads. The ball in Video Pinball
+    finally bounces off of the paddles!
+
+  * More accurate NTSC and PAL palettes. These palettes should be much more
+    like the colors displayed on a real TV.
+
+  * PAL color loss is now emulated. If a PAL game displays an odd number
+    of scanlines then the next frame will be displayed in black & white.
+
+  * TIA emulation improved to fix some problems with Pole Position,
+    Fatal Run, Dolphin, Decathlon, Robot Tank, and Hole Hunter.
+
+  * Support for Pitfall II has been added, however, the enhanced sound
+    provided by the DPC chip found in the Pitfall II cartridge isn't
+    currently emulated.
+
+  * Support added for the Commavid (CV) bankswitching method.
+
+  * Support added for the Megaboy cartridge.
+
+  * Improved Supercharger emulation including a new BIOS that shows the
+    vertical blue progress bars like the real thing.
+
+  * Code for the emulation core has been updated to work with newer C++
+    compilers compliant with the C++ standard.
+
+  * Basic message support added to the TIA emulation. This allows a short
+    message to overlay the TIA frame. Currently, it's used when switching
+    color modes and difficulty settings.
+ 
+  * The internal data structure for the stella.pro file was changed from
+    a resizable array to a binary search tree. This results in quicker
+    startup times.
+
+  * An SDL port of Stella is available (requires SDL 1.2.0 or greater)
+
+  * Added option to not load in the whole stella.pro file when starting 
+    Stella. This option is enabled on the X11, SDL, and DOS versions. Win32 
+    version is left alone since it's needed for loading multiple games from 
+    the UI. Saves on memory usage.
+
+  * Added INI file option to the X11 and SDL versions. Options can be 
+    specified in this file instead of entering them on the commandline. Any 
+    options entered on the commandline override options in the INI file.  
+    File is called stellarc. For the X11 and SDL versions, it can be in
+    either $HOME (as $HOME/.stellarc) or in /etc (as /etc/stellarc).  The
+    one in $HOME has higher priority than the one in /etc.
+
+  * Added snapshot support to the X11 and SDL versions. Pressing F12 saves 
+    the current screen in PNG format. Requires PNG library.
+
+  * Removed stella.pro file from the binary, resulting in large space
+    savings. The stella.pro file is no longer optional.  For the X11 and
+    SDL versions, it can be in either $HOME (as $HOME/.stella.pro) or in
+    /etc (as /etc/stella.pro). The one in $HOME has higher priority than
+    the one in /etc. For DOS and Win32 versions, the stella.pro file must
+    be in the same directory as the executable.
+
+  * Added pause functionality to the core. Implemented in DOS, X11, and
+    SDL versions for now.
+
 1.0 to 1.1: (February 26, 1999)
 
   * DOS and Linux versions support real Atari 2600 paddles using a 
