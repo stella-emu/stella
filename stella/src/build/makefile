@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.28 2002-11-13 16:19:20 stephena Exp $
+## $Id: makefile,v 1.29 2002-12-01 02:14:01 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -42,8 +42,9 @@ OPTIMIZATIONS    = -O2 -Wall -Wno-unused
 ### SDL sound not yet supported in the X11 version
 ### comment out all lines to completely disable sound
 ###
-SOUND_OSS = 1
-#SOUND_SDL = 1
+#SOUND_ALSA = 1
+SOUND_OSS  = 1
+#SOUND_SDL  = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -160,6 +161,15 @@ ifeq ($(SOUND_SDL), 1)
 #  OBJS.X11 += SoundOSS.o
   OPTS.SDL += -DSOUND_SDL=1
   OBJS.SDL += SoundSDL.o
+endif
+
+ifeq ($(SOUND_ALSA), 1)
+  OPTS.X11 += -DSOUND_ALSA=1
+  OBJS.X11 += SoundALSA.o
+  LIBS.X11 += -lasound
+  OPTS.SDL += -DSOUND_ALSA=1
+  OBJS.SDL += SoundALSA.o
+  LIBS.SDL += -lasound
 endif
 
 
@@ -441,20 +451,23 @@ SndDOS.o: $(UI)/dos/SndDOS.cxx
 dos_sb.o: $(UI)/dos/dos_sb.c
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/dos/dos_sb.c
 
+SoundALSA.o: $(UI)/sound/SoundALSA.cxx $(UI)/sound/SoundALSA.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundALSA.cxx
+
+SoundOSS.o: $(UI)/sound/SoundOSS.cxx $(UI)/sound/SoundOSS.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundOSS.cxx
+
+SoundSDL.o: $(UI)/sound/SoundSDL.cxx $(UI)/sound/SoundSDL.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundSDL.cxx
+
 TermX11.o: $(UI)/x11/TermX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/TermX11.cxx
 
 mainX11.o: $(UI)/x11/mainX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/mainX11.cxx
 
-SoundOSS.o: $(UI)/sound/SoundOSS.cxx $(UI)/sound/SoundOSS.hxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundOSS.cxx
-
 mainSDL.o: $(UI)/sdl/mainSDL.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
-
-SoundSDL.o: $(UI)/sound/SoundSDL.cxx $(UI)/sound/SoundSDL.hxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundSDL.cxx
 
 RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx
