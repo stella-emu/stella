@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.52 2003-09-23 00:58:31 stephena Exp $
+// $Id: mainSDL.cxx,v 1.53 2003-09-23 17:27:11 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1187,9 +1187,9 @@ void cleanup()
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
 #ifdef HAVE_JOYSTICK
-    if(SDL_JoystickOpened(0))
+    if(SDL_JoystickOpened(theLeftJoystickNumber))
       SDL_JoystickClose(theLeftJoystick);
-    if(SDL_JoystickOpened(1))
+    if(SDL_JoystickOpened(theRightJoystickNumber))
       SDL_JoystickClose(theRightJoystick);
 #endif
 

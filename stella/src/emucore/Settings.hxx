@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.6 2003-09-23 00:58:31 stephena Exp $
+// $Id: Settings.hxx,v 1.7 2003-09-23 17:27:11 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.6 2003-09-23 00:58:31 stephena Exp $
+  @version $Id: Settings.hxx,v 1.7 2003-09-23 17:27:11 stephena Exp $
 */
 class Settings
 {
@@ -93,10 +93,11 @@ class Settings
     /**
       Set the value associated with key to the given value.
 
-      @param key The key of the setting
+      @param key   The key of the setting
       @param value The value to assign to the setting
+      @param save  Whether this setting should be saved to the rc-file.
     */
-    void set(const string& key, const string& value);
+    void set(const string& key, const string& value, bool save = true);
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -231,11 +232,15 @@ class Settings
     // Assignment operator isn't supported by this class so make it private
     Settings& operator = (const Settings&);
 
-    // Structure used for storing properties
+    // Test whether the given setting is present in the array
+    bool contains(const string& key);
+
+    // Structure used for storing settings
     struct Setting
     {
       string key;
       string value;
+      bool save;
     };
 
     // Pointer to a dynamically allocated array of settings

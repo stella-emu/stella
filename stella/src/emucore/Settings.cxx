@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.7 2003-09-23 00:58:31 stephena Exp $
+// $Id: Settings.cxx,v 1.8 2003-09-23 17:27:11 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -108,7 +108,11 @@ void Settings::loadConfig()
     if((key.length() == 0) || (value.length() == 0))
       continue;
 
-    set(key, value);
+    // Only settings which have been previously set are valid
+    if(contains(key))
+      set(key, value);
+    else
+      cerr << "Invalid setting: " << key << endl;
   }
 
   in.close();
@@ -128,7 +132,9 @@ bool Settings::loadCommandLine(Int32 argc, char** argv)
     key = key.substr(1, key.length());
     string value = argv[++i];
 
-    set(key, value);
+    // Settings read from the commandline must not be saved to 
+    // the rc-file, unless they were previously set
+    set(key, value, false);
   }
 
   return true;
@@ -164,20 +170,25 @@ void Settings::saveConfig()
 
   // Write out each of the key and value pairs
   for(uInt32 i = 0; i < mySize; ++i)
-    out << mySettings[i].key << " = " << mySettings[i].value << endl;
+    if(mySettings[i].save)
+      out << mySettings[i].key << " = " << mySettings[i].value << endl;
 
   out.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::set(const string& key, const string& value)
+void Settings::set(const string& key, const string& value, bool save)
 {
   // See if the setting already exists
   for(uInt32 i = 0; i < mySize; ++i)
   {
+    // If a key is already present in the array, then we assume
+    // that it was set by the emulation core and must be saved
+    // to the rc-file.
     if(key == mySettings[i].key)
     {
       mySettings[i].value = value;
+      mySettings[i].save  = true;
       return;
     }
   }
@@ -200,8 +211,9 @@ void Settings::set(const string& key, const string& value)
   } 
 
   // Add new property to the array
-  mySettings[mySize].key = key;
+  mySettings[mySize].key   = key;
   mySettings[mySize].value = value;
+  mySettings[mySize].save  = save;
 
   ++mySize;
 }
@@ -211,12 +223,8 @@ Int32 Settings::getInt(const string& key) const
 {
   // Try to find the named setting and answer its value
   for(uInt32 i = 0; i < mySize; ++i)
-  {
     if(key == mySettings[i].key)
-    {
       return atoi(mySettings[i].value.c_str());
-    }
-  }
 
   return -1;
 }
@@ -246,14 +254,21 @@ string Settings::getString(const string& key) const
 {
   // Try to find the named setting and answer its value
   for(uInt32 i = 0; i < mySize; ++i)
-  {
     if(key == mySettings[i].key)
-    {
       return mySettings[i].value;
-    }
-  }
 
   return "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Settings::contains(const string& key)
+{
+  // Try to find the named setting
+  for(uInt32 i = 0; i < mySize; ++i)
+    if(key == mySettings[i].key)
+      return true;
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
