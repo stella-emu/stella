@@ -13,26 +13,41 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.5 2002-05-09 16:58:04 gunfight Exp $
+// $Id: PropsSet.cxx,v 1.6 2002-11-11 02:52:02 stephena Exp $
 //============================================================================
 
 #include <assert.h>
+
 #include "Props.hxx"
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet()
+   : myRoot(0), 
+     mySize(0),
+     myUseMemList(true),
+     myPropertiesFilename(""),
+     mySaveOnExit(false)
 {
-  root = 0;
-  mySize = 0;
-  useMemList = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::~PropertiesSet()
 {
-  deleteNode(root);
-  proStream.close();
+  if(myPropertiesStream.is_open())
+    myPropertiesStream.close();
+
+  if(myUseMemList && mySaveOnExit && (myPropertiesFilename != ""))
+  {
+    ofstream out(myPropertiesFilename.c_str());
+    if(out.is_open())
+    {
+      save(out);
+      out.close();
+    }
+  }
+
+  deleteNode(myRoot);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,17 +55,17 @@ void PropertiesSet::getMD5(string md5, Properties &properties)
 {
   bool found = false;
 
-  if(useMemList)
+  if(myUseMemList)
   {
     // Make sure tree isn't empty
-    if(root == 0)
+    if(myRoot == 0)
     {
-      properties = defProps;
+      properties = myDefaultProperties;
       return;
     }
 
     // Else, do a BST search for the node with the given md5
-    TreeNode *current = root;
+    TreeNode *current = myRoot;
 
     while(current)
     {
@@ -73,7 +88,7 @@ void PropertiesSet::getMD5(string md5, Properties &properties)
     if(found)
       properties = *(current->props);
     else
-      properties = defProps;
+      properties = myDefaultProperties;
   }
   else
   {
@@ -81,17 +96,17 @@ void PropertiesSet::getMD5(string md5, Properties &properties)
     for(;;)
     {
       // Make sure the stream is still good or we're done 
-      if(!proStream)
+      if(!myPropertiesStream)
       {
         break;
       }
 
       // Get the property list associated with this profile
-      Properties currentProperties(defProps);
-      currentProperties.load(proStream);
+      Properties currentProperties(myDefaultProperties);
+      currentProperties.load(myPropertiesStream);
 
       // If the stream is still good then insert the properties
-      if(proStream)
+      if(myPropertiesStream)
       {
         string currentMd5 = currentProperties.get("Cartridge.MD5");
 
@@ -103,14 +118,14 @@ void PropertiesSet::getMD5(string md5, Properties &properties)
       }
     }
 
-    properties = defProps;
+    properties = myDefaultProperties;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties)
 {
-	insertNode(root, properties);
+	insertNode(myRoot, properties);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,43 +170,42 @@ void PropertiesSet::deleteNode(TreeNode *node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::load(string filename, const Properties* defaults, bool useList)
 {
-    useMemList = useList;
-    defProps   = defaults;
+    myUseMemList = useList;
+    myDefaultProperties = defaults;
 
-    // Cyberstella crashes without this:
-    if(filename.length() <= 0)  return;
-    // Cybergoth 09.05.02
+    if(filename == "")
+      return;
 
-    proStream.open(filename.c_str());
+    myPropertiesStream.open(filename.c_str(), ios::in);
 
-    if(useMemList)
+    if(myUseMemList)
     {
-    // Loop reading properties
-    for(;;)
-    {
-      // Make sure the stream is still good or we're done 
-      if(!proStream)
+      // Loop reading properties
+      for(;;)
       {
-        break;
-      }
+        // Make sure the stream is still good or we're done 
+        if(!myPropertiesStream)
+        {
+          break;
+        }
 
-      // Get the property list associated with this profile
-      Properties properties(defProps);
-      properties.load(proStream);
+        // Get the property list associated with this profile
+        Properties properties(myDefaultProperties);
+        properties.load(myPropertiesStream);
 
-      // If the stream is still good then insert the properties
-      if(proStream)
-      {
-        insert(properties);
+        // If the stream is still good then insert the properties
+        if(myPropertiesStream)
+        {
+          insert(properties);
+        }
       }
-    }
     }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::save(ostream& out)
 {
-  saveNode(out, root);
+  saveNode(out, myRoot);
 }
 
 
@@ -200,9 +214,9 @@ void PropertiesSet::saveNode(ostream& out, TreeNode *node)
 {
   if(node)
   {
+    node->props->save(out);
     saveNode(out, node->left);
     saveNode(out, node->right);
-    node->props->save(out);
   }
 }
 
@@ -210,4 +224,19 @@ void PropertiesSet::saveNode(ostream& out, TreeNode *node)
 uInt32 PropertiesSet::size() const
 {
   return mySize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PropertiesSet::merge(Properties& properties, string& filename, bool saveOnExit)
+{
+  myPropertiesFilename = filename;
+  mySaveOnExit = saveOnExit;
+
+  // Can't merge the properties if the PropertiesSet isn't in memory
+  if(!myUseMemList)
+    return false;
+
+  insert(properties);
+
+  return true;
 }

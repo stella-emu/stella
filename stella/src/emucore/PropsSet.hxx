@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
+// $Id: PropsSet.hxx,v 1.4 2002-11-11 02:52:02 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIESSET_HXX
@@ -84,6 +84,17 @@ class PropertiesSet
     */
     uInt32 size() const;
 
+    /**
+      Merge the given properties into the collection.
+
+      @param properties The properties to merge
+      @param saveOnExit Whether to sync the PropertiesSet to disk on exit
+      @param filename Where the PropertiesSet should be saved
+      @return True on success, false on failure
+              Failure will occur if the PropertiesSet isn't currently in memory
+    */
+    bool merge(Properties& properties, string& filename, bool saveOnExit = true);
+
   private:
 
 	struct TreeNode
@@ -126,7 +137,7 @@ class PropertiesSet
     void saveNode(ostream& out, TreeNode *node);
 
     // The root of the BST
-    TreeNode* root;
+    TreeNode* myRoot;
 
     // Property to use as the key
     string myKey;
@@ -135,12 +146,18 @@ class PropertiesSet
     uInt32 mySize;
 
     // Whether to construct an in-memory list or rescan the file each time
-    bool useMemList;
+    bool myUseMemList;
 
     // The file stream for the stella.pro file
-    ifstream proStream;
+    ifstream myPropertiesStream;
 
     // The default properties set
-    const Properties* defProps;
+    const Properties* myDefaultProperties;
+
+    // The filename where this PropertiesSet should be saved
+    string myPropertiesFilename;
+
+    // Whether or not to actually save the PropertiesSet on exit
+    bool mySaveOnExit;
 };
 #endif
