@@ -24,7 +24,7 @@
 // 
 // This is exactly the case with the game DATA(!) below!
 //
-// All rights to the game Thrust belong 100% exclusiv to Manuel Polik
+// All rights to the game Thrust belong 100% exclusiv to Thomas Jentzsch
 // That means especially the right to modify and the right to sell it.
 // 
 // Any builds of Stella emulators may either use this file here exactly
