@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.22 2005-04-05 00:40:54 stephena Exp $
+// $Id: EventHandler.hxx,v 1.23 2005-04-06 23:47:07 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.22 2005-04-05 00:40:54 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.23 2005-04-06 23:47:07 stephena Exp $
 */
 class EventHandler
 {
@@ -89,6 +89,26 @@ class EventHandler
     void poll();
 
     /**
+      Bind a key to an event/action
+
+      @event  The event we are remapping
+      @key    The key to bind to this event
+    */
+    void addKeyMapping(Event::Type event, uInt16 key);
+
+    /**
+      Erase the specified mapping
+
+      @event  The event for which we erase all mappings
+    */
+    void eraseMapping(Event::Type event);
+
+    /**
+      Resets the event mappings to default values
+    */
+    void setDefaultMapping();
+
+    /**
       Returns the current state of the EventHandler
 
       @return The State type
@@ -101,7 +121,6 @@ class EventHandler
       @param The current state to set
     */
     void reset(State state);
-
 
     /**
       This method indicates whether a pause event has been received.
@@ -180,6 +199,7 @@ class EventHandler
     void setJoymap();
     void setDefaultKeymap();
     void setDefaultJoymap();
+    void saveMappings();
 
     bool isValidList(string list, uInt32 length);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.3 2005-04-06 19:50:12 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.4 2005-04-06 23:47:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -97,11 +97,7 @@ void EventMappingDialog::startRemapping()
   myCancelMapButton->setEnabled(true);
 
   // And show a message indicating which key is being remapped
-  ostringstream buf;
-  buf << "Select a new event for the '"
-      << EventHandler::ourActionList[ myActionSelected ].action
-      << "' action";
-  myKeyMapping->setLabel(buf.str());
+  drawKeyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,8 +105,11 @@ void EventMappingDialog::eraseRemapping()
 {
   if(myActionSelected < 0)
     return;
-  else
-    cerr << "Erase item: " << myActionSelected << endl;
+
+  Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
+  instance()->eventHandler().eraseMapping(event);
+
+  drawKeyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,20 +129,37 @@ void EventMappingDialog::stopRemapping()
   // Make sure the list widget is in a known state
   if(myActionSelected >= 0)
   {
-    ostringstream buf;
-    buf << "Key(s) : "
-	    << EventHandler::ourActionList[ myActionSelected ].key;
-    myKeyMapping->setLabel(buf.str());
-
+    drawKeyMapping();
     myMapButton->setEnabled(true);
     myEraseButton->setEnabled(true);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingDialog::drawKeyMapping()
+{
+  if(myActionSelected >= 0)
+  {
+    ostringstream buf;
+    buf << "Key(s) : "
+        << EventHandler::ourActionList[ myActionSelected ].key;
+    myKeyMapping->setLabel(buf.str());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingDialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 {
-//  cerr << "EventMappingDialog::handleKeyDown received: " << ascii << endl;
+  // Remap keys in remap mode, otherwise pass to listwidget
+  if(myRemapStatus && myActionSelected >= 0)
+  {
+    Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
+    instance()->eventHandler().addKeyMapping(event, ascii);
+
+    stopRemapping();
+  }
+  else
+    myActionsList->handleKeyDown(ascii, keycode, modifiers);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,11 +171,7 @@ void EventMappingDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32
       if(myActionsList->getSelected() >= 0)
       {
         myActionSelected = myActionsList->getSelected();
-        ostringstream buf;
-        buf << "Key(s) : "
-            << EventHandler::ourActionList[ myActionSelected ].key;
-
-        myKeyMapping->setLabel(buf.str());
+        drawKeyMapping();
         myMapButton->setEnabled(true);
         myEraseButton->setEnabled(true);
         myCancelMapButton->setEnabled(false);
@@ -179,7 +191,9 @@ void EventMappingDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32
       break;
 
     case kDefaultsCmd:
-cerr << "Set default mapping\n";
+      instance()->eventHandler().setDefaultMapping();
+      drawKeyMapping();
+
       break;
 
     default:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.42 2005-04-05 00:40:54 stephena Exp $
+// $Id: EventHandler.cxx,v 1.43 2005-04-06 23:47:06 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -587,21 +587,6 @@ void EventHandler::setActionMappings()
     if(key != "")
       ourActionList[i].key = key;
   }
-
-/* FIXME - add this to addXXXBinding and deleteBinding ...
-  // Save the new bindings
-  ostringstream keybuf, joybuf;
-
-  // Iterate through the keymap table and create a colon-separated list
-  for(uInt32 i = 0; i < StellaEvent::LastKCODE; ++i)
-    keybuf << myKeyTable[i] << ":";
-  myOSystem->settings().setString("keymap", keybuf.str());
-
-  // Iterate through the joymap table and create a colon-separated list
-  for(uInt32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
-    joybuf << myJoyTable[i] << ":";
-  myOSystem->settings().setString("joymap", joybuf.str());
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -656,8 +641,60 @@ void EventHandler::setJoymap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::addKeyMapping(Event::Type event, uInt16 key)
+{
+  myKeyTable[key] = event;
+
+  setActionMappings();
+  saveMappings();
+}
+
+/*  FIXME
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::addJoyMapping(Event::Type event,
+       StellaEvent::JoyStick stick, StellaEvent::JoyCode code)
+{
+  myJoyTable[stick * StellaEvent::LastJCODE + code] = event;
+
+  setActionMappings();
+  saveMappings();
+}
+*/
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::eraseMapping(Event::Type event)
+{
+  // Erase the KeyEvent arrays
+  for(Int32 i = 0; i < SDLK_LAST; ++i)
+    if(myKeyTable[i] == event)
+      myKeyTable[i] = Event::NoType;
+
+  // Erase the JoyEvent array
+  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    if(myJoyTable[i] == event)
+      myJoyTable[i] = Event::NoType;
+
+  setActionMappings();
+  saveMappings();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setDefaultMapping()
+{
+  setDefaultKeymap();
+  setDefaultJoymap();
+
+  setActionMappings();
+  saveMappings();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultKeymap()
 {
+  // Erase all mappings
+  for(Int32 i = 0; i < SDLK_LAST; ++i)
+    myKeyTable[i] = Event::NoType;
+
   myKeyTable[ SDLK_1 ]         = Event::KeyboardZero1;
   myKeyTable[ SDLK_2 ]         = Event::KeyboardZero2;
   myKeyTable[ SDLK_3 ]         = Event::KeyboardZero3;
@@ -725,16 +762,16 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_ESCAPE ]    = Event::ExitGame;
 #endif
 
-  // Iterate through the keymap table and create a colon-separated list
-  ostringstream keybuf;
-  for(uInt32 i = 0; i < SDLK_LAST; ++i)
-    keybuf << myKeyTable[i] << ":";
-  myOSystem->settings().setString("keymap", keybuf.str());
+  saveMappings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultJoymap()
 {
+  // Erase all mappings
+  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    myJoyTable[i] = Event::NoType;
+
   // Left joystick
   uInt32 i = StellaEvent::JSTICK_0 * StellaEvent::LastJCODE;
   myJoyTable[i + StellaEvent::JAXIS_UP]    = Event::JoystickZeroUp;
@@ -750,6 +787,24 @@ void EventHandler::setDefaultJoymap()
   myJoyTable[i + StellaEvent::JAXIS_LEFT]  = Event::JoystickOneLeft;
   myJoyTable[i + StellaEvent::JAXIS_RIGHT] = Event::JoystickOneRight;
   myJoyTable[i + StellaEvent::JBUTTON_0]   = Event::JoystickOneFire;
+
+  saveMappings();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveMappings()
+{
+  // Iterate through the keymap table and create a colon-separated list
+  ostringstream keybuf;
+  for(uInt32 i = 0; i < SDLK_LAST; ++i)
+    keybuf << myKeyTable[i] << ":";
+  myOSystem->settings().setString("keymap", keybuf.str());
+
+  // Iterate through the joymap table and create a colon-separated list
+  ostringstream joybuf;
+  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    joybuf << myJoyTable[i] << ":";
+  myOSystem->settings().setString("joymap", joybuf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

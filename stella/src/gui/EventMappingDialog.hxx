@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.hxx,v 1.3 2005-04-06 19:50:12 stephena Exp $
+// $Id: EventMappingDialog.hxx,v 1.4 2005-04-06 23:47:08 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -60,6 +60,8 @@ class EventMappingDialog : public Dialog
     void eraseRemapping();
     void stopRemapping();
     void loadConfig();
+
+    void drawKeyMapping();
 
   private:
     // Indicates the event that is currently selected

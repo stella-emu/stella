@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.25 2005-04-05 00:40:54 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.26 2005-04-06 23:47:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -650,71 +650,3 @@ void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
   }
 }
 */
-
-/*
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::addKeyBinding(Event::Type event, StellaEvent::KeyCode key)
-{
-  myKeyTable[key] = event;
-
-  loadRemapMenu();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::addJoyBinding(Event::Type event,
-       StellaEvent::JoyStick stick, StellaEvent::JoyCode code)
-{
-  myJoyTable[stick * StellaEvent::LastJCODE + code] = event;
-
-  loadRemapMenu();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::deleteBinding(Event::Type event)
-{
-  for(uInt32 i = 0; i < myKeyTableSize; ++i)
-    if(myKeyTable[i] == event)
-      myKeyTable[i] = Event::NoType;
-
-  for(uInt32 j = 0; j < myJoyTableSize; ++j)
-    if(myJoyTable[j] == event)
-      myJoyTable[j] = Event::NoType;
-
-  loadRemapMenu();
-}
-
-*/
-
-#if 0
-/**
-  This array must be initialized in a specific order, matching
-  their initialization in StellaEvent::KeyCode.
-
-  The other option would be to create an array of structures
-  (in StellaEvent.hxx) containing event/string pairs.
-  This would eliminate the use of enumerations and slow down
-  lookups.  So I do it this way instead.
- */
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* FrameBuffer::ourEventName[StellaEvent::LastKCODE] = {
-  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
-  "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-
-  "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-
-  "KP 0", "KP 1", "KP 2", "KP 3", "KP 4", "KP 5", "KP 6", "KP 7", "KP 8",
-  "KP 9", "KP .", "KP /", "KP *", "KP -", "KP +", "KP ENTER", "KP =",
-
-  "BACKSP", "TAB", "CLEAR", "ENTER", "ESC", "SPACE", ",", "-", ".",
-  "/", "\\", ";", "=", "\"", "`", "[", "]",
-
-  "PRT SCRN", "SCR LOCK", "PAUSE", "INS", "HOME", "PGUP",
-  "DEL", "END", "PGDN",
-
-  "LCTRL", "RCTRL", "LALT", "RALT", "LWIN", "RWIN", "MENU",
-  "UP", "DOWN", "LEFT", "RIGHT",
-
-  "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10",
-  "F11", "F12", "F13", "F14", "F15",
-};
-#endif
