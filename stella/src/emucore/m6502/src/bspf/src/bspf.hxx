@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.3 2002-04-10 04:07:39 bwmott Exp $
+// $Id: bspf.hxx,v 1.4 2004-05-28 22:07:57 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.3 2002-04-10 04:07:39 bwmott Exp $
+  @version $Id: bspf.hxx,v 1.4 2004-05-28 22:07:57 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -54,7 +54,7 @@ typedef unsigned int uInt32;
 
 #ifdef BSPF_WIN32
   // pragma to avoid all of the int <-> bool conversion warnings
-  #pragma warning(disable: 4800)
+//  #pragma warning(disable: 4800)
 #endif
 
 // Some old compilers do not support the bool type
@@ -66,12 +66,11 @@ typedef unsigned int uInt32;
 
 // Defines to help with path handling
 #if defined BSPF_UNIX
-  #define BSPF_PATH_SEPARATOR  '/'
+  #define BSPF_PATH_SEPARATOR  "/"
 #elif (defined(BSPF_DOS) || defined(BSPF_WIN32) || defined(BSPF_OS2))
-  #define BSPF_PATH_SEPARATOR  '\\'
-#elif defined BSPF_MACOS
-  #define BSPF_PATH_SEPARATOR  ':'
+  #define BSPF_PATH_SEPARATOR  "\\"
+#elif defined BSPF_MAC_OSX
+  #define BSPF_PATH_SEPARATOR  ":"
 #endif
 
 #endif
-

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.hxx,v 1.1 2004-05-24 17:18:23 stephena Exp $
+// $Id: SettingsUNIX.hxx,v 1.2 2004-05-28 22:07:57 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_UNIX_HXX
@@ -21,14 +21,12 @@
 
 #include "bspf.hxx"
 
-class Console;
-
 
 /**
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: SettingsUNIX.hxx,v 1.1 2004-05-24 17:18:23 stephena Exp $
+  @version $Id: SettingsUNIX.hxx,v 1.2 2004-05-28 22:07:57 stephena Exp $
 */
 class SettingsUNIX : public Settings
 {
@@ -48,16 +46,22 @@ class SettingsUNIX : public Settings
       This method should be called to get the filename of a state file
       given the state number.
 
+      @param md5   The md5sum to use as part of the filename.
+      @param state The state to use as part of the filename.
+
       @return String representing the full path of the state filename.
     */
-    virtual string stateFilename(uInt32 state);
+    virtual string stateFilename(const string& md5, uInt32 state);
+
 
     /**
-      This method should be called to get the filename of a snapshot.
+      This method should be called to test whether the given file exists.
 
-      @return String representing the full path of the snapshot filename.
+      @param filename The filename to test for existence.
+
+      @return boolean representing whether or not the file exists
     */
-    virtual string snapshotFilename();
+    virtual bool fileExists(const string& filename);
 
     /**
       Display the commandline settings for this UNIX version of Stella.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.24 2004-05-28 18:25:19 stephena Exp $
+// $Id: EventHandler.cxx,v 1.25 2004-05-28 22:07:57 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -343,7 +343,7 @@ void EventHandler::saveState()
 
   // Do a state save using the System
   string md5      = myConsole->properties().get("Cartridge.MD5");
-  string filename = myConsole->settings().stateFilename(myCurrentState);
+  string filename = myConsole->settings().stateFilename(md5, myCurrentState);
   int result      = myConsole->system().saveState(filename, md5);
 
   // Print appropriate message
@@ -380,7 +380,7 @@ void EventHandler::loadState()
 
   // Do a state save using the System
   string md5      = myConsole->properties().get("Cartridge.MD5");
-  string filename = myConsole->settings().stateFilename(myCurrentState);
+  string filename = myConsole->settings().stateFilename(md5, myCurrentState);
   int result      = myConsole->system().loadState(filename, md5);
 
   if(result == 1)
@@ -397,8 +397,42 @@ void EventHandler::loadState()
 void EventHandler::takeSnapshot()
 {
 #ifdef SNAPSHOT_SUPPORT
+  // Figure out the correct snapshot name
+  string filename;
+  string sspath = myConsole->settings().getString("ssdir");
+  string ssname = myConsole->settings().getString("ssname");
+
+  if(ssname == "romname")
+    sspath = sspath + BSPF_PATH_SEPARATOR + myConsole->properties().get("Cartridge.Name");
+  else if(ssname == "md5sum")
+    sspath = sspath + BSPF_PATH_SEPARATOR + myConsole->properties().get("Cartridge.MD5");
+
+  // Replace all spaces in name with underscores
+  replace(sspath.begin(), sspath.end(), ' ', '_');
+
+  // Check whether we want multiple snapshots created
+  if(!myConsole->settings().getBool("sssingle"))
+  {
+    // Determine if the file already exists, checking each successive filename
+    // until one doesn't exist
+    filename = sspath + ".png";
+    if(myConsole->settings().fileExists(filename))
+    {
+      ostringstream buf;
+      for(uInt32 i = 1; ;++i)
+      {
+        buf.str("");
+        buf << sspath << "_" << i << ".png";
+        if(!myConsole->settings().fileExists(buf.str()))
+          break;
+      }
+      filename = buf.str();
+    }
+  }
+  else
+    filename = sspath + ".png";
+
   // Now save the snapshot file
-  string filename   = myConsole->settings().snapshotFilename();
   uInt32 multiplier = myConsole->settings().getInt("zoom");
 
   myConsole->snapshot().savePNG(filename, multiplier);

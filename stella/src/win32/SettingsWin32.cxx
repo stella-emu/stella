@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.1 2004-05-24 17:18:23 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.2 2004-05-28 22:07:57 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -25,10 +25,6 @@
 #include <sys/types.h>
 
 #include "bspf.hxx"
-#include "Console.hxx"
-#include "EventHandler.hxx"
-#include "StellaEvent.hxx"
-
 #include "Settings.hxx"
 #include "SettingsWin32.hxx"
 
@@ -130,59 +126,18 @@ void SettingsWin32::usage(string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string SettingsWin32::stateFilename(uInt32 state)
+string SettingsWin32::stateFilename(const string& md5, uInt32 state)
 {
-  if(!myConsole)
-    return "";
-
   ostringstream buf;
-  buf << myStateDir << myConsole->properties().get("Cartridge.MD5")
-      << ".st" << state;
+  buf << myStateDir << md5 << ".st" << state;
 
   myStateFile = buf.str();
+
   return myStateFile;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string SettingsWin32::snapshotFilename()
+bool SettingsWin32::fileExists(const string& filename)
 {
-  if(!myConsole)
-    return "";
-
-  string filename;
-  string path = getString("ssdir");
-  string theSnapshotName = getString("ssname");
-
-  if(theSnapshotName == "romname")
-    path = path + "\\" + myConsole->properties().get("Cartridge.Name");
-  else if(theSnapshotName == "md5sum")
-    path = path + "\\" + myConsole->properties().get("Cartridge.MD5");
-
-  // Replace all spaces in name with underscores
-  replace(path.begin(), path.end(), ' ', '_');
-
-  // Check whether we want multiple snapshots created
-  if(!getBool("sssingle"))
-  {
-    // Determine if the file already exists, checking each successive filename
-    // until one doesn't exist
-    filename = path + ".png";
-    if(access(filename.c_str(), F_OK) == 0 )
-    {
-      ostringstream buf;
-      for(uInt32 i = 1; ;++i)
-      {
-        buf.str("");
-        buf << path << "_" << i << ".png";
-        if(access(buf.str().c_str(), F_OK) == -1 )
-          break;
-      }
-      filename = buf.str();
-    }
-  }
-  else
-    filename = path + ".png";
-
-  mySnapshotFile = filename;
-  return mySnapshotFile;
+  return false;//FIXME(access(filename.c_str(), F_OK|W_OK) == 0);
 }

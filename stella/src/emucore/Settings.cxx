@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.19 2004-04-27 00:50:51 stephena Exp $
+// $Id: Settings.cxx,v 1.20 2004-05-28 22:07:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -21,8 +21,6 @@
 #include <fstream>
 
 #include "bspf.hxx"
-#include "Console.hxx"
-#include "EventHandler.hxx"
 #include "Settings.hxx"
 
 #ifdef DEVELOPER_SUPPORT
@@ -32,7 +30,6 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
-  :  myConsole(0)
 {
   // First create the settings array
   myCapacity = 30;

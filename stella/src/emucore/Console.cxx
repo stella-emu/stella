@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.27 2004-04-27 00:50:51 stephena Exp $
+// $Id: Console.cxx,v 1.28 2004-05-28 22:07:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -64,9 +64,6 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   mySwitches = 0;
   mySystem = 0;
   myEvent = 0;
-
-  // Inform the settings object about the console
-  mySettings.setConsole(this);
 
   // Create an event handler which will collect and dispatch events
   myEventHandler = new EventHandler(this);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.12 2004-04-21 16:27:18 stephena Exp $
+// $Id: Settings.hxx,v 1.13 2004-05-28 22:07:57 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -25,14 +25,12 @@
 
 #include "bspf.hxx"
 
-class Console;
-
 
 /**
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.12 2004-04-21 16:27:18 stephena Exp $
+  @version $Id: Settings.hxx,v 1.13 2004-05-28 22:07:57 stephena Exp $
 */
 class Settings
 {
@@ -145,16 +143,21 @@ class Settings
       This method should be called to get the filename of a state file
       given the state number.
 
+      @param md5   The md5sum to use as part of the filename.
+      @param state The state to use as part of the filename.
+
       @return String representing the full path of the state filename.
     */
-    virtual string stateFilename(uInt32 state) = 0;
+    virtual string stateFilename(const string& md5, uInt32 state) = 0;
 
     /**
-      This method should be called to get the filename of a snapshot.
+      This method should be called to test whether the given file exists.
 
-      @return String representing the full path of the snapshot filename.
+      @param filename The filename to test for existence.
+
+      @return boolean representing whether or not the file exists
     */
-    virtual string snapshotFilename() = 0;
+    virtual bool fileExists(const string& filename) = 0;
 
     /**
       This method should be called to display usage information.
@@ -164,12 +167,6 @@ class Settings
     virtual void usage(string& message) = 0;
 
   public:
-    /**
-      This method should be called when the emulation core sets
-      the console object.
-    */
-    void setConsole(Console* console) { myConsole = console; } 
-
     /**
       This method should be called to get the filename of the users'
       properties (stella.pro) file.
@@ -224,9 +221,6 @@ class Settings
     string mySystemPropertiesFile;
     string myUserConfigFile;
     string mySystemConfigFile;
-
-    // The global Console object
-    Console* myConsole;
 
     // The full pathname of the settings file for input
     string mySettingsInputFilename;
