@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.4 2003-11-17 17:43:39 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.5 2003-11-18 15:04:17 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -218,7 +218,7 @@ bool FrameBufferGL::init()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawMediaSource() // FIXME - maybe less copying can be done?
+void FrameBufferGL::drawMediaSource()
 {
   // Copy the mediasource framebuffer to the RGB texture
   uInt8* currentFrame  = myMediaSource->currentFrameBuffer();
@@ -253,6 +253,7 @@ void FrameBufferGL::drawMediaSource() // FIXME - maybe less copying can be done?
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
                   GL_RGBA, GL_UNSIGNED_BYTE, myTexture->pixels);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+  glColor3f(0.0, 0.0, 0.0);
 
   glBegin(GL_QUADS);
     glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
@@ -260,6 +261,9 @@ void FrameBufferGL::drawMediaSource() // FIXME - maybe less copying can be done?
     glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(myWidth, myHeight);
     glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, myHeight);
   glEnd();
+
+  // The frame doesn't need to be completely redrawn anymore
+  theRedrawEntireFrameIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

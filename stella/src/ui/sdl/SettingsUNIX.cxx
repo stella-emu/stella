@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.4 2003-11-17 17:43:39 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.5 2003-11-18 15:04:17 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -65,7 +65,7 @@ SettingsUNIX::SettingsUNIX()
   set("video", "soft");
 #ifdef DISPLAY_OPENGL
   set("gl_filter", "nearest");
-  set("gl_aspect", "1");
+  set("gl_aspect", "2");
 #endif
   set("sound", "oss");
   set("fullscreen", "false");
