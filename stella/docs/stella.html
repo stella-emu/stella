@@ -217,7 +217,11 @@
 	<ul>
 		<li>Updated the sound system.  All popping and cracking sounds that previously
 			occurred at program start/stop and when entering/exiting menu or pause mode
-			have been eliminated.</li>
+			has been eliminated.</li>
+
+		<li>Fixed the <b>gl_fsmax</b> argument to mean "switch to desktop resolution
+			on fullscreen OpenGL", instead of to the maximum possible resolution
+			(the two are not always the same).</li>
 
 		<li>Added <b>Alt [</b> and <b>Alt ]</b> keys to dynamically adjust the
 			sound volume during emulation.</li>
@@ -225,7 +229,7 @@
 		<li>Added <b>Control 0</b>, <b>Control 1</b>, <b>Control 2</b>, <b>Control 3</b>
 			keys to dynamically change which paddle the mouse should emulate.</li>
 
-		<li>Added <b>-video_driver</b> argument.  This accepts the different options
+		<li>Added <b>video_driver</b> argument.  This accepts the different options
 			that can be specified for SDL_VIDEODRIVER (see SDL homepage for more
 			information).  Basically, it eliminates the need to set the SDL_VIDEODRIVER
 			environment variable.</li>
@@ -554,9 +558,9 @@
 
 		<tr>
 			<td><pre>-gl_fsmax &lt;0|1&gt;</pre></td>
-			<td>Use the maximum possible resolution when switching to fullscreen OpenGL
-				mode.  Under Linux (and Windows on laptops), this is usually the current
-				desktop resolution, so a video-mode switch can be avoided.</td>
+			<td>Use the current desktop resolution when switching to fullscreen OpenGL
+				mode (so a video-mode switch can be avoided).  If not supported, then
+				use the maximum possible resolution available.</td>
 		</tr>
 
 		<tr>

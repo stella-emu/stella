@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.9 2005-01-04 19:59:12 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.10 2005-01-04 21:04:20 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -519,9 +519,31 @@ void FrameBufferGL::viewport(uInt32* screenWidth, uInt32* screenHeight,
 /*    cerr << "original image width   = " << iwidth  << endl
          << "original image height  = " << iheight << endl
          << endl; */
+    uInt32 desktopWidth  = this->screenWidth();
+    uInt32 desktopHeight = this->screenHeight();
 
     if(myConsole->settings().getBool("gl_fsmax") &&
-       myScreenmode != (SDL_Rect**) -1)
+       desktopWidth != 0 && desktopHeight != 0)
+    {
+      // Use the largest available screen size
+      swidth  = desktopWidth;
+      sheight = desktopHeight;
+
+      scaleX = float(iwidth)  / swidth;
+      scaleY = float(iheight) / sheight;
+
+      // Figure out which dimension is closest to the 10% mark,
+      // and calculate the scaling required to bring it to exactly 10%
+      if(scaleX > scaleY)
+        scale = (swidth * 0.9) / iwidth;
+      else
+        scale = (sheight * 0.9) / iheight;
+
+      iwidth  = (Uint16) (scale * iwidth);
+      iheight = (Uint16) (scale * iheight);
+    }
+    else if(myConsole->settings().getBool("gl_fsmax") &&
+            myScreenmode != (SDL_Rect**) -1)
     {
       // Use the largest available screen size
       swidth  = myScreenmode[0]->w;
