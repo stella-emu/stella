@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.7 2002-02-03 16:51:22 stephena Exp $
+// $Id: mainSDL.cxx,v 1.8 2002-02-06 00:59:36 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -225,6 +225,9 @@ uInt32 theDesiredFrameRate = 60;
 //   3 - Mouse emulates paddle 3
 //   4 - Use real Atari 2600 paddles
 uInt32 thePaddleMode = 0;
+
+// An alternate properties file to use
+string theAlternateProFile = "";
 
 
 /**
@@ -1176,6 +1179,7 @@ void usage()
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
 #endif
+    "  -pro <props file>       Use the given properties file instead of stella.pro",
     "",
     0
   };
@@ -1200,6 +1204,23 @@ bool setupProperties(PropertiesSet& set)
   string homePropertiesFile = getenv("HOME");
   homePropertiesFile += "/.stella.pro";
   string systemPropertiesFile = "/etc/stella.pro";
+
+  // Check to see if the user has specified an alternate .pro file.
+  // If it exists, use it.
+  if(theAlternateProFile != "")
+  {
+    if(access(theAlternateProFile.c_str(), R_OK) == 0)
+    {
+      set.load(theAlternateProFile, &Console::defaultProperties(), false);
+      return true;
+    }
+    else
+    {
+      cerr << "ERROR: Couldn't find \"" << theAlternateProFile <<
+              "\" properties file." << endl;
+      return false;
+    }
+  }
 
   if(access(homePropertiesFile.c_str(), R_OK) == 0)
   {
@@ -1308,6 +1329,10 @@ void handleCommandLineArguments(int argc, char* argv[])
       theSnapShotName = argv[++i];
     }
 #endif
+    else if(string(argv[i]) == "-pro")
+    {
+      theAlternateProFile = argv[++i];
+    }
     else
     {
       cout << "Undefined option " << argv[i] << endl;
