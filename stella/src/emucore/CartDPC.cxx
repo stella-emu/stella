@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2004 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.8 2004-06-13 04:49:03 bwmott Exp $
+// $Id: CartDPC.cxx,v 1.9 2005-02-13 19:17:02 stephena Exp $
 //============================================================================
 
 #include <assert.h>

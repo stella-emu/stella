@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartE7.hxx,v 1.3 2005-02-13 19:17:02 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEE7_HXX
@@ -53,7 +53,7 @@ class Deserializer;
     here by accessing 1FF8 to 1FFB.
 
   @author  Bradford W. Mott
-  @version $Id: CartE7.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+  @version $Id: CartE7.hxx,v 1.3 2005-02-13 19:17:02 stephena Exp $
 */
 class CartridgeE7 : public Cartridge
 {

@@ -12,6 +12,32 @@
                                Release History
 ===============================================================================
 
+1.4.1 to 1.4.2: (February 19, 2005)
+
+  * Updated the sound system. All popping and cracking sounds that previously
+    occurred at program start/stop and when entering/exiting menu or pause
+    mode have been eliminated.
+ 
+  * Fixed the gl_fsmax argument to mean "switch to desktop resolution on
+    fullscreen OpenGL", instead of to the maximum possible resolution (the two
+    are not always the same).
+ 
+  * Added Alt [ and Alt ] keys to dynamically adjust the sound volume during
+    emulation.
+ 
+  * Added Control 0, Control 1, Control 2, Control 3 keys to dynamically change
+    which paddle the mouse should emulate.
+ 
+  * Added video_driver argument. This accepts the different options that can be
+    specified for SDL_VIDEODRIVER (see SDL homepage for more information).
+    Basically, it eliminates the need to set the SDL_VIDEODRIVER environment
+    variable.
+ 
+  * For the Windows port; added windib and directx as options for
+    'video_driver' when using software rendering. The 'windib' option is now
+    the default, and in many cases it's up to 10 times faster than using
+    'directx'.
+
 1.4 to 1.4.1: (August 15, 2004)
 
   * Fixed PAL sound issues.  PAL games now should sound correct (no distortion

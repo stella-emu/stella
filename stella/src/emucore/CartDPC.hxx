@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.hxx,v 1.3 2002-11-19 04:29:21 bwmott Exp $
+// $Id: CartDPC.hxx,v 1.4 2005-02-13 19:17:02 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEDCP_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   see David P. Crane's United States Patent Number 4,644,495.
 
   @author  Bradford W. Mott
-  @version $Id: CartDPC.hxx,v 1.3 2002-11-19 04:29:21 bwmott Exp $
+  @version $Id: CartDPC.hxx,v 1.4 2005-02-13 19:17:02 stephena Exp $
 */
 class CartridgeDPC : public Cartridge
 {

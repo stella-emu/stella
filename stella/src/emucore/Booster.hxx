@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.hxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+// $Id: Booster.hxx,v 1.2 2005-02-13 19:17:02 stephena Exp $
 //============================================================================
 
 #ifndef BOOSTERGRIP_HXX
@@ -28,7 +28,7 @@
   on it (a booster and a trigger).
 
   @author  Bradford W. Mott
-  @version $Id: Booster.hxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+  @version $Id: Booster.hxx,v 1.2 2005-02-13 19:17:02 stephena Exp $
 */
 class BoosterGrip : public Controller
 {

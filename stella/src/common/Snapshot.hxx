@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+// $Id: Snapshot.hxx,v 1.3 2005-02-13 19:17:02 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX

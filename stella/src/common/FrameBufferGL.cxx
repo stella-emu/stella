@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.10 2005-01-04 21:04:20 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.11 2005-02-13 19:17:01 stephena Exp $
 //============================================================================
 
 #include <SDL.h>

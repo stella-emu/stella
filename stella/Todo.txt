@@ -9,53 +9,43 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - August 15, 2004
+                         To Do List - February 19, 2005
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-For all ports:
+For all ports (in order of importance):
+
+  * Provide a fully integrated GUI where all settings can be changed, multiple
+    games can be run, etc; basically, move all functionality of external
+    frontends into Stella itself
+
+  * Add an internal debugger to Stella for game developers
 
   * Provide suggestions for improving Stella
 
   * Provide suggestions for improving the Stella User's Manual
 
-  * Port Stella to other operating systems:
-     
-    - Atari ST/TT/Falcon
-    - Mac (680x0, PowerPC)
-    - Others...
-
   * Find people to actually do the above ports, and try to more actively
     recruit people into the Stella project
 
-  * Add a debugger to Stella for game developers or create an external
-    debugger to be used by Stella and z26 (and add hooks into Stella for it)
 
-  * Further optimize the software mode, especially on Win32.  The software
-    renderer in Linux takes 4% CPU (it's actually faster than OpenGL); the same
-    code on a faster computer running Windows XP takes 60-70%!  I knew SDL
-    wasn't as optimized for Windows, but I didn't think it was that bad ...
+For the various frontends
 
-For the Windows GUI frontend (StellaX)
-
-  * Make all dialog boxes resizable for any size text
-
-  * The following features depend on developer availability
-
-    - Add a Sprite/Animation Editor 
-    - Add a PF Editor
-    - Add a Sourcecode Editor
-    - Either Support DASM as frontend or integrate a 6507 Assembler
-    - Either Support Distella as frontend or integrate a 6507 Disassembler
-    - AVI/MPEG export
-    - WAV/MP3 export
-    - Client/Server networked play for up to 4 Computers via LAN/Internet
-    - Tracking Hiscores
-    - Record and Playback games - not as real movie, but by logging
-      Input/RAM/processor states in given intervals.
-    - Cheatcodes
-    - Improve frontend by adding snapshots, labels, manuals, etc.
-      Like KStella for Linux. (Suggestion from Brian Luttrull)
+  - Discontinue all external frontends; integrate into Stella itself
+  - Add a Sprite/Animation Editor 
+  - Add a PF Editor
+  - Add a Sourcecode Editor
+  - Either Support DASM as frontend or integrate a 6507 Assembler
+  - Either Support Distella as frontend or integrate a 6507 Disassembler
+  - AVI/MPEG export
+  - WAV/MP3 export
+  - Client/Server networked play for up to 4 Computers via LAN/Internet
+  - Tracking Hiscores
+  - Record and Playback games - not as real movie, but by logging
+    Input/RAM/processor states in given intervals.
+  - Cheatcodes
+  - Improve frontend by adding snapshots, labels, manuals, etc.
+    Like KStella for Linux. (Suggestion from Brian Luttrull)

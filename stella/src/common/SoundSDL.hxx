@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2004 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.6 2005-01-04 02:29:29 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.7 2005-02-13 19:17:02 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.6 2005-01-04 02:29:29 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.7 2005-02-13 19:17:02 stephena Exp $
 */
 class SoundSDL : public Sound
 {

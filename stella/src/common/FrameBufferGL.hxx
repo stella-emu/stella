@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.5 2005-01-03 19:16:09 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.6 2005-02-13 19:17:01 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.5 2005-01-03 19:16:09 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.6 2005-02-13 19:17:01 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4.hxx,v 1.1 2002-08-14 02:30:52 bwmott Exp $
+// $Id: CartF4.hxx,v 1.2 2005-02-13 19:17:02 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF4_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   are eight 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF4.hxx,v 1.1 2002-08-14 02:30:52 bwmott Exp $
+  @version $Id: CartF4.hxx,v 1.2 2005-02-13 19:17:02 stephena Exp $
 */
 class CartridgeF4 : public Cartridge
 {
