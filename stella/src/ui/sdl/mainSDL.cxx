@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.13 2002-03-17 19:37:00 stephena Exp $
+// $Id: mainSDL.cxx,v 1.14 2002-03-20 00:03:24 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1674,10 +1674,54 @@ int main(int argc, char* argv[])
     cleanup();
   }
 
+#ifdef EXPERIMENTAL_TIMING
   // Set up timing stuff
-  Uint32 before, delta, frameTime = 0, eventTime = 0;
-  Uint32 timePerFrame = 1000000 / theDesiredFrameRate;
-  Uint32 numberOfFrames = 0;
+  uInt32 startTime, frameTime, virtualTime, currentTime;
+  uInt32 numberOfFrames = 0;
+  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) theDesiredFrameRate);
+
+  // Set the base for the timers
+  virtualTime = getTicks();
+  frameTime = 0;
+
+  // Main game loop
+  for(;;)
+  {
+    // Exit if the user wants to quit
+    if(theQuitIndicator)
+    {
+      break;
+    }
+
+    startTime = getTicks();
+    if(!thePauseIndicator)
+    {
+      theConsole->mediaSource().update();
+    }
+    updateDisplay(theConsole->mediaSource());
+    handleEvents();
+
+    currentTime = getTicks();
+    virtualTime += timePerFrame;
+    if(currentTime < virtualTime)
+    {
+      SDL_Delay((virtualTime - currentTime)/1000);
+    }
+
+    currentTime = getTicks() - startTime;
+    frameTime += currentTime;
+    ++numberOfFrames;
+
+//    cerr << "FPS = " << (double) numberOfFrames / ((double) frameTime / 1000000.0) << endl;
+  }
+#else
+  // Set up timing stuff
+  uInt32 startTime, frameTime, delta;
+  uInt32 numberOfFrames = 0;
+  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) theDesiredFrameRate);
+
+  // Set the base for the timers
+  frameTime = 0;
 
   // Main game loop
   for(;;)
@@ -1697,7 +1741,7 @@ int main(int argc, char* argv[])
       continue;
     }
 
-    before = getTicks();
+    startTime = getTicks();
     theConsole->mediaSource().update();
     updateDisplay(theConsole->mediaSource());
     handleEvents();
@@ -1705,15 +1749,16 @@ int main(int argc, char* argv[])
     // Now, waste time if we need to so that we are at the desired frame rate
     for(;;)
     {
-      delta = getTicks() - before;
+      delta = getTicks() - startTime;
 
       if(delta >= timePerFrame)
         break;
     }
 
-    frameTime += (getTicks() - before);
+    frameTime += getTicks() - startTime;
     ++numberOfFrames;
   }
+#endif
 
   if(theShowInfoFlag)
   {
@@ -1745,13 +1790,11 @@ inline uInt32 getTicks()
   timeval now;
   gettimeofday(&now, 0);
 
-  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
-
-  return ticks;
+  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
 }
 #else
 inline uInt32 getTicks()
 {
-  return SDL_GetTicks() * 1000;
+  return (uInt32) SDL_GetTicks() * 1000;
 }
 #endif

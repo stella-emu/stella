@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.11 2002-03-17 19:37:00 stephena Exp $
+## $Id: makefile,v 1.12 2002-03-20 00:03:24 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -57,6 +57,11 @@ OPTIMIZATIONS    =
 ### Only X11 and SDL ports supported for now
 # SNAPSHOT_SUPPORT = 1
 
+### to enable EXPERIMENTAL TIMING code
+### Enables emulator to not use 100% CPU
+### Only X11 and SDL ports supported for now
+# EXPERIMENTAL_TIMING = 1
+
 ##============================================================================
 ## All done, type make to get a list of frontends
 ## No configurable options below this line ...
@@ -90,34 +95,39 @@ CXXFLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
 
 ## set the user-defined options
 ifdef BSPF_BOOL
-OPTS.X11 += -DBSPF_BOOL
-OPTS.DOS += -DBSPF_BOOL
+OPTS.X11 += -DBSPF_BOOL=1
+OPTS.DOS += -DBSPF_BOOL=1   
 endif
 
 ifdef SHOW_TIMING
-OPTS.X11 += -DSHOW_TIMING
-OPTS.SDL += -DSHOW_TIMING
-OPTS.DOS += -DSHOW_TIMING
+OPTS.X11 += -DSHOW_TIMING=1
+OPTS.SDL += -DSHOW_TIMING=1
+OPTS.DOS += -DSHOW_TIMING=1
 endif
 
 ifdef DEBUG
-OPTS.X11 += -DDEBUG
-OPTS.SDL += -DDEBUG
-OPTS.DOS += -DDEBUG
+OPTS.X11 += -DDEBUG=1
+OPTS.SDL += -DDEBUG=1
+OPTS.DOS += -DDEBUG=1
 endif
 
 ifdef LINUX_JOYSTICK
-OPTS.X11 += -DLINUX_JOYSTICK
+OPTS.X11 += -DLINUX_JOYSTICK=1
 endif
 
 ifdef SNAPSHOT_SUPPORT
 OBJS.X11 += Snapshot.o
-OPTS.X11 += -DHAVE_PNG -I$(UI)/common
+OPTS.X11 += -DHAVE_PNG=1 -I$(UI)/common
 LIBS.X11 += -lpng
 
 OBJS.SDL += Snapshot.o
-OPTS.SDL += -DHAVE_PNG -I$(UI)/common
+OPTS.SDL += -DHAVE_PNG=1 -I$(UI)/common
 LIBS.SDL += -lpng
+endif
+
+ifdef EXPERIMENTAL_TIMING
+OPTS.X11 += -DEXPERIMENTAL_TIMING=1
+OPTS.SDL += -DEXPERIMENTAL_TIMING=1
 endif
 
 default:
@@ -142,7 +152,7 @@ dos:
           LD="gxx" \
           CXX="gcc" \
           INCLUDES="$(INCLUDES) -I$(UI)/dos -I$(UI)/sound" \
-          OPTIONS="-DBSPF_DOS" \
+          OPTIONS="-DBSPF_DOS=1" \
           OPTIONS+="$(OPTS.DOS)" \
           LDFLAGS="" \
           LDLIBS="" \
@@ -152,7 +162,7 @@ unix-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \
@@ -164,7 +174,7 @@ linux-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \
@@ -177,7 +187,7 @@ linux-sdl:
 	make stella.sdl \
           INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.SDL)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.SDL)" \
@@ -189,7 +199,7 @@ bsdi-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/X11R6/include" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \
@@ -201,7 +211,7 @@ solaris-x:
 	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/openwin/include" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/openwin/lib" \
           LDFLAGS+="$(CFLAGS.X11)" \

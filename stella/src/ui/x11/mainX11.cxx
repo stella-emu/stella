@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.14 2002-03-17 19:37:00 stephena Exp $
+// $Id: mainX11.cxx,v 1.15 2002-03-20 00:03:24 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1576,10 +1576,54 @@ int main(int argc, char* argv[])
     cleanup();
   }
 
+#ifdef EXPERIMENTAL_TIMING
   // Set up timing stuff
-  uInt32 before, delta, frameTime = 0, eventTime = 0;
-  uInt32 timePerFrame = 1000000 / theDesiredFrameRate;
+  uInt32 startTime, frameTime, virtualTime, currentTime;
   uInt32 numberOfFrames = 0;
+  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) theDesiredFrameRate);
+
+  // Set the base for the timers
+  virtualTime = getTicks();
+  frameTime = 0;
+
+  // Main game loop
+  for(;;)
+  {
+    // Exit if the user wants to quit
+    if(theQuitIndicator)
+    {
+      break;
+    }
+
+    startTime = getTicks();
+    if(!thePauseIndicator)
+    {
+      theConsole->mediaSource().update();
+    }
+    updateDisplay(theConsole->mediaSource());
+    handleEvents();
+
+    currentTime = getTicks();
+    virtualTime += timePerFrame;
+    if(currentTime < virtualTime)
+    {
+      usleep(virtualTime - currentTime);
+    }
+
+    currentTime = getTicks() - startTime;
+    frameTime += currentTime;
+    ++numberOfFrames;
+
+//    cerr << "FPS = " << (double) numberOfFrames / ((double) frameTime / 1000000.0) << endl;
+  }
+#else
+  // Set up timing stuff
+  uInt32 startTime, frameTime, delta;
+  uInt32 numberOfFrames = 0;
+  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) theDesiredFrameRate);
+
+  // Set the base for the timers
+  frameTime = 0;
 
   // Main game loop
   for(;;)
@@ -1599,7 +1643,7 @@ int main(int argc, char* argv[])
       continue;
     }
 
-    before = getTicks();
+    startTime = getTicks();
     theConsole->mediaSource().update();
     updateDisplay(theConsole->mediaSource());
     handleEvents();
@@ -1607,15 +1651,16 @@ int main(int argc, char* argv[])
     // Now, waste time if we need to so that we are at the desired frame rate
     for(;;)
     {
-      delta = getTicks() - before;
+      delta = getTicks() - startTime;
 
-      if(delta > timePerFrame)
+      if(delta >= timePerFrame)
         break;
     }
 
-    frameTime += (getTicks() - before);
+    frameTime += getTicks() - startTime;
     ++numberOfFrames;
   }
+#endif
 
   if(theShowInfoFlag)
   {
