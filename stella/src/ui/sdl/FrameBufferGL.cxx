@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.18 2004-04-26 12:49:46 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.19 2004-04-27 00:50:52 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -229,7 +229,7 @@ bool FrameBufferGL::init()
          << "Vendor  : " << glGetString(GL_VENDOR) << endl
          << "Renderer: " << glGetString(GL_RENDERER) << endl
          << "Version : " << glGetString(GL_VERSION) << endl
-         << colormode.str() << endl;   
+         << colormode.str() << endl << endl;
   }
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly

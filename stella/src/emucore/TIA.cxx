@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.31 2004-04-26 17:27:31 stephena Exp $
+// $Id: TIA.cxx,v 1.32 2004-04-27 00:50:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -288,7 +288,6 @@ bool TIA::save(Serializer& out)
   {
     out.putString(device);
 
-//FIXME    out.putLong(myLastSoundUpdateCycle);
     out.putLong(myClockWhenFrameStarted);
     out.putLong(myClockStartDisplay);
     out.putLong(myClockStopDisplay);
@@ -385,7 +384,6 @@ bool TIA::load(Deserializer& in)
     if(in.getString() != device)
       return false;
 
-//FIXME    myLastSoundUpdateCycle = (Int32) in.getLong();
     myClockWhenFrameStarted = (Int32) in.getLong();
     myClockStartDisplay = (Int32) in.getLong();
     myClockStopDisplay = (Int32) in.getLong();

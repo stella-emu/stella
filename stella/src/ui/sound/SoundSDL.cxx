@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.9 2004-04-26 17:27:32 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.10 2004-04-27 00:50:52 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -25,7 +25,7 @@
 
 #include "SoundSDL.hxx"
 
-#define DIGITAL_SOUND
+//#define DIGITAL_SOUND
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::SoundSDL(uInt32 fragsize, uInt32 queuesize)
@@ -235,6 +235,8 @@ bool SoundSDL::save(Serializer& out)
     out.putLong(reg4);
     out.putLong(reg5);
     out.putLong(reg6);
+
+    out.putLong(myLastSoundUpdateCycle);
   }
   catch(char *msg)
   {
@@ -267,6 +269,8 @@ bool SoundSDL::load(Deserializer& in)
     reg4 = (uInt8) in.getLong();
     reg5 = (uInt8) in.getLong();
     reg6 = (uInt8) in.getLong();
+
+    myLastSoundUpdateCycle = (Int32) in.getLong();
 
     // Only update the TIA sound registers if sound is enabled
     if(myIsInitializedFlag)

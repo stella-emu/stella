@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.72 2004-04-26 12:49:46 stephena Exp $
+// $Id: mainSDL.cxx,v 1.73 2004-04-27 00:50:52 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -64,11 +64,20 @@ static uInt32 getTicks();
 static bool setupProperties(PropertiesSet& set);
 
 #ifdef JOYSTICK_SUPPORT
-  static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
-  static SDL_Joystick* theRightJoystick = (SDL_Joystick*) NULL;
-  static uInt32 theLeftJoystickNumber;
-  static uInt32 theRightJoystickNumber;
+  static SDL_Joystick* theJoysticks[StellaEvent::LastJSTICK];
 //  static uInt32 thePaddleNumber;
+
+  // Lookup table for joystick numbers and events
+  StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK] = {
+    StellaEvent::JSTICK_0, StellaEvent::JSTICK_1,
+    StellaEvent::JSTICK_2, StellaEvent::JSTICK_3
+  };
+  StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
+    StellaEvent::JBUTTON_0, StellaEvent::JBUTTON_1, StellaEvent::JBUTTON_2, 
+    StellaEvent::JBUTTON_3, StellaEvent::JBUTTON_4, StellaEvent::JBUTTON_5, 
+    StellaEvent::JBUTTON_6, StellaEvent::JBUTTON_7, StellaEvent::JBUTTON_8, 
+    StellaEvent::JBUTTON_9
+  };
 #endif
 
 // Pointer to the console object or the null pointer
@@ -221,19 +230,6 @@ static Switches keyList[] = {
     { SDLK_PAGEDOWN,    StellaEvent::KCODE_PAGEDOWN   }
   };
 
-// Lookup table for joystick numbers and events
-StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK] = {
-    StellaEvent::JSTICK_0, StellaEvent::JSTICK_1,
-    StellaEvent::JSTICK_2, StellaEvent::JSTICK_3
-};
-StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
-    StellaEvent::JBUTTON_0, StellaEvent::JBUTTON_1, StellaEvent::JBUTTON_2, 
-    StellaEvent::JBUTTON_3, StellaEvent::JBUTTON_4, StellaEvent::JBUTTON_5, 
-    StellaEvent::JBUTTON_6, StellaEvent::JBUTTON_7, StellaEvent::JBUTTON_8, 
-    StellaEvent::JBUTTON_9
-};
-
-
 /**
   Returns number of ticks in microseconds
 */
@@ -260,41 +256,31 @@ inline uInt32 getTicks()
 bool setupJoystick()
 {
 #ifdef JOYSTICK_SUPPORT
+  // First clear the joystick array
+  for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
+    theJoysticks[i] = (SDL_Joystick*) NULL;
+
   // Initialize the joystick subsystem
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
     if(theShowInfoFlag)
       cout << "No joysticks present, use the keyboard.\n";
-    theLeftJoystick = theRightJoystick = 0;
+
     return true;
   }
 
-  theLeftJoystickNumber = (uInt32) theConsole->settings().getInt("joyleft");
-  if((theLeftJoystick = SDL_JoystickOpen(theLeftJoystickNumber)) != NULL)
+  // Try to open as many joysticks as possible (up to 4)
+  // Let the user decide how to map them
+  uInt32 limit = SDL_NumJoysticks() <= StellaEvent::LastJSTICK ?
+                 SDL_NumJoysticks() : StellaEvent::LastJSTICK;
+  for(uInt32 i = 0; i < limit; i++)
   {
-    if(theShowInfoFlag)
-      cout << "Left joystick is a "
-           << SDL_JoystickName(theLeftJoystickNumber)
-           << " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
-  }
-  else
-  {
-    if(theShowInfoFlag)
-      cout << "Left joystick not present, use keyboard instead.\n";
-  }
-
-  theRightJoystickNumber = theConsole->settings().getInt("joyright");
-  if((theRightJoystick = SDL_JoystickOpen(theRightJoystickNumber)) != NULL)
-  {
-    if(theShowInfoFlag)
-      cout << "Right joystick is a "
-           << SDL_JoystickName(theRightJoystickNumber)
-           << " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
-  }
-  else
-  {
-    if(theShowInfoFlag)
-      cout << "Right joystick not present, use keyboard instead.\n";
+    theJoysticks[i] = SDL_JoystickOpen(i);
+    if(theJoysticks[i] != NULL && theShowInfoFlag)
+    {
+      cout << "Joystick " << i << ": " << SDL_JoystickName(i)
+           << " with " << SDL_JoystickNumButtons(theJoysticks[i]) << " buttons.\n";
+    }
   }
 #endif
 
@@ -540,6 +526,7 @@ void handleEvents()
 
     if(event.jbutton.which >= StellaEvent::LastJSTICK)
       return;
+
     stick = joyList[event.jbutton.which];
 
     if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
@@ -644,10 +631,11 @@ void cleanup()
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
 #ifdef JOYSTICK_SUPPORT
-    if(SDL_JoystickOpened(theLeftJoystickNumber))
-      SDL_JoystickClose(theLeftJoystick);
-    if(SDL_JoystickOpened(theRightJoystickNumber))
-      SDL_JoystickClose(theRightJoystick);
+  for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
+  {
+    if(SDL_JoystickOpened(i))
+      SDL_JoystickClose(theJoysticks[i]);
+  }
 #endif
 
     SDL_Quit();

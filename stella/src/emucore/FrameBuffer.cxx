@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.8 2004-04-27 00:50:51 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -409,9 +409,9 @@ void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
     case MAIN_MENU:
 //      if(key == StellaEvent::KCODE_RETURN)
 //        myCurrentWidget = currentSelectedWidget();
-      if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_UP)
+      if(code == StellaEvent::JAXIS_UP)
         moveCursorUp(1);
-      else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_DOWN)
+      else if(code == StellaEvent::JAXIS_DOWN)
         moveCursorDown(1);
 
       break;  // MAIN_MENU
@@ -422,9 +422,9 @@ void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
         addJoyBinding(mySelectedEvent, stick, code);
         myRemapEventSelectedFlag = false;
       }
-      else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_UP)
+      else if(code == StellaEvent::JAXIS_UP)
         moveCursorUp(1);
-      else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_DOWN)
+      else if(code == StellaEvent::JAXIS_DOWN)
         moveCursorDown(1);
 //      else if(key == StellaEvent::KCODE_PAGEUP)
 //        movePageUp();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaEvent.hxx,v 1.7 2003-09-30 18:46:12 stephena Exp $
+// $Id: StellaEvent.hxx,v 1.8 2004-04-27 00:50:51 stephena Exp $
 //============================================================================
 
 #ifndef STELLAEVENT_HXX
@@ -28,7 +28,7 @@
   by the frontends directly.
 
   @author Stephen Anthony
-  @version $Id: StellaEvent.hxx,v 1.7 2003-09-30 18:46:12 stephena Exp $
+  @version $Id: StellaEvent.hxx,v 1.8 2004-04-27 00:50:51 stephena Exp $
 */
 class StellaEvent
 {
@@ -80,7 +80,6 @@ class StellaEvent
     enum JoyStick
     {
       JSTICK_0, JSTICK_1, JSTICK_2, JSTICK_3,
-      JSTICK_4, JSTICK_5, JSTICK_6, JSTICK_7,
       LastJSTICK
     };
 

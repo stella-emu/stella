@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.10 2004-04-26 17:27:31 stephena Exp $
+// $Id: Sound.cxx,v 1.11 2004-04-27 00:50:51 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -75,6 +75,8 @@ bool Sound::save(Serializer& out)
   out.putLong(reg);
   out.putLong(reg);
 
+  out.putLong(myLastSoundUpdateCycle);
+
   return true;
 }
 
@@ -92,6 +94,8 @@ bool Sound::load(Deserializer& in)
   reg = (uInt8) in.getLong();
   reg = (uInt8) in.getLong();
   reg = (uInt8) in.getLong();
+
+  myLastSoundUpdateCycle = (Int32) in.getLong();
 
   return true;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.8 2004-04-04 02:03:15 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.9 2004-04-27 00:50:52 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -98,8 +98,6 @@ void SettingsUNIX::usage(string& message)
   #ifdef JOYSTICK_SUPPORT
     << "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate\n"
     << "                             or that real Atari 2600 paddles are being used\n"
-    << "  -joyleft    <number>       The joystick number representing the left controller\n"
-    << "  -joyright   <number>       The joystick number representing the right controller\n"
   #else
     << "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
   #endif
