@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.8 2004-06-23 03:59:59 stephena Exp $
+// $Id: mainSDL.cxx,v 1.9 2004-06-28 23:16:24 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -130,7 +130,7 @@ static Int32 mouseX = 0;
 // Indicates whether to show information during program execution
 static bool theShowInfoFlag;
 
-struct Switches
+struct KeyList
 {
   SDLKey scanCode;
   StellaEvent::KeyCode keyCode;
@@ -139,7 +139,7 @@ struct Switches
 // Place the most used keys first to speed up access
 // Todo - initialize this array in the same order as the SDLK
 // keys are defined, so it can be a constant-time LUT
-static Switches keyList[] = {
+static KeyList keyList[] = {
     { SDLK_F1,          StellaEvent::KCODE_F1         },
     { SDLK_F2,          StellaEvent::KCODE_F2         },
     { SDLK_F3,          StellaEvent::KCODE_F3         },
@@ -479,7 +479,7 @@ void handleEvents()
       }
       else // check all the other keys
       {
-        for(unsigned int i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)
+        for(unsigned int i = 0; i < sizeof(keyList) / sizeof(KeyList); ++i)
         {
           if(keyList[i].scanCode == key)
             theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, 1);
@@ -491,7 +491,7 @@ void handleEvents()
       key  = event.key.keysym.sym;
       type = event.type;
 
-      for(unsigned int i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)
+      for(unsigned int i = 0; i < sizeof(keyList) / sizeof(KeyList); ++i)
       { 
         if(keyList[i].scanCode == key)
           theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, 0);
