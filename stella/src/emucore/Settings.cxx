@@ -13,10 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.9 2003-09-25 16:20:34 stephena Exp $
+// $Id: Settings.cxx,v 1.10 2003-09-28 21:59:24 stephena Exp $
 //============================================================================
 
-#include <assert.h>
+#include <cassert>
 #include <sstream>
 #include <fstream>
 

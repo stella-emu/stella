@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.hxx,v 1.4 2003-09-26 22:39:36 stephena Exp $
+// $Id: UserInterface.hxx,v 1.5 2003-09-28 21:59:24 stephena Exp $
 //============================================================================
 
 #ifndef USERINTERFACE_HXX
@@ -31,7 +31,7 @@ class MediaSource;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: UserInterface.hxx,v 1.4 2003-09-26 22:39:36 stephena Exp $
+  @version $Id: UserInterface.hxx,v 1.5 2003-09-28 21:59:24 stephena Exp $
 */
 class UserInterface
 {
@@ -67,9 +67,6 @@ class UserInterface
     void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
          Int32 state);
 
-    void sendKeymap(Event::Type table[StellaEvent::LastKCODE]);
-    void sendJoymap(Event::Type table[StellaEvent::LastJSTICK][StellaEvent::LastJCODE]);
-
   public:
     void showMainMenu(bool show);
     void showMessage(const string& message);
@@ -77,7 +74,7 @@ class UserInterface
 
   private:
     // Enumeration representing the different types of user interface widgets
-    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU, MESSAGE };
+    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU };
 
     Widget currentSelectedWidget();
     Event::Type currentSelectedEvent();
@@ -85,11 +82,21 @@ class UserInterface
     void moveCursorUp();
     void moveCursorDown();
 
-    // Draw a bounded box centered horizontally
-    void drawBoundedBox(uInt32 width, uInt32 height);
+    // Draw a bounded box at the specified coordinates
+    void drawBoundedBox(uInt32 x, uInt32 y, uInt32 width, uInt32 height);
 
     // Draw message text at specified coordinates
-    void drawText(const string& message, uInt32 x, uInt32 y);
+    void drawText(uInt32 x, uInt32 y, const string& message);
+
+    // scan the mapping arrays and update the remap menu
+    void loadRemapMenu();
+
+    // Add binding between a StellaEvent key and a core event
+    void addKeyBinding(Event::Type event, StellaEvent::KeyCode key);
+
+    // Remove all bindings for this core event
+    void deleteBinding(Event::Type event);
+
 
   private:
     // The Console for the system
@@ -98,11 +105,29 @@ class UserInterface
     // The Mediasource for the system
     MediaSource* myMediaSource;
 
+    // Structure used for main menu items
+    struct MainMenuItem
+    {
+      Widget widget;
+      string action;
+    };
+
+    // Structure used for remap menu items
+    struct RemapMenuItem
+    {
+      Event::Type event;
+      string action;
+      string key;
+    };
+
     // Bounds for the window frame
     uInt32 myXStart, myYStart, myWidth, myHeight;
 
-    // Table of bitmapped fonts.  Holds A..Z and 0..9.
-    static const uInt32 ourFontData[36];
+    // Table of bitmapped fonts.
+    static const uInt8 ourFontData[2048];
+
+    // Table of strings representing the various StellaEvent codes
+    static const char* ourEventName[StellaEvent::LastKCODE];
 
     // Type of interface item currently slated for redraw
     Widget myCurrentWidget;
@@ -113,17 +138,45 @@ class UserInterface
     // Indicates the current selected event being remapped
     Event::Type mySelectedEvent;
 
+    // The maximum number of vertical lines of text that can be onscreen
+    uInt32 myMaxLines;
+
+    // Keep track of current selected main menu item
+    uInt32 myMainMenuIndex, myMainMenuItems;
+
+    // Keep track of current selected remap menu item
+    uInt32 myRemapMenuIndex, myRemapMenuLowIndex, myRemapMenuHighIndex;
+    uInt32 myRemapMenuItems, myRemapMenuMaxLines;
+
     // Message timer
     Int32 myMessageTime;
 
     // Message text
     string myMessageText;
 
+    // The width of the information menu, determined by the longest string
+    uInt32 myInfoMenuWidth;
+
     // Holds information about the current selected ROM image
     string ourPropertiesInfo[6];
 
-    // The width of the information menu, determined by the longest string
-    uInt32 myInfoMenuWidth;
+    // Holds static strings for the main menu
+    static MainMenuItem ourMainMenu[2];
+
+    // Holds static strings for the remap menu
+    static RemapMenuItem ourRemapMenu[23];
+
+    // Holds the current key mappings
+    Event::Type* myKeyTable;
+
+    // Holds the number of items in the keytable array
+    uInt32 myKeyTableSize;
+
+    // Holds the current joystick mappings
+    Event::Type* myJoyTable;
+
+    // Holds the number of items in the joytable array
+    uInt32 myJoyTableSize;
 };
 
 #endif

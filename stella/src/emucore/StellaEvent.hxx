@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaEvent.hxx,v 1.4 2003-09-26 00:32:00 stephena Exp $
+// $Id: StellaEvent.hxx,v 1.5 2003-09-28 21:59:24 stephena Exp $
 //============================================================================
 
 #ifndef STELLAEVENT_HXX
@@ -28,13 +28,17 @@
   by the frontends directly.
 
   @author Stephen Anthony
-  @version $Id: StellaEvent.hxx,v 1.4 2003-09-26 00:32:00 stephena Exp $
+  @version $Id: StellaEvent.hxx,v 1.5 2003-09-28 21:59:24 stephena Exp $
 */
 class StellaEvent
 {
   public:
     /**
       Enumeration of keyboard keycodes
+
+      Note that the order of these codes is related to
+      UserInterface::ourEventName.  If these are ever changed or rearranged,
+      that array must be updated as well.
     */
     enum KeyCode
     {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
+// $Id: EventHandler.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -41,7 +41,7 @@ class MediaSource;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
 */
 class EventHandler
 {
@@ -98,19 +98,21 @@ class EventHandler
     void setMediaSource(MediaSource* mediaSource);
 
     /**
-      Get the current keymapping being used
+      Get the current keymapping being used in string form
 
       @return  The keymap list in string form
     */
     string getKeymap();
 
     /**
-      Get the current joymapping being used
+      Get the current joymapping being used in string form
 
       @return  The joymap list in string form
     */
     string getJoymap();
 
+    void getKeymapArray(Event::Type** array, uInt32* sizex);
+    void getJoymapArray(Event::Type** array, uInt32* sizex, uInt32* sizey);
 
   private:
     void setKeymap();
@@ -125,14 +127,12 @@ class EventHandler
     void loadState();
     void takeSnapshot();
 
-    void processMenuEvent(StellaEvent::KeyCode key);
-
   private:
     // Array of key events
     Event::Type myKeyTable[StellaEvent::LastKCODE];
 
     // Array of joystick events
-    Event::Type myJoyTable[StellaEvent::LastJSTICK][StellaEvent::LastJCODE];
+    Event::Type myJoyTable[StellaEvent::LastJSTICK*StellaEvent::LastJCODE];
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];

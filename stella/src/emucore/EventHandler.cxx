@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.13 2003-09-26 22:39:36 stephena Exp $
+// $Id: EventHandler.cxx,v 1.14 2003-09-28 21:59:24 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -49,9 +49,8 @@ EventHandler::EventHandler(Console* console)
     myKeyTable[i] = Event::NoType;
 
   // Erase the JoyEvent array
-  for(i = 0; i < StellaEvent::LastJSTICK; ++i)
-    for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
-      myJoyTable[i][j] = Event::NoType;
+  for(i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    myJoyTable[i] = Event::NoType;
 
   // Erase the Message array 
   for(i = 0; i < Event::LastType; ++i)
@@ -67,6 +66,9 @@ EventHandler::EventHandler(Console* console)
 
   setKeymap();
   setJoymap();
+
+  // Now send the filled event arrays to the GUI for display and remapping
+//  myConsole->gui().
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,8 +76,6 @@ EventHandler::~EventHandler()
 {
   if(myEvent)
     delete myEvent;
-
-  myEvent = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,7 +110,7 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
   if(myMenuStatus)
     myConsole->gui().sendJoyEvent(stick, code, state);
   else
-    sendEvent(myJoyTable[stick][code], state);
+    sendEvent(myJoyTable[stick*StellaEvent::LastJCODE + code], state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,13 +202,10 @@ void EventHandler::setJoymap()
     string key;
 
     // Fill the joymap table with events
-    for(Int32 i = 0; i < StellaEvent::LastJSTICK; ++i)
+    for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
     {
-      for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
-      {
-        buf >> key;
-        myJoyTable[i][j] = (Event::Type) atoi(key.c_str());
-      }
+      buf >> key;
+      myJoyTable[i] = (Event::Type) atoi(key.c_str());
     }
   }
   else
@@ -234,12 +231,26 @@ string EventHandler::getJoymap()
   ostringstream buf;
 
   // Iterate through the joymap table and create a colon-separated list
-  for(Int32 i = 0; i < StellaEvent::LastJSTICK; ++i)
-    for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
-      buf << myJoyTable[i][j] << ":";
+  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    buf << myJoyTable[i] << ":";
 
   myJoymapString = buf.str();
   return myJoymapString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::getKeymapArray(Event::Type** array, uInt32* sizex)
+{
+  *array = myKeyTable;
+  *sizex = StellaEvent::LastKCODE;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::getJoymapArray(Event::Type** array, uInt32* sizex, uInt32* sizey)
+{
+  *array = myJoyTable;
+  *sizex = StellaEvent::LastJSTICK;
+  *sizey = StellaEvent::LastJCODE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -313,19 +324,20 @@ void EventHandler::setDefaultKeymap()
 void EventHandler::setDefaultJoymap()
 {
   // Left joystick
-  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JBUTTON_9 ]  = Event::ConsoleSelect;
-  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_UP]    = Event::JoystickZeroUp;
-  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_DOWN]  = Event::JoystickZeroDown;
-  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_LEFT]  = Event::JoystickZeroLeft;
-  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_RIGHT] = Event::JoystickZeroRight;
-  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JBUTTON_0]   = Event::JoystickZeroFire;
+  uInt32 i = StellaEvent::JSTICK_0 * StellaEvent::LastJCODE;
+  myJoyTable[i + StellaEvent::JAXIS_UP]    = Event::JoystickZeroUp;
+  myJoyTable[i + StellaEvent::JAXIS_DOWN]  = Event::JoystickZeroDown;
+  myJoyTable[i + StellaEvent::JAXIS_LEFT]  = Event::JoystickZeroLeft;
+  myJoyTable[i + StellaEvent::JAXIS_RIGHT] = Event::JoystickZeroRight;
+  myJoyTable[i + StellaEvent::JBUTTON_0]   = Event::JoystickZeroFire;
 
   // Right joystick
-  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_UP]    = Event::JoystickOneUp;
-  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_DOWN]  = Event::JoystickOneDown;
-  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_LEFT]  = Event::JoystickOneLeft;
-  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_RIGHT] = Event::JoystickOneRight;
-  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JBUTTON_0]   = Event::JoystickOneFire;
+  i = StellaEvent::JSTICK_1 * StellaEvent::LastJCODE;
+  myJoyTable[i + StellaEvent::JAXIS_UP]    = Event::JoystickOneUp;
+  myJoyTable[i + StellaEvent::JAXIS_DOWN]  = Event::JoystickOneDown;
+  myJoyTable[i + StellaEvent::JAXIS_LEFT]  = Event::JoystickOneLeft;
+  myJoyTable[i + StellaEvent::JAXIS_RIGHT] = Event::JoystickOneRight;
+  myJoyTable[i + StellaEvent::JBUTTON_0]   = Event::JoystickOneFire;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

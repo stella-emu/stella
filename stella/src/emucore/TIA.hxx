@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
+// $Id: TIA.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -43,7 +43,7 @@ class Deserializer;
   in a bounded queue.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
+  @version $Id: TIA.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -243,9 +243,6 @@ class TIA : public Device , public MediaSource
 
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
-
-    // Draw message to framebuffer
-    void drawMessageText();
 
   private:
     /**
