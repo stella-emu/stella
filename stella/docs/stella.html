@@ -214,21 +214,24 @@
 		<li>Added some <b>developer</b> options to the core, and the ability to change
 			game width, height, xstart, ystart, etc. while the emulation is running.  Added
 			ability to switch between NTSC and PAL at runtime, and the ability to save the
-			current properties to a file; X11 and SDL versions supported for now</li>
+			current properties to a file or to merge the changes into the stella.pro file;
+			X11 and SDL versions supported for now</li>
 		<li>Added save/load state ability to the core; X11 and SDL versions supported for now</li>
 		<li>External sound server for the X11 and SDL versions no longer required, as all
 			sound code is now integrated into the core</li>
-		<li>Changed the locations of the INI file for the X11 and SDL versions; the users'
-			stellarc file is now located in "<i>$HOME/.stella/stellarc</i>", and the state files
-			are located in "<i>$HOME/.stella/state/</i>".  The users' stella.pro file is now
-			located in "<i>$HOME/.stella/stella.pro</i>"
+		<li>Changed the locations of the users' config files for the X11 and SDL versions; the users'
+			stellarc file is now located in "<i>$HOME/.stella/stellarc</i>", state files
+			are located in "<i>$HOME/.stella/state/</i>" and the stella.pro file is located
+			in "<i>$HOME/.stella/stella.pro</i>"
 		<li>Changed the way options are supplied on the commandline.  Now all commandline
 			options take <b>exactly</b> the same arguments as in the INI file</li>
 		<li>Made the TIA message boxes look a little nicer</li>
 		<li>Added "<i>-accurate</i>" command line option to choose between accurate
 			(CPU-intensive) timing or less accurate (CPU-friendly) timing to X11 and SDL
-			versions.  This is final version of what was considered experimental timing code
+			versions.  This is the final version of what was considered experimental timing code
 			in Stella 1.2</li>
+		<li>Added "<i>-sound</i>" command line option to choose which sound backend to use;
+			X11 and SDL versions supported for now</li>
 		<li>Added the following <b>developer</b> command line options to the X11 and SDL
 			versions, which are only activated in <b>developer</b> builds:
 			<ul>
@@ -237,6 +240,7 @@
 				<li><i>-Dheight</i></li>
 				<li><i>-Dxstart</i></li>
 				<li><i>-Dystart</i></li>
+				<li><i>-Dmerge</i></li>
 			</ul></li>
 	</ul>
 
@@ -463,7 +467,7 @@
 	you can play games using joysticks.  For additional information about the Linux
 	joystick driver see the following web site:
 	<a href="http://atrey.karlin.mff.cuni.cz/~vojtech/input">
-	http://atrey.karlin.mff.cuni.cz/~vojtech/input</a>.</p>
+	Linux Input Drivers</a>.</p>
 
 	<p>
 	<h2><b>Unix</b></h2>
@@ -494,8 +498,8 @@
 			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
 	</ol>
 
-	<p>Currently, sound is supported using the Open Sound System or using OSS
-	emulation under ALSA.  Sound has been tested and is known to work under
+	<p>Currently, sound is supported using the Open Sound System, using OSS
+	emulation under ALSA, or using SDL.  Sound has been tested and is known to work under
 	Linux and BSDI.  For additional information	on OSS or ALSA see the following
 	web sites:</p>
 
@@ -740,6 +744,11 @@
 				less CPU).</td>
 		</tr>
 		<tr>
+			<td><pre>-sound &lt;0|oss|sdl&gt;</pre></td>
+			<td>Disable sound entirely, or use the OSS or SDL backend (<i>depending on
+				support included</i>).</td>
+		</tr>
+		<tr>
 			<td><pre>-Dwidth &lt;number&gt;</pre></td>
 			<td>Sets the "Display.Width" property.  Its value must be in the range specified
 				in Section 7 (Game Properties).  (<i>If DEVELOPER support is
@@ -767,6 +776,12 @@
 			<td><pre>-Dformat &lt;NTSC|PAL&gt;</pre></td>
 			<td>Sets the "Display.Format" property (<i>If DEVELOPER support is
 				included</i>)</td>
+		</tr>
+		<tr>
+			<td><pre>-Dmerge &lt;0|1&gt;</pre></td>
+			<td>Save the current properties to a separate file in the users' home directory,
+				or merge them into the users' stella.pro file
+				(<i>If DEVELOPER support is included</i>)</td>
 		</tr>
 
 	</table>
@@ -1359,7 +1374,7 @@
 
 		<tr>
 			<td>Alt + s</td>
-			<td>Save the current properties to a file</td>
+			<td>Save the current properties</td>
 		</tr>
 
 	</table>
