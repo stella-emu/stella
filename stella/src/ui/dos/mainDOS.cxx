@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.9 2003-01-08 05:19:07 bwmott Exp $
+// $Id: mainDOS.cxx,v 1.10 2003-02-17 05:17:41 bwmott Exp $
 //============================================================================
 
 #include <go32.h>
@@ -43,6 +43,12 @@
 #include "System.hxx"
 #include "PCJoys.hxx"
 #include "scandef.h"
+#include "vga.hxx"
+
+#define END_OF_FUNCTION(x) void x##_end(void) {}
+#define END_OF_STATIC_FUNCTION(x) static void x##_end(void) {}
+#define LOCK_VARIABLE(x) _go32_dpmi_lock_data((void*)&x, sizeof(x))
+#define LOCK_FUNCTION(x) _go32_dpmi_lock_code((void*)x, (long)x##_end - (long)x)
 
 // Pointer to the console object or the null pointer
 Console* theConsole;
@@ -52,10 +58,10 @@ Event theEvent;
 Event theKeyboardEvent;
 
 // Array of flags for each keyboard key-code
-bool theKeyboardKeyState[128];
+volatile bool theKeyboardKeyState[128];
 
 // Used to ignore some number of key codes
-uInt32 theNumOfKeyCodesToIgnore;
+volatile uInt32 theNumOfKeyCodesToIgnore;
 
 // An alternate properties file to use
 string theAlternateProFile = "";
@@ -82,6 +88,12 @@ uInt32 theDesiredFrameRate = 60;
 //   3 - Mouse emulates paddle 3
 //   4 - Use real Atari 2600 paddles
 uInt32 thePaddleMode = 0;
+
+// Indicates if emulation should synchronize with video instead of system timer
+bool theSynchronizeVideoFlag = false;
+
+// Indicates if sound should be enabled or not
+bool theSoundEnabledFlag = true;
 
 // Indicates if the Mode X graphics should be used or not
 bool theUseModeXFlag = false;
@@ -119,6 +131,24 @@ static uInt32 theCurrentState = 0;
 // The locations for various required files
 static string theHomeDir;
 static string theStateDir;
+
+/**
+  Return true if the program is executing in a NT DOS virtual machine.
+*/
+bool isWindowsNt()
+{
+  const char* p = getenv("OS");
+
+  if(((p) && (stricmp(p, "Windows_NT") == 0)) ||
+      (_get_dos_version(1) == 0x0532))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 
 /**
   Changes the current state slot.
@@ -231,8 +261,50 @@ void loadState()
 }
 
 /**
-  This routine should be called once the console is create to setup
-  to graphics mode 
+  This is the keyboard interrupt service routine.  It's called 
+  whenever a key is pressed or released on the keyboard.
+*/
+static void keyboardInterruptServiceRoutine(void)
+{
+  // Get the scan code of the key
+  uInt8 code = inportb(0x60);
+
+  // Are we ignoring some key codes?
+  if(theNumOfKeyCodesToIgnore > 0)
+  {
+    --theNumOfKeyCodesToIgnore;
+  }
+  // Handle the pause key
+  else if(code == 0xE1)
+  {
+    // Toggle the state of the pause key.  The pause key only sends a "make"
+    // code it does not send a "break" code.  Also the "make" code is the
+    // sequence 0xE1, 0x1D, 0x45, 0xE1, 0x9D, 0xC5 so we'll need to skip the
+    // remaining 5 values in the sequence.
+    theKeyboardKeyState[SCAN_PAUSE] = !theKeyboardKeyState[SCAN_PAUSE];
+    theNumOfKeyCodesToIgnore = 5;
+  }
+  // Handle the "extended" and the "error" key codes
+  else if((code == 0xE0) || (code == 0x00))
+  {
+    // Currently, we ignore the "extended" and "error" key codes.  We should
+    // probably modify the "extended" key code support so that we can identify
+    // the extended keys...
+  }
+  else
+  {
+    // Update the state of the key
+    theKeyboardKeyState[code & 0x7F] = !(code & 0x80);
+  }
+
+  // Ack the interrupt
+  outp(0x20, 0x20);
+}
+END_OF_STATIC_FUNCTION(keyboardInterruptServiceRoutine);
+
+/**
+  This routine should be called once the console is created to setup
+  the graphics mode 
 */
 void startup()
 {
@@ -258,41 +330,31 @@ void startup()
   regs.h.ah = 0x00;
   int86(VGA_BIOS, &regs, &regs);
 
-  // Enable Mode X if we're using it
+  // Setup VGA graphics mode
   if(theUseModeXFlag)
   {
-    disable();
-    outpw(0x3C4, 0x0604);    // Disable chain mode
-    outpw(0x3D4, 0xE317);    // Disable word mode
-    outpw(0x3D4, 0x0014);    // Disable doubleword mode
-    outpw(0x3D4, 0x0100);    // Synchronous reset while setting misc output
+    VgaSetMode(VGA_320_240_60HZ);
 
-    outp(0x3C2, 0xE3);       // Create square pixel aspect ratio
-    outp(0x3C4, 0x00);       // Undo reset (restart sequencer)
-
-    outp(0x3D4, 0x11);       // Reprogram CRT controller
-    outp(0x3D5, (inp(0x3D5)) & 0x7f);
-
-    outpw(0x3D4, 0x0D06);    // Vertical total
-    outpw(0x3D4, 0x3E07);    // Overflow register
-    outpw(0x3D4, 0x4109);    // Cell height (2 to double scan)
-    outpw(0x3D4, 0xEA10);    // Vertical retrace start
-    outpw(0x3D4, 0xAC11);    // Vertical retrace end and write protect
-    outpw(0x3D4, 0xDF12);    // Vertical display enable end
-    outpw(0x3D4, 0xE715);    // Start vertical blanking
-    outpw(0x3D4, 0x0616);    // End vertical blanking
-    enable();
- 
-    // Clear the screen now that Mode X is enabled
+    // Clear the screen
+    outp(0x3C4, 0x02);
+    outp(0x3C5, 0x0F);
     for(uInt32 i = 0; i < 240 * 80; ++i)
     {
-      outp(0x3C4, 0x02);
-      outp(0x3C5, 0x0F);
       _farpokeb(_dos_ds, 0xA0000 + i, 0);
     }
   }
-    
-  // Setup to color palette for the video card
+  else
+  {
+    VgaSetMode(VGA_320_200_60HZ);
+
+    // Clear the screen
+    for(uInt32 i = 0; i < 320 * 200; ++i)
+    {
+      _farpokew(_dos_ds, 0xA0000 + i, 0);
+    }
+  }
+
+  // Setup color palette for the video card
   const uInt32* palette = theConsole->mediaSource().palette();
   outp(VGA_PEL_ADDRESS, 0);
   for(int index = 0; index < 256; index++)
@@ -303,6 +365,9 @@ void startup()
   }
 
   // Install keyboard interrupt handler
+  LOCK_VARIABLE(theKeyboardKeyState);
+  LOCK_VARIABLE(theNumOfKeyCodesToIgnore);
+  LOCK_FUNCTION(keyboardInterruptServiceRoutine);
   for(uInt32 k = 0; k < 128; ++k)
   {
     theKeyboardKeyState[k] = false;
@@ -817,48 +882,6 @@ void handleEvents()
 }
 
 /**
-  This is the keyboard interrupt service routine.  It's called 
-  whenever a key is pressed or released on the keyboard.
-*/
-static void keyboardInterruptServiceRoutine(void)
-{
-  // Get the scan code of the key
-  uInt8 code = inportb(0x60);
-
-  // Are we ignoring some key codes?
-  if(theNumOfKeyCodesToIgnore > 0)
-  {
-    --theNumOfKeyCodesToIgnore;
-  }
-  // Handle the pause key
-  else if(code == 0xE1)
-  {
-    // Toggle the state of the pause key.  The pause key only sends a "make"
-    // code it does not send a "break" code.  Also the "make" code is the
-    // sequence 0xE1, 0x1D, 0x45, 0xE1, 0x9D, 0xC5 so we'll need to skip the
-    // remaining 5 values in the sequence.
-    theKeyboardKeyState[SCAN_PAUSE] = !theKeyboardKeyState[SCAN_PAUSE];
-    theNumOfKeyCodesToIgnore = 5;
-  }
-  // Handle the "extended" and the "error" key codes
-  else if((code == 0xE0) || (code == 0x00))
-  {
-    // Currently, we ignore the "extended" and "error" key codes.  We should
-    // probably modify the "extended" key code support so that we can identify
-    // the extended keys...
-  }
-  else
-  {
-    // Update the state of the key
-    theKeyboardKeyState[code & 0x7F] = !(code & 0x80);
-  }
-
-  // Ack the interrupt
-  outp(0x20, 0x20);
-}
-
-
-/**
   Ensure that the necessary directories are created for Stella under
   STELLA_HOME or the current working directory if STELLA_HOME is not
   defined.
@@ -875,8 +898,8 @@ bool setupDirs()
     theHomeDir = ".";
   }
 
-  // Remove trailing backslash
-  if((theHomeDir.length() >= 1) && 
+  // Remove any trailing backslashes
+  while((theHomeDir.length() >= 1) &&
       (theHomeDir[theHomeDir.length() - 1] == '\\'))
   {
     theHomeDir = theHomeDir.substr(0, theHomeDir.length() - 1);
@@ -919,10 +942,12 @@ void usage()
     "",
     "  -fps <number>           Display the given number of frames per second",
     "  -modex                  Use 320x240 video mode instead of 320x200",
+    "  -nosound                Disables audio output",
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
     "  -pro <props file>       Use given properties file instead of stella.pro",
     "  -showinfo               Show some game info on exit",
+    "  -vsync                  Synchronize with video instead of system timer",
     0
   };
 
@@ -940,15 +965,22 @@ void usage()
 */
 bool setupProperties(PropertiesSet& set)
 {
-  // Try to load the properties file
-  string filename = (theAlternateProFile != "") ? theAlternateProFile :
+  // Try to load the properties file from either the current working
+  // directory or the $STELLA_HOME directory
+  string filename1 = (theAlternateProFile != "") ? theAlternateProFile :
       "stella.pro";
+  string filename2 = theHomeDir + '\\' + filename1;
 
-  if(access(filename.c_str(), F_OK) == 0)
+  if(access(filename1.c_str(), R_OK | F_OK) == 0)
   {
     // File is accessible so load properties from it
-    set.load(filename, &Console::defaultProperties(), false);
-
+    set.load(filename1, &Console::defaultProperties(), false);
+    return true;
+  }
+  else if(access(filename2.c_str(), R_OK | F_OK) == 0)
+  {
+    // File is accessible so load properties from it
+    set.load(filename2, &Console::defaultProperties(), false);
     return true;
   }
   else
@@ -1003,6 +1035,10 @@ void handleCommandLineArguments(int argc, char* argv[])
       }
       ++i;
     }
+    else if(string(argv[i]) == "-nosound")
+    {
+      theSoundEnabledFlag = false;
+    }
     else if(string(argv[i]) == "-modex")
     {
       theUseModeXFlag = true;
@@ -1015,6 +1051,10 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theAlternateProFile = argv[++i];
     }
+    else if(string(argv[i]) == "-vsync")
+    {
+      theSynchronizeVideoFlag = true;
+    }
     else
     {
       usage();
@@ -1025,6 +1065,9 @@ void handleCommandLineArguments(int argc, char* argv[])
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
+  // Find out if we're running in an NT DOS virtual machine
+  bool windowsNtFlag = isWindowsNt();
+
   // First set up the directories where Stella will find RC and state files
   if(!setupDirs())
   {
@@ -1037,13 +1080,31 @@ int main(int argc, char* argv[])
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
 
-  // Open the cartridge image and read it in
-  ifstream in;
-  in.open(file, ios::in | ios::binary); 
+  // Open the cartridge image and read it in.  The cartridge image is
+  // searched for in the current working directory, the $STELLA_HOME\ROMS
+  // directory, and finally the $STELLA_HOME directory.
+  string file1(file);
+  string file2(theHomeDir + "\\ROMS\\" + file1);
+  string file3(theHomeDir + '\\' + file1);
+
+  ifstream in; 
+  in.open(file1.c_str(), ios::in | ios::binary); 
   if(!in)
   {
-    cerr << "ERROR: Couldn't open " << file << "..." << endl;
-    exit(1);
+    in.close();
+    in.clear();
+    in.open(file2.c_str(), ios::in | ios::binary);
+    if(!in)
+    {
+      in.close();
+      in.clear();
+      in.open(file3.c_str(), ios::in | ios::binary);
+      if(!in)
+      {
+        cerr << "ERROR: Couldn't locate " << file << "..." << endl;
+        exit(1);
+      }
+    }
   }
 
   uInt8* image = new uInt8[512 * 1024];
@@ -1059,13 +1120,13 @@ int main(int argc, char* argv[])
     exit(1);
   }
 
-  // Create a sound object for use with the console
-  SoundDOS sound;
-//  sound.setSoundVolume(settings->theDesiredVolume);
-
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '\\')) ? 
       file : strrchr(file, '\\') + 1;
+
+  // Create a sound object for use with the console
+  SoundDOS sound(theSoundEnabledFlag);
+//  sound.setSoundVolume(settings->theDesiredVolume);
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, 
@@ -1077,55 +1138,57 @@ int main(int argc, char* argv[])
   startup();
 
   // Get the starting time in case we need to print statistics
-  uclock_t startingTime = uclock();
-
+  clock_t startingTime = clock();
+ 
   uInt32 numberOfFrames = 0;
   for( ; !theQuitIndicator ; ++numberOfFrames)
   {
     // Remember the current time before we start drawing the frame
-    uclock_t before = uclock();
+    uclock_t startTimeStamp = uclock();
 
     // Ask the media source to prepare the next frame
     if(!thePauseIndicator)
     {
       theConsole->mediaSource().update();
+      sound.mute(false);
       sound.updateSound(theConsole->mediaSource());
     }
-
-/*
-    TODO: This code seems to work fine under mode 13, however, it slows
-    the frame rate down under Mode X.  At any point it needs to be 
-    tested on more video cards before it's ready for production :-)
-
-    // If we're not behind schedule then let's wait for the VSYNC!
-    static uclock_t endOfLastVsync = 0;
-    if((theDesiredFrameRate <= 60) && 
-        (uclock() - endOfLastVsync < (UCLOCKS_PER_SEC / theDesiredFrameRate)))
+    else
     {
+      sound.mute(true);
+    }
+
+    // If vsync is selected or we're running under NT then wait for VSYNC
+    if(windowsNtFlag || theSynchronizeVideoFlag)
+    { 
+      // Wait until previous retrace has ended
       while(inp(0x3DA) & 0x08);
+
+      // Wait until next retrace has begun
       while(!(inp(0x3DA) & 0x08));
     }
-    endOfLastVsync = uclock();
-*/
- 
+
     // Update the display and handle events
     updateDisplay(theConsole->mediaSource());
     handleEvents();
-  
-    // Now, waste time if we need to so that we are at the desired frame rate
-    for(;;)
+ 
+    // Waste time if we need to so that we are at the desired frame rate
+    if(!(windowsNtFlag || theSynchronizeVideoFlag))
     {
-      uclock_t delta = uclock() - before;
-
-      if(delta > (UCLOCKS_PER_SEC / theDesiredFrameRate))
+      for(;;)
       {
-        break;
+        uclock_t endTimeStamp = uclock();
+        long long delta = endTimeStamp - startTimeStamp;
+        if(delta >= (UCLOCKS_PER_SEC / theDesiredFrameRate))
+        {
+          break;
+        }
       }
     }
   }
 
   // Get the ending time in case we need to print statistics
-  uclock_t endingTime = uclock();
+  clock_t endingTime = clock();
 
   // Close the sound device
   sound.close();
@@ -1138,8 +1201,7 @@ int main(int argc, char* argv[])
 
   if(theShowInfoFlag)
   {
-    double executionTime = (endingTime - startingTime) / 
-        (double)UCLOCKS_PER_SEC;
+    double executionTime = (endingTime - startingTime) / (double)CLOCKS_PER_SEC;
     double framesPerSecond = numberOfFrames / executionTime;
 
     cout << endl;
