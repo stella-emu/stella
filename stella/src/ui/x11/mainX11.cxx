@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.34 2002-12-01 02:13:14 stephena Exp $
+// $Id: mainX11.cxx,v 1.35 2002-12-01 17:06:18 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -369,9 +369,27 @@ bool setupDisplay()
 bool setupJoystick()
 {
 #ifdef HAVE_JOYSTICK
-  // Open the joystick devices
-  theLeftJoystickFd = open("/dev/js0", O_RDONLY | O_NONBLOCK);
-  theRightJoystickFd = open("/dev/js1", O_RDONLY | O_NONBLOCK);
+  if((theLeftJoystickFd = open("/dev/js0", O_RDONLY | O_NONBLOCK)) >= 0)
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Left joystick found.\n";
+  }
+  else
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Left joystick not present, use keyboard instead.\n";
+  }
+
+  if((theRightJoystickFd = open("/dev/js1", O_RDONLY | O_NONBLOCK)) >= 0)
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Right joystick found.\n";
+  }
+  else
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Right joystick not present, use keyboard instead.\n";
+  }
 #endif
 
   return true;
@@ -1368,7 +1386,7 @@ void usage()
 
   for(uInt32 i = 0; message[i] != 0; ++i)
   {
-    cerr << message[i] << endl;
+    cout << message[i] << endl;
   }
   exit(1);
 }
@@ -1580,14 +1598,24 @@ int main(int argc, char* argv[])
   {
     // if sound has been disabled, we still need a sound object
     sound = new Sound();
+    if(settings->theShowInfoFlag)
+      cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
   else if(settings->theSoundDriver == "alsa")
+  {
     sound = new SoundALSA();
+    if(settings->theShowInfoFlag)
+      cout << "Using ALSA for sound.\n";
+  }
 #endif
 #ifdef SOUND_OSS
   else if(settings->theSoundDriver == "oss")
+  {
     sound = new SoundOSS();
+    if(settings->theShowInfoFlag)
+      cout << "Using OSS for sound.\n";
+  }
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {

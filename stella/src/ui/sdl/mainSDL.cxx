@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.39 2002-12-01 02:13:13 stephena Exp $
+// $Id: mainSDL.cxx,v 1.40 2002-12-01 17:06:18 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -335,27 +335,38 @@ bool setupJoystick()
 #ifdef HAVE_JOYSTICK
   if(SDL_NumJoysticks() <= 0)
   {
-    cout << "No joysticks present, use the keyboard.\n";
+    if(settings->theShowInfoFlag)
+      cout << "No joysticks present, use the keyboard.\n";
     theLeftJoystick = theRightJoystick = 0;
     return true;
   }
 
   if((theLeftJoystick = SDL_JoystickOpen(0)) != NULL)
-    cout << "Left joystick is a " << SDL_JoystickName(0) <<
-      " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Left joystick is a " << SDL_JoystickName(0) <<
+        " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
+  }
   else
-    cout << "Left joystick not present, use keyboard instead.\n";
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Left joystick not present, use keyboard instead.\n";
+  }
 
   if((theRightJoystick = SDL_JoystickOpen(1)) != NULL)
-    cout << "Right joystick is a " << SDL_JoystickName(1) <<
-      " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Right joystick is a " << SDL_JoystickName(1) <<
+        " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
+  }
   else
-    cout << "Right joystick not present, use keyboard instead.\n";
+  {
+    if(settings->theShowInfoFlag)
+      cout << "Right joystick not present, use keyboard instead.\n";
+  }
+#endif
 
   return true;
-#else
-  return true;
-#endif
 }
 
 
@@ -1475,7 +1486,7 @@ void usage()
 
   for(uInt32 i = 0; message[i] != 0; ++i)
   {
-    cerr << message[i] << endl;
+    cout << message[i] << endl;
   }
   exit(1);
 }
@@ -1707,18 +1718,32 @@ int main(int argc, char* argv[])
   {
     // if sound has been disabled, we still need a sound object
     sound = new Sound();
+    if(settings->theShowInfoFlag)
+      cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
   else if(settings->theSoundDriver == "alsa")
+  {
     sound = new SoundALSA();
+    if(settings->theShowInfoFlag)
+      cout << "Using ALSA for sound.\n";
+  }
 #endif
 #ifdef SOUND_OSS
   else if(settings->theSoundDriver == "oss")
+  {
     sound = new SoundOSS();
+    if(settings->theShowInfoFlag)
+      cout << "Using OSS for sound.\n";
+  }
 #endif
 #ifdef SOUND_SDL
   else if(settings->theSoundDriver == "sdl")
+  {
     sound = new SoundSDL();
+    if(settings->theShowInfoFlag)
+      cout << "Using SDL for sound.\n";
+  }
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.7 2002-11-13 16:19:20 stephena Exp $
+// $Id: Settings.cxx,v 1.8 2002-12-01 17:06:18 stephena Exp $
 //============================================================================
 
 #ifdef DEVELOPER_SUPPORT
@@ -192,11 +192,7 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
     }
     else if(string(argv[i]) == "-sound")
     {
-      string option = argv[++i];
-      if((option != "oss") && (option != "sdl") && (option != "alsa"))
-        option = "0";
-
-      theSoundDriver = option;
+      theSoundDriver = argv[++i];
     }
 #ifdef DEVELOPER_SUPPORT
     else if(string(argv[i]) == "-Dformat")
