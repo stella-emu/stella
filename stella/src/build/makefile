@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.47 2003-12-05 19:51:08 stephena Exp $
+## $Id: makefile,v 1.48 2004-04-03 03:06:45 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -25,45 +25,19 @@
 
 ### add your own compiler optimizations here
 ### if none are provided, the defaults will be used
-OPTIMIZATIONS  =  
+OPTIMIZATIONS  = 
 
-### which system the SDL version is being compiled on
-### you should only enable one at a time
-SYSTEM_SDL = linux
-#SYSTEM_SDL = windows
-
-### which sound drivers to compile for the SDL version
-### OSS is most compatible, SDL for platforms where OSS not available
-### comment out all lines to completely disable sound
-###
-#SOUND_ALSA = 1
-#SOUND_OSS  = 1
-SOUND_SDL  = 1
-
-### to include OpenGL video support (SDL)
- OPENGL_SUPPORT = 1
-
-### to include joystick support (SDL)
+### to include joystick support
  JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library)
- SNAPSHOT_SUPPORT = 1
-
-### comment this out if your system doesn't
-### have the gettimeofday function
-# HAVE_GETTIMEOFDAY = 1
+# SNAPSHOT_SUPPORT = 1
 
 ### to include support for game developers
 ### enables some extra commandline options that allow the user
 ### to override some emulation defaults
-# DEVELOPER_SUPPORT = 1
-
-### if your C++ compiler doesn't support the bool type
-# BSPF_BOOL = 1
-
-### if your want some timing information displayed when you exit the program
-# SHOW_TIMING = 1
+ DEVELOPER_SUPPORT = 1
 
 ### you want a 6507 trace written to stdout
 # DEBUG = 1
@@ -76,22 +50,18 @@ SOUND_SDL  = 1
 CXX	= g++
 LD	= g++
 
-LDFLAGS = 
-LDLIBS	= 
+LDFLAGS  = `sdl-config --cflags`
+LDLIBS   = `sdl-config --libs`
+OBJECTS  =  mainSDL.o FrameBufferSDL.o FrameBufferSoft.o
+OPTIONS  =
+EXE_NAME =
 
-OBJS.SDL   =
-OPTS.SDL   =
-LIBS.SDL   = `sdl-config --libs`
-CFLAGS.SDL = `sdl-config --cflags`
+SRC      = ..
+CORE     = $(SRC)/emucore
+UI       = $(SRC)/ui
+COMMON   = $(SRC)/ui/common
 
-OPTS.DOS   = -DDOS
-
-SRC	= ..
-CORE	= $(SRC)/emucore
-UI	= $(SRC)/ui
-COMMON  = $(SRC)/ui/common
-
-INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(COMMON)
+INCLUDES  = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(COMMON) -I$(UI)/sdl -I$(UI)/sound
 
 ## set some sane optimizations if none have been provided
 ifndef OPTIMIZATIONS
@@ -105,82 +75,23 @@ endif
 FLAGS = $(OPTIMIZATIONS) -Wall -Wunused $(INCLUDES) $(SYS_INCLUDES)
 
 ## set the user-defined options
-ifdef BSPF_BOOL
-  OPTS.DOS += -DBSPF_BOOL   
-endif
-
-ifdef SHOW_TIMING
-  OPTS.SDL += -DSHOW_TIMING
-  OPTS.DOS += -DSHOW_TIMING
-endif
-
-ifdef DEBUG
-  OPTS.SDL += -DDEBUG
-  OPTS.DOS += -DDEBUG
-endif
+#ifdef DEBUG
+#  OPTS.SDL += -DDEBUG
+#  OPTS.DOS += -DDEBUG
+#endif
 
 ifdef JOYSTICK_SUPPORT
-  OPTS.SDL += -DHAVE_JOYSTICK
+  OPTIONS += -DJOYSTICK_SUPPORT
 endif
 
 ifdef SNAPSHOT_SUPPORT
-  OBJS.SDL += Snapshot.o
-  OPTS.SDL += -DSNAPSHOT_SUPPORT
-  LIBS.SDL += -lpng -lz
-endif
-
-ifdef HAVE_GETTIMEOFDAY
- OPTS.SDL += -DHAVE_GETTIMEOFDAY
+  OBJECTS += Snapshot.o
+  OPTIONS += -DSNAPSHOT_SUPPORT
+  LDLIBS  += -lpng -lz
 endif
 
 ifdef DEVELOPER_SUPPORT
-  OPTS.SDL += -DDEVELOPER_SUPPORT
-  OPTS.DOS += -DDEVELOPER_SUPPORT
-endif
-
-ifeq ($(SOUND_OSS), 1)
-  OPTS.SDL += -DSOUND_OSS
-  OBJS.SDL += SoundOSS.o
-endif
-
-ifeq ($(SOUND_SDL), 1)
-  OPTS.SDL += -DSOUND_SDL
-  OBJS.SDL += SoundSDL.o
-endif
-
-ifeq ($(SOUND_ALSA), 1)
-  OPTS.SDL += -DSOUND_ALSA
-  OBJS.SDL += SoundALSA.o
-  LIBS.SDL += -lasound
-endif
-
-##============================================================================
-## Now figure out what has to be built for SDL
-##============================================================================
-ifeq ($(SYSTEM_SDL), linux)
-  CFLAGS.SDL += -L/usr/X11R6/lib
-  OPTS.SDL   += -DBSPF_UNIX -DUNIX
-  LIBS.SDL   += -lX11 -lXext
-  OBJS.SDL   += SettingsUNIX.o
-
-  ifeq ($(OPENGL_SUPPORT), 1)
-    OPTS.SDL += -DDISPLAY_OPENGL
-    OBJS.SDL += FrameBufferGL.o
-    LIBS.SDL += -lGL
-  endif
-endif
-
-ifeq ($(SYSTEM_SDL), windows)
-  CFLAGS.SDL += ""
-  OPTS.SDL   += -DBSPF_WIN32 -DWIN32
-  LIBS.SDL   += ""
-  OBJS.SDL   += SettingsWin32.o
-
-  ifeq ($(OPENGL_SUPPORT), 1)
-    OPTS.SDL += -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST
-    OBJS.SDL += FrameBufferGL.o
-    LIBS.SDL += -lopengl32
-  endif
+  OPTIONS += -DDEVELOPER_SUPPORT
 endif
 
 
@@ -191,31 +102,40 @@ default:
 	@echo ""
 	@echo "<version> is one of:"
 	@echo ""
-	@echo "  dos       DOS version using DJGPP"
-	@echo "  sdl       SDL version (edit makefile for version)"
+	@echo "  linux     Linux/UNIX version"
+	@echo "  linux-gl  Linux/UNIX version with OpenGL support"
+	@echo "  win32     Windows 9x/ME/2000/XP version"
+	@echo "  win32-gl  Windows 9x/ME/2000/XP version with OpenGL support"
 	@echo ""
 	@echo "Hopefully new versions will be added soon!"
 	@echo ""
 
-dos:
-	make stella.exe \
-          LD="gxx" \
-          CXX="gcc" \
-          INCLUDES="$(INCLUDES) -I$(UI)/dos -I$(UI)/sound" \
-          OPTIONS="-DBSPF_DOS" \
-          OPTIONS+="$(OPTS.DOS)" \
-          LDFLAGS="" \
-          LDLIBS="" \
-          OBJS="mainDOS.o PCJoys.o SndDOS.o dos_sb.o vga.o"
+linux:
+	make stella \
+          EXE_NAME="stella" \
+          OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY" \
+          OBJS="$(OBJECTS) SettingsUNIX.o"
 
-sdl:
-	make stella.sdl \
-          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
-          OPTIONS="$(OPTS.SDL)" \
-          LDFLAGS="$(CFLAGS.SDL)" \
-          LDLIBS="$(LIBS.SDL)" \
-          OBJS="mainSDL.o FrameBufferSDL.o FrameBufferSoft.o" \
-          OBJS+="$(OBJS.SDL)"
+linux-gl:
+	make stella \
+          EXE_NAME="stella" \
+          LDFLAGS="$(LDFLAGS) -L/usr/X11R6/lib" \
+          LDLIBS="$(LDLIBS) -lGL" \
+          OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY -DDISPLAY_OPENGL" \
+          OBJS="$(OBJECTS) FrameBufferGL.o SettingsUNIX.o"
+
+win32:
+	make stella \
+          EXE_NAME="stella.exe" \
+          OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32" \
+          OBJS="$(OBJECTS) SettingsWin32.o"
+
+win32-gl:
+	make stella \
+          EXE_NAME="stella.exe" \
+          LDLIBS="$(LDLIBS) -lopengl32" \
+          OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST" \
+          OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o"
 
 
 ###############################################################################
@@ -232,17 +152,9 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
             $(M6502_OBJS)
 
-stella.exe: $(CORE_OBJS) $(OBJS)
-	$(LD) -o a.exe *.o $(LDFLAGS) $(LDLIBS)
-	exe2coff a.exe
-	strip a
-	del stella.exe
-	copy /B $(DJGPP:\DJGPP.ENV=)\bin\pmodstub.exe+a stella.exe
-	del a
-	del a.exe
-
-stella.sdl: $(CORE_OBJS) $(OBJS)
-	$(LD) -o stella.sdl $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
+stella: $(CORE_OBJS) $(OBJS)
+	$(LD) -o $(EXE_NAME) $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
+	strip $(EXE_NAME)
 
 M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
 	m4 $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4 > M6502Low.ins
@@ -253,14 +165,8 @@ M6502Hi.ins: $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4
 M6502Low.o: M6502Low.ins
 M6502Hi.o: M6502Hi.ins
 
-cleandos:
-	del *.o
-	del stella.exe 
-	del M6502Low.ins 
-	del M6502Hi.ins
-
 clean:
-	rm -f *.o stella stella.sdl stella.exe core
+	rm -f *.o stella stella.exe core
 
 cleanall: clean
 	rm -f M6502Low.ins M6502Hi.ins
