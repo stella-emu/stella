@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.14 2002-04-10 04:00:58 bwmott Exp $
+## $Id: makefile,v 1.15 2002-04-22 00:53:19 bwmott Exp $
 ##============================================================================
 
 ##============================================================================
@@ -235,7 +235,8 @@ stella.exe: $(CORE_OBJS) $(OBJS)
 	$(LD) -o a.exe *.o $(LDFLAGS) $(LDLIBS)
 	exe2coff a.exe
 	strip a
-	copy /B $(DJGPP:\DJGPP.ENV=)\bin\pmodstub.exe + a stella.exe
+	del stella.exe
+	copy /B $(DJGPP:\DJGPP.ENV=)\bin\pmodstub.exe+a stella.exe
 	del a
 	del a.exe
 
