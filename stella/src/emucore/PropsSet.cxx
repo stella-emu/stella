@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.4 2002-04-12 21:53:02 stephena Exp $
+// $Id: PropsSet.cxx,v 1.5 2002-05-09 16:58:04 gunfight Exp $
 //============================================================================
 
 #include <assert.h>
@@ -155,13 +155,17 @@ void PropertiesSet::deleteNode(TreeNode *node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::load(string filename, const Properties* defaults, bool useList)
 {
-  useMemList = useList;
-  defProps   = defaults;
+    useMemList = useList;
+    defProps   = defaults;
 
-  proStream.open(filename.c_str());
+    // Cyberstella crashes without this:
+    if(filename.length() <= 0)  return;
+    // Cybergoth 09.05.02
 
-  if(useMemList)
-  {
+    proStream.open(filename.c_str());
+
+    if(useMemList)
+    {
     // Loop reading properties
     for(;;)
     {
@@ -181,7 +185,7 @@ void PropertiesSet::load(string filename, const Properties* defaults, bool useLi
         insert(properties);
       }
     }
-  }
+    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
