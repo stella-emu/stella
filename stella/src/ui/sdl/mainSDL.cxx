@@ -13,12 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.54 2003-09-29 18:10:56 stephena Exp $
+// $Id: mainSDL.cxx,v 1.55 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <algorithm>
 
@@ -28,18 +27,21 @@
 #endif
 
 #include <SDL.h>
-#include <SDL_syswm.h>
 
 #include "bspf.hxx"
 #include "Console.hxx"
 #include "Event.hxx"
 #include "StellaEvent.hxx"
 #include "EventHandler.hxx"
-#include "MediaSrc.hxx"
+#include "FrameBuffer.hxx"
+#include "FrameBufferSDL.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
-#include "RectList.hxx"
+
+#ifdef DISPLAY_OPENGL
+  #include "FrameBufferGL.hxx"
+#endif
 
 #ifdef SOUND_ALSA
   #include "SoundALSA.hxx"
@@ -56,44 +58,6 @@
 #ifdef UNIX
   #include "SettingsUNIX.hxx"
 #endif
-
-// Hack for SDL < 1.2.0
-#ifndef SDL_ENABLE
-  #define SDL_ENABLE 1
-#endif
-#ifndef SDL_DISABLE
-  #define SDL_DISABLE 0
-#endif
-
-
-// function prototypes
-// FIXME the following will be placed in a Display class eventually ...
-static bool setupDisplay();
-static bool createScreen();
-static void recalculate8BitPalette();
-static void setupPalette();
-static void updateDisplay(MediaSource& mediaSource);
-static void resizeWindow(int mode);
-static void centerWindow();
-static void showCursor(bool show);
-static void grabMouse(bool grab);
-static void toggleFullscreen();
-static uInt32 maxWindowSizeForScreen();
-
-// Globals for the SDL stuff
-static SDL_Surface* screen = (SDL_Surface*) NULL;
-static Uint32 palette[256];
-static int bpp;
-static Display* theX11Display = (Display*) NULL;
-static Window theX11Window = 0;
-static int theX11Screen = 0;
-static int mouseX = 0;
-static bool x11Available = false;
-static SDL_SysWMinfo info;
-static int sdlflags;
-static RectList* rectList = (RectList*) NULL;
-static uInt32 theWidth, theHeight, theMaxWindowSize, theWindowSize;
-////////////////////////////////////////////
 
 static void cleanup();
 static bool setupJoystick();
@@ -119,20 +83,14 @@ static Sound* theSound = (Sound*) NULL;
 // Pointer to the settings object or the null pointer
 static Settings* theSettings = (Settings*) NULL;
 
+// Pointer to the display object or the null pointer
+static FrameBufferSDL* theDisplay = (FrameBufferSDL*) NULL;
+
 // Indicates if the mouse should be grabbed
 static bool theGrabMouseIndicator = false;
 
 // Indicates if the mouse cursor should be hidden
 static bool theHideCursorIndicator = false;
-
-// Indicates if the entire frame should be redrawn
-static bool theRedrawEntireFrameIndicator = true;
-
-// Indicates whether the game is currently in fullscreen
-static bool isFullscreen = false;
-
-// Indicates whether the window is currently centered
-static bool isCentered = false;
 
 // Indicates the current paddle mode
 static Int32 thePaddleMode;
@@ -297,88 +255,6 @@ inline uInt32 getTicks()
 
 
 /**
-  This routine should be called once the console is created to setup
-  the SDL window for us to use.  Return false if any operation fails,
-  otherwise return true.
-*/
-bool setupDisplay()
-{
-  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
-  if(SDL_Init(initflags) < 0)
-    return false;
-
-  // Check which system we are running under
-  x11Available = false;
-  SDL_VERSION(&info.version);
-  if(SDL_GetWMInfo(&info) > 0)
-    if(info.subsystem == SDL_SYSWM_X11)
-      x11Available = true;
-
-  sdlflags = SDL_SWSURFACE;
-  sdlflags |= theConsole->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
-  sdlflags |= theConsole->settings().getBool("owncmap") ? SDL_HWPALETTE : 0;
-
-  // Get the desired width and height of the display
-  theWidth  = theConsole->mediaSource().width();
-  theHeight = theConsole->mediaSource().height();
-
-  // Get the maximum size of a window for THIS screen
-  // Must be called after display and screen are known, as well as
-  // theWidth and theHeight
-  theMaxWindowSize = maxWindowSizeForScreen();
-
-  // Check to see if window size will fit in the screen
-  if((uInt32)theConsole->settings().getInt("zoom") > theMaxWindowSize)
-    theWindowSize = theMaxWindowSize;
-  else
-    theWindowSize = theConsole->settings().getInt("zoom");
-
-  // Set up the rectangle list to be used in updateDisplay
-  rectList = new RectList();
-  if(!rectList)
-  {
-    cerr << "ERROR: Unable to get memory for SDL rects" << endl;
-    return false;
-  }
-
-  // Set the window title and icon
-  ostringstream name;
-  name << "Stella: \"" << theConsole->properties().get("Cartridge.Name") << "\"";
-  SDL_WM_SetCaption(name.str().c_str(), "stella");
-
-  // Create the screen
-  if(!createScreen())
-    return false;
-  setupPalette();
-
-  // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  theGrabMouseIndicator  = theConsole->settings().getBool("grabmouse");
-  theHideCursorIndicator = theConsole->settings().getBool("hidecursor");
-  if(theConsole->settings().getBool("fullscreen"))
-  {
-    grabMouse(true);
-    showCursor(false);
-    isFullscreen = true;
-  }
-  else
-  {
-    // Keep mouse in game window if grabmouse is selected
-    grabMouse(theGrabMouseIndicator);
-
-    // Show or hide the cursor depending on the 'hidecursor' argument
-    showCursor(!theHideCursorIndicator);
-  }
-
-  // Center the window if centering is selected and not fullscreen
-  if(theConsole->settings().getBool("center") &&
-     !theConsole->settings().getBool("fullscreen"))
-    centerWindow();
-
-  return true;
-}
-
-
-/**
   This routine should be called once setupDisplay is called
   to create the joystick stuff.
 */
@@ -428,421 +304,6 @@ bool setupJoystick()
 
 
 /**
-  This routine is called whenever the screen needs to be recreated.
-  It updates the global screen variable.  When this happens, the
-  8-bit palette needs to be recalculated.
-*/
-bool createScreen()
-{
-  int w = theWidth  * theWindowSize * 2;
-  int h = theHeight * theWindowSize;
-
-  screen = SDL_SetVideoMode(w, h, 0, sdlflags);
-  if(screen == NULL)
-  {
-    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
-    return false;
-  }
-
-  bpp = screen->format->BitsPerPixel;
-  if(bpp == 8)
-    recalculate8BitPalette();
-
-  theRedrawEntireFrameIndicator = true;
-
-  return true;
-}
-
-
-/**
-  Recalculates palette of an 8-bit (256 color) screen.
-*/
-void recalculate8BitPalette()
-{
-  if(bpp != 8)
-    return;
-
-  // Map 2600 colors to the current screen
-  const uInt32* gamePalette = theConsole->mediaSource().palette();
-  SDL_Color colors[256];
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b;
-
-    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16);
-    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8);
-    b = (Uint8) (gamePalette[i] & 0x000000ff);
-
-    colors[i].r = r;
-    colors[i].g = g;
-    colors[i].b = b;
-  }
-  SDL_SetColors(screen, colors, 0, 256);
-
-  // Now see which colors we actually got
-  SDL_PixelFormat* format = screen->format;
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b;
-
-    r = format->palette->colors[i].r;
-    g = format->palette->colors[i].g;
-    b = format->palette->colors[i].b;
-
-    palette[i] = SDL_MapRGB(format, r, g, b);
-  }
-
-  theRedrawEntireFrameIndicator = true;
-}
-
-
-/**
-  Set up the palette for a screen of any depth.
-  Calls recalculate8BitPalette if necessary.
-*/
-void setupPalette()
-{
-  if(bpp == 8)
-  {
-    recalculate8BitPalette();
-    return;
-  }
-
-  // Make the palette be 75% as bright if pause is selected
-  float shade = 1.0;
-  if(theSettings->pause())
-    shade = 0.75;
-
-  const uInt32* gamePalette = theConsole->mediaSource().palette();
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b;
-
-    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
-    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
-    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
-
-    switch(bpp)
-    {
-      case 15:
-        palette[i] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-        break;
-
-      case 16:
-        palette[i] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
-        break;
-
-      case 24:
-      case 32:
-        palette[i] = (r << 16) | (g << 8) | b;
-        break;
-    }
-  }
-
-  theRedrawEntireFrameIndicator = true;
-}
-
-
-/**
-  This routine is called when the user wants to resize the window.
-  A '1' argument indicates that the window should increase in size, while '0'
-  indicates that the windows should decrease in size.  A '-1' indicates that
-  the window should be sized according to the current properties.
-  Can't resize in fullscreen mode.  Will only resize up to the maximum size
-  of the screen.
-*/
-void resizeWindow(int mode)
-{
-  // reset size to that given in properties
-  // this is a special case of allowing a resize while in fullscreen mode
-  if(mode == -1)
-  {
-    theWidth         = theConsole->mediaSource().width();
-    theHeight        = theConsole->mediaSource().height();
-  }
-  else if(mode == 1)   // increase size
-  {
-    if(isFullscreen)
-      return;
-
-    if(theWindowSize == theMaxWindowSize)
-      theWindowSize = 1;
-    else
-      theWindowSize++;
-  }
-  else if(mode == 0)   // decrease size
-  {
-    if(isFullscreen)
-      return;
-
-    if(theWindowSize == 1)
-      theWindowSize = theMaxWindowSize;
-    else
-      theWindowSize--;
-  }
-
-  if(!createScreen())
-    return;
-
-  // A resize may mean that the window is no longer centered
-  isCentered = false;
-
-  if(theConsole->settings().getBool("center"))
-    centerWindow();
-}
-
-
-/**
-  Centers the game window onscreen.  Only works in X11 for now.
-*/
-void centerWindow()
-{
-  if(!x11Available)
-  {
-    cerr << "Window centering only available under X11.\n";
-    return;
-  }
-
-  if(isFullscreen || isCentered)
-    return;
-
-  int x, y, w, h;
-  info.info.x11.lock_func();
-  theX11Display = info.info.x11.display;
-  theX11Window  = info.info.x11.wmwindow;
-  theX11Screen  = DefaultScreen(theX11Display);
-
-  w = DisplayWidth(theX11Display, theX11Screen);
-  h = DisplayHeight(theX11Display, theX11Screen);
-  x = (w - screen->w)/2;
-  y = (h - screen->h)/2;
-
-  XMoveWindow(theX11Display, theX11Window, x, y);
-  info.info.x11.unlock_func();
-
-  isCentered = true;
-  theRedrawEntireFrameIndicator = true;
-}
-
-
-/**
-  Toggles between fullscreen and window mode.  Grabmouse and hidecursor
-  activated when in fullscreen mode.
-*/
-void toggleFullscreen()
-{
-  isFullscreen = !isFullscreen;
-  if(isFullscreen)
-    sdlflags |= SDL_FULLSCREEN;
-  else
-    sdlflags &= ~SDL_FULLSCREEN;
-
-  if(!createScreen())
-    return;
-
-  if(isFullscreen)  // now in fullscreen mode
-  {
-    grabMouse(true);
-    showCursor(false);
-  }
-  else    // now in windowed mode
-  {
-    grabMouse(theGrabMouseIndicator);
-    showCursor(!theHideCursorIndicator);
-
-    if(theConsole->settings().getBool("center"))
-        centerWindow();
-  }
-}
-
-
-/**
-  Shows or hides the cursor based on the given boolean value.
-*/
-void showCursor(bool show)
-{
-  if(show)
-    SDL_ShowCursor(SDL_ENABLE);
-  else
-    SDL_ShowCursor(SDL_DISABLE);
-}
-
-
-/**
-  Grabs or ungrabs the mouse based on the given boolean value.
-*/
-void grabMouse(bool grab)
-{
-  if(grab)
-    SDL_WM_GrabInput(SDL_GRAB_ON);
-  else
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
-}
-
-
-/**
-  This routine should be called anytime the display needs to be updated
-*/
-void updateDisplay(MediaSource& mediaSource)
-{
-  uInt8* currentFrame = mediaSource.currentFrameBuffer();
-  uInt8* previousFrame = mediaSource.previousFrameBuffer();
-  uInt16 screenMultiple = (uInt16) theWindowSize;
-
-  uInt32 width  = theWidth;
-  uInt32 height = theHeight;
-
-  struct Rectangle
-  {
-    uInt8 color;
-    uInt16 x, y, width, height;
-  } rectangles[2][160];
-
-  // Start a new reclist on each display update
-  rectList->start();
-
-  // This array represents the rectangles that need displaying
-  // on the current scanline we're processing
-  Rectangle* currentRectangles = rectangles[0];
-
-  // This array represents the rectangles that are still active
-  // from the previous scanlines we have processed
-  Rectangle* activeRectangles = rectangles[1];
-
-  // Indicates the number of active rectangles
-  uInt16 activeCount = 0;
-
-  // This update procedure requires theWidth to be a multiple of four.  
-  // This is validated when the properties are loaded.
-  for(uInt16 y = 0; y < height; ++y)
-  {
-    // Indicates the number of current rectangles
-    uInt16 currentCount = 0;
-
-    // Look at four pixels at a time to see if anything has changed
-    uInt32* current = (uInt32*)(currentFrame); 
-    uInt32* previous = (uInt32*)(previousFrame);
-
-    for(uInt16 x = 0; x < width; x += 4, ++current, ++previous)
-    {
-      // Has something changed in this set of four pixels?
-      if((*current != *previous) || theRedrawEntireFrameIndicator)
-      {
-        uInt8* c = (uInt8*)current;
-        uInt8* p = (uInt8*)previous;
-
-        // Look at each of the bytes that make up the uInt32
-        for(uInt16 i = 0; i < 4; ++i, ++c, ++p)
-        {
-          // See if this pixel has changed
-          if((*c != *p) || theRedrawEntireFrameIndicator)
-          {
-            // Can we extend a rectangle or do we have to create a new one?
-            if((currentCount != 0) && 
-               (currentRectangles[currentCount - 1].color == *c) &&
-               ((currentRectangles[currentCount - 1].x + 
-                 currentRectangles[currentCount - 1].width) == (x + i)))
-            {
-              currentRectangles[currentCount - 1].width += 1;
-            }
-            else
-            {
-              currentRectangles[currentCount].x = x + i;
-              currentRectangles[currentCount].y = y;
-              currentRectangles[currentCount].width = 1;
-              currentRectangles[currentCount].height = 1;
-              currentRectangles[currentCount].color = *c;
-              currentCount++;
-            }
-          }
-        }
-      }
-    }
-
-    // Merge the active and current rectangles flushing any that are of no use
-    uInt16 activeIndex = 0;
-
-    for(uInt16 t = 0; (t < currentCount) && (activeIndex < activeCount); ++t)
-    {
-      Rectangle& current = currentRectangles[t];
-      Rectangle& active = activeRectangles[activeIndex];
-
-      // Can we merge the current rectangle with an active one?
-      if((current.x == active.x) && (current.width == active.width) &&
-         (current.color == active.color))
-      {
-        current.y = active.y;
-        current.height = active.height + 1;
-
-        ++activeIndex;
-      }
-      // Is it impossible for this active rectangle to be merged?
-      else if(current.x >= active.x)
-      {
-        // Flush the active rectangle
-        SDL_Rect temp;
-
-        temp.x = active.x * 2 * screenMultiple;
-        temp.y = active.y * screenMultiple;
-        temp.w = active.width * 2 * screenMultiple;
-        temp.h = active.height * screenMultiple;
-
-        rectList->add(&temp);
-        SDL_FillRect(screen, &temp, palette[active.color]);
-
-        ++activeIndex;
-      }
-    }
-
-    // Flush any remaining active rectangles
-    for(uInt16 s = activeIndex; s < activeCount; ++s)
-    {
-      Rectangle& active = activeRectangles[s];
-
-      SDL_Rect temp;
-      temp.x = active.x * 2 * screenMultiple;
-      temp.y = active.y * screenMultiple;
-      temp.w = active.width * 2 * screenMultiple;
-      temp.h = active.height * screenMultiple;
-
-      rectList->add(&temp);
-      SDL_FillRect(screen, &temp, palette[active.color]);
-    }
-
-    // We can now make the current rectangles into the active rectangles
-    Rectangle* tmp = currentRectangles;
-    currentRectangles = activeRectangles;
-    activeRectangles = tmp;
-    activeCount = currentCount;
- 
-    currentFrame += width;
-    previousFrame += width;
-  }
-
-  // Flush any rectangles that are still active
-  for(uInt16 t = 0; t < activeCount; ++t)
-  {
-    Rectangle& active = activeRectangles[t];
-
-    SDL_Rect temp;
-    temp.x = active.x * 2 * screenMultiple;
-    temp.y = active.y * screenMultiple;
-    temp.w = active.width * 2 * screenMultiple;
-    temp.h = active.height * screenMultiple;
-
-    rectList->add(&temp);
-    SDL_FillRect(screen, &temp, palette[active.color]);
-  }
-
-  // Now update all the rectangles at once
-  SDL_UpdateRects(screen, rectList->numRects(), rectList->rects());
-
-  // The frame doesn't need to be completely redrawn anymore
-  theRedrawEntireFrameIndicator = false;
-}
-
-
-/**
   This routine should be called regularly to handle events
 */
 void handleEvents()
@@ -868,31 +329,31 @@ void handleEvents()
       if(mod & KMOD_ALT)
       {
         if(key == SDLK_EQUALS)
-          resizeWindow(1);
+          theDisplay->resize(1);
         else if(key == SDLK_MINUS)
-          resizeWindow(0);
+          theDisplay->resize(0);
         else if(key == SDLK_RETURN)
-          toggleFullscreen();
+          theDisplay->toggleFullscreen();
 #ifdef DEVELOPER_SUPPORT
         else if(key == SDLK_END)       // Alt-End increases XStart
         {
           theConsole->changeXStart(1);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
         else if(key == SDLK_HOME)      // Alt-Home decreases XStart
         {
           theConsole->changeXStart(0);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
         else if(key == SDLK_PAGEUP)    // Alt-PageUp increases YStart
         {
           theConsole->changeYStart(1);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
         else if(key == SDLK_PAGEDOWN)  // Alt-PageDown decreases YStart
         {
           theConsole->changeYStart(0);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
 #endif
       }
@@ -901,46 +362,46 @@ void handleEvents()
         if(key == SDLK_g)
         {
           // don't change grabmouse in fullscreen mode
-          if(!isFullscreen)
+          if(!theDisplay->fullScreen())
           {
             theGrabMouseIndicator = !theGrabMouseIndicator;
-            grabMouse(theGrabMouseIndicator);
+            theDisplay->grabMouse(theGrabMouseIndicator);
           }
         }
         else if(key == SDLK_h)
         {
           // don't change hidecursor in fullscreen mode
-          if(!isFullscreen)
+          if(!theDisplay->fullScreen())
           {
             theHideCursorIndicator = !theHideCursorIndicator;
-            showCursor(!theHideCursorIndicator);
+            theDisplay->showCursor(!theHideCursorIndicator);
           }
         }
 #ifdef DEVELOPER_SUPPORT
         else if(key == SDLK_f)         // Ctrl-f toggles NTSC/PAL mode
         {
           theConsole->toggleFormat();
-          setupPalette();
+          theDisplay->setupPalette();
         }
         else if(key == SDLK_END)       // Ctrl-End increases Width
         {
           theConsole->changeWidth(1);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
         else if(key == SDLK_HOME)      // Ctrl-Home decreases Width
         {
           theConsole->changeWidth(0);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
         else if(key == SDLK_PAGEUP)    // Ctrl-PageUp increases Height
         {
           theConsole->changeHeight(1);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
         else if(key == SDLK_PAGEDOWN)  // Ctrl-PageDown decreases Height
         {
           theConsole->changeHeight(0);
-          resizeWindow(-1);
+          theDisplay->resize(-1);
         }
         else if(key == SDLK_s)         // Ctrl-s saves properties to a file
         {
@@ -981,20 +442,20 @@ void handleEvents()
     else if(event.type == SDL_MOUSEMOTION)
     {
       float fudgeFactor = 1000000.0;
-      Int32 resistance = 0, x = 0;
-      Int32 width   = theWidth * theWindowSize * 2;
+      Int32 resistance = 0, x = 0, mouseX;
+      Int32 width   = 640;//theWidth * theWindowSize * 2; FIXME
       Event::Type type = Event::LastType;
 
       // Grabmouse and hidecursor introduce some lag into the mouse movement,
       // so we need to fudge the numbers a bit
       if(theGrabMouseIndicator && theHideCursorIndicator)
       {
-        mouseX = (int)((float)mouseX + (float)event.motion.xrel
-                 * 1.5 * (float) theWindowSize);
+//        mouseX = (int)((float)mouseX + (float)event.motion.xrel
+//                 * 1.5 * (float) theWindowSize); FIXME
       }
       else
       {
-        mouseX = mouseX + event.motion.xrel * theWindowSize;
+//        mouseX = mouseX + event.motion.xrel * theWindowSize; FIXME
       }
 
       // Check to make sure mouseX is within the game window
@@ -1102,49 +563,6 @@ void handleEvents()
 
 
 /**
-  Calculate the maximum window size that the current screen can hold.
-  Only works in X11 for now.  If not running under X11, always return 3.
-*/
-uInt32 maxWindowSizeForScreen()
-{
-  if(!x11Available)
-    return 3;
-
-  // Otherwise, lock the screen and get the width and height
-  info.info.x11.lock_func();
-  theX11Display = info.info.x11.display;
-  theX11Window  = info.info.x11.wmwindow;
-  theX11Screen  = DefaultScreen(theX11Display);
-  info.info.x11.unlock_func();
-
-  int screenWidth  = DisplayWidth(info.info.x11.display,
-      DefaultScreen(theX11Display));
-  int screenHeight = DisplayHeight(info.info.x11.display,
-      DefaultScreen(theX11Display));
-
-  uInt32 multiplier = screenWidth / (theWidth * 2);
-  bool found = false;
-
-  while(!found && (multiplier > 0))
-  {
-    // Figure out the desired size of the window
-    int width  = theWidth  * multiplier * 2;
-    int height = theHeight * multiplier;
-
-    if((width < screenWidth) && (height < screenHeight))
-      found = true;
-    else
-      multiplier--;
-  }
-
-  if(found)
-    return multiplier;
-  else
-    return 1;
-}
-
-
-/**
   Setup the properties set by first checking for a user file
   "$HOME/.stella/stella.pro", then a system-wide file "/etc/stella.pro".
   Return false if neither file is found, else return true.
@@ -1207,6 +625,9 @@ void cleanup()
     theSound->closeDevice();
     delete theSound;
   }
+
+  if(theDisplay)
+    delete theDisplay;
 
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
@@ -1318,26 +739,35 @@ int main(int argc, char* argv[])
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
-  // Create the 2600 game console
-  theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
-                           theSound->getSampleRate());
-
-  // Free the image since we don't need it any longer
-  delete[] image;
-
   // Setup the SDL window and joystick
-  if(!setupDisplay())
+#ifdef DISPLAY_OPENGL
+  bool useGL = theSettings->getBool("opengl");
+  if(useGL)
+    theDisplay = new FrameBufferGL();
+  else
+#endif
+    theDisplay = new FrameBufferSDL();
+
+  if(!theDisplay)
   {
     cerr << "ERROR: Couldn't set up display.\n";
     cleanup();
     return 0;
   }
+
   if(!setupJoystick())
   {
     cerr << "ERROR: Couldn't set up joysticks.\n";
     cleanup();
     return 0;
   }
+
+  // Create the 2600 game console
+  theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
+                           *theDisplay, theSound->getSampleRate());
+
+  // Free the image since we don't need it any longer
+  delete[] image;
 
   // These variables are common to both timing options
   // and are needed to calculate the overall frames per second.
@@ -1366,14 +796,13 @@ int main(int argc, char* argv[])
       handleEvents();
       if(theSettings->pause())
       {
-        updateDisplay(theConsole->mediaSource());
+        theDisplay->update();
         SDL_Delay(10);
         continue;
       }
 
-      theConsole->mediaSource().update();
-      updateDisplay(theConsole->mediaSource());
-      theSound->updateSound(theConsole->mediaSource());
+      theDisplay->update();
+//FIXME      theSound->updateSound(theConsole->mediaSource());
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -1411,10 +840,9 @@ int main(int argc, char* argv[])
       handleEvents();
       if(!theSettings->pause())
       {
-        theConsole->mediaSource().update();
-        theSound->updateSound(theConsole->mediaSource());
+//FIXME        theSound->updateSound(theConsole->mediaSource());
       }
-      updateDisplay(theConsole->mediaSource());
+      theDisplay->update();
 
       currentTime = getTicks();
       virtualTime += timePerFrame;

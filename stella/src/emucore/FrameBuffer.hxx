@@ -13,41 +13,38 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.hxx,v 1.7 2003-10-01 19:01:02 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.1 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
-#ifndef USERINTERFACE_HXX
-#define USERINTERFACE_HXX
+#ifndef FRAMEBUFFER_HXX
+#define FRAMEBUFFER_HXX
 
 #include "bspf.hxx"
 #include "Event.hxx"
+#include "MediaSrc.hxx"
 #include "StellaEvent.hxx"
 
 class Console;
-class MediaSource;
 
 /**
   This class implements a MAME-like user interface where Stella settings
-  can be changed.
+  can be changed.  It also encapsulates the MediaSource.
 
   @author  Stephen Anthony
-  @version $Id: UserInterface.hxx,v 1.7 2003-10-01 19:01:02 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.1 2003-10-17 18:02:16 stephena Exp $
 */
-class UserInterface
+class FrameBuffer
 {
   public:
     /**
-      Creates a new User Interface
-
-      @param console  The Console object
-      @param mediasrc The MediaSource object to draw into
+      Creates a new Frame Buffer
     */
-    UserInterface(Console* console, MediaSource* mediasrc);
+    FrameBuffer();
 
     /**
       Destructor
     */
-    virtual ~UserInterface(void);
+    virtual ~FrameBuffer(void);
 
     /**
       Send a keyboard event to the user interface.
@@ -67,17 +64,53 @@ class UserInterface
     void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
          Int32 state);
 
-  public:
     void showMainMenu(bool show);
     void showMessage(const string& message);
-    void update();
 
-  private:
+    uInt32 width()  { return myWidth; }
+    uInt32 height() { return myHeight; }
+
+    uInt16* pixels() const;
+
+    /**
+      Answers if the display is currently in fullscreen mode.
+    */
+    bool fullScreen() { return isFullscreen; }
+
+  public:
+    /**
+      This routine should be called once the console is created to setup
+      the video system for us to use.  Return false if any operation fails,
+      otherwise return true.
+    */
+    virtual bool init(Console* console, MediaSource* mediasrc) = 0;
+
+    /**
+      This routine should be called anytime the display needs to be updated
+    */
+    virtual void update() = 0;
+
+    /**
+      Toggles between fullscreen and windowed mode.
+    */
+    virtual void toggleFullscreen() = 0;
+
+  protected:
     // Enumeration representing the different types of user interface widgets
     enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU, FONTS_MENU };
 
     Widget currentSelectedWidget();
     Event::Type currentSelectedEvent();
+
+    // Add binding between a StellaEvent key and a core event
+    void addKeyBinding(Event::Type event, StellaEvent::KeyCode key);
+
+    // Add binding between a StellaEvent joystick and a core event
+    void addJoyBinding(Event::Type event, StellaEvent::JoyStick stick,
+                       StellaEvent::JoyCode code);
+
+    // Remove all bindings for this core event
+    void deleteBinding(Event::Type event);
 
     // Move the cursor up 1 line, possibly scrolling the list of items
     void moveCursorUp();
@@ -91,42 +124,12 @@ class UserInterface
     // Move the list down 1 page and put the cursor at the top
     void movePageDown();
 
-    // Draw the main menu
-    void drawMainMenu();
-
-    // Draw the remap menu
-    void drawRemapMenu();
-
-    // Draw the info menu
-    void drawInfoMenu();
-
-    // Draw the fonts menu
-    void drawFontsMenu();
-
-    // Draw a bounded box at the specified coordinates
-    void drawBoundedBox(uInt32 x, uInt32 y, uInt32 width, uInt32 height);
-
-    // Draw message text at specified coordinates
-    void drawText(uInt32 x, uInt32 y, const string& message);
-
-    // Draw character 'c' at specified coordinates
-    void drawChar(uInt32 x, uInt32 y, uInt32 c);
-
     // scan the mapping arrays and update the remap menu
     void loadRemapMenu();
 
-    // Add binding between a StellaEvent key and a core event
-    void addKeyBinding(Event::Type event, StellaEvent::KeyCode key);
+    void initBase(Console* console, MediaSource* mediasrc);
 
-    // Add binding between a StellaEvent joystick and a core event
-    void addJoyBinding(Event::Type event, StellaEvent::JoyStick stick,
-                       StellaEvent::JoyCode code);
-
-    // Remove all bindings for this core event
-    void deleteBinding(Event::Type event);
-
-
-  private:
+  protected:
     // The Console for the system
     Console* myConsole;
 
@@ -208,6 +211,9 @@ class UserInterface
 
     // Holds the number of items in the joytable array
     uInt32 myJoyTableSize;
+
+    // Indicates whether the emulator is currently in fullscreen mode
+    bool isFullscreen; // FIXME - remove from here, its specific
 };
 
 #endif

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.41 2003-09-26 00:32:00 stephena Exp $
+## $Id: makefile,v 1.42 2003-10-17 18:02:15 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -23,16 +23,36 @@
 ## Comment a line out to disable that option, remove comment to enable it.
 ##============================================================================
 
-OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
+OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wunused
 
-### which sound drivers to compile for the X11 and SDL versions
+### which sound drivers to compile for the SDL version
 ### OSS is most compatible, SDL for platforms where OSS not available
-### SDL sound not yet supported in the X11 version
 ### comment out all lines to completely disable sound
 ###
 #SOUND_ALSA = 1
 #SOUND_OSS  = 1
 #SOUND_SDL  = 1
+
+### to include OpenGL video support (SDL)
+#DISPLAY_OPENGL = 1
+
+### to include joystick support (SDL)
+# JOYSTICK_SUPPORT = 1
+
+### to include support for saving snapshots in png format
+### (requires PNG library) FIXME
+### Only SDL port supported for now FIXME
+# SNAPSHOT_SUPPORT = 1
+
+### comment this out if your system doesn't
+### have the gettimeofday function
+HAVE_GETTIMEOFDAY = 1
+
+### to include support for game developers
+### enables some extra commandline options that allow the user
+### to override some emulation defaults
+### Only SDL port supported for now
+# DEVELOPER_SUPPORT = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -42,25 +62,6 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
 
 ### you want a 6507 trace written to stdout
 # DEBUG = 1
-
-### to include joystick support in the X11 and SDL versions
- JOYSTICK_SUPPORT = 1
-
-### to include support for saving snapshots in png format
-### (requires PNG library) FIXME
-### Only X11 and SDL ports supported for now FIXME
- SNAPSHOT_SUPPORT = 1
-
-### comment this out if your system doesn't
-### have the gettimeofday function
-### Currently, the X11 version won't compile without it
-HAVE_GETTIMEOFDAY = 1
-
-### to include support for game developers
-### enables some extra commandline options that allow the user
-### to override some emulation defaults
-### Only X11 and SDL ports supported for now
- DEVELOPER_SUPPORT = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -73,11 +74,6 @@ LD	= g++
 LDFLAGS = 
 LDLIBS	= 
 
-OBJS.X11   = 
-OPTS.X11   =
-LIBS.X11   =
-CFLAGS.X11 =
-
 OBJS.SDL   =
 OPTS.SDL   =
 LIBS.SDL   = `sdl-config --libs`
@@ -88,76 +84,66 @@ OPTS.DOS   = -DDOS=1
 SRC	= ..
 CORE	= $(SRC)/emucore
 UI	= $(SRC)/ui
+COMMON  = $(SRC)/ui/common
 
-INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(UI)/common
+INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(COMMON)
 
 FLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
 
 ## set the user-defined options
 ifdef BSPF_BOOL
-OPTS.X11 += -DBSPF_BOOL=1
 OPTS.DOS += -DBSPF_BOOL=1   
 endif
 
 ifdef SHOW_TIMING
-OPTS.X11 += -DSHOW_TIMING=1
 OPTS.SDL += -DSHOW_TIMING=1
 OPTS.DOS += -DSHOW_TIMING=1
 endif
 
 ifdef DEBUG
-OPTS.X11 += -DDEBUG=1
 OPTS.SDL += -DDEBUG=1
 OPTS.DOS += -DDEBUG=1
 endif
 
 ifdef JOYSTICK_SUPPORT
-OPTS.X11 += -DHAVE_JOYSTICK=1
 OPTS.SDL += -DHAVE_JOYSTICK=1
 endif
 
 ifdef SNAPSHOT_SUPPORT
-OBJS.X11 += Snapshot.o
-OPTS.X11 += -DSNAPSHOT_SUPPORT=1
-LIBS.X11 += -lpng -lz
-
 OBJS.SDL += Snapshot.o
 OPTS.SDL += -DSNAPSHOT_SUPPORT=1
 LIBS.SDL += -lpng -lz
 endif
 
 ifdef HAVE_GETTIMEOFDAY
-OPTS.X11 += -DHAVE_GETTIMEOFDAY=1
 OPTS.SDL += -DHAVE_GETTIMEOFDAY=1
 endif
 
 ifdef DEVELOPER_SUPPORT
-OPTS.X11 += -DDEVELOPER_SUPPORT=1
 OPTS.SDL += -DDEVELOPER_SUPPORT=1
 OPTS.DOS += -DDEVELOPER_SUPPORT=1
 endif
 
 ifeq ($(SOUND_OSS), 1)
-  OPTS.X11 += -DSOUND_OSS=1
-  OBJS.X11 += SoundOSS.o
   OPTS.SDL += -DSOUND_OSS=1
   OBJS.SDL += SoundOSS.o
 endif
 
 ifeq ($(SOUND_SDL), 1)
-#  OPTS.X11 += -DSOUND_OSS=1
-#  OBJS.X11 += SoundOSS.o
   OPTS.SDL += -DSOUND_SDL=1
   OBJS.SDL += SoundSDL.o
 endif
 
 ifeq ($(SOUND_ALSA), 1)
-  OPTS.X11 += -DSOUND_ALSA=1
-  OBJS.X11 += SoundALSA.o
-  LIBS.X11 += -lasound
   OPTS.SDL += -DSOUND_ALSA=1
   OBJS.SDL += SoundALSA.o
   LIBS.SDL += -lasound
+endif
+
+ifeq ($(DISPLAY_OPENGL), 1)
+  OPTS.SDL += -DDISPLAY_OPENGL=1
+  OBJS.SDL += DispGLSDL.o
+  LIBS.SDL += -lGL -lGLU
 endif
 
 
@@ -169,11 +155,7 @@ default:
 	@echo "<version> is one of:"
 	@echo ""
 	@echo "  dos                  DOS version using DJGPP"
-	@echo "  unix-x               Generic Unix X windows version"
-	@echo "  linux-x              Linux X windows version"
 	@echo "  linux-sdl            Linux SDL version"
-	@echo "  bsdi-x               BSD/OS 4.0 X Windows version"
-	@echo "  solaris-x            Solaris X windows version"
 	@echo ""
 	@echo "Hopefully new versions will be added soon!"
 	@echo ""
@@ -189,32 +171,6 @@ dos:
           LDLIBS="" \
           OBJS="mainDOS.o PCJoys.o SndDOS.o dos_sb.o vga.o"
 
-unix-x:
-	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
-          SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
-          OPTIONS+="$(OPTS.X11)" \
-          LDFLAGS="-L/usr/X11R6/lib" \
-          LDFLAGS+="$(CFLAGS.X11)" \
-          LDLIBS="-lX11 -lXext" \
-          LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SettingsUNIX.o"
-          OBJS+="$(OBJS.X11)"
-
-linux-x:
-	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
-          SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
-          OPTIONS+="$(OPTS.X11)" \
-          LDFLAGS="-L/usr/X11R6/lib" \
-          LDFLAGS+="$(CFLAGS.X11)" \
-          LDLIBS="-lX11 -lXext" \
-          LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SettingsUNIX.o" \
-          OBJS+="$(OBJS.X11)"
-
 linux-sdl:
 	make stella.sdl \
           INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
@@ -225,34 +181,8 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o RectList.o SettingsUNIX.o" \
+          OBJS="mainSDL.o FrameBufferSDL.o RectList.o SettingsUNIX.o" \
           OBJS+="$(OBJS.SDL)"
-
-bsdi-x:
-	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
-          SYS_INCLUDES="-I/usr/X11R6/include" \
-          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
-          OPTIONS+="$(OPTS.X11)" \
-          LDFLAGS="-L/usr/X11R6/lib" \
-          LDFLAGS+="$(CFLAGS.X11)" \
-          LDLIBS="-lX11 -lXext" \
-          LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SettingsUNIX.o"
-          OBJS+="$(OBJS.X11)"
-
-solaris-x:
-	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
-          SYS_INCLUDES="-I/usr/openwin/include" \
-          OPTIONS="-DBSPF_UNIX=1 -DUNIX=1" \
-          OPTIONS+="$(OPTS.X11)" \
-          LDFLAGS="-L/usr/openwin/lib" \
-          LDFLAGS+="$(CFLAGS.X11)" \
-          LDLIBS="-lX11 -lXext" \
-          LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SettingsUNIX.o"
-          OBJS+="$(OBJS.X11)"
 
 ###############################################################################
 ## List of "core" object files
@@ -265,7 +195,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartMB.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
-            Serializer.o Deserializer.o TIASound.o EventHandler.o UserInterface.o \
+            Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)
@@ -276,9 +206,6 @@ stella.exe: $(CORE_OBJS) $(OBJS)
 	copy /B $(DJGPP:\DJGPP.ENV=)\bin\pmodstub.exe+a stella.exe
 	del a
 	del a.exe
-
-stella.x11: $(CORE_OBJS) $(OBJS)
-	$(LD) -o stella.x11 $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
 
 stella.sdl: $(CORE_OBJS) $(OBJS)
 	$(LD) -o stella.sdl $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
@@ -299,7 +226,7 @@ cleandos:
 	del M6502Hi.ins
 
 clean:
-	rm -f *.o stella stella.x11 stella.sdl stella.exe core
+	rm -f *.o stella stella.sdl stella.exe core
 
 cleanall: clean
 	rm -f M6502Low.ins M6502Hi.ins
@@ -391,9 +318,6 @@ M6532.o: $(CORE)/M6532.cxx $(CORE)/M6532.hxx
 TIA.o: $(CORE)/TIA.cxx $(CORE)/TIA.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/TIA.cxx
 
-UserInterface.o: $(CORE)/UserInterface.cxx $(CORE)/UserInterface.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/UserInterface.cxx
-
 TIASound.o: $(CORE)/TIASound.c $(CORE)/TIASound.h
 	$(CXX) -c -DWIN32 $(FLAGS) $(OPTIONS) $(CORE)/TIASound.c
 
@@ -405,6 +329,9 @@ MD5.o: $(CORE)/MD5.cxx $(CORE)/MD5.hxx
 
 MediaSrc.o: $(CORE)/MediaSrc.cxx $(CORE)/MediaSrc.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/MediaSrc.cxx
+
+FrameBuffer.o: $(CORE)/FrameBuffer.cxx $(CORE)/FrameBuffer.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/FrameBuffer.cxx
 
 PropsSet.o: $(CORE)/PropsSet.cxx $(CORE)/PropsSet.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/PropsSet.cxx
@@ -430,8 +357,8 @@ Deserializer.o: $(CORE)/Deserializer.cxx $(CORE)/Deserializer.hxx
 Settings.o: $(CORE)/Settings.cxx $(CORE)/Settings.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Settings.cxx
 
-SettingsUNIX.o: $(UI)/common/SettingsUNIX.cxx $(UI)/common/SettingsUNIX.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/SettingsUNIX.cxx
+SettingsUNIX.o: $(UI)/sdl/SettingsUNIX.cxx $(UI)/sdl/SettingsUNIX.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SettingsUNIX.cxx
 
 Terminal.o: $(UI)/x11/Terminal.cxx $(UI)/x11/Terminal.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/x11/Terminal.cxx
@@ -468,6 +395,12 @@ mainSDL.o: $(UI)/sdl/mainSDL.cxx
 
 RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx
+
+FrameBufferSDL.o: $(UI)/sdl/FrameBufferSDL.cxx $(UI)/sdl/FrameBufferSDL.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferSDL.cxx
+
+FrameBufferGL.o: $(UI)/sdl/FrameBufferGL.cxx $(UI)/sdl/FrameBufferGL.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferGL.cxx
 
 Snapshot.o: $(UI)/common/Snapshot.cxx $(UI)/common/Snapshot.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Snapshot.cxx

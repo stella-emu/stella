@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.12 2003-09-25 16:20:33 stephena Exp $
+// $Id: Console.hxx,v 1.13 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -30,7 +30,7 @@ class Snapshot;
 class Sound;
 class Switches;
 class System;
-class UserInterface;
+class FrameBuffer;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -41,7 +41,7 @@ class UserInterface;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.12 2003-09-25 16:20:33 stephena Exp $
+  @version $Id: Console.hxx,v 1.13 2003-10-17 18:02:16 stephena Exp $
 */
 class Console
 {
@@ -59,7 +59,7 @@ class Console
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
         Settings& rcsettings, PropertiesSet& propertiesSet,
-        uInt32 sampleRate);
+        FrameBuffer& framebuffer, uInt32 sampleRate);
 
     /**
       Create a new console object by copying another one
@@ -85,16 +85,6 @@ class Console
     }
 
     /**
-      Get the media source of the console
-
-      @return The media source
-    */
-    MediaSource& mediaSource() const
-    {
-      return *myMediaSource;
-    }
-
-    /**
       Get the properties being used by the game
 
       @return The properties being used by the game
@@ -107,6 +97,13 @@ class Console
       @return The settings for this console
     */
     Settings& settings() const;
+
+    /**
+      Get the frame buffer of the console
+
+      @return The frame buffer
+    */
+    FrameBuffer& frameBuffer() const;
 
     /**
       Get the console switches
@@ -136,16 +133,6 @@ class Console
     EventHandler& eventHandler() const
     {
       return *myEventHandler;
-    }
-
-    /**
-      Get the user interfacee of the console
-
-      @return The graphical user interface
-    */
-    UserInterface& gui() const
-    {
-      return *myUserInterface;
     }
 
   public:
@@ -255,11 +242,11 @@ class Console
     // Reference to the PropertiesSet object
     PropertiesSet& myPropSet;
 
+    // Reference to the FrameBuffer object
+    FrameBuffer& myFrameBuffer;
+
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;
-
-    // Pointer to the UserInterface object
-    UserInterface* myUserInterface;
 
   private:
     // Default properties to use for properties objects

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.15 2003-09-30 01:22:45 stephena Exp $
+// $Id: EventHandler.cxx,v 1.16 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -26,7 +26,7 @@
 #include "Settings.hxx"
 #include "StellaEvent.hxx"
 #include "System.hxx"
-#include "UserInterface.hxx"
+#include "FrameBuffer.hxx"
 #include "bspf.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
@@ -88,13 +88,13 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
   if(key == StellaEvent::KCODE_TAB && state == 1)
   {
     myMenuStatus = !myMenuStatus;
-    myConsole->gui().showMainMenu(myMenuStatus);
+    myConsole->frameBuffer().showMainMenu(myMenuStatus);
     return;
   }
 
   // Determine where the event should be sent
   if(myMenuStatus)
-    myConsole->gui().sendKeyEvent(key, state);
+    myConsole->frameBuffer().sendKeyEvent(key, state);
   else
     sendEvent(myKeyTable[key], state);
 }
@@ -105,7 +105,7 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
 {
   // Determine where the event should be sent
   if(myMenuStatus)
-    myConsole->gui().sendJoyEvent(stick, code, state);
+    myConsole->frameBuffer().sendJoyEvent(stick, code, state);
   else
     sendEvent(myJoyTable[stick*StellaEvent::LastJCODE + code], state);
 }
@@ -154,7 +154,7 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     }
 
     if(ourMessageTable[event] != "")
-      myConsole->gui().showMessage(ourMessageTable[event]);
+      myConsole->frameBuffer().showMessage(ourMessageTable[event]);
   }
 
   // Otherwise, pass it to the emulation core
@@ -372,7 +372,7 @@ void EventHandler::saveState()
   else if(result == 3)
     buf << "Invalid state " << myCurrentState << " file";
 
-  myConsole->gui().showMessage(buf.str());
+  myConsole->frameBuffer().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -387,7 +387,7 @@ void EventHandler::changeState()
   ostringstream buf;
   buf << "Changed to slot " << myCurrentState;
 
-  myConsole->gui().showMessage(buf.str());
+  myConsole->frameBuffer().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -407,7 +407,7 @@ void EventHandler::loadState()
   else if(result == 3)
     buf << "Invalid state " << myCurrentState << " file";
 
-  myConsole->gui().showMessage(buf.str());
+  myConsole->frameBuffer().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -416,11 +416,11 @@ void EventHandler::takeSnapshot()
 #ifdef SNAPSHOT_SUPPORT
   // Now save the snapshot file
   string filename = myConsole->settings().snapshotFilename();
-  myConsole->snapshot().savePNG(filename, myConsole->mediaSource(),
+  myConsole->snapshot().savePNG(filename, myConsole->frameBuffer(),
       myConsole->settings().getInt("zoom")); // FIXME - update zoom in resizewindow
 
-  myConsole->gui().showMessage("Snapshot saved");
+  myConsole->frameBuffer().showMessage("Snapshot saved");
 #else
-  myConsole->gui().showMessage("Snapshots unsupported");
+  myConsole->frameBuffer().showMessage("Snapshots unsupported");
 #endif
 }

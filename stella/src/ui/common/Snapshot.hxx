@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.2 2003-09-12 18:08:54 stephena Exp $
+// $Id: Snapshot.hxx,v 1.3 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
@@ -22,7 +22,8 @@
 #include <png.h>
 
 #include "bspf.hxx"
-#include "MediaSrc.hxx"
+
+class FrameBuffer;
 
 class Snapshot
 {
@@ -30,7 +31,7 @@ class Snapshot
     Snapshot();
     ~Snapshot();
 
-    int savePNG(string filename, MediaSource& mediaSource, uInt32 multiplier = 1);
+    int savePNG(string filename, FrameBuffer& mediaSource, uInt32 multiplier = 1);
 
   private:
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);

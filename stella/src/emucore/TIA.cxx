@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.23 2003-09-26 22:39:36 stephena Exp $
+// $Id: TIA.cxx,v 1.24 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -28,7 +28,6 @@
 #include "TIA.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include "UserInterface.hxx"
 #include "TIASound.h"
 
 #define HBLANK 68
@@ -571,9 +570,6 @@ void TIA::update()
   // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myScanlineCountForLastFrame = totalClocks / 228;
-
-  // Draw any pending user interface elements to the framebuffer
-  myConsole.gui().update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

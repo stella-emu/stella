@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.5 2003-09-12 18:08:54 stephena Exp $
+// $Id: Snapshot.cxx,v 1.6 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -21,6 +21,7 @@
 #include <fstream>
 
 #include "bspf.hxx"
+#include "FrameBuffer.hxx"
 #include "Snapshot.hxx"
 
 
@@ -61,18 +62,20 @@ void Snapshot::png_user_error(png_structp ctx, png_const_charp str)
   This routine saves the current frame buffer to a 256 color PNG file,
   appropriately scaled by the amount specified in 'multiplier'.
 */
-int Snapshot::savePNG(string filename, MediaSource& mediaSource, uInt32 multiplier)
+int Snapshot::savePNG(string filename, FrameBuffer& frameBuffer, uInt32 multiplier)
 {
+#if 0
+// FIXME
   png_structp png_ptr = 0;
   png_infop info_ptr = 0;
 
-  uInt8* pixels = mediaSource.currentFrameBuffer();
+  uInt8* pixels = frameBuffer.current();
 
   // PNG and window dimensions will be different because of scaling
-  int picWidth  = mediaSource.width() * 2 * multiplier;
-  int picHeight = mediaSource.height() * multiplier;
-  int width  = mediaSource.width();
-  int height = mediaSource.height();
+  int picWidth  = frameBuffer.width() * 2 * multiplier;
+  int picHeight = frameBuffer.height() * multiplier;
+  int width  = frameBuffer.width();
+  int height = frameBuffer.height();
 
   ofstream* out = new ofstream(filename.c_str());
   if(!out)
@@ -90,7 +93,7 @@ int Snapshot::savePNG(string filename, MediaSource& mediaSource, uInt32 multipli
       return 0;
     }
 
-    const uInt32* gamePalette = mediaSource.palette();
+    const uInt32* gamePalette = frameBuffer.palette();
     for(uInt32 i = 0; i < 256; ++i)
     {
       palette[i].red   = (uInt8) ((gamePalette[i] & 0x00ff0000) >> 16);
@@ -169,6 +172,6 @@ int Snapshot::savePNG(string filename, MediaSource& mediaSource, uInt32 multipli
 
   out->close();
   delete out;
-
+#endif
   return 1;
 }

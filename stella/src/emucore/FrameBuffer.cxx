@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.9 2003-10-01 19:01:01 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.1 2003-10-17 18:02:16 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -25,7 +25,7 @@
 #include "StellaEvent.hxx"
 #include "Settings.hxx"
 #include "MediaSrc.hxx"
-#include "UserInterface.hxx"
+#include "FrameBuffer.hxx"
 
 // Eventually, these may become variables
 #define FGCOLOR    10 // A white color in NTSC and PAL mode
@@ -46,10 +46,8 @@
 #define RIGHTMARKER 16 // Indicates item being remapped
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
-    : myConsole(console),
-      myMediaSource(mediasrc),
-      myFrameRate(0),
+FrameBuffer::FrameBuffer()
+   :  myFrameRate(0),
       myCurrentWidget(W_NONE),
       myRemapEventSelectedFlag(false),
       mySelectedEvent(Event::NoType),
@@ -63,22 +61,23 @@ UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
       myRemapMenuMaxLines(0),
       myMessageTime(0),
       myMessageText(""),
-      myInfoMenuWidth(0)
+      myInfoMenuWidth(0),
+      isFullscreen(false) // FIXME
 {
-  myFrameRate = myConsole->settings().getInt("framerate");
+cerr << "FrameBuffer::FrameBuffer()\n";
+}
 
-  myXStart = atoi(myConsole->properties().get("Display.XStart").c_str());
-  myWidth = atoi(myConsole->properties().get("Display.Width").c_str());
-  myYStart = atoi(myConsole->properties().get("Display.YStart").c_str());
-  myHeight = atoi(myConsole->properties().get("Display.Height").c_str());
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::~FrameBuffer(void)
+{
+cerr << "FrameBuffer::~FrameBuffer()\n";
+}
 
-  // Make sure the starting x and width values are reasonable
-  if((myXStart + myWidth) > 160)
-  {
-    // Values are illegal so reset to default values
-    myXStart = 0;
-    myWidth = 160;
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::initBase(Console* console, MediaSource* mediasrc)
+{
+  myConsole     = console;
+  myMediaSource = mediasrc;
 
   // Fill the properties info array with game information
   ourPropertiesInfo[0] = myConsole->properties().get("Cartridge.Name");
@@ -112,16 +111,13 @@ UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
   myConsole->eventHandler().getKeymapArray(&myKeyTable, &myKeyTableSize);
   myConsole->eventHandler().getJoymapArray(&myJoyTable, &myJoyTableSize);
 
+  myFrameRate = myConsole->settings().getInt("framerate");
+
   loadRemapMenu();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::~UserInterface(void)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::showMainMenu(bool show)
+void FrameBuffer::showMainMenu(bool show)
 {
   myCurrentWidget = show ? MAIN_MENU : W_NONE;
   myRemapEventSelectedFlag = false;
@@ -129,14 +125,14 @@ void UserInterface::showMainMenu(bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::showMessage(const string& message)
+void FrameBuffer::showMessage(const string& message)
 {
   myMessageText = message;
   myMessageTime = myFrameRate << 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
+void FrameBuffer::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
   if(myCurrentWidget == W_NONE || state != 1)
     return;
@@ -199,7 +195,7 @@ cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "' selected for remappin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::sendJoyEvent(StellaEvent::JoyStick stick,
+void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
      StellaEvent::JoyCode code, Int32 state)
 {
   if(myCurrentWidget == W_NONE || state != 1)
@@ -245,51 +241,7 @@ cerr << "stick = " << stick << ", button = " << code << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::update()
-{
-  switch(myCurrentWidget)
-  {
-    case W_NONE:
-      break;
-
-    case MAIN_MENU:
-      drawMainMenu();
-      break;
-
-    case REMAP_MENU:
-      drawRemapMenu();
-      break;
-
-    case INFO_MENU:
-      drawInfoMenu();
-      break;
-
-    case FONTS_MENU:
-      drawFontsMenu();
-      break;
-
-    default:
-      break;
-  }
-
-  // A message is a special case of interface element
-  // It can overwrite even a menu
-  if(myMessageTime > 0)
-  {
-    uInt32 width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
-    uInt32 height = LINEOFFSET + FONTHEIGHT;
-    uInt32 x = (myWidth >> 1) - (width >> 1);
-    uInt32 y = myHeight - height - LINEOFFSET/2;
-
-    // Draw the bounded box and text
-    drawBoundedBox(x, y, width, height);
-    drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText);
-    myMessageTime--;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::Widget UserInterface::currentSelectedWidget()
+FrameBuffer::Widget FrameBuffer::currentSelectedWidget()
 {
   if(myMainMenuIndex >= 0 && myMainMenuIndex < myMainMenuItems)
     return ourMainMenu[myMainMenuIndex].widget;
@@ -298,7 +250,7 @@ UserInterface::Widget UserInterface::currentSelectedWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type UserInterface::currentSelectedEvent()
+Event::Type FrameBuffer::currentSelectedEvent()
 {
   if(myRemapMenuIndex >= 0 && myRemapMenuIndex < myRemapMenuItems)
     return ourRemapMenu[myRemapMenuIndex].event;
@@ -307,7 +259,7 @@ Event::Type UserInterface::currentSelectedEvent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::moveCursorUp()
+void FrameBuffer::moveCursorUp()
 {
   switch(myCurrentWidget)
   {
@@ -342,7 +294,7 @@ void UserInterface::moveCursorUp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::moveCursorDown()
+void FrameBuffer::moveCursorDown()
 {
   switch(myCurrentWidget)
   {
@@ -377,7 +329,7 @@ void UserInterface::moveCursorDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::movePageUp()
+void FrameBuffer::movePageUp()
 {
   switch(myCurrentWidget)
   {
@@ -409,7 +361,7 @@ void UserInterface::movePageUp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::movePageDown()
+void FrameBuffer::movePageDown()
 {
   switch(myCurrentWidget)
   {
@@ -441,185 +393,7 @@ void UserInterface::movePageDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void UserInterface::drawMainMenu()
-{
-  uInt32 x, y, width, height, i, xpos, ypos;
-
-  width  = 16*FONTWIDTH + 2*FONTWIDTH;
-  height = myMainMenuItems*LINEOFFSET + 2*FONTHEIGHT;
-  x = (myWidth >> 1) - (width >> 1);
-  y = (myHeight >> 1) - (height >> 1);
-
-  // Draw the bounded box and text, leaving a little room for arrows
-  xpos = x + XBOXOFFSET;
-  drawBoundedBox(x-2, y-2, width+3, height+3);
-  for(i = 0; i < myMainMenuItems; i++)
-    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourMainMenu[i].action);
-
-  // Now draw the selection arrow around the currently selected item
-  ypos = LINEOFFSET*myMainMenuIndex + y + YBOXOFFSET;
-  drawChar(x, ypos, LEFTARROW);
-  drawChar(width - x, ypos, RIGHTARROW);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void UserInterface::drawRemapMenu()
-{
-  uInt32 x, y, width, height, i, xpos, ypos;
-
-  width  = 16*FONTWIDTH + 2*FONTWIDTH;  // FIXME - change 16 to maximum in new framebuffer (~ 40)
-  height = myMaxLines*LINEOFFSET + 2*FONTHEIGHT;
-  x = (myWidth >> 1) - (width >> 1);
-  y = (myHeight >> 1) - (height >> 1);
-
-// FIXME - change 100 to left bound of key strings in new frmaebuffer
-  // Draw the bounded box and text, leaving a little room for arrows
-  drawBoundedBox(x-2, y-2, width+3, height+3);
-  for(i = myRemapMenuLowIndex; i < myRemapMenuHighIndex; i++)
-  {
-    drawText(x + XBOXOFFSET, LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET,
-             ourRemapMenu[i].action);
-    drawText(x + XBOXOFFSET+100, LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET,
-             ourRemapMenu[i].key);
-  }
-
-  // Normally draw an arrow indicating the current line,
-  // otherwise highlight the currently selected item for remapping
-  if(!myRemapEventSelectedFlag)
-  {
-    ypos = LINEOFFSET*(myRemapMenuIndex-myRemapMenuLowIndex) + y + YBOXOFFSET;
-    drawChar(x, ypos, LEFTARROW);
-    drawChar(width - x, ypos, RIGHTARROW);
-  }
-  else
-  {
-// FIXME - draw "<|  |>" around key being changed
-//  Can't be done until the framebuffer has been updated and I know exactly 
-//  where the item will be located on the line.
-   // cerr << "draw brackets around '" << ourRemapMenu[myRemapMenuIndex].key << "'\n";
-   drawText(x + 2, LINEOFFSET*(myRemapMenuIndex-myRemapMenuLowIndex) + y + YBOXOFFSET, ">");
-  }
-
-  // Finally, indicate that there are more items to the top or bottom
-  xpos = (width >> 1) - FONTWIDTH/2;
-  if(myRemapMenuHighIndex - myMaxLines > 0)
-    drawChar(xpos, y, UPARROW);
-
-  if(myRemapMenuLowIndex + myMaxLines < myRemapMenuItems)
-    drawChar(xpos, height - FONTWIDTH/2, DOWNARROW);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void UserInterface::drawInfoMenu()
-{
-  uInt32 x, y, width, height, i, xpos, ypos;
-
-  width  = myInfoMenuWidth*FONTWIDTH + 2*FONTWIDTH;
-  height = 6*LINEOFFSET + 2*FONTHEIGHT;
-  x = (myWidth >> 1) - (width >> 1);
-  y = (myHeight >> 1) - (height >> 1);
-
-  // Draw the bounded box and text
-  xpos = x + XBOXOFFSET;
-  drawBoundedBox(x, y, width, height);
-  for(i = 0; i < 6; i++)
-    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void UserInterface::drawFontsMenu()
-{
-  uInt32 xorig, yorig, width, height, xpos, ypos;
-
-  width  = 16*FONTWIDTH + 2*FONTWIDTH;
-  height = myMaxLines*LINEOFFSET;
-  xorig  = (myWidth >> 1) - (width >> 1);
-  yorig  = (myHeight >> 1) - (height >> 1);
-
-  // Draw the bounded box and text
-  xpos = xorig + XBOXOFFSET;
-  ypos = yorig + YBOXOFFSET;
-  drawBoundedBox(xorig, yorig, width, height);
-
-  uInt8* buffer = myMediaSource->currentFrameBuffer();
-
-  for(uInt32 lines = 0; lines < 256; lines+=16)
-  {
-    for(uInt32 x = 0; x < 16; x++)
-    {
-      for(uInt32 y = 0; y < FONTHEIGHT; y++)
-      {
-        for(uInt32 z = 0; z < FONTWIDTH; z++)
-        {
-          uInt32 letter = lines + x;
-          if((ourFontData[(letter << 3) + y] >> z) & 1)
-            buffer[(y + ypos)*myWidth + (x<<3) + z + xpos] = FGCOLOR;
-        }
-      }
-    }
-    ypos += LINEOFFSET;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::drawBoundedBox(uInt32 x, uInt32 y, uInt32 width, uInt32 height)
-{
-  uInt8* buffer = myMediaSource->currentFrameBuffer();
-
-  for(uInt32 col = 0; col < width; ++col)
-  {
-    for(uInt32 row = 0; row < height; ++row)
-    {
-      uInt32 position = ((y + row) * myWidth) + col + x;
-
-      if((col == 0) || (col == width - 1) || (row == 0) || (row == height - 1))
-        buffer[position] = FGCOLOR;
-      else
-        buffer[position] = BGCOLOR;
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::drawText(uInt32 xorig, uInt32 yorig, const string& message)
-{
-  uInt8* buffer = myMediaSource->currentFrameBuffer();
-
-  uInt8 length = message.length();
-  for(uInt32 x = 0; x < length; x++)
-  {
-    for(uInt32 y = 0; y < FONTHEIGHT; y++)
-    {
-      for(uInt32 z = 0; z < FONTWIDTH; z++)
-      {
-        char letter = message[x];
-        if((ourFontData[(letter << 3) + y] >> z) & 1)
-          buffer[(y + yorig)*myWidth + (x<<3) + z + xorig] = FGCOLOR;
-      }
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
-{
-  if(c >= 256 )
-    return;
-
-  uInt8* buffer = myMediaSource->currentFrameBuffer();
-
-  for(uInt32 y = 0; y < FONTHEIGHT; y++)
-  {
-    for(uInt32 z = 0; z < FONTWIDTH; z++)
-    {
-      if((ourFontData[(c << 3) + y] >> z) & 1)
-        buffer[(y + yorig)*myWidth + z + xorig] = FGCOLOR;
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::loadRemapMenu()
+void FrameBuffer::loadRemapMenu()
 {
   // Fill the remap menu with the current key and joystick mappings
   for(uInt32 i = 0; i < myRemapMenuItems; ++i)
@@ -644,7 +418,29 @@ void UserInterface::loadRemapMenu()
         ostringstream joyevent;
         uInt32 stick  = j / StellaEvent::LastJCODE;
         uInt32 button = j % StellaEvent::LastJCODE;
-        joyevent << "Joy " << stick << " B" << button;
+
+        switch(button)
+        {
+          case StellaEvent::JAXIS_UP:
+            joyevent << "J" << stick << " UP";
+            break;
+
+          case StellaEvent::JAXIS_DOWN:
+            joyevent << "J" << stick << " DOWN";
+            break;
+
+          case StellaEvent::JAXIS_LEFT:
+            joyevent << "J" << stick << " LEFT";
+            break;
+
+          case StellaEvent::JAXIS_RIGHT:
+            joyevent << "J" << stick << " RIGHT";
+            break;
+
+          default:
+            joyevent << "J" << stick << " B" << (button-4);
+            break;
+        }
 
         if(key == "")
           key = key + joyevent.str();
@@ -659,7 +455,7 @@ void UserInterface::loadRemapMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::addKeyBinding(Event::Type event, StellaEvent::KeyCode key)
+void FrameBuffer::addKeyBinding(Event::Type event, StellaEvent::KeyCode key)
 {
   myKeyTable[key] = event;
 
@@ -667,7 +463,7 @@ void UserInterface::addKeyBinding(Event::Type event, StellaEvent::KeyCode key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::addJoyBinding(Event::Type event,
+void FrameBuffer::addJoyBinding(Event::Type event,
        StellaEvent::JoyStick stick, StellaEvent::JoyCode code)
 {
   myJoyTable[stick * StellaEvent::LastJCODE + code] = event;
@@ -676,7 +472,7 @@ void UserInterface::addJoyBinding(Event::Type event,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::deleteBinding(Event::Type event)
+void FrameBuffer::deleteBinding(Event::Type event)
 {
   for(uInt32 i = 0; i < myKeyTableSize; ++i)
     if(myKeyTable[i] == event)
@@ -690,7 +486,7 @@ void UserInterface::deleteBinding(Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 UserInterface::ourFontData[2048] = {
+const uInt8 FrameBuffer::ourFontData[2048] = {
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7e,0x81,0xa5,0x81,0xbd,0x99,0x81,0x7e,0x7e,0xff,0xdb,0xff,0xc3,0xe7,0xff,0x7e,0x36,0x7f,0x7f,0x7f,0x3e,0x1c,0x08,0x00,0x08,0x1c,0x3e,0x7f,0x3e,0x1c,0x08,0x00,0x1c,0x3e,0x1c,0x7f,0x7f,0x3e,0x1c,0x3e,0x08,0x08,0x1c,0x3e,0x7f,0x3e,0x1c,0x3e,0x00,0x00,0x18,0x3c,0x3c,0x18,0x00,0x00,0xff,0xff,0xe7,0xc3,0xc3,0xe7,0xff,0xff,0x00,0x3c,0x66,0x42,0x42,0x66,0x3c,0x00,0xff,0xc3,0x99,0xbd,0xbd,0x99,0xc3,0xff,0xf0,0xe0,0xf0,0xbe,0x33,0x33,0x33,0x1e,0x3c,0x66,0x66,0x66,0x3c,0x18,0x7e,0x18,0xfc,0xcc,0xfc,0x0c,0x0c,0x0e,0x0f,0x07,0xfe,0xc6,0xfe,0xc6,0xc6,0xe6,0x67,0x03,0x99,0x5a,0x3c,0xe7,0xe7,0x3c,0x5a,0x99,0x01,0x07,0x1f,0x7f,0x1f,0x07,0x01,0x00,0x40,0x70,0x7c,0x7f,0x7c,0x70,0x40,0x00,0x18,0x3c,0x7e,0x18,0x18,0x7e,0x3c,0x18,0x66,0x66,0x66,0x66,0x66,0x00,0x66,0x00,0xfe,0xdb,0xdb,0xde,0xd8,0xd8,0xd8,0x00,0x7c,0xc6,0x1c,0x36,0x36,0x1c,0x33,0x1e,0x00,0x00,0x00,0x00,0x7e,0x7e,0x7e,0x00,0x18,0x3c,0x7e,0x18,0x7e,0x3c,0x18,0xff,0x18,0x3c,0x7e,0x18,0x18,0x18,0x18,0x00,0x18,0x18,0x18,0x18,0x7e,0x3c,0x18,0x00,0x00,0x18,0x30,0x7f,0x30,0x18,0x00,0x00,0x00,0x0c,0x06,0x7f,0x06,0x0c,0x00,0x00,0x00,0x00,0x03,0x03,0x03,0x7f,0x00,0x00,0x00,0x24,0x66,0xff,0x66,0x24,0x00,0x00,0x00,0x18,0x3c,0x7e,0xff,0xff,0x00,0x00,0x00,0xff,0xff,0x7e,0x3c,0x18,0x00,0x00,
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0c,0x1e,0x1e,0x0c,0x0c,0x00,0x0c,0x00,0x36,0x36,0x36,0x00,0x00,0x00,0x00,0x00,0x36,0x36,0x7f,0x36,0x7f,0x36,0x36,0x00,0x0c,0x3e,0x03,0x1e,0x30,0x1f,0x0c,0x00,0x00,0x63,0x33,0x18,0x0c,0x66,0x63,0x00,0x1c,0x36,0x1c,0x6e,0x3b,0x33,0x6e,0x00,0x06,0x06,0x03,0x00,0x00,0x00,0x00,0x00,0x18,0x0c,0x06,0x06,0x06,0x0c,0x18,0x00,0x06,0x0c,0x18,0x18,0x18,0x0c,0x06,0x00,0x00,0x66,0x3c,0xff,0x3c,0x66,0x00,0x00,0x00,0x0c,0x0c,0x3f,0x0c,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0c,0x0c,0x06,0x00,0x00,0x00,0x3f,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0c,0x0c,0x00,0x60,0x30,0x18,0x0c,0x06,0x03,0x01,0x00,0x3e,0x63,0x73,0x7b,0x6f,0x67,0x3e,0x00,0x0c,0x0e,0x0c,0x0c,0x0c,0x0c,0x3f,0x00,0x1e,0x33,0x30,0x1c,0x06,0x33,0x3f,0x00,0x1e,0x33,0x30,0x1c,0x30,0x33,0x1e,0x00,0x38,0x3c,0x36,0x33,0x7f,0x30,0x78,0x00,0x3f,0x03,0x1f,0x30,0x30,0x33,0x1e,0x00,0x1c,0x06,0x03,0x1f,0x33,0x33,0x1e,0x00,0x3f,0x33,0x30,0x18,0x0c,0x0c,0x0c,0x00,0x1e,0x33,0x33,0x1e,0x33,0x33,0x1e,0x00,0x1e,0x33,0x33,0x3e,0x30,0x18,0x0e,0x00,0x00,0x0c,0x0c,0x00,0x00,0x0c,0x0c,0x00,0x00,0x0c,0x0c,0x00,0x00,0x0c,0x0c,0x06,0x18,0x0c,0x06,0x03,0x06,0x0c,0x18,0x00,0x00,0x00,0x3f,0x00,0x00,0x3f,0x00,0x00,0x06,0x0c,0x18,0x30,0x18,0x0c,0x06,0x00,0x1e,0x33,0x30,0x18,0x0c,0x00,0x0c,0x00,
 0x3e,0x63,0x7b,0x7b,0x7b,0x03,0x1e,0x00,0x0c,0x1e,0x33,0x33,0x3f,0x33,0x33,0x00,0x3f,0x66,0x66,0x3e,0x66,0x66,0x3f,0x00,0x3c,0x66,0x03,0x03,0x03,0x66,0x3c,0x00,0x1f,0x36,0x66,0x66,0x66,0x36,0x1f,0x00,0x7f,0x46,0x16,0x1e,0x16,0x46,0x7f,0x00,0x7f,0x46,0x16,0x1e,0x16,0x06,0x0f,0x00,0x3c,0x66,0x03,0x03,0x73,0x66,0x7c,0x00,0x33,0x33,0x33,0x3f,0x33,0x33,0x33,0x00,0x1e,0x0c,0x0c,0x0c,0x0c,0x0c,0x1e,0x00,0x78,0x30,0x30,0x30,0x33,0x33,0x1e,0x00,0x67,0x66,0x36,0x1e,0x36,0x66,0x67,0x00,0x0f,0x06,0x06,0x06,0x46,0x66,0x7f,0x00,0x63,0x77,0x7f,0x7f,0x6b,0x63,0x63,0x00,0x63,0x67,0x6f,0x7b,0x73,0x63,0x63,0x00,0x1c,0x36,0x63,0x63,0x63,0x36,0x1c,0x00,0x3f,0x66,0x66,0x3e,0x06,0x06,0x0f,0x00,0x1e,0x33,0x33,0x33,0x3b,0x1e,0x38,0x00,0x3f,0x66,0x66,0x3e,0x36,0x66,0x67,0x00,0x1e,0x33,0x07,0x0e,0x38,0x33,0x1e,0x00,0x3f,0x2d,0x0c,0x0c,0x0c,0x0c,0x1e,0x00,0x33,0x33,0x33,0x33,0x33,0x33,0x3f,0x00,0x33,0x33,0x33,0x33,0x33,0x1e,0x0c,0x00,0x63,0x63,0x63,0x6b,0x7f,0x77,0x63,0x00,0x63,0x63,0x36,0x1c,0x1c,0x36,0x63,0x00,0x33,0x33,0x33,0x1e,0x0c,0x0c,0x1e,0x00,0x7f,0x63,0x31,0x18,0x4c,0x66,0x7f,0x00,0x1e,0x06,0x06,0x06,0x06,0x06,0x1e,0x00,0x03,0x06,0x0c,0x18,0x30,0x60,0x40,0x00,0x1e,0x18,0x18,0x18,0x18,0x18,0x1e,0x00,0x08,0x1c,0x36,0x63,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xff,
@@ -702,14 +498,14 @@ const uInt8 UserInterface::ourFontData[2048] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::MainMenuItem UserInterface::ourMainMenu[3] = {
+FrameBuffer::MainMenuItem FrameBuffer::ourMainMenu[3] = {
   { REMAP_MENU,  "Key Remapping"    },
   { INFO_MENU,   "Game Information" },
   { FONTS_MENU,  "Character Set"    }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::RemapMenuItem UserInterface::ourRemapMenu[57] = {
+FrameBuffer::RemapMenuItem FrameBuffer::ourRemapMenu[57] = {
   { Event::ConsoleSelect,           "Select",               "" },
   { Event::ConsoleReset,            "Reset",                "" },
   { Event::ConsoleColor,            "Color TV",             "" },
@@ -787,7 +583,7 @@ UserInterface::RemapMenuItem UserInterface::ourRemapMenu[57] = {
   lookups.  So I do it this way instead.
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* UserInterface::ourEventName[StellaEvent::LastKCODE] = {
+const char* FrameBuffer::ourEventName[StellaEvent::LastKCODE] = {
   "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
   "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 
