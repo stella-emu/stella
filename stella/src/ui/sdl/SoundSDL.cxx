@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.4 2002-11-11 22:07:35 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.5 2002-11-13 05:01:31 bwmott Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -175,9 +175,9 @@ void SoundSDL::updateSound(MediaSource& mediaSource)
     // Release lock on the sample queue
     SDL_UnlockAudio();
 
-    // Block until the sound thread has consumed all but 100 milliseconds
+    // Block until the sound thread has consumed all but 142 milliseconds
     // of the available audio samples
-    uInt32 leave = mySampleRate / 10;
+    uInt32 leave = mySampleRate / 7;
     for(;;)
     {
       uInt32 size = 0;
@@ -190,6 +190,8 @@ void SoundSDL::updateSound(MediaSource& mediaSource)
       {
         break;
       }
+ 
+      SDL_Delay(5);
     }
   }
 }
@@ -204,8 +206,8 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
     return;
   }
 
-  // Don't use samples unless there's at least 50 milliseconds worth of data
-  if(sound->mySampleQueue.size() < (sound->mySampleRate / 20))
+  // Don't use samples unless there's at least 76 milliseconds worth of data
+  if(sound->mySampleQueue.size() < (sound->mySampleRate / 13))
   {
     return;
   }
