@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.2 2002-10-12 15:24:49 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.3 2002-11-11 02:07:21 bwmott Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -27,8 +27,8 @@
 /**
   This class implements the sound API for SDL.
 
-  @author  Stephen Anthony
-  @version $Id: SoundSDL.hxx,v 1.2 2002-10-12 15:24:49 stephena Exp $
+  @author Stephen Anthony and Bradford W. Mott
+  @version $Id: SoundSDL.hxx,v 1.3 2002-11-11 02:07:21 bwmott Exp $
 */
 class SoundSDL
 {
@@ -45,6 +45,11 @@ class SoundSDL
 
   public: 
     /**
+      Closes the sound device
+    */
+    void close();
+
+    /**
       Return the playback sample rate for the sound device.
     
       @return The playback sample rate
@@ -59,6 +64,13 @@ class SoundSDL
     bool isSuccessfullyInitialized() const;
 
     /**
+      Set the mute state of the sound object.
+
+      @param state Mutes sound if true, unmute if false
+    */
+    void mute(bool state);
+
+    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a precentage from 0 to 100.
 
@@ -67,46 +79,93 @@ class SoundSDL
     void setSoundVolume(uInt32 volume);
 
     /**
-      Notifies this class of the MediaSource object where sample data
-      may be obtained.  The SDL sound api is thread-based, so the SDL
-      audio callback directly queries the MediaSource when it requires
-      more audio samples.
+      Update the sound device using the audio sample from the specified
+      media source.
 
-      @param mediaSource The MediaSource where sample data is obtained
+      @param mediaSource The media source to get audio samples from.
     */
-    void setMediaSource(MediaSource& mediaSource);
-
-    /**
-      Set the mute state of the sound object.
-
-      @param state Mutes sound if true, unmute if false
-    */
-    void mute(bool state);
-
-    /**
-      Closes the sound device
-    */
-    void close();
+    void updateSound(MediaSource& mediaSource);
 
   private:
-    // Indicates if the sound device was successfully initialized
-    bool myIsInitializedFlag;
+    /**
+      A bounded queue class used to hold audio samples after they are
+      produced by the MediaSource.
+    */
+    class SampleQueue
+    {
+      public:
+        /**
+          Create a new SampleQueue instance which can hold the specified
+          number of samples.  If the queue ever reaches its capacity then
+          older samples are discarded.
+        */
+        SampleQueue(uInt32 capacity);
 
-    // DSP sample rate
-    uInt32 mySampleRate;
+        /**
+          Destroy this SampleQueue instance.
+        */
+        virtual ~SampleQueue();
+
+      public:
+        /**
+          Clear any samples stored in the queue.
+        */
+        void clear();
+
+        /**
+          Dequeue the upto the specified number of samples and store them
+          in the buffer.  Returns the actual number of samples removed from
+          the queue.
+
+          @return the actual number of samples removed from the queue.
+        */
+        uInt32 dequeue(uInt8* buffer, uInt32 size);
+
+        /**
+          Enqueue the specified number of samples from the buffer.
+        */
+        void enqueue(uInt8* buffer, uInt32 size);
+
+        /**
+          Answers the number of samples currently in the queue.
+
+          @return The number of samples in the queue.
+        */
+        uInt32 size() const;
+
+      private:
+        const uInt32 myCapacity;
+        uInt8* myBuffer;
+        uInt32 mySize;
+        uInt32 myHead;
+        uInt32 myTail;
+    };
+
+  private:
+    // Current volume
+    uInt32 myCurrentVolume;
 
     // SDL fragment size
-    uInt32 myFragSize;
+    uInt32 myFragmentSize;
+
+    // Audio specification structure
+    SDL_AudioSpec myHardwareSpec;
+    
+    // Indicates if the sound device was successfully initialized
+    bool myIsInitializedFlag;
 
     // Indicates if the sound is currently muted
     bool myIsMuted;
 
-  private:
-    /**
-      The callback used by the SDL sound API.  It obtains samples
-      from the MediaSource as it needs them.
-    */
-    static void fillAudio(void* udata, uInt8* stream, Int32 len);
+    // DSP sample rate
+    uInt32 mySampleRate;
 
+    // Queue which holds samples from the media source before they are played
+    SampleQueue mySampleQueue;
+
+  private:
+    // Callback function invoked by the SDL Audio library when it needs data
+    static void callback(void* udata, uInt8* stream, int len);
 };
 #endif
+

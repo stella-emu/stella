@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.33 2002-11-10 19:43:16 stephena Exp $
+// $Id: mainSDL.cxx,v 1.34 2002-11-11 02:07:21 bwmott Exp $
 //============================================================================
 
 #include <fstream>
@@ -276,7 +276,8 @@ bool setupDisplay()
 
   // Set the window title and icon
   ostringstream name;
-  name << "Stella: \"" << theConsole->properties().get("Cartridge.Name") << "\"";
+  name << "Stella: \"" << theConsole->properties().get("Cartridge.Name") 
+      << "\"";
   SDL_WM_SetCaption(name.str().c_str(), "stella");
 
   // Create the screen
@@ -1446,13 +1447,14 @@ bool setupProperties(PropertiesSet& set)
   {
     if(access(settings->theAlternateProFile.c_str(), R_OK) == 0)
     {
-      set.load(settings->theAlternateProFile, &Console::defaultProperties(), false);
+      set.load(settings->theAlternateProFile, &Console::defaultProperties(),
+          false);
       return true;
     }
     else
     {
-      cerr << "ERROR: Couldn't find \"" << settings->theAlternateProFile <<
-              "\" properties file." << endl;
+      cerr << "ERROR: Couldn't find \"" << settings->theAlternateProFile
+          << "\" properties file." << endl;
       return false;
     }
   }
@@ -1652,10 +1654,6 @@ int main(int argc, char* argv[])
       theEvent, propertiesSet, sound.getSampleRate());
 #endif
 
-  // Let the sound object know about the MediaSource.
-  // The sound object takes care of getting samples from the MediaSource.  
-  sound.setMediaSource(theConsole->mediaSource());
-
   // Free the image since we don't need it any longer
   delete[] image;
 
@@ -1683,7 +1681,8 @@ int main(int argc, char* argv[])
   {
     // Set up accurate timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
+    uInt32 timePerFrame =
+        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
 
     // Set the base for the timers
     frameTime = 0;
@@ -1709,6 +1708,7 @@ int main(int argc, char* argv[])
       startTime = getTicks();
       theConsole->mediaSource().update();
       updateDisplay(theConsole->mediaSource());
+      sound.updateSound(theConsole->mediaSource());
       handleEvents();
 
       // Now, waste time if we need to so that we are at the desired frame rate
@@ -1728,7 +1728,8 @@ int main(int argc, char* argv[])
   {
     // Set up less accurate timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
+    uInt32 timePerFrame =
+        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
 
     // Set the base for the timers
     virtualTime = getTicks();
@@ -1749,6 +1750,10 @@ int main(int argc, char* argv[])
         theConsole->mediaSource().update();
       }
       updateDisplay(theConsole->mediaSource());
+      if(!thePauseIndicator)
+      {
+        sound.updateSound(theConsole->mediaSource());
+      }
       handleEvents();
 
       currentTime = getTicks();
