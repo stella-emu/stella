@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.7 2003-09-30 01:22:45 stephena Exp $
+// $Id: UserInterface.cxx,v 1.8 2003-09-30 18:46:12 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -666,7 +666,7 @@ UserInterface::RemapMenuItem UserInterface::ourRemapMenu[57] = {
 
 /**
   This array must be initialized in a specific order, matching
-  there initialization in StellaEvent::KeyCode.
+  their initialization in StellaEvent::KeyCode.
 
   The other option would be to create an array of structures
   (in StellaEvent.hxx) containing event/string pairs.
