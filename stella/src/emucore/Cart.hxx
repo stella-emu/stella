@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2003 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+// $Id: Cart.hxx,v 1.2 2003-02-17 04:59:54 bwmott Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -31,7 +31,7 @@ class System;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+  @version $Id: Cart.hxx,v 1.2 2003-02-17 04:59:54 bwmott Exp $
 */
 class Cartridge : public Device
 {
@@ -68,6 +68,11 @@ class Cartridge : public Device
       @return The "best guess" for the cartridge type
     */
     static string autodetectType(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true iff the image is probably a 3F bankswitching cartridge
+    */
+    static bool isProbably3F(const uInt8* image, uInt32 size);
 
   private:
     // Copy constructor isn't supported by cartridges so make it private

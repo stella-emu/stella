@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2003 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.5 2002-12-15 05:49:04 bwmott Exp $
+// $Id: Cart.cxx,v 1.6 2003-02-17 04:59:54 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -178,7 +178,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     }
     else if((size == 8192) || (memcmp(image, image + 8192, 8192) == 0))
     {
-      type = "F8";
+      type = isProbably3F(image, size) ? "3F" : "F8";
     }
     else if((size == 10495) || (size == 10240))
     {
@@ -199,18 +199,18 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
         if(image[i] != first)
         {
           // It's not a super cart (probably)
-          type = "F4";
+          type = isProbably3F(image, size) ? "3F" : "F4";
           break;
         }
       }
     }
     else if(size == 65536)
     {
-      type = "MB";
+      type = isProbably3F(image, size) ? "3F" : "MB";
     }
     else if(size == 131072)
     {
-      type = "MC";
+      type = isProbably3F(image, size) ? "3F" : "MC";
     }
     else
     {
@@ -223,7 +223,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
         if(image[i] != first)
         {
           // It's not a super cart (probably)
-          type = "F6";
+          type = isProbably3F(image, size) ? "3F" : "F6";
           break;
         }
       }
@@ -231,6 +231,21 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
 
   return type;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
+{
+  uInt32 count = 0;
+  for(uInt32 i = 0; i < size - 1; ++i)
+  {
+    if((image[i] == 0x85) && (image[i + 1] == 0x3F))
+    {
+      ++count;
+    }
+  }
+
+  return (count > 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
