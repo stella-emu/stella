@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.29 2002-12-01 02:14:01 stephena Exp $
+## $Id: makefile,v 1.30 2003-02-17 05:20:18 bwmott Exp $
 ##============================================================================
 
 ##============================================================================
@@ -199,7 +199,7 @@ dos:
           OPTIONS+="$(OPTS.DOS)" \
           LDFLAGS="" \
           LDLIBS="" \
-          OBJS="mainDOS.o PCJoys.o SndDOS.o dos_sb.o"
+          OBJS="mainDOS.o PCJoys.o SndDOS.o dos_sb.o vga.o"
 
 unix-x:
 	make stella.x11 \
@@ -450,6 +450,9 @@ SndDOS.o: $(UI)/dos/SndDOS.cxx
 
 dos_sb.o: $(UI)/dos/dos_sb.c
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/dos/dos_sb.c
+
+vga.o: $(UI)/dos/vga.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/dos/vga.cxx
 
 SoundALSA.o: $(UI)/sound/SoundALSA.cxx $(UI)/sound/SoundALSA.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundALSA.cxx
