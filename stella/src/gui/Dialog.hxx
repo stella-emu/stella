@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+// $Id: Dialog.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,7 +22,7 @@
 #ifndef DIALOG_HXX
 #define DIALOG_HXX
 
-#include <SDL.h>
+class OSystem;
 
 #include "Command.hxx"
 #include "Widget.hxx"
@@ -30,16 +30,21 @@
 
 #include "bspf.hxx"
 
+// Some "common" commands sent to handleCommand()
+enum {
+  kCloseCmd = 'clos'
+};
+
 /**
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 */
-class Dialog
+class Dialog : public GuiObject
 {
   public:
-    Dialog(uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+    Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
 
     virtual ~Dialog();
 
@@ -51,8 +56,8 @@ class Dialog
 
     virtual void drawDialog();
 
-    virtual void handleKeyDown(SDLKey key, SDLMod mod);
-    virtual void handleKeyUp(SDLKey key, SDLMod mod);
+    virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
+    virtual void handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers);
 
   protected:
     virtual void open();

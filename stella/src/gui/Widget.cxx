@@ -13,21 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+// $Id: Widget.cxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "Dialog.hxx"
+#include "Command.hxx"
 #include "GuiObject.hxx"
 #include "bspf.hxx"
 
 #include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget::Widget(GuiObject* boss, uInt32 x, uInt32 y, uInt32 w, uInt32 h)
-    : GuiObject(x, y, w, h),
+Widget::Widget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h)
+    : GuiObject(boss->instance(), x, y, w, h),
       _type(0),
       _boss(boss),
       _id(0),
@@ -48,12 +51,12 @@ Widget::~Widget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::draw()
 {
-  FrameBuffer* fb = _boss->instance().frameBuffer();
+  FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   if(!isVisible() || !_boss->isVisible())
     return;
 
-  int oldX = _x, oldY = _y;
+  Int32 oldX = _x, oldY = _y;
 
   // Account for our relative position in the dialog
   _x = getAbsX();
@@ -61,15 +64,15 @@ void Widget::draw()
 
   // Clear background (unless alpha blending is enabled)
   if(_flags & WIDGET_CLEARBG)
-    gui->fillRect(_x, _y, _w, _h, gui->_bgcolor);
+    fb.fillRect(_x, _y, _w, _h, fb.bgcolor);
 
   // Draw border
   if(_flags & WIDGET_BORDER) {
-    OverlayColor colorA = gui->_color;
-    OverlayColor colorB = gui->_shadowcolor;
+    OverlayColor colorA = fb.color;
+    OverlayColor colorB = fb.shadowcolor;
     if((_flags & WIDGET_INV_BORDER) == WIDGET_INV_BORDER)
-      SWAP(colorA, colorB);
-    gui->box(_x, _y, _w, _h, colorA, colorB);
+      ; //FIXME - add swap function SWAP(colorA, colorB);
+    fb.box(_x, _y, _w, _h, colorA, colorB);
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -88,7 +91,7 @@ void Widget::draw()
   }
 
   // Flag the draw area as dirty
-  gui->addDirtyRect(_x, _y, _w, _h);
+  fb.addDirtyRect(_x, _y, _w, _h);
 
   _x = oldX;
   _y = oldY;
@@ -103,7 +106,7 @@ void Widget::draw()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
+Widget* Widget::findWidgetInChain(Widget *w, Int32 x, Int32 y)
 {
   while(w)
   {
@@ -120,9 +123,10 @@ Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
+StaticTextWidget::StaticTextWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
                                    const string& text, TextAlignment align)
-    : Widget(boss, x, y, w, h), _align(align)
+    : Widget(boss, x, y, w, h),
+      _align(align)
 {
   _flags = WIDGET_ENABLED;
   _type = kStaticTextWidget;
@@ -130,7 +134,7 @@ StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setValue(int value)
+void StaticTextWidget::setValue(Int32 value)
 {
   char buf[256];
   sprintf(buf, "%d", value);
@@ -140,14 +144,14 @@ void StaticTextWidget::setValue(int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::drawWidget(bool hilite)
 {
-  NewGui *gui = &g_gui;
-  gui->drawString(_label, _x, _y, _w,
-                  isEnabled() ? gui->_textcolor : gui->_color, _align);
+  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  fb.drawString(_label, _x, _y, _w,
+                isEnabled() ? fb.textcolor : fb.color, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
-                           const string& label, uint32 cmd, uint8 hotkey)
+ButtonWidget::ButtonWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
+                           const string& label, Int32 cmd, uInt8 hotkey)
     : StaticTextWidget(boss, x, y, w, h, label, kTextAlignCenter),
       CommandSender(boss),
 	  _cmd(cmd),
@@ -158,7 +162,7 @@ ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void ButtonWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
     sendCommand(_cmd, 0);
@@ -167,15 +171,17 @@ void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::drawWidget(bool hilite)
 {
-  NewGui *gui = &g_gui;
-  gui->drawString(_label, _x, _y + (_h - kLineHeight)/2 + 1, _w,
-                  !isEnabled() ? gui->_color :
-                  hilite ? gui->_textcolorhi : gui->_textcolor, _align);
+  int kLineHeight = 10; //FIXME
+
+  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  fb.drawString(_label, _x, _y + (_h - kLineHeight)/2 + 1, _w,
+                !isEnabled() ? fb.color :
+                hilite ? fb.textcolorhi : fb.textcolor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
-static uint32 checked_img[8] =
+static uInt32 checked_img[8] =
 {
 	0x00000000,
 	0x01000010,
@@ -188,8 +194,8 @@ static uint32 checked_img[8] =
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheckboxWidget::CheckboxWidget(GuiObject *boss, int x, int y, int w, int h,
-                               const string& label, uint32 cmd, uint8 hotkey)
+CheckboxWidget::CheckboxWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
+                               const string& label, Int32 cmd, uInt8 hotkey)
     : ButtonWidget(boss, x, y, w, h, label, cmd, hotkey),
       _state(false)
 {
@@ -198,7 +204,7 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, int x, int y, int w, int h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void CheckboxWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
     toggleState();
@@ -219,26 +225,27 @@ void CheckboxWidget::setState(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::drawWidget(bool hilite)
 {
-  NewGui *gui = &g_gui;
+  FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   // Draw the box
-  gui->box(_x, _y, 14, 14, gui->_color, gui->_shadowcolor);
+  fb.box(_x, _y, 14, 14, fb.color, fb.shadowcolor);
 
   // If checked, draw cross inside the box
   if(_state)
-    gui->drawBitmap(checked_img, _x + 3, _y + 3,
-                    isEnabled() ? gui->_textcolor : gui->_color);
+; // FIXME - change bitmap to be a character in the font set, then draw that
+//    fb.drawBitmap(checked_img, _x + 3, _y + 3,
+//                 isEnabled() ? fb.textcolor : fb.color);
   else
-    gui->fillRect(_x + 2, _y + 2, 10, 10, gui->_bgcolor);
+    fb.fillRect(_x + 2, _y + 2, 10, 10, fb.bgcolor);
 
   // Finally draw the label
-  gui->drawString(_label, _x + 20, _y + 3, _w,
-                  isEnabled() ? gui->_textcolor : gui->_color);
+  fb.drawString(_label, _x + 20, _y + 3, _w,
+                isEnabled() ? fb.textcolor : fb.color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SliderWidget::SliderWidget(GuiObject *boss, int x, int y, int w, int h,
-                           const string& label, uint labelWidth, uint32 cmd, uint8 hotkey)
+SliderWidget::SliderWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
+                           const string& label, Int32 labelWidth, Int32 cmd, uInt8 hotkey)
   : ButtonWidget(boss, x, y, w, h, label, cmd, hotkey),
     _value(0),
     _oldValue(0),
@@ -252,13 +259,13 @@ SliderWidget::SliderWidget(GuiObject *boss, int x, int y, int w, int h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseMoved(int x, int y, int button)
+void SliderWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
 {
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
   if(isEnabled() && _isDragging && x >= (int)_labelWidth)
   {
-    int newValue = posToValue(x - _labelWidth);
+    Int32 newValue = posToValue(x - _labelWidth);
 
     if(newValue < _valueMin)
       newValue = _valueMin;
@@ -275,7 +282,7 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void SliderWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount)
 {
   if(isEnabled())
   {
@@ -285,7 +292,7 @@ void SliderWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void SliderWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
 {
   if(isEnabled() && _isDragging)
     sendCommand(_cmd, _value);
@@ -296,30 +303,30 @@ void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::drawWidget(bool hilite)
 {
-  NewGui *gui = &g_gui;
+  FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    gui->drawString(_label, _x, _y + 2, _labelWidth,
-                    isEnabled() ? gui->_textcolor : gui->_color, kTextAlignRight);
+    fb.drawString(_label, _x, _y + 2, _labelWidth,
+                  isEnabled() ? fb.textcolor : fb.color, kTextAlignRight);
 
   // Draw the box
-  gui->box(_x + _labelWidth, _y, _w - _labelWidth, _h, gui->_color, gui->_shadowcolor);
+  fb.box(_x + _labelWidth, _y, _w - _labelWidth, _h, fb.color, fb.shadowcolor);
 
   // Draw the 'bar'
-  gui->fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
-                !isEnabled() ? gui->_color :
-                hilite ? gui->_textcolorhi : gui->_textcolor);
+  fb.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
+              !isEnabled() ? fb.color :
+              hilite ? fb.textcolorhi : fb.textcolor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int SliderWidget::valueToPos(int value)
+Int32 SliderWidget::valueToPos(Int32 value)
 {
   return ((_w - _labelWidth - 4) * (value - _valueMin) / (_valueMax - _valueMin));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int SliderWidget::posToValue(int pos)
+Int32 SliderWidget::posToValue(Int32 pos)
 {
   return (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - 4) + _valueMin;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.18 2005-03-10 22:59:40 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.19 2005-03-11 23:36:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -218,7 +218,7 @@ void FrameBuffer::update()
           uInt32 y = myHeight - height - LINEOFFSET/2;
 
           // Draw the bounded box and text
-          drawBoundedBox(x, y+1, width, height-2);
+          box(x, y+1, width, height-2, 0, 0); // FIXME
           drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText);
           myMessageTime--;
 
@@ -320,7 +320,7 @@ inline void FrameBuffer::drawMainMenu()
 
   // Draw the bounded box and text, leaving a little room for arrows
   xpos = x + XBOXOFFSET;
-  drawBoundedBox(x-2, y-2, width+3, height+3);
+  box(x-2, y-2, width+3, height+3, 0, 0); //FIXME
   for(i = 0; i < myMainMenuItems; i++)
     drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourMainMenu[i].action);
 
@@ -341,7 +341,7 @@ inline void FrameBuffer::drawRemapMenu()
   y = (myHeight >> 1) - (height >> 1);
 
   // Draw the bounded box and text, leaving a little room for arrows
-  drawBoundedBox(x-2, y-2, width+3, height+3);
+  box(x-2, y-2, width+3, height+3, 0, 0); //FIXME
   for(Int32 i = myRemapMenuLowIndex; i < myRemapMenuHighIndex; i++)
   {
     ypos = LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET;
@@ -392,7 +392,7 @@ inline void FrameBuffer::drawInfoMenu()
 
   // Draw the bounded box and text
   xpos = x + XBOXOFFSET;
-  drawBoundedBox(x, y, width, height);
+  box(x, y, width, height, 0, 0); //FIXME
   for(i = 0; i < 9; i++)
     drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i]);
 }
@@ -1116,4 +1116,19 @@ void FrameBuffer::setWindowIcon()
   SDL_WM_SetIcon(surface, (unsigned char *) mask);
   SDL_FreeSurface(surface);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                      OverlayColor colorA, OverlayColor colorB)
+{
+  hLine(x + 1, y,     x + w - 2, colorA);
+  hLine(x,     y + 1, x + w - 1, colorA);
+  vLine(x,     y + 1, y + h - 2, colorA);
+  vLine(x + 1, y,     y + h - 1, colorA);
+
+  hLine(x + 1,     y + h - 2, x + w - 1, colorB);
+  hLine(x + 1,     y + h - 1, x + w - 2, colorB);
+  vLine(x + w - 1, y + 1,     y + h - 2, colorB);
+  vLine(x + w - 2, y + 1,     y + h - 1, colorB);
 }

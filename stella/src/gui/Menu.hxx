@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+// $Id: Menu.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 //============================================================================
 
 #ifndef MENU_HXX
@@ -22,6 +22,8 @@
 class Dialog;
 class OSystem;
 class OptionsDialog;
+
+#include <SDL.h>
 
 #include "Stack.hxx"
 #include "bspf.hxx"
@@ -35,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: Menu.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+  @version $Id: Menu.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 */
 class Menu
 {

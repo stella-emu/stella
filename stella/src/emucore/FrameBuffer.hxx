@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.17 2005-02-27 23:41:19 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.18 2005-03-11 23:36:30 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -30,16 +30,24 @@
 class Console;
 class OSystem;
 
+typedef uInt32 OverlayColor;
+
+// Text alignment modes for drawString()
+enum TextAlignment {
+	kTextAlignLeft,
+	kTextAlignCenter,
+	kTextAlignRight
+};
+
 /**
   This class encapsulates the MediaSource and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
   platform-specific video stuff.
 
-FIXME  This class also implements a MAME-like user interface where Stella settings
-  can be changed.
+  All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.17 2005-02-27 23:41:19 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.18 2005-03-11 23:36:30 stephena Exp $
 */
 class FrameBuffer
 {
@@ -216,6 +224,34 @@ FIXME
     */
     void setupPalette();
 
+    /**
+      Colors to use for the various GUI elements
+    */
+    OverlayColor color, shadowcolor;
+    OverlayColor bgcolor;
+    OverlayColor textcolor;
+    OverlayColor textcolorhi;
+
+    /**
+      This routine should be called to draw a rectangular box with sides
+      at the specified coordinates.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the box
+      @param h      The height of the box
+      @param colorA FIXME
+      @param colorB FIXME
+    */
+    void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+             OverlayColor colorA, OverlayColor colorB);
+
+    /**
+      Indicate that the specified area should be redrawn.
+      Currently this is a null-op.
+    */
+    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) {}
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
@@ -233,15 +269,6 @@ FIXME
     virtual bool createScreen() = 0;
 
     /**
-      This routine is called to map a given r,g,b triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
-
-    /**
       Switches between the filtering options in the video subsystem.
     */
     virtual void toggleFilter() = 0;
@@ -251,35 +278,6 @@ FIXME
       to the screen.
     */
     virtual void drawMediaSource() = 0;
-
-    /**
-      This routine should be called to draw a rectangular box with sides
-      at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param w   The width of the box
-      @param h   The height of the box
-    */
-    virtual void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
-
-    /**
-      This routine should be called to draw text at the specified coordinates.
-
-      @param x        The x coordinate
-      @param y        The y coordinate
-      @param message  The message text
-    */
-    virtual void drawText(uInt32 x, uInt32 y, const string& message) = 0;
-
-    /**
-      This routine should be called to draw character 'c' at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param c   The character to draw
-    */
-    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c) = 0;
 
     /**
       This routine is called before any drawing is done (per-frame).
@@ -298,6 +296,115 @@ FIXME
       @param data The actual pixel data (in bytes)
     */
     virtual void scanline(uInt32 row, uInt8* data) = 0;
+
+    /**
+      This routine is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
+
+    /**
+      This routine should be called to draw a horizontal line.
+
+      @param x     The first x coordinate
+      @param y     The y coordinate
+      @param x2    The second x coordinate
+      @param color The color of the line
+    */
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color) = 0;
+
+    /**
+      This routine should be called to draw a vertical line.
+
+      @param x     The x coordinate
+      @param y     The first y coordinate
+      @param y2    The second y coordinate
+      @param color The color of the line
+    */
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
+
+    /**
+      This routine should be called to draw a blended rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the box
+      @param h      The height of the box
+      @param color  FIXME
+      @param level  FIXME
+    */
+    virtual void blendRect(int x, int y, int w, int h,
+                           OverlayColor color, int level = 3) = 0;
+
+    /**
+      This routine should be called to draw a filled rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the area
+    */
+    virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                          OverlayColor color) = 0;
+
+    /**
+      This routine should be called to draw a framed rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the surrounding frame
+    */
+    virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           OverlayColor color) = 0;
+
+    /**
+      This routine should be called to draw the specified string.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the surrounding frame
+    */
+    virtual void drawString(const string& str, Int32 x, Int32 y, Int32 w,
+                            OverlayColor color, TextAlignment align = kTextAlignLeft,
+                            Int32 deltax = 0, bool useEllipsis = true) = 0;
+
+/* FIXME
+
+void drawChar(byte c, int x, int y, OverlayColor color, const Graphics::Font *font = 0);
+
+int getStringWidth(const String &str);
+int getCharWidth(byte c);
+
+void drawBitmap(uint32 *bitmap, int x, int y, OverlayColor color, int h = 8);
+*/
+
+
+
+    /**
+      This routine should be called to draw text at the specified coordinates.
+
+      @param x        The x coordinate
+      @param y        The y coordinate
+      @param message  The message text
+    */
+    virtual void drawText(uInt32 x, uInt32 y, const string& message) = 0;
+
+    /**
+      This routine should be called to draw character 'c' at the specified coordinates.
+
+      @param x   The x coordinate
+      @param y   The y coordinate
+      @param c   The character to draw
+    */
+    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c) = 0;
 
 #if 0
 FIXME

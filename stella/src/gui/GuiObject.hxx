@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+// $Id: GuiObject.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #ifndef GUI_OBJECT_HXX
 #define GUI_OBJECT_HXX
 
+class OSystem;
 class Widget;
 
 #include "Command.hxx"
@@ -31,19 +32,22 @@ class Widget;
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
   friend class Widget;
 
   public:
-    GuiObject(int x, int y, int w, int h)
-        : _x(x),
+    GuiObject(OSystem* osystem, int x, int y, int w, int h)
+        : myOSystem(osystem),
+          _x(x),
           _y(y),
           _w(w),
           _h(h),
           _firstWidget(0) { }
+
+    OSystem* instance() { return myOSystem; }
 
     virtual Int16  getAbsX() const     { return _x; }
     virtual Int16  getAbsY() const     { return _y; }
@@ -56,6 +60,8 @@ class GuiObject : public CommandReceiver
     virtual void draw() = 0;
 
   protected:
+    OSystem* myOSystem;
+
     Int16   _x, _y;
     uInt16  _w, _h;
 

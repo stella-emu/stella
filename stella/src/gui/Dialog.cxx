@@ -13,18 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+// $Id: Dialog.cxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include <SDL.h>
 #include <ctype.h>
 
-#include "stdafx.h"
-#include "newgui.h"
-#include "dialog.h"
-#include "widget.h"
+#include "OSystem.hxx"
+#include "FrameBuffer.hxx"
+#include "Menu.hxx"
+#include "Dialog.hxx"
+#include "Widget.hxx"
 
 /*
  * TODO list
@@ -35,8 +37,8 @@
  * ...
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::Dialog(uInt16 x, uInt16 y, uInt16 w, uInt16 h)
-    : GuiObject(x, y, w, h),
+Dialog::Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+    : GuiObject(instance, x, y, w, h),
       _mouseWidget(0),
       _focusedWidget(0),
       _visible(false)
@@ -51,13 +53,13 @@ Dialog::~Dialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Dialog::runModal()
+int Dialog::runModal() // FIXME
 {
   // Open up
   open();
 
   // Start processing events
-  g_gui.runLoop();
+//  g_gui.runLoop();
 
   // Return the result code
   return _result;
@@ -70,7 +72,7 @@ void Dialog::open()
 
   _result = 0;
   _visible = true;
-  g_gui.openDialog(this);
+  instance()->menu().addDialog(this);
 
   // Search for the first objects that wantsFocus() (if any) and give it the focus
   while(w && !w->wantsFocus())
@@ -87,7 +89,7 @@ void Dialog::open()
 void Dialog::close()
 {
   _visible = false;
-  g_gui.closeTopDialog();
+  instance()->menu().removeDialog();
 
   if (_mouseWidget) {
     _mouseWidget->handleMouseLeft(0);
@@ -110,7 +112,7 @@ void Dialog::releaseFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::draw()
 {
-  g_gui._needRedraw = true;
+  instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,8 +121,10 @@ void Dialog::drawDialog()
   if(!isVisible())
     return;
 
-  g_gui.blendRect(_x, _y, _w, _h, g_gui._bgcolor);
-  g_gui.box(_x, _y, _w, _h, g_gui._color, g_gui._shadowcolor);
+  FrameBuffer& fb = instance()->frameBuffer();
+
+  fb.blendRect(_x, _y, _w, _h, fb.bgcolor);
+  fb.box(_x, _y, _w, _h, fb.color, fb.shadowcolor);
 
   // Draw all children
   Widget* w = _firstWidget;
@@ -131,7 +135,7 @@ void Dialog::drawDialog()
   }
 
   // Flag the draw area as dirty
-  g_gui.addDirtyRect(_x, _y, _w, _h);
+  fb.addDirtyRect(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -201,7 +205,7 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyDown(uint16 ascii, int keycode, int modifiers)
+void Dialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 {
   if(_focusedWidget)
     if (_focusedWidget->handleKeyDown(ascii, keycode, modifiers))
@@ -214,7 +218,7 @@ void Dialog::handleKeyDown(uint16 ascii, int keycode, int modifiers)
     ascii = toupper(ascii);
     while(w)
     {
-      if(w->_type == kButtonWidget && ascii == toupper(((ButtonWidget *)w)->_hotkey))
+      if(0)//FIXME - don't let it access a protected variable w->_type == kButtonWidget && ascii == toupper(((ButtonWidget *)w)->_hotkey))
       {
         // The hotkey for widget w was pressed. We fake a mouse click into the
         // button by invoking the appropriate methods.
@@ -236,7 +240,7 @@ void Dialog::handleKeyDown(uint16 ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyUp(uint16 ascii, int keycode, int modifiers)
+void Dialog::handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers)
 {
   // Focused widget receives keyup events
   if(_focusedWidget)
@@ -298,7 +302,7 @@ void Dialog::handleTickle()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleCommand(CommandSender* sender, uint32 cmd, uint32 data)
+void Dialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
 {
   switch(cmd)
   {
@@ -319,8 +323,8 @@ Widget* Dialog::findWidget(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget* Dialog::addButton(int x, int y, const string &label,
-                                uint32 cmd, char hotkey)
+ButtonWidget* Dialog::addButton(Int32 x, Int32 y, const string& label,
+                                uInt32 cmd, char hotkey)
 {
   return new ButtonWidget(this, x, y, kButtonWidth, 16, label, cmd, hotkey);
 }

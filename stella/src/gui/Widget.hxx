@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+// $Id: Widget.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,46 +24,64 @@
 
 class Dialog;
 
+#include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "bspf.hxx"
 
 enum {
-	WIDGET_ENABLED		= 1 << 0,
-	WIDGET_INVISIBLE	= 1 << 1,
-	WIDGET_HILITED		= 1 << 2,
-	WIDGET_BORDER		= 1 << 3,
-	WIDGET_INV_BORDER	= 1 << 4,
-	WIDGET_CLEARBG		= 1 << 5,
-	WIDGET_WANT_TICKLE	= 1 << 7,
-	WIDGET_TRACK_MOUSE	= 1 << 8,
-	WIDGET_RETAIN_FOCUS	= 1 << 9
+  WIDGET_ENABLED      = 1 << 0,
+  WIDGET_INVISIBLE    = 1 << 1,
+  WIDGET_HILITED      = 1 << 2,
+  WIDGET_BORDER       = 1 << 3,
+  WIDGET_INV_BORDER   = 1 << 4,
+  WIDGET_CLEARBG      = 1 << 5,
+  WIDGET_WANT_TICKLE  = 1 << 7,
+  WIDGET_TRACK_MOUSE  = 1 << 8,
+  WIDGET_RETAIN_FOCUS = 1 << 9
+};
+
+enum {
+  kStaticTextWidget ='TEXT',
+  kEditTextWidget   = 'EDIT',
+  kButtonWidget     = 'BTTN',
+  kCheckboxWidget   = 'CHKB',
+  kSliderWidget     = 'SLDE',
+  kListWidget       = 'LIST',
+  kScrollBarWidget  = 'SCRB',
+  kPopUpWidget      = 'POPU',
+  kTabWidget        = 'TABW'
+};
+
+enum {
+  kButtonWidth  = 72,
+  kButtonHeight = 16
 };
 
 /**
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+  @version $Id: Widget.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
 */
 class Widget : public GuiObject
 {
   friend class Dialog;
 
   public:
-    Widget(GuiObject* boss, uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+    Widget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h);
     virtual ~Widget();
 
     virtual Int16 getAbsX() const  { return _x + _boss->getChildX(); }
     virtual Int16 getAbsY() const  { return _y + _boss->getChildY(); }
 
-    virtual void handleMouseDown(uInt32 x, uInt32 y, uInt32 button, uInt32 clickCount) {}
-    virtual void handleMouseUp(uInt32 x, uInt32 y, uInt32 button, uInt32 clickCount) {}
-    virtual void handleMouseEntered(uInt32 button) {}
-    virtual void handleMouseLeft(uInt32 button) {}
-    virtual void handleMouseMoved(uInt32 x, uInt32 y, uInt32 button) {}
-    virtual void handleMouseWheel(uInt32 x, uInt32 y, uInt32 direction) {}
-    virtual bool handleKeyDown(uInt16 ascii, int keycode, int modifiers) { return false; }
-    virtual bool handleKeyUp(uInt16 ascii, int keycode, int modifiers) { return false; }
+    virtual void handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount) {}
+    virtual void handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount) {}
+    virtual void handleMouseEntered(Int32 button) {}
+    virtual void handleMouseLeft(Int32 button) {}
+    virtual void handleMouseMoved(Int32 x, Int32 y, Int32 button) {}
+    virtual void handleMouseWheel(Int32 x, Int32 y, Int32 direction) {}
+    virtual bool handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers) { return false; }
+    virtual bool handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers) { return false; }
     virtual void handleTickle() {}
 
     void draw();
@@ -71,9 +89,9 @@ class Widget : public GuiObject
     void lostFocus() { _hasFocus = false; lostFocusWidget(); }
     virtual bool wantsFocus() { return false; };
 
-    void setFlags(int flags)    { _flags |= flags; }
-    void clearFlags(int flags)  { _flags &= ~flags; }
-    uInt32 getFlags() const     { return _flags; }
+    void setFlags(Int32 flags)    { _flags |= flags; }
+    void clearFlags(Int32 flags)  { _flags &= ~flags; }
+    Int32 getFlags() const     { return _flags; }
 
     void setEnabled(bool e)     { if (e) setFlags(WIDGET_ENABLED); else clearFlags(WIDGET_ENABLED); }
     bool isEnabled() const      { return _flags & WIDGET_ENABLED; }
@@ -85,16 +103,16 @@ class Widget : public GuiObject
     virtual void receivedFocusWidget() {}
     virtual void lostFocusWidget() {}
 
-    virtual Widget* findWidget(uInt32 x, uInt32 y) { return this; }
+    virtual Widget* findWidget(Int32 x, Int32 y) { return this; }
 
     void releaseFocus() { assert(_boss); _boss->releaseFocus(); }
 
     // By default, delegate unhandled commands to the boss
-    void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+    void handleCommand(CommandSender* sender, Int32 cmd, Int32 data)
          { assert(_boss); _boss->handleCommand(sender, cmd, data); }
 
   protected:
-    uInt32     _type;
+    Int32      _type;
     GuiObject* _boss;
     Widget*    _next;
     uInt16     _id;
@@ -102,7 +120,7 @@ class Widget : public GuiObject
     bool       _hasFocus;
 
   public:
-    static Widget* findWidgetInChain(Widget* start, uInt32 x, uInt32 y);
+    static Widget* findWidgetInChain(Widget* start, Int32 x, Int32 y);
 };
 
 
@@ -110,9 +128,10 @@ class Widget : public GuiObject
 class StaticTextWidget : public Widget
 {
   public:
-    StaticTextWidget(GuiObject* boss, uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                     const string& text);
-    void setValue(uInt32 value);
+    StaticTextWidget(GuiObject* boss,
+                     Int32 x, Int32 y, Int32 w, Int32 h,
+                     const string& text, TextAlignment align);
+    void setValue(Int32 value);
     void setLabel(const string& label)  { _label = label; }
     const string& getLabel() const      { return _label; }
 
@@ -121,22 +140,24 @@ class StaticTextWidget : public Widget
 
   protected:
     string _label;
+    TextAlignment _align;
 };
 
 
 /* ButtonWidget */
-class ButtonWidget : public StaticTextWidget
+class ButtonWidget : public StaticTextWidget, public CommandSender
 {
   public:
-    ButtonWidget(GuiObject* boss, uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                 const string& label, uInt32 cmd = 0, uInt8 hotkey = 0);
+    ButtonWidget(GuiObject* boss,
+                 Int32 x, Int32 y, Int32 w, Int32 h,
+                 const string& label, Int32 cmd = 0, uInt8 hotkey = 0);
 
-    void setCmd(uInt32 cmd)  { _cmd = cmd; }
-    uInt32 getCmd() const    { return _cmd; }
+    void setCmd(Int32 cmd)  { _cmd = cmd; }
+    Int32 getCmd() const    { return _cmd; }
 
-    void handleMouseUp(uInt32 x, uInt32 y, uInt32 button, uInt32 clickCount);
-    void handleMouseEntered(uInt32 button) { setFlags(WIDGET_HILITED); draw(); }
-    void handleMouseLeft(uInt32 button)    { clearFlags(WIDGET_HILITED); draw(); }
+    void handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount);
+    void handleMouseEntered(Int32 button) { setFlags(WIDGET_HILITED); draw(); }
+    void handleMouseLeft(Int32 button)    { clearFlags(WIDGET_HILITED); draw(); }
 
   protected:
     void drawWidget(bool hilite);
@@ -151,12 +172,12 @@ class ButtonWidget : public StaticTextWidget
 class CheckboxWidget : public ButtonWidget
 {
   public:
-    CheckboxWidget(GuiObject* boss, uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                   const string& label, uInt32 cmd = 0, uInt8 hotkey = 0);
+    CheckboxWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h,
+                   const string& label, Int32 cmd = 0, uInt8 hotkey = 0);
 
-    void handleMouseUp(uInt32 x, uInt32 y, uInt32 button, uInt32 clickCount);
-    virtual void handleMouseEntered(uInt32 button)	{}
-    virtual void handleMouseLeft(uInt32 button)	{}
+    void handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount);
+    virtual void handleMouseEntered(Int32 button)	{}
+    virtual void handleMouseLeft(Int32 button)	{}
 
     void setState(bool state);
     void toggleState()     { setState(!_state); }
@@ -174,32 +195,32 @@ class CheckboxWidget : public ButtonWidget
 class SliderWidget : public ButtonWidget
 {
   public:
-    SliderWidget(GuiObject *boss, int x, int y, int w, int h, const string& label = "",
-                 uInt32 labelWidth = 0, uInt32 cmd = 0, uInt8 hotkey = 0);
+    SliderWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h, const string& label = "",
+                 Int32 labelWidth = 0, Int32 cmd = 0, uInt8 hotkey = 0);
 
-    void setValue(uInt32 value) { _value = value; }
-    uInt32 getValue() const     { return _value; }
+    void setValue(Int32 value) { _value = value; }
+    Int32 getValue() const     { return _value; }
 
-    void   setMinValue(uInt32 value) { _valueMin = value; }
-    uInt32 getMinValue() const       { return _valueMin; }
-    void   setMaxValue(uInt32 value) { _valueMax = value; }
-    uInt32 getMaxValue() const       { return _valueMax; }
+    void   setMinValue(Int32 value) { _valueMin = value; }
+    Int32 getMinValue() const       { return _valueMin; }
+    void   setMaxValue(Int32 value) { _valueMax = value; }
+    Int32 getMaxValue() const       { return _valueMax; }
 
-    void handleMouseMoved(uInt32 x, uInt32 y, uInt32 button);
-    void handleMouseDown(uInt32 x, uInt32 y, uInt32 button, uInt32 clickCount);
-    void handleMouseUp(uInt32 x, uInt32 y, uInt32 button, uInt32 clickCount);
+    void handleMouseMoved(Int32 x, Int32 y, Int32 button);
+    void handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount);
+    void handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount);
 
   protected:
     void drawWidget(bool hilite);
 
-    uInt32 valueToPos(uInt32 value);
-    uInt32 posToValue(uInt32 pos);
+    Int32 valueToPos(Int32 value);
+    Int32 posToValue(Int32 pos);
 
   protected:
-    uInt32 _value, _oldValue;
-    uInt32 _valueMin, _valueMax;
+    Int32 _value, _oldValue;
+    Int32 _valueMin, _valueMax;
     bool   _isDragging;
-    uInt32 _labelWidth;
+    Int32 _labelWidth;
 };
 
 #endif
