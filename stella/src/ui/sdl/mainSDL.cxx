@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.60 2003-11-19 15:57:10 stephena Exp $
+// $Id: mainSDL.cxx,v 1.61 2003-11-23 20:54:59 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -516,6 +516,10 @@ void handleEvents()
     else if(event.type == SDL_QUIT)
     {
       theConsole->eventHandler().sendEvent(Event::Quit, 1);
+    }
+    else if(event.type == SDL_VIDEOEXPOSE)
+    {
+      theDisplay->refresh();
     }
 
 #ifdef HAVE_JOYSTICK

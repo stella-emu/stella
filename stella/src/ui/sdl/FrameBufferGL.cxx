@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.6 2003-11-22 20:13:11 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.7 2003-11-23 20:54:59 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -313,6 +313,7 @@ void FrameBufferGL::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   glRecti(x, y, x+w, y+h);
 
   // Now draw the outer edges
+  glLineWidth(theZoomLevel/2);
   glColor4f(0.8, 0.8, 0.8, 1.0);
   glBegin(GL_LINE_LOOP);
     glVertex2i(x,   y  );  // Top Left

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.5 2003-11-17 17:43:39 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.6 2003-11-23 20:54:59 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -34,7 +34,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.5 2003-11-17 17:43:39 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.6 2003-11-23 20:54:59 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -91,6 +91,12 @@ class FrameBufferSDL : public FrameBuffer
       Only works in X11 for now.  If not running under X11, always return 4.
     */
     uInt32 maxWindowSizeForScreen();
+
+    /**
+      Indicates that a redraw should be done, since the window contents
+      are dirty.
+    */
+    void refresh() { theRedrawEntireFrameIndicator = true; }
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx
