@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.10 2004-04-26 17:27:31 stephena Exp $
+// $Id: Sound.hxx,v 1.11 2004-06-13 04:54:25 bwmott Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -32,16 +32,17 @@ class System;
   It has almost no functionality, but is useful if one wishes
   to compile Stella with no sound support whatsoever.
 
-  @author  Stephen Anthony
-  @version $Id: Sound.hxx,v 1.10 2004-04-26 17:27:31 stephena Exp $
+  @author Stephen Anthony and Bradford W. Mott
+  @version $Id: Sound.hxx,v 1.11 2004-06-13 04:54:25 bwmott Exp $
 */
 class Sound
 {
   public:
     /**
-      Create a new sound object
+      Create a new sound object.  The init method must be invoked before
+      using the object.
     */
-    Sound(uInt32 fragsize = 0, uInt32 queuesize = 0);
+    Sound(uInt32 fragsize = 512);
  
     /**
       Destructor
@@ -50,6 +51,14 @@ class Sound
 
   public: 
     /**
+      The system cycle counter is being adjusting by the specified amount.  Any
+      members using the system cycle counter should be adjusted as needed.
+
+      @param amount The amount the cycle counter is being adjusted by
+    */
+    virtual void adjustCycleCounter(Int32 amount);
+
+    /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
 
@@ -57,7 +66,7 @@ class Sound
       @param mediasrc  The mediasource
       @param system    The system
     */
-    void init(Console* console, MediaSource* mediasrc, System* system);
+    virtual void init(Console* console, MediaSource* mediasrc, System* system);
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -67,60 +76,51 @@ class Sound
     virtual bool isSuccessfullyInitialized() const;
 
     /**
-      Sets the volume of the sound device to the specified level.  The
-      volume is given as a percentage from 0 to 100.  A -1 indicates
-      that the volume shouldn't be changed at all.
+      Set the mute state of the sound object.  While muted no sound is played.
 
-      @param percent The new volume percentage level for the sound device
+      @param state Mutes sound if true, unmute if false
     */
-    virtual void setVolume(Int32 percent);
+    virtual void mute(bool state);
 
     /**
-      Update the sound device with audio samples.
+      Reset the sound device.
     */
-    virtual void update();
+    virtual void reset();
 
     /**
       Sets the sound register to a given value.
 
       @param addr  The register address
       @param value The value to save into the register
+      @param cycle The system cycle at which the register is being updated
     */
-    virtual void set(uInt16 addr, uInt8 value);
+    virtual void set(uInt16 addr, uInt8 value, Int32 cycle);
 
     /**
-      Saves the current state of this device to the given Serializer.
+      Sets the volume of the sound device to the specified level.  The
+      volume is given as a percentage from 0 to 100.  Values outside
+      this range indicate that the volume shouldn't be changed at all.
 
-      @param out  The serializer device to save to.
-      @return     The result of the save.  True on success, false on failure.
+      @param percent The new volume percentage level for the sound device
     */
-    virtual bool save(Serializer& out);
+    virtual void setVolume(Int32 percent);
 
+public:
     /**
       Loads the current state of this device from the given Deserializer.
 
-      @param in  The deserializer device to load from.
-      @return    The result of the load.  True on success, false on failure.
+      @param in The deserializer device to load from.
+      @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
 
     /**
-      Sets the pause status.  While pause is selected, update()
-      should not play any sound.
+      Saves the current state of this device to the given Serializer.
 
-      @param status  Toggle pause based on status
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
     */
-    void pause(bool status) { myPauseStatus = status; }
-
-    /**
-      Resets the sound device.
-    */
-    void reset() { myLastSoundUpdateCycle = 0; }
-
-    /**
-      Resets the sound device.
-    */
-    void setCycles(Int32 cycles) { myLastSoundUpdateCycle += cycles; }
+    virtual bool save(Serializer& out);
 
   protected:
     // The Console for the system
@@ -132,11 +132,8 @@ class Sound
     // The System for the system
     System* mySystem;
 
-    // The pause status
-    bool myPauseStatus;
-
-    // Indicates the CPU cycle when a TIA sound register was last updated
-    Int32 myLastSoundUpdateCycle;
+    // Indicates the cycle when a sound register was last set
+    Int32 myLastRegisterSetCycle;
 };
 
 #endif

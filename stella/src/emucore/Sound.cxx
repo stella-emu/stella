@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.11 2004-04-27 00:50:51 stephena Exp $
+// $Id: Sound.cxx,v 1.12 2004-06-13 04:54:25 bwmott Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -22,9 +22,8 @@
 #include "Sound.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sound::Sound(uInt32 fragsize, uInt32 queuesize)
-  : myPauseStatus(false),
-    myLastSoundUpdateCycle(0)
+Sound::Sound(uInt32 fragsize)
+    : myLastRegisterSetCycle(0)
 {
 }
 
@@ -34,11 +33,23 @@ Sound::~Sound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::adjustCycleCounter(Int32 amount)
+{
+  myLastRegisterSetCycle += amount;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::mute(bool state)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sound::init(Console* console, MediaSource* mediasrc, System* system)
 {
-  myConsole     = console;
+  myConsole = console;
   myMediaSource = mediasrc;
-  mySystem      = system;
+  mySystem = system;
+  myLastRegisterSetCycle = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,36 +59,19 @@ bool Sound::isSuccessfullyInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::reset()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::set(uInt16 addr, uInt8 value, Int32 cycle)
+{
+  myLastRegisterSetCycle = cycle;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sound::setVolume(Int32 volume)
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::update()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::set(uInt16 addr, uInt8 value)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Sound::save(Serializer& out)
-{
-  out.putString("TIASound");
-
-  uInt8 reg = 0;
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
-
-  out.putLong(myLastSoundUpdateCycle);
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,7 +89,26 @@ bool Sound::load(Deserializer& in)
   reg = (uInt8) in.getLong();
   reg = (uInt8) in.getLong();
 
-  myLastSoundUpdateCycle = (Int32) in.getLong();
+  myLastRegisterSetCycle = (Int32)in.getLong();
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Sound::save(Serializer& out)
+{
+  out.putString("TIASound");
+
+  uInt8 reg = 0;
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+
+  out.putLong(myLastRegisterSetCycle);
+
+  return true;
+}
+
