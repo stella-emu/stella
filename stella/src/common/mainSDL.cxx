@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.14 2004-07-28 23:54:38 stephena Exp $
+// $Id: mainSDL.cxx,v 1.15 2004-08-06 01:51:15 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -52,7 +52,7 @@
 
 #if defined(UNIX)
   #include "SettingsUNIX.hxx"
-#elif defined(WIN32) 
+#elif defined(WIN32)
   #include "SettingsWin32.hxx"
 #else
   #error Unsupported platform!
@@ -72,9 +72,9 @@ static void ShowInfo(const string& msg);
     StellaEvent::JSTICK_3, StellaEvent::JSTICK_5, StellaEvent::JSTICK_5
   };
   StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
-    StellaEvent::JBUTTON_0,  StellaEvent::JBUTTON_1,  StellaEvent::JBUTTON_2, 
-    StellaEvent::JBUTTON_3,  StellaEvent::JBUTTON_4,  StellaEvent::JBUTTON_5, 
-    StellaEvent::JBUTTON_6,  StellaEvent::JBUTTON_7,  StellaEvent::JBUTTON_8, 
+    StellaEvent::JBUTTON_0,  StellaEvent::JBUTTON_1,  StellaEvent::JBUTTON_2,
+    StellaEvent::JBUTTON_3,  StellaEvent::JBUTTON_4,  StellaEvent::JBUTTON_5,
+    StellaEvent::JBUTTON_6,  StellaEvent::JBUTTON_7,  StellaEvent::JBUTTON_8,
     StellaEvent::JBUTTON_9,  StellaEvent::JBUTTON_10, StellaEvent::JBUTTON_11,
     StellaEvent::JBUTTON_12, StellaEvent::JBUTTON_13, StellaEvent::JBUTTON_14,
     StellaEvent::JBUTTON_15, StellaEvent::JBUTTON_16, StellaEvent::JBUTTON_17,
@@ -96,7 +96,7 @@ static void ShowInfo(const string& msg);
     Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance,
     Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance,
     Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance,
-    Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance 
+    Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance
   };
   static Event::Type SA_DrivingValue[2] = {
     Event::DrivingZeroValue, Event::DrivingOneValue
@@ -416,6 +416,7 @@ void HandleEvents()
             case SDLK_f:
               if(theUseOpenGLFlag)
                 ((FrameBufferGL*)theDisplay)->toggleFilter();
+              break;
 #endif
 #ifdef DEVELOPER_SUPPORT
             case SDLK_END:       // Alt-End increases XStart
@@ -535,7 +536,7 @@ void HandleEvents()
           mouseX = 0;
         else if(mouseX > width)
           mouseX = width;
-  
+
         Int32 resistance = (Int32)(1000000.0 * (width - mouseX) / width);
 
         theConsole->eventHandler().sendEvent(Paddle_Resistance[thePaddleMode], resistance);
@@ -686,7 +687,7 @@ void HandleEvents()
             // Send axis events for the paddles
             resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
             theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
-		  
+
             // Send events for the driving controllers
             if(axis == 1)
             {
@@ -696,7 +697,7 @@ void HandleEvents()
                 theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],1);
               else if(value >= 16384-4096)
                 theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],0);
-              else 
+              else
                 theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],3);
             }
             break;
@@ -776,7 +777,7 @@ int main(int argc, char* argv[])
 {
 #if defined(UNIX)
   theSettings = new SettingsUNIX();
-#elif defined(WIN32) 
+#elif defined(WIN32)
   theSettings = new SettingsWin32();
 #else
   #error Unsupported platform!
