@@ -36,14 +36,13 @@ To rebuild the SDL.dll file, follow the instructions below:
 
 Notes:
 
-1)  Credit for the bulk of the patchfile goes to Glenn Maynard.
+1)  Credit for this patchfile goes to Eckhard Stolberg.
 
 2)  Future versions of SDL will hopefully have this patch integrated.
 
 3)  The included SDL.dll file has not been extensively tested.  It is
     believed to be compatible with the most common input devices,
     but support may not be present for buttons on esoteric devices
-    (hats, sliders, etc).  If the included version of SDL.dll doesn't
-    support your particular input device (and you have no need for
-    Stelladaptor support), you can use the standard SDL.dll from
-    the main SDL website.
+    (hats, sliders, etc).  If for any reason the included version of SDL.dll
+    doesn't work for you (and you have no need for Stelladaptor support),
+    you can use the standard SDL.dll from the main SDL website.
