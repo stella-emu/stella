@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.5 2002-11-10 19:05:57 stephena Exp $
+// $Id: Console.hxx,v 1.6 2002-11-11 02:46:34 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,7 +36,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.5 2002-11-10 19:05:57 stephena Exp $
+  @version $Id: Console.hxx,v 1.6 2002-11-11 02:46:34 stephena Exp $
 */
 class Console
 {
@@ -134,7 +134,6 @@ class Console
     */
     static const Properties& defaultProperties();
 
-#ifdef DEVELOPER_SUPPORT
   public:
     /**
       Toggle between NTSC and PAL mode.  The GUI's may need to reload their palette.
@@ -177,9 +176,10 @@ class Console
       Save a copy of the current properties after any changes.
 
       @param filename Filename to save the properties into.
+      @param merge Whether or not to merge the changes into the
+                   main properties file.
     */
-    void saveProperties(string& filename);
-#endif
+    void saveProperties(string& filename, bool merge = false);
 
   private:
     // Pointers to the left and right controllers
@@ -199,6 +199,9 @@ class Console
  
     // Pointer to the 6502 based system being emulated 
     System* mySystem;
+
+    // Reference to the PropertiesSet object
+    PropertiesSet& myPropSet;
 
   private:
     // Default properties to use for properties objects

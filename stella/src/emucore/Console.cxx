@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.6 2002-11-10 19:05:57 stephena Exp $
+// $Id: Console.cxx,v 1.7 2002-11-11 02:46:34 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -46,7 +46,8 @@
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
     const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate,
     const Properties* userDefinedProperties)
-    : myEvent(event)
+    : myEvent(event),
+      myPropSet(propertiesSet)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -58,7 +59,7 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   string md5 = MD5(image, size);
 
   // Search for the properties based on MD5
-  propertiesSet.getMD5(md5, myProperties);
+  myPropSet.getMD5(md5, myProperties);
 
   // Merge any user-defined properties
   if(userDefinedProperties != 0)
@@ -149,7 +150,8 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const Console& console)
-    : myEvent(console.myEvent)
+    : myEvent(console.myEvent),
+      myPropSet(console.myPropSet)
 {
   // TODO: Write this method
   assert(false);
@@ -214,8 +216,6 @@ const Properties& Console::defaultProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Properties Console::ourDefaultProperties;
 
-
-#ifdef DEVELOPER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
@@ -399,25 +399,39 @@ void Console::changeHeight(const uInt32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::saveProperties(string& filename)
+void Console::saveProperties(string& filename, bool merge)
 {
   string message;
 
-  // Replace all spaces in filename with underscores
-  replace(filename.begin(), filename.end(), ' ', '_');
-  ofstream out(filename.c_str(), ios::out);
-
-  if(out && out.is_open())
+  // Merge the current properties into the PropertiesSet file
+  if(merge)
   {
-    myProperties.save(out);
-    out.close();
-    message = "Properties saved";
-    myMediaSource->showMessage(message, 120);
+    if(myPropSet.merge(myProperties, filename))
+    {
+      message = "Properties merged";
+      myMediaSource->showMessage(message, 120);
+    }
+    else
+    {
+      message = "Properties not merged";
+      myMediaSource->showMessage(message, 120);
+    }
   }
-  else
+  else  // Save to the specified file directly
   {
-    message = "Properties not saved";
-    myMediaSource->showMessage(message, 120);
+    ofstream out(filename.c_str(), ios::out);
+
+    if(out && out.is_open())
+    {
+      myProperties.save(out);
+      out.close();
+      message = "Properties saved";
+      myMediaSource->showMessage(message, 120);
+    }
+    else
+    {
+      message = "Properties not saved";
+      myMediaSource->showMessage(message, 120);
+    }
   }
 }
-#endif
