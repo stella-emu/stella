@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
+// $Id: Console.hxx,v 1.3 2002-10-09 04:38:11 bwmott Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,7 +36,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
+  @version $Id: Console.hxx,v 1.3 2002-10-09 04:38:11 bwmott Exp $
 */
 class Console
 {
@@ -50,10 +50,10 @@ class Console
       @param filename The name of the file that contained the ROM image
       @param event The event object to use
       @param profiles The game profiles object to use
-      @param sound The sound object to use
+      @param sampleRate The rate to create audio samples at
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
-        const Event& event, PropertiesSet& propertiesSet, Sound& sound);
+        const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate);
 
     /**
       Create a new console object by copying another one

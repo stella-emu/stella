@@ -13,29 +13,28 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.15 2002-08-17 15:29:28 stephena Exp $
+// $Id: TIA.cxx,v 1.16 2002-10-09 04:38:11 bwmott Exp $
 //============================================================================
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
 
 #include "Console.hxx"
 #include "Control.hxx"
 #include "M6502.hxx"
-#include "Sound.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "TIASound.h"
 
 #define HBLANK 68
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(const Console& console, Sound& sound)
+TIA::TIA(const Console& console, uInt32 sampleRate)
     : myConsole(console),
-      mySound(sound),
       myPauseState(false),
       myMessageTime(0),
       myMessageText(""),
@@ -44,8 +43,15 @@ TIA::TIA(const Console& console, Sound& sound)
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
       myCOLUP0(myColor[2]),
-      myCOLUP1(myColor[3])
+      myCOLUP1(myColor[3]),
+      mySampleQueue(sampleRate),
+      mySampleRate(sampleRate)
 {
+  if(mySampleRate != 0)
+  {
+    Tia_sound_init(31400, mySampleRate);
+  }
+
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];
   myPreviousFrameBuffer = new uInt8[160 * 300];
@@ -526,6 +532,9 @@ void TIA::update()
 
   // TODO: have code here that handles errors....
 
+  // Make sure all of the audio samples have been created
+  createAudioSamples(0, 0);
+
   // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myScanlineCountForLastFrame = totalClocks / 228;
@@ -549,10 +558,6 @@ bool TIA::pause(bool state)
   else
   {
     myPauseState = state;
-
-    // Propagate the pause state to the sound object
-    mySound.mute(myPauseState);
-
     return true;
   }
 }
@@ -695,6 +700,30 @@ uInt32 TIA::height() const
 uInt32 TIA::scanlines() const
 {
   return (uInt32)myScanlineCountForLastFrame;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::clearAudioSamples()
+{
+  mySampleQueue.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIA::dequeueAudioSamples(uInt8* buffer, int size)
+{
+  return mySampleQueue.dequeue(buffer, size);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIA::numberOfAudioSamples() const
+{
+  return mySampleQueue.size();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MediaSource::AudioSampleType TIA::typeOfAudioSamples() const
+{
+  return MediaSource::UNSIGNED_8BIT_MONO_AUDIO;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2474,49 +2503,37 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x15:    // Audio control 0
     {
-      mySound.set(Sound::AUDC0, value,
-          mySystem->cycles() - myLastSoundUpdateCycle);
-      myLastSoundUpdateCycle = mySystem->cycles();
+      createAudioSamples(addr, value);
       break;
     }
   
     case 0x16:    // Audio control 1
     {
-      mySound.set(Sound::AUDC1, value,
-          mySystem->cycles() - myLastSoundUpdateCycle);
-      myLastSoundUpdateCycle = mySystem->cycles();
+      createAudioSamples(addr, value);
       break;
     }
   
     case 0x17:    // Audio frequency 0
     {
-      mySound.set(Sound::AUDF0, value,
-          mySystem->cycles() - myLastSoundUpdateCycle);
-      myLastSoundUpdateCycle = mySystem->cycles();
+      createAudioSamples(addr, value);
       break;
     }
   
     case 0x18:    // Audio frequency 1
     {
-      mySound.set(Sound::AUDF1, value,
-          mySystem->cycles() - myLastSoundUpdateCycle);
-      myLastSoundUpdateCycle = mySystem->cycles();
+      createAudioSamples(addr, value);
       break;
     }
   
     case 0x19:    // Audio volume 0
     {
-      mySound.set(Sound::AUDV0, value,
-          mySystem->cycles() - myLastSoundUpdateCycle);
-      myLastSoundUpdateCycle = mySystem->cycles();
+      createAudioSamples(addr, value);
       break;
     }
   
     case 0x1A:    // Audio volume 1
     {
-      mySound.set(Sound::AUDV1, value,
-          mySystem->cycles() - myLastSoundUpdateCycle);
-      myLastSoundUpdateCycle = mySystem->cycles();
+      createAudioSamples(addr, value);
       break;
     }
 
@@ -2842,6 +2859,42 @@ void TIA::poke(uInt16 addr, uInt8 value)
 #endif
       break;
     }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::createAudioSamples(uInt16 addr, uInt8 value)
+{
+  // If the sample rate is zero then we should not create any audio samples
+  if(mySampleRate == 0)
+  {
+    return;
+  }
+
+  // Calculate the number of samples that need to be generated based on the
+  // number of CPU cycles which have passed since the last sound update
+  uInt32 samplesToGenerate = 
+      (mySampleRate * (mySystem->cycles() - myLastSoundUpdateCycle)) / 1190000;
+
+  // Update counters and create samples if there's one sample to generate
+  // TODO: This doesn't handle rounding quite right (10/08/2002)
+  if(samplesToGenerate >= 1)
+  {
+    uInt8 buffer[1024];
+
+    for(Int32 sg = (Int32)samplesToGenerate; sg > 0; sg -= 1024)
+    {
+      Tia_process(buffer, ((sg >= 1024) ? 1024 : sg));
+      mySampleQueue.enqueue(buffer, ((sg >= 1024) ? 1024 : sg));
+    }
+
+    myLastSoundUpdateCycle = myLastSoundUpdateCycle + 
+        ((samplesToGenerate * 1190000) / mySampleRate);
+  }
+
+  if(addr != 0)
+  {
+    Update_tia_sound(addr, value);
   }
 }
 
@@ -3178,11 +3231,11 @@ const uInt32 TIA::ourFontData[36] = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const TIA& c)
     : myConsole(c.myConsole),
-      mySound(c.mySound),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
       myCOLUP0(myColor[2]),
-      myCOLUP1(myColor[3])
+      myCOLUP1(myColor[3]),
+      mySampleQueue(1024)
 {
   assert(false);
 }
@@ -3193,5 +3246,98 @@ TIA& TIA::operator = (const TIA&)
   assert(false);
 
   return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TIA::SampleQueue::SampleQueue(uInt32 capacity)
+    : myCapacity(capacity),
+      myBuffer(0),
+      mySize(0),
+      myHead(0),
+      myTail(0)
+{
+  myBuffer = new uInt8[myCapacity];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TIA::SampleQueue::~SampleQueue()
+{
+  delete[] myBuffer;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::SampleQueue::clear()
+{
+  myHead = myTail = mySize = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIA::SampleQueue::dequeue(uInt8* buffer, uInt32 size)
+{
+  // We can only dequeue up to the number of items in the queue
+  if(size > mySize)
+  {
+    size = mySize;
+  }
+
+  if((myHead + size) < myCapacity)
+  {
+    memcpy((void*)buffer, (const void*)(myBuffer + myHead), size);
+    myHead += size;
+  }
+  else
+  {
+    uInt32 s1 = myCapacity - myHead;
+    uInt32 s2 = size - s1;
+    memcpy((void*)buffer, (const void*)(myBuffer + myHead), s1);
+    memcpy((void*)(buffer + s1), (const void*)myBuffer, s2);
+    myHead = (myHead + size) % myCapacity;
+  }
+
+  mySize -= size;
+
+  return size;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::SampleQueue::enqueue(uInt8* buffer, uInt32 size)
+{
+  // If an attempt is made to enqueue more than the queue can hold then
+  // we'll only enqueue the last myCapacity elements.
+  if(size > myCapacity)
+  {
+    buffer += (size - myCapacity);
+    size = myCapacity;
+  }
+
+  if((myTail + size) < myCapacity)
+  {
+    memcpy((void*)(myBuffer + myTail), (const void*)buffer, size);
+    myTail += size;
+  }
+  else
+  {
+    uInt32 s1 = myCapacity - myTail;
+    uInt32 s2 = size - s1;
+    memcpy((void*)(myBuffer + myTail), (const void*)buffer, s1);
+    memcpy((void*)myBuffer, (const void*)(buffer + s1), s2);
+    myTail = (myTail + size) % myCapacity;
+  }
+
+  if((mySize + size) > myCapacity)
+  {
+    myHead = (myHead + ((mySize + size) - myCapacity)) % myCapacity;
+    mySize = myCapacity;
+  }
+  else
+  {
+    mySize += size;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIA::SampleQueue::size() const
+{
+  return mySize;
 }
 

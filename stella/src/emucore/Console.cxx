@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
+// $Id: Console.cxx,v 1.4 2002-10-09 04:38:11 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -41,7 +41,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
-    const Event& event, PropertiesSet& propertiesSet, Sound& sound)
+    const Event& event, PropertiesSet& propertiesSet, uInt32 sampleRate) 
     : myEvent(event)
 {
   myControllers[0] = 0;
@@ -126,7 +126,7 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   }
 
   M6532* m6532 = new M6532(*this);
-  TIA* tia = new TIA(*this, sound);
+  TIA* tia = new TIA(*this, sampleRate);
   Cartridge* cartridge = Cartridge::create(image, size, myProperties);
 
   mySystem->attach(m6502);

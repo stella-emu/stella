@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.21 2002-08-15 00:29:39 stephena Exp $
+## $Id: makefile,v 1.22 2002-10-09 04:38:11 bwmott Exp $
 ##============================================================================
 
 ##============================================================================
@@ -150,11 +150,11 @@ dos:
           OPTIONS+="$(OPTS.DOS)" \
           LDFLAGS="" \
           LDLIBS="" \
-          OBJS="mainDOS.o PCJoys.o SndDOS.o sbdrv.o TIASound.o"
+          OBJS="mainDOS.o PCJoys.o SndDOS.o sbdrv.o"
 
 unix-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -162,11 +162,11 @@ unix-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SndUnix.o"
+          OBJS="mainX11.o SoundX11.o"
 
 linux-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -174,7 +174,7 @@ linux-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SndUnix.o" \
+          OBJS="mainX11.o SoundX11.o" \
           OBJS+="$(OBJS.X11)"
 
 linux-sdl:
@@ -187,11 +187,12 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SndSDL.o RectList.o TIASound.o" \
+          OBJS="mainSDL.o SndSDL.o RectList.o" \
           OBJS+="$(OBJS.SDL)"
+
 bsdi-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
           SYS_INCLUDES="-I/usr/X11R6/include" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -199,11 +200,11 @@ bsdi-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SndUnix.o"
+          OBJS="mainX11.o SoundX11.o"
 
 solaris-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
           SYS_INCLUDES="-I/usr/openwin/include" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -211,7 +212,7 @@ solaris-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SndUnix.o"
+          OBJS="mainX11.o SoundX11.o"
 
 ###############################################################################
 ## List of "core" object files
@@ -223,8 +224,8 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartF8.o CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o \
             CartMB.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
-            Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
-            Serializer.o Deserializer.o \
+            Props.o PropsSet.o Random.o Switches.o Settings.o TIA.o \
+            Serializer.o Deserializer.o TIASound.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)
@@ -347,6 +348,9 @@ M6532.o: $(CORE)/M6532.cxx
 TIA.o: $(CORE)/TIA.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/TIA.cxx
 
+TIASound.o: $(CORE)/TIASound.c
+	$(CXX) -c -DWIN32 $(CXXFLAGS) $(OPTIONS) $(CORE)/TIASound.c
+
 Console.o: $(CORE)/Console.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Console.cxx
 
@@ -367,9 +371,6 @@ Random.o: $(CORE)/Random.cxx
 
 Switches.o: $(CORE)/Switches.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Switches.cxx
-
-Sound.o: $(CORE)/Sound.cxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Sound.cxx
 
 Serializer.o: $(CORE)/Serializer.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Serializer.cxx
@@ -395,14 +396,14 @@ SndDOS.o: $(UI)/dos/SndDOS.cxx
 sbdrv.o: $(UI)/dos/sbdrv.c
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/dos/sbdrv.c
 
-TIASound.o: $(UI)/sound/TIASound.c
-	$(CXX) -c -DWIN32 $(CXXFLAGS) $(OPTIONS) $(UI)/sound/TIASound.c
-
 TermX11.o: $(UI)/x11/TermX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/TermX11.cxx
 
 mainX11.o: $(UI)/x11/mainX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/mainX11.cxx
+
+SoundX11.o: $(UI)/x11/SoundX11.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/SoundX11.cxx
 
 mainSDL.o: $(UI)/sdl/mainSDL.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
@@ -415,9 +416,6 @@ RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 
 Snapshot.o: $(UI)/common/Snapshot.cxx $(UI)/common/Snapshot.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Snapshot.cxx
-
-SndUnix.o: $(UI)/sound/SndUnix.cxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/sound/SndUnix.cxx
 
 D6502.o: $(CORE)/m6502/src/D6502.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/m6502/src/D6502.cxx
@@ -439,3 +437,4 @@ NullDev.o: $(CORE)/m6502/src/NullDev.cxx
 
 System.o: $(CORE)/m6502/src/System.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/m6502/src/System.cxx
+

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.27 2002-10-05 12:49:49 stephena Exp $
+// $Id: mainX11.cxx,v 1.28 2002-10-09 04:38:12 bwmott Exp $
 //============================================================================
 
 #include <fstream>
@@ -39,9 +39,9 @@
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
-#include "SndUnix.hxx"
 #include "System.hxx"
 #include "Settings.hxx"
+#include "SoundX11.hxx"
 
 #ifdef HAVE_PNG
   #include "Snapshot.hxx"
@@ -286,7 +286,8 @@ bool setupDisplay()
   char name[512];
   sprintf(name, "Stella: \"%s\"", 
       theConsole->properties().get("Cartridge.Name").c_str());
-  XmbSetWMProperties(theDisplay, theWindow, name, "stella", 0, 0, &hints, None, None);
+  XmbSetWMProperties(theDisplay, theWindow, name, "stella", 0, 0, &hints,
+      None, None);
 
   // Set up the palette for the screen
   setupPalette();
@@ -314,8 +315,8 @@ bool setupDisplay()
     XNextEvent(theDisplay, &event);
   } while (event.type != Expose);
 
-  eventMask = ExposureMask | KeyPressMask | KeyReleaseMask | PropertyChangeMask |
-              StructureNotifyMask;
+  eventMask = ExposureMask | KeyPressMask | KeyReleaseMask | 
+      PropertyChangeMask | StructureNotifyMask;
 
   // If we're using the mouse for paddle emulation then enable mouse events
   if(((theConsole->properties().get("Controller.Left") == "Paddles") ||
@@ -387,9 +388,9 @@ void setupPalette()
   {
     XColor color;
 
-    color.red   = (short unsigned int) (((palette[t] & 0x00ff0000) >> 8) * shade);
-    color.green = (short unsigned int) ((palette[t] & 0x0000ff00) * shade);
-    color.blue  = (short unsigned int) (((palette[t] & 0x000000ff) << 8) * shade);
+    color.red = (short unsigned int)(((palette[t] & 0x00ff0000) >> 8) * shade);
+    color.green = (short unsigned int)((palette[t] & 0x0000ff00) * shade);
+    color.blue = (short unsigned int)(((palette[t] & 0x000000ff) << 8) * shade);
     color.flags = DoRed | DoGreen | DoBlue;
 
     if(settings->theUsePrivateColormapFlag)
@@ -556,7 +557,7 @@ void handleEvents()
   // Handle the WM_DELETE_WINDOW message outside the event loop
   if(XCheckTypedWindowEvent(theDisplay, theWindow, ClientMessage, &event))
   {
-    if(event.xclient.data.l[0] == wm_delete_window)
+    if((unsigned long)event.xclient.data.l[0] == wm_delete_window)
     {
       doQuit();
       return;
@@ -1161,7 +1162,8 @@ void takeSnapshot()
     filename = filename + ".png";
 
   // Now save the snapshot file
-  snapshot->savePNG(filename, theConsole->mediaSource(), settings->theWindowSize);
+  snapshot->savePNG(filename, theConsole->mediaSource(), 
+      settings->theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;
@@ -1214,28 +1216,28 @@ void usage()
     "",
     "Valid options are:",
     "",
-    "  -fps        <number>        Display the given number of frames per second",
-    "  -owncmap    <0|1>           Install a private colormap",
-    "  -zoom       <size>          Makes window be 'size' times normal (1 - 4)",
-//    "  -fullscreen <0|1>           Play the game in fullscreen mode",
-    "  -grabmouse  <0|1>           Keeps the mouse in the game window",
-    "  -hidecursor <0|1>           Hides the mouse cursor in the game window",
-    "  -center     <0|1>           Centers the game window onscreen",
-    "  -volume     <number>        Set the volume (0 - 100)",
+    "  -fps        <number>       Display the given number of frames per second",
+    "  -owncmap    <0|1>          Install a private colormap",
+    "  -zoom       <size>         Makes window be 'size' times normal (1 - 4)",
+//    "  -fullscreen <0|1>          Play the game in fullscreen mode",
+    "  -grabmouse  <0|1>          Keeps the mouse in the game window",
+    "  -hidecursor <0|1>          Hides the mouse cursor in the game window",
+    "  -center     <0|1>          Centers the game window onscreen",
+    "  -volume     <number>       Set the volume (0 - 100)",
 #ifdef HAVE_JOYSTICK
-    "  -paddle     <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
-    "                              or that real Atari 2600 paddles are being used",
+    "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate",
+    "                             or that real Atari 2600 paddles are being used",
 #else
-    "  -paddle     <0|1|2|3>       Indicates which paddle the mouse should emulate",
+    "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate",
 #endif
-    "  -showinfo   <0|1>           Shows some game info on exit",
+    "  -showinfo   <0|1>          Shows some game info on exit",
 #ifdef HAVE_PNG
-    "  -ssdir      <path>          The directory to save snapshot files to",
-    "  -ssname     <name>          How to name the snapshot (romname or md5sum)",
-    "  -sssingle   <0|1>           Generate single snapshot instead of many",
+    "  -ssdir      <path>         The directory to save snapshot files to",
+    "  -ssname     <name>         How to name the snapshot (romname or md5sum)",
+    "  -sssingle   <0|1>          Generate single snapshot instead of many",
 #endif
-    "  -pro        <props file>    Use the given properties file instead of stella.pro",
-    "  -accurate   <0|1>           Accurate game timing (uses more CPU)",
+    "  -pro        <props file>   Use the given properties file instead of stella.pro",
+    "  -accurate   <0|1>          Accurate game timing (uses more CPU)",
     "",
     0
   };
@@ -1266,7 +1268,8 @@ bool setupProperties(PropertiesSet& set)
   {
     if(access(settings->theAlternateProFile.c_str(), R_OK) == 0)
     {
-      set.load(settings->theAlternateProFile, &Console::defaultProperties(), false);
+      set.load(settings->theAlternateProFile, 
+          &Console::defaultProperties(), false);
       return true;
     }
     else
@@ -1436,15 +1439,16 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  // Create a sound object for use with the console
-  SoundUnix sound(settings->theDesiredVolume);
+  // Create a sound object for playing audio
+  SoundX11 sound;
+  sound.setSoundVolume(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound);
+      theEvent, propertiesSet, sound.getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -1471,7 +1475,8 @@ int main(int argc, char* argv[])
   {
     // Set up timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
+    uInt32 timePerFrame = 
+        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
 
     // Set the base for the timers
     frameTime = 0;
@@ -1496,6 +1501,7 @@ int main(int argc, char* argv[])
 
       startTime = getTicks();
       theConsole->mediaSource().update();
+      sound.updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
       handleEvents();
 
@@ -1516,7 +1522,8 @@ int main(int argc, char* argv[])
   {
     // Set up timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
+    uInt32 timePerFrame = 
+        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
 
     // Set the base for the timers
     virtualTime = getTicks();
@@ -1536,6 +1543,7 @@ int main(int argc, char* argv[])
       {
         theConsole->mediaSource().update();
       }
+      sound.updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
       handleEvents();
 
@@ -1561,9 +1569,11 @@ int main(int argc, char* argv[])
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
     cout << endl;
-    cout << "Cartridge Name: " << theConsole->properties().get("Cartridge.Name");
+    cout << "Cartridge Name: " 
+        << theConsole->properties().get("Cartridge.Name");
     cout << endl;
-    cout << "Cartridge MD5:  " << theConsole->properties().get("Cartridge.MD5");
+    cout << "Cartridge MD5:  "
+        << theConsole->properties().get("Cartridge.MD5");
     cout << endl << endl;
   }
 
@@ -1588,3 +1598,4 @@ inline uInt32 getTicks()
 #else
 #error We need gettimeofday for the X11 version!!!
 #endif
+

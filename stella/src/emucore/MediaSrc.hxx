@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.3 2002-04-18 17:18:48 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.4 2002-10-09 04:38:11 bwmott Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -26,10 +26,10 @@ class MediaSource;
 #include "bspf.hxx"
 
 /**
-  This class provides an interface for accessing graphics data.
+  This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.3 2002-04-18 17:18:48 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.4 2002-10-09 04:38:11 bwmott Exp $
 */
 class MediaSource
 {
@@ -46,15 +46,18 @@ class MediaSource
 
   public:
     /**
-      This method should be called at an interval corresponding to
-      the desired frame rate to update the media source.  
+      This method should be called at an interval corresponding to the 
+      desired frame rate to update the media source.  Invoking this method
+      will update the graphics buffer and generate the corresponding audio
+      samples.
     */
     virtual void update() = 0;
 
     /**
-      This method should be called to cause further calls to 'update'
-      to be ignored until an unpause is given.  Will also send a mute to
-      the Sound device.
+      This method should be called to change the pause state of the
+      media source.  Once the media source is paused further calls to
+      the update method will be ignored until the media source is
+      unpaused.
 
       @return Status of the pause, success (true) or failure (false)
     */
@@ -111,6 +114,47 @@ class MediaSource
     */
     virtual uInt32 scanlines() const = 0;
 
+  public:
+    /**
+      Enumeration of the possible audio sample types.
+    */
+    enum AudioSampleType
+    {
+      UNSIGNED_8BIT_MONO_AUDIO
+    };
+
+    /**
+      Dequeues all of the samples in the audio sample queue.
+    */
+    virtual void clearAudioSamples() = 0;
+
+    /**
+      Dequeues up to the specified number of samples from the audio sample
+      queue into the buffer.  If the requested number of samples are not
+      available then all of samples are dequeued.  The method returns the
+      actual number of samples removed from the queue.
+
+      @return The actual number of samples which were dequeued.
+    */
+    virtual uInt32 dequeueAudioSamples(uInt8* buffer, int size) = 0;
+
+    /**
+      Answers the number of samples currently available in the audio
+      sample queue.
+
+      @return The number of samples in the audio sample queue.
+    */ 
+    virtual uInt32 numberOfAudioSamples() const = 0;
+
+    /**
+      Returns the type of audio samples which are being stored in the audio
+      sample queue.  Currently, only unsigned 8-bit audio samples are created,
+      however, in the future this will be extended to support stereo samples.
+
+      @return The type of audio sample stored in the sample queue.
+    */
+    virtual AudioSampleType typeOfAudioSamples() const = 0;
+
   private:
     // Copy constructor isn't supported by this class so make it private
     MediaSource(const MediaSource&);
@@ -119,3 +163,4 @@ class MediaSource
     MediaSource& operator = (const MediaSource&);
 };
 #endif
+
