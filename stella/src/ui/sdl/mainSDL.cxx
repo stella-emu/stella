@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.25 2002-08-04 00:28:18 stephena Exp $
+// $Id: mainSDL.cxx,v 1.26 2002-08-15 00:29:40 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -39,6 +39,7 @@
 #include "SndUnix.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
+#include "SndSDL.hxx"
 
 #ifdef HAVE_PNG
   #include "Snapshot.hxx"
@@ -213,7 +214,7 @@ static uInt32 currentState = 0;
 */
 bool setupDisplay()
 {
-  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK;
+  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_TIMER;
   if(SDL_Init(initflags) < 0)
     return false;
 
@@ -1550,7 +1551,7 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for use with the console
-  SoundUnix sound(settings->theDesiredVolume);
+  SoundSDL sound(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;

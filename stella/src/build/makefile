@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.20 2002-08-14 02:30:52 bwmott Exp $
+## $Id: makefile,v 1.21 2002-08-15 00:29:39 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -23,16 +23,11 @@
 ## Comment a line out to disable that option, remove comment to enable it.
 ##============================================================================
 
-### this should work with all compilers 
-# OPTIMIZATIONS    =
-### for normal optimization, full warnings
-# OPTIMIZATIONS    = -O -Wall
-### for common optimizations, full warnings except unused vars
 OPTIMIZATIONS    = -O2 -Wall -Wno-unused
 ### to get full optimization under gcc/x Intel based OS's..
 # OPTIMIZATIONS    = -O3 -mcpu=pentiumpro -march=pentiumpro -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
-#	-malign-functions=2 -malign-jumps=2 -malign-loops=2
+#	-falign-functions=2 -falign-jumps=2 -falign-loops=2
 ### to get full optimization under gcc/x Athlon based OS's..
 # OPTIMIZATIONS    = -O3 -mcpu=athlon -march=athlon -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
@@ -192,7 +187,7 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SndUnix.o RectList.o" \
+          OBJS="mainSDL.o SndSDL.o RectList.o TIASound.o" \
           OBJS+="$(OBJS.SDL)"
 bsdi-x:
 	make stella.x11 \
@@ -411,6 +406,9 @@ mainX11.o: $(UI)/x11/mainX11.cxx
 
 mainSDL.o: $(UI)/sdl/mainSDL.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
+
+SndSDL.o: $(UI)/sdl/SndSDL.cxx $(UI)/sdl/SndSDL.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SndSDL.cxx
 
 RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx

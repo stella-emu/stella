@@ -32,6 +32,10 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -609,4 +613,6 @@ void Tia_process (register unsigned char *buffer, register uint16 n)
 
 }
 
-
+#ifdef __cplusplus
+}
+#endif
