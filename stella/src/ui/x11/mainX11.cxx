@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.30 2002-11-10 19:43:17 stephena Exp $
+// $Id: mainX11.cxx,v 1.31 2002-11-11 21:11:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1585,7 +1585,6 @@ int main(int argc, char* argv[])
       theConsole->mediaSource().update();
       sound.updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
-      handleEvents();
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -1624,8 +1623,8 @@ int main(int argc, char* argv[])
       if(!thePauseIndicator)
       {
         theConsole->mediaSource().update();
+        sound.updateSound(theConsole->mediaSource());
       }
-      sound.updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
       handleEvents();
 
