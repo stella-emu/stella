@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.1 2003-11-09 23:53:20 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.2 2003-11-22 20:13:11 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -68,21 +68,7 @@ void FrameBufferSoft::setupPalette(float shade)
     g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
     b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
 
-    switch(myScreen->format->BitsPerPixel)
-    {
-      case 15:
-        myPalette[i] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-        break;
-
-      case 16:
-        myPalette[i] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
-        break;
-
-      case 24:
-      case 32:
-        myPalette[i] = (r << 16) | (g << 8) | b;
-        break;
-    }
+    myPalette[i] = SDL_MapRGB(myScreen->format, r, g, b);
   }
 
   theRedrawEntireFrameIndicator = true;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.5 2003-11-18 15:04:17 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.6 2003-11-22 20:13:11 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -77,22 +77,16 @@ bool FrameBufferGL::createScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::setupPalette(float shade)
 {
-// FIXME - OpenGL should be able to shade the texture itself
   const uInt32* gamePalette = myMediaSource->palette();
   for(uInt32 i = 0; i < 256; ++i)
   {
-    Uint8 r, g, b, a;
+    Uint8 r, g, b;
 
     r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
     g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
     b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
-    a = 0xff;
 
-  #if SDL_BYTEORDER == SDL_LIL_ENDIAN 
-    myPalette[i] = (a << 24) | (b << 16) | (g << 8) | r;
-  #else
-    myPalette[i] = (r << 24) | (g << 16) | (b << 8) | a;
-  #endif
+    myPalette[i] = SDL_MapRGB(myTexture->format, r, g, b);
   }
 
   theRedrawEntireFrameIndicator = true;
@@ -142,51 +136,83 @@ bool FrameBufferGL::init()
   SDL_WM_SetCaption(name.str().c_str(), "stella");
 
   // Set up the OpenGL attributes
-  int rgb_size[3];
-  int bpp = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
-  switch(bpp)
+  myDepth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+  switch(myDepth)
   {
     case 8:
-      rgb_size[0] = 3;
-      rgb_size[1] = 3;
-      rgb_size[2] = 2;
+      myRGB[0] = 3;
+      myRGB[1] = 3;
+      myRGB[2] = 2;
+      myRGB[3] = 0;
       break;
 
     case 15:
-    case 16:
-      rgb_size[0] = 5;
-      rgb_size[1] = 5;
-      rgb_size[2] = 5;
+      myRGB[0] = 5;
+      myRGB[1] = 5;
+      myRGB[2] = 5;
+      myRGB[3] = 0;
       break;
 
-    default:
-      rgb_size[0] = 8;
-      rgb_size[1] = 8;
-      rgb_size[2] = 8;
+    case 16:
+      myRGB[0] = 5;
+      myRGB[1] = 6;
+      myRGB[2] = 5;
+      myRGB[3] = 0;
+      break;
+
+    case 24:
+      myRGB[0] = 8;
+      myRGB[1] = 8;
+      myRGB[2] = 8;
+      myRGB[3] = 0;
+      break;
+
+    case 32:
+      myRGB[0] = 8;
+      myRGB[1] = 8;
+      myRGB[2] = 8;
+      myRGB[3] = 8;
+      break;
+
+    default:  // This should never happen
       break;
   }
-  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, rgb_size[0] );
-  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, rgb_size[1] );
-  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, rgb_size[2] );
-  SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, bpp );
+  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, myRGB[0] );
+  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
+  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, myRGB[2] );
+  SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
   // Create the screen
   if(!createScreen())
     return false;
+
+  // Now check to see what color components were actually created
+  SDL_GL_GetAttribute( SDL_GL_RED_SIZE, (int*)&myRGB[0] );
+  SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, (int*)&myRGB[1] );
+  SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, (int*)&myRGB[2] );
+  SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, (int*)&myRGB[3] );
+
+  // Create the texture surface and texture fonts
+  createTextures();
+
+  // Set up the palette *after* we know the color components
+  // and the textures
   setupPalette(1.0);
 
   // Show some OpenGL info
   if(myConsole->settings().getBool("showinfo"))
   {
+    ostringstream colormode;
+    colormode << "Color   : " << myDepth << " bit, " << myRGB[0] << "-"
+              << myRGB[1] << "-" << myRGB[2] << "-" << myRGB[3];
+
     cout << endl
          << "Vendor  : " << glGetString(GL_VENDOR) << endl
          << "Renderer: " << glGetString(GL_RENDERER) << endl
-         << "Version : " << glGetString(GL_VERSION) << endl;
+         << "Version : " << glGetString(GL_VERSION) << endl
+         << colormode.str() << endl;   
   }
-
-  // Create the texture surface and texture fonts
-  createTextures();
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
   theGrabMouseIndicator  = myConsole->settings().getBool("grabmouse");
@@ -209,8 +235,8 @@ bool FrameBufferGL::init()
   // Set up global GL stuff
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
-  glEnable(GL_LINE_SMOOTH);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+  glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_TEXTURE_2D);
 
@@ -223,9 +249,9 @@ void FrameBufferGL::drawMediaSource()
   // Copy the mediasource framebuffer to the RGB texture
   uInt8* currentFrame  = myMediaSource->currentFrameBuffer();
   uInt8* previousFrame = myMediaSource->previousFrameBuffer();
-  uInt32 width  = myMediaSource->width();
-  uInt32 height = myMediaSource->height();
-  uInt32* buffer = (uInt32*) myTexture->pixels;
+  uInt32 width         = myMediaSource->width();
+  uInt32 height        = myMediaSource->height();
+  uInt16* buffer       = (uInt16*) myTexture->pixels;
 
   register uInt32 y;
   for(y = 0; y < height; ++y )
@@ -241,9 +267,9 @@ void FrameBufferGL::drawMediaSource()
       if(v == previousFrame[bufofs] && !theRedrawEntireFrameIndicator)
         continue;
 
-      // x << 1 is times 2 ( doubling width ) WIDTH_FACTOR
+      // x << 1 is times 2 ( doubling width )
       const uInt32 pos = screenofsY + (x << 1);
-      buffer[pos] = buffer[pos+1] = myPalette[v];
+      buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
     }
   }
 
@@ -251,7 +277,7 @@ void FrameBufferGL::drawMediaSource()
   // and antialiasing 
   glBindTexture(GL_TEXTURE_2D, myTextureID);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
-                  GL_RGBA, GL_UNSIGNED_BYTE, myTexture->pixels);
+                  GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
   glColor3f(0.0, 0.0, 0.0);
 
@@ -282,13 +308,12 @@ void FrameBufferGL::postFrameUpdate()
 void FrameBufferGL::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   // First draw the box in the background, alpha-blended
-  glEnable(GL_BLEND);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
   glColor4f(0.0, 0.0, 0.0, 0.7);
   glRecti(x, y, x+w, y+h);
 
   // Now draw the outer edges
-  glDisable(GL_BLEND);
-  glColor3f(0.8, 0.8, 0.8);
+  glColor4f(0.8, 0.8, 0.8, 1.0);
   glBegin(GL_LINE_LOOP);
     glVertex2i(x,   y  );  // Top Left
     glVertex2i(x+w, y  );  // Top Right
@@ -311,8 +336,6 @@ void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c)
     return;
 
   glBindTexture(GL_TEXTURE_2D, myFontTextureID[c]);
-  glEnable(GL_BLEND);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
   glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex2i(x,   y  );
     glTexCoord2f(1, 0); glVertex2i(x+8, y  );
@@ -332,12 +355,8 @@ bool FrameBufferGL::createTextures()
   myTexCoord[2] = (GLfloat) myWidth / w;
   myTexCoord[3] = (GLfloat) myHeight / h;
 
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
-  #if SDL_BYTEORDER == SDL_LIL_ENDIAN 
-    0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-  #else
-    0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
-  #endif
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 16,
+    0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
 
   if(myTexture == NULL)
     return false;
@@ -365,7 +384,7 @@ bool FrameBufferGL::createTextures()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
                myTexture->pixels);
 
   // Now create the font textures.  There are 256 fonts of 8x8 pixels.
