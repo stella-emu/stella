@@ -11,6 +11,11 @@
 ===============================================================================
                                Release History
 ===============================================================================
+1.4.2 to 1.4.2a: MacOSX version only (February 21, 2005)
+  * Fixed problem in timing loop which was causing crashes after 15-30
+    minutes.
+  * Turned optimization on in compiler settings, which had somehow gotten
+    turned off.
 
 1.4.1 to 1.4.2: (February 19, 2005)
 
