@@ -1,12 +1,12 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
-//   SSSS    tt   ee  ee  ll   ll      aa
-//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
-//  SS  SS   tt   ee      ll   ll  aa  aa
-//   SSSS     ttt  eeeee llll llll  aaaaa
+//   SSSS    tt          lll  lll          XX     XX
+//  SS  SS   tt           ll   ll           XX   XX
+//  SS     tttttt  eeee   ll   ll   aaaa     XX XX
+//   SSSS    tt   ee  ee  ll   ll      aa     XXX
+//      SS   tt   eeeeee  ll   ll   aaaaa    XX XX
+//  SS  SS   tt   ee      ll   ll  aa  aa   XX   XX
+//   SSSS     ttt  eeeee llll llll  aaaaa  XX     XX
 //
 // Copyright (c) 1995-2000 by Jeff Miller
 // Copyright (c) 2004 by Stephen Anthony
@@ -14,11 +14,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.hxx,v 1.5 2004-07-15 00:11:07 stephena Exp $
-//============================================================================ 
+// $Id: MainDlg.hxx,v 1.6 2004-07-15 03:03:27 stephena Exp $
+//============================================================================
 
-#ifndef __MAINDLG_H_
-#define __MAINDLG_H_
+#ifndef MAIN_DLG_HXX
+#define MAIN_DLG_HXX
 
 #include "resource.h"
 
@@ -29,7 +29,6 @@ class CGlobalData;
 #include "TextButton3d.hxx"
 #include "HeaderCtrl.hxx"
 #include "RoundButton.hxx"
-
 
 class MainDlg
 {
@@ -70,6 +69,7 @@ class MainDlg
     void OnDestroy( void );
     void OnNcPaint( HRGN hrgn );
     void OnNcActivate( BOOL fActive );
+    void Quit();
     BOOL OnNcLButtonDown( INT nHitTest, POINTS pts );
 
     // callback methods
@@ -78,12 +78,10 @@ class MainDlg
     static int CALLBACK ListViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort );
 
     // internal data
-    void UpdateRomList();
-    bool PopulateRomList();
+    void UpdateRomList( bool forceReload = false );
+    bool PopulateRomList( bool forceReload = false );
     bool LoadRomListFromDisk();
     bool LoadRomListFromCache();
-
-    void Quit( HWND hwnd );
 
     HINSTANCE myHInstance;
 

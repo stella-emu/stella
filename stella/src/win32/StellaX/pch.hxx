@@ -1,9 +1,24 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/01/2000
+//   SSSS    tt          lll  lll          XX     XX
+//  SS  SS   tt           ll   ll           XX   XX
+//  SS     tttttt  eeee   ll   ll   aaaa     XX XX
+//   SSSS    tt   ee  ee  ll   ll      aa     XXX
+//      SS   tt   eeeeee  ll   ll   aaaaa    XX XX
+//  SS  SS   tt   ee      ll   ll  aa  aa   XX   XX
+//   SSSS     ttt  eeeee llll llll  aaaaa  XX     XX
 //
-#ifndef PCH_H
-#define PCH_H
+// Copyright (c) 1995-2000 by Jeff Miller
+// Copyright (c) 2004 by Stephen Anthony
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: pch.hxx,v 1.3 2004-07-15 03:03:27 stephena Exp $
+//============================================================================
+
+#ifndef PCH_HXX
+#define PCH_HXX
 
 #define WIN32_LEAN_AND_MEAN
 #define DIRECTINPUT_VERSION 5
@@ -33,90 +48,13 @@
 #endif
 #define UNUSED_ALWAYS(x) x
 
-//
-// Simple string class
-//
-
-class CSimpleString
-{
-  public:
-    CSimpleString() : 
-        m_psz( NULL ),
-        m_cch( -1 )
-    {
-    }
-
-    ~CSimpleString()
-    {
-      delete[] m_psz;
-      m_psz = NULL;
-      m_cch = -1;
-    }
-
-    BOOL Set( LPCTSTR psz )
-        {
-            int cch = lstrlen( psz );
-            if ( cch > m_cch )
-            {
-                delete[] m_psz;
-                m_psz = NULL;
-                m_cch = -1;
-
-                m_psz = new TCHAR[ cch + 1 ];
-                if ( m_psz == NULL )
-                {
-                    return FALSE;
-                }
-
-                m_cch = cch;
-            }
-
-            memcpy( m_psz, psz, ( cch + 1 ) * sizeof( TCHAR ) );
-
-            return TRUE;
-        }
-
-    LPCTSTR Get( void ) const
-        {
-            ASSERT( m_psz != NULL );
-            return m_psz;
-        }
-
-    int Length( void ) const
-        {
-            return m_cch;
-        }
-
-private:
-
-    //
-    // The string and its size (-1 means not initialized)
-    //
-
-    LPTSTR m_psz;
-    int m_cch;
-
-	CSimpleString( const CSimpleString& );  // no implementation
-	void operator=( const CSimpleString& );  // no implementation
-};
-
-//
 // Utility methods
 //
 
-void MessageBox(
-    HINSTANCE hInstance,
-    HWND hwndParent,
-    UINT uIDText
-    );
+void MessageBox( HINSTANCE hInstance, HWND hwndParent, UINT uIDText );
 
-void MessageBoxFromWinError(
-    DWORD dwError,
-    LPCTSTR pszCaption /* = NULL */
-    );
+void MessageBoxFromWinError( DWORD dwError, LPCTSTR pszCaption /* = NULL */ );
 
-void MessageBoxFromGetLastError(
-    LPCTSTR pszCaption /* = NULL */
-    );
+void MessageBoxFromGetLastError( LPCTSTR pszCaption /* = NULL */ );
 
 #endif

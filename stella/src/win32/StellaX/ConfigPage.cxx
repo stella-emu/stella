@@ -1,12 +1,12 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
-//   SSSS    tt   ee  ee  ll   ll      aa
-//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
-//  SS  SS   tt   ee      ll   ll  aa  aa
-//   SSSS     ttt  eeeee llll llll  aaaaa
+//   SSSS    tt          lll  lll          XX     XX
+//  SS  SS   tt           ll   ll           XX   XX
+//  SS     tttttt  eeee   ll   ll   aaaa     XX XX
+//   SSSS    tt   ee  ee  ll   ll      aa     XXX
+//      SS   tt   eeeeee  ll   ll   aaaaa    XX XX
+//  SS  SS   tt   ee      ll   ll  aa  aa   XX   XX
+//   SSSS     ttt  eeeee llll llll  aaaaa  XX     XX
 //
 // Copyright (c) 1995-2000 by Jeff Miller
 // Copyright (c) 2004 by Stephen Anthony
@@ -14,11 +14,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ConfigPage.cxx,v 1.4 2004-07-11 03:13:24 stephena Exp $
-//============================================================================ 
-
-//#define WINVER 0x0501
-//#include <afxcmn.h>
+// $Id: ConfigPage.cxx,v 1.5 2004-07-15 03:03:27 stephena Exp $
+//============================================================================
 
 #include "pch.hxx"
 #include "ConfigPage.hxx"
@@ -28,13 +25,14 @@
 #include "bspf.hxx"
 #include "Settings.hxx"
 
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 CConfigPage::CConfigPage( CGlobalData& rGlobalData )
            : myGlobalData( rGlobalData ),
              CPropertyPage( IDD_CONFIG_PAGE )
 {
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 BOOL CConfigPage::OnInitDialog( HWND hwnd )
 {
   m_hwnd = hwnd;
@@ -132,10 +130,12 @@ BOOL CConfigPage::OnInitDialog( HWND hwnd )
   return TRUE;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void CConfigPage::OnDestroy( void )
 {
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 LONG CConfigPage::OnApply( LPPSHNOTIFY lppsn )
 {
   UNUSED_ALWAYS( lppsn );
@@ -243,6 +243,7 @@ LONG CConfigPage::OnApply( LPPSHNOTIFY lppsn )
   return PSNRET_NOERROR;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 BOOL CConfigPage::OnCommand( WORD wNotifyCode, WORD wID, HWND hwndCtl )
 {
   UNUSED_ALWAYS( wNotifyCode );

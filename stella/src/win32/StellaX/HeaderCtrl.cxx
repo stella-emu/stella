@@ -1,18 +1,35 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/01/2000
+//   SSSS    tt          lll  lll          XX     XX
+//  SS  SS   tt           ll   ll           XX   XX
+//  SS     tttttt  eeee   ll   ll   aaaa     XX XX
+//   SSSS    tt   ee  ee  ll   ll      aa     XXX
+//      SS   tt   eeeeee  ll   ll   aaaaa    XX XX
+//  SS  SS   tt   ee      ll   ll  aa  aa   XX   XX
+//   SSSS     ttt  eeeee llll llll  aaaaa  XX     XX
 //
+// Copyright (c) 1995-2000 by Jeff Miller
+// Copyright (c) 2004 by Stephen Anthony
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: HeaderCtrl.cxx,v 1.3 2004-07-15 03:03:27 stephena Exp $
+//============================================================================
 
 #include "pch.hxx"
 #include "HeaderCtrl.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 CHeaderCtrl::CHeaderCtrl()
             : m_nSortCol(0),
               m_fSortAsc(TRUE)
 {
 }
 
-LRESULT CHeaderCtrl::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL& rfHandled )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+LRESULT CHeaderCtrl::WndProc( HWND hWnd, UINT msg, WPARAM wParam,
+                              LPARAM lParam, BOOL& rfHandled )
 {  
   switch ( msg )
   {
@@ -25,6 +42,7 @@ LRESULT CHeaderCtrl::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam,
   return 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void CHeaderCtrl::SetSortCol( int nCol, BOOL bAsc )
 {
   m_nSortCol = nCol;
@@ -42,6 +60,7 @@ void CHeaderCtrl::SetSortCol( int nCol, BOOL bAsc )
   InvalidateRect(hwndHeader, NULL, TRUE);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void CHeaderCtrl::OnDrawItem( HWND hwnd, UINT idCtl, LPDRAWITEMSTRUCT lpdis )
 {
   UNUSED_ALWAYS( idCtl );

@@ -1,12 +1,12 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
-//   SSSS    tt   ee  ee  ll   ll      aa
-//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
-//  SS  SS   tt   ee      ll   ll  aa  aa
-//   SSSS     ttt  eeeee llll llll  aaaaa
+//   SSSS    tt          lll  lll          XX     XX
+//  SS  SS   tt           ll   ll           XX   XX
+//  SS     tttttt  eeee   ll   ll   aaaa     XX XX
+//   SSSS    tt   ee  ee  ll   ll      aa     XXX
+//      SS   tt   eeeeee  ll   ll   aaaaa    XX XX
+//  SS  SS   tt   ee      ll   ll  aa  aa   XX   XX
+//   SSSS     ttt  eeeee llll llll  aaaaa  XX     XX
 //
 // Copyright (c) 1995-2000 by Jeff Miller
 // Copyright (c) 2004 by Stephen Anthony
@@ -14,8 +14,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.6 2004-07-15 00:11:06 stephena Exp $
-//============================================================================ 
+// $Id: MainDlg.cxx,v 1.7 2004-07-15 03:03:27 stephena Exp $
+//============================================================================
 
 #include "pch.hxx"
 #include "MainDlg.hxx"
@@ -142,10 +142,8 @@ MainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
     case WM_NCLBUTTONDOWN:
       return OnNcLButtonDown( (INT)wParam, MAKEPOINTS(lParam) );
 
-    case WM_SYSCOMMAND:
-      // Allow Alt-F4 to close the window
-      if ( wParam == SC_CLOSE )
-        Quit(myHwnd);
+    case WM_CLOSE:
+      Quit();
       break;
   }
 
@@ -277,7 +275,7 @@ BOOL MainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       break; // case IDC_PLAY
 
     case IDC_EXIT:
-      Quit(hwnd);
+      Quit();
       return TRUE;
       break; // case IDC_EXIT
 
@@ -308,8 +306,7 @@ BOOL MainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
 
     case IDC_RELOAD:
     {
-      LoadRomListFromDisk();
-      ListView_SortByColumn( myHwndList, myGlobalData.settings().getInt("sortcol") );
+      UpdateRomList( true );
       return TRUE;
       break; // case IDC_RELOAD
     }
@@ -457,7 +454,7 @@ HBRUSH MainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-void MainDlg::Quit( HWND hwnd )
+void MainDlg::Quit()
 {
   // OK, reload the settings to make sure we have the most current ones
   myGlobalData.settings().loadConfig();
@@ -468,26 +465,47 @@ void MainDlg::Quit( HWND hwnd )
 
   // Save the column widths
   myGlobalData.settings().setInt("namecolwidth",
-    ListView_GetColWidth( hwnd, 0 ));
+    ListView_GetColWidth( myHwnd, 0 ));
   myGlobalData.settings().setInt("manufacturercolwidth",
-    ListView_GetColWidth( hwnd, 1 ));
+    ListView_GetColWidth( myHwnd, 1 ));
   myGlobalData.settings().setInt("raritycolwidth",
-    ListView_GetColWidth( hwnd, 2 ));
+    ListView_GetColWidth( myHwnd, 2 ));
 
   // Now, save the settings
   myGlobalData.settings().saveConfig();
 
   ListView_Clear();
-  EndDialog( hwnd, IDCANCEL );
+  EndDialog( myHwnd, IDCANCEL );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-void MainDlg::UpdateRomList( void )
+void MainDlg::UpdateRomList( bool forceReload )
 {
   HWND hwndText;
   RECT rc;
+  TCHAR psz[256 + 1];
+  TCHAR pszStatus[256 + 1];
 
-  PopulateRomList();
+  // Erase status text
+  LoadString(myHInstance, IDS_STATUSTEXT, pszStatus, 256);
+  wsprintf( psz, pszStatus, 0 );
+  hwndText = GetDlgItem( *this, IDC_ROMCOUNT );
+  GetWindowRect(hwndText, &rc);
+  ScreenToClient( *this, (LPPOINT)&rc );
+  ScreenToClient( *this, ((LPPOINT)&rc)+1 );
+  SetWindowText( hwndText, psz );
+  InvalidateRect( *this, &rc, TRUE );
+
+  // Erase rom path
+  hwndText = GetDlgItem( *this, IDC_ROMPATH );
+  GetWindowRect(hwndText, &rc);
+  ScreenToClient( *this, (LPPOINT)&rc );
+  ScreenToClient( *this, ((LPPOINT)&rc)+1 );
+  SetWindowText( hwndText, "" );
+  InvalidateRect( *this, &rc, TRUE );
+
+  // Get the ROM gamelist, either from disk or cache
+  PopulateRomList( forceReload );
 
   // if items added, select first item and enable play button
   int nCount = ListView_GetItemCount( myHwndList );
@@ -495,8 +513,6 @@ void MainDlg::UpdateRomList( void )
     EnableWindow(GetDlgItem( *this, IDC_PLAY), FALSE );
 
   // Show status text
-  TCHAR psz[256 + 1];
-  TCHAR pszStatus[256 + 1];
   LoadString(myHInstance, IDS_STATUSTEXT, pszStatus, 256);
   wsprintf( psz, pszStatus, nCount );
   hwndText = GetDlgItem( *this, IDC_ROMCOUNT );
@@ -516,13 +532,15 @@ void MainDlg::UpdateRomList( void )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-bool MainDlg::PopulateRomList( void )
+bool MainDlg::PopulateRomList( bool forceReload )
 {
   bool result = false;
   bool cacheFileExists = myGlobalData.settings().fileExists("stellax.cache");
   bool cacheIsStale = false; // FIXME - add romdir status checking
 
-  if (cacheFileExists && !cacheIsStale)
+  if (forceReload)
+      result = LoadRomListFromDisk();
+  else if (cacheFileExists && !cacheIsStale)
   {
     result = LoadRomListFromCache();
     if (!result)
