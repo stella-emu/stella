@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.4 2004-06-23 00:33:37 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.5 2004-06-23 03:43:47 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -47,13 +47,14 @@ FrameBufferGL::~FrameBufferGL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createScreen()
 {
-  uInt32 screenWidth = 0, screenHeight = 0;
-
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE, myRGB[0] );
   SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, myRGB[2] );
   SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+  uInt32 screenWidth  = 0;
+  uInt32 screenHeight = 0;
 
   myDimensions.w = (Uint16) (myWidth  * theZoomLevel * theAspectRatio);
   myDimensions.h = (Uint16) myHeight * theZoomLevel;
@@ -67,8 +68,8 @@ bool FrameBufferGL::createScreen()
 
     myDimensions.x = rect.x;
     myDimensions.y = rect.y;
-    screenWidth    = rect.w;
-    screenHeight   = rect.h;
+    screenWidth  = rect.w;
+    screenHeight = rect.h;
   }
   else
   {
@@ -87,13 +88,14 @@ bool FrameBufferGL::createScreen()
   glPushAttrib(GL_ENABLE_BIT);
 
   // Center the screen horizontally and vertically
-  glViewport(0, 0, screenWidth, screenHeight);
+  glViewport(myDimensions.x, myDimensions.y, myDimensions.w, myDimensions.h);
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
 
-  glOrtho(0.0, screenWidth, screenHeight, 0.0, 0.0, 1.0);
+  glOrtho(0.0, (GLdouble) myDimensions.w/(theZoomLevel * theAspectRatio),
+          (GLdouble) myDimensions.h/theZoomLevel, 0.0, 0.0, 1.0);
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
@@ -199,9 +201,6 @@ bool FrameBufferGL::init()
       break;
   }
 
-  // Set the color used to erase the screen
-  glClearColor(0, 0, 0, 1);
-
   // Create the screen
   if(!createScreen())
     return false;
@@ -283,37 +282,23 @@ void FrameBufferGL::drawMediaSource()
     }
   }
 
+  // If necessary, erase the screen
+  if(theRedrawEntireFrameIndicator)
+    glClear(GL_COLOR_BUFFER_BIT);
+
   // Texturemap complete texture to surface so we have free scaling 
   // and antialiasing 
   glBindTexture(GL_TEXTURE_2D, myTextureID);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
                   GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-//  glColor3f(0.0, 0.0, 0.0);
-//  glRecti(0, 0, myDimensions.w, myDimensions.h);
 
   glBegin(GL_QUADS);
-    glTexCoord2f(myTexCoord[0], myTexCoord[1]);
-    glVertex2i(myDimensions.x, myDimensions.y);
-
-    glTexCoord2f(myTexCoord[2], myTexCoord[1]);
-    glVertex2i(myDimensions.x + myDimensions.w, myDimensions.y);
-
-    glTexCoord2f(myTexCoord[2], myTexCoord[3]);
-    glVertex2i(myDimensions.x + myDimensions.w, myDimensions.y + myDimensions.h);
-
-    glTexCoord2f(myTexCoord[0], myTexCoord[3]);
-    glVertex2i(myDimensions.x, myDimensions.y + myDimensions.h);
-  glEnd();
-
-/*
-  glBegin(GL_QUADS);
-    glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
+    glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0,       0);
     glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(myWidth, 0);
     glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(myWidth, myHeight);
-    glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, myHeight);
+    glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0,       myHeight);
   glEnd();
-*/
 
   // The frame doesn't need to be completely redrawn anymore
   theRedrawEntireFrameIndicator = false;
@@ -377,10 +362,10 @@ void FrameBufferGL::scanline(uInt32 row, uInt8* data)
 {
   // Invert the row, since OpenGL rows start at the bottom
   // of the framebuffer
-  row = myDimensions.h - row - 1;
+  row = myDimensions.h + myDimensions.y - row - 1;
 
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  glReadPixels(0, row, myDimensions.w, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+  glReadPixels(myDimensions.x, row, myDimensions.w, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -540,17 +525,16 @@ SDL_Rect FrameBufferGL::viewport(uInt32 width, uInt32 height)
   };
 
   // List of valid fullscreen OpenGL modes
-  Screenmode myScreenmode[7] = {
+  Screenmode myScreenmode[6] = {
     {320,  240 },
     {640,  480 },
     {800,  600 },
     {1024, 768 },
     {1280, 1024},
-    {1400, 1050},
     {1600, 1200}
   };
 
-  for(uInt32 i = 0; i < 7; i++)
+  for(uInt32 i = 0; i < 6; i++)
   {
     if(width <= myScreenmode[i].w && height <= myScreenmode[i].h)
     {

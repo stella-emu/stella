@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.8 2004-04-27 00:50:51 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.9 2004-06-23 03:43:47 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -70,6 +70,7 @@ FrameBuffer::FrameBuffer()
       myRemapMenuMaxLines(0),
       myMessageTime(0),
       myMessageText(""),
+      myMenuRedraws(2),
       myInfoMenuWidth(0)
 {
 }
@@ -210,7 +211,15 @@ void FrameBuffer::update()
       }
 
       // Now the screen is up to date
-      theMenuChangedIndicator = theRedrawEntireFrameIndicator = false;
+      theRedrawEntireFrameIndicator = false;
+
+      // This is a performance hack to only draw the menus when necessary
+      // Software mode is single-buffered, so we don't have to worry
+      // However, OpenGL mode is double-buffered, so we need to draw the
+      // menus at least twice (so they'll be in both buffers)
+      // Otherwise, we get horrible flickering
+      myMenuRedraws--;
+      theMenuChangedIndicator = (myMenuRedraws != 0);
     }
   }
 
@@ -334,6 +343,7 @@ void FrameBuffer::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 
   // Redraw the menus whenever a key event is received
   theMenuChangedIndicator = true;
+  myMenuRedraws = 2;
 
   // Check which type of widget is pending
   switch(myCurrentWidget)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.3 2004-06-23 03:43:47 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -42,10 +42,11 @@ FrameBufferSoft::~FrameBufferSoft()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSoft::createScreen()
 {
-  int w = myWidth  * theZoomLevel;
-  int h = myHeight * theZoomLevel;
+  myDimensions.x = myDimensions.y = 0;
+  myDimensions.w = myWidth  * theZoomLevel;
+  myDimensions.h = myHeight * theZoomLevel;
 
-  myScreen = SDL_SetVideoMode(w, h, 0, mySDLFlags);
+  myScreen = SDL_SetVideoMode(myDimensions.w, myDimensions.h, 0, mySDLFlags);
   if(myScreen == NULL)
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.9 2004-06-23 00:15:32 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.10 2004-06-23 03:43:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.9 2004-06-23 00:15:32 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.10 2004-06-23 03:43:47 stephena Exp $
 */
 class FrameBuffer
 {
@@ -323,6 +323,9 @@ class FrameBuffer
 
     // Message text
     string myMessageText;
+
+    // Number of times menu have been drawn
+    uInt32 myMenuRedraws;
 
     // The width of the information menu, determined by the longest string
     Int32 myInfoMenuWidth;
