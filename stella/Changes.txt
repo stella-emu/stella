@@ -1,0 +1,177 @@
+===============================================================================
+
+     SSSS    tt          lll  lll
+    SS  SS   tt           ll   ll
+    SS     tttttt  eeee   ll   ll   aaaa
+     SSSS    tt   ee  ee  ll   ll      aa
+        SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+    SS  SS   tt   ee      ll   ll  aa  aa
+     SSSS     ttt  eeeee llll llll  aaaaa
+
+===============================================================================
+                               Release History
+===============================================================================
+
+1.0 to 1.1: (February 26, 1999)
+
+  * DOS and Linux versions support real Atari 2600 paddles using a 
+    special PC game port adaptor
+
+  * Linux version uses the new 1.2.x joystick driver API
+
+  * Added support for the "-display" option to the X Window version
+
+  * Added support for private colormaps to the X Window version
+
+  * Fixed a few bugs in the Supercharger emulation
+
+    - A major bug in the ROM loading routine was fixed
+
+    - Multi-loading in "Escape from the Mindmaster" works correctly
+
+    - All Supercharger games load and execute at this point
+
+  * Added a small hack to the TIA code to fix a display problem in "Escape 
+    from the Mindmaster"
+
+  * Improved TIA emulation to support the RESPx multi-sprite trick
+
+1.0b1 to 1.0: (October 7, 1998)
+
+  * DOS version supports 320x200 and 320x240 graphics modes
+
+  * Several portability issues have been resolved 
+
+  * Preliminary support for Chris Wilkson's Megacart bank-switching scheme
+
+  * BSDI target included in makefile 
+
+  * Improved Users Manual in several "popular" formats
+
+0.7 to 1.0b1: (July 25, 1998)
+
+  * Supports the following controllers:
+
+      Joysticks, Paddles, Booster-Grip, Keyboard and Driving
+
+  * Supports the following bank switching methods:
+
+      2K, 3F, 4K, AR, E0, E7, F4SC, F6, F8, F8SC, FASC, FE
+
+  * Properties are associated with games using their MD5 checksum
+    calculated on the entire ROM image
+
+  * Uses the new 'stella.pro' file format for game properties
+
+  * Includes Erik's latest stella.pro properties file
+
+  * New frame rate throttle code for X windows GUI
+
+  * Based on the new and improved M6502 CPU emulation
+
+  * Improvements to TIA emulation
+
+    - Support HMOVE blanks
+
+    - Improved Cosmic Ark star field effect
+
+    - Some support for the RESPx multiple sprite trick
+
+    - Support NTSC and PAL palettes
+
+  * Improvements to PIA emulation (timing)
+
+  * Improved Supercharger emulation
+
+0.6 to 0.7: (June 7, 1997)
+
+  * Improved emulation speed of TIA and 6507
+
+  * Added Starpath Supercharger support
+
+  * Added Tigervision bank-switching support (3F bank-switching)
+
+  * Added pause game feature for Unix and DOS
+
+  * VCS files combined into a single builtin property file
+
+  * Added TIA HMOVE "feature" to support Cosmic Ark stars
+
+  * Improved TIA VSYNC code so that it works more like the real
+    thing (0.6 VSYNC code caused the graphics of some games to
+    be off such as Alien and Battle Zone)
+
+  * Added two 6507 emulators: one is designed to act more like
+    the real thing, while the other is designed to be as fast as
+    possible (required for Supercharger support)
+
+  * Changed TIA peeking so lower nibble of byte read is the same
+    as the TIA address being accessed (Warlords now works)
+  
+0.5 to 0.6: (January 18, 1997)
+
+  * Fixed collision detection problem (Freeway works)
+
+  * Changed PIA timing code to fix screen jitters
+
+  * Added new bank-switching methods: F4SC (Fatal Run), E7 (Burgertime)
+
+  * Fixed some code in the TIA emulation that caused SEGFAULTS
+
+  * Improved frame rate throttling code to work better on fast machines
+
+  * Improved TIA emulation (missle graphics are fully emulated now)
+
+  * Included Bob Colbert's "Okie Dokie" game
+
+  * Uses version 1.1 of the TIA Sound library by Ron Fries
+
+0.4 to 0.5: (November 17, 1996)
+
+  * Added sound support
+
+  * Added new bank-switching methods: F8SC (Defender II), FASC (CBS RAM+)
+
+  * Changed TIA so peeking $E and $F return $F not $0 for Haunted House
+
+  * Changed PIA timing code to fix screen jitters in Frogger
+
+  * Addressing scheme rewritten
+
+  * Optimized 6507 memory accesses
+
+  * Randomized memory in PIA upon startup
+
+  * Removed auto-disabling of objects at the start of a frame
+    so you can't walk through walls in Adventure
+
+  * Changed the X windows terminal update method to make it faster and
+    easier to understand
+
+0.3 to 0.4 (August 28, 1996):
+
+  * TIA code has been optimized some
+
+  * Some games can be played with just a ROM image
+
+  * New search method for ROM images (no more STELLA_PATH)
+
+  * Delta screen update supported
+
+  * Better error handling added to the "core"
+
+0.2 to 0.3 (July 12, 1996):
+
+  * Keyboard joystick support is much better (Daniel Marks)
+
+  * Paddles are now supported via the mouse (Bradford Mott)
+
+  * Many portability issues have been resolved (Keith Wilkins)
+
+  * Fixed a problem with the 6507 ADC and SBC instructions that caused
+    some games (Enduro) not to work correctly (Bradford Mott)
+
+  * Power Macintosh port (Aaron Giles)
+
+  * Windows 95 & NT port (Jeff Miller)
+
