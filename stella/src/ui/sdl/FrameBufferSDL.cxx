@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.4 2003-11-12 19:36:25 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.5 2003-11-17 17:43:39 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -33,6 +33,7 @@ FrameBufferSDL::FrameBufferSDL()
       theMaxZoomLevel(1),
       theGrabMouseIndicator(false),
       theHideCursorIndicator(false),
+      theAspectRatio(1.0),
       isFullscreen(false)
 {
 }
@@ -177,7 +178,7 @@ uInt32 FrameBufferSDL::maxWindowSizeForScreen()
   while(!found && (multiplier > 0))
   {
     // Figure out the desired size of the window
-    int width  = myWidth  * multiplier;
+    int width  = (int) (myWidth * multiplier * theAspectRatio);
     int height = myHeight * multiplier;
 
     if((width < screenWidth) && (height < screenHeight))

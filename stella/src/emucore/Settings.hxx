@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.9 2003-11-06 22:22:32 stephena Exp $
+// $Id: Settings.hxx,v 1.10 2003-11-17 17:43:39 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.9 2003-11-06 22:22:32 stephena Exp $
+  @version $Id: Settings.hxx,v 1.10 2003-11-17 17:43:39 stephena Exp $
 */
 class Settings
 {
@@ -71,6 +71,15 @@ class Settings
       @return The integer value of the setting
     */
     Int32 getInt(const string& key) const;
+
+    /**
+      Get the value assigned to the specified key.  If the key does
+      not exist then -1.0 is returned.
+
+      @param key The key of the setting to lookup
+      @return The floating point value of the setting
+    */
+    float getFloat(const string& key) const;
 
     /**
       Get the value assigned to the specified key.  If the key does

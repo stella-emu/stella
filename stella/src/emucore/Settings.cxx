@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.11 2003-11-06 22:22:32 stephena Exp $
+// $Id: Settings.cxx,v 1.12 2003-11-17 17:43:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -229,6 +229,17 @@ Int32 Settings::getInt(const string& key) const
       return atoi(mySettings[i].value.c_str());
 
   return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float Settings::getFloat(const string& key) const
+{
+  // Try to find the named setting and answer its value
+  for(uInt32 i = 0; i < mySize; ++i)
+    if(key == mySettings[i].key)
+      return atof(mySettings[i].value.c_str());
+
+  return -1.0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.3 2003-11-12 15:12:06 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.4 2003-11-17 17:43:39 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.3 2003-11-12 15:12:06 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.4 2003-11-17 17:43:39 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {
@@ -143,18 +143,6 @@ class FrameBufferGL : public FrameBufferSDL
 
     // The OpenGL font texture handles (one for each character)
     GLuint myFontTextureID[256];
-
-    // Structure to hold a characters coordinates
-    struct Coordinates
-    {
-      GLfloat minX;
-      GLfloat maxX;
-      GLfloat minY;
-      GLfloat maxY;
-    };
-
-    // OpenGL texture coordinates for the font surface
-    Coordinates myFontCoord[256];
 };
 
 #endif

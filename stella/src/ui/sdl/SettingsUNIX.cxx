@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.3 2003-11-09 23:53:20 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.4 2003-11-17 17:43:39 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -65,6 +65,7 @@ SettingsUNIX::SettingsUNIX()
   set("video", "soft");
 #ifdef DISPLAY_OPENGL
   set("gl_filter", "nearest");
+  set("gl_aspect", "1");
 #endif
   set("sound", "oss");
   set("fullscreen", "false");
@@ -102,6 +103,7 @@ void SettingsUNIX::usage(string& message)
     << "  -gl_filter  <type>         Type is one of the following:\n"
     << "               nearest         Normal scaling (GL_NEAREST)\n"
     << "               linear          Blurred scaling (GL_LINEAR)\n"
+    << "  -gl_aspect  <number>       Scale the width by the given amount\n"
     << endl
 #endif
     << "  -sound      <type>         Type is one of the following:\n"

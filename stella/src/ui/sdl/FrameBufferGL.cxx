@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.3 2003-11-12 15:12:06 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.4 2003-11-17 17:43:39 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -46,8 +46,8 @@ FrameBufferGL::~FrameBufferGL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createScreen()
 {
-  int w = myWidth  * theZoomLevel;
-  int h = myHeight * theZoomLevel;
+  uInt32 w = (uInt32) (myWidth  * theZoomLevel * theAspectRatio);
+  uInt32 h = myHeight * theZoomLevel;
 
   myScreen = SDL_SetVideoMode(w, h, 0, mySDLFlags);
   if(myScreen == NULL)
@@ -63,7 +63,7 @@ bool FrameBufferGL::createScreen()
   glPushMatrix();
   glLoadIdentity();
 
-  glOrtho(0.0, (GLdouble) myScreen->w/theZoomLevel,
+  glOrtho(0.0, (GLdouble) myScreen->w/(theZoomLevel * theAspectRatio),
           (GLdouble) myScreen->h/theZoomLevel, 0.0, 0.0, 1.0);
 
   glMatrixMode(GL_MODELVIEW);
@@ -104,6 +104,13 @@ bool FrameBufferGL::init()
   // Get the desired width and height of the display
   myWidth  = myMediaSource->width() << 1;
   myHeight = myMediaSource->height();
+
+  // Get the aspect ratio for the display
+  // Since the display is already doubled horizontally, we half the
+  // ratio that is provided
+  theAspectRatio = myConsole->settings().getFloat("gl_aspect") / 2;
+  if(theAspectRatio <= 0.0)
+    theAspectRatio = 1.0;
 
   // Now create the OpenGL SDL screen
   Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;

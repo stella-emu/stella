@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.4 2003-11-12 19:36:25 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.5 2003-11-17 17:43:39 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -34,7 +34,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.4 2003-11-12 19:36:25 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.5 2003-11-17 17:43:39 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -144,6 +144,9 @@ class FrameBufferSDL : public FrameBuffer
 
     // Indicates if the mouse cursor should be hidden
     bool theHideCursorIndicator;
+
+    // The aspect ratio of the window
+    float theAspectRatio;
 
     // Indicates whether the game is currently in fullscreen
     bool isFullscreen;
