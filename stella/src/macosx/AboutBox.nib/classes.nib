@@ -7,7 +7,6 @@
             OUTLETS = {appNameField = id; creditsField = id; versionField = id; }; 
             SUPERCLASS = NSObject; 
         }, 
-        {CLASS = AboutBoxTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 
     IBVersion = 1; 
