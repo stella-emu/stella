@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.16 2005-02-22 18:40:59 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.17 2005-02-27 23:41:19 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -192,82 +192,96 @@ void FrameBuffer::update()
   // Do any pre-frame stuff
   preFrameUpdate();
 
-  // Determine which mode we are in (normal or menu mode)
-  // In normal mode, only the mediasource or messages are shown,
-  //  and they are shown per-frame
-  // In menu mode, any of the menus are shown, but the mediasource
-  //  is not updated, and all updates depend on whether the screen is dirty
-  if(!myMenuMode)
+  // Determine which mode we are in (from the EventHandler)
+  // Take care of S_EMULATE mode here, otherwise let the GUI
+  // figure out what to draw
+  switch(myOSystem->eventHandler().state())
   {
-    // Draw changes to the mediasource
-    if(!myPauseStatus)
-      myOSystem->console().mediaSource().update();
-
-    // We always draw the screen, even if the core is paused
-    drawMediaSource();
-
-    if(!myPauseStatus)
+    case EventHandler::S_EMULATE:
     {
-      // Draw any pending messages
-      if(myMessageTime > 0)
-      {
-        uInt32 width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
-        uInt32 height = LINEOFFSET + FONTHEIGHT;
-        uInt32 x = (myWidth >> 1) - (width >> 1);
-        uInt32 y = myHeight - height - LINEOFFSET/2;
+      // Draw changes to the mediasource
+      if(!myPauseStatus)
+        myOSystem->console().mediaSource().update();
 
-        // Draw the bounded box and text
-        drawBoundedBox(x, y+1, width, height-2);
-        drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText);
-        myMessageTime--;
-
-        // Erase this message on next update
-        if(myMessageTime == 0)
-          theRedrawEntireFrameIndicator = true;
-      }
-    }
-  }
-  else   // we are in MENU_MODE
-  {
-    // Only update the screen if it's been invalidated
-    // or the menus have changed  
-    if(theMenuChangedIndicator || theRedrawEntireFrameIndicator)
-    {
+      // We always draw the screen, even if the core is paused
       drawMediaSource();
 
-      // Then overlay any menu items
-      switch(myCurrentWidget)
+      if(!myPauseStatus)
       {
-        case W_NONE:
-          break;
+        // Draw any pending messages
+        if(myMessageTime > 0)
+        {
+          uInt32 width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
+          uInt32 height = LINEOFFSET + FONTHEIGHT;
+          uInt32 x = (myWidth >> 1) - (width >> 1);
+          uInt32 y = myHeight - height - LINEOFFSET/2;
 
-        case MAIN_MENU:
-          drawMainMenu();
-          break;
+          // Draw the bounded box and text
+          drawBoundedBox(x, y+1, width, height-2);
+          drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText);
+          myMessageTime--;
 
-        case REMAP_MENU:
-          drawRemapMenu();
-          break;
-
-        case INFO_MENU:
-          drawInfoMenu();
-          break;
-
-        default:
-          break;
+          // Erase this message on next update
+          if(myMessageTime == 0)
+            theRedrawEntireFrameIndicator = true;
+        }
       }
-
-      // Now the screen is up to date
-      theRedrawEntireFrameIndicator = false;
-
-      // This is a performance hack to only draw the menus when necessary
-      // Software mode is single-buffered, so we don't have to worry
-      // However, OpenGL mode is double-buffered, so we need to draw the
-      // menus at least twice (so they'll be in both buffers)
-      // Otherwise, we get horrible flickering
-      myMenuRedraws--;
-      theMenuChangedIndicator = (myMenuRedraws != 0);
+      break;  // S_EMULATE
     }
+
+    case EventHandler::S_MENU:  // FIXME - this whole thing will disappear into the gui().menu class
+    {
+      // Only update the screen if it's been invalidated
+      // or the menus have changed  
+      if(theMenuChangedIndicator || theRedrawEntireFrameIndicator)
+      {
+        drawMediaSource();
+
+        // Then overlay any menu items
+        // FIXME myOSystem->gui().menu().draw();
+
+        switch(myCurrentWidget)
+        {
+          case W_NONE:
+            break;
+          case MAIN_MENU:
+            drawMainMenu();
+            break;
+          case REMAP_MENU:
+            drawRemapMenu();
+            break;
+          case INFO_MENU:
+            drawInfoMenu();
+            break;
+          default:
+            break;
+        }
+
+        // Now the screen is up to date
+        theRedrawEntireFrameIndicator = false;
+
+        // This is a performance hack to only draw the menus when necessary
+        // Software mode is single-buffered, so we don't have to worry
+        // However, OpenGL mode is double-buffered, so we need to draw the
+        // menus at least twice (so they'll be in both buffers)
+        // Otherwise, we get horrible flickering
+        myMenuRedraws--;
+        theMenuChangedIndicator = (myMenuRedraws != 0);
+      }
+      break;
+    }
+
+    case EventHandler::S_BROWSER:
+      // FIXME myOSystem->gui().browser().draw();
+      break;
+
+    case EventHandler::S_DEBUGGER:
+      // Not yet implemented
+      break;
+
+    case EventHandler::S_NONE:
+      return;
+      break;
   }
 
   // Do any post-frame stuff

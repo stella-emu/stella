@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.16 2005-02-22 18:41:11 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.17 2005-02-27 23:41:19 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -39,7 +39,7 @@ FIXME  This class also implements a MAME-like user interface where Stella settin
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.16 2005-02-22 18:41:11 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.17 2005-02-27 23:41:19 stephena Exp $
 */
 class FrameBuffer
 {
@@ -160,8 +160,8 @@ FIXME
     void refresh(bool now = false)
     {
       theRedrawEntireFrameIndicator = true;
-      if(now)
-        drawMediaSource();
+      myMenuRedraws = 2;
+      if(now) drawMediaSource();
     }
 
     /**

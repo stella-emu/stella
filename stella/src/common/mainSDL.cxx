@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.26 2005-02-25 02:29:37 stephena Exp $
+// $Id: mainSDL.cxx,v 1.27 2005-02-27 23:41:17 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -876,7 +876,7 @@ int main(int argc, char* argv[])
   theShowInfoFlag = theSettings->getBool("showinfo");
   theGrabMouseIndicator = theSettings->getBool("grabmouse");
   theHideCursorIndicator = theSettings->getBool("hidecursor");
-  bool theRomLauncherFlag = true;//theSettings->getBool("romlauncher");
+  bool theRomLauncherFlag = false;//true;//FIXMEtheSettings->getBool("romlauncher");
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
@@ -971,9 +971,10 @@ int main(int argc, char* argv[])
           break;
         else
         {
-          cerr << "Attempting to open " << romfile << endl;
-          theConsole = CreateConsole(romfile);
-          mainGameLoop();
+          if((theConsole = CreateConsole(romfile)) != NULL)
+            mainGameLoop();
+          else
+            break;
         }
       }
     }

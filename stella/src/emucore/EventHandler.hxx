@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.17 2005-02-25 02:29:38 stephena Exp $
+// $Id: EventHandler.hxx,v 1.18 2005-02-27 23:41:19 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -32,17 +32,16 @@ class OSystem;
   This class takes care of event remapping and dispatching for the
   Stella core, as well as keeping track of the current 'mode'.
 
-  The frontends will send translated events here, and the handler will
-  check to see what the current 'mode' is.  For now, the modes can be
-  normal and menu mode.
+  The frontend will send translated events here, and the handler will
+  check to see what the current 'mode' is.
 
-  If in normal mode, events received from the frontends are remapped and
+  If in emulation mode, events received from the frontend are remapped and
   sent to the emulation core.  If in menu mode, the events are sent
-  unchanged to the user interface, where (among other things) changing key
+  unchanged to the menu class, where (among other things) changing key
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.17 2005-02-25 02:29:38 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.18 2005-02-27 23:41:19 stephena Exp $
 */
 class EventHandler
 {

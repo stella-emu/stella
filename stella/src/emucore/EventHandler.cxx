@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.34 2005-02-25 02:29:38 stephena Exp $
+// $Id: EventHandler.cxx,v 1.35 2005-02-27 23:41:18 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -127,10 +127,6 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
   // Determine which mode we're in, then send the event to the appropriate place
   switch(myState)
   {
-    case S_NONE:
-      return;
-      break;
-
     case S_EMULATE:
 //      if(mod & KMOD_ALT && state)
 //        handleEvent(myAltKeyTable[key], state);
@@ -140,16 +136,20 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       handleEvent(myKeyTable[key], state);
       break;
 
-    case S_BROWSER:
-//FIXME      myOSystem->gui().browser().handleKeyEvent(key, mod, state);
-      break;
-
     case S_MENU:
 //FIXME      myOSystem->gui().menu().handleKeyEvent(key, mod, state);
       break;
 
+    case S_BROWSER:
+//FIXME      myOSystem->gui().browser().handleKeyEvent(key, mod, state);
+      break;
+
     case S_DEBUGGER:
       // Not yet implemented
+      break;
+
+    case S_NONE:
+      return;
       break;
   }
 }
