@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.41 2002-12-05 16:46:14 stephena Exp $
+// $Id: mainSDL.cxx,v 1.42 2003-09-03 20:10:58 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -34,6 +34,8 @@
 #include "bspf.hxx"
 #include "Console.hxx"
 #include "Event.hxx"
+#include "StellaEvent.hxx"
+#include "EventHandler.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
@@ -123,74 +125,108 @@ static RectList* rectList = (RectList*) NULL;
 struct Switches
 {
   SDLKey scanCode;
-  Event::Type eventCode;
-  string message;
+  StellaEvent::KeyCode keyCode;
 };
 
+// Place the most used keys first to speed up access
 static Switches list[] = {
-    { SDLK_1,           Event::KeyboardZero1,            "" },
-    { SDLK_2,           Event::KeyboardZero2,            "" },
-    { SDLK_3,           Event::KeyboardZero3,            "" },
-    { SDLK_q,           Event::KeyboardZero4,            "" },
-    { SDLK_w,           Event::KeyboardZero5,            "" },
-    { SDLK_e,           Event::KeyboardZero6,            "" },
-    { SDLK_a,           Event::KeyboardZero7,            "" },
-    { SDLK_s,           Event::KeyboardZero8,            "" },
-    { SDLK_d,           Event::KeyboardZero9,            "" },
-    { SDLK_z,           Event::KeyboardZeroStar,         "" },
-    { SDLK_x,           Event::KeyboardZero0,            "" },
-    { SDLK_c,           Event::KeyboardZeroPound,        "" },
+    { SDLK_F1,          StellaEvent::KCODE_F1         },
+    { SDLK_F2,          StellaEvent::KCODE_F2         },
+    { SDLK_F3,          StellaEvent::KCODE_F3         },
+    { SDLK_F4,          StellaEvent::KCODE_F4         },
+    { SDLK_F5,          StellaEvent::KCODE_F5         },
+    { SDLK_F6,          StellaEvent::KCODE_F6         },
+    { SDLK_F7,          StellaEvent::KCODE_F7         },
+    { SDLK_F8,          StellaEvent::KCODE_F8         },
+    { SDLK_F9,          StellaEvent::KCODE_F9         },
+    { SDLK_F10,         StellaEvent::KCODE_F10        },
+    { SDLK_F11,         StellaEvent::KCODE_F11        },
+    { SDLK_F12,         StellaEvent::KCODE_F12        },
 
-    { SDLK_8,           Event::KeyboardOne1,             "" },
-    { SDLK_9,           Event::KeyboardOne2,             "" },
-    { SDLK_0,           Event::KeyboardOne3,             "" },
-    { SDLK_i,           Event::KeyboardOne4,             "" },
-    { SDLK_o,           Event::KeyboardOne5,             "" },
-    { SDLK_p,           Event::KeyboardOne6,             "" },
-    { SDLK_k,           Event::KeyboardOne7,             "" },
-    { SDLK_l,           Event::KeyboardOne8,             "" },
-    { SDLK_SEMICOLON,   Event::KeyboardOne9,             "" },
-    { SDLK_COMMA,       Event::KeyboardOneStar,          "" },
-    { SDLK_PERIOD,      Event::KeyboardOne0,             "" },
-    { SDLK_SLASH,       Event::KeyboardOnePound,         "" },
+    { SDLK_UP,          StellaEvent::KCODE_UP         },
+    { SDLK_DOWN,        StellaEvent::KCODE_DOWN       },
+    { SDLK_LEFT,        StellaEvent::KCODE_LEFT       },
+    { SDLK_RIGHT,       StellaEvent::KCODE_RIGHT      },
+    { SDLK_SPACE,       StellaEvent::KCODE_SPACE      },
+    { SDLK_LCTRL,       StellaEvent::KCODE_CTRL       },
+    { SDLK_RCTRL,       StellaEvent::KCODE_CTRL       },
+    { SDLK_LALT,        StellaEvent::KCODE_ALT        },
+    { SDLK_RALT,        StellaEvent::KCODE_ALT        },
 
-    { SDLK_UP,          Event::JoystickZeroUp,           "" },
-    { SDLK_DOWN,        Event::JoystickZeroDown,         "" },
-    { SDLK_LEFT,        Event::JoystickZeroLeft,         "" },
-    { SDLK_RIGHT,       Event::JoystickZeroRight,        "" },
-    { SDLK_SPACE,       Event::JoystickZeroFire,         "" },
-    { SDLK_RETURN,      Event::JoystickZeroFire,         "" },
-    { SDLK_LCTRL,       Event::JoystickZeroFire,         "" },
-    { SDLK_z,           Event::BoosterGripZeroTrigger,   "" },
-    { SDLK_x,           Event::BoosterGripZeroBooster,   "" },
+    { SDLK_a,           StellaEvent::KCODE_a          },
+    { SDLK_b,           StellaEvent::KCODE_b          },
+    { SDLK_c,           StellaEvent::KCODE_c          },
+    { SDLK_d,           StellaEvent::KCODE_d          },
+    { SDLK_e,           StellaEvent::KCODE_e          },
+    { SDLK_f,           StellaEvent::KCODE_f          },
+    { SDLK_g,           StellaEvent::KCODE_g          },
+    { SDLK_h,           StellaEvent::KCODE_h          },
+    { SDLK_i,           StellaEvent::KCODE_i          },
+    { SDLK_j,           StellaEvent::KCODE_j          },
+    { SDLK_k,           StellaEvent::KCODE_k          },
+    { SDLK_l,           StellaEvent::KCODE_l          },
+    { SDLK_m,           StellaEvent::KCODE_m          },
+    { SDLK_n,           StellaEvent::KCODE_n          },
+    { SDLK_o,           StellaEvent::KCODE_o          },
+    { SDLK_p,           StellaEvent::KCODE_p          },
+    { SDLK_q,           StellaEvent::KCODE_q          },
+    { SDLK_r,           StellaEvent::KCODE_r          },
+    { SDLK_s,           StellaEvent::KCODE_s          },
+    { SDLK_t,           StellaEvent::KCODE_t          },
+    { SDLK_u,           StellaEvent::KCODE_u          },
+    { SDLK_v,           StellaEvent::KCODE_v          },
+    { SDLK_w,           StellaEvent::KCODE_w          },
+    { SDLK_x,           StellaEvent::KCODE_x          },
+    { SDLK_y,           StellaEvent::KCODE_y          },
+    { SDLK_z,           StellaEvent::KCODE_z          },
 
-    { SDLK_w,           Event::JoystickZeroUp,           "" },
-    { SDLK_s,           Event::JoystickZeroDown,         "" },
-    { SDLK_a,           Event::JoystickZeroLeft,         "" },
-    { SDLK_d,           Event::JoystickZeroRight,        "" },
-    { SDLK_TAB,         Event::JoystickZeroFire,         "" },
-    { SDLK_1,           Event::BoosterGripZeroTrigger,   "" },
-    { SDLK_2,           Event::BoosterGripZeroBooster,   "" },
+    { SDLK_0,           StellaEvent::KCODE_0          },
+    { SDLK_1,           StellaEvent::KCODE_1          },
+    { SDLK_2,           StellaEvent::KCODE_2          },
+    { SDLK_3,           StellaEvent::KCODE_3          },
+    { SDLK_4,           StellaEvent::KCODE_4          },
+    { SDLK_5,           StellaEvent::KCODE_5          },
+    { SDLK_6,           StellaEvent::KCODE_6          },
+    { SDLK_7,           StellaEvent::KCODE_7          },
+    { SDLK_8,           StellaEvent::KCODE_8          },
+    { SDLK_9,           StellaEvent::KCODE_9          },
 
-    { SDLK_o,           Event::JoystickOneUp,            "" },
-    { SDLK_l,           Event::JoystickOneDown,          "" },
-    { SDLK_k,           Event::JoystickOneLeft,          "" },
-    { SDLK_SEMICOLON,   Event::JoystickOneRight,         "" },
-    { SDLK_j,           Event::JoystickOneFire,          "" },
-    { SDLK_n,           Event::BoosterGripOneTrigger,    "" },
-    { SDLK_m,           Event::BoosterGripOneBooster,    "" },
+    { SDLK_KP0,         StellaEvent::KCODE_KP0        },
+    { SDLK_KP1,         StellaEvent::KCODE_KP1        },
+    { SDLK_KP2,         StellaEvent::KCODE_KP2        },
+    { SDLK_KP3,         StellaEvent::KCODE_KP3        },
+    { SDLK_KP4,         StellaEvent::KCODE_KP4        },
+    { SDLK_KP5,         StellaEvent::KCODE_KP5        },
+    { SDLK_KP6,         StellaEvent::KCODE_KP6        },
+    { SDLK_KP7,         StellaEvent::KCODE_KP7        },
+    { SDLK_KP8,         StellaEvent::KCODE_KP8        },
+    { SDLK_KP9,         StellaEvent::KCODE_KP9        },
+    { SDLK_KP_PERIOD,   StellaEvent::KCODE_KP_PERIOD  },
+    { SDLK_KP_DIVIDE,   StellaEvent::KCODE_KP_DIVIDE  },
+    { SDLK_KP_MULTIPLY, StellaEvent::KCODE_KP_MULTIPLY},
+    { SDLK_KP_MINUS,    StellaEvent::KCODE_KP_MINUS   },
+    { SDLK_KP_PLUS,     StellaEvent::KCODE_KP_PLUS    },
+    { SDLK_KP_ENTER,    StellaEvent::KCODE_KP_ENTER   },
+    { SDLK_KP_EQUALS,   StellaEvent::KCODE_KP_EQUALS  },
 
-    { SDLK_F1,          Event::ConsoleSelect,            "" },
-    { SDLK_F2,          Event::ConsoleReset,             "" },
-    { SDLK_F3,          Event::ConsoleColor,             "Color Mode" },
-    { SDLK_F4,          Event::ConsoleBlackWhite,        "BW Mode" },
-    { SDLK_F5,          Event::ConsoleLeftDifficultyA,   "Left Difficulty A" },
-    { SDLK_F6,          Event::ConsoleLeftDifficultyB,   "Left Difficulty B" },
-    { SDLK_F7,          Event::ConsoleRightDifficultyA,  "Right Difficulty A" },
-    { SDLK_F8,          Event::ConsoleRightDifficultyB,  "Right Difficulty B" }
+    { SDLK_BACKSPACE,   StellaEvent::KCODE_BACKSPACE  },
+    { SDLK_TAB,         StellaEvent::KCODE_TAB        },
+    { SDLK_RETURN,      StellaEvent::KCODE_RETURN     },
+    { SDLK_PAUSE,       StellaEvent::KCODE_PAUSE      },
+    { SDLK_ESCAPE,      StellaEvent::KCODE_ESCAPE     },
+    { SDLK_COMMA,       StellaEvent::KCODE_COMMA      },
+    { SDLK_PERIOD,      StellaEvent::KCODE_PERIOD     },
+    { SDLK_SLASH,       StellaEvent::KCODE_SLASH      },
+    { SDLK_BACKSLASH,   StellaEvent::KCODE_BACKSLASH  },
+    { SDLK_SEMICOLON,   StellaEvent::KCODE_SEMICOLON  },
+    { SDLK_QUOTE,       StellaEvent::KCODE_QUOTE      },
+    { SDLK_BACKQUOTE,   StellaEvent::KCODE_BACKQUOTE  },
+    { SDLK_LEFTBRACKET, StellaEvent::KCODE_LEFTBRACKET},
+    { SDLK_RIGHTBRACKET,StellaEvent::KCODE_RIGHTBRACKET}
   };
 
-// Event objects to use
+// Pointer to the event handler object or the null pointer
+static EventHandler* theEventHandler;
 static Event theEvent;
 static Event keyboardEvent;
 
@@ -1064,14 +1100,11 @@ void handleEvents()
       else // check all the other keys
       {
         for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
-        { 
+        {
           if(list[i].scanCode == key)
           {
-            theEvent.set(list[i].eventCode, 1);
-            keyboardEvent.set(list[i].eventCode, 1);
-            if(list[i].message != "")
-              theConsole->mediaSource().showMessage(list[i].message,
-                  MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+            theEventHandler->sendKeyEvent(list[i].keyCode,
+              StellaEvent::KSTATE_PRESSED);
           }
         }
       }
@@ -1085,8 +1118,8 @@ void handleEvents()
       { 
         if(list[i].scanCode == key)
         {
-          theEvent.set(list[i].eventCode, 0);
-          keyboardEvent.set(list[i].eventCode, 0);
+          theEventHandler->sendKeyEvent(list[i].keyCode,
+            StellaEvent::KSTATE_RELEASED);
         }
       }
     }
@@ -1699,6 +1732,15 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  // Create an event handler which will collect and dispatch event.
+  theEventHandler = new EventHandler();
+  if(!theEventHandler)
+  {
+    delete[] image;
+    cleanup();
+    return 0;
+  }
+
   // Create a sound object for playing audio
   if(settings->theSoundDriver == "0")
   {
@@ -1746,11 +1788,11 @@ int main(int argc, char* argv[])
   // Create the 2600 game console for users or developers
 #ifdef DEVELOPER_SUPPORT
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound->getSampleRate(),
+      *(theEventHandler->event()), propertiesSet, sound->getSampleRate(),
       &settings->userDefinedProperties);
 #else
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound->getSampleRate());
+      *(theEventHandler->event()), propertiesSet, sound->getSampleRate());
 #endif
 
   // Free the image since we don't need it any longer
@@ -1769,6 +1811,9 @@ int main(int argc, char* argv[])
     cleanup();
     return 0;
   }
+
+  // Let the event handler know about the mediasource
+  theEventHandler->setMediaSource(theConsole->mediaSource());
 
   // These variables are common to both timing options
   // and are needed to calculate the overall frames per second.
