@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.6 2003-10-26 19:40:39 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -29,7 +29,7 @@ class MediaSource;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.6 2003-10-26 19:40:39 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
 */
 class MediaSource
 {
@@ -99,6 +99,7 @@ class MediaSource
     virtual uInt32 scanlines() const = 0;
 
   public:
+#if 0 //FIXME
     /**
       Enumeration of the possible audio sample types.
     */
@@ -138,6 +139,7 @@ class MediaSource
       @return The type of audio sample stored in the sample queue.
     */
     virtual AudioSampleType typeOfAudioSamples() const = 0;
+#endif
 
   private:
     // Copy constructor isn't supported by this class so make it private

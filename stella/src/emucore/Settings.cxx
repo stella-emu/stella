@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.17 2004-04-03 18:54:22 stephena Exp $
+// $Id: Settings.cxx,v 1.18 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -46,6 +46,8 @@ Settings::Settings()
   set("gl_aspect", "2");
 #endif
   set("sound", "true");
+  set("fragsize", "512");
+  set("bufsize", "1536");
   set("fullscreen", "false");
   set("grabmouse", "false");
   set("hidecursor", "false");

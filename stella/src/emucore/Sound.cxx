@@ -13,13 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
+// $Id: Sound.cxx,v 1.9 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
+
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
 
 #include "Sound.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sound::Sound()
+Sound::Sound(uInt32 fragsize, uInt32 queuesize)
   : myPauseStatus(false)
 {
 }
@@ -37,17 +40,6 @@ void Sound::init(Console* console, MediaSource* mediasrc)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::closeDevice()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Sound::getSampleRate() const
-{
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Sound::isSuccessfullyInitialized() const
 {
   return true;
@@ -61,4 +53,43 @@ void Sound::setVolume(Int32 volume)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sound::update()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::set(uInt16 addr, uInt8 value)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Sound::save(Serializer& out)
+{
+  out.putString("TIASound");
+
+  uInt8 reg = 0;
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+  out.putLong(reg);
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Sound::load(Deserializer& in)
+{
+  string soundDevice = "TIASound";
+  if(in.getString() != soundDevice)
+    return false;
+
+  uInt8 reg;
+  reg = (uInt8) in.getLong();
+  reg = (uInt8) in.getLong();
+  reg = (uInt8) in.getLong();
+  reg = (uInt8) in.getLong();
+  reg = (uInt8) in.getLong();
+  reg = (uInt8) in.getLong();
+
+  return true;
 }

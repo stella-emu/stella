@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.6 2003-12-04 22:22:53 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.6 2003-12-04 22:22:53 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -37,7 +37,7 @@ class SoundSDL : public Sound
     /**
       Create a new sound object
     */
-    SoundSDL();
+    SoundSDL(uInt32 fragsize, uInt32 queuesize);
  
     /**
       Destructor
@@ -81,10 +81,33 @@ class SoundSDL : public Sound
     void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the
-      media source.
+      Generates audio samples to fill the sample queue.
     */
     void update();
+
+    /**
+      Sets the sound register to a given value.
+
+      @param addr  The register address
+      @param value The value to save into the register
+    */
+    void set(uInt16 addr, uInt8 value);
+
+    /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out  The serializer device to save to.
+      @return     The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out);
+
+    /**
+      Loads the current state of this device from the given Deserializer.
+
+      @param in  The deserializer device to load from.
+      @return    The result of the load.  True on success, false on failure.
+    */
+    bool load(Deserializer& in);
 
   private:
     /**
@@ -132,6 +155,13 @@ class SoundSDL : public Sound
           @return The number of samples in the queue.
         */
         uInt32 size() const;
+
+        /**
+          Answers the maximum number of samples the queue can hold.
+
+          @return The maximum number of samples in the queue.
+        */
+        uInt32 capacity() const { return myCapacity; }
 
       private:
         const uInt32 myCapacity;

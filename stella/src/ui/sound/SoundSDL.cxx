@@ -13,22 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.6 2003-12-04 22:22:53 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
 
+#include "TIASound.h"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+
 #include "SoundSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL::SoundSDL()
+SoundSDL::SoundSDL(uInt32 fragsize, uInt32 queuesize)
     : myCurrentVolume(SDL_MIX_MAXVOLUME),
-      myFragmentSize(2048),
+      myFragmentSize(fragsize),
       myIsInitializedFlag(false),
       myIsMuted(false),
       mySampleRate(31400),
-      mySampleQueueSize(8000),
-      mySampleQueue(mySampleQueueSize)//mySampleRate)
+      mySampleQueue(queuesize)
 {
   if(1)
   {
@@ -85,6 +88,10 @@ SoundSDL::SoundSDL()
 //    cerr << "Samples: " << (int)myHardwareSpec.samples << endl;
 //    cerr << "Size: " << (int)myHardwareSpec.size << endl;
 
+    // Now initialize the TIASound object which will actually generate sound
+    Tia_sound_init(31400, mySampleRate);
+
+    // And start the SDL sound subsystem ...
     SDL_PauseAudio(0);
   }
   else
@@ -98,13 +105,12 @@ SoundSDL::SoundSDL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::~SoundSDL()
 {
-  closeDevice();
-}
+  if(myIsInitializedFlag)
+  {
+    SDL_CloseAudio();
+  }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 SoundSDL::getSampleRate() const
-{
-  return myIsInitializedFlag ? mySampleRate : 0;
+  myIsInitializedFlag = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,17 +139,6 @@ void SoundSDL::mute(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::closeDevice()
-{
-  if(myIsInitializedFlag)
-  {
-    SDL_CloseAudio();
-  }
-
-  myIsInitializedFlag = false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::setVolume(Int32 percent)
 {
   if(myIsInitializedFlag)
@@ -164,44 +159,99 @@ void SoundSDL::setVolume(Int32 percent)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::update()
 {
-  if(myIsInitializedFlag)
-  {
-    if(myPauseStatus)
-      return;
 
+  if(!myPauseStatus && myIsInitializedFlag)
+  {
     // Make sure we have exclusive access to the sample queue
     SDL_LockAudio();
 
-    // Move all of the generated samples into the our private sample queue
-    uInt8 buffer[2048];
-    while(myMediaSource->numberOfAudioSamples() > 0)
-    {
-      uInt32 size = myMediaSource->dequeueAudioSamples(buffer, 2048);
-      mySampleQueue.enqueue(buffer, size);
-    }
+    // Generate enough samples to keep the sample queue full to capacity
+    uInt32 numbytes = mySampleQueue.capacity() - mySampleQueue.size();
+    uInt8 buffer[numbytes];
+    Tia_process(buffer, numbytes);
+    mySampleQueue.enqueue(buffer, numbytes);
 
     // Release lock on the sample queue
     SDL_UnlockAudio();
-
-    // Block until the sound thread has consumed all but 142 milliseconds
-    // of the available audio samples
-    uInt32 left = mySampleRate / 3;
-    for(;;)
-    {
-      uInt32 size = 0;
-  
-      SDL_LockAudio();
-      size = mySampleQueue.size();
-      SDL_UnlockAudio();
-
-      if(size < left)
-      {
-        break;
-      }
- 
-      SDL_Delay(1);
-    }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::set(uInt16 addr, uInt8 value)
+{
+  Update_tia_sound(addr, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL::save(Serializer& out)
+{
+  string device = "TIASound";
+
+  try
+  {
+    out.putString(device);
+
+    uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
+
+    // Only get the TIA sound registers if sound is enabled
+    if(myIsInitializedFlag)
+      Tia_get_registers(&reg1, &reg2, &reg3, &reg4, &reg5, &reg6);
+
+    out.putLong(reg1);
+    out.putLong(reg2);
+    out.putLong(reg3);
+    out.putLong(reg4);
+    out.putLong(reg5);
+    out.putLong(reg6);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << device << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL::load(Deserializer& in)
+{
+  string device = "TIASound";
+
+  try
+  {
+    if(in.getString() != device)
+      return false;
+
+    uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
+    reg1 = (uInt8) in.getLong();
+    reg2 = (uInt8) in.getLong();
+    reg3 = (uInt8) in.getLong();
+    reg4 = (uInt8) in.getLong();
+    reg5 = (uInt8) in.getLong();
+    reg6 = (uInt8) in.getLong();
+
+    // Only update the TIA sound registers if sound is enabled
+    if(myIsInitializedFlag)
+      Tia_set_registers(reg1, reg2, reg3, reg4, reg5, reg6);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << device << endl;
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,14 +263,6 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
   {
     return;
   }
-
-  // Don't use samples unless there's at least 76 milliseconds worth of data
-  if(sound->mySampleQueue.size() < (sound->mySampleRate / 16))
-  {
-    return;
-  }
-
-//cerr << "len: " << len << " Q.size: " << sound->mySampleQueue.size() << endl;
 
   if(sound->mySampleQueue.size() > 0)
   {
@@ -328,4 +370,3 @@ uInt32 SoundSDL::SampleQueue::size() const
 {
   return mySize;
 }
-

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.cxx,v 1.2 2002-08-11 17:48:13 stephena Exp $
+// $Id: Serializer.cxx,v 1.3 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #include <iostream>
@@ -68,7 +68,7 @@ void Serializer::putLong(long value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putString(string& str)
+void Serializer::putString(const string& str)
 {
   int len = str.length();
   putLong(len);

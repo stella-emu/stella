@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.22 2003-12-04 19:18:45 stephena Exp $
+// $Id: Console.cxx,v 1.23 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -155,7 +155,7 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   }
 
   M6532* m6532 = new M6532(*this);
-  TIA* tia = new TIA(*this, mySound.getSampleRate());
+  TIA* tia = new TIA(*this, mySound);
   Cartridge* cartridge = Cartridge::create(image, size, myProperties);
 
   mySystem->attach(m6502);
@@ -207,7 +207,7 @@ Console::~Console()
 void Console::update()
 {
   myFrameBuffer.update();
-  mySound.update();
+// FIXME  mySound.update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

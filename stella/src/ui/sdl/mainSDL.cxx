@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.68 2004-04-03 18:54:23 stephena Exp $
+// $Id: mainSDL.cxx,v 1.69 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -637,10 +637,7 @@ void cleanup()
     delete theConsole;
 
   if(theSound)
-  {
-    theSound->closeDevice();
     delete theSound;
-  }
 
   if(theDisplay)
     delete theDisplay;
@@ -693,7 +690,7 @@ int main(int argc, char* argv[])
 #if defined(UNIX)
   setenv("SDL_VIDEO_CENTERED", "1", 1);
 #else
-  putenv("SDL_VIDEO_CENTERED");
+  putenv("SDL_VIDEO_CENTERED=1");
 #endif
 
   // Get a pointer to the file which contains the cartridge ROM
@@ -756,9 +753,14 @@ int main(int argc, char* argv[])
   // Create a sound object for playing audio
   if(theSettings->getBool("sound"))
   {
-    theSound = new SoundSDL();
+    uInt32 fragsize = theSettings->getInt("fragsize");
+    uInt32 bufsize  = theSettings->getInt("bufsize");
+    theSound = new SoundSDL(fragsize, bufsize);
     if(theShowInfoFlag)
-      cout << "Sound enabled.\n";
+    {
+      cout << "Sound enabled, using fragment size = " << fragsize;
+      cout << " and buffer size = " << bufsize << "." << endl;
+    }
   }
   else  // even if sound has been disabled, we still need a sound object
   {

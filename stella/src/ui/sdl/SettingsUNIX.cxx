@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.7 2004-04-03 18:54:23 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.8 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -87,6 +87,8 @@ void SettingsUNIX::usage(string& message)
     << endl
   #endif
     << "  -sound      <0|1>          Enable sound generation\n"
+    << "  -fragsize   <number>       The size of sound fragments (should be a power of two)\n"
+    << "  -bufsize    <number>       The size of the sound buffer\n"
     << "  -framerate  <number>       Display the given number of frames per second\n"
     << "  -zoom       <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen <0|1>          Play the game in fullscreen mode\n"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.4 2002-08-11 17:48:13 stephena Exp $
+// $Id: Serializer.hxx,v 1.5 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #ifndef SERIALIZER_HXX
@@ -33,7 +33,7 @@
   Boolean values are written using a special pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.4 2002-08-11 17:48:13 stephena Exp $
+  @version $Id: Serializer.hxx,v 1.5 2004-04-04 02:03:15 stephena Exp $
 */
 class Serializer
 {
@@ -78,7 +78,7 @@ class Serializer
 
       @param str The string to write to the output stream.
     */
-    void putString(string& str);
+    void putString(const string& str);
 
     /**
       Writes a boolean value to the current output stream.

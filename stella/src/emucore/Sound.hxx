@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
+// $Id: Sound.hxx,v 1.9 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -21,6 +21,8 @@
 
 class Console;
 class MediaSource;
+class Serializer;
+class Deserializer;
 
 #include "bspf.hxx"
 
@@ -30,7 +32,7 @@ class MediaSource;
   to compile Stella with no sound support whatsoever.
 
   @author  Stephen Anthony
-  @version $Id: Sound.hxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
+  @version $Id: Sound.hxx,v 1.9 2004-04-04 02:03:15 stephena Exp $
 */
 class Sound
 {
@@ -38,7 +40,7 @@ class Sound
     /**
       Create a new sound object
     */
-    Sound();
+    Sound(uInt32 fragsize = 0, uInt32 queuesize = 0);
  
     /**
       Destructor
@@ -54,18 +56,6 @@ class Sound
       @param mediasrc  The mediasource
     */
     void init(Console* console, MediaSource* mediasrc);
-
-    /**
-      Closes the sound device
-    */
-    virtual void closeDevice();
-
-    /**
-      Return the playback sample rate for the sound device.
-    
-      @return The playback sample rate
-    */
-    virtual uInt32 getSampleRate() const;
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -84,10 +74,33 @@ class Sound
     virtual void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the
-      media source.
+      Update the sound device with audio samples.
     */
     virtual void update();
+
+    /**
+      Sets the sound register to a given value.
+
+      @param addr  The register address
+      @param value The value to save into the register
+    */
+    virtual void set(uInt16 addr, uInt8 value);
+
+    /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out  The serializer device to save to.
+      @return     The result of the save.  True on success, false on failure.
+    */
+    virtual bool save(Serializer& out);
+
+    /**
+      Loads the current state of this device from the given Deserializer.
+
+      @param in  The deserializer device to load from.
+      @return    The result of the load.  True on success, false on failure.
+    */
+    virtual bool load(Deserializer& in);
 
     /**
       Sets the pause status.  While pause is selected, update()

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.13 2003-12-10 18:58:56 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.14 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -371,13 +371,13 @@ bool FrameBufferGL::createTextures()
   {
     myFilterParam = GL_LINEAR;
     if(showinfo)
-      cout << "Using GL_LINEAR filtering.\n\n";
+      cout << "Using GL_LINEAR filtering.\n";
   }
   else if(filter == "nearest")
   {
     myFilterParam = GL_NEAREST;
     if(showinfo)
-      cout << "Using GL_NEAREST filtering.\n\n";
+      cout << "Using GL_NEAREST filtering.\n";
   }
 
   glGenTextures(1, &myTextureID);

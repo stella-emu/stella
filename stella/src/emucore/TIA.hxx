@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.11 2003-12-04 19:18:45 stephena Exp $
+// $Id: TIA.hxx,v 1.12 2004-04-04 02:03:15 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
 #define TIA_HXX
 
 class Console;
+class Sound;
 class System;
 class Serializer;
 class Deserializer;
@@ -39,11 +40,10 @@ class Deserializer;
   and composite sync required by a video modulator.  
 
   This class outputs the serial data into a frame buffer which can then
-  be displayed on screen it also creates audio samples and places them
-  in a bounded queue.
+  be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.11 2003-12-04 19:18:45 stephena Exp $
+  @version $Id: TIA.hxx,v 1.12 2004-04-04 02:03:15 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -52,9 +52,9 @@ class TIA : public Device , public MediaSource
       Create a new TIA for the specified console
 
       @param console The console the TIA is associated with
-      @param sampleRate The sample rate to create audio samples at
+      @param sound   The sound object the TIA is associated with
     */
-    TIA(const Console& console, uInt32 sampleRate);
+    TIA(const Console& console, Sound& sound);
  
     /**
       Destructor
@@ -171,38 +171,6 @@ class TIA : public Device , public MediaSource
     */
     uInt32 scanlines() const;
 
-    /**
-      Dequeues all of the samples in the audio sample queue.
-    */
-    void clearAudioSamples();
-
-    /**
-      Dequeues up to the specified number of samples from the audio sample
-      queue into the buffer.  If the requested number of samples are not
-      available then all of samples are dequeued.  The method returns the
-      actual number of samples removed from the queue.
-
-      @return The actual number of samples which were dequeued.
-    */
-    uInt32 dequeueAudioSamples(uInt8* buffer, int size);
-
-    /**
-      Answers the number of samples currently available in the audio
-      sample queue.
-
-      @return The number of samples in the audio sample queue.
-    */
-    uInt32 numberOfAudioSamples() const;
-
-    /**
-      Returns the type of audio samples which are being stored in the audio
-      sample queue.  Currently, only unsigned 8-bit audio samples are created,
-      however, in the future this will be extended to support stereo samples.
-
-      @return The type of audio sample stored in the sample queue.
-    */
-    MediaSource::AudioSampleType typeOfAudioSamples() const;
-
   private:
     // Compute the ball mask table
     void computeBallMaskTable();
@@ -236,67 +204,11 @@ class TIA : public Device , public MediaSource
     void waitHorizontalSync();
 
   private:
-    /**
-      A bounded queue class used to hold audio samples after they are
-      produced by the TIA sound emulation.
-    */
-    class SampleQueue
-    {
-      public:
-        /**
-          Create a new SampleQueue instance which can hold the specified
-          number of samples.  If the queue ever reaches its capacity then
-          older samples are discarded.
-        */
-        SampleQueue(uInt32 capacity);
-
-        /**
-          Destroy this SampleQueue instance.
-        */
-        virtual ~SampleQueue();
-
-      public:
-        /**
-          Clear any samples stored in the queue.
-        */
-        void clear();
-
-        /**
-          Dequeue the upto the specified number of samples and store them
-          in the buffer.  Returns the actual number of samples removed from
-          the queue.
-
-          @return the actual number of samples removed from the queue.
-        */
-        uInt32 dequeue(uInt8* buffer, uInt32 size);
-
-        /**
-          Enqueue the specified number of samples from the buffer.
-        */
-        void enqueue(uInt8* buffer, uInt32 size);
-
-        /**
-          Answers the number of samples currently in the queue.
-
-          @return The number of samples in the queue.
-        */
-        uInt32 size() const;
-
-      private:
-        const uInt32 myCapacity;
-        uInt8* myBuffer;
-        uInt32 mySize;
-        uInt32 myHead;
-        uInt32 myTail;
-    };
-
-    // Invoked to create and store audio samples into the sample queue
-    // whenever a TIA audio register is changed or a frame is finished
-    void createAudioSamples(uInt16 addr, uInt8 value);
-    
-  private:
     // Console the TIA is associated with
     const Console& myConsole;
+
+    // Sound object the TIA is associated with
+    Sound& mySound;
 
   private:
     // Indicates the CPU cycle when a TIA sound register was last updated
@@ -488,13 +400,6 @@ class TIA : public Device , public MediaSource
 
     // Counter used for TIA M0 "bug" 
     uInt32 myM0CosmicArkCounter;
-
-  private:
-    // Sample queue instance for storing audio samples
-    SampleQueue mySampleQueue;
-
-    // Sample rate requested for the audio samples
-    uInt32 mySampleRate;
 
   private:
     // Ball mask table (entries are true or false)
