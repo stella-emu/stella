@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
+// $Id: PropsSet.cxx,v 1.4 2002-04-12 21:53:02 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -148,6 +148,7 @@ void PropertiesSet::deleteNode(TreeNode *node)
     deleteNode(node->left);
     deleteNode(node->right);
     delete node->props;
+    delete node;
   }
 }
 
