@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.40 2003-09-20 13:41:36 stephena Exp $
+## $Id: makefile,v 1.41 2003-09-26 00:32:00 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -30,9 +30,9 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
 ### SDL sound not yet supported in the X11 version
 ### comment out all lines to completely disable sound
 ###
-SOUND_ALSA = 1
-SOUND_OSS  = 1
-SOUND_SDL  = 1
+#SOUND_ALSA = 1
+#SOUND_OSS  = 1
+#SOUND_SDL  = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -89,7 +89,7 @@ SRC	= ..
 CORE	= $(SRC)/emucore
 UI	= $(SRC)/ui
 
-INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(UI)/common -I$(UI)/frontend
+INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(UI)/common
 
 FLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
 
@@ -238,7 +238,7 @@ bsdi-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o"
+          OBJS="mainX11.o SettingsUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 solaris-x:
@@ -251,7 +251,7 @@ solaris-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o"
+          OBJS="mainX11.o SettingsUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 ###############################################################################
@@ -265,7 +265,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartMB.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
-            Serializer.o Deserializer.o TIASound.o EventHandler.o \
+            Serializer.o Deserializer.o TIASound.o EventHandler.o UserInterface.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)
@@ -312,9 +312,6 @@ Event.o: $(CORE)/Event.cxx $(CORE)/Event.hxx
 
 EventHandler.o: $(CORE)/EventHandler.cxx $(CORE)/EventHandler.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/EventHandler.cxx
-
-Frontend.o: $(CORE)/Frontend.cxx $(CORE)/Frontend.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Frontend.cxx
 
 Control.o: $(CORE)/Control.cxx $(CORE)/Control.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Control.cxx
@@ -394,6 +391,9 @@ M6532.o: $(CORE)/M6532.cxx $(CORE)/M6532.hxx
 TIA.o: $(CORE)/TIA.cxx $(CORE)/TIA.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/TIA.cxx
 
+UserInterface.o: $(CORE)/UserInterface.cxx $(CORE)/UserInterface.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/UserInterface.cxx
+
 TIASound.o: $(CORE)/TIASound.c $(CORE)/TIASound.h
 	$(CXX) -c -DWIN32 $(FLAGS) $(OPTIONS) $(CORE)/TIASound.c
 
@@ -459,9 +459,6 @@ SoundOSS.o: $(UI)/sound/SoundOSS.cxx $(UI)/sound/SoundOSS.hxx
 
 SoundSDL.o: $(UI)/sound/SoundSDL.cxx $(UI)/sound/SoundSDL.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundSDL.cxx
-
-FrontendUNIX.o: $(UI)/frontend/FrontendUNIX.cxx $(UI)/frontend/FrontendUNIX.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/frontend/FrontendUNIX.cxx
 
 mainX11.o: $(UI)/x11/mainX11.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/mainX11.cxx

@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.1 2003-09-25 16:20:34 stephena Exp $
+// $Id: UserInterface.cxx,v 1.2 2003-09-26 00:32:00 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
 #include "Console.hxx"
+#include "Event.hxx"
 #include "Settings.hxx"
 #include "MediaSrc.hxx"
 #include "UserInterface.hxx"
@@ -26,28 +27,28 @@
 UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
     : myConsole(console),
       myMediaSource(mediasrc),
-      myIsBufferDirtyFlag(true)
+      myBufferSize(160*300),
+      myBufferDirtyFlag(true),
+      myCurrentMenu(MENU_NONE)
 {
-  myMenuBuffer = new uInt8[160 * 300];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UserInterface::~UserInterface(void)
 {
-// FIXME
-cerr << "UserInterface::~UserInterface called\n";
-  delete[] myMenuBuffer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::showMainMenu(bool show)
+void UserInterface::showMenu(MenuType type)
 {
-  if(show)
-    cerr << "Menu entered ...\n";
-  else
-    cerr << "Menu exit.\n";
+  if(myCurrentMenu != type)
+    myBufferDirtyFlag = true;
 
-  return;
+  myCurrentMenu = type;
+
+//  if(myBufferDirtyFlag)
+//    cls();
+
 /*  uInt8* frontbuffer = myMediaSource->currentFrameBuffer();
   uInt8* backbuffer  = myMediaSource->previousFrameBuffer();
 
@@ -67,40 +68,83 @@ void UserInterface::showMainMenu(bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::setXStart(uInt32 value)
-{
-  myXStart = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::setYStart(uInt32 value)
-{
-  myYStart = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::setWidth(uInt32 value)
-{
-  myWidth = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::setHeight(uInt32 value)
-{
-  myHeight = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*void UserInterface::cls()
+void UserInterface::cls()
 {
 cerr << "UserInterface::cls() called\n";
-  uInt8* frontbuffer = myMediaSource->currentFrameBuffer();
-  uInt8* backbuffer  = myMediaSource->previousFrameBuffer();
-
-  for(uInt32 i = 0; i < 160*300; ++i)
-    frontbuffer[i] = backbuffer[i]  = (uInt8) 0;
+  // Initialize buffer to -1, which represents an 'opaque' color
+  // When the buffer is overlaid onto the TIA, all pixels with a
+  // color of -1 will be use the underlying color, like a color mask
+  for(uInt32 i = 0; i < myBufferSize; ++i)
+    myBuffer[i] = -1;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::update()
+{
+  uInt8* frontbuffer = myMediaSource->currentFrameBuffer();
+
+  if(myCurrentMenu == MENU_NONE)
+  {
+    myCurrentMenu = MENU_NONE;
+  }
+  else if(myCurrentMenu == MENU_MAIN)
+  {
+    cerr << "draw main menu\n";
+  }
+  else if(myCurrentMenu == MENU_REMAP)
+  {
+    cerr << "draw remap menu\n";
+  }
+  else if(myCurrentMenu == MENU_INFO)
+  {
+    cerr << "draw info menu\n";
+
+
+// FIXME - this will disappear soon ...
+  // First, draw the surrounding box
+  for(uInt32 x = 10; x < 100; ++x)
+  {
+    for(uInt32 y = 10; y < 200; ++y)
+    {
+      uInt32 position = ((20 + y) * 160) + x + 20;
+
+      if((x == 0) || (x == 200 - 1) || (y == 0) || (y == 200 - 1))
+        frontbuffer[position] = 10;
+      else
+        frontbuffer[position] = 0;
+    }
+  }
+
+  }
+
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+UserInterface::MenuType UserInterface::currentSelectedMenu()
+{
+  return MENU_INFO; // FIXME
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type UserInterface::currentSelectedItem()
+{
+  return Event::NoType; // FIXME
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::moveCursorUp()
+{
+cerr << "cursor up\n";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::moveCursorDown()
+{
+cerr << "cursor down\n";
+}
+
+
+/*
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::drawMessageText(string& message)
 {

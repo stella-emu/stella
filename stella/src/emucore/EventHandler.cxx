@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.10 2003-09-25 16:20:34 stephena Exp $
+// $Id: EventHandler.cxx,v 1.11 2003-09-26 00:32:00 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -94,9 +94,15 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
   if(key == StellaEvent::KCODE_TAB && state == 1)
   {
     myMenuStatus = !myMenuStatus;
-    myConsole->gui().showMainMenu(myMenuStatus);
-    if(!myMenuStatus)
+    if(myMenuStatus)
+    {
+      myConsole->gui().showMenu(UserInterface::MENU_MAIN);
+    }
+    else
+    {
+      myConsole->gui().showMenu(UserInterface::MENU_NONE);
       myReturnPressedFlag = myRemapModeFlag = myEventSelectedFlag = false;
+    }
 
     return;
   }
@@ -138,20 +144,23 @@ void EventHandler::processMenuEvent(StellaEvent::KeyCode key)
   }
   else if(myReturnPressedFlag)
   {
-    // FIXME - get selected menu
-    if(1)//menu == REMAP)
+    UserInterface::MenuType menu = myConsole->gui().currentSelectedMenu();
+    if(menu == UserInterface::MENU_REMAP)
     {
-      // draw remap menu
-cerr << "entering remap mode\n";
+      myConsole->gui().showMenu(UserInterface::MENU_REMAP);
       myRemapModeFlag = true;
     }
-/*    else if(1)//menu == INFO)
+    else if(menu == UserInterface::MENU_INFO)
     {
-      // draw info menu
+      myConsole->gui().showMenu(UserInterface::MENU_INFO);
     }
-*/
+
     myReturnPressedFlag = false;
   }
+  else if(key == StellaEvent::KCODE_UP)
+    myConsole->gui().moveCursorUp();
+  else if(key == StellaEvent::KCODE_DOWN)
+    myConsole->gui().moveCursorDown();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,7 +170,7 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
   // Determine where the event should be sent
   if(myMenuStatus && state == 1)
   {
-    cerr << "send joy event to remap class\n";
+    cerr << "send joy event to remap class\nstick = " << stick << ", button = " << code << endl;
   }
   else
   {
@@ -369,6 +378,7 @@ void EventHandler::setDefaultKeymap()
 void EventHandler::setDefaultJoymap()
 {
   // Left joystick
+  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JBUTTON_9 ]  = Event::ConsoleSelect;
   myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_UP]    = Event::JoystickZeroUp;
   myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_DOWN]  = Event::JoystickZeroDown;
   myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_LEFT]  = Event::JoystickZeroLeft;

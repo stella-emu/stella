@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.20 2003-09-21 14:33:33 stephena Exp $
+// $Id: TIA.cxx,v 1.21 2003-09-26 00:32:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -28,6 +28,7 @@
 #include "TIA.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "UserInterface.hxx"
 #include "TIASound.h"
 
 #define HBLANK 68
@@ -573,12 +574,9 @@ void TIA::update()
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myScanlineCountForLastFrame = totalClocks / 228;
 
-  // Draw any pending messages to the framebuffer
-  if(myMessageTime > 0)
-  {
-    drawMessageText();
-    --myMessageTime;
-  }
+  // Draw any pending user interface elements to the framebuffer
+  if(myConsole.gui().drawPending())
+    myConsole.gui().update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

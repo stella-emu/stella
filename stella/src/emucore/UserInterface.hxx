@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.hxx,v 1.1 2003-09-25 16:20:34 stephena Exp $
+// $Id: UserInterface.hxx,v 1.2 2003-09-26 00:32:00 stephena Exp $
 //============================================================================
 
 #ifndef USERINTERFACE_HXX
 #define USERINTERFACE_HXX
 
 #include "bspf.hxx"
+#include "Event.hxx"
 
 class Console;
 class MediaSource;
@@ -29,7 +30,7 @@ class MediaSource;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: UserInterface.hxx,v 1.1 2003-09-25 16:20:34 stephena Exp $
+  @version $Id: UserInterface.hxx,v 1.2 2003-09-26 00:32:00 stephena Exp $
 */
 class UserInterface
 {
@@ -47,25 +48,22 @@ class UserInterface
     */
     virtual ~UserInterface(void);
 
-
-//      @param key The key of the property to lookup
-//      @return The value of the property 
-
+    // Enumeration representing the different types of menus
+    enum MenuType { MENU_NONE, MENU_MAIN, MENU_REMAP, MENU_INFO };
 
   public:
-    void setXStart(uInt32 value);
-    void setYStart(uInt32 value);
-    void setWidth(uInt32 value);
-    void setHeight(uInt32 value);
+    MenuType currentSelectedMenu();
+    Event::Type currentSelectedItem();
 
-//    void drawMessageText(string& message);
-    void showMainMenu(bool show);
-    void showRemapMenu(bool show);
-    void showInfoMenu(bool show);
+    bool drawPending() { return myCurrentMenu != MENU_NONE; }
+    void showMenu(MenuType type);
+    void update();
+    void moveCursorUp();
+    void moveCursorDown();
 
   private:
-    // Enumerations representing the different types of menus
-    enum MenuType { MENU_REMAP, MENU_INFO };
+    // Clears the internal framebuffer
+    void cls();
 
   private:
     // The Console for the system
@@ -74,8 +72,11 @@ class UserInterface
     // The Mediasource for the system
     MediaSource* myMediaSource;
 
-    // A buffer containing the current menu to be drawn
-    uInt8* myMenuBuffer;
+    // A buffer containing the current interface element to be drawn
+    Int16* myBuffer;
+
+    // Indicates the size of the framebuffer
+    uInt32 myBufferSize;
 
     // Bounds for the window frame
     uInt32 myXStart, myYStart, myWidth, myHeight;
@@ -84,7 +85,10 @@ class UserInterface
     static const uInt32 ourFontData[36];
 
     // Indicates if buffers are dirty (have been modified)
-    bool myIsBufferDirtyFlag;
+    bool myBufferDirtyFlag;
+
+    // Menu type currently slated for redraw
+    MenuType myCurrentMenu;
 };
 
 #endif
