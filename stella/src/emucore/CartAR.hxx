@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.hxx,v 1.1.1.1 2001-12-27 19:54:19 bwmott Exp $
+// $Id: CartAR.hxx,v 1.2 2002-04-05 02:18:23 bwmott Exp $
 //============================================================================
 
 #ifndef CARTRIDGEAR_HXX
@@ -28,13 +28,14 @@ class M6502High;
 /**
   This is the cartridge class for Arcadia (aka Starpath) Supercharger 
   games.  Christopher Salomon provided most of the technical details 
-  used in creating this class.
+  used in creating this class.  A good description of the Supercharger
+  is provided in the Cuttle Cart's manual.
 
   The Supercharger has four 2K banks.  There are three banks of RAM 
   and one bank of ROM.  All 6K of the RAM can be read and written.
 
   @author  Bradford W. Mott
-  @version $Id: CartAR.hxx,v 1.1.1.1 2001-12-27 19:54:19 bwmott Exp $
+  @version $Id: CartAR.hxx,v 1.2 2002-04-05 02:18:23 bwmott Exp $
 */
 class CartridgeAR : public Cartridge
 {
@@ -106,8 +107,8 @@ class CartridgeAR : public Cartridge
     // Load the specified load into SC RAM
     void loadIntoRAM(uInt8 load);
 
-    // Sets up a "dummy" bootstrap ROM in the ROM bank of the cartridge
-    void setupROM();
+    // Sets up a "dummy" BIOS ROM in the ROM bank of the cartridge
+    void initializeROM();
 
   private:
     // Pointer to the 6502 processor in the system
@@ -137,10 +138,10 @@ class CartridgeAR : public Cartridge
     // Indicates when the power was last turned on
     Int32 myPowerRomCycle;
 
-    // Indicates the "value" address which was accessed
-    uInt16 myLastAccess;
+    // Data hold register used for writing
+    uInt8 myDataHoldRegister;
 
-    // Indicates the number of distinct accesses when "value" was set
+    // Indicates number of distinct accesses when data hold register was set
     uInt32 myNumberOfDistinctAccesses;
 
     // Indicates if a write is pending or not

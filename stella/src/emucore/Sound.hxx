@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: Sound.hxx,v 1.2 2002-03-28 02:02:24 bwmott Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -27,7 +27,7 @@
   for a specific operating system.
 
   @author  Bradford W. Mott
-  @version $Id: Sound.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+  @version $Id: Sound.hxx,v 1.2 2002-03-28 02:02:24 bwmott Exp $
 */
 class Sound
 {
@@ -53,8 +53,19 @@ class Sound
 
   public: 
     /**
-      Set the value of the specified sound register
+      Set the value of the specified sound register.
 
+      @param reg The sound register to set
+      @param val The new value for the sound register
+      @param cycles The number of elapsed CPU cycles since the last set
+    */
+    virtual void set(Sound::Register reg, uInt8 val, uInt32 cycles);
+
+    /**
+      Set the value of the specified sound register.  This method is being
+      kept for backwards compatibility.  There's a good chance it will be
+      removed in the 1.3 release of Stella as the sound system is overhauled.
+    
       @param reg The sound register to set
       @param val The new value for the sound register
     */

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: Props.cxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //============================================================================
 
 #include "Props.hxx"
@@ -108,32 +108,37 @@ void Properties::load(istream& in)
   // Empty my property array
   mySize = 0;
 
+  string line, key, value;
+  uInt32 one, two, three, four, garbage;
+
   // Loop reading properties
-  for(;;)
+  while(getline(in, line))
   {
-    // Get the key associated with this property
-    string key = readQuotedString(in);
+    // Strip all tabs from the line
+    while((garbage = line.find("\t")) != string::npos)
+      line.erase(garbage, 1);
 
-    // Make sure the stream is still okay
-    if(!in)
-    {
-      return;
-    }
+    // Ignore commented and empty lines
+    if((line.length() == 0) || (line[0] == ';'))
+      continue;
 
-    // A null key signifies the end of the property list
-    if(key == "")
-    {
+    // End of this record
+    if(line == "\"\"") 
       break;
-    }
 
-    // Get the value associated with this property
-    string value = readQuotedString(in);
+    one = line.find("\"", 0);
+    two = line.find("\"", one + 1);
+    three = line.find("\"", two + 1);
+    four = line.find("\"", three + 1);
 
-    // Make sure the stream is still okay
-    if(!in)
-    {
-      return;
-    }
+    // Invalid line if it doesn't contain 4 quotes
+    if((one == string::npos) || (two == string::npos) ||
+       (three == string::npos) || (four == string::npos))
+      break;
+
+    // Otherwise get the key and value
+    key = line.substr(one + 1, two - one - 1);
+    value = line.substr(three + 1, four - three - 1);
 
     // Set the property 
     set(key, value);
@@ -255,4 +260,3 @@ void Properties::copy(const Properties& properties)
     myProperties[i] = properties.myProperties[i];
   }
 }
-

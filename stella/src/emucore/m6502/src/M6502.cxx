@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.1.1.1 2001-12-27 19:54:30 bwmott Exp $
+// $Id: M6502.cxx,v 1.2 2001-12-29 17:55:59 bwmott Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -180,85 +180,85 @@ uInt8 M6502::ourBCDTable[2][256];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::AddressingMode M6502::ourAddressingModeTable[256] = {
-    Implied,    IndirectX, Invalid,   IndirectX,  // 0x0?
+    Implied,    IndirectX, Invalid,   IndirectX,    // 0x0?
     Zero,       Zero,      Zero,      Zero,
-    Implied,    Immediate, Implied,   Invalid,
+    Implied,    Immediate, Implied,   Immediate,
     Absolute,   Absolute,  Absolute,  Absolute,
 
-    Relative,   IndirectY, Invalid,   IndirectY,  // 0x1?
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0x1?
     ZeroX,      ZeroX,     ZeroX,     ZeroX,
     Implied,    AbsoluteY, Implied,   AbsoluteY,
     AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
 
-    Absolute,   IndirectX, Invalid,   IndirectX,  // 0x2?
+    Absolute,   IndirectX, Invalid,   IndirectX,    // 0x2?
     Zero,       Zero,      Zero,      Zero,
-    Implied,    Immediate, Implied,   Invalid,
+    Implied,    Immediate, Implied,   Immediate,
     Absolute,   Absolute,  Absolute,  Absolute,
 
-    Relative,   IndirectY, Invalid,   IndirectY,  // 0x3?
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0x3?
     ZeroX,      ZeroX,     ZeroX,     ZeroX,
     Implied,    AbsoluteY, Implied,   AbsoluteY,
     AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
 
-    Implied,    IndirectX, Invalid,   Invalid,    // 0x4?
-    Zero,       Zero,      Zero,      Invalid,
-    Implied,    Immediate, Implied,   Invalid,
-    Absolute,   Absolute,  Absolute,  Invalid,
-
-    Relative,   IndirectY, Invalid,   Invalid,    // 0x5?
-    ZeroX,      ZeroX,     ZeroX,     Invalid,
-    Implied,    AbsoluteY, Implied,   Invalid,
-    AbsoluteX,  AbsoluteX, AbsoluteX, Invalid,
-
-    Implied,    IndirectX, Invalid,   Invalid,    // 0x6?
-    Zero,       Zero,      Zero,      Invalid,
-    Implied,    Immediate, Implied,   Invalid,
-    Indirect,   Absolute,  Absolute,  Invalid,
-
-    Relative,   IndirectY, Invalid,   Invalid,    // 0x7?
-    ZeroX,      ZeroX,     ZeroX,     Invalid,
-    Implied,    AbsoluteY, Implied,   Invalid,
-    AbsoluteX,  AbsoluteX, AbsoluteX, Invalid,
-
-    Immediate,  IndirectX, Immediate, IndirectX,  // 0x8?
+    Implied,    IndirectX, Invalid,   IndirectX,    // 0x4?
     Zero,       Zero,      Zero,      Zero,
-    Implied,    Invalid,   Implied,   Invalid,
+    Implied,    Immediate, Implied,   Immediate,
     Absolute,   Absolute,  Absolute,  Absolute,
 
-    Relative,   IndirectY, Invalid,   Invalid,    // 0x9?
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0x5?
+    ZeroX,      ZeroX,     ZeroX,     ZeroX,
+    Implied,    AbsoluteY, Implied,   AbsoluteY,
+    AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
+
+    Implied,    IndirectX, Invalid,   IndirectX,    // 0x6?
+    Zero,       Zero,      Zero,      Zero,
+    Implied,    Immediate, Implied,   Immediate,
+    Indirect,   Absolute,  Absolute,  Absolute,
+
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0x7?
+    ZeroX,      ZeroX,     ZeroX,     ZeroX,
+    Implied,    AbsoluteY, Implied,   AbsoluteY,
+    AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
+
+    Immediate,  IndirectX, Immediate, IndirectX,    // 0x8?
+    Zero,       Zero,      Zero,      Zero,
+    Implied,    Immediate, Implied,   Immediate,
+    Absolute,   Absolute,  Absolute,  Absolute,
+
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0x9?
     ZeroX,      ZeroX,     ZeroY,     ZeroY,
-    Implied,    AbsoluteY, Implied,   Invalid,
-    Invalid,    AbsoluteX, Invalid,   Invalid,
+    Implied,    AbsoluteY, Implied,   AbsoluteY,
+    AbsoluteX,  AbsoluteX, AbsoluteY, AbsoluteY,
 
-    Immediate,  IndirectX, Immediate, Invalid,    // 0xA?
-    Zero,       Zero,      Zero,      Invalid,
-    Implied,    Immediate, Implied,   Invalid,
-    Absolute,   Absolute,  Absolute,  Invalid,
+    Immediate,  IndirectX, Immediate, IndirectX,    // 0xA?
+    Zero,       Zero,      Zero,      Zero,
+    Implied,    Immediate, Implied,   Immediate,
+    Absolute,   Absolute,  Absolute,  Absolute,
 
-    Relative,   IndirectY, Invalid,   Invalid,    // 0xB?
-    ZeroX,      ZeroX,     ZeroY,     Invalid,
-    Implied,    AbsoluteY, Implied,   Invalid,
-    AbsoluteX,  AbsoluteX, AbsoluteY, Invalid,
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0xB?
+    ZeroX,      ZeroX,     ZeroY,     ZeroY,
+    Implied,    AbsoluteY, Implied,   AbsoluteY,
+    AbsoluteX,  AbsoluteX, AbsoluteY, AbsoluteY,
 
-    Immediate,  IndirectX, Immediate, Invalid,    // 0xC?
-    Zero,       Zero,      Zero,      Invalid,
-    Implied,    Immediate, Implied,   Invalid,
-    Absolute,   Absolute,  Absolute,  Invalid,
+    Immediate,  IndirectX, Immediate, IndirectX,    // 0xC?
+    Zero,       Zero,      Zero,      Zero,
+    Implied,    Immediate, Implied,   Immediate,
+    Absolute,   Absolute,  Absolute,  Absolute,
 
-    Relative,   IndirectY, Invalid,   Invalid,    // 0xD?
-    ZeroX,      ZeroX,     ZeroX,     Invalid,
-    Implied,    AbsoluteY, Implied,   Invalid,
-    AbsoluteX,  AbsoluteX, AbsoluteX, Invalid,
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0xD?
+    ZeroX,      ZeroX,     ZeroX,     ZeroX,
+    Implied,    AbsoluteY, Implied,   AbsoluteY,
+    AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
 
-    Immediate,  IndirectX, Immediate, Invalid,    // 0xE?
-    Zero,       Zero,      Zero,      Invalid,
-    Implied,    Immediate, Implied,   Invalid,
-    Absolute,   Absolute,  Absolute,  Invalid,
+    Immediate,  IndirectX, Immediate, IndirectX,    // 0xE?
+    Zero,       Zero,      Zero,      Zero,
+    Implied,    Immediate, Implied,   Immediate,
+    Absolute,   Absolute,  Absolute,  Absolute,
 
-    Relative,   IndirectY, Invalid,   Invalid,    // 0xF?
-    ZeroX,      ZeroX,     ZeroX,     Invalid,
-    Implied,    AbsoluteY, Implied,   Invalid,
-    AbsoluteX,  AbsoluteX, AbsoluteX, Invalid
+    Relative,   IndirectY, Invalid,   IndirectY,    // 0xF?
+    ZeroX,      ZeroX,     ZeroX,     ZeroX,
+    Implied,    AbsoluteY, Implied,   AbsoluteY,
+    AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX
   };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -268,68 +268,68 @@ uInt32 M6502::ourInstructionProcessorCycleTable[256] = {
     2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 1
     6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 4, 4, 6, 6,  // 2
     2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 3
-    6, 6, 2, 2, 3, 3, 5, 2, 3, 2, 2, 2, 3, 4, 6, 2,  // 4
-    2, 5, 2, 2, 4, 4, 6, 2, 2, 4, 2, 2, 4, 4, 7, 2,  // 5
-    6, 6, 2, 2, 3, 3, 5, 2, 4, 2, 2, 2, 5, 4, 6, 2,  // 6
-    2, 5, 2, 2, 4, 4, 6, 2, 2, 4, 2, 2, 4, 4, 7, 2,  // 7
+    6, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 3, 4, 6, 6,  // 4
+    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 5
+    6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 5, 4, 6, 6,  // 6
+    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 7
     2, 6, 2, 6, 3, 3, 3, 3, 2, 2, 2, 2, 4, 4, 4, 4,  // 8
-    2, 6, 2, 2, 4, 4, 4, 4, 2, 5, 2, 2, 2, 5, 2, 2,  // 9
-    2, 6, 2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 4, 4, 4, 2,  // a
-    2, 5, 2, 2, 4, 4, 4, 2, 2, 4, 2, 2, 4, 4, 4, 2,  // b
-    2, 6, 2, 2, 3, 3, 5, 2, 2, 2, 2, 2, 4, 4, 6, 2,  // c
-    2, 5, 2, 2, 4, 4, 6, 2, 2, 4, 2, 2, 4, 4, 7, 2,  // d
-    2, 6, 2, 2, 3, 3, 5, 2, 2, 2, 2, 2, 4, 4, 6, 2,  // e
-    2, 5, 2, 2, 4, 4, 6, 2, 2, 4, 2, 2, 4, 4, 7, 2   // f
+    2, 6, 2, 6, 4, 4, 4, 4, 2, 5, 2, 5, 5, 5, 5, 5,  // 9
+    2, 6, 2, 6, 3, 3, 3, 4, 2, 2, 2, 2, 4, 4, 4, 4,  // a
+    2, 5, 2, 5, 4, 4, 4, 4, 2, 4, 2, 4, 4, 4, 4, 4,  // b
+    2, 6, 2, 8, 3, 3, 5, 5, 2, 2, 2, 2, 4, 4, 6, 6,  // c
+    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // d
+    2, 6, 2, 8, 3, 3, 5, 5, 2, 2, 2, 2, 4, 4, 6, 6,  // e
+    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7   // f
   };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* M6502::ourInstructionMnemonicTable[256] = {
-  "BRK",  "ORA",  "n/a",  "aso",  "nop",  "ORA",  "ASL",  "aso",    // 0x0?
-  "PHP",  "ORA",  "ASLA", "n/a",  "nop",  "ORA",  "ASL",  "aso",
+  "BRK",  "ORA",  "n/a",  "slo",  "nop",  "ORA",  "ASL",  "slo",    // 0x0?
+  "PHP",  "ORA",  "ASLA", "anc",  "nop",  "ORA",  "ASL",  "slo",
 
-  "BPL",  "ORA",  "n/a",  "aso",  "nop",  "ORA",  "ASL",  "aso",    // 0x1?
-  "CLC",  "ORA",  "nop",  "aso",  "nop",  "ORA",  "ASL",  "aso",
+  "BPL",  "ORA",  "n/a",  "slo",  "nop",  "ORA",  "ASL",  "slo",    // 0x1?
+  "CLC",  "ORA",  "nop",  "slo",  "nop",  "ORA",  "ASL",  "slo",
 
   "JSR",  "AND",  "n/a",  "rla",  "BIT",  "AND",  "ROL",  "rla",    // 0x2?
-  "PLP",  "AND",  "ROLA", "n/a",  "BIT",  "AND",  "ROL",  "rla",
+  "PLP",  "AND",  "ROLA", "anc",  "BIT",  "AND",  "ROL",  "rla",
 
-  "BMI",  "AND",  "rla",  "n/a",  "nop",  "AND",  "ROL",  "rla",    // 0x3?
+  "BMI",  "AND",  "n/a",  "rla",  "nop",  "AND",  "ROL",  "rla",    // 0x3?
   "SEC",  "AND",  "nop",  "rla",  "nop",  "AND",  "ROL",  "rla",
   
-  "RTI",  "EOR",  "n/a",  "n/a",  "nop",  "EOR",  "LSR",  "n/a",    // 0x4?
-  "PHA",  "EOR",  "LSRA", "n/a",  "JMP",  "EOR",  "LSR",  "n/a",
+  "RTI",  "EOR",  "n/a",  "sre",  "nop",  "EOR",  "LSR",  "sre",    // 0x4?
+  "PHA",  "EOR",  "LSRA", "asr",  "JMP",  "EOR",  "LSR",  "sre",
 
-  "BVC",  "EOR",  "n/a",  "n/a",  "nop",  "EOR",  "LSR",  "n/a",    // 0x5?
-  "CLI",  "EOR",  "nop",  "n/a",  "nop",  "EOR",  "LSR",  "n/a",
+  "BVC",  "EOR",  "n/a",  "sre",  "nop",  "EOR",  "LSR",  "sre",    // 0x5?
+  "CLI",  "EOR",  "nop",  "sre",  "nop",  "EOR",  "LSR",  "sre",
 
-  "RTS",  "ADC",  "n/a",  "n/a",  "nop",  "ADC",  "ROR",  "n/a",    // 0x6?
-  "PLA",  "ADC",  "RORA", "n/a",  "JMP",  "ADC",  "ROR",  "n/a",
+  "RTS",  "ADC",  "n/a",  "rra",  "nop",  "ADC",  "ROR",  "rra",    // 0x6?
+  "PLA",  "ADC",  "RORA", "arr",  "JMP",  "ADC",  "ROR",  "rra",
 
-  "BVS",  "ADC",  "n/a",  "n/a",  "nop",  "ADC",  "ROR",  "n/a",    // 0x7?
-  "SEI",  "ADC",  "nop",  "n/a",  "nop",  "ADC",  "ROR",  "n/a",
+  "BVS",  "ADC",  "n/a",  "rra",  "nop",  "ADC",  "ROR",  "rra",    // 0x7?
+  "SEI",  "ADC",  "nop",  "rra",  "nop",  "ADC",  "ROR",  "rra",
 
-  "nop",  "STA",  "nop",  "axs",  "STY",  "STA",  "STX",  "axs",    // 0x8?
-  "DEY",  "n/a",  "TXA",  "n/a",  "STY",  "STA",  "STX",  "axs",
+  "nop",  "STA",  "nop",  "sax",  "STY",  "STA",  "STX",  "sax",    // 0x8?
+  "DEY",  "nop",  "TXA",  "ane",  "STY",  "STA",  "STX",  "sax",
 
-  "BCC",  "STA",  "n/a",  "n/a",  "STY",  "STA",  "STX",  "axs",    // 0x9?
-  "TYA",  "STA",  "TXS",  "n/a",  "n/a",  "STA",  "n/a",  "n/a",
+  "BCC",  "STA",  "n/a",  "sha",  "STY",  "STA",  "STX",  "sax",    // 0x9?
+  "TYA",  "STA",  "TXS",  "shs",  "shy",  "STA",  "shx",  "sha",
 
-  "LDY",  "LDA",  "LDX",  "n/a",  "LDY",  "LDA",  "LDX",  "n/a",    // 0xA?
-  "TAY",  "LDA",  "TAX",  "n/a",  "LDY",  "LDA",  "LDX",  "n/a",
+  "LDY",  "LDA",  "LDX",  "lax",  "LDY",  "LDA",  "LDX",  "lax",    // 0xA?
+  "TAY",  "LDA",  "TAX",  "lxa",  "LDY",  "LDA",  "LDX",  "lax",
 
-  "BCS",  "LDA",  "n/a",  "n/a",  "LDY",  "LDA",  "LDX",  "n/a",    // 0xB?
-  "CLV",  "LDA",  "TSX",  "n/a",  "LDY",  "LDA",  "LDX",  "n/a",
+  "BCS",  "LDA",  "n/a",  "lax",  "LDY",  "LDA",  "LDX",  "lax",    // 0xB?
+  "CLV",  "LDA",  "TSX",  "las",  "LDY",  "LDA",  "LDX",  "lax",
 
-  "CPY",  "CMP",  "nop",  "n/a",  "CPY",  "CMP",  "DEC",  "n/a",    // 0xC?
-  "INY",  "CMP",  "DEX",  "n/a",  "CPY",  "CMP",  "DEC",  "n/a",
+  "CPY",  "CMP",  "nop",  "dcp",  "CPY",  "CMP",  "DEC",  "dcp",    // 0xC?
+  "INY",  "CMP",  "DEX",  "sbx",  "CPY",  "CMP",  "DEC",  "dcp",
 
-  "BNE",  "CMP",  "n/a",  "n/a",  "nop",  "CMP",  "DEC",  "n/a",    // 0xD?
-  "CLD",  "CMP",  "nop",  "n/a",  "nop",  "CMP",  "DEC",  "n/a",
+  "BNE",  "CMP",  "n/a",  "dcp",  "nop",  "CMP",  "DEC",  "dcp",    // 0xD?
+  "CLD",  "CMP",  "nop",  "dcp",  "nop",  "CMP",  "DEC",  "dcp",
 
-  "CPX",  "SBC",  "nop",  "n/a",  "CPX",  "SBC",  "INC",  "n/a",    // 0xE?
-  "INX",  "SBC",  "NOP",  "n/a",  "CPX",  "SBC",  "INC",  "n/a",
+  "CPX",  "SBC",  "nop",  "isb",  "CPX",  "SBC",  "INC",  "isb",    // 0xE?
+  "INX",  "SBC",  "NOP",  "sbc",  "CPX",  "SBC",  "INC",  "isb",
 
-  "BEQ",  "SBC",  "n/a",  "n/a",  "nop",  "SBC",  "INC",  "n/a",    // 0xF?
-  "SED",  "SBC",  "nop",  "n/a",  "nop",  "SBC",  "INC",  "n/a"
+  "BEQ",  "SBC",  "n/a",  "isb",  "nop",  "SBC",  "INC",  "isb",    // 0xF?
+  "SED",  "SBC",  "nop",  "isb",  "nop",  "SBC",  "INC",  "isb"
 };
 

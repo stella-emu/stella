@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.1.1.1 2001-12-27 19:54:25 bwmott Exp $
+// $Id: TIA.cxx,v 1.12 2002-04-18 17:18:48 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -33,6 +33,11 @@
 TIA::TIA(const Console& console, Sound& sound)
     : myConsole(console),
       mySound(sound),
+      myPauseState(false),
+      myMessageTime(0),
+      myMessageText(""),
+      myLastSoundUpdateCycle(0),
+      myColorLossEnabled(false),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
       myCOLUP0(myColor[2]),
@@ -57,7 +62,7 @@ TIA::TIA(const Console& console, Sound& sound)
         if((enabled & myBLBit) != 0)
           color = 1;
         if((enabled & myPFBit) != 0)
-          color = (enabled & ScoreBit) ? ((x == 0) ? 2 : 3) : 1;
+          color = 1;  // NOTE: Playfield has priority so ScoreBit isn't used
 
         myPriorityEncoder[x][enabled] = color;
       }
@@ -110,6 +115,9 @@ const char* TIA::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::reset()
 {
+  // Reset sound cycle indicator
+  myLastSoundUpdateCycle = 0;
+
   // Clear frame buffers
   for(uInt32 i = 0; i < 160 * 300; ++i)
   {
@@ -132,7 +140,7 @@ void TIA::reset()
   myClockAtLastUpdate = myClockWhenFrameStarted;
   myClocksToEndOfScanLine = 228;
   myVSYNCFinishClock = 0x7FFFFFFF;
-  myScanlineCountForFrame = 0;
+  myScanlineCountForLastFrame = 0;
 
   // Currently no objects are enabled
   myEnabledObjects = 0;
@@ -210,6 +218,15 @@ void TIA::reset()
     myFrameXStart = 0;
     myFrameWidth = 160;
   }
+
+  if(myConsole.properties().get("Display.Format") == "PAL")
+  {
+    myColorLossEnabled = true;
+  }
+  else
+  {
+    myColorLossEnabled = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -217,6 +234,9 @@ void TIA::systemCyclesReset()
 {
   // Get the current system cycle
   uInt32 cycles = mySystem->cycles();
+
+  // Adjust the sound cycle indicator
+  myLastSoundUpdateCycle -= cycles;
 
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
@@ -262,6 +282,12 @@ void TIA::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::update()
 {
+  // Don't do an update if the emulator is paused
+  if(myPauseState)
+  {
+    return;
+  }
+
   uInt8* tmp = myCurrentFrameBuffer;
   myCurrentFrameBuffer = myPreviousFrameBuffer;
   myPreviousFrameBuffer = tmp;
@@ -285,6 +311,26 @@ void TIA::update()
   // Reset frame buffer pointer
   myFramePointer = myCurrentFrameBuffer;
 
+  // If color loss is enabled then update the color registers based on
+  // the number of scanlines in the last frame that was generated
+  if(myColorLossEnabled)
+  {
+    if(myScanlineCountForLastFrame & 0x01)
+    {
+      myCOLUP0 |= 0x01010101;
+      myCOLUP1 |= 0x01010101;
+      myCOLUPF |= 0x01010101;
+      myCOLUBK |= 0x01010101;
+    }
+    else
+    {
+      myCOLUP0 &= 0xfefefefe;
+      myCOLUP1 &= 0xfefefefe;
+      myCOLUPF &= 0xfefefefe;
+      myCOLUBK &= 0xfefefefe;
+    }
+  }   
+
   // Execute instructions until frame is finished
   mySystem->m6502().execute(25000);
 
@@ -292,7 +338,102 @@ void TIA::update()
 
   // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  myScanlineCountForFrame = totalClocks / 228;
+  myScanlineCountForLastFrame = totalClocks / 228;
+
+  // Draw any pending messages to the framebuffer
+  if(myMessageTime > 0)
+  {
+    drawMessageText();
+    --myMessageTime;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::pause(bool state)
+{
+  if(myPauseState == state)
+  {
+    // Ignore multiple calls to do the same thing
+    return false;
+  }
+  else
+  {
+    myPauseState = state;
+
+    // Propagate the pause state to the sound object
+    mySound.mute(myPauseState);
+
+    return true;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::drawMessageText()
+{
+  // Set up the correct coordinates to print the message
+  uInt32 xOffSet = 10 + myFrameXStart;
+  uInt32 yOffSet = myFrameHeight - 30;
+
+  // Used to indicate the current x/y position of a pixel
+  uInt32 xPos, yPos;
+
+  // The actual font data for a letter
+  uInt32 data;
+
+  // The index into the palette to color the current text
+  uInt8 fontColor = 68;
+
+  // Clip the length if its wider than the screen
+  uInt8 length = myMessageText.length();
+  if(((length * 5) + xOffSet) >= myFrameWidth)
+    length = (myFrameWidth - xOffSet) / 5;
+
+  for(uInt8 x = 0; x < length; ++x)
+  {
+    char letter = myMessageText[x];
+
+    if((letter >= 'A') && (letter <= 'Z'))
+      data = ourFontData[(int)letter - 65];
+    else if((letter >= '0') && (letter <= '9'))
+      data = ourFontData[(int)letter - 48 + 26];
+    else   // unknown character or space
+    {
+      xOffSet += 3;
+      continue;
+    }
+
+    // start scanning the font data from the bottom up
+    yPos = 7;
+
+    for(uInt8 y = 0; y < 32; ++y)
+    {
+      // determine the correct scanline
+      xPos = y % 4;
+      if(xPos == 0)
+        --yPos;
+
+      if((data >> y) & 1)
+      {
+        uInt32 position = (yPos + yOffSet) * myFrameWidth + (4 - xPos) + xOffSet;
+        myCurrentFrameBuffer[position] = fontColor;
+      }
+    }
+
+    // move left to the next character
+    xOffSet += 5;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::showMessage(string& message, Int32 duration)
+{
+  myMessageText = message;
+  myMessageTime = duration;
+
+  // Make message uppercase, since there are no lowercase fonts defined
+  uInt32 length = myMessageText.length();
+  for(uInt32 i = 0; i < length; ++i)
+    myMessageText[i] = toupper(myMessageText[i]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -324,7 +465,7 @@ uInt32 TIA::height() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TIA::scanlines() const
 {
-  return (uInt32)myScanlineCountForFrame;
+  return (uInt32)myScanlineCountForLastFrame;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1390,7 +1531,6 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             enabled |= myM0Bit;
 
           myCollision |= ourCollisionTable[enabled];
-
           *myFramePointer = myColor[myPriorityEncoder[hpos < 80 ? 0 : 1]
               [enabled | myPlayfieldPriorityAndScore]];
         }
@@ -1458,35 +1598,28 @@ inline void TIA::updateFrame(Int32 clock)
 
       clocksFromStartOfScanLine += tmp;
       clocksToUpdate -= tmp;
-
-      // Handle HMOVE blanks
-      if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
-          (clocksFromStartOfScanLine == (Int32)(HBLANK + myFrameXStart)))
-      {
-        Int32 blanks = 8 - myFrameXStart;
-        myHMOVEBlankEnabled = false;
-        memset(myFramePointer, 0, blanks);
-        myFramePointer += blanks;
-        clocksFromStartOfScanLine += blanks;
-
-        if(clocksToUpdate >= blanks)
-        {
-          clocksToUpdate -= blanks;
-        }
-        else
-        {
-          // Updating more that we were supposed to so adjust the clocks
-          myClocksToEndOfScanLine -= (blanks - clocksToUpdate);
-          myClockAtLastUpdate += (blanks - clocksToUpdate);
-          clocksToUpdate = 0;
-        }
-      }
     }
+
+    // Remember frame pointer in case HMOVE blanks need to be handled
+    uInt8* oldFramePointer = myFramePointer;
 
     // Update as much of the scanline as we can
     if(clocksToUpdate != 0)
     {
       updateFrameScanline(clocksToUpdate, clocksFromStartOfScanLine - HBLANK);
+    }
+
+    // Handle HMOVE blanks if they are enabled
+    if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
+        (clocksFromStartOfScanLine < (HBLANK + 8)))
+    {
+      Int32 blanks = (HBLANK + 8) - clocksFromStartOfScanLine;
+      memset(oldFramePointer, 0, blanks);
+
+      if((clocksToUpdate + clocksFromStartOfScanLine) >= (HBLANK + 8))
+      {
+        myHMOVEBlankEnabled = false;
+      }
     }
 
     // See if we're at the end of a scanline
@@ -1560,49 +1693,51 @@ uInt8 TIA::peek(uInt16 addr)
   // Update frame to current color clock before we look at anything!
   updateFrame(mySystem->cycles() * 3);
 
+  uInt8 noise = mySystem->getDataBusState() & 0x3F;
+
   switch(addr & 0x000f)
   {
     case 0x00:    // CXM0P
       return ((myCollision & 0x0001) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0002) ? 0x40 : 0x00);
+          ((myCollision & 0x0002) ? 0x40 : 0x00) | noise;
 
     case 0x01:    // CXM1P
       return ((myCollision & 0x0004) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0008) ? 0x40 : 0x00) | 0x01;
+          ((myCollision & 0x0008) ? 0x40 : 0x00) | noise;
 
     case 0x02:    // CXP0FB
       return ((myCollision & 0x0010) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0020) ? 0x40 : 0x00) | 0x02;
+          ((myCollision & 0x0020) ? 0x40 : 0x00) | noise;
 
     case 0x03:    // CXP1FB
       return ((myCollision & 0x0040) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0080) ? 0x40 : 0x00) | 0x03;
+          ((myCollision & 0x0080) ? 0x40 : 0x00) | noise;
 
     case 0x04:    // CXM0FB
       return ((myCollision & 0x0100) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0200) ? 0x40 : 0x00) | 0x04;
+          ((myCollision & 0x0200) ? 0x40 : 0x00) | noise;
 
     case 0x05:    // CXM1FB
       return ((myCollision & 0x0400) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0800) ? 0x40 : 0x00) | 0x05;
+          ((myCollision & 0x0800) ? 0x40 : 0x00) | noise;
 
     case 0x06:    // CXBLPF
-      return ((myCollision & 0x1000) ? 0x80 : 0x00) | 0x06;
+      return ((myCollision & 0x1000) ? 0x80 : 0x00) | noise;
 
     case 0x07:    // CXPPMM
       return ((myCollision & 0x2000) ? 0x80 : 0x00) | 
-          ((myCollision & 0x4000) ? 0x40 : 0x00);
+          ((myCollision & 0x4000) ? 0x40 : 0x00) | noise;
 
     case 0x08:    // INPT0
     {
       Int32 r = myConsole.controller(Controller::Left).read(Controller::Nine);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise;
       }
       else
       {
@@ -1610,11 +1745,11 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise;
         }
         else
         {
-          return 0x7F;
+          return noise;
         }
       }
     }
@@ -1624,11 +1759,11 @@ uInt8 TIA::peek(uInt16 addr)
       Int32 r = myConsole.controller(Controller::Left).read(Controller::Five);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise;
       }
       else
       {
@@ -1636,11 +1771,11 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise;
         }
         else
         {
-          return 0x7F;
+          return noise;
         }
       }
     }
@@ -1650,11 +1785,11 @@ uInt8 TIA::peek(uInt16 addr)
       Int32 r = myConsole.controller(Controller::Right).read(Controller::Nine);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise;
       }
       else
       {
@@ -1662,11 +1797,11 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise;
         }
         else
         {
-          return 0x7F;
+          return noise;
         }
       }
     }
@@ -1676,11 +1811,11 @@ uInt8 TIA::peek(uInt16 addr)
       Int32 r = myConsole.controller(Controller::Right).read(Controller::Five);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise;
       }
       else
       {
@@ -1688,28 +1823,28 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise;
         }
         else
         {
-          return 0x7F;
+          return noise;
         }
       }
     }
 
     case 0x0C:    // INPT4
       return myConsole.controller(Controller::Left).read(Controller::Six) ?
-          0xFF : 0x7F;
+          (0x80 | noise) : noise;
 
     case 0x0D:    // INPT5
       return myConsole.controller(Controller::Right).read(Controller::Six) ?
-          0xFF : 0x7F;
+          (0x80 | noise) : noise;
 
     case 0x0e:
-      return 0x0e;
+      return noise;
 
     default:
-      return 0x0f;
+      return noise;
   }
 }
 
@@ -1822,28 +1957,44 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x06:    // Color-Luminance Player 0
     {
-      uInt32 color = (uInt32)value;
+      uInt32 color = (uInt32)(value & 0xfe);
+      if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
+      {
+        color |= 0x01;
+      }
       myCOLUP0 = (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
     case 0x07:    // Color-Luminance Player 1
     {
-      uInt32 color = (uInt32)value;
+      uInt32 color = (uInt32)(value & 0xfe);
+      if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
+      {
+        color |= 0x01;
+      }
       myCOLUP1 = (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
     case 0x08:    // Color-Luminance Playfield
     {
-      uInt32 color = (uInt32)value;
+      uInt32 color = (uInt32)(value & 0xfe);
+      if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
+      {
+        color |= 0x01;
+      }
       myCOLUPF = (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
     case 0x09:    // Color-Luminance Background
     {
-      uInt32 color = (uInt32)value;
+      uInt32 color = (uInt32)(value & 0xfe);
+      if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
+      {
+        color |= 0x01;
+      }
       myCOLUBK = (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
@@ -2021,6 +2172,14 @@ void TIA::poke(uInt16 addr, uInt8 value)
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM0 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
 
+      // TODO: Remove the following special hack for Dolphin by
+      // figuring out what really happens when Reset Missle 
+      // occurs 20 cycles after an HMOVE (04/13/02).
+      if(((clock - myLastHMOVEClock) == (20 * 3)) && (hpos == 69))
+      {
+        myPOSM0 = 8;
+      }
+ 
       myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
       break;
@@ -2031,6 +2190,14 @@ void TIA::poke(uInt16 addr, uInt8 value)
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM1 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
 
+      // TODO: Remove the following special hack for Pitfall II by
+      // figuring out what really happens when Reset Missle 
+      // occurs 3 cycles after an HMOVE (04/13/02).
+      if(((clock - myLastHMOVEClock) == (3 * 3)) && (hpos == 18))
+      {
+        myPOSM1 = 3;
+      }
+ 
       myCurrentM1Mask = &ourMissleMaskTable[myPOSM1 & 0x03]
           [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
       break;
@@ -2049,7 +2216,28 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         myPOSBL = 10;
       }
-      
+      // TODO: Remove the following special hack for Decathlon by
+      // figuring out what really happens when Reset Ball 
+      // occurs 3 cycles after an HMOVE (04/13/02).
+      else if(((clock - myLastHMOVEClock) == (3 * 3)) && (hpos == 18))
+      {
+        myPOSBL = 3;
+      } 
+      // TODO: Remove the following special hack for Robot Tank by
+      // figuring out what really happens when Reset Ball 
+      // occurs 7 cycles after an HMOVE (04/13/02).
+      else if(((clock - myLastHMOVEClock) == (7 * 3)) && (hpos == 30))
+      {
+        myPOSBL = 6;
+      } 
+      // TODO: Remove the following special hack for Hole Hunter by
+      // figuring out what really happens when Reset Ball 
+      // occurs 6 cycles after an HMOVE (04/13/02).
+      else if(((clock - myLastHMOVEClock) == (6 * 3)) && (hpos == 27))
+      {
+        myPOSBL = 5;
+      }
+ 
       myCurrentBLMask = &ourBallMaskTable[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
       break;
@@ -2057,37 +2245,49 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x15:    // Audio control 0
     {
-      mySound.set(Sound::AUDC0, value);
+      mySound.set(Sound::AUDC0, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x16:    // Audio control 1
     {
-      mySound.set(Sound::AUDC1, value);
+      mySound.set(Sound::AUDC1, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x17:    // Audio frequency 0
     {
-      mySound.set(Sound::AUDF0, value);
+      mySound.set(Sound::AUDF0, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x18:    // Audio frequency 1
     {
-      mySound.set(Sound::AUDF1, value);
+      mySound.set(Sound::AUDF1, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x19:    // Audio volume 0
     {
-      mySound.set(Sound::AUDV0, value);
+      mySound.set(Sound::AUDV0, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x1A:    // Audio volume 1
     {
-      mySound.set(Sound::AUDV1, value);
+      mySound.set(Sound::AUDV1, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
 
@@ -2428,7 +2628,7 @@ uInt8 TIA::ourDisabledMaskTable[640];
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int16 TIA::ourPokeDelayTable[64] = {
    0,  0,  0,  0, 12, 12,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
-   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
+   0,  0,  8,  8,  8,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 };
@@ -2542,138 +2742,208 @@ uInt32 TIA::ourPlayfieldTable[2][160];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt32 TIA::ourNTSCPalette[256] = {
-  0x000000, 0x1c1c1c, 0x393939, 0x595959, 
-  0x797979, 0x929292, 0xababab, 0xbcbcbc, 
-  0xcdcdcd, 0xd9d9d9, 0xe6e6e6, 0xececec, 
-  0xf2f2f2, 0xf8f8f8, 0xffffff, 0xffffff, 
-  0x391701, 0x5e2304, 0x833008, 0xa54716, 
-  0xc85f24, 0xe37820, 0xff911d, 0xffab1d, 
-  0xffc51d, 0xffce34, 0xffd84c, 0xffe651, 
-  0xfff456, 0xfff977, 0xffff98, 0xffff98, 
-  0x451904, 0x721e11, 0x9f241e, 0xb33a20, 
-  0xc85122, 0xe36920, 0xff811e, 0xff8c25, 
-  0xff982c, 0xffae38, 0xffc545, 0xffc559, 
-  0xffc66d, 0xffd587, 0xffe4a1, 0xffe4a1, 
-  0x4a1704, 0x7e1a0d, 0xb21d17, 0xc82119, 
-  0xdf251c, 0xec3b38, 0xfa5255, 0xfc6161, 
-  0xff706e, 0xff7f7e, 0xff8f8f, 0xff9d9e, 
-  0xffabad, 0xffb9bd, 0xffc7ce, 0xffc7ce, 
-  0x050568, 0x3b136d, 0x712272, 0x8b2a8c, 
-  0xa532a6, 0xb938ba, 0xcd3ecf, 0xdb47dd, 
-  0xea51eb, 0xf45ff5, 0xfe6dff, 0xfe7afd, 
-  0xff87fb, 0xff95fd, 0xffa4ff, 0xffa4ff, 
-  0x280479, 0x400984, 0x590f90, 0x70249d, 
-  0x8839aa, 0xa441c3, 0xc04adc, 0xd054ed, 
-  0xe05eff, 0xe96dff, 0xf27cff, 0xf88aff, 
-  0xff98ff, 0xfea1ff, 0xfeabff, 0xfeabff, 
-  0x35088a, 0x420aad, 0x500cd0, 0x6428d0, 
-  0x7945d0, 0x8d4bd4, 0xa251d9, 0xb058ec, 
-  0xbe60ff, 0xc56bff, 0xcc77ff, 0xd183ff, 
-  0xd790ff, 0xdb9dff, 0xdfaaff, 0xdfaaff, 
-  0x051e81, 0x0626a5, 0x082fca, 0x263dd4, 
-  0x444cde, 0x4f5aee, 0x5a68ff, 0x6575ff, 
-  0x7183ff, 0x8091ff, 0x90a0ff, 0x97a9ff, 
-  0x9fb2ff, 0xafbeff, 0xc0cbff, 0xc0cbff, 
-  0x0c048b, 0x2218a0, 0x382db5, 0x483ec7, 
-  0x584fda, 0x6159ec, 0x6b64ff, 0x7a74ff, 
-  0x8a84ff, 0x918eff, 0x9998ff, 0xa5a3ff, 
-  0xb1aeff, 0xb8b8ff, 0xc0c2ff, 0xc0c2ff, 
-  0x1d295a, 0x1d3876, 0x1d4892, 0x1c5cac, 
-  0x1c71c6, 0x3286cf, 0x489bd9, 0x4ea8ec, 
-  0x55b6ff, 0x70c7ff, 0x8cd8ff, 0x93dbff, 
-  0x9bdfff, 0xafe4ff, 0xc3e9ff, 0xc3e9ff, 
-  0x2f4302, 0x395202, 0x446103, 0x417a12, 
-  0x3e9421, 0x4a9f2e, 0x57ab3b, 0x5cbd55, 
-  0x61d070, 0x69e27a, 0x72f584, 0x7cfa8d, 
-  0x87ff97, 0x9affa6, 0xadffb6, 0xadffb6, 
-  0x0a4108, 0x0d540a, 0x10680d, 0x137d0f, 
-  0x169212, 0x19a514, 0x1cb917, 0x1ec919, 
-  0x21d91b, 0x47e42d, 0x6ef040, 0x78f74d, 
-  0x83ff5b, 0x9aff7a, 0xb2ff9a, 0xb2ff9a, 
-  0x04410b, 0x05530e, 0x066611, 0x077714, 
-  0x088817, 0x099b1a, 0x0baf1d, 0x48c41f, 
-  0x86d922, 0x8fe924, 0x99f927, 0xa8fc41, 
-  0xb7ff5b, 0xc9ff6e, 0xdcff81, 0xdcff81, 
-  0x02350f, 0x073f15, 0x0c4a1c, 0x2d5f1e, 
-  0x4f7420, 0x598324, 0x649228, 0x82a12e, 
-  0xa1b034, 0xa9c13a, 0xb2d241, 0xc4d945, 
-  0xd6e149, 0xe4f04e, 0xf2ff53, 0xf2ff53, 
-  0x263001, 0x243803, 0x234005, 0x51541b, 
-  0x806931, 0x978135, 0xaf993a, 0xc2a73e, 
-  0xd5b543, 0xdbc03d, 0xe1cb38, 0xe2d836, 
-  0xe3e534, 0xeff258, 0xfbff7d, 0xfbff7d, 
-  0x401a02, 0x581f05, 0x702408, 0x8d3a13, 
-  0xab511f, 0xb56427, 0xbf7730, 0xd0853a, 
-  0xe19344, 0xeda04e, 0xf9ad58, 0xfcb75c, 
-  0xffc160, 0xffc671, 0xffcb83, 0xffcb83
+  0x000000, 0x000000, 0x4a4a4a, 0x4a4a4a,
+  0x6f6f6f, 0x6f6f6f, 0x8e8e8e, 0x8e8e8e,
+  0xaaaaaa, 0xaaaaaa, 0xc0c0c0, 0xc0c0c0,
+  0xd6d6d6, 0xd6d6d6, 0xececec, 0xececec,
+
+  0x484800, 0x484800, 0x69690f, 0x69690f,
+  0x86861d, 0x86861d, 0xa2a22a, 0xa2a22a,
+  0xbbbb35, 0xbbbb35, 0xd2d240, 0xd2d240,
+  0xe8e84a, 0xe8e84a, 0xfcfc54, 0xfcfc54,
+
+  0x7c2c00, 0x7c2c00, 0x904811, 0x904811,
+  0xa26221, 0xa26221, 0xb47a30, 0xb47a30,
+  0xc3903d, 0xc3903d, 0xd2a44a, 0xd2a44a,
+  0xdfb755, 0xdfb755, 0xecc860, 0xecc860,
+
+  0x901c00, 0x901c00, 0xa33915, 0xa33915,
+  0xb55328, 0xb55328, 0xc66c3a, 0xc66c3a,
+  0xd5824a, 0xd5824a, 0xe39759, 0xe39759,
+  0xf0aa67, 0xf0aa67, 0xfcbc74, 0xfcbc74,
+
+  0x940000, 0x940000, 0xa71a1a, 0xa71a1a,
+  0xb83232, 0xb83232, 0xc84848, 0xc84848,
+  0xd65c5c, 0xd65c5c, 0xe46f6f, 0xe46f6f,
+  0xf08080, 0xf08080, 0xfc9090, 0xfc9090,
+
+  0x840064, 0x840064, 0x97197a, 0x97197a,
+  0xa8308f, 0xa8308f, 0xb846a2, 0xb846a2,
+  0xc659b3, 0xc659b3, 0xd46cc3, 0xd46cc3,
+  0xe07cd2, 0xe07cd2, 0xec8ce0, 0xec8ce0,
+
+  0x500084, 0x500084, 0x68199a, 0x68199a,
+  0x7d30ad, 0x7d30ad, 0x9246c0, 0x9246c0,
+  0xa459d0, 0xa459d0, 0xb56ce0, 0xb56ce0,
+  0xc57cee, 0xc57cee, 0xd48cfc, 0xd48cfc,
+
+  0x140090, 0x140090, 0x331aa3, 0x331aa3,
+  0x4e32b5, 0x4e32b5, 0x6848c6, 0x6848c6,
+  0x7f5cd5, 0x7f5cd5, 0x956fe3, 0x956fe3,
+  0xa980f0, 0xa980f0, 0xbc90fc, 0xbc90fc,
+
+  0x000094, 0x000094, 0x181aa7, 0x181aa7,
+  0x2d32b8, 0x2d32b8, 0x4248c8, 0x4248c8,
+  0x545cd6, 0x545cd6, 0x656fe4, 0x656fe4,
+  0x7580f0, 0x7580f0, 0x8490fc, 0x8490fc,
+
+  0x001c88, 0x001c88, 0x183b9d, 0x183b9d,
+  0x2d57b0, 0x2d57b0, 0x4272c2, 0x4272c2,
+  0x548ad2, 0x548ad2, 0x65a0e1, 0x65a0e1,
+  0x75b5ef, 0x75b5ef, 0x84c8fc, 0x84c8fc,
+
+  0x003064, 0x003064, 0x185080, 0x185080,
+  0x2d6d98, 0x2d6d98, 0x4288b0, 0x4288b0,
+  0x54a0c5, 0x54a0c5, 0x65b7d9, 0x65b7d9,
+  0x75cceb, 0x75cceb, 0x84e0fc, 0x84e0fc,
+
+  0x004030, 0x004030, 0x18624e, 0x18624e,
+  0x2d8169, 0x2d8169, 0x429e82, 0x429e82,
+  0x54b899, 0x54b899, 0x65d1ae, 0x65d1ae,
+  0x75e7c2, 0x75e7c2, 0x84fcd4, 0x84fcd4,
+
+  0x004400, 0x004400, 0x1a661a, 0x1a661a,
+  0x328432, 0x328432, 0x48a048, 0x48a048,
+  0x5cba5c, 0x5cba5c, 0x6fd26f, 0x6fd26f,
+  0x80e880, 0x80e880, 0x90fc90, 0x90fc90,
+
+  0x143c00, 0x143c00, 0x355f18, 0x355f18,
+  0x527e2d, 0x527e2d, 0x6e9c42, 0x6e9c42,
+  0x87b754, 0x87b754, 0x9ed065, 0x9ed065,
+  0xb4e775, 0xb4e775, 0xc8fc84, 0xc8fc84,
+
+  0x303800, 0x303800, 0x505916, 0x505916,
+  0x6d762b, 0x6d762b, 0x88923e, 0x88923e,
+  0xa0ab4f, 0xa0ab4f, 0xb7c25f, 0xb7c25f,
+  0xccd86e, 0xccd86e, 0xe0ec7c, 0xe0ec7c,
+
+  0x482c00, 0x482c00, 0x694d14, 0x694d14,
+  0x866a26, 0x866a26, 0xa28638, 0xa28638,
+  0xbb9f47, 0xbb9f47, 0xd2b656, 0xd2b656,
+  0xe8cc63, 0xe8cc63, 0xfce070, 0xfce070
+};
+  
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 TIA::ourPALPalette[256] = {
+  0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+  0x525252, 0x525252, 0x767676, 0x767676,
+  0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+  0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec,
+
+  0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+  0x525252, 0x525252, 0x767676, 0x767676,
+  0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+  0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec,
+
+  0x805800, 0x000000, 0x96711a, 0x2b2b2b,
+  0xab8732, 0x525252, 0xbe9c48, 0x767676,
+  0xcfaf5c, 0x979797, 0xdfc06f, 0xb6b6b6,
+  0xeed180, 0xd2d2d2, 0xfce090, 0xececec,
+
+  0x445c00, 0x000000, 0x5e791a, 0x2b2b2b,
+  0x769332, 0x525252, 0x8cac48, 0x767676,
+  0xa0c25c, 0x979797, 0xb3d76f, 0xb6b6b6,
+  0xc4ea80, 0xd2d2d2, 0xd4fc90, 0xececec,
+
+  0x703400, 0x000000, 0x89511a, 0x2b2b2b,
+  0xa06b32, 0x525252, 0xb68448, 0x767676,
+  0xc99a5c, 0x979797, 0xdcaf6f, 0xb6b6b6,
+  0xecc280, 0xd2d2d2, 0xfcd490, 0xececec,
+
+  0x006414, 0x000000, 0x1a8035, 0x2b2b2b,
+  0x329852, 0x525252, 0x48b06e, 0x767676,
+  0x5cc587, 0x979797, 0x6fd99e, 0xb6b6b6,
+  0x80ebb4, 0xd2d2d2, 0x90fcc8, 0xececec,
+
+  0x700014, 0x000000, 0x891a35, 0x2b2b2b,
+  0xa03252, 0x525252, 0xb6486e, 0x767676,
+  0xc95c87, 0x979797, 0xdc6f9e, 0xb6b6b6,
+  0xec80b4, 0xd2d2d2, 0xfc90c8, 0xececec,
+
+  0x005c5c, 0x000000, 0x1a7676, 0x2b2b2b,
+  0x328e8e, 0x525252, 0x48a4a4, 0x767676,
+  0x5cb8b8, 0x979797, 0x6fcbcb, 0xb6b6b6,
+  0x80dcdc, 0xd2d2d2, 0x90ecec, 0xececec,
+
+  0x70005c, 0x000000, 0x841a74, 0x2b2b2b,
+  0x963289, 0x525252, 0xa8489e, 0x767676,
+  0xb75cb0, 0x979797, 0xc66fc1, 0xb6b6b6,
+  0xd380d1, 0xd2d2d2, 0xe090e0, 0xececec,
+
+  0x003c70, 0x000000, 0x195a89, 0x2b2b2b,
+  0x2f75a0, 0x525252, 0x448eb6, 0x767676,
+  0x57a5c9, 0x979797, 0x68badc, 0xb6b6b6,
+  0x79ceec, 0xd2d2d2, 0x88e0fc, 0xececec,
+
+  0x580070, 0x000000, 0x6e1a89, 0x2b2b2b,
+  0x8332a0, 0x525252, 0x9648b6, 0x767676,
+  0xa75cc9, 0x979797, 0xb76fdc, 0xb6b6b6,
+  0xc680ec, 0xd2d2d2, 0xd490fc, 0xececec,
+
+  0x002070, 0x000000, 0x193f89, 0x2b2b2b,
+  0x2f5aa0, 0x525252, 0x4474b6, 0x767676,
+  0x578bc9, 0x979797, 0x68a1dc, 0xb6b6b6,
+  0x79b5ec, 0xd2d2d2, 0x88c8fc, 0xececec,
+
+  0x340080, 0x000000, 0x4a1a96, 0x2b2b2b,
+  0x5f32ab, 0x525252, 0x7248be, 0x767676,
+  0x835ccf, 0x979797, 0x936fdf, 0xb6b6b6,
+  0xa280ee, 0xd2d2d2, 0xb090fc, 0xececec,
+
+  0x000088, 0x000000, 0x1a1a9d, 0x2b2b2b,
+  0x3232b0, 0x525252, 0x4848c2, 0x767676,
+  0x5c5cd2, 0x979797, 0x6f6fe1, 0xb6b6b6,
+  0x8080ef, 0xd2d2d2, 0x9090fc, 0xececec,
+
+  0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+  0x525252, 0x525252, 0x767676, 0x767676,
+  0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+  0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec,
+
+  0x000000, 0x000000, 0x2b2b2b, 0x2b2b2b,
+  0x525252, 0x525252, 0x767676, 0x767676,
+  0x979797, 0x979797, 0xb6b6b6, 0xb6b6b6,
+  0xd2d2d2, 0xd2d2d2, 0xececec, 0xececec
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 TIA::ourPALPalette[256] = {
-  0x000000, 0x000000, 0x242424, 0x242424, 
-  0x484848, 0x484848, 0x6d6d6d, 0x6d6d6d, 
-  0x919191, 0x919191, 0xb6b6b6, 0xb6b6b6, 
-  0xdadada, 0xdadada, 0xffffff, 0xffffff, 
-  0x000000, 0x000000, 0x242424, 0x242424, 
-  0x484848, 0x484848, 0x6d6d6d, 0x6d6d6d, 
-  0x919191, 0x919191, 0xb6b6b6, 0xb6b6b6, 
-  0xdadada, 0xdadada, 0xffffff, 0xffffff, 
-  0x4a3700, 0x4a3700, 0x705813, 0x705813, 
-  0x8c732a, 0x8c732a, 0xa68d46, 0xa68d46, 
-  0xbea767, 0xbea767, 0xd4c18b, 0xd4c18b, 
-  0xeadcb3, 0xeadcb3, 0xfff6de, 0xfff6de, 
-  0x284a00, 0x284a00, 0x44700f, 0x44700f, 
-  0x5c8c21, 0x5c8c21, 0x74a638, 0x74a638, 
-  0x8cbe51, 0x8cbe51, 0xa6d46e, 0xa6d46e, 
-  0xc0ea8e, 0xc0ea8e, 0xdbffb0, 0xdbffb0, 
-  0x4a1300, 0x4a1300, 0x70280f, 0x70280f, 
-  0x8c3d21, 0x8c3d21, 0xa65438, 0xa65438, 
-  0xbe6d51, 0xbe6d51, 0xd4886e, 0xd4886e, 
-  0xeaa58e, 0xeaa58e, 0xffc4b0, 0xffc4b0, 
-  0x004a22, 0x004a22, 0x0f703b, 0x0f703b, 
-  0x218c52, 0x218c52, 0x38a66a, 0x38a66a, 
-  0x51be83, 0x51be83, 0x6ed49d, 0x6ed49d, 
-  0x8eeab8, 0x8eeab8, 0xb0ffd4, 0xb0ffd4, 
-  0x4a0028, 0x4a0028, 0x700f44, 0x700f44, 
-  0x8c215c, 0x8c215c, 0xa63874, 0xa63874, 
-  0xbe518c, 0xbe518c, 0xd46ea6, 0xd46ea6, 
-  0xea8ec0, 0xea8ec0, 0xffb0db, 0xffb0db, 
-  0x00404a, 0x00404a, 0x0f6370, 0x0f6370, 
-  0x217e8c, 0x217e8c, 0x3897a6, 0x3897a6, 
-  0x51afbe, 0x51afbe, 0x6ec7d4, 0x6ec7d4, 
-  0x8edeea, 0x8edeea, 0xb0f4ff, 0xb0f4ff, 
-  0x43002c, 0x43002c, 0x650f4b, 0x650f4b, 
-  0x7e2165, 0x7e2165, 0x953880, 0x953880, 
-  0xa6519a, 0xa6519a, 0xbf6eb7, 0xbf6eb7, 
-  0xd38ed3, 0xd38ed3, 0xe5b0f1, 0xe5b0f1, 
-  0x001d4a, 0x001d4a, 0x0f3870, 0x0f3870, 
-  0x21538c, 0x21538c, 0x386ea6, 0x386ea6, 
-  0x518dbe, 0x518dbe, 0x6ea8d4, 0x6ea8d4, 
-  0x8ec8ea, 0x8ec8ea, 0xb0e9ff, 0xb0e9ff, 
-  0x37004a, 0x37004a, 0x570f70, 0x570f70, 
-  0x70218c, 0x70218c, 0x8938a6, 0x8938a6, 
-  0xa151be, 0xa151be, 0xba6ed4, 0xba6ed4, 
-  0xd28eea, 0xd28eea, 0xeab0ff, 0xeab0ff, 
-  0x00184a, 0x00184a, 0x0f2e70, 0x0f2e70, 
-  0x21448c, 0x21448c, 0x385ba6, 0x385ba6, 
-  0x5174be, 0x5174be, 0x6e8fd4, 0x6e8fd4, 
-  0x8eabea, 0x8eabea, 0xb0c9ff, 0xb0c9ff, 
-  0x13004a, 0x13004a, 0x280f70, 0x280f70, 
-  0x3d218c, 0x3d218c, 0x5438a6, 0x5438a6, 
-  0x6d51be, 0x6d51be, 0x886ed4, 0x886ed4, 
-  0xa58eea, 0xa58eea, 0xc4b0ff, 0xc4b0ff, 
-  0x00014a, 0x00014a, 0x0f1170, 0x0f1170, 
-  0x21248c, 0x21248c, 0x383aa6, 0x383aa6, 
-  0x5153be, 0x5153be, 0x6e70d4, 0x6e70d4, 
-  0x8e8fea, 0x8e8fea, 0xb0b2ff, 0xb0b2ff, 
-  0x000000, 0x000000, 0x242424, 0x242424, 
-  0x484848, 0x484848, 0x6d6d6d, 0x6d6d6d, 
-  0x919191, 0x919191, 0xb6b6b6, 0xb6b6b6, 
-  0xdadada, 0xdadada, 0xffffff, 0xffffff, 
-  0x000000, 0x000000, 0x242424, 0x242424, 
-  0x484848, 0x484848, 0x6d6d6d, 0x6d6d6d, 
-  0x919191, 0x919191, 0xb6b6b6, 0xb6b6b6, 
-  0xdadada, 0xdadada, 0xffffff, 0xffffff
+const uInt32 TIA::ourFontData[36] = { 
+  0x699f999, // A
+  0xe99e99e, // B
+  0x6988896, // C
+  0xe99999e, // D
+  0xf88e88f, // E
+  0xf88e888, // F
+  0x698b996, // G
+  0x999f999, // H
+  0x7222227, // I
+  0x72222a4, // J
+  0x9accaa9, // K
+  0x888888f, // L
+  0x9ff9999, // M
+  0x9ddbb99, // N
+  0x6999996, // O
+  0xe99e888, // P
+  0x69999b7, // Q
+  0xe99ea99, // R
+  0x6986196, // S
+  0x7222222, // T
+  0x9999996, // U
+  0x9999966, // V
+  0x9999ff9, // W
+  0x99fff99, // X
+  0x9996244, // Y
+  0xf12488f, // Z
+  0x69bd996, // 0
+  0x2622227, // 1
+  0x691248f, // 2
+  0x6916196, // 3
+  0xaaaf222, // 4
+  0xf88e11e, // 5
+  0x698e996, // 6
+  0xf112244, // 7
+  0x6996996, // 8
+  0x6997196  // 9
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,18 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SndUnix.cxx,v 1.1.1.1 2001-12-27 19:54:35 bwmott Exp $
+// $Id: SndUnix.cxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //============================================================================
 
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #include "SndUnix.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundUnix::SoundUnix()
+SoundUnix::SoundUnix(int volume)
     : myDisabled(false),
       myMute(false)
 {
@@ -55,7 +56,9 @@ SoundUnix::SoundUnix()
     close(pfd[1]);
  
     // Execute the stella-sound server
-    if(execlp("stella-sound", "stella-sound", (char*)0))
+    char vol[3];
+    sprintf(vol, "%d", volume);
+    if(execlp("stella-sound", "stella-sound", "-volume", vol, (char*)0))
     {
       exit(1);
     }
@@ -86,9 +89,6 @@ SoundUnix::~SoundUnix()
     // Send quit command to the sound server
     unsigned char command = 0xC0;
     write(myFd, &command, 1);
-
-    // Kill the sound server
-    kill(myProcessId, SIGHUP);
 
     // Close descriptors
     close(myFd);
@@ -231,4 +231,3 @@ void SoundUnix::mute(bool state)
   // Send sound command to the stella-sound process
   write(myFd, &command, 1);
 }
-

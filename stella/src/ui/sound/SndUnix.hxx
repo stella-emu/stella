@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SndUnix.hxx,v 1.1.1.1 2001-12-27 19:54:35 bwmott Exp $
+// $Id: SndUnix.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDUNIX_HXX
@@ -30,7 +30,7 @@
   "stella-sound" process is done through a pipe.
 
   @author  Bradford W. Mott
-  @version $Id: SndUnix.hxx,v 1.1.1.1 2001-12-27 19:54:35 bwmott Exp $
+  @version $Id: SndUnix.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 */
 class SoundUnix : public Sound
 {
@@ -38,7 +38,7 @@ class SoundUnix : public Sound
     /**
       Create a new sound object
     */
-    SoundUnix();
+    SoundUnix(int volume);
  
     /**
       Destructor
@@ -84,4 +84,3 @@ class SoundUnix : public Sound
     uInt8 myAUDV1;
 };
 #endif
-

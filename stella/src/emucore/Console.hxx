@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: Console.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,7 +36,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+  @version $Id: Console.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 */
 class Console
 {
@@ -156,4 +156,3 @@ class Console
     static Properties ourDefaultProperties;
 };
 #endif
-

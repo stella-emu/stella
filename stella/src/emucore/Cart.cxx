@@ -1,19 +1,19 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+// $Id: Cart.cxx,v 1.3 2002-01-18 16:03:48 estolberg Exp $
 //============================================================================
 
 #include <assert.h>
@@ -23,6 +23,7 @@
 #include "Cart3F.hxx"
 #include "Cart4K.hxx"
 #include "CartAR.hxx"
+#include "CartDPC.hxx"
 #include "CartE0.hxx"
 #include "CartE7.hxx"
 #include "CartF4SC.hxx"
@@ -33,11 +34,13 @@
 #include "CartFASC.hxx"
 #include "CartFE.hxx"
 #include "CartMC.hxx"
+#include "CartMB.hxx"
+#include "CartCV.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge* Cartridge::create(const uInt8* image, uInt32 size, 
+Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     const Properties& properties)
 {
   Cartridge* cartridge = 0;
@@ -60,6 +63,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new Cartridge4K(image);
   else if(type == "AR")
     cartridge = new CartridgeAR(image, size);
+  else if(type == "DPC")
+    cartridge = new CartridgeDPC(image, size);
   else if(type == "E0")
     cartridge = new CartridgeE0(image);
   else if(type == "E7")
@@ -80,6 +85,10 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeFE(image);
   else if(type == "MC")
     cartridge = new CartridgeMC(image, size);
+  else if(type == "MB")
+    cartridge = new CartridgeMB(image);
+  else if(type == "CV")
+    cartridge = new CartridgeCV(image, size);
   else
   {
     // TODO: At some point this should be handled in a better way...
@@ -129,6 +138,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     {"3b76242691730b2dd22ec0ceab351bc6", "E7"},    // He-Man
     {"ac7c2260378975614192ca2bc3d20e0b", "FE"},    // Decathlon
     {"4f618c2429138e0280969193ed6c107e", "FE"},    // Robot Tank
+    {"6d842c96d5a01967be9680080dd5be54", "DPC"},   // Pitfall II
     {(char*)0,                           (char*)0}
   };
 
@@ -174,6 +184,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else if(size == 32768)
     {
       type = "F4SC";
+    }
+    else if(size == 65536)
+    {
+      type = "MB";
     }
     else if(size == 131072)
     {

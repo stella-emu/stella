@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.1.1.1 2001-12-27 19:54:22 bwmott Exp $
+// $Id: MediaSrc.hxx,v 1.3 2002-04-18 17:18:48 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
 #define MEDIASOURCE_HXX
+
+#include <string>
 
 class MediaSource;
 
@@ -27,7 +29,7 @@ class MediaSource;
   This class provides an interface for accessing graphics data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.1.1.1 2001-12-27 19:54:22 bwmott Exp $
+  @version $Id: MediaSrc.hxx,v 1.3 2002-04-18 17:18:48 stephena Exp $
 */
 class MediaSource
 {
@@ -48,6 +50,21 @@ class MediaSource
       the desired frame rate to update the media source.  
     */
     virtual void update() = 0;
+
+    /**
+      This method should be called to cause further calls to 'update'
+      to be ignored until an unpause is given.  Will also send a mute to
+      the Sound device.
+
+      @return Status of the pause, success (true) or failure (false)
+    */
+    virtual bool pause(bool state) = 0;
+
+    /**
+      Inserts the given message into the framebuffer for the given
+      number of frames.
+    */
+    virtual void showMessage(string& message, Int32 duration) = 0;
 
     /**
       Answers the current frame buffer
@@ -102,4 +119,3 @@ class MediaSource
     MediaSource& operator = (const MediaSource&);
 };
 #endif
-

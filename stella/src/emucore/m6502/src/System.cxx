@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.1.1.1 2001-12-27 19:54:31 bwmott Exp $
+// $Id: System.cxx,v 1.2 2001-12-30 18:36:02 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -29,7 +29,8 @@ System::System(uInt16 n, uInt16 m)
       myNumberOfPages(1 << (n - m)),
       myNumberOfDevices(0),
       myM6502(0),
-      myCycles(0)
+      myCycles(0),
+      myDataBusState(0)
 {
   // Make sure the arguments are reasonable
   assert((1 <= m) && (m <= n) && (n <= 16));

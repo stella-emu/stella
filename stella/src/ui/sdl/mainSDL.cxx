@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.23 2002-04-18 17:18:48 stephena Exp $
+// $Id: mainSDL.cxx,v 1.22 2002-04-18 17:18:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -21,46 +21,43 @@
 #include <string>
 #include <algorithm>
 #include <stdio.h>
-#include <time.h>
 #include <unistd.h>
-#include <signal.h>
+#include <time.h>
+#include <sys/time.h>
 
-#include <X11/Xos.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-#include <X11/keysym.h>
-#include <X11/cursorfont.h>
+#include <SDL.h>
+#include <SDL_syswm.h>
 
 #include "bspf.hxx"
 #include "Console.hxx"
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
-#include "SndUnix.hxx"
 #include "System.hxx"
+#include "SndUnix.hxx"
+#include "RectList.hxx"
 #include "Settings.hxx"
 
 #ifdef HAVE_PNG
   #include "Snapshot.hxx"
 #endif
 
-#ifdef LINUX_JOYSTICK
-  #include <unistd.h>
-  #include <fcntl.h>
-  #include <linux/joystick.h>
+// Hack for SDL < 1.2.0
+#ifndef SDL_ENABLE
+  #define SDL_ENABLE 1
+#endif
+#ifndef SDL_DISABLE
+  #define SDL_DISABLE 0
 #endif
 
 #define HAVE_GETTIMEOFDAY 1
 #define MESSAGE_INTERVAL 2
 
-// A graphic context for each of the 2600's colors
-static GC theGCTable[256];
-
 // function prototypes
 static bool setupDisplay();
 static bool setupJoystick();
-static bool createCursors();
+static bool createScreen(int width, int height);
+static void recalculate8BitPalette();
 static void setupPalette();
 static void cleanup();
 
@@ -86,98 +83,94 @@ static void loadState();
 static void saveState();
 static void changeState();
 
-// Globals for X windows stuff
-static Display* theDisplay = (Display*) NULL;
-static string theDisplayName = "";
-static int theScreen = 0;
-static Visual* theVisual = (Visual*) NULL;
-static Window theWindow = 0;
-static Colormap thePrivateColormap = 0;
-static Cursor normalCursor = 0;
-static Cursor blankCursor = 0;
-static uInt32 eventMask;
-static Atom wm_delete_window;
+// Globals for the SDL stuff
+static SDL_Surface* screen = (SDL_Surface*) NULL;
+static Uint32 palette[256];
+static int bpp;
+static Display* theX11Display = (Display*) NULL;
+static Window theX11Window = 0;
+static int theX11Screen = 0;
+static int mouseX = 0;
+static bool x11Available = false;
+static SDL_SysWMinfo info;
+static int sdlflags;
+static RectList* rectList = (RectList*) NULL;
+static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
+static SDL_Joystick* theRightJoystick = (SDL_Joystick*) NULL;
 
 #ifdef HAVE_PNG
   static Snapshot* snapshot;
 #endif
 
-#ifdef LINUX_JOYSTICK
-  // File descriptors for the joystick devices
-  static int theLeftJoystickFd;
-  static int theRightJoystickFd;
-#endif
-
-// Global event stuff
 struct Switches
 {
-  KeySym scanCode;
+  SDLKey scanCode;
   Event::Type eventCode;
   string message;
 };
 
 static Switches list[] = {
-  { XK_1,           Event::KeyboardZero1,            "" },
-  { XK_2,           Event::KeyboardZero2,            "" },
-  { XK_3,           Event::KeyboardZero3,            "" },
-  { XK_q,           Event::KeyboardZero4,            "" },
-  { XK_w,           Event::KeyboardZero5,            "" },
-  { XK_e,           Event::KeyboardZero6,            "" },
-  { XK_a,           Event::KeyboardZero7,            "" },
-  { XK_s,           Event::KeyboardZero8,            "" },
-  { XK_d,           Event::KeyboardZero9,            "" },
-  { XK_z,           Event::KeyboardZeroStar,         "" },
-  { XK_x,           Event::KeyboardZero0,            "" },
-  { XK_c,           Event::KeyboardZeroPound,        "" },
+    { SDLK_1,           Event::KeyboardZero1,            "" },
+    { SDLK_2,           Event::KeyboardZero2,            "" },
+    { SDLK_3,           Event::KeyboardZero3,            "" },
+    { SDLK_q,           Event::KeyboardZero4,            "" },
+    { SDLK_w,           Event::KeyboardZero5,            "" },
+    { SDLK_e,           Event::KeyboardZero6,            "" },
+    { SDLK_a,           Event::KeyboardZero7,            "" },
+    { SDLK_s,           Event::KeyboardZero8,            "" },
+    { SDLK_d,           Event::KeyboardZero9,            "" },
+    { SDLK_z,           Event::KeyboardZeroStar,         "" },
+    { SDLK_x,           Event::KeyboardZero0,            "" },
+    { SDLK_c,           Event::KeyboardZeroPound,        "" },
 
-  { XK_8,           Event::KeyboardOne1,            "" },
-  { XK_9,           Event::KeyboardOne2,            "" },
-  { XK_0,           Event::KeyboardOne3,            "" },
-  { XK_i,           Event::KeyboardOne4,            "" },
-  { XK_o,           Event::KeyboardOne5,            "" },
-  { XK_p,           Event::KeyboardOne6,            "" },
-  { XK_k,           Event::KeyboardOne7,            "" },
-  { XK_l,           Event::KeyboardOne8,            "" },
-  { XK_semicolon,   Event::KeyboardOne9,            "" },
-  { XK_comma,       Event::KeyboardOneStar,         "" },
-  { XK_period,      Event::KeyboardOne0,            "" },
-  { XK_slash,       Event::KeyboardOnePound,        "" },
+    { SDLK_8,           Event::KeyboardOne1,             "" },
+    { SDLK_9,           Event::KeyboardOne2,             "" },
+    { SDLK_0,           Event::KeyboardOne3,             "" },
+    { SDLK_i,           Event::KeyboardOne4,             "" },
+    { SDLK_o,           Event::KeyboardOne5,             "" },
+    { SDLK_p,           Event::KeyboardOne6,             "" },
+    { SDLK_k,           Event::KeyboardOne7,             "" },
+    { SDLK_l,           Event::KeyboardOne8,             "" },
+    { SDLK_SEMICOLON,   Event::KeyboardOne9,             "" },
+    { SDLK_COMMA,       Event::KeyboardOneStar,          "" },
+    { SDLK_PERIOD,      Event::KeyboardOne0,             "" },
+    { SDLK_SLASH,       Event::KeyboardOnePound,         "" },
 
-  { XK_Down,        Event::JoystickZeroDown,        "" },
-  { XK_Up,          Event::JoystickZeroUp,          "" },
-  { XK_Left,        Event::JoystickZeroLeft,        "" },
-  { XK_Right,       Event::JoystickZeroRight,       "" },
-  { XK_space,       Event::JoystickZeroFire,        "" },
-  { XK_Return,      Event::JoystickZeroFire,        "" },
-  { XK_Control_L,   Event::JoystickZeroFire,        "" },
-  { XK_z,           Event::BoosterGripZeroTrigger,  "" },
-  { XK_x,           Event::BoosterGripZeroBooster,  "" },
+    { SDLK_UP,          Event::JoystickZeroUp,           "" },
+    { SDLK_DOWN,        Event::JoystickZeroDown,         "" },
+    { SDLK_LEFT,        Event::JoystickZeroLeft,         "" },
+    { SDLK_RIGHT,       Event::JoystickZeroRight,        "" },
+    { SDLK_SPACE,       Event::JoystickZeroFire,         "" },
+    { SDLK_RETURN,      Event::JoystickZeroFire,         "" },
+    { SDLK_LCTRL,       Event::JoystickZeroFire,         "" },
+    { SDLK_z,           Event::BoosterGripZeroTrigger,   "" },
+    { SDLK_x,           Event::BoosterGripZeroBooster,   "" },
 
-  { XK_w,           Event::JoystickZeroUp,          "" },
-  { XK_s,           Event::JoystickZeroDown,        "" },
-  { XK_a,           Event::JoystickZeroLeft,        "" },
-  { XK_d,           Event::JoystickZeroRight,       "" },
-  { XK_Tab,         Event::JoystickZeroFire,        "" },
-  { XK_1,           Event::BoosterGripZeroTrigger,  "" },
-  { XK_2,           Event::BoosterGripZeroBooster,  "" },
+    { SDLK_w,           Event::JoystickZeroUp,           "" },
+    { SDLK_s,           Event::JoystickZeroDown,         "" },
+    { SDLK_a,           Event::JoystickZeroLeft,         "" },
+    { SDLK_d,           Event::JoystickZeroRight,        "" },
+    { SDLK_TAB,         Event::JoystickZeroFire,         "" },
+    { SDLK_1,           Event::BoosterGripZeroTrigger,   "" },
+    { SDLK_2,           Event::BoosterGripZeroBooster,   "" },
 
-  { XK_l,           Event::JoystickOneDown,         "" },
-  { XK_o,           Event::JoystickOneUp,           "" },
-  { XK_k,           Event::JoystickOneLeft,         "" },
-  { XK_semicolon,   Event::JoystickOneRight,        "" },
-  { XK_j,           Event::JoystickOneFire,         "" },
-  { XK_n,           Event::BoosterGripOneTrigger,   "" },
-  { XK_m,           Event::BoosterGripOneBooster,   "" },
+    { SDLK_o,           Event::JoystickOneUp,            "" },
+    { SDLK_l,           Event::JoystickOneDown,          "" },
+    { SDLK_k,           Event::JoystickOneLeft,          "" },
+    { SDLK_SEMICOLON,   Event::JoystickOneRight,         "" },
+    { SDLK_j,           Event::JoystickOneFire,          "" },
+    { SDLK_n,           Event::BoosterGripOneTrigger,    "" },
+    { SDLK_m,           Event::BoosterGripOneBooster,    "" },
 
-  { XK_F1,          Event::ConsoleSelect,           "" },
-  { XK_F2,          Event::ConsoleReset,            "" },
-  { XK_F3,          Event::ConsoleColor,            "Color Mode" },
-  { XK_F4,          Event::ConsoleBlackWhite,       "BW Mode" },
-  { XK_F5,          Event::ConsoleLeftDifficultyA,  "Left Difficulty A" },
-  { XK_F6,          Event::ConsoleLeftDifficultyB,  "Left Difficulty B" },
-  { XK_F7,          Event::ConsoleRightDifficultyA, "Right Difficulty A" },
-  { XK_F8,          Event::ConsoleRightDifficultyB, "Right Difficulty B" }
-};
+    { SDLK_F1,          Event::ConsoleSelect,            "" },
+    { SDLK_F2,          Event::ConsoleReset,             "" },
+    { SDLK_F3,          Event::ConsoleColor,             "Color Mode" },
+    { SDLK_F4,          Event::ConsoleBlackWhite,        "BW Mode" },
+    { SDLK_F5,          Event::ConsoleLeftDifficultyA,   "Left Difficulty A" },
+    { SDLK_F6,          Event::ConsoleLeftDifficultyB,   "Left Difficulty B" },
+    { SDLK_F7,          Event::ConsoleRightDifficultyA,  "Right Difficulty A" },
+    { SDLK_F8,          Event::ConsoleRightDifficultyB,  "Right Difficulty B" }
+  };
 
 // Event objects to use
 static Event theEvent;
@@ -207,37 +200,38 @@ static bool isCentered = false;
 // Indicates the current state to use for state saving
 static uInt32 currentState = 0;
 
+
+
 /**
   This routine should be called once the console is created to setup
-  the X11 connection and open a window for us to use.  Return false if any
-  operation fails, otherwise return true.
+  the SDL window for us to use.  Return false if any operation fails,
+  otherwise return true.
 */
 bool setupDisplay()
 {
-  // Open a connection to the X server
-  if(theDisplayName == "")
-    theDisplay = XOpenDisplay(NULL);
-  else
-    theDisplay = XOpenDisplay(theDisplayName.c_str());
-
-  // Verify that the connection was made
-  if(theDisplay == NULL)
-  {
-    cerr << "ERROR: Couldn't open X Windows display...\n";
+  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK;
+  if(SDL_Init(initflags) < 0)
     return false;
-  }
 
-  theScreen = DefaultScreen(theDisplay);
-  theVisual = DefaultVisual(theDisplay, theScreen);
-  Window rootWindow = RootWindow(theDisplay, theScreen);
+  // Check which system we are running under
+  x11Available = false;
+  SDL_VERSION(&info.version);
+  if(SDL_GetWMInfo(&info) > 0)
+    if(info.subsystem == SDL_SYSWM_X11)
+      x11Available = true;
+
+  sdlflags = SDL_HWSURFACE;
+  sdlflags |= settings->theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
+  sdlflags |= settings->theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
 
   // Get the desired width and height of the display
-  settings->theWidth  = theConsole->mediaSource().width();
+  settings->theWidth = theConsole->mediaSource().width();
   settings->theHeight = theConsole->mediaSource().height();
 
   // Get the maximum size of a window for THIS screen
   // Must be called after display and screen are known, as well as
   // theWidth and theHeight
+  // Defaults to 3 on systems without X11, maximum of 4 on any system.
   settings->theMaxWindowSize = maxWindowSizeForScreen();
 
   // If theWindowSize is not 0, then it must have been set on the commandline
@@ -257,80 +251,6 @@ bool setupDisplay()
       settings->theWindowSize = 2;
   }
 
-  // Figure out the desired size of the window
-  int width  = settings->theWidth  * settings->theWindowSize * 2;
-  int height = settings->theHeight * settings->theWindowSize;
-
-  theWindow = XCreateSimpleWindow(theDisplay, rootWindow, 0, 0,
-      width, height, CopyFromParent, CopyFromParent, 
-      BlackPixel(theDisplay, theScreen));
-  if(!theWindow)
-    return false;
-
-  // Create normal and blank cursors.  This must be called AFTER
-  // theDisplay and theWindow are defined
-  if(!createCursors())
-  {
-    cerr << "ERROR: Couldn't create cursors.\n";
-    return false;
-  }
-
-  XSizeHints hints;
-  hints.flags = PSize | PMinSize | PMaxSize;
-  hints.min_width = hints.max_width = hints.width = width;
-  hints.min_height = hints.max_height = hints.height = height;
-
-  // Set window and icon name, size hints and other properties 
-  char name[512];
-  sprintf(name, "Stella: \"%s\"", 
-      theConsole->properties().get("Cartridge.Name").c_str());
-  XmbSetWMProperties(theDisplay, theWindow, name, "stella", 0, 0, &hints, None, None);
-
-  // Set up the palette for the screen
-  setupPalette();
-
-  // Set up the delete window stuff ...
-  wm_delete_window = XInternAtom(theDisplay, "WM_DELETE_WINDOW", False);
-  XSetWMProtocols(theDisplay, theWindow, &wm_delete_window, 1);
-
-  // If requested install a private colormap for the window
-  if(settings->theUsePrivateColormapFlag)
-  {
-    XSetWindowColormap(theDisplay, theWindow, thePrivateColormap);
-  }
-
-  XSelectInput(theDisplay, theWindow, ExposureMask);
-  XMapWindow(theDisplay, theWindow);
-
-  // Center the window if centering is selected and not fullscreen
-  if(settings->theCenterWindowFlag)// && !theUseFullScreenFlag)
-    centerWindow();
-
-  XEvent event;
-  do
-  {
-    XNextEvent(theDisplay, &event);
-  } while (event.type != Expose);
-
-  eventMask = ExposureMask | KeyPressMask | KeyReleaseMask | PropertyChangeMask |
-              StructureNotifyMask;
-
-  // If we're using the mouse for paddle emulation then enable mouse events
-  if(((theConsole->properties().get("Controller.Left") == "Paddles") ||
-      (theConsole->properties().get("Controller.Right") == "Paddles"))
-    && (settings->thePaddleMode != 4)) 
-  {
-    eventMask |= (PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
-  }
-
-  // Keep mouse in game window if grabmouse is selected
-  grabMouse(settings->theGrabMouseFlag);
-
-  // Show or hide the cursor depending on the 'hidecursor' argument
-  showCursor(!settings->theHideCursorFlag);
-
-  XSelectInput(theDisplay, theWindow, eventMask);
-
 #ifdef HAVE_PNG
   // Take care of the snapshot stuff.
   snapshot = new Snapshot();
@@ -341,37 +261,159 @@ bool setupDisplay()
     settings->theSnapShotName = "romname";
 #endif
 
+  // Set up the rectangle list to be used in updateDisplay
+  rectList = new RectList();
+  if(!rectList)
+  {
+    cerr << "ERROR: Unable to get memory for SDL rects" << endl;
+    return false;
+  }
+
+  // Set the window title and icon
+  char name[512];
+  sprintf(name, "Stella: \"%s\"", 
+      theConsole->properties().get("Cartridge.Name").c_str());
+  SDL_WM_SetCaption(name, "stella");
+
+  // Figure out the desired size of the window
+  int width  = settings->theWidth  * settings->theWindowSize * 2;
+  int height = settings->theHeight * settings->theWindowSize;
+
+  // Create the screen
+  if(!createScreen(width, height))
+    return false;
+  setupPalette();
+
+  // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
+  if(settings->theUseFullScreenFlag)
+  {
+    grabMouse(true);
+    showCursor(false);
+    isFullscreen = true;
+  }
+  else
+  {
+    // Keep mouse in game window if grabmouse is selected
+    grabMouse(settings->theGrabMouseFlag);
+
+    // Show or hide the cursor depending on the 'hidecursor' argument
+    showCursor(!settings->theHideCursorFlag);
+  }
+
+  // Center the window if centering is selected and not fullscreen
+  if(settings->theCenterWindowFlag && !settings->theUseFullScreenFlag)
+    centerWindow();
+
   return true;
 }
+
 
 /**
   This routine should be called once setupDisplay is called
-  to create the joystick stuff
+  to create the joystick stuff.
 */
 bool setupJoystick()
 {
-#ifdef LINUX_JOYSTICK
-  // Open the joystick devices
-  theLeftJoystickFd = open("/dev/js0", O_RDONLY | O_NONBLOCK);
-  theRightJoystickFd = open("/dev/js1", O_RDONLY | O_NONBLOCK);
-#endif
+  if(SDL_NumJoysticks() <= 0)
+  {
+    cout << "No joysticks present, use the keyboard.\n";
+    theLeftJoystick = theRightJoystick = 0;
+    return true;
+  }
+
+  if((theLeftJoystick = SDL_JoystickOpen(0)) != NULL)
+    cout << "Left joystick is a " << SDL_JoystickName(0) <<
+      " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
+  else
+    cout << "Left joystick not present, use keyboard instead.\n";
+
+  if((theRightJoystick = SDL_JoystickOpen(1)) != NULL)
+    cout << "Right joystick is a " << SDL_JoystickName(1) <<
+      " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
+  else
+    cout << "Right joystick not present, use keyboard instead.\n";
 
   return true;
 }
 
+
+/**
+  This routine is called whenever the screen needs to be recreated.
+  It updates the global screen variable.  When this happens, the
+  8-bit palette needs to be recalculated.
+*/
+bool createScreen(int w, int h)
+{
+  screen = SDL_SetVideoMode(w, h, 0, sdlflags);
+  if(screen == NULL)
+  {
+    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    return false;
+  }
+
+  bpp = screen->format->BitsPerPixel;
+  if(bpp == 8)
+    recalculate8BitPalette();
+
+  return true;
+}
+
+
+/**
+  Recalculates palette of an 8-bit (256 color) screen.
+*/
+void recalculate8BitPalette()
+{
+  if(bpp != 8)
+    return;
+
+  // Make the palette be half-bright if pause is selected
+  uInt8 shift = 0;
+  if(thePauseIndicator)
+    shift = 1;
+
+  // Map 2600 colors to the current screen
+  const uInt32* gamePalette = theConsole->mediaSource().palette();
+  SDL_Color colors[256];
+  for(uInt32 i = 0; i < 256; ++i)
+  {
+    Uint8 r, g, b;
+
+    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16) >> shift;
+    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8) >> shift;
+    b = (Uint8) (gamePalette[i] & 0x000000ff) >> shift;
+
+    colors[i].r = r;
+    colors[i].g = g;
+    colors[i].b = b;
+  }
+  SDL_SetColors(screen, colors, 0, 256);
+
+  // Now see which colors we actually got
+  SDL_PixelFormat* format = screen->format;
+  for(uInt32 i = 0; i < 256; ++i)
+  {
+    Uint8 r, g, b;
+
+    r = format->palette->colors[i].r;
+    g = format->palette->colors[i].g;
+    b = format->palette->colors[i].b;
+
+    palette[i] = SDL_MapRGB(format, r, g, b);
+  }
+}
+
+
 /**
   Set up the palette for a screen of any depth.
+  Calls recalculate8BitPalette if necessary.
 */
 void setupPalette()
 {
-  // If we're using a private colormap then let's free it to be safe
-  if(settings->theUsePrivateColormapFlag && theDisplay)
+  if(bpp == 8)
   {
-    if(thePrivateColormap)
-      XFreeColormap(theDisplay, thePrivateColormap);
-
-     thePrivateColormap = XCreateColormap(theDisplay, theWindow, 
-       theVisual, AllocNone);
+    recalculate8BitPalette();
+    return;
   }
 
   // Make the palette be half-bright if pause is selected
@@ -379,31 +421,272 @@ void setupPalette()
   if(thePauseIndicator)
     shift = 1;
 
-  // Allocate colors in the default colormap
-  const uInt32* palette = theConsole->mediaSource().palette();
-  for(uInt32 t = 0; t < 256; ++t)
+  const uInt32* gamePalette = theConsole->mediaSource().palette();
+  for(uInt32 i = 0; i < 256; ++i)
   {
-    XColor color;
+    Uint8 r, g, b;
 
-    color.red   = ((palette[t] & 0x00ff0000) >> 8) >> shift;
-    color.green = (palette[t] & 0x0000ff00) >> shift;
-    color.blue  = ((palette[t] & 0x000000ff) << 8) >> shift;
-    color.flags = DoRed | DoGreen | DoBlue;
+    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16) >> shift;
+    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8) >> shift;
+    b = (Uint8) (gamePalette[i] & 0x000000ff) >> shift;
 
-    if(settings->theUsePrivateColormapFlag)
-      XAllocColor(theDisplay, thePrivateColormap, &color);
-    else
-      XAllocColor(theDisplay, DefaultColormap(theDisplay, theScreen), &color);
+    switch(bpp)
+    {
+      case 15:
+        palette[i] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+        break;
 
-    XGCValues values;
-    values.foreground = color.pixel;
+      case 16:
+        palette[i] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+        break;
 
-    if(theGCTable[t])
-      XFreeGC(theDisplay, theGCTable[t]);
-
-    theGCTable[t] = XCreateGC(theDisplay, theWindow, GCForeground, &values);
+      case 24:
+      case 32:
+        palette[i] = (r << 16) | (g << 8) | b;
+        break;
+    }
   }
 }
+
+
+/**
+  This routine is called when the program is about to quit.
+*/
+void doQuit()
+{
+  theQuitIndicator = true;
+}
+
+
+/**
+  This routine is called when the user wants to resize the window.
+  A '1' argument indicates that the window should increase in size, while '0'
+  indicates that the windows should decrease in size.
+  Can't resize in fullscreen mode.  Will only resize up to the maximum size
+  of the screen.
+*/
+void resizeWindow(int mode)
+{
+  if(isFullscreen)
+    return;
+
+  if(mode == 1)   // increase size
+  {
+    if(settings->theWindowSize == settings->theMaxWindowSize)
+      settings->theWindowSize = 1;
+    else
+      settings->theWindowSize++;
+  }
+  else   // decrease size
+  {
+    if(settings->theWindowSize == 1)
+      settings->theWindowSize = settings->theMaxWindowSize;
+    else
+      settings->theWindowSize--;
+  }
+
+  // Figure out the desired size of the window
+  int width  = settings->theWidth  * settings->theWindowSize * 2;
+  int height = settings->theHeight * settings->theWindowSize;
+
+  if(!createScreen(width, height))
+    return;
+
+  theRedrawEntireFrameIndicator = true;
+
+  // A resize may mean that the window is no longer centered
+  isCentered = false;
+
+  if(settings->theCenterWindowFlag)
+    centerWindow();
+}
+
+
+/**
+  Centers the game window onscreen.  Only works in X11 for now.
+*/
+void centerWindow()
+{
+  if(!x11Available)
+  {
+    cerr << "Window centering only available under X11.\n";
+    return;
+  }
+
+  if(isFullscreen || isCentered)
+    return;
+
+  int x, y, w, h;
+  info.info.x11.lock_func();
+  theX11Display = info.info.x11.display;
+  theX11Window  = info.info.x11.wmwindow;
+  theX11Screen  = DefaultScreen(theX11Display);
+
+  w = DisplayWidth(theX11Display, theX11Screen);
+  h = DisplayHeight(theX11Display, theX11Screen);
+  x = (w - screen->w)/2;
+  y = (h - screen->h)/2;
+
+  XMoveWindow(theX11Display, theX11Window, x, y);
+  info.info.x11.unlock_func();
+
+  isCentered = true;
+}
+
+
+/**
+  Toggles between fullscreen and window mode.  Grabmouse and hidecursor
+  activated when in fullscreen mode.
+*/
+void toggleFullscreen()
+{
+  int width  = settings->theWidth  * settings->theWindowSize * 2;
+  int height = settings->theHeight * settings->theWindowSize;
+
+  isFullscreen = !isFullscreen;
+  if(isFullscreen)
+    sdlflags |= SDL_FULLSCREEN;
+  else
+    sdlflags &= ~SDL_FULLSCREEN;
+
+  if(!createScreen(width, height))
+    return;
+
+  if(isFullscreen)  // now in fullscreen mode
+  {
+    grabMouse(true);
+    showCursor(false);
+  }
+  else    // now in windowed mode
+  {
+    grabMouse(settings->theGrabMouseFlag);
+    showCursor(!settings->theHideCursorFlag);
+
+    if(settings->theCenterWindowFlag)
+        centerWindow();
+  }
+
+  theRedrawEntireFrameIndicator = true;
+}
+
+
+/**
+  Toggles pausing of the emulator
+*/
+void togglePause()
+{
+  if(thePauseIndicator)	// emulator is already paused so continue
+  {
+    thePauseIndicator = false;
+  }
+  else	// we want to pause the game
+  {
+    thePauseIndicator = true;
+  }
+
+  // Pause the console
+  theConsole->mediaSource().pause(thePauseIndicator);
+
+  // Show a different palette depending on pause state
+  setupPalette();
+  theRedrawEntireFrameIndicator = true;
+}
+
+
+/**
+  Shows or hides the cursor based on the given boolean value.
+*/
+void showCursor(bool show)
+{
+  if(show)
+    SDL_ShowCursor(SDL_ENABLE);
+  else
+    SDL_ShowCursor(SDL_DISABLE);
+}
+
+
+/**
+  Grabs or ungrabs the mouse based on the given boolean value.
+*/
+void grabMouse(bool grab)
+{
+  if(grab)
+    SDL_WM_GrabInput(SDL_GRAB_ON);
+  else
+    SDL_WM_GrabInput(SDL_GRAB_OFF);
+}
+
+
+/**
+  Saves state of the current game in the current slot.
+*/
+void saveState()
+{
+#if 0
+  // Do a state save using the MediaSource
+  // ...
+
+  // Print appropriate message
+  char buf[40];
+  if(true) // if the state saved correctly
+    snprintf(buf, 39, "State %d saved", currentState);
+  else
+    snprintf(buf, 39, "Error saving state %d", currentState);
+
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#else
+  cerr << "State saving not yet implemented\n";
+#endif
+}
+
+
+/**
+  Changes the current state slot.
+*/
+void changeState()
+{
+  if(currentState == 9)
+    currentState = 0;
+  else
+    ++currentState;
+
+#if 0
+  // Print appropriate message
+  char buf[40];
+  snprintf(buf, 39, "Changed to state slot %d", currentState);
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#endif
+}
+
+
+/**
+  Loads state from the current slot for the current game.
+*/
+void loadState()
+{
+#if 0
+  // Do a state load using the MediaSource
+  // ...
+
+  // Print appropriate message
+  char buf[40];
+  if(true) // if the state loaded correctly
+    snprintf(buf, 39, "State %d loaded", currentState);
+  else
+    snprintf(buf, 39, "Error loading state %d", currentState);
+
+  string message = buf;
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+    settings->theDesiredFrameRate);
+#else
+  cerr << "State loading not yet implemented\n";
+#endif
+}
+
 
 /**
   This routine should be called anytime the display needs to be updated
@@ -422,6 +705,9 @@ void updateDisplay(MediaSource& mediaSource)
     uInt8 color;
     uInt16 x, y, width, height;
   } rectangles[2][160];
+
+  // Start a new reclist on each display update
+  rectList->start();
 
   // This array represents the rectangles that need displaying
   // on the current scanline we're processing
@@ -502,9 +788,15 @@ void updateDisplay(MediaSource& mediaSource)
       else if(current.x >= active.x)
       {
         // Flush the active rectangle
-        XFillRectangle(theDisplay, theWindow, theGCTable[active.color],
-           active.x * 2 * screenMultiple, active.y * screenMultiple, 
-           active.width * 2 * screenMultiple, active.height * screenMultiple);
+        SDL_Rect temp;
+
+        temp.x = active.x * 2 * screenMultiple;
+        temp.y = active.y * screenMultiple;
+        temp.w = active.width * 2 * screenMultiple;
+        temp.h = active.height * screenMultiple;
+
+        rectList->add(&temp);
+        SDL_FillRect(screen, &temp, palette[active.color]);
 
         ++activeIndex;
       }
@@ -515,9 +807,14 @@ void updateDisplay(MediaSource& mediaSource)
     {
       Rectangle& active = activeRectangles[s];
 
-      XFillRectangle(theDisplay, theWindow, theGCTable[active.color],
-         active.x * 2 * screenMultiple, active.y * screenMultiple, 
-         active.width * 2 * screenMultiple, active.height * screenMultiple);
+      SDL_Rect temp;
+      temp.x = active.x * 2 * screenMultiple;
+      temp.y = active.y * screenMultiple;
+      temp.w = active.width * 2 * screenMultiple;
+      temp.h = active.height * screenMultiple;
+
+      rectList->add(&temp);
+      SDL_FillRect(screen, &temp, palette[active.color]);
     }
 
     // We can now make the current rectangles into the active rectangles
@@ -526,7 +823,7 @@ void updateDisplay(MediaSource& mediaSource)
     activeRectangles = tmp;
     activeCount = currentCount;
  
-    currentFrame  += width;
+    currentFrame += width;
     previousFrame += width;
   }
 
@@ -535,74 +832,85 @@ void updateDisplay(MediaSource& mediaSource)
   {
     Rectangle& active = activeRectangles[t];
 
-    XFillRectangle(theDisplay, theWindow, theGCTable[active.color],
-       active.x * 2 * screenMultiple, active.y * screenMultiple, 
-       active.width * 2 * screenMultiple, active.height * screenMultiple);
+    SDL_Rect temp;
+    temp.x = active.x * 2 * screenMultiple;
+    temp.y = active.y * screenMultiple;
+    temp.w = active.width * 2 * screenMultiple;
+    temp.h = active.height * screenMultiple;
+
+    rectList->add(&temp);
+    SDL_FillRect(screen, &temp, palette[active.color]);
   }
+
+  // Now update all the rectangles at once
+  SDL_UpdateRects(screen, rectList->numRects(), rectList->rects());
 
   // The frame doesn't need to be completely redrawn anymore
   theRedrawEntireFrameIndicator = false;
 }
+
 
 /**
   This routine should be called regularly to handle events
 */
 void handleEvents()
 {
-  XEvent event;
+  SDL_Event event;
+  Uint8 axis;
+  Uint8 button;
+  Sint16 value;
+  Uint8 type;
+  Uint8 state;
+  SDLKey key;
+  SDLMod mod;
 
-  // Handle the WM_DELETE_WINDOW message outside the event loop
-  if(XCheckTypedWindowEvent(theDisplay, theWindow, ClientMessage, &event))
+  // Check for an event
+  while(SDL_PollEvent(&event))
   {
-    if(event.xclient.data.l[0] == wm_delete_window)
+    // keyboard events
+    if(event.type == SDL_KEYDOWN)
     {
-      doQuit();
-      return;
-    }
-  }
+      key = event.key.keysym.sym;
+      mod = event.key.keysym.mod;
+      type = event.type;
 
-  while(XCheckWindowEvent(theDisplay, theWindow, eventMask, &event))
-  {
-    char buffer[20];
-    KeySym key;
-    XComposeStatus compose;
-
-    if((event.type == KeyPress) || (event.type == KeyRelease))
-    {
-      XLookupString(&event.xkey, buffer, 20, &key, &compose);
-      if((key == XK_Escape) && (event.type == KeyPress))
+      if(key == SDLK_ESCAPE)
       {
         doQuit();
       }
-      else if((key == XK_equal) && (event.type == KeyPress))
+      else if(key == SDLK_EQUALS)
       {
         resizeWindow(1);
       }
-      else if((key == XK_minus) && (event.type == KeyPress))
+      else if(key == SDLK_MINUS)
       {
         resizeWindow(0);
       }
-      else if((key == XK_F9) && (event.type == KeyPress))
+      else if(key == SDLK_RETURN && mod & KMOD_ALT)
+      {
+        toggleFullscreen();
+      }
+      else if(key == SDLK_F9)
       {
         saveState();
       }
-      else if((key == XK_F10) && (event.type == KeyPress))
+      else if(key == SDLK_F10)
       {
         changeState();
       }
-      else if((key == XK_F11) && (event.type == KeyPress))
+      else if(key == SDLK_F11)
       {
         loadState();
       }
-      else if((key == XK_F12) && (event.type == KeyPress))
+      else if(key == SDLK_F12)
       {
         takeSnapshot();
       }
-      else if((key == XK_Pause) && (event.type == KeyPress))
+      else if(key == SDLK_PAUSE)
       {
         togglePause();
       }
-      else if((key == XK_g) && (event.type == KeyPress))
+      else if(key == SDLK_g)
       {
         // don't change grabmouse in fullscreen mode
         if(!isFullscreen)
@@ -611,7 +919,7 @@ void handleEvents()
           grabMouse(settings->theGrabMouseFlag);
         }
       }
-      else if((key == XK_h) && (event.type == KeyPress))
+      else if(key == SDLK_h)
       {
         // don't change hidecursor in fullscreen mode
         if(!isFullscreen)
@@ -620,31 +928,61 @@ void handleEvents()
           showCursor(!settings->theHideCursorFlag);
         }
       }
-      else
-      { 
+      else // check all the other keys
+      {
         for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
         { 
           if(list[i].scanCode == key)
           {
-            theEvent.set(list[i].eventCode, 
-                (event.type == KeyPress) ? 1 : 0);
-            keyboardEvent.set(list[i].eventCode, 
-                (event.type == KeyPress) ? 1 : 0);
-
-            if((event.type == KeyPress) && (list[i].message != ""))
+            theEvent.set(list[i].eventCode, 1);
+            keyboardEvent.set(list[i].eventCode, 1);
+            if(list[i].message != "")
               theConsole->mediaSource().showMessage(list[i].message,
                   MESSAGE_INTERVAL * settings->theDesiredFrameRate);
           }
         }
       }
     }
-    else if(event.type == MotionNotify)
+    else if(event.type == SDL_KEYUP)
     {
-      Int32 resistance = 0;
-      uInt32 width = settings->theWidth * settings->theWindowSize * 2;
+      key = event.key.keysym.sym;
+      type = event.type;
 
-      int x = width - event.xmotion.x;
-      resistance = (Int32)((1000000.0 * x) / width);
+      for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
+      { 
+        if(list[i].scanCode == key)
+        {
+          theEvent.set(list[i].eventCode, 0);
+          keyboardEvent.set(list[i].eventCode, 0);
+        }
+      }
+    }
+    else if(event.type == SDL_MOUSEMOTION)
+    {
+      int resistance = 0, x = 0;
+      float fudgeFactor = 1000000.0;
+      Int32 width   = settings->theWidth * settings->theWindowSize * 2;
+
+      // Grabmouse and hidecursor introduce some lag into the mouse movement,
+      // so we need to fudge the numbers a bit
+      if(settings->theGrabMouseFlag && settings->theHideCursorFlag)
+      {
+        mouseX = (int)((float)mouseX + (float)event.motion.xrel
+                 * 1.5 * (float) settings->theWindowSize);
+      }
+      else
+      {
+        mouseX = mouseX + event.motion.xrel * settings->theWindowSize;
+      }
+
+      // Check to make sure mouseX is within the game window
+      if(mouseX < 0)
+        mouseX = 0;
+      else if(mouseX > width)
+        mouseX = width;
+  
+      x = width - mouseX;
+      resistance = (Int32)((fudgeFactor * x) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
       if(settings->thePaddleMode == 0)
@@ -656,7 +994,7 @@ void handleEvents()
       else if(settings->thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeResistance, resistance);
     }
-    else if(event.type == ButtonPress) 
+    else if(event.type == SDL_MOUSEBUTTONDOWN)
     {
       if(settings->thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroFire, 1);
@@ -667,7 +1005,7 @@ void handleEvents()
       else if(settings->thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeFire, 1);
     }
-    else if(event.type == ButtonRelease)
+    else if(event.type == SDL_MOUSEBUTTONUP)
     {
       if(settings->thePaddleMode == 0)
         theEvent.set(Event::PaddleZeroFire, 0);
@@ -678,402 +1016,152 @@ void handleEvents()
       else if(settings->thePaddleMode == 3)
         theEvent.set(Event::PaddleThreeFire, 0);
     }
-    else if(event.type == Expose)
+    else if(event.type == SDL_ACTIVEEVENT)
     {
-      theRedrawEntireFrameIndicator = true;
-    }
-    else if(event.type == UnmapNotify)
-    {
-      if(!thePauseIndicator)
+      if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
       {
-        togglePause();
+        if(!thePauseIndicator)
+        {
+          togglePause();
+        }
       }
     }
-  }
-
-#ifdef LINUX_JOYSTICK
-  // Read joystick events and modify event states
-  if(theLeftJoystickFd >= 0)
-  {
-    struct js_event event;
-
-    // Process each joystick event that's queued-up
-    while(read(theLeftJoystickFd, &event, sizeof(struct js_event)) > 0)
+    else if(event.type == SDL_QUIT)
     {
-      if((event.type & ~JS_EVENT_INIT) == JS_EVENT_BUTTON)
+      doQuit();
+    }
+
+    // Read joystick events and modify event states
+    if(theLeftJoystick)
+    {
+      if(((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+          && (event.jbutton.which == 0))
       {
-        if(event.number == 0)
+        button = event.jbutton.button;
+        state = event.jbutton.state;
+        state = (state == SDL_PRESSED) ? 1 : 0;
+
+        if(button == 0)  // fire button
         {
-          theEvent.set(Event::JoystickZeroFire, event.value ? 
+          theEvent.set(Event::JoystickZeroFire, state ? 
               1 : keyboardEvent.get(Event::JoystickZeroFire));
 
           // If we're using real paddles then set paddle event as well
           if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleZeroFire, event.value);
+            theEvent.set(Event::PaddleZeroFire, state);
         }
-        else if(event.number == 1)
+        else if(button == 1)  // booster button
         {
-          theEvent.set(Event::BoosterGripZeroTrigger, event.value ? 
+          theEvent.set(Event::BoosterGripZeroTrigger, state ? 
               1 : keyboardEvent.get(Event::BoosterGripZeroTrigger));
 
           // If we're using real paddles then set paddle event as well
           if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleOneFire, event.value);
+            theEvent.set(Event::PaddleOneFire, state);
         }
       }
-      else if((event.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS)
+      else if((event.type == SDL_JOYAXISMOTION) && (event.jaxis.which == 0))
       {
-        if(event.number == 0)
+        axis = event.jaxis.axis;
+        value = event.jaxis.value;
+
+        if(axis == 0)  // x-axis
         {
-          theEvent.set(Event::JoystickZeroLeft, (event.value < -16384) ? 
+          theEvent.set(Event::JoystickZeroLeft, (value < -16384) ? 
               1 : keyboardEvent.get(Event::JoystickZeroLeft));
-          theEvent.set(Event::JoystickZeroRight, (event.value > 16384) ? 
+          theEvent.set(Event::JoystickZeroRight, (value > 16384) ? 
               1 : keyboardEvent.get(Event::JoystickZeroRight));
 
           // If we're using real paddles then set paddle events as well
           if(settings->thePaddleMode == 4)
           {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
+            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleZeroResistance, r);
           }
         }
-        else if(event.number == 1)
+        else if(axis == 1)  // y-axis
         {
-          theEvent.set(Event::JoystickZeroUp, (event.value < -16384) ? 
+          theEvent.set(Event::JoystickZeroUp, (value < -16384) ? 
               1 : keyboardEvent.get(Event::JoystickZeroUp));
-          theEvent.set(Event::JoystickZeroDown, (event.value > 16384) ? 
+          theEvent.set(Event::JoystickZeroDown, (value > 16384) ? 
               1 : keyboardEvent.get(Event::JoystickZeroDown));
 
           // If we're using real paddles then set paddle events as well
           if(settings->thePaddleMode == 4)
           {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
+            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleOneResistance, r);
           }
         }
       }
     }
-  }
 
-  if(theRightJoystickFd >= 0)
-  {
-    struct js_event event;
-
-    // Process each joystick event that's queued-up
-    while(read(theRightJoystickFd, &event, sizeof(struct js_event)) > 0)
+    if(theRightJoystick)
     {
-      if((event.type & ~JS_EVENT_INIT) == JS_EVENT_BUTTON)
+      if(((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+          && (event.jbutton.which == 1))
       {
-        if(event.number == 0)
+        button = event.jbutton.button;
+        state = event.jbutton.state;
+        state = (state == SDL_PRESSED) ? 1 : 0;
+
+        if(button == 0)  // fire button
         {
-          theEvent.set(Event::JoystickOneFire, event.value ? 
+          theEvent.set(Event::JoystickOneFire, state ? 
               1 : keyboardEvent.get(Event::JoystickOneFire));
 
           // If we're using real paddles then set paddle event as well
           if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleTwoFire, event.value);
+            theEvent.set(Event::PaddleTwoFire, state);
         }
-        else if(event.number == 1)
+        else if(button == 1)  // booster button
         {
-          theEvent.set(Event::BoosterGripOneTrigger, event.value ? 
+          theEvent.set(Event::BoosterGripOneTrigger, state ? 
               1 : keyboardEvent.get(Event::BoosterGripOneTrigger));
 
           // If we're using real paddles then set paddle event as well
           if(settings->thePaddleMode == 4)
-            theEvent.set(Event::PaddleThreeFire, event.value);
+            theEvent.set(Event::PaddleThreeFire, state);
         }
       }
-      else if((event.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS)
+      else if((event.type == SDL_JOYAXISMOTION) && (event.jaxis.which == 1))
       {
-        if(event.number == 0)
+        axis = event.jaxis.axis;
+        value = event.jaxis.value;
+
+        if(axis == 0)  // x-axis
         {
-          theEvent.set(Event::JoystickOneLeft, (event.value < -16384) ? 
+          theEvent.set(Event::JoystickOneLeft, (value < -16384) ? 
               1 : keyboardEvent.get(Event::JoystickOneLeft));
-          theEvent.set(Event::JoystickOneRight, (event.value > 16384) ? 
+          theEvent.set(Event::JoystickOneRight, (value > 16384) ? 
               1 : keyboardEvent.get(Event::JoystickOneRight));
 
           // If we're using real paddles then set paddle events as well
           if(settings->thePaddleMode == 4)
           {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
+            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleTwoResistance, r);
           }
         }
-        else if(event.number == 1)
+        else if(axis == 1)  // y-axis
         {
-          theEvent.set(Event::JoystickOneUp, (event.value < -16384) ? 
+          theEvent.set(Event::JoystickOneUp, (value < -16384) ? 
               1 : keyboardEvent.get(Event::JoystickOneUp));
-          theEvent.set(Event::JoystickOneDown, (event.value > 16384) ? 
+          theEvent.set(Event::JoystickOneDown, (value > 16384) ? 
               1 : keyboardEvent.get(Event::JoystickOneDown));
 
           // If we're using real paddles then set paddle events as well
           if(settings->thePaddleMode == 4)
           {
-            uInt32 r = (uInt32)((1.0E6L * (event.value + 32767L)) / 65536);
+            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
             theEvent.set(Event::PaddleThreeResistance, r);
           }
         }
       }
     }
   }
-#endif
 }
 
-/**
-  This routine is called when the program is about to quit.
-*/
-void doQuit()
-{
-  theQuitIndicator = true;
-}
-
-/**
-  This routine is called when the user wants to resize the window.
-  A '1' argument indicates that the window should increase in size, while '0'
-  indicates that the windows should decrease in size.
-  Can't resize in fullscreen mode.  Will only resize up to the maximum size
-  for the '-zoom' argument.
-*/
-void resizeWindow(int mode)
-{
-  if(isFullscreen)
-    return;
-
-  if(mode == 1)   // increase size
-  {
-    if(settings->theWindowSize == settings->theMaxWindowSize)
-      settings->theWindowSize = 1;
-    else
-      settings->theWindowSize++;
-  }
-  else   // decrease size
-  {
-    if(settings->theWindowSize == 1)
-      settings->theWindowSize = settings->theMaxWindowSize;
-    else
-      settings->theWindowSize--;
-  }
-
-  // Figure out the desired size of the window
-  int width  = settings->theWidth  * settings->theWindowSize * 2;
-  int height = settings->theHeight * settings->theWindowSize;
-
-  XWindowChanges wc;
-  wc.width = width;
-  wc.height = height;
-  XConfigureWindow(theDisplay, theWindow, CWWidth | CWHeight, &wc);
-
-  XSizeHints hints;
-  hints.flags = PSize | PMinSize | PMaxSize;
-  hints.min_width = hints.max_width = hints.width = width;
-  hints.min_height = hints.max_height = hints.height = height;
-  XSetWMNormalHints(theDisplay, theWindow, &hints);
-
-  theRedrawEntireFrameIndicator = true;
-
-  // A resize probably means that the window is no longer centered
-  isCentered = false;
-
-  if(settings->theCenterWindowFlag)
-    centerWindow();
-}
-
-/**
-  Centers the game window onscreen.
-*/
-void centerWindow()
-{
-  if(isFullscreen || isCentered)
-    return;
-
-  int x, y, w, h;
-
-  w = DisplayWidth(theDisplay, theScreen);
-  h = DisplayHeight(theDisplay, theScreen);
-  x = (w - (settings->theWidth * settings->theWindowSize * 2)) / 2;
-  y = (h - (settings->theHeight * settings->theWindowSize)) / 2;
-
-  XWindowChanges wc;
-  wc.x = x;
-  wc.y = y;
-  XConfigureWindow(theDisplay, theWindow, CWX | CWY, &wc);
-
-  XSizeHints hints;
-  hints.flags = PPosition;
-  hints.x = x;
-  hints.y = y;
-  XSetWMNormalHints(theDisplay, theWindow, &hints);
-
-  isCentered = true;
-}
-
-/**
-  Toggles between fullscreen and window mode.  Grabmouse and hidecursor
-  activated when in fullscreen mode.
-*/
-void toggleFullscreen()
-{
-  cerr << "Fullscreen mode not supported.\n";
-}
-
-/**
-  Toggles pausing of the emulator
-*/
-void togglePause()
-{
-  if(thePauseIndicator)	// emulator is already paused so continue
-  {
-    thePauseIndicator = false;
-  }
-  else	// we want to pause the game
-  {
-    thePauseIndicator = true;
-  }
-
-  // Pause the console
-  theConsole->mediaSource().pause(thePauseIndicator);
-
-  // Show a different palette depending on pause state
-  setupPalette();
-  theRedrawEntireFrameIndicator = true;
-}
-
-/**
-  Saves state of the current game in the current slot.
-*/
-void saveState()
-{
-#if 0
-  // Do a state save using the MediaSource
-  // ...
-
-  // Print appropriate message
-  char buf[40];
-  if(true) // if the state saved correctly
-    snprintf(buf, 39, "State %d saved", currentState);
-  else
-    snprintf(buf, 39, "Error saving state %d", currentState);
-
-  string message = buf;
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
-#else
-  cerr << "State saving not yet implemented\n";
-#endif
-}
-
-/**
-  Changes the current state slot.
-*/
-void changeState()
-{
-  if(currentState == 9)
-    currentState = 0;
-  else
-    ++currentState;
-
-#if 0
-  // Print appropriate message
-  char buf[40];
-  snprintf(buf, 39, "Changed to state slot %d", currentState);
-  string message = buf;
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
-#endif
-}
-
-/**
-  Loads state from the current slot for the current game.
-*/
-void loadState()
-{
-#if 0
-  // Do a state load using the MediaSource
-  // ...
-
-  // Print appropriate message
-  char buf[40];
-  if(true) // if the state loaded correctly
-    snprintf(buf, 39, "State %d loaded", currentState);
-  else
-    snprintf(buf, 39, "Error loading state %d", currentState);
-
-  string message = buf;
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
-#else
-  cerr << "State loading not yet implemented\n";
-#endif
-}
-
-/**
-  Shows or hides the cursor based on the given boolean value.
-*/
-void showCursor(bool show)
-{
-  if(!normalCursor || !blankCursor)
-    return;
-
-  if(show)
-    XDefineCursor(theDisplay, theWindow, normalCursor);
-  else
-    XDefineCursor(theDisplay, theWindow, blankCursor);
-}
-
-/**
-  Grabs or ungrabs the mouse based on the given boolean value.
-*/
-void grabMouse(bool grab)
-{
-  if(grab)
-  {
-   int result = XGrabPointer(theDisplay, theWindow, True, 0, GrabModeAsync,
-                 GrabModeAsync, theWindow, None, CurrentTime);
-
-    if(result != GrabSuccess)
-      cerr << "Couldn't grab mouse!!\n";
-  }
-  else
-    XUngrabPointer(theDisplay, CurrentTime);
-}
-
-/**
-  Creates a normal and blank cursor which may be needed if hidecursor or
-  fullscreen is toggled.  Return false on any errors, otherwise true.
-*/
-bool createCursors()
-{
-  if(!theDisplay || !theWindow)
-    return false;
-
-  Pixmap cursormask;
-  XGCValues xgc;
-  XColor dummycolour;
-  GC gc;
-
-  // First create the blank cursor
-  cursormask = XCreatePixmap(theDisplay, theWindow, 1, 1, 1);
-  xgc.function = GXclear;
-  gc = XCreateGC(theDisplay, cursormask, GCFunction, &xgc);
-  XFillRectangle(theDisplay, cursormask, gc, 0, 0, 1, 1);
-  dummycolour.pixel = 0;
-  dummycolour.red = 0;
-  dummycolour.flags = 04;
-  blankCursor = XCreatePixmapCursor(theDisplay, cursormask, cursormask,
-                                    &dummycolour, &dummycolour, 0, 0);
-  if(!blankCursor)
-    return false;
-
-  XFreeGC(theDisplay, gc);
-  XFreePixmap(theDisplay, cursormask);
-
-  // Now create the normal cursor
-  normalCursor = XCreateFontCursor(theDisplay, XC_left_ptr);
-  if(!normalCursor)
-    return false;
-
-  return true;
-}
 
 /**
   Called when the user wants to take a snapshot of the current display.
@@ -1147,13 +1235,27 @@ void takeSnapshot()
 #endif
 }
 
+
 /**
-  Calculate the maximum window size that the current screen can hold
+  Calculate the maximum window size that the current screen can hold.
+  Only works in X11 for now.  If not running under X11, always return 3.
 */
 uInt32 maxWindowSizeForScreen()
 {
-  int screenWidth  = DisplayWidth(theDisplay, theScreen);
-  int screenHeight = DisplayHeight(theDisplay, theScreen);
+  if(!x11Available)
+    return 3;
+
+  // Otherwise, lock the screen and get the width and height
+  info.info.x11.lock_func();
+  theX11Display = info.info.x11.display;
+  theX11Window  = info.info.x11.wmwindow;
+  theX11Screen  = DefaultScreen(theX11Display);
+  info.info.x11.unlock_func();
+
+  int screenWidth  = DisplayWidth(info.info.x11.display,
+      DefaultScreen(theX11Display));
+  int screenHeight = DisplayHeight(info.info.x11.display,
+      DefaultScreen(theX11Display));
 
   uInt32 multiplier = screenWidth / (settings->theWidth * 2);
   bool found = false;
@@ -1171,10 +1273,11 @@ uInt32 maxWindowSizeForScreen()
   }
 
   if(found)
-    return multiplier;
+    return (multiplier > 4 ? 4 : multiplier);
   else
     return 1;
 }
+
 
 /**
   Display a usage message and exit the program
@@ -1183,27 +1286,22 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "X Stella version 1.2",
+    "SDL Stella version 1.2",
     "",
-    "Usage: stella.x11 [option ...] file",
+    "Usage: stella.sdl [option ...] file",
     "",
     "Valid options are:",
     "",
-    "  -display <display>      Connect to the designated X display",
     "  -fps <number>           Display the given number of frames per second",
     "  -owncmap                Install a private colormap",
     "  -zoom <size>            Makes window be 'size' times normal (1 - 4)",
-//    "  -fullscreen             Play the game in fullscreen mode",
+    "  -fullscreen             Play the game in fullscreen mode",
     "  -grabmouse              Keeps the mouse in the game window",
     "  -hidecursor             Hides the mouse cursor in the game window",
     "  -center                 Centers the game window onscreen",
     "  -volume <number>        Set the volume (0 - 100)",
-#ifdef LINUX_JOYSTICK
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
-#else
-    "  -paddle <0|1|2|3>       Indicates which paddle the mouse should emulate",
-#endif
     "  -showinfo               Shows some game info on exit",
 #ifdef HAVE_PNG
     "  -ssdir <path>           The directory to save snapshot files to",
@@ -1221,6 +1319,7 @@ void usage()
   }
   exit(1);
 }
+
 
 /**
   Setup the properties set by first checking for a user file ".stella.pro",
@@ -1269,6 +1368,7 @@ bool setupProperties(PropertiesSet& set)
   }
 }
 
+
 /**
   Should be called to determine if an rc file exists.  First checks if there
   is a user specified file ".stellarc" and then if there is a system-wide
@@ -1291,6 +1391,7 @@ void handleRCFile()
   }
 }
 
+
 /**
   Does general cleanup in case any operation failed (or at end of program).
 */
@@ -1307,25 +1408,20 @@ void cleanup()
     delete snapshot;
 #endif
 
-  if(normalCursor)
-    XFreeCursor(theDisplay, normalCursor);
-  if(blankCursor)
-    XFreeCursor(theDisplay, blankCursor);
+  if(rectList)
+    delete rectList;
 
-  // If we're using a private colormap then let's free it to be safe
-  if(settings->theUsePrivateColormapFlag && theDisplay)
+  if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
-     XFreeColormap(theDisplay, thePrivateColormap);
-  }
+    if(SDL_JoystickOpened(0))
+      SDL_JoystickClose(theLeftJoystick);
+    if(SDL_JoystickOpened(1))
+      SDL_JoystickClose(theRightJoystick);
 
-#ifdef LINUX_JOYSTICK
-  // Close the joystick devices
-  if(theLeftJoystickFd)
-    close(theLeftJoystickFd);
-  if(theRightJoystickFd)
-    close(theRightJoystickFd);
-#endif
+    SDL_Quit();
+  }
 }
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
@@ -1389,7 +1485,7 @@ int main(int argc, char* argv[])
   // Free the image since we don't need it any longer
   delete[] image;
 
-  // Setup X window and joysticks
+  // Setup the SDL window and joystick
   if(!setupDisplay())
   {
     cerr << "ERROR: Couldn't set up display.\n";
@@ -1434,7 +1530,7 @@ int main(int argc, char* argv[])
     virtualTime += timePerFrame;
     if(currentTime < virtualTime)
     {
-      usleep(virtualTime - currentTime);
+      SDL_Delay((virtualTime - currentTime)/1000);
     }
 
     currentTime = getTicks() - startTime;
@@ -1466,7 +1562,7 @@ int main(int argc, char* argv[])
     if(thePauseIndicator)
     {
       updateDisplay(theConsole->mediaSource());
-      usleep(10000);
+      SDL_Delay(10);
       continue;
     }
 
@@ -1510,6 +1606,7 @@ int main(int argc, char* argv[])
   return 0;
 }
 
+
 /**
   Returns number of ticks in microseconds
 */
@@ -1519,10 +1616,11 @@ inline uInt32 getTicks()
   timeval now;
   gettimeofday(&now, 0);
 
-  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
-
-  return ticks;
+  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
 }
 #else
-#error "We need gettimeofday for the X11 version"
+inline uInt32 getTicks()
+{
+  return (uInt32) SDL_GetTicks() * 1000;
+}
 #endif

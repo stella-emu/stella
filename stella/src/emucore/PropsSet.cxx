@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: PropsSet.cxx,v 1.4 2002-04-12 21:53:02 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -21,92 +21,185 @@
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet::PropertiesSet(const string& key)
-    : myKey(key)
+PropertiesSet::PropertiesSet()
 {
-  myCapacity = 16;
-  myProperties = new Properties[myCapacity];
+  root = 0;
   mySize = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet::PropertiesSet(const PropertiesSet& p)
-    : myKey(p.myKey)
-{
-  myCapacity = p.myCapacity;
-  myProperties = new Properties[myCapacity];
-  mySize = p.mySize;
-
-  // Copy the properties from the other set
-  for(uInt32 i = 0; i < mySize; ++i)
-  {
-    myProperties[i] = p.myProperties[i];
-  }
+  useMemList = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::~PropertiesSet()
 {
-  delete[] myProperties;
+  deleteNode(root);
+  proStream.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Properties& PropertiesSet::get(uInt32 i)
+void PropertiesSet::getMD5(string md5, Properties &properties)
 {
-  // Make sure index is within range
-  assert(i < mySize);
+  bool found = false;
 
-  return myProperties[i]; 
+  if(useMemList)
+  {
+    // Make sure tree isn't empty
+    if(root == 0)
+    {
+      properties = defProps;
+      return;
+    }
+
+    // Else, do a BST search for the node with the given md5
+    TreeNode *current = root;
+
+    while(current)
+    {
+      string currentMd5 = current->props->get("Cartridge.MD5");
+
+      if(currentMd5 == md5)
+      {
+        found = true;
+        break;
+      }
+      else
+      {
+        if(md5 < currentMd5)
+          current = current->left;
+        else 
+           current = current->right;
+      }
+    }
+
+    if(found)
+      properties = *(current->props);
+    else
+      properties = defProps;
+  }
+  else
+  {
+    // Loop reading properties until required properties found
+    for(;;)
+    {
+      // Make sure the stream is still good or we're done 
+      if(!proStream)
+      {
+        break;
+      }
+
+      // Get the property list associated with this profile
+      Properties currentProperties(defProps);
+      currentProperties.load(proStream);
+
+      // If the stream is still good then insert the properties
+      if(proStream)
+      {
+        string currentMd5 = currentProperties.get("Cartridge.MD5");
+
+        if(currentMd5 == md5)
+        {
+          properties = currentProperties;
+          return;
+        }
+      }
+    }
+
+    properties = defProps;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties)
 {
-  uInt32 i;
-  uInt32 j;
+	insertNode(root, properties);
+}
 
-  // Get the key of the properties
-  string name = properties.get(myKey);
-
-  // See if the key already exists (we could use a binary search here...)
-  for(i = 0; i < mySize; ++i)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties)
+{
+  if(t)
   {
-    if(name == myProperties[i].get(myKey))
+    string md5 = properties.get("Cartridge.MD5");
+    string currentMd5 = t->props->get("Cartridge.MD5");
+
+    if(md5 < currentMd5)
+      insertNode(t->left, properties);
+    else if(md5 > currentMd5)
+      insertNode(t->right, properties);
+    else
     {
-      // Copy the properties which are being inserted
-      myProperties[i] = properties;
-      return;
+      delete t->props;
+      t->props = new Properties(properties);
     }
   }
-
-  // See if the properties array needs to be resized
-  if(mySize == myCapacity)
+  else
   {
-    Properties* newProperties = new Properties[myCapacity *= 2];
+    t = new TreeNode;
+    t->props = new Properties(properties);
+    t->left = 0;
+    t->right = 0;
+  }
+}
 
-    for(i = 0; i < mySize; ++i)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::deleteNode(TreeNode *node)
+{
+  if(node)
+  {
+    deleteNode(node->left);
+    deleteNode(node->right);
+    delete node->props;
+    delete node;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::load(string filename, const Properties* defaults, bool useList)
+{
+  useMemList = useList;
+  defProps   = defaults;
+
+  proStream.open(filename.c_str());
+
+  if(useMemList)
+  {
+    // Loop reading properties
+    for(;;)
     {
-      newProperties[i] = myProperties[i];
+      // Make sure the stream is still good or we're done 
+      if(!proStream)
+      {
+        break;
+      }
+
+      // Get the property list associated with this profile
+      Properties properties(defProps);
+      properties.load(proStream);
+
+      // If the stream is still good then insert the properties
+      if(proStream)
+      {
+        insert(properties);
+      }
     }
-
-    delete[] myProperties;
-
-    myProperties = newProperties;
   }
+}
 
-  // Find the correct place to insert the properties at
-  for(i = 0; (i < mySize) && (myProperties[i].get(myKey) < name); ++i);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::save(ostream& out)
+{
+  saveNode(out, root);
+}
 
-  // Okay, make room for the properties
-  for(j = mySize; j > i; --j)
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::saveNode(ostream& out, TreeNode *node)
+{
+  if(node)
   {
-    myProperties[j] = myProperties[j - 1];
+    saveNode(out, node->left);
+    saveNode(out, node->right);
+    node->props->save(out);
   }
- 
-  // Now, put the properties in the array
-  myProperties[i] = properties;
-
-  ++mySize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,93 +207,3 @@ uInt32 PropertiesSet::size() const
 {
   return mySize;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::erase(uInt32 i)
-{
-  // Make sure index is within range
-  assert(i < mySize);
-
-  for(uInt32 j = i + 1; j < mySize; ++j)
-  {
-    myProperties[j - 1] = myProperties[j];
-  }
-
-  --mySize;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(istream& in, const Properties* defaults)
-{
-  // Empty my properties array
-  mySize = 0;
-
-  // Loop reading properties
-  for(;;)
-  {
-    // Read char's until we see a quote as the next char or EOF is reached
-    while(in && (in.peek() != '"'))
-    {
-      char c;
-      in.get(c);
-
-      // If we see the comment character then ignore the line
-      if(c == ';')
-      {
-        while(in && (c != '\n'))
-        {
-          in.get(c);
-        }
-      }
-    }
-   
-    // Make sure the stream is still good or we're done 
-    if(!in)
-    {
-      break;
-    }
-
-    // Get the property list associated with this profile
-    Properties properties(defaults);
-    properties.load(in);
-
-    // If the stream is still good then insert the properties
-    if(in)
-    {
-      insert(properties);
-    }
-  }
-}
- 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::save(ostream& out)
-{
-  // Write each of the properties out
-  for(uInt32 i = 0; i < mySize; ++i)
-  {
-    myProperties[i].save(out);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet& PropertiesSet::operator = (const PropertiesSet& p)
-{
-  if(this != &p)
-  {
-    delete[] myProperties;
-
-    myKey = p.myKey;
-    myCapacity = p.myCapacity;
-    myProperties = new Properties[myCapacity];
-    mySize = p.mySize;
-
-    // Copy the properties from the other set
-    for(uInt32 i = 0; i < mySize; ++i)
-    {
-      myProperties[i] = p.myProperties[i];
-    }
-  }
-
-  return *this;
-}
-

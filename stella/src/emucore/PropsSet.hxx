@@ -13,55 +13,86 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: PropsSet.hxx,v 1.3 2002-01-16 02:14:25 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIESSET_HXX
 #define PROPERTIESSET_HXX
 
-class Properties;
+#include <fstream>
+#include <string>
 
 #include "bspf.hxx"
 #include "Props.hxx"
 
+class Properties;
+
 /**
-  This class maintains a sorted collection of properties.  Upon
-  construction one property is distinguished as the key for sorting.
+  This class maintains a sorted collection of properties.  The objects
+  are maintained in a binary search tree sorted by md5, since this is
+  the attribute most likely to be present in each entry in stella.pro
+  and least likely to change.  A change in MD5 would mean a change in
+  the game rom image (essentially a different game) and this would
+  necessitate a new entry in the stella.pro file anyway.
   
-  @author  Bradford W. Mott
-  @version $Id: PropsSet.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+  @author  Stephen Anthony
 */
 class PropertiesSet
 {
   public:
     /**
-      Create an empty properties set object using the specified
-      property as the key for sorting.
-
-      @param key The property to use as the key
+      Create an empty properties set object using the md5 as the
+      key to the BST.
     */
-    PropertiesSet(const string& key);
-
-    /**
-      Create a properties set object by copying another one
-
-      @param set The properties set to copy
-    */
-    PropertiesSet(const PropertiesSet& set);
+    PropertiesSet();
 
     /**
       Destructor
     */
     virtual ~PropertiesSet();
 
-  public:
     /**
-      Get the i'th properties from the set
+      Get the property from the set with the given MD5.
 
-      @param i The index of the properties to get
-      @return The properties stored at the i'th location
+      @param md5 The md5 of the property to get
+      @param properties The property with the given MD5, or
+             the default property if not found
     */
-    const Properties& get(uInt32 i);
+    void getMD5(string md5, Properties& properties);
+
+    /** 
+      Load properties from the specified file.  Use the given 
+      defaults properties as the defaults for any properties loaded.
+
+      @param string The input file to use
+      @param defaults The default properties to use
+      @param useList Flag to indicate storing properties in memory (default true)
+    */
+    void load(string filename, const Properties* defaults, bool useList = true);
+
+    /**
+      Save properties to the specified output stream 
+
+      @param out The output stream to use
+    */
+    void save(ostream& out);
+
+    /**
+      Get the number of properties in the collection.
+
+      @return The number of properties in the collection
+    */
+    uInt32 size() const;
+
+  private:
+
+	struct TreeNode
+	{
+   	    Properties *props;
+		TreeNode *left;
+		TreeNode *right;
+
+	};
 
     /**
       Insert the properties into the set.  If a duplicate is inserted 
@@ -72,57 +103,44 @@ class PropertiesSet
     void insert(const Properties& properties);
 
     /**
-      Get the number of properties in the collection.
+      Insert a node in the bst, keeping the tree sorted.
 
-      @return The number of properties in the collection
+      @param node The current subroot of the tree
+      @param properties The collection of properties
     */
-    uInt32 size() const;
+    void insertNode(TreeNode* &node, const Properties& properties);
 
     /**
-      Erase the i'th properties from the collection.
+      Deletes a node from the bst.  Does not preserve bst sorting.
 
-      @param i The profile index
+      @param node The current subroot of the tree
     */
-    void erase(uInt32 i);
+    void deleteNode(TreeNode *node);
 
-  public:
-    /** 
-      Load properties from the specified input stream.  Use the given 
-      defaults properties as the defaults for any properties loaded.
-
-      @param in The input stream to use
-      @param defaults The default properties to use
-    */
-    void load(istream& in, const Properties* defaults);
- 
     /**
-      Save properties to the specified output stream 
+      Save current node properties to the specified output stream 
 
       @param out The output stream to use
+      @param node The current subroot of the tree
     */
-    void save(ostream& out);
+    void saveNode(ostream& out, TreeNode *node);
 
-  public:
-    /**
-      Overloaded assignment operator
+    // The root of the BST
+    TreeNode* root;
 
-      @param propertiesSet The properties set to set myself equal to
-      @return Myself after assignment has taken place
-    */
-    PropertiesSet& operator = (const PropertiesSet& propertiesSet);
-
-  private:
     // Property to use as the key
     string myKey;
 
-    // Pointer to a dynamically allocated array of properties
-    Properties* myProperties;
+    // The size of the properties bst (i.e. the number of properties in it)
+    uInt32 mySize;
 
-    // Current capacity of the properties array 
-    unsigned int myCapacity;
+    // Whether to construct an in-memory list or rescan the file each time
+    bool useMemList;
 
-    // The size of the properties array (i.e. the number of properties in it)
-    unsigned int mySize;
+    // The file stream for the stella.pro file
+    ifstream proStream;
+
+    // The default properties set
+    const Properties* defProps;
 };
 #endif
-

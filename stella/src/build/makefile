@@ -13,51 +13,133 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+## $Id: makefile,v 1.15 2002-04-22 00:53:19 bwmott Exp $
 ##============================================================================
 
 ##============================================================================
+## Development environment options
 ##
-## The following options are used during compiling.  You may need to
-## define some of these on the CXXFLAGS line if you're running on an
-## "unsupported" system
-##
-##   -DBSPF_BOOL         if your C++ compiler doesn't support the bool type
-##
-##   -DSHOW_TIMING       if your want some timing information displayed when
-##                       you exit the program
-##
-##   -DDEBUG             if you want a 6507 trace written to stdout
-##
-##   -DLINUX_JOYSTICK    to include linux joystick driver support
-##                       (requires you to install the joystick kernel module)
-##
+## The following options are used during compiling.
+## Comment a line out to disable that option, remove comment to enable it.
 ##============================================================================
 
-CXX      = g++
-LD       = g++
+### this should work with all compilers 
+OPTIMIZATIONS    =
+### for normal optimization, full warnings
+# OPTIMIZATIONS    = -O -Wall
+### for common optimizations, full warnings except unused vars
+# OPTIMIZATIONS    = -O2 -Wall -Wno-unused
+### to get full optimization under gcc/x Intel based OS's..
+# OPTIMIZATIONS    = -O3 -mcpu=pentiumpro -march=pentiumpro -Wall -Wno-unused \
+#	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
+#	-malign-functions=2 -malign-jumps=2 -malign-loops=2
+### to get full optimization under gcc/x Athlon based OS's..
+# OPTIMIZATIONS    = -O3 -mcpu=athlon -march=athlon -Wall -Wno-unused \
+#	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
+#	-malign-functions=2 -malign-jumps=2 -malign-loops=2
 
-LDFLAGS  = 
-LDLIBS   = 
+### if your C++ compiler doesn't support the bool type
+# BSPF_BOOL = 1
 
-SRC      = ..
-CORE     = $(SRC)/emucore
-UI       = $(SRC)/ui
+### if your want some timing information displayed when you exit the program
+# SHOW_TIMING = 1
 
-INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src
+### you want a 6507 trace written to stdout
+# DEBUG = 1
 
-CXXFLAGS = -O -Wall $(INCLUDES) $(SYS_INCLUDES)
+### to include linux joystick driver support in the X11 version
+### (requires you to install the joystick kernel module)
+# LINUX_JOYSTICK = 1
+
+### to include support for saving snapshots in png format
+### (requires PNG library)
+### Only X11 and SDL ports supported for now
+# SNAPSHOT_SUPPORT = 1
+
+### to enable EXPERIMENTAL TIMING code
+### Enables emulator to not use 100% CPU
+### Only X11 and SDL ports supported for now
+# EXPERIMENTAL_TIMING = 1
+
+##============================================================================
+## All done, type make to get a list of frontends
+## No configurable options below this line ...
+##============================================================================
+
+CXX	= g++
+LD	= g++
+
+LDFLAGS = 
+LDLIBS	= 
+
+OBJS.X11   =
+OPTS.X11   =
+LIBS.X11   =
+CFLAGS.X11 =
+
+OBJS.SDL   =
+OPTS.SDL   =
+LIBS.SDL   = `sdl-config --libs`
+CFLAGS.SDL = `sdl-config --cflags`
+
+OPTS.DOS   =
+
+SRC	= ..
+CORE	= $(SRC)/emucore
+UI	= $(SRC)/ui
+
+INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(UI)/common
+
+CXXFLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
+
+## set the user-defined options
+ifdef BSPF_BOOL
+OPTS.X11 += -DBSPF_BOOL=1
+OPTS.DOS += -DBSPF_BOOL=1   
+endif
+
+ifdef SHOW_TIMING
+OPTS.X11 += -DSHOW_TIMING=1
+OPTS.SDL += -DSHOW_TIMING=1
+OPTS.DOS += -DSHOW_TIMING=1
+endif
+
+ifdef DEBUG
+OPTS.X11 += -DDEBUG=1
+OPTS.SDL += -DDEBUG=1
+OPTS.DOS += -DDEBUG=1
+endif
+
+ifdef LINUX_JOYSTICK
+OPTS.X11 += -DLINUX_JOYSTICK=1
+endif
+
+ifdef SNAPSHOT_SUPPORT
+OBJS.X11 += Snapshot.o
+OPTS.X11 += -DHAVE_PNG=1
+LIBS.X11 += -lpng
+
+OBJS.SDL += Snapshot.o
+OPTS.SDL += -DHAVE_PNG=1
+LIBS.SDL += -lpng
+endif
+
+ifdef EXPERIMENTAL_TIMING
+OPTS.X11 += -DEXPERIMENTAL_TIMING=1
+OPTS.SDL += -DEXPERIMENTAL_TIMING=1
+endif
 
 default:
 	@echo ""
 	@echo "To build Stella type: 'make <version>'"
+	@echo "You should edit the makefile for extra options"
 	@echo ""
-	@echo "where <version> is one of:"
+	@echo "<version> is one of:"
 	@echo ""
 	@echo "  dos                  DOS version using DJGPP"
 	@echo "  unix-x               Generic Unix X windows version"
 	@echo "  linux-x              Linux X windows version"
-	@echo "  linux-x-joy          Linux X windows version with joystick"
+	@echo "  linux-sdl            Linux SDL version"
 	@echo "  bsdi-x               BSD/OS 4.0 X Windows version"
 	@echo "  solaris-x            Solaris X windows version"
 	@echo ""
@@ -69,54 +151,71 @@ dos:
           LD="gxx" \
           CXX="gcc" \
           INCLUDES="$(INCLUDES) -I$(UI)/dos -I$(UI)/sound" \
-          OPTIONS="-DBSPF_DOS" \
+          OPTIONS="-DBSPF_DOS=1" \
+          OPTIONS+="$(OPTS.DOS)" \
           LDFLAGS="" \
           LDLIBS="" \
           OBJS="mainDOS.o PCJoys.o SndDOS.o sbdrv.o TIASound.o"
 
 unix-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
+          LDLIBS+="$(LIBS.X11)" \
           OBJS="mainX11.o SndUnix.o"
 
 linux-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
-          OBJS="mainX11.o SndUnix.o"
+          LDLIBS+="$(LIBS.X11)" \
+          OBJS="mainX11.o SndUnix.o" \
+          OBJS+="$(OBJS.X11)"
 
-linux-x-joy:
-	make xstella \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
+linux-sdl:
+	make stella.sdl \
+          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX -DLINUX_JOYSTICK" \
+          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS+="$(OPTS.SDL)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
-          OBJS="mainX11.o SndUnix.o"
-
+          LDLIBS+="$(LIBS.SDL)" \
+          OBJS="mainSDL.o SndUnix.o RectList.o" \
+          OBJS+="$(OBJS.SDL)"
 bsdi-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/X11R6/include" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
+          LDLIBS+="$(LIBS.X11)" \
           OBJS="mainX11.o SndUnix.o"
 
 solaris-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/openwin/include" \
-          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS="-DBSPF_UNIX=1" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/openwin/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
+          LDLIBS+="$(LIBS.X11)" \
           OBJS="mainX11.o SndUnix.o"
 
 ###############################################################################
@@ -124,24 +223,28 @@ solaris-x:
 ###############################################################################
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
-CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartE0.o \
-            CartE7.o CartF4SC.o CartF6.o CartF6SC.o CartF8.o CartF8SC.o \
-            CartFASC.o CartFE.o CartMC.o Console.o \
-            Control.o DefProps.o Driving.o \
+CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
+            CartE0.o CartE7.o CartF4SC.o CartF6.o CartF6SC.o CartF8.o \
+            CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o CartMB.o \
+            Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
-            Props.o PropsSet.o Random.o Sound.o Switches.o TIA.o \
+            Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)
 	$(LD) -o a.exe *.o $(LDFLAGS) $(LDLIBS)
 	exe2coff a.exe
 	strip a
-	copy /B \djgpp\bin\pmodstub.exe + a stella.exe
+	del stella.exe
+	copy /B $(DJGPP:\DJGPP.ENV=)\bin\pmodstub.exe+a stella.exe
 	del a
 	del a.exe
 
-xstella: $(CORE_OBJS) $(OBJS)
-	$(LD) -o xstella $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
+stella.x11: $(CORE_OBJS) $(OBJS)
+	$(LD) -o stella.x11 $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
+
+stella.sdl: $(CORE_OBJS) $(OBJS)
+	$(LD) -o stella.sdl $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
 
 M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
 	m4 $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4 > M6502Low.ins
@@ -149,25 +252,20 @@ M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
 M6502Hi.ins: $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4
 	m4 $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4 > M6502Hi.ins
 
-DefProps.def: $(CORE)/stella.pro
-	sed 's/"/\\\"/g;s/^/"/g;s/$$/",/g' $(CORE)/stella.pro > DefProps.def
-
-DefProps.o: DefProps.def
 M6502Low.o: M6502Low.ins
 M6502Hi.o: M6502Hi.ins
 
 cleandos:
 	del *.o
 	del stella.exe 
-	del DefProps.def 
 	del M6502Low.ins 
 	del M6502Hi.ins
 
 clean:
-	rm -f *.o stella xstella stella.exe core
+	rm -f *.o stella stella.x11 stella.sdl stella.exe core
 
 cleanall: clean
-	rm -f DefProps.def M6502Low.ins M6502Hi.ins
+	rm -f M6502Low.ins M6502Hi.ins
 
 Driving.o: $(CORE)/Driving.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Driving.cxx
@@ -205,6 +303,9 @@ Cart4K.o: $(CORE)/Cart4K.cxx
 CartAR.o: $(CORE)/CartAR.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartAR.cxx
 
+CartDPC.o: $(CORE)/CartDPC.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartDPC.cxx
+
 CartE0.o: $(CORE)/CartE0.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartE0.cxx
 
@@ -235,8 +336,11 @@ CartFE.o: $(CORE)/CartFE.cxx
 CartMC.o: $(CORE)/CartMC.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartMC.cxx
 
-DefProps.o: $(CORE)/DefProps.cxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/DefProps.cxx
+CartMB.o: $(CORE)/CartMB.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartMB.cxx
+
+CartCV.o: $(CORE)/CartCV.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartCV.cxx
 
 M6532.o: $(CORE)/M6532.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/M6532.cxx
@@ -268,6 +372,8 @@ Switches.o: $(CORE)/Switches.cxx
 Sound.o: $(CORE)/Sound.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Sound.cxx
 
+Settings.o: $(UI)/common/Settings.cxx $(UI)/common/Settings.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Settings.cxx
 
 Terminal.o: $(UI)/x11/Terminal.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/Terminal.cxx
@@ -291,7 +397,16 @@ TermX11.o: $(UI)/x11/TermX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/TermX11.cxx
 
 mainX11.o: $(UI)/x11/mainX11.cxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/mainX11.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/mainX11.cxx
+
+mainSDL.o: $(UI)/sdl/mainSDL.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
+
+RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx
+
+Snapshot.o: $(UI)/common/Snapshot.cxx $(UI)/common/Snapshot.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Snapshot.cxx
 
 SndUnix.o: $(UI)/sound/SndUnix.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/sound/SndUnix.cxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 // 
-// $Id: OSS.c,v 1.1.1.1 2001-12-27 19:54:35 bwmott Exp $
+// $Id: OSS.c,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //==========================================================================*/
 
 /**
@@ -21,7 +21,7 @@
   Open Sound System (OSS) API.
 
   @author  Bradford W. Mott
-  @version $Id: OSS.c,v 1.1.1.1 2001-12-27 19:54:35 bwmott Exp $
+  @version $Id: OSS.c,v 1.2 2002-01-08 17:11:32 stephena Exp $
 */
 
 #include <fcntl.h>
@@ -31,6 +31,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
 
 #ifdef __FreeBSD__
   #include <machine/soundcard.h>
@@ -47,11 +48,17 @@
 */
 unsigned long computeFragmentSize(int sampleRate);
 
+/* Mixer function prototypes */
+void openMixer(int changeVolume);
+void closeMixer();
+
+/* dsp and mixer file descriptors */
+int fd, mixer_fd;
+int originalVolume;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 int main(int argc, char* argv[])
 {
-  int fd;
   int numberAndSizeOfFragments;
   int fragmentSize;
   unsigned char* fragmentBuffer;
@@ -59,6 +66,16 @@ int main(int argc, char* argv[])
   int format;
   int stereo;
   int mute = 0;
+  int newVolume = 75;
+
+  if(argc == 3)  /* check to see if volume has been given */
+  {
+    if(!strncmp(argv[1], "-volume", 7))
+    {
+      if((atoi(argv[2]) >= 0) && (atoi(argv[2]) <= 100))
+        newVolume = atoi(argv[2]);
+    }
+  }
 
   /* Open the sound device for writing */
   if((fd = open("/dev/dsp", O_WRONLY, 0)) == -1)
@@ -117,6 +134,8 @@ int main(int argc, char* argv[])
   /* Allocate fragment buffer */
   fragmentBuffer = (unsigned char*)malloc(fragmentSize);
 
+  /* Now open the mixer for changing the volume */
+  openMixer(newVolume);
 
   /* Initialize the TIA Sound Library */
   Tia_sound_init(31400, sampleRate);
@@ -176,6 +195,8 @@ int main(int argc, char* argv[])
 
           case 6:    /* Quit */
             close(fd);
+            free(fragmentBuffer);
+            closeMixer();
             return 1;
             break;
 
@@ -225,3 +246,45 @@ unsigned long computeFragmentSize(int sampleRate)
   return 8;
 }
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+void openMixer(int changeVolume)
+{
+  int volume;
+
+  if((mixer_fd = open("/dev/mixer", O_RDWR, 0)) == -1)
+  {
+    printf("stella-sound: Unable to open /dev/mixer device!\n");
+    mixer_fd = 0;
+    return;
+  }
+
+  volume = 0;
+  if(ioctl(mixer_fd, MIXER_READ(SOUND_MIXER_PCM), &originalVolume) == -1)
+  {
+    printf("stella-sound: Unable to read mixer settings!\n");    
+    close(mixer_fd);
+    mixer_fd = 0;
+    return;
+  }
+
+  volume = changeVolume | (changeVolume << 8);
+  if(ioctl(mixer_fd, MIXER_WRITE(SOUND_MIXER_PCM), &volume) == -1)
+  {
+    printf("stella-sound: Unable to set new volume!\n"); 
+    close(mixer_fd);
+    mixer_fd = 0;
+    return;
+  }
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+void closeMixer()
+{
+  if(mixer_fd)
+  {
+    if(ioctl(mixer_fd, MIXER_WRITE(SOUND_MIXER_PCM), &originalVolume) == -1)
+      printf("stella-sound: Unable to set original volume!\n");
+
+    close(mixer_fd);
+  }
+}

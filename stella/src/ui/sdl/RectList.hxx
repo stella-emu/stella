@@ -8,28 +8,35 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-1999 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DefProps.cxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: RectList.hxx,v 1.1 2002-03-05 22:39:47 stephena Exp $
 //============================================================================
 
-#include "DefProps.hxx"
+#ifndef RECT_LIST_HXX
+#define RECT_LIST_HXX
 
-/**
-  The default properties file is generated from the 'stella.pro' file 
-  using a sed script
-*/
-static const char* theScript[] = {
-  #include "DefProps.def"
-  0
+#include <SDL.h>
+
+class RectList
+{
+  public:
+    RectList(Uint32 size = 512);
+    ~RectList();
+
+    void add(SDL_Rect* rect);
+
+    SDL_Rect* rects();
+    Uint32 numRects();
+    void start();
+
+  private:
+    Uint32 currentSize, currentRect;
+
+    SDL_Rect* rectArray;
 };
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char** defaultPropertiesFile()
-{
-  return theScript;
-}
-
+#endif
