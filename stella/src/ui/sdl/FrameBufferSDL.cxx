@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.8 2003-12-03 18:11:25 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.9 2003-12-04 22:22:53 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -155,7 +155,7 @@ void FrameBufferSDL::grabMouse(bool grab)
 uInt32 FrameBufferSDL::maxWindowSizeForScreen()
 {
   if(!x11Available)
-    return 3;
+    return 4;
 
 #ifdef UNIX
   // Otherwise, lock the screen and get the width and height
@@ -186,6 +186,8 @@ uInt32 FrameBufferSDL::maxWindowSizeForScreen()
   else
     return 1;
 #endif
+
+  return 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

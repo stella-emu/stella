@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.45 2003-11-09 23:53:19 stephena Exp $
+## $Id: makefile,v 1.46 2003-12-04 22:22:53 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -30,14 +30,14 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wunused
 ### comment out all lines to completely disable sound
 ###
 #SOUND_ALSA = 1
-SOUND_OSS  = 1
-#SOUND_SDL  = 1
+#SOUND_OSS  = 1
+SOUND_SDL  = 1
 
 ### to include OpenGL video support (SDL)
-# OPENGL_SUPPORT = 1
+ OPENGL_SUPPORT = 1
 
 ### to include joystick support (SDL)
-# JOYSTICK_SUPPORT = 1
+ JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library) FIXME
@@ -46,13 +46,13 @@ SOUND_OSS  = 1
 
 ### comment this out if your system doesn't
 ### have the gettimeofday function
-HAVE_GETTIMEOFDAY = 1
+#HAVE_GETTIMEOFDAY = 1
 
 ### to include support for game developers
 ### enables some extra commandline options that allow the user
 ### to override some emulation defaults
 ### Only SDL port supported for now
-# DEVELOPER_SUPPORT = 1
+ DEVELOPER_SUPPORT = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -124,7 +124,7 @@ OPTS.SDL += -DDEVELOPER_SUPPORT=1
 OPTS.DOS += -DDEVELOPER_SUPPORT=1
 endif
 
-ifeq ($(SOUND_OSS), 1)
+ifeq ($(sounD_OSS), 1)
   OPTS.SDL += -DSOUND_OSS=1
   OBJS.SDL += SoundOSS.o
 endif
@@ -143,7 +143,7 @@ endif
 ifeq ($(OPENGL_SUPPORT), 1)
   OPTS.SDL += -DDISPLAY_OPENGL=1
   OBJS.SDL += FrameBufferGL.o
-  LIBS.SDL += -lGL -lGLU
+  LIBS.SDL += -lopengl32
 endif
 
 
@@ -156,6 +156,7 @@ default:
 	@echo ""
 	@echo "  dos                  DOS version using DJGPP"
 	@echo "  linux-sdl            Linux SDL version"
+	@echo "  win32-sdl            Windows SDL version"
 	@echo ""
 	@echo "Hopefully new versions will be added soon!"
 	@echo ""
@@ -183,6 +184,20 @@ linux-sdl:
           LDLIBS+="$(LIBS.SDL)" \
           OBJS="mainSDL.o SettingsUNIX.o FrameBufferSDL.o FrameBufferSoft.o" \
           OBJS+="$(OBJS.SDL)"
+
+win32-sdl:
+	make stella.sdl \
+          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
+          SYS_INCLUDES="" \
+          OPTIONS="-DBSPF_UNIX=1 -DWIN32" \
+          OPTIONS+="$(OPTS.SDL)" \
+          LDFLAGS="" \
+          LDFLAGS+="$(CFLAGS.SDL)" \
+          LDLIBS="" \
+          LDLIBS+="$(LIBS.SDL)" \
+          OBJS="mainSDL.o SettingsWin32.o FrameBufferSDL.o FrameBufferSoft.o" \
+          OBJS+="$(OBJS.SDL)"
+
 
 ###############################################################################
 ## List of "core" object files
@@ -359,6 +374,9 @@ Settings.o: $(CORE)/Settings.cxx $(CORE)/Settings.hxx
 
 SettingsUNIX.o: $(UI)/sdl/SettingsUNIX.cxx $(UI)/sdl/SettingsUNIX.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SettingsUNIX.cxx
+
+SettingsWin32.o: $(UI)/sdl/SettingsWin32.cxx $(UI)/sdl/SettingsWin32.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SettingsWin32.cxx
 
 Terminal.o: $(UI)/x11/Terminal.cxx $(UI)/x11/Terminal.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/x11/Terminal.cxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.63 2003-12-04 19:18:45 stephena Exp $
+// $Id: mainSDL.cxx,v 1.64 2003-12-04 22:22:53 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -59,6 +59,10 @@
 
 #ifdef UNIX
   #include "SettingsUNIX.hxx"
+#endif
+
+#ifdef WIN32
+  #include "SettingsWin32.hxx"
 #endif
 
 static void cleanup();
@@ -665,6 +669,9 @@ int main(int argc, char* argv[])
 #ifdef UNIX
   theSettings = new SettingsUNIX();
 #endif
+#ifdef WIN32
+  theSettings = new SettingsWin32();
+#endif
   if(!theSettings)
   {
     cleanup();
@@ -687,13 +694,13 @@ int main(int argc, char* argv[])
 
   // Request that the SDL window be centered, if possible
   // This will probably only work under Linux
-  setenv("SDL_VIDEO_CENTERED", "1", 1);
+  putenv("SDL_VIDEO_CENTERED");
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
 
   // Open the cartridge image and read it in
-  ifstream in(file); 
+  ifstream in(file, ios_base::binary);
   if(!in)
   {
     cerr << "ERROR: Couldn't open " << file << "..." << endl;

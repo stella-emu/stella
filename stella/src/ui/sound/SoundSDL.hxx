@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.6 2003-12-04 22:22:53 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.6 2003-12-04 22:22:53 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -159,6 +159,9 @@ class SoundSDL : public Sound
 
     // DSP sample rate
     uInt32 mySampleRate;
+
+    // The sample queue size (which is auto-adapting)
+    uInt32 mySampleQueueSize;
 
     // Queue which holds samples from the media source before they are played
     SampleQueue mySampleQueue;

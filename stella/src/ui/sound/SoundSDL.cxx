@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.6 2003-12-04 22:22:53 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -23,11 +23,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::SoundSDL()
     : myCurrentVolume(SDL_MIX_MAXVOLUME),
-      myFragmentSize(1024),
+      myFragmentSize(2048),
       myIsInitializedFlag(false),
       myIsMuted(false),
       mySampleRate(31400),
-      mySampleQueue(mySampleRate)
+      mySampleQueueSize(8000),
+      mySampleQueue(mySampleQueueSize)//mySampleRate)
 {
   if(1)
   {
@@ -172,10 +173,10 @@ void SoundSDL::update()
     SDL_LockAudio();
 
     // Move all of the generated samples into the our private sample queue
-    uInt8 buffer[4096];
+    uInt8 buffer[2048];
     while(myMediaSource->numberOfAudioSamples() > 0)
     {
-      uInt32 size = myMediaSource->dequeueAudioSamples(buffer, 4096);
+      uInt32 size = myMediaSource->dequeueAudioSamples(buffer, 2048);
       mySampleQueue.enqueue(buffer, size);
     }
 
@@ -184,7 +185,7 @@ void SoundSDL::update()
 
     // Block until the sound thread has consumed all but 142 milliseconds
     // of the available audio samples
-    uInt32 leave = mySampleRate / 7;
+    uInt32 left = mySampleRate / 3;
     for(;;)
     {
       uInt32 size = 0;
@@ -193,12 +194,12 @@ void SoundSDL::update()
       size = mySampleQueue.size();
       SDL_UnlockAudio();
 
-      if(size <= leave)
+      if(size < left)
       {
         break;
       }
  
-      SDL_Delay(5);
+      SDL_Delay(1);
     }
   }
 }
@@ -214,7 +215,7 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
   }
 
   // Don't use samples unless there's at least 76 milliseconds worth of data
-  if(sound->mySampleQueue.size() < (sound->mySampleRate / 13))
+  if(sound->mySampleQueue.size() < (sound->mySampleRate / 16))
   {
     return;
   }
@@ -224,11 +225,11 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
   if(sound->mySampleQueue.size() > 0)
   {
     Int32 offset;
-    uInt8 buffer[4096];
+    uInt8 buffer[2048];
     for(offset = 0; (offset < len) && (sound->mySampleQueue.size() > 0); )
     {
       uInt32 s = sound->mySampleQueue.dequeue(buffer, 
-          (4096 > (len - offset) ? (len - offset) : 4096));
+          (2048 > (len - offset) ? (len - offset) : 2048));
       SDL_MixAudio(stream + offset, buffer, s, sound->myCurrentVolume);
       offset += s;
     }
