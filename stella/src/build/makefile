@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.48 2004-04-03 03:06:45 stephena Exp $
+## $Id: makefile,v 1.49 2004-04-03 18:54:21 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -32,12 +32,16 @@ OPTIMIZATIONS  =
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library)
-# SNAPSHOT_SUPPORT = 1
+ SNAPSHOT_SUPPORT = 1
 
 ### to include support for game developers
 ### enables some extra commandline options that allow the user
 ### to override some emulation defaults
  DEVELOPER_SUPPORT = 1
+
+### to build on SMP (or distcc-based) machines
+### change to number of CPU's you have
+ NUMBER_CPU = 1
 
 ### you want a 6507 trace written to stdout
 # DEBUG = 1
@@ -52,9 +56,10 @@ LD	= g++
 
 LDFLAGS  = `sdl-config --cflags`
 LDLIBS   = `sdl-config --libs`
-OBJECTS  =  mainSDL.o FrameBufferSDL.o FrameBufferSoft.o
+OBJECTS  =  mainSDL.o SoundSDL.o FrameBufferSDL.o FrameBufferSoft.o
 OPTIONS  =
 EXE_NAME =
+SMP      =
 
 SRC      = ..
 CORE     = $(SRC)/emucore
@@ -70,6 +75,12 @@ ifndef OPTIMIZATIONS
   else
     OPTIMIZATIONS = -O2 -march=i386
   endif
+endif
+
+ifndef NUMBER_CPU
+  SMP = -j1
+else
+  SMP = -j$(NUMBER_CPU)
 endif
 
 FLAGS = $(OPTIMIZATIONS) -Wall -Wunused $(INCLUDES) $(SYS_INCLUDES)
@@ -111,13 +122,13 @@ default:
 	@echo ""
 
 linux:
-	make stella \
+	make $(SMP) stella \
           EXE_NAME="stella" \
           OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY" \
           OBJS="$(OBJECTS) SettingsUNIX.o"
 
 linux-gl:
-	make stella \
+	make $(SMP) stella \
           EXE_NAME="stella" \
           LDFLAGS="$(LDFLAGS) -L/usr/X11R6/lib" \
           LDLIBS="$(LDLIBS) -lGL" \
@@ -125,13 +136,13 @@ linux-gl:
           OBJS="$(OBJECTS) FrameBufferGL.o SettingsUNIX.o"
 
 win32:
-	make stella \
+	make $(SMP) stella \
           EXE_NAME="stella.exe" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32" \
           OBJS="$(OBJECTS) SettingsWin32.o"
 
 win32-gl:
-	make stella \
+	make $(SMP) stella \
           EXE_NAME="stella.exe" \
           LDLIBS="$(LDLIBS) -lopengl32" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST" \

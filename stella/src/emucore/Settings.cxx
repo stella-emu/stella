@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.16 2003-12-05 19:51:09 stephena Exp $
+// $Id: Settings.cxx,v 1.17 2004-04-03 18:54:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -40,6 +40,19 @@ Settings::Settings()
   mySize = 0;
 
   // Now fill it with options that are common to all versions of Stella
+  set("video", "soft");
+#ifdef DISPLAY_OPENGL
+  set("gl_filter", "nearest");
+  set("gl_aspect", "2");
+#endif
+  set("sound", "true");
+  set("fullscreen", "false");
+  set("grabmouse", "false");
+  set("hidecursor", "false");
+  set("volume", "-1");
+  set("accurate", "true");
+  set("joyleft", "0");
+  set("joyright", "1");
   set("framerate", "60");
   set("keymap", "");
   set("joymap", "");

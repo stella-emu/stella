@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.67 2003-12-10 18:58:56 stephena Exp $
+// $Id: mainSDL.cxx,v 1.68 2004-04-03 18:54:23 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -39,6 +39,7 @@
 #include "FrameBufferSoft.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
+#include "SoundSDL.hxx"
 #include "Settings.hxx"
 
 #ifdef DISPLAY_OPENGL
@@ -48,22 +49,12 @@
   static bool theUseOpenGLFlag;
 #endif
 
-#ifdef SOUND_ALSA
-  #include "SoundALSA.hxx"
-#endif
-
-#ifdef SOUND_OSS
-  #include "SoundOSS.hxx"
-#endif
-
-#ifdef SOUND_SDL
-  #include "SoundSDL.hxx"
-#endif
-
 #if defined(UNIX)
   #include "SettingsUNIX.hxx"
 #elif defined(WIN32) 
   #include "SettingsWin32.hxx"
+#else
+  #error Unsupported platform!
 #endif
 
 static void cleanup();
@@ -72,13 +63,12 @@ static void handleEvents();
 static uInt32 getTicks();
 static bool setupProperties(PropertiesSet& set);
 
-#ifdef HAVE_JOYSTICK
+#ifdef JOYSTICK_SUPPORT
   static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
   static SDL_Joystick* theRightJoystick = (SDL_Joystick*) NULL;
   static uInt32 theLeftJoystickNumber;
   static uInt32 theRightJoystickNumber;
 //  static uInt32 thePaddleNumber;
-
 #endif
 
 // Pointer to the console object or the null pointer
@@ -269,7 +259,7 @@ inline uInt32 getTicks()
 */
 bool setupJoystick()
 {
-#ifdef HAVE_JOYSTICK
+#ifdef JOYSTICK_SUPPORT
   // Initialize the joystick subsystem
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
@@ -541,7 +531,7 @@ void handleEvents()
       theDisplay->refresh();
     }
 
-#ifdef HAVE_JOYSTICK
+#ifdef JOYSTICK_SUPPORT
     // Read joystick events and modify event states
     StellaEvent::JoyStick stick;
     StellaEvent::JoyCode code;
@@ -657,7 +647,7 @@ void cleanup()
 
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
-#ifdef HAVE_JOYSTICK
+#ifdef JOYSTICK_SUPPORT
     if(SDL_JoystickOpened(theLeftJoystickNumber))
       SDL_JoystickClose(theLeftJoystick);
     if(SDL_JoystickOpened(theRightJoystickNumber))
@@ -676,6 +666,8 @@ int main(int argc, char* argv[])
   theSettings = new SettingsUNIX();
 #elif defined(WIN32) 
   theSettings = new SettingsWin32();
+#else
+  #error Unsupported platform!
 #endif
   if(!theSettings)
   {
@@ -687,7 +679,7 @@ int main(int argc, char* argv[])
   // Take care of commandline arguments
   if(!theSettings->loadCommandLine(argc, argv))
   {
-    string message = "Stella for SDL version 1.4\n\nUsage: stella.sdl [option ...] file";
+    string message = "Stella for SDL version 1.4\n\nUsage: stella [options ...] romfile";
     theSettings->usage(message);
     cleanup();
     return 0;
@@ -762,44 +754,18 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  string sounddriver = theSettings->getString("sound");
-  if(sounddriver == "0")
+  if(theSettings->getBool("sound"))
   {
-    // even if sound has been disabled, we still need a sound object
+    theSound = new SoundSDL();
+    if(theShowInfoFlag)
+      cout << "Sound enabled.\n";
+  }
+  else  // even if sound has been disabled, we still need a sound object
+  {
     theSound = new Sound();
     if(theShowInfoFlag)
       cout << "Sound disabled.\n";
   }
-#ifdef SOUND_ALSA
-  else if(sounddriver == "alsa")
-  {
-    theSound = new SoundALSA();
-    if(theShowInfoFlag)
-      cout << "Using ALSA for sound.\n";
-  }
-#endif
-#ifdef SOUND_OSS
-  else if(sounddriver == "oss")
-  {
-    theSound = new SoundOSS();
-    if(theShowInfoFlag)
-      cout << "Using OSS for sound.\n";
-  }
-#endif
-#ifdef SOUND_SDL
-  else if(sounddriver == "sdl")
-  {
-    theSound = new SoundSDL();
-    if(theShowInfoFlag)
-      cout << "Using SDL for sound.\n";
-  }
-#endif
-  else   // a driver that doesn't exist was requested, so disable sound
-  {
-    cerr << "ERROR: Sound support for " << sounddriver << " not available.\n";
-    theSound = new Sound();
-  }
-
   theSound->setVolume(theSettings->getInt("volume"));
 
   // Get just the filename of the file containing the ROM image

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.1 2003-12-04 22:22:53 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.2 2004-04-03 18:54:23 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -61,25 +61,11 @@ SettingsWin32::SettingsWin32()
   mySnapshotFile = "";
   myStateFile    = "";
 
-  // Now create UNIX specific settings
-  set("video", "soft");
-#ifdef DISPLAY_OPENGL
-  set("gl_filter", "nearest");
-  set("gl_aspect", "2");
-#endif
-  set("sound", "sdl");
-  set("fullscreen", "false");
-  set("grabmouse", "false");
-  set("hidecursor", "false");
-  set("volume", "-1");
+  // Now create Win32 specific settings
   set("accurate", "false");  // Don't change this, or the sound will skip
 #ifdef SNAPSHOT_SUPPORT
-  set("ssname", "romname");
   set("ssdir", ".\\");
-  set("ssingle", "false");
 #endif
-  set("joyleft", "0");
-  set("joyright", "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,7 +83,7 @@ void SettingsWin32::usage(string& message)
     << endl
     << "  -video      <type>         Type is one of the following:\n"
     << "               soft            SDL software mode\n"
-#ifdef DISPLAY_OPENGL
+  #ifdef DISPLAY_OPENGL
     << "               gl              SDL OpenGL mode\n"
     << endl
     << "  -gl_filter  <type>         Type is one of the following:\n"
@@ -105,33 +91,22 @@ void SettingsWin32::usage(string& message)
     << "               linear          Blurred scaling (GL_LINEAR)\n"
     << "  -gl_aspect  <number>       Scale the width by the given amount\n"
     << endl
-#endif
-    << "  -sound      <type>         Type is one of the following:\n"
-    << "               0               Disables all sound generation\n"
-  #ifdef SOUND_ALSA
-    << "               alsa            ALSA version 0.9 driver\n"
   #endif
-  #ifdef SOUND_OSS
-    << "               oss             Open Sound System driver\n"
-  #endif
-  #ifdef SOUND_SDL
-    << "               sdl             Native SDL driver\n"
-  #endif
-    << endl
+    << "  -sound      <0|1>          Enable sound generation\n"
     << "  -framerate  <number>       Display the given number of frames per second\n"
     << "  -zoom       <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen <0|1>          Play the game in fullscreen mode\n"
     << "  -grabmouse  <0|1>          Keeps the mouse in the game window\n"
     << "  -hidecursor <0|1>          Hides the mouse cursor in the game window\n"
     << "  -volume     <number>       Set the volume (0 - 100)\n"
-#ifdef HAVE_JOYSTICK
+  #ifdef JOYSTICK_SUPPORT
     << "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate\n"
     << "                             or that real Atari 2600 paddles are being used\n"
     << "  -joyleft    <number>       The joystick number representing the left controller\n"
     << "  -joyright   <number>       The joystick number representing the right controller\n"
-#else
+  #else
     << "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
-#endif
+  #endif
     << "  -altpro     <props file>   Use the given properties file instead of stella.pro\n"
     << "  -showinfo   <0|1>          Shows some game info\n"
     << "  -accurate   <0|1>          Accurate game timing (uses more CPU)\n"
@@ -179,9 +154,9 @@ string SettingsWin32::snapshotFilename()
   string theSnapshotName = getString("ssname");
 
   if(theSnapshotName == "romname")
-    path = path + "/" + myConsole->properties().get("Cartridge.Name");
+    path = path + "\\" + myConsole->properties().get("Cartridge.Name");
   else if(theSnapshotName == "md5sum")
-    path = path + "/" + myConsole->properties().get("Cartridge.MD5");
+    path = path + "\\" + myConsole->properties().get("Cartridge.MD5");
 
   // Replace all spaces in name with underscores
   replace(path.begin(), path.end(), ' ', '_');
