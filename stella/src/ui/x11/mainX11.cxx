@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.12 2002-03-10 01:29:55 stephena Exp $
+// $Id: mainX11.cxx,v 1.13 2002-03-12 19:27:11 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1490,6 +1490,11 @@ void cleanup()
 {
   if(theConsole)
     delete theConsole;
+
+#ifdef HAVE_PNG
+  if(snapshot)
+    delete snapshot;
+#endif
 
   if(normalCursor)
     XFreeCursor(theDisplay, normalCursor);

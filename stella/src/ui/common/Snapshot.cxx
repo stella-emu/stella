@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.1 2002-03-10 01:29:54 stephena Exp $
+// $Id: Snapshot.cxx,v 1.2 2002-03-12 19:27:11 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -173,6 +173,7 @@ int Snapshot::savePNG(string filename, MediaSource& mediaSource, int multiplier)
     delete[] newScanline;
 
   out->close();
+  delete out;
 
   return 1;
 }
