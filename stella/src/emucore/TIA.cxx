@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.16 2002-10-09 04:38:11 bwmott Exp $
+// $Id: TIA.cxx,v 1.17 2002-10-31 20:46:06 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -366,6 +366,20 @@ bool TIA::save(Serializer& out)
 
     out.putBool(myDumpEnabled);
     out.putLong(myDumpDisabledCycle);
+
+    // Save the sample stuff ...
+    string soundDevice = "TIASound";
+    out.putString(soundDevice);
+    out.putLong(mySampleRate);
+
+    uInt8 reg1, reg2, reg3, reg4, reg5, reg6;
+    Tia_get_registers(&reg1, &reg2, &reg3, &reg4, &reg5, &reg6);
+    out.putLong(reg1);
+    out.putLong(reg2);
+    out.putLong(reg3);
+    out.putLong(reg4);
+    out.putLong(reg5);
+    out.putLong(reg6);
   }
   catch(char *msg)
   {
@@ -460,6 +474,22 @@ bool TIA::load(Deserializer& in)
 
     myDumpEnabled = in.getBool();
     myDumpDisabledCycle = (Int32) in.getLong();
+
+    // Load the sample stuff ...
+    string soundDevice = "TIASound";
+    if(in.getString() != soundDevice)
+      return false;
+
+    mySampleRate = (uInt32) in.getLong();
+
+    uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
+    reg1 = (uInt8) in.getLong();
+    reg1 = (uInt8) in.getLong();
+    reg1 = (uInt8) in.getLong();
+    reg1 = (uInt8) in.getLong();
+    reg1 = (uInt8) in.getLong();
+    reg1 = (uInt8) in.getLong();
+    Tia_set_registers(reg1, reg2, reg3, reg4, reg5, reg6);
   }
   catch(char *msg)
   {

@@ -47,6 +47,11 @@ void Tia_process_2 (register unsigned char *buffer,
 void Tia_process (register unsigned char *buffer,
                   register unsigned int n);
 
+void Tia_get_registers (unsigned char *reg1, unsigned char *reg2, unsigned char *reg3,
+                        unsigned char *reg4, unsigned char *reg5, unsigned char *reg6);
+void Tia_set_registers (unsigned char reg1, unsigned char reg2, unsigned char reg3,
+                        unsigned char reg4, unsigned char reg5, unsigned char reg6);
+
 #ifdef __cplusplus
 }
 #endif

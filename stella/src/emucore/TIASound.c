@@ -613,6 +613,55 @@ void Tia_process (register unsigned char *buffer, register uint16 n)
 
 }
 
+
+/*****************************************************************************/
+/* Module:  Tia_get_registers()                                              */
+/* Purpose: Returns the 6 TIA sound registers for use in state               */
+/*          loading and saving.                                              */
+/*                                                                           */
+/* Author:  Stephen Anthony                                                  */
+/* Date:    October 31, 2002                                                 */
+/*                                                                           */
+/* Inputs:  reg .. reg6 - pointers to the variables where the registers      */
+/*          will be placed                                                   */
+/*                                                                           */
+/*****************************************************************************/
+
+void Tia_get_registers (unsigned char *reg1, unsigned char *reg2, unsigned char *reg3,
+                        unsigned char *reg4, unsigned char *reg5, unsigned char *reg6)
+{
+    *reg1 = AUDC[0];
+    *reg2 = AUDC[1];
+    *reg3 = AUDF[0];
+    *reg4 = AUDF[1];
+    *reg5 = AUDV[0];
+    *reg6 = AUDV[1];
+}
+
+
+/*****************************************************************************/
+/* Module:  Tia_set_registers()                                              */
+/* Purpose: Sets the 6 TIA sound registers for use in state                  */
+/*          loading and saving.                                              */
+/*                                                                           */
+/* Author:  Stephen Anthony                                                  */
+/* Date:    October 31, 2002                                                 */
+/*                                                                           */
+/* Inputs:  reg .. reg6 - the registers to be set                            */
+/*                                                                           */
+/*****************************************************************************/
+
+void Tia_set_registers (unsigned char reg1, unsigned char reg2, unsigned char reg3,
+                        unsigned char reg4, unsigned char reg5, unsigned char reg6)
+{
+    AUDC[0] = reg1;
+    AUDC[1] = reg2;
+    AUDF[0] = reg3;
+    AUDF[1] = reg4;
+    AUDV[0] = reg5;
+    AUDV[1] = reg6;
+}
+
 #ifdef __cplusplus
 }
 #endif
