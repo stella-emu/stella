@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.5 2002-01-16 15:09:21 stephena Exp $
+// $Id: mainX11.cxx,v 1.6 2002-02-01 02:13:08 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -45,6 +45,12 @@
 
 #ifdef IMLIB2_SNAPSHOT
   #include <Imlib2.h>
+
+  // The path to save snapshot files
+  string theSnapShotDir = "";
+
+  // What the snapshot should be called (romname or md5sum)
+  string theSnapShotName = "";
 #endif
 
 #ifdef LINUX_JOYSTICK
@@ -88,12 +94,14 @@ void grabMouse(bool grab);
 void toggleFullscreen();
 void takeSnapshot();
 void togglePause();
-void setupProperties(PropertiesSet& set);
+uInt32 maxWindowSizeForScreen();
+
+bool setupProperties(PropertiesSet& set);
 void handleCommandLineArguments(int argc, char* argv[]);
 void handleRCFile();
 void parseRCOptions(istream& in);
 void usage();
-uInt32 maxWindowSizeForScreen();
+
 
 // Global event stuff
 struct Switches
@@ -385,6 +393,13 @@ bool setupDisplay()
     imlib_context_set_colormap(thePrivateColormap);
   else
     imlib_context_set_colormap(DefaultColormap(theDisplay, theScreen));
+
+  // By default, snapshot dir is HOME and name is ROMNAME, assuming that
+  // they haven't been specified on the commandline
+  if(theSnapShotDir == "")
+    theSnapShotDir = getenv("HOME");
+  if(theSnapShotName == "")
+    theSnapShotName = "romname";
 #endif
 
   return true;
@@ -985,11 +1000,12 @@ bool createCursors()
 
 /**
   Called when the user wants to take a snapshot of the current display.
-  Currently, images are stored in png format in the users home directory
-  name consecutively as "Cartridge.Name".png.  If that name exists, they are
-  named as Cartridge.Name"_x.png, where x starts with 1 and
-  increases if the previous name already exists.  All spaces in filenames
-  are converted to underscore '_'.
+  Images are stored in png format in the directory specified by the 'ssdir'
+  argument, or in $HOME by default.
+  Images are named consecutively as "NAME".png, where name is specified by
+  the 'ssname' argument.  If that name exists, they are named as "Name"_x.png,
+  where x starts with 1 and increases if the previous name already exists.
+  All spaces in filenames are converted to underscore '_'.
 */
 void takeSnapshot()
 {
@@ -1007,8 +1023,17 @@ void takeSnapshot()
   }
 
   // Now find the correct name for the snapshot
-  string filename = getenv("HOME");
-  filename = filename + "/" + theConsole->properties().get("Cartridge.Name");
+  string filename = theSnapShotDir;
+  if(theSnapShotName == "romname")
+    filename = filename + "/" + theConsole->properties().get("Cartridge.Name");
+  else if(theSnapShotName == "md5sum")
+    filename = filename + "/" + theConsole->properties().get("Cartridge.MD5");
+  else
+  {
+    cerr << "ERROR: unknown name " << theSnapShotName
+         << " for snapshot type" << endl;
+    return;
+  }
 
   // Replace all spaces in name with underscores
   replace(filename.begin(), filename.end(), ' ', '_');
@@ -1038,7 +1063,10 @@ void takeSnapshot()
   imlib_save_image(filename.c_str());
   imlib_free_image();
 
-  cerr << "Snapshot saved as " << filename << endl;
+  if(access(filename.c_str(), F_OK) == 0)
+    cerr << "Snapshot saved as " << filename << endl;
+  else
+    cerr << "Couldn't create snapshot " << filename << endl;
 #else
   cerr << "Snapshot mode not supported.\n";
 #endif
@@ -1080,9 +1108,9 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "XStella version 1.2",
+    "X Stella version 1.2",
     "",
-    "Usage: xstella [option ...] file",
+    "Usage: stella.x11 [option ...] file",
     "",
     "Valid options are:",
     "",
@@ -1090,7 +1118,7 @@ void usage()
     "  -fps <number>           Display the given number of frames per second",
     "  -owncmap                Install a private colormap",
     "  -winsize <size>         Makes initial window be 'size' times normal",
-    "  -fullscreen             Play the game in fullscreen mode",
+//    "  -fullscreen             Play the game in fullscreen mode",
     "  -grabmouse              Keeps the mouse in the game window",
     "  -hidecursor             Hides the mouse cursor in the game window",
     "  -center                 Centers the game window onscreen",
@@ -1102,6 +1130,10 @@ void usage()
     "  -paddle <0|1|2|3>       Indicates which paddle the mouse should emulate",
 #endif
     "  -showfps                Shows some game info on exit",
+#ifdef IMLIB2_SNAPSHOT
+    "  -ssdir <path>           The directory to save snapshot files to",
+    "  -ssname <name>          How to name the snapshot (romname or md5sum)",
+#endif
     "",
     0
   };
@@ -1115,11 +1147,12 @@ void usage()
 
 /**
   Setup the properties set by first checking for a user file ".stella.pro",
-  then a system-wide file "/etc/stella.pro".
+  then a system-wide file "/etc/stella.pro".  Return false if neither file
+  is found, else return true.
 
   @param set The properties set to setup
 */
-void setupProperties(PropertiesSet& set)
+bool setupProperties(PropertiesSet& set)
 {
   string homePropertiesFile = getenv("HOME");
   homePropertiesFile += "/.stella.pro";
@@ -1128,10 +1161,17 @@ void setupProperties(PropertiesSet& set)
   if(access(homePropertiesFile.c_str(), R_OK) == 0)
   {
     set.load(homePropertiesFile, &Console::defaultProperties(), false);
+    return true;
   }
   else if(access(systemPropertiesFile.c_str(), R_OK) == 0)
   {
     set.load(systemPropertiesFile, &Console::defaultProperties(), false);
+    return true;
+  }
+  else
+  {
+    cerr << "ERROR: Couldn't find stella.pro file." << endl;
+    return false;
   }
 }
 
@@ -1222,6 +1262,16 @@ void handleCommandLineArguments(int argc, char* argv[])
 
       theDesiredVolume = volume;
     }
+#ifdef IMLIB2_SNAPSHOT
+    else if(string(argv[i]) == "-ssdir")
+    {
+      theSnapShotDir = argv[++i];
+    }
+    else if(string(argv[i]) == "-ssname")
+    {
+      theSnapShotName = argv[++i];
+    }
+#endif
     else
     {
       cout << "Undefined option " << argv[i] << endl;
@@ -1382,6 +1432,16 @@ void parseRCOptions(istream& in)
 
       theDesiredVolume = volume;
     }
+#ifdef IMLIB2_SNAPSHOT
+    else if(key == "ssdir")
+    {
+      theSnapShotDir = value;
+    }
+    else if(key == "ssname")
+    {
+      theSnapShotName = value;
+    }
+#endif
   }
 }
 
@@ -1440,7 +1500,11 @@ int main(int argc, char* argv[])
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
-  setupProperties(propertiesSet);
+  if(!setupProperties(propertiesSet))
+  {
+    delete[] image;
+    exit(1);
+  }
 
   // Create a sound object for use with the console
   SoundUnix sound(theDesiredVolume);
