@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.35 2002-11-11 02:56:27 stephena Exp $
+// $Id: mainSDL.cxx,v 1.36 2002-11-11 22:09:07 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -39,7 +39,12 @@
 #include "System.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
-#include "SoundSDL.hxx"
+
+#ifdef USE_OSS_SOUND
+  #include "SoundX11.hxx"
+#else
+  #include "SoundSDL.hxx"
+#endif
 
 #ifdef HAVE_PNG
   #include "Snapshot.hxx"
@@ -1659,7 +1664,12 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
+#ifdef USE_OSS_SOUND
+  SoundX11 sound;
+#else
   SoundSDL sound;
+#endif
+
   sound.setSoundVolume(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
@@ -1682,14 +1692,14 @@ int main(int argc, char* argv[])
   if(!setupDisplay())
   {
     cerr << "ERROR: Couldn't set up display.\n";
-    sound.close();
+    sound.closeDevice();
     cleanup();
     return 0;
   }
   if(!setupJoystick())
   {
     cerr << "ERROR: Couldn't set up joysticks.\n";
-    sound.close();
+    sound.closeDevice();
     cleanup();
     return 0;
   }
@@ -1702,8 +1712,7 @@ int main(int argc, char* argv[])
   {
     // Set up accurate timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame =
-        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
 
     // Set the base for the timers
     frameTime = 0;
@@ -1718,6 +1727,7 @@ int main(int argc, char* argv[])
       }
 
       // Call handleEvents here to see if user pressed pause
+      startTime = getTicks();
       handleEvents();
       if(thePauseIndicator)
       {
@@ -1726,11 +1736,9 @@ int main(int argc, char* argv[])
         continue;
       }
 
-      startTime = getTicks();
       theConsole->mediaSource().update();
       updateDisplay(theConsole->mediaSource());
       sound.updateSound(theConsole->mediaSource());
-      handleEvents();
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -1765,16 +1773,13 @@ int main(int argc, char* argv[])
       }
 
       startTime = getTicks();
+      handleEvents();
       if(!thePauseIndicator)
       {
         theConsole->mediaSource().update();
-      }
-      updateDisplay(theConsole->mediaSource());
-      if(!thePauseIndicator)
-      {
         sound.updateSound(theConsole->mediaSource());
       }
-      handleEvents();
+      updateDisplay(theConsole->mediaSource());
 
       currentTime = getTicks();
       virtualTime += timePerFrame;
@@ -1805,7 +1810,7 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
-  sound.close();
+  sound.closeDevice();
   cleanup();
   return 0;
 }
