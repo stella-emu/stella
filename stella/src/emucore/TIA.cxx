@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.7 2002-03-17 19:37:00 stephena Exp $
+// $Id: TIA.cxx,v 1.8 2002-03-18 14:38:34 gunfight Exp $
 //============================================================================
 
 #include <assert.h>
@@ -31,12 +31,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const Console& console, Sound& sound)
-    : myConsole(console),
-      mySound(sound),
-      myCOLUBK(myColor[0]),
-      myCOLUPF(myColor[1]),
-      myCOLUP0(myColor[2]),
-      myCOLUP1(myColor[3])
+    : myConsole(console)
+    ,mySound(sound)
+    ,myCOLUBK(myColor[0])
+    ,myCOLUPF(myColor[1])
+    ,myCOLUP0(myColor[2])
+    ,myCOLUP1(myColor[3])
+    ,pauseState(false)
 {
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];
