@@ -15,10 +15,10 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // GameList
 
-GameList::GameList() 
+GameList::GameList()
     : rs("GameList")
 {
-    rs.Bind(path, "ROM Path", "");
+    rs.Bind(m_Path, "ROM Path", "");
 }
 
 GameList::~GameList()
@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(GameList, CListCtrl)
 	//{{AFX_MSG_MAP(GameList)
 	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnclick)
 	ON_NOTIFY_REFLECT(LVN_ITEMACTIVATE, OnItemActivate)
+	ON_WM_KEYDOWN()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -111,7 +112,7 @@ void GameList::populateRomList()
     deleteItemsAndProperties();
 
     // Add new content
-    if(path.GetLength() > 0)
+    if(m_Path.GetLength() > 0)
     {
         displayPath();
     }
@@ -137,10 +138,10 @@ void GameList::displayPath()
 	BOOL first = true;
 
 	// Do pathname
-	if (path.GetAt(path.GetLength()-1) == '\\')
-		searchpath = path + "*.*";
+	if (m_Path.GetAt(m_Path.GetLength()-1) == '\\')
+		searchpath = m_Path + "*.*";
 	else
-		searchpath = path + "\\*.*";
+		searchpath = m_Path + "\\*.*";
   
 	bFind = find.FindFile(searchpath);
 
@@ -235,7 +236,7 @@ void GameList::displayDrives()
     int itemCounter;
 
     // Clear path
-    path = "";
+    m_Path = "";
 
     //Enumerate drive letters and add them to list
     dwDrives = GetLogicalDrives();
@@ -284,27 +285,33 @@ void GameList::OnItemActivate(NMHDR* pNMHDR, LRESULT* pResult)
 
         if(strcmpi(props->get("Cartridge.Type").c_str(), "Dots") == 0)
         {
-            int cutPos = path.ReverseFind('\\');
-            path = path.Left(cutPos);
+            int cutPos = m_Path.ReverseFind('\\');
+            m_Path = m_Path.Left(cutPos);
             populateRomList();
         }
         else if(strcmpi(props->get("Cartridge.Type").c_str(), "Directory") == 0)
         {
             // Do pathname
-            if (path.GetLength() <= 0)
+            if (m_Path.GetLength() <= 0)
             {
-                path = dir;
+                m_Path = dir;
             }
-            else if (path.GetAt(path.GetLength()-1) != '\\')
+            else if (m_Path.GetAt(m_Path.GetLength()-1) != '\\')
             {
-	            path += "\\";
-                path += dir;
+	            m_Path += "\\";
+                m_Path += dir;
             }
             else
             {
-                path += dir;
+                m_Path += dir;
             }
             populateRomList();
+        }
+        else
+        {
+            // Notify parent to play the current game by 
+            // sending a faked 'Play Button Pressed' message.
+            if (m_pParent)  m_pParent->PostMessage(WM_COMMAND, BN_CLICKED | IDC_PLAY);
         }
     }
     *pResult = 0;
@@ -357,10 +364,10 @@ CString GameList::getCurrentFile()
     int curSel = GetSelectionMark();
     if(curSel >= 0)
     {
-        if (path.GetAt(path.GetLength()-1) != '\\')
-	        path += "\\";
+        if (m_Path.GetAt(m_Path.GetLength()-1) != '\\')
+	        m_Path += "\\";
 
-        filename = path + GetItemText(curSel,0);
+        filename = m_Path + GetItemText(curSel,0);
     }
 
     return filename;
@@ -375,4 +382,12 @@ CString GameList::getCurrentName()
     }
 
     return "";
+}
+
+void GameList::init(PropertiesSet* newPropertiesSet, CWnd* newParent)
+{
+    m_pParent = newParent;
+    m_pPropertiesSet = newPropertiesSet;
+    SetExtendedStyle(LVS_EX_FULLROWSELECT);
+    insertColumns();
 }

@@ -1,4 +1,4 @@
-Cyberstella V1.2 by Manuel Polik
+Cyberstella V1.2
 
 Currently Open Todos:
 

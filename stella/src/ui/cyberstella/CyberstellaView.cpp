@@ -53,7 +53,6 @@ CCyberstellaView::CCyberstellaView()
 	//{{AFX_DATA_INIT(CCyberstellaView)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-
     m_pGlobalData = new CGlobalData(GetModuleHandle(NULL));
     m_bIsPause = false;
     m_pPropertiesSet = NULL;
@@ -95,17 +94,8 @@ void CCyberstellaView::OnInitialUpdate()
     status.Format(IDS_STATUSTEXT, m_List.GetItemCount());
     SetDlgItemText(IDC_ROMCOUNT,status);
 
-    //
     // Show rom path
-    //
-
     //ToDo: SetDlgItemText(IDC_ROMPATH, m_pGlobalData->romDir);
-
-    //
-    // Set default button
-    //
-
-    ::SendMessage( *this, DM_SETDEFID, IDC_PLAY, 0 );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -405,9 +395,7 @@ void CCyberstellaView::Initialize()
     m_List.SetImageList (&m_imglist, LVSIL_SMALL);
 
     // Init ListCtrl
-    m_List.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-    m_List.insertColumns();
-    m_List.setPropertiesSet(m_pPropertiesSet);
+    m_List.init(m_pPropertiesSet,this);
 
     // Try to load the file stella.pro file
     string filename( "stella.pro" );

@@ -17,7 +17,8 @@ class GameList : public CListCtrl
 {
 private:
     // memebers saved in registry
-    CString path;
+    CString m_Path;
+    CWnd* m_pParent;
     PropertiesSet* m_pPropertiesSet;
 
     // Regbinding
@@ -31,6 +32,7 @@ private:
     // Construction
 public:
 	GameList();
+	virtual ~GameList();
 
 // Operations
 public:
@@ -42,11 +44,9 @@ public:
 
 // Implementation
 public:
-	virtual ~GameList();
     void insertColumns();
     void populateRomList();
-    void setPropertiesSet(PropertiesSet* newPropertiesSet) 
-         {m_pPropertiesSet = newPropertiesSet;}
+    void init(PropertiesSet* newPropertiesSet, CWnd* newParent);
     void deleteItemsAndProperties();
     CString getCurrentFile();
     CString getCurrentName();
