@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.3 2004-06-13 17:14:24 bwmott Exp $
+// $Id: SoundSDL.cxx,v 1.4 2004-06-20 00:52:37 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -30,9 +30,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::SoundSDL(uInt32 fragsize)
     : myIsInitializedFlag(false),
+      myFragmentSizeLogBase2(0),
       myIsMuted(false),
-      myVolume(100),
-      myFragmentSizeLogBase2(0)
+      myVolume(100)
 {
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
   {
@@ -290,7 +290,11 @@ bool SoundSDL::load(Deserializer& in)
 
     // Only update the TIA sound registers if sound is enabled
     if(myIsInitializedFlag)
+    {
+
       Tia_set_registers(reg1, reg2, reg3, reg4, reg5, reg6);
+      myRegWriteQueue.clear();
+    }
   }
   catch(char *msg)
   {

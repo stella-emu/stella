@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.3 2004-06-13 16:51:15 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.4 2004-06-20 00:52:37 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -90,12 +90,7 @@ void SettingsUNIX::usage(string& message)
     << "  -grabmouse  <0|1>          Keeps the mouse in the game window\n"
     << "  -hidecursor <0|1>          Hides the mouse cursor in the game window\n"
     << "  -volume     <number>       Set the volume (0 - 100)\n"
-  #ifdef JOYSTICK_SUPPORT
-    << "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate\n"
-    << "                             or that real Atari 2600 paddles are being used\n"
-  #else
     << "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
-  #endif
     << "  -altpro     <props file>   Use the given properties file instead of stella.pro\n"
     << "  -showinfo   <0|1>          Shows some game info\n"
     << "  -accurate   <0|1>          Accurate game timing (uses more CPU)\n"
@@ -107,13 +102,13 @@ void SettingsUNIX::usage(string& message)
     << endl
   #ifdef DEVELOPER_SUPPORT
     << " DEVELOPER options (see Stella manual for details)\n"
-    << "  -Dformat                    Sets \"Display.Format\"\n"
-    << "  -Dxstart                    Sets \"Display.XStart\"\n"
-    << "  -Dwidth                     Sets \"Display.Width\"\n"
-    << "  -Dystart                    Sets \"Display.YStart\"\n"
-    << "  -Dheight                    Sets \"Display.Height\"\n"
-    << "  -mergeprops  <0|1>          Merge changed properties into properties file,\n"
-    << "                              or save into a separate file\n"
+    << "  -Dformat                   Sets \"Display.Format\"\n"
+    << "  -Dxstart                   Sets \"Display.XStart\"\n"
+    << "  -Dwidth                    Sets \"Display.Width\"\n"
+    << "  -Dystart                   Sets \"Display.YStart\"\n"
+    << "  -Dheight                   Sets \"Display.Height\"\n"
+    << "  -mergeprops  <0|1>         Merge changed properties into properties file,\n"
+    << "                             or save into a separate file\n"
   #endif
     << endl;
 }
