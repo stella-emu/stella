@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.4 2002-11-11 22:07:35 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -21,6 +21,7 @@
 
 #include <SDL.h>
 
+#include "Sound.hxx"
 #include "bspf.hxx"
 #include "MediaSrc.hxx"
 
@@ -28,9 +29,9 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.4 2002-11-11 22:07:35 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
 */
-class SoundSDL
+class SoundSDL : public Sound
 {
   public:
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.37 2002-11-12 01:50:06 stephena Exp $
+// $Id: mainSDL.cxx,v 1.38 2002-11-13 16:19:21 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -36,13 +36,16 @@
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
+#include "Sound.hxx"
 #include "System.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
 
-#ifdef USE_OSS_SOUND
-  #include "SoundX11.hxx"
-#else
+#ifdef SOUND_OSS
+  #include "SoundOSS.hxx"
+#endif
+
+#ifdef SOUND_SDL
   #include "SoundSDL.hxx"
 #endif
 
@@ -192,6 +195,9 @@ static Console* theConsole = (Console*) NULL;
 
 // Pointer to the settings object or the null pointer
 static Settings* settings = (Settings*) NULL;
+
+// Pointer to the sound object or the null pointer
+static Sound* sound = (Sound*) NULL;
 
 // Indicates if the user wants to quit
 static bool theQuitIndicator = false;
@@ -1438,6 +1444,18 @@ void usage()
     "  -pro        <props file>    Use the given properties file instead of stella.pro",
     "  -accurate   <0|1>           Accurate game timing (uses more CPU)",
     "",
+    "  -sound      <type>          Type is one of the following:",
+    "               0                Disables all sound generation",
+#ifdef SOUND_ALSA
+    "               alsa             ALSA version 0.9 driver",
+#endif
+#ifdef SOUND_OSS
+    "               oss              Open Sound System driver (most compatible)",
+#endif
+#ifdef SOUND_SDL
+    "               sdl              Native SDL driver",
+#endif
+    "",
 #ifdef DEVELOPER_SUPPORT
     " DEVELOPER options (see Stella manual for details)",
     "  -Dformat                    Sets \"Display.Format\"",
@@ -1553,6 +1571,9 @@ void cleanup()
 
   if(rectList)
     delete rectList;
+
+  if(sound)
+    delete sound;
 
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
@@ -1678,13 +1699,27 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-#ifdef USE_OSS_SOUND
-  SoundX11 sound;
-#else
-  SoundSDL sound;
+  if(settings->theSoundDriver == "0")
+  {
+    // if sound has been disabled, we still need a sound object
+    sound = new Sound();
+  }
+#ifdef SOUND_OSS
+  else if(settings->theSoundDriver == "oss")
+    sound = new SoundOSS();
 #endif
+#ifdef SOUND_SDL
+  else if(settings->theSoundDriver == "sdl")
+    sound = new SoundSDL();
+#endif
+  else   // a driver that doesn't exist was requested, so disable sound
+  {
+    cerr << "ERROR: Sound support for "
+         << settings->theSoundDriver << " disabled.\n";
+    sound = new Sound();
+  }
 
-  sound.setSoundVolume(settings->theDesiredVolume);
+  sound->setSoundVolume(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
@@ -1692,11 +1727,11 @@ int main(int argc, char* argv[])
   // Create the 2600 game console for users or developers
 #ifdef DEVELOPER_SUPPORT
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound.getSampleRate(),
+      theEvent, propertiesSet, sound->getSampleRate(),
       &settings->userDefinedProperties);
 #else
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound.getSampleRate());
+      theEvent, propertiesSet, sound->getSampleRate());
 #endif
 
   // Free the image since we don't need it any longer
@@ -1706,14 +1741,14 @@ int main(int argc, char* argv[])
   if(!setupDisplay())
   {
     cerr << "ERROR: Couldn't set up display.\n";
-    sound.closeDevice();
+    sound->closeDevice();
     cleanup();
     return 0;
   }
   if(!setupJoystick())
   {
     cerr << "ERROR: Couldn't set up joysticks.\n";
-    sound.closeDevice();
+    sound->closeDevice();
     cleanup();
     return 0;
   }
@@ -1752,7 +1787,7 @@ int main(int argc, char* argv[])
 
       theConsole->mediaSource().update();
       updateDisplay(theConsole->mediaSource());
-      sound.updateSound(theConsole->mediaSource());
+      sound->updateSound(theConsole->mediaSource());
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -1791,7 +1826,7 @@ int main(int argc, char* argv[])
       if(!thePauseIndicator)
       {
         theConsole->mediaSource().update();
-        sound.updateSound(theConsole->mediaSource());
+        sound->updateSound(theConsole->mediaSource());
       }
       updateDisplay(theConsole->mediaSource());
 
@@ -1824,7 +1859,7 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
-  sound.closeDevice();
+  sound->closeDevice();
   cleanup();
   return 0;
 }

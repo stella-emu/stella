@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.27 2002-11-13 03:47:55 bwmott Exp $
+## $Id: makefile,v 1.28 2002-11-13 16:19:20 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -37,10 +37,13 @@ OPTIMIZATIONS    = -O2 -Wall -Wno-unused
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
 #	-falign-functions=2 -falign-jumps=2 -falign-loops=2
 
-### which sound code to use for the SDL version
-### choices are "oss" or "sdl"
+### which sound drivers to compile for the X11 and SDL versions
 ### OSS is most compatible, SDL for platforms where OSS not available
-SDL_SOUND = oss
+### SDL sound not yet supported in the X11 version
+### comment out all lines to completely disable sound
+###
+SOUND_OSS = 1
+#SOUND_SDL = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -145,17 +148,18 @@ OPTS.SDL += -DDEVELOPER_SUPPORT=1
 OPTS.DOS += -DDEVELOPER_SUPPORT=1
 endif
 
-ifdef SDL_SOUND
-  ifeq ($(SDL_SOUND), oss)
-    OPTS.SDL += -DUSE_OSS_SOUND=1
-    OBJS.SDL += SoundX11.o
-  endif
-  ifeq ($(SDL_SOUND), sdl)
-    OBJS.SDL += SoundSDL.o
-  endif
-else
-  OPTS.SDL += -DUSE_OSS_SOUND=1
-  OBJS.SDL += SoundX11.o
+ifeq ($(SOUND_OSS), 1)
+  OPTS.X11 += -DSOUND_OSS=1
+  OBJS.X11 += SoundOSS.o
+  OPTS.SDL += -DSOUND_OSS=1
+  OBJS.SDL += SoundOSS.o
+endif
+
+ifeq ($(SOUND_SDL), 1)
+#  OPTS.X11 += -DSOUND_OSS=1
+#  OBJS.X11 += SoundOSS.o
+  OPTS.SDL += -DSOUND_SDL=1
+  OBJS.SDL += SoundSDL.o
 endif
 
 
@@ -189,7 +193,7 @@ dos:
 
 unix-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -197,11 +201,12 @@ unix-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SoundX11.o"
+          OBJS="mainX11.o"
+          OBJS+="$(OBJS.X11)"
 
 linux-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -209,12 +214,12 @@ linux-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SoundX11.o" \
+          OBJS="mainX11.o" \
           OBJS+="$(OBJS.X11)"
 
 linux-sdl:
 	make stella.sdl \
-          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/x11" \
+          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.SDL)" \
@@ -227,7 +232,7 @@ linux-sdl:
 
 bsdi-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/X11R6/include" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -235,11 +240,12 @@ bsdi-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SoundX11.o"
+          OBJS="mainX11.o"
+          OBJS+="$(OBJS.X11)"
 
 solaris-x:
 	make stella.x11 \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11" \
+          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/openwin/include" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.X11)" \
@@ -247,7 +253,8 @@ solaris-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o SoundX11.o"
+          OBJS="mainX11.o"
+          OBJS+="$(OBJS.X11)"
 
 ###############################################################################
 ## List of "core" object files
@@ -259,7 +266,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartF8.o CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o \
             CartMB.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
-            Props.o PropsSet.o Random.o Switches.o Settings.o TIA.o \
+            Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o TIASound.o \
             $(M6502_OBJS)
 
@@ -404,6 +411,9 @@ Props.o: $(CORE)/Props.cxx
 Random.o: $(CORE)/Random.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Random.cxx
 
+Sound.o: $(CORE)/Sound.cxx $(CORE)/Sound.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Sound.cxx
+
 Switches.o: $(CORE)/Switches.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Switches.cxx
 
@@ -437,14 +447,14 @@ TermX11.o: $(UI)/x11/TermX11.cxx
 mainX11.o: $(UI)/x11/mainX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/mainX11.cxx
 
-SoundX11.o: $(UI)/x11/SoundX11.cxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/SoundX11.cxx
+SoundOSS.o: $(UI)/sound/SoundOSS.cxx $(UI)/sound/SoundOSS.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundOSS.cxx
 
 mainSDL.o: $(UI)/sdl/mainSDL.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
 
-SoundSDL.o: $(UI)/sdl/SoundSDL.cxx $(UI)/sdl/SoundSDL.hxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SoundSDL.cxx
+SoundSDL.o: $(UI)/sound/SoundSDL.cxx $(UI)/sound/SoundSDL.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundSDL.cxx
 
 RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx
@@ -472,4 +482,3 @@ NullDev.o: $(CORE)/m6502/src/NullDev.cxx
 
 System.o: $(CORE)/m6502/src/System.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/m6502/src/System.cxx
-

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.17 2002-10-31 20:46:06 stephena Exp $
+// $Id: TIA.cxx,v 1.18 2002-11-13 16:19:20 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -370,10 +370,13 @@ bool TIA::save(Serializer& out)
     // Save the sample stuff ...
     string soundDevice = "TIASound";
     out.putString(soundDevice);
-    out.putLong(mySampleRate);
 
-    uInt8 reg1, reg2, reg3, reg4, reg5, reg6;
-    Tia_get_registers(&reg1, &reg2, &reg3, &reg4, &reg5, &reg6);
+    uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
+
+    // Only get the TIA sound registers if sound is enabled
+    if(mySampleRate != 0)
+      Tia_get_registers(&reg1, &reg2, &reg3, &reg4, &reg5, &reg6);
+
     out.putLong(reg1);
     out.putLong(reg2);
     out.putLong(reg3);
@@ -480,8 +483,6 @@ bool TIA::load(Deserializer& in)
     if(in.getString() != soundDevice)
       return false;
 
-    mySampleRate = (uInt32) in.getLong();
-
     uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
     reg1 = (uInt8) in.getLong();
     reg1 = (uInt8) in.getLong();
@@ -489,7 +490,10 @@ bool TIA::load(Deserializer& in)
     reg1 = (uInt8) in.getLong();
     reg1 = (uInt8) in.getLong();
     reg1 = (uInt8) in.getLong();
-    Tia_set_registers(reg1, reg2, reg3, reg4, reg5, reg6);
+
+    // Only update the TIA sound registers if sound is enabled
+    if(mySampleRate != 0)
+      Tia_set_registers(reg1, reg2, reg3, reg4, reg5, reg6);
   }
   catch(char *msg)
   {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.32 2002-11-12 01:50:06 stephena Exp $
+// $Id: mainX11.cxx,v 1.33 2002-11-13 16:19:21 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -40,9 +40,13 @@
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
+#include "Sound.hxx"
 #include "System.hxx"
 #include "Settings.hxx"
-#include "SoundX11.hxx"
+
+#ifdef SOUND_OSS
+  #include "SoundOSS.hxx"
+#endif
 
 #ifdef HAVE_PNG
   #include "Snapshot.hxx"
@@ -191,6 +195,9 @@ static Console* theConsole = (Console*) NULL;
 
 // Pointer to the settings object or the null pointer
 static Settings* settings = (Settings*) NULL;
+
+// Pointer to the sound object or the null pointer
+static Sound* sound = (Sound*) NULL;
 
 // Indicates if the user wants to quit
 static bool theQuitIndicator = false;
@@ -1333,6 +1340,15 @@ void usage()
     "  -pro        <props file>   Use the given properties file instead of stella.pro",
     "  -accurate   <0|1>          Accurate game timing (uses more CPU)",
     "",
+    "  -sound      <type>          Type is one of the following:",
+    "               0                Disables all sound generation",
+#ifdef SOUND_ALSA
+    "               alsa             ALSA version 0.9 driver",
+#endif
+#ifdef SOUND_OSS
+    "               oss              Open Sound System driver (most compatible)",
+#endif
+    "",
 #ifdef DEVELOPER_SUPPORT
     " DEVELOPER options (see Stella manual for details)",
     "  -Dformat                    Sets \"Display.Format\"",
@@ -1442,6 +1458,9 @@ void cleanup()
   if(snapshot)
     delete snapshot;
 #endif
+
+  if(sound)
+    delete sound;
 
   if(normalCursor)
     XFreeCursor(theDisplay, normalCursor);
@@ -1553,8 +1572,23 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  SoundX11 sound;
-  sound.setSoundVolume(settings->theDesiredVolume);
+  if(settings->theSoundDriver == "0")
+  {
+    // if sound has been disabled, we still need a sound object
+    sound = new Sound();
+  }
+#ifdef SOUND_OSS
+  else if(settings->theSoundDriver == "oss")
+    sound = new SoundOSS();
+#endif
+  else   // a driver that doesn't exist was requested, so disable sound
+  {
+    cerr << "ERROR: Sound support for "
+         << settings->theSoundDriver << " disabled.\n";
+    sound = new Sound();
+  }
+
+  sound->setSoundVolume(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
@@ -1562,11 +1596,11 @@ int main(int argc, char* argv[])
   // Create the 2600 game console for users or developers
 #ifdef DEVELOPER_SUPPORT
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound.getSampleRate(),
+      theEvent, propertiesSet, sound->getSampleRate(),
       &settings->userDefinedProperties);
 #else
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound.getSampleRate());
+      theEvent, propertiesSet, sound->getSampleRate());
 #endif
 
   // Free the image since we don't need it any longer
@@ -1620,7 +1654,7 @@ int main(int argc, char* argv[])
       }
 
       theConsole->mediaSource().update();
-      sound.updateSound(theConsole->mediaSource());
+      sound->updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
 
       // Now, waste time if we need to so that we are at the desired frame rate
@@ -1661,7 +1695,7 @@ int main(int argc, char* argv[])
       if(!thePauseIndicator)
       {
         theConsole->mediaSource().update();
-        sound.updateSound(theConsole->mediaSource());
+        sound->updateSound(theConsole->mediaSource());
       }
       updateDisplay(theConsole->mediaSource());
 

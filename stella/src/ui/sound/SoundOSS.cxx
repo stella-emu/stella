@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundX11.cxx,v 1.2 2002-11-11 22:02:59 stephena Exp $
+// $Id: SoundOSS.cxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
 //============================================================================
 
 #include <fcntl.h>
@@ -31,10 +31,10 @@
 #define DSP_DEVICE "/dev/dsp"
 #define MIXER_DEVICE "/dev/mixer"
 
-#include "SoundX11.hxx"
+#include "SoundOSS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundX11::SoundX11()
+SoundOSS::SoundOSS()
     : myIsInitializedFlag(false),
       myDspFd(-1),
       myMixerFd(-1),
@@ -125,13 +125,13 @@ SoundX11::SoundX11()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundX11::~SoundX11()
+SoundOSS::~SoundOSS()
 {
   closeDevice();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundX11::closeDevice()
+void SoundOSS::closeDevice()
 {
   if(myIsInitializedFlag)
   {
@@ -159,19 +159,19 @@ void SoundX11::closeDevice()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 SoundX11::getSampleRate() const
+uInt32 SoundOSS::getSampleRate() const
 {
   return myIsInitializedFlag ? mySampleRate : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundX11::isSuccessfullyInitialized() const
+bool SoundOSS::isSuccessfullyInitialized() const
 {
   return myIsInitializedFlag;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundX11::setSoundVolume(uInt32 volume)
+void SoundOSS::setSoundVolume(uInt32 volume)
 {
   if(myIsInitializedFlag && (myMixerFd != -1))
   {
@@ -195,7 +195,7 @@ void SoundX11::setSoundVolume(uInt32 volume)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundX11::updateSound(MediaSource& mediaSource)
+void SoundOSS::updateSound(MediaSource& mediaSource)
 {
   if(myIsInitializedFlag)
   {

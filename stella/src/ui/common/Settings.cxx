@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.6 2002-11-11 22:14:56 stephena Exp $
+// $Id: Settings.cxx,v 1.7 2002-11-13 16:19:20 stephena Exp $
 //============================================================================
 
 #ifdef DEVELOPER_SUPPORT
@@ -43,6 +43,7 @@ Settings::Settings()
   theMaxWindowSize = 0;
   theHeight = 0;
   theWidth = 0;
+  theSoundDriver = "oss";
 
 #ifdef DEVELOPER_SUPPORT
   userDefinedProperties.set("Display.Format", "-1");
@@ -188,6 +189,14 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
     else if(string(argv[i]) == "-pro")
     {
       theAlternateProFile = argv[++i];
+    }
+    else if(string(argv[i]) == "-sound")
+    {
+      string option = argv[++i];
+      if((option != "oss") && (option != "sdl") && (option != "alsa"))
+        option = "0";
+
+      theSoundDriver = option;
     }
 #ifdef DEVELOPER_SUPPORT
     else if(string(argv[i]) == "-Dformat")
@@ -387,6 +396,13 @@ void Settings::handleRCFile(istream& in)
         theMultipleSnapShotFlag = false;
       else if(option == 0)
         theMultipleSnapShotFlag = true;
+    }
+    else if(key == "sound")
+    {
+      if((value != "oss") && (value != "sdl") && (value != "alsa"))
+        value = "0";
+
+      theSoundDriver = value;
     }
 #ifdef DEVELOPER_SUPPORT
     else if(key == "Dmerge")

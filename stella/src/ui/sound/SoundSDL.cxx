@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.5 2002-11-13 05:01:31 bwmott Exp $
+// $Id: SoundSDL.cxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
 //============================================================================
 
 #include <SDL.h>

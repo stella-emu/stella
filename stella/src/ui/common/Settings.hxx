@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.5 2002-11-11 02:55:16 stephena Exp $
+// $Id: Settings.hxx,v 1.6 2002-11-13 16:19:20 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -93,6 +93,9 @@ class Settings
     // Indicates the width and height of the game display based on properties
     uInt32 theHeight;
     uInt32 theWidth;
+
+    // Indicates which sound driver to use at run-time
+    string theSoundDriver;
 
 #ifdef DEVELOPER_SUPPORT
     // User-modified properties

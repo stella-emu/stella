@@ -13,54 +13,55 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundX11.hxx,v 1.2 2002-11-11 22:03:00 stephena Exp $
+// $Id: Sound.hxx,v 1.4 2002-11-13 16:19:20 stephena Exp $
 //============================================================================
 
-#ifndef SOUNDX11_HXX
-#define SOUNDX11_HXX
+#ifndef SOUND_HXX
+#define SOUND_HXX
 
 #include "bspf.hxx"
 #include "MediaSrc.hxx"
 
 /**
-  This class implements a sound class for the X11 front-end.  The
-  Open Sound System (OSS) API is currently supported.
+  This class is a base class for the various sound objects.
+  It has almost no functionality, but is useful if one wishes
+  to compile Stella with no sound support whatsoever.
 
-  @author  Bradford W. Mott
-  @version $Id: SoundX11.hxx,v 1.2 2002-11-11 22:03:00 stephena Exp $
+  @author  Stephen Anthony
+  @version $Id: Sound.hxx,v 1.4 2002-11-13 16:19:20 stephena Exp $
 */
-class SoundX11
+class Sound
 {
   public:
     /**
       Create a new sound object
     */
-    SoundX11();
+    Sound();
  
     /**
       Destructor
     */
-    virtual ~SoundX11();
+    virtual ~Sound();
 
   public: 
     /**
       Closes the sound device
     */
-    void closeDevice();
+    virtual void closeDevice();
 
     /**
       Return the playback sample rate for the sound device.
     
       @return The playback sample rate
     */
-    uInt32 getSampleRate() const;
+    virtual uInt32 getSampleRate() const;
 
     /**
-      Return true iff the sound device was successfully initlaized.
+      Return true iff the sound device was successfully initialized.
 
-      @return true iff the sound device was successfully initlaized.
+      @return true iff the sound device was successfully initialized.
     */
-    bool isSuccessfullyInitialized() const;
+    virtual bool isSuccessfullyInitialized() const;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -68,7 +69,7 @@ class SoundX11
 
       @param volume The new volume for the sound device
     */
-    void setSoundVolume(uInt32 volume);
+    virtual void setSoundVolume(uInt32 volume);
 
     /**
       Update the sound device using the audio sample from the specified
@@ -76,23 +77,6 @@ class SoundX11
 
       @param mediaSource The media source to get audio samples from.
     */
-    void updateSound(MediaSource& mediaSource);
-
-  private:
-    // Indicates if the sound device was successfully initialized
-    bool myIsInitializedFlag;
-
-    // DSP file descriptor
-    int myDspFd;
-
-    // Mixer file descriptor
-    int myMixerFd;
-
-    // Original mixer volume when the sound device was opened
-    int myOriginalVolume;
-
-    // DSP sample rate
-    uInt32 mySampleRate;
+    virtual void updateSound(MediaSource& mediaSource);
 };
 #endif
-

@@ -31,4 +31,5 @@
 ;ssname     = <romname|md5sum>
 ;sssingle   = <0|1>
 ;accurate   = <0|1>
+;sound      = <0|oss|sdl>
 ;Dmerge     = <0|1>
