@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.8 2003-11-30 03:36:51 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.9 2003-11-30 22:50:15 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -114,10 +114,12 @@ bool FrameBufferGL::init()
 
   // Check which system we are running under
   x11Available = false;
+#ifdef UNIX
   SDL_VERSION(&myWMInfo.version);
   if(SDL_GetWMInfo(&myWMInfo) > 0)
     if(myWMInfo.subsystem == SDL_SYSWM_X11)
       x11Available = true;
+#endif
 
   // Get the maximum size of a window for THIS screen
   theMaxZoomLevel = maxWindowSizeForScreen();
