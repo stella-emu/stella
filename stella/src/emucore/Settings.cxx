@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.25 2004-07-09 00:27:39 stephena Exp $
+// $Id: Settings.cxx,v 1.26 2004-07-12 02:26:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -167,7 +167,7 @@ void Settings::usage()
 {
 #ifndef MAC_OSX
   cout << endl
-    << "Stella version 1.4_cvs\n\nUsage: stella [options ...] romfile" << endl
+    << "Stella version 1.4\n\nUsage: stella [options ...] romfile" << endl
     << endl
     << "Valid options are:" << endl
     << endl
