@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.27 2004-06-20 23:30:48 stephena Exp $
+// $Id: EventHandler.cxx,v 1.28 2004-07-21 00:15:08 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -405,9 +405,6 @@ void EventHandler::takeSnapshot()
     sspath = sspath + BSPF_PATH_SEPARATOR + myConsole->properties().get("Cartridge.Name");
   else if(ssname == "md5sum")
     sspath = sspath + BSPF_PATH_SEPARATOR + myConsole->properties().get("Cartridge.MD5");
-
-  // Replace all spaces in name with underscores
-  replace(sspath.begin(), sspath.end(), ' ', '_');
 
   // Check whether we want multiple snapshots created
   if(!myConsole->settings().getBool("sssingle"))

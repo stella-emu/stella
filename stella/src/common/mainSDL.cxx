@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.12 2004-07-10 13:20:25 stephena Exp $
+// $Id: mainSDL.cxx,v 1.13 2004-07-21 00:15:08 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -472,7 +472,6 @@ void handleEvents()
           {
             string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
               theConsole->properties().get("Cartridge.Name") + ".pro";
-            replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
             theConsole->saveProperties(newPropertiesFile);
           }
         }
