@@ -13,10 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.1.1.1 2001-12-27 19:54:30 bwmott Exp $
+// $Id: M6502Hi.cxx,v 1.2 2002-05-13 19:10:25 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
 
 #define debugStream cout
 
@@ -167,3 +169,100 @@ void M6502High::interruptHandler()
   myExecutionStatus &= ~(MaskableInterruptBit | NonmaskableInterruptBit);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6502High::save(Serializer& out)
+{
+  string CPU = name();
+
+  try
+  {
+    out.putString(CPU);
+
+    out.putLong(A);    // Accumulator
+    out.putLong(X);    // X index register
+    out.putLong(Y);    // Y index register
+    out.putLong(SP);   // Stack Pointer
+    out.putLong(IR);   // Instruction register
+    out.putLong(PC);   // Program Counter
+
+    out.putBool(N);     // N flag for processor status register
+    out.putBool(V);     // V flag for processor status register
+    out.putBool(B);     // B flag for processor status register
+    out.putBool(D);     // D flag for processor status register
+    out.putBool(I);     // I flag for processor status register
+    out.putBool(notZ);  // Z flag complement for processor status register
+    out.putBool(C);     // C flag for processor status register
+
+    out.putLong(myExecutionStatus);
+
+    // Indicates the number of distinct memory accesses
+    out.putLong(myNumberOfDistinctAccesses);
+    // Indicates the last address which was accessed
+    out.putLong(myLastAddress);
+
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << CPU << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6502High::load(Deserializer& in)
+{
+  string CPU = name();
+
+  try
+  {
+    if(in.getString() != CPU)
+      return false;
+
+    A = (uInt8) in.getLong();    // Accumulator
+    X = (uInt8) in.getLong();    // X index register
+    Y = (uInt8) in.getLong();    // Y index register
+    SP = (uInt8) in.getLong();   // Stack Pointer
+    IR = (uInt8) in.getLong();   // Instruction register
+    PC = (uInt16) in.getLong();  // Program Counter
+
+    N = in.getBool();     // N flag for processor status register
+    V = in.getBool();     // V flag for processor status register
+    B = in.getBool();     // B flag for processor status register
+    D = in.getBool();     // D flag for processor status register
+    I = in.getBool();     // I flag for processor status register
+    notZ = in.getBool();  // Z flag complement for processor status register
+    C = in.getBool();     // C flag for processor status register
+
+    myExecutionStatus = (uInt8) in.getLong();
+
+    // Indicates the number of distinct memory accesses
+    myNumberOfDistinctAccesses = (uInt32) in.getLong();
+    // Indicates the last address which was accessed
+    myLastAddress = (uInt16) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << CPU << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* M6502High::name() const
+{
+  return "M6502High";
+}

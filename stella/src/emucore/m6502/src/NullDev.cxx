@@ -13,10 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: NullDev.cxx,v 1.1.1.1 2001-12-27 19:54:31 bwmott Exp $
+// $Id: NullDev.cxx,v 1.2 2002-05-13 19:10:25 stephena Exp $
 //============================================================================
 
 #include "NullDev.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NullDevice::NullDevice()
@@ -58,3 +60,14 @@ void NullDevice::poke(uInt16 address, uInt8 value)
   cerr << hex << "NullDevice: poke(" << address << "," << value << ")" << endl;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool NullDevice::save(Serializer& out)
+{
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool NullDevice::load(Deserializer& in)
+{
+  return true;
+}

@@ -13,13 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Device.hxx,v 1.1.1.1 2001-12-27 19:54:29 bwmott Exp $
+// $Id: Device.hxx,v 1.2 2002-05-13 19:10:25 stephena Exp $
 //============================================================================
 
 #ifndef DEVICE_HXX
 #define DEVICE_HXX
 
 class System;
+class Serializer;
+class Deserializer;
 
 #include "bspf.hxx"
 
@@ -28,7 +30,7 @@ class System;
   based system.
 
   @author  Bradford W. Mott
-  @version $Id: Device.hxx,v 1.1.1.1 2001-12-27 19:54:29 bwmott Exp $
+  @version $Id: Device.hxx,v 1.2 2002-05-13 19:10:25 stephena Exp $
 */
 class Device
 {
@@ -70,6 +72,22 @@ class Device
       @param system The system the device should install itself in
     */
     virtual void install(System& system) = 0;
+
+    /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    virtual bool save(Serializer& out) = 0;
+
+    /**
+      Loads the current state of this device from the given Deserializer.
+
+      @param in The deserializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    virtual bool load(Deserializer& in) = 0;
 
   public:
     /**

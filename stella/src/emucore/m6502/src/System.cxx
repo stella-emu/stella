@@ -13,13 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.2 2001-12-30 18:36:02 bwmott Exp $
+// $Id: System.cxx,v 1.3 2002-05-13 19:10:25 stephena Exp $
 //============================================================================
 
 #include <assert.h>
+#include <iostream>
+
 #include "Device.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(uInt16 n, uInt16 m)
@@ -47,6 +51,10 @@ System::System(uInt16 n, uInt16 m)
   {
     setPageAccess(page, access);
   }
+
+  // Set up (de)serializer in case we are asked to save/load state
+  serializer = new Serializer();
+  deserializer = new Deserializer();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,6 +71,12 @@ System::~System()
 
   // Free my page access table
   delete[] myPageAccessTable;
+
+  // Free the serializer stuff
+  if(serializer)
+    delete serializer;
+  if(deserializer)
+    delete deserializer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +85,7 @@ void System::reset()
   // Reset system cycle counter
   resetCycles();
 
-  // Frist we reset the devices attached to myself
+  // First we reset the devices attached to myself
   for(uInt32 i = 0; i < myNumberOfDevices; ++i)
   {
     myDevices[i]->reset();
@@ -107,9 +121,59 @@ void System::attach(M6502* m6502)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool System::save(Serializer& out)
+{
+  string name = "System";
+
+  try
+  {
+    out.putString(name);
+    out.putLong(myCycles);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << name << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool System::load(Deserializer& in)
+{
+  string name = "System";
+
+  try
+  {
+    if(in.getString() != name)
+      return false;
+
+    myCycles = (uInt32) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << name << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::resetCycles()
 {
-  // Frist we let all of the device attached to me know about the reset
+  // First we let all of the device attached to me know about the reset
   for(uInt32 i = 0; i < myNumberOfDevices; ++i)
   {
     myDevices[i]->systemCyclesReset();
@@ -141,11 +205,72 @@ const System::PageAccess& System::getPageAccess(uInt16 page)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int System::saveState(string &fileName, string& md5sum)
+{
+  // Open the file as a new Serializer
+  if(!serializer->open(fileName))
+    return 2;
+
+  // Prepend the state file with the md5sum of this cartridge
+  // This is the first defensive check for an invalid state file
+  serializer->putString(md5sum);
+
+  // First save state for this system
+  if(!save(*serializer))
+    return 3;
+
+  // Next, save state for the CPU
+  if(!myM6502->save(*serializer))
+    return 3;
+
+  // Now save the state of each device
+  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+  {
+    if(!myDevices[i]->save(*serializer))
+      return 3;
+  }
+
+  serializer->close();
+  return 1;  // success
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int System::loadState(string &fileName, string& md5sum)
+{
+  // Open the file as a new Deserializer
+  if(!deserializer->open(fileName))
+    return 2;
+
+  // Look at the beginning of the state file.  It should contain the md5sum
+  // of the current cartridge.  If it doesn't, this state file is invalid.
+  if(deserializer->getString() != md5sum)
+    return 3;
+
+  // First load state for this system
+  if(!load(*deserializer))
+    return 3;
+
+  // Next, load state for the CPU
+  if(!myM6502->load(*deserializer))
+    return 3;
+
+  // Now load the state of each device
+  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+  {
+    if(!myDevices[i]->load(*deserializer))
+      return 3;
+  }
+
+  deserializer->close();
+  return 1;  // success
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(const System& s)
     : myAddressMask(s.myAddressMask),
       myPageShift(s.myPageShift),
       myPageMask(s.myPageMask),
-      myNumberOfPages(s.myNumberOfPages)
+     myNumberOfPages(s.myNumberOfPages)
 {
   assert(false);
 }
@@ -157,5 +282,3 @@ System& System::operator = (const System&)
 
   return *this;
 }
-
-
