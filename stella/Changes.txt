@@ -12,6 +12,12 @@
                                Release History
 ===============================================================================
 
+DOS 1.2 to DOS 1.2.1: (April 28, 2002)
+
+  * Fixed a bug with control keys being confused with the pause key
+
+  * Fixed a bug with the pause key causing the application to lockup
+
 1.1 to 1.2: (April 21, 2002)
 
   * Improved illegal CPU instruction support. Thrust and Qb will now operate
