@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.4 2003-11-09 23:53:19 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.4 2003-11-09 23:53:19 stephena Exp $
 */
 class FrameBuffer
 {
@@ -147,10 +147,8 @@ class FrameBuffer
       @param y   The y coordinate
       @param w   The width of the box
       @param h   The height of the box
-      @param fg  The color of the bounding sides
-      @param bg  The color of the background
     */
-    virtual void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt8 fg, uInt8 bg) = 0;
+    virtual void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
 
     /**
       This routine should be called to draw text at the specified coordinates.
@@ -158,9 +156,8 @@ class FrameBuffer
       @param x        The x coordinate
       @param y        The y coordinate
       @param message  The message text
-      @param fg       The color of the text
     */
-    virtual void drawText(uInt32 x, uInt32 y, const string& message, uInt8 fg) = 0;
+    virtual void drawText(uInt32 x, uInt32 y, const string& message) = 0;
 
     /**
       This routine should be called to draw character 'c' at the specified coordinates.
@@ -168,9 +165,8 @@ class FrameBuffer
       @param x   The x coordinate
       @param y   The y coordinate
       @param c   The character to draw
-      @param fg  The color of the character
     */
-    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c, uInt8 fg) = 0;
+    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c) = 0;
 
     /**
       This routine is called before any drawing is done (per-frame).
@@ -208,6 +204,9 @@ class FrameBuffer
     // Table of bitmapped fonts.
     static const uInt8 ourFontData[2048];
 
+    // Holds the foreground and background color table indices
+    uInt8 myFGColor, myBGColor;
+
   private:
     // Enumeration representing the different types of user interface widgets
     enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU };
@@ -234,17 +233,11 @@ class FrameBuffer
     // Draw the info menu
     void drawInfoMenu();
 
-    // Move the cursor up 1 line, possibly scrolling the list of items
-    void moveCursorUp();
+    // Move the cursor up 'amt' lines, possibly scrolling the list of items
+    void moveCursorUp(uInt32 amt);
 
-    // Move the cursor down 1 line, possibly scrolling the list of items
-    void moveCursorDown();
-
-    // Move the list up 1 page and put the cursor at the top
-    void movePageUp();
-
-    // Move the list down 1 page and put the cursor at the top
-    void movePageDown();
+    // Move the cursor down 'amt' lines, possibly scrolling the list of items
+    void moveCursorDown(uInt32 amt);
 
     // scan the mapping arrays and update the remap menu
     void loadRemapMenu();
@@ -287,14 +280,17 @@ class FrameBuffer
     bool theMenuChangedIndicator;
 
     // The maximum number of vertical lines of text that can be onscreen
-    uInt32 myMaxLines;
+    Int32 myMaxRows;
+
+    // The maximum number of characters of text in a row
+    Int32 myMaxColumns;
 
     // Keep track of current selected main menu item
     uInt32 myMainMenuIndex, myMainMenuItems;
 
     // Keep track of current selected remap menu item
-    uInt32 myRemapMenuIndex, myRemapMenuLowIndex, myRemapMenuHighIndex;
-    uInt32 myRemapMenuItems, myRemapMenuMaxLines;
+    Int32 myRemapMenuIndex, myRemapMenuLowIndex, myRemapMenuHighIndex;
+    Int32 myRemapMenuItems, myRemapMenuMaxLines;
 
     // Message timer
     Int32 myMessageTime;
@@ -303,7 +299,7 @@ class FrameBuffer
     string myMessageText;
 
     // The width of the information menu, determined by the longest string
-    uInt32 myInfoMenuWidth;
+    Int32 myInfoMenuWidth;
 
     // Holds information about the current selected ROM image
     string ourPropertiesInfo[9];

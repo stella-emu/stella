@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.2 2003-11-06 22:22:32 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.3 2003-11-09 23:53:20 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -25,15 +25,22 @@
 #include "FrameBuffer.hxx"
 #include "bspf.hxx"
 
-class Console;
-class MediaSource;
-class RectList;
+/**
+  This class is a base class for the SDL framebuffer and is derived from
+  the core FrameBuffer class.
 
+  It defines all common code shared between the software
+  and OpenGL video modes, as well as required methods defined in
+  the core FrameBuffer.
+
+  @author  Stephen Anthony
+  @version $Id: FrameBufferSDL.hxx,v 1.3 2003-11-09 23:53:20 stephena Exp $
+*/
 class FrameBufferSDL : public FrameBuffer
 {
   public:
     /**
-      Creates a new SDL software framebuffer
+      Creates a new SDL framebuffer
     */
     FrameBufferSDL();
 
@@ -42,68 +49,6 @@ class FrameBufferSDL : public FrameBuffer
     */
     virtual ~FrameBufferSDL();
 
-    /**
-      This routine should be called once the console is created to setup
-      the video system for us to use.  Return false if any operation fails,
-      otherwise return true.
-    */
-    virtual bool init();
-
-    /**
-      This routine should be called anytime the MediaSource needs to be redrawn
-      to the screen.
-    */
-    virtual void drawMediaSource();
-
-    /**
-      This routine should be called to draw a rectangular box with sides
-      at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param w   The width of the box
-      @param h   The height of the box
-      @param fg  The color of the bounding sides
-      @param bg  The color of the background
-    */
-    virtual void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt8 fg, uInt8 bg);
-
-    /**
-      This routine should be called to draw text at the specified coordinates.
-
-      @param x        The x coordinate
-      @param y        The y coordinate
-      @param message  The message text
-      @param fg       The color of the text
-    */
-    virtual void drawText(uInt32 x, uInt32 y, const string& message, uInt8 fg);
-
-    /**
-      This routine should be called to draw character 'c' at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param c   The character to draw
-      @param fg  The color of the character
-    */
-    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c, uInt8 fg);
-
-    /**
-      This routine is called before any drawing is done (per-frame).
-    */
-    virtual void preFrameUpdate();
-
-    /**
-      This routine is called after any drawing is done (per-frame).
-    */
-    virtual void postFrameUpdate();
-
-    /**
-      This routine is called when the emulation has been paused.
-
-      @param status  Toggle pause based on status
-    */
-    virtual void pause(bool status);
 
     /**
       Toggles between fullscreen and window mode.  Grabmouse and hidecursor
@@ -142,40 +87,45 @@ class FrameBufferSDL : public FrameBuffer
     uInt32 zoomLevel() { return theZoomLevel; }
 
     /**
-      This routine is called whenever the screen needs to be recreated.
-      It updates the global screen variable.
-    */
-    bool createScreen();
-
-   /**
-     Centers the game window onscreen.  Only works in X11 for now.
-   */
-    void centerScreen();
-
-    /**
       Calculate the maximum window size that the current screen can hold.
       Only works in X11 for now.  If not running under X11, always return 4.
     */
     uInt32 maxWindowSizeForScreen();
 
+    //////////////////////////////////////////////////////////////////////
+    // The following methods are derived from FrameBuffer.hxx
+    //////////////////////////////////////////////////////////////////////
+    /**
+      This routine is called when the emulation has been paused.
+
+      @param status  Toggle pause based on status
+    */
+    void pause(bool status);
+
+    //////////////////////////////////////////////////////////////////////
+    // The following methods must be defined in child classes
+    //////////////////////////////////////////////////////////////////////
+    /**
+      This routine is called whenever the screen needs to be recreated.
+      It updates the global screen variable.
+    */
+    virtual bool createScreen() = 0;
+
     /**
       Set up the palette for a screen of any depth > 8.
       Scales the palette by 'shade'.
     */
-    void setupPalette(float shade);
+    virtual void setupPalette(float shade) = 0;
 
-  private:
+  protected:
     // The SDL video buffer
     SDL_Surface* myScreen;
-
-    // Used in the dirty update of the SDL surface
-    RectList* myRectList;
 
     // SDL initialization flags
     uInt32 mySDLFlags;
 
     // SDL palette
-    Uint32 palette[256];
+    Uint32 myPalette[256];
 
     // Used to get window-manager specifics
     SDL_SysWMinfo myWMInfo;
@@ -189,9 +139,6 @@ class FrameBufferSDL : public FrameBuffer
     // Indicates the maximum zoom of the SDL screen
     uInt32 theMaxZoomLevel;
 
-    // Indicates whether the window is currently centered
-    bool isCentered;
-
     // Indicates if the mouse should be grabbed
     bool theGrabMouseIndicator;
 
@@ -200,27 +147,6 @@ class FrameBufferSDL : public FrameBuffer
 
     // Indicates whether the game is currently in fullscreen
     bool isFullscreen;
-};
-
-/**
-
- */
-class RectList
-{
-  public:
-    RectList(Uint32 size = 512);
-    ~RectList();
-
-    void add(SDL_Rect* rect);
-
-    SDL_Rect* rects();
-    Uint32 numRects();
-    void start();
-
-  private:
-    Uint32 currentSize, currentRect;
-
-    SDL_Rect* rectArray;
 };
 
 #endif

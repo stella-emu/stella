@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.1 2003-11-06 22:22:32 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.2 2003-11-09 23:53:20 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -22,20 +22,14 @@
 
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
+#include "FrameBufferSDL.hxx"
 #include "FrameBufferGL.hxx"
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL()
-   :  myScreen(0),
-      myTexture(0),
-      x11Available(false),
-      theZoomLevel(1),
-      theMaxZoomLevel(1),
-      theGrabMouseIndicator(false),
-      theHideCursorIndicator(false),
-      isFullscreen(false)
+   :  myTexture(0)
 {
 }
 
@@ -44,6 +38,61 @@ FrameBufferGL::~FrameBufferGL()
 {
   if(myTexture)
     SDL_FreeSurface(myTexture);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::createScreen()
+{
+  int w = myWidth  * theZoomLevel;
+  int h = myHeight * theZoomLevel;
+
+  myScreen = SDL_SetVideoMode(w, h, 0, mySDLFlags);
+  if(myScreen == NULL)
+  {
+    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    return false;
+  }
+
+  glPushAttrib(GL_ENABLE_BIT);
+  glViewport(0, 0, myScreen->w, myScreen->h);
+
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glLoadIdentity();
+
+  glOrtho(0.0, (GLdouble) myScreen->w/theZoomLevel,
+          (GLdouble) myScreen->h/theZoomLevel, 0.0, 0.0, 1.0);
+
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glLoadIdentity();
+
+  theRedrawEntireFrameIndicator = true;
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::setupPalette(float shade)
+{
+// FIXME - OpenGL should be able to shade the texture itself
+  const uInt32* gamePalette = myMediaSource->palette();
+  for(uInt32 i = 0; i < 256; ++i)
+  {
+    Uint8 r, g, b, a;
+
+    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
+    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
+    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
+    a = 0xff;
+
+  #if SDL_BYTEORDER == SDL_LIL_ENDIAN 
+    myPalette[i] = (a << 24) | (b << 16) | (g << 8) | r;
+  #else
+    myPalette[i] = (r << 24) | (g << 16) | (b << 8) | a;
+  #endif
+  }
+
+  theRedrawEntireFrameIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,6 +243,7 @@ void FrameBufferGL::drawMediaSource() // FIXME - maybe less copying can be done?
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
                   GL_RGBA, GL_UNSIGNED_BYTE, myTexture->pixels);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+  glColor3f(0.0, 0.0, 0.0);
 
   glBegin(GL_QUADS);
     glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
@@ -216,214 +266,14 @@ void FrameBufferGL::postFrameUpdate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::createScreen()
-{
-  int w = myWidth  * theZoomLevel;
-  int h = myHeight * theZoomLevel;
-
-  myScreen = SDL_SetVideoMode(w, h, 0, mySDLFlags);
-  if(myScreen == NULL)
-  {
-    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
-    return false;
-  }
-
-  glPushAttrib(GL_ENABLE_BIT);
-  glViewport(0, 0, myScreen->w, myScreen->h);
-
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-
-  glOrtho(0.0, (GLdouble) myScreen->w/theZoomLevel,
-          (GLdouble) myScreen->h/theZoomLevel, 0.0, 0.0, 1.0);
-
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
-
-  theRedrawEntireFrameIndicator = true;
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::setupPalette(float shade)
-{
-// FIXME - OpenGL should be able to shade the texture itself
-  const uInt32* gamePalette = myMediaSource->palette();
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b, a;
-
-    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
-    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
-    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
-    a = 0xff;
-
-  #if SDL_BYTEORDER == SDL_LIL_ENDIAN 
-    myPalette[i] = (a << 24) | (b << 16) | (g << 8) | r;
-  #else
-    myPalette[i] = (r << 24) | (g << 16) | (b << 8) | a;
-  #endif
-  }
-
-  theRedrawEntireFrameIndicator = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::pause(bool status)
-{
-  myPauseStatus = status;
-
-  // Shade the palette to 75% normal value in pause mode
-  // FIXME - this seems like cheating, we should be using OpenGL instead
-  if(myPauseStatus)
-    setupPalette(0.75);
-  else
-    setupPalette(1.0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::toggleFullscreen()
-{
-  isFullscreen = !isFullscreen;
-  if(isFullscreen)
-    mySDLFlags |= SDL_FULLSCREEN;
-  else
-    mySDLFlags &= ~SDL_FULLSCREEN;
-
-  if(!createScreen())
-    return;
-
-  if(isFullscreen)  // now in fullscreen mode
-  {
-    grabMouse(true);
-    showCursor(false);
-  }
-  else    // now in windowed mode
-  {
-    grabMouse(theGrabMouseIndicator);
-    showCursor(!theHideCursorIndicator);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::resize(int mode)
-{
-  // reset size to that given in properties
-  // this is a special case of allowing a resize while in fullscreen mode
-  if(mode == 0)
-  {
-    myWidth  = myMediaSource->width() << 1;
-    myHeight = myMediaSource->height();
-  }
-  else if(mode == 1)   // increase size
-  {
-    if(isFullscreen)
-      return;
-
-    if(theZoomLevel == theMaxZoomLevel)
-      theZoomLevel = 1;
-    else
-      theZoomLevel++;
-  }
-  else if(mode == -1)   // decrease size
-  {
-    if(isFullscreen)
-      return;
-
-    if(theZoomLevel == 1)
-      theZoomLevel = theMaxZoomLevel;
-    else
-      theZoomLevel--;
-  }
-
-  if(!createScreen())
-    return;
-
-  // Now update the settings
-  ostringstream tmp;
-  tmp << theZoomLevel;
-  myConsole->settings().set("zoom", tmp.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::showCursor(bool show)
-{
-  if(isFullscreen)
-    return;
-
-  if(show)
-    SDL_ShowCursor(SDL_ENABLE);
-  else
-    SDL_ShowCursor(SDL_DISABLE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::grabMouse(bool grab)
-{
-  if(isFullscreen)
-    return;
-
-  if(grab)
-    SDL_WM_GrabInput(SDL_GRAB_ON);
-  else
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBufferGL::maxWindowSizeForScreen()
-{
-  if(!x11Available)
-    return 1;
-
-#ifdef UNIX
-  // Otherwise, lock the screen and get the width and height
-  myWMInfo.info.x11.lock_func();
-  Display* theX11Display = myWMInfo.info.x11.display;
-  myWMInfo.info.x11.unlock_func();
-
-  int screenWidth  = DisplayWidth(theX11Display, DefaultScreen(theX11Display));
-  int screenHeight = DisplayHeight(theX11Display, DefaultScreen(theX11Display));
-
-  uInt32 multiplier = screenWidth / myWidth;
-  bool found = false;
-
-  while(!found && (multiplier > 0))
-  {
-    // Figure out the desired size of the window
-    int width  = myWidth  * multiplier;
-    int height = myHeight * multiplier;
-
-    if((width < screenWidth) && (height < screenHeight))
-      found = true;
-    else
-      multiplier--;
-  }
-
-  if(found)
-    return multiplier;
-  else
-    return 1;
-#else
-  return 1;
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-       uInt8 fg, uInt8 bg)
+void FrameBufferGL::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   // First draw the box in the background, alpha-blended
-  // We don't care about the specified bg color, since 
-  // we always want black with alpha
   glEnable(GL_BLEND);
   glColor4f(0.0, 0.0, 0.0, 0.7);
   glRecti(x, y, x+w, y+h);
 
   // Now draw the outer edges
-  // Again, we don't care about the provided fg color, since
-  // we always want a light grey with no alpha
   glDisable(GL_BLEND);
   glColor3f(0.8, 0.8, 0.8);
   glBegin(GL_LINE_LOOP);
@@ -435,8 +285,7 @@ void FrameBufferGL::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawText(uInt32 xorig, uInt32 yorig,
-       const string& message, uInt8 fg)
+void FrameBufferGL::drawText(uInt32 xorig, uInt32 yorig, const string& message)
 {
   glBindTexture(GL_TEXTURE_2D, myFontTextureID);
   glEnable(GL_BLEND);
@@ -459,7 +308,7 @@ void FrameBufferGL::drawText(uInt32 xorig, uInt32 yorig,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c, uInt8 fg)
+void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c)
 {
   if(c >= 256 )
     return;

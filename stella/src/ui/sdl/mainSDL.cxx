@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.57 2003-11-06 22:22:32 stephena Exp $
+// $Id: mainSDL.cxx,v 1.58 2003-11-09 23:53:20 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -35,18 +35,14 @@
 #include "StellaEvent.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
+#include "FrameBufferSDL.hxx"
+#include "FrameBufferSoft.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
 
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
-  // Pointer to the OpenGL display object or the null pointer
-  static FrameBufferGL* theDisplay = (FrameBufferGL*) NULL;
-#else
-  #include "FrameBufferSDL.hxx"  
-  // Pointer to the software display object or the null pointer
-  static FrameBufferSDL* theDisplay = (FrameBufferSDL*) NULL;
 #endif
 
 #ifdef SOUND_ALSA
@@ -82,6 +78,9 @@ static bool setupProperties(PropertiesSet& set);
 
 // Pointer to the console object or the null pointer
 static Console* theConsole = (Console*) NULL;
+
+// Pointer to the display object or the null pointer
+static FrameBufferSDL* theDisplay = (FrameBufferSDL*) NULL;
 
 // Pointer to the sound object or the null pointer
 static Sound* theSound = (Sound*) NULL;
@@ -704,15 +703,27 @@ int main(int argc, char* argv[])
   }
 
   // Create an SDL window
+  string videodriver = theSettings->getString("video");
+  if(videodriver == "soft")
+  {
+    theDisplay = new FrameBufferSoft();
+    if(theShowInfoFlag)
+      cout << "Using software mode for video.\n";
+  }
 #ifdef DISPLAY_OPENGL
-  theDisplay = new FrameBufferGL();
-  if(theShowInfoFlag)
-    cout << "Using OpenGL SDL for video.\n";
-#else
-  theDisplay = new FrameBufferSDL();
-  if(theShowInfoFlag)
-    cout << "Using software SDL for video.\n";
+  else if(videodriver == "gl")
+  {
+    theDisplay = new FrameBufferGL();
+    if(theShowInfoFlag)
+      cout << "Using OpenGL mode for video.\n";
+  }
 #endif
+  else   // a driver that doesn't exist was requested, so use software mode
+  {
+    theDisplay = new FrameBufferSoft();
+    if(theShowInfoFlag)
+      cout << "Using software mode for video.\n";
+  }
 
   if(!theDisplay)
   {
@@ -722,8 +733,8 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  string driver = theSettings->getString("sound");
-  if(driver == "0")
+  string sounddriver = theSettings->getString("sound");
+  if(sounddriver == "0")
   {
     // even if sound has been disabled, we still need a sound object
     theSound = new Sound();
@@ -731,7 +742,7 @@ int main(int argc, char* argv[])
       cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
-  else if(driver == "alsa")
+  else if(sounddriver == "alsa")
   {
     theSound = new SoundALSA();
     if(theShowInfoFlag)
@@ -739,7 +750,7 @@ int main(int argc, char* argv[])
   }
 #endif
 #ifdef SOUND_OSS
-  else if(driver == "oss")
+  else if(sounddriver == "oss")
   {
     theSound = new SoundOSS();
     if(theShowInfoFlag)
@@ -747,7 +758,7 @@ int main(int argc, char* argv[])
   }
 #endif
 #ifdef SOUND_SDL
-  else if(driver == "sdl")
+  else if(sounddriver == "sdl")
   {
     theSound = new SoundSDL();
     if(theShowInfoFlag)
@@ -756,7 +767,7 @@ int main(int argc, char* argv[])
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {
-    cerr << "ERROR: Sound support for " << driver << " not available.\n";
+    cerr << "ERROR: Sound support for " << sounddriver << " not available.\n";
     theSound = new Sound();
   }
 

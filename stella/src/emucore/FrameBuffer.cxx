@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.4 2003-11-09 23:53:19 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -28,8 +28,6 @@
 #include "FrameBuffer.hxx"
 
 // Eventually, these may become variables
-#define FGCOLOR    10  // A white color in NTSC and PAL mode
-#define BGCOLOR    0   // A black color in NTSC and PAL mode
 #define FONTWIDTH  8
 #define FONTHEIGHT 8
 
@@ -53,13 +51,16 @@ FrameBuffer::FrameBuffer()
       myHeight(300),
       theRedrawEntireFrameIndicator(true),
       myPauseStatus(false),
+      myFGColor(10),
+      myBGColor(0),
       myFrameRate(0),
       myCurrentWidget(W_NONE),
       myRemapEventSelectedFlag(false),
       mySelectedEvent(Event::NoType),
       myMenuMode(false),
       theMenuChangedIndicator(false),
-      myMaxLines(0),
+      myMaxRows(0),
+      myMaxColumns(0),
       myMainMenuIndex(0),
       myMainMenuItems(sizeof(ourMainMenu)/sizeof(MainMenuItem)),
       myRemapMenuIndex(0),
@@ -95,29 +96,46 @@ void FrameBuffer::initDisplay(Console* console, MediaSource* mediasrc)
   ourPropertiesInfo[7] = "MD5SUM:";
   ourPropertiesInfo[8] = myConsole->properties().get("Cartridge.MD5");
 
-  // Figure out the longest string
-  for(uInt8 i = 0; i < 9; i++)
-    if(ourPropertiesInfo[i].length() > myInfoMenuWidth)
-      myInfoMenuWidth = ourPropertiesInfo[i].length();
-
   // Get the arrays containing key and joystick mappings
   myConsole->eventHandler().getKeymapArray(&myKeyTable, &myKeyTableSize);
   myConsole->eventHandler().getJoymapArray(&myJoyTable, &myJoyTableSize);
 
   myFrameRate = myConsole->settings().getInt("framerate");
 
-  loadRemapMenu();
-
   // Now initialize the derived class
   init();
 
-  // The following has to be done after the initialization of the derived class
-  // Determine the maximum number of items that can be onscreen vertically
-  myMaxLines = myHeight / LINEOFFSET - 2;
+  // The following has to be done after the initialization of the derived class,
+  //  since we need the exact width and height of the display
+
+  // Determine the maximum number of characters that can be onscreen
+  myMaxColumns = myWidth / FONTWIDTH - 3;
+  myMaxRows    = myHeight / LINEOFFSET - 2;
+
   // Set up the correct bounds for the remap menu
-  myRemapMenuMaxLines  = myRemapMenuItems > myMaxLines ? myMaxLines : myRemapMenuItems;
+  myRemapMenuMaxLines  = myRemapMenuItems > myMaxRows ? myMaxRows : myRemapMenuItems;
   myRemapMenuLowIndex  = 0;
   myRemapMenuHighIndex = myRemapMenuMaxLines;
+
+  // Figure out the longest properties string,
+  // and cut any string that is wider than the display
+  for(uInt8 i = 0; i < 9; i++)
+  {
+    if(ourPropertiesInfo[i].length() > (uInt32) myInfoMenuWidth)
+    {
+      myInfoMenuWidth = ourPropertiesInfo[i].length();
+      if(myInfoMenuWidth > myMaxColumns)
+      {
+        myInfoMenuWidth = myMaxColumns;
+        string s = ourPropertiesInfo[i];
+        ourPropertiesInfo[i] = s.substr(0, myMaxColumns - 3) + "...";
+      }
+    }
+  }
+
+  // Finally, load the remap menu with strings,
+  // clipping any strings which are wider than the display
+  loadRemapMenu();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,8 +169,8 @@ void FrameBuffer::update()
         uInt32 y = myHeight - height - LINEOFFSET/2;
 
         // Draw the bounded box and text
-        drawBoundedBox(x, y, width, height, FGCOLOR, BGCOLOR);
-        drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText, FGCOLOR);
+        drawBoundedBox(x, y+1, width, height-2);
+        drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText);
         myMessageTime--;
 
         // Erase this message on next update
@@ -167,7 +185,6 @@ void FrameBuffer::update()
     // or the menus have changed  
     if(theMenuChangedIndicator || theRedrawEntireFrameIndicator)
     {
-cerr << "redrawing screen and menus\n";      
       drawMediaSource();
 
       // Then overlay any menu items
@@ -232,35 +249,35 @@ inline void FrameBuffer::drawMainMenu()
 
   // Draw the bounded box and text, leaving a little room for arrows
   xpos = x + XBOXOFFSET;
-  drawBoundedBox(x-2, y-2, width+3, height+3, FGCOLOR, BGCOLOR);
+  drawBoundedBox(x-2, y-2, width+3, height+3);
   for(i = 0; i < myMainMenuItems; i++)
-    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourMainMenu[i].action, FGCOLOR);
+    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourMainMenu[i].action);
 
   // Now draw the selection arrow around the currently selected item
   ypos = LINEOFFSET*myMainMenuIndex + y + YBOXOFFSET;
-  drawChar(x, ypos, LEFTARROW, FGCOLOR);
-  drawChar(x + width - FONTWIDTH, ypos, RIGHTARROW, FGCOLOR);
+  drawChar(x, ypos, LEFTARROW);
+  drawChar(x + width - FONTWIDTH, ypos, RIGHTARROW);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void FrameBuffer::drawRemapMenu()
 {
-  uInt32 x, y, width, height, i, xpos, ypos;
+  uInt32 x, y, width, height, xpos, ypos;
 
   width  = (myWidth >> 3) * FONTWIDTH - (FONTWIDTH << 1);
-  height = myMaxLines*LINEOFFSET + (FONTHEIGHT << 1);
+  height = myMaxRows*LINEOFFSET + (FONTHEIGHT << 1);
   x = (myWidth >> 1) - (width >> 1);
   y = (myHeight >> 1) - (height >> 1);
 
   // Draw the bounded box and text, leaving a little room for arrows
-  drawBoundedBox(x-2, y-2, width+3, height+3, FGCOLOR, BGCOLOR);
-  for(i = myRemapMenuLowIndex; i < myRemapMenuHighIndex; i++)
+  drawBoundedBox(x-2, y-2, width+3, height+3);
+  for(Int32 i = myRemapMenuLowIndex; i < myRemapMenuHighIndex; i++)
   {
     ypos = LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET;
-    drawText(x + XBOXOFFSET, ypos, ourRemapMenu[i].action, FGCOLOR);
+    drawText(x + XBOXOFFSET, ypos, ourRemapMenu[i].action);
 
     xpos = width - ourRemapMenu[i].key.length() * FONTWIDTH;
-    drawText(xpos, ypos, ourRemapMenu[i].key, FGCOLOR);
+    drawText(xpos, ypos, ourRemapMenu[i].key);
   }
 
   // Normally draw an arrow indicating the current line,
@@ -268,8 +285,8 @@ inline void FrameBuffer::drawRemapMenu()
   if(!myRemapEventSelectedFlag)
   {
     ypos = LINEOFFSET*(myRemapMenuIndex-myRemapMenuLowIndex) + y + YBOXOFFSET;
-    drawChar(x, ypos, LEFTARROW, FGCOLOR);
-    drawChar(x + width - FONTWIDTH, ypos, RIGHTARROW, FGCOLOR);
+    drawChar(x, ypos, LEFTARROW);
+    drawChar(x + width - FONTWIDTH, ypos, RIGHTARROW);
   }
   else
   {
@@ -277,19 +294,19 @@ inline void FrameBuffer::drawRemapMenu()
 
     // Left marker is at the beginning of event name text
     xpos = width - ourRemapMenu[myRemapMenuIndex].key.length() * FONTWIDTH - FONTWIDTH;
-    drawChar(xpos, ypos, LEFTMARKER, FGCOLOR);
+    drawChar(xpos, ypos, LEFTMARKER);
 
     // Right marker is at the end of the line
-    drawChar(x + width - FONTWIDTH, ypos, RIGHTMARKER, FGCOLOR);
+    drawChar(x + width - FONTWIDTH, ypos, RIGHTMARKER);
   }
 
   // Finally, indicate that there are more items to the top or bottom
   xpos = (width >> 1) - (FONTWIDTH >> 1);
-  if(myRemapMenuHighIndex - myMaxLines > 0)
-    drawChar(xpos, y, UPARROW, FGCOLOR);
+  if(myRemapMenuHighIndex - myMaxRows > 0)
+    drawChar(xpos, y, UPARROW);
 
-  if(myRemapMenuLowIndex + myMaxLines < myRemapMenuItems)
-    drawChar(xpos, height - (FONTWIDTH >> 1), DOWNARROW, FGCOLOR);
+  if(myRemapMenuLowIndex + myMaxRows < myRemapMenuItems)
+    drawChar(xpos, height - (FONTWIDTH >> 1), DOWNARROW);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -304,9 +321,9 @@ inline void FrameBuffer::drawInfoMenu()
 
   // Draw the bounded box and text
   xpos = x + XBOXOFFSET;
-  drawBoundedBox(x, y, width, height, FGCOLOR, BGCOLOR);
+  drawBoundedBox(x, y, width, height);
   for(i = 0; i < 9; i++)
-    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i], FGCOLOR);
+    drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,9 +342,9 @@ void FrameBuffer::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
       if(key == StellaEvent::KCODE_RETURN)
         myCurrentWidget = currentSelectedWidget();
       else if(key == StellaEvent::KCODE_UP)
-        moveCursorUp();
+        moveCursorUp(1);
       else if(key == StellaEvent::KCODE_DOWN)
-        moveCursorDown();
+        moveCursorDown(1);
 
       break;  // MAIN_MENU
 
@@ -347,13 +364,13 @@ void FrameBuffer::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
         myRemapEventSelectedFlag = true;
       }
       else if(key == StellaEvent::KCODE_UP)
-        moveCursorUp();
+        moveCursorUp(1);
       else if(key == StellaEvent::KCODE_DOWN)
-        moveCursorDown();
+        moveCursorDown(1);
       else if(key == StellaEvent::KCODE_PAGEUP)
-        movePageUp();
+        moveCursorUp(4);
       else if(key == StellaEvent::KCODE_PAGEDOWN)
-        movePageDown();
+        moveCursorDown(4);
       else if(key == StellaEvent::KCODE_ESCAPE)
       {
         myCurrentWidget = MAIN_MENU;
@@ -383,7 +400,6 @@ void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
   if(myCurrentWidget == W_NONE || state != 1)
     return;
 
-cerr << "stick = " << stick << ", button = " << code << endl;
   // Redraw the menus whenever a joy event is received
   theMenuChangedIndicator = true;
 
@@ -394,9 +410,9 @@ cerr << "stick = " << stick << ", button = " << code << endl;
 //      if(key == StellaEvent::KCODE_RETURN)
 //        myCurrentWidget = currentSelectedWidget();
       if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_UP)
-        moveCursorUp();
+        moveCursorUp(1);
       else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_DOWN)
-        moveCursorDown();
+        moveCursorDown(1);
 
       break;  // MAIN_MENU
 
@@ -407,9 +423,9 @@ cerr << "stick = " << stick << ", button = " << code << endl;
         myRemapEventSelectedFlag = false;
       }
       else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_UP)
-        moveCursorUp();
+        moveCursorUp(1);
       else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_DOWN)
-        moveCursorDown();
+        moveCursorDown(1);
 //      else if(key == StellaEvent::KCODE_PAGEUP)
 //        movePageUp();
 //      else if(key == StellaEvent::KCODE_PAGEDOWN)
@@ -452,7 +468,7 @@ Event::Type FrameBuffer::currentSelectedEvent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::moveCursorUp()
+void FrameBuffer::moveCursorUp(uInt32 amt)
 {
   switch(myCurrentWidget)
   {
@@ -463,20 +479,24 @@ void FrameBuffer::moveCursorUp()
       break;
 
     case REMAP_MENU:
-      // Since this menu will have more options than can fit it one screen,
-      // we have to implement a sliding window
-      if(myRemapMenuIndex > myRemapMenuLowIndex)
+      // First move cursor down by the given amt
+      myRemapMenuIndex -= amt;
+
+      // Move down the boundaries
+      if(myRemapMenuIndex < myRemapMenuLowIndex)
       {
-        myRemapMenuIndex--;
+        Int32 x = myRemapMenuLowIndex - myRemapMenuIndex;
+        myRemapMenuLowIndex -= x;
+        myRemapMenuHighIndex -= x;
       }
-      else if(myRemapMenuIndex == myRemapMenuLowIndex)
+
+      // Then scale back up, if necessary
+      if(myRemapMenuLowIndex < 0)
       {
-        if(myRemapMenuLowIndex > 0)
-        {
-          myRemapMenuLowIndex--;
-          myRemapMenuHighIndex--;
-          myRemapMenuIndex--;
-        }
+        Int32 x = 0 - myRemapMenuLowIndex;
+        myRemapMenuIndex += x;
+        myRemapMenuLowIndex += x;
+        myRemapMenuHighIndex += x;
       }
 
       break;
@@ -487,7 +507,7 @@ void FrameBuffer::moveCursorUp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::moveCursorDown()
+void FrameBuffer::moveCursorDown(uInt32 amt)
 {
   switch(myCurrentWidget)
   {
@@ -498,85 +518,27 @@ void FrameBuffer::moveCursorDown()
       break;
 
     case REMAP_MENU:
-      // Since this menu will have more options than can fit it one screen,
-      // we have to implement a sliding window
-      if(myRemapMenuIndex < myRemapMenuHighIndex - 1)
+      // First move cursor up by the given amount
+      myRemapMenuIndex += amt;
+
+      // Move up the boundaries
+      if(myRemapMenuIndex >= myRemapMenuHighIndex)
       {
-        myRemapMenuIndex++;
-      }
-      else if(myRemapMenuIndex == myRemapMenuHighIndex - 1)
-      {
-        if(myRemapMenuHighIndex < myRemapMenuItems)
-        {
-          myRemapMenuLowIndex++;
-          myRemapMenuHighIndex++;
-          myRemapMenuIndex++;
-        }
+        Int32 x = myRemapMenuIndex - myRemapMenuHighIndex + 1;
+
+        myRemapMenuLowIndex += x;
+        myRemapMenuHighIndex += x;
       }
 
-      break;
-
-    default:  // This should never happen
-      break;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::movePageUp()
-{
-  switch(myCurrentWidget)
-  {
-    case MAIN_MENU:
-      break;
-
-    case REMAP_MENU:
-      if(myRemapMenuLowIndex < myMaxLines)
+      // Then scale back down, if necessary
+      if(myRemapMenuHighIndex >= myRemapMenuItems)
       {
-        myRemapMenuLowIndex  = 0;
-        myRemapMenuHighIndex = myMaxLines;
+        Int32 x = myRemapMenuHighIndex - myRemapMenuItems;
+
+        myRemapMenuIndex -= x;
+        myRemapMenuLowIndex -= x;
+        myRemapMenuHighIndex -= x;
       }
-      else
-      {
-        myRemapMenuLowIndex  -= myMaxLines;
-        myRemapMenuHighIndex -= myMaxLines;
-      }
-
-      // Don't scroll the cursor if it falls within the screen
-      if(myRemapMenuIndex < myRemapMenuLowIndex ||
-         myRemapMenuIndex > myRemapMenuHighIndex-1)
-        myRemapMenuIndex = myRemapMenuHighIndex - 1;
-
-      break;
-
-    default:  // This should never happen
-      break;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::movePageDown()
-{
-  switch(myCurrentWidget)
-  {
-    case MAIN_MENU:
-      break;
-
-    case REMAP_MENU:
-      if(myRemapMenuHighIndex + myMaxLines >= myRemapMenuItems)
-      {
-        myRemapMenuHighIndex = myRemapMenuItems;
-        myRemapMenuLowIndex = myRemapMenuHighIndex - myMaxLines;
-      }
-      else
-      {
-        myRemapMenuLowIndex  += myMaxLines;
-        myRemapMenuHighIndex += myMaxLines;
-      }
-
-      // Don't scroll the cursor if it falls within the screen
-      if(myRemapMenuIndex < myRemapMenuLowIndex ||
-         myRemapMenuIndex > myRemapMenuHighIndex-1)
-        myRemapMenuIndex = myRemapMenuLowIndex;
 
       break;
 
@@ -589,7 +551,7 @@ void FrameBuffer::movePageDown()
 void FrameBuffer::loadRemapMenu()
 {
   // Fill the remap menu with the current key and joystick mappings
-  for(uInt32 i = 0; i < myRemapMenuItems; ++i)
+  for(Int32 i = 0; i < myRemapMenuItems; ++i)
   {
     Event::Type event = ourRemapMenu[i].event;
     ourRemapMenu[i].key = "None";
@@ -643,7 +605,17 @@ void FrameBuffer::loadRemapMenu()
     }
 
     if(key != "")
-      ourRemapMenu[i].key = key;
+    {
+      // 19 is the max size of the event names, and 2 is for the space in between
+      // (this could probably be cleaner ...)
+      uInt32 len = myMaxColumns - 19 - 2;
+      if(key.length() > len)
+      {
+        ourRemapMenu[i].key = key.substr(0, len - 3) + "...";
+      }
+      else
+        ourRemapMenu[i].key = key;
+    }
   }
 }
 

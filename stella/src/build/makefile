@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.44 2003-11-06 22:22:32 stephena Exp $
+## $Id: makefile,v 1.45 2003-11-09 23:53:19 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -34,7 +34,7 @@ SOUND_OSS  = 1
 #SOUND_SDL  = 1
 
 ### to include OpenGL video support (SDL)
-DISPLAY_OPENGL = 0
+# OPENGL_SUPPORT = 1
 
 ### to include joystick support (SDL)
 # JOYSTICK_SUPPORT = 1
@@ -140,14 +140,10 @@ ifeq ($(SOUND_ALSA), 1)
   LIBS.SDL += -lasound
 endif
 
-ifeq ($(DISPLAY_OPENGL), 1)
+ifeq ($(OPENGL_SUPPORT), 1)
   OPTS.SDL += -DDISPLAY_OPENGL=1
   OBJS.SDL += FrameBufferGL.o
   LIBS.SDL += -lGL -lGLU
-endif
-
-ifeq ($(DISPLAY_OPENGL), 0)
-  OBJS.SDL += FrameBufferSDL.o
 endif
 
 
@@ -185,7 +181,7 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SettingsUNIX.o" \
+          OBJS="mainSDL.o SettingsUNIX.o FrameBufferSDL.o FrameBufferSoft.o" \
           OBJS+="$(OBJS.SDL)"
 
 ###############################################################################
@@ -402,6 +398,9 @@ RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 
 FrameBufferSDL.o: $(UI)/sdl/FrameBufferSDL.cxx $(UI)/sdl/FrameBufferSDL.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferSDL.cxx
+
+FrameBufferSoft.o: $(UI)/sdl/FrameBufferSoft.cxx $(UI)/sdl/FrameBufferSoft.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferSoft.cxx
 
 FrameBufferGL.o: $(UI)/sdl/FrameBufferGL.cxx $(UI)/sdl/FrameBufferGL.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferGL.cxx

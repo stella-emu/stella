@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.2 2003-11-06 22:22:32 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.3 2003-11-09 23:53:20 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -62,20 +62,21 @@ SettingsUNIX::SettingsUNIX()
   myStateFile    = "";
 
   // Now create UNIX specific settings
+  set("video", "soft");
 #ifdef DISPLAY_OPENGL
   set("gl_filter", "nearest");
 #endif
+  set("sound", "oss");
+  set("fullscreen", "false");
+  set("grabmouse", "false");
+  set("hidecursor", "false");
+  set("volume", "-1");
+  set("accurate", "true");
 #ifdef SNAPSHOT_SUPPORT
   set("ssname", "romname");
   set("ssdir", "./");
   set("ssingle", "false");
 #endif
-  set("fullscreen", "false");
-  set("grabmouse", "false");
-  set("hidecursor", "false");
-  set("accurate", "true");
-  set("volume", "-1");
-  set("sound", "oss");
   set("joyleft", "0");
   set("joyright", "1");
 }
@@ -93,22 +94,26 @@ void SettingsUNIX::usage(string& message)
     << endl
     << "Valid options are:" << endl
     << endl
+    << "  -video      <type>         Type is one of the following:\n"
+    << "               soft            SDL software mode\n"
 #ifdef DISPLAY_OPENGL
+    << "               gl              SDL OpenGL mode\n"
+    << endl
     << "  -gl_filter  <type>         Type is one of the following:\n"
     << "               nearest         Normal scaling (GL_NEAREST)\n"
     << "               linear          Blurred scaling (GL_LINEAR)\n"
     << endl
 #endif
-    << "  -sound      <type>          Type is one of the following:\n"
-    << "               0                Disables all sound generation\n"
+    << "  -sound      <type>         Type is one of the following:\n"
+    << "               0               Disables all sound generation\n"
   #ifdef SOUND_ALSA
-    << "               alsa             ALSA version 0.9 driver\n"
+    << "               alsa            ALSA version 0.9 driver\n"
   #endif
   #ifdef SOUND_OSS
-    << "               oss              Open Sound System driver\n"
+    << "               oss             Open Sound System driver\n"
   #endif
   #ifdef SOUND_SDL
-    << "               SDL              Native SDL driver\n"
+    << "               sdl             Native SDL driver\n"
   #endif
     << endl
     << "  -framerate  <number>       Display the given number of frames per second\n"
@@ -116,7 +121,6 @@ void SettingsUNIX::usage(string& message)
     << "  -fullscreen <0|1>          Play the game in fullscreen mode\n"
     << "  -grabmouse  <0|1>          Keeps the mouse in the game window\n"
     << "  -hidecursor <0|1>          Hides the mouse cursor in the game window\n"
-    << "  -center     <0|1>          Centers the game window onscreen\n"
     << "  -volume     <number>       Set the volume (0 - 100)\n"
 #ifdef HAVE_JOYSTICK
     << "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate\n"

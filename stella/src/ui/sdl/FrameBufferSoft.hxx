@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.2 2003-11-09 23:53:20 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.1 2003-11-09 23:53:20 stephena Exp $
 //============================================================================
 
-#ifndef FRAMEBUFFER_GL_HXX
-#define FRAMEBUFFER_GL_HXX
+#ifndef FRAMEBUFFER_SOFT_HXX
+#define FRAMEBUFFER_SOFT_HXX
 
 #include <SDL.h>
-#include <SDL_opengl.h>
 #include <SDL_syswm.h>
 
 #include "FrameBuffer.hxx"
@@ -29,25 +28,27 @@
 
 class Console;
 class MediaSource;
+class RectList;
+
 
 /**
-  This class implements an SDL OpenGL framebuffer.
+  This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.2 2003-11-09 23:53:20 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.1 2003-11-09 23:53:20 stephena Exp $
 */
-class FrameBufferGL : public FrameBufferSDL
+class FrameBufferSoft : public FrameBufferSDL
 {
   public:
     /**
-      Creates a new SDL OpenGL framebuffer
+      Creates a new SDL software framebuffer
     */
-    FrameBufferGL();
+    FrameBufferSoft();
 
     /**
       Destructor
     */
-    virtual ~FrameBufferGL();
+    virtual ~FrameBufferSoft();
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBufferSDL.hxx
@@ -120,41 +121,29 @@ class FrameBufferGL : public FrameBufferSDL
     virtual void postFrameUpdate();
 
   private:
+    // Used in the dirty update of the SDL surface
+    RectList* myRectList;
+};
 
-    bool createTextures();
+/**
 
-    uInt32 power_of_two(uInt32 input)
-    {
-      uInt32 value = 1;
-      while( value < input )
-        value <<= 1;
-      return value;
-    }
+ */
+class RectList
+{
+  public:
+    RectList(Uint32 size = 512);
+    ~RectList();
+
+    void add(SDL_Rect* rect);
+
+    SDL_Rect* rects();
+    Uint32 numRects();
+    void start();
 
   private:
-    // The main texture buffer
-    SDL_Surface* myTexture;
+    Uint32 currentSize, currentRect;
 
-    // The OpenGL main texture handle
-    GLuint myTextureID;
-
-    // OpenGL texture coordinates for the main surface
-    GLfloat myTexCoord[4];
-
-    // The OpenGL font texture handle
-    GLuint myFontTextureID;
-
-    // Structure to hold a characters coordinates
-    struct Coordinates
-    {
-      GLfloat minX;
-      GLfloat maxX;
-      GLfloat minY;
-      GLfloat maxY;
-    };
-
-    // OpenGL texture coordinates for the font surface
-    Coordinates myFontCoord[256];
+    SDL_Rect* rectArray;
 };
 
 #endif
