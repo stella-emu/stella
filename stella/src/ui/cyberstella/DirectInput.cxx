@@ -1,19 +1,34 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/13/2000
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
+// Copyright (c) 1995-1999 by Bradford W. Mott
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: DirectInput.cxx,v 1.2 2003-11-11 18:55:39 stephena Exp $
+//============================================================================
 
 #define DIRECTINPUT_VERSION 0x700
 
 #include "pch.hxx"
-#include "DirectInput.hxx"
 #include "resource.h"
 
+#include "DirectInput.hxx"
+
+
 //
-// CDirectInput
+// DirectInput
 //
 
-CDirectInput::CDirectInput(HWND hwnd, DWORD dwDevType, int nButtonCount)
+DirectInput::DirectInput(HWND hwnd, DWORD dwDevType, int nButtonCount)
          : m_hwnd( hwnd )
          , m_piDID(NULL)
          , m_piDI(NULL)
@@ -24,22 +39,22 @@ CDirectInput::CDirectInput(HWND hwnd, DWORD dwDevType, int nButtonCount)
          , m_lY(0)
          , m_fInitialized( FALSE )
 {
-	TRACE("CDirectInput::CDirectInput");
+	TRACE("DirectInput::DirectInput");
 }
 
-CDirectInput::~CDirectInput(
+DirectInput::~DirectInput(
     )
 {
-	TRACE("CDirectInput::~CDirectInput");
+	TRACE("DirectInput::~DirectInput");
 
 	Cleanup();
 }
 
-HRESULT CDirectInput::Initialize(
+HRESULT DirectInput::Initialize(
     void
     )
 {
-    TRACE("CDirectInput::Initialize");
+    TRACE("DirectInput::Initialize");
 
     HINSTANCE hInstance = (HINSTANCE)::GetWindowLong( m_hwnd, GWL_HINSTANCE );
 
@@ -142,11 +157,11 @@ cleanup:
     return hr;
 }
 
-void CDirectInput::Cleanup(
+void DirectInput::Cleanup(
     void
     )
 {
-	TRACE("CDirectInput::Cleanup");
+	TRACE("DirectInput::Cleanup");
 
 	delete[] m_pButtons;
 
@@ -166,13 +181,13 @@ void CDirectInput::Cleanup(
     m_fInitialized = FALSE;
 }
 
-BOOL CALLBACK CDirectInput::EnumDevicesProc
+BOOL CALLBACK DirectInput::EnumDevicesProc
 (
 	const DIDEVICEINSTANCE* lpddi, 
 	LPVOID pvRef
 )
 {
-	CDirectInput* pThis = (CDirectInput*)pvRef;
+	DirectInput* pThis = (DirectInput*)pvRef;
 	ASSERT(pThis);
 
 	const DIDATAFORMAT* pdidf = NULL;
@@ -240,7 +255,7 @@ BOOL CALLBACK CDirectInput::EnumDevicesProc
 	return DIENUM_STOP;
 }
 
-BOOL CDirectInput::IsButtonPressed
+BOOL DirectInput::IsButtonPressed
 (
 	int nButton
 ) const
@@ -256,15 +271,15 @@ BOOL CDirectInput::IsButtonPressed
 
 // ---------------------------------------------------------------------------
 
-CDirectKeyboard::CDirectKeyboard(
+DirectKeyboard::DirectKeyboard(
 	HWND hwnd
     ) : \
-	CDirectInput( hwnd, DIDEVTYPE_KEYBOARD, 256 )
+	DirectInput( hwnd, DIDEVTYPE_KEYBOARD, 256 )
 {
-	TRACE( "CDirectKeyboard::CDirectKeyboard" );
+	TRACE( "DirectKeyboard::DirectKeyboard" );
 }
 
-HRESULT CDirectKeyboard::Update(
+HRESULT DirectKeyboard::Update(
     void
     )
 {
@@ -299,23 +314,23 @@ HRESULT CDirectKeyboard::Update(
 
 // ---------------------------------------------------------------------------
 
-CDirectJoystick::CDirectJoystick(
+DirectJoystick::DirectJoystick(
 	HWND hwnd
     ) : \
-	CDirectInput( hwnd, DIDEVTYPE_JOYSTICK, 32 )
+	DirectInput( hwnd, DIDEVTYPE_JOYSTICK, 32 )
 {
-	TRACE( "CDirectJoystick::CDirectJoystick" );
+	TRACE( "DirectJoystick::DirectJoystick" );
 }
 
-HRESULT CDirectJoystick::Initialize(
+HRESULT DirectJoystick::Initialize(
     void
     )
 {
-    TRACE( "CDirectJoystick::Initialize" );
+    TRACE( "DirectJoystick::Initialize" );
 
     HRESULT hr;
 
-    hr = CDirectInput::Initialize();
+    hr = DirectInput::Initialize();
     if ( FAILED(hr) )
     {
         return hr;
@@ -392,7 +407,7 @@ HRESULT CDirectJoystick::Initialize(
     return S_OK;
 }
 
-HRESULT CDirectJoystick::Update(
+HRESULT DirectJoystick::Update(
     void
     )
 {
@@ -442,7 +457,7 @@ HRESULT CDirectJoystick::Update(
 CDisabledJoystick::CDisabledJoystick(
 	HWND hwnd
     ) : \
-    CDirectInput( NULL, 0, 0 )
+    DirectInput( NULL, 0, 0 )
 {
     UNUSED_ALWAYS( hwnd );
 
@@ -458,15 +473,15 @@ HRESULT CDisabledJoystick::Update(
 
 // ---------------------------------------------------------------------------
 
-CDirectMouse::CDirectMouse(
+DirectMouse::DirectMouse(
 	HWND hwnd
     ) : \
-	CDirectInput( hwnd, DIDEVTYPE_MOUSE, 4 )
+	DirectInput( hwnd, DIDEVTYPE_MOUSE, 4 )
 {
-	TRACE( "CDirectMouse::CDirectMouse" );
+	TRACE( "DirectMouse::DirectMouse" );
 }
 
-HRESULT CDirectMouse::Update(
+HRESULT DirectMouse::Update(
     void
     )
 {

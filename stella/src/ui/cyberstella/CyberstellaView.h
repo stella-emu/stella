@@ -11,8 +11,7 @@
 
 #include "GlobalData.hxx"
 #include "PropsSet.hxx"
-#include "Sound.hxx"
-#include "Settings.hxx"
+#include "SettingsWin32.hxx"
 #include "GameList.h"
 
 class CCyberstellaView : public CFormView
@@ -66,8 +65,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-    // methods
-    void togglePause();
     void playRom(LONG gameID = NULL);
 
     LRESULT initialize(WPARAM wParam, LPARAM lParam);
@@ -75,10 +72,8 @@ private:
     LRESULT updateListInfos(WPARAM wParam, LPARAM lParam);
 
     // members
-    PropertiesSet* m_pPropertiesSet;
-    Sound* pSound;
-    Settings* pSettings;
-    bool m_bIsPause;
+    PropertiesSet* thePropertiesSet;
+    SettingsWin32* theSettings;
 };
 
 #ifndef _DEBUG  // debug version in CyberstellaView.cpp

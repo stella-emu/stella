@@ -8,6 +8,7 @@
 #include "CyberstellaView.h"
 #include "StellaConfig.h"
 #include "Console.hxx"
+#include "MainWin32.hxx"
 #include "SoundWin32.hxx"
 #include "SettingsWin32.hxx"
 
@@ -20,7 +21,7 @@ static char THIS_FILE[] = __FILE__;
 //
 // Undefining USE_FS will use the (untested) windowed mode
 //
-
+/*
 #define USE_FS
 
 #ifdef USE_FS
@@ -31,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 
 #define FORCED_VIDEO_CX 640
 #define FORCED_VIDEO_CY 480
-
+*/
 /////////////////////////////////////////////////////////////////////////////
 // CCyberstellaView
 
@@ -57,15 +58,46 @@ CCyberstellaView::CCyberstellaView()
 	//{{AFX_DATA_INIT(CCyberstellaView)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-    m_pGlobalData = new CGlobalData(GetModuleHandle(NULL));
-    m_bIsPause = false;
-    m_pPropertiesSet = NULL;
+
+  // FIXME - get rid of this
+  m_pGlobalData = new CGlobalData(GetModuleHandle(NULL));
+
+  // Create SettingsWin32 object
+  // This should be done before any other xxxWin32 objects are created
+  theSettings = new SettingsWin32();
+  theSettings->loadConfig();
+
+  // Create a properties set for us to use
+  thePropertiesSet = new PropertiesSet();
+
+  // Try to load the file stella.pro file
+  string filename("stella.pro"); // FIXME look into settings to get path
+    
+  // See if we can open the file and load properties from it
+  ifstream stream(filename.c_str()); 
+  if(stream)
+  {
+    // File was opened so load properties from it
+    stream.close();
+    thePropertiesSet->load(filename, &Console::defaultProperties());
+  }
+  else
+  {
+    thePropertiesSet->load("", &Console::defaultProperties());
+    MessageBox("stella.pro not found in working directory!", "Warning!", MB_OK|MB_ICONEXCLAMATION);
+  }
 }
 
 CCyberstellaView::~CCyberstellaView()
 {
-    if(m_pGlobalData) delete m_pGlobalData;
-    if(m_pPropertiesSet) delete m_pPropertiesSet;
+  if(m_pGlobalData)
+    delete m_pGlobalData;
+
+  if(thePropertiesSet)
+    delete thePropertiesSet;
+
+  if(theSettings)
+    delete theSettings;
 }
 
 void CCyberstellaView::DoDataExchange(CDataExchange* pDX)
@@ -126,156 +158,94 @@ void CCyberstellaView::OnPlay()
     playRom();
 }
 
-//  Toggles pausing of the emulator
-void CCyberstellaView::togglePause()
-{
-    m_bIsPause = !m_bIsPause;
-
-    //TODO: theConsole->mediaSource().pause(m_bIsPause);
-}
-
 LRESULT CCyberstellaView::initialize(WPARAM wParam, LPARAM lParam)
 {
-    // Create a properties set for us to use
-    m_pPropertiesSet = new PropertiesSet(); 
+  // Set up the image list.
+  HICON hFolder, hAtari;
 
-    // Create SettingsWin32 object
-    pSettings = new SettingsWin32();
-    pSettings->loadConfig();
+  m_imglist.Create( 16, 16, ILC_COLOR16 | ILC_MASK, 4, 1 );
 
-	// Set up the image list.
-    HICON hFolder, hAtari;
+  hFolder = reinterpret_cast<HICON>(
+              ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_FOLDER),
+                            IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
+  hAtari = reinterpret_cast<HICON>(
+              ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME),
+                            IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
 
-    m_imglist.Create ( 16, 16, ILC_COLOR16 | ILC_MASK, 4, 1 );
+  m_imglist.Add (hFolder);
+  m_imglist.Add (hAtari);
 
-    hFolder = reinterpret_cast<HICON>(
-                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_FOLDER),
-                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
-    hAtari = reinterpret_cast<HICON>(
-                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME),
-                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
+  m_List.SetImageList (&m_imglist, LVSIL_SMALL);
 
-    m_imglist.Add (hFolder);
-    m_imglist.Add (hAtari);
+  // Init ListCtrl
+  m_List.init(thePropertiesSet,this);
+  m_List.populateRomList();
 
-    m_List.SetImageList (&m_imglist, LVSIL_SMALL);
-
-    // Init ListCtrl
-    m_List.init(m_pPropertiesSet,this);
-
-    // Try to load the file stella.pro file
-    string filename("stella.pro");
-    
-    // See if we can open the file and load properties from it
-    ifstream stream(filename.c_str()); 
-    if(stream)
-    {
-        // File was opened so load properties from it
-        stream.close();
-        m_pPropertiesSet->load(filename, &Console::defaultProperties());
-    }
-    else
-    {
-        m_pPropertiesSet->load("", &Console::defaultProperties());
-        MessageBox("stella.pro not found in working directory!", "Warning!", MB_OK|MB_ICONEXCLAMATION);
-    }
-
-    m_List.populateRomList();
-
-    return 0;
+  return 0;
 }
 
 void CCyberstellaView::OnDestroy() 
 {
-	CFormView::OnDestroy();
-    m_List.deleteItemsAndProperties();
+  CFormView::OnDestroy();
+  m_List.deleteItemsAndProperties();
 }
 
 LRESULT CCyberstellaView::updateListInfos(WPARAM wParam, LPARAM lParam)
 {
-    // Show status text
-    CString status;
-    status.Format(IDS_STATUSTEXT, m_List.getRomCount());
-    SetDlgItemText(IDC_ROMCOUNT,status);
+  // Show status text
+  CString status;
+  status.Format(IDS_STATUSTEXT, m_List.getRomCount());
+  SetDlgItemText(IDC_ROMCOUNT,status);
 
-    // Show rom path
-    SetDlgItemText(IDC_ROMPATH, m_List.getPath());
-    return 0;
+  // Show rom path
+  SetDlgItemText(IDC_ROMPATH, m_List.getPath());
+
+  return 0;
 }
 
 LRESULT CCyberstellaView::displayNote(WPARAM wParam, LPARAM lParam)
 {
+  // Show rom path
+  CString note;
+  note.Format(IDS_NOTETEXT, m_List.getCurrentNote());
+  ((CMainFrame*)AfxGetMainWnd())->setStatusText(note);
 
-    // Show rom path
-    CString note;
-    note.Format(IDS_NOTETEXT, m_List.getCurrentNote());
-    ((CMainFrame*)AfxGetMainWnd())->setStatusText(note);
-    return 0;    
+  return 0;    
 }
 
 void CCyberstellaView::playRom(LONG gameID)
 {
-    
-    EnableWindow(FALSE);
+  EnableWindow(FALSE);
 
-#ifdef USE_FS
-    CDirectXFullScreen* pwnd = NULL;
-#else
-    CDirectXWindow* pwnd = NULL;
-#endif
+  CString fileName;
+  BYTE* pImage = NULL;
+  LPCTSTR pszFileName = NULL;
+  DWORD dwImageSize;
+  DWORD dwActualSize;
 
-    CString fileName;
-    BYTE* pImage = NULL;
-    LPCTSTR pszFileName = NULL;
-    DWORD dwImageSize;
-    DWORD dwActualSize;
-    Console* pConsole = NULL;
+  fileName = m_List.getCurrentFile();
+  if(fileName.GetLength() <= 0)
+    return;
 
-    // Create Sound driver object
-    // (Will be initialized once we have a window handle below)
-    if(m_pGlobalData->bNoSound)
-    {
-        TRACE("Creating Sound driver");
-        pSound = new Sound();
-    }
-    else
-    {
-        TRACE("Creating SoundWin32 driver");
-        pSound = new SoundWin32();
-    }
-    if ( pSound == NULL )
-    {
-        goto exit;
-    }
+  // Load the rom file
+  HANDLE hFile;
+  hFile = ::CreateFile( fileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
+  if(hFile == INVALID_HANDLE_VALUE)
+  {
+    DWORD dwLastError = ::GetLastError();
 
-    fileName = m_List.getCurrentFile();
+    TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
+    ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
 
-    // Safety Bail Out
-    if(fileName.GetLength() <= 0)
-      return;
+    // ::MessageBoxFromGetLastError( pszPathName );
+    TCHAR pszFormat[ 1024 ];
+    LoadString(GetModuleHandle(NULL), IDS_ROM_LOAD_FAILED, pszFormat, 1023 );
 
-    // Load the rom file
-    HANDLE hFile;
-    hFile = ::CreateFile( fileName, GENERIC_READ, FILE_SHARE_READ, NULL,
-                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+    LPTSTR pszLastError = NULL;
 
-    if(hFile == INVALID_HANDLE_VALUE)
-    {
-        DWORD dwLastError = ::GetLastError();
-
-        TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
-        ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
-
-        // ::MessageBoxFromGetLastError( pszPathName );
-        TCHAR pszFormat[ 1024 ];
-        LoadString(GetModuleHandle(NULL),
-                    IDS_ROM_LOAD_FAILED,
-                    pszFormat, 1023 );
-
-        LPTSTR pszLastError = NULL;
-
-        FormatMessage(
+    FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
             NULL, 
             dwLastError, 
@@ -284,65 +254,85 @@ void CCyberstellaView::playRom(LONG gameID)
             0, 
             NULL);
 
-        TCHAR pszError[ 1024 ];
-        wsprintf( pszError, 
-                  pszFormat, 
-                  pszCurrentDirectory,
-                  fileName, 
-                  dwLastError,
-                  pszLastError );
+    TCHAR pszError[ 1024 ];
+    wsprintf( pszError, 
+              pszFormat, 
+              pszCurrentDirectory,
+              fileName, 
+              dwLastError,
+              pszLastError );
 
-        ::MessageBox( *this, 
-                      pszError, 
-                      _T("Error"),
-                      MB_OK | MB_ICONEXCLAMATION );
+    ::MessageBox( *this, 
+                  pszError, 
+                  _T("Error"),
+                  MB_OK | MB_ICONEXCLAMATION );
 
-        ::LocalFree( pszLastError );
+    ::LocalFree( pszLastError );
+    return;
+  }
 
-        goto exit;
-    }
+  dwImageSize = ::GetFileSize( hFile, NULL );
 
-    dwImageSize = ::GetFileSize( hFile, NULL );
+  pImage = new BYTE[dwImageSize + 1];
+  if(pImage == NULL)
+    return;
 
-    pImage = new BYTE[dwImageSize + 1];
-    if ( pImage == NULL )
-        goto exit;
+  if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
+  {
+    VERIFY( ::CloseHandle( hFile ) );
+    MessageBoxFromGetLastError(fileName);
+    delete pImage;
+    return;
+  }
 
-    if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
-    {
-        VERIFY( ::CloseHandle( hFile ) );
+  VERIFY( ::CloseHandle(hFile) );
 
-        MessageBoxFromGetLastError(fileName);
+  // get just the filename
+  pszFileName = _tcsrchr( fileName, _T('\\') );
+  if ( pszFileName )
+  {
+    ++pszFileName;
+  }
+  else
+  {
+    pszFileName = fileName;
+  }
 
-        goto exit;
-    }
+//::MessageBox(*this, "got here", _T("Error"), MB_OK | MB_ICONEXCLAMATION );
 
-    VERIFY( ::CloseHandle(hFile) );
+  ::ShowWindow( *this, SW_HIDE );
 
-    // get just the filename
-    pszFileName = _tcsrchr( fileName, _T('\\') );
-    if ( pszFileName )
-    {
-        ++pszFileName;
-    }
-    else
-    {
-        pszFileName = fileName;
-    }
+  // Create a new main instance for this cartridge
+  MainWin32* mainWin32 = new MainWin32(pImage, dwActualSize, pszFileName,
+                          *theSettings, *thePropertiesSet);
+  // And start the main emulation loop
+  mainWin32->run();
 
-    try
-    {
-        // If this throws an exception, then it's probably a bad cartridge
-        pConsole = new Console( pImage, dwActualSize, pszFileName, *pSettings,
-                                *m_pPropertiesSet, 31400 );
-        if ( pConsole == NULL )
-            goto exit;
-    }
+  ::ShowWindow( *this, SW_SHOW );
+  
+  delete pImage;
+  delete mainWin32;
+
+  EnableWindow(TRUE);
+
+  // Set focus back to the rom list
+  m_List.SetFocus();
+}
+
+#if 0 // MainWin32
+  try
+  {
+    // If this throws an exception, then it's probably a bad cartridge
+    pConsole = new Console( pImage, dwActualSize, pszFileName, *pSettings,
+                            *thePropertiesSet, 31400 );
+    if ( pConsole == NULL )
+      goto exit;
+  }
     catch (...)
     {
 
-        ::MessageBox(GetModuleHandle(NULL),
-            NULL, IDS_CANTSTARTCONSOLE);
+        // FIXME ::MessageBox(GetModuleHandle(NULL),
+           // NULL, IDS_CANTSTARTCONSOLE);
 
         goto exit;
     }
@@ -389,23 +379,4 @@ void CCyberstellaView::playRom(LONG gameID)
         TRACE( "Sndwin32 Initialize failed, err = %X", hr );
       }
     }
-
-    ::ShowWindow( *this, SW_HIDE );
-
-    (void)pwnd->Run();
-
-    ::ShowWindow( *this, SW_SHOW );
-
-exit:
-    delete pwnd;
-    delete pConsole;
-    delete pSound;
-
-    if(pImage)
-      delete pImage;
-
-    EnableWindow(TRUE);
-
-    // Set focus back to the rom list
-    m_List.SetFocus();
-}
+#endif

@@ -13,17 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.hxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+// $Id: DirectInput.hxx,v 1.3 2003-11-11 18:55:39 stephena Exp $
 //============================================================================
 
 #ifndef DIRECT_INPUT_HXX
 #define DIRECT_INPUT_HXX
 
-class CDirectInput
+#include "dinput.h"
+
+class DirectInput
 {
   public:
-	CDirectInput( HWND hwnd, DWORD dwDevType, int nButtonCount );
-	virtual ~CDirectInput( );
+	DirectInput( HWND hwnd, DWORD dwDevType, int nButtonCount );
+	virtual ~DirectInput( );
 
   public:
 	virtual HRESULT Initialize( void );
@@ -62,12 +64,12 @@ private:
 
     BOOL m_fInitialized;
 
-	CDirectInput( const CDirectInput& );  // no implementation
-	void operator=( const CDirectInput& );  // no implementation
+	DirectInput( const DirectInput& );  // no implementation
+	void operator=( const DirectInput& );  // no implementation
 
 };
 
-inline int CDirectInput::GetButtonCount(
+inline int DirectInput::GetButtonCount(
 	void
     ) const
 {
@@ -75,7 +77,7 @@ inline int CDirectInput::GetButtonCount(
 }
 
 
-inline IDirectInputDevice2* CDirectInput::GetDevice(
+inline IDirectInputDevice2* DirectInput::GetDevice(
 	void
     ) const
 {
@@ -84,7 +86,7 @@ inline IDirectInputDevice2* CDirectInput::GetDevice(
 	return m_piDID;
 }
 
-inline void CDirectInput::GetPos(
+inline void DirectInput::GetPos(
 	LONG* pX,
 	LONG* pY
     ) const
@@ -103,41 +105,41 @@ inline void CDirectInput::GetPos(
 
 // ---------------------------------------------------------------------------
 
-class CDirectMouse : public CDirectInput
+class DirectMouse : public DirectInput
 {
 public:
 
-	CDirectMouse( HWND hwnd );
+	DirectMouse( HWND hwnd );
 
 	HRESULT Update( void );
 
 private:
 
-	CDirectMouse( const CDirectMouse& );  // no implementation
-	void operator=( const CDirectMouse& );  // no implementation
+	DirectMouse( const DirectMouse& );  // no implementation
+	void operator=( const DirectMouse& );  // no implementation
 
 };
 
 
 // ---------------------------------------------------------------------------
 
-class CDirectJoystick : public CDirectInput
+class DirectJoystick : public DirectInput
 {
 public:
 
-	CDirectJoystick( HWND hwnd );
+	DirectJoystick( HWND hwnd );
 
     HRESULT Initialize( void );
 	HRESULT Update( void );
 
 private:
 
-	CDirectJoystick( const CDirectJoystick& );  // no implementation
-	void operator=( const CDirectJoystick& );  // no implementation
+	DirectJoystick( const DirectJoystick& );  // no implementation
+	void operator=( const DirectJoystick& );  // no implementation
 
 };
 
-class CDisabledJoystick : public CDirectInput
+class CDisabledJoystick : public DirectInput
 {
 public:
 
@@ -154,18 +156,18 @@ private:
 
 // ---------------------------------------------------------------------------
 
-class CDirectKeyboard : public CDirectInput
+class DirectKeyboard : public DirectInput
 {
 public:
 
-	CDirectKeyboard( HWND hwnd );
+	DirectKeyboard( HWND hwnd );
 
 	HRESULT Update( void );
 
 private:
 
-	CDirectKeyboard( const CDirectKeyboard& );  // no implementation
-	void operator=( const CDirectKeyboard& );  // no implementation
+	DirectKeyboard( const DirectKeyboard& );  // no implementation
+	void operator=( const DirectKeyboard& );  // no implementation
 
 };
 
