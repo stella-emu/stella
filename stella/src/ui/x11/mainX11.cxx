@@ -13,14 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.28 2002-10-09 04:38:12 bwmott Exp $
+// $Id: mainX11.cxx,v 1.29 2002-11-10 19:18:35 stephena Exp $
 //============================================================================
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <algorithm>
-#include <stdio.h>
+
 #include <time.h>
 #include <unistd.h>
 #include <signal.h>
@@ -283,11 +284,10 @@ bool setupDisplay()
   hints.min_height = hints.max_height = hints.height = height;
 
   // Set window and icon name, size hints and other properties 
-  char name[512];
-  sprintf(name, "Stella: \"%s\"", 
-      theConsole->properties().get("Cartridge.Name").c_str());
-  XmbSetWMProperties(theDisplay, theWindow, name, "stella", 0, 0, &hints,
-      None, None);
+  ostringstream name;
+  name << "Stella: \"" << theConsole->properties().get("Cartridge.Name") << "\"";
+  XmbSetWMProperties(theDisplay, theWindow, name.str().c_str(), "stella", 0, 0,
+      &hints, None, None);
 
   // Set up the palette for the screen
   setupPalette();
@@ -406,6 +406,8 @@ void setupPalette()
 
     theGCTable[t] = XCreateGC(theDisplay, theWindow, GCForeground, &values);
   }
+
+  theRedrawEntireFrameIndicator = true;
 }
 
 /**
@@ -626,6 +628,68 @@ void handleEvents()
           showCursor(!settings->theHideCursorFlag);
         }
       }
+#ifdef DEVELOPER_SUPPORT
+      else if((key == XK_f) && (event.type == KeyPress)) // Alt-f switches between NTSC and PAL
+      {
+        if(event.xkey.state & Mod1Mask)
+        {
+          theConsole->toggleFormat();
+
+          // update the palette
+          setupPalette();
+        }
+      }
+      else if((key == XK_End) && (event.type == KeyPress))    // End decreases XStart
+      {                                                       // Alt-End decreases Width
+        if(event.xkey.state & Mod1Mask)
+          theConsole->changeWidth(0);
+        else
+          theConsole->changeXStart(0);
+
+        // Make sure changes to the properties are reflected onscreen
+        resizeWindow(-1);
+      }
+      else if((key == XK_Home) && (event.type == KeyPress))   // Home increases XStart
+      {                                                       // Alt-Home increases Width
+        if(event.xkey.state & Mod1Mask)
+          theConsole->changeWidth(1);
+        else
+          theConsole->changeXStart(1);
+
+        // Make sure changes to the properties are reflected onscreen
+        resizeWindow(-1);
+      }
+      else if((key == XK_Next) && (event.type == KeyPress))   // PageDown decreases YStart
+      {                                                       // Alt-PageDown decreases Height
+        if(event.xkey.state & Mod1Mask)
+          theConsole->changeHeight(0);
+        else
+          theConsole->changeYStart(0);
+
+        // Make sure changes to the properties are reflected onscreen
+        resizeWindow(-1);
+      }
+      else if((key == XK_Prior) && (event.type == KeyPress)) // PageUp increases YStart
+      {                                                         // Alt-PageUp increases Height
+        if(event.xkey.state & Mod1Mask)
+          theConsole->changeHeight(1);
+        else
+          theConsole->changeYStart(1);
+
+        // Make sure changes to the properties are reflected onscreen
+        resizeWindow(-1);
+      }
+      else if((key == XK_s) && (event.type == KeyPress))   // Alt-s saves properties to a file
+      {
+        if(event.xkey.state & Mod1Mask)
+        {
+          string newPropertiesFile = getenv("HOME");
+          newPropertiesFile = newPropertiesFile + "/" + \
+            theConsole->properties().get("Cartridge.Name") + ".pro";
+          theConsole->saveProperties(newPropertiesFile);
+        }
+      }
+#endif
       else
       { 
         for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
@@ -836,24 +900,36 @@ void doQuit()
 /**
   This routine is called when the user wants to resize the window.
   A '1' argument indicates that the window should increase in size, while '0'
-  indicates that the windows should decrease in size.
+  indicates that the windows should decrease in size.  A '-1' indicates that
+  the window should be sized according to the current properties.
   Can't resize in fullscreen mode.  Will only resize up to the maximum size
-  for the '-zoom' argument.
+  of the screen.
 */
 void resizeWindow(int mode)
 {
-  if(isFullscreen)
-    return;
-
-  if(mode == 1)   // increase size
+  // reset size to that given in properties
+  // this is a special case of allowing a resize while in fullscreen mode
+  if(mode == -1)
   {
+    settings->theWidth         = theConsole->mediaSource().width();
+    settings->theHeight        = theConsole->mediaSource().height();
+    settings->theMaxWindowSize = maxWindowSizeForScreen();
+  }
+  else if(mode == 1)   // increase size
+  {
+    if(isFullscreen)
+      return;
+
     if(settings->theWindowSize == settings->theMaxWindowSize)
       settings->theWindowSize = 1;
     else
       settings->theWindowSize++;
   }
-  else   // decrease size
+  else if(mode == 0)   // decrease size
   {
+    if(isFullscreen)
+      return;
+
     if(settings->theWindowSize == 1)
       settings->theWindowSize = settings->theMaxWindowSize;
     else
@@ -911,6 +987,7 @@ void centerWindow()
   XSetWMNormalHints(theDisplay, theWindow, &hints);
 
   isCentered = true;
+  theRedrawEntireFrameIndicator = true;
 }
 
 /**
@@ -941,7 +1018,6 @@ void togglePause()
 
   // Show a different palette depending on pause state
   setupPalette();
-  theRedrawEntireFrameIndicator = true;
 }
 
 /**
@@ -949,27 +1025,24 @@ void togglePause()
 */
 void saveState()
 {
-  char buf[1024];
-  string path = getenv("HOME");
-  path += "/.stella/state";
-
-  // First get the name for the current state file
+  ostringstream buf;
   string md5 = theConsole->properties().get("Cartridge.MD5");
-  snprintf(buf, 1023, "%s/%s.st%d", path.c_str(), md5.c_str(), currentState);
-  string fileName = buf;
+  buf << getenv("HOME") << "/.stella/state/" << md5 << ".st" << currentState;
+  string filename = buf.str();
 
   // Do a state save using the System
-  int result = theConsole->system().saveState(fileName, md5);
+  int result = theConsole->system().saveState(filename, md5);
 
   // Print appropriate message
+  buf.str("");
   if(result == 1)
-    snprintf(buf, 1023, "State %d saved", currentState);
+    buf << "State " << currentState << " saved";
   else if(result == 2)
-    snprintf(buf, 1023, "Error saving state %d", currentState);
+    buf << "Error saving state " << currentState;
   else if(result == 3)
-    snprintf(buf, 1023, "Invalid state %d file", currentState);
+    buf << "Invalid state " << currentState << " file";
 
-  string message = buf;
+  string message = buf.str();
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
 }
@@ -995,9 +1068,9 @@ void changeState(int direction)
   }
 
   // Print appropriate message
-  char buf[40];
-  snprintf(buf, 39, "Changed to slot %d", currentState);
-  string message = buf;
+  ostringstream buf;
+  buf << "Changed to slot " << currentState;
+  string message = buf.str();
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
 }
@@ -1007,27 +1080,24 @@ void changeState(int direction)
 */
 void loadState()
 {
-  char buf[1024];
-  string path = getenv("HOME");
-  path += "/.stella/state";
-
-  // First get the name for the current state file
+  ostringstream buf;
   string md5 = theConsole->properties().get("Cartridge.MD5");
-  snprintf(buf, 1023, "%s/%s.st%d", path.c_str(), md5.c_str(), currentState);
-  string fileName = buf;
+  buf << getenv("HOME") << "/.stella/state/" << md5 << ".st" << currentState;
+  string filename = buf.str();
 
   // Do a state load using the System
-  int result = theConsole->system().loadState(fileName, md5);
+  int result = theConsole->system().loadState(filename, md5);
 
   // Print appropriate message
+  buf.str("");
   if(result == 1)
-    snprintf(buf, 1023, "State %d loaded", currentState);
+    buf << "State " << currentState << " loaded";
   else if(result == 2)
-    snprintf(buf, 1023, "Error loading state %d", currentState);
+    buf << "Error loading state " << currentState;
   else if(result == 3)
-    snprintf(buf, 1023, "Invalid state %d file", currentState);
+    buf << "Invalid state " << currentState << " file";
 
-  string message = buf;
+  string message = buf.str();
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
 }
@@ -1121,11 +1191,13 @@ void takeSnapshot()
   }
 
   // Now find the correct name for the snapshot
-  string filename = settings->theSnapShotDir;
+  string path = settings->theSnapShotDir;
+  string filename;
+
   if(settings->theSnapShotName == "romname")
-    filename = filename + "/" + theConsole->properties().get("Cartridge.Name");
+    path = path + "/" + theConsole->properties().get("Cartridge.Name");
   else if(settings->theSnapShotName == "md5sum")
-    filename = filename + "/" + theConsole->properties().get("Cartridge.MD5");
+    path = path + "/" + theConsole->properties().get("Cartridge.MD5");
   else
   {
     cerr << "ERROR: unknown name " << settings->theSnapShotName
@@ -1134,36 +1206,32 @@ void takeSnapshot()
   }
 
   // Replace all spaces in name with underscores
-  replace(filename.begin(), filename.end(), ' ', '_');
+  replace(path.begin(), path.end(), ' ', '_');
 
   // Check whether we want multiple snapshots created
   if(settings->theMultipleSnapShotFlag)
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
-    string extFilename = filename + ".png";
-    if(access(extFilename.c_str(), F_OK) == 0 )
+    filename = path + ".png";
+    if(access(filename.c_str(), F_OK) == 0 )
     {
-      uInt32 i;
-      char buffer[1024];
-
-      for(i = 1; ;++i)
+      ostringstream buf;
+      for(uInt32 i = 1; ;++i)
       {
-        snprintf(buffer, 1023, "%s_%d.png", filename.c_str(), i);
-        if(access(buffer, F_OK) == -1 )
+        buf.str("");
+        buf << path << "_" << i << ".png";
+        if(access(buf.str().c_str(), F_OK) == -1 )
           break;
       }
-      filename = buffer;
+      filename = buf.str();
     }
-    else
-      filename = extFilename;
   }
   else
-    filename = filename + ".png";
+    filename = path + ".png";
 
   // Now save the snapshot file
-  snapshot->savePNG(filename, theConsole->mediaSource(), 
-      settings->theWindowSize);
+  snapshot->savePNG(filename, theConsole->mediaSource(), settings->theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;
@@ -1239,6 +1307,16 @@ void usage()
     "  -pro        <props file>   Use the given properties file instead of stella.pro",
     "  -accurate   <0|1>          Accurate game timing (uses more CPU)",
     "",
+#ifdef DEVELOPER_SUPPORT
+    " DEVELOPER options (see Stella manual for details)",
+    "  -Dformat                    Sets \"Display.Format\"",
+    "  -Dxstart                    Sets \"Display.XStart\"",
+    "  -Dwidth                     Sets \"Display.Width\"",
+    "  -Dystart                    Sets \"Display.YStart\"",
+    "  -Dheight                    Sets \"Display.Height\"",
+    "  -Dcpu                       Sets \"Emulation.CPU\"",
+    "  -Dhmoveblanks               Sets \"Emulation.HmoveBlanks\"",
+#endif
     0
   };
 
@@ -1446,9 +1524,15 @@ int main(int argc, char* argv[])
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
-  // Create the 2600 game console
+  // Create the 2600 game console for users or developers
+#ifdef DEVELOPER_SUPPORT
+  theConsole = new Console(image, size, filename, 
+      theEvent, propertiesSet, sound.getSampleRate(),
+      &settings->userDefinedProperties);
+#else
   theConsole = new Console(image, size, filename, 
       theEvent, propertiesSet, sound.getSampleRate());
+#endif
 
   // Free the image since we don't need it any longer
   delete[] image;
