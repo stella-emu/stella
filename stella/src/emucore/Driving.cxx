@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.2 2004-05-28 19:08:12 stephena Exp $
+// $Id: Driving.cxx,v 1.3 2004-06-04 12:22:12 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -60,6 +60,8 @@ bool Driving::read(DigitalPin pin)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
         }
+		else 
+		  return(myEvent.get(Event::DrivingZeroValue) & 0x01);
       }
       else
       {
@@ -71,6 +73,8 @@ bool Driving::read(DigitalPin pin)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
         }
+		else 
+		  return(myEvent.get(Event::DrivingOneValue) & 0x01);
       }
 
     case Two:
@@ -84,6 +88,8 @@ bool Driving::read(DigitalPin pin)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
         }
+		else 
+		  return(myEvent.get(Event::DrivingZeroValue) & 0x02);
       }
       else
       {
@@ -95,6 +101,8 @@ bool Driving::read(DigitalPin pin)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
         }
+		else 
+		  return(myEvent.get(Event::DrivingOneValue) & 0x02);
       }
 
     case Three:

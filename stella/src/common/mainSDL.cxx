@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+// $Id: mainSDL.cxx,v 1.2 2004-06-04 12:22:12 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -97,6 +97,9 @@ static bool setupProperties(PropertiesSet& set);
     Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance,
     Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance,
     Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance 
+  };
+  static Event::Type SA_DrivingValue[2] = {
+    Event::DrivingZeroValue, Event::DrivingOneValue
   };
 #endif
 
@@ -647,11 +650,13 @@ void handleEvents()
             if(type == JT_STELLADAPTOR_1)
             {
               theConsole->eventHandler().sendEvent(Event::JoystickZeroFire, state);
+              theConsole->eventHandler().sendEvent(Event::DrivingZeroFire, state);
               theConsole->eventHandler().sendEvent(Event::PaddleZeroFire, state);
             }
             else
             {
               theConsole->eventHandler().sendEvent(Event::JoystickOneFire, state);
+              theConsole->eventHandler().sendEvent(Event::DrivingOneFire, state);
               theConsole->eventHandler().sendEvent(Event::PaddleTwoFire, state);
             }
           }
@@ -677,6 +682,19 @@ void handleEvents()
           // Send axis events for the paddles
           resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
           theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
+		  
+          // Send events for the driving controllers
+          if(axis == 1)
+          {
+            if(value <= -16384-4096)
+              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],2);
+            else if(value > 16384+4096)
+              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],1);
+            else if(value >= 16384-4096)
+              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],0);
+            else 
+              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],3);
+          }
         }
         break;  // Stelladaptor joystick
 

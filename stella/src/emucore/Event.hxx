@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.4 2003-09-25 16:20:34 stephena Exp $
+// $Id: Event.hxx,v 1.5 2004-06-04 12:22:12 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.4 2003-09-25 16:20:34 stephena Exp $
+  @version $Id: Event.hxx,v 1.5 2004-06-04 12:22:12 stephena Exp $
 */
 class Event
 {
@@ -64,9 +64,11 @@ class Event
       KeyboardOne7, KeyboardOne8, KeyboardOne9,
       KeyboardOneStar, KeyboardOne0, KeyboardOnePound,
 
-      DrivingZeroClockwise, DrivingZeroCounterClockwise, DrivingZeroFire,
-      DrivingOneClockwise, DrivingOneCounterClockwise, DrivingOneFire,
-
+      DrivingZeroClockwise, DrivingZeroCounterClockwise, DrivingZeroValue, 
+	  DrivingZeroFire,
+      DrivingOneClockwise, DrivingOneCounterClockwise, DrivingOneValue,
+	  DrivingOneFire,
+	  
       ChangeState, LoadState, SaveState, TakeSnapshot, Pause, Quit,
 
       LastType
