@@ -248,7 +248,7 @@ private:
 
     // Stella stuff
 
-    CGlobalData&    m_rGlobalData;
+    CGlobalData&    myGlobalData;
     CStellaXMain    m_stella;
 
 CMainDlg( const CMainDlg& );  // no implementation

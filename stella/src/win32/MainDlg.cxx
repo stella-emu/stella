@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.2 2004-05-27 22:02:35 stephena Exp $
+// $Id: MainDlg.cxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -25,6 +25,7 @@
 #include "DocPage.hxx"
 #include "ConfigPage.hxx"
 #include "resource.h"
+#include "Settings.hxx"
 
 #define BKGND_BITMAP_TOP     64
 #define BKGND_BITMAP_BOTTOM  355
@@ -46,7 +47,7 @@ inline LPARAM ListView_GetItemData( HWND hwndList, int iItem )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 CMainDlg::CMainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance )
-        : m_rGlobalData(rGlobalData),
+        : myGlobalData(rGlobalData),
           m_hInstance(hInstance)
 {
 }
@@ -271,7 +272,8 @@ BOOL CMainDlg::OnInitDialog( void  )
   SetDlgItemText( hwnd, IDC_ROMCOUNT, psz );
 
   // Show rom path
-  SetDlgItemText( hwnd, IDC_ROMPATH, m_rGlobalData.RomDir() );
+  SetDlgItemText( hwnd, IDC_ROMPATH,
+                  myGlobalData.settings().getString("romdir").c_str() );
 
   // Set default button
   ::SendMessage( hwnd, DM_SETDEFID, IDC_PLAY, 0 );
@@ -306,7 +308,7 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       pListData = (CListData*)ListView_GetItemData( m_hwndList, nItem );
 
       TCHAR pszPathName[ MAX_PATH + 1 ];
-      lstrcpy( pszPathName, m_rGlobalData.RomDir() );
+      lstrcpy( pszPathName, myGlobalData.settings().getString("romdir").c_str() );
       lstrcat( pszPathName, _T("\\") );
       lstrcat( pszPathName, 
       pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
@@ -316,7 +318,7 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
 
       (void)m_stella.PlayROM( hwnd, pszPathName,
                               pListData->GetTextForColumn( CListData::NAME_COLUMN ),
-                              m_rGlobalData );
+                              myGlobalData );
 
       ::EnableWindow( hwnd, TRUE );
 
@@ -336,7 +338,7 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
     {
       CPropertySheet ps( _T("Configure"), hwnd );
 
-      CConfigPage pgConfig( m_rGlobalData );
+      CConfigPage pgConfig( myGlobalData );
       ps.AddPage( &pgConfig );
 
       (void)ps.DoModal();
@@ -490,7 +492,7 @@ DWORD CMainDlg::PopulateRomList( void )
 
     TCHAR pszPath[ MAX_PATH ];
 
-    lstrcpy( pszPath, m_rGlobalData.RomDir() );
+    lstrcpy( pszPath, myGlobalData.settings().getString("romdir").c_str() );
     lstrcat( pszPath, _T("\\*.bin") );
 
     WIN32_FIND_DATA ffd;
@@ -580,7 +582,7 @@ DWORD CMainDlg::ReadRomData(
 
     TCHAR pszPath[MAX_PATH + 1];
 
-    lstrcpy( pszPath, m_rGlobalData.RomDir() );
+    lstrcpy( pszPath, myGlobalData.RomDir() );
     lstrcat( pszPath, _T("\\") );
     lstrcat( pszPath, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
 

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by Stella.rc
+// Microsoft Visual C++ generated include file.
+// Used by stella.rc
 //
 #define IDB_TILE                        101
 #define IDI_APP                         102
@@ -66,9 +66,11 @@
 #define IDC_CONFIG                      1015
 #define IDC_PADDLE                      1017
 #define IDC_SOUND                       1018
-#define IDC_JOYSTICK                    1019
-#define IDC_AUTO_SELECT_VIDEOMODE       1020
-#define IDC_BROWSE                      1021
+#define IDC_VOLUME                      1019
+#define IDC_VIDEO                       1020
+#define IDC_ASPECT                      1021
+#define IDC_BROWSE                      1022
+#define IDC_EDIT2                       1027
 #define IDC_INSTRUCTIONS                2000
 #define IDC_ADOBE                       2001
 #define ID_FILE_EXIT                    32771
@@ -79,7 +81,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        296
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1022
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

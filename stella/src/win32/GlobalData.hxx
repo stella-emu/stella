@@ -14,15 +14,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalData.hxx,v 1.2 2004-05-27 22:02:35 stephena Exp $
+// $Id: GlobalData.hxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
 //============================================================================ 
 
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef GLOBAL_DATA_HXX
+#define GLOBAL_DATA_HXX
 
 #include "pch.hxx"
+#include "bspf.hxx"
 
 class CConfigPage;
+class Settings;
 
 class CGlobalData
 {
@@ -30,70 +32,35 @@ class CGlobalData
 
   public:
     CGlobalData( HINSTANCE hInstance );
-    ~CGlobalData( );
+    ~CGlobalData( void );
 
-    BOOL ParseCommandLine( int argc, TCHAR* argv[] );
-
-    int DesiredFrameRate( void ) const
-    {
-      return m_nDesiredFrameRate;
-    }
-
-    // Booleans
-    BOOL NoSound() const
-    {
-      return m_fNoSound;
-    }
-
-    int PaddleMode( void ) const
-    {
-      return m_nPaddleMode;
-    }
-    
     LPCTSTR PathName( void ) const
     {
-      if ( m_pszPathName[0] == _T('\0') )
+      if ( myPathName[0] == _T('\0') )
         return NULL;
 
-      return m_pszPathName;
+      return myPathName;
     }
 
-    LPCTSTR RomDir( void ) const
-    {
-      return m_pszRomDir;
-    }
-    
     HINSTANCE ModuleInstance( void ) const
     {
-      return m_hInstance;
+      return myInstance;
     }
 
-    // Modified flags
-    void SetModified( void )
+    Settings& settings( void )
     {
-      m_fIsModified = TRUE;
-    }
-
-    BOOL IsModified( void ) const
-    {
-      return m_fIsModified;
+      return *mySettings;
     }
 
   private:
-    // Basic options
-    TCHAR m_pszRomDir[ MAX_PATH ];
-    int m_nPaddleMode;
-    BOOL m_fNoSound;
+    Settings* mySettings;
 
-    // Advanced options
-    int m_nDesiredFrameRate;
+    string myArgumentList;
 
-    HINSTANCE m_hInstance;
-    TCHAR m_pszPathName[ MAX_PATH ];
+    HINSTANCE myInstance;
+    TCHAR myPathName[ MAX_PATH ];
 
-    BOOL m_fIsModified;
-
-    CGlobalData( const CGlobalData& );  // no implementation
+    CGlobalData( const CGlobalData& );     // no implementation
     void operator=( const CGlobalData& );  // no implementation
 };
 

@@ -75,12 +75,12 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "This version of StellaX is not to be sold without written permission of the author"
-            VALUE "CompanyName", "Jeff Miller (miller@zipcon.net)"
+            VALUE "Comments", "This version of StellaX is released under the GPL."
+            VALUE "CompanyName", "Stephen Anthony (stephena@users.sourceforge.net)"
             VALUE "FileDescription", "StellaX"
             VALUE "FileVersion", "1, 4, 0, 0"
             VALUE "InternalName", "StellaX"
-            VALUE "LegalCopyright", "Copyright (C) 2004 Stephen Anthony"
+            VALUE "LegalCopyright", "Copyright (C) 2004 Jeff Miller, Copyright (C) 2004 Stephen Anthony"
             VALUE "LegalTrademarks", "n/a"
             VALUE "OriginalFilename", "StellaX.exe"
             VALUE "PrivateBuild", "n/a"
@@ -176,32 +176,31 @@ BEGIN
     LTEXT           "Dedicated To:",-1,7,94,46,8
 END
 
-IDD_CONFIG_PAGE DIALOG  0, 0, 390, 196
-STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+IDD_CONFIG_PAGE DIALOGEX 0, 0, 306, 199
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Options"
-FONT 8, "MS Shell Dlg"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "&ROM (.bin) file path:",-1,7,10,64,8
-    EDITTEXT        IDC_ROMPATH,82,7,246,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "&Browse...",IDC_BROWSE,333,7,50,14
+    EDITTEXT        IDC_ROMPATH,82,7,152,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Browse...",IDC_BROWSE,241,7,50,14
     LTEXT           "Set this to the path where your .bin rom files are located.",
-                    -1,7,25,376,8
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,39,376,1
-    LTEXT           "Mouse should emulate &paddle:",-1,7,49,97,8
-    COMBOBOX        IDC_PADDLE,109,46,48,82,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    -1,7,25,292,8
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,39,292,1
+    LTEXT           "Mouse should emulate &paddle:",-1,7,49,111,8
+    COMBOBOX        IDC_PADDLE,122,47,48,82,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
     LTEXT           "Set this to specify which paddle the mouse should emulate.  This can be any number from 0 to 3 inclusive.",
-                    -1,7,65,333,8
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,8,82,375,1
-    CONTROL         "&Auto select video mode",IDC_AUTO_SELECT_VIDEOMODE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,90,10
-    LTEXT           "If this is not checked, then a standard video mode (640x480) will be used.  Otherwise, StellaX will use the video mode which it believes will work best.  You should only uncheck this if you are having video problems while running StellaX.",
-                    -1,7,105,376,18
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,129,374,1
+                    -1,7,66,198,18
     CONTROL         "Disable &Sound",IDC_SOUND,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,7,141,62,10
-    CONTROL         "Disable &Joysticks",IDC_JOYSTICK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,7,155,70,10
+                    WS_TABSTOP,7,164,62,10
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,91,291,1
+    LTEXT           "Video Driver:",-1,7,101,67,10
+    COMBOBOX        IDC_VIDEO,67,99,51,35,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Aspect Ratio:",-1,7,120,55,10
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,136,290,1
+    EDITTEXT        IDC_ASPECT,66,118,50,12,ES_AUTOHSCROLL
 END
 
 
@@ -240,9 +239,9 @@ BEGIN
     IDD_CONFIG_PAGE, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 383
+        RIGHTMARGIN, 299
         TOPMARGIN, 7
-        BOTTOMMARGIN, 189
+        BOTTOMMARGIN, 192
     END
 END
 #endif    // APSTUDIO_INVOKED

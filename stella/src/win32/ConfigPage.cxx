@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ConfigPage.cxx,v 1.2 2004-05-27 22:02:35 stephena Exp $
+// $Id: ConfigPage.cxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -22,8 +22,12 @@
 #include "resource.h"
 #include "BrowseForFolder.hxx"
 
+#include "bspf.hxx"
+#include "Settings.hxx"
+
+
 CConfigPage::CConfigPage( CGlobalData& rGlobalData )
-           : m_rGlobalData( rGlobalData ),
+           : myGlobalData( rGlobalData ),
              CPropertyPage( IDD_CONFIG_PAGE )
 {
 }
@@ -34,14 +38,17 @@ BOOL CConfigPage::OnInitDialog( HWND hwnd )
   m_hwnd = hwnd;
   HWND hwndCtrl;
     
+  // Reload settings just in case the emulation changed them
+  myGlobalData.settings().loadConfig();
+
   // Set up ROMPATH
   hwndCtrl = ::GetDlgItem( hwnd, IDC_ROMPATH );
   ::SendMessage( hwndCtrl, EM_LIMITTEXT, MAX_PATH, 0 );
-  ::SetWindowText( hwndCtrl, m_rGlobalData.RomDir() );
+  ::SetWindowText( hwndCtrl,
+                   myGlobalData.settings().getString("romdir").c_str() );
 
   // Set up PADDLE
   hwndCtrl = ::GetDlgItem( hwnd, IDC_PADDLE );
-
   TCHAR psz[4] = _T("0");
   TCHAR i;
   for ( i = 0; i < 4; ++i )
@@ -49,12 +56,31 @@ BOOL CConfigPage::OnInitDialog( HWND hwnd )
     psz[0] = _T('0') + i;
     ::SendMessage( hwndCtrl, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)psz );
   }
+  ::SendMessage( hwndCtrl, CB_SETCURSEL,
+                myGlobalData.settings().getInt("paddle"), 0 );
 
-  ::SendMessage( hwndCtrl, CB_SETCURSEL, m_rGlobalData.PaddleMode(), 0 );
+  // Set up Video mode
+  int videomode = 0;
+  hwndCtrl = ::GetDlgItem( hwnd, IDC_VIDEO );
+  ::SendMessage( hwndCtrl, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)"Software" );
+  ::SendMessage( hwndCtrl, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)"OpenGL" );
+  if(myGlobalData.settings().getString("video") == "soft")
+    videomode = 0;
+  else if(myGlobalData.settings().getString("video") == "gl")
+    videomode = 1;
+  ::SendMessage( hwndCtrl, CB_SETCURSEL, videomode, 0 );
+
+  // Set up Aspect Ratio
+  hwndCtrl = ::GetDlgItem( hwnd, IDC_ASPECT );
+  ::SendMessage( hwndCtrl, EM_LIMITTEXT, MAX_PATH, 0 );
+  ::SetWindowText( hwndCtrl,
+                   myGlobalData.settings().getString("gl_aspect").c_str() );
 
   // Set up SOUND
   hwndCtrl = ::GetDlgItem( hwnd, IDC_SOUND );
-  ::SendMessage( hwndCtrl, BM_SETCHECK, m_rGlobalData.NoSound() ? BST_CHECKED : BST_UNCHECKED, 0 );
+  ::SendMessage( hwndCtrl, BM_SETCHECK,
+                 myGlobalData.settings().getBool("sound")
+                 ? BST_UNCHECKED : BST_CHECKED, 0 );
 
   return TRUE;
 }
@@ -71,20 +97,52 @@ LONG CConfigPage::OnApply( LPPSHNOTIFY lppsn )
   // HWND hwnd = lppsn->hdr.hwndFrom; <<-- points to the sheet!
 
   HWND hwndCtrl;
+  TCHAR buffer[ MAX_PATH ];
+  string str;
+  int i;
+  bool b;
 
+  // RomPath
   hwndCtrl = ::GetDlgItem( m_hwnd, IDC_ROMPATH );
   ASSERT( hwndCtrl );
-  ::GetWindowText( hwndCtrl, m_rGlobalData.m_pszRomDir, MAX_PATH );
+  ::GetWindowText( hwndCtrl, buffer, MAX_PATH );
+  myGlobalData.settings().setString( "romdir", buffer );
 
+  // Paddle
   hwndCtrl = ::GetDlgItem( m_hwnd, IDC_PADDLE );
   ASSERT( hwndCtrl );
-  m_rGlobalData.m_nPaddleMode = ::SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 );
+  myGlobalData.settings().setInt( "paddle",
+    ::SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 ) );
 
+  // VideoMode
+  hwndCtrl = ::GetDlgItem( m_hwnd, IDC_VIDEO );
+  ASSERT( hwndCtrl );
+  i = ::SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 );
+  if( i == 0 )
+    str = "soft";
+  else if( i == 1 )
+    str = "gl";
+  else
+    str = "soft";
+  myGlobalData.settings().setString( "video", str );
+
+  // AspectRatio
+  hwndCtrl = ::GetDlgItem( m_hwnd, IDC_ASPECT );
+  ASSERT( hwndCtrl );
+  ::GetWindowText( hwndCtrl, buffer, MAX_PATH );
+  myGlobalData.settings().setString( "gl_aspect", buffer );
+
+  // Sound
   hwndCtrl = ::GetDlgItem( m_hwnd, IDC_SOUND );
   ASSERT( hwndCtrl );
-  m_rGlobalData.m_fNoSound = ( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 ) == BST_CHECKED );
+  if( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
+    b = false;
+  else
+    b = true;
+  myGlobalData.settings().setBool( "sound", b );
 
-  m_rGlobalData.SetModified();
+  // Finally, save the config file
+  myGlobalData.settings().saveConfig();
 
   return PSNRET_NOERROR;
 }

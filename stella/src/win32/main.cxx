@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: main.cxx,v 1.2 2004-05-27 22:02:35 stephena Exp $
+// $Id: main.cxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -66,8 +66,6 @@ int WINAPI _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UNUSED_ALWAYS( lpCmdLine );
   UNUSED_ALWAYS( nCmdShow );
 
-  DWORD dwRet;
-
   (void)::DeleteFile(g_ctszDebugLog);
 
   CSingleInstance mutex( _T("StellaXMutex") );
@@ -83,36 +81,11 @@ int WINAPI _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   ::InitCommonControls();
 
-  BOOL fOk = FALSE;
   CGlobalData globaldata( hInstance );
 
-  fOk = globaldata.ParseCommandLine( __argc, __argv );
-  if (!fOk)
-  {
-    MessageBox( hInstance, NULL, IDS_BADARGUMENT );
-  }
-  else
-  {
-    LPCTSTR ctszPathName = globaldata.PathName();
-    if (ctszPathName != NULL)
-    {
-      // a filename was given on the commandline, skip the UI
-      CStellaXMain stellax;
-
-      dwRet = stellax.Initialize();
-      if ( dwRet != ERROR_SUCCESS )
-        MessageBoxFromWinError( dwRet, _T("CStellaX::Initialize") );
-      else
-        dwRet = stellax.PlayROM( GetDesktopWindow(), ctszPathName,
-                                 _T("StellaX"), globaldata );
-    }
-    else
-    {
-      // show the ui
-      CMainDlg dlg( globaldata, hInstance );
-      dlg.DoModal( NULL );
-    }
-  }
+  // show the ui
+  CMainDlg dlg( globaldata, hInstance );
+  dlg.DoModal( NULL );
 
   if ( hrCoInit == S_OK )
     ::CoUninitialize();

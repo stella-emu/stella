@@ -13,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.2 2004-05-28 22:07:57 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
 //============================================================================
 
-#include <cstdlib>
+//#include <cstdlib>
 #include <sstream>
 #include <fstream>
 
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+//#include <unistd.h>
+//#include <sys/stat.h>
+//#include <sys/types.h>
 
 #include "bspf.hxx"
 #include "Settings.hxx"
@@ -44,8 +44,8 @@ SettingsWin32::SettingsWin32()
 
   myUserPropertiesFile   = stelladir + "stella.pro";
   mySystemPropertiesFile = stelladir + "stella.pro";
-  myUserConfigFile       = stelladir + "stellarc";
-  mySystemConfigFile     = stelladir + "stellarc";
+  myUserConfigFile       = stelladir + "stella.ini";
+  mySystemConfigFile     = stelladir + "stella.ini";
 
   // Set up the names of the input and output config files
   mySettingsOutputFilename = myUserConfigFile;
@@ -58,6 +58,7 @@ SettingsWin32::SettingsWin32()
   myStateFile    = "";
 
   // Now create Win32 specific settings
+  set("romdir", "roms");
   set("accurate", "false");  // Don't change this, or the sound will skip
 #ifdef SNAPSHOT_SUPPORT
   set("ssdir", ".\\");

@@ -14,12 +14,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ConfigPage.hxx,v 1.2 2004-05-27 22:02:35 stephena Exp $
+// $Id: ConfigPage.hxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
 //============================================================================ 
 
 #ifndef CONFIGPG_H
 #define CONFIGPG_H
-//FIXME #pragma once
 
 #include "PropertySheet.hxx"
 #include "GlobalData.hxx"
@@ -37,10 +36,10 @@ class CConfigPage : public CPropertyPage
     virtual BOOL OnCommand( WORD /* wNotifyCode */, WORD /* wID */, HWND /* hwndCtl */ );
 
   private:
-    CGlobalData& m_rGlobalData;
+    CGlobalData& myGlobalData;
     HWND m_hwnd;
 
-    CConfigPage( const CConfigPage& );  // no implementation
+    CConfigPage( const CConfigPage& );     // no implementation
     void operator=( const CConfigPage& );  // no implementation
 };
 

@@ -20,8 +20,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;BSPF_WIN32"
+				AdditionalIncludeDirectories="..\emucore\m6502\src\bspf\src;..\emucore"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;BSPF_WIN32;DISPLAY_OPENGL;SNAPSHOT_SUPPORT"
 				RuntimeLibrary="5"
 				PrecompiledHeaderFile=".\Debug/Stella.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -529,6 +529,12 @@
 				RelativePath="RoundButton.hxx">
 			</File>
 			<File
+				RelativePath=".\SettingsWin32.cxx">
+			</File>
+			<File
+				RelativePath=".\SettingsWin32.hxx">
+			</File>
+			<File
 				RelativePath="stella.rc">
 			</File>
 			<File
@@ -604,6 +610,18 @@
 				RelativePath="Wnd.hxx">
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\emucore\Settings.cxx">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories="..\emucore\m6502\src\bspf\src;..\emucore"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\emucore\Settings.hxx">
+		</File>
 		<File
 			RelativePath="STELLA.ICO">
 		</File>
