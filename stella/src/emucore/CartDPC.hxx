@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartDPC.hxx,v 1.3 2002-11-19 04:29:21 bwmott Exp $
 //============================================================================
 
 #ifndef CARTRIDGEDCP_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   see David P. Crane's United States Patent Number 4,644,495.
 
   @author  Bradford W. Mott
-  @version $Id: CartDPC.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+  @version $Id: CartDPC.hxx,v 1.3 2002-11-19 04:29:21 bwmott Exp $
 */
 class CartridgeDPC : public Cartridge
 {
@@ -61,6 +61,13 @@ class CartridgeDPC : public Cartridge
       Reset device to its power-on state
     */
     virtual void reset();
+
+    /**
+      Notification method invoked by the system right before the
+      system resets its cycle counter to zero.  It may be necessary
+      to override this method for devices that remember cycle counts.
+    */
+    virtual void systemCyclesReset();
 
     /**
       Install cartridge in the specified system.  Invoked by the system
@@ -115,6 +122,12 @@ class CartridgeDPC : public Cartridge
     */
     void clockRandomNumberGenerator();
 
+    /** 
+      Updates any data fetchers in music mode based on the number of
+      CPU cycles which have passed since the last update.
+    */
+    void updateMusicModeDataFetchers();
+
   private:
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
@@ -125,6 +138,9 @@ class CartridgeDPC : public Cartridge
     // The 2K display ROM image of the cartridge
     uInt8 myDisplayImage[2048];
 
+    // The top registers for the data fetchers
+    uInt8 myTops[8];
+
     // The bottom registers for the data fetchers
     uInt8 myBottoms[8];
 
@@ -134,10 +150,17 @@ class CartridgeDPC : public Cartridge
     // The flag registers for the data fetchers
     uInt8 myFlags[8];
 
+    // The music mode DF5, DF6, & DF7 enabled flags
+    bool myMusicMode[3];
+
     // The random number generator register
     uInt8 myRandomNumber;
 
-    // The top registers for the data fetchers
-    uInt8 myTops[8];
+    // System cycle count when the last update to music data fetchers occurred
+    Int32 mySystemCycles;
+
+    // Fractional DPC music OSC clocks unused during the last update
+    double myFractionalClocks;
 };
 #endif
+
