@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.4 2004-06-20 00:52:37 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.5 2004-06-20 01:12:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -289,11 +289,13 @@ bool SoundSDL::load(Deserializer& in)
     myLastRegisterSetCycle = (Int32) in.getLong();
 
     // Only update the TIA sound registers if sound is enabled
+    // Make sure to empty the queue of previous sound fragments
     if(myIsInitializedFlag)
     {
-
-      Tia_set_registers(reg1, reg2, reg3, reg4, reg5, reg6);
+      SDL_PauseAudio(1);
       myRegWriteQueue.clear();
+      Tia_set_registers(reg1, reg2, reg3, reg4, reg5, reg6);
+      SDL_PauseAudio(0);
     }
   }
   catch(char *msg)
