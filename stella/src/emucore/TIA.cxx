@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.10 2002-03-28 05:10:17 bwmott Exp $
+// $Id: TIA.cxx,v 1.11 2002-04-13 05:14:51 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -60,7 +60,7 @@ TIA::TIA(const Console& console, Sound& sound)
         if((enabled & myBLBit) != 0)
           color = 1;
         if((enabled & myPFBit) != 0)
-          color = (enabled & ScoreBit) ? ((x == 0) ? 2 : 3) : 1;
+          color = 1;  // NOTE: Playfield has priority so ScoreBit isn't used
 
         myPriorityEncoder[x][enabled] = color;
       }
@@ -1453,7 +1453,6 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             enabled |= myM0Bit;
 
           myCollision |= ourCollisionTable[enabled];
-
           *myFramePointer = myColor[myPriorityEncoder[hpos < 80 ? 0 : 1]
               [enabled | myPlayfieldPriorityAndScore]];
         }
@@ -1521,35 +1520,28 @@ inline void TIA::updateFrame(Int32 clock)
 
       clocksFromStartOfScanLine += tmp;
       clocksToUpdate -= tmp;
-
-      // Handle HMOVE blanks
-      if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
-          (clocksFromStartOfScanLine == (Int32)(HBLANK + myFrameXStart)))
-      {
-        Int32 blanks = 8 - myFrameXStart;
-        myHMOVEBlankEnabled = false;
-        memset(myFramePointer, 0, blanks);
-        myFramePointer += blanks;
-        clocksFromStartOfScanLine += blanks;
-
-        if(clocksToUpdate >= blanks)
-        {
-          clocksToUpdate -= blanks;
-        }
-        else
-        {
-          // Updating more that we were supposed to so adjust the clocks
-          myClocksToEndOfScanLine -= (blanks - clocksToUpdate);
-          myClockAtLastUpdate += (blanks - clocksToUpdate);
-          clocksToUpdate = 0;
-        }
-      }
     }
+
+    // Remember frame pointer in case HMOVE blanks need to be handled
+    uInt8* oldFramePointer = myFramePointer;
 
     // Update as much of the scanline as we can
     if(clocksToUpdate != 0)
     {
       updateFrameScanline(clocksToUpdate, clocksFromStartOfScanLine - HBLANK);
+    }
+
+    // Handle HMOVE blanks if they are enabled
+    if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
+        (clocksFromStartOfScanLine < (HBLANK + 8)))
+    {
+      Int32 blanks = (HBLANK + 8) - clocksFromStartOfScanLine;
+      memset(oldFramePointer, 0, blanks);
+
+      if((clocksToUpdate + clocksFromStartOfScanLine) >= (HBLANK + 8))
+      {
+        myHMOVEBlankEnabled = false;
+      }
     }
 
     // See if we're at the end of a scanline
@@ -2102,6 +2094,14 @@ void TIA::poke(uInt16 addr, uInt8 value)
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM0 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
 
+      // TODO: Remove the following special hack for Dolphin by
+      // figuring out what really happens when Reset Missle 
+      // occurs 20 cycles after an HMOVE (04/13/02).
+      if(((clock - myLastHMOVEClock) == (20 * 3)) && (hpos == 69))
+      {
+        myPOSM0 = 8;
+      }
+ 
       myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
       break;
@@ -2112,6 +2112,14 @@ void TIA::poke(uInt16 addr, uInt8 value)
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM1 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
 
+      // TODO: Remove the following special hack for Pitfall II by
+      // figuring out what really happens when Reset Missle 
+      // occurs 3 cycles after an HMOVE (04/13/02).
+      if(((clock - myLastHMOVEClock) == (3 * 3)) && (hpos == 18))
+      {
+        myPOSM1 = 3;
+      }
+ 
       myCurrentM1Mask = &ourMissleMaskTable[myPOSM1 & 0x03]
           [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
       break;
@@ -2130,7 +2138,28 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         myPOSBL = 10;
       }
-      
+      // TODO: Remove the following special hack for Decathlon by
+      // figuring out what really happens when Reset Ball 
+      // occurs 3 cycles after an HMOVE (04/13/02).
+      else if(((clock - myLastHMOVEClock) == (3 * 3)) && (hpos == 18))
+      {
+        myPOSBL = 3;
+      } 
+      // TODO: Remove the following special hack for Robot Tank by
+      // figuring out what really happens when Reset Ball 
+      // occurs 7 cycles after an HMOVE (04/13/02).
+      else if(((clock - myLastHMOVEClock) == (7 * 3)) && (hpos == 30))
+      {
+        myPOSBL = 6;
+      } 
+      // TODO: Remove the following special hack for Hole Hunter by
+      // figuring out what really happens when Reset Ball 
+      // occurs 6 cycles after an HMOVE (04/13/02).
+      else if(((clock - myLastHMOVEClock) == (6 * 3)) && (hpos == 27))
+      {
+        myPOSBL = 5;
+      }
+ 
       myCurrentBLMask = &ourBallMaskTable[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
       break;
@@ -2521,7 +2550,7 @@ uInt8 TIA::ourDisabledMaskTable[640];
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int16 TIA::ourPokeDelayTable[64] = {
    0,  0,  0,  0, 12, 12,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
-   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
+   0,  0,  8,  8,  8,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 };
