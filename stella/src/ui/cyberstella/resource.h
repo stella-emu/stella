@@ -45,13 +45,13 @@
 #define IDC_WEB_JEFFMILL                1010
 #define IDC_WEB_STELLA                  1011
 #define IDC_ROMPATH                     1013
-#define IDC_ROMNOTE                     1014
 #define IDC_CONFIG                      1015
 #define IDC_PADDLE                      1017
 #define IDC_SOUND                       1018
 #define IDC_JOYSTICK                    1019
 #define IDC_AUTO_SELECT_VIDEOMODE       1020
 #define IDC_BROWSE                      1021
+#define ID_BUTTON32774                  32774
 
 // Next default values for new objects
 // 
@@ -59,7 +59,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         32771
+#define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -98,4 +98,9 @@ void CMainFrame::Dump(CDumpContext& dc) const
 	CFrameWnd::Dump(dc);
 }
 
+void CMainFrame::setStatusText(CString text)
+{
+    m_wndStatusBar.SetWindowText(text);
+}
+
 #endif //_DEBUG

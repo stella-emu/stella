@@ -3,17 +3,35 @@
 
 #include "pch.hxx"
 #include "Cyberstella.h"
+#include "MainFrm.h"
 #include "CyberstellaDoc.h"
 #include "CyberstellaView.h"
 #include "StellaConfig.h"
 #include "MD5.hxx"
 #include "PropsSet.hxx"
+#include "Console.hxx"
+#include "SoundWin32.hxx"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+//
+// Undefining USE_FS will use the (untested) windowed mode
+//
+
+//#define USE_FS
+
+#ifdef USE_FS
+#include "DirectXFullScreen.hxx"
+#else
+#include "DirectXWindow.hxx"
+#endif
+
+#define FORCED_VIDEO_CX 640
+#define FORCED_VIDEO_CY 480
 
 /////////////////////////////////////////////////////////////////////////////
 // CCyberstellaView
@@ -38,11 +56,14 @@ CCyberstellaView::CCyberstellaView()
 	//}}AFX_DATA_INIT
 
     m_pGlobalData = new CGlobalData(GetModuleHandle(NULL));
+    m_bIsPause = false;
+    m_pPropertiesSet = NULL;
 }
 
 CCyberstellaView::~CCyberstellaView()
 {
     if(m_pGlobalData) delete m_pGlobalData;
+    if(m_pPropertiesSet) delete m_pPropertiesSet;
 }
 
 void CCyberstellaView::DoDataExchange(CDataExchange* pDX)
@@ -71,31 +92,11 @@ void CCyberstellaView::OnInitialUpdate()
 
     HWND hwnd = *this;
 
-    dwRet = m_stella.Initialize();
+    dwRet = Initialize();
     if ( dwRet != ERROR_SUCCESS )
     {
         MessageBoxFromWinError( dwRet, _T("CStellaX::Initialize") );
         AfxGetMainWnd()->SendMessage(WM_CLOSE, 0, 0);
-    }
-
-    //
-    // Make the Rom note have bold text
-    //
-
-    HWND hwndCtrl;
-
-    hwndCtrl = ::GetDlgItem( hwnd, IDC_ROMNOTE );
-
-    HFONT hfont = (HFONT)::SendMessage( hwndCtrl, WM_GETFONT, 0, 0 );
-
-    LOGFONT lf;
-    ::GetObject( hfont, sizeof(LOGFONT), &lf );
-    lf.lfWeight = FW_BOLD;
-
-    m_hfontRomNote = ::CreateFontIndirect( &lf );
-    if ( m_hfontRomNote )
-    {
-        ::SendMessage( hwndCtrl, WM_SETFONT, (WPARAM)m_hfontRomNote, 0 );
     }
 
     const int nMaxString = 256;
@@ -378,7 +379,7 @@ DWORD CCyberstellaView::ReadRomData(CListData* pListData) const
         
         // search through the properties set for this MD5
 
-        PropertiesSet& propertiesSet = m_stella.GetPropertiesSet();
+        PropertiesSet& propertiesSet = GetPropertiesSet();
         Properties properties;
         propertiesSet.getMD5(md5, properties);
 
@@ -446,7 +447,7 @@ void CCyberstellaView::OnPlay()
 
     ::EnableWindow(*this, FALSE );
 
-    (void)m_stella.PlayROM( *this, 
+    PlayROM( *this, 
                             pszPathName,
                             pListData->GetTextForColumn( CListData::NAME_COLUMN ),
                             m_pGlobalData);
@@ -456,4 +457,303 @@ void CCyberstellaView::OnPlay()
     // Set focus back to the rom list
 
     ::SetFocus(m_List);
+}
+
+//  Toggles pausing of the emulator
+void CCyberstellaView::togglePause()
+{
+    m_bIsPause = !m_bIsPause;
+
+    //TODO: theConsole->mediaSource().pause(m_bIsPause);
+}
+
+DWORD CCyberstellaView::Initialize()
+{
+    TRACE( "CStellaXMain::SetupProperties" );
+
+    // Create a properties set for us to use
+
+    if ( m_pPropertiesSet )
+    {
+        return ERROR_SUCCESS;
+    }
+
+    m_pPropertiesSet = new PropertiesSet(); 
+    if ( m_pPropertiesSet == NULL )
+    {
+        return ERROR_NOT_ENOUGH_MEMORY;
+    }
+
+    // Try to load the file stella.pro file
+    string filename( "stella.pro" );
+    
+    // See if we can open the file and load properties from it
+    ifstream stream(filename.c_str()); 
+    if(stream)
+    {
+        // File was opened so load properties from it
+        stream.close();
+        m_pPropertiesSet->load(filename, &Console::defaultProperties());
+    }
+    else
+    {
+        m_pPropertiesSet->load("", &Console::defaultProperties());
+    }
+
+    return ERROR_SUCCESS;
+}
+
+HRESULT CCyberstellaView::PlayROM(HWND hwnd,
+    LPCTSTR pszPathName,
+    LPCTSTR pszFriendlyName,
+    CGlobalData* rGlobalData)
+{
+    UNUSED_ALWAYS( hwnd );
+
+    HRESULT hr = S_OK;
+
+    TRACE("CStellaXMain::PlayROM");
+
+    //
+    // show wait cursor while loading
+    //
+
+    HCURSOR hcur = ::SetCursor( ::LoadCursor( NULL, IDC_WAIT ) );
+
+    //
+    // setup objects used here
+    //
+
+    BYTE* pImage = NULL;
+    LPCTSTR pszFileName = NULL;
+
+#ifdef USE_FS
+    CDirectXFullScreen* pwnd = NULL;
+#else
+    CDirectXWindow* pwnd = NULL;
+#endif
+    Console* pConsole = NULL;
+    Sound* pSound = NULL;
+    Event rEvent;
+
+    //
+    // Load the rom file
+    //
+
+    HANDLE hFile;
+    DWORD dwImageSize;
+
+    hFile = ::CreateFile( pszPathName, 
+                          GENERIC_READ, 
+                          FILE_SHARE_READ, 
+                          NULL, 
+                          OPEN_EXISTING, 
+                          FILE_ATTRIBUTE_NORMAL,
+                          NULL );
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        HINSTANCE hInstance = (HINSTANCE)::GetWindowLong( hwnd, GWL_HINSTANCE );
+
+        DWORD dwLastError = ::GetLastError();
+
+        TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
+        ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
+
+        // ::MessageBoxFromGetLastError( pszPathName );
+        TCHAR pszFormat[ 1024 ];
+        LoadString( hInstance,
+                    IDS_ROM_LOAD_FAILED,
+                    pszFormat, 1023 );
+
+        LPTSTR pszLastError = NULL;
+
+        FormatMessage(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL, 
+            dwLastError, 
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+            (LPTSTR)&pszLastError, 
+            0, 
+            NULL);
+
+        TCHAR pszError[ 1024 ];
+        wsprintf( pszError, 
+                  pszFormat, 
+                  pszCurrentDirectory,
+                  pszPathName, 
+                  dwLastError,
+                  pszLastError );
+
+        ::MessageBox( hwnd, 
+                      pszError, 
+                      _T("Error"),
+                      MB_OK | MB_ICONEXCLAMATION );
+
+        ::LocalFree( pszLastError );
+
+        hr = HRESULT_FROM_WIN32( ::GetLastError() ); 
+        goto exit;
+    }
+
+    dwImageSize = ::GetFileSize( hFile, NULL );
+
+    pImage = new BYTE[dwImageSize + 1];
+    if ( pImage == NULL )
+    {
+        hr = E_OUTOFMEMORY;
+        goto exit;
+    }
+
+    DWORD dwActualSize;
+    if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
+    {
+        VERIFY( ::CloseHandle( hFile ) );
+
+        MessageBoxFromGetLastError( pszPathName );
+
+        hr = HRESULT_FROM_WIN32( ::GetLastError() );
+        goto exit;
+    }
+
+    VERIFY( ::CloseHandle(hFile) );
+
+    //
+    // Create Sound driver object
+    // (Will be initialized once we have a window handle below)
+    //
+
+    if (rGlobalData->bNoSound)
+    {
+        TRACE("Creating Sound driver");
+        pSound = new Sound;
+    }
+    else
+    {
+        TRACE("Creating SoundWin32 driver");
+        pSound = new SoundWin32;
+    }
+    if ( pSound == NULL )
+    {
+        hr = E_OUTOFMEMORY;
+        goto exit;
+    }
+
+    //
+    // get just the filename
+    //
+
+    pszFileName = _tcsrchr( pszPathName, _T('\\') );
+    if ( pszFileName )
+    {
+        ++pszFileName;
+    }
+    else
+    {
+        pszFileName = pszPathName;
+    }
+
+    try
+    {
+        // If this throws an exception, then it's probably a bad cartridge
+
+        pConsole = new Console( pImage, 
+                                dwActualSize,
+                                pszFileName, 
+                                rEvent, 
+                                *m_pPropertiesSet, 
+                                *pSound );
+        if ( pConsole == NULL )
+        {
+            hr = E_OUTOFMEMORY;
+            goto exit;
+        }
+    }
+    catch (...)
+    {
+
+        ::MessageBox(rGlobalData->instance,
+            NULL, IDS_CANTSTARTCONSOLE);
+
+        goto exit;
+    }
+
+#ifdef USE_FS
+    pwnd = new CDirectXFullScreen( rGlobalData,
+                                   pConsole, 
+                                   rEvent );
+#else
+    pwnd = new CDirectXWindow( rGlobalData,
+                               pConsole,
+                               rEvent );
+#endif
+    if ( pwnd == NULL )
+    {
+        hr = E_OUTOFMEMORY;
+        goto exit;
+    }
+
+#ifdef USE_FS
+    if (rGlobalData->bAutoSelectVideoMode)
+    {
+        hr = pwnd->Initialize( );
+    }
+    else
+    {
+        //
+        // Initialize with 640 x 480
+        //
+
+        hr = pwnd->Initialize( FORCED_VIDEO_CX, FORCED_VIDEO_CY );
+    }
+#else
+    hr = pwnd->Initialize( hwnd, pszFriendlyName );
+#endif
+    if ( FAILED(hr) )
+    {
+        TRACE( "CWindow::Initialize failed, err = %X", hr );
+        goto exit;
+    }
+
+    if (!rGlobalData->bNoSound)
+    {
+        //
+        // 060499: Pass pwnd->GetHWND() in instead of hwnd as some systems
+        // will not play sound if this isn't set to the active window
+        //
+
+        SoundWin32* pSoundWin32 = static_cast<SoundWin32*>( pSound );
+
+        hr = pSoundWin32->Initialize( *pwnd );
+        if ( FAILED(hr) )
+        {
+            TRACE( "Sndwin32 Initialize failed, err = %X", hr );
+            goto exit;
+        }
+    }
+
+    // restore cursor
+
+    ::SetCursor( hcur );
+    hcur = NULL;
+
+    ::ShowWindow( hwnd, SW_HIDE );
+
+    (void)pwnd->Run();
+
+    ::ShowWindow( hwnd, SW_SHOW );
+
+exit:
+
+    if ( hcur )
+    {
+        ::SetCursor( hcur );
+    }
+
+    delete pwnd;
+
+    delete pConsole;
+    delete pSound;
+    delete pImage;
+
+    return hr;
 }

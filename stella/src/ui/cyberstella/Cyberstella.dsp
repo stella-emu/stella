@@ -168,10 +168,6 @@ SOURCE=.\StellaConfig.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\StellaXMain.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\Timer.cxx
 # End Source File
 # End Group
@@ -253,10 +249,6 @@ SOURCE=.\SoundWin32.hxx
 # Begin Source File
 
 SOURCE=.\StellaConfig.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\StellaXMain.hxx
 # End Source File
 # Begin Source File
 

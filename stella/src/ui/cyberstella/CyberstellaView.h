@@ -9,9 +9,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "StellaXMain.hxx"
 #include "GlobalData.hxx"
 #include "ListData.hxx"
+#include "PropsSet.hxx"
 
 class CCyberstellaView : public CFormView
 {
@@ -28,8 +28,6 @@ public:
 // Attributes
 public:
 	CCyberstellaDoc* GetDocument();
-    CStellaXMain    m_stella;
-    HFONT m_hfontRomNote;
     CGlobalData* m_pGlobalData;
 
 // Operations
@@ -64,10 +62,20 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+    // methods
+    PropertiesSet& GetPropertiesSet() const {return *m_pPropertiesSet;}
     static int CALLBACK ListViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort );
     DWORD PopulateRomList();
     void ClearList();
+    void togglePause();
     DWORD ReadRomData(CListData* pListData) const;
+    DWORD Initialize();
+    HRESULT PlayROM( HWND hwnd, LPCTSTR ctszPathName, 
+                     LPCTSTR pszFriendlyName, 
+                     CGlobalData* rGlobalData );
+    // members
+    PropertiesSet* m_pPropertiesSet;
+    bool m_bIsPause;
 };
 
 #ifndef _DEBUG  // debug version in CyberstellaView.cpp

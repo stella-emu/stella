@@ -95,17 +95,8 @@ IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
 
 IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 15
 BEGIN
-    BUTTON      ID_FILE_NEW
-    BUTTON      ID_FILE_OPEN
-    BUTTON      ID_FILE_SAVE
-    SEPARATOR
-    BUTTON      ID_EDIT_CUT
-    BUTTON      ID_EDIT_COPY
-    BUTTON      ID_EDIT_PASTE
-    SEPARATOR
-    BUTTON      ID_FILE_PRINT
-    SEPARATOR
     BUTTON      ID_APP_ABOUT
+    BUTTON      IDC_PLAY
 END
 
 
@@ -118,27 +109,17 @@ IDR_MAINFRAME MENU PRELOAD DISCARDABLE
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
-        MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
-        MENUITEM SEPARATOR
+        MENUITEM "&Play",                       IDC_PLAY
         MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
     END
     POPUP "&View"
     BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "Configuration"
+    BEGIN
+        MENUITEM "&Cyberstella",                IDC_CONFIG
     END
     POPUP "&Help"
     BEGIN
@@ -175,7 +156,7 @@ END
 // Dialog
 //
 
-IDD_CYBERSTELLA_FORM DIALOGEX 0, 0, 409, 211
+IDD_CYBERSTELLA_FORM DIALOGEX 0, 0, 409, 169
 STYLE WS_CHILD
 FONT 8, "MS Shell Dlg"
 BEGIN
@@ -184,14 +165,9 @@ BEGIN
     CONTROL         "List1",IDC_ROMLIST,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | 
                     WS_BORDER | WS_TABSTOP,7,19,395,143,WS_EX_STATICEDGE
-    PUSHBUTTON      "&Play",IDC_PLAY,7,188,155,16
-    PUSHBUTTON      "&Options",IDC_CONFIG,247,188,155,16
     RTEXT           "<status>",IDC_ROMCOUNT,322,7,80,8,SS_NOPREFIX
     CONTROL         "Static",IDC_ROMPATH,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,57,7,254,8
-    CONTROL         "",IDC_ROMNOTE,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
-                    WS_GROUP,93,167,309,8
-    LTEXT           "Game notes (if available):",-1,7,167,80,8
 END
 
 IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 390, 176
@@ -223,7 +199,7 @@ END
 
 IDD_CONFIG_PAGE DIALOG DISCARDABLE  0, 0, 390, 149
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Options"
+CAPTION "Cyberstella Configuration"
 FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "&ROM (.bin) file path:",-1,7,10,64,8
@@ -305,7 +281,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 402
         TOPMARGIN, 7
-        BOTTOMMARGIN, 204
+        BOTTOMMARGIN, 162
     END
 
     IDD_ABOUTBOX, DIALOG

@@ -8,7 +8,6 @@
 
 #include "resource.h"
 #include "pch.hxx"
-#include "StellaXMain.hxx"
 
 class CMainDlg;
 
