@@ -25,10 +25,12 @@ To rebuild the SDL.dll file, follow the instructions below:
 1)  Get the 'SDL-1.2.7.zip' package from the main SDL website and
     unzip it.
 
-2)  Apply the patchfile 'SDL_mmjoystick_1.2.7.diff' to the SDL-1.2.7
+2)  Unzip 'SDL_mmjoystick_1.2.7.zip' to obtain 'SDL_mmjoystick_1.2.7.diff'.
+
+3)  Apply the patchfile 'SDL_mmjoystick_1.2.7.diff' to the SDL-1.2.7
     directory (under Linux:  patch -p0 < SDL_mmjoystick_1.2.7.diff).
 
-3)  Build the SDL.dll library from within Visual C++ (you may need the DX5
+4)  Build the SDL.dll library from within Visual C++ (you may need the DX5
     development files).
 
 
