@@ -244,5 +244,8 @@
 		</Filter>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="StellaX.rc"/>
 	</Globals>
 </VisualStudioProject>

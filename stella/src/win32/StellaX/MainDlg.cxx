@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.2 2004-07-04 20:16:03 stephena Exp $
+// $Id: MainDlg.cxx,v 1.3 2004-07-06 22:51:58 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -28,8 +28,6 @@
 
 #define BKGND_BITMAP_TOP     64
 #define BKGND_BITMAP_BOTTOM  355
-
-// NOTE: LVS_OWNERDATA doesn't support LVM_SORTITEMS!
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 inline LPARAM ListView_GetItemData( HWND hwndList, int iItem )
@@ -54,12 +52,12 @@ CMainDlg::CMainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance )
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void CMainDlg::ClearList( void )
 {
-  int nCount = ListView_GetItemCount( m_hwndList );
+  int nCount = ListView_GetItemCount( myHwndList );
 
   for (int i = 0; i < nCount; ++i)
-    delete (CListData*)ListView_GetItemData( m_hwndList, i );
+    delete (CListData*)ListView_GetItemData( myHwndList, i );
 
-  ListView_DeleteAllItems( m_hwndList );
+  ListView_DeleteAllItems( myHwndList );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -82,7 +80,7 @@ CMainDlg::StaticDialogFunc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
   {
     case WM_INITDIALOG:
       pDlg = reinterpret_cast<CMainDlg*>( lParam );
-      pDlg->m_hwnd = hDlg;
+      pDlg->myHwnd = hDlg;
       (void)::SetWindowLong( hDlg, DWL_USER, reinterpret_cast<LONG>( pDlg ) );
       break;
 
@@ -152,7 +150,7 @@ CMainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
       // When the fActive parameter is FALSE, an application should return 
       // TRUE to indicate that the system should proceed with the default 
       // processing
-      SetWindowLong( m_hwnd, DWL_MSGRESULT, TRUE );
+      SetWindowLong( myHwnd, DWL_MSGRESULT, TRUE );
       return TRUE;
 
     case WM_NCLBUTTONDOWN:
@@ -161,7 +159,7 @@ CMainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
     case WM_SYSCOMMAND:
       // Allow Alt-F4 to close the window
       if ( wParam == SC_CLOSE )
-        ::EndDialog( m_hwnd, IDCANCEL );
+        ::EndDialog( myHwnd, IDCANCEL );
       break;
   }
 
@@ -198,26 +196,27 @@ BOOL CMainDlg::OnInitDialog( void  )
 
   // Do subclassing
   m_CoolCaption.OnInitDialog( hwnd );
-  m_header.SubclassDlgItem( hwnd, IDC_ROMLIST );
-  m_btn3d.SubclassDlgItem( hwnd, IDC_TITLE );
-  m_btnPlay.SubclassDlgItem( hwnd, IDC_PLAY );
-  m_btnHelp.SubclassDlgItem( hwnd, IDC_ABOUT );
-  m_btnConfig.SubclassDlgItem( hwnd, IDC_CONFIG );
-  m_btnExit.SubclassDlgItem( hwnd, IDC_EXIT );
+  myHeader.SubclassDlgItem( hwnd, IDC_ROMLIST );
+  myAppTitle.SubclassDlgItem( hwnd, IDC_TITLE );
+  myPlayButton.SubclassDlgItem( hwnd, IDC_PLAY );
+  myReloadButton.SubclassDlgItem( hwnd, IDC_RELOAD );
+  myHelpButton.SubclassDlgItem( hwnd, IDC_ABOUT );
+  myConfigButton.SubclassDlgItem( hwnd, IDC_CONFIG );
+  myExitButton.SubclassDlgItem( hwnd, IDC_EXIT );
 
   const int nMaxString = 256;
   TCHAR psz[nMaxString + 1];
 
   // Initialize the list view
-  m_hwndList = ::GetDlgItem( hwnd, IDC_ROMLIST );
-  ASSERT( m_hwndList );
+  myHwndList = ::GetDlgItem( hwnd, IDC_ROMLIST );
+  ASSERT( myHwndList );
 
   // LVS_EX_ONECLICKACTIVATE was causing a/vs in kernel32
-  ::SendMessage( m_hwndList, LVM_SETEXTENDEDLISTVIEWSTYLE,
+  ::SendMessage( myHwndList, LVM_SETEXTENDEDLISTVIEWSTYLE,
                  0, LVS_EX_FULLROWSELECT );
 
   RECT rc;
-  ::GetClientRect( m_hwndList, &rc );
+  ::GetClientRect( myHwndList, &rc );
 
   LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
   int cx = lTotalWidth / CListData::GetColumnCount();
@@ -232,39 +231,11 @@ BOOL CMainDlg::OnInitDialog( void  )
     lvc.fmt = LVCFMT_LEFT;
     lvc.cx = cx;
     lvc.pszText = psz;
-    ListView_InsertColumn( m_hwndList, i, &lvc );
+    ListView_InsertColumn( myHwndList, i, &lvc );
   }
 
-  DWORD dwError = PopulateRomList();
-  if ( dwError != ERROR_SUCCESS )
-  {
-    MessageBoxFromWinError( dwError, _T("PopulateRomList") );
-    return FALSE;
-  }
-
-  // if items added, select first item and enable play button
-  int nCount = ListView_GetItemCount( m_hwndList );
-  if (nCount != 0)
-  {
-    m_header.SetSortCol( 0, TRUE );
-    ListView_SortItems( m_hwndList, ListViewCompareFunc, (LPARAM)this ); 
-    ListView_SetItemState( m_hwndList, 0, LVIS_SELECTED | LVIS_FOCUSED,
-                           LVIS_SELECTED | LVIS_FOCUSED );
-  }
-  else
-  {
-    ::EnableWindow(::GetDlgItem( hwnd, IDC_PLAY), FALSE );
-  }
-
-  // Show status text
-  TCHAR pszStatus[256 + 1];
-  LoadString(m_hInstance, IDS_STATUSTEXT, pszStatus, 256);
-  wsprintf( psz, pszStatus, nCount );
-  SetDlgItemText( hwnd, IDC_ROMCOUNT, psz );
-
-  // Show rom path
-  SetDlgItemText( hwnd, IDC_ROMPATH,
-                  myGlobalData.settings().getString("romdir").c_str() );
+  // Update the ROM game list
+  UpdateRomList();
 
   // Set default button
   ::SendMessage( hwnd, DM_SETDEFID, IDC_PLAY, 0 );
@@ -287,7 +258,7 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
   switch (id)
   {
     case IDC_PLAY:
-      nItem = (int)::SendMessage( m_hwndList, LVM_GETNEXTITEM, 
+      nItem = (int)::SendMessage( myHwndList, LVM_GETNEXTITEM, 
                                   (WPARAM)-1, MAKELPARAM( LVNI_SELECTED, 0 ) );
       ASSERT( nItem != -1 );
       if ( nItem == -1 )
@@ -296,7 +267,7 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
         return TRUE;
       }
 
-      pListData = (CListData*)ListView_GetItemData( m_hwndList, nItem );
+      pListData = (CListData*)ListView_GetItemData( myHwndList, nItem );
 
       TCHAR pszPathName[ MAX_PATH + 1 ];
       lstrcpy( pszPathName, myGlobalData.settings().getString("romdir").c_str() );
@@ -306,7 +277,7 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       (void)m_stella.PlayROM( pszPathName, myGlobalData );
 
       // Set focus back to the rom list
-      ::SetFocus( m_hwndList );
+      ::SetFocus( myHwndList );
 
       return TRUE;
       break; // case IDC_PLAY
@@ -340,6 +311,14 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       ps.DoModal();
       return TRUE;
       break; // case IDC_ABOUT
+    }
+
+    case IDC_RELOAD:
+    {
+      UpdateRomList();
+
+      return TRUE;
+      break; // case IDC_RELOAD
     }
   }
 
@@ -456,12 +435,56 @@ HBRUSH CMainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void CMainDlg::UpdateRomList( void )
+{
+  HWND hwndText;
+  RECT rc;
+
+  DWORD dwError = PopulateRomList();
+  if ( dwError != ERROR_SUCCESS )
+    MessageBoxFromWinError( dwError, _T("PopulateRomList") );
+
+  // if items added, select first item and enable play button
+  int nCount = ListView_GetItemCount( myHwndList );
+  if (nCount != 0)
+  {
+    myHeader.SetSortCol( 0, TRUE );
+    ListView_SortItems( myHwndList, ListViewCompareFunc, (LPARAM)this ); 
+    ListView_SetItemState( myHwndList, 0, LVIS_SELECTED | LVIS_FOCUSED,
+                           LVIS_SELECTED | LVIS_FOCUSED );
+  }
+  else
+  {
+    ::EnableWindow(::GetDlgItem( *this, IDC_PLAY), FALSE );
+  }
+
+  // Show status text
+  TCHAR psz[256 + 1];
+  TCHAR pszStatus[256 + 1];
+  LoadString(m_hInstance, IDS_STATUSTEXT, pszStatus, 256);
+  wsprintf( psz, pszStatus, nCount );
+  hwndText = GetDlgItem( *this, IDC_ROMCOUNT );
+  GetWindowRect(hwndText, &rc);
+  ScreenToClient( *this, (LPPOINT)&rc );
+  ScreenToClient( *this, ((LPPOINT)&rc)+1 );
+  SetWindowText( hwndText, psz );
+  InvalidateRect( *this, &rc, TRUE );
+
+  // Show rom path
+  hwndText = GetDlgItem( *this, IDC_ROMPATH );
+  GetWindowRect(hwndText, &rc);
+  ScreenToClient( *this, (LPPOINT)&rc );
+  ScreenToClient( *this, ((LPPOINT)&rc)+1 );
+  SetWindowText( hwndText, myGlobalData.settings().getString("romdir").c_str() );
+  InvalidateRect( *this, &rc, TRUE );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 DWORD CMainDlg::PopulateRomList( void )
 {
   DWORD dwRet;
   ClearList();
 
-  // REVIEW: Support .zip files?
   TCHAR pszPath[ MAX_PATH ];
 
   lstrcpy( pszPath, myGlobalData.settings().getString("romdir").c_str() );
@@ -470,7 +493,7 @@ DWORD CMainDlg::PopulateRomList( void )
   WIN32_FIND_DATA ffd;
   HANDLE hFind = FindFirstFile( pszPath, &ffd );
 
-  ListView_SetItemCount( m_hwndList, 100 );
+  ListView_SetItemCount( myHwndList, 100 );
 
   int iItem = 0;
   BOOL fDone = (hFind == INVALID_HANDLE_VALUE);
@@ -494,15 +517,15 @@ DWORD CMainDlg::PopulateRomList( void )
     lvi.iSubItem = 0;
     lvi.pszText = LPSTR_TEXTCALLBACK;
     lvi.lParam = (LPARAM)pListData;
-    int nItem = ListView_InsertItem( m_hwndList, &lvi );
+    int nItem = ListView_InsertItem( myHwndList, &lvi );
 
     ASSERT( nItem != -1 );
 
-    ListView_SetItemText( m_hwndList, nItem, 
+    ListView_SetItemText( myHwndList, nItem, 
         CListData::FILENAME_COLUMN, LPSTR_TEXTCALLBACK );
-    ListView_SetItemText(m_hwndList, nItem, 
+    ListView_SetItemText(myHwndList, nItem, 
         CListData::MANUFACTURER_COLUMN, LPSTR_TEXTCALLBACK);
-    ListView_SetItemText( m_hwndList, nItem, 
+    ListView_SetItemText( myHwndList, nItem, 
         CListData::RARITY_COLUMN, LPSTR_TEXTCALLBACK );
 
     // go to the next rom file
@@ -616,55 +639,51 @@ DWORD CMainDlg::ReadRomData(CListData* pListData) const
     return ERROR_SUCCESS;
 }
 
-void CMainDlg::OnColumnClick(
-    LPNMLISTVIEW pnmv
-    )
+void CMainDlg::OnColumnClick( LPNMLISTVIEW pnmv )
 {
     HCURSOR hcur = ::SetCursor(::LoadCursor(NULL, IDC_WAIT));
 
-    m_header.SetSortCol(pnmv->iSubItem, TRUE);
+    myHeader.SetSortCol(pnmv->iSubItem, TRUE);
     ListView_SortItems(pnmv->hdr.hwndFrom, ListViewCompareFunc, (LPARAM)this);
 
     // ensure the selected item is visible
 
-    int nItem = ListView_GetNextItem( m_hwndList, -1, LVNI_SELECTED );
+    int nItem = ListView_GetNextItem( myHwndList, -1, LVNI_SELECTED );
     if (nItem != -1)
     {
-        ListView_EnsureVisible( m_hwndList, nItem, TRUE );
+        ListView_EnsureVisible( myHwndList, nItem, TRUE );
     }
 
     ::SetCursor(hcur);
 }
 
-void CMainDlg::OnItemChanged(
-    LPNMLISTVIEW pnmv
-    )
+void CMainDlg::OnItemChanged( LPNMLISTVIEW pnmv )
 {
-    HWND hwnd = *this;
+  HWND hwnd = *this;
 
-    HWND hwndNote = ::GetDlgItem( hwnd, IDC_ROMNOTE );
+  HWND hwndNote = ::GetDlgItem( hwnd, IDC_ROMNOTE );
 
-    RECT rc;
-    ::GetWindowRect(hwndNote, &rc);
-    ::ScreenToClient( hwnd, (LPPOINT)&rc );
-    ::ScreenToClient( hwnd, ((LPPOINT)&rc)+1 );
+  RECT rc;
+  GetWindowRect(hwndNote, &rc);
+  ScreenToClient( hwnd, (LPPOINT)&rc );
+  ScreenToClient( hwnd, ((LPPOINT)&rc)+1 );
 
-    int iItem = ListView_GetNextItem(pnmv->hdr.hwndFrom, -1, LVNI_SELECTED);
-    if (iItem == -1)
-    {
-        ::SetWindowText( hwndNote, _T("") );
-        ::EnableWindow( ::GetDlgItem( hwnd, IDC_PLAY ), FALSE );
-        ::InvalidateRect( hwnd, &rc, TRUE );
-        return;
-    }
+  int iItem = ListView_GetNextItem(pnmv->hdr.hwndFrom, -1, LVNI_SELECTED);
+  if (iItem == -1)
+  {
+    SetWindowText( hwndNote, _T("") );
+    EnableWindow( ::GetDlgItem( hwnd, IDC_PLAY ), FALSE );
+    InvalidateRect( hwnd, &rc, TRUE );
+    return;
+  }
 
-    CListData* pListData = (CListData*)ListView_GetItemData( 
-        pnmv->hdr.hwndFrom, 
-        pnmv->iItem );
+  CListData* pListData = (CListData*)ListView_GetItemData( 
+    pnmv->hdr.hwndFrom, 
+    pnmv->iItem );
 
-    ::SetWindowText( hwndNote, pListData->GetNote() );
-    ::InvalidateRect( hwnd, &rc, TRUE );
-    ::EnableWindow( ::GetDlgItem( hwnd, IDC_PLAY ), TRUE );
+  SetWindowText( hwndNote, pListData->GetNote() );
+  InvalidateRect( hwnd, &rc, TRUE );
+  EnableWindow( ::GetDlgItem( hwnd, IDC_PLAY ), TRUE );
 }
 
 // ---------------------------------------------------------------------------
@@ -700,7 +719,7 @@ int CALLBACK CMainDlg::ListViewCompareFunc(
     // while other column metadata requires a call to ReadRomData
     //
 
-    int nSortCol = pThis->m_header.GetSortCol();
+    int nSortCol = pThis->myHeader.GetSortCol();
 
     CListData* pItem1 = reinterpret_cast<CListData*>( lParam1 );
     if ( ! pItem1->IsPopulated() && nSortCol != 0 )

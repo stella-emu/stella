@@ -76,7 +76,7 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "This version of StellaX is released under the GPL."
-            VALUE "CompanyName", "Stephen Anthony (stephena@users.sourceforge.net)"
+            VALUE "CompanyName", "Stephen Anthony (sa666_666@hotmail.com)"
             VALUE "FileDescription", "StellaX"
             VALUE "FileVersion", "1, 4, 0, 0"
             VALUE "InternalName", "StellaX"
@@ -113,15 +113,15 @@ BEGIN
                     LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | 
                     WS_BORDER | WS_TABSTOP,7,57,395,143,WS_EX_STATICEDGE
     CONTROL         "&Play",IDC_PLAY,"Button",BS_OWNERDRAW | WS_TABSTOP,7,
-                    226,200,16
+                    226,149,16
     CONTROL         "&Options",IDC_CONFIG,"Button",BS_OWNERDRAW | WS_TABSTOP,
                     230,226,54,16
     CONTROL         "&Help",IDC_ABOUT,"Button",BS_OWNERDRAW | WS_TABSTOP,289,
                     226,54,16
     CONTROL         "E&xit",IDC_EXIT,"Button",BS_OWNERDRAW | WS_TABSTOP,348,
                     226,54,16
-    CTEXT           "Written by Jeff Miller (miller@zipcon.net)\nStella core by Bradford W. Mott (bwmott@acm.org)",
-                    IDC_STATIC,175,13,227,19,SS_NOPREFIX
+    CTEXT           "Written by Jeff Miller (miller@zipcon.net)\nUpdated by Stephen Anthony (sa666_666@hotmail.com)\nStella core by Bradford W. Mott (bwmott@acm.org)",
+                    IDC_STATIC,175,7,227,28,SS_NOPREFIX
     RTEXT           "<status>",IDC_ROMCOUNT,322,45,80,8,SS_NOPREFIX
     CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,39,411,1
     CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,218,411,1
@@ -132,37 +132,30 @@ BEGIN
     CONTROL         "",IDC_ROMNOTE,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
                     WS_GROUP,93,205,309,8
     LTEXT           "Game notes (if available):",-1,7,205,98,8
+    CONTROL         "&Reload",IDC_RELOAD,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    172,226,54,16
 END
 
-IDD_ABOUT_PAGE DIALOGEX 0, 0, 298, 136
+IDD_ABOUT_PAGE DIALOGEX 0, 0, 299, 86
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Information"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "You must own legal copies of all ROM images you are using.  The Stella team can't tell you where to find ROM images so DON'T ASK.  All requests will either be deleted or sent to the appropriate authorities.  StellaX is GPL software.",
-                    -1,7,7,283,30,SS_NOPREFIX
+                    -1,7,7,284,30,SS_NOPREFIX
     LTEXT           "If you have a question or a problem, please try one of these contacts:",
-                    -1,7,44,283,8,SS_NOPREFIX
+                    -1,7,44,284,8,SS_NOPREFIX
     LTEXT           "Steve Anthony:",-1,7,58,53,8,SS_NOPREFIX
     LTEXT           "sa666_666@hotmail.com",IDC_EMAIL_MAINTAINER,73,58,122,8,
                     SS_NOPREFIX | SS_NOTIFY
     LTEXT           "http://minbar.org",IDC_WEB_MAINTAINER,202,58,72,8,
                     SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "Stella dev team:",-1,7,70,52,8,SS_NOPREFIX
+    LTEXT           "Stella dev team:",-1,7,70,60,8,SS_NOPREFIX
     LTEXT           "stella-main@lists.sourceforge.net",IDC_EMAIL_STELLA,73,
                     70,122,8,SS_NOPREFIX | SS_NOTIFY
     LTEXT           "http://stella.sf.net",IDC_WEB_STELLA,202,70,68,8,
                     SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "God, Suzi and Noah",-1,60,94,69,8,SS_NOPREFIX
-    LTEXT           "Bradford Mott, Mike Balfour and Roger Onslow.",-1,60,
-                    107,204,8,SS_NOPREFIX
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,86,283,1
-    LTEXT           "Beta Tester:",-1,7,120,44,8,SS_NOPREFIX
-    LTEXT           "John Hardy IV",IDC_WWW_MAME,60,120,46,8,SS_NOPREFIX | 
-                    SS_NOTIFY
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,37,283,1
-    LTEXT           "Thanks To:",-1,7,107,38,8
-    LTEXT           "Dedicated To:",-1,7,94,46,8
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,37,284,1
 END
 
 IDD_CONFIG_PAGE DIALOGEX 0, 0, 306, 199
@@ -212,9 +205,9 @@ BEGIN
     IDD_ABOUT_PAGE, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 290
+        RIGHTMARGIN, 291
         TOPMARGIN, 7
-        BOTTOMMARGIN, 128
+        BOTTOMMARGIN, 78
     END
 
     IDD_CONFIG_PAGE, DIALOG
@@ -253,60 +246,23 @@ STRINGTABLE
 BEGIN
     IDS_STATUSTEXT          "%d files found"
     IDS_STELLA              "StellaX"
-    IDS_NODIRECTINPUT       "DirectInput could not be initialized.  Be sure you have DirectX 5.0 or later installed."
-    IDS_CANTSTARTCONSOLE    "Error starting console.  You may have chosen an invalid ROM file."
-    IDS_COINIT_FAILED       "Unable to initialize COM subsystem"
-    IDS_ASS_FAILED          "Unable to initialize audio subsystem"
-    IDS_PAS_FAILED          "Unable to create audio stream"
-    IDS_DD_INIT_FAILED      "Unable to initialize DirectDraw object"
-    IDS_DD_ENUMMODES_FAILED "Unable to enumerate display modes"
-    IDS_NO_VID_MODE         "No compatible video modes were found"
-    IDS_DI_INIT_FAILED      "Unable to initialize DirectInput object"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_ALREADYRUNNING      "StellaX is already running!"
-    IDS_BADARGUMENT         "Unknown argument given on command line"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_DDSDM_FAILED        "Unable to set video mode.  Your video adapter might be incompatible with stella."
-    IDS_DSCSBFAILED         "IDirectSound::CreateSoundBuffer failed"
-    IDS_DSSCLFAILED         "IDirectSound::SetCooperativeLevel failed"
-    IDS_FILEFILTER          "Stella Files (*.bin)|*.bin|All Files (*.*)|*.*||"
     IDS_FILENAME            "Filename"
     IDS_MANUFACTURER        "Manufacturer"
-    IDS_MIKE                """I've heard some folks discussing the possibility of writing an 2600 emulator in a high level language - forget it, not possible."" -- Mike Livesay on rec.games.video.classic"
     IDS_NAME                "Name"
-    IDS_NODIRECTDRAW        "DirectDraw does not appear to be installed on this system!"
     IDS_RARITY              "Rarity"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_CW_FAILED           "CreateWindow failed"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_DDSCL_FAILED        "IDirectDraw::SetCooperativeLevel failed"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_DDCS_FAILED         "IDirectDraw::CreateSurface failed"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_DDCP_FAILED         "IDirectDraw::CreatePalette failed"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_ROM_LOAD_FAILED     "Unable to load ROM image\n\nCurrent Directory: %s\nPath: %s\nError code: %d - %s"
     IDS_NO_ITEM_SELECTED    "Before pressing play you must first select a game from the list!"
 END
 

@@ -180,20 +180,21 @@ public:
 
     operator HWND( void ) const
         {
-            return m_hwnd;
+            return myHwnd;
         }
 
 private:
 
-    HWND m_hwnd;
+    HWND myHwnd;
 
-    CCoolCaption m_CoolCaption;
-    CTextButton3d m_btn3d;
-    CHeaderCtrl m_header;
-    CRoundButton m_btnPlay;
-    CRoundButton m_btnHelp;
-    CRoundButton m_btnConfig;
-    CRoundButton m_btnExit;
+    CCoolCaption  m_CoolCaption;
+    CTextButton3d myAppTitle;
+    CHeaderCtrl   myHeader;
+    CRoundButton  myPlayButton;
+    CRoundButton  myHelpButton;
+    CRoundButton  myReloadButton;
+    CRoundButton  myConfigButton;
+    CRoundButton  myExitButton;
 
     //
     // Message handlers
@@ -235,13 +236,14 @@ private:
     // internal data
 
     DWORD PopulateRomList();
+    void UpdateRomList();
     DWORD ReadRomData( CListData* ) const;
 
     HINSTANCE m_hInstance;
 
     // stuff in list
 
-    HWND m_hwndList;
+    HWND myHwndList;
     void ClearList();
 
     HFONT m_hfontRomNote;
