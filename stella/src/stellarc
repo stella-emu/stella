@@ -12,6 +12,8 @@
 ;  Values are the same as those allowed on the commandline.
 ;  Boolean values are specified as 1 (for true) and 0 (for false)
 ;
+;  This file can be put in "/etc/stellarc" for system-wide access
+;  or in "$HOME/.stella/stellarc" for individual users.
                        
 ;display    = <display>
 ;fps        = <number>
