@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.24 2002-05-14 18:29:44 stephena Exp $
+// $Id: mainSDL.cxx,v 1.25 2002-08-04 00:28:18 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -52,7 +52,6 @@
   #define SDL_DISABLE 0
 #endif
 
-#define HAVE_GETTIMEOFDAY 1
 #define MESSAGE_INTERVAL 2
 
 // function prototypes
@@ -1329,6 +1328,7 @@ void usage()
     "  -sssingle               Generate single snapshot instead of many",
 #endif
     "  -pro <props file>       Use the given properties file instead of stella.pro",
+    "  -nohog                  Don't take all the CPU (gives less accurate emulation)",
     "",
     0
   };
@@ -1576,89 +1576,94 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-#ifdef EXPERIMENTAL_TIMING
-  // Set up timing stuff
-  uInt32 startTime, frameTime, virtualTime, currentTime;
-  uInt32 numberOfFrames = 0;
-  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
+  // These variables are common to both timing options
+  // and are needed to calculate the overall frames per second.
+  uInt32 frameTime = 0, numberOfFrames = 0;
 
-  // Set the base for the timers
-  virtualTime = getTicks();
-  frameTime = 0;
-
-  // Main game loop
-  for(;;)
+  if(settings->theHogCPUFlag)   // normal, CPU-intensive timing
   {
-    // Exit if the user wants to quit
-    if(theQuitIndicator)
-    {
-      break;
-    }
+    // Set up accurate timing stuff
+    uInt32 startTime, delta;
+    uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
 
-    startTime = getTicks();
-    if(!thePauseIndicator)
-    {
-      theConsole->mediaSource().update();
-    }
-    updateDisplay(theConsole->mediaSource());
-    handleEvents();
+    // Set the base for the timers
+    frameTime = 0;
 
-    currentTime = getTicks();
-    virtualTime += timePerFrame;
-    if(currentTime < virtualTime)
-    {
-      SDL_Delay((virtualTime - currentTime)/1000);
-    }
-
-    currentTime = getTicks() - startTime;
-    frameTime += currentTime;
-    ++numberOfFrames;
-  }
-#else
-  // Set up timing stuff
-  uInt32 startTime, frameTime, delta;
-  uInt32 numberOfFrames = 0;
-  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
-
-  // Set the base for the timers
-  frameTime = 0;
-
-  // Main game loop
-  for(;;)
-  {
-    // Exit if the user wants to quit
-    if(theQuitIndicator)
-    {
-      break;
-    }
-
-    // Call handleEvents here to see if user pressed pause
-    handleEvents();
-    if(thePauseIndicator)
-    {
-      updateDisplay(theConsole->mediaSource());
-      SDL_Delay(10);
-      continue;
-    }
-
-    startTime = getTicks();
-    theConsole->mediaSource().update();
-    updateDisplay(theConsole->mediaSource());
-    handleEvents();
-
-    // Now, waste time if we need to so that we are at the desired frame rate
+    // Main game loop
     for(;;)
     {
-      delta = getTicks() - startTime;
-
-      if(delta >= timePerFrame)
+      // Exit if the user wants to quit
+      if(theQuitIndicator)
+      {
         break;
-    }
+      }
 
-    frameTime += getTicks() - startTime;
-    ++numberOfFrames;
+      // Call handleEvents here to see if user pressed pause
+      handleEvents();
+      if(thePauseIndicator)
+      {
+        updateDisplay(theConsole->mediaSource());
+        SDL_Delay(10);
+        continue;
+      }
+
+      startTime = getTicks();
+      theConsole->mediaSource().update();
+      updateDisplay(theConsole->mediaSource());
+      handleEvents();
+
+      // Now, waste time if we need to so that we are at the desired frame rate
+      for(;;)
+      {
+        delta = getTicks() - startTime;
+
+        if(delta >= timePerFrame)
+          break;
+      }
+
+      frameTime += getTicks() - startTime;
+      ++numberOfFrames;
+    }
   }
-#endif
+  else    // less accurate, less CPU-intensive timing
+  {
+    // Set up less accurate timing stuff
+    uInt32 startTime, virtualTime, currentTime;
+    uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
+
+    // Set the base for the timers
+    virtualTime = getTicks();
+    frameTime = 0;
+
+    // Main game loop
+    for(;;)
+    {
+      // Exit if the user wants to quit
+      if(theQuitIndicator)
+      {
+        break;
+      }
+
+      startTime = getTicks();
+      if(!thePauseIndicator)
+      {
+        theConsole->mediaSource().update();
+      }
+      updateDisplay(theConsole->mediaSource());
+      handleEvents();
+
+      currentTime = getTicks();
+      virtualTime += timePerFrame;
+      if(currentTime < virtualTime)
+      {
+        SDL_Delay((virtualTime - currentTime)/1000);
+      }
+
+      currentTime = getTicks() - startTime;
+      frameTime += currentTime;
+      ++numberOfFrames;
+    }
+  }
 
   if(settings->theShowInfoFlag)
   {

@@ -27,3 +27,4 @@
 ;ssdir = <pathname>
 ;ssname = <romname|md5sum>
 ;sssingle = <0|1>
+;nohog = <0|1>

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.1 2002-03-21 22:47:00 stephena Exp $
+// $Id: Settings.cxx,v 1.2 2002-08-04 00:28:18 stephena Exp $
 //============================================================================
 
 #include "Settings.hxx"
@@ -28,6 +28,7 @@ Settings::Settings()
   theHideCursorFlag = false;
   theUsePrivateColormapFlag = false;
   theMultipleSnapShotFlag = true;
+  theHogCPUFlag = true;
   theDesiredVolume = 75;
   theDesiredFrameRate = 60;
   thePaddleMode = 0;
@@ -105,6 +106,10 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
     else if(string(argv[i]) == "-showinfo")
     {
       theShowInfoFlag = true;
+    }
+    else if(string(argv[i]) == "-nohog")
+    {
+      theHogCPUFlag = false;
     }
     else if(string(argv[i]) == "-zoom")
     {
@@ -250,6 +255,14 @@ void Settings::handleRCFile(istream& in)
         theShowInfoFlag = true;
       else if(option == 0)
         theShowInfoFlag = false;
+    }
+    else if(key == "nohog")
+    {
+      uInt32 option = atoi(value.c_str());
+      if(option == 1)
+        theHogCPUFlag = false;
+      else if(option == 0)
+        theShowInfoFlag = true;
     }
     else if(key == "zoom")
     {

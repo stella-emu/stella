@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.18 2002-08-03 22:52:39 stephena Exp $
+## $Id: makefile,v 1.19 2002-08-04 00:28:18 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -35,8 +35,8 @@ OPTIMIZATIONS    =
 #	-malign-functions=2 -malign-jumps=2 -malign-loops=2
 ### to get full optimization under gcc/x Athlon based OS's..
 # OPTIMIZATIONS    = -O3 -mcpu=athlon -march=athlon -Wall -Wno-unused \
-	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
-	-falign-functions=2 -falign-jumps=2 -falign-loops=2
+#	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
+#	-falign-functions=2 -falign-jumps=2 -falign-loops=2
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -55,10 +55,10 @@ OPTIMIZATIONS    =
 ### Only X11 and SDL ports supported for now
 # SNAPSHOT_SUPPORT = 1
 
-### to enable EXPERIMENTAL TIMING code
-### Enables emulator to not use 100% CPU
-### Only X11 and SDL ports supported for now
-# EXPERIMENTAL_TIMING = 1
+### comment this out if your system doesn't
+### have the gettimeofday function
+### Currently, the X11 version won't compile without it
+HAVE_GETTIMEOFDAY = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -124,9 +124,9 @@ OPTS.SDL += -DHAVE_PNG=1
 LIBS.SDL += -lpng
 endif
 
-ifdef EXPERIMENTAL_TIMING
-OPTS.X11 += -DEXPERIMENTAL_TIMING=1
-OPTS.SDL += -DEXPERIMENTAL_TIMING=1
+ifdef HAVE_GETTIMEOFDAY
+OPTS.X11 += -DHAVE_GETTIMEOFDAY=1
+OPTS.SDL += -DHAVE_GETTIMEOFDAY=1
 endif
 
 default:
