@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.1 2002-10-11 13:07:01 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.2 2002-10-12 15:24:49 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -28,7 +28,7 @@
   This class implements the sound API for SDL.
 
   @author  Stephen Anthony
-  @version $Id: SoundSDL.hxx,v 1.1 2002-10-11 13:07:01 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.2 2002-10-12 15:24:49 stephena Exp $
 */
 class SoundSDL
 {
@@ -52,9 +52,9 @@ class SoundSDL
     uInt32 getSampleRate() const;
 
     /**
-      Return true iff the sound device was successfully initlaized.
+      Return true iff the sound device was successfully initialized.
 
-      @return true iff the sound device was successfully initlaized.
+      @return true iff the sound device was successfully initialized
     */
     bool isSuccessfullyInitialized() const;
 
@@ -67,24 +67,26 @@ class SoundSDL
     void setSoundVolume(uInt32 volume);
 
     /**
-      Update the sound device using the audio sample from the specified
-      media source.
+      Notifies this class of the MediaSource object where sample data
+      may be obtained.  The SDL sound api is thread-based, so the SDL
+      audio callback directly queries the MediaSource when it requires
+      more audio samples.
 
-      @param mediaSource The media source to get audio samples from.
+      @param mediaSource The MediaSource where sample data is obtained
     */
-    void updateSound(MediaSource& mediaSource);
+    void setMediaSource(MediaSource& mediaSource);
 
     /**
-      Closes the soudn device
-    */
-    void close();
+      Set the mute state of the sound object.
 
-    /**
-      Set the mute state of the sound object
-
-      @param state Mutes sound iff true
+      @param state Mutes sound if true, unmute if false
     */
     void mute(bool state);
+
+    /**
+      Closes the sound device
+    */
+    void close();
 
   private:
     // Indicates if the sound device was successfully initialized
@@ -99,12 +101,11 @@ class SoundSDL
     // Indicates if the sound is currently muted
     bool myIsMuted;
 
-  /**
-    Some stuff which is required to be static since the SDL audio
-    callback is a C-style function.
-  */
   private:
-
+    /**
+      The callback used by the SDL sound API.  It obtains samples
+      from the MediaSource as it needs them.
+    */
     static void fillAudio(void* udata, uInt8* stream, Int32 len);
 
 };

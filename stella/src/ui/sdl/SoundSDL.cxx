@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.1 2002-10-11 13:07:00 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.2 2002-10-12 15:24:49 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
 
 #include "SoundSDL.hxx"
 
-static uInt8 currentVolume;
-static MediaSource* _mediaSource;
+static uInt8 _myCurrentVolume;
+static MediaSource* _myMediaSource;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::SoundSDL(bool activate)
@@ -64,8 +64,8 @@ SoundSDL::SoundSDL(bool activate)
   mySampleRate = obtained.freq;
 
   // Take care of the static stuff ...
-  currentVolume = 0;
-  _mediaSource = (MediaSource*) NULL;
+  _myCurrentVolume = 0;
+  _myMediaSource = (MediaSource*) NULL;
 
   SDL_PauseAudio(0);
 }
@@ -73,6 +73,7 @@ SoundSDL::SoundSDL(bool activate)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::~SoundSDL()
 {
+  close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,8 +106,6 @@ void SoundSDL::mute(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::close()
 {
-  SDL_PauseAudio(0);
-
   if(myIsInitializedFlag)
     SDL_CloseAudio();
 
@@ -120,28 +119,26 @@ void SoundSDL::setSoundVolume(uInt32 percent)
     return;
 
   if((percent >= 0) && (percent <= 100))
-    currentVolume = (int) (((float) percent / 100.0) * (float) SDL_MIX_MAXVOLUME);
+    _myCurrentVolume = (int) (((float) percent / 100.0) * (float) SDL_MIX_MAXVOLUME);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::updateSound(MediaSource& mediaSource)
+void SoundSDL::setMediaSource(MediaSource& mediaSource)
 {
-  // this is a HUGE HACK and will disappear soon
-  _mediaSource = &mediaSource;
+  _myMediaSource = &mediaSource;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::fillAudio(void* udata, uInt8* stream, Int32 len)
 {  
-  if(!_mediaSource)
+  if(!_myMediaSource)
     return;
 
-  uInt32 samples = _mediaSource->numberOfAudioSamples();
-  if(samples == 0)
-    return;
-
-  uInt8 buffer[len];
-  _mediaSource->dequeueAudioSamples(buffer, len);
-
-  SDL_MixAudio(stream, buffer, len, currentVolume);
+  // Dequeue samples as long as full fragments are available
+  if(_myMediaSource->numberOfAudioSamples() >= (uInt32) len)
+  {
+    uInt8 buffer[len];
+    _myMediaSource->dequeueAudioSamples(buffer, (uInt32)len);
+    SDL_MixAudio(stream, buffer, len, _myCurrentVolume);
+  }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.30 2002-10-11 13:07:01 stephena Exp $
+// $Id: mainSDL.cxx,v 1.31 2002-10-12 15:24:49 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -587,7 +587,7 @@ void togglePause()
     thePauseIndicator = true;
   }
 
-  // Pause the console
+  // Pause the console and the audio
   theConsole->mediaSource().pause(thePauseIndicator);
 
   // Show a different palette depending on pause state
@@ -1573,6 +1573,10 @@ int main(int argc, char* argv[])
   theConsole = new Console(image, size, filename, 
       theEvent, propertiesSet, sound.getSampleRate());
 
+  // Let the sound object know about the MediaSource.
+  // The sound object takes care of getting samples from the MediaSource.  
+  sound.setMediaSource(theConsole->mediaSource());
+
   // Free the image since we don't need it any longer
   delete[] image;
 
@@ -1625,7 +1629,6 @@ int main(int argc, char* argv[])
 
       startTime = getTicks();
       theConsole->mediaSource().update();
-      sound.updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
       handleEvents();
 
@@ -1665,7 +1668,6 @@ int main(int argc, char* argv[])
       if(!thePauseIndicator)
       {
         theConsole->mediaSource().update();
-        sound.updateSound(theConsole->mediaSource());
       }
       updateDisplay(theConsole->mediaSource());
       handleEvents();
