@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.2 2002-03-18 14:40:07 gunfight Exp $
+// $Id: CartDPC.cxx,v 1.3 2002-03-28 01:48:28 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -21,11 +21,19 @@
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// This class does not emulate the music mode data fetchers of the DPC.  A 
+// draft version of this class which does support the music mode data fetchers
+// has been developed, however, it hasn't been checked in because additional
+// work to the Stella sound system is needed for the sound to work correctly.
+// Full support for the DPC will be added in the 1.3 release of Stella.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 {
-	uInt32 addr;
+  uInt32 addr;
 
-	// Copy the program ROM image into my buffer
+  // Copy the program ROM image into my buffer
   for(addr = 0; addr < 8192; ++addr)
   {
     myProgramImage[addr] = image[addr];
