@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.10 2003-09-28 21:59:24 stephena Exp $
+// $Id: Settings.cxx,v 1.11 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -32,9 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
-    : myPauseIndicator(false),
-      myQuitIndicator(false),
-      myConsole(0)
+  :  myConsole(0)
 {
   // First create the settings array
   myCapacity = 30;

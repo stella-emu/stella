@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.8 2003-10-26 19:40:39 stephena Exp $
+// $Id: Settings.hxx,v 1.9 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.8 2003-10-26 19:40:39 stephena Exp $
+  @version $Id: Settings.hxx,v 1.9 2003-11-06 22:22:32 stephena Exp $
 */
 class Settings
 {
@@ -135,32 +135,6 @@ class Settings
     void setConsole(Console* console) { myConsole = console; } 
 
     /**
-      This method should be called when the emulation core receives
-      a QUIT event.
-    */
-    void setQuitEvent() { myQuitIndicator = true; }
-
-    /**
-      This method determines whether the QUIT event has been received.
-
-      @return Boolean representing whether a QUIT event has been received
-    */
-    bool quit() { return myQuitIndicator; }
-
-    /**
-      This method should be called at when the emulation core receives
-      a PAUSE event.
-    */
-    void setPauseEvent(bool status) { myPauseIndicator = status; }
-
-    /**
-      This method determines whether the PAUSE event has been received.
-
-      @return Boolean representing whether a PAUSE event has been received
-    */
-    bool pause() { return myPauseIndicator; }
-
-    /**
       This method should be called to get the filename of the users'
       properties (stella.pro) file.
 
@@ -204,9 +178,6 @@ class Settings
 #endif
 
   protected:
-    bool myPauseIndicator;
-    bool myQuitIndicator;
-
     string myBaseDir;
     string myStateDir;
     string myStateFile;

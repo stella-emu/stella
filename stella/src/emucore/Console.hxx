@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.14 2003-10-26 19:40:39 stephena Exp $
+// $Id: Console.hxx,v 1.15 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -41,7 +41,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.14 2003-10-26 19:40:39 stephena Exp $
+  @version $Id: Console.hxx,v 1.15 2003-11-06 22:22:32 stephena Exp $
 */
 class Console
 {
@@ -50,17 +50,17 @@ class Console
       Create a new console for emulating the specified game using the
       given event object and game profiles.
 
-      @param image The ROM image of the game to emulate
-      @param size The size of the ROM image  
-      @param filename The name of the file that contained the ROM image
-      @param rcsettings The settings object to use
-      @param profiles The game profiles object to use
+      @param image       The ROM image of the game to emulate
+      @param size        The size of the ROM image  
+      @param filename    The name of the file that contained the ROM image
+      @param settings    The settings object to use
+      @param profiles    The game profiles object to use
       @param framebuffer The framebuffer object to use
-      @param sampleRate The rate to create audio samples at
+      @param sound       The sound object to use
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
-        Settings& rcsettings, PropertiesSet& propertiesSet,
-        FrameBuffer& framebuffer, uInt32 sampleRate);
+        Settings& settings, PropertiesSet& propertiesSet,
+        FrameBuffer& framebuffer, Sound& sound);
 
     /**
       Create a new console object by copying another one
@@ -105,6 +105,13 @@ class Console
       @return The frame buffer
     */
     FrameBuffer& frameBuffer() const;
+
+    /**
+      Get the sound object of the console
+
+      @return The sound object for this console
+    */
+    Sound& sound() const;
 
     /**
       Get the console switches
@@ -245,6 +252,9 @@ class Console
 
     // Reference to the FrameBuffer object
     FrameBuffer& myFrameBuffer;
+
+    // Reference to the Sound object
+    Sound& mySound;
 
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.17 2003-10-26 19:40:39 stephena Exp $
+// $Id: EventHandler.cxx,v 1.18 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -27,6 +27,7 @@
 #include "StellaEvent.hxx"
 #include "System.hxx"
 #include "FrameBuffer.hxx"
+#include "Sound.hxx"
 #include "bspf.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
@@ -38,6 +39,7 @@ EventHandler::EventHandler(Console* console)
     : myConsole(console),
       myCurrentState(0),
       myPauseStatus(false),
+      myQuitStatus(false),
       myMenuStatus(false),
       myRemapEnabledFlag(true)
 {
@@ -84,11 +86,13 @@ Event* EventHandler::event()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
-  // First check if we are entering menu mode
-  if(myRemapEnabledFlag && key == StellaEvent::KCODE_TAB && state == 1)
+  // First check if we are changing menu mode, and only change when not paused
+  // Sound is paused when entering menu mode, but the framebuffer is kept active
+  if(myRemapEnabledFlag && key == StellaEvent::KCODE_TAB && state == 1 && !myPauseStatus)
   {
     myMenuStatus = !myMenuStatus;
-    myConsole->frameBuffer().showMainMenu(myMenuStatus);
+    myConsole->frameBuffer().showMenu(myMenuStatus);
+    myConsole->sound().pause(myMenuStatus);
     return;
   }
 
@@ -145,13 +149,13 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     {
       myPauseStatus = !myPauseStatus;
       myConsole->frameBuffer().pause(myPauseStatus);
-//FIXME  myConsole->sound().pause(myPauseStatus);
+      myConsole->sound().pause(myPauseStatus);
       return;
     }
     else if(event == Event::Quit)
     {
+      myQuitStatus = !myQuitStatus;
       myConsole->settings().saveConfig();
-      myConsole->settings().setQuitEvent();
       return;
     }
 

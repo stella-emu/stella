@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundOSS.hxx,v 1.2 2003-02-25 03:12:55 stephena Exp $
+// $Id: SoundOSS.hxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDOSS_HXX
@@ -28,7 +28,7 @@
   Open Sound System (OSS) API.
 
   @author  Bradford W. Mott
-  @version $Id: SoundOSS.hxx,v 1.2 2003-02-25 03:12:55 stephena Exp $
+  @version $Id: SoundOSS.hxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
 */
 class SoundOSS : public Sound
 {
@@ -73,6 +73,14 @@ class SoundOSS : public Sound
     void setSoundVolume(Int32 percent);
 
     /**
+      Sets the pause status.  While pause is selected, updateSound()
+      should not play any sound.
+
+      @param status  Toggle pause based on status
+    */
+    void pause(bool status) { myPauseStatus = status; }
+
+    /**
       Update the sound device using the audio sample from the specified
       media source.
 
@@ -95,5 +103,8 @@ class SoundOSS : public Sound
 
     // DSP sample rate
     uInt32 mySampleRate;
+
+    // The pause status
+    bool myPauseStatus;
 };
 #endif

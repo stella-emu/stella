@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.5 2003-02-25 03:12:54 stephena Exp $
+// $Id: Sound.cxx,v 1.6 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include "Sound.hxx"
@@ -47,6 +47,11 @@ bool Sound::isSuccessfullyInitialized() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sound::setSoundVolume(Int32 volume)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::pause(bool status)
 {
 }
 

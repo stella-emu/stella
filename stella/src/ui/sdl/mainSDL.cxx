@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.56 2003-10-26 19:40:39 stephena Exp $
+// $Id: mainSDL.cxx,v 1.57 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <cstdlib>
 
 #ifdef HAVE_GETTIMEOFDAY
   #include <time.h>
@@ -34,13 +35,18 @@
 #include "StellaEvent.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
-#include "FrameBufferSDL.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
 
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
+  // Pointer to the OpenGL display object or the null pointer
+  static FrameBufferGL* theDisplay = (FrameBufferGL*) NULL;
+#else
+  #include "FrameBufferSDL.hxx"  
+  // Pointer to the software display object or the null pointer
+  static FrameBufferSDL* theDisplay = (FrameBufferSDL*) NULL;
 #endif
 
 #ifdef SOUND_ALSA
@@ -82,9 +88,6 @@ static Sound* theSound = (Sound*) NULL;
 
 // Pointer to the settings object or the null pointer
 static Settings* theSettings = (Settings*) NULL;
-
-// Pointer to the display object or the null pointer
-static FrameBufferSDL* theDisplay = (FrameBufferSDL*) NULL;
 
 // Indicates if the mouse should be grabbed
 static bool theGrabMouseIndicator = false;
@@ -201,7 +204,6 @@ static Switches keyList[] = {
     { SDLK_CLEAR,       StellaEvent::KCODE_CLEAR      },
     { SDLK_RETURN,      StellaEvent::KCODE_RETURN     },
     { SDLK_ESCAPE,      StellaEvent::KCODE_ESCAPE     },
-    { SDLK_SPACE,       StellaEvent::KCODE_SPACE      },
     { SDLK_COMMA,       StellaEvent::KCODE_COMMA      },
     { SDLK_MINUS,       StellaEvent::KCODE_MINUS      },
     { SDLK_PERIOD,      StellaEvent::KCODE_PERIOD     },
@@ -506,7 +508,7 @@ void handleEvents()
     {
       if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
       {
-        if(!theSettings->pause())
+        if(!theConsole->eventHandler().doPause())
         {
           theConsole->eventHandler().sendEvent(Event::Pause, 1);
         }
@@ -671,6 +673,10 @@ int main(int argc, char* argv[])
   thePaddleMode = theSettings->getInt("paddle");
   theShowInfoFlag = theSettings->getBool("showinfo");
 
+  // Request that the SDL window be centered, if possible
+  // This will probably only work under Linux
+  setenv("SDL_VIDEO_CENTERED", "1", 1);
+
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
 
@@ -693,6 +699,24 @@ int main(int argc, char* argv[])
   if(!setupProperties(propertiesSet))
   {
     delete[] image;
+    cleanup();
+    return 0;
+  }
+
+  // Create an SDL window
+#ifdef DISPLAY_OPENGL
+  theDisplay = new FrameBufferGL();
+  if(theShowInfoFlag)
+    cout << "Using OpenGL SDL for video.\n";
+#else
+  theDisplay = new FrameBufferSDL();
+  if(theShowInfoFlag)
+    cout << "Using software SDL for video.\n";
+#endif
+
+  if(!theDisplay)
+  {
+    cerr << "ERROR: Couldn't set up display.\n";
     cleanup();
     return 0;
   }
@@ -741,25 +765,9 @@ int main(int argc, char* argv[])
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
-  // Setup the SDL window
-#ifdef DISPLAY_OPENGL
-  bool useGL = theSettings->getBool("opengl");
-  if(useGL)
-    theDisplay = new FrameBufferGL();
-  else
-#endif
-    theDisplay = new FrameBufferSDL();
-
-  if(!theDisplay)
-  {
-    cerr << "ERROR: Couldn't set up display.\n";
-    cleanup();
-    return 0;
-  }
-
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
-                           *theDisplay, theSound->getSampleRate());
+                           *theDisplay, *theSound);
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -790,21 +798,13 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theSettings->quit())
+      if(theConsole->eventHandler().doQuit())
       {
         break;
       }
 
-      // Call handleEvents here to see if user pressed pause
       startTime = getTicks();
       handleEvents();
-      if(theSettings->pause())
-      {
-        theDisplay->update();
-        SDL_Delay(10);
-        continue;
-      }
-
       theDisplay->update();
       theSound->updateSound(*theDisplay->mediaSource());
 
@@ -835,24 +835,16 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theSettings->quit())
+      if(theConsole->eventHandler().doQuit())
       {
         break;
       }
-/*
-      startTime = getTicks();
-      handleEvents();
-      if(!theSettings->pause())
-      {
-        theSound->updateSound(*theDisplay->mediaSource());
-      }
-      theDisplay->update();
-*/
+
       startTime = getTicks();
       handleEvents();
       theDisplay->update();
       theSound->updateSound(*theDisplay->mediaSource());
-///
+
       currentTime = getTicks();
       virtualTime += timePerFrame;
       if(currentTime < virtualTime)

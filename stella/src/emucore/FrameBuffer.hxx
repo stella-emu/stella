@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.2 2003-10-26 19:40:39 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.2 2003-10-26 19:40:39 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
 */
 class FrameBuffer
 {
@@ -70,7 +70,7 @@ class FrameBuffer
 
       @param show  Show/hide the menu based on the boolean value
     */
-    void showMainMenu(bool show);
+    void showMenu(bool show);
 
     /**
       Shows a message onscreen.
@@ -280,6 +280,12 @@ class FrameBuffer
     // Indicates the current selected event being remapped
     Event::Type mySelectedEvent;
 
+    // Indicates if we are in menu mode
+    bool myMenuMode;
+
+    // Indicates if the menus should be redrawn
+    bool theMenuChangedIndicator;
+
     // The maximum number of vertical lines of text that can be onscreen
     uInt32 myMaxLines;
 
@@ -300,7 +306,7 @@ class FrameBuffer
     uInt32 myInfoMenuWidth;
 
     // Holds information about the current selected ROM image
-    string ourPropertiesInfo[6];
+    string ourPropertiesInfo[9];
 
     // Holds static strings for the main menu
     static MainMenuItem ourMainMenu[2];

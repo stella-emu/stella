@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.11 2003-10-26 19:40:39 stephena Exp $
+// $Id: EventHandler.hxx,v 1.12 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -41,7 +41,7 @@ class MediaSource;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.11 2003-10-26 19:40:39 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.12 2003-11-06 22:22:32 stephena Exp $
 */
 class EventHandler
 {
@@ -118,6 +118,16 @@ class EventHandler
     */
     void enableRemapping(bool status) { myRemapEnabledFlag = status; }
 
+    /**
+      This method indicated whether a pause event has been received.
+    */
+    bool doPause() { return myPauseStatus; }
+
+    /**
+      This method indicated whether a quit event has been received.
+    */
+    bool doQuit() { return myQuitStatus; }
+
     void getKeymapArray(Event::Type** array, uInt32* size);
     void getJoymapArray(Event::Type** array, uInt32* size);
 
@@ -158,6 +168,9 @@ class EventHandler
 
     // Indicates the current pause status
     bool myPauseStatus;
+
+    // Indicates the current quit status
+    bool myQuitStatus;
 
     // The current keymap in string form
     string myKeymapString;

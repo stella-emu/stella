@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.42 2003-09-19 15:45:01 stephena Exp $
+// $Id: mainX11.cxx,v 1.43 2003-11-06 22:22:33 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -64,7 +64,7 @@
 #endif
 
 // function prototypes
-// FIXME the following will be placed in a Display class eventually ...
+// the following will be placed in a Display class eventually ...
 // A graphic context for each of the 2600's colors
 static GC theGCTable[256];
 static bool setupDisplay();
@@ -647,7 +647,7 @@ void handleEvents()
       {
         resizeWindow(0);
       }
-// FIXME - change x to Ctrl-x
+// change x to Ctrl-x
       else if((key == XK_g) && (event.type == KeyPress))
       {
         // don't change grabmouse in fullscreen mode

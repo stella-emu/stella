@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.1 2003-10-26 19:40:39 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.2 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -24,7 +24,6 @@
 #include "FrameBuffer.hxx"
 #include "FrameBufferSDL.hxx"
 #include "MediaSrc.hxx"
-#include "RectList.hxx"
 #include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -608,4 +607,60 @@ void FrameBufferSDL::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c, uInt8 fg)
       }
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+RectList::RectList(Uint32 size)
+{
+  currentSize = size;
+  currentRect = 0;
+
+  rectArray = new SDL_Rect[currentSize];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+RectList::~RectList()
+{
+  delete[] rectArray;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RectList::add(SDL_Rect* newRect)
+{
+  if(currentRect >= currentSize)
+  {
+    currentSize = currentSize * 2;
+    SDL_Rect *temp = new SDL_Rect[currentSize];
+
+    for(Uint32 i = 0; i < currentRect; ++i)
+      temp[i] = rectArray[i];
+
+    delete[] rectArray;
+    rectArray = temp;
+  }
+
+  rectArray[currentRect].x = newRect->x;
+  rectArray[currentRect].y = newRect->y;
+  rectArray[currentRect].w = newRect->w;
+  rectArray[currentRect].h = newRect->h;
+
+  ++currentRect;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SDL_Rect* RectList::rects()
+{
+  return rectArray;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Uint32 RectList::numRects()
+{
+  return currentRect;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RectList::start()
+{
+  currentRect = 0;
 }

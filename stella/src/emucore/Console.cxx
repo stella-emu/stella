@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.19 2003-10-26 19:40:39 stephena Exp $
+// $Id: Console.cxx,v 1.20 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -39,6 +39,7 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx" 
+#include "Sound.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
@@ -50,11 +51,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
-    Settings& rcsettings, PropertiesSet& propertiesSet, 
-    FrameBuffer& framebuffer, uInt32 sampleRate)
-    : mySettings(rcsettings),
+    Settings& settings, PropertiesSet& propertiesSet, 
+    FrameBuffer& framebuffer, Sound& sound)
+    : mySettings(settings),
       myPropSet(propertiesSet),
-      myFrameBuffer(framebuffer)
+      myFrameBuffer(framebuffer),
+      mySound(sound)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -158,7 +160,7 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   }
 
   M6532* m6532 = new M6532(*this);
-  TIA* tia = new TIA(*this, sampleRate);
+  TIA* tia = new TIA(*this, mySound.getSampleRate());
   Cartridge* cartridge = Cartridge::create(image, size, myProperties);
 
   mySystem->attach(m6502);
@@ -181,7 +183,8 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
 Console::Console(const Console& console)
     : mySettings(console.mySettings),
       myPropSet(console.myPropSet),
-      myFrameBuffer(console.myFrameBuffer)
+      myFrameBuffer(console.myFrameBuffer),
+      mySound(console.mySound)
 {
   // TODO: Write this method
   assert(false);
@@ -213,6 +216,12 @@ Settings& Console::settings() const
 FrameBuffer& Console::frameBuffer() const
 {
   return myFrameBuffer;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Sound& Console::sound() const
+{
+  return mySound;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

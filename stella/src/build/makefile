@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.43 2003-10-26 19:40:39 stephena Exp $
+## $Id: makefile,v 1.44 2003-11-06 22:22:32 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -34,10 +34,10 @@ SOUND_OSS  = 1
 #SOUND_SDL  = 1
 
 ### to include OpenGL video support (SDL)
-#DISPLAY_OPENGL = 1
+DISPLAY_OPENGL = 0
 
 ### to include joystick support (SDL)
- JOYSTICK_SUPPORT = 1
+# JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library) FIXME
@@ -142,8 +142,12 @@ endif
 
 ifeq ($(DISPLAY_OPENGL), 1)
   OPTS.SDL += -DDISPLAY_OPENGL=1
-  OBJS.SDL += DispGLSDL.o
+  OBJS.SDL += FrameBufferGL.o
   LIBS.SDL += -lGL -lGLU
+endif
+
+ifeq ($(DISPLAY_OPENGL), 0)
+  OBJS.SDL += FrameBufferSDL.o
 endif
 
 
@@ -181,7 +185,7 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o FrameBufferSDL.o RectList.o SettingsUNIX.o" \
+          OBJS="mainSDL.o SettingsUNIX.o" \
           OBJS+="$(OBJS.SDL)"
 
 ###############################################################################

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.cxx,v 1.3 2003-02-25 03:12:55 stephena Exp $
+// $Id: SoundALSA.cxx,v 1.4 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <alsa/asoundlib.h>
@@ -30,7 +30,8 @@ SoundALSA::SoundALSA()
       myOriginalVolumeLeft(-1),
       myOriginalVolumeRight(-1),
       myBufferSize(0),
-      mySampleRate(0)
+      mySampleRate(0),
+      myPauseStatus(false)
 {
   Int32 err;
   char pcmName[]   = "plughw:0,0";
@@ -242,6 +243,9 @@ void SoundALSA::updateSound(MediaSource& mediaSource)
 {
   if(myIsInitializedFlag)
   {
+    if(myPauseStatus)
+      return;
+
     snd_pcm_sframes_t frames;
     uInt8 periodCount = 0;
 

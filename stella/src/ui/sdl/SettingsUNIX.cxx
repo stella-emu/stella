@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.1 2003-10-26 19:40:39 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.2 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -63,11 +63,15 @@ SettingsUNIX::SettingsUNIX()
 
   // Now create UNIX specific settings
 #ifdef DISPLAY_OPENGL
-  set("opengl", "false");
+  set("gl_filter", "nearest");
+#endif
+#ifdef SNAPSHOT_SUPPORT
+  set("ssname", "romname");
+  set("ssdir", "./");
+  set("ssingle", "false");
 #endif
   set("fullscreen", "false");
   set("grabmouse", "false");
-  set("center", "false");
   set("hidecursor", "false");
   set("accurate", "true");
   set("volume", "-1");
@@ -89,6 +93,24 @@ void SettingsUNIX::usage(string& message)
     << endl
     << "Valid options are:" << endl
     << endl
+#ifdef DISPLAY_OPENGL
+    << "  -gl_filter  <type>         Type is one of the following:\n"
+    << "               nearest         Normal scaling (GL_NEAREST)\n"
+    << "               linear          Blurred scaling (GL_LINEAR)\n"
+    << endl
+#endif
+    << "  -sound      <type>          Type is one of the following:\n"
+    << "               0                Disables all sound generation\n"
+  #ifdef SOUND_ALSA
+    << "               alsa             ALSA version 0.9 driver\n"
+  #endif
+  #ifdef SOUND_OSS
+    << "               oss              Open Sound System driver\n"
+  #endif
+  #ifdef SOUND_SDL
+    << "               SDL              Native SDL driver\n"
+  #endif
+    << endl
     << "  -framerate  <number>       Display the given number of frames per second\n"
     << "  -zoom       <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen <0|1>          Play the game in fullscreen mode\n"
@@ -96,9 +118,6 @@ void SettingsUNIX::usage(string& message)
     << "  -hidecursor <0|1>          Hides the mouse cursor in the game window\n"
     << "  -center     <0|1>          Centers the game window onscreen\n"
     << "  -volume     <number>       Set the volume (0 - 100)\n"
-#ifdef DISPLAY_OPENGL
-    << "  -opengl     <0|1>          Use OpenGL mode.\n"
-#endif
 #ifdef HAVE_JOYSTICK
     << "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate\n"
     << "                             or that real Atari 2600 paddles are being used\n"
@@ -114,15 +133,6 @@ void SettingsUNIX::usage(string& message)
     << "  -ssdir      <path>         The directory to save snapshot files to\n"
     << "  -ssname     <name>         How to name the snapshot (romname or md5sum)\n"
     << "  -sssingle   <0|1>          Generate single snapshot instead of many\n"
-  #endif
-    << endl
-    << "  -sound      <type>          Type is one of the following:\n"
-    << "               0                Disables all sound generation\n"
-  #ifdef SOUND_ALSA
-    << "               alsa             ALSA version 0.9 driver\n"
-  #endif
-  #ifdef SOUND_OSS
-    << "               oss              Open Sound System driver\n"
   #endif
     << endl
   #ifdef DEVELOPER_SUPPORT

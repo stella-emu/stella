@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.2 2003-10-26 19:40:39 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -57,6 +57,8 @@ FrameBuffer::FrameBuffer()
       myCurrentWidget(W_NONE),
       myRemapEventSelectedFlag(false),
       mySelectedEvent(Event::NoType),
+      myMenuMode(false),
+      theMenuChangedIndicator(false),
       myMaxLines(0),
       myMainMenuIndex(0),
       myMainMenuItems(sizeof(ourMainMenu)/sizeof(MainMenuItem)),
@@ -84,23 +86,19 @@ void FrameBuffer::initDisplay(Console* console, MediaSource* mediasrc)
 
   // Fill the properties info array with game information
   ourPropertiesInfo[0] = myConsole->properties().get("Cartridge.Name");
-  if(ourPropertiesInfo[0].length() > myInfoMenuWidth)
-    myInfoMenuWidth = ourPropertiesInfo[0].length();
-  ourPropertiesInfo[1] = myConsole->properties().get("Cartridge.Manufacturer");
-  if(ourPropertiesInfo[1].length() > myInfoMenuWidth)
-    myInfoMenuWidth = ourPropertiesInfo[1].length();
-  ourPropertiesInfo[2] = myConsole->properties().get("Cartridge.Rarity");
-  if(ourPropertiesInfo[2].length() > myInfoMenuWidth)
-    myInfoMenuWidth = ourPropertiesInfo[2].length();
-  ourPropertiesInfo[3] = myConsole->properties().get("Cartridge.MD5");
-  if(ourPropertiesInfo[3].length() > myInfoMenuWidth)
-    myInfoMenuWidth = ourPropertiesInfo[3].length();
-  ourPropertiesInfo[4] = myConsole->properties().get("Cartridge.Type");
-  if(ourPropertiesInfo[4].length() > myInfoMenuWidth)
-    myInfoMenuWidth = ourPropertiesInfo[4].length();
-  ourPropertiesInfo[5] = myConsole->properties().get("Cartridge.ModelNo");
-  if(ourPropertiesInfo[5].length() > myInfoMenuWidth)
-    myInfoMenuWidth = ourPropertiesInfo[5].length();
+  ourPropertiesInfo[1] = "";
+  ourPropertiesInfo[2] = "Manufacturer: " + myConsole->properties().get("Cartridge.Manufacturer");
+  ourPropertiesInfo[3] = "Model:        " + myConsole->properties().get("Cartridge.ModelNo");
+  ourPropertiesInfo[4] = "Rarity:       " + myConsole->properties().get("Cartridge.Rarity");
+  ourPropertiesInfo[5] = "Type:         " + myConsole->properties().get("Cartridge.Type");
+  ourPropertiesInfo[6] = "";
+  ourPropertiesInfo[7] = "MD5SUM:";
+  ourPropertiesInfo[8] = myConsole->properties().get("Cartridge.MD5");
+
+  // Figure out the longest string
+  for(uInt8 i = 0; i < 9; i++)
+    if(ourPropertiesInfo[i].length() > myInfoMenuWidth)
+      myInfoMenuWidth = ourPropertiesInfo[i].length();
 
   // Get the arrays containing key and joystick mappings
   myConsole->eventHandler().getKeymapArray(&myKeyTable, &myKeyTableSize);
@@ -128,51 +126,75 @@ void FrameBuffer::update()
   // Do any pre-frame stuff
   preFrameUpdate();
 
-  // Draw changes to the mediasource
-  if(!myPauseStatus) // FIXME - sound class
-    myMediaSource->update();
-
-  drawMediaSource();
-
-  // Then overlay any menu items
-  switch(myCurrentWidget)
+  // Determine which mode we are in (normal or menu mode)
+  // In normal mode, only the mediasource or messages are shown,
+  //  and they are shown per-frame
+  // In menu mode, any of the menus are shown, but the mediasource
+  //  is not updated, and all updates depend on whether the screen is dirty
+  if(!myMenuMode)
   {
-    case W_NONE:
-      break;
+    // Draw changes to the mediasource
+    if(!myPauseStatus)
+      myMediaSource->update();
 
-    case MAIN_MENU:
-      drawMainMenu();
-      break;
+    // We always draw the screen, even if the core is paused
+    drawMediaSource();
 
-    case REMAP_MENU:
-      drawRemapMenu();
-      break;
+    if(!myPauseStatus)
+    {
+      // Draw any pending messages
+      if(myMessageTime > 0)
+      {
+        uInt32 width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
+        uInt32 height = LINEOFFSET + FONTHEIGHT;
+        uInt32 x = (myWidth >> 1) - (width >> 1);
+        uInt32 y = myHeight - height - LINEOFFSET/2;
 
-    case INFO_MENU:
-      drawInfoMenu();
-      break;
+        // Draw the bounded box and text
+        drawBoundedBox(x, y, width, height, FGCOLOR, BGCOLOR);
+        drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText, FGCOLOR);
+        myMessageTime--;
 
-    default:
-      break;
+        // Erase this message on next update
+        if(myMessageTime == 0)
+          theRedrawEntireFrameIndicator = true;
+      }
+    }
   }
-
-  // A message is a special case of interface element
-  // It can overwrite even a menu
-  if(myMessageTime > 0)
+  else   // we are in MENU_MODE
   {
-    uInt32 width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
-    uInt32 height = LINEOFFSET + FONTHEIGHT;
-    uInt32 x = (myWidth >> 1) - (width >> 1);
-    uInt32 y = myHeight - height - LINEOFFSET/2;
+    // Only update the screen if it's been invalidated
+    // or the menus have changed  
+    if(theMenuChangedIndicator || theRedrawEntireFrameIndicator)
+    {
+cerr << "redrawing screen and menus\n";      
+      drawMediaSource();
 
-    // Draw the bounded box and text
-    drawBoundedBox(x, y, width, height, FGCOLOR, BGCOLOR);
-    drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText, FGCOLOR);
-    myMessageTime--;
+      // Then overlay any menu items
+      switch(myCurrentWidget)
+      {
+        case W_NONE:
+          break;
 
-    // Erase this message on next update
-    if(myMessageTime == 0)
-      theRedrawEntireFrameIndicator = true;
+        case MAIN_MENU:
+          drawMainMenu();
+          break;
+
+        case REMAP_MENU:
+          drawRemapMenu();
+          break;
+
+        case INFO_MENU:
+          drawInfoMenu();
+          break;
+
+        default:
+          break;
+      }
+
+      // Now the screen is up to date
+      theMenuChangedIndicator = theRedrawEntireFrameIndicator = false;
+    }
   }
 
   // Do any post-frame stuff
@@ -180,8 +202,10 @@ void FrameBuffer::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showMainMenu(bool show)
+void FrameBuffer::showMenu(bool show)
 {
+  myMenuMode = show;
+
   myCurrentWidget = show ? MAIN_MENU : W_NONE;
   myRemapEventSelectedFlag = false;
   mySelectedEvent = Event::NoType;
@@ -192,7 +216,7 @@ void FrameBuffer::showMainMenu(bool show)
 void FrameBuffer::showMessage(const string& message)
 {
   myMessageText = message;
-  myMessageTime = myFrameRate << 1;
+  myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
   theRedrawEntireFrameIndicator = true;
 }
 
@@ -202,7 +226,7 @@ inline void FrameBuffer::drawMainMenu()
   uInt32 x, y, width, height, i, xpos, ypos;
 
   width  = 16*FONTWIDTH + (FONTWIDTH << 1);
-  height = myMainMenuItems*LINEOFFSET + 2*FONTHEIGHT;
+  height = myMainMenuItems*LINEOFFSET + (FONTHEIGHT << 1);
   x = (myWidth >> 1) - (width >> 1);
   y = (myHeight >> 1) - (height >> 1);
 
@@ -224,7 +248,7 @@ inline void FrameBuffer::drawRemapMenu()
   uInt32 x, y, width, height, i, xpos, ypos;
 
   width  = (myWidth >> 3) * FONTWIDTH - (FONTWIDTH << 1);
-  height = myMaxLines*LINEOFFSET + 2*FONTHEIGHT;
+  height = myMaxLines*LINEOFFSET + (FONTHEIGHT << 1);
   x = (myWidth >> 1) - (width >> 1);
   y = (myHeight >> 1) - (height >> 1);
 
@@ -260,12 +284,12 @@ inline void FrameBuffer::drawRemapMenu()
   }
 
   // Finally, indicate that there are more items to the top or bottom
-  xpos = (width >> 1) - FONTWIDTH/2;
+  xpos = (width >> 1) - (FONTWIDTH >> 1);
   if(myRemapMenuHighIndex - myMaxLines > 0)
     drawChar(xpos, y, UPARROW, FGCOLOR);
 
   if(myRemapMenuLowIndex + myMaxLines < myRemapMenuItems)
-    drawChar(xpos, height - FONTWIDTH/2, DOWNARROW, FGCOLOR);
+    drawChar(xpos, height - (FONTWIDTH >> 1), DOWNARROW, FGCOLOR);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -273,15 +297,15 @@ inline void FrameBuffer::drawInfoMenu()
 {
   uInt32 x, y, width, height, i, xpos;
 
-  width  = myInfoMenuWidth*FONTWIDTH + 2*FONTWIDTH;
-  height = 6*LINEOFFSET + 2*FONTHEIGHT;
+  width  = myInfoMenuWidth*FONTWIDTH + (FONTWIDTH << 1);
+  height = 9*LINEOFFSET + (FONTHEIGHT << 1);
   x = (myWidth >> 1) - (width >> 1);
   y = (myHeight >> 1) - (height >> 1);
 
   // Draw the bounded box and text
   xpos = x + XBOXOFFSET;
   drawBoundedBox(x, y, width, height, FGCOLOR, BGCOLOR);
-  for(i = 0; i < 6; i++)
+  for(i = 0; i < 9; i++)
     drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i], FGCOLOR);
 }
 
@@ -290,6 +314,9 @@ void FrameBuffer::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
   if(myCurrentWidget == W_NONE || state != 1)
     return;
+
+  // Redraw the menus whenever a key event is received
+  theMenuChangedIndicator = true;
 
   // Check which type of widget is pending
   switch(myCurrentWidget)
@@ -357,6 +384,8 @@ void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
     return;
 
 cerr << "stick = " << stick << ", button = " << code << endl;
+  // Redraw the menus whenever a joy event is received
+  theMenuChangedIndicator = true;
 
   // Check which type of widget is pending
   switch(myCurrentWidget)
@@ -663,7 +692,7 @@ const uInt8 FrameBuffer::ourFontData[2048] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::MainMenuItem FrameBuffer::ourMainMenu[2] = {
-  { REMAP_MENU,  "Key Remapping"    },
+  { REMAP_MENU,  "Event Remapping"    },
   { INFO_MENU,   "Game Information" }
 };
 

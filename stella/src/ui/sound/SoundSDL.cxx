@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.2 2003-02-25 03:12:55 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.3 2003-11-06 22:22:33 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -27,7 +27,8 @@ SoundSDL::SoundSDL(bool activate)
       myIsInitializedFlag(false),
       myIsMuted(false),
       mySampleRate(31400),
-      mySampleQueue(mySampleRate)
+      mySampleQueue(mySampleRate),
+      myPauseStatus(false)
 {
   if(activate)
   {
@@ -165,6 +166,9 @@ void SoundSDL::updateSound(MediaSource& mediaSource)
 {
   if(myIsInitializedFlag)
   {
+    if(myPauseStatus)
+      return;
+
     // Make sure we have exclusive access to the sample queue
     SDL_LockAudio();
 

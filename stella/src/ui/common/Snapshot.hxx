@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.3 2003-10-17 18:02:16 stephena Exp $
+// $Id: Snapshot.hxx,v 1.4 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
@@ -31,7 +31,7 @@ class Snapshot
     Snapshot();
     ~Snapshot();
 
-    int savePNG(string filename, FrameBuffer& mediaSource, uInt32 multiplier = 1);
+    int savePNG(string filename, FrameBuffer& framebuffer, uInt32 multiplier = 1);
 
   private:
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);

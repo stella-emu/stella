@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.2 2003-11-06 22:22:32 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.1 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
-#ifndef FRAMEBUFFER_SDL_HXX
-#define FRAMEBUFFER_SDL_HXX
+#ifndef FRAMEBUFFER_GL_HXX
+#define FRAMEBUFFER_GL_HXX
 
 #include <SDL.h>
+#include <SDL_opengl.h>
 #include <SDL_syswm.h>
 
 #include "FrameBuffer.hxx"
@@ -27,20 +28,19 @@
 
 class Console;
 class MediaSource;
-class RectList;
 
-class FrameBufferSDL : public FrameBuffer
+class FrameBufferGL : public FrameBuffer
 {
   public:
     /**
-      Creates a new SDL software framebuffer
+      Creates a new SDL OpenGL framebuffer
     */
-    FrameBufferSDL();
+    FrameBufferGL();
 
     /**
       Destructor
     */
-    virtual ~FrameBufferSDL();
+    virtual ~FrameBufferGL();
 
     /**
       This routine should be called once the console is created to setup
@@ -132,50 +132,77 @@ class FrameBufferSDL : public FrameBuffer
     void grabMouse(bool grab);
 
     /**
+      Set up the palette for a screen of any depth > 8.
+      Scales the palette by 'shade'.
+    */
+    void setupPalette(float shade);
+
+    /**
       Answers if the display is currently in fullscreen mode.
     */
     bool fullScreen() { return isFullscreen; }
 
     /**
-      Answers the current zoom level of the SDL 
+      Answers the current zoom level of the SDL window
     */
     uInt32 zoomLevel() { return theZoomLevel; }
 
+  private:
     /**
       This routine is called whenever the screen needs to be recreated.
       It updates the global screen variable.
     */
     bool createScreen();
 
-   /**
-     Centers the game window onscreen.  Only works in X11 for now.
-   */
-    void centerScreen();
-
     /**
       Calculate the maximum window size that the current screen can hold.
-      Only works in X11 for now.  If not running under X11, always return 4.
+      Only works in X11 for now.  If not running under X11, always return 1.
     */
     uInt32 maxWindowSizeForScreen();
 
-    /**
-      Set up the palette for a screen of any depth > 8.
-      Scales the palette by 'shade'.
-    */
-    void setupPalette(float shade);
+    bool createTextures();
+
+    uInt32 power_of_two(uInt32 input)
+    {
+      uInt32 value = 1;
+      while( value < input )
+        value <<= 1;
+      return value;
+    }
 
   private:
     // The SDL video buffer
     SDL_Surface* myScreen;
 
-    // Used in the dirty update of the SDL surface
-    RectList* myRectList;
+    // The main texture buffer
+    SDL_Surface* myTexture;
+
+    // The OpenGL main texture handle
+    GLuint myTextureID;
+
+    // OpenGL texture coordinates for the main surface
+    GLfloat myTexCoord[4];
+
+    // The OpenGL font texture handle
+    GLuint myFontTextureID;
+
+    // Structure to hold a characters coordinates
+    struct Coordinates
+    {
+      GLfloat minX;
+      GLfloat maxX;
+      GLfloat minY;
+      GLfloat maxY;
+    };
+
+    // OpenGL texture coordinates for the font surface
+    Coordinates myFontCoord[256];
 
     // SDL initialization flags
     uInt32 mySDLFlags;
 
     // SDL palette
-    Uint32 palette[256];
+    uInt32 myPalette[256];
 
     // Used to get window-manager specifics
     SDL_SysWMinfo myWMInfo;
@@ -200,27 +227,6 @@ class FrameBufferSDL : public FrameBuffer
 
     // Indicates whether the game is currently in fullscreen
     bool isFullscreen;
-};
-
-/**
-
- */
-class RectList
-{
-  public:
-    RectList(Uint32 size = 512);
-    ~RectList();
-
-    void add(SDL_Rect* rect);
-
-    SDL_Rect* rects();
-    Uint32 numRects();
-    void start();
-
-  private:
-    Uint32 currentSize, currentRect;
-
-    SDL_Rect* rectArray;
 };
 
 #endif

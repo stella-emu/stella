@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.hxx,v 1.3 2003-02-25 03:12:55 stephena Exp $
+// $Id: SoundALSA.hxx,v 1.4 2003-11-06 22:22:32 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDALSA_HXX
@@ -30,7 +30,7 @@
   Advanced Linux Sound Architecture (ALSA) version 0.9.x API.
 
   @author  Stephen Anthony
-  @version $Id: SoundALSA.hxx,v 1.3 2003-02-25 03:12:55 stephena Exp $
+  @version $Id: SoundALSA.hxx,v 1.4 2003-11-06 22:22:32 stephena Exp $
 */
 class SoundALSA : public Sound
 {
@@ -75,6 +75,14 @@ class SoundALSA : public Sound
     void setSoundVolume(Int32 percent);
 
     /**
+      Sets the pause status.  While pause is selected, updateSound()
+      should not play any sound.
+
+      @param status  Toggle pause based on status
+    */
+    void pause(bool status) { myPauseStatus = status; }
+
+    /**
       Update the sound device using the audio sample from the specified
       media source.
 
@@ -110,5 +118,8 @@ class SoundALSA : public Sound
 
     // PCM sample rate
     uInt32 mySampleRate;
+
+    // The pause status
+    bool myPauseStatus;
 };
 #endif
