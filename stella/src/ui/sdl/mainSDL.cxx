@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.4 2002-01-16 15:09:21 stephena Exp $
+// $Id: mainSDL.cxx,v 1.5 2002-01-19 02:17:19 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -314,15 +314,25 @@ bool setupDisplay()
     }
   }
 
+  // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
+  if(theUseFullScreenFlag)
+  {
+    grabMouse(true);
+    showCursor(false);
+    isFullscreen = true;
+  }
+  else
+  {
+    // Keep mouse in game window if grabmouse is selected
+    grabMouse(theGrabMouseFlag);
+
+    // Show or hide the cursor depending on the 'hidecursor' argument
+    showCursor(!theHideCursorFlag);
+  }
+
   // Center the window if centering is selected and not fullscreen
   if(theCenterWindowFlag && !theUseFullScreenFlag)
     centerWindow();
-
-  // Keep mouse in game window if grabmouse is selected
-  grabMouse(theGrabMouseFlag);
-
-  // Show or hide the cursor depending on the 'hidecursor' argument
-  showCursor(!theHideCursorFlag);
 
 #ifdef IMLIB2_SNAPSHOT
   SDL_SysWMinfo info;
