@@ -214,25 +214,29 @@ LRESULT CCyberstellaView::displayNote(WPARAM wParam, LPARAM lParam)
 
 void CCyberstellaView::OnGunfight()
 {
-    playRom(IDG_GUNFIGHT);
+    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+    //playRom(IDG_GUNFIGHT);
     //MessageBox("If you'd like to play Gunfight on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }    
 
 void CCyberstellaView::OnJammed() 
 {
-    playRom(IDG_JAMMED);
+    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+    //playRom(IDG_JAMMED);
     //MessageBox("If you'd like to play Jammed on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }
 
 void CCyberstellaView::OnQb() 
 {
-    playRom(IDG_QB);
+    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+    //playRom(IDG_QB);
     //MessageBox("If you'd like to play Qb on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }
 
 void CCyberstellaView::OnThrust() 
 {
-    playRom(IDG_THRUST);
+    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+    //playRom(IDG_THRUST);
     //MessageBox("If you'd like to play Thrust on a real VCS, you can order a cartridge for only $25\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }
 
@@ -278,8 +282,6 @@ void CCyberstellaView::playRom(LONG gameID)
     {
         case IDG_GUNFIGHT:
         {
-            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-            
             /*pszFileName = "Gunfight";
             dwActualSize = sizeof gunfight;
             pImage = new BYTE[dwActualSize];
@@ -291,8 +293,6 @@ void CCyberstellaView::playRom(LONG gameID)
         }
         case IDG_JAMMED:
         {
-            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-
             /*pszFileName = "Jammed";
             dwActualSize = sizeof jammed;
             pImage = new BYTE[dwActualSize];
@@ -304,8 +304,6 @@ void CCyberstellaView::playRom(LONG gameID)
         }
         case IDG_QB:
         {
-            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-
             /*pszFileName = "Qb";
             dwActualSize = sizeof qb;
             pImage = new BYTE[dwActualSize];
@@ -317,8 +315,6 @@ void CCyberstellaView::playRom(LONG gameID)
         }
         case IDG_THRUST:
         {
-            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-                        
             /*pszFileName = "Thrust";
             dwActualSize = sizeof thrust;
             pImage = new BYTE[dwActualSize];
