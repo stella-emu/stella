@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartE0.cxx,v 1.3 2002-12-01 15:59:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -195,7 +195,6 @@ void CartridgeE0::segmentTwo(uInt16 slice)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE0::save(Serializer& out)
 {
-  cerr << "save from CartE0  !!\n";
   string cart = name();
 
   try
@@ -223,7 +222,6 @@ bool CartridgeE0::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE0::load(Deserializer& in)
 {
-  cerr << "load from CartE0  !!\n";
   string cart = name();
 
   try

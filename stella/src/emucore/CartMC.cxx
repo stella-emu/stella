@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartMC.cxx,v 1.3 2002-12-01 15:59:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -222,13 +222,68 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::save(Serializer& out)
 {
-  cerr << "save from CartMC  \n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    // The currentBlock array
+    out.putLong(4);
+    for(uInt32 i = 0; i < 4; ++i)
+      out.putLong(myCurrentBlock[i]);
+
+    // The 32K of RAM
+    out.putLong(32 * 1024);
+    for(uInt32 i = 0; i < 32 * 1024; ++i)
+      out.putLong(myRAM[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::load(Deserializer& in)
 {
-  cerr << "load from CartMC  \n";
+  string cart = name();
+
+  try
+  {
+    uInt32 limit;
+
+    if(in.getString() != cart)
+      return false;
+
+    // The currentBlock array
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myCurrentBlock[i] = (uInt8) in.getLong();
+
+    // The 32K of RAM
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myRAM[i] = (uInt8) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
   return true;
 }
