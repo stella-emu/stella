@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.4 2003-11-09 23:53:19 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.5 2003-11-12 19:36:25 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.4 2003-11-09 23:53:19 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.5 2003-11-12 19:36:25 stephena Exp $
 */
 class FrameBuffer
 {
@@ -120,6 +120,14 @@ class FrameBuffer
     */
     MediaSource* mediaSource() const;
 
+     /**
+      Sets the pause status.  While pause is selected, the
+      MediaSource will not be updated.
+
+      @param status  Toggle pause based on status
+    */
+    void pause(bool status);
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
@@ -179,11 +187,12 @@ class FrameBuffer
     virtual void postFrameUpdate() = 0;
 
     /**
-      This routine is called when the emulation has been paused.
+      This routine is called when the emulation has received
+      a pause event.
 
-      @param status  Toggle pause based on status
+      @param status  The received pause status
     */
-    virtual void pause(bool status) = 0;
+    virtual void pauseEvent(bool status) = 0;
 
   protected:
     // The Console for the system
@@ -197,9 +206,6 @@ class FrameBuffer
 
     // Indicates if the entire frame should be redrawn
     bool theRedrawEntireFrameIndicator;
-
-    // Indicates the current pause status
-    bool myPauseStatus;
 
     // Table of bitmapped fonts.
     static const uInt8 ourFontData[2048];
@@ -245,6 +251,9 @@ class FrameBuffer
   private:
     // Indicates the current framerate of the system
     uInt32 myFrameRate;
+
+    // Indicates the current pause status
+    bool myPauseStatus;
 
     // Structure used for main menu items
     struct MainMenuItem

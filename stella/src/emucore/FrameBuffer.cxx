@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.4 2003-11-09 23:53:19 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.5 2003-11-12 19:36:25 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -50,10 +50,10 @@ FrameBuffer::FrameBuffer()
       myWidth(160),
       myHeight(300),
       theRedrawEntireFrameIndicator(true),
-      myPauseStatus(false),
       myFGColor(10),
       myBGColor(0),
       myFrameRate(0),
+      myPauseStatus(false),
       myCurrentWidget(W_NONE),
       myRemapEventSelectedFlag(false),
       mySelectedEvent(Event::NoType),
@@ -447,6 +447,16 @@ MediaSource* FrameBuffer::mediaSource() const
     return myMediaSource;
   else
     return (MediaSource*) NULL;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::pause(bool status)
+{
+  myPauseStatus = status;
+
+  // Now notify the child object, in case it wants to do something
+  // special when pause is received
+  pauseEvent(myPauseStatus); 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

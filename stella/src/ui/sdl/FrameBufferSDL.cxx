@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.3 2003-11-09 23:53:20 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.4 2003-11-12 19:36:25 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -43,12 +43,10 @@ FrameBufferSDL::~FrameBufferSDL()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL::pause(bool status)
+void FrameBufferSDL::pauseEvent(bool status)
 {
-  myPauseStatus = status;
-
   // Shade the palette to 75% normal value in pause mode
-  if(myPauseStatus)
+  if(status)
     setupPalette(0.75);
   else
     setupPalette(1.0);
