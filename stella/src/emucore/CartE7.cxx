@@ -13,13 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.1.1.1 2001-12-27 19:54:19 bwmott Exp $
+// $Id: CartE7.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "CartE7.hxx"
 #include "Random.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7::CartridgeE7(const uInt8* image)
@@ -212,3 +215,79 @@ void CartridgeE7::bankRAM(uInt16 bank)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE7::save(Serializer& out)
+{
+  cerr << "save from CartE7  !!\n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putLong(2);
+    for(uInt32 i = 0; i < 2; ++i)
+      out.putLong(myCurrentSlice[i]);
+
+    out.putLong(myCurrentRAM);
+
+    // The 2048 bytes of RAM
+    out.putLong(2048);
+    for(uInt32 i = 0; i < 2048; ++i)
+      out.putLong(myRAM[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE7::load(Deserializer& in)
+{
+  cerr << "load from CartE7  !!\n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    uInt32 limit;
+
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myCurrentSlice[i] = (uInt16) in.getLong();
+
+    myCurrentRAM = (uInt16) in.getLong();
+
+    // The 2048 bytes of RAM
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myRAM[i] = (uInt8) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Set up the previously used banks for the RAM and segment
+  bankRAM(myCurrentRAM);
+  bank(myCurrentSlice[0]);
+
+  return true;
+}

@@ -13,20 +13,22 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.2 2002-03-18 14:40:07 gunfight Exp $
+// $Id: CartCV.cxx,v 1.3 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "CartCV.hxx"
 #include "Random.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
 {
-	uInt32 addr;
-
-	if(size == 2048)
+  uInt32 addr;
+  if(size == 2048)
   {
     // Copy the ROM image into my buffer
     for(uInt32 addr = 0; addr < 2048; ++addr)
@@ -129,3 +131,61 @@ void CartridgeCV::poke(uInt16, uInt8)
   // This is ROM so poking has no effect :-)
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCV::save(Serializer& out)
+{
+  cerr << "save from CartCV  !!\n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    // Output RAM
+    out.putLong(1024);
+    for(uInt32 addr = 0; addr < 1024; ++addr)
+      out.putLong(myRAM[addr]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCV::load(Deserializer& in)
+{
+  cerr << "load from CartCV  !!\n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    // Input RAM
+    uInt32 limit = (uInt32) in.getLong();
+    for(uInt32 addr = 0; addr < limit; ++addr)
+      myRAM[addr] = (uInt8) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}

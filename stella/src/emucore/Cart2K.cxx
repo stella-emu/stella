@@ -13,12 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.cxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+// $Id: Cart2K.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "Cart2K.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2K::Cartridge2K(const uInt8* image)
@@ -80,3 +83,49 @@ void Cartridge2K::poke(uInt16, uInt8)
   // This is ROM so poking has no effect :-)
 } 
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge2K::save(Serializer& out)
+{
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge2K::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}

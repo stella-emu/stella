@@ -13,13 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: CartMC.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "CartMC.hxx"
 #include "Random.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
@@ -216,3 +219,16 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
   }  
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMC::save(Serializer& out)
+{
+  cerr << "save from CartMC  \n";
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMC::load(Deserializer& in)
+{
+  cerr << "load from CartMC  \n";
+  return true;
+}

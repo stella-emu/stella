@@ -13,13 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.hxx,v 1.1 2001-12-30 18:43:30 bwmott Exp $
+// $Id: CartDPC.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEDCP_HXX
 #define CARTRIDGEDCP_HXX
 
 class CartridgeDPC;
+class Serializer;
+class Deserializer;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -30,7 +32,7 @@ class CartridgeDPC;
   see David P. Crane's United States Patent Number 4,644,495.
 
   @author  Bradford W. Mott
-  @version $Id: CartDPC.hxx,v 1.1 2001-12-30 18:43:30 bwmott Exp $
+  @version $Id: CartDPC.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 */
 class CartridgeDPC : public Cartridge
 {
@@ -67,6 +69,22 @@ class CartridgeDPC : public Cartridge
       @param system The system the device should install itself in
     */
     virtual void install(System& system);
+
+    /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    virtual bool save(Serializer& out);
+
+    /**
+      Loads the current state of this device from the given Deserializer.
+
+      @param in The deserializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    virtual bool load(Deserializer& in);
 
   public:
     /**
@@ -123,4 +141,3 @@ class CartridgeDPC : public Cartridge
     uInt8 myTops[8];
 };
 #endif
-

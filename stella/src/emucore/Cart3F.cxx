@@ -13,12 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.1.1.1 2001-12-27 19:54:18 bwmott Exp $
+// $Id: Cart3F.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "Cart3F.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size)
@@ -146,3 +149,57 @@ void Cartridge3F::bank(uInt16 bank)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3F::save(Serializer& out)
+{
+  cerr << "save from Cart3F  !!\n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+    out.putLong(myCurrentBank);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3F::load(Deserializer& in)
+{
+  cerr << "load from Cart3F  !!\n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Now, go to the current bank
+  bank(myCurrentBank);
+
+  return true;
+}

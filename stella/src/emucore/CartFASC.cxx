@@ -13,13 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.1.1.1 2001-12-27 19:54:20 bwmott Exp $
+// $Id: CartFASC.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "CartFASC.hxx"
 #include "Random.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFASC::CartridgeFASC(const uInt8* image)
@@ -186,3 +189,67 @@ void CartridgeFASC::bank(uInt16 bank)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFASC::save(Serializer& out)
+{
+  cerr << "save from CartFASC  !!\n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putLong(myCurrentBank);
+
+    // The 256 bytes of RAM
+    out.putLong(256);
+    for(uInt32 i = 0; i < 256; ++i)
+      out.putLong(myRAM[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFASC::load(Deserializer& in)
+{
+  cerr << "load from CartFASC  \n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getLong();
+
+    uInt32 limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myRAM[i] = (uInt8) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Remember what bank we were in
+  bank(myCurrentBank);
+
+  return true;
+}

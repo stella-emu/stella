@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.2 2002-04-05 02:18:23 bwmott Exp $
+// $Id: CartAR.cxx,v 1.3 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -22,6 +22,9 @@
 #include "M6502Hi.hxx"
 #include "Random.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size)
@@ -419,3 +422,16 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
   cerr << "ERROR: Supercharger load is missing from ROM image...\n";
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeAR::save(Serializer& out)
+{
+  cerr << "save from CartAR  \n";
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeAR::load(Deserializer& in)
+{
+  cerr << "load from CartAR  \n";
+  return true;
+}

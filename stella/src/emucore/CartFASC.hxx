@@ -13,13 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.hxx,v 1.1.1.1 2001-12-27 19:54:20 bwmott Exp $
+// $Id: CartFASC.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEFASC_HXX
 #define CARTRIDGEFASC_HXX
 
 class CartridgeFASC;
+class Serializer;
+class Deserializer;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -29,7 +31,7 @@ class CartridgeFASC;
   three 4K banks and 256 bytes of RAM.
 
   @author  Bradford W. Mott
-  @version $Id: CartFASC.hxx,v 1.1.1.1 2001-12-27 19:54:20 bwmott Exp $
+  @version $Id: CartFASC.hxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 */
 class CartridgeFASC : public Cartridge
 {
@@ -66,6 +68,22 @@ class CartridgeFASC : public Cartridge
       @param system The system the device should install itself in
     */
     virtual void install(System& system);
+
+    /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    virtual bool save(Serializer& out);
+
+    /**
+      Loads the current state of this device from the given Deserializer.
+
+      @param in The deserializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    virtual bool load(Deserializer& in);
 
   public:
     /**

@@ -13,12 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.1.1.1 2001-12-27 19:54:19 bwmott Exp $
+// $Id: CartE0.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "CartE0.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0::CartridgeE0(const uInt8* image)
@@ -189,3 +192,59 @@ void CartridgeE0::segmentTwo(uInt16 slice)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE0::save(Serializer& out)
+{
+  cerr << "save from CartE0  !!\n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putLong(4);
+    for(uInt32 i = 0; i < 4; ++i)
+      out.putLong(myCurrentSlice[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE0::load(Deserializer& in)
+{
+  cerr << "load from CartE0  !!\n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    uInt32 limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myCurrentSlice[i] = (uInt16) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}

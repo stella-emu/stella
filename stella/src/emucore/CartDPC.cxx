@@ -13,12 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.3 2002-03-28 01:48:28 bwmott Exp $
+// $Id: CartDPC.cxx,v 1.4 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "CartDPC.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // This class does not emulate the music mode data fetchers of the DPC.  A 
@@ -325,3 +328,108 @@ void CartridgeDPC::bank(uInt16 bank)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeDPC::save(Serializer& out)
+{
+  cerr << "save from CartDPC  !!\n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    // Indicates which bank is currently active
+    out.putLong(myCurrentBank);
+
+    // The bottom registers for the data fetchers
+    out.putLong(8);
+    for(uInt32 i = 0; i < 8; ++i)
+      out.putLong(myBottoms[i]);
+
+    // The counter registers for the data fetchers
+    out.putLong(8);
+    for(uInt32 i = 0; i < 8; ++i)
+      out.putLong(myCounters[i]);
+
+    // The flag registers for the data fetchers
+    out.putLong(8);
+    for(uInt32 i = 0; i < 8; ++i)
+      out.putLong(myFlags[i]);
+
+    // The random number generator register
+    out.putLong(myRandomNumber);
+
+    // The top registers for the data fetchers
+    out.putLong(8);
+    for(uInt32 i = 0; i < 8; ++i)
+      out.putLong(myTops[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeDPC::load(Deserializer& in)
+{
+  cerr << "load from CartDPC  !!\n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    uInt32 limit;
+
+    // Indicates which bank is currently active
+    myCurrentBank = (uInt16) in.getLong();
+
+    // The bottom registers for the data fetchers
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myBottoms[i] = (uInt8) in.getLong();
+
+    // The counter registers for the data fetchers
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myCounters[i] = (uInt16) in.getLong();
+
+    // The flag registers for the data fetchers
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myFlags[i] = (uInt8) in.getLong();
+
+    // The random number generator register
+    myRandomNumber = (uInt8) in.getLong();
+
+    // The top registers for the data fetchers
+    limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myTops[i] = (uInt8) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Now, go to the current bank
+  bank(myCurrentBank);
+
+  return true;
+}

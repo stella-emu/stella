@@ -13,13 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4SC.cxx,v 1.1.1.1 2001-12-27 19:54:19 bwmott Exp $
+// $Id: CartF4SC.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "CartF4SC.hxx"
 #include "Random.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF4SC::CartridgeF4SC(const uInt8* image)
@@ -152,3 +155,67 @@ void CartridgeF4SC::bank(uInt16 bank)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF4SC::save(Serializer& out)
+{
+  cerr << "save from CartF4SC  !!\n";
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putLong(myCurrentBank);
+
+    // The 128 bytes of RAM
+    out.putLong(128);
+    for(uInt32 i = 0; i < 128; ++i)
+      out.putLong(myRAM[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF4SC::load(Deserializer& in)
+{
+  cerr << "load from CartF4SC  !!\n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getLong();
+
+    uInt32 limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myRAM[i] = (uInt8) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Remember what bank we were in
+  bank(myCurrentBank);
+
+  return true;
+}

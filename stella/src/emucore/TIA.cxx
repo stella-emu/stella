@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.12 2002-04-18 17:18:48 stephena Exp $
+// $Id: TIA.cxx,v 1.13 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -26,6 +26,9 @@
 #include "Sound.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 #define HBLANK 68
 
@@ -277,6 +280,195 @@ void TIA::install(System& system)
       mySystem->setPageAccess(i >> shift, access);
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::save(Serializer& out)
+{
+  cerr << "save from TIA  !!\n";
+  string device = name();
+
+  try
+  {
+    out.putString(device);
+
+    out.putLong(myLastSoundUpdateCycle);
+    out.putLong(myClockWhenFrameStarted);
+    out.putLong(myClockStartDisplay);
+    out.putLong(myClockStopDisplay);
+    out.putLong(myClockAtLastUpdate);
+    out.putLong(myClocksToEndOfScanLine);
+    out.putLong(myScanlineCountForLastFrame);
+    out.putLong(myVSYNCFinishClock);
+
+    out.putLong(myEnabledObjects);
+
+    out.putLong(myVSYNC);
+    out.putLong(myVBLANK);
+    out.putLong(myNUSIZ0);
+    out.putLong(myNUSIZ1);
+
+    out.putLong(myCOLUP0);
+    out.putLong(myCOLUP1);
+    out.putLong(myCOLUPF);
+    out.putLong(myCOLUBK);
+
+    out.putLong(myCTRLPF);
+    out.putLong(myPlayfieldPriorityAndScore);
+    out.putBool(myREFP0);
+    out.putBool(myREFP1);
+    out.putLong(myPF);
+    out.putLong(myGRP0);
+    out.putLong(myGRP1);
+    out.putLong(myDGRP0);
+    out.putLong(myDGRP1);
+    out.putBool(myENAM0);
+    out.putBool(myENAM1);
+    out.putBool(myENABL);
+    out.putBool(myDENABL);
+    out.putLong(myHMP0);
+    out.putLong(myHMP1);
+    out.putLong(myHMM0);
+    out.putLong(myHMM1);
+    out.putLong(myHMBL);
+    out.putBool(myVDELP0);
+    out.putBool(myVDELP1);
+    out.putBool(myVDELBL);
+    out.putBool(myRESMP0);
+    out.putBool(myRESMP1);
+    out.putLong(myCollision);
+    out.putLong(myPOSP0);
+    out.putLong(myPOSP1);
+    out.putLong(myPOSM0);
+    out.putLong(myPOSM1);
+    out.putLong(myPOSBL);
+
+    out.putLong(myCurrentGRP0);
+    out.putLong(myCurrentGRP1);
+
+// pointers
+//  myCurrentBLMask = ourBallMaskTable[0][0];
+//  myCurrentM0Mask = ourMissleMaskTable[0][0][0];
+//  myCurrentM1Mask = ourMissleMaskTable[0][0][0];
+//  myCurrentP0Mask = ourPlayerMaskTable[0][0][0];
+//  myCurrentP1Mask = ourPlayerMaskTable[0][0][0];
+//  myCurrentPFMask = ourPlayfieldTable[0];
+
+    out.putLong(myLastHMOVEClock);
+    out.putBool(myHMOVEBlankEnabled);
+    out.putBool(myM0CosmicArkMotionEnabled);
+    out.putLong(myM0CosmicArkCounter);
+
+    out.putBool(myDumpEnabled);
+    out.putLong(myDumpDisabledCycle);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in TIA save state\n";
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::load(Deserializer& in)
+{
+  cerr << "load from TIA  !!\n";
+  string device = name();
+
+  try
+  {
+    if(in.getString() != device)
+      return false;
+
+    myLastSoundUpdateCycle = (Int32) in.getLong();
+    myClockWhenFrameStarted = (Int32) in.getLong();
+    myClockStartDisplay = (Int32) in.getLong();
+    myClockStopDisplay = (Int32) in.getLong();
+    myClockAtLastUpdate = (Int32) in.getLong();
+    myClocksToEndOfScanLine = (Int32) in.getLong();
+    myScanlineCountForLastFrame = (Int32) in.getLong();
+    myVSYNCFinishClock = (Int32) in.getLong();
+
+    myEnabledObjects = (uInt8) in.getLong();
+
+    myVSYNC = (uInt8) in.getLong();
+    myVBLANK = (uInt8) in.getLong();
+    myNUSIZ0 = (uInt8) in.getLong();
+    myNUSIZ1 = (uInt8) in.getLong();
+
+    myCOLUP0 = (uInt32) in.getLong();
+    myCOLUP1 = (uInt32) in.getLong();
+    myCOLUPF = (uInt32) in.getLong();
+    myCOLUBK = (uInt32) in.getLong();
+
+    myCTRLPF = (uInt8) in.getLong();
+    myPlayfieldPriorityAndScore = (uInt8) in.getLong();
+    myREFP0 = in.getBool();
+    myREFP1 = in.getBool();
+    myPF = (uInt32) in.getLong();
+    myGRP0 = (uInt8) in.getLong();
+    myGRP1 = (uInt8) in.getLong();
+    myDGRP0 = (uInt8) in.getLong();
+    myDGRP1 = (uInt8) in.getLong();
+    myENAM0 = in.getBool();
+    myENAM1 = in.getBool();
+    myENABL = in.getBool();
+    myDENABL = in.getBool();
+    myHMP0 = (Int8) in.getLong();
+    myHMP1 = (Int8) in.getLong();
+    myHMM0 = (Int8) in.getLong();
+    myHMM1 = (Int8) in.getLong();
+    myHMBL = (Int8) in.getLong();
+    myVDELP0 = in.getBool();
+    myVDELP1 = in.getBool();
+    myVDELBL = in.getBool();
+    myRESMP0 = in.getBool();
+    myRESMP1 = in.getBool();
+    myCollision = (uInt16) in.getLong();
+    myPOSP0 = (Int16) in.getLong();
+    myPOSP1 = (Int16) in.getLong();
+    myPOSM0 = (Int16) in.getLong();
+    myPOSM1 = (Int16) in.getLong();
+    myPOSBL = (Int16) in.getLong();
+
+    myCurrentGRP0 = (uInt8) in.getLong();
+    myCurrentGRP1 = (uInt8) in.getLong();
+
+// pointers
+//  myCurrentBLMask = ourBallMaskTable[0][0];
+//  myCurrentM0Mask = ourMissleMaskTable[0][0][0];
+//  myCurrentM1Mask = ourMissleMaskTable[0][0][0];
+//  myCurrentP0Mask = ourPlayerMaskTable[0][0][0];
+//  myCurrentP1Mask = ourPlayerMaskTable[0][0][0];
+//  myCurrentPFMask = ourPlayfieldTable[0];
+
+    myLastHMOVEClock = (Int32) in.getLong();
+    myHMOVEBlankEnabled = in.getBool();
+    myM0CosmicArkMotionEnabled = in.getBool();
+    myM0CosmicArkCounter = (uInt32) in.getLong();
+
+    myDumpEnabled = in.getBool();
+    myDumpDisabledCycle = (Int32) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in TIA load state\n";
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

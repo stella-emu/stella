@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.1.1.1 2001-12-27 19:54:22 bwmott Exp $
+// $Id: M6532.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -22,6 +22,9 @@
 #include "Random.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
+#include "Serializer.hxx"
+#include "Deserializer.hxx"
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const Console& console)
@@ -288,6 +291,81 @@ void M6532::poke(uInt16 addr, uInt8 value)
 #endif
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6532::save(Serializer& out)
+{
+  string device = name();
+
+  try
+  {
+    out.putString(device);
+
+    // Output the RAM
+    out.putLong(128);
+    for(uInt32 t = 0; t < 128; ++t)
+      out.putLong(myRAM[t]);
+
+    out.putLong(myTimer);
+    out.putLong(myIntervalShift);
+    out.putLong(myCyclesWhenTimerSet);
+    out.putLong(myCyclesWhenInterruptReset);
+    out.putBool(myTimerReadAfterInterrupt);
+    out.putLong(myDDRA);
+    out.putLong(myDDRB);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << device << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6532::load(Deserializer& in)
+{
+  string device = name();
+
+  try
+  {
+    if(in.getString() != device)
+      return false;
+
+    // Input the RAM
+    uInt32 limit = (uInt32) in.getLong();
+    for(uInt32 t = 0; t < limit; ++t)
+      myRAM[t] = (uInt8) in.getLong();
+
+    myTimer = (uInt32) in.getLong();
+    myIntervalShift = (uInt32) in.getLong();
+    myCyclesWhenTimerSet = (uInt32) in.getLong();
+    myCyclesWhenInterruptReset = (uInt32) in.getLong();
+    myTimerReadAfterInterrupt = in.getBool();
+
+    myDDRA = (uInt8) in.getLong();
+    myDDRB = (uInt8) in.getLong();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << device << endl;
+    return false;
+  }
+
+  return true;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const M6532& c)
