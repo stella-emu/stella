@@ -8,18 +8,19 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2003 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.8 2002-11-13 03:47:55 bwmott Exp $
+// $Id: mainDOS.cxx,v 1.9 2003-01-08 05:19:07 bwmott Exp $
 //============================================================================
 
 #include <go32.h>
 #include <dpmi.h>
 #include <sys/farptr.h>
 #include <sys/nearptr.h>
+#include <sys/stat.h>
 #include <dos.h>
 #include <pc.h>
 #include <unistd.h>
@@ -88,6 +89,8 @@ bool theUseModeXFlag = false;
 // Pointer to the joysticks object
 PCJoysticks* theJoysticks;
 
+#define MESSAGE_INTERVAL     2
+
 // Mouse IRQ
 #define MOUSE_BIOS           0x33
 
@@ -110,6 +113,122 @@ _go32_dpmi_seginfo theOldKeyboardHandler;
 _go32_dpmi_seginfo theKeyboardHandler;
 static void keyboardInterruptServiceRoutine(void);
 
+// Indicates the current state to use for state saving
+static uInt32 theCurrentState = 0;
+
+// The locations for various required files
+static string theHomeDir;
+static string theStateDir;
+
+/**
+  Changes the current state slot.
+*/
+void changeState(uInt32 change)
+{
+  // Calculate new state slot
+  theCurrentState = (theCurrentState + ((change == 0) ? 9 : 1)) % 10;
+
+  // Print appropriate message
+  ostringstream buf;
+  buf << "Changed to slot " << theCurrentState;
+  string message = buf.str();
+  theConsole->mediaSource().showMessage(message,
+      MESSAGE_INTERVAL * theDesiredFrameRate);
+}
+
+/**
+  Saves state of the current game in the current slot.
+*/
+void saveState()
+{
+  ostringstream buf;
+  string md5 = theConsole->properties().get("Cartridge.MD5");
+
+  string sub1 = theStateDir + '\\' + md5.substr(0, 8);
+  string sub2 = sub1 + '\\' + md5.substr(8, 8);
+  string sub3 = sub2 + '\\' + md5.substr(16, 8);
+  buf << sub3 << '\\' << md5.substr(24, 8) << ".st" << theCurrentState;
+  string filename = buf.str();
+
+  // If needed create the sub-directory corresponding to the characters
+  // of the MD5 checksum
+  if(access(sub1.c_str(), F_OK) != 0)
+  {
+    if(mkdir(sub1.c_str(), S_IWUSR) != 0)
+    {
+      theConsole->mediaSource().showMessage(string() = "Error Saving State",
+          MESSAGE_INTERVAL * theDesiredFrameRate);
+      return;
+    }
+  }
+
+  if(access(sub2.c_str(), F_OK) != 0)
+  {
+    if(mkdir(sub2.c_str(), S_IWUSR) != 0)
+    {
+      theConsole->mediaSource().showMessage(string() = "Error Saving State",
+          MESSAGE_INTERVAL * theDesiredFrameRate);
+      return;
+    }
+  }
+
+  if(access(sub3.c_str(), F_OK) != 0)
+  {
+    if(mkdir(sub3.c_str(), S_IWUSR) != 0)
+    {
+      theConsole->mediaSource().showMessage(string() = "Error Saving State",
+          MESSAGE_INTERVAL * theDesiredFrameRate);
+      return;
+    }
+  }
+
+  // Do a state save using the System
+  int result = theConsole->system().saveState(filename, md5);
+
+  // Print appropriate message
+  buf.str("");
+  if(result == 1)
+    buf << "State " << theCurrentState << " saved";
+  else if(result == 2)
+    buf << "Error saving state " << theCurrentState;
+  else if(result == 3)
+    buf << "Invalid state " << theCurrentState << " file";
+
+  string message = buf.str();
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+      theDesiredFrameRate);
+}
+
+/**
+  Loads state from the current slot for the current game.
+*/
+void loadState()
+{
+  ostringstream buf;
+  string md5 = theConsole->properties().get("Cartridge.MD5");
+
+  string sub1 = theStateDir + '\\' + md5.substr(0, 8);
+  string sub2 = sub1 + '\\' + md5.substr(8, 8);
+  string sub3 = sub2 + '\\' + md5.substr(16, 8);
+  buf << sub3 << '\\' << md5.substr(24, 8) << ".st" << theCurrentState;
+  string filename = buf.str();
+
+  // Do a state load using the System
+  int result = theConsole->system().loadState(filename, md5);
+
+  // Print appropriate message
+  buf.str("");
+  if(result == 1)
+    buf << "State " << theCurrentState << " loaded";
+  else if(result == 2)
+    buf << "Error loading state " << theCurrentState;
+  else if(result == 3)
+    buf << "Invalid state " << theCurrentState << " file";
+
+  string message = buf.str();
+  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
+      theDesiredFrameRate);
+}
 
 /**
   This routine should be called once the console is create to setup
@@ -510,6 +629,47 @@ void updateEventsUsingKeyboardState()
     theQuitIndicator = true;
   }
 
+  // Handle switching save state slots
+  static bool changedState = false;
+  if((theKeyboardKeyState[SCAN_F10]) && !changedState)
+  {
+    if(theKeyboardKeyState[SCAN_LSHIFT] || theKeyboardKeyState[SCAN_RSHIFT])
+    {
+      changeState(0);
+    }
+    else
+    {
+      changeState(1);
+    }
+    changedState = true;
+  }
+  else if(!theKeyboardKeyState[SCAN_F10])
+  {
+    changedState = false;
+  }
+ 
+  static bool savedState = false;
+  if(!savedState && theKeyboardKeyState[SCAN_F9])
+  {
+    saveState();
+    savedState = true;
+  }
+  else if(!theKeyboardKeyState[SCAN_F9])
+  {
+    savedState = false;
+  }
+ 
+  static bool loadedState = false;
+  if(!loadedState && theKeyboardKeyState[SCAN_F11])
+  {
+    loadState();
+    loadedState = true;
+  }
+  else if(!theKeyboardKeyState[SCAN_F11])
+  {
+    loadedState = false;
+  }
+
   // First we clear all of the keyboard events
   for(unsigned int k = 0; k < sizeof(list) / sizeof(Switches); ++k)
   {
@@ -697,6 +857,53 @@ static void keyboardInterruptServiceRoutine(void)
   outp(0x20, 0x20);
 }
 
+
+/**
+  Ensure that the necessary directories are created for Stella under
+  STELLA_HOME or the current working directory if STELLA_HOME is not
+  defined.
+
+  Required directories are $STELLA_HOME/state.
+  This must be called before any other function.
+*/
+bool setupDirs()
+{
+  // Get the directory to use
+  theHomeDir = getenv("STELLA_HOME");
+  if(theHomeDir == "")
+  {
+    theHomeDir = ".";
+  }
+
+  // Remove trailing backslash
+  if((theHomeDir.length() >= 1) && 
+      (theHomeDir[theHomeDir.length() - 1] == '\\'))
+  {
+    theHomeDir = theHomeDir.substr(0, theHomeDir.length() - 1);
+  }
+
+  // Create state saving directory if needed
+  theStateDir = theHomeDir + "\\state";
+  if(access(theStateDir.c_str(), F_OK) != 0)
+  {
+    if(mkdir(theStateDir.c_str(), S_IWUSR) != 0)
+    {
+      cerr << "ERROR: Creating state save directory " 
+          << theStateDir << endl;
+      return false;
+    }
+  }
+
+  if(access(theStateDir.c_str(), R_OK | W_OK | X_OK | D_OK) != 0)
+  {
+    cerr << "ERROR: Access not allowed to the state save directory "
+          << theStateDir << endl;
+    return false;
+  }
+
+  return true;
+}
+
 /**
   Display a usage message and exit the program
 */
@@ -704,7 +911,7 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "Stella for DOS version 1.2.1",
+    "Stella for DOS version 1.3",
     "",
     "Usage: stella [option ...] file",
     "",
@@ -818,6 +1025,12 @@ void handleCommandLineArguments(int argc, char* argv[])
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
+  // First set up the directories where Stella will find RC and state files
+  if(!setupDirs())
+  {
+    return 0;
+  }
+
   // Handle the command line arguments
   handleCommandLineArguments(argc, argv);
 
