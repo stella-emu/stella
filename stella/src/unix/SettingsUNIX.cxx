@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.5 2004-07-04 15:16:22 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.6 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -61,57 +61,6 @@ SettingsUNIX::SettingsUNIX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsUNIX::~SettingsUNIX()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsUNIX::usage(string& message)
-{
-  cout << endl
-    << message << endl
-    << endl
-    << "Valid options are:" << endl
-    << endl
-    << "  -video      <type>         Type is one of the following:\n"
-    << "               soft            SDL software mode\n"
-  #ifdef DISPLAY_OPENGL
-    << "               gl              SDL OpenGL mode\n"
-    << endl
-    << "  -gl_filter  <type>         Type is one of the following:\n"
-    << "               nearest         Normal scaling (GL_NEAREST)\n"
-    << "               linear          Blurred scaling (GL_LINEAR)\n"
-    << "  -gl_aspect  <number>       Scale the width by the given amount\n"
-    << "  -gl_fsmax   <0|1>          Use the largest available screenmode in fullscreen OpenGL\n"
-    << endl
-  #endif
-    << "  -sound      <0|1>          Enable sound generation\n"
-    << "  -fragsize   <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -framerate  <number>       Display the given number of frames per second\n"
-    << "  -zoom       <size>         Makes window be 'size' times normal\n"
-    << "  -fullscreen <0|1>          Play the game in fullscreen mode\n"
-    << "  -grabmouse  <0|1>          Keeps the mouse in the game window\n"
-    << "  -hidecursor <0|1>          Hides the mouse cursor in the game window\n"
-    << "  -volume     <number>       Set the volume (0 - 100)\n"
-    << "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
-    << "  -altpro     <props file>   Use the given properties file instead of stella.pro\n"
-    << "  -showinfo   <0|1>          Shows some game info\n"
-    << "  -accurate   <0|1>          Accurate game timing (uses more CPU)\n"
-  #ifdef SNAPSHOT_SUPPORT
-    << "  -ssdir      <path>         The directory to save snapshot files to\n"
-    << "  -ssname     <name>         How to name the snapshot (romname or md5sum)\n"
-    << "  -sssingle   <0|1>          Generate single snapshot instead of many\n"
-  #endif
-    << endl
-  #ifdef DEVELOPER_SUPPORT
-    << " DEVELOPER options (see Stella manual for details)\n"
-    << "  -Dformat                   Sets \"Display.Format\"\n"
-    << "  -Dxstart                   Sets \"Display.XStart\"\n"
-    << "  -Dwidth                    Sets \"Display.Width\"\n"
-    << "  -Dystart                   Sets \"Display.YStart\"\n"
-    << "  -Dheight                   Sets \"Display.Height\"\n"
-    << "  -mergeprops  <0|1>         Merge changed properties into properties file,\n"
-    << "                             or save into a separate file\n"
-  #endif
-    << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

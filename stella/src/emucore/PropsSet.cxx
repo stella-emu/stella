@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.6 2002-11-11 02:52:02 stephena Exp $
+// $Id: PropsSet.cxx,v 1.7 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -152,6 +152,8 @@ void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties)
     t->props = new Properties(properties);
     t->left = 0;
     t->right = 0;
+
+    ++mySize;
   }
 }
 
@@ -208,6 +210,12 @@ void PropertiesSet::save(ostream& out)
   saveNode(out, myRoot);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::print()
+{
+  cout << size() << endl;
+  printNode(myRoot);
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::saveNode(ostream& out, TreeNode *node)
@@ -217,6 +225,17 @@ void PropertiesSet::saveNode(ostream& out, TreeNode *node)
     node->props->save(out);
     saveNode(out, node->left);
     saveNode(out, node->right);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::printNode(TreeNode *node)
+{
+  if(node)
+  {
+    node->props->print();
+    printNode(node->left);
+    printNode(node->right);
   }
 }
 

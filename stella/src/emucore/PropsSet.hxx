@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.4 2002-11-11 02:52:02 stephena Exp $
+// $Id: PropsSet.hxx,v 1.5 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIESSET_HXX
@@ -85,6 +85,11 @@ class PropertiesSet
     uInt32 size() const;
 
     /**
+      Prints the contents of the PropertiesSet as a flat file.
+    */
+    void print();
+
+    /**
       Merge the given properties into the collection.
 
       @param properties The properties to merge
@@ -135,6 +140,13 @@ class PropertiesSet
       @param node The current subroot of the tree
     */
     void saveNode(ostream& out, TreeNode *node);
+
+    /**
+      Prints the current node properties
+
+      @param node The current subroot of the tree
+    */
+    void printNode(TreeNode *node);
 
     // The root of the BST
     TreeNode* myRoot;

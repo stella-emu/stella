@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.hxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
+// $Id: SettingsWin32.hxx,v 1.4 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_WIN32_HXX
@@ -26,7 +26,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: SettingsWin32.hxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
+  @version $Id: SettingsWin32.hxx,v 1.4 2004-07-05 00:53:48 stephena Exp $
 */
 class SettingsWin32 : public Settings
 {
@@ -61,13 +61,6 @@ class SettingsWin32 : public Settings
       @return boolean representing whether or not the file exists
     */
     virtual bool fileExists(const string& filename);
-
-    /**
-      Display the commandline settings for this UNIX version of Stella.
-
-      @param  message A short message about this version of Stella
-    */
-    virtual void usage(string& message);
 };
 
 #endif

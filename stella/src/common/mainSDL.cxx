@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.9 2004-06-28 23:16:24 stephena Exp $
+// $Id: mainSDL.cxx,v 1.10 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -61,7 +61,7 @@ static void cleanup();
 static bool setupJoystick();
 static void handleEvents();
 static uInt32 getTicks();
-static bool setupProperties(PropertiesSet& set);
+static void setupProperties(PropertiesSet& set);
 
 #ifdef JOYSTICK_SUPPORT
 //  static uInt32 thePaddleNumber;
@@ -705,49 +705,38 @@ void handleEvents()
 
 
 /**
-  Setup the properties set by first checking for a user file
-  "$HOME/.stella/stella.pro", then a system-wide file "/etc/stella.pro".
-  Return false if neither file is found, else return true.
-
-  @param set The properties set to setup
+  Setup the properties set by first checking for a user file,
+  then a system-wide file.
 */
-bool setupProperties(PropertiesSet& set)
+void setupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
   string theAlternateProFile = theSettings->getString("altpro");
-  string theUserProFile = theSettings->userPropertiesFilename();
-  string theSystemProFile = theSettings->systemPropertiesFilename();
+  string theUserProFile      = theSettings->userPropertiesFilename();
+  string theSystemProFile    = theSettings->systemPropertiesFilename();
+
+  // When 'listroms' is specified, we need to have the full list in memory
+  if(theSettings->getBool("listrominfo"))
+    useMemList = true;
 
 #ifdef DEVELOPER_SUPPORT
   // If the user wishes to merge any property modifications to the
   // PropertiesSet file, then the PropertiesSet file MUST be loaded
   // into memory.
-  useMemList = theSettings->getBool("mergeprops");
+
+  // If 'useMemList' is true, do not override it
+  if(!useMemList)
+    useMemList = theSettings->getBool("mergeprops");
 #endif
 
-  // Check to see if the user has specified an alternate .pro file.
-
   if(theAlternateProFile != "")
-  {
     set.load(theAlternateProFile, &Console::defaultProperties(), useMemList);
-    return true;
-  }
-
-  if(theUserProFile != "")
-  {
+  else if(theUserProFile != "")
     set.load(theUserProFile, &Console::defaultProperties(), useMemList);
-    return true;
-  }
   else if(theSystemProFile != "")
-  {
     set.load(theSystemProFile, &Console::defaultProperties(), useMemList);
-    return true;
-  }
   else
-  {
     set.load("", &Console::defaultProperties(), false);
-    return true;
-  }
 }
 
 
@@ -804,8 +793,19 @@ int main(int argc, char* argv[])
   // Take care of commandline arguments
   if(!theSettings->loadCommandLine(argc, argv))
   {
-    string message = "Stella version 1.4_cvs\n\nUsage: stella [options ...] romfile";
-    theSettings->usage(message);
+    cleanup();
+    return 0;
+  }
+
+  // Create a properties set for us to use and set it up
+  PropertiesSet propertiesSet;
+  setupProperties(propertiesSet);
+
+  // Check to see if the 'listroms' argument was given
+  // If so, list the roms and immediately exit
+  if(theSettings->getBool("listrominfo"))
+  {
+    propertiesSet.print();
     cleanup();
     return 0;
   }
@@ -827,8 +827,6 @@ int main(int argc, char* argv[])
   if(!in)
   {
     cerr << "ERROR: Couldn't open " << file << "..." << endl;
-    string message = "Stella version 1.4_cvs\n\nUsage: stella [options ...] romfile";
-    theSettings->usage(message);
     cleanup();
     return 0;
   }
@@ -837,15 +835,6 @@ int main(int argc, char* argv[])
   in.read((char*)image, 512 * 1024);
   uInt32 size = in.gcount();
   in.close();
-
-  // Create a properties set for us to use and set it up
-  PropertiesSet propertiesSet;
-  if(!setupProperties(propertiesSet))
-  {
-    delete[] image;
-    cleanup();
-    return 0;
-  }
 
   // Create an SDL window
   string videodriver = theSettings->getString("video");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.13 2004-05-28 22:07:57 stephena Exp $
+// $Id: Settings.hxx,v 1.14 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -30,7 +30,7 @@
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.13 2004-05-28 22:07:57 stephena Exp $
+  @version $Id: Settings.hxx,v 1.14 2004-07-05 00:53:48 stephena Exp $
 */
 class Settings
 {
@@ -58,8 +58,15 @@ class Settings
 
     /**
       This method should be called to load the arguments from the commandline.
+
+      @return False on any errors, otherwise true
     */
     bool loadCommandLine(Int32 argc, char** argv);
+
+    /**
+      This method should be called to display usage information.
+    */
+    void usage();
 
     /**
       Get the value assigned to the specified key.  If the key does
@@ -158,13 +165,6 @@ class Settings
       @return boolean representing whether or not the file exists
     */
     virtual bool fileExists(const string& filename) = 0;
-
-    /**
-      This method should be called to display usage information.
-
-      @param  message A short message about this version of Stella
-    */
-    virtual void usage(string& message) = 0;
 
   public:
     /**

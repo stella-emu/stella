@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.3 2002-11-09 23:29:51 stephena Exp $
+// $Id: Props.hxx,v 1.4 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -30,7 +30,7 @@
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.3 2002-11-09 23:29:51 stephena Exp $
+  @version $Id: Props.hxx,v 1.4 2004-07-05 00:53:48 stephena Exp $
 */
 class Properties
 {
@@ -94,6 +94,11 @@ class Properties
       @param properties The properties object to merge
     */
     void merge(const Properties& properties);
+
+    /**
+      Print the attributes of this properties object
+    */
+    void print();
 
   public:
     /**

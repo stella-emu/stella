@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.hxx,v 1.2 2004-05-28 22:07:57 stephena Exp $
+// $Id: SettingsUNIX.hxx,v 1.3 2004-07-05 00:53:48 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_UNIX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: SettingsUNIX.hxx,v 1.2 2004-05-28 22:07:57 stephena Exp $
+  @version $Id: SettingsUNIX.hxx,v 1.3 2004-07-05 00:53:48 stephena Exp $
 */
 class SettingsUNIX : public Settings
 {
@@ -62,13 +62,6 @@ class SettingsUNIX : public Settings
       @return boolean representing whether or not the file exists
     */
     virtual bool fileExists(const string& filename);
-
-    /**
-      Display the commandline settings for this UNIX version of Stella.
-
-      @param  message A short message about this version of Stella
-    */
-    virtual void usage(string& message);
 };
 
 #endif
