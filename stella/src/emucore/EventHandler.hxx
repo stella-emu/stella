@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.13 2003-11-24 14:51:06 stephena Exp $
+// $Id: EventHandler.hxx,v 1.14 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -24,7 +24,6 @@
 #include "StellaEvent.hxx"
 
 class Console;
-class MediaSource;
 
 
 /**
@@ -41,7 +40,7 @@ class MediaSource;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.13 2003-11-24 14:51:06 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.14 2004-06-20 23:30:48 stephena Exp $
 */
 class EventHandler
 {
@@ -91,13 +90,6 @@ class EventHandler
     void sendEvent(Event::Type type, Int32 value);
 	
     /**
-      Set the mediasource.
-
-      @param mediaSource   The mediasource
-    */
-    void setMediaSource(MediaSource* mediaSource);
-
-    /**
       Enable/disable remapping mode.
 
       @param status  The toggle for enable/disable
@@ -145,9 +137,6 @@ class EventHandler
 
     // Global Event object
     Event* myEvent;
-
-    // Global mediasource object
-    MediaSource* myMediaSource;
 
     // Indicates the current state to use for state loading/saving
     uInt32 myCurrentState;

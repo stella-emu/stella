@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.8 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.8 2004-06-20 23:30:48 stephena Exp $
 */
 class FrameBuffer
 {
@@ -192,6 +192,24 @@ class FrameBuffer
       @param status  The received pause status
     */
     virtual void pauseEvent(bool status) = 0;
+
+    /**
+      This routine is called to get the width of the onscreen image.
+    */
+    virtual uInt32 winWidth() = 0;
+
+    /**
+      This routine is called to get the height of the onscreen image.
+    */
+    virtual uInt32 winHeight() = 0;
+
+    /**
+      This routine is called to get the specified scanline data.
+
+      @param row  The row we are looking for
+      @param data The actual pixel data (in bytes)
+    */
+    virtual void scanline(uInt32 row, uInt8* data) = 0;
 
   protected:
     // The Console for the system

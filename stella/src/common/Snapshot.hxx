@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+// $Id: Snapshot.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
 #define SNAPSHOT_HXX
 
-class Console;
-class MediaSource;
+class FrameBuffer;
 
 #include <png.h>
 #include "bspf.hxx"
@@ -31,10 +30,9 @@ class Snapshot
     /**
       Create a new shapshot class for taking snapshots in PNG format.
 
-      @param console   The console
-      @param mediasrc  The mediasource
+      @param framebuffer The SDL framebuffer containing the image data
     */
-    Snapshot(Console* console, MediaSource* mediasrc);
+    Snapshot(FrameBuffer& framebuffer);
 
     /**
       The destructor.
@@ -42,15 +40,13 @@ class Snapshot
     ~Snapshot();
 
     /**
-      This routine saves the current frame buffer to a PNG file,
-      appropriately scaled by the amount specified in 'multiplier'.
+      This routine saves the current frame buffer to a PNG file.
 
-      @param filename    The filename of the PNG file
-      @param multiplier  The amount that multiplication (zoom level)
+      @param filename  The filename of the PNG file
 
-      @return  The resulting error code
+      @string  The resulting string to print to the framebuffer
     */
-    uInt32 savePNG(string filename, uInt32 multiplier = 1);
+    string savePNG(string filename);
 
   private:
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
@@ -62,14 +58,8 @@ class Snapshot
     static void png_user_error(png_structp ctx, png_const_charp str);
 
   private:
-    // The Console for the system
-    Console* myConsole;
-
-    // The Mediasource for the system
-    MediaSource* myMediaSource;
-
-    // The PNG palette
-    png_colorp palette;
+    // The Framebuffer for the system
+    FrameBuffer& myFrameBuffer;
 };
 
 #endif

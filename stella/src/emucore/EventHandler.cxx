@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.26 2004-06-13 04:57:17 bwmott Exp $
+// $Id: EventHandler.cxx,v 1.27 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -22,7 +22,6 @@
 #include "Console.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
-#include "MediaSrc.hxx"
 #include "Settings.hxx"
 #include "StellaEvent.hxx"
 #include "System.hxx"
@@ -432,11 +431,10 @@ void EventHandler::takeSnapshot()
   else
     filename = sspath + ".png";
 
-  // Now save the snapshot file
-  uInt32 multiplier = myConsole->settings().getInt("zoom");
-
-  myConsole->snapshot().savePNG(filename, multiplier);
-  myConsole->frameBuffer().showMessage("Snapshot saved");
+  // Now create a Snapshot object and save the PNG
+  Snapshot snapshot(myConsole->frameBuffer());
+  string result = snapshot.savePNG(filename);
+  myConsole->frameBuffer().showMessage(result);
 #else
   myConsole->frameBuffer().showMessage("Snapshots unsupported");
 #endif

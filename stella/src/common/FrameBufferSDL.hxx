@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -35,7 +35,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -49,7 +49,6 @@ class FrameBufferSDL : public FrameBuffer
       Destructor
     */
     virtual ~FrameBufferSDL();
-
 
     /**
       Toggles between fullscreen and window mode.  Grabmouse and hidecursor

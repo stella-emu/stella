@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -381,6 +381,56 @@ void FrameBufferSoft::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
       }
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::scanline(uInt32 row, uInt8* data)
+{
+  // Make sure no pixels are being modified
+  SDL_LockSurface(myScreen);
+
+  uInt32 bpp     = myScreen->format->BytesPerPixel;
+  uInt8* start   = (uInt8*) myScreen->pixels;
+  uInt32 yoffset = row * myScreen->pitch;
+  uInt32 pixel = 0;
+  uInt8 *p, r, g, b;
+
+  for(Int32 x = 0; x < myScreen->w; x++)
+  {
+    p = (Uint8*) (start    +  // Start at top of RAM
+                 (yoffset) +  // Go down 'row' lines
+                 (x * bpp));  // Go in 'x' pixels
+
+    switch(bpp)
+    {
+      case 1:
+        pixel = *p;
+        break;
+
+      case 2:
+        pixel = *(Uint16*) p;
+        break;
+
+      case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+          pixel = p[0] << 16 | p[1] << 8 | p[2];
+        else
+          pixel = p[0] | p[1] << 8 | p[2] << 16;
+        break;
+
+      case 4:
+        pixel = *(Uint32*) p;
+        break;
+    }
+
+    SDL_GetRGB(pixel, myScreen->format, &r, &g, &b);
+
+    data[x * 3 + 0] = r;
+    data[x * 3 + 1] = g;
+    data[x * 3 + 2] = b;
+  }
+
+  SDL_UnlockSurface(myScreen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

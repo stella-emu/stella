@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.2 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -350,6 +350,17 @@ void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c)
     glTexCoord2f(1, 1); glVertex2i(x+8, y+8);
     glTexCoord2f(0, 1); glVertex2i(x,   y+8);
   glEnd();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::scanline(uInt32 row, uInt8* data)
+{
+  // Invert the row, since OpenGL rows start at the bottom
+  // of the framebuffer
+  row = winHeight() - row - 1;
+
+  glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  glReadPixels(0, row, winWidth(), 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

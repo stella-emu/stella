@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.19 2004-06-13 16:51:15 stephena Exp $
+// $Id: Console.hxx,v 1.20 2004-06-20 23:30:48 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -26,7 +26,6 @@ class EventHandler;
 class MediaSource;
 class PropertiesSet;
 class Settings;
-class Snapshot;
 class Sound;
 class Switches;
 class System;
@@ -41,7 +40,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.19 2004-06-13 16:51:15 stephena Exp $
+  @version $Id: Console.hxx,v 1.20 2004-06-20 23:30:48 stephena Exp $
 */
 class Console
 {
@@ -170,22 +169,6 @@ class Console
       @return The default properties object
     */
     static const Properties& defaultProperties();
-
-#ifdef SNAPSHOT_SUPPORT
-  public:
-    // Pointer to the Snapshot object
-    Snapshot* mySnapshot;
-
-    /**
-      Get the snapshot object of the console
-
-      @return The snapshot object for this console
-    */
-    Snapshot& snapshot() const
-    {
-      return *mySnapshot;
-    }
-#endif
 
 #ifdef DEVELOPER_SUPPORT
   public:
