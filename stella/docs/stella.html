@@ -230,7 +230,7 @@
 		<li>Stella.pro file now required, it is no longer optional</li>
 		<li>INI file support added to X11 and SDL versions</li>
 		<li>PNG snapshot support added to X11 and SDL versions (requires PNG library)</li>
-		<li>Added pause ability to the core, X11 and SDL versions supported for now</li>
+		<li>Added pause ability to the core, DOS, X11 and SDL versions supported for now</li>
 		<li>Updated PAL & NTSC palettes with more accurate colors</li>
 		<li>Added experimental timing code to X11 and SDL versions. Reduces CPU
 			usage at the expense of smooth framerates.</li>
@@ -1279,7 +1279,7 @@
 
 	<p>The DOS version of Stella looks for a property file <i>stella.pro</i> in the
 	current working directory.  If this file isn't found then the emulator will
-	print an error and exit.</p>
+	try to guess the best settings for the game.</p>
 
 	<p>
 	<h2><b>Linux and Unix</b></h2>
@@ -1287,8 +1287,8 @@
 	<p>The Linux and Unix versions of Stella looks for the property file
 	<i>.stella.pro</i> in your home directory.  If this file is not found there, 
 	Stella will look for a <i>stella.pro</i> file in the <i>/etc/</i> directory.
-	If the file isn't found in either place, then the emulator will	print an error
-	and exit.</p>
+	If the file isn't found in either place, then the emulator wil try to
+	guess the best settings for the game.</p>
 
 	<p>
 	<h2><b>Property File</b></h2>
