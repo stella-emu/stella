@@ -13,17 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.1 2005-04-04 02:19:22 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.2 2005-04-05 00:40:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <sstream>
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "ListWidget.hxx"
 #include "Dialog.hxx"
 #include "GuiUtils.hxx"
+#include "Event.hxx"
 #include "EventHandler.hxx"
 #include "EventMappingDialog.hxx"
 
@@ -32,26 +35,27 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMappingDialog::EventMappingDialog(OSystem* osystem, uInt16 x, uInt16 y,
                                        uInt16 w, uInt16 h)
-    : Dialog(osystem, x, y, w, h)
+    : Dialog(osystem, x, y, w, h),
+      myActionSelected(-1),
+      myRemapStatus(false)
 {
-  // Add Previous, Next and Close buttons
-  addButton(10, h - 24, "Defaults", kDefaultsCmd, 0);
-  addButton(w - (kButtonWidth + 10), h - 24, "OK", kCloseCmd, 0);
+  // Add Default and OK buttons
+  myDefaultsButton = addButton(10, h - 24, "Defaults", kDefaultsCmd, 0);
+  myOKButton       = addButton(w - (kButtonWidth + 10), h - 24, "OK", kCloseCmd, 0);
 
   new StaticTextWidget(this, 10, 8, 200, 16, "Select an event to remap:", kTextAlignCenter);
   myActionsList = new ListWidget(this, 10, 20, 200, 100);
   myActionsList->setNumberingMode(kListNumberingOff);
 
-  string title = "Hello Test!";
-  myActionTitle = new StaticTextWidget(this, 10, 125, 200, 16, title, kTextAlignCenter);
-  myKeyMapping  = new StaticTextWidget(this, 10, 130, 200, 16, "", kTextAlignCenter);
-
-  myActionTitle->setFlags(WIDGET_CLEARBG);
+  myKeyMapping  = new StaticTextWidget(this, 10, 125, w - 20, 16,
+                                       "Key(s) : ", kTextAlignLeft);
   myKeyMapping->setFlags(WIDGET_CLEARBG);
 
   // Add remap and erase buttons
-  addButton(220, 30, "Map", kMapCmd, 0);
-  addButton(220, 50, "Erase", kEraseCmd, 0);
+  myMapButton       = addButton(220, 30, "Map", kStartMapCmd, 0);
+  myEraseButton     = addButton(220, 50, "Erase", kEraseCmd, 0);
+  myCancelMapButton = addButton(220, 70, "Cancel", kStopMapCmd, 0);
+  myCancelMapButton->setEnabled(false);
 
   // Get actions names
   StringList l;
@@ -60,9 +64,6 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, uInt16 x, uInt16 y,
     l.push_back(EventHandler::ourActionList[i].action);
 
   myActionsList->setList(l);
-
-  myActionSelected = -1;
-//  CEActions::Instance()->beginMapping(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,9 +72,67 @@ EventMappingDialog::~EventMappingDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingDialog::startRemapping()
+{
+  if(myActionSelected < 0 || myRemapStatus)
+    return;
+
+  // Set the flags for the next event that arrives
+  myRemapStatus = true;
+
+  // Disable all other widgets while in remap mode, except enable 'Cancel'
+  myActionsList->setEnabled(false);
+  myMapButton->setEnabled(false);
+  myEraseButton->setEnabled(false);
+  myDefaultsButton->setEnabled(false);
+  myOKButton->setEnabled(false);
+  myCancelMapButton->setEnabled(true);
+
+  // And show a message indicating which key is being remapped
+  ostringstream buf;
+  buf << "Select a new event for the '"
+      << EventHandler::ourActionList[ myActionSelected ].action
+      << "' action";
+  myKeyMapping->setLabel(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingDialog::eraseRemapping()
+{
+  if(myActionSelected < 0)
+    return;
+  else
+    cerr << "Erase item: " << myActionSelected << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingDialog::stopRemapping()
+{
+  // Turn off remap mode
+  myRemapStatus = false;
+
+  // And re-enable all the widgets
+  myActionsList->setEnabled(true);
+  myMapButton->setEnabled(true);
+  myEraseButton->setEnabled(true);
+  myDefaultsButton->setEnabled(true);
+  myOKButton->setEnabled(true);
+  myCancelMapButton->setEnabled(false);
+
+  // Make sure the list widget is in a known state
+  if(myActionSelected >= 0)
+  {
+    ostringstream buf;
+    buf << "Key(s) : "
+	    << EventHandler::ourActionList[ myActionSelected ].key;
+    myKeyMapping->setLabel(buf.str());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingDialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 {
-  cerr << "EventMappingDialog::handleKeyDown received: " << ascii << endl;
+//  cerr << "EventMappingDialog::handleKeyDown received: " << ascii << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,23 +143,25 @@ void EventMappingDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32
     case kListSelectionChangedCmd:
       if(myActionsList->getSelected() >= 0)
       {
-cerr << "Item selected: " << myActionsList->getSelected() << endl;
+        myActionSelected = myActionsList->getSelected();
+        ostringstream buf;
+        buf << "Key(s) : "
+            << EventHandler::ourActionList[ myActionSelected ].key;
 
-/*        char selection[100];
-
-        sprintf(selection, "Associated key : %s", CEDevice::getKeyName(CEActions::Instance()->getMapping((ActionType)(_actionsList->getSelected() + 1))).c_str());
-        _keyMapping->setLabel(selection);
-        _keyMapping->draw();
-*/
+        myKeyMapping->setLabel(buf.str());
       }
       break;
 
-    case kMapCmd:
-cerr << "Remap item: " << myActionsList->getSelected() << endl;
+    case kStartMapCmd:
+      startRemapping();
       break;
 
     case kEraseCmd:
-cerr << "Erase item: " << myActionsList->getSelected() << endl;
+      eraseRemapping();
+      break;
+
+    case kStopMapCmd:
+      stopRemapping();
       break;
 
     case kDefaultsCmd:

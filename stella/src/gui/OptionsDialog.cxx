@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.9 2005-04-04 02:19:22 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.10 2005-04-05 00:40:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -86,7 +86,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myAudioDialog = new AudioDialog(myOSystem, x, y, w, h);
 
-  w = 280; h = 180;
+  w = 280; h = 170;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myEventMappingDialog = new EventMappingDialog(myOSystem, x, y, w, h);
 

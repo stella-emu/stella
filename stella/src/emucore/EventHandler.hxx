@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.21 2005-04-04 02:19:21 stephena Exp $
+// $Id: EventHandler.hxx,v 1.22 2005-04-05 00:40:54 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -41,7 +41,7 @@ enum MouseButton {
 struct ActionList {
   Event::Type event;
   string action;
-  string keys;
+  string key;
 };
 
 /**
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.21 2005-04-04 02:19:21 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.22 2005-04-05 00:40:54 stephena Exp $
 */
 class EventHandler
 {
@@ -121,9 +121,6 @@ class EventHandler
     // Holds static strings for the remap menu
     static ActionList ourActionList[58];
 
-    void getKeymapArray(Event::Type** array, uInt32* size);
-    void getJoymapArray(Event::Type** array, uInt32* size);
-
   private:
     /**
       Send an event directly to the event handler.
@@ -168,12 +165,17 @@ class EventHandler
          Int32 state);
 
     /**
-      Sets the mouse to act as paddle 'which'
+      Sets the mouse to act as paddle 'num'
 
-      @param which The paddle which the mouse should emulate
+      @param num The paddle which the mouse should emulate
     */
-    void setPaddleMode(Int8 which);
+    void setPaddleMode(uInt32 num);
 
+    /**
+      The following methods take care of assigning action mappings.
+    */
+    void setActionMappings();
+    void setSDLMappings();
     void setKeymap();
     void setJoymap();
     void setDefaultKeymap();
@@ -191,19 +193,16 @@ class EventHandler
     OSystem* myOSystem;
 
     // Array of key events, indexed by SDLKey
-    Event::Type myKeyTable[256];
-
-    // Array of alt-key events, indexed by SDLKey
-    Event::Type myAltKeyTable[256];
-
-    // Array of ctrl-key events, indexed by SDLKey
-    Event::Type myCtrlKeyTable[256];
+    Event::Type myKeyTable[SDLK_LAST];
 
     // Array of joystick events
     Event::Type myJoyTable[StellaEvent::LastJSTICK*StellaEvent::LastJCODE];
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
+
+    // Array of strings which correspond to the given SDL key
+    string ourSDLMapping[SDLK_LAST];
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;

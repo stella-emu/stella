@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.41 2005-04-04 02:19:20 stephena Exp $
+// $Id: EventHandler.cxx,v 1.42 2005-04-05 00:40:54 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -53,11 +53,10 @@ EventHandler::EventHandler(OSystem* osystem)
   myEvent = new Event();
 
   // Erase the KeyEvent arrays
-  for(Int32 i = 0; i < 256; ++i)
+  for(Int32 i = 0; i < SDLK_LAST; ++i)
   {
-    myKeyTable[i]     = Event::NoType;
-    myAltKeyTable[i]  = Event::NoType;
-    myCtrlKeyTable[i] = Event::NoType;
+    myKeyTable[i] = Event::NoType;
+    ourSDLMapping[i] = "";
   }
 
   // Erase the JoyEvent array
@@ -76,8 +75,12 @@ EventHandler::EventHandler(OSystem* osystem)
   ourMessageTable[Event::ConsoleRightDifficultyA] = "Right Difficulty A";
   ourMessageTable[Event::ConsoleRightDifficultyB] = "Right Difficulty B";
 
+  // Make sure the event/action mappings are correctly set,
+  // and fill the ActionList structure with valid values
+  setSDLMappings();
   setKeymap();
   setJoymap();
+  setActionMappings();
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
 }
@@ -514,6 +517,94 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setActionMappings()
+{
+  // Fill the ActionList with the current key and joystick mappings
+  for(Int32 i = 0; i < 58; ++i)
+  {
+    Event::Type event = ourActionList[i].event;
+    ourActionList[i].key = "None";
+    string key = "";
+    for(uInt32 j = 0; j < SDLK_LAST; ++j)   // size of myKeyTable
+    {
+      if(myKeyTable[j] == event)
+      {
+        if(key == "")
+          key = key + ourSDLMapping[j];
+        else
+          key = key + ", " + ourSDLMapping[j];
+      }
+    }
+/*  FIXME
+    for(uInt32 j = 0; j < myJoyTableSize; ++j)
+    {
+      if(myJoyTable[j] == event)
+      {
+        ostringstream joyevent;
+        uInt32 stick  = j / StellaEvent::LastJCODE;
+        uInt32 button = j % StellaEvent::LastJCODE;
+
+        switch(button)
+        {
+          case StellaEvent::JAXIS_UP:
+            joyevent << "J" << stick << " UP";
+            break;
+
+          case StellaEvent::JAXIS_DOWN:
+            joyevent << "J" << stick << " DOWN";
+            break;
+
+          case StellaEvent::JAXIS_LEFT:
+            joyevent << "J" << stick << " LEFT";
+            break;
+
+          case StellaEvent::JAXIS_RIGHT:
+            joyevent << "J" << stick << " RIGHT";
+            break;
+
+          default:
+            joyevent << "J" << stick << " B" << (button-4);
+            break;
+        }
+        if(key == "")
+          key = key + joyevent.str();
+        else
+          key = key + ", " + joyevent.str();
+      }
+    }
+*/
+    // There are some keys which are hardcoded.  These should be represented too.
+    string prepend = "";
+    if(event == Event::Quit)
+      prepend = "Ctrl Q";  // FIXME for OSX
+    // else if ...
+
+    if(key == "")
+      key = prepend;
+    else if(prepend != "")
+      key = prepend + ", " + key;
+
+    if(key != "")
+      ourActionList[i].key = key;
+  }
+
+/* FIXME - add this to addXXXBinding and deleteBinding ...
+  // Save the new bindings
+  ostringstream keybuf, joybuf;
+
+  // Iterate through the keymap table and create a colon-separated list
+  for(uInt32 i = 0; i < StellaEvent::LastKCODE; ++i)
+    keybuf << myKeyTable[i] << ":";
+  myOSystem->settings().setString("keymap", keybuf.str());
+
+  // Iterate through the joymap table and create a colon-separated list
+  for(uInt32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    joybuf << myJoyTable[i] << ":";
+  myOSystem->settings().setString("joymap", joybuf.str());
+*/
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setKeymap()
 {
   // Since istringstream swallows whitespace, we have to make the
@@ -521,13 +612,13 @@ void EventHandler::setKeymap()
   string list = myOSystem->settings().getString("keymap");
   replace(list.begin(), list.end(), ':', ' ');
 
-  if(isValidList(list, StellaEvent::LastKCODE))
+  if(isValidList(list, SDLK_LAST))
   {
     istringstream buf(list);
     string key;
 
     // Fill the keymap table with events
-    for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
+    for(Int32 i = 0; i < SDLK_LAST; ++i)
     {
       buf >> key;
       myKeyTable[i] = (Event::Type) atoi(key.c_str());
@@ -540,6 +631,8 @@ void EventHandler::setKeymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setJoymap()
 {
+// FIXME
+/*
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
   string list = myOSystem->settings().getString("joymap");
@@ -559,20 +652,7 @@ void EventHandler::setJoymap()
   }
   else
     setDefaultJoymap();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getKeymapArray(Event::Type** array, uInt32* size)
-{
-  *array = myKeyTable;
-  *size  = StellaEvent::LastKCODE;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getJoymapArray(Event::Type** array, uInt32* size)
-{
-  *array = myJoyTable;
-  *size  = StellaEvent::LastJSTICK * StellaEvent::LastJCODE;
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -640,7 +720,6 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_F10 ]       = Event::ChangeState;
   myKeyTable[ SDLK_F11 ]       = Event::LoadState;
   myKeyTable[ SDLK_F12 ]       = Event::TakeSnapshot;
-
   myKeyTable[ SDLK_PAUSE ]     = Event::Pause;
 #ifndef MAC_OSX
   myKeyTable[ SDLK_ESCAPE ]    = Event::ExitGame;
@@ -648,7 +727,7 @@ void EventHandler::setDefaultKeymap()
 
   // Iterate through the keymap table and create a colon-separated list
   ostringstream keybuf;
-  for(uInt32 i = 0; i < 256; ++i)
+  for(uInt32 i = 0; i < SDLK_LAST; ++i)
     keybuf << myKeyTable[i] << ":";
   myOSystem->settings().setString("keymap", keybuf.str());
 }
@@ -791,7 +870,7 @@ void EventHandler::takeSnapshot()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setPaddleMode(Int8 num)
+void EventHandler::setPaddleMode(uInt32 num)
 {
   myPaddleMode = num;
 
@@ -803,15 +882,251 @@ void EventHandler::setPaddleMode(Int8 num)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setSDLMappings()
+{
+  ourSDLMapping[ SDLK_BACKSPACE ]    = "BACKSPACE";
+  ourSDLMapping[ SDLK_TAB ]          = "TAB";
+  ourSDLMapping[ SDLK_CLEAR ]        = "CLEAR";
+  ourSDLMapping[ SDLK_RETURN ]       = "RETURN";
+  ourSDLMapping[ SDLK_PAUSE ]        = "PAUSE";
+  ourSDLMapping[ SDLK_ESCAPE ]       = "ESCAPE";
+  ourSDLMapping[ SDLK_SPACE ]        = "SPACE";
+  ourSDLMapping[ SDLK_EXCLAIM ]      = "EXCLAIM";
+  ourSDLMapping[ SDLK_QUOTEDBL ]     = "QUOTEDBL";
+  ourSDLMapping[ SDLK_HASH ]         = "HASH";
+  ourSDLMapping[ SDLK_DOLLAR ]       = "DOLLAR";
+  ourSDLMapping[ SDLK_AMPERSAND ]    = "AMPERSAND";
+  ourSDLMapping[ SDLK_QUOTE ]        = "QUOTE";
+  ourSDLMapping[ SDLK_LEFTPAREN ]    = "LEFTPAREN";
+  ourSDLMapping[ SDLK_RIGHTPAREN ]   = "RIGHTPAREN";
+  ourSDLMapping[ SDLK_ASTERISK ]     = "ASTERISK";
+  ourSDLMapping[ SDLK_PLUS ]         = "PLUS";
+  ourSDLMapping[ SDLK_COMMA ]        = "COMMA";
+  ourSDLMapping[ SDLK_MINUS ]        = "MINUS";
+  ourSDLMapping[ SDLK_PERIOD ]       = "PERIOD";
+  ourSDLMapping[ SDLK_SLASH ]        = "SLASH";
+  ourSDLMapping[ SDLK_0 ]            = "0";
+  ourSDLMapping[ SDLK_1 ]            = "1";
+  ourSDLMapping[ SDLK_2 ]            = "2";
+  ourSDLMapping[ SDLK_3 ]            = "3";
+  ourSDLMapping[ SDLK_4 ]            = "4";
+  ourSDLMapping[ SDLK_5 ]            = "5";
+  ourSDLMapping[ SDLK_6 ]            = "6";
+  ourSDLMapping[ SDLK_7 ]            = "7";
+  ourSDLMapping[ SDLK_8 ]            = "8";
+  ourSDLMapping[ SDLK_9 ]            = "9";
+  ourSDLMapping[ SDLK_COLON ]        = "COLON";
+  ourSDLMapping[ SDLK_SEMICOLON ]    = "SEMICOLON";
+  ourSDLMapping[ SDLK_LESS ]         = "LESS";
+  ourSDLMapping[ SDLK_EQUALS ]       = "EQUALS";
+  ourSDLMapping[ SDLK_GREATER ]      = "GREATER";
+  ourSDLMapping[ SDLK_QUESTION ]     = "QUESTION";
+  ourSDLMapping[ SDLK_AT ]           = "AT";
+  ourSDLMapping[ SDLK_LEFTBRACKET ]  = "LEFTBRACKET";
+  ourSDLMapping[ SDLK_BACKSLASH ]    = "BACKSLASH";
+  ourSDLMapping[ SDLK_RIGHTBRACKET ] = "RIGHTBRACKET";
+  ourSDLMapping[ SDLK_CARET ]        = "CARET";
+  ourSDLMapping[ SDLK_UNDERSCORE ]   = "UNDERSCORE";
+  ourSDLMapping[ SDLK_BACKQUOTE ]    = "BACKQUOTE";
+  ourSDLMapping[ SDLK_a ]            = "A";
+  ourSDLMapping[ SDLK_b ]            = "B";
+  ourSDLMapping[ SDLK_c ]            = "C";
+  ourSDLMapping[ SDLK_d ]            = "D";
+  ourSDLMapping[ SDLK_e ]            = "E";
+  ourSDLMapping[ SDLK_f ]            = "F";
+  ourSDLMapping[ SDLK_g ]            = "G";
+  ourSDLMapping[ SDLK_h ]            = "H";
+  ourSDLMapping[ SDLK_i ]            = "I";
+  ourSDLMapping[ SDLK_j ]            = "J";
+  ourSDLMapping[ SDLK_k ]            = "K";
+  ourSDLMapping[ SDLK_l ]            = "L";
+  ourSDLMapping[ SDLK_m ]            = "M";
+  ourSDLMapping[ SDLK_n ]            = "N";
+  ourSDLMapping[ SDLK_o ]            = "O";
+  ourSDLMapping[ SDLK_p ]            = "P";
+  ourSDLMapping[ SDLK_q ]            = "Q";
+  ourSDLMapping[ SDLK_r ]            = "R";
+  ourSDLMapping[ SDLK_s ]            = "S";
+  ourSDLMapping[ SDLK_t ]            = "T";
+  ourSDLMapping[ SDLK_u ]            = "U";
+  ourSDLMapping[ SDLK_v ]            = "V";
+  ourSDLMapping[ SDLK_w ]            = "W";
+  ourSDLMapping[ SDLK_x ]            = "X";
+  ourSDLMapping[ SDLK_y ]            = "Y";
+  ourSDLMapping[ SDLK_z ]            = "Z";
+  ourSDLMapping[ SDLK_DELETE ]       = "DELETE";
+  ourSDLMapping[ SDLK_WORLD_0 ]      = "WORLD_0";
+  ourSDLMapping[ SDLK_WORLD_1 ]      = "WORLD_1";
+  ourSDLMapping[ SDLK_WORLD_2 ]      = "WORLD_2";
+  ourSDLMapping[ SDLK_WORLD_3 ]      = "WORLD_3";
+  ourSDLMapping[ SDLK_WORLD_4 ]      = "WORLD_4";
+  ourSDLMapping[ SDLK_WORLD_5 ]      = "WORLD_5";
+  ourSDLMapping[ SDLK_WORLD_6 ]      = "WORLD_6";
+  ourSDLMapping[ SDLK_WORLD_7 ]      = "WORLD_7";
+  ourSDLMapping[ SDLK_WORLD_8 ]      = "WORLD_8";
+  ourSDLMapping[ SDLK_WORLD_9 ]      = "WORLD_9";
+  ourSDLMapping[ SDLK_WORLD_10 ]     = "WORLD_10";
+  ourSDLMapping[ SDLK_WORLD_11 ]     = "WORLD_11";
+  ourSDLMapping[ SDLK_WORLD_12 ]     = "WORLD_12";
+  ourSDLMapping[ SDLK_WORLD_13 ]     = "WORLD_13";
+  ourSDLMapping[ SDLK_WORLD_14 ]     = "WORLD_14";
+  ourSDLMapping[ SDLK_WORLD_15 ]     = "WORLD_15";
+  ourSDLMapping[ SDLK_WORLD_16 ]     = "WORLD_16";
+  ourSDLMapping[ SDLK_WORLD_17 ]     = "WORLD_17";
+  ourSDLMapping[ SDLK_WORLD_18 ]     = "WORLD_18";
+  ourSDLMapping[ SDLK_WORLD_19 ]     = "WORLD_19";
+  ourSDLMapping[ SDLK_WORLD_20 ]     = "WORLD_20";
+  ourSDLMapping[ SDLK_WORLD_21 ]     = "WORLD_21";
+  ourSDLMapping[ SDLK_WORLD_22 ]     = "WORLD_22";
+  ourSDLMapping[ SDLK_WORLD_23 ]     = "WORLD_23";
+  ourSDLMapping[ SDLK_WORLD_24 ]     = "WORLD_24";
+  ourSDLMapping[ SDLK_WORLD_25 ]     = "WORLD_25";
+  ourSDLMapping[ SDLK_WORLD_26 ]     = "WORLD_26";
+  ourSDLMapping[ SDLK_WORLD_27 ]     = "WORLD_27";
+  ourSDLMapping[ SDLK_WORLD_28 ]     = "WORLD_28";
+  ourSDLMapping[ SDLK_WORLD_29 ]     = "WORLD_29";
+  ourSDLMapping[ SDLK_WORLD_30 ]     = "WORLD_30";
+  ourSDLMapping[ SDLK_WORLD_31 ]     = "WORLD_31";
+  ourSDLMapping[ SDLK_WORLD_32 ]     = "WORLD_32";
+  ourSDLMapping[ SDLK_WORLD_33 ]     = "WORLD_33";
+  ourSDLMapping[ SDLK_WORLD_34 ]     = "WORLD_34";
+  ourSDLMapping[ SDLK_WORLD_35 ]     = "WORLD_35";
+  ourSDLMapping[ SDLK_WORLD_36 ]     = "WORLD_36";
+  ourSDLMapping[ SDLK_WORLD_37 ]     = "WORLD_37";
+  ourSDLMapping[ SDLK_WORLD_38 ]     = "WORLD_38";
+  ourSDLMapping[ SDLK_WORLD_39 ]     = "WORLD_39";
+  ourSDLMapping[ SDLK_WORLD_40 ]     = "WORLD_40";
+  ourSDLMapping[ SDLK_WORLD_41 ]     = "WORLD_41";
+  ourSDLMapping[ SDLK_WORLD_42 ]     = "WORLD_42";
+  ourSDLMapping[ SDLK_WORLD_43 ]     = "WORLD_43";
+  ourSDLMapping[ SDLK_WORLD_44 ]     = "WORLD_44";
+  ourSDLMapping[ SDLK_WORLD_45 ]     = "WORLD_45";
+  ourSDLMapping[ SDLK_WORLD_46 ]     = "WORLD_46";
+  ourSDLMapping[ SDLK_WORLD_47 ]     = "WORLD_47";
+  ourSDLMapping[ SDLK_WORLD_48 ]     = "WORLD_48";
+  ourSDLMapping[ SDLK_WORLD_49 ]     = "WORLD_49";
+  ourSDLMapping[ SDLK_WORLD_50 ]     = "WORLD_50";
+  ourSDLMapping[ SDLK_WORLD_51 ]     = "WORLD_51";
+  ourSDLMapping[ SDLK_WORLD_52 ]     = "WORLD_52";
+  ourSDLMapping[ SDLK_WORLD_53 ]     = "WORLD_53";
+  ourSDLMapping[ SDLK_WORLD_54 ]     = "WORLD_54";
+  ourSDLMapping[ SDLK_WORLD_55 ]     = "WORLD_55";
+  ourSDLMapping[ SDLK_WORLD_56 ]     = "WORLD_56";
+  ourSDLMapping[ SDLK_WORLD_57 ]     = "WORLD_57";
+  ourSDLMapping[ SDLK_WORLD_58 ]     = "WORLD_58";
+  ourSDLMapping[ SDLK_WORLD_59 ]     = "WORLD_59";
+  ourSDLMapping[ SDLK_WORLD_60 ]     = "WORLD_60";
+  ourSDLMapping[ SDLK_WORLD_61 ]     = "WORLD_61";
+  ourSDLMapping[ SDLK_WORLD_62 ]     = "WORLD_62";
+  ourSDLMapping[ SDLK_WORLD_63 ]     = "WORLD_63";
+  ourSDLMapping[ SDLK_WORLD_64 ]     = "WORLD_64";
+  ourSDLMapping[ SDLK_WORLD_65 ]     = "WORLD_65";
+  ourSDLMapping[ SDLK_WORLD_66 ]     = "WORLD_66";
+  ourSDLMapping[ SDLK_WORLD_67 ]     = "WORLD_67";
+  ourSDLMapping[ SDLK_WORLD_68 ]     = "WORLD_68";
+  ourSDLMapping[ SDLK_WORLD_69 ]     = "WORLD_69";
+  ourSDLMapping[ SDLK_WORLD_70 ]     = "WORLD_70";
+  ourSDLMapping[ SDLK_WORLD_71 ]     = "WORLD_71";
+  ourSDLMapping[ SDLK_WORLD_72 ]     = "WORLD_72";
+  ourSDLMapping[ SDLK_WORLD_73 ]     = "WORLD_73";
+  ourSDLMapping[ SDLK_WORLD_74 ]     = "WORLD_74";
+  ourSDLMapping[ SDLK_WORLD_75 ]     = "WORLD_75";
+  ourSDLMapping[ SDLK_WORLD_76 ]     = "WORLD_76";
+  ourSDLMapping[ SDLK_WORLD_77 ]     = "WORLD_77";
+  ourSDLMapping[ SDLK_WORLD_78 ]     = "WORLD_78";
+  ourSDLMapping[ SDLK_WORLD_79 ]     = "WORLD_79";
+  ourSDLMapping[ SDLK_WORLD_80 ]     = "WORLD_80";
+  ourSDLMapping[ SDLK_WORLD_81 ]     = "WORLD_81";
+  ourSDLMapping[ SDLK_WORLD_82 ]     = "WORLD_82";
+  ourSDLMapping[ SDLK_WORLD_83 ]     = "WORLD_83";
+  ourSDLMapping[ SDLK_WORLD_84 ]     = "WORLD_84";
+  ourSDLMapping[ SDLK_WORLD_85 ]     = "WORLD_85";
+  ourSDLMapping[ SDLK_WORLD_86 ]     = "WORLD_86";
+  ourSDLMapping[ SDLK_WORLD_87 ]     = "WORLD_87";
+  ourSDLMapping[ SDLK_WORLD_88 ]     = "WORLD_88";
+  ourSDLMapping[ SDLK_WORLD_89 ]     = "WORLD_89";
+  ourSDLMapping[ SDLK_WORLD_90 ]     = "WORLD_90";
+  ourSDLMapping[ SDLK_WORLD_91 ]     = "WORLD_91";
+  ourSDLMapping[ SDLK_WORLD_92 ]     = "WORLD_92";
+  ourSDLMapping[ SDLK_WORLD_93 ]     = "WORLD_93";
+  ourSDLMapping[ SDLK_WORLD_94 ]     = "WORLD_94";
+  ourSDLMapping[ SDLK_WORLD_95 ]     = "WORLD_95";
+  ourSDLMapping[ SDLK_KP0 ]          = "KP0";
+  ourSDLMapping[ SDLK_KP1 ]          = "KP1";
+  ourSDLMapping[ SDLK_KP2 ]          = "KP2";
+  ourSDLMapping[ SDLK_KP3 ]          = "KP3";
+  ourSDLMapping[ SDLK_KP4 ]          = "KP4";
+  ourSDLMapping[ SDLK_KP5 ]          = "KP5";
+  ourSDLMapping[ SDLK_KP6 ]          = "KP6";
+  ourSDLMapping[ SDLK_KP7 ]          = "KP7";
+  ourSDLMapping[ SDLK_KP8 ]          = "KP8";
+  ourSDLMapping[ SDLK_KP9 ]          = "KP9";
+  ourSDLMapping[ SDLK_KP_PERIOD ]    = "KP_PERIOD";
+  ourSDLMapping[ SDLK_KP_DIVIDE ]    = "KP_DIVIDE";
+  ourSDLMapping[ SDLK_KP_MULTIPLY ]  = "KP_MULTIPLY";
+  ourSDLMapping[ SDLK_KP_MINUS ]     = "KP_MINUS";
+  ourSDLMapping[ SDLK_KP_PLUS ]      = "KP_PLUS";
+  ourSDLMapping[ SDLK_KP_ENTER ]     = "KP_ENTER";
+  ourSDLMapping[ SDLK_KP_EQUALS ]    = "KP_EQUALS";
+  ourSDLMapping[ SDLK_UP ]           = "UP";
+  ourSDLMapping[ SDLK_DOWN ]         = "DOWN";
+  ourSDLMapping[ SDLK_RIGHT ]        = "RIGHT";
+  ourSDLMapping[ SDLK_LEFT ]         = "LEFT";
+  ourSDLMapping[ SDLK_INSERT ]       = "INSERT";
+  ourSDLMapping[ SDLK_HOME ]         = "HOME";
+  ourSDLMapping[ SDLK_END ]          = "END";
+  ourSDLMapping[ SDLK_PAGEUP ]       = "PAGEUP";
+  ourSDLMapping[ SDLK_PAGEDOWN ]     = "PAGEDOWN";
+  ourSDLMapping[ SDLK_F1 ]           = "F1";
+  ourSDLMapping[ SDLK_F2 ]           = "F2";
+  ourSDLMapping[ SDLK_F3 ]           = "F3";
+  ourSDLMapping[ SDLK_F4 ]           = "F4";
+  ourSDLMapping[ SDLK_F5 ]           = "F5";
+  ourSDLMapping[ SDLK_F6 ]           = "F6";
+  ourSDLMapping[ SDLK_F7 ]           = "F7";
+  ourSDLMapping[ SDLK_F8 ]           = "F8";
+  ourSDLMapping[ SDLK_F9 ]           = "F9";
+  ourSDLMapping[ SDLK_F10 ]          = "F10";
+  ourSDLMapping[ SDLK_F11 ]          = "F11";
+  ourSDLMapping[ SDLK_F12 ]          = "F12";
+  ourSDLMapping[ SDLK_F13 ]          = "F13";
+  ourSDLMapping[ SDLK_F14 ]          = "F14";
+  ourSDLMapping[ SDLK_F15 ]          = "F15";
+  ourSDLMapping[ SDLK_NUMLOCK ]      = "NUMLOCK";
+  ourSDLMapping[ SDLK_CAPSLOCK ]     = "CAPSLOCK";
+  ourSDLMapping[ SDLK_SCROLLOCK ]    = "SCROLLOCK";
+  ourSDLMapping[ SDLK_RSHIFT ]       = "RSHIFT";
+  ourSDLMapping[ SDLK_LSHIFT ]       = "LSHIFT";
+  ourSDLMapping[ SDLK_RCTRL ]        = "RCTRL";
+  ourSDLMapping[ SDLK_LCTRL ]        = "LCTRL";
+  ourSDLMapping[ SDLK_RALT ]         = "RALT";
+  ourSDLMapping[ SDLK_LALT ]         = "LALT";
+  ourSDLMapping[ SDLK_RMETA ]        = "RMETA";
+  ourSDLMapping[ SDLK_LMETA ]        = "LMETA";
+  ourSDLMapping[ SDLK_LSUPER ]       = "LSUPER";
+  ourSDLMapping[ SDLK_RSUPER ]       = "RSUPER";
+  ourSDLMapping[ SDLK_MODE ]         = "MODE";
+  ourSDLMapping[ SDLK_COMPOSE ]      = "COMPOSE";
+  ourSDLMapping[ SDLK_HELP ]         = "HELP";
+  ourSDLMapping[ SDLK_PRINT ]        = "PRINT";
+  ourSDLMapping[ SDLK_SYSREQ ]       = "SYSREQ";
+  ourSDLMapping[ SDLK_BREAK ]        = "BREAK";
+  ourSDLMapping[ SDLK_MENU ]         = "MENU";
+  ourSDLMapping[ SDLK_POWER ]        = "POWER";
+  ourSDLMapping[ SDLK_EURO ]         = "EURO";
+  ourSDLMapping[ SDLK_UNDO ]         = "UNDO";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ActionList EventHandler::ourActionList[58] = {
   { Event::ConsoleSelect,           "Select",                                      "" },
   { Event::ConsoleReset,            "Reset",                                       "" },
   { Event::ConsoleColor,            "Color TV",                                    "" },
   { Event::ConsoleBlackWhite,       "Black & White TV",                            "" },
-  { Event::ConsoleLeftDifficultyB,  "Left Difficulty B",                           "" },
   { Event::ConsoleLeftDifficultyA,  "Left Difficulty A",                           "" },
-  { Event::ConsoleRightDifficultyB, "Right Difficulty B",                          "" },
+  { Event::ConsoleLeftDifficultyB,  "Left Difficulty B",                           "" },
   { Event::ConsoleRightDifficultyA, "Right Difficulty A",                          "" },
+  { Event::ConsoleRightDifficultyB, "Right Difficulty B",                          "" },
   { Event::SaveState,               "Save State",                                  "" },
   { Event::ChangeState,             "Change State",                                "" },
   { Event::LoadState,               "Load State",                                  "" },

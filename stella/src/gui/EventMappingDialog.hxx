@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.hxx,v 1.1 2005-04-04 02:19:22 stephena Exp $
+// $Id: EventMappingDialog.hxx,v 1.2 2005-04-05 00:40:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,19 +39,35 @@ class EventMappingDialog : public Dialog
     virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
 
   protected:
+    ButtonWidget*     myMapButton;
+    ButtonWidget*     myCancelMapButton;
+    ButtonWidget*     myEraseButton;
+    ButtonWidget*     myOKButton;
+    ButtonWidget*     myDefaultsButton;
     ListWidget*       myActionsList;
-    StaticTextWidget* myActionTitle;
     StaticTextWidget* myKeyMapping;
-    Int32             myActionSelected;
 
   private:
+    enum {
+      kStartMapCmd = 'map ',
+      kEraseCmd    = 'eras',
+      kStopMapCmd  = 'smap'
+    };
+
     virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
 
-    enum {
-      kMapCmd   = 'map ',
-      kEraseCmd = 'eras'
-    };
+    void startRemapping();
+    void eraseRemapping();
+    void stopRemapping();
 //    void loadConfig() { }
+
+  private:
+    // Indicates the event that is currently selected
+    Int32 myActionSelected;
+
+    // Indicates if we're currently in remap mode
+    // In this mode, the next event received is remapped to some action
+    bool myRemapStatus;
 };
 
 #endif
