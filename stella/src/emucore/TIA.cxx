@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.30 2004-04-21 16:27:30 stephena Exp $
+// $Id: TIA.cxx,v 1.31 2004-04-26 17:27:31 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -37,7 +37,6 @@
 TIA::TIA(const Console& console, Sound& sound)
     : myConsole(console),
       mySound(sound),
-      myLastSoundUpdateCycle(0),  // FIXME  this may disappear
       myColorLossEnabled(false),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
@@ -116,8 +115,8 @@ const char* TIA::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::reset()
 {
-  // Reset sound cycle indicator
-  myLastSoundUpdateCycle = 0;
+  // Reset the sound device
+  mySound.reset();
 
   // Clear frame buffers
   for(uInt32 i = 0; i < 160 * 300; ++i)
@@ -237,7 +236,7 @@ void TIA::systemCyclesReset()
   uInt32 cycles = mySystem->cycles();
 
   // Adjust the sound cycle indicator
-  myLastSoundUpdateCycle -= cycles;
+  mySound.setCycles(-cycles);
 
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
@@ -289,7 +288,7 @@ bool TIA::save(Serializer& out)
   {
     out.putString(device);
 
-    out.putLong(myLastSoundUpdateCycle);
+//FIXME    out.putLong(myLastSoundUpdateCycle);
     out.putLong(myClockWhenFrameStarted);
     out.putLong(myClockStartDisplay);
     out.putLong(myClockStopDisplay);
@@ -386,7 +385,7 @@ bool TIA::load(Deserializer& in)
     if(in.getString() != device)
       return false;
 
-    myLastSoundUpdateCycle = (Int32) in.getLong();
+//FIXME    myLastSoundUpdateCycle = (Int32) in.getLong();
     myClockWhenFrameStarted = (Int32) in.getLong();
     myClockStartDisplay = (Int32) in.getLong();
     myClockStopDisplay = (Int32) in.getLong();

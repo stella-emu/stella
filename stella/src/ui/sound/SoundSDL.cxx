@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.8 2004-04-20 21:08:03 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.9 2004-04-26 17:27:32 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -21,8 +21,11 @@
 #include "TIASound.h"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "System.hxx"
 
 #include "SoundSDL.hxx"
+
+#define DIGITAL_SOUND
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::SoundSDL(uInt32 fragsize, uInt32 queuesize)
@@ -159,7 +162,7 @@ void SoundSDL::setVolume(Int32 percent)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::update()
 {
-
+#if !defined(DIGITAL_SOUND)
   if(!myPauseStatus && myIsInitializedFlag)
   {
     // Make sure we have exclusive access to the sample queue
@@ -174,12 +177,41 @@ void SoundSDL::update()
     // Release lock on the sample queue
 //    SDL_UnlockAudio();
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::set(uInt16 addr, uInt8 value)
 {
+#if defined(DIGITAL_SOUND)
+  // Calculate the number of samples that need to be generated based on the
+  // number of CPU cycles which have passed since the last sound update
+  uInt32 samplesToGenerate =
+         (mySampleRate * (mySystem->cycles() - myLastSoundUpdateCycle)) / 1190000;
+
+  // Update counters and create samples if there's one sample to generate
+  // TODO: This doesn't handle rounding quite right (10/08/2002)
+  if(samplesToGenerate >= 1)
+  {
+    uInt8 buffer[1024];
+
+    for(Int32 sg = (Int32)samplesToGenerate; sg > 0; sg -= 1024)
+    {
+      Tia_process(buffer, ((sg >= 1024) ? 1024 : sg));
+      mySampleQueue.enqueue(buffer, ((sg >= 1024) ? 1024 : sg));
+    }
+ 	 	
+    myLastSoundUpdateCycle = myLastSoundUpdateCycle +
+        ((samplesToGenerate * 1190000) / mySampleRate);
+  }
+
+  if(addr != 0)
+  {
+    Update_tia_sound(addr, value);
+  }
+#else
   Update_tia_sound(addr, value);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.25 2004-04-20 21:07:40 stephena Exp $
+// $Id: Console.cxx,v 1.26 2004-04-26 17:27:31 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -174,7 +174,7 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   myFrameBuffer.initDisplay(this, myMediaSource);
 
   // Initialize the sound interface.
-  mySound.init(this, myMediaSource);
+  mySound.init(this, myMediaSource, mySystem);
 
 #ifdef SNAPSHOT_SUPPORT
   // Create a snapshot object which will handle taking snapshots

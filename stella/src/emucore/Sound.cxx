@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.9 2004-04-04 02:03:15 stephena Exp $
+// $Id: Sound.cxx,v 1.10 2004-04-26 17:27:31 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -23,7 +23,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Sound::Sound(uInt32 fragsize, uInt32 queuesize)
-  : myPauseStatus(false)
+  : myPauseStatus(false),
+    myLastSoundUpdateCycle(0)
 {
 }
 
@@ -33,10 +34,11 @@ Sound::~Sound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::init(Console* console, MediaSource* mediasrc)
+void Sound::init(Console* console, MediaSource* mediasrc, System* system)
 {
   myConsole     = console;
   myMediaSource = mediasrc;
+  mySystem      = system;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

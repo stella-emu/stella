@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.9 2004-04-04 02:03:15 stephena Exp $
+// $Id: Sound.hxx,v 1.10 2004-04-26 17:27:31 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -23,6 +23,7 @@ class Console;
 class MediaSource;
 class Serializer;
 class Deserializer;
+class System;
 
 #include "bspf.hxx"
 
@@ -32,7 +33,7 @@ class Deserializer;
   to compile Stella with no sound support whatsoever.
 
   @author  Stephen Anthony
-  @version $Id: Sound.hxx,v 1.9 2004-04-04 02:03:15 stephena Exp $
+  @version $Id: Sound.hxx,v 1.10 2004-04-26 17:27:31 stephena Exp $
 */
 class Sound
 {
@@ -54,8 +55,9 @@ class Sound
 
       @param console   The console
       @param mediasrc  The mediasource
+      @param system    The system
     */
-    void init(Console* console, MediaSource* mediasrc);
+    void init(Console* console, MediaSource* mediasrc, System* system);
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -110,6 +112,16 @@ class Sound
     */
     void pause(bool status) { myPauseStatus = status; }
 
+    /**
+      Resets the sound device.
+    */
+    void reset() { myLastSoundUpdateCycle = 0; }
+
+    /**
+      Resets the sound device.
+    */
+    void setCycles(Int32 cycles) { myLastSoundUpdateCycle += cycles; }
+
   protected:
     // The Console for the system
     Console* myConsole;
@@ -117,8 +129,14 @@ class Sound
     // The Mediasource for the system
     MediaSource* myMediaSource;
 
+    // The System for the system
+    System* mySystem;
+
     // The pause status
     bool myPauseStatus;
+
+    // Indicates the CPU cycle when a TIA sound register was last updated
+    Int32 myLastSoundUpdateCycle;
 };
 
 #endif

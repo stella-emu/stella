@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.12 2004-04-04 02:03:15 stephena Exp $
+// $Id: TIA.hxx,v 1.13 2004-04-26 17:27:31 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -43,7 +43,7 @@ class Deserializer;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.12 2004-04-04 02:03:15 stephena Exp $
+  @version $Id: TIA.hxx,v 1.13 2004-04-26 17:27:31 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -211,9 +211,6 @@ class TIA : public Device , public MediaSource
     Sound& mySound;
 
   private:
-    // Indicates the CPU cycle when a TIA sound register was last updated
-    Int32 myLastSoundUpdateCycle;
-
     // Indicates if color loss should be enabled or disabled.  Color loss
     // occurs on PAL (and maybe SECAM) systems when the previous frame
     // contains an odd number of scanlines.
