@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.7 2002-04-28 18:06:56 bwmott Exp $
+// $Id: mainDOS.cxx,v 1.8 2002-11-13 03:47:55 bwmott Exp $
 //============================================================================
 
 #include <go32.h>
@@ -26,7 +26,7 @@
 
 #include <fstream>
 #include <iostream>
-#include <strstream>
+#include <sstream>
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -848,6 +848,7 @@ int main(int argc, char* argv[])
 
   // Create a sound object for use with the console
   SoundDOS sound;
+//  sound.setSoundVolume(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '\\')) ? 
@@ -855,7 +856,7 @@ int main(int argc, char* argv[])
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound);
+      theEvent, propertiesSet, sound.getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -875,6 +876,7 @@ int main(int argc, char* argv[])
     if(!thePauseIndicator)
     {
       theConsole->mediaSource().update();
+      sound.updateSound(theConsole->mediaSource());
     }
 
 /*
@@ -911,6 +913,9 @@ int main(int argc, char* argv[])
 
   // Get the ending time in case we need to print statistics
   uclock_t endingTime = uclock();
+
+  // Close the sound device
+  sound.close();
 
   uInt32 scanlines = theConsole->mediaSource().scanlines();
   string cartName = theConsole->properties().get("Cartridge.Name");

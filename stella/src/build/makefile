@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.26 2002-11-11 22:01:28 stephena Exp $
+## $Id: makefile,v 1.27 2002-11-13 03:47:55 bwmott Exp $
 ##============================================================================
 
 ##============================================================================
@@ -185,7 +185,7 @@ dos:
           OPTIONS+="$(OPTS.DOS)" \
           LDFLAGS="" \
           LDLIBS="" \
-          OBJS="mainDOS.o PCJoys.o SndDOS.o sbdrv.o"
+          OBJS="mainDOS.o PCJoys.o SndDOS.o dos_sb.o"
 
 unix-x:
 	make stella.x11 \
@@ -428,8 +428,8 @@ PCJoys.o: $(UI)/dos/PCJoys.cxx
 SndDOS.o: $(UI)/dos/SndDOS.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/dos/SndDOS.cxx
 
-sbdrv.o: $(UI)/dos/sbdrv.c
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/dos/sbdrv.c
+dos_sb.o: $(UI)/dos/dos_sb.c
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/dos/dos_sb.c
 
 TermX11.o: $(UI)/x11/TermX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/TermX11.cxx
