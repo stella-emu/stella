@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.11 2004-07-07 22:46:01 stephena Exp $
+// $Id: mainSDL.cxx,v 1.12 2004-07-10 13:20:25 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -721,13 +721,13 @@ void setupProperties(PropertiesSet& set)
     useMemList = true;
 
   if(theAlternateProFile != "")
-    set.load(theAlternateProFile, &Console::defaultProperties(), useMemList);
+    set.load(theAlternateProFile, useMemList);
   else if(theUserProFile != "")
-    set.load(theUserProFile, &Console::defaultProperties(), useMemList);
+    set.load(theUserProFile, useMemList);
   else if(theSystemProFile != "")
-    set.load(theSystemProFile, &Console::defaultProperties(), useMemList);
+    set.load(theSystemProFile, useMemList);
   else
-    set.load("", &Console::defaultProperties(), false);
+    set.load("", false);
 }
 
 

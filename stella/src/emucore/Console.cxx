@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.33 2004-07-07 22:46:01 stephena Exp $
+// $Id: Console.cxx,v 1.34 2004-07-10 13:20:26 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -235,41 +235,6 @@ Console& Console::operator = (const Console&)
 
   return *this;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Properties& Console::defaultProperties()
-{
-  // Make sure the <key,value> pairs are in the default properties object
-  ourDefaultProperties.set("Cartridge.Filename", "");
-  ourDefaultProperties.set("Cartridge.MD5", "");
-  ourDefaultProperties.set("Cartridge.Manufacturer", "");
-  ourDefaultProperties.set("Cartridge.ModelNo", "");
-  ourDefaultProperties.set("Cartridge.Name", "Untitled");
-  ourDefaultProperties.set("Cartridge.Note", "");
-  ourDefaultProperties.set("Cartridge.Rarity", "");
-  ourDefaultProperties.set("Cartridge.Type", "Auto-detect");
-
-  ourDefaultProperties.set("Console.LeftDifficulty", "B");
-  ourDefaultProperties.set("Console.RightDifficulty", "B");
-  ourDefaultProperties.set("Console.TelevisionType", "Color");
-
-  ourDefaultProperties.set("Controller.Left", "Joystick");
-  ourDefaultProperties.set("Controller.Right", "Joystick");
-
-  ourDefaultProperties.set("Display.Format", "NTSC");
-  ourDefaultProperties.set("Display.XStart", "0");
-  ourDefaultProperties.set("Display.Width", "160");
-  ourDefaultProperties.set("Display.YStart", "34");
-  ourDefaultProperties.set("Display.Height", "210");
-
-  ourDefaultProperties.set("Emulation.CPU", "Auto-detect");
-  ourDefaultProperties.set("Emulation.HmoveBlanks", "Yes");
-
-  return ourDefaultProperties;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Properties Console::ourDefaultProperties;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()

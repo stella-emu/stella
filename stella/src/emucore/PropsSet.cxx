@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.7 2004-07-05 00:53:48 stephena Exp $
+// $Id: PropsSet.cxx,v 1.8 2004-07-10 13:20:35 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -29,6 +29,7 @@ PropertiesSet::PropertiesSet()
      myPropertiesFilename(""),
      mySaveOnExit(false)
 {
+  myDefaultProperties = &defaultProperties();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -170,10 +171,9 @@ void PropertiesSet::deleteNode(TreeNode *node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(string filename, const Properties* defaults, bool useList)
+void PropertiesSet::load(string filename, bool useList)
 {
     myUseMemList = useList;
-    myDefaultProperties = defaults;
 
     if(filename == "")
       return;
@@ -259,3 +259,38 @@ bool PropertiesSet::merge(Properties& properties, string& filename, bool saveOnE
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Properties& PropertiesSet::defaultProperties()
+{
+  // Make sure the <key,value> pairs are in the default properties object
+  ourDefaultProperties.set("Cartridge.Filename", "");
+  ourDefaultProperties.set("Cartridge.MD5", "");
+  ourDefaultProperties.set("Cartridge.Manufacturer", "");
+  ourDefaultProperties.set("Cartridge.ModelNo", "");
+  ourDefaultProperties.set("Cartridge.Name", "Untitled");
+  ourDefaultProperties.set("Cartridge.Note", "");
+  ourDefaultProperties.set("Cartridge.Rarity", "");
+  ourDefaultProperties.set("Cartridge.Type", "Auto-detect");
+
+  ourDefaultProperties.set("Console.LeftDifficulty", "B");
+  ourDefaultProperties.set("Console.RightDifficulty", "B");
+  ourDefaultProperties.set("Console.TelevisionType", "Color");
+
+  ourDefaultProperties.set("Controller.Left", "Joystick");
+  ourDefaultProperties.set("Controller.Right", "Joystick");
+
+  ourDefaultProperties.set("Display.Format", "NTSC");
+  ourDefaultProperties.set("Display.XStart", "0");
+  ourDefaultProperties.set("Display.Width", "160");
+  ourDefaultProperties.set("Display.YStart", "34");
+  ourDefaultProperties.set("Display.Height", "210");
+
+  ourDefaultProperties.set("Emulation.CPU", "Auto-detect");
+  ourDefaultProperties.set("Emulation.HmoveBlanks", "Yes");
+
+  return ourDefaultProperties;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Properties PropertiesSet::ourDefaultProperties;

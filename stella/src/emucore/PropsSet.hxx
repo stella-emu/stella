@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.5 2004-07-05 00:53:48 stephena Exp $
+// $Id: PropsSet.hxx,v 1.6 2004-07-10 13:20:35 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIESSET_HXX
@@ -65,10 +65,9 @@ class PropertiesSet
       defaults properties as the defaults for any properties loaded.
 
       @param string The input file to use
-      @param defaults The default properties to use
       @param useList Flag to indicate storing properties in memory (default true)
     */
-    void load(string filename, const Properties* defaults, bool useList = true);
+    void load(string filename, bool useList = true);
 
     /**
       Save properties to the specified output stream 
@@ -148,8 +147,21 @@ class PropertiesSet
     */
     void printNode(TreeNode *node);
 
+    /**
+      Get the default properties object to use for other properties objects
+
+      @return The default properties object
+    */
+    static const Properties& defaultProperties();
+
     // The root of the BST
     TreeNode* myRoot;
+
+    // Default properties to use for properties objects
+    static Properties ourDefaultProperties;
+
+    // The default properties set
+    const Properties* myDefaultProperties;
 
     // Property to use as the key
     string myKey;
@@ -162,9 +174,6 @@ class PropertiesSet
 
     // The file stream for the stella.pro file
     ifstream myPropertiesStream;
-
-    // The default properties set
-    const Properties* myDefaultProperties;
 
     // The filename where this PropertiesSet should be saved
     string myPropertiesFilename;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.2 2004-07-10 13:20:36 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -904,23 +904,23 @@ bool setupProperties(PropertiesSet& set)
 
   if(theAlternateProFile != "")
   {
-    set.load(theAlternateProFile, &Console::defaultProperties(), useMemList);
+    set.load(theAlternateProFile, useMemList);
     return true;
   }
 
   if(theUserProFile != "")
   {
-    set.load(theUserProFile, &Console::defaultProperties(), useMemList);
+    set.load(theUserProFile, useMemList);
     return true;
   }
   else if(theSystemProFile != "")
   {
-    set.load(theSystemProFile, &Console::defaultProperties(), useMemList);
+    set.load(theSystemProFile, useMemList);
     return true;
   }
   else
   {
-    set.load("", &Console::defaultProperties(), false);
+    set.load("", false);
     return true;
   }
 }

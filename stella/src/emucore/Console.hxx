@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.21 2004-07-07 22:46:01 stephena Exp $
+// $Id: Console.hxx,v 1.22 2004-07-10 13:20:35 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -40,7 +40,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.21 2004-07-07 22:46:01 stephena Exp $
+  @version $Id: Console.hxx,v 1.22 2004-07-10 13:20:35 stephena Exp $
 */
 class Console
 {
@@ -163,12 +163,6 @@ class Console
     Console& operator = (const Console& console);
 
   public:
-    /**
-      Get the default properties object to use for other properties objects
-
-      @return The default properties object
-    */
-    static const Properties& defaultProperties();
 
     /**
       Toggle between NTSC and PAL mode.  The frontends will need to
@@ -262,9 +256,5 @@ class Console
 
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;
-
-  private:
-    // Default properties to use for properties objects
-    static Properties ourDefaultProperties;
 };
 #endif
