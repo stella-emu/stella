@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.50 2003-09-12 18:08:54 stephena Exp $
+// $Id: mainSDL.cxx,v 1.51 2003-09-19 15:45:01 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -35,7 +35,6 @@
 #include "Event.hxx"
 #include "StellaEvent.hxx"
 #include "EventHandler.hxx"
-#include "Frontend.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
@@ -55,7 +54,6 @@
 #endif
 
 #ifdef UNIX
-  #include "FrontendUNIX.hxx"
   #include "SettingsUNIX.hxx"
 #endif
 
@@ -100,13 +98,8 @@ static uInt32 theWidth, theHeight, theMaxWindowSize, theWindowSize;
 static void cleanup();
 static bool setupJoystick();
 static void handleEvents();
-
-static void takeSnapshot();
-
 static uInt32 getTicks();
 static bool setupProperties(PropertiesSet& set);
-static void handleRCFile();
-static void usage();
 
 #ifdef HAVE_JOYSTICK
   static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
@@ -122,9 +115,6 @@ static Console* theConsole = (Console*) NULL;
 
 // Pointer to the sound object or the null pointer
 static Sound* theSound = (Sound*) NULL;
-
-// Pointer to the frontend object or the null pointer
-static Frontend* theFrontend = (Frontend*) NULL;
 
 // Pointer to the settings object or the null pointer
 #ifdef UNIX
@@ -492,7 +482,7 @@ void setupPalette()
 
   // Make the palette be 75% as bright if pause is selected
   float shade = 1.0;
-  if(theFrontend->pause())
+  if(theSettings->pause())
     shade = 0.75;
 
   const uInt32* gamePalette = theConsole->mediaSource().palette();
@@ -930,11 +920,11 @@ void handleEvents()
       {
         if(theSettings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
         {
-          theConsole->saveProperties(theConsole->frontend().userPropertiesFilename(), true);
+          theConsole->saveProperties(theSettings->userPropertiesFilename(), true);
         }
         else  // Save to file in home directory
         {
-          string newPropertiesFile = theConsole->frontend().userHomeDir() + "/" + \
+          string newPropertiesFile = theSettings->userHomeDir() + "/" + \
             theConsole->properties().get("Cartridge.Name") + ".pro";
           replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
           theConsole->saveProperties(newPropertiesFile);
@@ -1026,7 +1016,7 @@ void handleEvents()
     {
       if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
       {
-        if(!theFrontend->pause())
+        if(!theSettings->pause())
         {
           theConsole->eventHandler().sendEvent(Event::Pause, 1);
         }
@@ -1152,15 +1142,15 @@ bool setupProperties(PropertiesSet& set)
     return true;
   }
 
-  if(theFrontend->userPropertiesFilename() != "")
+  if(theSettings->userPropertiesFilename() != "")
   {
-    set.load(theFrontend->userPropertiesFilename(),
+    set.load(theSettings->userPropertiesFilename(),
              &Console::defaultProperties(), useMemList);
     return true;
   }
-  else if(theFrontend->systemPropertiesFilename() != "")
+  else if(theSettings->systemPropertiesFilename() != "")
   {
-    set.load(theFrontend->systemPropertiesFilename(),
+    set.load(theSettings->systemPropertiesFilename(),
              &Console::defaultProperties(), useMemList);
     return true;
   }
@@ -1179,9 +1169,6 @@ void cleanup()
 {
   if(theSettings)
     delete theSettings;
-
-  if(theFrontend)
-    delete theFrontend;
 
   if(theConsole)
     delete theConsole;
@@ -1209,36 +1196,18 @@ void cleanup()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
-  // First set up the frontend to communicate with the emulation core
 #ifdef UNIX
-  theFrontend = new FrontendUNIX();
-#endif
-  if(!theFrontend)
-  {
-    cerr << "ERROR: Couldn't set up the frontend.\n";
-    cleanup();
-    return 0;
-  }
-
-  // Create some settings for the emulator
-  string infile   = "";
-  string outfile  = theFrontend->userConfigFilename();
-  if(theFrontend->userConfigFilename() != "")
-    infile = theFrontend->userConfigFilename();
-  else if(theFrontend->systemConfigFilename() != "")
-    infile = theFrontend->systemConfigFilename();
-
-#ifdef UNIX
-  theSettings = new SettingsUNIX(infile, outfile);
+  theSettings = new SettingsUNIX();
 #endif
   if(!theSettings)
   {
     cleanup();
     return 0;
   }
+  theSettings->loadConfig();
 
   // Take care of commandline arguments
-  if(!theSettings->handleCommandLineArgs(argc, argv))
+  if(!theSettings->loadCommandLine(argc, argv))
   {
     string message = "Stella for SDL version 1.4\n\nUsage: stella.sdl [option ...] file";
     theSettings->usage(message);
@@ -1318,7 +1287,7 @@ int main(int argc, char* argv[])
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
-                           *theFrontend, theSound->getSampleRate());
+                           theSound->getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -1354,7 +1323,7 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theFrontend->quit())
+      if(theSettings->quit())
       {
         break;
       }
@@ -1362,7 +1331,7 @@ int main(int argc, char* argv[])
       // Call handleEvents here to see if user pressed pause
       startTime = getTicks();
       handleEvents();
-      if(theFrontend->pause())
+      if(theSettings->pause())
       {
         updateDisplay(theConsole->mediaSource());
         SDL_Delay(10);
@@ -1400,14 +1369,14 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theFrontend->quit())
+      if(theSettings->quit())
       {
         break;
       }
 
       startTime = getTicks();
       handleEvents();
-      if(!theFrontend->pause())
+      if(!theSettings->pause())
       {
         theConsole->mediaSource().update();
         theSound->updateSound(theConsole->mediaSource());

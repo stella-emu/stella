@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.38 2003-09-12 18:08:52 stephena Exp $
+## $Id: makefile,v 1.39 2003-09-19 15:45:01 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -199,7 +199,7 @@ unix-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o"
+          OBJS="mainX11.o SettingsUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 linux-x:
@@ -212,7 +212,7 @@ linux-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o FrontendUNIX.o SettingsUNIX.o" \
+          OBJS="mainX11.o SettingsUNIX.o" \
           OBJS+="$(OBJS.X11)"
 
 linux-sdl:
@@ -225,7 +225,7 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o RectList.o FrontendUNIX.o SettingsUNIX.o" \
+          OBJS="mainSDL.o RectList.o SettingsUNIX.o" \
           OBJS+="$(OBJS.SDL)"
 
 bsdi-x:
@@ -265,7 +265,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartMB.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
-            Serializer.o Deserializer.o TIASound.o EventHandler.o Frontend.o \
+            Serializer.o Deserializer.o TIASound.o EventHandler.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)

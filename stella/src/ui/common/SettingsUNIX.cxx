@@ -13,27 +13,29 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.2 2003-09-12 18:08:53 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.3 2003-09-19 15:45:01 stephena Exp $
 //============================================================================
 
+#include <cstdlib>
+#include <sstream>
 #include <fstream>
 
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include "bspf.hxx"
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "StellaEvent.hxx"
-
-#ifdef DEVELOPER_SUPPORT
-  #include "Props.hxx"
-#endif
 
 #include "Settings.hxx"
 #include "SettingsUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsUNIX::SettingsUNIX(const string& infile, const string& outfile)
-    : mySettingsInputFilename(infile),
-      mySettingsOutputFilename(outfile)
+SettingsUNIX::SettingsUNIX()
 {
+  // Initialize UNIX specific settings
   theUseFullScreenFlag = false;
   theGrabMouseFlag = false;
   theCenterWindowFlag = false;
@@ -42,110 +44,49 @@ SettingsUNIX::SettingsUNIX(const string& infile, const string& outfile)
   theUsePrivateColormapFlag = false;
   theAccurateTimingFlag = true;
   theDesiredVolume = -1;
-  theDesiredFrameRate = 60;
   thePaddleMode = 0;
   theAlternateProFile = "";
   theSoundDriver = "oss";
   theLeftJoystickNumber = 0;
   theRightJoystickNumber = 1;
 
-#ifdef DEVELOPER_SUPPORT
-  userDefinedProperties.set("Display.Format", "-1");
-  userDefinedProperties.set("Display.XStart", "-1");
-  userDefinedProperties.set("Display.Width", "-1");
-  userDefinedProperties.set("Display.YStart", "-1");
-  userDefinedProperties.set("Display.Height", "-1");
+  // Set up user specific filenames
+  myHomeDir = getenv("HOME");
+  string basepath = myHomeDir + "/.stella";
 
-  theMergePropertiesFlag = false;
-#endif
+  if(access(basepath.c_str(), R_OK|W_OK|X_OK) != 0 )
+    mkdir(basepath.c_str(), 0777);
 
-  handleRCFile();
+  myStateDir = basepath + "/state/";
+  if(access(myStateDir.c_str(), R_OK|W_OK|X_OK) != 0 )
+    mkdir(myStateDir.c_str(), 0777);
+
+  myUserPropertiesFile   = basepath + "/stella.pro";
+  mySystemPropertiesFile = "/etc/stella.pro";
+  myUserConfigFile       = basepath + "/stellarc";
+  mySystemConfigFile     = "/etc/stellarc";
+
+  // Set up the names of the input and output config files
+  mySettingsOutputFilename = myUserConfigFile;
+  if(access(myUserConfigFile.c_str(), R_OK) == 0)
+    mySettingsInputFilename = myUserConfigFile;
+  else
+    mySettingsInputFilename = mySystemConfigFile;
+
+  mySnapshotFile = "";
+  myStateFile    = "";
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsUNIX::~SettingsUNIX()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsUNIX::setConsole(Console* console)
-{
-  myConsole = console;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SettingsUNIX::handleCommandLineArgs(int argc, char* argv[])
-{
-  // Make sure we have the correct number of command line arguments
-  if(argc == 1)
-    return false;
-
-  for(Int32 i = 1; i < (argc - 1); ++i)
-  {
-    // strip off the '-' character
-    string key = argv[i];
-    key = key.substr(1, key.length());
-    string value = argv[++i];
-
-    parseArg(key, value);
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsUNIX::handleRCFile()
-{
-  string line, key, value;
-  uInt32 equalPos;
-
-  ifstream in(mySettingsInputFilename.c_str());
-  if(!in || !in.is_open())
-    return;
-
-  while(getline(in, line))
-  {
-    // Strip all whitespace and tabs from the line
-    uInt32 garbage;
-    while((garbage = line.find(" ")) != string::npos)
-      line.erase(garbage, 1);
-    while((garbage = line.find("\t")) != string::npos)
-      line.erase(garbage, 1);
-
-    // Ignore commented and empty lines
-    if((line.length() == 0) || (line[0] == ';'))
-      continue;
-
-    // Search for the equal sign and discard the line if its not found
-    if((equalPos = line.find("=")) == string::npos)
-      continue;
-
-    key   = line.substr(0, equalPos);
-    value = line.substr(equalPos + 1, line.length() - key.length() - 1);
-
-    // Check for absent key or value
-    if((key.length() == 0) || (value.length() == 0))
-      continue;
-
-    parseArg(key, value);
-  }
-
-  in.close();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsUNIX::parseArg(string& key, string& value)
+void SettingsUNIX::setArgument(string& key, string& value)
 {
   // Now set up the options by key
-  if(key == "fps")
-  {
-    // They're setting the desired frame rate
-    uInt32 rate = atoi(value.c_str());
-    if(rate < 1)
-      cout << "Invalid rate " << rate << endl;
-    else
-      theDesiredFrameRate = rate;
-  }
-  else if(key == "paddle")
+  if(key == "paddle")
   {
     // They're trying to set the paddle emulation mode
     uInt32 pMode;
@@ -216,15 +157,6 @@ void SettingsUNIX::parseArg(string& key, string& value)
     else if(option == 0)
       theAccurateTimingFlag = false;
   }
-  else if(key == "zoom")
-  {
-    // They're setting the initial window size
-    uInt32 zoom = atoi(value.c_str());
-    if(zoom < 1)
-      cout << "Invalid zoom value " << zoom << endl;
-    else
-      theZoomLevel = zoom;
-  }
   else if(key == "volume")
   {
     // They're setting the desired volume
@@ -236,39 +168,12 @@ void SettingsUNIX::parseArg(string& key, string& value)
 
     theDesiredVolume = volume;
   }
-  else if(key == "ssdir")
-  {
-    theSnapshotDir = value;
-  }
-  else if(key == "ssname")
-  {
-    if((value != "md5sum") && (value != "romname"))
-      cout << "Invalid snapshot name " << value << endl;
-    else
-      theSnapshotName = value;
-  }
-  else if(key == "sssingle")
-  {
-    uInt32 option = atoi(value.c_str());
-    if(option == 1)
-      theMultipleSnapshotFlag = false;
-    else if(option == 0)
-      theMultipleSnapshotFlag = true;
-  }
   else if(key == "sound")
   {
     if((value != "oss") && (value != "sdl") && (value != "alsa"))
       value = "0";
 
     theSoundDriver = value;
-  }
-  else if(key == "keymap")
-  {
-    theKeymapList = value;
-  }
-  else if(key == "joymap")
-  {
-    theJoymapList = value;
   }
   else if(key == "joyleft")
   {
@@ -286,16 +191,6 @@ void SettingsUNIX::parseArg(string& key, string& value)
     else
       theRightJoystickNumber = joynum;
   }
-#ifdef DEVELOPER_SUPPORT
-  else if(key == "Dmerge")
-  {
-    uInt32 option = atoi(value.c_str());
-    if(option == 1)
-      theMergePropertiesFlag = true;
-    else if(option == 0)
-      theMergePropertiesFlag = false;
-  }
-#endif
   else
   {
     cout << "Undefined option " << key << endl;
@@ -303,17 +198,11 @@ void SettingsUNIX::parseArg(string& key, string& value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsUNIX::save()
+string SettingsUNIX::getArguments()
 {
-  if(!myConsole)
-    return;
+  ostringstream buf;
 
-  ofstream out(mySettingsOutputFilename.c_str());
-  if(!out || !out.is_open())
-    return;
-
-  out << "fps = " << theDesiredFrameRate << endl
-      << "paddle = " << thePaddleMode << endl
+  buf << "paddle = " << thePaddleMode << endl
       << "owncmap = " << theUsePrivateColormapFlag << endl
       << "fullscreen = " << theUseFullScreenFlag << endl
       << "grabmouse = " << theGrabMouseFlag << endl
@@ -323,20 +212,11 @@ void SettingsUNIX::save()
       << "accurate = " << theAccurateTimingFlag << endl
       << "zoom = " << theZoomLevel << endl
       << "volume = " << theDesiredVolume << endl
-      << "ssdir = " << theSnapshotDir << endl
-      << "ssname = " << theSnapshotName << endl
-      << "sssingle = " << theMultipleSnapshotFlag << endl
       << "sound = " << theSoundDriver << endl
-#ifdef DEVELOPER_SUPPORT
-      << "Dmerge = " << theMergePropertiesFlag << endl
-#endif
-      << "keymap = " << myConsole->eventHandler().getKeymap() << endl
-      << "joymap = " << myConsole->eventHandler().getJoymap() << endl
       << "joyleft = " << theLeftJoystickNumber << endl
-      << "joyright = " << theRightJoystickNumber << endl
-      << endl;
+      << "joyright = " << theRightJoystickNumber << endl;
 
-  out.close();
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -366,7 +246,7 @@ void SettingsUNIX::usage(string& message)
     << "  -pro        <props file>   Use the given properties file instead of stella.pro\n"
     << "  -showinfo   <0|1>          Shows some game info\n"
     << "  -accurate   <0|1>          Accurate game timing (uses more CPU)\n"
-  #ifdef HAVE_PNG
+  #ifdef SNAPSHOT_SUPPORT
     << "  -ssdir      <path>         The directory to save snapshot files to\n"
     << "  -ssname     <name>         How to name the snapshot (romname or md5sum)\n"
     << "  -sssingle   <0|1>          Generate single snapshot instead of many\n"
@@ -392,4 +272,67 @@ void SettingsUNIX::usage(string& message)
     << "                              or save into a separate file\n"
   #endif
     << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string SettingsUNIX::stateFilename(uInt32 state)
+{
+  if(!myConsole)
+    return "";
+
+  ostringstream buf;
+  buf << myStateDir << myConsole->properties().get("Cartridge.MD5")
+      << ".st" << state;
+
+  myStateFile = buf.str();
+  return myStateFile;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string SettingsUNIX::snapshotFilename()
+{
+  if(!myConsole)
+    return "";
+
+  string filename;
+  string path = theSnapshotDir;
+
+  if(theSnapshotName == "romname")
+    path = path + "/" + myConsole->properties().get("Cartridge.Name");
+  else if(theSnapshotName == "md5sum")
+    path = path + "/" + myConsole->properties().get("Cartridge.MD5");
+
+  // Replace all spaces in name with underscores
+  replace(path.begin(), path.end(), ' ', '_');
+
+  // Check whether we want multiple snapshots created
+  if(theMultipleSnapshotFlag)
+  {
+    // Determine if the file already exists, checking each successive filename
+    // until one doesn't exist
+    filename = path + ".png";
+    if(access(filename.c_str(), F_OK) == 0 )
+    {
+      ostringstream buf;
+      for(uInt32 i = 1; ;++i)
+      {
+        buf.str("");
+        buf << path << "_" << i << ".png";
+        if(access(buf.str().c_str(), F_OK) == -1 )
+          break;
+      }
+      filename = buf.str();
+    }
+  }
+  else
+    filename = path + ".png";
+
+  mySnapshotFile = filename;
+  return mySnapshotFile;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string SettingsUNIX::userHomeDir()
+{
+  return myHomeDir;
 }

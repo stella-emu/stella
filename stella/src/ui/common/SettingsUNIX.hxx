@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.hxx,v 1.2 2003-09-12 18:08:54 stephena Exp $
+// $Id: SettingsUNIX.hxx,v 1.3 2003-09-19 15:45:01 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_UNIX_HXX
@@ -28,7 +28,7 @@ class Console;
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: SettingsUNIX.hxx,v 1.2 2003-09-12 18:08:54 stephena Exp $
+  @version $Id: SettingsUNIX.hxx,v 1.3 2003-09-19 15:45:01 stephena Exp $
 */
 class SettingsUNIX : public Settings
 {
@@ -36,7 +36,7 @@ class SettingsUNIX : public Settings
     /**
       Create a new UNIX settings object
     */
-    SettingsUNIX(const string& infile, const string& outfile);
+    SettingsUNIX();
 
     /**
       Destructor
@@ -45,27 +45,49 @@ class SettingsUNIX : public Settings
 
   public:
     /**
+      This method should be called to set arguments.
+
+      @param key   The variable to be set
+      @param value The value for the variable to hold
+    */
+    virtual void setArgument(string& key, string& value);
+
+    /**
+      This method should be called to get system-specific settings.
+
+      @return  A string representing all the key/value pairs.
+    */
+    virtual string getArguments();
+
+    /**
+      This method should be called to get the filename of a state file
+      given the state number.
+
+      @return String representing the full path of the state filename.
+    */
+    virtual string stateFilename(uInt32 state);
+
+    /**
+      This method should be called to get the filename of a snapshot.
+
+      @return String representing the full path of the snapshot filename.
+    */
+    virtual string snapshotFilename();
+
+  public:
+    /**
       Display the commandline settings for this UNIX version of Stella.
 
       @param  message A short message about this version of Stella
     */
-    virtual void usage(string& message);
+    void usage(string& message);
 
     /**
-      Save the current settings to an rc file.
-    */
-    virtual void save();
+      Return the users UNIX home directory
 
-    /**
-      Let the frontend know about the console object.
+      @param  message A short message about this version of Stella
     */
-    virtual void setConsole(Console* console);
-
-  public:
-    /**
-      Handle UNIX commandline arguments
-    */
-    bool handleCommandLineArgs(Int32 ac, char** av);
+    string userHomeDir();
 
   public:
     // Indicates whether to use fullscreen
@@ -93,9 +115,6 @@ class SettingsUNIX : public Settings
     // Indicates what the desired volume is
     Int32 theDesiredVolume;
 
-    // Indicates what the desired frame rate is
-    uInt32 theDesiredFrameRate;
-
     // Indicate which paddle mode we're using:
     //   0 - Mouse emulates paddle 0
     //   1 - Mouse emulates paddle 1
@@ -117,17 +136,8 @@ class SettingsUNIX : public Settings
     Int32 theRightJoystickNumber;
 
   private:
-    void handleRCFile();
-    void parseArg(string& key, string& value);
-
-    // The full pathname of the settings file for input
-    string mySettingsInputFilename;
-
-    // The full pathname of the settings file for output
-    string mySettingsOutputFilename;
-
-    // The global Console object
-    Console* myConsole;
+    // The UNIX home directory
+    string myHomeDir;
 };
 
 #endif

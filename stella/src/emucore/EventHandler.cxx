@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.6 2003-09-12 18:08:53 stephena Exp $
+// $Id: EventHandler.cxx,v 1.7 2003-09-19 15:45:01 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -22,7 +22,6 @@
 #include "Console.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
-#include "Frontend.hxx"
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
 #include "StellaEvent.hxx"
@@ -114,13 +113,13 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
     }
     else if(event == Event::Pause)
     {
-      myConsole->frontend().setPauseEvent();
+      myConsole->settings().setPauseEvent();
       return;
     }
     else if(event == Event::Quit)
     {
-      myConsole->settings().save();
-      myConsole->frontend().setQuitEvent();
+      myConsole->settings().saveConfig();
+      myConsole->settings().setQuitEvent();
       return;
     }
 
@@ -168,13 +167,13 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
     }
     else if(event == Event::Pause)
     {
-      myConsole->frontend().setPauseEvent();
+      myConsole->settings().setPauseEvent();
       return;
     }
     else if(event == Event::Quit)
     {
-      myConsole->settings().save();
-      myConsole->frontend().setQuitEvent();
+      myConsole->settings().saveConfig();
+      myConsole->settings().setQuitEvent();
       return;
     }
 
@@ -193,13 +192,13 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
   // the emulation core
   if(event == Event::Pause && state == 1)
   {
-    myConsole->frontend().setPauseEvent();
+    myConsole->settings().setPauseEvent();
     return;
   }
   else if(event == Event::Quit && state == 1)
   {
-    myConsole->settings().save();
-    myConsole->frontend().setQuitEvent();
+    myConsole->settings().saveConfig();
+    myConsole->settings().setQuitEvent();
     return;
   }
 
@@ -392,7 +391,7 @@ void EventHandler::saveState()
 
   // Do a state save using the System
   string md5      = myConsole->properties().get("Cartridge.MD5");
-  string filename = myConsole->frontend().stateFilename(md5, myCurrentState);
+  string filename = myConsole->settings().stateFilename(myCurrentState);
   int result      = myConsole->system().saveState(filename, md5);
 
   // Print appropriate message
@@ -430,7 +429,7 @@ void EventHandler::loadState()
 
   // Do a state save using the System
   string md5      = myConsole->properties().get("Cartridge.MD5");
-  string filename = myConsole->frontend().stateFilename(md5, myCurrentState);
+  string filename = myConsole->settings().stateFilename(myCurrentState);
   int result      = myConsole->system().loadState(filename, md5);
 
   if(result == 1)
@@ -451,7 +450,7 @@ void EventHandler::takeSnapshot()
   string message, filename;
 
   // Now save the snapshot file
-  filename = myConsole->frontend().snapshotFilename();
+  filename = myConsole->settings().snapshotFilename();
   myConsole->snapshot().savePNG(filename, myConsole->mediaSource(),
       myConsole->settings().theZoomLevel);
 
