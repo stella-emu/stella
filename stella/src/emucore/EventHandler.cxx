@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.19 2003-11-13 00:25:07 stephena Exp $
+// $Id: EventHandler.cxx,v 1.20 2003-11-13 00:26:58 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -157,7 +157,7 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     else if(event == Event::Quit)
     {
       myQuitStatus = !myQuitStatus;
-//      myConsole->settings().saveConfig();
+      myConsole->settings().saveConfig();
       return;
     }
 
