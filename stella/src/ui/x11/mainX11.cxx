@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.38 2003-09-09 16:45:47 stephena Exp $
+// $Id: mainX11.cxx,v 1.39 2003-09-11 00:13:39 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -437,23 +437,23 @@ bool setupJoystick()
 #ifdef HAVE_JOYSTICK
   if((theLeftJoystickFd = open("/dev/js0", O_RDONLY | O_NONBLOCK)) >= 0)
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Left joystick found.\n";
   }
   else
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Left joystick not present, use keyboard instead.\n";
   }
 
   if((theRightJoystickFd = open("/dev/js1", O_RDONLY | O_NONBLOCK)) >= 0)
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Right joystick found.\n";
   }
   else
   {
-    if(settings->theShowInfoFlag)
+    if(theConsole->settings().theShowInfoFlag)
       cout << "Right joystick not present, use keyboard instead.\n";
   }
 #endif
@@ -787,7 +787,7 @@ void handleEvents()
     {
       Int32 resistance = 0;
       uInt32 width = theWidth * theWindowSize * 2;
-      Event::Type type;
+      Event::Type type = Event::LastType;
 
       int x = width - event.xmotion.x;
       resistance = (Int32)((1000000.0 * x) / width);
@@ -806,7 +806,7 @@ void handleEvents()
     }
     else if(event.type == ButtonPress || event.type == ButtonRelease)
     {
-      Event::Type type;
+      Event::Type type = Event::LastType;
       Int32 value;
 
       value = (event.type == ButtonPress) ? 1 : 0;
@@ -837,6 +837,73 @@ void handleEvents()
 
 #ifdef HAVE_JOYSTICK
   // Read joystick events and modify event states
+  StellaEvent::JoyStick stick;
+  StellaEvent::JoyCode code;
+  uInt32 state;
+  uInt8 axis;
+  Int32 value;
+
+  if(theLeftJoystickFd >= 0)
+  {
+    struct js_event event;
+    stick = joyList[0];
+
+    // Process each joystick event that's queued-up
+    while(read(theLeftJoystickFd, &event, sizeof(struct js_event)) > 0)
+    {
+      if((event.type & ~JS_EVENT_INIT) == JS_EVENT_BUTTON)
+      {
+        if(event.number >= StellaEvent::LastJCODE)
+          return;
+
+        code  = joyButtonList[event.number];
+        state = event.value;
+
+        theConsole->eventHandler().sendJoyEvent(stick, code, state);
+      }
+      else if((event.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS)
+      {
+        code  = StellaEvent::LastJCODE;
+        state = 1;
+
+        axis  = event.number;
+        value = event.value;
+
+        if(axis == 0)  // x-axis
+        {
+          if(value < -16384)
+            code = StellaEvent::JAXIS_LEFT;
+          else if(value > 16384)
+            code = StellaEvent::JAXIS_RIGHT;
+          else
+          {
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT, 0);
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT, 0);
+
+            return;
+          }
+        }
+        else if(axis == 1)  // y-axis
+        {
+          if(value < -16384)
+            code = StellaEvent::JAXIS_UP;
+          else if(value > 16384)
+            code = StellaEvent::JAXIS_DOWN;
+          else
+          {
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP, 0);
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN, 0);
+
+            return;
+          }
+        }
+
+        theConsole->eventHandler().sendJoyEvent(stick, code, state);
+      }
+    }
+  }
+
+/*  // Read joystick events and modify event states
   if(theLeftJoystickFd >= 0)
   {
     struct js_event event;
@@ -959,7 +1026,7 @@ void handleEvents()
         }
       }
     }
-  }
+  }*/
 #endif
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.47 2003-09-09 16:45:47 stephena Exp $
+// $Id: mainSDL.cxx,v 1.48 2003-09-11 00:13:39 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -979,7 +979,7 @@ void handleEvents()
       float fudgeFactor = 1000000.0;
       Int32 resistance = 0, x = 0;
       Int32 width   = theWidth * theWindowSize * 2;
-      Event::Type type;
+      Event::Type type = Event::LastType;
 
       // Grabmouse and hidecursor introduce some lag into the mouse movement,
       // so we need to fudge the numbers a bit
@@ -1016,7 +1016,7 @@ void handleEvents()
     }
     else if(event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
     {
-      Event::Type type;
+      Event::Type type = Event::LastType;
       Int32 value;
 
       if(event.type == SDL_MOUSEBUTTONDOWN)
