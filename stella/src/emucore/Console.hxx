@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.18 2004-06-13 04:59:40 bwmott Exp $
+// $Id: Console.hxx,v 1.19 2004-06-13 16:51:15 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -41,7 +41,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.18 2004-06-13 04:59:40 bwmott Exp $
+  @version $Id: Console.hxx,v 1.19 2004-06-13 16:51:15 stephena Exp $
 */
 class Console
 {
@@ -57,11 +57,10 @@ class Console
       @param profiles    The game profiles object to use
       @param framebuffer The framebuffer object to use
       @param sound       The sound object to use
-      @param framerate   The framerate being used
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
         Settings& settings, PropertiesSet& propertiesSet,
-        FrameBuffer& framebuffer, Sound& sound, uInt32 frameRate);
+        FrameBuffer& framebuffer, Sound& sound);
 
     /**
       Create a new console object by copying another one

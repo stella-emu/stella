@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.3 2004-05-28 23:16:26 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.4 2004-06-13 16:51:15 stephena Exp $
 //============================================================================
 
 //#include <cstdlib>
@@ -60,6 +60,7 @@ SettingsWin32::SettingsWin32()
   // Now create Win32 specific settings
   set("romdir", "roms");
   set("accurate", "false");  // Don't change this, or the sound will skip
+  set("fragsize", "2048");   // Anything less than this usually causes sound skipping
 #ifdef SNAPSHOT_SUPPORT
   set("ssdir", ".\\");
 #endif
@@ -90,7 +91,7 @@ void SettingsWin32::usage(string& message)
     << endl
   #endif
     << "  -sound      <0|1>          Enable sound generation\n"
-    << "  -fragsize   <number>       The size of sound fragments (should be a power of two)\n"
+    << "  -fragsize   <number>       The size of sound fragments (must be a power of two)\n"
     << "  -bufsize    <number>       The size of the sound buffer\n"
     << "  -framerate  <number>       Display the given number of frames per second\n"
     << "  -zoom       <size>         Makes window be 'size' times normal\n"

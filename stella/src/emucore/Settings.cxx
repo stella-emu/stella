@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.20 2004-05-28 22:07:57 stephena Exp $
+// $Id: Settings.cxx,v 1.21 2004-06-13 16:51:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -44,12 +44,11 @@ Settings::Settings()
 #endif
   set("sound", "true");
   set("fragsize", "512");
-  set("bufsize", "1536");
   set("fullscreen", "false");
   set("grabmouse", "false");
   set("hidecursor", "false");
   set("volume", "-1");
-  set("accurate", "true");
+  set("accurate", "false");
   set("framerate", "60");
   set("keymap", "");
   set("joymap", "");

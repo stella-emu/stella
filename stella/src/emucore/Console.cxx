@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.29 2004-06-13 04:59:40 bwmott Exp $
+// $Id: Console.cxx,v 1.30 2004-06-13 16:51:15 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -52,12 +52,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
     Settings& settings, PropertiesSet& propertiesSet, 
-    FrameBuffer& framebuffer, Sound& sound, uInt32 frameRate)
+    FrameBuffer& framebuffer, Sound& sound)
     : mySettings(settings),
       myPropSet(propertiesSet),
       myFrameBuffer(framebuffer),
-      mySound(sound),
-      myFrameRate(frameRate)
+      mySound(sound)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -65,6 +64,8 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   mySwitches = 0;
   mySystem = 0;
   myEvent = 0;
+
+  myFrameRate = mySettings.getInt("framerate");
 
   // Create an event handler which will collect and dispatch events
   myEventHandler = new EventHandler(this);

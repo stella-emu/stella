@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.33 2004-06-13 04:53:04 bwmott Exp $
+// $Id: TIA.cxx,v 1.34 2004-06-13 16:51:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -38,11 +38,11 @@ TIA::TIA(const Console& console, Sound& sound)
     : myConsole(console),
       mySound(sound),
       myColorLossEnabled(false),
+      myMaximumNumberOfScanlines(262),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
       myCOLUP0(myColor[2]),
-      myCOLUP1(myColor[3]),
-      myMaximumNumberOfScanlines(262)
+      myCOLUP1(myColor[3])
 {
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];

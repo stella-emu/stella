@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.2 2004-06-13 05:03:26 bwmott Exp $
+// $Id: SoundSDL.hxx,v 1.3 2004-06-13 16:51:15 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.2 2004-06-13 05:03:26 bwmott Exp $
+  @version $Id: SoundSDL.hxx,v 1.3 2004-06-13 16:51:15 stephena Exp $
 */
 class SoundSDL : public Sound
 {

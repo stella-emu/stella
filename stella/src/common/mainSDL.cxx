@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.3 2004-06-13 05:09:37 bwmott Exp $
+// $Id: mainSDL.cxx,v 1.4 2004-06-13 16:51:15 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -759,10 +759,13 @@ bool setupProperties(PropertiesSet& set)
 void cleanup()
 {
 #ifdef JOYSTICK_SUPPORT
-  for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
+  if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
   {
-    if(SDL_JoystickOpened(i))
-      SDL_JoystickClose(theJoysticks[i].stick);
+    for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
+    {
+      if(SDL_JoystickOpened(i))
+        SDL_JoystickClose(theJoysticks[i].stick);
+    }
   }
 #endif
 
@@ -778,7 +781,9 @@ void cleanup()
   if(theDisplay)
     delete theDisplay;
 
-  SDL_Quit();
+  Uint32 subsystem_mask = SDL_INIT_VIDEO|SDL_INIT_AUDIO;
+  if(SDL_WasInit(subsystem_mask) == subsystem_mask)
+    SDL_Quit();
 }
 
 
@@ -825,6 +830,8 @@ int main(int argc, char* argv[])
   if(!in)
   {
     cerr << "ERROR: Couldn't open " << file << "..." << endl;
+    string message = "Stella version 1.4_cvs\n\nUsage: stella [options ...] romfile";
+    theSettings->usage(message);
     cleanup();
     return 0;
   }
@@ -899,7 +906,7 @@ int main(int argc, char* argv[])
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
-                           *theDisplay, *theSound, theSettings->getInt("framerate"));
+                           *theDisplay, *theSound);
 
   // Free the image since we don't need it any longer
   delete[] image;
