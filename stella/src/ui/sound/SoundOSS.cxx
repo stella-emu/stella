@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundOSS.cxx,v 1.3 2003-11-06 22:22:32 stephena Exp $
+// $Id: SoundOSS.cxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
 //============================================================================
 
 #include <fcntl.h>
@@ -39,8 +39,7 @@ SoundOSS::SoundOSS()
       myDspFd(-1),
       myMixerFd(-1),
       myOriginalVolume(-1),
-      mySampleRate(0),
-      myPauseStatus(false)
+      mySampleRate(0)
 {
   // Open the sound device for writing
   if((myDspFd = open(DSP_DEVICE, O_WRONLY, 0)) == -1)
@@ -172,7 +171,7 @@ bool SoundOSS::isSuccessfullyInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundOSS::setSoundVolume(Int32 percent)
+void SoundOSS::setVolume(Int32 percent)
 {
   if(myIsInitializedFlag && (myMixerFd != -1))
   {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.cxx,v 1.4 2003-11-06 22:22:32 stephena Exp $
+// $Id: SoundALSA.cxx,v 1.5 2003-11-18 21:39:02 stephena Exp $
 //============================================================================
 
 #include <alsa/asoundlib.h>
@@ -30,8 +30,7 @@ SoundALSA::SoundALSA()
       myOriginalVolumeLeft(-1),
       myOriginalVolumeRight(-1),
       myBufferSize(0),
-      mySampleRate(0),
-      myPauseStatus(false)
+      mySampleRate(0)
 {
   Int32 err;
   char pcmName[]   = "plughw:0,0";
@@ -216,7 +215,7 @@ bool SoundALSA::isSuccessfullyInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundALSA::setSoundVolume(Int32 percent)
+void SoundALSA::setVolume(Int32 percent)
 {
   if(myIsInitializedFlag && myMixerElem)
   {

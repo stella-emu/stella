@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.58 2003-11-09 23:53:20 stephena Exp $
+// $Id: mainSDL.cxx,v 1.59 2003-11-18 21:39:02 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -771,7 +771,7 @@ int main(int argc, char* argv[])
     theSound = new Sound();
   }
 
-  theSound->setSoundVolume(theSettings->getInt("volume"));
+  theSound->setVolume(theSettings->getInt("volume"));
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;

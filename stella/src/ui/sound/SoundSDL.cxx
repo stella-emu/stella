@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.3 2003-11-06 22:22:33 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -21,16 +21,15 @@
 #include "SoundSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL::SoundSDL(bool activate)
+SoundSDL::SoundSDL()
     : myCurrentVolume(SDL_MIX_MAXVOLUME),
       myFragmentSize(1024),
       myIsInitializedFlag(false),
       myIsMuted(false),
       mySampleRate(31400),
-      mySampleQueue(mySampleRate),
-      myPauseStatus(false)
+      mySampleQueue(mySampleRate)
 {
-  if(activate)
+  if(1)
   {
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
     {
@@ -144,7 +143,7 @@ void SoundSDL::closeDevice()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::setSoundVolume(Int32 percent)
+void SoundSDL::setVolume(Int32 percent)
 {
   if(myIsInitializedFlag)
   {

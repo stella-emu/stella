@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.6 2003-11-06 22:22:32 stephena Exp $
+// $Id: Sound.hxx,v 1.7 2003-11-18 21:39:02 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -28,7 +28,7 @@
   to compile Stella with no sound support whatsoever.
 
   @author  Stephen Anthony
-  @version $Id: Sound.hxx,v 1.6 2003-11-06 22:22:32 stephena Exp $
+  @version $Id: Sound.hxx,v 1.7 2003-11-18 21:39:02 stephena Exp $
 */
 class Sound
 {
@@ -70,15 +70,7 @@ class Sound
 
       @param percent The new volume percentage level for the sound device
     */
-    virtual void setSoundVolume(Int32 percent);
-
-    /**
-      Sets the pause status.  While pause is selected, updateSound()
-      should not play any sound.
-
-      @param status  Toggle pause based on status
-    */
-    virtual void pause(bool status);
+    virtual void setVolume(Int32 percent);
 
     /**
       Update the sound device using the audio sample from the specified
@@ -87,5 +79,17 @@ class Sound
       @param mediaSource The media source to get audio samples from.
     */
     virtual void updateSound(MediaSource& mediaSource);
+
+    /**
+      Sets the pause status.  While pause is selected, update()
+      should not play any sound.
+
+      @param status  Toggle pause based on status
+    */
+    void pause(bool status) { myPauseStatus = status; }
+
+  protected:
+    // The pause status
+    bool myPauseStatus;
 };
 #endif

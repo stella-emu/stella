@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.3 2003-11-06 22:22:33 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.3 2003-11-06 22:22:33 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -37,7 +37,7 @@ class SoundSDL : public Sound
     /**
       Create a new sound object
     */
-    SoundSDL(bool activate = true);
+    SoundSDL();
  
     /**
       Destructor
@@ -78,15 +78,7 @@ class SoundSDL : public Sound
 
       @param percent The new volume percentage level for the sound device
     */
-    void setSoundVolume(Int32 percent);
-
-    /**
-      Sets the pause status.  While pause is selected, updateSound()
-      should not play any sound.
-
-      @param status  Toggle pause based on status
-    */
-    void pause(bool status) { myPauseStatus = status; }
+    void setVolume(Int32 percent);
 
     /**
       Update the sound device using the audio sample from the specified
@@ -173,12 +165,9 @@ class SoundSDL : public Sound
     // Queue which holds samples from the media source before they are played
     SampleQueue mySampleQueue;
 
-    // The pause status
-    bool myPauseStatus;
-
   private:
     // Callback function invoked by the SDL Audio library when it needs data
     static void callback(void* udata, uInt8* stream, int len);
 };
-#endif
 
+#endif
