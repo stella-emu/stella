@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.3 2002-11-09 23:29:51 stephena Exp $
+// $Id: Props.cxx,v 1.4 2002-11-11 02:49:02 stephena Exp $
 //============================================================================
 
 #include "Props.hxx"
@@ -159,6 +159,7 @@ void Properties::save(ostream& out)
 
   // Put a trailing null string so we know when to stop reading
   writeQuotedString(out, "");
+  out.put('\n');
   out.put('\n');
 }
 
