@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.5 2003-12-10 18:58:56 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.6 2004-04-20 21:08:03 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -70,7 +70,7 @@ bool FrameBufferSoft::init()
 
   // Check which system we are running under
   x11Available = false;
-#ifdef UNIX
+#if UNIX && (!__APPLE__)
   SDL_VERSION(&myWMInfo.version);
   if(SDL_GetWMInfo(&myWMInfo) > 0)
     if(myWMInfo.subsystem == SDL_SYSWM_X11)

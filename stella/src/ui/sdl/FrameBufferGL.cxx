@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.16 2004-04-15 21:27:31 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.17 2004-04-20 21:07:50 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -134,7 +134,7 @@ bool FrameBufferGL::init()
 
   // Check which system we are running under
   x11Available = false;
-#ifdef UNIX
+#if UNIX && (!__APPLE__)
   SDL_VERSION(&myWMInfo.version);
   if(SDL_GetWMInfo(&myWMInfo) > 0)
     if(myWMInfo.subsystem == SDL_SYSWM_X11)

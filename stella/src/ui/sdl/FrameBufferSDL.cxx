@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.11 2004-04-15 22:52:43 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.12 2004-04-20 21:08:03 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -179,7 +179,8 @@ uInt32 FrameBufferSDL::maxWindowSizeForScreen()
   if(!x11Available)
     return 4;
 
-#ifdef UNIX
+  /* Every UNIX except Darwin with Cocoa. */
+#if UNIX && (!__APPLE__)
   // Otherwise, lock the screen and get the width and height
   myWMInfo.info.x11.lock_func();
   Display* theX11Display = myWMInfo.info.x11.display;

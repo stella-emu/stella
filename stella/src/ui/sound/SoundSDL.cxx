@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.7 2004-04-04 02:03:15 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.8 2004-04-20 21:08:03 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -163,7 +163,7 @@ void SoundSDL::update()
   if(!myPauseStatus && myIsInitializedFlag)
   {
     // Make sure we have exclusive access to the sample queue
-    SDL_LockAudio();
+//    SDL_LockAudio();
 
     // Generate enough samples to keep the sample queue full to capacity
     uInt32 numbytes = mySampleQueue.capacity() - mySampleQueue.size();
@@ -172,7 +172,7 @@ void SoundSDL::update()
     mySampleQueue.enqueue(buffer, numbytes);
 
     // Release lock on the sample queue
-    SDL_UnlockAudio();
+//    SDL_UnlockAudio();
   }
 }
 

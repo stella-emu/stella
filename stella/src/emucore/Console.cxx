@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.24 2004-04-12 23:28:42 stephena Exp $
+// $Id: Console.cxx,v 1.25 2004-04-20 21:07:40 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -207,7 +207,7 @@ Console::~Console()
 void Console::update()
 {
   myFrameBuffer.update();
-  mySound.update();
+//FIXME  mySound.update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
