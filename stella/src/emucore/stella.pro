@@ -20653,3 +20653,23 @@
 "Display.XStart" "8"
 ""
 
+"Cartridge.MD5" "be2870a0120fd28d25284e9ccdcbdc99" 
+"Cartridge.Name" "Tomb Raider 2600 [REV 01] (Montezuma's Revenge Hack)" 
+"Cartridge.Type" "E0" 
+"Display.Height" "192" 
+"Display.YStart" "38" 
+""
+
+"Cartridge.MD5" "e0221c95aa657f5764eeeb64c8429258" 
+"Cartridge.Name" "Tomb Raider 2600 [REV 02] (Montezuma's Revenge Hack)" 
+"Cartridge.Type" "E0" 
+"Display.Height" "192" 
+"Display.YStart" "38" 
+""
+
+"Cartridge.MD5" "5b574faa56836da0866ba32ae32547f2" 
+"Cartridge.Name" "Tomb Raider 2600 [REV 03] (Montezuma's Revenge Hack)" 
+"Cartridge.Type" "E0" 
+"Display.Height" "192" 
+"Display.YStart" "38" 
+""
