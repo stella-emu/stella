@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.23 2005-03-28 00:04:54 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.24 2005-04-03 19:37:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.23 2005-03-28 00:04:54 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.24 2005-04-03 19:37:32 stephena Exp $
 */
 class FrameBuffer
 {
@@ -106,7 +106,7 @@ class FrameBuffer
 
       @return  The current width
     */
-//    inline const uInt32 imageWidth()  { return myImageDim.w; }
+    inline const uInt32 imageWidth()  { return myImageDim.w; }
 
     /**
       Returns the current height of the framebuffer image.
@@ -114,7 +114,7 @@ class FrameBuffer
 
       @return  The current height
     */
-//    inline const uInt32 imageHeight() { return myImageDim.h; }
+    inline const uInt32 imageHeight() { return myImageDim.h; }
 
      /**
       Sets the pause status.  While pause is selected, the

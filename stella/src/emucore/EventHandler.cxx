@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.39 2005-03-28 00:04:53 stephena Exp $
+// $Id: EventHandler.cxx,v 1.40 2005-04-03 19:37:32 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -42,7 +42,9 @@ EventHandler::EventHandler(OSystem* osystem)
       myLSState(0),
       myPauseFlag(false),
       myExitGameFlag(false),
-      myQuitFlag(false)
+      myQuitFlag(false),
+      myGrabMouseFlag(false),
+      myPaddleMode(0)
 {
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
@@ -76,6 +78,8 @@ EventHandler::EventHandler(OSystem* osystem)
 
   setKeymap();
   setJoymap();
+
+  myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,6 +103,105 @@ void EventHandler::reset(State state)
   myPauseFlag = false;
   myExitGameFlag = false;
   myQuitFlag = false;
+  myPaddleMode = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::poll()   // FIXME - add modifiers for OSX
+{
+  SDL_Event event;
+
+  // Check for an event
+  while(SDL_PollEvent(&event))
+  {
+    switch(event.type)
+    {
+      // keyboard events
+      case SDL_KEYUP:
+      case SDL_KEYDOWN:
+      {
+        SDLKey key  = event.key.keysym.sym;
+        SDLMod mod  = event.key.keysym.mod;
+        uInt8 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
+
+        // An attempt to speed up event processing
+        // All SDL-specific event actions are accessed by either
+        // Control or Alt keys.  So we quickly check for those.
+        if(mod & KMOD_ALT && state)
+        {
+          switch(int(key))
+          {
+            case SDLK_EQUALS:
+              myOSystem->frameBuffer().resize(1);
+              break;
+
+            case SDLK_MINUS:
+              myOSystem->frameBuffer().resize(-1);
+              break;
+
+            case SDLK_RETURN:
+              myOSystem->frameBuffer().toggleFullscreen();
+              break;
+
+            case SDLK_f:
+              myOSystem->frameBuffer().toggleFilter();
+              break;
+          }
+        }
+        else if(mod & KMOD_CTRL && state)
+        {
+          switch(int(key))
+          {
+            case SDLK_q:
+              handleEvent(Event::Quit, 1);
+              break;
+
+            case SDLK_g:
+              // don't change grabmouse in fullscreen mode
+              if(!myOSystem->frameBuffer().fullScreen())
+              {
+                myGrabMouseFlag = !myGrabMouseFlag;
+                myOSystem->settings().setBool("grabmouse", myGrabMouseFlag);
+                myOSystem->frameBuffer().grabMouse(myGrabMouseFlag);
+              }
+              break;
+          }
+        }
+
+        // Otherwise, let the event handler deal with it
+        handleKeyEvent(key, mod, state);
+        break;  // SDL_KEYUP, SDL_KEYDOWN
+      }
+
+      case SDL_MOUSEMOTION:
+        handleMouseMotionEvent(event);
+        break; // SDL_MOUSEMOTION
+
+      case SDL_MOUSEBUTTONUP:
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        uInt8 state = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
+        handleMouseButtonEvent(event, state);
+        break;  // SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN
+      }
+
+      case SDL_ACTIVEEVENT:
+        if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
+          if(!myPauseFlag)
+            handleEvent(Event::Pause, 1);
+        break; // SDL_ACTIVEEVENT
+
+      case SDL_QUIT:
+        handleEvent(Event::Quit, 1);
+        break;  // SDL_QUIT
+
+      case SDL_VIDEOEXPOSE:
+        myOSystem->frameBuffer().refresh();
+        break;  // SDL_VIDEOEXPOSE
+    }
+
+    // FIXME - joystick stuff goes here
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,7 +210,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
   // Handle keys here that are accessible no matter which mode we're in
 
   // Toggle menu mode
-  if(key == SDLK_TAB && state == 1 && !myPauseFlag)
+  if(key == SDLK_TAB && state == 1 && !myPauseFlag) // FIXME - add remappable 'enter menu mode key here'
   {
     if(myState == S_EMULATE)
     {
@@ -132,13 +235,72 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
   switch(myState)
   {
     case S_EMULATE:
-//      if(mod & KMOD_ALT && state)
-//        handleEvent(myAltKeyTable[key], state);
-//      else if(mod & KMOD_CTRL && state)
-//        handleEvent(myCtrlKeyTable[key], state);
-//      else
-      handleEvent(myKeyTable[key], state);
-      break;
+      // An attempt to speed up event processing
+      // All SDL-specific event actions are accessed by either
+      // Control or Alt keys.  So we quickly check for those.
+      if(mod & KMOD_ALT && state)
+      {
+        switch(int(key))
+        {
+          case SDLK_LEFTBRACKET:
+            myOSystem->sound().adjustVolume(-1);
+            break;
+
+          case SDLK_RIGHTBRACKET:
+            myOSystem->sound().adjustVolume(1);
+            break;
+        }
+	    // FIXME - alt developer stuff goes here
+      }
+      else if(mod & KMOD_CTRL && state)
+      {
+        switch(int(key))
+        {
+          case SDLK_0:   // Ctrl-0 sets the mouse to paddle 0
+            setPaddleMode(0);
+            break;
+
+          case SDLK_1:	 // Ctrl-1 sets the mouse to paddle 1
+            setPaddleMode(1);
+            break;
+
+          case SDLK_2:	 // Ctrl-2 sets the mouse to paddle 2
+            setPaddleMode(2);
+            break;
+
+          case SDLK_3:	 // Ctrl-3 sets the mouse to paddle 3
+            setPaddleMode(3);
+            break;
+
+          case SDLK_f:	 // Ctrl-f toggles NTSC/PAL mode
+            myOSystem->console().toggleFormat();
+            myOSystem->frameBuffer().setupPalette();
+            break;
+
+          case SDLK_p:	 // Ctrl-p toggles different palettes
+            myOSystem->console().togglePalette();
+            myOSystem->frameBuffer().setupPalette();
+            break;
+
+          // FIXME - Ctrl developer support goes here
+
+          case SDLK_s:	 // Ctrl-s saves properties to a file
+            // Attempt to merge with propertiesSet
+            if(myOSystem->settings().getBool("mergeprops"))
+              myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
+            else  // Save to file in base directory
+            {
+              string newPropertiesFile = myOSystem->baseDir() + "/" + \
+                myOSystem->console().properties().get("Cartridge.Name") + ".pro";
+              myOSystem->console().saveProperties(newPropertiesFile);
+            }
+            break;
+        }
+      }
+      else
+        handleEvent(myKeyTable[key], state);
+
+      break;  // S_EMULATE
 
     case S_MENU:
       myOSystem->menu().handleKeyEvent(key, mod, state);
@@ -483,6 +645,12 @@ void EventHandler::setDefaultKeymap()
 #ifndef MAC_OSX
   myKeyTable[ SDLK_ESCAPE ]    = Event::ExitGame;
 #endif
+
+  // Iterate through the keymap table and create a colon-separated list
+  ostringstream keybuf;
+  for(uInt32 i = 0; i < 256; ++i)
+    keybuf << myKeyTable[i] << ":";
+  myOSystem->settings().setString("keymap", keybuf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -620,4 +788,16 @@ void EventHandler::takeSnapshot()
 #else
   myOSystem->frameBuffer().showMessage("Snapshots unsupported");
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setPaddleMode(Int8 num)
+{
+  myPaddleMode = num;
+
+  ostringstream buf;
+  buf << "Mouse is paddle " << num;
+  myOSystem->frameBuffer().showMessage(buf.str());
+
+  myOSystem->settings().setInt("paddle", myPaddleMode);
 }

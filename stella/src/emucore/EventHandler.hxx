@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.19 2005-03-14 04:08:14 stephena Exp $
+// $Id: EventHandler.hxx,v 1.20 2005-04-03 19:37:32 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -50,7 +50,7 @@ enum MouseButton {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.19 2005-03-14 04:08:14 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.20 2005-04-03 19:37:32 stephena Exp $
 */
 class EventHandler
 {
@@ -76,6 +76,12 @@ class EventHandler
     Event* event();
 
     /**
+      Collects and dispatches any pending events.  This method should be
+      called regularly (at X times per second, where X is the game framerate).
+    */
+    void poll();
+
+    /**
       Returns the current state of the EventHandler
 
       @return The State type
@@ -89,6 +95,26 @@ class EventHandler
     */
     void reset(State state);
 
+
+    /**
+      This method indicates whether a pause event has been received.
+    */
+    inline bool doPause() { return myPauseFlag; }
+
+    /**
+      This method indicates whether a exit game event has been received.
+    */
+    inline bool doExitGame() { return myExitGameFlag; }
+
+    /**
+      This method indicates whether a quit event has been received.
+    */
+    inline bool doQuit() { return myQuitFlag; }
+
+    void getKeymapArray(Event::Type** array, uInt32* size);
+    void getJoymapArray(Event::Type** array, uInt32* size);
+
+  private:
     /**
       Send an event directly to the event handler.
       These events cannot be remapped.
@@ -130,26 +156,14 @@ class EventHandler
     */
     void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
          Int32 state);
-	
-    /**
-      This method indicates whether a pause event has been received.
-    */
-    inline bool doPause() { return myPauseFlag; }
 
     /**
-      This method indicates whether a exit game event has been received.
+      Sets the mouse to act as paddle 'which'
+
+      @param which The paddle which the mouse should emulate
     */
-    inline bool doExitGame() { return myExitGameFlag; }
+    void setPaddleMode(Int8 which);
 
-    /**
-      This method indicates whether a quit event has been received.
-    */
-    inline bool doQuit() { return myQuitFlag; }
-
-    void getKeymapArray(Event::Type** array, uInt32* size);
-    void getJoymapArray(Event::Type** array, uInt32* size);
-
-  private:
     void setKeymap();
     void setJoymap();
     void setDefaultKeymap();
@@ -198,6 +212,12 @@ class EventHandler
 
     // Indicates whether to quit the emulator
     bool myQuitFlag;
+
+    // Indicates whether the mouse cursor is grabbed
+    bool myGrabMouseFlag;
+
+    // Indicates which paddle the mouse currently emulates
+    Int8 myPaddleMode;
 
     // The current keymap in string form
     string myKeymapString;

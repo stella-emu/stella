@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.15 2005-03-28 00:04:53 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.16 2005-04-03 19:37:32 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -334,7 +334,7 @@ void FrameBufferGL::toggleFilter()
 void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 {
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-  glLineWidth(1);
+  glLineWidth(2);
   glColor4f(myGUIPalette[color][0],
             myGUIPalette[color][1],
             myGUIPalette[color][2],
@@ -349,7 +349,7 @@ void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
 {
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-  glLineWidth(1);
+  glLineWidth(2);
   glColor4f(myGUIPalette[color][0],
             myGUIPalette[color][1],
             myGUIPalette[color][2],

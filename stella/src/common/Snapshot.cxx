@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.4 2005-02-13 19:17:02 stephena Exp $
+// $Id: Snapshot.cxx,v 1.5 2005-04-03 19:37:32 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -22,7 +22,6 @@
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
-#include "FrameBufferSDL.hxx"
 #include "Snapshot.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
