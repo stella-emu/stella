@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.17 2004-04-20 21:07:50 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.18 2004-04-26 12:49:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -233,21 +233,18 @@ bool FrameBufferGL::init()
   }
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  theGrabMouseIndicator  = myConsole->settings().getBool("grabmouse");
-  theHideCursorIndicator = myConsole->settings().getBool("hidecursor");
   if(myConsole->settings().getBool("fullscreen"))
   {
     grabMouse(true);
     showCursor(false);
-    isFullscreen = true;
   }
   else
   {
     // Keep mouse in game window if grabmouse is selected
-    grabMouse(theGrabMouseIndicator);
+    grabMouse(myConsole->settings().getBool("grabmouse"));
 
     // Show or hide the cursor depending on the 'hidecursor' argument
-    showCursor(!theHideCursorIndicator);
+    showCursor(!myConsole->settings().getBool("hidecursor"));
   }
 
   return true;

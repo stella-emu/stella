@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.13 2004-04-21 16:27:34 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.14 2004-04-26 12:49:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -33,10 +33,7 @@ FrameBufferSDL::FrameBufferSDL()
    :  x11Available(false),
       theZoomLevel(1),
       theMaxZoomLevel(1),
-      theGrabMouseIndicator(false),
-      theHideCursorIndicator(false),
       theAspectRatio(1.0),
-      isFullscreen(false),
       myPauseStatus(false)
 {
 }
@@ -80,7 +77,7 @@ void FrameBufferSDL::setupPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL::toggleFullscreen()
 {
-  isFullscreen = !isFullscreen;
+  bool isFullscreen = !myConsole->settings().getBool("fullscreen");
 
   // Update the settings
   myConsole->settings().setBool("fullscreen", isFullscreen);
@@ -100,8 +97,8 @@ void FrameBufferSDL::toggleFullscreen()
   }
   else    // now in windowed mode
   {
-    grabMouse(theGrabMouseIndicator);
-    showCursor(!theHideCursorIndicator);
+    grabMouse(myConsole->settings().getBool("grabmouse"));
+    showCursor(!myConsole->settings().getBool("hidecursor"));
   }
 }
 
@@ -117,7 +114,7 @@ void FrameBufferSDL::resize(int mode)
   }
   else if(mode == 1)   // increase size
   {
-    if(isFullscreen)
+    if(myConsole->settings().getBool("fullscreen"))
       return;
 
     if(theZoomLevel == theMaxZoomLevel)
@@ -127,7 +124,7 @@ void FrameBufferSDL::resize(int mode)
   }
   else if(mode == -1)   // decrease size
   {
-    if(isFullscreen)
+    if(myConsole->settings().getBool("fullscreen"))
       return;
 
     if(theZoomLevel == 1)
@@ -146,31 +143,25 @@ void FrameBufferSDL::resize(int mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL::showCursor(bool show)
 {
-  if(isFullscreen)
-    return;
-
   if(show)
     SDL_ShowCursor(SDL_ENABLE);
   else
     SDL_ShowCursor(SDL_DISABLE);
-
-  // Update the settings
-  myConsole->settings().setBool("hidecursor", !show);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL::grabMouse(bool grab)
 {
-  if(isFullscreen)
-    return;
-
   if(grab)
     SDL_WM_GrabInput(SDL_GRAB_ON);
   else
     SDL_WM_GrabInput(SDL_GRAB_OFF);
+}
 
-  // Update the settings
-  myConsole->settings().setBool("grabmouse", grab);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL::fullScreen()
+{
+  return myConsole->settings().getBool("fullscreen");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

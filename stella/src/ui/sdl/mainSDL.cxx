@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.71 2004-04-16 13:10:37 stephena Exp $
+// $Id: mainSDL.cxx,v 1.72 2004-04-26 12:49:46 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -370,6 +370,7 @@ void handleEvents()
           if(!theDisplay->fullScreen())
           {
             theGrabMouseIndicator = !theGrabMouseIndicator;
+            theSettings->setBool("grabmouse", theGrabMouseIndicator);
             theDisplay->grabMouse(theGrabMouseIndicator);
           }
         }
@@ -379,6 +380,7 @@ void handleEvents()
           if(!theDisplay->fullScreen())
           {
             theHideCursorIndicator = !theHideCursorIndicator;
+            theSettings->setBool("hidecursor", theHideCursorIndicator);
             theDisplay->showCursor(!theHideCursorIndicator);
           }
         }
@@ -682,6 +684,8 @@ int main(int argc, char* argv[])
   // Cache some settings so they don't have to be repeatedly searched for
   thePaddleMode = theSettings->getInt("paddle");
   theShowInfoFlag = theSettings->getBool("showinfo");
+  theGrabMouseIndicator = theSettings->getBool("grabmouse");
+  theHideCursorIndicator = theSettings->getBool("hidecursor");
 
   // Request that the SDL window be centered, if possible
   putenv("SDL_VIDEO_CENTERED=1");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.10 2004-04-15 22:52:43 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.11 2004-04-26 12:49:46 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -23,6 +23,7 @@
 #include <SDL_syswm.h>
 
 #include "FrameBuffer.hxx"
+#include "Settings.hxx"
 #include "bspf.hxx"
 
 /**
@@ -34,7 +35,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.10 2004-04-15 22:52:43 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.11 2004-04-26 12:49:46 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -79,7 +80,7 @@ class FrameBufferSDL : public FrameBuffer
     /**
       Answers if the display is currently in fullscreen mode.
     */
-    bool fullScreen() { return isFullscreen; }
+    bool fullScreen();
 
     /**
       Answers the current zoom level of the SDL 
@@ -152,17 +153,8 @@ class FrameBufferSDL : public FrameBuffer
     // Indicates the maximum zoom of the SDL screen
     uInt32 theMaxZoomLevel;
 
-    // Indicates if the mouse should be grabbed
-    bool theGrabMouseIndicator;
-
-    // Indicates if the mouse cursor should be hidden
-    bool theHideCursorIndicator;
-
     // The aspect ratio of the window
     float theAspectRatio;
-
-    // Indicates whether the game is currently in fullscreen
-    bool isFullscreen;
 
     // Indicates whether the emulation has paused
 	bool myPauseStatus;
