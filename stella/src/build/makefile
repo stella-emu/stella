@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.17 2002-05-14 18:29:44 stephena Exp $
+## $Id: makefile,v 1.18 2002-08-03 22:52:39 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -35,8 +35,8 @@ OPTIMIZATIONS    =
 #	-malign-functions=2 -malign-jumps=2 -malign-loops=2
 ### to get full optimization under gcc/x Athlon based OS's..
 # OPTIMIZATIONS    = -O3 -mcpu=athlon -march=athlon -Wall -Wno-unused \
-#	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
-#	-malign-functions=2 -malign-jumps=2 -malign-loops=2
+	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
+	-falign-functions=2 -falign-jumps=2 -falign-loops=2
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.2 2002-03-12 19:27:11 stephena Exp $
+// $Id: Snapshot.cxx,v 1.3 2002-08-03 22:52:39 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -37,7 +37,7 @@ Snapshot::~Snapshot()
 void Snapshot::png_write_data(png_structp ctx, png_bytep area, png_size_t size)
 {
   ofstream* out = (ofstream *) png_get_io_ptr(ctx);
-  out->write(area, size);
+  out->write((const char *)area, size);
 }
 
 void Snapshot::png_io_flush(png_structp ctx)
