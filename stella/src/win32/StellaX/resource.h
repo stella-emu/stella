@@ -32,7 +32,7 @@
 #define IDC_PLAY                        1005
 #define IDC_ROMCOUNT                    1006
 #define IDC_ROMLIST                     1007
-#define IDC_STATIC                      1008
+#define IDC_STATIC_TEXT                 1008
 #define IDC_TITLE                       1009
 #define IDC_WEB_MAINTAINER              1010
 #define IDC_WEB_STELLA                  1011
@@ -42,14 +42,22 @@
 #define IDC_CONFIG                      1015
 #define IDC_CONFIG2                     1016
 #define IDC_PADDLE                      1017
-#define IDC_SOUND                       1018
 #define IDC_VOLUME                      1019
-#define IDC_VIDEO                       1020
-#define IDC_ASPECT                      1021
 #define IDC_BROWSE                      1022
 #define IDC_EDIT2                       1027
 #define IDC_RELOAD                      1028
-#define IDC_INSTRUCTIONS                2000
+#define IDC_SNAPSHOT_TYPE               1029
+#define IDC_SNAPSHOT_LOCATION           1030
+#define IDC_SNAPSHOT_MULTIPLE           1031
+#define IDC_SOUND_ENABLE                1032
+#define IDC_SOUND_VOLUME                1033
+#define IDC_LIST1                       1033
+#define IDC_VIDEO                       1034
+#define IDC_GL_ASPECT                   1035
+#define IDC_GL_FSMAX                    1036
+#define IDC_SOUND_VOLUME_SPIN           1044
+#define IDC_SOUND_FRAGSIZE              1045
+#define IDC_TAB1                        1046
 #define ID_FILE_EXIT                    32771
 
 // Next default values for new objects
@@ -58,7 +66,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        296
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
