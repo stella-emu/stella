@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2004 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.34 2004-06-13 16:51:15 stephena Exp $
+// $Id: TIA.cxx,v 1.35 2005-01-05 02:57:58 bwmott Exp $
 //============================================================================
 
 #include <cassert>
@@ -2717,7 +2717,7 @@ uInt8 TIA::ourDisabledMaskTable[640];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int16 TIA::ourPokeDelayTable[64] = {
-   0,  0,  0,  0, 12, 12,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
+   0,  1,  0,  0,  8,  8,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
    0,  0,  8,  8,  8,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
