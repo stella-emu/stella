@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.5 2004-07-11 22:04:22 stephena Exp $
+// $Id: MainDlg.cxx,v 1.6 2004-07-15 00:11:06 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -103,7 +103,7 @@ MainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
       break;
 
     case WM_INITDIALOG:
-      return OnInitDialog( );
+      return OnInitDialog();
 
     case WM_NOTIFY:
       return OnNotify( (int)wParam, (LPNMHDR)lParam );
@@ -118,7 +118,7 @@ MainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
 
     // Cool caption handlers
     case WM_DESTROY:
-      OnDestroy( );
+      OnDestroy();
       break;
 
     case WM_DRAWITEM:
@@ -179,7 +179,7 @@ BOOL MainDlg::OnInitDialog( void  )
     ::SendMessage( hwndCtrl, WM_SETFONT, (WPARAM)m_hfontRomNote, 0 );
 
   // Do subclassing
-  m_CoolCaption.OnInitDialog( hwnd );
+  myCoolCaption.OnInitDialog( hwnd );
   myHeader.SubclassDlgItem( hwnd, IDC_ROMLIST );
   myAppTitle.SubclassDlgItem( hwnd, IDC_TITLE );
   myPlayButton.SubclassDlgItem( hwnd, IDC_PLAY );
@@ -487,8 +487,7 @@ void MainDlg::UpdateRomList( void )
   HWND hwndText;
   RECT rc;
 
-  if ( !PopulateRomList() )
-    MessageBoxFromWinError( 0, _T("PopulateRomList") );
+  PopulateRomList();
 
   // if items added, select first item and enable play button
   int nCount = ListView_GetItemCount( myHwndList );
@@ -521,12 +520,26 @@ bool MainDlg::PopulateRomList( void )
 {
   bool result = false;
   bool cacheFileExists = myGlobalData.settings().fileExists("stellax.cache");
-  bool cacheIsStale = false; // FIXME
+  bool cacheIsStale = false; // FIXME - add romdir status checking
 
-  if(cacheFileExists && !cacheIsStale)
+  if (cacheFileExists && !cacheIsStale)
+  {
     result = LoadRomListFromCache();
+    if (!result)
+    {
+      MessageBox( myHInstance, myHwnd, IDS_CORRUPT_CACHE_FILE );
+      result = LoadRomListFromDisk();
+    }
+  }
   else
+  {
+    if (!cacheFileExists)
+      MessageBox( myHInstance, myHwnd, IDS_NO_CACHE_FILE );
+    else if (cacheIsStale)
+      MessageBox( myHInstance, myHwnd, IDS_ROMDIR_CHANGED );
+
     result = LoadRomListFromDisk();
+  }
 
   ListView_SortByColumn( myHwndList, myGlobalData.settings().getInt("sortcol") );
   return result;
@@ -718,42 +731,33 @@ bool MainDlg::LoadRomListFromCache()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 // Cool caption message handlers
-void MainDlg::OnDestroy(
-    void
-    )
+void MainDlg::OnDestroy( void )
 {
-    m_CoolCaption.OnDestroy();
+  myCoolCaption.OnDestroy();
 
-    if ( m_hfontRomNote )
-    {
-        ::DeleteObject( m_hfontRomNote );
-        m_hfontRomNote = NULL;
-    }
+  if ( m_hfontRomNote )
+  {
+    DeleteObject( m_hfontRomNote );
+    m_hfontRomNote = NULL;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-void MainDlg::OnNcPaint(
-    HRGN hrgn
-    )
+void MainDlg::OnNcPaint( HRGN hrgn )
 {
-    m_CoolCaption.OnNcPaint( hrgn );
+  myCoolCaption.OnNcPaint( hrgn );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-void MainDlg::OnNcActivate(
-    BOOL fActive
-    )
+void MainDlg::OnNcActivate( BOOL fActive )
 {
-    m_CoolCaption.OnNcActivate( fActive );
+  myCoolCaption.OnNcActivate( fActive );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-BOOL MainDlg::OnNcLButtonDown(
-    INT nHitTest,
-    POINTS pts
-    )
+BOOL MainDlg::OnNcLButtonDown( INT nHitTest, POINTS pts )
 {
-    return m_CoolCaption.OnNCLButtonDown( nHitTest, pts );
+  return myCoolCaption.OnNCLButtonDown( nHitTest, pts );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.hxx,v 1.4 2004-07-11 22:04:22 stephena Exp $
+// $Id: MainDlg.hxx,v 1.5 2004-07-15 00:11:07 stephena Exp $
 //============================================================================ 
 
 #ifndef __MAINDLG_H_
@@ -46,7 +46,7 @@ class MainDlg
   private:
     HWND myHwnd;
 
-    CCoolCaption  m_CoolCaption;
+    CCoolCaption  myCoolCaption;
     CTextButton3d myAppTitle;
     CHeaderCtrl   myHeader;
     CRoundButton  myPlayButton;

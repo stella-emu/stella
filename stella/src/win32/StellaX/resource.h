@@ -20,7 +20,10 @@
 #define IDS_STATUSTEXT                  289
 #define IDS_STELLA                      290
 #define IDS_UNKNOWNERROR                291
+#define IDS_NO_CACHE_FILE               291
 #define IDS_DEBUGBUILD                  292
+#define IDS_CORRUPT_CACHE_FILE          292
+#define IDS_ROMDIR_CHANGED              293
 #define IDS_COINIT_FAILED               296
 #define IDS_ASS_FAILED                  297
 #define IDS_PAS_FAILED                  298

@@ -259,6 +259,9 @@ STRINGTABLE
 BEGIN
     IDS_STATUSTEXT          "%d files found"
     IDS_STELLA              "StellaX"
+    IDS_NO_CACHE_FILE       "No ROM cache file was found.  Regenerating the cache will take some time."
+    IDS_CORRUPT_CACHE_FILE  "The ROM cache file was corrupt.  Regenerating the cache will take some time."
+    IDS_ROMDIR_CHANGED      "The ROM directory has changed.  The ROM cache will be regenerated."
 END
 
 STRINGTABLE 
