@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.23 2005-02-21 02:23:49 stephena Exp $
+// $Id: Console.hxx,v 1.24 2005-02-21 20:41:26 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,7 +36,7 @@ class OSystem;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.23 2005-02-21 02:23:49 stephena Exp $
+  @version $Id: Console.hxx,v 1.24 2005-02-21 20:41:26 stephena Exp $
 */
 class Console
 {
@@ -47,11 +47,9 @@ class Console
 
       @param image       The ROM image of the game to emulate
       @param size        The size of the ROM image  
-      @param filename    The name of the file that contained the ROM image
       @param osystem     The OSystem object to use
     */
-    Console(const uInt8* image, uInt32 size, const char* filename,
-            OSystem& osystem);
+    Console(const uInt8* image, uInt32 size, OSystem* osystem);
 
     /**
       Create a new console object by copying another one
@@ -177,8 +175,8 @@ class Console
 #endif
 
   private:
-    // Reference to the osystem object
-    OSystem& myOSystem;
+    // Pointer to the osystem object
+    OSystem* myOSystem;
 
     // Pointers to the left and right controllers
     Controller* myControllers[2];

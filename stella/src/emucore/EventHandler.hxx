@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.15 2005-02-21 02:23:49 stephena Exp $
+// $Id: EventHandler.hxx,v 1.16 2005-02-21 20:42:21 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -40,7 +40,7 @@ class OSystem;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.15 2005-02-21 02:23:49 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.16 2005-02-21 20:42:21 stephena Exp $
 */
 class EventHandler
 {
@@ -48,7 +48,7 @@ class EventHandler
     /**
       Create a new event handler object
     */
-    EventHandler(OSystem& osystem);
+    EventHandler(OSystem* osystem);
  
     /**
       Destructor
@@ -123,8 +123,8 @@ class EventHandler
     void takeSnapshot();
 
   private:
-    // Global Console object
-    OSystem& myOSystem;
+    // Global OSystem object
+    OSystem* myOSystem;
 
     // Array of key events
     Event::Type myKeyTable[StellaEvent::LastKCODE];

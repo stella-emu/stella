@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.13 2005-02-21 02:23:49 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.14 2005-02-21 20:42:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -47,8 +47,8 @@
 #define RIGHTMARKER 16 // Indicates item being remapped
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::FrameBuffer()
-   :  myOSystem(0),
+FrameBuffer::FrameBuffer(OSystem* osystem)
+   :  myOSystem(osystem),
       myWidth(0),
       myHeight(0),
       theRedrawEntireFrameIndicator(true),
@@ -81,6 +81,7 @@ FrameBuffer::FrameBuffer()
       myMenuRedraws(2),
       myInfoMenuWidth(0)
 {
+  myOSystem->attach(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,10 +90,8 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::initialize(OSystem* osystem, const string title,
-                             uInt32 width, uInt32 height)
+void FrameBuffer::initialize(const string title, uInt32 width, uInt32 height)
 {
-  myOSystem = osystem;
   myWidth   = width;
   myHeight  = height;
 

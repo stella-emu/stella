@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.8 2005-02-21 02:23:57 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.9 2005-02-21 20:43:53 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -30,7 +30,8 @@
 #include "SettingsUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsUNIX::SettingsUNIX()
+SettingsUNIX::SettingsUNIX(OSystem* osystem)
+    : Settings(osystem)
 {
   // First set variables that the parent class needs
   myBaseDir = getenv("HOME");

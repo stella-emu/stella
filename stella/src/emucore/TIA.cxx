@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.36 2005-02-21 02:23:57 stephena Exp $
+// $Id: TIA.cxx,v 1.37 2005-02-21 20:43:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -30,15 +30,14 @@
 #include "Deserializer.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
-#include "OSystem.hxx"
 
 #define HBLANK 68
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(OSystem& osystem)
-    : myOSystem(osystem),
-      myConsole(osystem.console()),
-      mySound(osystem.sound()),
+TIA::TIA(const Console& console, Sound& sound, Settings& settings)
+    : myConsole(console),
+      mySound(sound),
+      mySettings(settings),
       myColorLossEnabled(false),
       myMaximumNumberOfScanlines(262),
       myCOLUBK(myColor[0]),
@@ -266,6 +265,7 @@ void TIA::install(System& system)
 
   uInt16 shift = mySystem->pageShift();
   mySystem->resetCycles();
+cerr << "TIA::install()\n";
 
 
   // All accesses are to this device
@@ -282,6 +282,7 @@ void TIA::install(System& system)
       mySystem->setPageAccess(i >> shift, access);
     }
   }
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -535,7 +536,7 @@ void TIA::update()
 const uInt32* TIA::palette() const
 {
   // See which palette we should be using
-  string type   = myOSystem.settings().getString("palette");
+  string type   = mySettings.getString("palette");
   string format = myConsole.properties().get("Display.Format");
 
   if(type == "standard")
@@ -3272,9 +3273,9 @@ const uInt32 TIA::ourPALPaletteZ26[256] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const TIA& c)
-    : myOSystem(c.myOSystem),
-      myConsole(c.myConsole),
+    : myConsole(c.myConsole),
       mySound(c.mySound),
+      mySettings(c.mySettings),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
       myCOLUP0(myColor[2]),

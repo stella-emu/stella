@@ -13,16 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.1 2005-02-21 02:23:57 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.2 2005-02-21 20:43:53 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
 #define OSYSTEM_UNIX_HXX
-
-class FrameBuffer;
-class Sound;
-class Settings;
-class PropertiesSet;
 
 #include "bspf.hxx"
 
@@ -31,7 +26,7 @@ class PropertiesSet;
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.1 2005-02-21 02:23:57 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.2 2005-02-21 20:43:53 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {
@@ -39,8 +34,7 @@ class OSystemUNIX : public OSystem
     /**
       Create a new UNIX-specific operating system object
     */
-    OSystemUNIX(FrameBuffer& framebuffer, Sound& sound,
-                Settings& settings, PropertiesSet& propset);
+    OSystemUNIX();
 
     /**
       Destructor

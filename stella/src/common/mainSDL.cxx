@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.21 2005-02-21 02:23:48 stephena Exp $
+// $Id: mainSDL.cxx,v 1.22 2005-02-21 20:41:20 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -120,6 +120,9 @@ static Event::Type Paddle_Button[4] = {
 
 // Pointer to the main parent osystem object or the null pointer
 static OSystem* theOSystem = (OSystem*) NULL;
+
+// Pointer to the display object or the null pointer
+static EventHandler* theEventHandler = (EventHandler*) NULL;
 
 // Pointer to the display object or the null pointer
 static FrameBuffer* theDisplay = (FrameBuffer*) NULL;
@@ -804,18 +807,21 @@ void Cleanup()
   }
 #endif
 
-  if(theOSystem)
-    delete theOSystem;
-/*
-  if(theConsole)
-    delete theConsole;
-
   if(theSound)
     delete theSound;
 
   if(theDisplay)
     delete theDisplay;
-*/
+
+  if(theEventHandler)
+    delete theEventHandler;
+
+  if(theOSystem)
+  {
+    theOSystem->detachConsole();
+    delete theOSystem;
+  }
+
   if(SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO)
     SDL_Quit();
 }
@@ -826,10 +832,13 @@ int main(int argc, char* argv[])
 {
   uInt8* image = NULL;
 
+  // Create the parent OSystem object and settings
 #if defined(UNIX)
-  theSettings = new SettingsUNIX();
+  theOSystem = new OSystemUNIX();
+  theSettings = new SettingsUNIX(theOSystem);
 #elif defined(WIN32)
-  theSettings = new SettingsWin32();
+  theOSystem = new OSystemWin32();
+  theSettings = new SettingsWin32(theOSystem);
 #else
   #error Unsupported platform!
 #endif
@@ -847,6 +856,9 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  // Create the event handler for the system
+  theEventHandler = new EventHandler(theOSystem);
+
   // Cache some settings so they don't have to be repeatedly searched for
   thePaddleMode = theSettings->getInt("paddle");
   theShowInfoFlag = theSettings->getBool("showinfo");
@@ -856,6 +868,7 @@ int main(int argc, char* argv[])
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
   SetupProperties(propertiesSet);
+  theOSystem->attach(&propertiesSet);
 
   // Check to see if the 'listroms' argument was given
   // If so, list the roms and immediately exit
@@ -885,7 +898,7 @@ int main(int argc, char* argv[])
   string videodriver = theSettings->getString("video");
   if(videodriver == "soft")
   {
-    theDisplay = new FrameBufferSoft();
+    theDisplay = new FrameBufferSoft(theOSystem);
   }
 #ifdef DISPLAY_OPENGL
   else if(videodriver == "gl")
@@ -896,7 +909,7 @@ int main(int argc, char* argv[])
 #endif
   else   // a driver that doesn't exist was requested, so use software mode
   {
-    theDisplay = new FrameBufferSoft();
+    theDisplay = new FrameBufferSoft(theOSystem);
   }
 
   if(!theDisplay)
@@ -927,15 +940,6 @@ int main(int argc, char* argv[])
     ShowInfo("Sound disabled");
   }
 
-  // Create the parent OSystem object
-#if defined(UNIX)
-  theOSystem = new OSystemUNIX(*theDisplay, *theSound, *theSettings, propertiesSet);
-#elif defined(WIN32)
-  theSettings = new SettingsWin32();
-#else
-  #error Unsupported platform!
-#endif
-
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
 
@@ -953,12 +957,10 @@ int main(int argc, char* argv[])
   uInt32 size = in.gcount();
   in.close();
 
-  // Get just the filename of the file containing the ROM image
-  const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
-
   // Create the 2600 game console
-//  theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
-//                           *theDisplay, *theSound);
+  Console* theConsole = new Console(image, size, theOSystem);
+
+cerr << "got here\n";
 
   // Free the image since we don't need it any longer
   delete[] image;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.15 2005-02-21 02:23:57 stephena Exp $
+// $Id: TIA.hxx,v 1.16 2005-02-21 20:43:25 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -24,7 +24,7 @@ class Sound;
 class System;
 class Serializer;
 class Deserializer;
-class OSystem;
+class Settings;
 
 #include "bspf.hxx"
 #include "Device.hxx"
@@ -42,7 +42,7 @@ class OSystem;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.15 2005-02-21 02:23:57 stephena Exp $
+  @version $Id: TIA.hxx,v 1.16 2005-02-21 20:43:25 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -50,10 +50,11 @@ class TIA : public Device , public MediaSource
     /**
       Create a new TIA for the specified console
 
-      @param console The console the TIA is associated with
-      @param sound   The sound object the TIA is associated with
+      @param console   The console the TIA is associated with
+      @param sound     The sound object the TIA is associated with
+      @param settings  The settings object the TIA is associated with
     */
-    TIA(OSystem& osystem);
+    TIA(const Console& console, Sound& sound, Settings& settings);
  
     /**
       Destructor
@@ -203,14 +204,14 @@ class TIA : public Device , public MediaSource
     void waitHorizontalSync();
 
   private:
-    // OSsystem the TIA is associated with
-    const OSystem& myOSystem;
-
     // Console the TIA is associated with
     const Console& myConsole;
 
     // Sound object the TIA is associated with
     Sound& mySound;
+
+    // Settings object the TIA is associated with
+    Settings& mySettings;
 
   private:
     // Indicates if color loss should be enabled or disabled.  Color loss

@@ -13,19 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.31 2005-02-21 02:23:57 stephena Exp $
+// $Id: Settings.cxx,v 1.32 2005-02-21 20:43:20 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
 
+#include "OSystem.hxx"
+
 #include "bspf.hxx"
 #include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Settings::Settings()
+Settings::Settings(OSystem* osystem)
+    : myOSystem(osystem)
 {
+  // Add this settings object to the OSystem
+  myOSystem->attach(this);
+
   // First create the settings array
   myCapacity = 30;
   mySettings = new Setting[myCapacity];

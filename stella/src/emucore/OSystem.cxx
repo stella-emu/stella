@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.1 2005-02-21 02:23:49 stephena Exp $
+// $Id: OSystem.cxx,v 1.2 2005-02-21 20:43:20 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -29,15 +29,8 @@
 #include "OSystem.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystem::OSystem(FrameBuffer& framebuffer, Sound& sound,
-                 Settings& settings, PropertiesSet& propset)
-    : myFrameBuffer(framebuffer),
-      mySound(sound),
-      mySettings(settings),
-      myPropSet(propset)
+OSystem::OSystem()
 {
-  // Create an event handler which will collect and dispatch events
-  myEventHandler = new EventHandler(*this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,10 +46,6 @@ void OSystem::update()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem(const OSystem& osystem)
-    : myFrameBuffer(osystem.myFrameBuffer),
-      mySound(osystem.mySound),
-      mySettings(osystem.mySettings),
-      myPropSet(osystem.myPropSet)
 {
 }
 

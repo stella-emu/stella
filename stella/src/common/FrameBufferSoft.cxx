@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.7 2005-02-21 02:23:48 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.8 2005-02-21 20:41:18 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -28,8 +28,8 @@
 #include "OSystem.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferSoft::FrameBufferSoft()
-    : FrameBuffer()
+FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
+    : FrameBuffer(osystem)
 {
 }
 

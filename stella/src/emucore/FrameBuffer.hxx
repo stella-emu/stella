@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.14 2005-02-21 02:23:49 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.15 2005-02-21 20:43:10 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -39,7 +39,7 @@ FIXME  This class also implements a MAME-like user interface where Stella settin
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.14 2005-02-21 02:23:49 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.15 2005-02-21 20:43:10 stephena Exp $
 */
 class FrameBuffer
 {
@@ -47,7 +47,7 @@ class FrameBuffer
     /**
       Creates a new Frame Buffer
     */
-    FrameBuffer();
+    FrameBuffer(OSystem* osystem);
 
     /**
       Destructor
@@ -58,12 +58,11 @@ class FrameBuffer
       Initializes the framebuffer display.  This must be called before any
       calls are made to derived methods.
 
-      @param osystem   The parent osystem 
       @param title     The title of the window
       @param width     The width of the framebuffer
       @param height    The height of the framebuffer
     */
-    void initialize(OSystem* osystem, const string title, uInt32 width, uInt32 height);
+    void initialize(const string title, uInt32 width, uInt32 height);
 
     /**
       Updates the display, which depending on the current mode could mean

@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.hxx,v 1.4 2005-02-21 02:23:57 stephena Exp $
+// $Id: SettingsUNIX.hxx,v 1.5 2005-02-21 20:43:53 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_UNIX_HXX
 #define SETTINGS_UNIX_HXX
+
+class OSystem;
 
 #include "bspf.hxx"
 
@@ -25,7 +27,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: SettingsUNIX.hxx,v 1.4 2005-02-21 02:23:57 stephena Exp $
+  @version $Id: SettingsUNIX.hxx,v 1.5 2005-02-21 20:43:53 stephena Exp $
 */
 class SettingsUNIX : public Settings
 {
@@ -33,7 +35,7 @@ class SettingsUNIX : public Settings
     /**
       Create a new UNIX settings object
     */
-    SettingsUNIX();
+    SettingsUNIX(OSystem* osystem);
 
     /**
       Destructor

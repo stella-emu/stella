@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.1 2005-02-21 02:23:49 stephena Exp $
+// $Id: OSystem.hxx,v 1.2 2005-02-21 20:43:20 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -35,7 +35,7 @@ class PropertiesSet;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.1 2005-02-21 02:23:49 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.2 2005-02-21 20:43:20 stephena Exp $
 */
 class OSystem
 {
@@ -43,8 +43,7 @@ class OSystem
     /**
       Create a new OSystem abstract class
     */
-    OSystem(FrameBuffer& framebuffer, Sound& sound,
-            Settings& settings, PropertiesSet& propset);
+    OSystem();
 
     /**
       Destructor
@@ -59,23 +58,51 @@ class OSystem
     void update();
 
     /**
+      Adds the specified eventhandler to the system.
+
+      @param eventhandler The eventhandler to add 
+    */
+    void attach(EventHandler* eventhandler) { myEventHandler = eventhandler; }
+
+    /**
+      Adds the specified framebuffer to the system.
+
+      @param framebuffer The framebuffer to add 
+    */
+    void attach(FrameBuffer* framebuffer) { myFrameBuffer = framebuffer; }
+
+    /**
+      Adds the specified sound device to the system.
+
+      @param sound The sound device to add 
+    */
+    void attach(Sound* sound) { mySound = sound; }
+
+    /**
+      Adds the specified settings object to the system.
+
+      @param settings The settings object to add 
+    */
+    void attach(Settings* settings) { mySettings = settings; }
+
+    /**
+      Adds the specified game properties set to the system.
+
+      @param propset The properties set to add 
+    */
+    void attach(PropertiesSet* propset) { myPropSet = propset; }
+
+    /**
       Adds the specified console to the system.
 
       @param console  The console (game emulation object) to add 
     */
-    void addConsole(Console* console) { myConsole = console; }
+    void attach(Console* console) { myConsole = console; }
 
     /**
       Removes the currently attached console from the system.
     */
-    void removeConsole(void) { delete myConsole; myConsole = NULL; }
-
-    /**
-      Get the console of the system.
-
-      @return The console object
-    */
-    Console& console(void) const { return *myConsole; }
+    void detachConsole(void) { delete myConsole; myConsole = NULL; }
 
     /**
       Get the event handler of the system
@@ -89,35 +116,41 @@ class OSystem
 
       @return The frame buffer
     */
-    FrameBuffer& frameBuffer() const { return myFrameBuffer; }
+    FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
 
     /**
       Get the sound object of the system
 
       @return The sound object
     */
-    Sound& sound() const { return mySound; }
+    Sound& sound() const { return *mySound; }
 
     /**
       Get the settings object of the system
 
       @return The settings object
     */
-    Settings& settings() const { return mySettings; }
+    Settings& settings() const { return *mySettings; }
 
     /**
       Get the set of game properties for the system
 
       @return The properties set object
     */
-    PropertiesSet& propSet() const { return myPropSet; }
+    PropertiesSet& propSet() const { return *myPropSet; }
+
+    /**
+      Get the console of the system.
+
+      @return The console object
+    */
+    Console& console(void) const { return *myConsole; }
 
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
-
     /**
       This method should be called to get the filename of a state file
       given the state number.
@@ -142,17 +175,17 @@ class OSystem
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;
 
-    // Reference to the FrameBuffer object
-    FrameBuffer& myFrameBuffer;
+    // Pointer to the FrameBuffer object
+    FrameBuffer* myFrameBuffer;
 
-    // Reference to the Sound object
-    Sound& mySound;
+    // Pointer to the Sound object
+    Sound* mySound;
 
-    // Reference to the Settings object
-    Settings& mySettings;
+    // Pointer to the Settings object
+    Settings* mySettings;
 
-    // Reference to the PropertiesSet object
-    PropertiesSet& myPropSet;
+    // Pointer to the PropertiesSet object
+    PropertiesSet* myPropSet;
 
     // Pointer to the (currently defined) Console object
     Console* myConsole;

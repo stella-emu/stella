@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.1 2005-02-21 02:23:57 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.2 2005-02-21 20:43:47 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -29,9 +29,7 @@
 #include "OSystemUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemUNIX::OSystemUNIX(FrameBuffer& framebuffer, Sound& sound,
-                         Settings& settings, PropertiesSet& propset)
-    : OSystem(framebuffer, sound, settings, propset)
+OSystemUNIX::OSystemUNIX()
 {
 }
 

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.59 2005-02-21 02:23:47 stephena Exp $
+## $Id: makefile,v 1.60 2005-02-21 20:41:04 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -32,7 +32,7 @@ OPTIMIZATIONS  =
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library)
- SNAPSHOT_SUPPORT = 1
+# SNAPSHOT_SUPPORT = 1
 
 ### to include support for game developers
 ### enables some extra commandline options that allow the user
@@ -41,7 +41,7 @@ OPTIMIZATIONS  =
 
 ### to build on SMP (or distcc-based) machines
 ### change to number of CPU's you have
- NUMBER_CPU = 1
+ NUMBER_CPU = 3
 
 ##============================================================================
 ## All done, type make to get a list of frontends
