@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+// $Id: Dialog.hxx,v 1.4 2005-03-12 01:47:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,7 +39,7 @@ enum {
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.4 2005-03-12 01:47:15 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -52,17 +52,16 @@ class Dialog : public GuiObject
 
     bool isVisible() const { return _visible; }
 
-    void releaseFocus();
-
+    virtual void open();
+    virtual void close();
     virtual void drawDialog();
 
     virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
     virtual void handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers);
 
   protected:
-    virtual void open();
-    virtual void close();
     virtual void draw();
+    void releaseFocus();
 
     virtual void handleTickle(); // Called periodically (in every guiloop() )
     virtual void handleMouseDown(int x, int y, int button, int clickCount);

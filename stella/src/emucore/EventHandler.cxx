@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.36 2005-03-10 22:59:40 stephena Exp $
+// $Id: EventHandler.cxx,v 1.37 2005-03-12 01:47:15 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -112,6 +112,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
     if(myState == S_EMULATE)
     {
       myState = S_MENU;
+      myOSystem->menu().reset();
       myOSystem->frameBuffer().refresh();
       myOSystem->sound().mute(true);
       return;
@@ -119,6 +120,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
     else if(myState == S_MENU)
     {
       myState = S_EMULATE;
+      myOSystem->menu().reset();
       myOSystem->frameBuffer().refresh();
       myOSystem->sound().mute(false);
       return;

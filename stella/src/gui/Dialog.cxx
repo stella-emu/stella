@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+// $Id: Dialog.cxx,v 1.4 2005-03-12 01:47:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include <SDL.h>
-#include <ctype.h>
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -41,13 +40,16 @@ Dialog::Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
     : GuiObject(instance, x, y, w, h),
       _mouseWidget(0),
       _focusedWidget(0),
-      _visible(false)
+      _visible(true)
 {
+  cerr << "Dialog::Dialog()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
+  cerr << "Dialog::~Dialog()\n";
+
   delete _firstWidget;
   _firstWidget = 0;
 }
@@ -68,11 +70,9 @@ int Dialog::runModal() // FIXME
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::open()
 {
-  Widget* w = _firstWidget;
-
   _result = 0;
-  _visible = true;
-  instance()->menu().addDialog(this);
+
+  Widget* w = _firstWidget;
 
   // Search for the first objects that wantsFocus() (if any) and give it the focus
   while(w && !w->wantsFocus())
@@ -88,9 +88,6 @@ void Dialog::open()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::close()
 {
-  _visible = false;
-  instance()->menu().removeDialog();
-
   if (_mouseWidget) {
     _mouseWidget->handleMouseLeft(0);
     _mouseWidget = 0;
@@ -207,6 +204,8 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 {
+cerr << "Dialog::handleKeyDown()\n";
+
   if(_focusedWidget)
     if (_focusedWidget->handleKeyDown(ascii, keycode, modifiers))
       return;

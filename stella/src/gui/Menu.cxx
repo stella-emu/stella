@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.2 2005-03-10 22:59:40 stephena Exp $
+// $Id: Menu.cxx,v 1.3 2005-03-12 01:47:15 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -30,13 +30,9 @@ Menu::Menu(OSystem* osystem)
     : myOSystem(osystem),
       myOptionsDialog(NULL)
 {
-#ifdef DEBUG
   cerr << "Menu::Menu()\n";
-#endif
 
   myOSystem->attach(this);  
-
-  // Create a stack to hold the various dialog boxes
 
   // Create the top-level menu
   myOptionsDialog = new OptionsDialog(myOSystem);
@@ -45,9 +41,7 @@ Menu::Menu(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Menu::~Menu()
 {
-#ifdef DEBUG
   cerr << "Menu::~Menu()\n";
-#endif
 
   delete myOptionsDialog;
 }
@@ -55,13 +49,12 @@ Menu::~Menu()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Menu::draw()
 {
-#ifdef DEBUG
-  cerr << "Menu::draw()\n";
-#endif
-
   // Draw all the dialogs on the stack
   for(Int32 i = 0; i < myDialogStack.size(); i++)
+  {
+    myDialogStack[i]->open();
     myDialogStack[i]->drawDialog();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,7 +75,10 @@ void Menu::reset()
 {
   // Pop all items from the stack, and then add the base menu
   for(Int32 i = 0; i < myDialogStack.size(); i++)
-    myDialogStack.pop();
+  {
+    Dialog* d = myDialogStack.pop();
+    d->close();
+  }
 
   myDialogStack.push(myOptionsDialog);
 }
@@ -90,11 +86,19 @@ void Menu::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Menu::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 {
+  if(myDialogStack.empty())
+    return;
+
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
+  // Convert SDL values to ascii so the ScummVM subsystem can work with it
+  // FIXME - convert SDLKey and SDLMod to int values
+  uInt16 ascii = 0;
+  Int32 keycode = 0, modifiers = 0;
+
   if(state == 1)
-    activeDialog->handleKeyDown(key, mod);
+    activeDialog->handleKeyDown(ascii, keycode, modifiers);
   else
-    activeDialog->handleKeyUp(key, mod);
+    activeDialog->handleKeyUp(ascii, keycode, modifiers);
 }

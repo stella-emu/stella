@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.63 2005-03-10 22:59:39 stephena Exp $
+## $Id: makefile,v 1.64 2005-03-12 01:47:14 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -81,7 +81,7 @@ else
   SMP = -j$(NUMBER_CPU)
 endif
 
-FLAGS = $(OPTIMIZATIONS) -Wall -Wunused $(INCLUDES) $(SYS_INCLUDES)
+FLAGS = $(OPTIMIZATIONS) -Wall -Wno-multichar -Wunused $(INCLUDES) $(SYS_INCLUDES)
 
 ifdef JOYSTICK_SUPPORT
   OPTIONS += -DJOYSTICK_SUPPORT

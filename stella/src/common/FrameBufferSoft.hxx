@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.7 2005-02-22 18:40:55 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.8 2005-03-12 01:47:15 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -34,7 +34,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.7 2005-02-22 18:40:55 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.8 2005-03-12 01:47:15 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -65,16 +65,6 @@ class FrameBufferSoft : public FrameBuffer
     virtual bool createScreen();
 
     /**
-      This routine is called to map a given r,g,b triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
-      { return SDL_MapRGB(myScreen->format, r, g, b); }
-
-    /**
       Switches between the filtering options in software mode.
       Currently, none exist.
     */
@@ -85,6 +75,107 @@ class FrameBufferSoft : public FrameBuffer
       to the screen.
     */
     virtual void drawMediaSource();
+
+    /**
+      This routine is called before any drawing is done (per-frame).
+    */
+    virtual void preFrameUpdate();
+
+    /**
+      This routine is called after any drawing is done (per-frame).
+    */
+    virtual void postFrameUpdate();
+
+    /**
+      This routine is called to get the specified scanline data.
+
+      @param row  The row we are looking for
+      @param data The actual pixel data (in bytes)
+    */
+    virtual void scanline(uInt32 row, uInt8* data);
+
+    /**
+      This routine is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
+      { return SDL_MapRGB(myScreen->format, r, g, b); }
+
+    /**
+      This routine is called to draw a horizontal line.
+
+      @param x     The first x coordinate
+      @param y     The y coordinate
+      @param x2    The second x coordinate
+      @param color The color of the line
+    */
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color);
+
+    /**
+      This routine is called to draw a vertical line.
+
+      @param x     The x coordinate
+      @param y     The first y coordinate
+      @param y2    The second y coordinate
+      @param color The color of the line
+    */
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
+
+    /**
+      This routine is called to draw a blended rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the box
+      @param h      The height of the box
+      @param color  FIXME
+      @param level  FIXME
+    */
+    virtual void blendRect(int x, int y, int w, int h,
+                           OverlayColor color, int level = 3);
+
+    /**
+      This routine is called to draw a filled rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the area
+    */
+    virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                          OverlayColor color);
+
+    /**
+      This routine is called to draw a framed rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the surrounding frame
+    */
+    virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           OverlayColor color);
+
+    /**
+      This routine is called to draw the specified string.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the surrounding frame
+    */
+    virtual void drawString(const string& str, Int32 x, Int32 y, Int32 w,
+                            OverlayColor color, TextAlignment align = kTextAlignLeft,
+                            Int32 deltax = 0, bool useEllipsis = true);
+
+
+
 
     /**
       This routine should be called to draw a rectangular box with sides
@@ -114,24 +205,6 @@ class FrameBufferSoft : public FrameBuffer
       @param c   The character to draw
     */
     virtual void drawChar(uInt32 x, uInt32 y, uInt32 c);
-
-    /**
-      This routine is called before any drawing is done (per-frame).
-    */
-    virtual void preFrameUpdate();
-
-    /**
-      This routine is called after any drawing is done (per-frame).
-    */
-    virtual void postFrameUpdate();
-
-    /**
-      This routine is called to get the specified scanline data.
-
-      @param row  The row we are looking for
-      @param data The actual pixel data (in bytes)
-    */
-    virtual void scanline(uInt32 row, uInt8* data);
 
   private:
     // Used in the dirty update of the SDL surface

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.18 2005-03-11 23:36:30 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.19 2005-03-12 01:47:15 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -47,7 +47,7 @@ enum TextAlignment {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.18 2005-03-11 23:36:30 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.19 2005-03-12 01:47:15 stephena Exp $
 */
 class FrameBuffer
 {
@@ -324,7 +324,7 @@ FIXME
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color) = 0;
 
     /**
       This routine should be called to draw a blended rectangle.

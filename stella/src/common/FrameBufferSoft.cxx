@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.9 2005-02-22 18:40:55 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.10 2005-03-12 01:47:14 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -408,6 +408,79 @@ void FrameBufferSoft::scanline(uInt32 row, uInt8* data)
   }
 
   SDL_UnlockSurface(myScreen);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
+{
+  SDL_Rect tmp;
+
+  // Horizontal line
+  tmp.x = x * theZoomLevel;
+  tmp.y = y * theZoomLevel;
+  tmp.w = (x2 - x + 1) * theZoomLevel;
+  tmp.h = theZoomLevel;
+  SDL_FillRect(myScreen, &tmp, myPalette[myFGColor]);  // top
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
+{
+  SDL_Rect tmp;
+
+  // Vertical line
+  tmp.x = x * theZoomLevel;
+  tmp.y = y * theZoomLevel;
+  tmp.w = theZoomLevel;
+  tmp.h = (y2 - y + 1) * theZoomLevel;
+  SDL_FillRect(myScreen, &tmp, myPalette[myFGColor]);  // left
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::blendRect(int x, int y, int w, int h,
+                                OverlayColor color, int level)
+{
+// FIXME - make this do alpha-blending
+  SDL_Rect tmp;
+
+  // Fill the rectangle
+  tmp.x = x * theZoomLevel;
+  tmp.y = y * theZoomLevel;
+  tmp.w = w * theZoomLevel;
+  tmp.h = h * theZoomLevel;
+  myRectList->add(&tmp);
+  SDL_FillRect(myScreen, &tmp, myPalette[myBGColor]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                               OverlayColor color)
+{
+  SDL_Rect tmp;
+
+  // Fill the rectangle
+  tmp.x = x * theZoomLevel;
+  tmp.y = y * theZoomLevel;
+  tmp.w = w * theZoomLevel;
+  tmp.h = h * theZoomLevel;
+  myRectList->add(&tmp);
+  SDL_FillRect(myScreen, &tmp, myPalette[myBGColor]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                                OverlayColor color)
+{
+  cerr << "FrameBufferSoft::frameRect()\n";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::drawString(const string& str, Int32 x, Int32 y, Int32 w,
+                                 OverlayColor color, TextAlignment align,
+                                 Int32 deltax, bool useEllipsis)
+{
+// FIXME - implement this correctly
+  drawText(x, y, str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

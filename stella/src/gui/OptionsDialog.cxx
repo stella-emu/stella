@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.2 2005-03-11 23:36:30 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.3 2005-03-12 01:47:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,10 +51,10 @@ enum {
 };
 
 enum {
-  kRowHeight      = 18,
-  kBigButtonWidth = 90,
+  kRowHeight      = 20,
+  kBigButtonWidth = 140,
   kMainMenuWidth  = (kBigButtonWidth + 2 * 8),
-  kMainMenuHeight = 7 * kRowHeight + 3 * 5 + 7 + 5
+  kMainMenuHeight = 6 * kRowHeight + 10,
 };
 
 #define addBigButton(label, cmd, hotkey) \
@@ -63,20 +63,17 @@ enum {
 OptionsDialog::OptionsDialog(OSystem* osystem)
     : Dialog(osystem, (320 - kMainMenuWidth) / 2, (200 - kMainMenuHeight)/2, kMainMenuWidth, kMainMenuHeight)
 {
+cerr << "OptionsDialog::OptionsDialog()\n";
+
   int y = 7;
 
   const int x = (_w - kBigButtonWidth) / 2;
-  addBigButton("Video", kVidCmd, 'V');
-  y += 5;
-
-  addBigButton("Audio", kAudCmd, 'A');
+  addBigButton("Video Settings", kVidCmd, 'V');
+  addBigButton("Audio Settings", kAudCmd, 'A');
   addBigButton("Event Remapping", kEMapCmd, 'E');
-  y += 5;
-
-  addBigButton("Misc", kMiscCmd, 'M');
-  addBigButton("Game Info", kInfoCmd, 'I');
+  addBigButton("Miscellaneous", kMiscCmd, 'M');
+  addBigButton("Game Information", kInfoCmd, 'I');
   addBigButton("Help", kHelpCmd, 'H');
-  y += 5;
 
 /*
   // Now create all the dialogs attached to each menu button
