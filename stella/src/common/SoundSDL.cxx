@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.2 2004-06-13 05:03:26 bwmott Exp $
+// $Id: SoundSDL.cxx,v 1.3 2004-06-13 17:14:24 bwmott Exp $
 //============================================================================
 
 #include <cassert>
+#include <cmath>
 #include <SDL.h>
 
 #include "TIASound.h"
@@ -30,7 +31,8 @@
 SoundSDL::SoundSDL(uInt32 fragsize)
     : myIsInitializedFlag(false),
       myIsMuted(false),
-      myVolume(100)
+      myVolume(100),
+      myFragmentSizeLogBase2(0)
 {
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
   {
@@ -59,9 +61,9 @@ SoundSDL::SoundSDL(uInt32 fragsize)
     // will not work so we'll need to disable the audio support)
     if(((float)myHardwareSpec.samples / (float)myHardwareSpec.freq) >= 0.25)
     {
-      cerr << "WARNING: Audio device doesn't support realtime audio! Make ";
+      cerr << "WARNING: Sound device doesn't support realtime audio! Make ";
       cerr << "sure a sound" << endl;
-      cerr << "         server isn't running.  Audio is disabled..." << endl;
+      cerr << "         server isn't running.  Audio is disabled." << endl;
 
       SDL_CloseAudio();
       return;
@@ -69,6 +71,7 @@ SoundSDL::SoundSDL(uInt32 fragsize)
 
     myIsInitializedFlag = true;
     myIsMuted = false;
+    myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
 
 /*
     cerr << "Freq: " << (int)myHardwareSpec.freq << endl;
@@ -186,10 +189,10 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
   }
 
   // If there are excessive items on the queue then we'll remove some
-  if(myRegWriteQueue.duration() > (10.0 / 60.0))
+  if(myRegWriteQueue.duration() > (myFragmentSizeLogBase2 / 60.0))
   {
     double removed = 0.0;
-    while(removed < (8.0 / 60.0))
+    while(removed < ((myFragmentSizeLogBase2 - 1) / 60.0))
     {
       RegWrite& info = myRegWriteQueue.front();
       removed += info.delta;
@@ -229,12 +232,15 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
       // Does the register update occur before the end of the fragment?
       if(info.delta <= duration)
       {
+        // If the register update time hasn't already passed then
+        // process samples upto the point where it should occur
         if(info.delta > 0.0)
         {
-          // Process the fragment upto the next TIA register write
+          // Process the fragment upto the next TIA register write.  We
+          // round the count passed to Tia_process up if needed.
           double samples = (myHardwareSpec.freq * info.delta);
           Tia_process(stream + (uInt32)position, (uInt32)samples +
-              (uInt32)(position + samples) -
+              (uInt32)(position + samples) - 
               ((uInt32)position + (uInt32)samples));
           position += samples;
           remaining -= samples;
@@ -253,8 +259,6 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
       }
     }
   }
-
-  //cout << myRegWriteQueue.size() << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.3 2004-06-13 16:51:15 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.4 2004-06-13 17:14:25 bwmott Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.3 2004-06-13 16:51:15 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.4 2004-06-13 17:14:25 bwmott Exp $
 */
 class SoundSDL : public Sound
 {
@@ -188,6 +188,9 @@ class SoundSDL : public Sound
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
     
+    // Log base 2 of the selected fragment size
+    double myFragmentSizeLogBase2;
+
     // Indicates if the sound device was successfully initialized
     bool myIsInitializedFlag;
 
