@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.3 2002-11-11 02:07:21 bwmott Exp $
+// $Id: SoundSDL.hxx,v 1.4 2002-11-11 22:07:35 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -28,7 +28,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.3 2002-11-11 02:07:21 bwmott Exp $
+  @version $Id: SoundSDL.hxx,v 1.4 2002-11-11 22:07:35 stephena Exp $
 */
 class SoundSDL
 {
@@ -47,7 +47,7 @@ class SoundSDL
     /**
       Closes the sound device
     */
-    void close();
+    void closeDevice();
 
     /**
       Return the playback sample rate for the sound device.

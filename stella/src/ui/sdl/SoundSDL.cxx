@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.3 2002-11-11 02:07:21 bwmott Exp $
+// $Id: SoundSDL.cxx,v 1.4 2002-11-11 22:07:35 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -97,7 +97,7 @@ SoundSDL::SoundSDL(bool activate)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::~SoundSDL()
 {
-  close();
+  closeDevice();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,7 +132,7 @@ void SoundSDL::mute(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::close()
+void SoundSDL::closeDevice()
 {
   if(myIsInitializedFlag)
   {
