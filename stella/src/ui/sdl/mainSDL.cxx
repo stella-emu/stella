@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.70 2004-04-12 23:28:43 stephena Exp $
+// $Id: mainSDL.cxx,v 1.71 2004-04-16 13:10:37 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -673,7 +673,7 @@ int main(int argc, char* argv[])
   // Take care of commandline arguments
   if(!theSettings->loadCommandLine(argc, argv))
   {
-    string message = "Stella for SDL version 1.4\n\nUsage: stella [options ...] romfile";
+    string message = "Stella version 1.4_cvs\n\nUsage: stella [options ...] romfile";
     theSettings->usage(message);
     cleanup();
     return 0;
