@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.74 2004-05-06 00:06:20 stephena Exp $
+// $Id: mainSDL.cxx,v 1.75 2004-05-11 19:42:55 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -90,6 +90,14 @@ static bool setupProperties(PropertiesSet& set);
   };
 
   static Stella_Joystick theJoysticks[StellaEvent::LastJSTICK];
+
+  // Static lookup tables for Stelladaptor axis support
+  static Event::Type SA_Axis[2][2][3] = {
+    Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance,
+    Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance,
+    Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance,
+    Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance 
+  };
 #endif
 
 // Pointer to the console object or the null pointer
@@ -300,7 +308,7 @@ bool setupJoystick()
       continue;
 
     // Figure out what type of joystick this is
-    if(name.substr(0,12) == "Stelladaptor")
+    if(name.find("Stelladaptor", 0) != string::npos)
     {
       saCount++;
       if(saCount > 2)  // Ignore more than 2 Stelladaptors
@@ -310,7 +318,7 @@ bool setupJoystick()
       }
       else if(saCount == 1)
       {
-        name = "Left Stelladaptor  (Left joystick, Paddles 0 and 1, Left driving controller)";
+        name = "Left Stelladaptor (Left joystick, Paddles 0 and 1, Left driving controller)";
         theJoysticks[i].type = JT_STELLADAPTOR_1;
       }
       else if(saCount == 2)
@@ -573,6 +581,8 @@ void handleEvents()
     StellaEvent::JoyCode code;
     Int32 state;
     Uint8 axis;
+    Uint8 button;
+    Int32 resistance;
     Sint16 value;
     JoyType type;
 
@@ -586,6 +596,9 @@ void handleEvents()
     // Stelladaptors behave differently, and can't be remapped
     switch(type)
     {
+      case JT_NONE:
+        break;
+
       case JT_REGULAR:
 
         if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
@@ -621,28 +634,51 @@ void handleEvents()
         break;  // Regular joystick
 
       case JT_STELLADAPTOR_1:
-
-        if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
-        {
-          cerr << "Stelladaptor 1 button activated\n";
-        }
-        else if(event.type == SDL_JOYAXISMOTION)
-        {
-          cerr << "Stelladaptor 1 axis activated\n";
-        }
-        break;
-
       case JT_STELLADAPTOR_2:
 
         if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
         {
-          cerr << "Stelladaptor 2 button activated\n";
+          button = event.jbutton.button;
+          state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+
+          // Send button events for the joysticks/paddles
+          if(button == 0)
+          {
+            if(type == JT_STELLADAPTOR_1)
+            {
+              theConsole->eventHandler().sendEvent(Event::JoystickZeroFire, state);
+              theConsole->eventHandler().sendEvent(Event::PaddleZeroFire, state);
+            }
+            else
+            {
+              theConsole->eventHandler().sendEvent(Event::JoystickOneFire, state);
+              theConsole->eventHandler().sendEvent(Event::PaddleOneFire, state);
+            }
+          }
+          else if(button == 1)
+          {
+            if(type == JT_STELLADAPTOR_1)
+              theConsole->eventHandler().sendEvent(Event::PaddleTwoFire, state);
+            else
+              theConsole->eventHandler().sendEvent(Event::PaddleThreeFire, state);
+          }
         }
         else if(event.type == SDL_JOYAXISMOTION)
         {
-          cerr << "Stelladaptor 2 axis activated\n";
+          axis = event.jaxis.axis;
+          value = event.jaxis.value;
+
+          // Send axis events for the joysticks
+          theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][0],
+                      (value < -16384) ? 1 : 0);
+          theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][1],
+                      (value > 16384) ? 1 : 0);
+
+          // Send axis events for the paddles
+          resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
+          theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
         }
-        break;
+        break;  // Stelladaptor joystick
 
       default:
         break;
@@ -704,6 +740,14 @@ bool setupProperties(PropertiesSet& set)
 */
 void cleanup()
 {
+#ifdef JOYSTICK_SUPPORT
+  for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
+  {
+    if(SDL_JoystickOpened(i))
+      SDL_JoystickClose(theJoysticks[i].stick);
+  }
+#endif
+
   if(theSettings)
     delete theSettings;
 
@@ -716,18 +760,7 @@ void cleanup()
   if(theDisplay)
     delete theDisplay;
 
-  if(SDL_WasInit(SDL_INIT_EVERYTHING))
-  {
-#ifdef JOYSTICK_SUPPORT
-  for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
-  {
-    if(SDL_JoystickOpened(i))
-      SDL_JoystickClose(theJoysticks[i].stick);
-  }
-#endif
-
-    SDL_Quit();
-  }
+  SDL_Quit();
 }
 
 
