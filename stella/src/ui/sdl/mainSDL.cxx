@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.61 2003-11-23 20:54:59 stephena Exp $
+// $Id: mainSDL.cxx,v 1.62 2003-11-30 03:36:51 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -338,6 +338,10 @@ void handleEvents()
           theDisplay->resize(-1);
         else if(key == SDLK_RETURN)
           theDisplay->toggleFullscreen();
+#ifdef DISPLAY_OPENGL
+        else if(key == SDLK_f)
+          ((FrameBufferGL*)theDisplay)->toggleFilter();
+#endif
 #ifdef DEVELOPER_SUPPORT
         else if(key == SDLK_END)       // Alt-End increases XStart
         {

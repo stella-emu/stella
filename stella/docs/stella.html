@@ -335,7 +335,7 @@
 	</ul>
 
 	<p>
-	<h2><b>Linux</b></h2>
+	<h2><b>Linux/UNIX</b></h2>
 
 	<p>The Linux version of Stella is designed to work on a Linux Workstation with
 	the following:</p>
@@ -343,35 +343,17 @@
 	<ul>
 		<li>Linux Kernel 2.0.x
 		<li>X Window System
-		<li>GNU C++ compiler version 2.7.2 and the make utility are required for compiling the Stella source code; GNU C++ compiler version 2.8.1 or later is highly recommended
+		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling the Stella source code; GNU C++ compiler version 3.2.x or later is highly recommended
 		<li>16 MB of RAM required; 32 MB highly recommended
-		<li>8 bit color graphics card required; 16 bit color graphics card highly recommended
+		<li>15 bit color minimum; 16 bit color graphics card highly recommended
 		<li>486/120 MHz required; 586/166 MHz highly recommended
-		<li>Open Sound System with a supported sound card required for sound
+		<li>SDL version 1.2.0 or greater
+		<li>ALSA or OSS drivers with a supported sound card required for sound; ALSA 0.9 highly recommended
 		<li>Joystick device driver version 1.2.x required for joystick support
 		<li>Joysticks or gamepads are highly recommended
 		<li>Mouse required for paddle emulation using the mouse
-		<li>Special adaptor required for using real Atari 2600 paddles
-		<li>SDL version requires SDL 1.2.0 or greater
+<!--		<li>Special adaptor required for using real Atari 2600 paddles-->
 	</ul>
-
-	<p>
-	<h2><b>Unix</b></h2>
-
-	<p>The Unix version of Stella is designed to work on a Unix Workstation with
-	the following:</p>
-
-	<ul>
-		<li>Unix operating system
-		<li>X Window System
-		<li>GNU C++ compiler version 2.7.2 and the make utility are required; GNU C++ compiler version 2.8.1 is highly recommended
-		<li>32 MB of RAM; 64 MB highly recommended
-		<li>8 bit color display required; true color display highly recommended
-		<li>High performance CPU
-		<li>Open Sound System required for sound
-		<li>SDL version requires SDL 1.2.0 or greater
-	</ul>
-
 
 	<br><br>
 	<p><h1>
@@ -421,65 +403,57 @@
 	<p>
 	<h2><b>Linux</b></h2>
 
-	<p>The Linux versions of Stella are distributed as a compressed tar file
-	containing the Linux executables as well as some other files.  If these
-	pre-built executables do not seem to work on your system then download the
-	Unix source code distribution and build your own executables.  You should
-	install the distribution as follows:</p>
+	<p>The Linux versions of Stella are distributed in both executable and source code
+	form, and in compressed tar files as well as (S)RPM's.
 
-	<ol>
+	<p>If you're using the executables from a compressed tar file, follow these instructions:
+	<ul>
 		<li>Extract files from the distribution:
-			<pre>   tar -zxvf stella-<i>release</i>-linux-<i>arch</i>.tar.gz</pre></li>
+			<pre>   tar -jxvf stella-<i>release</i>-linux-<i>arch</i>.tar.bz2</pre></li>
 
 		<li>Login as root and change directories to the distribution directory</li>
 
 		<li>Copy the executable to a directory that's in your path:
-			<pre>   cp stella.<i>version</i> /usr/local/bin</pre></li>
+			<pre>   cp stella.sdl /usr/local/bin</pre></li>
 
 		<li>Copy the supplied stella.pro properties file to the system-wide location:
 			<pre>   cp stella.pro /etc</pre> or to your home directory:
 			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
-	</ol>
+	</ul>
 
-	<p>If you have a joystick driver installed, such as <i>joystick-1.2.13.tar.gz</i>,
-	you can play games using joysticks.  For additional information about the Linux
-	joystick driver see the following web site:
-	<a href="http://atrey.karlin.mff.cuni.cz/~vojtech/input">
-	Linux Input Drivers</a>.</p>
-
-	<p>
-	<h2><b>Unix</b></h2>
-
-	<p>The Unix version of Stella is distributed as a compressed tar file
-	containing the C++ source code as well as some other files.  The source code
-	can be compiled under most Unix operating systems as well as DOS.  The most recent
-	Unix code was developed with the GNU C++ compiler version 3.2, however, it should
-	compile with other C++ compilers.  The DOS port was developed with DJGPP using
-	GNU C++ version 3.0.4.  You should install the distribution as follows:</p>
-
-	<ol>
+	<p>If you're compiling the source from a compressed tar file, follow these instructions:
+	<ul>
 		<li>Extract files from the distribution:
-			<pre>   tar -zxvf stella-release-src.tar.gz</pre></li>
+			<pre>   tar -jxvf stella-release-src.tar.bz2</pre></li>
 
 		<li>Change directories to the stella-<i>release</i>/src/build directory</li>
 
 		<li>Edit the <b>makefile</b> to meet your needs</li>
 
-		<li>Type <b>make</b> and follow the on screen instructions to build the
-		preferred <b>stella.<i>version</i></b> executable</li>
+		<li>Build the executable with the following command:
+			<pre>   make linux-sdl</pre></li>
 
 		<li>Copy the executable to a directory that's in your path:
-			<pre>   cp stella.<i>version</i> /usr/local/bin</pre></li>
+			<pre>   cp stella.sdl /usr/local/bin</pre></li>
 
 		<li>Copy the supplied stella.pro properties file to the system-wide location:
 			<pre>   cp stella.pro /etc</pre> or to your home directory:
 			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
-	</ol>
+	</ul>
+
+	<p>If you're using the binary RPM's or source SRPM's, consult your distribution on
+	how to proceed.</p>
+
+	<p>If you have a supported joystick and driver installed,
+	you can play games using joysticks.  For additional information about the Linux
+	joystick driver see the following web site:
+	<a href="http://atrey.karlin.mff.cuni.cz/~vojtech/input">
+	Linux Input Drivers</a>.</p>
 
 	<p>Currently, sound is supported using the ALSA v0.9 API (-sound alsa), the Open Sound
-	System or OSS emulation under ALSA (-sound oss), or SDL (-sound sdl).  As of this time,
-	the X11 version cannot use SDL sound.  Sound has been tested and is known to work under
-	Linux and BSDI.  For additional information on OSS or ALSA see the following web sites:</p>
+	System or OSS emulation under ALSA (-sound oss), or SDL (-sound sdl).  Sound has been
+	tested and is known to work under Linux and BSDI.  For additional information on
+	OSS or ALSA see the following web sites:</p>
 
 	<p><a href="http://www.4front-tech.com">4Front Technologies (OSS)</a><br>
 	<a href="http://www.alsa-project.org">Advanced Linux Sound Architecture (ALSA)</a>
@@ -633,16 +607,15 @@
 	<p>
 	<h2><b>Linux and Unix</b></h2>
 
-	<p>The Unix version of Stella uses command line arguments to specify the game
+	<p>The Linux version of Stella uses command line arguments to specify the game
 	you'd like to play as well as other options.  To see the list of available
 	arguments, simply run stella without any options or filename.  To run Stella
 	use a command line of the following format:</p>
 
-	<pre>   stella.<i>version</i> [options ...] filename.bin</pre>
+	<pre>   stella.sdl [options ...] filename.bin</pre>
 
-	<p><b>Version</b> is either x11 or sdl, depending on which version you compiled/installed.</p>
-
-	<p><b>Options</b> (0 indicates false, 1 indicates true, others are self-explanatory)</p>
+	<p><b>Options</b> (0 indicates false, 1 indicates true, others are self-explanatory)
+		The words 'true' and 'false' can also be used.</p>
 
 	<table BORDER=2>
 		<tr>
@@ -651,94 +624,108 @@
 		</tr>
 
 		<tr>
-			<td><pre>-display &lt;display&gt;</pre></td>
-			<td>Connect to the designated X display (<i>X11 version only</i>)</td>
+			<td><pre>-video &lt;soft|gl&gt;</pre></td>
+			<td>Use SDL software or OpenGL mode.</td>
 		</tr>
 
 		<tr>
-			<td><pre>-fps &lt;number&gt;</pre></td>
-			<td>Display the given number of frames per second</td>
+			<td><pre>-gl_filter &lt;nearest|linear&gt;</pre></td>
+			<td>Use GL_NEAREST or GL_LINEAR filtering.  GL_NEAREST results in a scaled,
+				pixelated image, while GL_LINEAR introduces blurring.</td>
 		</tr>
 
 		<tr>
-			<td><pre>-owncmap &lt;0|1&gt;</pre></td>
-			<td>Install a private colormap</td>
+			<td><pre>-gl_aspect &lt;number&gt;</pre></td>
+			<td>Specify the aspect ratio of the window.  Normal TV mode would be 4:3,
+				so you would specify 1.3333.  But since many video modes do not use
+				square pixels, you may have to try different values.  I find 1.6
+				gives the most authentic look.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-sound &lt;0|alsa|oss|sdl&gt;</pre></td>
+			<td>Disable sound entirely, or use the given backend.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-framerate &lt;number&gt;</pre></td>
+			<td>Display the given number of frames per second.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-zoom &lt;size&gt;</pre></td>
-			<td>Makes window be 'size' times normal (1 - 4)</td>
+			<td>Makes window be 'size' times normal.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-fullscreen &lt;0|1&gt;</pre></td>
-			<td>Play the game in fullscreen mode (<i>SDL version only</i>)</td>
+			<td>Play the game in fullscreen mode.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-grabmouse &lt;0|1&gt;</pre></td>
-			<td>Keeps the mouse in the game window</td>
+			<td>Keeps the mouse in the game window.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-hidecursor &lt;0|1&gt;</pre></td>
-			<td>Hides the mouse cursor in the game window</td>
-		</tr>
-
-		<tr>
-			<td><pre>-center &lt;0|1&gt;</pre></td>
-			<td>Centers the game window onscreen</td>
+			<td>Hides the mouse cursor in the game window.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-volume &lt;number&gt;</pre></td>
 			<td>Set the volume (0 - 100).  Use -1 to completely disable
-				changing the volume</td>
+				changing the volume.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-paddle &lt;0|1|2|3|real&gt;</pre></td>
 			<td>Indicates which paddle the mouse should emulate or that real Atari
-				2600 paddles are being used (defaults to paddle 0)</td>
+				2600 paddles are being used (defaults to paddle 0).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-joyleft &lt;number&gt;</pre></td>
+			<td>The joystick number representing the left controller.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-joyright &lt;number&gt;</pre></td>
+			<td>The joystick number representing the right controller.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-altpro &lt;props file&gt;</pre></td>
+			<td>Use the given properties file instead of stella.pro.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
-			<td>Shows some game info while the emulator is running</td>
+			<td>Shows some game info.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-accurate &lt;0|1&gt;</pre></td>
+			<td>Accurate game timing (uses more CPU).</td>
 		</tr>
 
 		<tr>
 			<td><pre>-ssdir &lt;path&gt;</pre></td>
-			<td>The directory to save snapshot files to (<i>If SNAPSHOT support is
-				included</i>)</td>
+			<td>The directory to save snapshot files to.</td>
 		</tr>
 
 		<tr>
-			<td><pre>-ssname &lt;name&gt;</pre></td>
-			<td>How to name the snapshot (romname or md5sum) (<i>If SNAPSHOT support is
-				included</i>)</td>
+			<td><pre>-ssname &lt;romname|md5sum&gt;</pre></td>
+			<td>How to name the snapshot.  Option 'romname' will use the filename
+				provided in stella.pro, while 'md5sum' will use the calculated
+				MD5 sum of the rom.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-sssingle &lt;0|1&gt;</pre></td>
-			<td>Generate single snapshot instead of many (<i>If SNAPSHOT support is
-				included</i>)</td>
+			<td>Generate single snapshot instead of many.</td>
 		</tr>
 
-		<tr>
-			<td><pre>-pro &lt;props file&gt;</pre></td>
-			<td>Use the given properties file instead of stella.pro</td>
-		</tr>
-		<tr>
-			<td><pre>-accurate &lt;0|1&gt;</pre></td>
-			<td>Use accurate game timing (and more CPU), or less accurate timing (and
-				less CPU).</td>
-		</tr>
-		<tr>
-			<td><pre>-sound &lt;0|alsa|oss|sdl&gt;</pre></td>
-			<td>Disable sound entirely, or use the given backend (<i>depending on
-				support included</i>).</td>
-		</tr>
 		<tr>
 			<td><pre>-Dwidth &lt;number&gt;</pre></td>
 			<td>Sets the "Display.Width" property.  Its value must be in the range specified
@@ -769,7 +756,7 @@
 				included</i>)</td>
 		</tr>
 		<tr>
-			<td><pre>-Dmerge &lt;0|1&gt;</pre></td>
+			<td><pre>-mergeprops &lt;0|1&gt;</pre></td>
 			<td>Save the current properties to a separate file in the users' home directory,
 				or merge them into the users' stella.pro file
 				(<i>If DEVELOPER support is included</i>)</td>
@@ -816,8 +803,8 @@
 		</tr>
 
 		<tr>
-			<td>-display localhost</td>
-			<td>display = localhost</td>
+			<td>-video gl</td>
+			<td>video = gl</td>
 		</tr>
 
 		<tr>
@@ -827,7 +814,7 @@
 
 		<tr>
 			<td>-showinfo 1</td>
-			<td>showinfo = 1</td>
+			<td>showinfo = 1 (or showinfo = true)</td>
 		</tr>
 	</table>
 
@@ -842,7 +829,7 @@
 	keyboard as shown in the following tables.</p>
 
 	<p>As of Stella 1.4, most of these events can be remapped to other keys on your keyboard
-	or buttons on your joystick.  The tables below are the default settings.</p>
+	or buttons on your joystick.  The tables below show the default settings.</p>
 
 	<p><b>Console Controls</b></p>
 
@@ -854,7 +841,7 @@
 
 		<tr>
 			<td>Exit emulator/submenu</td>
-			<td>Escape</td>
+			<td>Escape (Alt-F4 for Windows)</td>
 		</tr>
 
 		<tr>
@@ -918,7 +905,7 @@
 		</tr>
 
 		<tr>
-			<td>Save snapshot (if supported)</td>
+			<td>Save PNG snapshot</td>
 			<td>F12</td>
 		</tr>
 
@@ -1417,6 +1404,12 @@
 		<tr>
 			<td>Toggle fullscreen/windowed mode</td>
 			<td>Alt + Enter</td>
+			<td>SDL</td>
+		</tr>
+
+		<tr>
+			<td>Toggle OpenGL filtering modes</td>
+			<td>Alt + f</td>
 			<td>SDL</td>
 		</tr>
 	</table>

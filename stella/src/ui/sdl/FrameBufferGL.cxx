@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.7 2003-11-23 20:54:59 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.8 2003-11-30 03:36:51 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -29,7 +29,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL()
-   :  myTexture(0)
+   :  myTexture(0),
+      myFilterParam(GL_NEAREST)
 {
 }
 
@@ -365,16 +366,15 @@ bool FrameBufferGL::createTextures()
   // Create an OpenGL texture from the SDL texture
   bool showinfo = myConsole->settings().getBool("showinfo");
   string filter = myConsole->settings().getString("gl_filter");
-  GLint param = GL_NEAREST;
   if(filter == "linear")
   {
-    param = GL_LINEAR;
+    myFilterParam = GL_LINEAR;
     if(showinfo)
       cout << "Using GL_LINEAR filtering.\n\n";
   }
   else if(filter == "nearest")
   {
-    param = GL_NEAREST;
+    myFilterParam = GL_NEAREST;
     if(showinfo)
       cout << "Using GL_NEAREST filtering.\n\n";
   }
@@ -383,8 +383,8 @@ bool FrameBufferGL::createTextures()
   glBindTexture(GL_TEXTURE_2D, myTextureID);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
                myTexture->pixels);
 
@@ -430,8 +430,8 @@ bool FrameBufferGL::createTextures()
     glBindTexture(GL_TEXTURE_2D, myFontTextureID[c]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                fontTexture->pixels);
   }
@@ -439,4 +439,37 @@ bool FrameBufferGL::createTextures()
   SDL_FreeSurface(fontTexture);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::toggleFilter()
+{
+  if(myFilterParam == GL_NEAREST)
+  {
+    myFilterParam = GL_LINEAR;
+    myConsole->settings().setString("gl_filter", "linear");
+  }
+  else
+  {
+    myFilterParam = GL_NEAREST;
+    myConsole->settings().setString("gl_filter", "nearest");
+  }
+
+  glBindTexture(GL_TEXTURE_2D, myTextureID);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
+
+  for(uInt32 i =0; i < 256; i++)
+  {
+    glBindTexture(GL_TEXTURE_2D, myFontTextureID[i]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
+  }
+
+  // The filtering has changed, so redraw the entire screen
+  theRedrawEntireFrameIndicator = true;
 }

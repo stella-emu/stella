@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.5 2003-11-22 20:13:11 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.6 2003-11-30 03:36:51 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.5 2003-11-22 20:13:11 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.6 2003-11-30 03:36:51 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {
@@ -48,6 +48,12 @@ class FrameBufferGL : public FrameBufferSDL
       Destructor
     */
     virtual ~FrameBufferGL();
+
+    /**
+      Switches between the two filtering options in OpenGL.
+      Currently, these are GL_NEAREST and GL_LINEAR.
+    */
+	void toggleFilter();
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBufferSDL.hxx
@@ -149,6 +155,9 @@ class FrameBufferGL : public FrameBufferSDL
 
     // The OpenGL font texture handles (one for each character)
     GLuint myFontTextureID[256];
+
+    // The texture filtering to use
+    GLint myFilterParam;
 };
 
 #endif

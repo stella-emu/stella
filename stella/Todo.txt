@@ -9,11 +9,13 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - October 2, 1998
+                         To Do List - November 25, 2003
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org.
+
+For all ports:
 
   * Provide suggestions for improving Stella
 
@@ -22,18 +24,41 @@ on the list below and send email to Bradford Mott at bwmott@acm.org.
   * Port Stella to other operating systems:
      
     - Atari ST/TT/Falcon
-    - Mac (680x0)
+    - Mac (680x0, PowerPC)
     - Others...
-
-  * Port the OSS stella-sound program, for Linux, to other versions of Unix
-
-  * Add a built-in game menu to the DOS version of Stella
-
-  * Find out if the Pro Audio Spectrum sound card is supported by the
-    DOS version of Stella (if not then add support for this card)
-
-  * Add support for real Atari controllers to the DOS version of Stella
-    (this will involve hardware as well as software)
 
   * Add a debugger to Stella for game developers
 
+
+For the Windows port of Stella (Cyberstella):
+
+  * More Columns / Advanced sorting for the GUI
+
+  * Make all dialog boxes resizable for any size text
+
+  * Improve the DirectSound support
+
+  * Add Fullscreen / Windowed mode - Alt-Enter
+
+  * Add a Direct3D version, so we have alpha-blending, hardware stretch, etc.
+
+  * Add commandline options that were in StellaX
+
+  * Add Screenshots in PNG format - F12
+
+  * The following features depend on developer availability
+
+    - Add a Sprite/Animation Editor 
+    - Add a PF Editor
+    - Add a Sourcecode Editor
+    - Either Support DASM as frontend or integrate a 6507 Assembler
+    - Either Support Distella as frontend or integrate a 6507 Disassembler
+    - AVI/MPEG export
+    - WAV/MP3 export
+    - Client/Server networked play for up to 4 Computers via LAN/Internet
+    - Tracking Hiscores
+    - Record and Playback games - not as real movie, but by logging
+      Input/RAM/processor states in given intervals.
+    - Cheatcodes
+    - Improve frontend by adding snapshots, labels, manuals, etc.
+      Like KStella for Linux. (Suggestion from Brian Luttrull)
