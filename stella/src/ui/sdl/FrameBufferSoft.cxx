@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.4 2003-12-03 18:11:25 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.5 2003-12-10 18:58:56 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -54,24 +54,6 @@ bool FrameBufferSoft::createScreen()
 
   theRedrawEntireFrameIndicator = true;
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::setupPalette(float shade)
-{
-  const uInt32* gamePalette = myMediaSource->palette();
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b;
-
-    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
-    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
-    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
-
-    myPalette[i] = SDL_MapRGB(myScreen->format, r, g, b);
-  }
-
-  theRedrawEntireFrameIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -121,7 +103,7 @@ bool FrameBufferSoft::init()
   // Create the screen
   if(!createScreen())
     return false;
-  setupPalette(1.0);
+  setupPalette();
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
   theGrabMouseIndicator  = myConsole->settings().getBool("grabmouse");

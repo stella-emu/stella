@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.9 2003-12-04 22:22:53 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.10 2003-12-10 18:58:56 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -36,7 +36,8 @@ FrameBufferSDL::FrameBufferSDL()
       theGrabMouseIndicator(false),
       theHideCursorIndicator(false),
       theAspectRatio(1.0),
-      isFullscreen(false)
+      isFullscreen(false),
+      myPauseStatus(false)
 {
 }
 
@@ -48,12 +49,33 @@ FrameBufferSDL::~FrameBufferSDL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL::pauseEvent(bool status)
 {
-  // Shade the palette to 75% normal value in pause mode
-  if(status)
-    setupPalette(0.75);
-  else
-    setupPalette(1.0);
+  myPauseStatus = status;
+  setupPalette();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSDL::setupPalette()
+{
+  // Shade the palette to 75% normal value in pause mode
+  float shade = 1.0;
+  if(myPauseStatus)
+    shade = 0.75;
+
+  const uInt32* gamePalette = myMediaSource->palette();
+  for(uInt32 i = 0; i < 256; ++i)
+  {
+    Uint8 r, g, b;
+
+    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
+    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
+    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
+
+    myPalette[i] = SDL_MapRGB(myScreen->format, r, g, b);
+  }
+
+  theRedrawEntireFrameIndicator = true;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL::toggleFullscreen()

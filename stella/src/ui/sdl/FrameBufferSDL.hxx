@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.8 2003-12-03 18:11:25 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.9 2003-12-10 18:58:56 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -34,7 +34,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.8 2003-12-03 18:11:25 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.9 2003-12-10 18:58:56 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -97,6 +97,11 @@ class FrameBufferSDL : public FrameBuffer
     */
     void setWindowAttributes();
 
+    /**
+      Set up the palette for a screen of any depth > 8.
+    */
+    void setupPalette();
+
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
@@ -115,12 +120,6 @@ class FrameBufferSDL : public FrameBuffer
       It updates the global screen variable.
     */
     virtual bool createScreen() = 0;
-
-    /**
-      Set up the palette for a screen of any depth > 8.
-      Scales the palette by 'shade'.
-    */
-    virtual void setupPalette(float shade) = 0;
 
   protected:
     // The SDL video buffer
@@ -155,6 +154,9 @@ class FrameBufferSDL : public FrameBuffer
 
     // Indicates whether the game is currently in fullscreen
     bool isFullscreen;
+
+    // Indicates whether the emulation has paused
+	bool myPauseStatus;
 };
 
 #endif

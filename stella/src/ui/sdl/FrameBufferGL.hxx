@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.6 2003-11-30 03:36:51 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.7 2003-12-10 18:58:56 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.6 2003-11-30 03:36:51 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.7 2003-12-10 18:58:56 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {
@@ -63,12 +63,6 @@ class FrameBufferGL : public FrameBufferSDL
       It updates the global screen variable.
     */
     virtual bool createScreen();
-
-    /**
-      Set up the palette for a screen of any depth > 8.
-      Scales the palette by 'shade'.
-    */
-    virtual void setupPalette(float shade);
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.66 2003-12-06 00:17:29 stephena Exp $
+// $Id: mainSDL.cxx,v 1.67 2003-12-10 18:58:56 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -399,12 +399,12 @@ void handleEvents()
         else if(key == SDLK_f)         // Ctrl-f toggles NTSC/PAL mode
         {
           theConsole->toggleFormat();
-          theDisplay->setupPalette(1.0);
+          theDisplay->setupPalette();
         }
         else if(key == SDLK_p)         // Ctrl-p toggles different palettes
         {
           theConsole->togglePalette();
-          theDisplay->setupPalette(1.0);
+          theDisplay->setupPalette();
         }
         else if(key == SDLK_END)       // Ctrl-End increases Width
         {

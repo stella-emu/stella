@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.12 2003-12-06 00:17:29 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.13 2003-12-10 18:58:56 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -84,24 +84,6 @@ bool FrameBufferGL::createScreen()
 
   theRedrawEntireFrameIndicator = true;
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::setupPalette(float shade)
-{
-  const uInt32* gamePalette = myMediaSource->palette();
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b;
-
-    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
-    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
-    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
-
-    myPalette[i] = SDL_MapRGB(myTexture->format, r, g, b);
-  }
-
-  theRedrawEntireFrameIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,7 +194,7 @@ bool FrameBufferGL::init()
 
   // Set up the palette *after* we know the color components
   // and the textures
-  setupPalette(1.0);
+  setupPalette();
 
   // Show some OpenGL info
   if(myConsole->settings().getBool("showinfo"))

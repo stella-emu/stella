@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.1 2003-11-09 23:53:20 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.2 2003-12-10 18:58:56 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.1 2003-11-09 23:53:20 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.2 2003-12-10 18:58:56 stephena Exp $
 */
 class FrameBufferSoft : public FrameBufferSDL
 {
@@ -58,12 +58,6 @@ class FrameBufferSoft : public FrameBufferSDL
       It updates the global screen variable.
     */
     virtual bool createScreen();
-
-    /**
-      Set up the palette for a screen of any depth > 8.
-      Scales the palette by 'shade'.
-    */
-    virtual void setupPalette(float shade);
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx
