@@ -12,6 +12,85 @@
                                Release History
 ===============================================================================
 
+1.2 to 1.3: (February 17, 2003)
+
+  * Improved TIA sound system so that games with digitized audio work
+
+  * Added saving and loading of game state to the core; X11, SDL, and DOS
+    versions current support saving and loading game state
+
+  * Added support for F4 bankswitching method
+
+  * Pitfall II DPC sound emulation completed
+
+  * Fixed a bug which caused the difficulty switches to operate backwards
+
+  * Changed DPC auto-detection to use file size so that Pitfall II mods work
+
+  * Modified RIOT timer emulation so that startup values are random
+
+  * Added 3F bankswitching auto-detection routine so that homebrews and
+    demos work without a stella.pro entry
+
+  * Updated the TIA message boxes so they look a little nicer 
+
+  * Latest stella.pro file included in distribution
+
+  * Added some developer options to the core, and the ability to change game
+    width, height, xstart, ystart, and others while the emulation is running.
+    Added ability to switch between NTSC and PAL at runtime, and the ability
+    to save the current properties to a file or to merge the changes into the
+    stella.pro file; X11 and SDL versions supported for now (compile option)
+
+  * External sound server for the X11 and SDL versions no longer required, as
+    all sound code is now integrated into the core 
+
+  * Changed locations of the user's config files for the X11 and SDL versions;
+    the user's stellarc file is now located in $HOME/.stella/stellarc, state
+    files are located in $HOME/.stella/state/ and the stella.pro file is
+    located in $HOME/.stella/stella.pro
+
+  * Changed the way options are supplied on the commandline for the X11 and
+    SDL versions. Now all commandline options take exactly the same arguments
+    as in the INI file.
+
+  * Added "-accurate" command line option to choose between accurate
+    (CPU-intensive) timing or less accurate (CPU-friendly) timing to X11
+    and SDL versions. This is the final version of what was considered
+    experimental timing code in Stella 1.2.
+
+  * Added "-sound" command line option to choose which sound backend to
+    use (alsa, oss, sdl) with the X11 and SDL versions.
+
+  * Added the developer command line options to the X11 and SDL versions,
+    which are only activated in developer builds: -Dformat, -Dwidth,
+    -Dheight, -Dxstart, -Dystart, -Dmerge 
+
+  * Fixed window resize bug in the X11 port
+
+  * Added "-nosound" command line option to the DOS port to disable audio
+
+  * DOS port supports a "-vsync" option to synchronize emulation with the
+    video blank of the video card
+
+  * Changed VGA code in the DOS port to use a 60Hz 320x200 and a 60Hz
+    320x240 graphics mode
+
+  * DOS port has been updated to run better under Windows NT, 2000, and XP.
+    There are still issues with the sound, however, it is usable.
+
+  * DOS port is using a new Sound Blaster driver created by Matt Conte which
+    supports auto-detection of sound cards.
+
+  * DOS port supports a STELLA_HOME environment variable that defines 
+    the location of config files.
+ 
+  * In the DOS port the stella.pro file is searched for first in the
+    current working director and then in the $STELLA_HOME directory
+
+  * In the DOS port the ROM image is searched for first using the
+    specified path, then in $STELLA_HOME/ROMS, and finally in $STELLA_HOME
+  
 Cyberstella 1.2.1 (May 16, 2002)
 
   * Removed the built-in games until some legal stuff is sorted out

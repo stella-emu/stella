@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                     Release 1.2 for DOS, Linux, and Unix 
+                     Release 1.3 for DOS, Linux, and Unix 
 ===============================================================================
 
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most 
@@ -21,15 +21,15 @@ of your favorite Atari 2600 games again! Stella was originally developed for
 Linux by Bradford W. Mott, however, it has been ported to a number of other
 platforms.
 
-This is the 1.2 release of Stella for DOS, Linux, and Unix. Distributions
+This is the 1.3 release of Stella for DOS, Linux, and Unix. Distributions
 for other operating systems will appear as they become available. The three 
 distributions currently available are:
 
-  * Binary distribution for Linux (stella-1.2-linux-x86.tar.gz)
+  * Binary distribution for Linux (stella-1.3-linux-x86.tar.gz)
 
-  * Binary distribution for DOS (st12.zip)
+  * Binary distribution for DOS (st13.zip)
 
-  * Source code distribution for Linux, Unix, and DOS (stella-1.2-src.tar.gz)
+  * Source code distribution for Linux, Unix, and DOS (stella-1.3-src.tar.gz)
 
 PLEASE DO NOT WRITE ASKING FOR ROM IMAGES TO USE WITH STELLA! ALL SUCH
 REQUESTS WILL BE IGNORED!
@@ -37,69 +37,82 @@ REQUESTS WILL BE IGNORED!
 New in this Release
 ===================
 
-  * Improved illegal CPU instruction support. Thrust and Qb will now operate
-    correctly.
+  * Improved TIA sound system so that games with digitized audio work
 
-  * Improved emulation of undefined TIA reads. The ball in Video Pinball
-    finally bounces off of the paddles!
+  * Added saving and loading of game state to the core; X11, SDL, and DOS
+    versions current support saving and loading game state
 
-  * More accurate NTSC and PAL palettes. These palettes should be much more
-    like the colors displayed on a real TV.
+  * Added support for F4 bankswitching method
 
-  * PAL color loss is now emulated. If a PAL game displays an odd number
-    of scanlines then the next frame will be displayed in black & white.
+  * Pitfall II DPC sound emulation completed
 
-  * TIA emulation improved to fix some problems with Pole Position,
-    Fatal Run, Dolphin, Decathlon, Robot Tank, and Hole Hunter.
+  * Fixed a bug which caused the difficulty switches to operate backwards
 
-  * Support for Pitfall II has been added, however, the enhanced sound
-    provided by the DPC chip found in the Pitfall II cartridge isn't
-    currently emulated.
+  * Changed DPC auto-detection to use file size so that Pitfall II mods work
 
-  * Support added for the Commavid (CV) bankswitching method.
+  * Modified RIOT timer emulation so that startup values are random
 
-  * Support added for the Megaboy cartridge.
+  * Added 3F bankswitching auto-detection routine so that homebrews and
+    demos work without a stella.pro entry
 
-  * Improved Supercharger emulation including a new BIOS that shows the
-    vertical blue progress bars like the real thing.
+  * Updated the TIA message boxes so they look a little nicer
 
-  * Code for the emulation core has been updated to work with newer C++
-    compilers compliant with the C++ standard.
+  * Latest stella.pro file included in distribution
 
-  * Basic message support added to the TIA emulation. This allows a short
-    message to overlay the TIA frame. Currently, it's used when switching
-    color modes and difficulty settings.
- 
-  * The internal data structure for the stella.pro file was changed from
-    a resizable array to a binary search tree. This results in quicker
-    startup times.
+  * Added some developer options to the core, and the ability to change game
+    width, height, xstart, ystart, and others while the emulation is running.
+    Added ability to switch between NTSC and PAL at runtime, and the ability
+    to save the current properties to a file or to merge the changes into the
+    stella.pro file; X11 and SDL versions supported for now (compile option)
 
-  * An SDL port of Stella is available (requires SDL 1.2.0 or greater)
+  * External sound server for the X11 and SDL versions no longer required, as
+    all sound code is now integrated into the core
 
-  * Added option to not load in the whole stella.pro file when starting 
-    Stella. This option is enabled on the X11, SDL, and DOS versions. Win32 
-    version is left alone since it's needed for loading multiple games from 
-    the UI. Saves on memory usage.
+  * Changed locations of the user's config files for the X11 and SDL versions;
+    the user's stellarc file is now located in $HOME/.stella/stellarc, state
+    files are located in $HOME/.stella/state/ and the stella.pro file is
+    located in $HOME/.stella/stella.pro
 
-  * Added INI file option to the X11 and SDL versions. Options can be 
-    specified in this file instead of entering them on the commandline. Any 
-    options entered on the commandline override options in the INI file.  
-    File is called stellarc. For the X11 and SDL versions, it can be in
-    either $HOME (as $HOME/.stellarc) or in /etc (as /etc/stellarc).  The
-    one in $HOME has higher priority than the one in /etc.
+  * Changed the way options are supplied on the commandline for the X11 and
+    SDL versions. Now all commandline options take exactly the same arguments
+    as in the INI file.
 
-  * Added snapshot support to the X11 and SDL versions. Pressing F12 saves 
-    the current screen in PNG format. Requires PNG library.
+  * Added "-accurate" command line option to choose between accurate
+    (CPU-intensive) timing or less accurate (CPU-friendly) timing to X11
+    and SDL versions. This is the final version of what was considered
+    experimental timing code in Stella 1.2.
 
-  * Removed stella.pro file from the binary, resulting in large space
-    savings. The stella.pro file is no longer optional.  For the X11 and
-    SDL versions, it can be in either $HOME (as $HOME/.stella.pro) or in
-    /etc (as /etc/stella.pro). The one in $HOME has higher priority than
-    the one in /etc. For DOS and Win32 versions, the stella.pro file must
-    be in the same directory as the executable.
+  * Added "-sound" command line option to choose which sound backend to
+    use (alsa, oss, sdl) with the X11 and SDL versions.
 
-  * Added pause functionality to the core. Implemented in DOS, X11, and
-    SDL versions for now.
+  * Added the developer command line options to the X11 and SDL versions,
+    which are only activated in developer builds: -Dformat, -Dwidth,
+    -Dheight, -Dxstart, -Dystart, -Dmerge
+
+  * Fixed window resize bug in the X11 port
+
+  * Added "-nosound" command line option to the DOS port to disable audio
+
+  * DOS port supports a "-vsync" option to synchronize emulation with the
+    video blank of the video card
+
+  * Changed VGA code in the DOS port to use a 60Hz 320x200 and a 60Hz
+    320x240 graphics mode
+
+  * DOS port has been updated to run better under Windows NT, 2000, and XP.
+    There are still issues with the sound, however, it is usable.
+
+  * DOS port is using a new Sound Blaster driver created by Matt Conte which
+    supports auto-detection of sound cards.
+
+  * DOS port supports a STELLA_HOME environment variable that defines
+    the location of config files.
+
+  * In the DOS port the stella.pro file is searched for first in the
+    current working director and then in the $STELLA_HOME directory
+
+  * In the DOS port the ROM image is searched for first using the
+    specified path, then in $STELLA_HOME/ROMS, and finally in $STELLA_HOME
 
 Distribution Site
 ================= 
