@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.cxx,v 1.4 2003-11-14 00:47:35 stephena Exp $
+// $Id: DirectInput.cxx,v 1.5 2003-11-16 19:32:50 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -26,9 +26,10 @@ DirectInput::DirectInput()
     mylpdi(NULL),
     myKeyboard(NULL),
     myMouse(NULL),
-    myLeftJoystick(NULL),
-    myRightJoystick(NULL)
+    myJoystickCount(0)
 {
+  for(uInt32 i = 0; i < 8; i++)
+    myJoystick[i] = NULL;
 }
 
 DirectInput::~DirectInput()
@@ -87,6 +88,70 @@ bool DirectInput::initialize(HWND hwnd)
   if(FAILED(myMouse->Acquire()))
     return false;
 
+  // Initialize all joysticks
+  // Since a joystick isn't absolutely required, we won't return
+  // false if there are none found
+  if(FAILED(mylpdi->EnumDevices(DI8DEVCLASS_GAMECTRL,
+                                EnumJoysticksCallback,
+                                this, DIEDFL_ATTACHEDONLY)))
+    return true;
+
+  for(uInt32 i = 0; i < myJoystickCount; i++)
+  {
+    LPDIRECTINPUTDEVICE8 joystick = myJoystick[i];
+
+    if(FAILED(joystick->SetDataFormat(&c_dfDIJoystick2 )))
+      return true;
+    if(FAILED(joystick->SetCooperativeLevel(hwnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND)))
+      return true;
+
+    // Set the size of the buffer for buffered data
+    DIPROPDWORD j_dipdw;
+    j_dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
+    j_dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+    j_dipdw.diph.dwObj        = 0;
+    j_dipdw.diph.dwHow        = DIPH_DEVICE;
+    j_dipdw.dwData            = 64;
+    joystick->SetProperty(DIPROP_BUFFERSIZE, &j_dipdw.diph);
+
+    // Set X-axis range to (-1000 ... +1000)
+    DIPROPRANGE dipr;
+    dipr.diph.dwSize       = sizeof(dipr);
+    dipr.diph.dwHeaderSize = sizeof(dipr.diph);
+    dipr.diph.dwHow        = DIPH_BYOFFSET;
+    dipr.lMin              = -1000;
+    dipr.lMax              = +1000;
+    dipr.diph.dwObj = DIJOFS_X;
+    joystick->SetProperty(DIPROP_RANGE, &dipr.diph);
+
+    // And again for Y-axis range
+    dipr.diph.dwSize       = sizeof(dipr);
+    dipr.diph.dwHeaderSize = sizeof(dipr.diph);
+    dipr.diph.dwHow        = DIPH_BYOFFSET;
+    dipr.lMin              = -1000;
+    dipr.lMax              = +1000;
+    dipr.diph.dwObj = DIJOFS_Y;
+    joystick->SetProperty(DIPROP_RANGE, &dipr.diph);
+
+    // Set dead zone to 50%
+    DIPROPDWORD dipdw;
+    dipdw.diph.dwSize       = sizeof(dipdw);
+    dipdw.diph.dwHeaderSize = sizeof(dipdw.diph);
+    dipdw.diph.dwHow        = DIPH_BYOFFSET;
+    dipdw.dwData            = 5000;
+    dipdw.diph.dwObj        = DIJOFS_X;
+    joystick->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
+
+    dipdw.diph.dwSize       = sizeof(dipdw);
+    dipdw.diph.dwHeaderSize = sizeof(dipdw.diph);
+    dipdw.diph.dwHow        = DIPH_BYOFFSET;
+    dipdw.dwData            = 5000;
+    dipdw.diph.dwObj        = DIJOFS_Y;
+    joystick->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
+
+    joystick->Acquire();
+  }
+
   return true;
 }
 
@@ -142,8 +207,52 @@ bool DirectInput::getMouseEvents(DIDEVICEOBJECTDATA* mouseEvents,
   return true;
 }
 
+bool DirectInput::getJoystickEvents(uInt32 stick, DIDEVICEOBJECTDATA* joyEvents,
+                                    DWORD* numJoyEvents)
+{
+  LPDIRECTINPUTDEVICE8 joystick;
+
+  // Make sure the joystick exists and has been initialized
+  if(stick >= 0 && stick <= 8)
+  {
+    joystick = myJoystick[stick];
+    if(joystick == NULL)
+      return false;
+  }
+  else
+    return false;
+
+  // Check for joystick events
+  joystick->Poll();
+  HRESULT hr = joystick->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
+                                       joyEvents, numJoyEvents, 0 );
+
+  if(hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED)
+  {
+    hr = joystick->Acquire();
+    if(hr == DIERR_OTHERAPPHASPRIO)
+      return false;
+
+    joystick->Poll();
+    hr = joystick->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
+                                 joyEvents, numJoyEvents, 0 );
+  }
+
+  return true;
+}
+
 void DirectInput::cleanup()
 {
+  for(uInt32 i = 0; i < myJoystickCount; i++)
+  {
+    if(myJoystick[i])
+    {
+      myJoystick[i]->Unacquire();
+      myJoystick[i]->Release();
+      myJoystick[i] = NULL;
+    }
+  }
+
   if(myMouse)
   {
     myMouse->Unacquire();
@@ -165,396 +274,28 @@ void DirectInput::cleanup()
   }
 }
 
-/*
-BOOL CALLBACK DirectInput::EnumDevicesProc
-(
-	const DIDEVICEINSTANCE* lpddi, 
-	LPVOID pvRef
-)
+BOOL CALLBACK DirectInput::EnumJoysticksCallback(
+                const DIDEVICEINSTANCE* inst, 
+               	LPVOID pvRef)
 {
-	DirectInput* pThis = (DirectInput*)pvRef;
-	ASSERT(pThis);
+  DirectInput* pThis = (DirectInput*) pvRef;
+  if(!pThis)
+    return DIENUM_STOP;
 
-	const DIDATAFORMAT* pdidf = NULL;
+  // If we can't store any more joysticks, then stop enumeration.
+  // The limit is set to 8, since the Stella eventhandler core
+  // can use up to 8 joysticks.
+  if(pThis->myJoystickCount > 8)
+    return DIENUM_STOP;
 
-	switch(pThis->m_dwDevType)
-	{
-	case DIDEVTYPE_MOUSE:
-		TRACE("EnumDevicesProc (mouse)");
-		pdidf = &c_dfDIMouse;
-		break;
+  // Obtain an interface to the enumerated joystick.
+  HRESULT hr = pThis->mylpdi->CreateDevice(inst->guidInstance,
+      (LPDIRECTINPUTDEVICE8*) &pThis->myJoystick[pThis->myJoystickCount], NULL );
 
-	case DIDEVTYPE_KEYBOARD:
-		TRACE("EnumDevicesProc (keyboard)");
-		pdidf = &c_dfDIKeyboard;
-		break;
+  // Indicate that we've found one more joystick
+  if(!FAILED(hr))
+    pThis->myJoystickCount++;
 
-	case DIDEVTYPE_JOYSTICK:
-		TRACE("EnumDevicesProc (joystick)");
-		pdidf = &c_dfDIJoystick;
-		break;
-
-	default:
-		ASSERT(FALSE);
-		return DIENUM_STOP;
-	};
-
-	HRESULT hr;
-
-	IDirectInputDevice* piDID;
-	hr = pThis->m_piDI->CreateDevice(lpddi->guidInstance, &piDID, 
-		NULL);
-	ASSERT(hr == DI_OK && "IDI::CreateDevice failed");
-	if (hr != DI_OK)
-	{
-		return DIENUM_CONTINUE;
-	}
-
-	hr = piDID->SetDataFormat(pdidf);
-	ASSERT(hr == DI_OK && "IDID::SetDataFormat failed");
-	if (hr != DI_OK)
-	{
-		piDID->Release();
-		return DIENUM_CONTINUE;
-	}
-
-	hr = piDID->QueryInterface(IID_IDirectInputDevice2, 
-		(void**)&(pThis->m_piDID));
-	if (hr != S_OK)
-	{
-		piDID->Release();
-		return DIENUM_CONTINUE;
-	}
-
-	// undo the addref that QI did (CreateDevice did an addref)
-
-	pThis->m_piDID->Release();
-
-#ifdef _DEBUG
-	DIDEVICEINSTANCE didi;
-	didi.dwSize = sizeof(didi);
-	piDID->GetDeviceInfo(&didi);
-	TRACE("Using device: %s", didi.tszProductName);
-#endif
-
-	return DIENUM_STOP;
+  // And continue enumeration for more joysticks
+  return DIENUM_CONTINUE;
 }
-
-BOOL DirectInput::IsButtonPressed
-(
-	int nButton
-) const
-{
-	if ( nButton > GetButtonCount() )
-    {
-		return FALSE;
-    }
-
-	return ( m_pButtons[nButton] ) ? 1 : 0;
-}
-
-
-// ---------------------------------------------------------------------------
-
-
-// ---------------------------------------------------------------------------
-
-DirectJoystick::DirectJoystick(
-	HWND hwnd
-    ) : \
-	DirectInput( hwnd, DIDEVTYPE_JOYSTICK, 32 )
-{
-	TRACE( "DirectJoystick::DirectJoystick" );
-}
-
-HRESULT DirectJoystick::Initialize(
-    void
-    )
-{
-    TRACE( "DirectJoystick::Initialize" );
-
-    HRESULT hr;
-
-    hr = DirectInput::Initialize();
-    if ( FAILED(hr) )
-    {
-        return hr;
-    }
-
-	if ( GetDevice() == NULL )
-	{
-		TRACE("No joystick was found");
-		return S_FALSE;
-	}
-
-	// set X-axis range to (-1000 ... +1000)
-	// This lets us test against 0 to see which way the stick is pointed.
-	
-	DIPROPRANGE dipr;
-
-	dipr.diph.dwSize = sizeof(dipr);
-    dipr.diph.dwHeaderSize = sizeof(dipr.diph);
-	dipr.diph.dwHow = DIPH_BYOFFSET;
-	dipr.lMin = -1000;
-	dipr.lMax = +1000;
-	dipr.diph.dwObj = DIJOFS_X;
-	hr = GetDevice()->SetProperty( DIPROP_RANGE, &dipr.diph );
-    if ( FAILED(hr) )
-    {
-        TRACE( "SetProperty(DIPROP_RANGE,x) failed, hr=%X", hr );
-        return hr;
-    }
-
-	// And again for Y-axis range
-	
-	dipr.diph.dwSize = sizeof(dipr);
-    dipr.diph.dwHeaderSize = sizeof(dipr.diph);
-	dipr.diph.dwHow = DIPH_BYOFFSET;
-	dipr.lMin = -1000;
-	dipr.lMax = +1000;
-	dipr.diph.dwObj = DIJOFS_Y;
-	hr = GetDevice()->SetProperty( DIPROP_RANGE, &dipr.diph );
-    if ( FAILED(hr) )
-    {
-        TRACE( "SetProperty(DIPROP_RANGE,y) failed, hr=%X", hr );
-        return hr;
-    }
-
-
-	// set dead zone to 50%
-	
-	DIPROPDWORD dipdw;
-
-	dipdw.diph.dwSize = sizeof(dipdw);
-	dipdw.diph.dwHeaderSize = sizeof(dipdw.diph);
-	dipdw.diph.dwHow = DIPH_BYOFFSET;
-	dipdw.dwData = 5000;
-	dipdw.diph.dwObj = DIJOFS_X;
-	hr = GetDevice()->SetProperty( DIPROP_DEADZONE, &dipdw.diph ); 
-    if ( FAILED(hr) )
-    {
-        TRACE( "SetProperty(DIPROP_DEADZONE,x) failed, hr=%X", hr );
-        return hr;
-    }
-
-	dipdw.diph.dwSize = sizeof(dipdw);
-	dipdw.diph.dwHeaderSize = sizeof(dipdw.diph);
-	dipdw.diph.dwHow = DIPH_BYOFFSET;
-	dipdw.dwData = 5000;
-	dipdw.diph.dwObj = DIJOFS_Y;
-	hr = GetDevice()->SetProperty( DIPROP_DEADZONE, &dipdw.diph ); 
-    if ( FAILED(hr) )
-    {
-        TRACE( "SetProperty(DIPROP_DEADZONE,y) failed, hr=%X", hr );
-        return hr;
-    }
-
-    return S_OK;
-}
-
-HRESULT DirectJoystick::Update(
-    void
-    )
-{
-	if ( GetDevice() == NULL )
-    {
-		return E_FAIL;
-    }
-
-	HRESULT hr;
-
-	DIJOYSTATE dijs;
-
-	GetDevice()->Poll();
-
-	hr = GetDevice()->GetDeviceState( sizeof(dijs), &dijs );
-	if ( hr == DIERR_INPUTLOST ||
-         hr == DIERR_NOTACQUIRED )
-	{
-		hr = GetDevice()->Acquire();
-        if ( hr == DIERR_OTHERAPPHASPRIO )
-        {
-            return S_FALSE;
-        }
-
-		GetDevice()->Poll();
-		hr = GetDevice()->GetDeviceState( sizeof(dijs), &dijs );
-	}
-
-	ASSERT(hr == DI_OK && "Joystick GetDeviceState failed");
-
-	if ( hr == DI_OK )
-	{
-		m_lX = dijs.lX;
-		m_lY = dijs.lY;
-
-		memcpy( m_pButtons, 
-                dijs.rgbButtons, 
-                sizeof(dijs.rgbButtons) );
-	}
-
-	return hr;
-}
-
-
-// ---------------------------------------------------------------------------
-
-CDisabledJoystick::CDisabledJoystick(
-	HWND hwnd
-    ) : \
-    DirectInput( NULL, 0, 0 )
-{
-    UNUSED_ALWAYS( hwnd );
-
-	TRACE( "CDisabledJoystick::CDisabledJoystick" );
-}
-
-HRESULT CDisabledJoystick::Update(
-    void
-    )
-{
-	return S_FALSE;
-}
-
-// ---------------------------------------------------------------------------
-
-DirectMouse::DirectMouse(
-	HWND hwnd
-    ) : \
-	DirectInput( hwnd, DIDEVTYPE_MOUSE, 4 )
-{
-	TRACE( "DirectMouse::DirectMouse" );
-}
-
-HRESULT DirectMouse::Update(
-    void
-    )
-{
-	if (GetDevice() == NULL)
-    {
-		return E_FAIL;
-    }
-
-	HRESULT hr;
-
-	DIMOUSESTATE dims;
-
-	GetDevice()->Poll();
-
-	hr = GetDevice()->GetDeviceState( sizeof(dims), &dims );
-	if ( hr == DIERR_INPUTLOST ||
-         hr == DIERR_NOTACQUIRED )
-	{
-		hr = GetDevice()->Acquire();
-        if ( hr == DIERR_OTHERAPPHASPRIO )
-        {
-            return S_FALSE;
-        }
-
-		GetDevice()->Poll();
-		hr = GetDevice()->GetDeviceState( sizeof(dims), &dims );
-	}
-
-	ASSERT( hr == DI_OK && "Mouse GetDeviceState failed" );
-
-	if ( hr == DI_OK )
-	{
-		// Because the mouse is returning relative positions,
-		// force X and Y to go between 0 ... 999
-
-		m_lX += dims.lX;
-
-		if (m_lX < 0)
-        {
-			m_lX = 0;
-        }
-		else if (m_lX > 999) 
-        {
-			m_lX = 999;
-        }
-
-		m_lY += dims.lY;
-
-		if (m_lY < 0)
-        {
-			m_lY = 0;
-        }
-		else if (m_lY > 999)
-        {
-			m_lY = 999;
-        }
-
-		memcpy( m_pButtons, 
-                dims.rgbButtons, 
-                sizeof(dims.rgbButtons) );
-	}
-
-	return hr;
-}
-*/
-
-///////////////////////////////////////
-// The following was part of initialize
-///////////////////////////////////////
-/*
-  // initialize the mouse
-  if (FAILED(lpdi->CreateDevice(GUID_SysMouse, &m_mouse, NULL)))
-    return false;
-  if (FAILED(m_mouse->SetCooperativeLevel(hWnd, DISCL_BACKGROUND |
-                                          DISCL_NONEXCLUSIVE)))
-    return false;
-  if (FAILED(m_mouse->SetDataFormat(&c_dfDIMouse)))
-    return false;
-  if (FAILED(m_mouse->Acquire()))
-    return false;
-*/
-/*
-    //
-	// enumerate to find proper device
-    // The callback will set m_piDID
-    //
-
-	TRACE("\tCalling EnumDevices");
-
-	hr = m_piDI->EnumDevices( m_dwDevType, 
-                              EnumDevicesProc, 
-		                      this, 
-                              DIEDFL_ATTACHEDONLY );
-	if ( m_piDID )
-	{
-		TRACE("\tGot a device!");
-
-		(void)m_piDID->SetCooperativeLevel( m_hwnd, 
-                                            DISCL_NONEXCLUSIVE 
-			                                | DISCL_FOREGROUND);
-
-		hr = GetDevice()->Acquire();
-        if ( hr == DIERR_OTHERAPPHASPRIO )
-        {
-            return S_FALSE;
-        }
-	}
-
-	m_pButtons = new BYTE[GetButtonCount()];
-    if ( m_pButtons == NULL )
-    {
-        hr = E_OUTOFMEMORY;
-        goto cleanup;
-    }
-
-    m_fInitialized = TRUE;
-
-cleanup:
-
-    if ( FAILED(hr) )
-    {
-        Cleanup();
-
-        if ( uMsg != 0 )
-        {
-            MessageBox( hInstance, m_hwnd, uMsg );
-        }
-    }
-
-    return hr;
-*/

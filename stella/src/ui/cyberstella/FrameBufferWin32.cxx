@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.cxx,v 1.3 2003-11-14 00:47:35 stephena Exp $
+// $Id: FrameBufferWin32.cxx,v 1.4 2003-11-16 19:32:52 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -48,14 +48,12 @@ FrameBufferWin32::FrameBufferWin32()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferWin32::~FrameBufferWin32()
 {
-OutputDebugString("got here  FrameBufferWin32::~FrameBufferWin32()");
   cleanup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::cleanup()
 {
-OutputDebugString("got here  FrameBufferWin32::cleanup()");
   if(m_piDDPalette)
   {
     m_piDDPalette->Release();
@@ -83,7 +81,7 @@ OutputDebugString("got here  FrameBufferWin32::cleanup()");
 	if(myHWND)
 	{
     ::DestroyWindow( myHWND );
-OutputDebugString("got here  destroyed window");
+
         //
         // Remove the WM_QUIT which will be in the message queue
         // so that the main window doesn't exit

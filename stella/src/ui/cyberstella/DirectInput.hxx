@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.hxx,v 1.5 2003-11-14 00:47:35 stephena Exp $
+// $Id: DirectInput.hxx,v 1.6 2003-11-16 19:32:51 stephena Exp $
 //============================================================================
 
 #ifndef DIRECT_INPUT_HXX
 #define DIRECT_INPUT_HXX
+
+#define DIRECTINPUT_VERSION 0x0800
 
 #include "bspf.hxx"
 #include "dinput.h"
@@ -30,23 +32,28 @@ class DirectInput
 
     bool getKeyEvents(DIDEVICEOBJECTDATA* keyEvents, DWORD* numKeyEvents);
     bool getMouseEvents(DIDEVICEOBJECTDATA* mouseEvents, DWORD* numMouseEvents);
+    bool getJoystickEvents(uInt32 stick, DIDEVICEOBJECTDATA* joyEvents,
+                           DWORD* numJoyEvents);
 
     bool initialize(HWND hwnd);
 
     void update();
 
+    uInt32 numJoysticks() { return myJoystickCount; }
+
   private:
     void cleanup();
 
-    static BOOL CALLBACK EnumDevicesProc(const DIDEVICEINSTANCE* lpddi, LPVOID pvRef );
+    static BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE* inst,
+                                               LPVOID pvRef);
 
     HWND myHWND;
 
     LPDIRECTINPUT8       mylpdi;
     LPDIRECTINPUTDEVICE8 myKeyboard;
     LPDIRECTINPUTDEVICE8 myMouse;
-    LPDIRECTINPUTDEVICE8 myLeftJoystick;
-    LPDIRECTINPUTDEVICE8 myRightJoystick;
+    LPDIRECTINPUTDEVICE8 myJoystick[8];
+    uInt32 myJoystickCount;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainWin32.hxx,v 1.2 2003-11-14 00:47:35 stephena Exp $
+// $Id: MainWin32.hxx,v 1.3 2003-11-16 19:32:52 stephena Exp $
 //============================================================================
 
 #ifndef MAIN_WIN32_HXX
@@ -41,7 +41,7 @@ class DirectInput;
   in the Porting.txt document
 
   @author  Stephen Anthony
-  @version $Id: MainWin32.hxx,v 1.2 2003-11-14 00:47:35 stephena Exp $
+  @version $Id: MainWin32.hxx,v 1.3 2003-11-16 19:32:52 stephena Exp $
 */
 class MainWin32
 {
@@ -95,6 +95,10 @@ class MainWin32
       StellaEvent::KeyCode keyCode;
     };
     static Switches keyList[StellaEvent::LastKCODE];
+
+    // Lookup tables for joystick numbers and events
+    static StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK];
+    static StellaEvent::JoyCode  joyButtonList[StellaEvent::LastJCODE-4];
 
     const CGlobalData* m_rGlobalData;
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainWin32.cxx,v 1.2 2003-11-14 00:47:35 stephena Exp $
+// $Id: MainWin32.cxx,v 1.3 2003-11-16 19:32:52 stephena Exp $
 //============================================================================
 
 #define STRICT
@@ -89,11 +89,13 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
   myIsInitialized = true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MainWin32::~MainWin32()
 {
   cleanup();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MainWin32::cleanup()
 {
   ShowCursor(TRUE);
@@ -113,6 +115,7 @@ void MainWin32::cleanup()
   myIsInitialized = false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DWORD MainWin32::run()
 {
   if(!myIsInitialized)
@@ -200,6 +203,7 @@ DWORD MainWin32::run()
 	return msg.wParam;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MainWin32::UpdateEvents()
 {
   DIDEVICEOBJECTDATA eventArray[64];
@@ -281,66 +285,55 @@ void MainWin32::UpdateEvents()
       }
     }
   }
-/*
-    //
-	// Update joystick
-    //
 
-  FIXME - add multiple joysticks 
-	if (m_pDirectJoystick->Update() == S_OK)
-	{
-		rgEventState[Event::JoystickZeroFire] |=
-			m_pDirectJoystick->IsButtonPressed(0);
+  // Check for joystick events
+  for(uInt32 joystick = 0; joystick < theInput->numJoysticks(); joystick++)
+  {
+    numEvents = 64;
+    if(theInput->getJoystickEvents(joystick, eventArray, &numEvents))
+    {
+      StellaEvent::JoyStick stick = joyList[joystick];
+      StellaEvent::JoyCode code;
+      
+      for(uInt32 i = 0; i < numEvents; i++ ) 
+      {
+        Event::Type type = Event::LastType;
+        Int32 state, value;
 
-		LONG x;
-		LONG y;
-		m_pDirectJoystick->GetPos( &x, &y );
-
-		if (x < 0)
+        if(eventArray[i].dwOfs == DIJOFS_X)  // left-right motion
         {
-			rgEventState[Event::JoystickZeroLeft] = 1;
+          value = (Int32) eventArray[i].dwData;
+
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
+            (value < 0) ? 1 : 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
+            (value > 0) ? 1 : 0);
         }
-		else if (x > 0)
+        else if(eventArray[i].dwOfs == DIJOFS_Y)  // up-down motion
         {
-			rgEventState[Event::JoystickZeroRight] = 1;
+          value = (Int32) eventArray[i].dwData;
+
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
+            (value < 0) ? 1 : 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
+            (value > 0) ? 1 : 0);
         }
-		if (y < 0)
+        else  // Check for button press and release
         {
-			rgEventState[Event::JoystickZeroUp] = 1;
+          for(uInt32 j = 0; j < StellaEvent::LastJCODE-4; j++)
+          {
+            if(eventArray[i].dwOfs == DIJOFS_BUTTON(j))
+            {
+              code  = joyButtonList[j];
+              state = (Int32) eventArray[i].dwData & 0x80 ? 1 : 0;
+
+              theConsole->eventHandler().sendJoyEvent(stick, code, state); 
+            }
+          }
         }
-		else if (y > 0)
-        {
-			rgEventState[Event::JoystickZeroDown] = 1;
-        }
-	}
-
-    //
-	// Update mouse
-    //
-
-	if (m_pDirectMouse->Update() == S_OK)
-	{
-		// NOTE: Mouse::GetPos returns a value from 0..999
-
-		LONG x;
-		m_pDirectMouse->GetPos( &x, NULL );
-
-		// Mouse resistance is measured between 0...1000000
-
-//    	rgEventState[ m_rGlobalData->PaddleResistanceEvent() ] = (999-x)*1000;
-		
-//		rgEventState[ m_rGlobalData->PaddleFireEvent() ] |= m_pDirectMouse->IsButtonPressed(0);
-	}
-
-    //
-	// Write new event state
-    //
-
-//	for (i = 0; i < nEventCount; ++i)
-//	{
-//		m_rEvent.set( (Event::Type)i, rgEventState[i] );
-//	}
-*/
+      }
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -456,4 +449,23 @@ MainWin32::Switches MainWin32::keyList[StellaEvent::LastKCODE] = {
   { DIK_DELETE,       StellaEvent::KCODE_DELETE       },
   { DIK_END,          StellaEvent::KCODE_END          },
   { DIK_NEXT,         StellaEvent::KCODE_PAGEDOWN     }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StellaEvent::JoyStick MainWin32::joyList[StellaEvent::LastJSTICK] = { 
+  StellaEvent::JSTICK_0, StellaEvent::JSTICK_1,
+  StellaEvent::JSTICK_2, StellaEvent::JSTICK_3,
+  StellaEvent::JSTICK_4, StellaEvent::JSTICK_5,
+  StellaEvent::JSTICK_6, StellaEvent::JSTICK_7
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StellaEvent::JoyCode MainWin32::joyButtonList[StellaEvent::LastJCODE-4] = {
+  StellaEvent::JBUTTON_0,  StellaEvent::JBUTTON_1,  StellaEvent::JBUTTON_2, 
+  StellaEvent::JBUTTON_3,  StellaEvent::JBUTTON_4,  StellaEvent::JBUTTON_5, 
+  StellaEvent::JBUTTON_6,  StellaEvent::JBUTTON_7,  StellaEvent::JBUTTON_8, 
+  StellaEvent::JBUTTON_9,  StellaEvent::JBUTTON_10, StellaEvent::JBUTTON_11, 
+  StellaEvent::JBUTTON_12, StellaEvent::JBUTTON_13, StellaEvent::JBUTTON_14, 
+  StellaEvent::JBUTTON_15, StellaEvent::JBUTTON_16, StellaEvent::JBUTTON_17, 
+  StellaEvent::JBUTTON_18, StellaEvent::JBUTTON_19
 };
