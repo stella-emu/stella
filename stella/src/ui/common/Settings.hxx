@@ -13,13 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.3 2002-09-29 14:11:11 stephena Exp $
+// $Id: Settings.hxx,v 1.4 2002-11-10 00:27:26 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
 #define SETTINGS_HXX
 
 #include "bspf.hxx"
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Props.hxx"
+#endif
 
 class Settings
 {
@@ -89,6 +93,11 @@ class Settings
     // Indicates the width and height of the game display based on properties
     uInt32 theHeight;
     uInt32 theWidth;
+
+#ifdef DEVELOPER_SUPPORT
+    // User-modified properties
+    Properties userDefinedProperties;
+#endif
 };
 
 #endif

@@ -13,8 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.3 2002-09-29 14:11:10 stephena Exp $
+// $Id: Settings.cxx,v 1.4 2002-11-10 00:27:26 stephena Exp $
 //============================================================================
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Props.hxx"
+#endif
 
 #include "Settings.hxx"
 
@@ -39,6 +43,14 @@ Settings::Settings()
   theMaxWindowSize = 0;
   theHeight = 0;
   theWidth = 0;
+
+#ifdef DEVELOPER_SUPPORT
+  userDefinedProperties.set("Display.Format", "-1");
+  userDefinedProperties.set("Display.XStart", "-1");
+  userDefinedProperties.set("Display.Width", "-1");
+  userDefinedProperties.set("Display.YStart", "-1");
+  userDefinedProperties.set("Display.Height", "-1");
+#endif
 }
 
 Settings::~Settings()
@@ -175,6 +187,42 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
     {
       theAlternateProFile = argv[++i];
     }
+#ifdef DEVELOPER_SUPPORT
+    else if(string(argv[i]) == "-Dformat")
+    {
+      string option = argv[++i];
+      if((option == "NTSC") || (option == "PAL"))
+        userDefinedProperties.set("Display.Format", option);
+    }
+    else if(string(argv[i]) == "-Dxstart")
+    {
+      string option = argv[i+1];
+      uInt32 value = atoi(argv[++i]);
+      if((value >= 0) && (value <= 80) && ((value % 4) == 0))
+        userDefinedProperties.set("Display.XStart", option);
+    }
+    else if(string(argv[i]) == "-Dwidth")
+    {
+      string option = argv[i+1];
+      uInt32 value = atoi(argv[++i]);
+      if((value >= 80) && (value <= 160) && ((value % 4) == 0))
+        userDefinedProperties.set("Display.Width", option);
+    }
+    else if(string(argv[i]) == "-Dystart")
+    {
+      string option = argv[i+1];
+      uInt32 value = atoi(argv[++i]);
+      if((value >= 0) && (value <= 64))
+        userDefinedProperties.set("Display.YStart", option);
+    }
+    else if(string(argv[i]) == "-Dheight")
+    {
+      string option = argv[i+1];
+      uInt32 value = atoi(argv[++i]);
+      if((value >= 100) && (value <= 256))
+        userDefinedProperties.set("Display.Height", option);
+    }
+#endif
     else
     {
       cout << "Undefined option " << argv[i] << endl;
