@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.6 2004-07-07 22:46:01 stephena Exp $
+// $Id: Props.cxx,v 1.7 2004-07-12 04:05:03 stephena Exp $
 //============================================================================
 
 #include "Props.hxx"
@@ -285,7 +285,7 @@ void Properties::print()
   cout << get("Cartridge.MD5") << "|"
        << get("Cartridge.Name") << "|"
        << get("Cartridge.Rarity") << "|"
-       << get("Cartridge.Manufactuer") << "|"
+       << get("Cartridge.Manufacturer") << "|"
        << get("Cartridge.Note")
        << endl;
 }
