@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.5 2002-04-10 04:09:59 bwmott Exp $
+// $Id: mainDOS.cxx,v 1.6 2002-04-22 01:31:22 bwmott Exp $
 //============================================================================
 
 #include <go32.h>
@@ -22,6 +22,7 @@
 #include <sys/nearptr.h>
 #include <dos.h>
 #include <pc.h>
+#include <unistd.h>
 
 #include <fstream>
 #include <iostream>
@@ -49,11 +50,20 @@ Console* theConsole;
 Event theEvent;
 Event theKeyboardEvent;
 
+// An alternate properties file to use
+string theAlternateProFile = "";
+
 // Indicates if the entire frame should be redrawn
 bool theRedrawEntireFrameFlag = true;
 
 // Indicates if the user wants to quit
 bool theQuitIndicator = false;
+
+// Indicates if the emulator should be paused
+bool thePauseIndicator = false;
+
+// Indicates whether to show some game info on program exit
+bool theShowInfoFlag = false;
 
 // Indicates what the desired frame rate is
 uInt32 theDesiredFrameRate = 60;
@@ -126,21 +136,28 @@ void startup()
   // Enable Mode X if we're using it
   if(theUseModeXFlag)
   {
-    outpw(0x3C4, 0x604);     // Unchain mode
-    outpw(0x3C4, 0xF02);
-    outpw(0x3D4, 0x0014);
-    outpw(0x3D4, 0xE317);
+    disable();
+    outpw(0x3C4, 0x0604);    // Disable chain mode
+    outpw(0x3D4, 0xE317);    // Disable word mode
+    outpw(0x3D4, 0x0014);    // Disable doubleword mode
+    outpw(0x3D4, 0x0100);    // Synchronous reset while setting misc output
 
-    outpw(0x3C2, 0xE3);      // Create square pixel aspect ratio
-    outpw(0x3D4, 0x2C11);    // Turn off write protect
+    outp(0x3C2, 0xE3);       // Create square pixel aspect ratio
+    outp(0x3C4, 0x00);       // Undo reset (restart sequencer)
+
+    outp(0x3D4, 0x11);       // Reprogram CRT controller
+    outp(0x3D5, (inp(0x3D5)) & 0x7f);
+
     outpw(0x3D4, 0x0D06);    // Vertical total
     outpw(0x3D4, 0x3E07);    // Overflow register
+    outpw(0x3D4, 0x4109);    // Cell height (2 to double scan)
     outpw(0x3D4, 0xEA10);    // Vertical retrace start
     outpw(0x3D4, 0xAC11);    // Vertical retrace end and write protect
     outpw(0x3D4, 0xDF12);    // Vertical display enable end
     outpw(0x3D4, 0xE715);    // Start vertical blanking
     outpw(0x3D4, 0x0616);    // End vertical blanking
-
+    enable();
+ 
     // Clear the screen now that Mode X is enabled
     for(uInt32 i = 0; i < 240 * 80; ++i)
     {
@@ -284,8 +301,41 @@ void updateDisplay(MediaSource& mediaSource)
       // Disable the near pointers
       __djgpp_nearptr_disable();
     }
+    else
+    {
+      // Counldn't enable near pointers so we'll use a slower methods :-(
+      uInt8* data = (uInt8*)(0xA0000 + offset) 
+          + (((160 - theWidth) / 2) * 2) / 4;
+ 
+      // TODO: Rearrange this loop so we don't have to do as many calls to 
+      // outp().  This is rather slow when the entire screen changes.
+      for(uInt32 y = 0; y < height; ++y)
+      {
+        uInt8* screen = data;
 
-    // TODO: I should handle the case where near pointers aren't available
+        for(uInt32 x = 0; x < width; ++x)
+        {
+          if(*current != *previous)
+          {
+            uInt8* frame = (uInt8*)current;
+
+            outp(0x3C4, 0x02);
+            outp(0x3C5, 0x03);
+            _farpokeb(_dos_ds, (uInt32)screen, *frame);
+            _farpokeb(_dos_ds, (uInt32)(screen + 1), *(frame + 2));
+
+            outp(0x3C4, 0x02);
+            outp(0x3C5, 0x0C);
+            _farpokeb(_dos_ds, (uInt32)screen, *(frame + 1));
+            _farpokeb(_dos_ds, (uInt32)(screen + 1), *(frame + 3));
+          }
+          screen += 2;
+          current++;
+          previous++;
+        }
+        data += 80;
+      }
+    }
   }
   else
   {
@@ -481,67 +531,68 @@ static void keyboardInterruptServiceRoutine(void)
   {
     uInt16 scanCode;
     Event::Type eventCode;
+    string message;
   };
 
   static Switches list[] = {
-    { SCAN_1,         Event::KeyboardZero1 },
-    { SCAN_2,         Event::KeyboardZero2 },
-    { SCAN_3,         Event::KeyboardZero3 },
-    { SCAN_Q,         Event::KeyboardZero4 },
-    { SCAN_W,         Event::KeyboardZero5 },
-    { SCAN_E,         Event::KeyboardZero6 },
-    { SCAN_A,         Event::KeyboardZero7 },
-    { SCAN_S,         Event::KeyboardZero8 },
-    { SCAN_D,         Event::KeyboardZero9 },
-    { SCAN_Z,         Event::KeyboardZeroStar },
-    { SCAN_X,         Event::KeyboardZero0 },
-    { SCAN_C,         Event::KeyboardZeroPound },
+    { SCAN_1,         Event::KeyboardZero1,             "" },
+    { SCAN_2,         Event::KeyboardZero2,             "" },
+    { SCAN_3,         Event::KeyboardZero3,             "" },
+    { SCAN_Q,         Event::KeyboardZero4,             "" },
+    { SCAN_W,         Event::KeyboardZero5,             "" },
+    { SCAN_E,         Event::KeyboardZero6,             "" },
+    { SCAN_A,         Event::KeyboardZero7,             "" },
+    { SCAN_S,         Event::KeyboardZero8,             "" },
+    { SCAN_D,         Event::KeyboardZero9,             "" },
+    { SCAN_Z,         Event::KeyboardZeroStar,          "" },
+    { SCAN_X,         Event::KeyboardZero0,             "" },
+    { SCAN_C,         Event::KeyboardZeroPound,         "" },
 
-    { SCAN_8,         Event::KeyboardOne1 },
-    { SCAN_9,         Event::KeyboardOne2 },
-    { SCAN_0,         Event::KeyboardOne3 },
-    { SCAN_I,         Event::KeyboardOne4 },
-    { SCAN_O,         Event::KeyboardOne5 },
-    { SCAN_P,         Event::KeyboardOne6 },
-    { SCAN_K,         Event::KeyboardOne7 },
-    { SCAN_L,         Event::KeyboardOne8 },
-    { SCAN_SCOLON,    Event::KeyboardOne9 },
-    { SCAN_COMMA,     Event::KeyboardOneStar },
-    { SCAN_STOP,      Event::KeyboardOne0 },
-    { SCAN_FSLASH,    Event::KeyboardOnePound },
+    { SCAN_8,         Event::KeyboardOne1,              "" },
+    { SCAN_9,         Event::KeyboardOne2,              "" },
+    { SCAN_0,         Event::KeyboardOne3,              "" },
+    { SCAN_I,         Event::KeyboardOne4,              "" },
+    { SCAN_O,         Event::KeyboardOne5,              "" },
+    { SCAN_P,         Event::KeyboardOne6,              "" },
+    { SCAN_K,         Event::KeyboardOne7,              "" },
+    { SCAN_L,         Event::KeyboardOne8,              "" },
+    { SCAN_SCOLON,    Event::KeyboardOne9,              "" },
+    { SCAN_COMMA,     Event::KeyboardOneStar,           "" },
+    { SCAN_STOP,      Event::KeyboardOne0,              "" },
+    { SCAN_FSLASH,    Event::KeyboardOnePound,          "" },
 
-    { SCAN_DOWN,      Event::JoystickZeroDown },
-    { SCAN_UP,        Event::JoystickZeroUp },
-    { SCAN_LEFT,      Event::JoystickZeroLeft },
-    { SCAN_RIGHT,     Event::JoystickZeroRight },
-    { SCAN_SPACE,     Event::JoystickZeroFire },
-    { SCAN_Z,         Event::BoosterGripZeroTrigger },
-    { SCAN_X,         Event::BoosterGripZeroBooster },
+    { SCAN_DOWN,      Event::JoystickZeroDown,          "" },
+    { SCAN_UP,        Event::JoystickZeroUp,            "" },
+    { SCAN_LEFT,      Event::JoystickZeroLeft,          "" },
+    { SCAN_RIGHT,     Event::JoystickZeroRight,         "" },
+    { SCAN_SPACE,     Event::JoystickZeroFire,          "" },
+    { SCAN_Z,         Event::BoosterGripZeroTrigger,    "" },
+    { SCAN_X,         Event::BoosterGripZeroBooster,    "" },
    
-    { SCAN_W,         Event::JoystickZeroUp },
-    { SCAN_S,         Event::JoystickZeroDown },
-    { SCAN_A,         Event::JoystickZeroLeft },
-    { SCAN_D,         Event::JoystickZeroRight },
-    { SCAN_TAB,       Event::JoystickZeroFire },
-    { SCAN_1,         Event::BoosterGripZeroTrigger },
-    { SCAN_2,         Event::BoosterGripZeroBooster },
+    { SCAN_W,         Event::JoystickZeroUp,            "" },
+    { SCAN_S,         Event::JoystickZeroDown,          "" },
+    { SCAN_A,         Event::JoystickZeroLeft,          "" },
+    { SCAN_D,         Event::JoystickZeroRight,         "" },
+    { SCAN_TAB,       Event::JoystickZeroFire,          "" },
+    { SCAN_1,         Event::BoosterGripZeroTrigger,    "" },
+    { SCAN_2,         Event::BoosterGripZeroBooster,    "" },
    
-    { SCAN_L,         Event::JoystickOneDown },
-    { SCAN_O,         Event::JoystickOneUp },
-    { SCAN_K,         Event::JoystickOneLeft },
-    { SCAN_SCOLON,    Event::JoystickOneRight },
-    { SCAN_J,         Event::JoystickOneFire },
-    { SCAN_N,         Event::BoosterGripOneTrigger },
-    { SCAN_M,         Event::BoosterGripOneBooster },
+    { SCAN_L,         Event::JoystickOneDown,           "" },
+    { SCAN_O,         Event::JoystickOneUp,             "" },
+    { SCAN_K,         Event::JoystickOneLeft,           "" },
+    { SCAN_SCOLON,    Event::JoystickOneRight,          "" },
+    { SCAN_J,         Event::JoystickOneFire,           "" },
+    { SCAN_N,         Event::BoosterGripOneTrigger,     "" },
+    { SCAN_M,         Event::BoosterGripOneBooster,     "" },
    
-    { SCAN_F1,        Event::ConsoleSelect },
-    { SCAN_F2,        Event::ConsoleReset },
-    { SCAN_F3,        Event::ConsoleColor },
-    { SCAN_F4,        Event::ConsoleBlackWhite },
-    { SCAN_F5,        Event::ConsoleLeftDifficultyA },
-    { SCAN_F6,        Event::ConsoleLeftDifficultyB },
-    { SCAN_F7,        Event::ConsoleRightDifficultyA },
-    { SCAN_F8,        Event::ConsoleRightDifficultyB }
+    { SCAN_F1,        Event::ConsoleSelect,             "" },
+    { SCAN_F2,        Event::ConsoleReset,              "" },
+    { SCAN_F3,        Event::ConsoleColor,              "Color Mode" },
+    { SCAN_F4,        Event::ConsoleBlackWhite,         "BW Mode" },
+    { SCAN_F5,        Event::ConsoleLeftDifficultyA,    "Left Difficulty A" },
+    { SCAN_F6,        Event::ConsoleLeftDifficultyB,    "Left Difficulty B" },
+    { SCAN_F7,        Event::ConsoleRightDifficultyA,   "Right Difficulty A" },
+    { SCAN_F8,        Event::ConsoleRightDifficultyB,   "Right Difficulty B" }
   };
 
   // Get the scan code of the key
@@ -555,6 +606,18 @@ static void keyboardInterruptServiceRoutine(void)
     {
       theQuitIndicator = true;
     }
+    // See if the pause/break key has been pressed
+    else if((scanCode & 0x7f) == SCAN_BREAK)
+    {
+      if(!(scanCode & 0x80))
+      {
+        // Toggle the pause state
+        thePauseIndicator = !thePauseIndicator;
+
+        // Pause the console
+        theConsole->mediaSource().pause(thePauseIndicator);
+      }
+    }
     else
     {
       // Change the event state if needed
@@ -564,6 +627,12 @@ static void keyboardInterruptServiceRoutine(void)
         {
           theEvent.set(list[i].eventCode, (scanCode & 0x80) ? 0 : 1);
           theKeyboardEvent.set(list[i].eventCode, (scanCode & 0x80) ? 0 : 1);
+
+          if(!(scanCode & 0x80) && (list[i].message != ""))
+          {
+            theConsole->mediaSource().showMessage(list[i].message,
+                2 * theDesiredFrameRate);
+          }
         }
       }
     }
@@ -580,6 +649,8 @@ void usage()
 {
   static const char* message[] = {
     "",
+    "Stella for DOS version 1.2",
+    "",
     "Usage: stella [option ...] file",
     "",
     "Valid options are:",
@@ -588,6 +659,8 @@ void usage()
     "  -modex                  Use 320x240 video mode instead of 320x200",
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
+    "  -pro <props file>       Use given properties file instead of stella.pro",
+    "  -showinfo               Show some game info on exit",
     0
   };
 
@@ -603,13 +676,25 @@ void usage()
 
   @param set The properties set to setup
 */
-void setupProperties(PropertiesSet& set)
+bool setupProperties(PropertiesSet& set)
 {
-  // Try to load the file stella.pro file
-  string filename = "stella.pro";
+  // Try to load the properties file
+  string filename = (theAlternateProFile != "") ? theAlternateProFile :
+      "stella.pro";
 
-  // File was opened so load properties from it
-  set.load(filename, &Console::defaultProperties(), false);
+  if(access(filename.c_str(), F_OK) == 0)
+  {
+    // File is accessible so load properties from it
+    set.load(filename, &Console::defaultProperties(), false);
+
+    return true;
+  }
+  else
+  {
+    cerr << "ERROR: Couldn't find \"" << filename << "\" properties file."
+        << endl;
+    return false;
+  }
 }
 
 /**
@@ -661,6 +746,14 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theUseModeXFlag = true;
     }
+    else if(string(argv[i]) == "-showinfo")
+    {
+      theShowInfoFlag = true;
+    }
+    else if(string(argv[i]) == "-pro")
+    {
+      theAlternateProFile = argv[++i];
+    }
     else
     {
       usage();
@@ -693,7 +786,11 @@ int main(int argc, char* argv[])
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
-  setupProperties(propertiesSet);
+  if(!setupProperties(propertiesSet))
+  {
+    delete[] image;
+    exit(1);
+  }
 
   // Create a sound object for use with the console
   SoundDOS sound;
@@ -721,7 +818,10 @@ int main(int argc, char* argv[])
     uclock_t before = uclock();
 
     // Ask the media source to prepare the next frame
-    theConsole->mediaSource().update();
+    if(!thePauseIndicator)
+    {
+      theConsole->mediaSource().update();
+    }
 
 /*
     TODO: This code seems to work fine under mode 13, however, it slows
@@ -731,7 +831,7 @@ int main(int argc, char* argv[])
     // If we're not behind schedule then let's wait for the VSYNC!
     static uclock_t endOfLastVsync = 0;
     if((theDesiredFrameRate <= 60) && 
-        (uclock() - endOfLastVsync < (1000000 / theDesiredFrameRate)))
+        (uclock() - endOfLastVsync < (UCLOCKS_PER_SEC / theDesiredFrameRate)))
     {
       while(inp(0x3DA) & 0x08);
       while(!(inp(0x3DA) & 0x08));
@@ -742,13 +842,13 @@ int main(int argc, char* argv[])
     // Update the display and handle events
     updateDisplay(theConsole->mediaSource());
     handleEvents();
-    
+  
     // Now, waste time if we need to so that we are at the desired frame rate
     for(;;)
     {
-      uInt32 delta = uclock() - before;
+      uclock_t delta = uclock() - before;
 
-      if(delta > (1000000 / theDesiredFrameRate))
+      if(delta > (UCLOCKS_PER_SEC / theDesiredFrameRate))
       {
         break;
       }
@@ -759,16 +859,26 @@ int main(int argc, char* argv[])
   uclock_t endingTime = uclock();
 
   uInt32 scanlines = theConsole->mediaSource().scanlines();
+  string cartName = theConsole->properties().get("Cartridge.Name");
+  string cartMD5 = theConsole->properties().get("Cartridge.MD5");
   delete theConsole;
   shutdown();
 
-  double executionTime = (endingTime - startingTime) / 1000000.0;
-  double framesPerSecond = numberOfFrames / executionTime;
+  if(theShowInfoFlag)
+  {
+    double executionTime = (endingTime - startingTime) / 
+        (double)UCLOCKS_PER_SEC;
+    double framesPerSecond = numberOfFrames / executionTime;
 
-  cout << endl;
-  cout << numberOfFrames << " total frames drawn\n";
-  cout << framesPerSecond << " frames/second\n";
-  cout << scanlines << " scanlines in last frame\n";
-  cout << endl;
+    cout << endl;
+    cout << numberOfFrames << " total frames drawn\n";
+    cout << framesPerSecond << " frames/second\n";
+    cout << scanlines << " scanlines in last frame\n";
+    cout << endl;
+    cout << "Cartridge Name: " << cartName << endl;
+    cout << "Cartridge MD5:  " << cartMD5 << endl;
+    cout << endl;
+    cout << endl;
+  }
 }
 
