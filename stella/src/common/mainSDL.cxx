@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.7 2004-06-23 00:15:32 stephena Exp $
+// $Id: mainSDL.cxx,v 1.8 2004-06-23 03:59:59 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -380,17 +380,7 @@ void handleEvents()
         else if(key == SDLK_MINUS)
           theDisplay->resize(-1);
         else if(key == SDLK_RETURN)
-        {
-#ifdef FIXMEWIN32
-          // Disable fullscreen OpenGL mode - FIXME
-          if(theSettings->getString("video") == "gl")
-            theDisplay->showMessage("Fullscreen OpenGL disabled");
-          else
-            theDisplay->toggleFullscreen();
-#else
           theDisplay->toggleFullscreen();
-#endif
-        }
 #ifdef DISPLAY_OPENGL
         else if(key == SDLK_f && theUseOpenGLFlag)
           ((FrameBufferGL*)theDisplay)->toggleFilter();
@@ -868,11 +858,6 @@ int main(int argc, char* argv[])
 #ifdef DISPLAY_OPENGL
   else if(videodriver == "gl")
   {
-   #ifdef WIN32
-    // Disable fullscreen OpenGL mode in Windows for now - FIXME
-    theSettings->setBool("fullscreen", false);
-   #endif
-
     theDisplay = new FrameBufferGL();
     theUseOpenGLFlag = true;
     if(theShowInfoFlag)
