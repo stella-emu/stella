@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -34,8 +34,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib
-SDLmain.lib"
-				AdditionalDependencies="sdl.lib sdlmain.lib"
+SDLmain.lib
+libpng.lib
+opengl32.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -72,7 +74,7 @@ SDLmain.lib"
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="2"
@@ -83,8 +85,10 @@ SDLmain.lib"
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib
-SDLmain.lib"
-				AdditionalDependencies="sdl.lib sdlmain.lib"
+SDLmain.lib
+libpng.lib
+opengl32.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -212,6 +216,9 @@ SDLmain.lib"
 				RelativePath="..\..\emucore\FrameBuffer.cxx">
 			</File>
 			<File
+				RelativePath="..\..\common\FrameBufferGL.cxx">
+			</File>
+			<File
 				RelativePath="..\..\common\FrameBufferSDL.cxx">
 			</File>
 			<File
@@ -267,6 +274,9 @@ SDLmain.lib"
 			</File>
 			<File
 				RelativePath="..\..\win32\SettingsWin32.cxx">
+			</File>
+			<File
+				RelativePath="..\..\common\Snapshot.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Sound.cxx">
@@ -385,6 +395,9 @@ SDLmain.lib"
 				RelativePath="..\..\emucore\FrameBuffer.hxx">
 			</File>
 			<File
+				RelativePath="..\..\common\FrameBufferGL.hxx">
+			</File>
+			<File
 				RelativePath="..\..\common\FrameBufferSDL.hxx">
 			</File>
 			<File
@@ -437,6 +450,9 @@ SDLmain.lib"
 			</File>
 			<File
 				RelativePath="..\..\win32\SettingsWin32.hxx">
+			</File>
+			<File
+				RelativePath="..\..\common\Snapshot.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Sound.hxx">

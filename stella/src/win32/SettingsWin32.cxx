@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.6 2004-06-28 23:13:53 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.7 2004-07-04 15:23:20 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -86,6 +86,7 @@ void SettingsWin32::usage(string& message)
     << "               nearest         Normal scaling (GL_NEAREST)\n"
     << "               linear          Blurred scaling (GL_LINEAR)\n"
     << "  -gl_aspect  <number>       Scale the width by the given amount\n"
+    << "  -gl_fsmax   <0|1>          Use the largest available screenmode in fullscreen OpenGL\n"
     << endl
   #endif
     << "  -sound      <0|1>          Enable sound generation\n"
