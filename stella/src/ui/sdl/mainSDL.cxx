@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.73 2004-04-27 00:50:52 stephena Exp $
+// $Id: mainSDL.cxx,v 1.74 2004-05-06 00:06:20 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -64,20 +64,32 @@ static uInt32 getTicks();
 static bool setupProperties(PropertiesSet& set);
 
 #ifdef JOYSTICK_SUPPORT
-  static SDL_Joystick* theJoysticks[StellaEvent::LastJSTICK];
 //  static uInt32 thePaddleNumber;
 
   // Lookup table for joystick numbers and events
   StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK] = {
-    StellaEvent::JSTICK_0, StellaEvent::JSTICK_1,
-    StellaEvent::JSTICK_2, StellaEvent::JSTICK_3
+    StellaEvent::JSTICK_0, StellaEvent::JSTICK_1, StellaEvent::JSTICK_2,
+    StellaEvent::JSTICK_3, StellaEvent::JSTICK_5, StellaEvent::JSTICK_5
   };
   StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
-    StellaEvent::JBUTTON_0, StellaEvent::JBUTTON_1, StellaEvent::JBUTTON_2, 
-    StellaEvent::JBUTTON_3, StellaEvent::JBUTTON_4, StellaEvent::JBUTTON_5, 
-    StellaEvent::JBUTTON_6, StellaEvent::JBUTTON_7, StellaEvent::JBUTTON_8, 
-    StellaEvent::JBUTTON_9
+    StellaEvent::JBUTTON_0,  StellaEvent::JBUTTON_1,  StellaEvent::JBUTTON_2, 
+    StellaEvent::JBUTTON_3,  StellaEvent::JBUTTON_4,  StellaEvent::JBUTTON_5, 
+    StellaEvent::JBUTTON_6,  StellaEvent::JBUTTON_7,  StellaEvent::JBUTTON_8, 
+    StellaEvent::JBUTTON_9,  StellaEvent::JBUTTON_10, StellaEvent::JBUTTON_11,
+    StellaEvent::JBUTTON_12, StellaEvent::JBUTTON_13, StellaEvent::JBUTTON_14,
+    StellaEvent::JBUTTON_15, StellaEvent::JBUTTON_16, StellaEvent::JBUTTON_17,
+    StellaEvent::JBUTTON_18, StellaEvent::JBUTTON_19
   };
+
+  enum JoyType { JT_NONE, JT_REGULAR, JT_STELLADAPTOR_1, JT_STELLADAPTOR_2 };
+
+  struct Stella_Joystick
+  {
+    SDL_Joystick* stick;
+    JoyType       type;
+  };
+
+  static Stella_Joystick theJoysticks[StellaEvent::LastJSTICK];
 #endif
 
 // Pointer to the console object or the null pointer
@@ -256,9 +268,15 @@ inline uInt32 getTicks()
 bool setupJoystick()
 {
 #ifdef JOYSTICK_SUPPORT
+  // Keep track of how many Stelladaptors we've found
+  uInt8 saCount = 0;
+
   // First clear the joystick array
   for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
-    theJoysticks[i] = (SDL_Joystick*) NULL;
+  {
+    theJoysticks[i].stick = (SDL_Joystick*) NULL;
+    theJoysticks[i].type  = JT_NONE;
+  }
 
   // Initialize the joystick subsystem
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
@@ -269,17 +287,50 @@ bool setupJoystick()
     return true;
   }
 
-  // Try to open as many joysticks as possible (up to 4)
-  // Let the user decide how to map them
+  // Try to open 4 regular joysticks and 2 Stelladaptor devices
   uInt32 limit = SDL_NumJoysticks() <= StellaEvent::LastJSTICK ?
                  SDL_NumJoysticks() : StellaEvent::LastJSTICK;
   for(uInt32 i = 0; i < limit; i++)
   {
-    theJoysticks[i] = SDL_JoystickOpen(i);
-    if(theJoysticks[i] != NULL && theShowInfoFlag)
+    string name = SDL_JoystickName(i);
+    theJoysticks[i].stick = SDL_JoystickOpen(i);
+
+    // Skip if we couldn't open it for any reason
+    if(theJoysticks[i].stick == NULL)
+      continue;
+
+    // Figure out what type of joystick this is
+    if(name.substr(0,12) == "Stelladaptor")
     {
-      cout << "Joystick " << i << ": " << SDL_JoystickName(i)
-           << " with " << SDL_JoystickNumButtons(theJoysticks[i]) << " buttons.\n";
+      saCount++;
+      if(saCount > 2)  // Ignore more than 2 Stelladaptors
+      {
+        theJoysticks[i].type = JT_NONE;
+        continue;
+      }
+      else if(saCount == 1)
+      {
+        name = "Left Stelladaptor  (Left joystick, Paddles 0 and 1, Left driving controller)";
+        theJoysticks[i].type = JT_STELLADAPTOR_1;
+      }
+      else if(saCount == 2)
+      {
+        name = "Right Stelladaptor (Right joystick, Paddles 2 and 3, Right driving controller)";
+        theJoysticks[i].type = JT_STELLADAPTOR_2;
+      }
+
+      if(theShowInfoFlag)
+        cout << "Joystick " << i << ": " << name << endl;
+    }
+    else
+    {
+      theJoysticks[i].type = JT_REGULAR;
+      if(theShowInfoFlag)
+      {
+        cout << "Joystick " << i << ": " << SDL_JoystickName(i)
+             << " with " << SDL_JoystickNumButtons(theJoysticks[i].stick)
+             << " buttons.\n";
+      }
     }
   }
 #endif
@@ -523,41 +574,78 @@ void handleEvents()
     Int32 state;
     Uint8 axis;
     Sint16 value;
+    JoyType type;
 
     if(event.jbutton.which >= StellaEvent::LastJSTICK)
       return;
 
     stick = joyList[event.jbutton.which];
+    type  = theJoysticks[event.jbutton.which].type;
 
-    if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+    // Figure put what type of joystick we're dealing with
+    // Stelladaptors behave differently, and can't be remapped
+    switch(type)
     {
-      if(event.jbutton.button >= StellaEvent::LastJCODE)
-        return;
+      case JT_REGULAR:
 
-      code  = joyButtonList[event.jbutton.button];
-      state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+        if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+        {
+          if(event.jbutton.button >= StellaEvent::LastJCODE)
+            return;
 
-      theConsole->eventHandler().sendJoyEvent(stick, code, state);
-    }
-    else if(event.type == SDL_JOYAXISMOTION)
-    {
-      axis = event.jaxis.axis;
-      value = event.jaxis.value;
+          code  = joyButtonList[event.jbutton.button];
+          state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-      if(axis == 0)  // x-axis
-      {
-        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
-          (value < -16384) ? 1 : 0);
-        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
-          (value > 16384) ? 1 : 0);
-      }
-      else if(axis == 1)  // y-axis
-      {
-        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
-          (value < -16384) ? 1 : 0);
-        theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
-          (value > 16384) ? 1 : 0);
-      }
+          theConsole->eventHandler().sendJoyEvent(stick, code, state);
+        }
+        else if(event.type == SDL_JOYAXISMOTION)
+        {
+          axis = event.jaxis.axis;
+          value = event.jaxis.value;
+
+          if(axis == 0)  // x-axis
+          {
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
+              (value < -16384) ? 1 : 0);
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
+              (value > 16384) ? 1 : 0);
+          }
+          else if(axis == 1)  // y-axis
+          {
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
+              (value < -16384) ? 1 : 0);
+            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
+              (value > 16384) ? 1 : 0);
+          }
+        }
+        break;  // Regular joystick
+
+      case JT_STELLADAPTOR_1:
+
+        if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+        {
+          cerr << "Stelladaptor 1 button activated\n";
+        }
+        else if(event.type == SDL_JOYAXISMOTION)
+        {
+          cerr << "Stelladaptor 1 axis activated\n";
+        }
+        break;
+
+      case JT_STELLADAPTOR_2:
+
+        if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+        {
+          cerr << "Stelladaptor 2 button activated\n";
+        }
+        else if(event.type == SDL_JOYAXISMOTION)
+        {
+          cerr << "Stelladaptor 2 axis activated\n";
+        }
+        break;
+
+      default:
+        break;
     }
 #endif
   }
@@ -634,7 +722,7 @@ void cleanup()
   for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
   {
     if(SDL_JoystickOpened(i))
-      SDL_JoystickClose(theJoysticks[i]);
+      SDL_JoystickClose(theJoysticks[i].stick);
   }
 #endif
 
