@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.18 2002-11-13 16:19:20 stephena Exp $
+// $Id: TIA.cxx,v 1.19 2002-11-19 04:33:48 bwmott Exp $
 //============================================================================
 
 #include <cassert>
@@ -485,11 +485,11 @@ bool TIA::load(Deserializer& in)
 
     uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
     reg1 = (uInt8) in.getLong();
-    reg1 = (uInt8) in.getLong();
-    reg1 = (uInt8) in.getLong();
-    reg1 = (uInt8) in.getLong();
-    reg1 = (uInt8) in.getLong();
-    reg1 = (uInt8) in.getLong();
+    reg2 = (uInt8) in.getLong();
+    reg3 = (uInt8) in.getLong();
+    reg4 = (uInt8) in.getLong();
+    reg5 = (uInt8) in.getLong();
+    reg6 = (uInt8) in.getLong();
 
     // Only update the TIA sound registers if sound is enabled
     if(mySampleRate != 0)
