@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.12 2004-07-22 01:54:08 stephena Exp $
+// $Id: Sound.hxx,v 1.13 2005-01-04 02:29:31 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -33,7 +33,7 @@ class System;
   to compile Stella with no sound support whatsoever.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: Sound.hxx,v 1.12 2004-07-22 01:54:08 stephena Exp $
+  @version $Id: Sound.hxx,v 1.13 2005-01-04 02:29:31 stephena Exp $
 */
 class Sound
 {
@@ -106,6 +106,14 @@ class Sound
       @param percent The new volume percentage level for the sound device
     */
     virtual void setVolume(Int32 percent);
+
+    /**
+      Adjusts the volume of the sound device based on the given direction.
+
+      @param direction  Increase or decrease the current volume by a predefined
+                        amount based on the direction (1 = increase, -1 =decrease)
+    */
+    virtual void adjustVolume(Int8 direction);
 
 public:
     /**

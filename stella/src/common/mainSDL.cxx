@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.18 2005-01-03 19:16:09 stephena Exp $
+// $Id: mainSDL.cxx,v 1.19 2005-01-04 02:29:29 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -64,6 +64,7 @@ static void HandleEvents();
 static uInt32 GetTicks();
 static void SetupProperties(PropertiesSet& set);
 static void ShowInfo(const string& msg);
+static void SetPaddleMode(Int32 mode);
 
 #ifdef JOYSTICK_SUPPORT
   // Lookup table for joystick numbers and events
@@ -267,6 +268,21 @@ static KeyList keyList[] = {
 
 
 /**
+  Set the mouse to emulate the given paddle
+*/
+void SetPaddleMode(Int32 mode)
+{
+	thePaddleMode = mode;
+
+    ostringstream buf;
+    buf << "Mouse is paddle " << mode;
+    theDisplay->showMessage(buf.str());
+
+	theSettings->setInt("paddle",thePaddleMode);
+}
+
+
+/**
   Prints given message based on 'theShowInfoFlag'
 */
 static void ShowInfo(const string& msg)
@@ -412,6 +428,15 @@ void HandleEvents()
             case SDLK_RETURN:
               theDisplay->toggleFullscreen();
               break;
+
+            case SDLK_LEFTBRACKET:
+              theSound->adjustVolume(-1);
+              break;
+
+            case SDLK_RIGHTBRACKET:
+              theSound->adjustVolume(1);
+              break;
+
 #ifdef DISPLAY_OPENGL
             case SDLK_f:
               if(theUseOpenGLFlag)
@@ -473,6 +498,22 @@ void HandleEvents()
             case SDLK_p:         // Ctrl-p toggles different palettes
               theConsole->togglePalette();
               theDisplay->setupPalette();
+              break;
+
+            case SDLK_0:         // Ctrl-0 sets the mouse to paddle 0
+              SetPaddleMode(0);
+              break;
+
+            case SDLK_1:         // Ctrl-1 sets the mouse to paddle 1
+              SetPaddleMode(1);
+              break;
+
+            case SDLK_2:         // Ctrl-2 sets the mouse to paddle 2
+              SetPaddleMode(2);
+              break;
+
+            case SDLK_3:         // Ctrl-3 sets the mouse to paddle 3
+              SetPaddleMode(3);
               break;
 
 #ifdef DEVELOPER_SUPPORT

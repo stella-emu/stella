@@ -209,40 +209,33 @@
 	software.  Stella is written in C++, which allows it to be ported to other
 	operating systems and architectures.  Since its original release Stella has
 	been ported to AcornOS, AmigaOS, DOS, FreeBSD, Linux, MacOS, OpenStep, OS/2,
-        Sega Dreamcast, Unix, and Windows.
+    Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 1.4.1</b></h2>
+	<h2><b>New in Release 1.4.2</b></h2>
 
 	<ul>
-		<li>Fixed PAL sound issues.  PAL games now should sound correct (no distortion
-			or missing sounds), but some games may still run too fast.  This is still
-			a work-in-progress, and will be fixed in Stella 1.5.</li>
+		<li>Updated the sound system.  All popping and cracking sounds that previously
+			occurred at program start/stop and when entering/exiting menu or pause mode
+			have been eliminated.</li>
 
-		<li>Cleaned up the SDL event gathering loop.  This should hopefully fix the
-			problems with "double-pumping events" reported by some Windows users.
-			Event gathering and dispatching is now much faster as well.</li>
+		<li>Added <b>Control [</b> and <b>Control ]</b> keys to dynamically adjust the
+			sound volume during emulation.</li>
 
-		<li>Fixed a bug where the Control or Alt keys could be assigned to some event,
-			but they could never be used.  Control/Alt can now be used for any event.</li>
+		<li>Added <b>Control 0</b>, <b>Control 1</b>, <b>Control 2</b>, <b>Control 3</b>
+			keys to dynamically change which paddle the mouse should emulate.</li>
 
-		<li>Updated stella.pro file to work with the latest Good2600 ROMset release
-			(Thanks go to Voch for helping to maintain the stella.pro file).</li>
+		<li>Added <b>-video_driver</b> argument.  This accepts the different options
+			that can be specified for SDL_VIDEODRIVER (see SDL homepage for more
+			information).  Basically, it eliminates the need to set the SDL_VIDEODRIVER
+			environment variable.</li>
 
-		<li>For the Windows port; removed requirement for ROM files to be named *.bin
-		in the StellaX frontend.  The ROM's can now have any name, but ZIP-files are
-		not yet supported.</li>
+		<li>For the Windows port; added <i>windib</i> and <i>directx</i> as options for
+			'video_driver' when using software rendering.  The 'windib' option is now
+			the default, and in many cases it's up to 10 times faster than using
+			'directx'.</li>
 
-		<li>For the Windows port; fixed the problems with the included modified SDL
-			library and Windows 98 users.  Stella should now run in Windows 98.</li>
-
-		<li>For the OSX port; added preference to allow user to select the directory
-			in which ROM images are stored.  This sets the default directory to start
-			the browsing for a ROM in, and doesn't preclude the user from selecting a 
-			file outside that directory.</li>
-
-		<li>For the OSX port; fixed preferences bug where Preferences changed before
-			a game was opened were not being saved.</li>
+		<li>For the OSX port; blah ...</li>
 	</ul>
 
 	<p>
@@ -328,8 +321,9 @@
 	<p>The Mac version of Stella is designed to work on a Power Macintosh with
 	the following:</p>
 	<ul>
-  		<li>Mac OSX 10.1 or Above </li>
-  		<li>500 MHz G3 PPC processor or Above </li>
+		<li>Mac OSX 10.1 or Above</li>
+		<li>500 MHz G4 PPC processor or above (Stella <b>may</b> work with a G3
+			processor, but this is still a work-in-progress)</li>
 	</ul>
 
 	<p>
@@ -1491,6 +1485,35 @@
 			<td>Control + s</td>
 		</tr>
 
+		<tr>
+			<td>Increase volume</td>
+			<td>Control + ]</td>
+		</tr>
+
+		<tr>
+			<td>Decrease volume</td>
+			<td>Control + [</td>
+		</tr>
+
+		<tr>
+			<td>Set mouse to emulate paddle 0</td>
+			<td>Control + 0</td>
+		</tr>
+
+		<tr>
+			<td>Set mouse to emulate paddle 1</td>
+			<td>Control + 1</td>
+		</tr>
+
+		<tr>
+			<td>Set mouse to emulate paddle 2</td>
+			<td>Control + 2</td>
+		</tr>
+
+		<tr>
+			<td>Set mouse to emulate paddle 3</td>
+			<td>Control + 3</td>
+		</tr>
 	</table>
 
 	<br><br><br>

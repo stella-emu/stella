@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.5 2004-06-20 00:52:37 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.6 2005-01-04 02:29:29 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.5 2004-06-20 00:52:37 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.6 2005-01-04 02:29:29 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -82,6 +82,14 @@ class SoundSDL : public Sound
       @param percent The new volume percentage level for the sound device
     */
     virtual void setVolume(Int32 percent);
+
+    /**
+      Adjusts the volume of the sound device based on the given direction.
+
+      @param direction  Increase or decrease the current volume by a predefined
+                        amount based on the direction (1 = increase, -1 =decrease)
+    */
+    virtual void adjustVolume(Int8 direction);
 
   public:
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.13 2004-07-22 01:54:08 stephena Exp $
+// $Id: Sound.cxx,v 1.14 2005-01-04 02:29:30 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -73,6 +73,11 @@ void Sound::set(uInt16 addr, uInt8 value, Int32 cycle)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sound::setVolume(Int32 volume)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::adjustVolume(Int8 direction)
 {
 }
 

@@ -13,17 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.6 2004-07-22 01:54:08 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.7 2005-01-04 02:29:29 stephena Exp $
 //============================================================================
 
+#include <sstream>
 #include <cassert>
 #include <cmath>
 #include <SDL.h>
 
 #include "TIASound.h"
 #include "Console.hxx"
+#include "FrameBuffer.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "Settings.hxx"
 #include "System.hxx"
 #include "SoundSDL.hxx"
 
@@ -153,6 +156,33 @@ void SoundSDL::setVolume(Int32 percent)
       SDL_UnlockAudio();
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::adjustVolume(Int8 direction)
+{
+  ostringstream strval;
+  string message;
+
+  Int32 percent = myVolume;
+
+  if(direction == -1)
+    percent -= 2;
+  else if(direction == 1)
+    percent += 2;
+
+  if((percent < 0) || (percent > 100))
+    return;
+
+  setVolume(percent);
+
+  // Now show an onscreen message
+  strval << percent;
+  message = "Volume set to ";
+  message += strval.str();
+
+  myConsole->frameBuffer().showMessage(message);
+  myConsole->settings().setInt("volume", percent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
