@@ -9,7 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "GlobalData.hxx"
 #include "PropsSet.hxx"
 #include "SettingsWin32.hxx"
 #include "GameList.h"
@@ -29,7 +28,6 @@ public:
 // Attributes
 public:
 	CCyberstellaDoc* GetDocument();
-    CGlobalData* m_pGlobalData;
     CImageList m_imglist;
 
 // Operations

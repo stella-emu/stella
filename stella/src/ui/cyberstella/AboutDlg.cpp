@@ -4,6 +4,7 @@
 #include "pch.hxx"
 #include "Cyberstella.h"
 #include "AboutDlg.h"
+#include ".\aboutdlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,9 +35,9 @@ void AboutDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(AboutDlg, CDialog)
-	//{{AFX_MSG_MAP(AboutDlg)
+	// {{AFX_MSG_MAP(AboutDlg)
 	ON_BN_CLICKED(IDC_CONTINUE, OnContinue)
-	//}}AFX_MSG_MAP
+	// }} AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,7 @@ BOOL AboutDlg::OnInitDialog()
 	m_hlMail_JSM.SetURL( _T("mailto:stephena@users.sourceforge.net?Subject=Cyberstella") );
 
 	m_hlWWW_JSM.SubclassDlgItem(IDC_WEB_MAINTAINER, this);
-	m_hlWWW_JSM.SetURL( _T("http://minbar.org") );
+	m_hlWWW_JSM.SetURL( _T("http://www.cs.mun.ca/~stephena") );
 
 	m_hlMail_Stella.SubclassDlgItem(IDC_EMAIL_STELLA, this);
 	m_hlMail_Stella.SetURL( _T("mailto:stella-main@lists.sourceforge.net") );

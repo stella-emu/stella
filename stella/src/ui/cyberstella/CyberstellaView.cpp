@@ -18,21 +18,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-//
-// Undefining USE_FS will use the (untested) windowed mode
-//
-/*
-#define USE_FS
-
-#ifdef USE_FS
-#include "DirectXFullScreen.hxx"
-#else
-#include "DirectXWindow.hxx"
-#endif
-
-#define FORCED_VIDEO_CX 640
-#define FORCED_VIDEO_CY 480
-*/
 /////////////////////////////////////////////////////////////////////////////
 // CCyberstellaView
 
@@ -59,9 +44,6 @@ CCyberstellaView::CCyberstellaView()
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 
-  // FIXME - get rid of this
-  m_pGlobalData = new CGlobalData(GetModuleHandle(NULL));
-
   // Create SettingsWin32 object
   // This should be done before any other xxxWin32 objects are created
   theSettings = new SettingsWin32();
@@ -71,7 +53,7 @@ CCyberstellaView::CCyberstellaView()
   thePropertiesSet = new PropertiesSet();
 
   // Try to load the file stella.pro file
-  string filename("stella.pro"); // FIXME look into settings to get path
+  string filename(theSettings->userPropertiesFilename());
     
   // See if we can open the file and load properties from it
   ifstream stream(filename.c_str()); 
@@ -90,14 +72,14 @@ CCyberstellaView::CCyberstellaView()
 
 CCyberstellaView::~CCyberstellaView()
 {
-  if(m_pGlobalData)
-    delete m_pGlobalData;
-
   if(thePropertiesSet)
     delete thePropertiesSet;
 
   if(theSettings)
+  {
+    theSettings->saveConfig();
     delete theSettings;
+  }
 }
 
 void CCyberstellaView::DoDataExchange(CDataExchange* pDX)
@@ -149,8 +131,8 @@ CCyberstellaDoc* CCyberstellaView::GetDocument() // non-debug version is inline
 
 void CCyberstellaView::OnConfig() 
 {
-    StellaConfig dlg(m_pGlobalData);
-    dlg.DoModal();
+  StellaConfig dlg(theSettings);
+  dlg.DoModal();
 }
 
 void CCyberstellaView::OnPlay() 
@@ -178,7 +160,7 @@ LRESULT CCyberstellaView::initialize(WPARAM wParam, LPARAM lParam)
   m_List.SetImageList (&m_imglist, LVSIL_SMALL);
 
   // Init ListCtrl
-  m_List.init(thePropertiesSet,this);
+  m_List.init(thePropertiesSet, theSettings, this);
   m_List.populateRomList();
 
   return 0;

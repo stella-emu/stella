@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainWin32.cxx,v 1.4 2003-11-19 21:06:27 stephena Exp $
+// $Id: MainWin32.cxx,v 1.5 2003-11-24 01:14:38 stephena Exp $
 //============================================================================
 
 #define STRICT
@@ -55,10 +55,10 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
   }
 
   // Create a sound object for playing audio
-//  string driver = theSettings.getString("sound");
-//  if(driver != "0")
-//    theSound = new SoundWin32();
-//  else
+  string sounddriver = theSettings.getString("sound");
+  if(sounddriver == "win32")
+    theSound = new SoundWin32();
+  else
     theSound = new Sound();
   if(!theSound)
   {
@@ -66,7 +66,7 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
     return;
   }
 
-//  theSound->setSoundVolume(theSettings.getInt("volume"));
+  theSound->setVolume(theSettings.getInt("volume"));
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, theSettings, thePropertiesSet,
@@ -76,6 +76,10 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
   // the handle to the current window.
   // This must be done after the console is created, since at this
   // point we know that the FrameBuffer has been fully initialized
+
+  // Initialize SoundWin32
+  if(sounddriver == "win32")
+    ((SoundWin32*)theSound)->Initialize(theDisplay->hwnd());
 
   // Initialize DirectInput
   theInput = new DirectInput();
@@ -92,9 +96,6 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MainWin32::~MainWin32()
 {
-  // Save the settings for this instance of the console
-  theConsole->settings().saveConfig();
-
   cleanup();
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.hxx,v 1.2 2003-11-13 00:25:07 stephena Exp $
+// $Id: FrameBufferWin32.hxx,v 1.3 2003-11-24 01:14:38 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WIN32_HXX
@@ -27,9 +27,10 @@ class MediaSource;
 
 /**
   This class implements a DirectX software framebuffer.
+  Only fullscreen mode is supported for now.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferWin32.hxx,v 1.2 2003-11-13 00:25:07 stephena Exp $
+  @version $Id: FrameBufferWin32.hxx,v 1.3 2003-11-24 01:14:38 stephena Exp $
 */ 
 class FrameBufferWin32 : public FrameBuffer
 {
@@ -45,7 +46,7 @@ class FrameBufferWin32 : public FrameBuffer
     virtual ~FrameBufferWin32();
 
     HWND hwnd() const { return myHWND; }
-    bool windowActive() { return m_fActiveWindow; }
+    bool windowActive() { return isWindowActive; }
 
     /**
       This routine should be called once the console is created to setup
@@ -140,22 +141,19 @@ class FrameBufferWin32 : public FrameBuffer
     void cleanup();
 
     HWND myHWND;
-    bool m_fActiveWindow;
-
-    RECT m_rectScreen;
-    POINT m_ptBlitOffset;
+    RECT myScreenRect;
+    POINT myBlitOffset;
 
     // Stella objects
-    SIZE mySizeGame;
+    SIZE myGameSize;
     BYTE myPalette[256];
 
-    //
     // DirectX
-    //
-    IDirectDraw* m_piDD;
-    IDirectDrawSurface* m_piDDSPrimary;
-    IDirectDrawSurface* m_piDDSBack;
-    IDirectDrawPalette* m_piDDPalette;
+    IDirectDraw* myDD;
+    IDirectDrawSurface* myPrimarySurface;
+    IDirectDrawSurface* myBackSurface;
+    DDSURFACEDESC myDDSurface;
+    IDirectDrawPalette* myDDPalette;
 
     static LPCTSTR pszClassName;
 
@@ -167,6 +165,9 @@ class FrameBufferWin32 : public FrameBuffer
 
     // Indicates whether the game is currently in fullscreen
     bool isFullscreen;
+
+    // Indicates whether the window is currently active
+    bool isWindowActive;
 };
 
 #endif

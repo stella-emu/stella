@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.cxx,v 1.5 2003-11-19 21:06:27 stephena Exp $
+// $Id: FrameBufferWin32.cxx,v 1.6 2003-11-24 01:14:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -34,14 +34,14 @@ LPCTSTR FrameBufferWin32::pszClassName = _T("StellaXClass");
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferWin32::FrameBufferWin32()
-   :  m_piDD( NULL ),
-      m_piDDSPrimary( NULL ),
-      m_piDDSBack( NULL ),
-      m_piDDPalette( NULL ),
-      m_fActiveWindow( TRUE ),
+   :  myDD(NULL),
+      myPrimarySurface(NULL),
+      myBackSurface(NULL),
+      myDDPalette(NULL),
       theZoomLevel(1),
       theMaxZoomLevel(1),
-      isFullscreen(false)
+      isFullscreen(false),
+      isWindowActive(true)
 {
 }
 
@@ -49,51 +49,48 @@ FrameBufferWin32::FrameBufferWin32()
 FrameBufferWin32::~FrameBufferWin32()
 {
   cleanup();
+
+  if(myHWND)
+  {
+    DestroyWindow( myHWND );
+
+    // Remove the WM_QUIT which will be in the message queue
+    // so that the main window doesn't exit
+    MSG msg;
+    PeekMessage(&msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);
+
+    myHWND = NULL;
+  }
+
+  UnregisterClass(pszClassName, GetModuleHandle(NULL));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::cleanup()
 {
-  if(m_piDDPalette)
+  if(myDDPalette)
   {
-    m_piDDPalette->Release();
-    m_piDDPalette = NULL;
+    myDDPalette->Release();
+    myDDPalette = NULL;
   }
 
-  if ( m_piDDSBack )
+  if(myBackSurface)
   {
-    m_piDDSBack->Release();
-    m_piDDSBack = NULL;
+    myBackSurface->Release();
+    myBackSurface = NULL;
   }
 
-  if ( m_piDD )
+  if(myDD)
   {
-    if ( m_piDDSPrimary )
+    if(myPrimarySurface)
     {
-      m_piDDSPrimary->Release();
-      m_piDDSPrimary = NULL;
+      myPrimarySurface->Release();
+      myPrimarySurface = NULL;
     }
 
-    m_piDD->Release();
-    m_piDD = NULL;
+    myDD->Release();
+    myDD = NULL;
   }
-
-	if(myHWND)
-	{
-    ::DestroyWindow( myHWND );
-
-        //
-        // Remove the WM_QUIT which will be in the message queue
-        // so that the main window doesn't exit
-        //
-
-        MSG msg;
-        ::PeekMessage( &msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE );
-
-        myHWND = NULL;
-	}
-
-    ::UnregisterClass( pszClassName, GetModuleHandle(NULL));
 }
 
 
@@ -103,8 +100,8 @@ bool FrameBufferWin32::init()
   HRESULT hrCoInit = ::CoInitialize( NULL );
 
   // Get the game's width and height
-  mySizeGame.cx = myWidth  = myMediaSource->width() << 1;
-  mySizeGame.cy = myHeight = myMediaSource->height();
+  myGameSize.cx = myWidth  = myMediaSource->width() << 1;
+  myGameSize.cy = myHeight = myMediaSource->height();
 
   // Initialize the pixel data table
   for(uInt32 i = 0; i < 256; ++i)
@@ -125,9 +122,9 @@ bool FrameBufferWin32::init()
 	wcex.hCursor       = LoadCursor( NULL, IDC_ARROW );
 	wcex.hbrBackground = (HBRUSH)GetStockObject( NULL_BRUSH );
 
-  if( ! ::RegisterClassEx( &wcex ) )
+  if(!RegisterClassEx(&wcex))
   {
-OutputDebugString("got here  failed 1");
+    OutputDebugString("Error:  RegisterClassEX FAILED");
     hr = HRESULT_FROM_WIN32( ::GetLastError() );
     cleanup();
     return false;
@@ -142,181 +139,155 @@ OutputDebugString("got here  failed 1");
                            NULL, 
                            GetModuleHandle(NULL), 
                            this );
-	if( myHWND == NULL )
-	{
-OutputDebugString("got here  failed 2");
+  if(myHWND == NULL )
+  {
+    OutputDebugString("Error:  CreateWindowEx FAILED");
     hr = HRESULT_FROM_WIN32( GetLastError() );
     cleanup();
     return false;
-	}
+  }
 
-  ::SetFocus( myHWND );
-  ::ShowWindow( myHWND, SW_SHOW );
-  ::UpdateWindow( myHWND );
+  ::SetFocus(myHWND);
+  ::ShowWindow(myHWND, SW_SHOW);
+  ::UpdateWindow(myHWND);
 	
   ::ShowCursor( FALSE );
 
-  //
   // Initialize DirectDraw 
   //
   hr = ::CoCreateInstance( CLSID_DirectDraw, 
                            NULL, 
                            CLSCTX_SERVER, 
                            IID_IDirectDraw, 
-                           (void**)&m_piDD );
-  if( FAILED(hr) )
+                           (void**)&myDD );
+  if(FAILED(hr))
   {
-OutputDebugString("got here  failed 3");
-    cleanup();
-  }
-
-  //
-  // Initialize it
-  // This method takes the driver GUID parameter that the DirectDrawCreate 
-  // function typically uses (NULL is active display driver)
-  //
-  hr = m_piDD->Initialize( NULL );
-  if ( FAILED(hr) )
-  {
-OutputDebugString("got here  failed 4");
+    OutputDebugString("Error:  CoCreateInstance FAILED");
     cleanup();
     return false;
   }
 
-  //
+  // Initialize it
+  // This method takes the driver GUID parameter that the DirectDrawCreate 
+  // function typically uses (NULL is active display driver)
+  hr = myDD->Initialize(NULL);
+  if(FAILED(hr))
+  {
+    OutputDebugString("Error:  DirectDraw Initialize FAILED");
+    cleanup();
+    return false;
+  }
+
   // Get the best video mode for game width
-  //
-//int cx = 640; int cy = 480;
-int cx = 320; int cy = 240;
-    ::SetRect( &m_rectScreen, 0, 0, cx, cy );
+  //int cx = 640; int cy = 480;
+  int cx = 320; int cy = 240;
+  SetRect(&myScreenRect, 0, 0, cx, cy);
 
-    if ( cx == 0 || cy == 0 )
+  if(cx == 0 || cy == 0)
+  {
+    hr = myDD->EnumDisplayModes(0, NULL, this, EnumModesCallback);
+    if(FAILED(hr))
     {
-    	hr = m_piDD->EnumDisplayModes( 0, NULL, this, EnumModesCallback );
-        if ( FAILED(hr) )
-        {
-OutputDebugString("got here  failed 5");
-cleanup();
-return false;
-        }
+      OutputDebugString("Error:  Displaymode Enumeration FAILED");
+      cleanup();
+      return false;
     }
+  }
 
-	if ( m_rectScreen.right == 0 || m_rectScreen.bottom == 0 )
-	{
-OutputDebugString("got here  failed 6");
-        hr = E_INVALIDARG;
-cleanup();
-return false;
-	}
+  if(myScreenRect.right == 0 || myScreenRect.bottom == 0)
+  {
+    OutputDebugString("Error:  ScreenRect INVALID");
+    cleanup();
+    return false;
+  }
 
-	TRACE( "Video Mode Selected: %d x %d", m_rectScreen.right, m_rectScreen.bottom );
+  // compute blit offset to center image
+  myBlitOffset.x = ((myScreenRect.right - myGameSize.cx) / 2);
+  myBlitOffset.y = ((myScreenRect.bottom - myGameSize.cy) / 2);
 
-	// compute blit offset to center image
+  // Set cooperative level
+  hr = myDD->SetCooperativeLevel(myHWND, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN);
+  if(FAILED(hr))
+  {
+    OutputDebugString("Error:  SetCooperativeLevel FAILED");
+    cleanup();
+    return false;
+  }
 
-	m_ptBlitOffset.x = ( ( m_rectScreen.right - mySizeGame.cx ) / 2 );
-	m_ptBlitOffset.y = ( ( m_rectScreen.bottom - mySizeGame.cy ) / 2 );
+  hr = myDD->SetDisplayMode(myScreenRect.right, myScreenRect.bottom, 8);
+  if(FAILED(hr))
+  {
+    OutputDebugString("Error:  SetDisplayMode FAILED");
+    cleanup();
+    return false;
+  }
 
-	// Set cooperative level
-
-	hr = m_piDD->SetCooperativeLevel( myHWND, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN );
-	if ( FAILED(hr) )
-	{
-OutputDebugString("got here  failed 7");
-cleanup();
-return false;
-	}
-
-	hr = m_piDD->SetDisplayMode( m_rectScreen.right, m_rectScreen.bottom, 8 );
-	if ( FAILED(hr) )
-	{
-OutputDebugString("got here  failed 8");
-cleanup();
-return false;
-	}
-
-    //
-	// Create the primary surface
-    //
-
+  // Create the primary surface
   DDSURFACEDESC ddsd;
   ZeroMemory(&ddsd, sizeof(ddsd));
   ddsd.dwSize         = sizeof(ddsd);
   ddsd.dwFlags        = DDSD_CAPS;
   ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
-	hr = m_piDD->CreateSurface(&ddsd, &m_piDDSPrimary, NULL);
-	if (FAILED(hr))
-	{
-OutputDebugString("got here  failed 9");
-cleanup();
-return false;
-	}
-
-    //
-	// Create the offscreen surface
-    //
-
-	ZeroMemory(&ddsd, sizeof(ddsd));
-	ddsd.dwSize = sizeof(ddsd);
-	ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
-	ddsd.dwWidth  = mySizeGame.cx;
-	ddsd.dwHeight = mySizeGame.cy;
-	hr = m_piDD->CreateSurface(&ddsd, &m_piDDSBack, NULL);
-	if (FAILED(hr))
-	{
-OutputDebugString("got here  failed 10");
-cleanup();
-return false;
-	}
-
-    //
-	// Erase the surface
-    //
-
-    HDC hdc;
-	hr = m_piDDSBack->GetDC( &hdc );
-	if ( hr == DD_OK )
-	{
-		::SetBkColor( hdc, RGB(0, 0, 0) );
-        RECT rc;
-        ::SetRect( &rc, 0, 0, 
-                   mySizeGame.cx,
-                   mySizeGame.cy );
-		::ExtTextOut( hdc, 0, 0, ETO_OPAQUE, &rc, NULL, 0, NULL );
-
-		(void)m_piDDSBack->ReleaseDC( hdc );
-	}
-
-    //
-    // Create Palette
-    //
-
-	PALETTEENTRY pe[256];
-
-	for ( int i = 0; i < 256; ++i )
-	{
-		pe[i].peRed   = (BYTE)( (pPalette[i] & 0x00FF0000) >> 16 );
-		pe[i].peGreen = (BYTE)( (pPalette[i] & 0x0000FF00) >> 8 );
-		pe[i].peBlue  = (BYTE)( (pPalette[i] & 0x000000FF) );
-		pe[i].peFlags = 0;
-	}
-
-    hr = m_piDD->CreatePalette( DDPCAPS_8BIT, 
-                                pe, 
-                                &m_piDDPalette, 
-                                NULL );
-  if( FAILED(hr) )
+  hr = myDD->CreateSurface(&ddsd, &myPrimarySurface, NULL);
+  if(FAILED(hr))
   {
-OutputDebugString("got here  failed 11");
+    OutputDebugString("Error:  Create primary surface FAILED");
     cleanup();
     return false;
   }
 
-  hr = m_piDDSPrimary->SetPalette( m_piDDPalette );
-  if( FAILED(hr) )
+  // Create the offscreen surface
+  ZeroMemory(&ddsd, sizeof(ddsd));
+  ddsd.dwSize         = sizeof(ddsd);
+  ddsd.dwFlags        = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
+  ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
+  ddsd.dwWidth        = myGameSize.cx;
+  ddsd.dwHeight       = myGameSize.cy;
+
+  hr = myDD->CreateSurface(&ddsd, &myBackSurface, NULL);
+  if(FAILED(hr))
   {
-OutputDebugString("got here  failed 12");
+    OutputDebugString("Error:  Create back surface FAILED");
+    cleanup();
+    return false;
+  }
+
+  // Erase the surface
+  HDC hdc;
+  hr = myBackSurface->GetDC(&hdc);
+  if(hr == DD_OK)
+  {
+    SetBkColor(hdc, RGB(0, 0, 0));
+    RECT rc;
+    SetRect(&rc, 0, 0, myGameSize.cx, myGameSize.cy);
+    ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, NULL, 0, NULL);
+
+    (void)myBackSurface->ReleaseDC(hdc);
+  }
+
+  // Create Palette
+  PALETTEENTRY pe[256];
+  for(uInt32 i = 0; i < 256; ++i)
+  {
+    pe[i].peRed   = (BYTE)( (pPalette[i] & 0x00FF0000) >> 16 );
+    pe[i].peGreen = (BYTE)( (pPalette[i] & 0x0000FF00) >> 8 );
+    pe[i].peBlue  = (BYTE)( (pPalette[i] & 0x000000FF) );
+    pe[i].peFlags = 0;
+  }
+
+  hr = myDD->CreatePalette(DDPCAPS_8BIT, pe, &myDDPalette, NULL );
+  if(FAILED(hr))
+  {
+    OutputDebugString("Error:  CreatePalette FAILED");
+    cleanup();
+    return false;
+  }
+
+  hr = myPrimarySurface->SetPalette(myDDPalette);
+  if(FAILED(hr))
+  {
+    OutputDebugString("Error:  SetPalette FAILED");
     cleanup();
     return false;
   }
@@ -328,33 +299,21 @@ OutputDebugString("got here  failed 12");
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawMediaSource()
 {
-  if(m_piDDSPrimary == NULL || !m_fActiveWindow)
+  if(myPrimarySurface == NULL || !isWindowActive)
     return;
 
-  HRESULT hr;
   const BYTE* current  = myMediaSource->currentFrameBuffer();
   const BYTE* previous = myMediaSource->previousFrameBuffer();
+  BYTE* pbBackBytes = (BYTE*)myDDSurface.lpSurface;
 
-  // acquire pointer to linear video ram
-  DDSURFACEDESC ddsd;
-  ZeroMemory( &ddsd, sizeof(ddsd) );
-  ddsd.dwSize = sizeof(ddsd);
-
-  hr = m_piDDSBack->Lock( NULL, 
-                          &ddsd, 
-                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
-                          NULL );
-  // BUGBUG: Check for error
-
-  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
   register int y;
-  for(y = 0; y < mySizeGame.cy; ++y)
+  for(y = 0; y < myGameSize.cy; ++y)
   {
-    const WORD bufofsY = (WORD) ( y * mySizeGame.cx >> 1 );
-    const DWORD screenofsY = ( y * ddsd.lPitch );
+    const WORD bufofsY = (WORD) ( y * myGameSize.cx >> 1 );
+    const DWORD screenofsY = ( y * myDDSurface.lPitch );
 
     register int x;
-    for(x = 0; x < mySizeGame.cx >> 1; ++x )
+    for(x = 0; x < myGameSize.cx >> 1; ++x )
     {
       const WORD bufofs = bufofsY + x;
       BYTE v = current[ bufofs ];
@@ -366,7 +325,6 @@ void FrameBufferWin32::drawMediaSource()
       pbBackBytes[ pos + 0 ] = pbBackBytes[ pos + 1 ] = myPalette[v];
     }
   }
-  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 
   // The frame doesn't need to be completely redrawn anymore
   theRedrawEntireFrameIndicator = false;
@@ -375,22 +333,25 @@ void FrameBufferWin32::drawMediaSource()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::preFrameUpdate()
 {
-  // FIXME - move locking here so its only done once per frame
+  // Acquire pointer to linear video ram
+  ZeroMemory(&myDDSurface, sizeof(myDDSurface));
+  myDDSurface.dwSize = sizeof(myDDSurface);
+
+  HRESULT hr = myBackSurface->Lock(NULL, &myDDSurface, DDLOCK_WAIT, NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::postFrameUpdate()
 {
   // We only send any changes to the screen once per frame
-  // FIXME - move unlocking here so its only done once per frame
+  (void)myBackSurface->Unlock(myDDSurface.lpSurface);
 
   // Blit offscreen to onscreen
-  RECT rc = { 0, 0, mySizeGame.cx, mySizeGame.cy };
+  RECT rc = { 0, 0, myGameSize.cx, myGameSize.cy };
 
-  HRESULT hr = m_piDDSPrimary->BltFast( m_ptBlitOffset.x, m_ptBlitOffset.y,
-                                m_piDDSBack, 
+  HRESULT hr = myPrimarySurface->BltFast( myBlitOffset.x, myBlitOffset.y,
+                                myBackSurface, 
                                 &rc, 
-                                // DDBLTFAST_WAIT |DDBLTFAST_DESTCOLORKEY   );
                                 DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT  );
 }
 
@@ -407,25 +368,14 @@ void FrameBufferWin32::toggleFullscreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
-  // acquire pointer to linear video ram
-  DDSURFACEDESC ddsd;
-  ZeroMemory( &ddsd, sizeof(ddsd) );
-  ddsd.dwSize = sizeof(ddsd);
-
-  HRESULT hr = m_piDDSBack->Lock( NULL, 
-                          &ddsd, 
-                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
-                          NULL );
-  // BUGBUG: Check for error
-
-  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
+  BYTE* pbBackBytes = (BYTE*)myDDSurface.lpSurface;
 
   // First draw the background
   for(uInt32 row = 0; row < h; row++)
   {
     for(uInt32 col = 0; col < w; col++)
     {
-      BYTE* ptr = pbBackBytes + ((row + y) * ddsd.lPitch) + col + x;
+      BYTE* ptr = pbBackBytes + ((row + y) * myDDSurface.lPitch) + col + x;
       *ptr = myPalette[myBGColor];
     }
   }
@@ -433,140 +383,105 @@ void FrameBufferWin32::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   // Now draw the surrounding lines
   for(uInt32 col = 0; col < w+1; col++)  // Top line
   {
-    BYTE* ptr = pbBackBytes + y * ddsd.lPitch + col + x;
+    BYTE* ptr = pbBackBytes + y * myDDSurface.lPitch + col + x;
     *ptr = myPalette[myFGColor];
   }
 
   for(uInt32 col = 0; col < w+1; col++)  // Bottom line
   {
-    BYTE* ptr = pbBackBytes + (y+h) * ddsd.lPitch + col + x;
+    BYTE* ptr = pbBackBytes + (y+h) * myDDSurface.lPitch + col + x;
     *ptr = myPalette[myFGColor];
   }
 
   for(uInt32 row = 0; row < h; row++)  //  Left line
   {
-    BYTE* ptr = pbBackBytes + (row + y) * ddsd.lPitch + x;
+    BYTE* ptr = pbBackBytes + (row + y) * myDDSurface.lPitch + x;
     *ptr = myPalette[myFGColor];
   }
 
   for(uInt32 row = 0; row < h; row++)  //  Right line
   {
-    BYTE* ptr = pbBackBytes + (row + y) * ddsd.lPitch + x + w;
+    BYTE* ptr = pbBackBytes + (row + y) * myDDSurface.lPitch + x + w;
     *ptr = myPalette[myFGColor];
   }
-
-  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawText(uInt32 xorig, uInt32 yorig, const string& message)
 {
-  // acquire pointer to linear video ram
-  DDSURFACEDESC ddsd;
-  ZeroMemory( &ddsd, sizeof(ddsd) );
-  ddsd.dwSize = sizeof(ddsd);
-
-  HRESULT hr = m_piDDSBack->Lock( NULL, 
-                          &ddsd, 
-                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
-                          NULL );
-
-  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
+  BYTE* pbBackBytes = (BYTE*)myDDSurface.lpSurface;
   uInt8 length = message.length();
-  for(uInt32 x = 0; x < length; x++)
+  for(uInt32 z = 0; z < length; z++)
   {
     for(uInt32 y = 0; y < 8; y++)
     {
-      for(uInt32 z = 0; z < 8; z++)
+      for(uInt32 x = 0; x < 8; x++)
       {
-        char letter = message[x];
-        if((ourFontData[(letter << 3) + y] >> z) & 1)
-          pbBackBytes[((x<<3) + z + xorig) + (y + yorig) * ddsd.lPitch] =
+        char letter = message[z];
+        if((ourFontData[(letter << 3) + y] >> x) & 1)
+          pbBackBytes[((z<<3) + x + xorig) + (y + yorig) * myDDSurface.lPitch] =
             myPalette[myFGColor];
       }
     }
   }
-
-  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
 {
-  // acquire pointer to linear video ram
-  DDSURFACEDESC ddsd;
-  ZeroMemory( &ddsd, sizeof(ddsd) );
-  ddsd.dwSize = sizeof(ddsd);
-
-  HRESULT hr = m_piDDSBack->Lock( NULL, 
-                          &ddsd, 
-                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
-                          NULL );
-
-  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
+  BYTE* pbBackBytes = (BYTE*)myDDSurface.lpSurface;
   for(uInt32 y = 0; y < 8; y++)
   {
     for(uInt32 x = 0; x < 8; x++)
     {
       if((ourFontData[(c << 3) + y] >> x) & 1)
-        pbBackBytes[x + xorig + (y + yorig) * ddsd.lPitch] =
+        pbBackBytes[x + xorig + (y + yorig) * myDDSurface.lPitch] =
           myPalette[myFGColor];
     }
   }
-
-  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LRESULT CALLBACK FrameBufferWin32::StaticWindowProc(
 	HWND hwnd, 
 	UINT uMsg, 
 	WPARAM wParam, 
-	LPARAM lParam
-    )
+	LPARAM lParam)
 {
-	FrameBufferWin32* pThis;
+  FrameBufferWin32* pThis;
 
-    if ( uMsg == WM_CREATE )
-    {
-        pThis = reinterpret_cast<FrameBufferWin32*>( 
+  if(uMsg == WM_CREATE)
+  {
+    pThis = reinterpret_cast<FrameBufferWin32*>( 
             reinterpret_cast<CREATESTRUCT*>( lParam )->lpCreateParams );
 
-        ::SetWindowLong( hwnd, 
-                         GWL_USERDATA, 
-                         reinterpret_cast<LONG>( pThis ) );
-    }
-    else
+    SetWindowLong(hwnd, GWL_USERDATA, reinterpret_cast<LONG>(pThis));
+  }
+  else
+  {
+    pThis = reinterpret_cast<FrameBufferWin32*>(GetWindowLong(hwnd, GWL_USERDATA));
+  }
+
+  if(pThis)
+  {
+    if(pThis->WndProc(uMsg, wParam, lParam))
     {
-        pThis = reinterpret_cast<FrameBufferWin32*>( 
-            ::GetWindowLong( hwnd, GWL_USERDATA ) );
+      // Handled message
+      return 0L;
     }
+  }
 
-    if ( pThis )
-    {
-        if ( pThis->WndProc( uMsg, wParam, lParam ) )
-        {
-            //
-            // Handled message
-            //
-
-            return 0L;
-        }
-    }
-
-    //
-    // Unhandled message
-    //
-
-    return ::DefWindowProc( hwnd, uMsg, wParam, lParam );
+  // Unhandled message
+  return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BOOL FrameBufferWin32::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
   {
     case WM_ACTIVATE:
-      m_fActiveWindow = (wParam != WA_INACTIVE);
+      isWindowActive = (wParam != WA_INACTIVE);
       break;
 
     case WM_DESTROY:
@@ -586,60 +501,41 @@ BOOL FrameBufferWin32::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
   return TRUE;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HRESULT WINAPI FrameBufferWin32::EnumModesCallback(
     LPDDSURFACEDESC lpDDSurfaceDesc,
     LPVOID lpContext)
 {
   FrameBufferWin32* pThis = (FrameBufferWin32*)lpContext;
 
-  DWORD dwWidthReq  = pThis->mySizeGame.cx;
-  DWORD dwHeightReq = pThis->mySizeGame.cy;
+  DWORD dwWidthReq  = pThis->myGameSize.cx;
+  DWORD dwHeightReq = pThis->myGameSize.cy;
 
   DWORD dwWidth = lpDDSurfaceDesc->dwWidth;
   DWORD dwHeight = lpDDSurfaceDesc->dwHeight;
   DWORD dwRGBBitCount = lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount;
 
-    //
-    // must be 8 bit mode
-    //
+  // Must be 8 bit mode
+  if(dwRGBBitCount != 8)
+    return DDENUMRET_OK;
 
-	if (dwRGBBitCount != 8)
-    {
-        return DDENUMRET_OK;
-    }
+  // Must be larger then required screen size
+  if(dwWidth < dwWidthReq || dwHeight < dwHeightReq)
+    return DDENUMRET_OK;
 
-    //
-    // must be larger then required screen size
-    //
+  if(pThis->myScreenRect.right != 0 && pThis->myScreenRect.bottom != 0)
+  {
+    // check to see if this is better than the previous choice
+    if((dwWidth - dwWidthReq) > (pThis->myScreenRect.right - dwWidthReq))
+      return DDENUMRET_OK;
 
-    if ( dwWidth < dwWidthReq || dwHeight < dwHeightReq )
-    {
-        return DDENUMRET_OK;
-    }
+    if((dwHeight - dwHeightReq) > (pThis->myScreenRect.bottom - dwHeightReq))
+      return DDENUMRET_OK;
+  }
 
-    if ( pThis->m_rectScreen.right != 0 && pThis->m_rectScreen.bottom != 0 )
-    {
-        //
-        // check to see if this is better than the previous choice
-        //
+  // use it!
+  pThis->myScreenRect.right = dwWidth;
+  pThis->myScreenRect.bottom = dwHeight;
 
-        if ( (dwWidth - dwWidthReq) > (pThis->m_rectScreen.right - dwWidthReq) )
-        {
-            return DDENUMRET_OK;
-        }
-
-        if ( (dwHeight - dwHeightReq) > (pThis->m_rectScreen.bottom - dwHeightReq) )
-        {
-            return DDENUMRET_OK;
-        }
-    }
-
-    //
-    // use it!
-    //
-
-    pThis->m_rectScreen.right = dwWidth;
-    pThis->m_rectScreen.bottom = dwHeight;
-
-	return DDENUMRET_OK;
+  return DDENUMRET_OK;
 }

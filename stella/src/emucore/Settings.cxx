@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.12 2003-11-17 17:43:39 stephena Exp $
+// $Id: Settings.cxx,v 1.13 2003-11-24 01:14:38 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -141,8 +141,9 @@ bool Settings::loadCommandLine(Int32 argc, char** argv)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
-  if(!myConsole)
-    return;
+//  if(!myConsole)
+//    return;
+// FIXME - there should not be a dependency on Console
 
   ofstream out(mySettingsOutputFilename.c_str());
   if(!out || !out.is_open())
@@ -152,8 +153,8 @@ void Settings::saveConfig()
   }
 
   // Make sure that any modifications to key remapping is saved
-  set("keymap", myConsole->eventHandler().getKeymap());
-  set("joymap", myConsole->eventHandler().getJoymap());
+//  set("keymap", myConsole->eventHandler().getKeymap());
+//  set("joymap", myConsole->eventHandler().getJoymap());
 
   out << ";  Stella configuration file" << endl
       << ";" << endl
@@ -221,6 +222,42 @@ void Settings::set(const string& key, const string& value, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::setInt(const string& key, const uInt32 value)
+{
+  ostringstream stream;
+  stream << value;
+
+  set(key, stream.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::setFloat(const string& key, const float value)
+{
+  ostringstream stream;
+  stream << value;
+
+  set(key, stream.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::setBool(const string& key, const bool value)
+{
+  ostringstream stream;
+  stream << value;
+
+  set(key, stream.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::setString(const string& key, const string& value)
+{
+  ostringstream stream;
+  stream << value;
+
+  set(key, stream.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 Settings::getInt(const string& key) const
 {
   // Try to find the named setting and answer its value
@@ -237,7 +274,7 @@ float Settings::getFloat(const string& key) const
   // Try to find the named setting and answer its value
   for(uInt32 i = 0; i < mySize; ++i)
     if(key == mySettings[i].key)
-      return atof(mySettings[i].value.c_str());
+      return (float) atof(mySettings[i].value.c_str());
 
   return -1.0;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.10 2003-11-17 17:43:39 stephena Exp $
+// $Id: Settings.hxx,v 1.11 2003-11-24 01:14:38 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.10 2003-11-17 17:43:39 stephena Exp $
+  @version $Id: Settings.hxx,v 1.11 2003-11-24 01:14:38 stephena Exp $
 */
 class Settings
 {
@@ -106,7 +106,34 @@ class Settings
       @param value The value to assign to the setting
       @param save  Whether this setting should be saved to the rc-file.
     */
-    void set(const string& key, const string& value, bool save = true);
+    void setInt(const string& key, const uInt32 value);
+
+    /**
+      Set the value associated with key to the given value.
+
+      @param key   The key of the setting
+      @param value The value to assign to the setting
+      @param save  Whether this setting should be saved to the rc-file.
+    */
+    void setFloat(const string& key, const float value);
+
+    /**
+      Set the value associated with key to the given value.
+
+      @param key   The key of the setting
+      @param value The value to assign to the setting
+      @param save  Whether this setting should be saved to the rc-file.
+    */
+    void setBool(const string& key, const bool value);
+
+    /**
+      Set the value associated with key to the given value.
+
+      @param key   The key of the setting
+      @param value The value to assign to the setting
+      @param save  Whether this setting should be saved to the rc-file.
+    */
+    void setString(const string& key, const string& value);
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -187,6 +214,8 @@ class Settings
 #endif
 
   protected:
+    void set(const string& key, const string& value, bool save = true);
+
     string myBaseDir;
     string myStateDir;
     string myStateFile;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundWin32.cxx,v 1.3 2003-11-19 21:06:27 stephena Exp $
+// $Id: SoundWin32.cxx,v 1.4 2003-11-24 01:14:38 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -92,7 +92,7 @@ void SoundWin32::closeDevice()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 SoundWin32::getSampleRate() const
 {
-  return myIsInitializedFlag ? mySampleRate : 0;
+  return mySampleRate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,7 +139,10 @@ void SoundWin32::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundWin32::SoundError(const char* message)
 {
-  cout << "ERROR in SOUND: " << message << endl;
+  string error = "Error:  ";
+  error += message;
+  OutputDebugString(error.c_str());
+
   myIsInitializedFlag = false;
 }
 

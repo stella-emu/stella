@@ -1,10 +1,26 @@
-// GameList.cpp : implementation file
+//============================================================================
 //
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-1999 by Bradford W. Mott
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: GameList.cpp,v 1.5 2003-11-24 01:14:38 stephena Exp $
+//============================================================================
 
 #include "pch.hxx"
 #include "Cyberstella.h"
 #include "GameList.h"
 #include "MD5.hxx"
+#include "SettingsWin32.hxx"
 
 class CyberstellaView;
 
@@ -14,29 +30,26 @@ class CyberstellaView;
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-// GameList
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameList::GameList()
-    : rs("GameList")
+  : myRomPath(""),
+    myRomCount(0)
 {
-    rs.Bind(m_Path, "ROM Path", "");
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameList::~GameList()
 {
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BEGIN_MESSAGE_MAP(GameList, CListCtrl)
-	//{{AFX_MSG_MAP(GameList)
+	// {{AFX_MSG_MAP(GameList)
 	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnclick)
 	ON_NOTIFY_REFLECT(LVN_ITEMACTIVATE, OnItemActivate)
 	ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, OnItemchanged)
-	//}}AFX_MSG_MAP
+	// }}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// GameList message handlers
 
 // Sort the item in reverse alphabetical order.
 static int CALLBACK
@@ -114,7 +127,7 @@ void GameList::populateRomList()
     deleteItemsAndProperties();
 
     // Add new content
-    if(m_Path.GetLength() > 0)
+    if(myRomPath.GetLength() > 0)
     {
         displayPath();
     }
@@ -130,6 +143,9 @@ void GameList::populateRomList()
     SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 
     if(m_pParent)   m_pParent->SendMessage(MSG_GAMELIST_UPDATE);
+
+  // Save the current path
+  mySettings->setString("rompath", (const char*) myRomPath);
 }
 
 void GameList::displayPath()
@@ -142,15 +158,15 @@ void GameList::displayPath()
 	BOOL first = true;
 
 	// Do pathname
-	if (m_Path.GetAt(m_Path.GetLength()-1) == '\\')
-		searchpath = m_Path + "*.*";
+	if (myRomPath.GetAt(myRomPath.GetLength()-1) == '\\')
+		searchpath = myRomPath + "*.*";
 	else
-		searchpath = m_Path + "\\*.*";
+		searchpath = myRomPath + "\\*.*";
   
 	bFind = find.FindFile(searchpath);
 
     // Init Rom count
-    m_RomCount = 0;
+    myRomCount = 0;
 
 	while (bFind)
 	{
@@ -224,7 +240,7 @@ void GameList::displayPath()
             lvi.pszText = name.GetBuffer(name.GetLength());
 			SetItem(&lvi);
 
-            m_RomCount++;
+            myRomCount++;
         }
 	}
 
@@ -252,7 +268,7 @@ void GameList::displayDrives()
     int itemCounter;
 
     // Clear path
-    m_Path = "";
+    myRomPath = "";
 
     //Enumerate drive letters and add them to list
     dwDrives = GetLogicalDrives();
@@ -301,25 +317,25 @@ void GameList::OnItemActivate(NMHDR* pNMHDR, LRESULT* pResult)
 
         if(strcmpi(props->get("Cartridge.Type").c_str(), "Dots") == 0)
         {
-            int cutPos = m_Path.ReverseFind('\\');
-            m_Path = m_Path.Left(cutPos);
+            int cutPos = myRomPath.ReverseFind('\\');
+            myRomPath = myRomPath.Left(cutPos);
             populateRomList();
         }
         else if(strcmpi(props->get("Cartridge.Type").c_str(), "Directory") == 0)
         {
             // Do pathname
-            if (m_Path.GetLength() <= 0)
+            if (myRomPath.GetLength() <= 0)
             {
-                m_Path = dir;
+                myRomPath = dir;
             }
-            else if (m_Path.GetAt(m_Path.GetLength()-1) != '\\')
+            else if (myRomPath.GetAt(myRomPath.GetLength()-1) != '\\')
             {
-	            m_Path += "\\";
-                m_Path += dir;
+	            myRomPath += "\\";
+                myRomPath += dir;
             }
             else
             {
-                m_Path += dir;
+                myRomPath += dir;
             }
             populateRomList();
         }
@@ -361,7 +377,7 @@ Properties* GameList::readRomData(CString binFile)
         std::string md5 = MD5(pImage, dwFileSize);
         // search through the properties set for this MD5
         Properties* props = new Properties();
-        m_pPropertiesSet->getMD5(md5, *props);
+        myPropertiesSet->getMD5(md5, *props);
         // Return properties
         delete[] pImage;
         VERIFY(::CloseHandle(hFile));
@@ -380,10 +396,10 @@ CString GameList::getCurrentFile()
     int curSel = GetSelectionMark();
     if(curSel >= 0)
     {
-        if (m_Path.GetAt(m_Path.GetLength()-1) != '\\')
-	        m_Path += "\\";
+        if (myRomPath.GetAt(myRomPath.GetLength()-1) != '\\')
+	        myRomPath += "\\";
 
-        filename = m_Path + GetItemText(curSel,0);
+        filename = myRomPath + GetItemText(curSel,0);
     }
 
     return filename;
@@ -410,12 +426,16 @@ CString GameList::getCurrentNote()
     return "";
 }
 
-void GameList::init(PropertiesSet* newPropertiesSet, CWnd* newParent)
+void GameList::init(PropertiesSet* newPropertiesSet,
+                    SettingsWin32* settings, CWnd* newParent)
 {
-    m_pParent = newParent;
-    m_pPropertiesSet = newPropertiesSet;
-    SetExtendedStyle(LVS_EX_FULLROWSELECT);
-    insertColumns();
+  m_pParent = newParent;
+  myPropertiesSet = newPropertiesSet;
+  mySettings = settings;
+
+  myRomPath = mySettings->getString("rompath").c_str();
+  SetExtendedStyle(LVS_EX_FULLROWSELECT);
+  insertColumns();
 }
 
 

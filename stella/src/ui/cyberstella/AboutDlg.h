@@ -48,6 +48,7 @@ private:
 	CHyperLink m_hlMail_Stella;
 	CHyperLink m_hlWWW_Stella;
 	CHyperLink m_hlWWW_Mame;
+
 };
 
 //{{AFX_INSERT_LOCATION}}

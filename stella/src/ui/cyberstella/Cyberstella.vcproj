@@ -171,28 +171,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="CRegBinding.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="Cyberstella.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -288,28 +266,6 @@
 			</File>
 			<File
 				RelativePath="GameList.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="GlobalData.cxx">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -465,37 +421,12 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="Timer.cxx">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
 				RelativePath="AboutDlg.h">
-			</File>
-			<File
-				RelativePath="CRegBinding.h">
 			</File>
 			<File
 				RelativePath="Cyberstella.h">
@@ -514,9 +445,6 @@
 			</File>
 			<File
 				RelativePath="GameList.h">
-			</File>
-			<File
-				RelativePath="GlobalData.hxx">
 			</File>
 			<File
 				RelativePath="HyperLink.h">
@@ -547,9 +475,6 @@
 			</File>
 			<File
 				RelativePath="StellaConfig.h">
-			</File>
-			<File
-				RelativePath="Timer.hxx">
 			</File>
 		</Filter>
 		<Filter
@@ -1793,5 +1718,8 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="Cyberstella.rc"/>
 	</Globals>
 </VisualStudioProject>
