@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.26 2002-09-29 14:11:11 stephena Exp $
+// $Id: mainX11.cxx,v 1.27 2002-10-05 12:49:49 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -86,7 +86,7 @@ static void usage();
 
 static void loadState();
 static void saveState();
-static void changeState();
+static void changeState(int direction);
 
 // Globals for X windows stuff
 static Display* theDisplay = (Display*) NULL;
@@ -590,7 +590,10 @@ void handleEvents()
       }
       else if((key == XK_F10) && (event.type == KeyPress))
       {
-        changeState();
+        if(event.xkey.state & ShiftMask)
+          changeState(0);
+        else
+          changeState(1);
       }
       else if((key == XK_F11) && (event.type == KeyPress))
       {
@@ -973,16 +976,26 @@ void saveState()
 /**
   Changes the current state slot.
 */
-void changeState()
+void changeState(int direction)
 {
-  if(currentState == 9)
-    currentState = 0;
-  else
-    ++currentState;
+  if(direction == 1)   // increase current state slot
+  {
+    if(currentState == 9)
+      currentState = 0;
+    else
+      ++currentState;
+  }
+  else   // decrease current state slot
+  {
+    if(currentState == 0)
+      currentState = 9;
+    else
+      --currentState;
+  }
 
   // Print appropriate message
   char buf[40];
-  snprintf(buf, 39, "Changed to state slot %d", currentState);
+  snprintf(buf, 39, "Changed to slot %d", currentState);
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
@@ -1340,23 +1353,6 @@ void cleanup()
 }
 
 /**
-  Returns number of ticks in microseconds
-*/
-#ifdef HAVE_GETTIMEOFDAY
-inline uInt32 getTicks()
-{
-  timeval now;
-  gettimeofday(&now, 0);
-
-  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
-
-  return ticks;
-}
-#else
-#error We need gettimeofday for the X11 version!!!
-#endif
-
-/**
   Creates some directories under $HOME.
   Required directories are $HOME/.stella and $HOME/.stella/state
 */
@@ -1575,3 +1571,20 @@ int main(int argc, char* argv[])
   cleanup();
   return 0;
 }
+
+/**
+  Returns number of ticks in microseconds
+*/
+#ifdef HAVE_GETTIMEOFDAY
+inline uInt32 getTicks()
+{
+  timeval now;
+  gettimeofday(&now, 0);
+
+  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
+
+  return ticks;
+}
+#else
+#error We need gettimeofday for the X11 version!!!
+#endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.28 2002-09-29 14:11:11 stephena Exp $
+// $Id: mainSDL.cxx,v 1.29 2002-10-05 12:49:49 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -674,7 +674,7 @@ void changeState(int direction)
 
   // Print appropriate message
   char buf[40];
-  snprintf(buf, 39, "Changed to state slot %d", currentState);
+  snprintf(buf, 39, "Changed to slot %d", currentState);
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
