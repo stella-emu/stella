@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 1.4</b></h4></center>
+	<center><h4><b>Release 1.4.1</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -33,7 +33,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - July 2004</b></center>
+	<center><b>February 1999 - August 2004</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -212,65 +212,37 @@
         Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 1.4</b></h2>
+	<h2><b>New in Release 1.4.1</b></h2>
 
 	<ul>
-		<li>Codebase ported to SDL.  The DOS and X11 ports have been discontinued.</li>
-		<li>Sound code ported to SDL.  For the Linux versions, ALSA and OSS sound
-			support has been discontinued.</li>
-		<li>The Linux, MacOSX and Windows ports are now based on the same codebase and
-			are actively maintained.  That means simultaneous (and hopefully
-			more frequent) releases.</li>
-		<li>A new Windows port has been created, with the GUI based on StellaX.
-			This is the first new release for Windows since Stella 1.2.
-			(software mode is not yet optimized; OpenGL mode works much better)</li>
-		<li>A new Mac OSX port has been created by Mark Grebe.  This is the first new
-			release for Mac OSX	since Stella 1.2.</li>
-		<li>Added OpenGL rendering support.</li>
-		<li>Added more refined in-game GUI.</li>
-		<li>Added event remapping.  Emulation keys can now be remapped to the keyboard
-			or up to 4 joysticks.</li>
-		<li>Added native Stelladaptor support.  Joysticks, paddles, and driving controllers
-			have been tested.</li>
-		<li>Digital sound support (used in games like Quadrun and Pitfall2) has been
-			greatly improved.  Sound generation is now more tightly synchronized with
-			video updates.</li>
-		<li>Added support for switchable palettes.  Currently you can switch between the
-			current Stella palette, original Stella palette (pre-1.2 versions), and
-			the z26 palette.</li>
-		<li>Added support for UA Limited style bankswitching (Funky Fish and Pleiades).</li>
-		<li>Switched to using <i>high compatibility M6502 mode</i> by default. This
-			means old state saves from previous Stella versions will no longer work.</li>
-		<li>The meaning of the "<i>-sound</i>" command line option has been changed.
-			This option now accepts either 'true' or 'false (1 or 0) to enable/disable
-			sound.</li>
-		<li>Changed sound mixer functionality.  The system volume/mixer settings will
-			never be changed; volume changes in Stella will only affect the emulation
-			itself.</li>
-		<li>Added "<i>-video</i>" command line option.  This option accepts either 'soft'
-			or 'gl', to use software/OpenGL rendering.</li>
-		<li>Added "<i>-gl_filter</i>" command line option.  This option accepts either
-			'nearest' or 'linear', to use GL_NEAREST or GL_LINEAR filtering.</li>
-		<li>Added "<i>-gl_aspect</i>" command line option.  This option accepts a decimal
-			value specifying how much to scale the width of the emulation image (useful
-			for giving an authentic 'square-looking' 4:3 mode).</li>
-		<li>Added "<i>-gl_fsmax</i>" command line option.  This option accepts either
-			'true' or 'false, and specifies to use the maximum possible resolution when
-			in fullscreen OpenGL mode (useful for Linux and for Windows on laptops).</li>
-		<li>Added "<i>-fragsize</i>" command line option.  This option accepts the
-			size to use for sound fragments.  Linux/MacOSX works well with 512,
-			Windows seems to need 2048.  This value must be a power of two.</li>
-		<li>Modified "<i>-volume</i>" command line option.  If you specify '-1',
-			Stella will use the system volume.</li>
-		<li>Renamed the "<i>-pro</i>" command line option to "<i>-altpro</i>".</li>
-		<li>Renamed the "<i>-fps</i>" command line option to "<i>-framerate</i>".</li>
-		<li>Removed the "<i>-center</i>" command line option.  Stella now automatically
-			centers the window when possible.</li>
-		<li>Removed the "<i>-paddle real</i>" command line option, since it never really
-			worked correctly (and Stelladaptor support adds that functionality
-			anyway).</li>
-		<li>Removed all command line options relating to the X11 port
-			(owncmap, display).</li>
+		<li>Fixed PAL sound issues.  PAL games now should sound correct (no distortion
+			or missing sounds), but some games may still run too fast.  This is still
+			a work-in-progress, and will be fixed in Stella 1.5.</li>
+
+		<li>Cleaned up the SDL event gathering loop.  This should hopefully fix the
+			problems with "double-pumping events" reported by some Windows users.
+			Event gathering and dispatching is now much faster as well.</li>
+
+		<li>Fixed a bug where the Control or Alt keys could be assigned to some event,
+			but they could never be used.  Control/Alt can now be used for any event.</li>
+
+		<li>Updated stella.pro file to work with the latest Good2600 ROMset release
+			(Thanks go to Voch for helping to maintain the stella.pro file).</li>
+
+		<li>For the Windows port; removed requirement for ROM files to be named *.bin
+		in the StellaX frontend.  The ROM's can now have any name, but ZIP-files are
+		not yet supported.</li>
+
+		<li>For the Windows port; fixed the problems with the included modified SDL
+			library and Windows 98 users.  Stella should now run in Windows 98.</li>
+
+		<li>For the OSX port; added preference to allow user to select the directory
+			in which ROM images are stored.  This sets the default directory to start
+			the browsing for a ROM in, and doesn't preclude the user from selecting a 
+			file outside that directory.</li>
+
+		<li>For the OSX port; fixed preferences bug where Preferences changed before
+			a game was opened were not being saved.</li>
 	</ul>
 
 	<p>
@@ -302,6 +274,7 @@
 		<li>Supports cartridges using Parker Brothers' 8K bank-switching scheme</li>
 		<li>Supports cartridges using Tigervision's bank-switching scheme with up to
 			512K ROM</li>
+		<li>Supports cartridges using UA Limited bank-switching scheme</li>
 		<li>Supports Supercharger single-load and multi-load games</li>
 		<li>Supports property file for setting the properties associated with games</li>
 		<li>Supports user specified frame rate</li>
@@ -345,8 +318,8 @@
 		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling
 			the Stella source code; GNU C++ compiler version 3.2.x or later is highly
 			recommended</li>
-		<li>486/120 MHz required; 586/166 MHz highly recommended (Stella <b>may</b>
-			compile on other architectures, but it hasn't been tested)</li>
+		<li>Pentium class machine required (Stella <b>may</b> compile on other
+			architectures, but it hasn't been tested)</li>
 	</ul>
 
 	<p>
@@ -369,7 +342,8 @@
 		<li>Visual C++ 7 compiler is required to compile the StellaX GUI frontend</li>
 		<li>Visual C++ 7 or MinGW compiler is required to compile the Stella
 			executable</li>
-		<li>486/120 MHz required; 586/166 MHz highly recommended</li>
+		<li>Pentium class machine required; OpenGL accelerated video card highly
+			recommended</li>
 	</ul>
 
 	<br><br>

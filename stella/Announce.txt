@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                  Release 1.4 for Linux, Mac OSX and Windows
+                  Release 1.4.1 for Linux, Mac OSX and Windows
 ===============================================================================
 
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most 
@@ -21,108 +21,23 @@ of your favorite Atari 2600 games again!  Stella was originally developed for
 Linux by Bradford W. Mott, however, it has been ported to a number of other
 platforms.
 
-This is the 1.4 release of Stella for Linux, Mac OSX and Windows.  Distributions
+This is the 1.4.1 release of Stella for Linux, Mac OSX and Windows.  Distributions
 for other operating systems will appear as they become available. The
 distributions currently available are:
 
-  * Binary distribution in RPM format for Linux (stella-1.4-1.i586.rpm)
+  * Binary distribution in RPM format for Linux (stella-1.4.1-1.i586.rpm)
 
-  * Binary distribution for Mac OSX (StellaOSX1.4.dmg.gz)
+  * Binary distribution for Mac OSX (StellaOSX1.4.1.dmg.gz)
 
-  * Binary distribution for Windows (stella-1.4-win32.zip)
+  * Binary distribution for Windows (stella-1.4.1-win32.zip)
 
-  * Source code distribution for Linux, Mac OSX and Windows (stella-1.4-src.tar.gz)
+  * Source code distribution for Linux, Mac OSX and Windows (stella-1.4.1-src.tar.gz)
 
-  * Source code in SRPM format for Linux RPM-based systems (stella-1.4-1.src.rpm)
+  * Source code in SRPM format for Linux RPM-based systems (stella-1.4.1-1.src.rpm)
 
 PLEASE DO NOT WRITE ASKING FOR ROM IMAGES TO USE WITH STELLA! ALL SUCH
 REQUESTS WILL BE IGNORED!
 
-New in this Release
-===================
-
-  * Codebase ported to SDL. The DOS and X11 ports have been discontinued.
-
-  * Sound code ported to SDL. For the Linux versions, ALSA and OSS sound
-    support has been discontinued.
-
-  * The Linux, MacOSX and Windows ports are now based on the same codebase
-    and are actively maintained. That means simultaneous (and hopefully more
-    frequent) releases.
-
-  * A new Windows port has been created, with the GUI based on StellaX.
-    This is the first new release for Windows since Stella 1.2.
-    (software  mode is not yet optimized; OpenGL mode works much better)
-
-  * A new Mac OSX port has been created by Mark Grebe. This is the first new
-    release for Mac OSX since Stella 1.2.
-
-  * Added OpenGL rendering support.
-
-  * Added more refined in-game GUI.
-
-  * Added event remapping. Emulation keys can now be remapped to the keyboard
-    or up to 4 joysticks.
-
-  * Added native Stelladaptor support. Joysticks, paddles, and driving
-    controllers have been tested.
-
-  * Digital sound support (used in games like Quadrun and Pitfall2) has been
-    greatly improved. Sound generation is now more tightly synchronized with
-    video updates.
-
-  * Added support for switchable palettes. Currently you can switch between
-    the current Stella palette, original Stella palette (pre-1.2 versions),
-    and the z26 palette.
-
-  * Added support for UA Limited style bankswitching (Funky Fish and Pleiades).
-
-  * Switched to using high compatibility M6502 mode by default. This means
-    old state saves from previous Stella versions will no longer work.
-
-  * The meaning of the "-sound" command line option has been changed. This
-    option now accepts either 'true' or 'false (1 or 0) to enable/disable
-    sound.
-
-  * Changed sound mixer functionality. The system volume/mixer settings will
-    never be changed; volume changes in Stella will only affect the
-    emulation itself.
-
-  * Added "-video" command line option. This option accepts either 'soft' or
-    'gl', to use software/OpenGL rendering.
-
-  * Added "-gl_filter" command line option. This option accepts either
-    'nearest' or 'linear', to use GL_NEAREST or GL_LINEAR filtering.
-
-  * Added "-gl_aspect" command line option. This option accepts a decimal
-    value specifying how much to scale the width of the emulation image
-    (useful for giving an authentic 'square-looking' 4:3 mode).
-
-  * Added "-gl_fsmax" command line option. This option accepts either
-    'true' or 'false, and specifies to use the maximum possible resolution
-    when in fullscreen OpenGL mode (useful for Linux and for Windows on
-    laptops).
-
-  * Added "-fragsize" command line option. This option accepts the size to
-    use for sound fragments. Linux/MacOSX works well with 512, Windows seems
-    to need 2048. This value must be a power of two.
-
-  * Modified "-volume" command line option. If you specify '-1', Stella will
-    use the system volume.
-
-  * Renamed the "-pro" command line option to "-altpro".
-
-  * Renamed the "-fps" command line option to "-framerate".
-
-  * Removed the "-center" command line option. Stella now automatically
-    centers the window when possible.
-
-  * Removed the "-paddle real" command line option, since it never really
-    worked correctly (and Stelladaptor support adds that functionality
-    anyway).
-
-  * Removed all command line options relating to the X11 port
-    (owncmap, display).
 
 Distribution Site
 ================= 

@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - July 17, 2004
+                         To Do List - August 15, 2004
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something

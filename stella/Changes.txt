@@ -12,6 +12,37 @@
                                Release History
 ===============================================================================
 
+1.4 to 1.4.1: (August 15, 2004)
+
+  * Fixed PAL sound issues.  PAL games now should sound correct (no distortion
+    or missing sounds), but some games may still run too fast.  This is still
+    a work-in-progress, and will be fixed in Stella 1.5.
+
+  * Cleaned up the SDL event gathering loop.  This should hopefully fix the
+    problems with "double-pumping events" reported by some Windows users.
+    Event gathering and dispatching is now much faster as well.
+
+  * Fixed a bug where the Control or Alt keys could be assigned to some event,
+    but they could never be used.  Control/Alt can now be used for any event.
+
+  * Updated stella.pro file to work with the latest Good2600 ROMset release
+    (Thanks go to Voch for helping to maintain the stella.pro file).
+
+  * For the Windows port; removed requirement for ROM files to be named *.bin
+    in the StellaX frontend.  The ROM's can now have any name, but ZIP-files are
+    not yet supported.
+
+  * For the Windows port; fixed the problems with the included modified SDL
+    library and Windows 98 users.  Stella should now run in Windows 98.
+
+  * For the OSX port; added preference to allow user to select the directory
+    in which ROM images are stored.  This sets the default directory to start
+    the browsing for a ROM in, and doesn't preclude the user from selecting a 
+    file outside that directory.
+
+  * For the OSX port; fixed preferences bug where Preferences changed before
+    a game was opened were not being saved.
+
 1.3 to 1.4: (July 17, 2004)
 
   * Codebase ported to SDL. The DOS and X11 ports have been discontinued.

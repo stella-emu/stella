@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.36 2004-07-28 23:54:38 stephena Exp $
+// $Id: Console.cxx,v 1.37 2004-08-12 23:36:15 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -250,6 +250,8 @@ Console& Console::operator = (const Console&)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
+  mySystem->reset();
+
   string format = myProperties.get("Display.Format");
 
   if(format == "NTSC")
