@@ -7,11 +7,11 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 1.3</b></h4></center>
-	<br><br><br>
+	<center><h4><b>Release 1.4</b></h4></center>
+	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
-	<br><br><br><br>
+	<br><br>
 
 	<ol>
 		<li><a href="#Introduction">Introduction</a></li>
@@ -21,14 +21,14 @@
 		<li><a href="#Starting">Starting A Game</a></li>
 		<li><a href="#Keyboard">Keyboard Layout</a></li>
 		<li><a href="#Properties">Game Properties</a></li>
-		<li><a href="#Adaptor">Real Paddle Adaptor</a></li>
+		<li><a href="#Adaptor">Stelladaptor Support</a></li>
 		<li><a href="#Acknowledgments">Acknowledgments</a></li>
 		<li><a href="#License">License and Disclaimer</a></li>
 	</ol>
 
-	<br><br><br><br><br>
+	<br><br><br>
 
-	<center><b>February 1999 - February 2003</b></center>
+	<center><b>February 1999 - June 2004</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -207,8 +207,10 @@
         Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 1.3</b></h2>
+	<h2><b>New in Release 1.4</b></h2>
 
+	<p>FIXME - add feature list</p>
+<!--
 	<ul>
 		<li>Improved TIA sound system so that games with digitized audio work</li>
 		<li>Added saving and loading of game state to the core; X11, SDL, and DOS
@@ -270,7 +272,7 @@
 			specified path, then in <i>%STELLA_HOME%/ROMS</i>, and finally
 			in <i>%STELLA_HOME%</i></li>
 	</ul>
-
+-->
 	<p>
 	<h2><b>Features</b></h2>
 
@@ -280,7 +282,8 @@
 		<li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard or joysticks
 		<li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard
 		<li>Emulates one Atari 2600 Paddle Controller using your computer's mouse
-		<li>Emulates four Atari 2600 Paddle Controllers using a special PC game port adaptor
+		<li>Support for real Atari 2600 controllers using the
+			<a href="http://www.pixelspast.com/products">Stelladaptor</a>
 		<li>Emulates the Atari 2600 Driving Controllers using your computer's keyboard or joysticks
 		<li>Emulates the CBS Booster-Grip Controller using your computer's keyboard or joysticks
 		<li>Supports cartridges using Atari's standard 2K and 4K format
@@ -298,8 +301,6 @@
 		<li>Supports the NTSC and PAL television palettes
 		<li>Supports several "undocumented features" of the TIA graphics chip used by some games
 		<li>TIA emulation supports full collision checking
-		<li>DOS version of Stella works with most emulator game shells such as "Game Menu" by Jim Pragit
-		<li>DOS version of Stella supports the standard 320x200 VGA graphics mode as well as the extended 320x240 VGA graphics mode
 		<li>Linux version of Stella works with the KStella frontend by Stephen Anthony
 	</ul>
 
@@ -316,25 +317,6 @@
 	stella.pro file.  It is no longer optional as it was for past versions.</p>
 
 	<p>
-	<h2><b>DOS</b></h2>
-
-	<p>The DOS version of Stella is designed to work on an IBM-PC or 100%
-	compatible system with the following:</p>
-
-	<ul>
-		<li>DOS 5.0 or higher
-		<li>8 MB of RAM
-		<li>256 color VGA graphics card
-		<li>586/166 MHz required
-		<li>At least 2 megabytes of hard disk space available
-		<li>Sound Blaster or 100% compatible sound card required for sound
-		<li>Joysticks or gamepads are highly recommended
-		<li>Mouse and mouse driver required for paddle emulation using the mouse
-		<li>Special adaptor required for using real Atari 2600 paddles
-		<li>Emulator game shell highly recommended
-	</ul>
-
-	<p>
 	<h2><b>Linux/UNIX</b></h2>
 
 	<p>The Linux version of Stella is designed to work on a Linux Workstation with
@@ -348,12 +330,50 @@
 		<li>15 bit color minimum; 16 bit color graphics card highly recommended
 		<li>486/120 MHz required; 586/166 MHz highly recommended
 		<li>SDL version 1.2.0 or greater
-		<li>ALSA or OSS drivers with a supported sound card required for sound; ALSA 0.9 highly recommended
-		<li>Joystick device driver version 1.2.x required for joystick support
 		<li>Joysticks or gamepads are highly recommended
 		<li>Mouse required for paddle emulation using the mouse
-<!--		<li>Special adaptor required for using real Atari 2600 paddles-->
 	</ul>
+
+	<p>
+	<h2><b>Macintosh</b></h2>
+
+<p>FIXME</p>
+<!--
+	<p>The MacLinux version of Stella is designed to work on a Linux Workstation with
+	the following:</p>
+
+	<ul>
+		<li>Linux Kernel 2.0.x
+		<li>X Window System
+		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling the Stella source code; GNU C++ compiler version 3.2.x or later is highly recommended
+		<li>16 MB of RAM required; 32 MB highly recommended
+		<li>15 bit color minimum; 16 bit color graphics card highly recommended
+		<li>486/120 MHz required; 586/166 MHz highly recommended
+		<li>SDL version 1.2.0 or greater
+		<li>Joysticks or gamepads are highly recommended
+		<li>Mouse required for paddle emulation using the mouse
+	</ul>
+-->
+	<p>
+	<h2><b>Windows</b></h2>
+
+<p>FIXME</p>
+<!--
+	<p>The Linux version of Stella is designed to work on a Linux Workstation with
+	the following:</p>
+
+	<ul>
+		<li>Linux Kernel 2.0.x
+		<li>X Window System
+		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling the Stella source code; GNU C++ compiler version 3.2.x or later is highly recommended
+		<li>16 MB of RAM required; 32 MB highly recommended
+		<li>15 bit color minimum; 16 bit color graphics card highly recommended
+		<li>486/120 MHz required; 586/166 MHz highly recommended
+		<li>SDL version 1.2.0 or greater
+		<li>Joysticks or gamepads are highly recommended
+		<li>Mouse required for paddle emulation using the mouse
+	</ul>
+-->
 
 	<br><br>
 	<p><h1>
@@ -365,76 +385,25 @@
 	see the installation instructions included with the distribution for your system.</p>
 
 	<p>
-	<h2><b>DOS</b></h2>
-
-	<p>The DOS version of Stella is distributed as a ZIP archive containing the DOS
-	executable as well as some other files.  The DOS version of Stella 
-	works with DOS as well as Windows 9x.  The DOS version will run under
-        Windows NT, 2000, and XP, however, the sound may not operate correctly.
-	You should install it as follows:</p>
-
-	<ol>
-		<li>Change directories to the root directory:<br>
-			<pre>   CD C:\</pre></li>
-
-		<li>Extract the Stella distribution:
-			<pre>   unzip st<i>release</i>.zip</pre></li>
-
-		<li>Add the following to your <b>AUTOEXEC.BAT</b> file:
-			<pre>   SET PATH=%PATH%;C:\STELLA</pre></li>
-
-		<li>If you have a Sound Blaster or 100% compatible sound card make sure
-		the <b>BLASTER</b> environment variable is set in your <b>AUTOEXEC.BAT</b> file.
-                The sound driver will attempt to auto-detect your card if the <b>BLASTER</b> variable
-                isn't correctly specified.
-		For example:
-			<pre>   SET BLASTER=A220 I7 D1</pre></li>
-
-		<li>If you have a mouse make sure your mouse driver is loaded in either the
-		<b>CONFIG.SYS</b> file or the <b>AUTOEXEC.BAT</b> file</li>
-
-		<li>Reboot your system</li>
-	</ol>
-
-	<p>For the second step you'll need a program for extracting ZIP archive files.
-	You can use PKUNZIP for DOS, the Info-Zip UnZip tool for DOS, or a number of
-	other programs available for extracting ZIP files.</p>
-
-	<p>
-	<h2><b>Linux</b></h2>
+	<h2><b>Linux/UNIX</b></h2>
 
 	<p>The Linux versions of Stella are distributed in both executable and source code
 	form, and in compressed tar files as well as (S)RPM's.
 
-	<p>If you're using the executables from a compressed tar file, follow these instructions:
-	<ul>
-		<li>Extract files from the distribution:
-			<pre>   tar -jxvf stella-<i>release</i>-linux-<i>arch</i>.tar.bz2</pre></li>
-
-		<li>Login as root and change directories to the distribution directory</li>
-
-		<li>Copy the executable to a directory that's in your path:
-			<pre>   cp stella.sdl /usr/local/bin</pre></li>
-
-		<li>Copy the supplied stella.pro properties file to the system-wide location:
-			<pre>   cp stella.pro /etc</pre> or to your home directory:
-			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
-	</ul>
-
 	<p>If you're compiling the source from a compressed tar file, follow these instructions:
 	<ul>
 		<li>Extract files from the distribution:
-			<pre>   tar -jxvf stella-release-src.tar.bz2</pre></li>
+			<pre>   tar jxvf stella-release-src.tar.bz2</pre></li>
 
 		<li>Change directories to the stella-<i>release</i>/src/build directory</li>
 
 		<li>Edit the <b>makefile</b> to meet your needs</li>
 
 		<li>Build the executable with the following command:
-			<pre>   make linux-sdl</pre></li>
+			<pre>   make linux (or make linux-gl)</pre></li>
 
 		<li>Copy the executable to a directory that's in your path:
-			<pre>   cp stella.sdl /usr/local/bin</pre></li>
+			<pre>   cp stella /usr/local/bin</pre></li>
 
 		<li>Copy the supplied stella.pro properties file to the system-wide location:
 			<pre>   cp stella.pro /etc</pre> or to your home directory:
@@ -444,23 +413,25 @@
 	<p>If you're using the binary RPM's or source SRPM's, consult your distribution on
 	how to proceed.</p>
 
-	<p>If you have a supported joystick and driver installed,
+	<p>If you have a supported joystick and driver installed and SDL can see the device,
 	you can play games using joysticks.  For additional information about the Linux
 	joystick driver see the following web site:
 	<a href="http://atrey.karlin.mff.cuni.cz/~vojtech/input">
 	Linux Input Drivers</a>.</p>
 
-	<p>Currently, sound is supported using the ALSA v0.9 API (-sound alsa), the Open Sound
-	System or OSS emulation under ALSA (-sound oss), or SDL (-sound sdl).  Sound has been
-	tested and is known to work under Linux and BSDI.  For additional information on
-	OSS or ALSA see the following web sites:</p>
+	<p>Currently, sound is supported using SDL.  As long as SDL can see your sound card, Stella
+	will be able to produce sound.</p>
 
-	<p><a href="http://www.4front-tech.com">4Front Technologies (OSS)</a><br>
-	<a href="http://www.alsa-project.org">Advanced Linux Sound Architecture (ALSA)</a>
-	</p>
+	<p>
+	<h2><b>Macintosh</b></h2>
 
-	<p>Support for the external sound server has been deprecated as of Stella 1.3.  The sound
-	code has been integrated into the core.</p>
+	<p>FIXME - add info for Mac</p>
+
+	<p>
+	<h2><b>Windows</b></h2>
+
+	<p>FIXME - add info for Windows</p>
+
 
 	<br><br>
 	<p><h1>
@@ -536,83 +507,14 @@
 	playing.  To play a game follow the directions for your operating system.</p>
 
 	<p>
-	<h2><b>DOS</b></h2>
-
-	<p>The DOS version of Stella uses command line arguments to specify the game
-	you'd like to play as well as other options.  To see the list of available
-	arguments, simply run stella without any options or filename.  The options are
-	provided here for reference.  To run Stella use a command line
-	of the following format:</p>
-
-	<pre>   stella.exe [options ...] filename.bin</pre>
-
-	<p><b>Options</b></p>
-
-	<table BORDER=2>
-		<tr>
-			<th>Argument</th>
-			<th>Description</th>
-		</tr>
-
-		<tr>
-			<td><pre>-fps &lt;number&gt;</pre></td>
-			<td>Attempt to display n frames per second instead of the default 60
-				frames per second (if the computer isn't fast enough then it may
-				be unable to display the desired number of frames per second)</td>
-		</tr>
-
-		<tr>
-			<td><pre>-modex</pre></td>
-			<td>Indicates that the 320x240 graphics mode should be used instead of
-				the default 320x200 graphics mode</td>
-		</tr>
-
-		<tr>
-			<td><pre>-nosound</pre></td>
-			<td>Indicates that the sound blaster support should be disabled</td>
-		</tr>
-
-		<tr>
-			<td><pre>-paddle &lt;0|1|2|3|real&gt;</pre></td>
-			<td>Indicates which paddle the mouse should emulate or that real Atari
-				2600 paddles are being used (defaults to paddle 0)</td>
-		</tr>
-		<tr>
-			<td><pre>-pro &lt;props file&gt;</pre></td>
-			<td>Use the given properties file instead of stella.pro</td>
-		</tr>
-		<tr>
-			<td><pre>-showinfo</pre></td>
-			<td>Shows some game info on exit</td>
-		</tr>
-
-		<tr>
-			<td><pre>-vsync</pre></td>
-			<td>Indicates that the emulation should synchronize with the video card instead
-				of the system timer</td>
-		</tr>
-
-	</table>
-
-	<p><b>Emulator Game Shells</b></p>
-
-	<p>Instead of using the command line to run Stella you may find it easier to
-	use an emulator game shell.  An emulator game shell allows you to pick games
-	from a menu without having to type everything at the command line.  One such
-	game shell is Jim Pragit's "Game Menu".  Other frontends can be found at the
-	<a href="http://www.atariage.com">Atari Age</a> website under
-	<a href="http://www.atariage.com/2600/emulation/index.html?SystemID=2600">
-	2600 - Emulation</a>.</p>
-
-	<p>
-	<h2><b>Linux and Unix</b></h2>
+	<h2><b>Linux/Unix</b></h2>
 
 	<p>The Linux version of Stella uses command line arguments to specify the game
 	you'd like to play as well as other options.  To see the list of available
 	arguments, simply run stella without any options or filename.  To run Stella
 	use a command line of the following format:</p>
 
-	<pre>   stella.sdl [options ...] filename.bin</pre>
+	<pre>   stella [options ...] filename.bin</pre>
 
 	<p><b>Options</b> (0 indicates false, 1 indicates true, others are self-explanatory)
 		The words 'true' and 'false' can also be used.</p>
@@ -643,8 +545,8 @@
 		</tr>
 
 		<tr>
-			<td><pre>-sound &lt;0|alsa|oss|sdl&gt;</pre></td>
-			<td>Disable sound entirely, or use the given backend.</td>
+			<td><pre>-sound &lt;0|1&gt;</pre></td>
+			<td>Enable or disable sound.</td>
 		</tr>
 
 		<tr>
@@ -682,16 +584,6 @@
 			<td><pre>-paddle &lt;0|1|2|3|real&gt;</pre></td>
 			<td>Indicates which paddle the mouse should emulate or that real Atari
 				2600 paddles are being used (defaults to paddle 0).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-joyleft &lt;number&gt;</pre></td>
-			<td>The joystick number representing the left controller.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-joyright &lt;number&gt;</pre></td>
-			<td>The joystick number representing the right controller.</td>
 		</tr>
 
 		<tr>
@@ -766,16 +658,8 @@
 
 	<p><b>Emulator Game Shells</b></p>
 
-	<p>There are at least three Stella frontends for Unix/Linux:
-
 	<p><a href="http://kstella.sourceforge.net">KStella</a>, which concentrates on
 	Stella only and includes manuals, snapshots, cartridge labels, etc.</p>
-
-	<p><a href="http://kemulator.sourceforge.net">Kemulator</a>, which concentrates
-	on several different emulators (Super Nintendo, Stella, MESS, etc.)</p>
-
-	<p><a href="http://home.tu-clausthal.de/~ifmar/asmsoftware/stellashell.html">
-	Stella Shell</a>, which has been around the longest.</p>
 
 	<p><b>INI File</b></p>
 
@@ -819,6 +703,22 @@
 	</table>
 
 	<p>See the sample stellarc file for more information.</p>
+
+	<p>
+	<h2><b>Macintosh</b></h2>
+
+	<p>The Mac version of Stella is a native Cocoa-based application.</p>
+	<p> FIXME - add more info</p>
+
+	<p>
+	<h2><b>Windows</b></h2>
+
+	<p>The Windows version of Stella is either commandline based or can use a GUI.
+	If you wish to use the commandline version, the options are the same as for the
+	Linux version (described above).</p>
+
+	<p> FIXME - add more info about GUI StellaX launcher</p>
+
 
 	<br><br>
 	<p><h1>
@@ -1367,50 +1267,40 @@
 
 	<p><b>Other Keys (cannot be remapped)</b></p>
 
-	<p>The following keys are not present in all versions, so they are listed by
-	version here:</p>
-
 	<table BORDER=2>
 		<tr>
 			<th>Function</th>
 			<th>Key</th>
-			<th>Version</th>
 		</tr>
 
 		<tr>
 			<td>Resize window to next <i>larger</i> size</td>
 			<td>Alt + =</td>
-			<td>SDL</td>
 		</tr>
 
 		<tr>
 			<td>Resize window to next <i>smaller</i> size</td>
 			<td>Alt + -</td>
-			<td>SDL</td>
 		</tr>
 
 		<tr>
 			<td>Grab mouse (keep mouse in game window)</td>
 			<td>Control + g</td>
-			<td>SDL</td>
 		</tr>
 
 		<tr>
 			<td>Hide cursor (hide cursor in game window)</td>
 			<td>Control + h</td>
-			<td>SDL</td>
 		</tr>
 
 		<tr>
 			<td>Toggle fullscreen/windowed mode</td>
 			<td>Alt + Enter</td>
-			<td>SDL</td>
 		</tr>
 
 		<tr>
 			<td>Toggle OpenGL filtering modes</td>
 			<td>Alt + f</td>
-			<td>SDL</td>
 		</tr>
 	</table>
 
@@ -1425,20 +1315,26 @@
 	Erik Kovach, <a href="http://home.earthlink.net/~voch/atari">here</a>.</p>
 
 	<p>
-	<h2><b>DOS</b></h2>
-
-	<p>The DOS version of Stella looks for a property file <i>stella.pro</i> in the
-	current working directory.  If this file isn't found then the emulator will
-	try to guess the best settings for the game.</p>
-
-	<p>
-	<h2><b>Linux and Unix</b></h2>
+	<h2><b>Linux/Unix</b></h2>
 
 	<p>The Linux and Unix versions of Stella looks for the property file
 	<i>stella.pro</i> in your <i>$HOME/.stella</i> directory.  If this file is not found there, 
 	Stella will look for a <i>stella.pro</i> file in the <i>/etc/</i> directory.
 	If the file isn't found in either place, then the emulator wil try to
 	guess the best settings for the game.</p>
+
+	<p>
+	<h2><b>Macintosh</b></h2>
+
+	<p>The Mac version of Stella looks for the property file in the $HOME directory.</p>
+	<p> FIXME - check to see where the Mac port looks for the properties file.</p>
+
+	<p>
+	<h2><b>Windows</b></h2>
+
+	<p>The Windows version of Stella looks for the property file in the directory
+	containing the application.  In the future, support may be added for storing the
+	property file in the users profile (Windows 2000 and higher).</p>
 
 	<p>
 	<h2><b>Property File</b></h2>
@@ -1613,34 +1509,32 @@
 
 	<br><br>
 	<p><h1>
-	<a name="Adaptor">8. Real Paddle Adaptor</a></h1>
+	<a name="Adaptor">8. Stelladaptor Support</a></h1>
 	<hr>
 
-	<p>The DOS and Linux versions of Stella support real Atari 2600 paddles using
-	a special adaptor which connects to the PC game port.  The adaptor requires the
-	following parts:</p>
+	<p>Stella supports real Atari 2600 joysticks and paddles using the
+	<a href="http://www.pixelspast.com/products">Stelladaptor</a> device.
+	The 1.4 release of Stella does not yet support driving controllers connected
+	to a Stelladaptor.</p>
+
+	<p>Stella can use up to <b>two</b> Stelladaptors; any extra ones are ignored.
+	Stelladaptor devices will be automatically detected and configured.  The
+	detection and configuration is as follows:
 
 	<ul>
-		<li>1 DB15 male connector (joystick extension cable plugs into this)</li>
-		<li>2 DB9 male connectors (paddles plug into these)</li>
-		<li>4 115k resistors</li>
-		<li>1 Small project box</li>
-		<li>1 Joystick extension cable</li>
-		<li>Some wire or ribbon cable</li>
+		<li>The first Stelladaptor found will act as either the left physical
+			joystick or paddles 1 & 2.  Basically, whatever controller you plug
+			into it will behave as if it were plugged in to the <b>left game
+			port</b> on a real Atari.</li>
+
+		<li>The second Stelladaptor found will act as either the right physical
+			joystick or paddles 3 & 4.  Basically, whatever controller you plug
+			into it will behave as if it were plugged in to the <b>right game
+			port</b> on a real Atari.</li>
+
+		<li>Any other Stelladaptors will be ignored.</li>
 	</ul>
 
-	<p>Most of these parts can be found at Radio Shack.  I could not find a DB15
-	connector there or the 115k resistors, however, if you're willing to sacrifice
-	a joystick extension cable you can do without the DB15 connector and you can
-	always place a 100k resistor and 15k resistor in series to make a 115k
-	resistor.  A schematic of the adaptor is shown below:</p>
-
-	<p><a><img src="graphics/circuit.png"></a></p>
-
-	<p>As you build the adaptor be careful not to short the +5V and GND
-	connections.  Although several people have built this adaptor and use it 
-	no guarantee is given that the circuit is error free therefore
-	<b>USE IT AT YOUR OWN RISK!</b></p>
 
 	<br><br>
 	<p><h1>
