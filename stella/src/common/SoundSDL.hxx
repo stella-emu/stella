@@ -13,40 +13,42 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SndDOS.hxx,v 1.2 2002-11-13 03:47:55 bwmott Exp $
+// $Id: SoundSDL.hxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
 //============================================================================
 
-#ifndef SOUNDDOS_HXX
-#define SOUNDDOS_HXX
+#ifndef SOUNDSDL_HXX
+#define SOUNDSDL_HXX
 
+#include <SDL.h>
+
+#include "Sound.hxx"
 #include "bspf.hxx"
 #include "MediaSrc.hxx"
 
 /**
-  This class implements aa sound class for the DOS front-end.  It supports
-  SoundBlaster compatible sound cards.
+  This class implements the sound API for SDL.
 
-  @author Bradford W. Mott
-  @version $Id: SndDOS.hxx,v 1.2 2002-11-13 03:47:55 bwmott Exp $
+  @author Stephen Anthony and Bradford W. Mott
+  @version $Id: SoundSDL.hxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
 */
-class SoundDOS
+class SoundSDL : public Sound
 {
   public:
     /**
       Create a new sound object
     */
-    SoundDOS(bool activate = true);
+    SoundSDL(uInt32 fragsize, uInt32 queuesize);
  
     /**
       Destructor
     */
-    virtual ~SoundDOS();
+    virtual ~SoundSDL();
 
   public: 
     /**
       Closes the sound device
     */
-    void close();
+    void closeDevice();
 
     /**
       Return the playback sample rate for the sound device.
@@ -71,19 +73,41 @@ class SoundDOS
 
     /**
       Sets the volume of the sound device to the specified level.  The
-      volume is given as a precentage from 0 to 100.
+      volume is given as a percentage from 0 to 100.  A -1 indicates
+      that the volume shouldn't be changed at all.
 
-      @param volume The new volume for the sound device
+      @param percent The new volume percentage level for the sound device
     */
-    void setSoundVolume(uInt32 volume);
+    void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the specified
-      media source.
-
-      @param mediaSource The media source to get audio samples from.
+      Generates audio samples to fill the sample queue.
     */
-    void updateSound(MediaSource& mediaSource);
+    void update();
+
+    /**
+      Sets the sound register to a given value.
+
+      @param addr  The register address
+      @param value The value to save into the register
+    */
+    void set(uInt16 addr, uInt8 value);
+
+    /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out  The serializer device to save to.
+      @return     The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out);
+
+    /**
+      Loads the current state of this device from the given Deserializer.
+
+      @param in  The deserializer device to load from.
+      @return    The result of the load.  True on success, false on failure.
+    */
+    bool load(Deserializer& in);
 
   private:
     /**
@@ -132,12 +156,19 @@ class SoundDOS
         */
         uInt32 size() const;
 
+        /**
+          Answers the maximum number of samples the queue can hold.
+
+          @return The maximum number of samples in the queue.
+        */
+        uInt32 capacity() const { return myCapacity; }
+
       private:
         const uInt32 myCapacity;
         uInt8* myBuffer;
-        volatile uInt32 mySize;
-        volatile uInt32 myHead;
-        volatile uInt32 myTail;
+        uInt32 mySize;
+        uInt32 myHead;
+        uInt32 myTail;
     };
 
   private:
@@ -147,12 +178,11 @@ class SoundDOS
     // SDL fragment size
     uInt32 myFragmentSize;
 
+    // Audio specification structure
+    SDL_AudioSpec myHardwareSpec;
+    
     // Indicates if the sound device was successfully initialized
     bool myIsInitializedFlag;
-
-    // Mutex
-    bool myUpdateLock;
-    bool myCallbackLock;
 
     // Indicates if the sound is currently muted
     bool myIsMuted;
@@ -160,12 +190,15 @@ class SoundDOS
     // DSP sample rate
     uInt32 mySampleRate;
 
+    // The sample queue size (which is auto-adapting)
+    uInt32 mySampleQueueSize;
+
     // Queue which holds samples from the media source before they are played
     SampleQueue mySampleQueue;
 
   private:
-    // Callback function invoked by the sound library when it needs data
-    static void callback(void* udata, void* stream, int len);
+    // Callback function invoked by the SDL Audio library when it needs data
+    static void callback(void* udata, uInt8* stream, int len);
 };
-#endif
 
+#endif
