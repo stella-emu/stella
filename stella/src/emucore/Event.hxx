@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: Event.hxx,v 1.2 2003-09-04 23:23:06 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+  @version $Id: Event.hxx,v 1.2 2003-09-04 23:23:06 stephena Exp $
 */
 class Event
 {
@@ -65,6 +65,8 @@ class Event
 
       DrivingZeroClockwise, DrivingZeroCounterClockwise, DrivingZeroFire,
       DrivingOneClockwise, DrivingOneCounterClockwise, DrivingOneFire,
+
+      ChangeState, LoadState, SaveState, TakeSnapshot,
 
       LastType
     };

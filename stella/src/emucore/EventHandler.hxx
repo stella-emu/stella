@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.2 2003-09-04 16:50:48 stephena Exp $
+// $Id: EventHandler.hxx,v 1.3 2003-09-04 23:23:06 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -40,7 +40,7 @@ class MediaSource;
   unchanged to the remap class, where key remapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.2 2003-09-04 16:50:48 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.3 2003-09-04 23:23:06 stephena Exp $
 */
 class EventHandler
 {
@@ -94,8 +94,11 @@ class EventHandler
 #endif
 
   private:
-    void setDefaultKeyMapping();
-    void setDefaultJoyMapping();
+    void setDefaultKeymap();
+    void setDefaultJoymap();
+    void saveState();
+    void changeState();
+    void loadState();
 
   private:
     struct KeyEvent
@@ -115,6 +118,9 @@ class EventHandler
 
     // Global mediasource object
     MediaSource* myMediaSource;
+
+    // Indicates the current state to use for state loading/saving
+    uInt32 myCurrentState;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.43 2003-09-04 16:50:48 stephena Exp $
+// $Id: mainSDL.cxx,v 1.44 2003-09-04 23:23:06 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -39,7 +39,6 @@
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
-#include "System.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
 
@@ -96,10 +95,6 @@ static bool setupProperties(PropertiesSet& set);
 static void handleRCFile();
 static void usage();
 
-static void loadState();
-static void saveState();
-static void changeState(int direction);
-
 // Globals for the SDL stuff
 static SDL_Surface* screen = (SDL_Surface*) NULL;
 static Uint32 palette[256];
@@ -113,6 +108,7 @@ static SDL_SysWMinfo info;
 static int sdlflags;
 static RectList* rectList = (RectList*) NULL;
 static uInt32 theWidth, theHeight, theMaxWindowSize, theWindowSize;
+static string theSnapShotDir, theSnapShotName;
 
 #ifdef HAVE_JOYSTICK
   static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
@@ -226,15 +222,11 @@ static Switches list[] = {
     { SDLK_RIGHTBRACKET,StellaEvent::KCODE_RIGHTBRACKET}
   };
 
-// Pointer to the event handler object or the null pointer
 static Event theEvent;
 static Event keyboardEvent;
 
 // Pointer to the console object or the null pointer
 static Console* theConsole = (Console*) NULL;
-
-// Pointer to the settings object or the null pointer
-//static Settings* settings = (Settings*) NULL;
 
 // Pointer to the sound object or the null pointer
 static Sound* sound = (Sound*) NULL;
@@ -259,9 +251,6 @@ static bool isFullscreen = false;
 
 // Indicates whether the window is currently centered
 static bool isCentered = false;
-
-// Indicates the current state to use for state saving
-static uInt32 currentState = 0;
 
 // The locations for various required files
 static string homeDir;
@@ -328,9 +317,14 @@ bool setupDisplay()
   snapshot = new Snapshot();
 
   if(theConsole->settings().theSnapShotDir == "")
-    theConsole->settings().theSnapShotDir = homeDir;
+    theSnapShotDir = homeDir;
+  else
+    theSnapShotDir = theConsole->settings().theSnapShotDir;
+
   if(theConsole->settings().theSnapShotName == "")
-    theConsole->settings().theSnapShotName = "romname";
+    theSnapShotName = "romname";
+  else
+    theSnapShotName = theConsole->settings().theSnapShotName;
 #endif
 
   // Set up the rectangle list to be used in updateDisplay
@@ -710,91 +704,6 @@ void grabMouse(bool grab)
 
 
 /**
-  Saves state of the current game in the current slot.
-*/
-void saveState()
-{
-  ostringstream buf;
-  string md5 = theConsole->properties().get("Cartridge.MD5");
-  buf << stateDir << md5 << ".st" << currentState;
-  string filename = buf.str();
-
-  // Do a state save using the System
-  int result = theConsole->system().saveState(filename, md5);
-
-  // Print appropriate message
-  buf.str("");
-  if(result == 1)
-    buf << "State " << currentState << " saved";
-  else if(result == 2)
-    buf << "Error saving state " << currentState;
-  else if(result == 3)
-    buf << "Invalid state " << currentState << " file";
-
-  string message = buf.str();
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    theConsole->settings().theDesiredFrameRate);
-}
-
-
-/**
-  Changes the current state slot.
-*/
-void changeState(int direction)
-{
-  if(direction == 1)   // increase current state slot
-  {
-    if(currentState == 9)
-      currentState = 0;
-    else
-      ++currentState;
-  }
-  else   // decrease current state slot
-  {
-    if(currentState == 0)
-      currentState = 9;
-    else
-      --currentState;
-  }
-
-  // Print appropriate message
-  ostringstream buf;
-  buf << "Changed to slot " << currentState;
-  string message = buf.str();
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    theConsole->settings().theDesiredFrameRate);
-}
-
-
-/**
-  Loads state from the current slot for the current game.
-*/
-void loadState()
-{
-  ostringstream buf;
-  string md5 = theConsole->properties().get("Cartridge.MD5");
-  buf << stateDir << md5 << ".st" << currentState;
-  string filename = buf.str();
-
-  // Do a state load using the System
-  int result = theConsole->system().loadState(filename, md5);
-
-  // Print appropriate message
-  buf.str("");
-  if(result == 1)
-    buf << "State " << currentState << " loaded";
-  else if(result == 2)
-    buf << "Error loading state " << currentState;
-  else if(result == 3)
-    buf << "Invalid state " << currentState << " file";
-
-  string message = buf.str();
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    theConsole->settings().theDesiredFrameRate);
-}
-
-
-/**
   This routine should be called anytime the display needs to be updated
 */
 void updateDisplay(MediaSource& mediaSource)
@@ -995,21 +904,6 @@ void handleEvents()
       else if(key == SDLK_RETURN && mod & KMOD_ALT)
       {
         toggleFullscreen();
-      }
-      else if(key == SDLK_F9)
-      {
-        saveState();
-      }
-      else if(key == SDLK_F10)
-      {
-        if(mod & KMOD_SHIFT)
-          changeState(0);
-        else
-          changeState(1);
-      }
-      else if(key == SDLK_F11)
-      {
-        loadState();
       }
       else if(key == SDLK_F12)
       {
@@ -1359,22 +1253,21 @@ void takeSnapshot()
   if(!snapshot)
   {
     message = "Snapshots disabled";
-    theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
+    theConsole->mediaSource().showMessage(message, 120);
     return;
   }
 
   // Now find the correct name for the snapshot
-  string path = theConsole->settings().theSnapShotDir;
+  string path = theSnapShotDir;
   string filename;
 
-  if(theConsole->settings().theSnapShotName == "romname")
+  if(theSnapShotName == "romname")
     path = path + "/" + theConsole->properties().get("Cartridge.Name");
-  else if(theConsole->settings().theSnapShotName == "md5sum")
+  else if(theSnapShotName == "md5sum")
     path = path + "/" + theConsole->properties().get("Cartridge.MD5");
   else
   {
-    cerr << "ERROR: unknown name " << theConsole->settings().theSnapShotName
+    cerr << "ERROR: unknown name " << theSnapShotName
          << " for snapshot type" << endl;
     return;
   }
@@ -1410,19 +1303,16 @@ void takeSnapshot()
   if(access(filename.c_str(), F_OK) == 0)
   {
     message = "Snapshot saved";
-    theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
+    theConsole->mediaSource().showMessage(message, 120);
   }
   else
   {
     message = "Snapshot not saved";
-    theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
+    theConsole->mediaSource().showMessage(message, 120);
   }
 #else
   string message = "Snapshots unsupported";
-  theConsole->mediaSource().showMessage(message,
-    MESSAGE_INTERVAL * theConsole->settings().theDesiredFrameRate);
+  theConsole->mediaSource().showMessage(message, 120);
 #endif
 }
 

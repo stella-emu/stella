@@ -13,19 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.2 2003-09-04 16:50:48 stephena Exp $
+// $Id: EventHandler.cxx,v 1.3 2003-09-04 23:23:06 stephena Exp $
 //============================================================================
+
+#include <sstream>
 
 #include "Console.hxx"
 #include "Event.hxx"
-#include "StellaEvent.hxx"
 #include "EventHandler.hxx"
 #include "MediaSrc.hxx"
+#include "StellaEvent.hxx"
+#include "System.hxx"
 #include "bspf.hxx"
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(Console* console)
-    : myConsole(console)
+    : myConsole(console),
+      myCurrentState(0)
 {
   // Create the event object which will be used for this handler
   myEvent = new Event();
@@ -37,8 +42,8 @@ EventHandler::EventHandler(Console* console)
     keyTable[i].message = "";
   }
 
-  setDefaultKeyMapping();
-  setDefaultJoyMapping();
+  setDefaultKeymap();
+  setDefaultJoymap();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,14 +73,38 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key,
   if(keyTable[key].type == Event::LastType)
     return;
 
-  if((keyTable[key].message != "") && (state == StellaEvent::KSTATE_PRESSED))
-    myMediaSource->showMessage(keyTable[key].message, 120);
+  // Take care of special events that aren't technically part of
+  // the emulation core
+  if(state == StellaEvent::KSTATE_PRESSED)
+  {
+    if(keyTable[key].type == Event::SaveState)
+    {
+      saveState();
+      return;
+    }
+    else if(keyTable[key].type == Event::ChangeState)
+    {
+      changeState();
+      return;
+    }
+    else if(keyTable[key].type == Event::LoadState)
+    {
+      loadState();
+      return;
+    }
+//    else if(keyTable[key].type == Event::TakeSnapshot)
+//      cerr << "Event::TakeSnapshot received\n";
 
+    if(keyTable[key].message != "")
+      myMediaSource->showMessage(keyTable[key].message, 120);
+  }
+
+  // Otherwise, pass it to the emulation core
   myEvent->set(keyTable[key].type, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultKeyMapping()
+void EventHandler::setDefaultKeymap()
 {
   keyTable[StellaEvent::KCODE_1].type         = Event::KeyboardZero1;
   keyTable[StellaEvent::KCODE_2].type         = Event::KeyboardZero2;
@@ -127,10 +156,10 @@ void EventHandler::setDefaultKeyMapping()
   keyTable[StellaEvent::KCODE_F6].type        = Event::ConsoleLeftDifficultyB;
   keyTable[StellaEvent::KCODE_F7].type        = Event::ConsoleRightDifficultyA;
   keyTable[StellaEvent::KCODE_F8].type        = Event::ConsoleRightDifficultyB;
-//  keyTable[StellaEvent::KCODE_F9].type        = Event::
-//  keyTable[StellaEvent::KCODE_F10].type       = Event::
-//  keyTable[StellaEvent::KCODE_F11].type       = Event::
-//  keyTable[StellaEvent::KCODE_F12].type       = Event::
+  keyTable[StellaEvent::KCODE_F9].type        = Event::SaveState;
+  keyTable[StellaEvent::KCODE_F10].type       = Event::ChangeState;
+  keyTable[StellaEvent::KCODE_F11].type       = Event::LoadState;
+  keyTable[StellaEvent::KCODE_F12].type       = Event::TakeSnapshot;
 
   keyTable[StellaEvent::KCODE_F3].message      = "Color Mode";
   keyTable[StellaEvent::KCODE_F4].message      = "BW Mode";
@@ -146,6 +175,79 @@ void EventHandler::setDefaultKeyMapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyMapping()
+void EventHandler::setDefaultJoymap()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveState()
+{
+  ostringstream buf;
+  string md5 = myConsole->properties().get("Cartridge.MD5");
+//  string filename = frontend->stateFilename(md5, myCurrentState);
+
+// FIXME !!!  This MUST be changed to reflect the frontend/OS being used
+  string stateDir = "/home/stephena/.stella/state/";
+  buf << stateDir << md5 << ".st" << myCurrentState;
+  string filename = buf.str();
+/////////////////////////////////////////////////////////
+
+  // Do a state save using the System
+  int result = myConsole->system().saveState(filename, md5);
+
+  // Print appropriate message
+  buf.str("");
+  if(result == 1)
+    buf << "State " << myCurrentState << " saved";
+  else if(result == 2)
+    buf << "Error saving state " << myCurrentState;
+  else if(result == 3)
+    buf << "Invalid state " << myCurrentState << " file";
+
+  string message = buf.str();
+  myMediaSource->showMessage(message, 120);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::changeState()
+{
+  if(myCurrentState == 9)
+    myCurrentState = 0;
+  else
+    ++myCurrentState;
+
+  // Print appropriate message
+  ostringstream buf;
+  buf << "Changed to slot " << myCurrentState;
+  string message = buf.str();
+  myMediaSource->showMessage(message, 120);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::loadState()
+{
+  ostringstream buf;
+  string md5 = myConsole->properties().get("Cartridge.MD5");
+//  string filename = frontend->stateFilename(md5, myCurrentState);
+
+// FIXME !!!  This MUST be changed to reflect the frontend/OS being used
+  string stateDir = "/home/stephena/.stella/state/";
+  buf << stateDir << md5 << ".st" << myCurrentState;
+  string filename = buf.str();
+/////////////////////////////////////////////////////////
+
+  // Do a state save using the System
+  int result = myConsole->system().loadState(filename, md5);
+
+  // Print appropriate message
+  buf.str("");
+  if(result == 1)
+    buf << "State " << myCurrentState << " loaded";
+  else if(result == 2)
+    buf << "Error loading state " << myCurrentState;
+  else if(result == 3)
+    buf << "Invalid state " << myCurrentState << " file";
+
+  string message = buf.str();
+  myMediaSource->showMessage(message, 120);
 }
