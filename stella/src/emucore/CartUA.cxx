@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.1 2004-06-25 03:44:12 bwmott Exp $
+// $Id: CartUA.cxx,v 1.2 2004-06-25 13:32:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -144,7 +144,7 @@ void CartridgeUA::bank(uInt16 bank)
   myCurrentBank = bank;
   uInt16 offset = myCurrentBank * 4096;
   uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
+//  uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
