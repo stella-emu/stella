@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.7 2002-02-03 16:51:21 stephena Exp $
+## $Id: makefile,v 1.8 2002-02-17 04:41:41 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -23,14 +23,18 @@
 ## Comment a line out to disable that option, remove comment to enable it.
 ##============================================================================
 
+### this should work with all compilers 
+OPTIMIZATIONS    =
 ### for normal optimization, full warnings
 # OPTIMIZATIONS    = -O -Wall
 ### for common optimizations, full warnings except unused vars
 # OPTIMIZATIONS    = -O2 -Wall -Wno-unused
-### this should work with all compilers 
-OPTIMIZATIONS    =
 ### to get full optimization under gcc/x Intel based OS's..
 # OPTIMIZATIONS    = -O3 -mcpu=pentiumpro -march=pentiumpro -Wall -Wno-unused \
+#	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
+#	-malign-functions=2 -malign-jumps=2 -malign-loops=2
+### to get full optimization under gcc/x Athlon based OS's..
+# OPTIMIZATIONS    = -O3 -march=athlon -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
 #	-malign-functions=2 -malign-jumps=2 -malign-loops=2
 
@@ -49,9 +53,8 @@ OPTIMIZATIONS    =
 # LINUX_JOYSTICK = 1
 
 ### to include support for saving snapshots in png format
-### (X and SDL versions only)
-### (requires you to install Imlib)
-# IMLIB_SNAPSHOT = 1
+### (X version requires Imlib)
+# X11_SNAPSHOT = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -104,15 +107,11 @@ ifdef LINUX_JOYSTICK
 OPTS.X11 += -DLINUX_JOYSTICK
 endif
 
-ifdef IMLIB_SNAPSHOT
-OPTS.X11 += -DIMLIB_SNAPSHOT
+ifdef X11_SNAPSHOT
+OPTS.X11 += -DHAVE_IMLIB
 LIBS.X11 += `imlib-config --libs`
 CFLAGS.X11 += `imlib-config --cflags`
-OPTS.SDL += -DIMLIB_SNAPSHOT
-LIBS.SDL += `imlib-config --libs`
-CFLAGS.SDL += `imlib-config --cflags`
 endif
-
 
 default:
 	@echo ""
@@ -174,9 +173,9 @@ linux-sdl:
           OPTIONS+="$(OPTS.SDL)" \
           LDFLAGS="-L/usr/X11R6/lib" \
           LDFLAGS+="$(CFLAGS.SDL)" \
-          LDLIBS="-lX11 -lXext" \
+          LDLIBS="-lX11 -lXext -lpng" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SndUnix.o"
+          OBJS="mainSDL.o SndUnix.o SnapSDL.o"
 
 bsdi-x:
 	make stella.x11 \
@@ -382,6 +381,9 @@ mainX11.o: $(UI)/x11/mainX11.cxx
 
 mainSDL.o: $(UI)/sdl/mainSDL.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
+
+SnapSDL.o: $(UI)/sdl/SnapSDL.cxx $(UI)/sdl/SnapSDL.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SnapSDL.cxx
 
 SndUnix.o: $(UI)/sound/SndUnix.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/sound/SndUnix.cxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.8 2002-02-06 00:59:36 stephena Exp $
+// $Id: mainSDL.cxx,v 1.9 2002-02-17 04:41:41 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -39,18 +39,8 @@
 #include "PropsSet.hxx"
 #include "System.hxx"
 #include "SndUnix.hxx"
+#include "SnapSDL.hxx"
 
-#ifdef IMLIB_SNAPSHOT
-  #include <Imlib.h>
-
-  ImlibData* imlibData;
-
-  // The path to save snapshot files
-  string theSnapShotDir = "";
-
-  // What the snapshot should be called (romname or md5sum)
-  string theSnapShotName = "";
-#endif
 
 SDL_Joystick* theLeftJoystick;
 SDL_Joystick* theRightJoystick;
@@ -58,6 +48,7 @@ SDL_Joystick* theRightJoystick;
 // function prototypes
 bool setupDisplay();
 bool setupJoystick();
+bool createScreen(int width, int height);
 void cleanup();
 
 void updateDisplay(MediaSource& mediaSource);
@@ -81,6 +72,7 @@ void usage();
 
 // Globals for the SDL stuff
 static SDL_Surface* screen;
+static Uint32 palette[256];
 static int bpp;
 static Display* theX11Display;
 static Window theX11Window;
@@ -88,9 +80,9 @@ static int theX11Screen;
 static int mouseX = 0;
 static bool x11Available = false;
 static SDL_SysWMinfo info;
+static int sdlflags;
+static SnapshotSDL* snapshot;
 
-// SDL colors palette
-static Uint32 colors[256];
 
 struct Switches
 {
@@ -203,11 +195,11 @@ bool theShowInfoFlag = false;
 // Indicates whether to show cursor in the game window
 bool theHideCursorFlag = false;
 
-// Indicates whether the game is currently in fullscreen
-bool isFullscreen = false;
-
 // Indicates whether to allocate colors from a private color map
 bool theUsePrivateColormapFlag = false;
+
+// Indicates whether the game is currently in fullscreen
+bool isFullscreen = false;
 
 // Indicates whether the window is currently centered
 bool isCentered = false;
@@ -228,6 +220,12 @@ uInt32 thePaddleMode = 0;
 
 // An alternate properties file to use
 string theAlternateProFile = "";
+
+// The path to save snapshot files
+string theSnapShotDir = "";
+
+// What the snapshot should be called (romname or md5sum)
+string theSnapShotName = "";
 
 
 /**
@@ -250,8 +248,12 @@ bool setupDisplay()
     if(info.subsystem == SDL_SYSWM_X11)
       x11Available = true;
 
-  int sdlflags = SDL_HWSURFACE | SDL_HWPALETTE;
+  sdlflags = SDL_HWSURFACE;
   sdlflags |= theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
+  sdlflags |= theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
+
+  // Always use an 8-bit screen since the Atari 2600 had less than 256 colors
+  bpp = 8;
 
   // Get the desired width and height of the display
   theWidth = theConsole->mediaSource().width();
@@ -283,57 +285,15 @@ bool setupDisplay()
   int width = theWidth * 2 * theWindowSize;
   int height = theHeight * theWindowSize;
 
-  screen = SDL_SetVideoMode(width, height, 0, sdlflags);
-  if(screen == NULL)
-  {
-    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+  // Create the screen
+  if(!createScreen(width, height))
     return false;
-  }
-  bpp = screen->format->BitsPerPixel;
 
   // set the window title and icon name
   char name[512];
   sprintf(name, "Stella: \"%s\"", 
       theConsole->properties().get("Cartridge.Name").c_str());
   SDL_WM_SetCaption(name, "stella");
-
-  // Create the color palette based on screen bpp
-  const uInt32* palette = theConsole->mediaSource().palette();
-  for(uInt32 i = 0; i < 256; i += 2)
-  {
-    Uint8 r, g, b;
-
-    r = (Uint8) ((palette[i] & 0x00ff0000) >> 16);
-    g = (Uint8) ((palette[i] & 0x0000ff00) >> 8);
-    b = (Uint8) (palette[i] & 0x000000ff);
-
-    switch(bpp)
-    {
-      case 8:
-        SDL_Color color;
-        color.r = r;
-        color.g = g;
-        color.b = b;
-
-        SDL_SetColors(screen, &color, i, 1);
-        break;
-
-      case 15:
-        colors[i] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-        colors[i + 1] = colors[i];
-        break;
-
-      case 16:
-        colors[i] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
-        colors[i + 1] = colors[i];
-        break;
-
-      case 32:
-        colors[i] = (r << 16) | (g << 8) | b;
-        colors[i + 1] = colors[i];
-        break;
-    }
-  }
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
   if(theUseFullScreenFlag)
@@ -355,25 +315,15 @@ bool setupDisplay()
   if(theCenterWindowFlag && !theUseFullScreenFlag)
     centerWindow();
 
-#ifdef IMLIB_SNAPSHOT
-  if(x11Available)
-  {
-    info.info.x11.lock_func();
-    theX11Display = info.info.x11.display;
-    theX11Window  = info.info.x11.wmwindow;
-    theX11Screen  = DefaultScreen(theX11Display);
-    info.info.x11.unlock_func();
+  // Take care of the snapshot stuff
+  snapshot = new SnapshotSDL();
 
-    imlibData = Imlib_init(theX11Display);
-
-    // By default, snapshot dir is HOME and name is ROMNAME, assuming that
-    // they haven't been specified on the commandline
-    if(theSnapShotDir == "")
-      theSnapShotDir = getenv("HOME");
-    if(theSnapShotName == "")
-      theSnapShotName = "romname";
-  }
-#endif
+  // By default, snapshot dir is HOME and name is ROMNAME, assuming that
+  // they haven't been specified on the commandline
+  if(theSnapShotDir == "")
+    theSnapShotDir = getenv("HOME");
+  if(theSnapShotName == "")
+    theSnapShotName = "romname";
 
   return true;
 }
@@ -404,6 +354,55 @@ bool setupJoystick()
       " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
   else
     cout << "Right joystick not present, use keyboard instead.\n";
+
+  return true;
+}
+
+
+/**
+  This routine is called whenever the screen needs to be recreated.
+  It updates the global screen variable.  When this happens, the
+  palette has to be recalculated as well.
+*/
+bool createScreen(int w, int h)
+{
+  screen = SDL_SetVideoMode(w, h, bpp, sdlflags);
+  if(screen == NULL)
+  {
+    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    return false;
+  }
+
+  // Now set the screen palette
+  const uInt32* gamePalette = theConsole->mediaSource().palette();
+  SDL_Color colors[256];
+  for(uInt32 i = 0; i < 256; i += 2)
+  {
+    Uint8 r, g, b;
+
+    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16);
+    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8);
+    b = (Uint8) (gamePalette[i] & 0x000000ff);
+
+    colors[i].r = colors[i+1].r = r;
+    colors[i].g = colors[i+1].g = g;
+    colors[i].b = colors[i+1].b = b;
+  }
+  SDL_SetColors(screen, colors, 0, 256);
+
+  // Now see which colors we actually got
+  SDL_PixelFormat* format = screen->format;
+  for(uInt32 i = 0; i < 256; i += 2)
+  {
+    Uint8 r, g, b;
+
+    r = format->palette->colors[i].r;
+    g = format->palette->colors[i].g;
+    b = format->palette->colors[i].b;
+
+    palette[i] = SDL_MapRGB(format, r, g, b);
+    palette[i+1] = palette[i];
+  }
 
   return true;
 }
@@ -449,13 +448,8 @@ void resizeWindow(int mode)
   int width = theWidth * 2 * theWindowSize;
   int height = theHeight * theWindowSize;
 
-  screen = SDL_SetVideoMode(width, height, 0, SDL_HWSURFACE | SDL_HWPALETTE);
-  if(screen == NULL)
-  {
-    cerr << "Unable to resize SDL window: " << SDL_GetError() << endl;
+  if(!createScreen(width, height))
     return;
-  }
-  bpp = screen->format->BitsPerPixel;
 
   theRedrawEntireFrameFlag = true;
 
@@ -507,17 +501,15 @@ void toggleFullscreen()
 {
   int width = theWidth * 2 * theWindowSize;
   int height = theHeight * theWindowSize;
-  int sdlflags = SDL_HWSURFACE | SDL_HWPALETTE;
-  isFullscreen = !isFullscreen;
-  sdlflags |= isFullscreen ? SDL_FULLSCREEN : 0;
 
-  screen = SDL_SetVideoMode(width, height, 0, sdlflags);
-  if(screen == NULL)
-  {
-    cerr << "Unable to switch screenmode: " << SDL_GetError() << endl;
+  isFullscreen = !isFullscreen;
+  if(isFullscreen)
+    sdlflags |= SDL_FULLSCREEN;
+  else
+    sdlflags &= ~SDL_FULLSCREEN;
+
+  if(!createScreen(width, height))
     return;
-  }
-  bpp = screen->format->BitsPerPixel;
 
   if(isFullscreen)  // now in fullscreen mode
   {
@@ -680,7 +672,7 @@ void updateDisplay(MediaSource& mediaSource)
         rect.y = active.y * screenMultiple;
         rect.w = active.width * 2 * screenMultiple;
         rect.h = active.height * screenMultiple;
-        SDL_FillRect(screen, &rect, colors[active.color]);
+        SDL_FillRect(screen, &rect, palette[active.color]);
 
         ++activeIndex;
       }
@@ -695,7 +687,7 @@ void updateDisplay(MediaSource& mediaSource)
       rect.y = active.y * screenMultiple;
       rect.w = active.width * 2 * screenMultiple;
       rect.h = active.height * screenMultiple;
-      SDL_FillRect(screen, &rect, colors[active.color]);
+      SDL_FillRect(screen, &rect, palette[active.color]);
     }
 
     // We can now make the current rectangles into the active rectangles
@@ -717,7 +709,7 @@ void updateDisplay(MediaSource& mediaSource)
     rect.y = active.y * screenMultiple;
     rect.w = active.width * 2 * screenMultiple;
     rect.h = active.height * screenMultiple;
-    SDL_FillRect(screen, &rect, colors[active.color]);
+    SDL_FillRect(screen, &rect, palette[active.color]);
   }
 
   SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
@@ -777,7 +769,7 @@ void handleEvents()
       }
       else if(key == SDLK_g)
       {
-        // don't turn off grabmouse in fullscreen or we may lose the keyboard
+        // don't change grabmouse in fullscreen mode
         if(!isFullscreen)
         {
           theGrabMouseFlag = !theGrabMouseFlag;
@@ -786,8 +778,12 @@ void handleEvents()
       }
       else if(key == SDLK_h)
       {
-        theHideCursorFlag = !theHideCursorFlag;
-        showCursor(!theHideCursorFlag);
+        // don't change hidecursor in fullscreen mode
+        if(!isFullscreen)
+        {
+          theHideCursorFlag = !theHideCursorFlag;
+          showCursor(!theHideCursorFlag);
+        }
       }
       else // check all the other keys
       {
@@ -1037,28 +1033,19 @@ void handleEvents()
 */
 void takeSnapshot()
 {
-#ifdef IMLIB_SNAPSHOT
-  if(!x11Available)
+  if(!snapshot)
   {
-    cerr << "Snapshot support only available under X11.\n";
+    cerr << "Snapshot support disabled.\n";
     return;
   }
-  else if(isFullscreen)
+/*  else if(isFullscreen)
   {
     cerr << "Snapshot support unavailable in fullscreen (for now).\n";
     return;
   }
-
+*/
   int width  = screen->w;
   int height = screen->h;
-
-  ImlibImage* image = Imlib_create_image_from_drawable(imlibData, theX11Window,
-              0, 0, 0, width, height);
-  if(image == NULL)
-  {
-    cerr << "Could not create snapshot!!\n";
-    return;
-  }
 
   // Now find the correct name for the snapshot
   string filename = theSnapShotDir;
@@ -1096,16 +1083,12 @@ void takeSnapshot()
     filename = extFilename;
 
   // Now save the snapshot file
-  Imlib_save_image(imlibData, image, (char*)filename.c_str(), NULL);
-  Imlib_kill_image(imlibData, image);
+  snapshot->savePNG(screen, filename.c_str());
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;
   else
     cerr << "Couldn't create snapshot " << filename << endl;
-#else
-  cerr << "Snapshot mode not supported.\n";
-#endif
 }
 
 
@@ -1166,6 +1149,7 @@ void usage()
     "Valid options are:",
     "",
     "  -fps <number>           Display the given number of frames per second",
+    "  -owncmap                Install a private colormap",
     "  -winsize <size>         Makes initial window be 'size' times normal",
     "  -fullscreen             Play the game in fullscreen mode",
     "  -grabmouse              Keeps the mouse in the game window",
@@ -1175,10 +1159,8 @@ void usage()
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
     "  -showinfo               Shows some game info on exit",
-#ifdef IMLIB_SNAPSHOT
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
-#endif
     "  -pro <props file>       Use the given properties file instead of stella.pro",
     "",
     0
@@ -1283,6 +1265,10 @@ void handleCommandLineArguments(int argc, char* argv[])
       }
       ++i;
     }
+    else if(string(argv[i]) == "-owncmap")
+    {
+      theUsePrivateColormapFlag = true;
+    }
     else if(string(argv[i]) == "-fullscreen")
     {
       theUseFullScreenFlag = true;
@@ -1319,7 +1305,6 @@ void handleCommandLineArguments(int argc, char* argv[])
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB_SNAPSHOT
     else if(string(argv[i]) == "-ssdir")
     {
       theSnapShotDir = argv[++i];
@@ -1328,7 +1313,6 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theSnapShotName = argv[++i];
     }
-#endif
     else if(string(argv[i]) == "-pro")
     {
       theAlternateProFile = argv[++i];
@@ -1425,6 +1409,14 @@ void parseRCOptions(istream& in)
           thePaddleMode = pMode;
       }
     }
+    else if(key == "owncmap")
+    {
+      uInt32 option = atoi(value.c_str());
+      if(option == 1)
+        theUsePrivateColormapFlag = true;
+      else if(option == 0)
+        theUsePrivateColormapFlag = false;
+    }
     else if(key == "fullscreen")
     {
       uInt32 option = atoi(value.c_str());
@@ -1483,7 +1475,6 @@ void parseRCOptions(istream& in)
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB_SNAPSHOT
     else if(key == "ssdir")
     {
       theSnapShotDir = value;
@@ -1492,7 +1483,6 @@ void parseRCOptions(istream& in)
     {
       theSnapShotName = value;
     }
-#endif
   }
 }
 
@@ -1504,6 +1494,9 @@ void cleanup()
 {
   if(theConsole)
     delete theConsole;
+
+  if(snapshot)
+    delete snapshot;
 
   if(SDL_JoystickOpened(0))
     SDL_JoystickClose(theLeftJoystick);

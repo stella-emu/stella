@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.8 2002-02-06 00:59:36 stephena Exp $
+// $Id: mainX11.cxx,v 1.9 2002-02-17 04:41:42 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -43,7 +43,7 @@
 #include "SndUnix.hxx"
 #include "System.hxx"
 
-#ifdef IMLIB_SNAPSHOT
+#ifdef HAVE_IMLIB
   #include <Imlib.h>
 
   ImlibData* imlibData;
@@ -217,11 +217,11 @@ bool theShowInfoFlag = false;
 // Indicates whether to show cursor in the game window
 bool theHideCursorFlag = false;
 
-// Indicates whether the game is currently in fullscreen
-bool isFullscreen = false;
-
 // Indicates whether to allocate colors from a private color map
 bool theUsePrivateColormapFlag = false;
+
+// Indicates whether the game is currently in fullscreen
+bool isFullscreen = false;
 
 // Indicates whether the window is currently centered
 bool isCentered = false;
@@ -390,7 +390,7 @@ bool setupDisplay()
   XSelectInput(theDisplay, theWindow, eventMask);
 
   // If imlib snapshots are enabled, set up some imlib stuff
-#ifdef IMLIB_SNAPSHOT
+#ifdef HAVE_IMLIB
   imlibData = Imlib_init(theDisplay);
 
   // By default, snapshot dir is HOME and name is ROMNAME, assuming that
@@ -598,7 +598,7 @@ void handleEvents()
       }
       else if((key == XK_g) && (event.type == KeyPress))
       {
-        // don't turn off grabmouse in fullscreen or we may lose the keyboard
+        // don't change grabmouse in fullscreen mode
         if(!isFullscreen)
         {
           theGrabMouseFlag = !theGrabMouseFlag;
@@ -607,8 +607,12 @@ void handleEvents()
       }
       else if((key == XK_h) && (event.type == KeyPress))
       {
-        theHideCursorFlag = !theHideCursorFlag;
-        showCursor(!theHideCursorFlag);
+        // don't change hidecursor in fullscreen mode
+        if(!isFullscreen)
+        {
+          theHideCursorFlag = !theHideCursorFlag;
+          showCursor(!theHideCursorFlag);
+        }
       }
       else
       { 
@@ -1008,7 +1012,7 @@ bool createCursors()
 */
 void takeSnapshot()
 {
-#ifdef IMLIB_SNAPSHOT
+#ifdef HAVE_IMLIB
   // Figure out the actual size of the window
   int width = theWidth * 2 * theWindowSize;
   int height = theHeight * theWindowSize;
@@ -1127,7 +1131,7 @@ void usage()
     "  -paddle <0|1|2|3>       Indicates which paddle the mouse should emulate",
 #endif
     "  -showinfo               Shows some game info on exit",
-#ifdef IMLIB_SNAPSHOT
+#ifdef HAVE_IMLIB
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
 #endif
@@ -1277,7 +1281,7 @@ void handleCommandLineArguments(int argc, char* argv[])
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB_SNAPSHOT
+#ifdef HAVE_IMLIB
     else if(string(argv[i]) == "-ssdir")
     {
       theSnapShotDir = argv[++i];
@@ -1451,7 +1455,7 @@ void parseRCOptions(istream& in)
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB_SNAPSHOT
+#ifdef HAVE_IMLIB
     else if(key == "ssdir")
     {
       theSnapShotDir = value;
