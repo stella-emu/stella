@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.7 2004-07-15 03:03:27 stephena Exp $
+// $Id: MainDlg.cxx,v 1.8 2004-07-17 19:34:01 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -658,7 +658,7 @@ bool MainDlg::LoadRomListFromDisk()
     strncpy(rarity, props.get("Cartridge.Rarity").c_str(), 255);
 
     // Make sure the onscreen 'Name' field isn't blank
-    if(props.get("Cartridge.Name") == "")
+    if(props.get("Cartridge.Name") == "Untitled")
       strncpy(name, g->name().c_str(), 255);
 
     // Update the current game
