@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.40 2002-12-01 17:06:18 stephena Exp $
+// $Id: mainSDL.cxx,v 1.41 2002-12-05 16:46:14 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -221,8 +221,13 @@ static bool isCentered = false;
 // Indicates the current state to use for state saving
 static uInt32 currentState = 0;
 
+// The locations for various required files
+static string homeDir;
+static string stateDir;
 static string homePropertiesFile;
 static string systemPropertiesFile;
+static string homeRCFile;
+static string systemRCFile;
 
 
 /**
@@ -279,7 +284,7 @@ bool setupDisplay()
   snapshot = new Snapshot();
 
   if(settings->theSnapShotDir == "")
-    settings->theSnapShotDir = getenv("HOME");
+    settings->theSnapShotDir = homeDir;
   if(settings->theSnapShotName == "")
     settings->theSnapShotName = "romname";
 #endif
@@ -626,7 +631,7 @@ void togglePause()
     thePauseIndicator = true;
   }
 
-  // Pause the console and the audio
+  // Pause the console
   theConsole->mediaSource().pause(thePauseIndicator);
 
   // Show a different palette depending on pause state
@@ -665,7 +670,7 @@ void saveState()
 {
   ostringstream buf;
   string md5 = theConsole->properties().get("Cartridge.MD5");
-  buf << getenv("HOME") << "/.stella/state/" << md5 << ".st" << currentState;
+  buf << stateDir << md5 << ".st" << currentState;
   string filename = buf.str();
 
   // Do a state save using the System
@@ -722,7 +727,7 @@ void loadState()
 {
   ostringstream buf;
   string md5 = theConsole->properties().get("Cartridge.MD5");
-  buf << getenv("HOME") << "/.stella/state/" << md5 << ".st" << currentState;
+  buf << stateDir << md5 << ".st" << currentState;
   string filename = buf.str();
 
   // Do a state load using the System
@@ -1003,7 +1008,7 @@ void handleEvents()
         if(mod & KMOD_ALT)
           theConsole->changeWidth(0);
         else
-        theConsole->changeXStart(0);
+          theConsole->changeXStart(0);
 
         // Make sure changes to the properties are reflected onscreen
         resizeWindow(-1);
@@ -1048,8 +1053,7 @@ void handleEvents()
           }
           else  // Save to file in home directory
           {
-            string newPropertiesFile = getenv("HOME");
-            newPropertiesFile = newPropertiesFile + "/" + \
+            string newPropertiesFile = homeDir + "/" + \
               theConsole->properties().get("Cartridge.Name") + ".pro";
             replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
             theConsole->saveProperties(newPropertiesFile);
@@ -1450,7 +1454,7 @@ void usage()
 #else
     "  -paddle     <0|1|2|3>       Indicates which paddle the mouse should emulate",
 #endif
-    "  -showinfo   <0|1>           Shows some game info on exit",
+    "  -showinfo   <0|1>           Shows some game info",
 #ifdef HAVE_PNG
     "  -ssdir      <path>          The directory to save snapshot files to",
     "  -ssname     <name>          How to name the snapshot (romname or md5sum)",
@@ -1465,7 +1469,7 @@ void usage()
     "               alsa             ALSA version 0.9 driver",
 #endif
 #ifdef SOUND_OSS
-    "               oss              Open Sound System driver (most compatible)",
+    "               oss              Open Sound System driver",
 #endif
 #ifdef SOUND_SDL
     "               sdl              Native SDL driver",
@@ -1552,17 +1556,14 @@ bool setupProperties(PropertiesSet& set)
 */
 void handleRCFile()
 {
-  string homeRCFile = getenv("HOME");
-  homeRCFile += "/.stella/stellarc";
-
   if(access(homeRCFile.c_str(), R_OK) == 0 )
   {
     ifstream homeStream(homeRCFile.c_str());
     settings->handleRCFile(homeStream);
   }
-  else if(access("/etc/stellarc", R_OK) == 0 )
+  else if(access(systemRCFile.c_str(), R_OK) == 0 )
   {
-    ifstream systemStream("/etc/stellarc");
+    ifstream systemStream(systemRCFile.c_str());
     settings->handleRCFile(systemStream);
   }
 }
@@ -1588,7 +1589,10 @@ void cleanup()
     delete rectList;
 
   if(sound)
+  {
+    sound->closeDevice();
     delete sound;
+  }
 
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
@@ -1605,35 +1609,16 @@ void cleanup()
 
 
 /**
-  Returns number of ticks in microseconds
-*/
-#ifdef HAVE_GETTIMEOFDAY
-inline uInt32 getTicks()
-{
-  timeval now;
-  gettimeofday(&now, 0);
-
-  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
-}
-#else
-inline uInt32 getTicks()
-{
-  return (uInt32) SDL_GetTicks() * 1000;
-}
-#endif
-
-
-/**
   Creates some directories under $HOME.
   Required directories are $HOME/.stella and $HOME/.stella/state
   Also sets up various locations for properties files, etc.
+
+  This must be called before any other function.
 */
 bool setupDirs()
 {
-  string path;
-
-  path = getenv("HOME");
-  path += "/.stella";
+  homeDir = getenv("HOME");
+  string path = homeDir + "/.stella";
 
   if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
   {
@@ -1641,17 +1626,18 @@ bool setupDirs()
       return false;
   }
 
-  path += "/state";
-  if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
+  stateDir = homeDir + "/.stella/state/";
+  if(access(stateDir.c_str(), R_OK|W_OK|X_OK) != 0 )
   {
-    if(mkdir(path.c_str(), 0777) != 0)
+    if(mkdir(stateDir.c_str(), 0777) != 0)
       return false;
   }
 
-  homePropertiesFile   = getenv("HOME");
-  homePropertiesFile  += "/.stella/stella.pro";
+  homePropertiesFile   = homeDir + "/.stella/stella.pro";
   systemPropertiesFile = "/etc/stella.pro";
-  
+  homeRCFile           = homeDir + "/.stella/stellarc";
+  systemRCFile         = "/etc/stellarc";
+
   return true;
 }
 
@@ -1748,7 +1734,7 @@ int main(int argc, char* argv[])
   else   // a driver that doesn't exist was requested, so disable sound
   {
     cerr << "ERROR: Sound support for "
-         << settings->theSoundDriver << " disabled.\n";
+         << settings->theSoundDriver << " not available.\n";
     sound = new Sound();
   }
 
@@ -1774,14 +1760,12 @@ int main(int argc, char* argv[])
   if(!setupDisplay())
   {
     cerr << "ERROR: Couldn't set up display.\n";
-    sound->closeDevice();
     cleanup();
     return 0;
   }
   if(!setupJoystick())
   {
     cerr << "ERROR: Couldn't set up joysticks.\n";
-    sound->closeDevice();
     cleanup();
     return 0;
   }
@@ -1892,7 +1876,25 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
-  sound->closeDevice();
   cleanup();
   return 0;
 }
+
+
+/**
+  Returns number of ticks in microseconds
+*/
+#ifdef HAVE_GETTIMEOFDAY
+inline uInt32 getTicks()
+{
+  timeval now;
+  gettimeofday(&now, 0);
+
+  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
+}
+#else
+inline uInt32 getTicks()
+{
+  return (uInt32) SDL_GetTicks() * 1000;
+}
+#endif
