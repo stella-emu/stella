@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.8 2005-03-12 01:47:15 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.9 2005-03-13 03:38:39 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -34,7 +34,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.8 2005-03-12 01:47:15 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.9 2005-03-13 03:38:39 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -162,53 +162,21 @@ class FrameBufferSoft : public FrameBuffer
                            OverlayColor color);
 
     /**
-      This routine is called to draw the specified string.
+      This routine is called to draw the specified character.
 
+      @param c      The character to draw
       @param x      The x coordinate
       @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the surrounding frame
+      @param color  The color of the character
     */
-    virtual void drawString(const string& str, Int32 x, Int32 y, Int32 w,
-                            OverlayColor color, TextAlignment align = kTextAlignLeft,
-                            Int32 deltax = 0, bool useEllipsis = true);
-
-
-
-
-    /**
-      This routine should be called to draw a rectangular box with sides
-      at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param w   The width of the box
-      @param h   The height of the box
-    */
-    virtual void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-
-    /**
-      This routine should be called to draw text at the specified coordinates.
-
-      @param x        The x coordinate
-      @param y        The y coordinate
-      @param message  The message text
-    */
-    virtual void drawText(uInt32 x, uInt32 y, const string& message);
-
-    /**
-      This routine should be called to draw character 'c' at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param c   The character to draw
-    */
-    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c);
+    virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color);
 
   private:
     // Used in the dirty update of the SDL surface
     RectList* myRectList;
+
+    // GUI palette
+    Uint32 myGUIPalette[5];
 };
 
 class RectList

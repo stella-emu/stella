@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.64 2005-03-12 01:47:14 stephena Exp $
+## $Id: makefile,v 1.65 2005-03-13 03:38:39 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -153,7 +153,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
-            OSystem.o Menu.o Widget.o Dialog.o OptionsDialog.o\
+            OSystem.o StellaFont.o Menu.o Widget.o Dialog.o OptionsDialog.o\
             $(M6502_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
@@ -351,6 +351,9 @@ NullDev.o: $(CORE)/m6502/src/NullDev.cxx $(CORE)/m6502/src/NullDev.hxx
 
 System.o: $(CORE)/m6502/src/System.cxx $(CORE)/m6502/src/System.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/System.cxx
+
+StellaFont.o: $(GUI)/StellaFont.cxx $(GUI)/StellaFont.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/StellaFont.cxx
 
 Menu.o: $(GUI)/Menu.cxx $(GUI)/Menu.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Menu.cxx

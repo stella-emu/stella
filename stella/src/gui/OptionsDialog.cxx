@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.3 2005-03-12 01:47:15 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.4 2005-03-13 03:38:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,19 +28,6 @@
 
 #include "bspf.hxx"
 
-/*
-using GUI::CommandSender;
-using GUI::StaticTextWidget;
-using GUI::kButtonWidth;
-using GUI::kCloseCmd;
-using GUI::kTextAlignCenter;
-using GUI::kTextAlignLeft;
-using GUI::WIDGET_ENABLED;
-
-typedef GUI::OptionsDialog GUI_OptionsDialog;
-typedef GUI::ChooserDialog GUI_ChooserDialog;
-*/
-
 enum {
   kVidCmd   = 'VIDO',
   kAudCmd   = 'AUDO',
@@ -51,20 +38,23 @@ enum {
 };
 
 enum {
-  kRowHeight      = 20,
-  kBigButtonWidth = 140,
+  kRowHeight      = 22,
+  kBigButtonWidth = 100,
   kMainMenuWidth  = (kBigButtonWidth + 2 * 8),
   kMainMenuHeight = 6 * kRowHeight + 10,
 };
 
 #define addBigButton(label, cmd, hotkey) \
-	new ButtonWidget(this, x, y, kBigButtonWidth, 16, label, cmd, hotkey); y += kRowHeight
+	new ButtonWidget(this, x, y, kBigButtonWidth, 18, label, cmd, hotkey); y += kRowHeight
 
 OptionsDialog::OptionsDialog(OSystem* osystem)
     : Dialog(osystem, (320 - kMainMenuWidth) / 2, (200 - kMainMenuHeight)/2, kMainMenuWidth, kMainMenuHeight)
+/* FIXME - make this depend on the framebuffer dimensions
+    : Dialog(osystem, (osystem->frameBuffer().width() - kMainMenuWidth) / 2,
+                      (osystem->frameBuffer().height() - kMainMenuHeight)/2,
+                      kMainMenuWidth, kMainMenuHeight)
+*/
 {
-cerr << "OptionsDialog::OptionsDialog()\n";
-
   int y = 7;
 
   const int x = (_w - kBigButtonWidth) / 2;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+// $Id: Widget.hxx,v 1.4 2005-03-13 03:38:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 
 class Dialog;
 
+#include "StellaFont.hxx"
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "bspf.hxx"
@@ -61,7 +62,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+  @version $Id: Widget.hxx,v 1.4 2005-03-13 03:38:41 stephena Exp $
 */
 class Widget : public GuiObject
 {

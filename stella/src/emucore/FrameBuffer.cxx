@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.19 2005-03-11 23:36:30 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.20 2005-03-13 03:38:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -26,6 +26,9 @@
 #include "Settings.hxx"
 #include "MediaSrc.hxx"
 #include "FrameBuffer.hxx"
+#include "FontData.hxx"
+#include "StellaFont.hxx"
+#include "GuiUtils.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
 
@@ -53,8 +56,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myWidth(0),
       myHeight(0),
       theRedrawEntireFrameIndicator(true),
-      myFGColor(10),
-      myBGColor(0),
 
       myWMAvailable(false),
       theZoomLevel(1),
@@ -63,32 +64,50 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
 
       myFrameRate(0),
       myPauseStatus(false),
-      myCurrentWidget(W_NONE),
-      myRemapEventSelectedFlag(false),
-      mySelectedEvent(Event::NoType),
-      myMenuMode(false),
       theMenuChangedIndicator(false),
-      myMaxRows(0),
-      myMaxColumns(0),
-      myMainMenuIndex(0),
-      myMainMenuItems(sizeof(ourMainMenu)/sizeof(MainMenuItem)),
-      myRemapMenuIndex(0),
-      myRemapMenuLowIndex(0),
-      myRemapMenuHighIndex(0),
-      myRemapMenuItems(sizeof(ourRemapMenu)/sizeof(RemapMenuItem)),
-      myRemapMenuMaxLines(0),
       myMessageTime(0),
       myMessageText(""),
-      myMenuRedraws(2),
-      myInfoMenuWidth(0)
+      myMenuRedraws(2)
 {
   // Add the framebuffer to the system
   myOSystem->attach(this);
+
+  // Fill the GUI colors array
+  // The specific video subsystem will know what to do with it
+  uInt8 colors[5][3] = {
+    {104, 104, 104},
+    {0, 0, 0},
+    {64, 64, 64},
+    {32, 160, 32},
+    {0, 255, 0}
+  };
+
+  for(uInt8 i = 0; i < 5; i++)
+    for(uInt8 j = 0; j < 3; j++)
+      myGUIColors[i][j] = colors[i][j];
+
+  // Create a font to draw text
+  const FontDesc desc = {
+    "04b-16b-10",
+    9,
+    10,
+    8,
+    33,
+    94,
+    _font_bits,
+    0,  /* no encode table*/
+    _sysfont_width,
+    33,
+    sizeof(_font_bits)/sizeof(uInt16)
+  };
+  myFont = new StellaFont(this, desc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer(void)
 {
+  if(myFont)
+    delete myFont;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,14 +231,15 @@ void FrameBuffer::update()
         // Draw any pending messages
         if(myMessageTime > 0)
         {
-          uInt32 width  = myMessageText.length()*FONTWIDTH + FONTWIDTH;
-          uInt32 height = LINEOFFSET + FONTHEIGHT;
-          uInt32 x = (myWidth >> 1) - (width >> 1);
-          uInt32 y = myHeight - height - LINEOFFSET/2;
+          uInt32 w = myFont->getStringWidth(myMessageText) + 10;
+          uInt32 h = myFont->getFontHeight() + 5;
+          uInt32 x = (myWidth >> 1) - (w >> 1);
+          uInt32 y = myHeight - h - LINEOFFSET/2;
 
           // Draw the bounded box and text
-          box(x, y+1, width, height-2, 0, 0); // FIXME
-          drawText(x + XBOXOFFSET/2, LINEOFFSET/2 + y, myMessageText);
+          fillRect(x+1, y+2, w-2, h-4, kBGColor);  // FIXME - possibly change this to blended rect
+          box(x, y+1, w, h-2, kColor, kColor);
+          myFont->drawString(myMessageText, x, y, w, kTextColor, kTextAlignCenter);
           myMessageTime--;
 
           // Erase this message on next update
@@ -230,7 +250,7 @@ void FrameBuffer::update()
       break;  // S_EMULATE
     }
 
-    case EventHandler::S_MENU:  // FIXME - this whole thing will disappear into the gui().menu class
+    case EventHandler::S_MENU:
     {
       // Only update the screen if it's been invalidated or the menus have changed  
       if(theMenuChangedIndicator || theRedrawEntireFrameIndicator)
@@ -240,24 +260,6 @@ void FrameBuffer::update()
         // Then overlay any menu items
         myOSystem->menu().draw();
 
-/*
-        switch(myCurrentWidget)
-        {
-          case W_NONE:
-            break;
-          case MAIN_MENU:
-            drawMainMenu();
-            break;
-          case REMAP_MENU:
-            drawRemapMenu();
-            break;
-          case INFO_MENU:
-            drawInfoMenu();
-            break;
-          default:
-            break;
-        }
-*/
         // Now the screen is up to date
         theRedrawEntireFrameIndicator = false;
 
@@ -290,6 +292,15 @@ void FrameBuffer::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::showMessage(const string& message)
+{
+  myMessageText = message;
+  myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
+  theRedrawEntireFrameIndicator = true;
+}
+
+/*
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMenu(bool show)
 {
   myMenuMode = show;
@@ -297,14 +308,6 @@ void FrameBuffer::showMenu(bool show)
   myCurrentWidget = show ? MAIN_MENU : W_NONE;
   myRemapEventSelectedFlag = false;
   mySelectedEvent = Event::NoType;
-  theRedrawEntireFrameIndicator = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showMessage(const string& message)
-{
-  myMessageText = message;
-  myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
   theRedrawEntireFrameIndicator = true;
 }
 
@@ -320,7 +323,7 @@ inline void FrameBuffer::drawMainMenu()
 
   // Draw the bounded box and text, leaving a little room for arrows
   xpos = x + XBOXOFFSET;
-  box(x-2, y-2, width+3, height+3, 0, 0); //FIXME
+  box(x-2, y-2, width+3, height+3, kColor, kBGColor); //FIXME
   for(i = 0; i < myMainMenuItems; i++)
     drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourMainMenu[i].action);
 
@@ -341,7 +344,7 @@ inline void FrameBuffer::drawRemapMenu()
   y = (myHeight >> 1) - (height >> 1);
 
   // Draw the bounded box and text, leaving a little room for arrows
-  box(x-2, y-2, width+3, height+3, 0, 0); //FIXME
+  box(x-2, y-2, width+3, height+3, kColor, kBGColor); //FIXME
   for(Int32 i = myRemapMenuLowIndex; i < myRemapMenuHighIndex; i++)
   {
     ypos = LINEOFFSET*(i-myRemapMenuLowIndex) + y + YBOXOFFSET;
@@ -392,7 +395,7 @@ inline void FrameBuffer::drawInfoMenu()
 
   // Draw the bounded box and text
   xpos = x + XBOXOFFSET;
-  box(x, y, width, height, 0, 0); //FIXME
+  box(x, y, width, height, kColor, kBGColor); //FIXME
   for(i = 0; i < 9; i++)
     drawText(xpos, LINEOFFSET*i + y + YBOXOFFSET, ourPropertiesInfo[i]);
 }
@@ -515,6 +518,7 @@ void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
       break;
   }
 }
+*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::pause(bool status)
@@ -526,6 +530,7 @@ void FrameBuffer::pause(bool status)
 //FIXME  pauseEvent(myPauseStatus); 
 }
 
+/*
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::Widget FrameBuffer::currentSelectedWidget()
 {
@@ -826,7 +831,9 @@ FrameBuffer::RemapMenuItem FrameBuffer::ourRemapMenu[57] = {
   { Event::KeyboardOne0,            "Right-Pad 0",          "" },
   { Event::KeyboardOnePound,        "Right-Pad #",          "" }
 };
+*/
 
+#if 0
 /**
   This array must be initialized in a specific order, matching
   their initialization in StellaEvent::KeyCode.
@@ -858,6 +865,7 @@ const char* FrameBuffer::ourEventName[StellaEvent::LastKCODE] = {
   "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10",
   "F11", "F12", "F13", "F14", "F15",
 };
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setupPalette()

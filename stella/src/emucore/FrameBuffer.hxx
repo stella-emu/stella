@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.19 2005-03-12 01:47:15 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.20 2005-03-13 03:38:40 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -25,19 +25,13 @@
 #include "bspf.hxx"
 #include "Event.hxx"
 #include "MediaSrc.hxx"
+#include "StellaFont.hxx"
 #include "StellaEvent.hxx"
+#include "GuiUtils.hxx"
 
+class StellaFont;
 class Console;
 class OSystem;
-
-typedef uInt32 OverlayColor;
-
-// Text alignment modes for drawString()
-enum TextAlignment {
-	kTextAlignLeft,
-	kTextAlignCenter,
-	kTextAlignRight
-};
 
 /**
   This class encapsulates the MediaSource and is the basis for the video
@@ -47,7 +41,7 @@ enum TextAlignment {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.19 2005-03-12 01:47:15 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.20 2005-03-13 03:38:40 stephena Exp $
 */
 class FrameBuffer
 {
@@ -61,6 +55,13 @@ class FrameBuffer
       Destructor
     */
     virtual ~FrameBuffer();
+
+    /**
+      Get the font object of the framebuffer
+
+      @return The font reference
+    */
+    StellaFont& font() const { return *myFont; }
 
     /**
       (Re)initializes the framebuffer display.  This must be called before any
@@ -77,14 +78,6 @@ class FrameBuffer
       drawing the mediasource, any pending menus, etc.
     */
     void update();
-
-    /**
-      Shows the main menu onscreen.  This will only be called if event
-      remapping has been enabled in the event handler.
-
-      @param show  Show/hide the menu based on the boolean value
-    */
-    void showMenu(bool show);
 
     /**
       Shows a message onscreen.
@@ -131,24 +124,6 @@ FIXME
       This routine is called to get the height of the system desktop.
     */
     uInt32 screenHeight();
-
-    /**
-      Send a keyboard event to the user interface.
-
-      @param code   The StellaEvent code
-      @param state  The StellaEvent state
-    */
-    void sendKeyEvent(StellaEvent::KeyCode code, Int32 state);
-
-    /**
-      Send a joystick button event to the user interface.
-
-      @param stick The joystick activated
-      @param code  The StellaEvent joystick code
-      @param state The StellaEvent state
-    */
-    void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
-         Int32 state);
 
      /**
       Sets the pause status.  While pause is selected, the
@@ -223,14 +198,6 @@ FIXME
       Set up the palette for a screen of any depth > 8.
     */
     void setupPalette();
-
-    /**
-      Colors to use for the various GUI elements
-    */
-    OverlayColor color, shadowcolor;
-    OverlayColor bgcolor;
-    OverlayColor textcolor;
-    OverlayColor textcolorhi;
 
     /**
       This routine should be called to draw a rectangular box with sides
@@ -364,47 +331,18 @@ FIXME
                            OverlayColor color) = 0;
 
     /**
-      This routine should be called to draw the specified string.
+      This routine should be called to draw the specified character.
 
+      @param c      The character to draw
       @param x      The x coordinate
       @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the surrounding frame
+      @param color  The color of the character
     */
-    virtual void drawString(const string& str, Int32 x, Int32 y, Int32 w,
-                            OverlayColor color, TextAlignment align = kTextAlignLeft,
-                            Int32 deltax = 0, bool useEllipsis = true) = 0;
+    virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color) = 0;
 
 /* FIXME
-
-void drawChar(byte c, int x, int y, OverlayColor color, const Graphics::Font *font = 0);
-
-int getStringWidth(const String &str);
-int getCharWidth(byte c);
-
 void drawBitmap(uint32 *bitmap, int x, int y, OverlayColor color, int h = 8);
 */
-
-
-
-    /**
-      This routine should be called to draw text at the specified coordinates.
-
-      @param x        The x coordinate
-      @param y        The y coordinate
-      @param message  The message text
-    */
-    virtual void drawText(uInt32 x, uInt32 y, const string& message) = 0;
-
-    /**
-      This routine should be called to draw character 'c' at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param c   The character to draw
-    */
-    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c) = 0;
 
 #if 0
 FIXME
@@ -428,12 +366,6 @@ FIXME
     // Indicates if the entire frame should be redrawn
     bool theRedrawEntireFrameIndicator;
 
-    // Table of bitmapped fonts.
-    static const uInt8 ourFontData[2048];
-
-    // Holds the foreground and background color table indices
-    uInt8 myFGColor, myBGColor;
-
     // The SDL video buffer
     SDL_Surface* myScreen;
 
@@ -442,6 +374,9 @@ FIXME
 
     // SDL palette
     Uint32 myPalette[256];
+
+    // Holds the palette for GUI elements
+    uInt8 myGUIColors[5][3];
 
     // Used to get window-manager specifics
     SDL_SysWMinfo myWMInfo;
@@ -462,12 +397,16 @@ FIXME
     // The aspect ratio of the window
     float theAspectRatio;
 
+    // The font object to use
+    StellaFont* myFont;
+
   private:
     /**
       Set the icon for the main SDL window.
     */
     void setWindowIcon();
 
+/*
     // Enumeration representing the different types of user interface widgets
     enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU };
 
@@ -501,7 +440,7 @@ FIXME
 
     // scan the mapping arrays and update the remap menu
     void loadRemapMenu();
-
+*/
   private:
     // Indicates the current framerate of the system
     uInt32 myFrameRate;
@@ -509,6 +448,19 @@ FIXME
     // Indicates the current pause status
     bool myPauseStatus;
 
+    // Indicates if the menus should be redrawn
+    bool theMenuChangedIndicator;
+
+    // Message timer
+    Int32 myMessageTime;
+
+    // Message text
+    string myMessageText;
+
+    // Number of times menu have been drawn
+    uInt32 myMenuRedraws;
+
+/*
     // Structure used for main menu items
     struct MainMenuItem
     {
@@ -539,9 +491,6 @@ FIXME
     // Indicates if we are in menu mode
     bool myMenuMode;
 
-    // Indicates if the menus should be redrawn
-    bool theMenuChangedIndicator;
-
     // The maximum number of vertical lines of text that can be onscreen
     Int32 myMaxRows;
 
@@ -554,15 +503,6 @@ FIXME
     // Keep track of current selected remap menu item
     Int32 myRemapMenuIndex, myRemapMenuLowIndex, myRemapMenuHighIndex;
     Int32 myRemapMenuItems, myRemapMenuMaxLines;
-
-    // Message timer
-    Int32 myMessageTime;
-
-    // Message text
-    string myMessageText;
-
-    // Number of times menu have been drawn
-    uInt32 myMenuRedraws;
 
     // The width of the information menu, determined by the longest string
     Int32 myInfoMenuWidth;
@@ -587,6 +527,7 @@ FIXME
 
     // Holds the number of items in the joytable array
     uInt32 myJoyTableSize;
+*/
 };
 
 #endif

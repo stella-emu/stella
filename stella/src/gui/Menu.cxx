@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.3 2005-03-12 01:47:15 stephena Exp $
+// $Id: Menu.cxx,v 1.4 2005-03-13 03:38:40 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -93,12 +93,8 @@ void Menu::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
   Dialog* activeDialog = myDialogStack.top();
 
   // Convert SDL values to ascii so the ScummVM subsystem can work with it
-  // FIXME - convert SDLKey and SDLMod to int values
-  uInt16 ascii = 0;
-  Int32 keycode = 0, modifiers = 0;
-
   if(state == 1)
-    activeDialog->handleKeyDown(ascii, keycode, modifiers);
+    activeDialog->handleKeyDown(key, key, mod);
   else
-    activeDialog->handleKeyUp(ascii, keycode, modifiers);
+    activeDialog->handleKeyUp(key, key, mod);
 }
