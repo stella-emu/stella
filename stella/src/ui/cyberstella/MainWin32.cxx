@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainWin32.cxx,v 1.1 2003-11-13 00:25:07 stephena Exp $
+// $Id: MainWin32.cxx,v 1.2 2003-11-14 00:47:35 stephena Exp $
 //============================================================================
 
 #define STRICT
@@ -39,10 +39,12 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
                      Settings& settings, PropertiesSet& properties)
   : theSettings(settings),
     thePropertiesSet(properties),
-    myIsInitialized(false),
     theDisplay(NULL),
     theSound(NULL),
-    theInput(NULL)
+    theInput(NULL),
+    theMouseX(0),
+    thePaddleMode(0),
+    myIsInitialized(false)
 {
   // Setup the DirectX window
   theDisplay = new FrameBufferWin32();
@@ -58,13 +60,12 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
 //    theSound = new SoundWin32();
 //  else
     theSound = new Sound();
-/*
   if(!theSound)
   {
     cleanup();
     return;
   }
-*/
+
 //  theSound->setSoundVolume(theSettings.getInt("volume"));
 
   // Create the 2600 game console
@@ -138,16 +139,13 @@ DWORD MainWin32::run()
 
   for(;;)
   {
-    if( ::PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+    if(::PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ))
     {
-      if( msg.message == WM_QUIT )
-      {
-//        theConsole->eventHandler().sendEvent(Event::Quit, 1);
+      if(msg.message == WM_QUIT)
         break;
-      }
 
-      ::TranslateMessage( &msg );
-      ::DispatchMessage( &msg );
+      ::TranslateMessage(&msg);
+      ::DispatchMessage(&msg);
     }
     else if (theDisplay->windowActive())
     {
@@ -204,51 +202,85 @@ DWORD MainWin32::run()
 
 void MainWin32::UpdateEvents()
 {
-  // Update the input devices, and gather all pending events
-  theInput->update();
+  DIDEVICEOBJECTDATA eventArray[64];
+  DWORD numEvents;
 
-	const int nSize = _countof(keyList);
-  DirectInput::DI_Event event;
-  while(theInput->pollEvent(&event))
+  // Check for keyboard events
+  numEvents = 64;
+  if(theInput->getKeyEvents(eventArray, &numEvents))
   {
-    switch(event.type)
+    for(unsigned int i = 0; i < numEvents; i++ ) 
     {
-      case DirectInput::KEY_DOWN:
-      case DirectInput::KEY_UP:
-        uInt32 key  = event.key.key;
-        uInt8 state = event.key.state;
+      uInt32 key  = eventArray[i].dwOfs;
+      uInt8 state = eventArray[i].dwData & 0x80 ? 1 : 0;
 
-        for(uInt32 i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)
-        {
-          if(keyList[i].nVirtKey == key)
-            theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
-        }
-
-        break;
+      for(uInt32 i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)
+      {
+        if(keyList[i].nVirtKey == key)
+          theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
+      }
     }
   }
 
-
-    //
-	// I do this because an event may appear multiple times in the map
-	// and I don't want to undo a set i may have done earlier in the loop
-    //
-
-
-//    long rgKeyEventState[ nSize ];
-//	ZeroMemory( rgKeyEventState, nSize * sizeof(StellaEvent::KeyCode) );
-
-  // Update keyboard
-/*
-  if(m_pDirectKeyboard->Update() == S_OK)
+  // Check for mouse events
+  numEvents = 64;
+  if(theInput->getMouseEvents(eventArray, &numEvents))
   {
-    for(int i = 0; i < nSize; ++i)
+    for(unsigned int i = 0; i < numEvents; i++ ) 
     {
-      int state = (m_pDirectKeyboard->IsButtonPressed(keyList[i].nVirtKey)) ? 1 : 0;
-      theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
+      Event::Type type = Event::LastType;
+      Int32 value;
+      switch(eventArray[i].dwOfs)
+      {
+        // Check for button press and release
+        case DIMOFS_BUTTON0:
+        case DIMOFS_BUTTON1:
+        case DIMOFS_BUTTON2:
+        case DIMOFS_BUTTON3:
+        case DIMOFS_BUTTON4:
+        case DIMOFS_BUTTON5:
+        case DIMOFS_BUTTON6:
+        case DIMOFS_BUTTON7:
+          value = (Int32) eventArray[i].dwData & 0x80 ? 1 : 0;
+
+          if(thePaddleMode == 0)
+            type = Event::PaddleZeroFire;
+          else if(thePaddleMode == 1)
+            type = Event::PaddleOneFire;
+          else if(thePaddleMode == 2)
+            type = Event::PaddleTwoFire;
+          else if(thePaddleMode == 3)
+            type = Event::PaddleThreeFire;
+
+          theConsole->eventHandler().sendEvent(type, value);
+          break;
+
+        // Check for horizontal movement
+        case DIMOFS_X:
+          theMouseX = theMouseX + eventArray[i].dwData;
+
+          // Force mouseX between 0 ... 999
+          if(theMouseX < 0)
+            theMouseX = 0;
+          else if(theMouseX > 999)
+            theMouseX = 999;
+
+          Int32 value = (999 - theMouseX) * 1000;
+
+          if(thePaddleMode == 0)
+            type = Event::PaddleZeroResistance;
+          else if(thePaddleMode == 1)
+            type = Event::PaddleOneResistance;
+          else if(thePaddleMode == 2)
+            type = Event::PaddleTwoResistance;
+          else if(thePaddleMode == 3)
+            type = Event::PaddleThreeResistance;
+
+          theConsole->eventHandler().sendEvent(type, value);
+          break;
+      }
     }
   }
-*/
 /*
     //
 	// Update joystick

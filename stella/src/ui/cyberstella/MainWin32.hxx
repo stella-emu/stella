@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainWin32.hxx,v 1.1 2003-11-13 00:25:07 stephena Exp $
+// $Id: MainWin32.hxx,v 1.2 2003-11-14 00:47:35 stephena Exp $
 //============================================================================
 
 #ifndef MAIN_WIN32_HXX
@@ -41,7 +41,7 @@ class DirectInput;
   in the Porting.txt document
 
   @author  Stephen Anthony
-  @version $Id: MainWin32.hxx,v 1.1 2003-11-13 00:25:07 stephena Exp $
+  @version $Id: MainWin32.hxx,v 1.2 2003-11-14 00:47:35 stephena Exp $
 */
 class MainWin32
 {
@@ -68,6 +68,7 @@ class MainWin32
 
   private:
     void UpdateEvents();
+    void cleanup();
 
   private:
     // Pointer to the console object
@@ -95,117 +96,16 @@ class MainWin32
     };
     static Switches keyList[StellaEvent::LastKCODE];
 
-
-/////////////////////////////////////////////////////////
-//
-// These will move into a separate Framebuffer class soon
-//
-/////////////////////////////////////////////////////////
-#if 0
-  public:
-    HWND hwnd() const { return myHWND; }
-
-    //////////////////////////////////////////////////////////////////////
-    // The following methods are derived from FrameBuffer.hxx
-    //////////////////////////////////////////////////////////////////////
-    /**
-      This routine should be called once the console is created to setup
-      the video system for us to use.  Return false if any operation fails,
-      otherwise return true.
-    */
-    bool init();
-
-    /**
-      This routine should be called anytime the MediaSource needs to be redrawn
-      to the screen.
-    */
-    void drawMediaSource();
-
-    /**
-      This routine should be called to draw a rectangular box with sides
-      at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param w   The width of the box
-      @param h   The height of the box
-    */
-    void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-
-    /**
-      This routine should be called to draw text at the specified coordinates.
-
-      @param x        The x coordinate
-      @param y        The y coordinate
-      @param message  The message text
-    */
-    void drawText(uInt32 x, uInt32 y, const string& message);
-
-    /**
-      This routine should be called to draw character 'c' at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param c   The character to draw
-    */
-    void drawChar(uInt32 x, uInt32 y, uInt32 c);
-
-    /**
-      This routine is called before any drawing is done (per-frame).
-    */
-    void preFrameUpdate();
-
-    /**
-      This routine is called after any drawing is done (per-frame).
-    */
-    void postFrameUpdate();
-
-    /**
-      This routine is called when the emulation has received
-      a pause event.
-
-      @param status  The received pause status
-    */
-    virtual void pauseEvent(bool status);
-#endif
-//////////////////////////////////////////////////
-// Some of this will stay here, some will go to
-// the FrameBufferWin32 class
-//////////////////////////////////////////////////
-  private:
     const CGlobalData* m_rGlobalData;
 
+    // Indicates the current mouse position in the X direction
+    Int32 theMouseX;
+
+    // Indicates the current paddle mode
+    uInt32 thePaddleMode;
+
+    // Indicates that all subsystems were initialized
     bool myIsInitialized;
-
-    void cleanup();
-#if 0
-    static LRESULT CALLBACK StaticWindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-    BOOL WndProc( UINT uMsg, WPARAM wParam, LPARAM lParam );
-
-    static HRESULT WINAPI EnumModesCallback( LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext);
-
-    void cleanup();
-
-    HWND myHWND;
-    bool m_fActiveWindow;
-
-    RECT m_rectScreen;
-    POINT m_ptBlitOffset;
-
-    // Stella objects
-    SIZE mySizeGame;
-    BYTE myPalette[256];
-
-    //
-    // DirectX
-    //
-    IDirectDraw* m_piDD;
-    IDirectDrawSurface* m_piDDSPrimary;
-    IDirectDrawSurface* m_piDDSBack;
-    IDirectDrawPalette* m_piDDPalette;
-
-    static LPCTSTR pszClassName;
-#endif
 };
 
 #endif

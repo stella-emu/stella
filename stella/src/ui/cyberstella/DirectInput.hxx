@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.hxx,v 1.4 2003-11-13 00:25:07 stephena Exp $
+// $Id: DirectInput.hxx,v 1.5 2003-11-14 00:47:35 stephena Exp $
 //============================================================================
 
 #ifndef DIRECT_INPUT_HXX
@@ -28,34 +28,14 @@ class DirectInput
     DirectInput();
     ~DirectInput();
 
-  public:
-    enum type_tt { KEY_DOWN, KEY_UP };
-
-    struct KeyboardEvent
-    {
-      uInt32 key;
-      uInt8  state;
-    };
-
-    struct DI_Event
-    {
-      type_tt type;
-      union
-      {
-        KeyboardEvent key;
-      };
-    };
+    bool getKeyEvents(DIDEVICEOBJECTDATA* keyEvents, DWORD* numKeyEvents);
+    bool getMouseEvents(DIDEVICEOBJECTDATA* mouseEvents, DWORD* numMouseEvents);
 
     bool initialize(HWND hwnd);
 
     void update();
 
-    bool pollEvent(DI_Event* event);
-
   private:
-    DI_Event myEventBuffer[100];
-    uInt32 myEventBufferPos;
-
     void cleanup();
 
     static BOOL CALLBACK EnumDevicesProc(const DIDEVICEINSTANCE* lpddi, LPVOID pvRef );

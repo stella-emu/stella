@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.cxx,v 1.3 2003-11-13 00:25:07 stephena Exp $
+// $Id: DirectInput.cxx,v 1.4 2003-11-14 00:47:35 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -43,7 +43,11 @@ bool DirectInput::initialize(HWND hwnd)
                                IID_IDirectInput8, (void**)&mylpdi, NULL)))
     return false;
 
-  // initialize the keyboard
+  // We use buffered mode whenever possible, since it is more
+  // efficient than constantly getting a full state snapshot
+  // and analyzing it for state changes
+
+  // Initialize the keyboard
   if(FAILED(mylpdi->CreateDevice(GUID_SysKeyboard, &myKeyboard, NULL)))
     return false;
   if(FAILED(myKeyboard->SetDataFormat(&c_dfDIKeyboard)))
@@ -51,77 +55,91 @@ bool DirectInput::initialize(HWND hwnd)
   if(FAILED(myKeyboard->SetCooperativeLevel(hwnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
     return false;
 
-  DIPROPDWORD dipdw;
-  dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
-  dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-  dipdw.diph.dwObj        = 0;
-  dipdw.diph.dwHow        = DIPH_DEVICE;
-  dipdw.dwData            = 256;
-  if(FAILED(myKeyboard->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
+  DIPROPDWORD k_dipdw;
+  k_dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
+  k_dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+  k_dipdw.diph.dwObj        = 0;
+  k_dipdw.diph.dwHow        = DIPH_DEVICE;
+  k_dipdw.dwData            = 64;
+  if(FAILED(myKeyboard->SetProperty(DIPROP_BUFFERSIZE, &k_dipdw.diph)))
     return false;
 
   if(FAILED(myKeyboard->Acquire()))
     return false;
 
-  // Make sure to reset the event buffer
-  myEventBufferPos = 0;
+  // Initialize the mouse
+  if(FAILED(mylpdi->CreateDevice(GUID_SysMouse, &myMouse, NULL)))
+    return false;
+  if(FAILED(myMouse->SetDataFormat(&c_dfDIMouse2)))
+    return false;
+  if(FAILED(myMouse->SetCooperativeLevel(hwnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
+    return false; // DISCL_FOREGROUND | DISCL_EXCLUSIVE
+
+  DIPROPDWORD m_dipdw;
+  m_dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
+  m_dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+  m_dipdw.diph.dwObj        = 0;
+  m_dipdw.diph.dwHow        = DIPH_DEVICE;
+  m_dipdw.dwData            = 64;
+  if(FAILED(myMouse->SetProperty(DIPROP_BUFFERSIZE, &m_dipdw.diph)))
+    return false;
+
+  if(FAILED(myMouse->Acquire()))
+    return false;
 
   return true;
 }
 
-void DirectInput::update()
+bool DirectInput::getKeyEvents(DIDEVICEOBJECTDATA* keyEvents,
+                               DWORD* numKeyEvents)
 {
   HRESULT hr;
 
-  if(myKeyboard != NULL)
+  // Make sure the keyboard has been initialized
+  if(myKeyboard == NULL)
+    return false;
+
+  // Check for keyboard events
+  hr = myKeyboard->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
+                                 keyEvents, numKeyEvents, 0 );
+
+  if(hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED)
   {
-    DIDEVICEOBJECTDATA keyEvents[256];
-    DWORD numKeyEvents = 256;
+    hr = myKeyboard->Acquire();
+    if(hr == DIERR_OTHERAPPHASPRIO)
+      return false;
 
     hr = myKeyboard->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
-                                   keyEvents, &numKeyEvents, 0 );
-
-    if(hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED)
-    {
-      hr = myKeyboard->Acquire();
-      if(hr == DIERR_OTHERAPPHASPRIO)
-        return;
-
-      hr = myKeyboard->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
-                                     keyEvents, &numKeyEvents, 0 );
-    }
-
-    // add these new key events to the event buffer
-    for(unsigned int i = 0; i < numKeyEvents; i++ ) 
-    {
-      uInt32 j = myEventBufferPos;
-      if(j < 100)
-      {
-        myEventBuffer[j].type      = (keyEvents[i].dwData & 0x80) ? KEY_DOWN : KEY_UP;
-        myEventBuffer[j].key.key   = keyEvents[i].dwOfs;
-        myEventBuffer[j].key.state = (myEventBuffer[j].type == KEY_DOWN) ? 1 : 0;
-        myEventBufferPos++;
-      }
-      else  // if we run out of room, then ignore new events
-      {
-        myEventBufferPos = 100;
-        break;
-      }
-    }
+                                   keyEvents, numKeyEvents, 0 );
   }
-  //  else check mouse
+
+  return true;
 }
 
-bool DirectInput::pollEvent(DI_Event* event)
+bool DirectInput::getMouseEvents(DIDEVICEOBJECTDATA* mouseEvents,
+                                 DWORD* numMouseEvents)
 {
-  // Pump the event buffer and return if a new event is found
-  if(myEventBufferPos > 0)
-  {
-    *event = myEventBuffer[--myEventBufferPos];
-    return true;
-  }
-  else
+  HRESULT hr;
+
+  // Make sure the mouse has been initialized
+  if(myMouse == NULL)
     return false;
+
+  // Check for mouse events
+  hr = myMouse->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
+                              mouseEvents, numMouseEvents, 0 );
+
+  if(hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED)
+  {
+    hr = myMouse->Acquire();
+    if(hr == DIERR_OTHERAPPHASPRIO)
+      return false;
+
+    hr = myMouse->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
+                                mouseEvents, numMouseEvents, 0 );
+  }
+
+  return true;
 }
 
 void DirectInput::cleanup()

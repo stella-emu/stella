@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.cxx,v 1.2 2003-11-13 00:25:07 stephena Exp $
+// $Id: FrameBufferWin32.cxx,v 1.3 2003-11-14 00:47:35 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -48,12 +48,14 @@ FrameBufferWin32::FrameBufferWin32()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferWin32::~FrameBufferWin32()
 {
+OutputDebugString("got here  FrameBufferWin32::~FrameBufferWin32()");
   cleanup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::cleanup()
 {
+OutputDebugString("got here  FrameBufferWin32::cleanup()");
   if(m_piDDPalette)
   {
     m_piDDPalette->Release();
@@ -81,7 +83,7 @@ void FrameBufferWin32::cleanup()
 	if(myHWND)
 	{
     ::DestroyWindow( myHWND );
-
+OutputDebugString("got here  destroyed window");
         //
         // Remove the WM_QUIT which will be in the message queue
         // so that the main window doesn't exit
@@ -186,6 +188,7 @@ OutputDebugString("got here  failed 4");
   //
   // Get the best video mode for game width
   //
+//int cx = 640; int cy = 480;
 int cx = 320; int cy = 240;
     ::SetRect( &m_rectScreen, 0, 0, cx, cy );
 
@@ -319,7 +322,7 @@ OutputDebugString("got here  failed 12");
     cleanup();
     return false;
   }
-OutputDebugString("got here init exited with true");
+
   // If we get this far, then assume that there were no problems
   return true;
 }
@@ -459,57 +462,46 @@ LRESULT CALLBACK FrameBufferWin32::StaticWindowProc(
 }
 
 
-BOOL FrameBufferWin32::WndProc(
-    UINT uMsg,
-    WPARAM wParam,
-    LPARAM lParam
-    )
+BOOL FrameBufferWin32::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    switch (uMsg)
-	{
-	case WM_ACTIVATE:
-        m_fActiveWindow = ( wParam != WA_INACTIVE );
-		break;
+  switch (uMsg)
+  {
+    case WM_ACTIVATE:
+      m_fActiveWindow = (wParam != WA_INACTIVE);
+      break;
 
-	case WM_DESTROY:
-        ::PostQuitMessage( 0 );
-		break;
+    case WM_DESTROY:
+      ::PostQuitMessage(0);
+      break;
 
     case WM_KEYDOWN:
-		switch ( (int)wParam )
-		{
-		case VK_ESCAPE:
-            //
-            // Escape = Exit
-            //
+      switch((int)wParam)
+      {
+        case VK_ESCAPE:
+          ::PostMessage(myHWND, WM_CLOSE, 0, 0);
 
-            ::PostMessage( myHWND, WM_CLOSE, 0, 0 );
-			break;
-
-		}
-		break;
+          // For some braindead reason, the exit event must be handled
+          // here.  Normally, an Escape event would be the same as any
+          // other and the Console would handle it.
+          // But since Windows insists on doing it this way, we have
+          // to make sure that the Escape event is still received by
+          // the core.
+          myConsole->eventHandler().sendEvent(Event::Quit, 1);
+          break;
+      }
+      break;
 
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            ::BeginPaint( myHWND, &ps );
-            ::EndPaint( myHWND, &ps );
-        }
-        break;
+      PAINTSTRUCT ps;
+      ::BeginPaint( myHWND, &ps );
+      ::EndPaint( myHWND, &ps );
+      break;
 
     default:
-        //
-        // Unhandled message
-        //
+      return FALSE;
+  }
 
-        return FALSE;
-	}
-
-    //
-	// Handled message
-    //
-
-    return TRUE;
+  return TRUE;
 }
 
 HRESULT WINAPI FrameBufferWin32::EnumModesCallback(
