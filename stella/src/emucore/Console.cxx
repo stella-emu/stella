@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.8 2002-11-12 01:02:16 stephena Exp $
+// $Id: Console.cxx,v 1.9 2002-12-15 04:40:55 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -64,6 +64,12 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   if(userDefinedProperties != 0)
   {
     myProperties.merge(*userDefinedProperties);
+  }
+
+  // Make sure the MD5 value of the cartridge is set in the properties
+  if(myProperties.get("Cartridge.MD5") == "")
+  {
+    myProperties.set("Cartridge.MD5", md5);
   }
 
   // Setup the controllers based on properties
