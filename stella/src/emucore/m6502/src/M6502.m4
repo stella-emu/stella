@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4,v 1.2 2001-12-29 17:55:59 bwmott Exp $
+// $Id: M6502.m4,v 1.3 2002-04-22 01:08:51 bwmott Exp $
 //============================================================================
 
 /** 
   Code and cases to emulate each of the 6502 instruction 
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4,v 1.2 2001-12-29 17:55:59 bwmott Exp $
+  @version $Id: M6502.m4,v 1.3 2002-04-22 01:08:51 bwmott Exp $
 */
 
 #ifndef NOTSAMEPAGE
@@ -157,11 +157,13 @@ define(M6502_BIT, `{
 
 define(M6502_BRK, `{
   peek(PC++);
+
+  B = true;
+
   poke(0x0100 + SP--, PC >> 8);
   poke(0x0100 + SP--, PC & 0x00ff);
   poke(0x0100 + SP--, PS());
 
-  B = true;
   I = true;
 
   PC = peek(0xfffe);
