@@ -1,5 +1,37 @@
 // Thrust authorized to be included within the Stella package
 // by kind permission from Thomas Jentzsch
+//
+// This file is hereby explicitely excluded from the GPL
+// under which Cyberstella and all other Stella emulators
+// are released
+//
+// Read this Q&A from the official GPL FAQ:
+//
+////////////////////////////////////////////////////////////////////////
+// 
+// Q: If a programming language interpreter is released under the GPL, 
+// does that mean programs written to be interpreted by it must be 
+// under GPL-compatible licenses?
+//
+// A: When the interpreter just interprets a language, the answer is no. 
+// The interpreted program, to the interpreter, is just data; a free 
+// software license like the GPL, based on copyright law, cannot limit 
+// what data you use the interpreter on. You can run it on any data 
+// (interpreted program), any way you like, and there are no requirements 
+// about licensing that data to anyone. 
+// 
+////////////////////////////////////////////////////////////////////////
+// 
+// This is exactly the case with the game DATA(!) below!
+//
+// All rights to the game Thrust belong 100% exclusiv to Manuel Polik
+// That means especially the right to modify and the right to sell it.
+// 
+// Any builds of Stella emulators may either use this file here exactly
+// as provided, or leave it out completely of the project.
+// By no means will the author lose any of the rights to his game.
+//
+// Again: This file is no GPL!
 
 unsigned char thrust[16384] =
 {
