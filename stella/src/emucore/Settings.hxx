@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.17 2004-07-28 23:54:39 stephena Exp $
+// $Id: Settings.hxx,v 1.18 2004-08-17 01:17:08 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -26,7 +26,7 @@
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.17 2004-07-28 23:54:39 stephena Exp $
+  @version $Id: Settings.hxx,v 1.18 2004-08-17 01:17:08 stephena Exp $
 */
 class Settings
 {
@@ -164,36 +164,37 @@ class Settings
 
   public:
     /**
-      This method should be called to get the filename of the users'
-      properties (stella.pro) file.
+      This method should be called to get the filename of the
+      properties (stella.pro) file for the purpose of loading.
 
-      @return String representing the full path of the user properties filename.
+      @return String representing the full path of the properties filename.
     */
-    string userPropertiesFilename() { return myUserPropertiesFile; }
+    string propertiesInputFilename() { return myPropertiesInputFile; }
 
     /**
-      This method should be called to get the filename of the system
-      properties (stella.pro) file.
+      This method should be called to get the filename of the
+      properties (stella.pro) file for the purpose of saving.
 
-      @return String representing the full path of the system properties filename.
+      @return String representing the full path of the properties filename.
     */
-    string systemPropertiesFilename() { return mySystemPropertiesFile; }
+    string propertiesOutputFilename() { return myPropertiesOutputFile; }
+
 
     /**
-      This method should be called to get the filename of the users'
-      config (stellarc) file.
+      This method should be called to get the filename of the config file
+      for the purpose of loading.
 
-      @return String representing the full path of the user config filename.
+      @return String representing the full path of the config filename.
     */
-    string userConfigFilename() { return myUserConfigFile; }
+    string configInputFilename() { return myConfigInputFile; }
 
     /**
-      This method should be called to get the filename of the system
-      config (stellarc) file.
+      This method should be called to get the filename of the config file
+      for the purpose of saving.
 
-      @return String representing the full path of the system config filename.
+      @return String representing the full path of the config filename.
     */
-    string systemConfigFilename() { return mySystemConfigFile; }
+    string configOutputFilename() { return myConfigOutputFile; }
 
     /**
       Return the default directory for storing data.
@@ -205,19 +206,12 @@ class Settings
 
     string myBaseDir;
     string myStateDir;
-    string myStateFile;
-    string mySnapshotFile;
-    string myUserPropertiesFile;
-    string mySystemPropertiesFile;
-    string myUserConfigFile;
-    string mySystemConfigFile;
 
-    // The full pathname of the settings file for input
-    string mySettingsInputFilename;
+    string myPropertiesInputFile;
+    string myPropertiesOutputFile;
+    string myConfigInputFile;
+    string myConfigOutputFile;
 
-    // The full pathname of the settings file for output
-    string mySettingsOutputFilename;
-	
     // Structure used for storing settings
     struct Setting
     {

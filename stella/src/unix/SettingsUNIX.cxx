@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.6 2004-07-05 00:53:48 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.7 2004-08-17 01:17:08 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -42,20 +42,28 @@ SettingsUNIX::SettingsUNIX()
   if(!fileExists(myStateDir))
     mkdir(myStateDir.c_str(), 0777);
 
-  myUserPropertiesFile   = stelladir + "/stella.pro";
-  mySystemPropertiesFile = "/etc/stella.pro";
-  myUserConfigFile       = stelladir + "/stellarc";
-  mySystemConfigFile     = "/etc/stellarc";
+  string userPropertiesFile   = stelladir + "/stella.pro";
+  string systemPropertiesFile = "/etc/stella.pro";
+  string userConfigFile       = stelladir + "/stellarc";
+  string systemConfigFile     = "/etc/stellarc";
 
   // Set up the names of the input and output config files
-  mySettingsOutputFilename = myUserConfigFile;
-  if(fileExists(myUserConfigFile))
-    mySettingsInputFilename = myUserConfigFile;
+  myConfigOutputFile = userConfigFile;
+  if(fileExists(userConfigFile))
+    myConfigInputFile = userConfigFile;
+  else if(fileExists(systemConfigFile))
+    myConfigInputFile = systemConfigFile;
   else
-    mySettingsInputFilename = mySystemConfigFile;
+    myConfigInputFile = "";
 
-  mySnapshotFile = "";
-  myStateFile    = "";
+  // Set up the input and output properties files
+  myPropertiesOutputFile = userPropertiesFile;
+  if(fileExists(userPropertiesFile))
+    myPropertiesInputFile = userPropertiesFile;
+  else if(fileExists(systemPropertiesFile))
+    myPropertiesInputFile = systemPropertiesFile;
+  else
+    myPropertiesInputFile = "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,13 +77,11 @@ string SettingsUNIX::stateFilename(const string& md5, uInt32 state)
   ostringstream buf;
   buf << myStateDir << md5 << ".st" << state;
 
-  myStateFile = buf.str();
-
-  return myStateFile;
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SettingsUNIX::fileExists(const string& filename)
 {
-  return (access(filename.c_str(), F_OK|W_OK) == 0);
+  return (access(filename.c_str(), F_OK) == 0);
 }

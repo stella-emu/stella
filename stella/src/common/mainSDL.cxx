@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.15 2004-08-06 01:51:15 stephena Exp $
+// $Id: mainSDL.cxx,v 1.16 2004-08-17 01:17:08 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -271,7 +271,7 @@ static KeyList keyList[] = {
 */
 static void ShowInfo(const string& msg)
 {
-  if(theShowInfoFlag)
+  if(theShowInfoFlag && msg != "")
     cout << msg << endl;
 }
 
@@ -499,7 +499,7 @@ void HandleEvents()
             case SDLK_s:         // Ctrl-s saves properties to a file
               // Attempt to merge with propertiesSet
               if(theConsole->settings().getBool("mergeprops"))
-                theConsole->saveProperties(theSettings->userPropertiesFilename(), true);
+                theConsole->saveProperties(theSettings->propertiesOutputFilename(), true);
               else  // Save to file in home directory
               {
                 string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
@@ -520,8 +520,8 @@ void HandleEvents()
 
       case SDL_MOUSEMOTION:
       {
-        uInt32 zoom      = theDisplay->zoomLevel();
-        Int32 width      = theDisplay->width() * zoom;
+        uInt32 zoom = theDisplay->zoomLevel();
+        Int32 width = theDisplay->width() * zoom;
 
         // Grabmouse and hidecursor introduce some lag into the mouse movement,
         // so we need to fudge the numbers a bit
@@ -649,7 +649,7 @@ void HandleEvents()
             button = event.jbutton.button;
             state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-            // Send button events for the joysticks/paddles
+            // Send button events for the joysticks/paddles/driving controllers
             if(button == 0)
             {
               if(type == JT_STELLADAPTOR_1)
@@ -719,23 +719,29 @@ void HandleEvents()
 void SetupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
-  string theAlternateProFile = theSettings->getString("altpro");
-  string theUserProFile      = theSettings->userPropertiesFilename();
-  string theSystemProFile    = theSettings->systemPropertiesFilename();
+  string theAltPropertiesFile = theSettings->getString("altpro");
+  string thePropertiesFile    = theSettings->propertiesInputFilename();
 
   // When 'listrominfo' or 'mergeprops' is specified, we need to have the
   // full list in memory
   if(theSettings->getBool("listrominfo") || theSettings->getBool("mergeprops"))
     useMemList = true;
 
-  if(theAlternateProFile != "")
-    set.load(theAlternateProFile, useMemList);
-  else if(theUserProFile != "")
-    set.load(theUserProFile, useMemList);
-  else if(theSystemProFile != "")
-    set.load(theSystemProFile, useMemList);
+  stringstream buf;
+  if(theAltPropertiesFile != "")
+  {
+    buf << "Reading game properties from \'" << theAltPropertiesFile << "\'\n";
+    set.load(theAltPropertiesFile, useMemList);
+  }
+  else if(thePropertiesFile != "")
+  {
+    buf << "Reading game properties from \'" << thePropertiesFile << "\'\n";
+    set.load(thePropertiesFile, useMemList);
+  }
   else
     set.load("", false);
+
+  ShowInfo(buf.str());
 }
 
 
@@ -796,6 +802,12 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  // Cache some settings so they don't have to be repeatedly searched for
+  thePaddleMode = theSettings->getInt("paddle");
+  theShowInfoFlag = theSettings->getBool("showinfo");
+  theGrabMouseIndicator = theSettings->getBool("grabmouse");
+  theHideCursorIndicator = theSettings->getBool("hidecursor");
+
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
   SetupProperties(propertiesSet);
@@ -808,12 +820,6 @@ int main(int argc, char* argv[])
     Cleanup();
     return 0;
   }
-
-  // Cache some settings so they don't have to be repeatedly searched for
-  thePaddleMode = theSettings->getInt("paddle");
-  theShowInfoFlag = theSettings->getBool("showinfo");
-  theGrabMouseIndicator = theSettings->getBool("grabmouse");
-  theHideCursorIndicator = theSettings->getBool("hidecursor");
 
   // Request that the SDL window be centered, if possible
   putenv("SDL_VIDEO_CENTERED=1");

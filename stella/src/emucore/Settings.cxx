@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.28 2004-08-12 23:36:15 stephena Exp $
+// $Id: Settings.cxx,v 1.29 2004-08-17 01:17:08 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -73,7 +73,7 @@ void Settings::loadConfig()
   string line, key, value;
   uInt32 equalPos;
 
-  ifstream in(mySettingsInputFilename.c_str());
+  ifstream in(myConfigInputFile.c_str());
   if(!in || !in.is_open())
   {
     cout << "Error: Couldn't load settings file\n";
@@ -167,7 +167,7 @@ void Settings::usage()
 {
 #ifndef MAC_OSX
   cout << endl
-    << "Stella version 1.4.1\n\nUsage: stella [options ...] romfile" << endl
+    << "Stella version 1.4.2_cvs\n\nUsage: stella [options ...] romfile" << endl
     << endl
     << "Valid options are:" << endl
     << endl
@@ -209,7 +209,7 @@ void Settings::usage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
-  ofstream out(mySettingsOutputFilename.c_str());
+  ofstream out(myConfigOutputFile.c_str());
   if(!out || !out.is_open())
   {
     cout << "Error: Couldn't save settings file\n";
