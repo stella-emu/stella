@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.39 2003-09-19 15:45:01 stephena Exp $
+## $Id: makefile,v 1.40 2003-09-20 13:41:36 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -30,9 +30,9 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
 ### SDL sound not yet supported in the X11 version
 ### comment out all lines to completely disable sound
 ###
-#SOUND_ALSA = 1
-#SOUND_OSS  = 1
-#SOUND_SDL  = 1
+SOUND_ALSA = 1
+SOUND_OSS  = 1
+SOUND_SDL  = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
