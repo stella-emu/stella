@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.7 2002-11-19 04:29:21 bwmott Exp $
+// $Id: CartDPC.cxx,v 1.8 2004-06-13 04:49:03 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -148,7 +148,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
   mySystemCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
-  double clocks = ((15750.0 * cycles) / 1193182.0) + myFractionalClocks;
+  double clocks = ((15750.0 * cycles) / 1193191.66666667) + myFractionalClocks;
   Int32 wholeClocks = (Int32)clocks;
   myFractionalClocks = clocks - (double)wholeClocks;
 
