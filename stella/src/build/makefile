@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.24 2002-10-31 20:44:26 stephena Exp $
+## $Id: makefile,v 1.25 2002-11-09 23:34:35 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -58,6 +58,12 @@ OPTIMIZATIONS    = -O2 -Wall -Wno-unused
 ### have the gettimeofday function
 ### Currently, the X11 version won't compile without it
 HAVE_GETTIMEOFDAY = 1
+
+### to include support for game developers
+### enables some extra commandline options that allow the user
+### to override some emulation defaults
+### Only X11 and SDL ports supported for now
+# DEVELOPER_SUPPORT = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -126,6 +132,12 @@ endif
 ifdef HAVE_GETTIMEOFDAY
 OPTS.X11 += -DHAVE_GETTIMEOFDAY=1
 OPTS.SDL += -DHAVE_GETTIMEOFDAY=1
+endif
+
+ifdef DEVELOPER_SUPPORT
+OPTS.X11 += -DDEVELOPER_SUPPORT=1
+OPTS.SDL += -DDEVELOPER_SUPPORT=1
+OPTS.DOS += -DDEVELOPER_SUPPORT=1
 endif
 
 default:
