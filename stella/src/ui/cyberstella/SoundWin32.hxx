@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundWin32.hxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+// $Id: SoundWin32.hxx,v 1.3 2003-11-19 21:06:27 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_WIN32_HXX
@@ -30,7 +30,7 @@
   Win32 DirectSound API.
 
   @author  Stephen Anthony
-  @version $Id: SoundWin32.hxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+  @version $Id: SoundWin32.hxx,v 1.3 2003-11-19 21:06:27 stephena Exp $
 */
 class SoundWin32 : public Sound
 {
@@ -72,15 +72,13 @@ class SoundWin32 : public Sound
 
       @param percent The new volume percentage level for the sound device
     */
-    void setSoundVolume(Int32 percent);
+    void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the specified
+      Update the sound device using the audio sample from the
       media source.
-
-      @param mediaSource The media source to get audio samples from.
     */
-    void updateSound(MediaSource& mediaSource);
+    void update();
 
     /**
       Initialize the DirectSound subsystem/
@@ -114,4 +112,5 @@ class SoundWin32 : public Sound
     // DSP sample rate
     uInt32 mySampleRate;
 };
+
 #endif

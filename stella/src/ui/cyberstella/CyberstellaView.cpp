@@ -298,8 +298,6 @@ void CCyberstellaView::playRom(LONG gameID)
     pszFileName = fileName;
   }
 
-//::MessageBox(*this, "got here", _T("Error"), MB_OK | MB_ICONEXCLAMATION );
-
   ::ShowWindow( *this, SW_HIDE );
 
   // Create a new main instance for this cartridge
@@ -309,6 +307,7 @@ void CCyberstellaView::playRom(LONG gameID)
   mainWin32->run();
 
   ::ShowWindow( *this, SW_SHOW );
+  ShowCursor(TRUE);
   
   delete pImage;
   delete mainWin32;

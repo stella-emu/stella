@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainWin32.cxx,v 1.3 2003-11-16 19:32:52 stephena Exp $
+// $Id: MainWin32.cxx,v 1.4 2003-11-19 21:06:27 stephena Exp $
 //============================================================================
 
 #define STRICT
@@ -92,14 +92,15 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MainWin32::~MainWin32()
 {
+  // Save the settings for this instance of the console
+  theConsole->settings().saveConfig();
+
   cleanup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MainWin32::cleanup()
 {
-  ShowCursor(TRUE);
-
   if(theDisplay)
     delete theDisplay;
 
@@ -132,7 +133,7 @@ DWORD MainWin32::run()
   QueryPerformanceFrequency( (LARGE_INTEGER*)&uiCountsPerSecond );
 
   const unsigned __int64 uiCountsPerFrame = 
-    ( uiCountsPerSecond / 60);// FIXME m_rGlobalData->desiredFrameRate);
+    ( uiCountsPerSecond / theSettings.getInt("framerate"));
 
   unsigned __int64 uiFrameStart;
   unsigned __int64 uiFrameCurrent;
@@ -158,8 +159,7 @@ DWORD MainWin32::run()
       ::QueryPerformanceCounter( (LARGE_INTEGER*)&uiFrameStart );
 
       UpdateEvents();
-      theDisplay->update();
-      theSound->updateSound(*theDisplay->mediaSource());
+      theConsole->update();
 
       // waste time to to meet desired frame rate
       for(;;)
@@ -167,38 +167,25 @@ DWORD MainWin32::run()
         QueryPerformanceCounter( (LARGE_INTEGER*)&uiFrameCurrent );
         if((uiFrameCurrent - uiFrameStart) >= uiCountsPerFrame)
           break;
-//FIXME        else
-//          WaitMessage();
       }
     }
   }
 
   // Main message loop done
-/*
-  if ( m_rGlobalData->bShowFPS)
-	{
-		// get number of scanlines in last frame
+  if(0)// m_rGlobalData->bShowFPS)
+  {
+    // Get the final tick count
+    unsigned __int64 uiEndRun;
+    QueryPerformanceCounter( (LARGE_INTEGER*)&uiEndRun );
 
-		uInt32 uScanLines = rMediaSource.scanlines();
+    // Get number of ticks
+    DWORD secs = (DWORD)((uiEndRun - uiStartRun) / uiCountsPerSecond);
+    DWORD fps = (secs == 0) ? 0 : (uFrameCount / secs);
 
-		// Get the final tick count
-
-		unsigned __int64 uiEndRun;
-        ::QueryPerformanceCounter( (LARGE_INTEGER*)&uiEndRun );
-
-		// Get number of ticks
-
-		DWORD secs = (DWORD)( ( uiEndRun - uiStartRun ) / uiCountsPerSecond );
-
-		DWORD fps = (secs == 0) ? 0 : (uFrameCount / secs);
-
-		TCHAR pszBuf[1024];
-		wsprintf( pszBuf, _T("Frames drawn: %ld\nFPS: %ld\nScanlines in last frame: %ld\n"),
-			      uFrameCount,
-                  fps, 
-                  uScanLines );
-		MessageBox( NULL, pszBuf, _T("Statistics"), MB_OK );
-	}*/
+    TCHAR pszBuf[1024];
+    wsprintf(pszBuf, _T("Frames drawn: %ld\nFPS: %ld\n"), uFrameCount, fps);
+    MessageBox(NULL, pszBuf, _T("Statistics"), MB_OK);
+  }
 
 	return msg.wParam;
 }

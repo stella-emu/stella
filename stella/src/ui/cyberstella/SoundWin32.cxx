@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundWin32.cxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+// $Id: SoundWin32.cxx,v 1.3 2003-11-19 21:06:27 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -102,12 +102,12 @@ bool SoundWin32::isSuccessfullyInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundWin32::setSoundVolume(Int32 percent)
+void SoundWin32::setVolume(Int32 percent)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundWin32::updateSound(MediaSource& mediaSource)
+void SoundWin32::update()
 {
   if(myIsInitializedFlag)
   {
@@ -116,9 +116,9 @@ void SoundWin32::updateSound(MediaSource& mediaSource)
     uInt8* buffer = new uInt8[myBufferSize];
 
     // Dequeue samples as long as full fragments are available
-    while(mediaSource.numberOfAudioSamples() >= myBufferSize)
+    while(myMediaSource->numberOfAudioSamples() >= myBufferSize)
     {
-      mediaSource.dequeueAudioSamples(buffer, myBufferSize);
+      myMediaSource->dequeueAudioSamples(buffer, myBufferSize);
 
       LPVOID lpvWrite;
       DWORD  dwLength;

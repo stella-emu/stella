@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.2 2003-09-23 19:41:16 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.3 2003-11-19 21:06:27 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -29,23 +29,18 @@ SettingsWin32::SettingsWin32()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsWin32::~SettingsWin32()
 {
-        cerr << "SettingsWin32::~SettingsWin32()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string SettingsWin32::stateFilename(uInt32 state)
 {
-        cerr << "SettingsWin32::stateFilename()\n";
-
-        return "";
+  return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string SettingsWin32::snapshotFilename()
 {
-        cerr << "SettingsWin32::snapshotFilename()\n";
-
-        return "";
+  return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

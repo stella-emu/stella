@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.cxx,v 1.4 2003-11-16 19:32:52 stephena Exp $
+// $Id: FrameBufferWin32.cxx,v 1.5 2003-11-19 21:06:27 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -103,8 +103,8 @@ bool FrameBufferWin32::init()
   HRESULT hrCoInit = ::CoInitialize( NULL );
 
   // Get the game's width and height
-  mySizeGame.cx = myMediaSource->width() << 1;
-  mySizeGame.cy = myMediaSource->height();
+  mySizeGame.cx = myWidth  = myMediaSource->width() << 1;
+  mySizeGame.cy = myHeight = myMediaSource->height();
 
   // Initialize the pixel data table
   for(uInt32 i = 0; i < 256; ++i)
@@ -347,7 +347,6 @@ void FrameBufferWin32::drawMediaSource()
   // BUGBUG: Check for error
 
   BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
-
   register int y;
   for(y = 0; y < mySizeGame.cy; ++y)
   {
@@ -359,7 +358,7 @@ void FrameBufferWin32::drawMediaSource()
     {
       const WORD bufofs = bufofsY + x;
       BYTE v = current[ bufofs ];
-      if(v == previous[ bufofs ])
+      if(v == previous[ bufofs ] && !theRedrawEntireFrameIndicator)
         continue;
 
       // x << 1 is times 2 ( doubling width ) WIDTH_FACTOR
@@ -367,19 +366,23 @@ void FrameBufferWin32::drawMediaSource()
       pbBackBytes[ pos + 0 ] = pbBackBytes[ pos + 1 ] = myPalette[v];
     }
   }
-
   (void)m_piDDSBack->Unlock( ddsd.lpSurface );
+
+  // The frame doesn't need to be completely redrawn anymore
+  theRedrawEntireFrameIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::preFrameUpdate()
 {
+  // FIXME - move locking here so its only done once per frame
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::postFrameUpdate()
 {
   // We only send any changes to the screen once per frame
+  // FIXME - move unlocking here so its only done once per frame
 
   // Blit offscreen to onscreen
   RECT rc = { 0, 0, mySizeGame.cx, mySizeGame.cy };
@@ -404,16 +407,114 @@ void FrameBufferWin32::toggleFullscreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
+  // acquire pointer to linear video ram
+  DDSURFACEDESC ddsd;
+  ZeroMemory( &ddsd, sizeof(ddsd) );
+  ddsd.dwSize = sizeof(ddsd);
+
+  HRESULT hr = m_piDDSBack->Lock( NULL, 
+                          &ddsd, 
+                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
+                          NULL );
+  // BUGBUG: Check for error
+
+  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
+
+  // First draw the background
+  for(uInt32 row = 0; row < h; row++)
+  {
+    for(uInt32 col = 0; col < w; col++)
+    {
+      BYTE* ptr = pbBackBytes + ((row + y) * ddsd.lPitch) + col + x;
+      *ptr = myPalette[myBGColor];
+    }
+  }
+
+  // Now draw the surrounding lines
+  for(uInt32 col = 0; col < w+1; col++)  // Top line
+  {
+    BYTE* ptr = pbBackBytes + y * ddsd.lPitch + col + x;
+    *ptr = myPalette[myFGColor];
+  }
+
+  for(uInt32 col = 0; col < w+1; col++)  // Bottom line
+  {
+    BYTE* ptr = pbBackBytes + (y+h) * ddsd.lPitch + col + x;
+    *ptr = myPalette[myFGColor];
+  }
+
+  for(uInt32 row = 0; row < h; row++)  //  Left line
+  {
+    BYTE* ptr = pbBackBytes + (row + y) * ddsd.lPitch + x;
+    *ptr = myPalette[myFGColor];
+  }
+
+  for(uInt32 row = 0; row < h; row++)  //  Right line
+  {
+    BYTE* ptr = pbBackBytes + (row + y) * ddsd.lPitch + x + w;
+    *ptr = myPalette[myFGColor];
+  }
+
+  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawText(uInt32 xorig, uInt32 yorig, const string& message)
 {
+  // acquire pointer to linear video ram
+  DDSURFACEDESC ddsd;
+  ZeroMemory( &ddsd, sizeof(ddsd) );
+  ddsd.dwSize = sizeof(ddsd);
+
+  HRESULT hr = m_piDDSBack->Lock( NULL, 
+                          &ddsd, 
+                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
+                          NULL );
+
+  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
+  uInt8 length = message.length();
+  for(uInt32 x = 0; x < length; x++)
+  {
+    for(uInt32 y = 0; y < 8; y++)
+    {
+      for(uInt32 z = 0; z < 8; z++)
+      {
+        char letter = message[x];
+        if((ourFontData[(letter << 3) + y] >> z) & 1)
+          pbBackBytes[((x<<3) + z + xorig) + (y + yorig) * ddsd.lPitch] =
+            myPalette[myFGColor];
+      }
+    }
+  }
+
+  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
 {
+  // acquire pointer to linear video ram
+  DDSURFACEDESC ddsd;
+  ZeroMemory( &ddsd, sizeof(ddsd) );
+  ddsd.dwSize = sizeof(ddsd);
+
+  HRESULT hr = m_piDDSBack->Lock( NULL, 
+                          &ddsd, 
+                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
+                          NULL );
+
+  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
+  for(uInt32 y = 0; y < 8; y++)
+  {
+    for(uInt32 x = 0; x < 8; x++)
+    {
+      if((ourFontData[(c << 3) + y] >> x) & 1)
+        pbBackBytes[x + xorig + (y + yorig) * ddsd.lPitch] =
+          myPalette[myFGColor];
+    }
+  }
+
+  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 }
 
 LRESULT CALLBACK FrameBufferWin32::StaticWindowProc(
@@ -470,23 +571,6 @@ BOOL FrameBufferWin32::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_DESTROY:
       ::PostQuitMessage(0);
-      break;
-
-    case WM_KEYDOWN:
-      switch((int)wParam)
-      {
-        case VK_ESCAPE:
-          ::PostMessage(myHWND, WM_CLOSE, 0, 0);
-
-          // For some braindead reason, the exit event must be handled
-          // here.  Normally, an Escape event would be the same as any
-          // other and the Console would handle it.
-          // But since Windows insists on doing it this way, we have
-          // to make sure that the Escape event is still received by
-          // the core.
-          myConsole->eventHandler().sendEvent(Event::Quit, 1);
-          break;
-      }
       break;
 
     case WM_PAINT:
