@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.4 2004-06-20 00:52:37 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.5 2004-07-04 15:16:22 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -80,6 +80,7 @@ void SettingsUNIX::usage(string& message)
     << "               nearest         Normal scaling (GL_NEAREST)\n"
     << "               linear          Blurred scaling (GL_LINEAR)\n"
     << "  -gl_aspect  <number>       Scale the width by the given amount\n"
+    << "  -gl_fsmax   <0|1>          Use the largest available screenmode in fullscreen OpenGL\n"
     << endl
   #endif
     << "  -sound      <0|1>          Enable sound generation\n"
