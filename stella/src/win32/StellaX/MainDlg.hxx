@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.hxx,v 1.3 2004-07-10 22:25:58 stephena Exp $
+// $Id: MainDlg.hxx,v 1.4 2004-07-11 22:04:22 stephena Exp $
 //============================================================================ 
 
 #ifndef __MAINDLG_H_
@@ -37,6 +37,7 @@ class MainDlg
     enum { IDD = IDD_MAIN };
 
     MainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance );
+    virtual ~MainDlg( void );
 
     virtual int DoModal( HWND hwndParent );
 
@@ -63,7 +64,7 @@ class MainDlg
 
     // wm_notify handlers
     void OnItemChanged( LPNMLISTVIEW pnmv );
-//    void OnColumnClick( LPNMLISTVIEW pnmv );
+    void OnColumnClick( LPNMLISTVIEW pnmv );
 
     // cool caption handlers
     void OnDestroy( void );
@@ -74,6 +75,7 @@ class MainDlg
     // callback methods
     BOOL CALLBACK DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam );
     static BOOL CALLBACK StaticDialogFunc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam );
+    static int CALLBACK ListViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort );
 
     // internal data
     void UpdateRomList();
@@ -81,11 +83,14 @@ class MainDlg
     bool LoadRomListFromDisk();
     bool LoadRomListFromCache();
 
-    HINSTANCE m_hInstance;
+    void Quit( HWND hwnd );
 
-    // stuff in list
+    HINSTANCE myHInstance;
+
     HWND myHwndList;
     LPARAM ListView_GetItemData( HWND hwndList, int iItem );
+    void ListView_SortByColumn( HWND hwndList, int col );
+    int  ListView_GetColWidth( HWND hwndList, int col );
     void ListView_Clear();
 
     HFONT m_hfontRomNote;

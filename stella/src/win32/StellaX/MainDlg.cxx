@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.4 2004-07-10 22:25:58 stephena Exp $
+// $Id: MainDlg.cxx,v 1.5 2004-07-11 22:04:22 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -35,14 +35,21 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 MainDlg::MainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance )
         : myGlobalData(rGlobalData),
-          m_hInstance(hInstance)
+          myHInstance(hInstance)
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+MainDlg::~MainDlg( void )
+{
+  // Just to be safe, make sure we don't have a memory leak
+  ListView_Clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 int MainDlg::DoModal( HWND hwndParent )
 {
-  return DialogBoxParam( m_hInstance, 
+  return DialogBoxParam( myHInstance, 
                          MAKEINTRESOURCE(IDD),
                          hwndParent, 
                          StaticDialogFunc, 
@@ -138,7 +145,7 @@ MainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
     case WM_SYSCOMMAND:
       // Allow Alt-F4 to close the window
       if ( wParam == SC_CLOSE )
-        ::EndDialog( myHwnd, IDCANCEL );
+        Quit(myHwnd);
       break;
   }
 
@@ -154,7 +161,7 @@ BOOL MainDlg::OnInitDialog( void  )
   HWND hwnd = *this;
 
   // Set dialog icon
-  HICON hicon = ::LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_APP));
+  HICON hicon = ::LoadIcon(myHInstance, MAKEINTRESOURCE(IDI_APP));
   ::SendMessage( hwnd, WM_SETICON, ICON_BIG, (LPARAM)hicon );
   ::SendMessage( hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hicon );
 
@@ -199,16 +206,24 @@ BOOL MainDlg::OnInitDialog( void  )
   int columnHeader[] = { IDS_NAME, IDS_MANUFACTURER, IDS_RARITY };
 
   // Set the column widths
-  LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
   int columnWidth[3];
-  columnWidth[0] = (int) (0.58 * lTotalWidth);
-  columnWidth[1] = (int) (0.25 * lTotalWidth);
-  columnWidth[2] = lTotalWidth - columnWidth[0] - columnWidth[1];
+  columnWidth[0] = myGlobalData.settings().getInt("namecolwidth");
+  columnWidth[1] = myGlobalData.settings().getInt("manufacturercolwidth");
+  columnWidth[2] = myGlobalData.settings().getInt("raritycolwidth");
+
+  // Make sure there are sane values for the column widths
+  if (columnWidth[0] <= 0 || columnWidth[1] <= 0 || columnWidth[2] <= 0)
+  {
+    LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
+    columnWidth[0] = (int) (0.58 * lTotalWidth);
+    columnWidth[1] = (int) (0.25 * lTotalWidth);
+    columnWidth[2] = lTotalWidth - columnWidth[0] - columnWidth[1];
+  }
 
   // Set up the column headings
-  for (int i = 0; i < sizeof(columnHeader)/sizeof(int); ++i)
+  for (int i = 0; i < 3; ++i)
   {
-    LoadString( m_hInstance, columnHeader[i], psz, nMaxString );
+    LoadString( myHInstance, columnHeader[i], psz, nMaxString );
 
     LV_COLUMN lvc;
     lvc.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
@@ -222,7 +237,7 @@ BOOL MainDlg::OnInitDialog( void  )
   UpdateRomList();
 
   // Set default button
-  ::SendMessage( hwnd, DM_SETDEFID, IDC_PLAY, 0 );
+  SendMessage( hwnd, DM_SETDEFID, IDC_PLAY, 0 );
 
   // return FALSE if SetFocus is called
   return TRUE;
@@ -247,7 +262,7 @@ BOOL MainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       ASSERT( nItem != -1 );
       if ( nItem == -1 )
       {
-        MessageBox( m_hInstance, hwnd, IDS_NO_ITEM_SELECTED );
+        MessageBox( myHInstance, hwnd, IDS_NO_ITEM_SELECTED );
         return TRUE;
       }
 
@@ -262,8 +277,7 @@ BOOL MainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       break; // case IDC_PLAY
 
     case IDC_EXIT:
-      ListView_Clear();
-      EndDialog( hwnd, IDCANCEL );
+      Quit(hwnd);
       return TRUE;
       break; // case IDC_EXIT
 
@@ -295,7 +309,7 @@ BOOL MainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
     case IDC_RELOAD:
     {
       LoadRomListFromDisk();
-
+      ListView_SortByColumn( myHwndList, myGlobalData.settings().getInt("sortcol") );
       return TRUE;
       break; // case IDC_RELOAD
     }
@@ -315,13 +329,13 @@ BOOL MainDlg::OnNotify( int idCtrl, LPNMHDR pnmh )
       OnItemChanged( (LPNMLISTVIEW)pnmh );
       return TRUE;
 
-//    case LVN_COLUMNCLICK:
-//      OnColumnClick( (LPNMLISTVIEW)pnmh );
-//      return TRUE;
+    case LVN_COLUMNCLICK:
+      OnColumnClick( (LPNMLISTVIEW)pnmh );
+      return TRUE;
 
     case NM_DBLCLK:
       // send out an ok click to play
-      ::SendDlgItemMessage( *this, IDC_PLAY, BM_CLICK, 0, 0 );
+      SendDlgItemMessage( *this, IDC_PLAY, BM_CLICK, 0, 0 );
       return TRUE;
   }
 
@@ -354,6 +368,12 @@ void MainDlg::OnItemChanged( LPNMLISTVIEW pnmv )
   SetWindowText( hwndNote, g->note().c_str() );
   InvalidateRect( hwnd, &rc, TRUE );
   EnableWindow( GetDlgItem( hwnd, IDC_PLAY ), TRUE );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void MainDlg::OnColumnClick( LPNMLISTVIEW pnmv )
+{
+  ListView_SortByColumn( pnmv->hdr.hwndFrom, pnmv->iSubItem );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -393,7 +413,7 @@ BOOL MainDlg::OnEraseBkgnd( HDC hdc )
 
   HDC hdcMem = CreateCompatibleDC(hdc);
 
-  HBITMAP hbmpTile = LoadBitmap( m_hInstance, MAKEINTRESOURCE(IDB_TILE) );
+  HBITMAP hbmpTile = LoadBitmap( myHInstance, MAKEINTRESOURCE(IDB_TILE) );
 
   BITMAP bm;
   GetObject(hbmpTile, sizeof(bm), &bm);
@@ -437,6 +457,31 @@ HBRUSH MainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void MainDlg::Quit( HWND hwnd )
+{
+  // OK, reload the settings to make sure we have the most current ones
+  myGlobalData.settings().loadConfig();
+
+  // Save the current sort column
+  int sortcol = myHeader.GetSortCol();
+  myGlobalData.settings().setInt("sortcol", sortcol);
+
+  // Save the column widths
+  myGlobalData.settings().setInt("namecolwidth",
+    ListView_GetColWidth( hwnd, 0 ));
+  myGlobalData.settings().setInt("manufacturercolwidth",
+    ListView_GetColWidth( hwnd, 1 ));
+  myGlobalData.settings().setInt("raritycolwidth",
+    ListView_GetColWidth( hwnd, 2 ));
+
+  // Now, save the settings
+  myGlobalData.settings().saveConfig();
+
+  ListView_Clear();
+  EndDialog( hwnd, IDCANCEL );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void MainDlg::UpdateRomList( void )
 {
   HWND hwndText;
@@ -447,22 +492,13 @@ void MainDlg::UpdateRomList( void )
 
   // if items added, select first item and enable play button
   int nCount = ListView_GetItemCount( myHwndList );
-  if (nCount != 0)
-  {
-    myHeader.SetSortCol( 0, TRUE );
-//    ListView_SortItems( myHwndList, ListViewCompareFunc, (LPARAM)this ); 
-    ListView_SetItemState( myHwndList, 0, LVIS_SELECTED | LVIS_FOCUSED,
-                           LVIS_SELECTED | LVIS_FOCUSED );
-  }
-  else
-  {
-    ::EnableWindow(::GetDlgItem( *this, IDC_PLAY), FALSE );
-  }
+  if (nCount == 0)
+    EnableWindow(GetDlgItem( *this, IDC_PLAY), FALSE );
 
   // Show status text
   TCHAR psz[256 + 1];
   TCHAR pszStatus[256 + 1];
-  LoadString(m_hInstance, IDS_STATUSTEXT, pszStatus, 256);
+  LoadString(myHInstance, IDS_STATUSTEXT, pszStatus, 256);
   wsprintf( psz, pszStatus, nCount );
   hwndText = GetDlgItem( *this, IDC_ROMCOUNT );
   GetWindowRect(hwndText, &rc);
@@ -492,6 +528,7 @@ bool MainDlg::PopulateRomList( void )
   else
     result = LoadRomListFromDisk();
 
+  ListView_SortByColumn( myHwndList, myGlobalData.settings().getInt("sortcol") );
   return result;
 }
 
@@ -594,7 +631,10 @@ bool MainDlg::LoadRomListFromDisk()
       strncpy(name, g->name().c_str(), 255);
 
     // Update the current game
-    // To save memory, 'Note' is the only item that needs to be saved
+    g->setMd5( md5 );
+    g->setName( name );
+    g->setRarity( rarity );
+    g->setManufacturer( manufacturer );
     g->setNote( props.get("Cartridge.Note") );
 
     // Update the cachefile with this game
@@ -648,9 +688,13 @@ bool MainDlg::LoadRomListFromCache()
     in.getline(manufacturer, 255);
     in.getline(note, 255);
 
-    // These are the only things we really need to save
+    // And save it to this game object
     g->setAvailable( true );
     g->setRom( rom );
+    g->setMd5( md5 );
+    g->setName( name );
+    g->setRarity( rarity );
+    g->setManufacturer( manufacturer );
     g->setNote( note );
 
     LV_ITEM lvi;
@@ -726,6 +770,42 @@ LPARAM MainDlg::ListView_GetItemData( HWND hwndList, int iItem )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void MainDlg::ListView_SortByColumn( HWND hwndList, int col )
+{
+  HCURSOR hcur = SetCursor(LoadCursor(NULL, IDC_WAIT));
+
+  int nCount = ListView_GetItemCount( hwndList );
+  if (nCount != 0)
+  {
+    myHeader.SetSortCol( col, TRUE );
+    ListView_SortItems( hwndList, ListViewCompareFunc, (LPARAM)this ); 
+    ListView_SetItemState( hwndList, 0, LVIS_SELECTED | LVIS_FOCUSED,
+                           LVIS_SELECTED | LVIS_FOCUSED );
+  }
+
+  // ensure the selected item is visible
+  int nItem = ListView_GetNextItem( myHwndList, -1, LVNI_SELECTED );
+  if (nItem != -1)
+    ListView_EnsureVisible( myHwndList, nItem, TRUE );
+
+  SetCursor(hcur);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+int MainDlg::ListView_GetColWidth( HWND hwndList, int col )
+{
+  // Although there seems to be a similar function in the Win32 API
+  // to do this, I couldn't get it to work, so it's quicker to
+  // write this one and use it ...
+  LV_COLUMN lvc;
+  lvc.mask = LVCF_WIDTH;
+  if (ListView_GetColumn( myHwndList, col, &lvc ) == TRUE)
+    return lvc.cx;
+  else
+    return 0;  // the next time StellaX starts, it will recreate a sane value
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void MainDlg::ListView_Clear( void )
 {
   int nCount = ListView_GetItemCount( myHwndList );
@@ -734,4 +814,42 @@ void MainDlg::ListView_Clear( void )
     delete (Game*) ListView_GetItemData( myHwndList, i );
 
   ListView_DeleteAllItems( myHwndList );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+int CALLBACK
+MainDlg::ListViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
+{
+  MainDlg* dlg = reinterpret_cast<MainDlg*>( lParamSort );
+
+  int sortCol = dlg->myHeader.GetSortCol();
+
+  Game* g1 = reinterpret_cast<Game*>( lParam1 );
+  Game* g2 = reinterpret_cast<Game*>( lParam2 );
+
+  string s1 = "", s2 = "";
+  switch (sortCol)
+  {
+    case 0:
+      s1 = g1->name();
+      s2 = g2->name();
+      break;
+
+    case 1:
+      s1 = g1->manufacturer();
+      s2 = g2->manufacturer();
+      break;
+
+    case 2:
+      s1 = g1->rarity();
+      s2 = g2->rarity();
+      break;
+  }
+
+  if (s1 > s2)
+    return 1;
+  else if (s1 < s2)
+    return -1;
+  else
+    return 0;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.8 2004-07-05 00:53:48 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.9 2004-07-11 22:04:21 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -62,6 +62,13 @@ SettingsWin32::SettingsWin32()
 #ifdef SNAPSHOT_SUPPORT
   set("ssdir", ".\\");
 #endif
+
+  // These settings are for the StellaX frontend
+  // If you don't use StellaX, the following settings are ignored
+  set("sortcol", "0");
+  set("namecolwidth", "0");
+  set("manufacturercolwidth", "0");
+  set("raritycolwidth", "0");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
