@@ -1,0 +1,2586 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		080E96DDFE201D6D7F000001 = {
+			children = (
+				F5A47A9D01A0482F01D3D55B,
+				F5A47A9E01A0483001D3D55B,
+				2D94482C0628F97500DD9879,
+				2D94482D0628F97500DD9879,
+				2DD8799F063A2131008FF2A2,
+				2DD879A0063A2131008FF2A2,
+				2D7B4F66063B506700579B93,
+				2D7B4F67063B506700579B93,
+				2D7B4F6E063B51DB00579B93,
+				2D7B4F6F063B51DB00579B93,
+			);
+			isa = PBXGroup;
+			name = Classes;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C165CFE840E0CC02AAC07 = {
+			children = (
+				089C165DFE840E0CC02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C165DFE840E0CC02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C165EFE840E0CC02AAC07 = {
+			fileRef = 089C165CFE840E0CC02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//080
+//081
+//082
+//083
+//084
+//100
+//101
+//102
+//103
+//104
+		1058C7A0FEA54F0111CA2CBB = {
+			children = (
+				1058C7A1FEA54F0111CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "Linked Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1058C7A1FEA54F0111CA2CBB = {
+			fallbackIsa = PBXFileReference;
+			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
+			name = Cocoa.framework;
+			path = /System/Library/Frameworks/Cocoa.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1058C7A2FEA54F0111CA2CBB = {
+			children = (
+				2D4764C806683C5F00F63D87,
+				2DEB3D4C0629BD24007EBBD3,
+				29B97325FDCFA39411CA2CEA,
+				29B97324FDCFA39411CA2CEA,
+			);
+			isa = PBXGroup;
+			name = "Other Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1058C7A3FEA54F0111CA2CBB = {
+			fileRef = 1058C7A1FEA54F0111CA2CBB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//100
+//101
+//102
+//103
+//104
+//170
+//171
+//172
+//173
+//174
+		17587328FF379C6511CA2CBB = {
+			explicitFileType = wrapper.application;
+			fallbackIsa = PBXFileReference;
+			isa = PBXApplicationReference;
+			path = StellaOSX.app;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+//170
+//171
+//172
+//173
+//174
+//190
+//191
+//192
+//193
+//194
+		19C28FACFE9D520D11CA2CBB = {
+			children = (
+				17587328FF379C6511CA2CBB,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//190
+//191
+//192
+//193
+//194
+//290
+//291
+//292
+//293
+//294
+		29B97313FDCFA39411CA2CEA = {
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504CCFFE6A4B311CA0CBA,
+				4A9504CDFFE6A4B311CA0CBA,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
+			projectDirPath = "";
+			targets = (
+				29B97326FDCFA39411CA2CEA,
+			);
+		};
+		29B97314FDCFA39411CA2CEA = {
+			children = (
+				080E96DDFE201D6D7F000001,
+				29B97315FDCFA39411CA2CEA,
+				29B97317FDCFA39411CA2CEA,
+				29B97323FDCFA39411CA2CEA,
+				19C28FACFE9D520D11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "«PROJECTNAMEASXML»";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA = {
+			children = (
+				2D07AD480630E634004BFF22,
+				2DE2DF100627AE07006BEC99,
+				2DE2DF110627AE07006BEC99,
+				2DE2DF120627AE07006BEC99,
+				2DE2DF130627AE07006BEC99,
+				2DE2DF140627AE07006BEC99,
+				2DE2DF150627AE07006BEC99,
+				2DE2DF160627AE07006BEC99,
+				2DE2DF170627AE07006BEC99,
+				2DE2DF180627AE07006BEC99,
+				2DE2DF190627AE07006BEC99,
+				2DE2DF1A0627AE07006BEC99,
+				2DE2DF1B0627AE07006BEC99,
+				2DE2DF1C0627AE07006BEC99,
+				2DE2DF1D0627AE07006BEC99,
+				2DE2DF1E0627AE07006BEC99,
+				2DE2DF1F0627AE07006BEC99,
+				2DE2DF200627AE07006BEC99,
+				2DE2DF210627AE07006BEC99,
+				2DE2DF220627AE07006BEC99,
+				2DE2DF230627AE07006BEC99,
+				2DE2DF240627AE07006BEC99,
+				2DE2DF250627AE07006BEC99,
+				2DE2DF260627AE07006BEC99,
+				2DE2DF270627AE07006BEC99,
+				2DE2DF280627AE07006BEC99,
+				2DE2DF290627AE07006BEC99,
+				2DE2DF2A0627AE07006BEC99,
+				2DE2DF2B0627AE07006BEC99,
+				2DE2DF2C0627AE07006BEC99,
+				2DE2DF2D0627AE07006BEC99,
+				2DE2DF2E0627AE07006BEC99,
+				2DE2DF2F0627AE07006BEC99,
+				2DE2DF300627AE07006BEC99,
+				2DE2DF310627AE07006BEC99,
+				2DE2DF320627AE07006BEC99,
+				2DE2DF330627AE07006BEC99,
+				2DE2DF340627AE07006BEC99,
+				2DE2DF350627AE07006BEC99,
+				2DE2DF360627AE07006BEC99,
+				2DE2DF370627AE07006BEC99,
+				2DE2DF380627AE07006BEC99,
+				2DE2DF390627AE07006BEC99,
+				2DE2DF3A0627AE07006BEC99,
+				2DE2DF3B0627AE07006BEC99,
+				2DE2DF3C0627AE07006BEC99,
+				2DE2DF3D0627AE07006BEC99,
+				2DE2DF3E0627AE07006BEC99,
+				2DE2DF3F0627AE07006BEC99,
+				2DE2DF400627AE07006BEC99,
+				2DE2DF410627AE07006BEC99,
+				2D733D6E062895B2006265D9,
+				2D733D6F062895B2006265D9,
+				2D733D70062895B2006265D9,
+				2D733D71062895B2006265D9,
+				2DE2DF420627AE07006BEC99,
+				2DE2DF430627AE07006BEC99,
+				2DE2DF440627AE07006BEC99,
+				2DE2DF450627AE07006BEC99,
+				2DE2DF7C0627AE33006BEC99,
+				2DE2DF7D0627AE33006BEC99,
+				2DE2DF7E0627AE33006BEC99,
+				2DE2DF7F0627AE34006BEC99,
+				2DE2DF800627AE34006BEC99,
+				2DE2DF810627AE34006BEC99,
+				2DE2DF820627AE34006BEC99,
+				2DE2DF830627AE34006BEC99,
+				2DE2DF840627AE34006BEC99,
+				2DE2DF850627AE34006BEC99,
+				2DE2DF860627AE34006BEC99,
+				2DE2DF870627AE34006BEC99,
+				2DE2DF880627AE34006BEC99,
+				2DE2DF890627AE34006BEC99,
+				2DE2DF8A0627AE34006BEC99,
+				2DE2DF8B0627AE34006BEC99,
+				2D733D77062895F1006265D9,
+				2D944848062904E800DD9879,
+				2DE2DF8C0627AE34006BEC99,
+				2DE2DF8D0627AE34006BEC99,
+				2DE2DF8E0627AE34006BEC99,
+				2DE2DF8F0627AE34006BEC99,
+				2DE2DF900627AE34006BEC99,
+				2DE2DF910627AE34006BEC99,
+				2DE2DFAD0627AFF9006BEC99,
+				2DE2DFAE0627AFF9006BEC99,
+				2DE2DFBC0627B1DF006BEC99,
+				2DE2DFBD0627B1DF006BEC99,
+				2DE2DFBE0627B1DF006BEC99,
+				2DE2DFBF0627B1DF006BEC99,
+				2DE2DFC00627B1DF006BEC99,
+				2DE2DFC10627B1DF006BEC99,
+				2DE2DFC20627B1DF006BEC99,
+				2DE2DFC30627B1DF006BEC99,
+				2DE2DFC40627B1DF006BEC99,
+				2DE2DFC50627B1DF006BEC99,
+				2DE2DFC60627B1DF006BEC99,
+				2DE2DFC70627B1DF006BEC99,
+				2DE2DFC80627B1DF006BEC99,
+				2DE2DFC90627B1DF006BEC99,
+				2D733D5D062893E7006265D9,
+				2D733D5E062893E7006265D9,
+				2D733D5F062893E7006265D9,
+				2D733D60062893E7006265D9,
+				2D733D61062893E7006265D9,
+				2D733D62062893E7006265D9,
+				2DDA34020665817D00CDD299,
+				2DDA34030665817D00CDD299,
+				2D944866062911CD00DD9879,
+				2D94486C0629124700DD9879,
+				2D11C9A90667003F00724063,
+				2D11C9AA0667003F00724063,
+			);
+			isa = PBXGroup;
+			name = "Other Sources";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA = {
+			children = (
+				2D113E090672BF2100317017,
+				2D16A8E106324136005DF364,
+				2D7B4F6C063B513200579B93,
+				089C165CFE840E0CC02AAC07,
+				B2F367C504C7ADC700A80002,
+				2D7B4F6A063B507400579B93,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA = {
+			children = (
+				1058C7A0FEA54F0111CA2CBB,
+				1058C7A2FEA54F0111CA2CBB,
+			);
+			isa = PBXGroup;
+			name = Frameworks;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97324FDCFA39411CA2CEA = {
+			fallbackIsa = PBXFileReference;
+			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
+			name = AppKit.framework;
+			path = /System/Library/Frameworks/AppKit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		29B97325FDCFA39411CA2CEA = {
+			fallbackIsa = PBXFileReference;
+			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
+			name = Foundation.framework;
+			path = /System/Library/Frameworks/Foundation.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		29B97326FDCFA39411CA2CEA = {
+			buildPhases = (
+				2D9BDF110679649300F84C4D,
+				29B97327FDCFA39411CA2CEA,
+				29B97328FDCFA39411CA2CEA,
+				29B9732BFDCFA39411CA2CEA,
+				29B9732DFDCFA39411CA2CEA,
+				2D02685F0627C1C100A8E7DB,
+				2D26484006795BCC0075A98A,
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" .";
+				HEADER_SEARCH_PATHS = "./SDL.framework/Headers ../emucore ../emucore/m6502/src/bspf/src ../emucore/m6502/src ../ui/sound ../common .";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = .;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "-DMAC_OSX  -DJOYSTICK_SUPPORT -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST -DDEVELOPER_SUPPORT -DHAVE_GETTIMEOFDAY -DSNAPSHOT_SUPPORT -DBSPF_MAC_OSX";
+				OTHER_LDFLAGS = "-framework SDL -lz -lpng";
+				PRODUCT_NAME = StellaOSX;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+			);
+			isa = PBXApplicationTarget;
+			name = StellaOSX;
+			productInstallPath = "$(HOME)/Applications";
+			productName = "«PROJECTNAME»";
+			productReference = 17587328FF379C6511CA2CBB;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>bin</string>
+				<string>BIN</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Atari 2600 Cartridge File</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>Cart</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>StellaOSX</string>
+	<key>CFBundleGetInfoString</key>
+	<string>1.4</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>docs</string>
+	<key>CFBundleHelpBookName</key>
+	<string>docs</string>
+	<key>CFBundleIconFile</key>
+	<string>Stella</string>
+	<key>CFBundleIdentifier</key>
+	<string>StellaOSX</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>StLa</string>
+	<key>CFBundleVersion</key>
+	<string>1.4</string>
+	<key>NSMainNibFile</key>
+	<string>SDLMain.nib</string>
+	<key>NSPrincipalClass</key>
+	<string>SDLApplication</string>
+	<key>«PROJECTNAMEASXML»</key>
+	<string>SDL Cocoa App</string>
+</dict>
+</plist>
+";
+		};
+		29B97327FDCFA39411CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+				F5A47AA101A0483001D3D55B,
+				2DE2DF470627AE07006BEC99,
+				2DE2DF490627AE07006BEC99,
+				2DE2DF4B0627AE07006BEC99,
+				2DE2DF4D0627AE07006BEC99,
+				2DE2DF4F0627AE07006BEC99,
+				2DE2DF510627AE07006BEC99,
+				2DE2DF530627AE07006BEC99,
+				2DE2DF550627AE07006BEC99,
+				2DE2DF570627AE07006BEC99,
+				2DE2DF590627AE07006BEC99,
+				2DE2DF5B0627AE07006BEC99,
+				2DE2DF5D0627AE07006BEC99,
+				2DE2DF5F0627AE07006BEC99,
+				2DE2DF610627AE07006BEC99,
+				2DE2DF630627AE07006BEC99,
+				2DE2DF650627AE07006BEC99,
+				2DE2DF670627AE07006BEC99,
+				2DE2DF690627AE07006BEC99,
+				2DE2DF6B0627AE07006BEC99,
+				2DE2DF6D0627AE07006BEC99,
+				2DE2DF6F0627AE07006BEC99,
+				2DE2DF710627AE07006BEC99,
+				2DE2DF730627AE07006BEC99,
+				2DE2DF750627AE07006BEC99,
+				2DE2DF770627AE07006BEC99,
+				2DE2DF790627AE07006BEC99,
+				2DE2DF7B0627AE07006BEC99,
+				2DE2DF930627AE34006BEC99,
+				2DE2DF950627AE34006BEC99,
+				2DE2DF970627AE34006BEC99,
+				2DE2DF990627AE34006BEC99,
+				2DE2DF9B0627AE34006BEC99,
+				2DE2DF9D0627AE34006BEC99,
+				2DE2DF9F0627AE34006BEC99,
+				2DE2DFA10627AE34006BEC99,
+				2DE2DFA30627AE34006BEC99,
+				2DE2DFA50627AE34006BEC99,
+				2DE2DFA70627AE34006BEC99,
+				2DE2DFB00627AFF9006BEC99,
+				2DE2DFCB0627B1DF006BEC99,
+				2DE2DFCD0627B1DF006BEC99,
+				2DE2DFCF0627B1DF006BEC99,
+				2DE2DFD10627B1DF006BEC99,
+				2DE2DFD30627B1DF006BEC99,
+				2DE2DFD50627B1DF006BEC99,
+				2DE2DFD70627B1DF006BEC99,
+				2D733D66062893E7006265D9,
+				2D733D68062893E7006265D9,
+				2D733D6A062893E7006265D9,
+				2D733D73062895B2006265D9,
+				2D733D75062895B2006265D9,
+				2D733D79062895F1006265D9,
+				2D94482E0628F97500DD9879,
+				2D94486D0629124700DD9879,
+				2DD879A1063A2131008FF2A2,
+				2D7B4F68063B506700579B93,
+				2D7B4F70063B51DB00579B93,
+				2DDA34050665817D00CDD299,
+				2D11C9AC0667003F00724063,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29B97328FDCFA39411CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+				089C165EFE840E0CC02AAC07,
+				B2F367C604C7ADC700A80002,
+				2D16A8E206324136005DF364,
+				2D7B4F6B063B507400579B93,
+				2D7B4F6D063B513200579B93,
+				2D113E110672BF2100317017,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29B9732BFDCFA39411CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+				F5A47AA301A0483001D3D55B,
+				2DE2DF460627AE07006BEC99,
+				2DE2DF480627AE07006BEC99,
+				2DE2DF4A0627AE07006BEC99,
+				2DE2DF4C0627AE07006BEC99,
+				2DE2DF4E0627AE07006BEC99,
+				2DE2DF500627AE07006BEC99,
+				2DE2DF520627AE07006BEC99,
+				2DE2DF540627AE07006BEC99,
+				2DE2DF560627AE07006BEC99,
+				2DE2DF580627AE07006BEC99,
+				2DE2DF5A0627AE07006BEC99,
+				2DE2DF5C0627AE07006BEC99,
+				2DE2DF5E0627AE07006BEC99,
+				2DE2DF600627AE07006BEC99,
+				2DE2DF620627AE07006BEC99,
+				2DE2DF640627AE07006BEC99,
+				2DE2DF660627AE07006BEC99,
+				2DE2DF680627AE07006BEC99,
+				2DE2DF6A0627AE07006BEC99,
+				2DE2DF6C0627AE07006BEC99,
+				2DE2DF6E0627AE07006BEC99,
+				2DE2DF700627AE07006BEC99,
+				2DE2DF720627AE07006BEC99,
+				2DE2DF740627AE07006BEC99,
+				2DE2DF760627AE07006BEC99,
+				2DE2DF780627AE07006BEC99,
+				2DE2DF7A0627AE07006BEC99,
+				2DE2DF920627AE34006BEC99,
+				2DE2DF940627AE34006BEC99,
+				2DE2DF960627AE34006BEC99,
+				2DE2DF980627AE34006BEC99,
+				2DE2DF9A0627AE34006BEC99,
+				2DE2DF9C0627AE34006BEC99,
+				2DE2DF9E0627AE34006BEC99,
+				2DE2DFA00627AE34006BEC99,
+				2DE2DFA20627AE34006BEC99,
+				2DE2DFA40627AE34006BEC99,
+				2DE2DFA60627AE34006BEC99,
+				2DE2DFAF0627AFF9006BEC99,
+				2DE2DFCA0627B1DF006BEC99,
+				2DE2DFCC0627B1DF006BEC99,
+				2DE2DFCE0627B1DF006BEC99,
+				2DE2DFD00627B1DF006BEC99,
+				2DE2DFD20627B1DF006BEC99,
+				2DE2DFD40627B1DF006BEC99,
+				2DE2DFD60627B1DF006BEC99,
+				2D733D65062893E7006265D9,
+				2D733D67062893E7006265D9,
+				2D733D69062893E7006265D9,
+				2D733D72062895B2006265D9,
+				2D733D74062895B2006265D9,
+				2D94482F0628F97500DD9879,
+				2D944849062904E800DD9879,
+				2D944867062911CD00DD9879,
+				2D07AD490630E634004BFF22,
+				2DD879A2063A2131008FF2A2,
+				2D7B4F69063B506700579B93,
+				2D7B4F71063B51DB00579B93,
+				2DDA34040665817D00CDD299,
+				2D11C9AB0667003F00724063,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29B9732DFDCFA39411CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+				1058C7A3FEA54F0111CA2CBB,
+				2DEB3D4D0629BD24007EBBD3,
+				2D4764C906683C6000F63D87,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+//290
+//291
+//292
+//293
+//294
+//2D0
+//2D1
+//2D2
+//2D3
+//2D4
+		2D02685F0627C1C100A8E7DB = {
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2D113DFA0672BE0800317017,
+			);
+			isa = PBXCopyFilesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2D07AD480630E634004BFF22 = {
+			fileEncoding = 30;
+			indentWidth = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = mainSDL.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+			tabWidth = 4;
+			usesTabs = 0;
+		};
+		2D07AD490630E634004BFF22 = {
+			fileRef = 2D07AD480630E634004BFF22;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D113DFA0672BE0800317017 = {
+			fileRef = 2D4764C806683C5F00F63D87;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D113E090672BF2100317017 = {
+			explicitFileType = folder;
+			isa = PBXFileReference;
+			path = ../../docs;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2D113E110672BF2100317017 = {
+			fileRef = 2D113E090672BF2100317017;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D11C9A90667003F00724063 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Snapshot.cxx;
+			path = ../common/Snapshot.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D11C9AA0667003F00724063 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Snapshot.hxx;
+			path = ../common/Snapshot.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D11C9AB0667003F00724063 = {
+			fileRef = 2D11C9A90667003F00724063;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D11C9AC0667003F00724063 = {
+			fileRef = 2D11C9AA0667003F00724063;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D16A8E106324136005DF364 = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
+			path = Stella.icns;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D16A8E206324136005DF364 = {
+			fileRef = 2D16A8E106324136005DF364;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D26484006795BCC0075A98A = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[! -a build/StellaOSX.app/Contents/Resources/docs/index.html ]];\nthen\nmv build/StellaOSX.app/Contents/Resources/docs/stella.html build/StellaOSX.app/Contents/Resources/docs/index.html;\nfi\n";
+		};
+		2D4764C806683C5F00F63D87 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			path = SDL.framework;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D4764C906683C6000F63D87 = {
+			fileRef = 2D4764C806683C5F00F63D87;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D5D062893E7006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FrameBufferGL.cxx;
+			path = ../common/FrameBufferGL.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D5E062893E7006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = FrameBufferGL.hxx;
+			path = ../common/FrameBufferGL.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D5F062893E7006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FrameBufferSDL.cxx;
+			path = ../common/FrameBufferSDL.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D60062893E7006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = FrameBufferSDL.hxx;
+			path = ../common/FrameBufferSDL.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D61062893E7006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FrameBufferSoft.cxx;
+			path = ../common/FrameBufferSoft.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D62062893E7006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = FrameBufferSoft.hxx;
+			path = ../common/FrameBufferSoft.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D65062893E7006265D9 = {
+			fileRef = 2D733D5D062893E7006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D66062893E7006265D9 = {
+			fileRef = 2D733D5E062893E7006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D67062893E7006265D9 = {
+			fileRef = 2D733D5F062893E7006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D68062893E7006265D9 = {
+			fileRef = 2D733D60062893E7006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D69062893E7006265D9 = {
+			fileRef = 2D733D61062893E7006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D6A062893E7006265D9 = {
+			fileRef = 2D733D62062893E7006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D6E062895B2006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = EventHandler.cxx;
+			path = ../emucore/EventHandler.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D6F062895B2006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = EventHandler.hxx;
+			path = ../emucore/EventHandler.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D70062895B2006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FrameBuffer.cxx;
+			path = ../emucore/FrameBuffer.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D71062895B2006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = FrameBuffer.hxx;
+			path = ../emucore/FrameBuffer.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D72062895B2006265D9 = {
+			fileRef = 2D733D6E062895B2006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D73062895B2006265D9 = {
+			fileRef = 2D733D6F062895B2006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D74062895B2006265D9 = {
+			fileRef = 2D733D70062895B2006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D75062895B2006265D9 = {
+			fileRef = 2D733D71062895B2006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D733D77062895F1006265D9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Settings.hxx;
+			path = ../emucore/Settings.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D733D79062895F1006265D9 = {
+			fileRef = 2D733D77062895F1006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D7B4F66063B506700579B93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = AboutBox.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2D7B4F67063B506700579B93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = AboutBox.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2D7B4F68063B506700579B93 = {
+			fileRef = 2D7B4F66063B506700579B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D7B4F69063B506700579B93 = {
+			fileRef = 2D7B4F67063B506700579B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D7B4F6A063B507400579B93 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			path = AboutBox.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2D7B4F6B063B507400579B93 = {
+			fileRef = 2D7B4F6A063B507400579B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D7B4F6C063B513200579B93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text.html;
+			path = Credits.html;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D7B4F6D063B513200579B93 = {
+			fileRef = 2D7B4F6C063B513200579B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D7B4F6E063B51DB00579B93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = AboutBoxTextView.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D7B4F6F063B51DB00579B93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = AboutBoxTextView.m;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D7B4F70063B51DB00579B93 = {
+			fileRef = 2D7B4F6E063B51DB00579B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D7B4F71063B51DB00579B93 = {
+			fileRef = 2D7B4F6F063B51DB00579B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D94482C0628F97500DD9879 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Preferences.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2D94482D0628F97500DD9879 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = Preferences.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2D94482E0628F97500DD9879 = {
+			fileRef = 2D94482C0628F97500DD9879;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D94482F0628F97500DD9879 = {
+			fileRef = 2D94482D0628F97500DD9879;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D944848062904E800DD9879 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Settings.cxx;
+			path = ../emucore/Settings.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D944849062904E800DD9879 = {
+			fileRef = 2D944848062904E800DD9879;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D944866062911CD00DD9879 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = SettingsMACOSX.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D944867062911CD00DD9879 = {
+			fileRef = 2D944866062911CD00DD9879;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D94486C0629124700DD9879 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			path = SettingsMACOSX.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D94486D0629124700DD9879 = {
+			fileRef = 2D94486C0629124700DD9879;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D9BDF110679649300F84C4D = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "m4 ../emucore/m6502/src/M6502Low.m4 ../emucore/m6502/src/M6502.m4 > M6502Low.ins\nm4 ../emucore/m6502/src/M6502Hi.m4 ../emucore/m6502/src/M6502.m4 > M6502Hi.ins\n";
+		};
+		2DD8799F063A2131008FF2A2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Menus.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DD879A0063A2131008FF2A2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = Menus.m;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DD879A1063A2131008FF2A2 = {
+			fileRef = 2DD8799F063A2131008FF2A2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DD879A2063A2131008FF2A2 = {
+			fileRef = 2DD879A0063A2131008FF2A2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DDA34020665817D00CDD299 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SoundSDL.cxx;
+			path = ../common/SoundSDL.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DDA34030665817D00CDD299 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = SoundSDL.hxx;
+			path = ../common/SoundSDL.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DDA34040665817D00CDD299 = {
+			fileRef = 2DDA34020665817D00CDD299;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DDA34050665817D00CDD299 = {
+			fileRef = 2DDA34030665817D00CDD299;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF100627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Booster.cxx;
+			path = ../emucore/Booster.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF110627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Booster.hxx;
+			path = ../emucore/Booster.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF120627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Cart.cxx;
+			path = ../emucore/Cart.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF130627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Cart.hxx;
+			path = ../emucore/Cart.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF140627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Cart2K.cxx;
+			path = ../emucore/Cart2K.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF150627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Cart2K.hxx;
+			path = ../emucore/Cart2K.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF160627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Cart3F.cxx;
+			path = ../emucore/Cart3F.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF170627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Cart3F.hxx;
+			path = ../emucore/Cart3F.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF180627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Cart4K.cxx;
+			path = ../emucore/Cart4K.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF190627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Cart4K.hxx;
+			path = ../emucore/Cart4K.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF1A0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartAR.cxx;
+			path = ../emucore/CartAR.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF1B0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartAR.hxx;
+			path = ../emucore/CartAR.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF1C0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartCV.cxx;
+			path = ../emucore/CartCV.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF1D0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartCV.hxx;
+			path = ../emucore/CartCV.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF1E0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartDPC.cxx;
+			path = ../emucore/CartDPC.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF1F0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartDPC.hxx;
+			path = ../emucore/CartDPC.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF200627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartE0.cxx;
+			path = ../emucore/CartE0.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF210627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartE0.hxx;
+			path = ../emucore/CartE0.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF220627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartE7.cxx;
+			path = ../emucore/CartE7.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF230627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartE7.hxx;
+			path = ../emucore/CartE7.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF240627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartF4.cxx;
+			path = ../emucore/CartF4.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF250627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartF4.hxx;
+			path = ../emucore/CartF4.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF260627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartF4SC.cxx;
+			path = ../emucore/CartF4SC.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF270627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartF4SC.hxx;
+			path = ../emucore/CartF4SC.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF280627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartF6.cxx;
+			path = ../emucore/CartF6.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF290627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartF6.hxx;
+			path = ../emucore/CartF6.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF2A0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartF6SC.cxx;
+			path = ../emucore/CartF6SC.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF2B0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartF6SC.hxx;
+			path = ../emucore/CartF6SC.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF2C0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartF8.cxx;
+			path = ../emucore/CartF8.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF2D0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartF8.hxx;
+			path = ../emucore/CartF8.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF2E0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartF8SC.cxx;
+			path = ../emucore/CartF8SC.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF2F0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartF8SC.hxx;
+			path = ../emucore/CartF8SC.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF300627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartFASC.cxx;
+			path = ../emucore/CartFASC.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF310627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartFASC.hxx;
+			path = ../emucore/CartFASC.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF320627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartFE.cxx;
+			path = ../emucore/CartFE.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF330627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartFE.hxx;
+			path = ../emucore/CartFE.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF340627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartMB.cxx;
+			path = ../emucore/CartMB.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF350627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartMB.hxx;
+			path = ../emucore/CartMB.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF360627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CartMC.cxx;
+			path = ../emucore/CartMC.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF370627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CartMC.hxx;
+			path = ../emucore/CartMC.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF380627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Console.cxx;
+			path = ../emucore/Console.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF390627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Console.hxx;
+			path = ../emucore/Console.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF3A0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Control.cxx;
+			path = ../emucore/Control.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF3B0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Control.hxx;
+			path = ../emucore/Control.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF3C0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Deserializer.cxx;
+			path = ../emucore/Deserializer.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF3D0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Deserializer.hxx;
+			path = ../emucore/Deserializer.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF3E0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Driving.cxx;
+			path = ../emucore/Driving.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF3F0627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Driving.hxx;
+			path = ../emucore/Driving.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF400627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Event.cxx;
+			path = ../emucore/Event.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF410627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Event.hxx;
+			path = ../emucore/Event.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF420627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Joystick.cxx;
+			path = ../emucore/Joystick.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF430627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Joystick.hxx;
+			path = ../emucore/Joystick.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF440627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Keyboard.cxx;
+			path = ../emucore/Keyboard.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF450627AE07006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Keyboard.hxx;
+			path = ../emucore/Keyboard.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF460627AE07006BEC99 = {
+			fileRef = 2DE2DF100627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF470627AE07006BEC99 = {
+			fileRef = 2DE2DF110627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF480627AE07006BEC99 = {
+			fileRef = 2DE2DF120627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF490627AE07006BEC99 = {
+			fileRef = 2DE2DF130627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF4A0627AE07006BEC99 = {
+			fileRef = 2DE2DF140627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF4B0627AE07006BEC99 = {
+			fileRef = 2DE2DF150627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF4C0627AE07006BEC99 = {
+			fileRef = 2DE2DF160627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF4D0627AE07006BEC99 = {
+			fileRef = 2DE2DF170627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF4E0627AE07006BEC99 = {
+			fileRef = 2DE2DF180627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF4F0627AE07006BEC99 = {
+			fileRef = 2DE2DF190627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF500627AE07006BEC99 = {
+			fileRef = 2DE2DF1A0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF510627AE07006BEC99 = {
+			fileRef = 2DE2DF1B0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF520627AE07006BEC99 = {
+			fileRef = 2DE2DF1C0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF530627AE07006BEC99 = {
+			fileRef = 2DE2DF1D0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF540627AE07006BEC99 = {
+			fileRef = 2DE2DF1E0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF550627AE07006BEC99 = {
+			fileRef = 2DE2DF1F0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF560627AE07006BEC99 = {
+			fileRef = 2DE2DF200627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF570627AE07006BEC99 = {
+			fileRef = 2DE2DF210627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF580627AE07006BEC99 = {
+			fileRef = 2DE2DF220627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF590627AE07006BEC99 = {
+			fileRef = 2DE2DF230627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF5A0627AE07006BEC99 = {
+			fileRef = 2DE2DF240627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF5B0627AE07006BEC99 = {
+			fileRef = 2DE2DF250627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF5C0627AE07006BEC99 = {
+			fileRef = 2DE2DF260627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF5D0627AE07006BEC99 = {
+			fileRef = 2DE2DF270627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF5E0627AE07006BEC99 = {
+			fileRef = 2DE2DF280627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF5F0627AE07006BEC99 = {
+			fileRef = 2DE2DF290627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF600627AE07006BEC99 = {
+			fileRef = 2DE2DF2A0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF610627AE07006BEC99 = {
+			fileRef = 2DE2DF2B0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF620627AE07006BEC99 = {
+			fileRef = 2DE2DF2C0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF630627AE07006BEC99 = {
+			fileRef = 2DE2DF2D0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF640627AE07006BEC99 = {
+			fileRef = 2DE2DF2E0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF650627AE07006BEC99 = {
+			fileRef = 2DE2DF2F0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF660627AE07006BEC99 = {
+			fileRef = 2DE2DF300627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF670627AE07006BEC99 = {
+			fileRef = 2DE2DF310627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF680627AE07006BEC99 = {
+			fileRef = 2DE2DF320627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF690627AE07006BEC99 = {
+			fileRef = 2DE2DF330627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF6A0627AE07006BEC99 = {
+			fileRef = 2DE2DF340627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF6B0627AE07006BEC99 = {
+			fileRef = 2DE2DF350627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF6C0627AE07006BEC99 = {
+			fileRef = 2DE2DF360627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF6D0627AE07006BEC99 = {
+			fileRef = 2DE2DF370627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF6E0627AE07006BEC99 = {
+			fileRef = 2DE2DF380627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF6F0627AE07006BEC99 = {
+			fileRef = 2DE2DF390627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF700627AE07006BEC99 = {
+			fileRef = 2DE2DF3A0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF710627AE07006BEC99 = {
+			fileRef = 2DE2DF3B0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF720627AE07006BEC99 = {
+			fileRef = 2DE2DF3C0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF730627AE07006BEC99 = {
+			fileRef = 2DE2DF3D0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF740627AE07006BEC99 = {
+			fileRef = 2DE2DF3E0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF750627AE07006BEC99 = {
+			fileRef = 2DE2DF3F0627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF760627AE07006BEC99 = {
+			fileRef = 2DE2DF400627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF770627AE07006BEC99 = {
+			fileRef = 2DE2DF410627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF780627AE07006BEC99 = {
+			fileRef = 2DE2DF420627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF790627AE07006BEC99 = {
+			fileRef = 2DE2DF430627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF7A0627AE07006BEC99 = {
+			fileRef = 2DE2DF440627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF7B0627AE07006BEC99 = {
+			fileRef = 2DE2DF450627AE07006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF7C0627AE33006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = M6532.cxx;
+			path = ../emucore/M6532.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF7D0627AE33006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = M6532.hxx;
+			path = ../emucore/M6532.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF7E0627AE33006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = MD5.cxx;
+			path = ../emucore/MD5.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF7F0627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = MD5.hxx;
+			path = ../emucore/MD5.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF800627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = MediaSrc.cxx;
+			path = ../emucore/MediaSrc.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF810627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = MediaSrc.hxx;
+			path = ../emucore/MediaSrc.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF820627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Paddles.cxx;
+			path = ../emucore/Paddles.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF830627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Paddles.hxx;
+			path = ../emucore/Paddles.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF840627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Props.cxx;
+			path = ../emucore/Props.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF850627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Props.hxx;
+			path = ../emucore/Props.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF860627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = PropsSet.cxx;
+			path = ../emucore/PropsSet.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF870627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = PropsSet.hxx;
+			path = ../emucore/PropsSet.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF880627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Random.cxx;
+			path = ../emucore/Random.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF890627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Random.hxx;
+			path = ../emucore/Random.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF8A0627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Serializer.cxx;
+			path = ../emucore/Serializer.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF8B0627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Serializer.hxx;
+			path = ../emucore/Serializer.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF8C0627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Sound.cxx;
+			path = ../emucore/Sound.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF8D0627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Sound.hxx;
+			path = ../emucore/Sound.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF8E0627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Switches.cxx;
+			path = ../emucore/Switches.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF8F0627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Switches.hxx;
+			path = ../emucore/Switches.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF900627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TIA.cxx;
+			path = ../emucore/TIA.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF910627AE34006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = TIA.hxx;
+			path = ../emucore/TIA.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DF920627AE34006BEC99 = {
+			fileRef = 2DE2DF7C0627AE33006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF930627AE34006BEC99 = {
+			fileRef = 2DE2DF7D0627AE33006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF940627AE34006BEC99 = {
+			fileRef = 2DE2DF7E0627AE33006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF950627AE34006BEC99 = {
+			fileRef = 2DE2DF7F0627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF960627AE34006BEC99 = {
+			fileRef = 2DE2DF800627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF970627AE34006BEC99 = {
+			fileRef = 2DE2DF810627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF980627AE34006BEC99 = {
+			fileRef = 2DE2DF820627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF990627AE34006BEC99 = {
+			fileRef = 2DE2DF830627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF9A0627AE34006BEC99 = {
+			fileRef = 2DE2DF840627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF9B0627AE34006BEC99 = {
+			fileRef = 2DE2DF850627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF9C0627AE34006BEC99 = {
+			fileRef = 2DE2DF860627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF9D0627AE34006BEC99 = {
+			fileRef = 2DE2DF870627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF9E0627AE34006BEC99 = {
+			fileRef = 2DE2DF880627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DF9F0627AE34006BEC99 = {
+			fileRef = 2DE2DF890627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA00627AE34006BEC99 = {
+			fileRef = 2DE2DF8A0627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA10627AE34006BEC99 = {
+			fileRef = 2DE2DF8B0627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA20627AE34006BEC99 = {
+			fileRef = 2DE2DF8C0627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA30627AE34006BEC99 = {
+			fileRef = 2DE2DF8D0627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA40627AE34006BEC99 = {
+			fileRef = 2DE2DF8E0627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA50627AE34006BEC99 = {
+			fileRef = 2DE2DF8F0627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA60627AE34006BEC99 = {
+			fileRef = 2DE2DF900627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFA70627AE34006BEC99 = {
+			fileRef = 2DE2DF910627AE34006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFAD0627AFF9006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = TIASound.c;
+			path = ../emucore/TIASound.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFAE0627AFF9006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TIASound.h;
+			path = ../emucore/TIASound.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFAF0627AFF9006BEC99 = {
+			fileRef = 2DE2DFAD0627AFF9006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFB00627AFF9006BEC99 = {
+			fileRef = 2DE2DFAE0627AFF9006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFBC0627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = D6502.cxx;
+			path = ../emucore/m6502/src/D6502.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFBD0627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = D6502.hxx;
+			path = ../emucore/m6502/src/D6502.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFBE0627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Device.cxx;
+			path = ../emucore/m6502/src/Device.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFBF0627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Device.hxx;
+			path = ../emucore/m6502/src/Device.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC00627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = M6502.cxx;
+			path = ../emucore/m6502/src/M6502.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC10627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = M6502.hxx;
+			path = ../emucore/m6502/src/M6502.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC20627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = M6502Hi.cxx;
+			path = ../emucore/m6502/src/M6502Hi.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC30627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = M6502Hi.hxx;
+			path = ../emucore/m6502/src/M6502Hi.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC40627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = M6502Low.cxx;
+			path = ../emucore/m6502/src/M6502Low.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC50627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = M6502Low.hxx;
+			path = ../emucore/m6502/src/M6502Low.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC60627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = NullDev.cxx;
+			path = ../emucore/m6502/src/NullDev.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC70627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = NullDev.hxx;
+			path = ../emucore/m6502/src/NullDev.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC80627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = System.cxx;
+			path = ../emucore/m6502/src/System.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFC90627B1DF006BEC99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = System.hxx;
+			path = ../emucore/m6502/src/System.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE2DFCA0627B1DF006BEC99 = {
+			fileRef = 2DE2DFBC0627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFCB0627B1DF006BEC99 = {
+			fileRef = 2DE2DFBD0627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFCC0627B1DF006BEC99 = {
+			fileRef = 2DE2DFBE0627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFCD0627B1DF006BEC99 = {
+			fileRef = 2DE2DFBF0627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFCE0627B1DF006BEC99 = {
+			fileRef = 2DE2DFC00627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFCF0627B1DF006BEC99 = {
+			fileRef = 2DE2DFC10627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD00627B1DF006BEC99 = {
+			fileRef = 2DE2DFC20627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD10627B1DF006BEC99 = {
+			fileRef = 2DE2DFC30627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD20627B1DF006BEC99 = {
+			fileRef = 2DE2DFC40627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD30627B1DF006BEC99 = {
+			fileRef = 2DE2DFC50627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD40627B1DF006BEC99 = {
+			fileRef = 2DE2DFC60627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD50627B1DF006BEC99 = {
+			fileRef = 2DE2DFC70627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD60627B1DF006BEC99 = {
+			fileRef = 2DE2DFC80627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE2DFD70627B1DF006BEC99 = {
+			fileRef = 2DE2DFC90627B1DF006BEC99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DEB3D4C0629BD24007EBBD3 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = OpenGL.framework;
+			path = /System/Library/Frameworks/OpenGL.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2DEB3D4D0629BD24007EBBD3 = {
+			fileRef = 2DEB3D4C0629BD24007EBBD3;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//2D0
+//2D1
+//2D2
+//2D3
+//2D4
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+		4A9504CCFFE6A4B311CA0CBA = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+				ZERO_LINK = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		4A9504CDFFE6A4B311CA0CBA = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+//B20
+//B21
+//B22
+//B23
+//B24
+		B2F367C504C7ADC700A80002 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			path = SDLMain.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		B2F367C604C7ADC700A80002 = {
+			fileRef = B2F367C504C7ADC700A80002;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//B20
+//B21
+//B22
+//B23
+//B24
+//F50
+//F51
+//F52
+//F53
+//F54
+		F5A47A9D01A0482F01D3D55B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = SDLMain.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		F5A47A9E01A0483001D3D55B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = SDLMain.m;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		F5A47AA101A0483001D3D55B = {
+			fileRef = F5A47A9D01A0482F01D3D55B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5A47AA301A0483001D3D55B = {
+			fileRef = F5A47A9E01A0483001D3D55B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA;
+}
