@@ -43,6 +43,9 @@
   * For the OSX port; fixed preferences bug where Preferences changed before
     a game was opened were not being saved.
 
+  * For the OSX port; fixed an issue which would prevent the program from
+    working with OSX 10.1.
+
 1.3 to 1.4: (July 17, 2004)
 
   * Codebase ported to SDL. The DOS and X11 ports have been discontinued.
