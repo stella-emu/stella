@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ConfigPage.cxx,v 1.5 2004-07-15 03:03:27 stephena Exp $
+// $Id: ConfigPage.cxx,v 1.6 2004-09-14 19:10:29 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -74,7 +74,7 @@ BOOL CConfigPage::OnInitDialog( HWND hwnd )
   }
   SendMessage( hwndCtrl, CB_SETCURSEL, myGlobalData.settings().getInt("paddle"), 0 );
 
-  // Get video
+  // Get video renderer
   int videomode = 0;
   hwndCtrl = GetDlgItem( hwnd, IDC_VIDEO );
   SendMessage( hwndCtrl, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)"Software" );
@@ -84,6 +84,17 @@ BOOL CConfigPage::OnInitDialog( HWND hwnd )
   else if(myGlobalData.settings().getString("video") == "gl")
     videomode = 1;
   SendMessage( hwndCtrl, CB_SETCURSEL, videomode, 0 );
+
+  // Get video driver
+  int videodriver = 0;
+  hwndCtrl = GetDlgItem( hwnd, IDC_VIDEO_DRIVER );
+  SendMessage( hwndCtrl, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)"WinDIB" );
+  SendMessage( hwndCtrl, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)"DirectX" );
+  if(myGlobalData.settings().getString("video_driver") == "windib")
+    videodriver = 0;
+  else if(myGlobalData.settings().getString("video_driver") == "directx")
+    videodriver = 1;
+  SendMessage( hwndCtrl, CB_SETCURSEL, videodriver, 0 );
 
   // Get gl_aspect
   hwndCtrl = GetDlgItem( hwnd, IDC_GL_ASPECT );
@@ -179,7 +190,7 @@ LONG CConfigPage::OnApply( LPPSHNOTIFY lppsn )
   myGlobalData.settings().setInt( "paddle",
     SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 ) );
 
-  // Set video
+  // Set video renderer
   hwndCtrl = GetDlgItem( m_hwnd, IDC_VIDEO );
   ASSERT( hwndCtrl );
   i = ::SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 );
@@ -190,6 +201,18 @@ LONG CConfigPage::OnApply( LPPSHNOTIFY lppsn )
   else
     str = "soft";
   myGlobalData.settings().setString( "video", str );
+
+  // Set video driver
+  hwndCtrl = GetDlgItem( m_hwnd, IDC_VIDEO_DRIVER );
+  ASSERT( hwndCtrl );
+  i = ::SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 );
+  if( i == 0 )
+    str = "windib";
+  else if( i == 1 )
+    str = "directx";
+  else
+    str = "windib";
+  myGlobalData.settings().setString( "video_driver", str );
 
   // Set gl_aspect
   hwndCtrl = GetDlgItem( m_hwnd, IDC_GL_ASPECT );

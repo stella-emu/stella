@@ -59,8 +59,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,0,0
- PRODUCTVERSION 1,4,0,0
+ FILEVERSION 1,4,2,0
+ PRODUCTVERSION 1,4,2,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -78,14 +78,14 @@ BEGIN
             VALUE "Comments", "This version of StellaX is released under the GPL."
             VALUE "CompanyName", "Stephen Anthony (sa666_666@hotmail.com)"
             VALUE "FileDescription", "StellaX"
-            VALUE "FileVersion", "1, 4, 0, 0"
+            VALUE "FileVersion", "1, 4, 2, 0"
             VALUE "InternalName", "StellaX"
             VALUE "LegalCopyright", "Copyright (C) 2000 Jeff Miller, Copyright (C) 2004 Stephen Anthony"
             VALUE "LegalTrademarks", "n/a"
             VALUE "OriginalFilename", "StellaX.exe"
             VALUE "PrivateBuild", "n/a"
             VALUE "ProductName", "StellaX"
-            VALUE "ProductVersion", "1, 4, 0, 0"
+            VALUE "ProductVersion", "1, 4, 2, 0"
             VALUE "SpecialBuild", "n/a"
         END
     END
@@ -125,7 +125,7 @@ BEGIN
     RTEXT           "<status>",IDC_ROMCOUNT,322,45,80,8,SS_NOPREFIX
     CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,39,411,1
     CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,218,411,1
-    CONTROL         "StellaX v1.4.1",IDC_TITLE,"Button",BS_OWNERDRAW | 
+    CONTROL         "StellaX v1.4.2",IDC_TITLE,"Button",BS_OWNERDRAW | 
                     BS_CENTER | BS_TOP | WS_DISABLED | WS_TABSTOP,7,7,145,22
     CONTROL         "Static",IDC_ROMPATH,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,57,45,254,8
@@ -158,44 +158,47 @@ BEGIN
     CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,37,284,1
 END
 
-IDD_CONFIG_PAGE DIALOGEX 0, 0, 269, 158
+IDD_CONFIG_PAGE DIALOGEX 0, 0, 267, 174
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Options"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "File Locations",-1,7,7,254,39
-    LTEXT           "ROM Directory:",-1,14,25,55,8
+    GROUPBOX        "File Locations",IDC_STATIC,7,7,254,39
+    LTEXT           "ROM Directory:",IDC_STATIC,14,25,55,8
     EDITTEXT        IDC_ROMPATH,67,23,171,13,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_BROWSE,241,23,13,12
-    GROUPBOX        "Snapshot Settings",-1,7,49,148,43
-    LTEXT           "Save Snapshot as:",-1,14,61,67,10
+    GROUPBOX        "Snapshot Settings",IDC_STATIC,7,49,148,43
+    LTEXT           "Save Snapshot as:",IDC_STATIC,14,61,67,10
     COMBOBOX        IDC_SNAPSHOT_TYPE,86,60,60,37,CBS_DROPDOWNLIST | 
                     CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Generate multiple snapshots",IDC_SNAPSHOT_MULTIPLE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,75,109,11
-    GROUPBOX        "Paddle Emulation",-1,161,49,100,43
-    LTEXT           "Mouse is paddle:",-1,167,61,65,8
+    GROUPBOX        "Paddle Emulation",IDC_STATIC,161,49,100,43
+    LTEXT           "Mouse is paddle:",IDC_STATIC,167,61,65,8
     COMBOBOX        IDC_PADDLE,225,60,30,82,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    GROUPBOX        "Video Settings",-1,7,95,118,57
-    LTEXT           "Driver:",-1,14,108,28,10
+    GROUPBOX        "Video Settings",IDC_STATIC,7,97,118,71
+    LTEXT           "Renderer:",IDC_STATIC,14,108,43,10
     COMBOBOX        IDC_VIDEO,62,106,52,35,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Aspect Ratio:",-1,14,122,50,10
-    EDITTEXT        IDC_GL_ASPECT,62,120,51,12,ES_AUTOHSCROLL
+    LTEXT           "Aspect Ratio:",IDC_STATIC,14,136,50,10
+    EDITTEXT        IDC_GL_ASPECT,62,134,51,12,ES_AUTOHSCROLL
     CONTROL         "Maximize FS OpenGL",IDC_GL_FSMAX,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,25,135,86,12
-    GROUPBOX        "Sound Settings",-1,132,95,96,57
-    LTEXT           "Volume:",-1,140,108,28,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,21,152,86,12
+    GROUPBOX        "Sound Settings",IDC_STATIC,132,97,96,57
+    LTEXT           "Volume:",IDC_STATIC,140,108,28,8
     EDITTEXT        IDC_SOUND_VOLUME,176,106,29,12,ES_AUTOHSCROLL
     CONTROL         "",IDC_SOUND_VOLUME_SPIN,"msctls_updown32",
                     UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | 
                     UDS_ARROWKEYS,205,106,11,12
-    LTEXT           "Frag Size:",-1,140,122,36,8
+    LTEXT           "Frag Size:",IDC_STATIC,140,122,36,8
     COMBOBOX        IDC_SOUND_FRAGSIZE,176,120,41,51,CBS_DROPDOWNLIST | 
                     CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Disable &Sound",IDC_SOUND_ENABLE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,147,135,62,10
+    LTEXT           "Driver:",IDC_STATIC,15,122,46,9
+    COMBOBOX        IDC_VIDEO_DRIVER,62,120,52,31,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 
@@ -226,9 +229,9 @@ BEGIN
     IDD_CONFIG_PAGE, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 262
+        RIGHTMARGIN, 260
         TOPMARGIN, 7
-        BOTTOMMARGIN, 152
+        BOTTOMMARGIN, 168
     END
 END
 #endif    // APSTUDIO_INVOKED

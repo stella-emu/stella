@@ -61,7 +61,10 @@
 #define IDC_SOUND_VOLUME_SPIN           1044
 #define IDC_SOUND_FRAGSIZE              1045
 #define IDC_TAB1                        1046
+#define IDC_VIDEO_DRIVER                1047
+#define IDC_COMBO1                      1047
 #define ID_FILE_EXIT                    32771
+#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
@@ -69,7 +72,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        296
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1047
+#define _APS_NEXT_CONTROL_VALUE         1048
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

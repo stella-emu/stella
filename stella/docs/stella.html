@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 1.4.1</b></h4></center>
+	<center><h4><b>Release 1.4.2</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -33,7 +33,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - August 2004</b></center>
+	<center><b>February 1999 - September 2004</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -319,13 +319,13 @@
 			the Stella source code; GNU C++ compiler version 3.2.x or later is highly
 			recommended</li>
 		<li>Pentium class machine required (Stella <b>may</b> compile on other
-			architectures, but it hasn't been tested)</li>
+			architectures, but it hasn't been extensively tested)</li>
 	</ul>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
 
-	<p>The MacLinux version of Stella is designed to work on a Power Macintosh with
+	<p>The Mac version of Stella is designed to work on a Power Macintosh with
 	the following:</p>
 	<ul>
   		<li>Mac OSX 10.1 or Above </li>
@@ -344,6 +344,8 @@
 			executable</li>
 		<li>Pentium class machine required; OpenGL accelerated video card highly
 			recommended</li>
+		<li>SDL version 1.2.8 or greater (or included SDL.dll) required for
+			Stelladaptor support</li>
 	</ul>
 
 	<br><br>
@@ -533,7 +535,13 @@
 
 		<tr>
 			<td><pre>-video &lt;soft|gl&gt;</pre></td>
-			<td>Use SDL software or OpenGL mode.</td>
+			<td>Use SDL software or OpenGL rendering mode.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-video_driver &lt;x11|windib|directx&gt;</pre></td>
+			<td>Use the specified video driver.  Windows works best with 'windib',
+				'x11' is used for Linux/Unix.</td>
 		</tr>
 
 		<tr>
@@ -1497,6 +1505,7 @@
 
 	<p>To remap an event:
 	<ol>
+		<li>Start playing a game (ie, start the emulation).</li>
 		<li>Enter menu mode be pressing <b>Tab</b>.</li>
 		<li>Press Cursor Up/Down to move up/down one line at a time,
 			or PageUp/PageDown to move up/down 5 lines at a time.  The arrows on
@@ -1531,7 +1540,7 @@
 
 	<p>
 	<h2><b>Macintosh</b></h2>
-	<p>The Mac version of Stella looks for the property file&nbsp; in the
+	<p>The Mac version of Stella looks for the property file in the
 	directory containing the application.</p>
 
 	<p>

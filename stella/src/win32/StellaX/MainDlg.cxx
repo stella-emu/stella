@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.9 2004-08-06 01:53:05 stephena Exp $
+// $Id: MainDlg.cxx,v 1.10 2004-09-14 19:10:29 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -616,12 +616,9 @@ bool MainDlg::LoadRomListFromDisk()
   // We don't create the propsSet until we need it, since it's
   // a time-consuming process
   PropertiesSet propsSet;
-  string theUserProFile   = myGlobalData.settings().userPropertiesFilename();
-  string theSystemProFile = myGlobalData.settings().systemPropertiesFilename();
-  if(theUserProFile != "")
-    propsSet.load(theUserProFile, true);
-  else if(theSystemProFile != "")
-    propsSet.load(theSystemProFile, true);
+  string theProperties = myGlobalData.settings().propertiesInputFilename();
+  if(theProperties != "")
+    propsSet.load(theProperties, true);
   else
     propsSet.load("", false);
 
