@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.26 2002-08-15 00:29:40 stephena Exp $
+// $Id: mainSDL.cxx,v 1.27 2002-08-17 16:24:24 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -84,7 +84,7 @@ static void usage();
 
 static void loadState();
 static void saveState();
-static void changeState();
+static void changeState(int direction);
 
 // Globals for the SDL stuff
 static SDL_Surface* screen = (SDL_Surface*) NULL;
@@ -655,12 +655,22 @@ void saveState()
 /**
   Changes the current state slot.
 */
-void changeState()
+void changeState(int direction)
 {
-  if(currentState == 9)
-    currentState = 0;
-  else
-    ++currentState;
+  if(direction == 1)   // increase current state slot
+  {
+    if(currentState == 9)
+      currentState = 0;
+    else
+      ++currentState;
+  }
+  else   // decrease current state slot
+  {
+    if(currentState == 0)
+      currentState = 9;
+    else
+      --currentState;
+  }
 
   // Print appropriate message
   char buf[40];
@@ -910,7 +920,10 @@ void handleEvents()
       }
       else if(key == SDLK_F10)
       {
-        changeState();
+        if(mod & KMOD_SHIFT)
+          changeState(0);
+        else
+          changeState(1);
       }
       else if(key == SDLK_F11)
       {
