@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.23 2002-05-13 19:29:44 stephena Exp $
+// $Id: mainSDL.cxx,v 1.24 2002-05-14 18:29:44 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -24,6 +24,8 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <SDL.h>
 #include <SDL_syswm.h>
@@ -60,6 +62,7 @@ static bool createScreen(int width, int height);
 static void recalculate8BitPalette();
 static void setupPalette();
 static void cleanup();
+static bool setupDirs();
 
 static void updateDisplay(MediaSource& mediaSource);
 static void handleEvents();
@@ -95,8 +98,11 @@ static bool x11Available = false;
 static SDL_SysWMinfo info;
 static int sdlflags;
 static RectList* rectList = (RectList*) NULL;
-static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
-static SDL_Joystick* theRightJoystick = (SDL_Joystick*) NULL;
+
+#ifdef HAVE_JOYSTICK
+  static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
+  static SDL_Joystick* theRightJoystick = (SDL_Joystick*) NULL;
+#endif
 
 #ifdef HAVE_PNG
   static Snapshot* snapshot;
@@ -313,6 +319,7 @@ bool setupDisplay()
 */
 bool setupJoystick()
 {
+#ifdef HAVE_JOYSTICK
   if(SDL_NumJoysticks() <= 0)
   {
     cout << "No joysticks present, use the keyboard.\n";
@@ -333,6 +340,9 @@ bool setupJoystick()
     cout << "Right joystick not present, use keyboard instead.\n";
 
   return true;
+#else
+  return true;
+#endif
 }
 
 
@@ -366,11 +376,6 @@ void recalculate8BitPalette()
   if(bpp != 8)
     return;
 
-  // Make the palette be half-bright if pause is selected
-  uInt8 shift = 0;
-  if(thePauseIndicator)
-    shift = 1;
-
   // Map 2600 colors to the current screen
   const uInt32* gamePalette = theConsole->mediaSource().palette();
   SDL_Color colors[256];
@@ -378,9 +383,9 @@ void recalculate8BitPalette()
   {
     Uint8 r, g, b;
 
-    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16) >> shift;
-    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8) >> shift;
-    b = (Uint8) (gamePalette[i] & 0x000000ff) >> shift;
+    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16);
+    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8);
+    b = (Uint8) (gamePalette[i] & 0x000000ff);
 
     colors[i].r = r;
     colors[i].g = g;
@@ -415,19 +420,19 @@ void setupPalette()
     return;
   }
 
-  // Make the palette be half-bright if pause is selected
-  uInt8 shift = 0;
+  // Make the palette be 75% as bright if pause is selected
+  float shade = 1.0;
   if(thePauseIndicator)
-    shift = 1;
+    shade = 0.75;
 
   const uInt32* gamePalette = theConsole->mediaSource().palette();
   for(uInt32 i = 0; i < 256; ++i)
   {
     Uint8 r, g, b;
 
-    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16) >> shift;
-    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8) >> shift;
-    b = (Uint8) (gamePalette[i] & 0x000000ff) >> shift;
+    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
+    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
+    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
 
     switch(bpp)
     {
@@ -621,11 +626,13 @@ void grabMouse(bool grab)
 */
 void saveState()
 {
-  char buf[40];
+  char buf[1024];
+  string path = getenv("HOME");
+  path += "/.stella/state";
 
   // First get the name for the current state file
   string md5 = theConsole->properties().get("Cartridge.MD5");
-  snprintf(buf, 39, "%s.st%d", md5.c_str(), currentState);
+  snprintf(buf, 1023, "%s/%s.st%d", path.c_str(), md5.c_str(), currentState);
   string fileName = buf;
 
   // Do a state save using the System
@@ -633,9 +640,11 @@ void saveState()
 
   // Print appropriate message
   if(result == 1)
-    snprintf(buf, 39, "State %d saved", currentState);
-  else
-    snprintf(buf, 39, "Error saving state %d  %d", currentState, result);
+    snprintf(buf, 1023, "State %d saved", currentState);
+  else if(result == 2)
+    snprintf(buf, 1023, "Error saving state %d", currentState);
+  else if(result == 3)
+    snprintf(buf, 1023, "Invalid state %d file", currentState);
 
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
@@ -667,11 +676,13 @@ void changeState()
 */
 void loadState()
 {
-  char buf[40];
+  char buf[1024];
+  string path = getenv("HOME");
+  path += "/.stella/state";
 
   // First get the name for the current state file
   string md5 = theConsole->properties().get("Cartridge.MD5");
-  snprintf(buf, 39, "%s.st%d", md5.c_str(), currentState);
+  snprintf(buf, 1023, "%s/%s.st%d", path.c_str(), md5.c_str(), currentState);
   string fileName = buf;
 
   // Do a state load using the System
@@ -679,9 +690,11 @@ void loadState()
 
   // Print appropriate message
   if(result == 1)
-    snprintf(buf, 39, "State %d loaded", currentState);
-  else
-    snprintf(buf, 39, "Error loading state %d  %d", currentState, result);
+    snprintf(buf, 1023, "State %d loaded", currentState);
+  else if(result == 2)
+    snprintf(buf, 1023, "Error loading state %d", currentState);
+  else if(result == 3)
+    snprintf(buf, 1023, "Invalid state %d file", currentState);
 
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
@@ -1032,6 +1045,7 @@ void handleEvents()
       doQuit();
     }
 
+#ifdef HAVE_JOYSTICK
     // Read joystick events and modify event states
     if(theLeftJoystick)
     {
@@ -1160,6 +1174,7 @@ void handleEvents()
         }
       }
     }
+#endif
   }
 }
 
@@ -1301,8 +1316,12 @@ void usage()
     "  -hidecursor             Hides the mouse cursor in the game window",
     "  -center                 Centers the game window onscreen",
     "  -volume <number>        Set the volume (0 - 100)",
+#ifdef HAVE_JOYSTICK
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
+#else
+    "  -paddle <0|1|2|3>       Indicates which paddle the mouse should emulate",
+#endif
     "  -showinfo               Shows some game info on exit",
 #ifdef HAVE_PNG
     "  -ssdir <path>           The directory to save snapshot files to",
@@ -1323,16 +1342,16 @@ void usage()
 
 
 /**
-  Setup the properties set by first checking for a user file ".stella.pro",
-  then a system-wide file "/etc/stella.pro".  Return false if neither file
-  is found, else return true.
+  Setup the properties set by first checking for a user file
+  "$HOME/.stella/stella.pro", then a system-wide file "/etc/stella.pro".
+  Return false if neither file is found, else return true.
 
   @param set The properties set to setup
 */
 bool setupProperties(PropertiesSet& set)
 {
   string homePropertiesFile = getenv("HOME");
-  homePropertiesFile += "/.stella.pro";
+  homePropertiesFile += "/.stella/stella.pro";
   string systemPropertiesFile = "/etc/stella.pro";
 
   // Check to see if the user has specified an alternate .pro file.
@@ -1372,13 +1391,13 @@ bool setupProperties(PropertiesSet& set)
 
 /**
   Should be called to determine if an rc file exists.  First checks if there
-  is a user specified file ".stellarc" and then if there is a system-wide
-  file "/etc/stellarc".
+  is a user specified file "$HOME/.stella/stellarc" and then if there is a
+  system-wide file "/etc/stellarc".
 */
 void handleRCFile()
 {
   string homeRCFile = getenv("HOME");
-  homeRCFile += "/.stellarc";
+  homeRCFile += "/.stella/stellarc";
 
   if(access(homeRCFile.c_str(), R_OK) == 0 )
   {
@@ -1414,20 +1433,77 @@ void cleanup()
 
   if(SDL_WasInit(SDL_INIT_EVERYTHING))
   {
+#ifdef HAVE_JOYSTICK
     if(SDL_JoystickOpened(0))
       SDL_JoystickClose(theLeftJoystick);
     if(SDL_JoystickOpened(1))
       SDL_JoystickClose(theRightJoystick);
+#endif
 
     SDL_Quit();
   }
 }
 
 
+/**
+  Returns number of ticks in microseconds
+*/
+#ifdef HAVE_GETTIMEOFDAY
+inline uInt32 getTicks()
+{
+  timeval now;
+  gettimeofday(&now, 0);
+
+  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
+}
+#else
+inline uInt32 getTicks()
+{
+  return (uInt32) SDL_GetTicks() * 1000;
+}
+#endif
+
+
+/**
+  Creates some directories under $HOME.
+  Required directories are $HOME/.stella and $HOME/.stella/state
+*/
+bool setupDirs()
+{
+  string path;
+
+  path = getenv("HOME");
+  path += "/.stella";
+
+  if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
+  {
+    if(mkdir(path.c_str(), 0777) != 0)
+      return false;
+  }
+
+  path += "/state";
+  if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
+  {
+    if(mkdir(path.c_str(), 0777) != 0)
+      return false;
+  }
+
+  return true;
+}
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
-  // First create some settings for the emulator
+  // First set up the directories where Stella will find RC and state files
+  if(!setupDirs())
+  {
+    cerr << "ERROR: Couldn't set up config directories.\n";
+    cleanup();
+    return 0;
+  }
+
+  // Create some settings for the emulator
   settings = new Settings();
   if(!settings)
   {
@@ -1537,8 +1613,6 @@ int main(int argc, char* argv[])
     currentTime = getTicks() - startTime;
     frameTime += currentTime;
     ++numberOfFrames;
-
-//    cerr << "FPS = " << (double) numberOfFrames / ((double) frameTime / 1000000.0) << endl;
   }
 #else
   // Set up timing stuff
@@ -1594,7 +1668,6 @@ int main(int argc, char* argv[])
     cout << endl;
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
-    cout << theConsole->mediaSource().scanlines() << " scanlines in last frame\n";
     cout << endl;
     cout << "Cartridge Name: " << theConsole->properties().get("Cartridge.Name");
     cout << endl;
@@ -1606,22 +1679,3 @@ int main(int argc, char* argv[])
   cleanup();
   return 0;
 }
-
-
-/**
-  Returns number of ticks in microseconds
-*/
-#ifdef HAVE_GETTIMEOFDAY
-inline uInt32 getTicks()
-{
-  timeval now;
-  gettimeofday(&now, 0);
-
-  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
-}
-#else
-inline uInt32 getTicks()
-{
-  return (uInt32) SDL_GetTicks() * 1000;
-}
-#endif

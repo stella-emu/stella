@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.23 2002-04-18 17:18:48 stephena Exp $
+// $Id: mainX11.cxx,v 1.24 2002-05-14 18:29:45 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -24,6 +24,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <X11/Xos.h>
 #include <X11/Xlib.h>
@@ -45,7 +47,7 @@
   #include "Snapshot.hxx"
 #endif
 
-#ifdef LINUX_JOYSTICK
+#ifdef HAVE_JOYSTICK
   #include <unistd.h>
   #include <fcntl.h>
   #include <linux/joystick.h>
@@ -63,6 +65,7 @@ static bool setupJoystick();
 static bool createCursors();
 static void setupPalette();
 static void cleanup();
+static bool setupDirs();
 
 static void updateDisplay(MediaSource& mediaSource);
 static void handleEvents();
@@ -102,7 +105,7 @@ static Atom wm_delete_window;
   static Snapshot* snapshot;
 #endif
 
-#ifdef LINUX_JOYSTICK
+#ifdef HAVE_JOYSTICK
   // File descriptors for the joystick devices
   static int theLeftJoystickFd;
   static int theRightJoystickFd;
@@ -350,7 +353,7 @@ bool setupDisplay()
 */
 bool setupJoystick()
 {
-#ifdef LINUX_JOYSTICK
+#ifdef HAVE_JOYSTICK
   // Open the joystick devices
   theLeftJoystickFd = open("/dev/js0", O_RDONLY | O_NONBLOCK);
   theRightJoystickFd = open("/dev/js1", O_RDONLY | O_NONBLOCK);
@@ -374,10 +377,10 @@ void setupPalette()
        theVisual, AllocNone);
   }
 
-  // Make the palette be half-bright if pause is selected
-  uInt8 shift = 0;
+  // Make the palette be 75% as bright if pause is selected
+  float shade = 1.0;
   if(thePauseIndicator)
-    shift = 1;
+    shade = 0.75;
 
   // Allocate colors in the default colormap
   const uInt32* palette = theConsole->mediaSource().palette();
@@ -385,9 +388,9 @@ void setupPalette()
   {
     XColor color;
 
-    color.red   = ((palette[t] & 0x00ff0000) >> 8) >> shift;
-    color.green = (palette[t] & 0x0000ff00) >> shift;
-    color.blue  = ((palette[t] & 0x000000ff) << 8) >> shift;
+    color.red   = (short unsigned int) (((palette[t] & 0x00ff0000) >> 8) * shade);
+    color.green = (short unsigned int) ((palette[t] & 0x0000ff00) * shade);
+    color.blue  = (short unsigned int) (((palette[t] & 0x000000ff) << 8) * shade);
     color.flags = DoRed | DoGreen | DoBlue;
 
     if(settings->theUsePrivateColormapFlag)
@@ -691,7 +694,7 @@ void handleEvents()
     }
   }
 
-#ifdef LINUX_JOYSTICK
+#ifdef HAVE_JOYSTICK
   // Read joystick events and modify event states
   if(theLeftJoystickFd >= 0)
   {
@@ -943,23 +946,29 @@ void togglePause()
 */
 void saveState()
 {
-#if 0
-  // Do a state save using the MediaSource
-  // ...
+  char buf[1024];
+  string path = getenv("HOME");
+  path += "/.stella/state";
+
+  // First get the name for the current state file
+  string md5 = theConsole->properties().get("Cartridge.MD5");
+  snprintf(buf, 1023, "%s/%s.st%d", path.c_str(), md5.c_str(), currentState);
+  string fileName = buf;
+
+  // Do a state save using the System
+  int result = theConsole->system().saveState(fileName, md5);
 
   // Print appropriate message
-  char buf[40];
-  if(true) // if the state saved correctly
-    snprintf(buf, 39, "State %d saved", currentState);
-  else
-    snprintf(buf, 39, "Error saving state %d", currentState);
+  if(result == 1)
+    snprintf(buf, 1023, "State %d saved", currentState);
+  else if(result == 2)
+    snprintf(buf, 1023, "Error saving state %d", currentState);
+  else if(result == 3)
+    snprintf(buf, 1023, "Invalid state %d file", currentState);
 
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
-#else
-  cerr << "State saving not yet implemented\n";
-#endif
 }
 
 /**
@@ -972,14 +981,12 @@ void changeState()
   else
     ++currentState;
 
-#if 0
   // Print appropriate message
   char buf[40];
   snprintf(buf, 39, "Changed to state slot %d", currentState);
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
-#endif
 }
 
 /**
@@ -987,23 +994,29 @@ void changeState()
 */
 void loadState()
 {
-#if 0
-  // Do a state load using the MediaSource
-  // ...
+  char buf[1024];
+  string path = getenv("HOME");
+  path += "/.stella/state";
+
+  // First get the name for the current state file
+  string md5 = theConsole->properties().get("Cartridge.MD5");
+  snprintf(buf, 1023, "%s/%s.st%d", path.c_str(), md5.c_str(), currentState);
+  string fileName = buf;
+
+  // Do a state load using the System
+  int result = theConsole->system().loadState(fileName, md5);
 
   // Print appropriate message
-  char buf[40];
-  if(true) // if the state loaded correctly
-    snprintf(buf, 39, "State %d loaded", currentState);
-  else
-    snprintf(buf, 39, "Error loading state %d", currentState);
+  if(result == 1)
+    snprintf(buf, 1023, "State %d loaded", currentState);
+  else if(result == 2)
+    snprintf(buf, 1023, "Error loading state %d", currentState);
+  else if(result == 3)
+    snprintf(buf, 1023, "Invalid state %d file", currentState);
 
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
-#else
-  cerr << "State loading not yet implemented\n";
-#endif
 }
 
 /**
@@ -1198,7 +1211,7 @@ void usage()
     "  -hidecursor             Hides the mouse cursor in the game window",
     "  -center                 Centers the game window onscreen",
     "  -volume <number>        Set the volume (0 - 100)",
-#ifdef LINUX_JOYSTICK
+#ifdef HAVE_JOYSTICK
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
 #else
@@ -1223,16 +1236,16 @@ void usage()
 }
 
 /**
-  Setup the properties set by first checking for a user file ".stella.pro",
-  then a system-wide file "/etc/stella.pro".  Return false if neither file
-  is found, else return true.
+  Setup the properties set by first checking for a user file
+  "$HOME/.stella/stella.pro", then a system-wide file "/etc/stella.pro".
+  Return false if neither file is found, else return true.
 
   @param set The properties set to setup
 */
 bool setupProperties(PropertiesSet& set)
 {
   string homePropertiesFile = getenv("HOME");
-  homePropertiesFile += "/.stella.pro";
+  homePropertiesFile += "/.stella/stella.pro";
   string systemPropertiesFile = "/etc/stella.pro";
 
   // Check to see if the user has specified an alternate .pro file.
@@ -1271,13 +1284,13 @@ bool setupProperties(PropertiesSet& set)
 
 /**
   Should be called to determine if an rc file exists.  First checks if there
-  is a user specified file ".stellarc" and then if there is a system-wide
-  file "/etc/stellarc".
+  is a user specified file "$HOME/.stella/stellarc" and then if there is a
+  system-wide file "/etc/stellarc".
 */
 void handleRCFile()
 {
   string homeRCFile = getenv("HOME");
-  homeRCFile += "/.stellarc";
+  homeRCFile += "/.stella/stellarc";
 
   if(access(homeRCFile.c_str(), R_OK) == 0 )
   {
@@ -1318,7 +1331,7 @@ void cleanup()
      XFreeColormap(theDisplay, thePrivateColormap);
   }
 
-#ifdef LINUX_JOYSTICK
+#ifdef HAVE_JOYSTICK
   // Close the joystick devices
   if(theLeftJoystickFd)
     close(theLeftJoystickFd);
@@ -1327,10 +1340,62 @@ void cleanup()
 #endif
 }
 
+/**
+  Returns number of ticks in microseconds
+*/
+#ifdef HAVE_GETTIMEOFDAY
+inline uInt32 getTicks()
+{
+  timeval now;
+  gettimeofday(&now, 0);
+
+  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
+
+  return ticks;
+}
+#else
+#error We need gettimeofday for the X11 version!!!
+#endif
+
+/**
+  Creates some directories under $HOME.
+  Required directories are $HOME/.stella and $HOME/.stella/state
+*/
+bool setupDirs()
+{
+  string path;
+
+  path = getenv("HOME");
+  path += "/.stella";
+
+  if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
+  {
+    if(mkdir(path.c_str(), 0777) != 0)
+      return false;
+  }
+
+  path += "/state";
+  if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
+  {
+    if(mkdir(path.c_str(), 0777) != 0)
+      return false;
+  }
+
+  return true;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
-  // First create some settings for the emulator
+  // First set up the directories where Stella will find RC and state files
+  if(!setupDirs())
+  {
+    cerr << "ERROR: Couldn't set up config directories.\n";
+    cleanup();
+    return 0;
+  }
+
+  // Create some settings for the emulator
   settings = new Settings();
   if(!settings)
   {
@@ -1440,8 +1505,6 @@ int main(int argc, char* argv[])
     currentTime = getTicks() - startTime;
     frameTime += currentTime;
     ++numberOfFrames;
-
-//    cerr << "FPS = " << (double) numberOfFrames / ((double) frameTime / 1000000.0) << endl;
   }
 #else
   // Set up timing stuff
@@ -1497,7 +1560,6 @@ int main(int argc, char* argv[])
     cout << endl;
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
-    cout << theConsole->mediaSource().scanlines() << " scanlines in last frame\n";
     cout << endl;
     cout << "Cartridge Name: " << theConsole->properties().get("Cartridge.Name");
     cout << endl;
@@ -1509,20 +1571,3 @@ int main(int argc, char* argv[])
   cleanup();
   return 0;
 }
-
-/**
-  Returns number of ticks in microseconds
-*/
-#ifdef HAVE_GETTIMEOFDAY
-inline uInt32 getTicks()
-{
-  timeval now;
-  gettimeofday(&now, 0);
-
-  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
-
-  return ticks;
-}
-#else
-#error "We need gettimeofday for the X11 version"
-#endif

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.16 2002-05-13 19:29:44 stephena Exp $
+## $Id: makefile,v 1.17 2002-05-14 18:29:44 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -47,9 +47,8 @@ OPTIMIZATIONS    =
 ### you want a 6507 trace written to stdout
 # DEBUG = 1
 
-### to include linux joystick driver support in the X11 version
-### (requires you to install the joystick kernel module)
-# LINUX_JOYSTICK = 1
+### to include joystick support in the X11 and SDL versions
+# JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library)
@@ -110,8 +109,9 @@ OPTS.SDL += -DDEBUG=1
 OPTS.DOS += -DDEBUG=1
 endif
 
-ifdef LINUX_JOYSTICK
-OPTS.X11 += -DLINUX_JOYSTICK=1
+ifdef JOYSTICK_SUPPORT
+OPTS.X11 += -DHAVE_JOYSTICK=1
+OPTS.SDL += -DHAVE_JOYSTICK=1
 endif
 
 ifdef SNAPSHOT_SUPPORT

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.4 2002-05-14 15:22:28 stephena Exp $
+// $Id: CartAR.cxx,v 1.5 2002-05-14 18:29:44 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -451,7 +451,7 @@ bool CartridgeAR::save(Serializer& out)
     // All of the 8448 byte loads associated with the game 
     // Note that the size of this array is myNumberOfLoadImages * 8448
     out.putLong(myNumberOfLoadImages * 8448);
-    for(i = 0; i < myNumberOfLoadImages * 8448; ++i)
+    for(i = 0; i < (uInt32) myNumberOfLoadImages * 8448; ++i)
       out.putLong(myLoadImages[i]);
 
     // Indicates how many 8448 loads there are
