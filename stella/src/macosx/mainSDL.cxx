@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.4 2004-07-28 23:54:39 stephena Exp $
+// $Id: mainSDL.cxx,v 1.5 2004-08-02 00:28:48 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -415,6 +415,7 @@ bool handleInitialEvents(void)
         {
           if(key == SDLK_q)         // Command-q quits
 		  {
+            theSettings->saveConfig();
 		    return(false);
 		  }
 		  else if(key == SDLK_o)         // Command-o starts a new game
@@ -425,6 +426,7 @@ bool handleInitialEvents(void)
 	  }
       else if(event.type == SDL_QUIT)
       {
+        theSettings->saveConfig();
 		return(false);
       }
 	}
@@ -1134,7 +1136,6 @@ while(1) {
   }
 
   double lasttime = Atari_time();
-  double frametime = 0.1;	/* measure time between two runs */
 
   enableGameMenus();
   
@@ -1162,9 +1163,6 @@ while(1) {
 	    usleep((int) (delaytime * 1e6));
 	  curtime = Atari_time();
 
-	  /* make average time */
-	  frametime = (frametime * 4.0 + curtime - lastcurtime) * 0.2;
-  //  fps = 1.0 / frametime;
 	  lastcurtime = curtime;
 
 	  lasttime += timePerFrame;
