@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.6 2002-04-22 01:31:22 bwmott Exp $
+// $Id: mainDOS.cxx,v 1.7 2002-04-28 18:06:56 bwmott Exp $
 //============================================================================
 
 #include <go32.h>
@@ -49,6 +49,12 @@ Console* theConsole;
 // Event objects to use
 Event theEvent;
 Event theKeyboardEvent;
+
+// Array of flags for each keyboard key-code
+bool theKeyboardKeyState[128];
+
+// Used to ignore some number of key codes
+uInt32 theNumOfKeyCodesToIgnore;
 
 // An alternate properties file to use
 string theAlternateProFile = "";
@@ -178,10 +184,15 @@ void startup()
   }
 
   // Install keyboard interrupt handler
+  for(uInt32 k = 0; k < 128; ++k)
+  {
+    theKeyboardKeyState[k] = false;
+  }
+  theNumOfKeyCodesToIgnore = 0;
   disable();
   _go32_dpmi_get_protected_mode_interrupt_vector(0x09, &theOldKeyboardHandler);
-  theKeyboardHandler.pm_selector = _my_cs();
-  theKeyboardHandler.pm_offset = (int)keyboardInterruptServiceRoutine;
+  theKeyboardHandler.pm_selector = _go32_my_cs();
+  theKeyboardHandler.pm_offset = (long)(&keyboardInterruptServiceRoutine);
   _go32_dpmi_allocate_iret_wrapper(&theKeyboardHandler);
   _go32_dpmi_set_protected_mode_interrupt_vector(0x09, &theKeyboardHandler);
   enable();
@@ -190,11 +201,7 @@ void startup()
   regs.w.ax = 0x0000;
   int86(MOUSE_BIOS, &regs, &regs);
 
-  if(regs.w.ax == 0x0000)
-  {
-    cerr << "WARNING: Mouse initialization failed..." << endl;
-  }
-  else
+  if(regs.w.ax != 0x0000)
   {
     // Set mouse bounding box to 0,0 to 511,511
     regs.w.ax = 0x0007;
@@ -412,11 +419,139 @@ void updateDisplay(MediaSource& mediaSource)
 }
 
 /**
+  This routine is called by the updateEvents routine to handle updated
+  the events based on the current keyboard state.
+*/
+void updateEventsUsingKeyboardState()
+{
+  struct Switches
+  {
+    uInt16 scanCode;
+    Event::Type eventCode;
+    string message;
+  };
+
+  static Switches list[] = {
+    { SCAN_1,         Event::KeyboardZero1,             "" },
+    { SCAN_2,         Event::KeyboardZero2,             "" },
+    { SCAN_3,         Event::KeyboardZero3,             "" },
+    { SCAN_Q,         Event::KeyboardZero4,             "" },
+    { SCAN_W,         Event::KeyboardZero5,             "" },
+    { SCAN_E,         Event::KeyboardZero6,             "" },
+    { SCAN_A,         Event::KeyboardZero7,             "" },
+    { SCAN_S,         Event::KeyboardZero8,             "" },
+    { SCAN_D,         Event::KeyboardZero9,             "" },
+    { SCAN_Z,         Event::KeyboardZeroStar,          "" },
+    { SCAN_X,         Event::KeyboardZero0,             "" },
+    { SCAN_C,         Event::KeyboardZeroPound,         "" },
+
+    { SCAN_8,         Event::KeyboardOne1,              "" },
+    { SCAN_9,         Event::KeyboardOne2,              "" },
+    { SCAN_0,         Event::KeyboardOne3,              "" },
+    { SCAN_I,         Event::KeyboardOne4,              "" },
+    { SCAN_O,         Event::KeyboardOne5,              "" },
+    { SCAN_P,         Event::KeyboardOne6,              "" },
+    { SCAN_K,         Event::KeyboardOne7,              "" },
+    { SCAN_L,         Event::KeyboardOne8,              "" },
+    { SCAN_SCOLON,    Event::KeyboardOne9,              "" },
+    { SCAN_COMMA,     Event::KeyboardOneStar,           "" },
+    { SCAN_STOP,      Event::KeyboardOne0,              "" },
+    { SCAN_FSLASH,    Event::KeyboardOnePound,          "" },
+
+    { SCAN_DOWN,      Event::JoystickZeroDown,          "" },
+    { SCAN_UP,        Event::JoystickZeroUp,            "" },
+    { SCAN_LEFT,      Event::JoystickZeroLeft,          "" },
+    { SCAN_RIGHT,     Event::JoystickZeroRight,         "" },
+    { SCAN_SPACE,     Event::JoystickZeroFire,          "" },
+    { SCAN_Z,         Event::BoosterGripZeroTrigger,    "" },
+    { SCAN_X,         Event::BoosterGripZeroBooster,    "" },
+   
+    { SCAN_W,         Event::JoystickZeroUp,            "" },
+    { SCAN_S,         Event::JoystickZeroDown,          "" },
+    { SCAN_A,         Event::JoystickZeroLeft,          "" },
+    { SCAN_D,         Event::JoystickZeroRight,         "" },
+    { SCAN_TAB,       Event::JoystickZeroFire,          "" },
+    { SCAN_1,         Event::BoosterGripZeroTrigger,    "" },
+    { SCAN_2,         Event::BoosterGripZeroBooster,    "" },
+   
+    { SCAN_L,         Event::JoystickOneDown,           "" },
+    { SCAN_O,         Event::JoystickOneUp,             "" },
+    { SCAN_K,         Event::JoystickOneLeft,           "" },
+    { SCAN_SCOLON,    Event::JoystickOneRight,          "" },
+    { SCAN_J,         Event::JoystickOneFire,           "" },
+    { SCAN_N,         Event::BoosterGripOneTrigger,     "" },
+    { SCAN_M,         Event::BoosterGripOneBooster,     "" },
+   
+    { SCAN_F1,        Event::ConsoleSelect,             "" },
+    { SCAN_F2,        Event::ConsoleReset,              "" },
+    { SCAN_F3,        Event::ConsoleColor,              "Color Mode" },
+    { SCAN_F4,        Event::ConsoleBlackWhite,         "BW Mode" },
+    { SCAN_F5,        Event::ConsoleLeftDifficultyA,    "Left Difficulty A" },
+    { SCAN_F6,        Event::ConsoleLeftDifficultyB,    "Left Difficulty B" },
+    { SCAN_F7,        Event::ConsoleRightDifficultyA,   "Right Difficulty A" },
+    { SCAN_F8,        Event::ConsoleRightDifficultyB,   "Right Difficulty B" }
+  };
+
+  // Handle pausing the emulator
+  if((!thePauseIndicator) && (theKeyboardKeyState[SCAN_PAUSE]))
+  {
+    thePauseIndicator = true;
+    theConsole->mediaSource().pause(true);
+  }
+  else if(thePauseIndicator && (!theKeyboardKeyState[SCAN_PAUSE]))
+  {
+    thePauseIndicator = false;
+    theConsole->mediaSource().pause(false);
+  }
+
+  // Handle quiting the emulator
+  if(theKeyboardKeyState[SCAN_ESC])
+  {
+    theQuitIndicator = true;
+  }
+
+  // First we clear all of the keyboard events
+  for(unsigned int k = 0; k < sizeof(list) / sizeof(Switches); ++k)
+  {
+    theKeyboardEvent.set(list[k].eventCode, 0);
+  }
+
+  // Now, change the event state if needed for each event
+  for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
+  {
+    if(theKeyboardKeyState[list[i].scanCode])
+    {
+      if(theKeyboardEvent.get(list[i].eventCode) == 0)
+      {
+        theEvent.set(list[i].eventCode, 1);
+        theKeyboardEvent.set(list[i].eventCode, 1);
+        if(list[i].message != "")
+        {
+          theConsole->mediaSource().showMessage(list[i].message,
+              2 * theDesiredFrameRate);
+        } 
+      }
+    }
+    else
+    {
+      if(theKeyboardEvent.get(list[i].eventCode) == 0)
+      {
+        theEvent.set(list[i].eventCode, 0);
+        theKeyboardEvent.set(list[i].eventCode, 0);
+      }
+    }
+  }
+}
+
+/**
   This routine should be called regularly to handle events
 */
 void handleEvents()
 {
   union REGS regs;
+
+  // Update events based on keyboard state
+  updateEventsUsingKeyboardState();
 
   // Update paddles if we're using the mouse to emulate one
   if(thePaddleMode < 4)
@@ -527,115 +662,35 @@ void handleEvents()
 */
 static void keyboardInterruptServiceRoutine(void)
 {
-  struct Switches
-  {
-    uInt16 scanCode;
-    Event::Type eventCode;
-    string message;
-  };
-
-  static Switches list[] = {
-    { SCAN_1,         Event::KeyboardZero1,             "" },
-    { SCAN_2,         Event::KeyboardZero2,             "" },
-    { SCAN_3,         Event::KeyboardZero3,             "" },
-    { SCAN_Q,         Event::KeyboardZero4,             "" },
-    { SCAN_W,         Event::KeyboardZero5,             "" },
-    { SCAN_E,         Event::KeyboardZero6,             "" },
-    { SCAN_A,         Event::KeyboardZero7,             "" },
-    { SCAN_S,         Event::KeyboardZero8,             "" },
-    { SCAN_D,         Event::KeyboardZero9,             "" },
-    { SCAN_Z,         Event::KeyboardZeroStar,          "" },
-    { SCAN_X,         Event::KeyboardZero0,             "" },
-    { SCAN_C,         Event::KeyboardZeroPound,         "" },
-
-    { SCAN_8,         Event::KeyboardOne1,              "" },
-    { SCAN_9,         Event::KeyboardOne2,              "" },
-    { SCAN_0,         Event::KeyboardOne3,              "" },
-    { SCAN_I,         Event::KeyboardOne4,              "" },
-    { SCAN_O,         Event::KeyboardOne5,              "" },
-    { SCAN_P,         Event::KeyboardOne6,              "" },
-    { SCAN_K,         Event::KeyboardOne7,              "" },
-    { SCAN_L,         Event::KeyboardOne8,              "" },
-    { SCAN_SCOLON,    Event::KeyboardOne9,              "" },
-    { SCAN_COMMA,     Event::KeyboardOneStar,           "" },
-    { SCAN_STOP,      Event::KeyboardOne0,              "" },
-    { SCAN_FSLASH,    Event::KeyboardOnePound,          "" },
-
-    { SCAN_DOWN,      Event::JoystickZeroDown,          "" },
-    { SCAN_UP,        Event::JoystickZeroUp,            "" },
-    { SCAN_LEFT,      Event::JoystickZeroLeft,          "" },
-    { SCAN_RIGHT,     Event::JoystickZeroRight,         "" },
-    { SCAN_SPACE,     Event::JoystickZeroFire,          "" },
-    { SCAN_Z,         Event::BoosterGripZeroTrigger,    "" },
-    { SCAN_X,         Event::BoosterGripZeroBooster,    "" },
-   
-    { SCAN_W,         Event::JoystickZeroUp,            "" },
-    { SCAN_S,         Event::JoystickZeroDown,          "" },
-    { SCAN_A,         Event::JoystickZeroLeft,          "" },
-    { SCAN_D,         Event::JoystickZeroRight,         "" },
-    { SCAN_TAB,       Event::JoystickZeroFire,          "" },
-    { SCAN_1,         Event::BoosterGripZeroTrigger,    "" },
-    { SCAN_2,         Event::BoosterGripZeroBooster,    "" },
-   
-    { SCAN_L,         Event::JoystickOneDown,           "" },
-    { SCAN_O,         Event::JoystickOneUp,             "" },
-    { SCAN_K,         Event::JoystickOneLeft,           "" },
-    { SCAN_SCOLON,    Event::JoystickOneRight,          "" },
-    { SCAN_J,         Event::JoystickOneFire,           "" },
-    { SCAN_N,         Event::BoosterGripOneTrigger,     "" },
-    { SCAN_M,         Event::BoosterGripOneBooster,     "" },
-   
-    { SCAN_F1,        Event::ConsoleSelect,             "" },
-    { SCAN_F2,        Event::ConsoleReset,              "" },
-    { SCAN_F3,        Event::ConsoleColor,              "Color Mode" },
-    { SCAN_F4,        Event::ConsoleBlackWhite,         "BW Mode" },
-    { SCAN_F5,        Event::ConsoleLeftDifficultyA,    "Left Difficulty A" },
-    { SCAN_F6,        Event::ConsoleLeftDifficultyB,    "Left Difficulty B" },
-    { SCAN_F7,        Event::ConsoleRightDifficultyA,   "Right Difficulty A" },
-    { SCAN_F8,        Event::ConsoleRightDifficultyB,   "Right Difficulty B" }
-  };
-
   // Get the scan code of the key
-  uInt8 scanCode = inportb(0x60);
-  
-  // If it is an 0xE0 or 0 then ignore it
-  if((scanCode != 0xE0) && (scanCode != 0))
+  uInt8 code = inportb(0x60);
+
+  // Are we ignoring some key codes?
+  if(theNumOfKeyCodesToIgnore > 0)
   {
-    // See if the escape key has been pressed
-    if((scanCode & 0x7f) == SCAN_ESC)
-    {
-      theQuitIndicator = true;
-    }
-    // See if the pause/break key has been pressed
-    else if((scanCode & 0x7f) == SCAN_BREAK)
-    {
-      if(!(scanCode & 0x80))
-      {
-        // Toggle the pause state
-        thePauseIndicator = !thePauseIndicator;
-
-        // Pause the console
-        theConsole->mediaSource().pause(thePauseIndicator);
-      }
-    }
-    else
-    {
-      // Change the event state if needed
-      for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
-      {
-        if(list[i].scanCode == (scanCode & 0x7f))
-        {
-          theEvent.set(list[i].eventCode, (scanCode & 0x80) ? 0 : 1);
-          theKeyboardEvent.set(list[i].eventCode, (scanCode & 0x80) ? 0 : 1);
-
-          if(!(scanCode & 0x80) && (list[i].message != ""))
-          {
-            theConsole->mediaSource().showMessage(list[i].message,
-                2 * theDesiredFrameRate);
-          }
-        }
-      }
-    }
+    --theNumOfKeyCodesToIgnore;
+  }
+  // Handle the pause key
+  else if(code == 0xE1)
+  {
+    // Toggle the state of the pause key.  The pause key only sends a "make"
+    // code it does not send a "break" code.  Also the "make" code is the
+    // sequence 0xE1, 0x1D, 0x45, 0xE1, 0x9D, 0xC5 so we'll need to skip the
+    // remaining 5 values in the sequence.
+    theKeyboardKeyState[SCAN_PAUSE] = !theKeyboardKeyState[SCAN_PAUSE];
+    theNumOfKeyCodesToIgnore = 5;
+  }
+  // Handle the "extended" and the "error" key codes
+  else if((code == 0xE0) || (code == 0x00))
+  {
+    // Currently, we ignore the "extended" and "error" key codes.  We should
+    // probably modify the "extended" key code support so that we can identify
+    // the extended keys...
+  }
+  else
+  {
+    // Update the state of the key
+    theKeyboardKeyState[code & 0x7F] = !(code & 0x80);
   }
 
   // Ack the interrupt
@@ -649,7 +704,7 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "Stella for DOS version 1.2",
+    "Stella for DOS version 1.2.1",
     "",
     "Usage: stella [option ...] file",
     "",
@@ -691,9 +746,8 @@ bool setupProperties(PropertiesSet& set)
   }
   else
   {
-    cerr << "ERROR: Couldn't find \"" << filename << "\" properties file."
-        << endl;
-    return false;
+    set.load("", &Console::defaultProperties(), false);
+    return true;
   }
 }
 
