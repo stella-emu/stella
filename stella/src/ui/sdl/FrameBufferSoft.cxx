@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.3 2003-11-30 22:50:15 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.4 2003-12-03 18:11:25 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -116,9 +116,7 @@ bool FrameBufferSoft::init()
   }
 
   // Set the window title and icon
-  ostringstream name;
-  name << "Stella: \"" << myConsole->properties().get("Cartridge.Name") << "\"";
-  SDL_WM_SetCaption(name.str().c_str(), "stella");
+  setWindowAttributes();
 
   // Create the screen
   if(!createScreen())

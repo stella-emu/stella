@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.10 2003-12-02 01:46:40 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.11 2003-12-03 18:11:25 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -134,9 +134,7 @@ bool FrameBufferGL::init()
   mySDLFlags |= myConsole->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
 
   // Set the window title and icon
-  ostringstream name;
-  name << "Stella: \"" << myConsole->properties().get("Cartridge.Name") << "\"";
-  SDL_WM_SetCaption(name.str().c_str(), "stella");
+  setWindowAttributes();
 
   // Set up the OpenGL attributes
   myDepth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;

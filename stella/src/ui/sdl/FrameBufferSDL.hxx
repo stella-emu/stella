@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.8 2003-12-03 18:11:25 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -34,7 +34,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.7 2003-11-24 14:51:06 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.8 2003-12-03 18:11:25 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -91,6 +91,11 @@ class FrameBufferSDL : public FrameBuffer
       Only works in X11 for now.  If not running under X11, always return 4.
     */
     uInt32 maxWindowSizeForScreen();
+
+    /**
+      Set the title and icon for the main SDL window.
+    */
+    void setWindowAttributes();
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.7 2003-11-30 22:50:15 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.8 2003-12-03 18:11:25 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -25,6 +25,8 @@
 #include "FrameBufferSDL.hxx"
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
+
+#include "stella.xpm"   // The Stella icon
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL::FrameBufferSDL()
@@ -184,4 +186,66 @@ uInt32 FrameBufferSDL::maxWindowSizeForScreen()
   else
     return 1;
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSDL::setWindowAttributes()
+{
+  // Set the window title
+  ostringstream name;
+  name << "Stella: \"" << myConsole->properties().get("Cartridge.Name") << "\"";
+  SDL_WM_SetCaption(name.str().c_str(), "stella");
+
+  // Set the window icon
+  uInt32 w, h, ncols, nbytes;
+  uInt32 rgba[256], icon[32 * 32];
+  uInt8  mask[32][4];
+
+  sscanf(stella_icon[0], "%d %d %d %d", &w, &h, &ncols, &nbytes);
+  if((w != 32) || (h != 32) || (ncols > 255) || (nbytes > 1))
+  {
+    cerr << "ERROR: Couldn't load the icon.\n";
+    return;
+  }
+
+  for(uInt32 i = 0; i < ncols; i++)
+  {
+    unsigned char  code;
+	char color[32];
+    uInt32 col;
+
+    sscanf(stella_icon[1 + i], "%c c %s", &code, color);
+    if(!strcmp(color, "None"))
+      col = 0x00000000;
+    else if(!strcmp(color, "black"))
+      col = 0xFF000000;
+    else if (color[0] == '#')
+    {
+      sscanf(color + 1, "%06x", &col);
+      col |= 0xFF000000;
+    }
+    else
+    {
+      cerr << "ERROR: Couldn't load the icon.\n";
+      return;
+    }
+    rgba[code] = col;
+  }
+
+  memset(mask, 0, sizeof(mask));
+  for(h = 0; h < 32; h++)
+  {
+    const char* line = stella_icon[1 + ncols + h];
+    for(w = 0; w < 32; w++)
+    {
+      icon[w + 32 * h] = rgba[(int)line[w]];
+      if(rgba[(int)line[w]] & 0xFF000000)
+        mask[h][w >> 3] |= 1 << (7 - (w & 0x07));
+    }
+  }
+
+  SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(icon, 32, 32, 32,
+                         32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
+  SDL_WM_SetIcon(surface, (unsigned char *) mask);
+  SDL_FreeSurface(surface);
 }
