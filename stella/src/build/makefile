@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.6 2002-01-18 16:04:46 estolberg Exp $
+## $Id: makefile,v 1.7 2002-02-03 16:51:21 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -50,8 +50,8 @@ OPTIMIZATIONS    =
 
 ### to include support for saving snapshots in png format
 ### (X and SDL versions only)
-### (requires you to install Imlib2)
-# IMLIB2_SNAPSHOT = 1
+### (requires you to install Imlib)
+# IMLIB_SNAPSHOT = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -104,13 +104,13 @@ ifdef LINUX_JOYSTICK
 OPTS.X11 += -DLINUX_JOYSTICK
 endif
 
-ifdef IMLIB2_SNAPSHOT
-OPTS.X11 += -DIMLIB2_SNAPSHOT
-LIBS.X11 += `imlib2-config --libs`
-CFLAGS.X11 += `imlib2-config --cflags`
-OPTS.SDL += -DIMLIB2_SNAPSHOT
-LIBS.SDL += `imlib2-config --libs`
-CFLAGS.SDL += `imlib2-config --cflags`
+ifdef IMLIB_SNAPSHOT
+OPTS.X11 += -DIMLIB_SNAPSHOT
+LIBS.X11 += `imlib-config --libs`
+CFLAGS.X11 += `imlib-config --cflags`
+OPTS.SDL += -DIMLIB_SNAPSHOT
+LIBS.SDL += `imlib-config --libs`
+CFLAGS.SDL += `imlib-config --cflags`
 endif
 
 

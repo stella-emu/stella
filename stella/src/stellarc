@@ -22,7 +22,7 @@
 ;center  = <0|1>
 ;volume  = <number>
 ;paddle  = <0|1|2|3|real>
-;showfps = <0|1>
+;showinfo = <0|1>
 ;fullscreen = <0|1>
 ;ssdir = <pathname>
 ;ssname = <romname|md5sum>

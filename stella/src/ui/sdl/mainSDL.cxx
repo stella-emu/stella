@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.6 2002-02-01 02:13:08 stephena Exp $
+// $Id: mainSDL.cxx,v 1.7 2002-02-03 16:51:22 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -40,8 +40,10 @@
 #include "System.hxx"
 #include "SndUnix.hxx"
 
-#ifdef IMLIB2_SNAPSHOT
-  #include <Imlib2.h>
+#ifdef IMLIB_SNAPSHOT
+  #include <Imlib.h>
+
+  ImlibData* imlibData;
 
   // The path to save snapshot files
   string theSnapShotDir = "";
@@ -84,6 +86,8 @@ static Display* theX11Display;
 static Window theX11Window;
 static int theX11Screen;
 static int mouseX = 0;
+static bool x11Available = false;
+static SDL_SysWMinfo info;
 
 // SDL colors palette
 static Uint32 colors[256];
@@ -127,6 +131,7 @@ static Switches list[] = {
     { SDLK_RIGHT,       Event::JoystickZeroRight },
     { SDLK_SPACE,       Event::JoystickZeroFire }, 
     { SDLK_RETURN,      Event::JoystickZeroFire }, 
+    { SDLK_LCTRL,       Event::JoystickZeroFire }, 
     { SDLK_z,           Event::BoosterGripZeroTrigger },
     { SDLK_x,           Event::BoosterGripZeroBooster },
 
@@ -193,7 +198,7 @@ bool theGrabMouseFlag = false;
 bool theCenterWindowFlag = false;
 
 // Indicates whether to show some game info on program exit
-bool theShowFpsFlag = false;
+bool theShowInfoFlag = false;
 
 // Indicates whether to show cursor in the game window
 bool theHideCursorFlag = false;
@@ -234,6 +239,13 @@ bool setupDisplay()
     return false;
 
   atexit(doQuit);
+
+  // Check which system we are running under
+  x11Available = false;
+  SDL_VERSION(&info.version);
+  if(SDL_GetWMInfo(&info) > 0)
+    if(info.subsystem == SDL_SYSWM_X11)
+      x11Available = true;
 
   int sdlflags = SDL_HWSURFACE | SDL_HWPALETTE;
   sdlflags |= theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
@@ -340,32 +352,23 @@ bool setupDisplay()
   if(theCenterWindowFlag && !theUseFullScreenFlag)
     centerWindow();
 
-#ifdef IMLIB2_SNAPSHOT
-  SDL_SysWMinfo info;
-  SDL_VERSION(&info.version);
-
-  if(SDL_GetWMInfo(&info) > 0)
+#ifdef IMLIB_SNAPSHOT
+  if(x11Available)
   {
-    if(info.subsystem == SDL_SYSWM_X11)
-    {
-      info.info.x11.lock_func();
-      theX11Display = info.info.x11.display;
-      theX11Window  = info.info.x11.wmwindow;
-      theX11Screen  = DefaultScreen(theX11Display);
-      info.info.x11.unlock_func();
+    info.info.x11.lock_func();
+    theX11Display = info.info.x11.display;
+    theX11Window  = info.info.x11.wmwindow;
+    theX11Screen  = DefaultScreen(theX11Display);
+    info.info.x11.unlock_func();
 
-      imlib_context_set_display(theX11Display);
-      imlib_context_set_drawable(theX11Window);
-      imlib_context_set_visual(DefaultVisual(theX11Display, theX11Screen));
-      imlib_context_set_colormap(DefaultColormap(theX11Display, theX11Screen));
+    imlibData = Imlib_init(theX11Display);
 
-      // By default, snapshot dir is HOME and name is ROMNAME, assuming that
-      // they haven't been specified on the commandline
-      if(theSnapShotDir == "")
-        theSnapShotDir = getenv("HOME");
-      if(theSnapShotName == "")
-        theSnapShotName = "romname";
-    }
+    // By default, snapshot dir is HOME and name is ROMNAME, assuming that
+    // they haven't been specified on the commandline
+    if(theSnapShotDir == "")
+      theSnapShotDir = getenv("HOME");
+    if(theSnapShotName == "")
+      theSnapShotName = "romname";
   }
 #endif
 
@@ -469,67 +472,65 @@ void centerWindow()
   if(isFullscreen || isCentered)
     return;
 
-  SDL_SysWMinfo info;
-  SDL_VERSION(&info.version);
-
-  if(SDL_GetWMInfo(&info) > 0)
+  if(!x11Available)
   {
-    int x, y, w, h;
-
-    if(info.subsystem == SDL_SYSWM_X11)
-    {
-      info.info.x11.lock_func();
-      theX11Display = info.info.x11.display;
-      theX11Window  = info.info.x11.wmwindow;
-      theX11Screen  = DefaultScreen(theX11Display);
-
-      w = DisplayWidth(theX11Display, theX11Screen);
-      h = DisplayHeight(theX11Display, theX11Screen);
-      x = (w - screen->w)/2;
-      y = (h - screen->h)/2;
-
-      XMoveWindow(theX11Display, theX11Window, x, y);
-      info.info.x11.unlock_func();
-
-      isCentered = true;
-    }
+    cerr << "Window centering only available under X11.\n";
+    return;
   }
+
+  int x, y, w, h;
+  info.info.x11.lock_func();
+  theX11Display = info.info.x11.display;
+  theX11Window  = info.info.x11.wmwindow;
+  theX11Screen  = DefaultScreen(theX11Display);
+
+  w = DisplayWidth(theX11Display, theX11Screen);
+  h = DisplayHeight(theX11Display, theX11Screen);
+  x = (w - screen->w)/2;
+  y = (h - screen->h)/2;
+
+  XMoveWindow(theX11Display, theX11Window, x, y);
+  info.info.x11.unlock_func();
+
+  isCentered = true;
 }
 
 
 /**
   Toggles between fullscreen and window mode.  Grabmouse and hidecursor
-  activated when in fullscreen mode.  Only works in X11 for now.
+  activated when in fullscreen mode.
 */
 void toggleFullscreen()
 {
-  if(isFullscreen)  // changing to windowed mode
-  {
-    if(SDL_WM_ToggleFullScreen(screen) == 0)
-    {
-      cerr << "Couldn't switch to windowed mode.\n";
-      return;
-    }
+  int width = theWidth * 2 * theWindowSize;
+  int height = theHeight * theWindowSize;
+  int sdlflags = SDL_HWSURFACE | SDL_HWPALETTE;
+  isFullscreen = !isFullscreen;
+  sdlflags |= isFullscreen ? SDL_FULLSCREEN : 0;
 
+  screen = SDL_SetVideoMode(width, height, 0, sdlflags);
+  if(screen == NULL)
+  {
+    cerr << "Unable to switch screenmode: " << SDL_GetError() << endl;
+    return;
+  }
+  bpp = screen->format->BitsPerPixel;
+
+  if(isFullscreen)  // now in fullscreen mode
+  {
+    grabMouse(true);
+    showCursor(false);
+  }
+  else    // now in windowed mode
+  {
     grabMouse(theGrabMouseFlag);
     showCursor(!theHideCursorFlag);
-    isFullscreen = false;
 
     if(theCenterWindowFlag)
         centerWindow();
   }
-  else  // changing to fullscreen mode
-  {
-    if(SDL_WM_ToggleFullScreen(screen) == 0)
-    {
-      cerr << "Couldn't switch to fullscreen mode.\n";
-      return;
-    }
 
-    grabMouse(true);
-    showCursor(false);
-    isFullscreen = true;
-  }
+  theRedrawEntireFrameFlag = true;
 }
 
 
@@ -735,6 +736,7 @@ void handleEvents()
   Uint8 type;
   Uint8 state;
   SDLKey key;
+  SDLMod mod;
 
   // Check for an event
   while(SDL_PollEvent(&event))
@@ -743,6 +745,7 @@ void handleEvents()
     if(event.type == SDL_KEYDOWN)
     {
       key = event.key.keysym.sym;
+      mod = event.key.keysym.mod;
       type = event.type;
 
       if(key == SDLK_ESCAPE)
@@ -757,7 +760,7 @@ void handleEvents()
       {
         resizeWindow(0);
       }
-      else if(key == SDLK_F11)
+      else if(key == SDLK_RETURN && mod & KMOD_ALT)
       {
         toggleFullscreen();
       }
@@ -1031,13 +1034,23 @@ void handleEvents()
 */
 void takeSnapshot()
 {
-#ifdef IMLIB2_SNAPSHOT
-  // Figure out the actual size of the window
-  int width = theWidth * 2 * theWindowSize;
-  int height = theHeight * theWindowSize;
+#ifdef IMLIB_SNAPSHOT
+  if(!x11Available)
+  {
+    cerr << "Snapshot support only available under X11.\n";
+    return;
+  }
+  else if(isFullscreen)
+  {
+    cerr << "Snapshot support unavailable in fullscreen (for now).\n";
+    return;
+  }
 
-  Imlib_Image image = imlib_create_image_from_drawable(0, 0, 0, width, height, 1);
+  int width  = screen->w;
+  int height = screen->h;
 
+  ImlibImage* image = Imlib_create_image_from_drawable(imlibData, theX11Window,
+              0, 0, 0, width, height);
   if(image == NULL)
   {
     cerr << "Could not create snapshot!!\n";
@@ -1079,11 +1092,9 @@ void takeSnapshot()
   else
     filename = extFilename;
 
-  // Now save the png snapshot file
-  imlib_context_set_image(image);
-  imlib_image_set_format("png");
-  imlib_save_image(filename.c_str());
-  imlib_free_image();
+  // Now save the snapshot file
+  Imlib_save_image(imlibData, image, (char*)filename.c_str(), NULL);
+  Imlib_kill_image(imlibData, image);
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;
@@ -1097,16 +1108,12 @@ void takeSnapshot()
 
 /**
   Calculate the maximum window size that the current screen can hold.
-  Only works in X11 for now.  If not running under X11, always return 5.
+  Only works in X11 for now.  If not running under X11, always return 3.
 */
 uInt32 maxWindowSizeForScreen()
 {
-  SDL_SysWMinfo info;
-  SDL_VERSION(&info.version);
-
-  if(SDL_GetWMInfo(&info) > 0)
-    if(info.subsystem != SDL_SYSWM_X11)
-      return 5;
+  if(!x11Available)
+    return 3;
 
   // Otherwise, lock the screen and get the width and height
   info.info.x11.lock_func();
@@ -1164,8 +1171,8 @@ void usage()
     "  -volume <number>        Set the volume from 0 to 100",
     "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
     "                          or that real Atari 2600 paddles are being used",
-    "  -showfps                Shows some game info on exit",
-#ifdef IMLIB2_SNAPSHOT
+    "  -showinfo               Shows some game info on exit",
+#ifdef IMLIB_SNAPSHOT
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
 #endif
@@ -1271,9 +1278,9 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theCenterWindowFlag = true;
     }
-    else if(string(argv[i]) == "-showfps")
+    else if(string(argv[i]) == "-showinfo")
     {
-      theShowFpsFlag = true;
+      theShowInfoFlag = true;
     }
     else if(string(argv[i]) == "-winsize")
     {
@@ -1291,7 +1298,7 @@ void handleCommandLineArguments(int argc, char* argv[])
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB2_SNAPSHOT
+#ifdef IMLIB_SNAPSHOT
     else if(string(argv[i]) == "-ssdir")
     {
       theSnapShotDir = argv[++i];
@@ -1425,13 +1432,13 @@ void parseRCOptions(istream& in)
       else if(option == 0)
         theCenterWindowFlag = false;
     }
-    else if(key == "showfps")
+    else if(key == "showinfo")
     {
       uInt32 option = atoi(value.c_str());
       if(option == 1)
-        theShowFpsFlag = true;
+        theShowInfoFlag = true;
       else if(option == 0)
-        theShowFpsFlag = false;
+        theShowInfoFlag = false;
     }
     else if(key == "winsize")
     {
@@ -1451,7 +1458,7 @@ void parseRCOptions(istream& in)
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB2_SNAPSHOT
+#ifdef IMLIB_SNAPSHOT
     else if(key == "ssdir")
     {
       theSnapShotDir = value;
@@ -1577,7 +1584,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(theShowFpsFlag)
+  if(theShowInfoFlag)
   {
     timeval endingTime;
     gettimeofday(&endingTime, 0);
@@ -1590,6 +1597,10 @@ int main(int argc, char* argv[])
     cout << framesPerSecond << " frames/second\n";
     cout << theConsole->mediaSource().scanlines() << " scanlines in last frame\n";
     cout << endl;
+    cout << "Cartridge Name: " << theConsole->properties().get("Cartridge.Name");
+    cout << endl;
+    cout << "Cartridge MD5:  " << theConsole->properties().get("Cartridge.MD5");
+    cout << endl << endl;
   }
 
   // Cleanup time ...

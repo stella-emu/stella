@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.6 2002-02-01 02:13:08 stephena Exp $
+// $Id: mainX11.cxx,v 1.7 2002-02-03 16:51:22 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -43,8 +43,10 @@
 #include "SndUnix.hxx"
 #include "System.hxx"
 
-#ifdef IMLIB2_SNAPSHOT
-  #include <Imlib2.h>
+#ifdef IMLIB_SNAPSHOT
+  #include <Imlib.h>
+
+  ImlibData* imlibData;
 
   // The path to save snapshot files
   string theSnapShotDir = "";
@@ -143,6 +145,7 @@ static Switches list[] = {
   { XK_Right,       Event::JoystickZeroRight },
   { XK_space,       Event::JoystickZeroFire }, 
   { XK_Return,      Event::JoystickZeroFire }, 
+  { XK_Control_L,   Event::JoystickZeroFire }, 
   { XK_z,           Event::BoosterGripZeroTrigger },
   { XK_x,           Event::BoosterGripZeroBooster },
 
@@ -209,7 +212,7 @@ bool theGrabMouseFlag = false;
 bool theCenterWindowFlag = false;
 
 // Indicates whether to show some game info on program exit
-bool theShowFpsFlag = false;
+bool theShowInfoFlag = false;
 
 // Indicates whether to show cursor in the game window
 bool theHideCursorFlag = false;
@@ -355,7 +358,7 @@ bool setupDisplay()
   XMapWindow(theDisplay, theWindow);
 
   // Center the window if centering is selected and not fullscreen
-  if(theCenterWindowFlag && !theUseFullScreenFlag)
+  if(theCenterWindowFlag)// && !theUseFullScreenFlag)
     centerWindow();
 
   XEvent event;
@@ -384,15 +387,8 @@ bool setupDisplay()
   XSelectInput(theDisplay, theWindow, eventMask);
 
   // If imlib snapshots are enabled, set up some imlib stuff
-#ifdef IMLIB2_SNAPSHOT
-  imlib_context_set_display(theDisplay);
-  imlib_context_set_drawable(theWindow);
-  imlib_context_set_visual(DefaultVisual(theDisplay, theScreen));
-
-  if(theUsePrivateColormapFlag)
-    imlib_context_set_colormap(thePrivateColormap);
-  else
-    imlib_context_set_colormap(DefaultColormap(theDisplay, theScreen));
+#ifdef IMLIB_SNAPSHOT
+  imlibData = Imlib_init(theDisplay);
 
   // By default, snapshot dir is HOME and name is ROMNAME, assuming that
   // they haven't been specified on the commandline
@@ -1009,13 +1005,13 @@ bool createCursors()
 */
 void takeSnapshot()
 {
-#ifdef IMLIB2_SNAPSHOT
+#ifdef IMLIB_SNAPSHOT
   // Figure out the actual size of the window
   int width = theWidth * 2 * theWindowSize;
   int height = theHeight * theWindowSize;
 
-  Imlib_Image image = imlib_create_image_from_drawable(0, 0, 0, width, height, 1);
-
+  ImlibImage* image = Imlib_create_image_from_drawable(imlibData, theWindow,
+              0, 0, 0, width, height);
   if(image == NULL)
   {
     cerr << "Could not create snapshot!!\n";
@@ -1057,11 +1053,9 @@ void takeSnapshot()
   else
     filename = extFilename;
 
-  // Now save the png snapshot file
-  imlib_context_set_image(image);
-  imlib_image_set_format("png");
-  imlib_save_image(filename.c_str());
-  imlib_free_image();
+  // Now save the snapshot file
+  Imlib_save_image(imlibData, image, (char*)filename.c_str(), NULL);
+  Imlib_kill_image(imlibData, image);
 
   if(access(filename.c_str(), F_OK) == 0)
     cerr << "Snapshot saved as " << filename << endl;
@@ -1129,8 +1123,8 @@ void usage()
 #else
     "  -paddle <0|1|2|3>       Indicates which paddle the mouse should emulate",
 #endif
-    "  -showfps                Shows some game info on exit",
-#ifdef IMLIB2_SNAPSHOT
+    "  -showinfo               Shows some game info on exit",
+#ifdef IMLIB_SNAPSHOT
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
 #endif
@@ -1242,9 +1236,9 @@ void handleCommandLineArguments(int argc, char* argv[])
     {
       theCenterWindowFlag = true;
     }
-    else if(string(argv[i]) == "-showfps")
+    else if(string(argv[i]) == "-showinfo")
     {
-      theShowFpsFlag = true;
+      theShowInfoFlag = true;
     }
     else if(string(argv[i]) == "-winsize")
     {
@@ -1262,7 +1256,7 @@ void handleCommandLineArguments(int argc, char* argv[])
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB2_SNAPSHOT
+#ifdef IMLIB_SNAPSHOT
     else if(string(argv[i]) == "-ssdir")
     {
       theSnapShotDir = argv[++i];
@@ -1406,13 +1400,13 @@ void parseRCOptions(istream& in)
       else if(option == 0)
         theCenterWindowFlag = false;
     }
-    else if(key == "showfps")
+    else if(key == "showinfo")
     {
       uInt32 option = atoi(value.c_str());
       if(option == 1)
-        theShowFpsFlag = true;
+        theShowInfoFlag = true;
       else if(option == 0)
-        theShowFpsFlag = false;
+        theShowInfoFlag = false;
     }
     else if(key == "winsize")
     {
@@ -1432,7 +1426,7 @@ void parseRCOptions(istream& in)
 
       theDesiredVolume = volume;
     }
-#ifdef IMLIB2_SNAPSHOT
+#ifdef IMLIB_SNAPSHOT
     else if(key == "ssdir")
     {
       theSnapShotDir = value;
@@ -1576,7 +1570,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(theShowFpsFlag)
+  if(theShowInfoFlag)
   {
     timeval endingTime;
     gettimeofday(&endingTime, 0);
@@ -1589,6 +1583,10 @@ int main(int argc, char* argv[])
     cout << framesPerSecond << " frames/second\n";
     cout << theConsole->mediaSource().scanlines() << " scanlines in last frame\n";
     cout << endl;
+    cout << "Cartridge Name: " << theConsole->properties().get("Cartridge.Name");
+    cout << endl;
+    cout << "Cartridge MD5:  " << theConsole->properties().get("Cartridge.MD5");
+    cout << endl << endl;
   }
 
   // Cleanup time ...
