@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.75 2004-05-11 19:42:55 stephena Exp $
+// $Id: mainSDL.cxx,v 1.76 2004-05-13 12:38:17 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -652,13 +652,13 @@ void handleEvents()
             else
             {
               theConsole->eventHandler().sendEvent(Event::JoystickOneFire, state);
-              theConsole->eventHandler().sendEvent(Event::PaddleOneFire, state);
+              theConsole->eventHandler().sendEvent(Event::PaddleTwoFire, state);
             }
           }
           else if(button == 1)
           {
             if(type == JT_STELLADAPTOR_1)
-              theConsole->eventHandler().sendEvent(Event::PaddleTwoFire, state);
+              theConsole->eventHandler().sendEvent(Event::PaddleOneFire, state);
             else
               theConsole->eventHandler().sendEvent(Event::PaddleThreeFire, state);
           }
