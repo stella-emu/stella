@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.21 2003-09-26 00:32:00 stephena Exp $
+// $Id: TIA.cxx,v 1.22 2003-09-26 17:35:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -592,115 +592,6 @@ bool TIA::pause(bool state)
     myPauseState = state;
     return true;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::drawMessageText()
-{
-  // Set up the correct coordinates to draw the surrounding box
-  uInt32 xBoxOffSet = 2 + myFrameXStart;
-  uInt32 yBoxOffSet = myFrameHeight - 18;
-  uInt32 boxToTextXOffSet = 2;
-  uInt32 boxToTextYOffSet = 4;
-
-  // Set up the correct coordinates to print the message
-  uInt32 xTextOffSet = xBoxOffSet + boxToTextXOffSet;
-  uInt32 yTextOffSet = yBoxOffSet + boxToTextYOffSet;
-
-  // Used to indicate the current x/y position of a pixel
-  uInt32 xPos, yPos;
-
-  // The actual font data for a letter
-  uInt32 data;
-
-  // The index into the palette to color the current text and background
-  uInt8 fontColor, backColor;
-
-  // Palette index depends on whether we are in NTSC or PAL mode
-  if(myConsole.properties().get("Display.Format") == "PAL")
-  {
-    fontColor = 10;
-    backColor = 0;
-  }
-  else
-  {
-    fontColor = 10;
-    backColor = 0;
-  }
-
-  // Clip the length if its wider than the screen
-  uInt8 length = myMessageText.length();
-  if(((length * 5) + xTextOffSet) >= myFrameWidth)
-    length = (myFrameWidth - xTextOffSet) / 5;
-
-  // Reset the offsets to center the message
-  uInt32 boxWidth  = (5 * length) + boxToTextXOffSet;
-  uInt32 boxHeight = 8 + (2 * (yTextOffSet - yBoxOffSet));
-  xBoxOffSet = (myFrameWidth >> 1) - (boxWidth >> 1);
-  xTextOffSet = xBoxOffSet + boxToTextXOffSet;
-
-  // First, draw the surrounding box
-  for(uInt32 x = 0; x < boxWidth; ++x)
-  {
-    for(uInt32 y = 0; y < boxHeight; ++y)
-    {
-      uInt32 position = ((yBoxOffSet + y) * myFrameWidth) + x + xBoxOffSet;
-
-      if((x == 0) || (x == boxWidth - 1) || (y == 0) || (y == boxHeight - 1))
-        myCurrentFrameBuffer[position] = fontColor;
-      else
-        myCurrentFrameBuffer[position] = backColor;
-    }
-  }
-
-  // Then, draw the text
-//FIXME - change back to x
-  for(uInt8 x1 = 0; x1 < length; ++x1)
-  {
-    char letter = myMessageText[x1];
-
-    if((letter >= 'A') && (letter <= 'Z'))
-      data = ourFontData[(int)letter - 65];
-    else if((letter >= '0') && (letter <= '9'))
-      data = ourFontData[(int)letter - 48 + 26];
-    else   // unknown character or space
-    {
-      xTextOffSet += 3;
-      continue;
-    }
-
-    // start scanning the font data from the bottom up
-    yPos = 7;
-
-    for(uInt8 y = 0; y < 32; ++y)
-    {
-      // determine the correct scanline
-      xPos = y % 4;
-      if(xPos == 0)
-        --yPos;
-
-      if((data >> y) & 1)
-      {
-        uInt32 position = (yPos + yTextOffSet) * myFrameWidth + (4 - xPos) + xTextOffSet;
-        myCurrentFrameBuffer[position] = fontColor;
-      }
-    }
-
-    // move left to the next character
-    xTextOffSet += 5;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::showMessage(string& message, Int32 duration)
-{
-  myMessageText = message;
-  myMessageTime = duration;
-
-  // Make message uppercase, since there are no lowercase fonts defined
-  uInt32 length = myMessageText.length();
-  for(uInt32 i = 0; i < length; ++i)
-    myMessageText[i] = toupper(myMessageText[i]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

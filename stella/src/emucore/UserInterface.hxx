@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.hxx,v 1.2 2003-09-26 00:32:00 stephena Exp $
+// $Id: UserInterface.hxx,v 1.3 2003-09-26 17:35:05 stephena Exp $
 //============================================================================
 
 #ifndef USERINTERFACE_HXX
@@ -21,6 +21,7 @@
 
 #include "bspf.hxx"
 #include "Event.hxx"
+#include "StellaEvent.hxx"
 
 class Console;
 class MediaSource;
@@ -30,7 +31,7 @@ class MediaSource;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: UserInterface.hxx,v 1.2 2003-09-26 00:32:00 stephena Exp $
+  @version $Id: UserInterface.hxx,v 1.3 2003-09-26 17:35:05 stephena Exp $
 */
 class UserInterface
 {
@@ -48,22 +49,45 @@ class UserInterface
     */
     virtual ~UserInterface(void);
 
-    // Enumeration representing the different types of menus
-    enum MenuType { MENU_NONE, MENU_MAIN, MENU_REMAP, MENU_INFO };
+    /**
+      Send a keyboard event to the user interface.
+
+      @param code  The StellaEvent code
+      @param state The StellaEvent state
+    */
+    void sendKeyEvent(StellaEvent::KeyCode code, Int32 state);
+
+    /**
+      Send a joystick button event to the user interface.
+
+      @param stick The joystick activated
+      @param code  The StellaEvent joystick code
+      @param state The StellaEvent state
+    */
+    void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
+         Int32 state);
+
+    void sendKeymap(Event::Type table[StellaEvent::LastKCODE]);
+    void sendJoymap(Event::Type table[StellaEvent::LastJSTICK][StellaEvent::LastJCODE]);
 
   public:
-    MenuType currentSelectedMenu();
-    Event::Type currentSelectedItem();
-
-    bool drawPending() { return myCurrentMenu != MENU_NONE; }
-    void showMenu(MenuType type);
+    bool drawPending() { return myCurrentWidget != NONE; }
+    void showMainMenu(bool show);
+    void showMessage(string& message);
     void update();
+
+  private:
+    // Enumeration representing the different types of user interface widgets
+    enum Widget { NONE, MAIN_MENU, REMAP_MENU, INFO_MENU, MESSAGE };
+
+    Widget currentSelectedWidget();
+    Event::Type currentSelectedEvent();
+
     void moveCursorUp();
     void moveCursorDown();
 
-  private:
-    // Clears the internal framebuffer
-    void cls();
+    // Draw a bounded box centered horizontally
+    void drawBoundedBox(uInt32 width, uInt32 height);
 
   private:
     // The Console for the system
@@ -72,23 +96,26 @@ class UserInterface
     // The Mediasource for the system
     MediaSource* myMediaSource;
 
-    // A buffer containing the current interface element to be drawn
-    Int16* myBuffer;
-
-    // Indicates the size of the framebuffer
-    uInt32 myBufferSize;
-
     // Bounds for the window frame
     uInt32 myXStart, myYStart, myWidth, myHeight;
 
     // Table of bitmapped fonts.  Holds A..Z and 0..9.
     static const uInt32 ourFontData[36];
 
-    // Indicates if buffers are dirty (have been modified)
-    bool myBufferDirtyFlag;
+    // Type of interface item currently slated for redraw
+    Widget myCurrentWidget;
 
-    // Menu type currently slated for redraw
-    MenuType myCurrentMenu;
+    // Indicates that an event is currently being remapped
+    bool myRemapEventSelectedFlag;
+
+    // Indicates the current selected event being remapped
+    Event::Type mySelectedEvent;
+
+    // Message timer
+    Int32 myMessageTime;
+
+    // Message text
+    string myMessageText;
 };
 
 #endif

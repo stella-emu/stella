@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.2 2003-09-26 00:32:00 stephena Exp $
+// $Id: UserInterface.cxx,v 1.3 2003-09-26 17:35:05 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -27,9 +27,11 @@
 UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
     : myConsole(console),
       myMediaSource(mediasrc),
-      myBufferSize(160*300),
-      myBufferDirtyFlag(true),
-      myCurrentMenu(MENU_NONE)
+      myCurrentWidget(NONE),
+      myRemapEventSelectedFlag(false),
+      mySelectedEvent(Event::NoType),
+      myMessageTime(0),
+      myMessageText("")
 {
 }
 
@@ -39,43 +41,63 @@ UserInterface::~UserInterface(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::showMenu(MenuType type)
+void UserInterface::showMainMenu(bool show)
 {
-  if(myCurrentMenu != type)
-    myBufferDirtyFlag = true;
-
-  myCurrentMenu = type;
-
-//  if(myBufferDirtyFlag)
-//    cls();
-
-/*  uInt8* frontbuffer = myMediaSource->currentFrameBuffer();
-  uInt8* backbuffer  = myMediaSource->previousFrameBuffer();
-
-  // First, draw the surrounding box
-  for(uInt32 x = 0; x < 100; ++x)
-  {
-    for(uInt32 y = 0; y < 100; ++y)
-    {
-      uInt32 position = ((20 + y) * myWidth) + x + 20;
-
-      if((x == 0) || (x == 200 - 1) || (y == 0) || (y == 200 - 1))
-        frontbuffer[position] = backbuffer[position] = 10;
-      else
-        frontbuffer[position] = backbuffer[position] = 0;
-    }
-  }*/
+  myCurrentWidget = show ? MAIN_MENU : NONE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UserInterface::cls()
+void UserInterface::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
-cerr << "UserInterface::cls() called\n";
-  // Initialize buffer to -1, which represents an 'opaque' color
-  // When the buffer is overlaid onto the TIA, all pixels with a
-  // color of -1 will be use the underlying color, like a color mask
-  for(uInt32 i = 0; i < myBufferSize; ++i)
-    myBuffer[i] = -1;
+  if(myCurrentWidget == NONE || state != 1)
+    return;
+  else if(myCurrentWidget == MAIN_MENU)
+  {
+    if(key == StellaEvent::KCODE_RETURN)
+      myCurrentWidget = currentSelectedWidget();
+    else if(key == StellaEvent::KCODE_UP)
+      moveCursorUp();
+    else if(key == StellaEvent::KCODE_DOWN)
+      moveCursorDown();
+  }
+  else if(myCurrentWidget == REMAP_MENU)
+  {
+    if(myRemapEventSelectedFlag)
+    {
+      if(key == StellaEvent::KCODE_ESCAPE)
+        // associate nothing with the selected event
+cerr << "delete binding for " << mySelectedEvent << endl;
+      else
+        // associate this stellaevent with the selected event
+cerr << "add binding " << key << " for " << mySelectedEvent << endl;
+
+      myRemapEventSelectedFlag = false;
+    }
+    else if(key == StellaEvent::KCODE_RETURN)
+    {
+cerr << "event selected for remapping\n";
+      mySelectedEvent = currentSelectedEvent();
+      myRemapEventSelectedFlag = true;
+    }
+    else if(key == StellaEvent::KCODE_UP)
+      moveCursorUp();
+    else if(key == StellaEvent::KCODE_DOWN)
+      moveCursorDown();
+    else if(key == StellaEvent::KCODE_ESCAPE)
+      myCurrentWidget = MAIN_MENU;
+  }
+  else if(myCurrentWidget == INFO_MENU)
+  {
+cerr << "key received while in info menu\n";
+    if(key == StellaEvent::KCODE_ESCAPE)
+      myCurrentWidget = MAIN_MENU;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::sendJoyEvent(StellaEvent::JoyStick stick,
+     StellaEvent::JoyCode code, Int32 state)
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,30 +105,28 @@ void UserInterface::update()
 {
   uInt8* frontbuffer = myMediaSource->currentFrameBuffer();
 
-  if(myCurrentMenu == MENU_NONE)
+  if(myCurrentWidget == NONE)
   {
-    myCurrentMenu = MENU_NONE;
+    return;  // this shouldn't happen
   }
-  else if(myCurrentMenu == MENU_MAIN)
+  else if(myCurrentWidget == MAIN_MENU)
   {
-    cerr << "draw main menu\n";
+    ; // draw main menu
   }
-  else if(myCurrentMenu == MENU_REMAP)
+  else if(myCurrentWidget == REMAP_MENU)
   {
-    cerr << "draw remap menu\n";
+    ; // draw remap menu
   }
-  else if(myCurrentMenu == MENU_INFO)
+  else if(myCurrentWidget == INFO_MENU)
   {
-    cerr << "draw info menu\n";
-
 
 // FIXME - this will disappear soon ...
   // First, draw the surrounding box
-  for(uInt32 x = 10; x < 100; ++x)
+  for(uInt32 x = 0; x < 100; ++x)
   {
-    for(uInt32 y = 10; y < 200; ++y)
+    for(uInt32 y = 0; y < 100; ++y)
     {
-      uInt32 position = ((20 + y) * 160) + x + 20;
+      uInt32 position = ((20 + y) * myMediaSource->width()) + x + 20;
 
       if((x == 0) || (x == 200 - 1) || (y == 0) || (y == 200 - 1))
         frontbuffer[position] = 10;
@@ -114,21 +134,19 @@ void UserInterface::update()
         frontbuffer[position] = 0;
     }
   }
-
   }
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::MenuType UserInterface::currentSelectedMenu()
+UserInterface::Widget UserInterface::currentSelectedWidget()
 {
-  return MENU_INFO; // FIXME
+  return REMAP_MENU; // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type UserInterface::currentSelectedItem()
+Event::Type UserInterface::currentSelectedEvent()
 {
-  return Event::NoType; // FIXME
+  return Event::ConsoleSelect; // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -281,3 +299,33 @@ const uInt32 UserInterface::ourFontData[36] = {
   0x6996996, // 8
   0x6997196  // 9
 };
+
+/*  uInt8* frontbuffer = myMediaSource->currentFrameBuffer();
+  uInt8* backbuffer  = myMediaSource->previousFrameBuffer();
+
+  // First, draw the surrounding box
+  for(uInt32 x = 0; x < 100; ++x)
+  {
+    for(uInt32 y = 0; y < 100; ++y)
+    {
+      uInt32 position = ((20 + y) * myWidth) + x + 20;
+
+      if((x == 0) || (x == 200 - 1) || (y == 0) || (y == 200 - 1))
+        frontbuffer[position] = backbuffer[position] = 10;
+      else
+        frontbuffer[position] = backbuffer[position] = 0;
+    }
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::showMessage(string& message, Int32 duration)
+{
+  myMessageText = message;
+  myMessageTime = duration;
+
+  // Make message uppercase, since there are no lowercase fonts defined
+  uInt32 length = myMessageText.length();
+  for(uInt32 i = 0; i < length; ++i)
+    myMessageText[i] = toupper(myMessageText[i]);
+}
+*/

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.7 2002-10-09 04:38:12 bwmott Exp $
+// $Id: TIA.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -43,7 +43,7 @@ class Deserializer;
   in a bounded queue.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.7 2002-10-09 04:38:12 bwmott Exp $
+  @version $Id: TIA.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -136,12 +136,6 @@ class TIA : public Device , public MediaSource
       @return Status of the pause, success (true) or failure (false)
     */
     virtual bool pause(bool state);
-
-    /**
-      Inserts the given message into the framebuffer for the given
-      number of frames.
-    */
-    virtual void showMessage(string& message, Int32 duration);
 
     /**
       Answers the current frame buffer
@@ -318,12 +312,6 @@ class TIA : public Device , public MediaSource
 
     // Indicates whether the emulation is paused or not
     bool myPauseState;
-
-    // Message timer
-    Int32 myMessageTime;
-
-    // Message text
-    string myMessageText;
 
   private:
     // Indicates the CPU cycle when a TIA sound register was last updated
@@ -566,9 +554,6 @@ class TIA : public Device , public MediaSource
     // the PAL color loss effect.
     static const uInt32 ourPALPalette[256];
 
-    // Table of bitmapped fonts.  Holds A..Z and 0..9.
-    static const uInt32 ourFontData[36];
-
   private:
     // Copy constructor isn't supported by this class so make it private
     TIA(const TIA&);
@@ -578,4 +563,3 @@ class TIA : public Device , public MediaSource
 };
 
 #endif
-

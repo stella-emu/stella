@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.11 2003-09-26 00:32:00 stephena Exp $
+// $Id: EventHandler.cxx,v 1.12 2003-09-26 17:35:05 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -37,10 +37,7 @@
 EventHandler::EventHandler(Console* console)
     : myConsole(console),
       myCurrentState(0),
-      myMenuStatus(false),
-      myReturnPressedFlag(false),
-      myRemapModeFlag(false),
-      myEventSelectedFlag(false)
+      myMenuStatus(false)
 {
   Int32 i;
 
@@ -94,73 +91,15 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
   if(key == StellaEvent::KCODE_TAB && state == 1)
   {
     myMenuStatus = !myMenuStatus;
-    if(myMenuStatus)
-    {
-      myConsole->gui().showMenu(UserInterface::MENU_MAIN);
-    }
-    else
-    {
-      myConsole->gui().showMenu(UserInterface::MENU_NONE);
-      myReturnPressedFlag = myRemapModeFlag = myEventSelectedFlag = false;
-    }
-
+    myConsole->gui().showMainMenu(myMenuStatus);
     return;
   }
 
   // Determine where the event should be sent
-  if(myMenuStatus && state == 1)
-  {
-    if(key == StellaEvent::KCODE_RETURN)
-      myReturnPressedFlag = true;
-
-    processMenuEvent(key);
-  }
+  if(myMenuStatus)
+    myConsole->gui().sendKeyEvent(key, state);
   else
-  {
     sendEvent(myKeyTable[key], state);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::processMenuEvent(StellaEvent::KeyCode key)
-{
-  if(myRemapModeFlag && myEventSelectedFlag)
-  {
-    if(key == StellaEvent::KCODE_ESCAPE)
-      // associate nothing with the selected event
-      cerr << "delete binding for " << mySelectedEvent << endl;
-    else
-      // associate this stellaevent with the selected event
-      cerr << "add binding " << key << " for " << mySelectedEvent << endl;
-
-    myReturnPressedFlag = myEventSelectedFlag = false;
-  }
-  else if(myReturnPressedFlag && myRemapModeFlag)
-  {
-    cerr << "return pressed while in remap mode\n";
-    mySelectedEvent = Event::ConsoleSelect; // FIXME - get from gui() which event is currently selected
-    myEventSelectedFlag = true;
-    myReturnPressedFlag = false;
-  }
-  else if(myReturnPressedFlag)
-  {
-    UserInterface::MenuType menu = myConsole->gui().currentSelectedMenu();
-    if(menu == UserInterface::MENU_REMAP)
-    {
-      myConsole->gui().showMenu(UserInterface::MENU_REMAP);
-      myRemapModeFlag = true;
-    }
-    else if(menu == UserInterface::MENU_INFO)
-    {
-      myConsole->gui().showMenu(UserInterface::MENU_INFO);
-    }
-
-    myReturnPressedFlag = false;
-  }
-  else if(key == StellaEvent::KCODE_UP)
-    myConsole->gui().moveCursorUp();
-  else if(key == StellaEvent::KCODE_DOWN)
-    myConsole->gui().moveCursorDown();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,14 +107,10 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
      StellaEvent::JoyCode code, Int32 state)
 {
   // Determine where the event should be sent
-  if(myMenuStatus && state == 1)
-  {
-    cerr << "send joy event to remap class\nstick = " << stick << ", button = " << code << endl;
-  }
+  if(myMenuStatus)
+    myConsole->gui().sendJoyEvent(stick, code, state);
   else
-  {
     sendEvent(myJoyTable[stick][code], state);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.7 2003-09-25 16:20:34 stephena Exp $
+// $Id: EventHandler.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -33,14 +33,15 @@ class MediaSource;
 
   The frontends will send translated events here, and the handler will
   check to see what the current 'mode' is.  For now, the modes can be
-  normal and remap.
+  normal and menu mode.
 
   If in normal mode, events received from the frontends are remapped and
-  sent to the emulation core.  If in remap mode, the events are sent
-  unchanged to the remap class, where key remapping can take place.
+  sent to the emulation core.  If in menu mode, the events are sent
+  unchanged to the user interface, where (among other things) changing key
+  mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.7 2003-09-25 16:20:34 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.8 2003-09-26 17:35:05 stephena Exp $
 */
 class EventHandler
 {
@@ -125,7 +126,6 @@ class EventHandler
     void takeSnapshot();
 
     void processMenuEvent(StellaEvent::KeyCode key);
-//    void processMenuEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code);
 
   private:
     // Array of key events
@@ -158,14 +158,8 @@ class EventHandler
     // The current joymap in string form
     string myJoymapString;
 
-    // Indicates that a menu should be entered
+    // Indicates that the main menu is being entered
     bool myMenuStatus;
-
-    // These are used for the state machine that processes menu events
-    bool myReturnPressedFlag, myRemapModeFlag, myEventSelectedFlag;
-
-    // 
-    Event::Type mySelectedEvent;
 };
 
 #endif
