@@ -14,11 +14,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaXMain.hxx,v 1.2 2004-07-04 20:16:03 stephena Exp $
+// $Id: StellaXMain.hxx,v 1.3 2004-07-10 22:25:58 stephena Exp $
 //============================================================================ 
 
 #ifndef STELLAX_H
 #define STELLAX_H
+
+#include "bspf.hxx"
 
 class CGlobalData;
 
@@ -28,7 +30,7 @@ class CStellaXMain
     CStellaXMain();
     ~CStellaXMain();
 
-    void PlayROM( LPCTSTR filename, CGlobalData& globaldata );
+    void PlayROM( string& romfile, CGlobalData& globaldata );
 
   private:
     CStellaXMain( const CStellaXMain& );    // no implementation

@@ -8,34 +8,28 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2000 by Jeff Miller
 // Copyright (c) 2004 by Stephen Anthony
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalData.cxx,v 1.3 2004-07-10 22:25:58 stephena Exp $
+// $Id: Game.cxx,v 1.1 2004-07-10 22:25:58 stephena Exp $
 //============================================================================ 
 
-#include "pch.hxx"
-#include "resource.h"
+#include "Game.hxx"
 
-#include "bspf.hxx"
-#include "Settings.hxx"
-#include "SettingsWin32.hxx"
-#include "GlobalData.hxx"
-
-
-CGlobalData::CGlobalData( HINSTANCE hInstance )
-           : mySettings(0),
-             myInstance(hInstance)
+Game::Game( void )
 {
-  mySettings = new SettingsWin32();
-  mySettings->loadConfig();
+  _available    = false;
+  _rom          = " ";
+  _md5          = " ";
+  _name         = " ";
+  _rarity       = " ";
+  _manufacturer = " ";
+  _note         = " ";
 }
 
-CGlobalData::~CGlobalData()
+
+Game::~Game( void )
 {
-  if(mySettings)
-    delete mySettings;
 }

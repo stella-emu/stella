@@ -1,10 +1,24 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/10/2000
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
-#ifndef MAINDLG_H
-#define MAINDLG_H
-#pragma once
+// Copyright (c) 1995-2000 by Jeff Miller
+// Copyright (c) 2004 by Stephen Anthony
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: MainDlg.hxx,v 1.3 2004-07-10 22:25:58 stephena Exp $
+//============================================================================ 
+
+#ifndef __MAINDLG_H_
+#define __MAINDLG_H_
 
 #include "resource.h"
 
@@ -16,175 +30,19 @@ class CGlobalData;
 #include "HeaderCtrl.hxx"
 #include "RoundButton.hxx"
 
-class CMainDlg;
 
-class CListData
+class MainDlg
 {
-    friend CMainDlg;
-
-public:
-
-    CListData() :
-        m_fPopulated( FALSE )
-        {
-        }
-
-    DWORD Initialize()
-        {
-            //
-            // ListView control doesn't like NULLs returned, so initialize all
-            //
-
-            if ( ! m_strName.Set( _T("") ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! m_strManufacturer.Set( _T("") ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! m_strRarity.Set( _T("") ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! m_strFileName.Set( _T("") ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! m_strNote.Set( _T("") ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            return ERROR_SUCCESS;
-        }
-
-    //
-    // MetaData
-    //
-
-    static int GetColumnCount( void )
-        {
-            return 4;
-        }
-
-    enum ColumnIndex
-        {
-            FILENAME_COLUMN,
-            NAME_COLUMN,
-            MANUFACTURER_COLUMN,
-            RARITY_COLUMN,
-        };
-
-    static UINT GetColumnNameIdForColumn( int nCol )
-        {
-            UINT uID = 0;
-
-            switch ( nCol )
-            {
-            case NAME_COLUMN:
-                uID = IDS_NAME;
-                break;
-                
-            case MANUFACTURER_COLUMN:
-                uID = IDS_MANUFACTURER;
-                break;
-                
-            case RARITY_COLUMN:
-                uID = IDS_RARITY;
-                break;
-                
-            case FILENAME_COLUMN:
-                uID = IDS_FILENAME;
-                break;
-                
-            default:
-                ASSERT(FALSE);
-                break;
-            }
-
-            return uID;
-        }
-
-    LPCTSTR GetTextForColumn( int nCol ) const
-        {
-            LPCTSTR pszText = NULL;
-            
-            switch (nCol)
-            {
-            case NAME_COLUMN:
-                pszText = m_strName.Get();
-                break;
-                
-            case MANUFACTURER_COLUMN:
-                pszText = m_strManufacturer.Get();
-                break;
-                
-            case RARITY_COLUMN:
-                pszText = m_strRarity.Get();
-                break;
-                
-            case FILENAME_COLUMN:
-                pszText = m_strFileName.Get();
-                break;
-                
-            default:
-                ASSERT( FALSE );
-                break;
-            }
-
-            return pszText;
-        }
-
-    LPCTSTR GetNote( void ) const
-        {
-            return m_strNote.Get();
-        }
-
-    BOOL IsPopulated( void ) const
-        {
-            return m_fPopulated;
-        }
-
-private:
-
-    CSimpleString m_strName;
-    CSimpleString m_strManufacturer;
-    CSimpleString m_strRarity;
-    CSimpleString m_strFileName;
-    CSimpleString m_strNote;
-    BOOL m_fPopulated;
-
-private:
-
-CListData( const CListData& );  // no implementation
-void operator=( const CListData& );  // no implementation
-
-};
-
-// ---------------------------------------------------------------------------
-
-class CMainDlg
-{
-public:
-
+  public:
     enum { IDD = IDD_MAIN };
 
-    CMainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance );
+    MainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance );
 
     virtual int DoModal( HWND hwndParent );
 
-    operator HWND( void ) const
-        {
-            return myHwnd;
-        }
+    operator HWND( void ) const { return myHwnd; }
 
-private:
-
+  private:
     HWND myHwnd;
 
     CCoolCaption  m_CoolCaption;
@@ -196,66 +54,45 @@ private:
     CRoundButton  myConfigButton;
     CRoundButton  myExitButton;
 
-    //
     // Message handlers
-    //
-
     BOOL OnInitDialog( void );
     BOOL OnCommand( int id, HWND hwndCtl, UINT codeNotify );
     BOOL OnNotify( int idCtrl, LPNMHDR pnmh );
     BOOL OnEraseBkgnd( HDC hdc );
     HBRUSH OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic );
 
-    //
     // wm_notify handlers
-    //
-
-    void OnGetDispInfo( NMLVDISPINFO* pnmh );
-
-    void OnColumnClick( LPNMLISTVIEW pnmv );
     void OnItemChanged( LPNMLISTVIEW pnmv );
+//    void OnColumnClick( LPNMLISTVIEW pnmv );
 
-    //
     // cool caption handlers
-    //
-
     void OnDestroy( void );
     void OnNcPaint( HRGN hrgn );
     void OnNcActivate( BOOL fActive );
     BOOL OnNcLButtonDown( INT nHitTest, POINTS pts );
 
-    //
     // callback methods
-    //
-
     BOOL CALLBACK DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam );
-
     static BOOL CALLBACK StaticDialogFunc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam );
-    static int CALLBACK ListViewCompareFunc( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort );
 
     // internal data
-
-    DWORD PopulateRomList();
     void UpdateRomList();
-    DWORD ReadRomData( CListData* ) const;
+    bool PopulateRomList();
+    bool LoadRomListFromDisk();
+    bool LoadRomListFromCache();
 
     HINSTANCE m_hInstance;
 
     // stuff in list
-
     HWND myHwndList;
-    void ClearList();
+    LPARAM ListView_GetItemData( HWND hwndList, int iItem );
+    void ListView_Clear();
 
     HFONT m_hfontRomNote;
 
     // Stella stuff
-
     CGlobalData&    myGlobalData;
     CStellaXMain    m_stella;
-
-CMainDlg( const CMainDlg& );  // no implementation
-void operator=( const CMainDlg& );  // no implementation
-
 };
 
 #endif

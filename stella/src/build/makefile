@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.54 2004-06-28 02:06:21 stephena Exp $
+## $Id: makefile,v 1.55 2004-07-10 22:25:57 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -25,7 +25,7 @@
 
 ### add your own compiler optimizations here
 ### if none are provided, the defaults will be used
-OPTIMIZATIONS  = 
+OPTIMIZATIONS  = -O2 -march=i586 
 
 ### to include joystick support
  JOYSTICK_SUPPORT = 1

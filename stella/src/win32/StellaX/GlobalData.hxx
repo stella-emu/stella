@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalData.hxx,v 1.1 2004-06-28 23:13:54 stephena Exp $
+// $Id: GlobalData.hxx,v 1.2 2004-07-10 22:25:58 stephena Exp $
 //============================================================================ 
 
 #ifndef GLOBAL_DATA_HXX
@@ -34,14 +34,6 @@ class CGlobalData
     CGlobalData( HINSTANCE hInstance );
     ~CGlobalData( void );
 
-    LPCTSTR PathName( void ) const
-    {
-      if ( myPathName[0] == _T('\0') )
-        return NULL;
-
-      return myPathName;
-    }
-
     HINSTANCE ModuleInstance( void ) const
     {
       return myInstance;
@@ -55,10 +47,7 @@ class CGlobalData
   private:
     Settings* mySettings;
 
-    string myArgumentList;
-
     HINSTANCE myInstance;
-    TCHAR myPathName[ MAX_PATH ];
 
     CGlobalData( const CGlobalData& );     // no implementation
     void operator=( const CGlobalData& );  // no implementation

@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\emucore;..\..\emucore\m6502\src\bspf\src;..\..\win32"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;BSPF_WIN32;DISPLAY_OPENGL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;BSPF_WIN32;JOYSTICK_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -68,7 +68,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\emucore;..\..\emucore\m6502\src\bspf\src;..\..\win32"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;BSPF_WIN32;JOYSTICK_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
 				WarningLevel="1"
@@ -130,6 +130,9 @@
 				RelativePath=".\debug.cxx">
 			</File>
 			<File
+				RelativePath=".\Game.cxx">
+			</File>
+			<File
 				RelativePath=".\GlobalData.cxx">
 			</File>
 			<File
@@ -145,10 +148,19 @@
 				RelativePath=".\MainDlg.cxx">
 			</File>
 			<File
+				RelativePath="..\..\emucore\MD5.cxx">
+			</File>
+			<File
 				RelativePath=".\pch.cxx">
 			</File>
 			<File
 				RelativePath=".\PropertySheet.cxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\Props.cxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\PropsSet.cxx">
 			</File>
 			<File
 				RelativePath=".\RoundButton.cxx">
@@ -189,6 +201,9 @@
 				RelativePath=".\debug.hxx">
 			</File>
 			<File
+				RelativePath=".\Game.hxx">
+			</File>
+			<File
 				RelativePath=".\GlobalData.hxx">
 			</File>
 			<File
@@ -201,10 +216,19 @@
 				RelativePath=".\MainDlg.hxx">
 			</File>
 			<File
+				RelativePath="..\..\emucore\MD5.hxx">
+			</File>
+			<File
 				RelativePath=".\pch.hxx">
 			</File>
 			<File
 				RelativePath=".\PropertySheet.hxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\Props.hxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\PropsSet.hxx">
 			</File>
 			<File
 				RelativePath=".\Resource.h">

@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: main.cxx,v 1.1 2004-06-28 23:13:54 stephena Exp $
+// $Id: main.cxx,v 1.2 2004-07-10 22:25:58 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -84,7 +84,7 @@ int WINAPI _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   CGlobalData globaldata( hInstance );
 
   // show the ui
-  CMainDlg dlg( globaldata, hInstance );
+  MainDlg dlg( globaldata, hInstance );
   dlg.DoModal( NULL );
 
   if ( hrCoInit == S_OK )

@@ -4,29 +4,18 @@
 //
 #ifndef PCH_H
 #define PCH_H
-#pragma once
-
-#ifndef _WIN32
-#error This file can only be compiled for a Win32 platform
-#endif
 
 #define WIN32_LEAN_AND_MEAN
-#define STRICT
 #define DIRECTINPUT_VERSION 5
+
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
-
-// warning C4201: nonstandard extension used : nameless struct/union
-
-#pragma warning ( once: 4201 )
 
 #include <mmsystem.h>
 #include <commdlg.h>
 #include <commctrl.h>
 
-#include <ddraw.h>
-#include <dsound.h>
 #include <dinput.h>
 
 #include "debug.hxx"
@@ -34,9 +23,6 @@
 // ---------------------------------------------------------------------------
 // Conditional defines
 
-#define DOUBLE_WIDTH
-
-//
 // Macros
 //
 
@@ -53,21 +39,19 @@
 
 class CSimpleString
 {
-public:
-
+  public:
     CSimpleString() : 
         m_psz( NULL ),
         m_cch( -1 )
-        {
-        }
+    {
+    }
 
     ~CSimpleString()
-        {
-            delete[] m_psz;
-            m_psz = NULL;
-
-            m_cch = -1;
-        }
+    {
+      delete[] m_psz;
+      m_psz = NULL;
+      m_cch = -1;
+    }
 
     BOOL Set( LPCTSTR psz )
         {
@@ -134,6 +118,5 @@ void MessageBoxFromWinError(
 void MessageBoxFromGetLastError(
     LPCTSTR pszCaption /* = NULL */
     );
-
 
 #endif

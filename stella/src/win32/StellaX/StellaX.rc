@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Static",IDC_ROMPATH,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,57,45,254,8
     CONTROL         "",IDC_ROMNOTE,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
-                    WS_GROUP,93,205,309,8
+                    WS_GROUP,105,205,297,8
     LTEXT           "Game notes (if available):",-1,7,205,98,8
     CONTROL         "&Reload",IDC_RELOAD,"Button",BS_OWNERDRAW | WS_TABSTOP,
                     172,226,54,16

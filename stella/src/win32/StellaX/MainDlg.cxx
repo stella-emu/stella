@@ -14,54 +14,33 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.3 2004-07-06 22:51:58 stephena Exp $
+// $Id: MainDlg.cxx,v 1.4 2004-07-10 22:25:58 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
 #include "MainDlg.hxx"
+#include "Game.hxx"
 #include "GlobalData.hxx"
 #include "PropertySheet.hxx"
 #include "AboutPage.hxx"
 #include "ConfigPage.hxx"
 #include "resource.h"
 #include "Settings.hxx"
+#include "PropsSet.hxx"
+#include "MD5.hxx"
 
 #define BKGND_BITMAP_TOP     64
 #define BKGND_BITMAP_BOTTOM  355
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-inline LPARAM ListView_GetItemData( HWND hwndList, int iItem )
-{
-  LVITEM lvi;
-  lvi.mask = LVIF_PARAM;
-  lvi.iItem = iItem;
-  lvi.iSubItem = 0;
-
-  ListView_GetItem(hwndList, &lvi);
-
-  return lvi.lParam;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-CMainDlg::CMainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance )
+MainDlg::MainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance )
         : myGlobalData(rGlobalData),
           m_hInstance(hInstance)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-void CMainDlg::ClearList( void )
-{
-  int nCount = ListView_GetItemCount( myHwndList );
-
-  for (int i = 0; i < nCount; ++i)
-    delete (CListData*)ListView_GetItemData( myHwndList, i );
-
-  ListView_DeleteAllItems( myHwndList );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-int CMainDlg::DoModal( HWND hwndParent )
+int MainDlg::DoModal( HWND hwndParent )
 {
   return DialogBoxParam( m_hInstance, 
                          MAKEINTRESOURCE(IDD),
@@ -72,20 +51,20 @@ int CMainDlg::DoModal( HWND hwndParent )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 BOOL CALLBACK
-CMainDlg::StaticDialogFunc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
+MainDlg::StaticDialogFunc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-  CMainDlg* pDlg;
+  MainDlg* pDlg;
 
   switch ( uMsg )
   {
     case WM_INITDIALOG:
-      pDlg = reinterpret_cast<CMainDlg*>( lParam );
+      pDlg = reinterpret_cast<MainDlg*>( lParam );
       pDlg->myHwnd = hDlg;
       (void)::SetWindowLong( hDlg, DWL_USER, reinterpret_cast<LONG>( pDlg ) );
       break;
 
     default:
-      pDlg = reinterpret_cast<CMainDlg*>( ::GetWindowLong( hDlg, DWL_USER ) );
+      pDlg = reinterpret_cast<MainDlg*>( ::GetWindowLong( hDlg, DWL_USER ) );
       if ( pDlg == NULL )
         return FALSE;
       break;
@@ -96,7 +75,7 @@ CMainDlg::StaticDialogFunc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 BOOL CALLBACK
-CMainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
+MainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
   BOOL b;
 
@@ -168,7 +147,7 @@ CMainDlg::DialogFunc( UINT uMsg, WPARAM wParam, LPARAM lParam )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-BOOL CMainDlg::OnInitDialog( void  )
+BOOL MainDlg::OnInitDialog( void  )
 {
   DWORD dwRet;
 
@@ -181,9 +160,7 @@ BOOL CMainDlg::OnInitDialog( void  )
 
   // Make the Rom note have bold text
   HWND hwndCtrl;
-
   hwndCtrl = ::GetDlgItem( hwnd, IDC_ROMNOTE );
-
   HFONT hfont = (HFONT)::SendMessage( hwndCtrl, WM_GETFONT, 0, 0 );
 
   LOGFONT lf;
@@ -218,18 +195,25 @@ BOOL CMainDlg::OnInitDialog( void  )
   RECT rc;
   ::GetClientRect( myHwndList, &rc );
 
-  LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
-  int cx = lTotalWidth / CListData::GetColumnCount();
+  // Declare the column headings
+  int columnHeader[] = { IDS_NAME, IDS_MANUFACTURER, IDS_RARITY };
 
-  for (int i = 0; i < CListData::GetColumnCount(); ++i)
+  // Set the column widths
+  LONG lTotalWidth = rc.right-rc.left - GetSystemMetrics(SM_CXVSCROLL);
+  int columnWidth[3];
+  columnWidth[0] = (int) (0.58 * lTotalWidth);
+  columnWidth[1] = (int) (0.25 * lTotalWidth);
+  columnWidth[2] = lTotalWidth - columnWidth[0] - columnWidth[1];
+
+  // Set up the column headings
+  for (int i = 0; i < sizeof(columnHeader)/sizeof(int); ++i)
   {
-    ::LoadString( m_hInstance, CListData::GetColumnNameIdForColumn( i ), 
-                  psz, nMaxString );
+    LoadString( m_hInstance, columnHeader[i], psz, nMaxString );
 
     LV_COLUMN lvc;
     lvc.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
     lvc.fmt = LVCFMT_LEFT;
-    lvc.cx = cx;
+    lvc.cx = columnWidth[i];
     lvc.pszText = psz;
     ListView_InsertColumn( myHwndList, i, &lvc );
   }
@@ -245,14 +229,14 @@ BOOL CMainDlg::OnInitDialog( void  )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
+BOOL MainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
 {
   UNUSED_ALWAYS( hwndCtl );
   UNUSED_ALWAYS( codeNotify );
 
   HWND hwnd = *this;
-  CListData* pListData;
-
+  Game* g;
+  string romfile;
   int nItem;
 
   switch (id)
@@ -263,28 +247,23 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       ASSERT( nItem != -1 );
       if ( nItem == -1 )
       {
-        ::MessageBox( m_hInstance, hwnd, IDS_NO_ITEM_SELECTED );
+        MessageBox( m_hInstance, hwnd, IDS_NO_ITEM_SELECTED );
         return TRUE;
       }
 
-      pListData = (CListData*)ListView_GetItemData( myHwndList, nItem );
-
-      TCHAR pszPathName[ MAX_PATH + 1 ];
-      lstrcpy( pszPathName, myGlobalData.settings().getString("romdir").c_str() );
-      lstrcat( pszPathName, _T("\\") );
-      lstrcat( pszPathName, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
-
-      (void)m_stella.PlayROM( pszPathName, myGlobalData );
+      g = (Game*) ListView_GetItemData( myHwndList, nItem );
+      romfile = myGlobalData.settings().getString("romdir") + "\\" + g->rom(); 
+      (void)m_stella.PlayROM( romfile, myGlobalData );
 
       // Set focus back to the rom list
-      ::SetFocus( myHwndList );
+      SetFocus( myHwndList );
 
       return TRUE;
       break; // case IDC_PLAY
 
     case IDC_EXIT:
-      ClearList();
-      ::EndDialog( hwnd, IDCANCEL );
+      ListView_Clear();
+      EndDialog( hwnd, IDCANCEL );
       return TRUE;
       break; // case IDC_EXIT
 
@@ -315,7 +294,7 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
 
     case IDC_RELOAD:
     {
-      UpdateRomList();
+      LoadRomListFromDisk();
 
       return TRUE;
       break; // case IDC_RELOAD
@@ -326,23 +305,19 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-BOOL CMainDlg::OnNotify( int idCtrl, LPNMHDR pnmh )
+BOOL MainDlg::OnNotify( int idCtrl, LPNMHDR pnmh )
 {
   UNUSED_ALWAYS( idCtrl );
 
   switch ( pnmh->code )
   {
-    case LVN_GETDISPINFO:
-      OnGetDispInfo( (NMLVDISPINFO*)pnmh );
-      return TRUE;
-
-    case LVN_COLUMNCLICK:
-      OnColumnClick( (LPNMLISTVIEW)pnmh );
-      return TRUE;
-
     case LVN_ITEMCHANGED:
       OnItemChanged( (LPNMLISTVIEW)pnmh );
       return TRUE;
+
+//    case LVN_COLUMNCLICK:
+//      OnColumnClick( (LPNMLISTVIEW)pnmh );
+//      return TRUE;
 
     case NM_DBLCLK:
       // send out an ok click to play
@@ -352,6 +327,33 @@ BOOL CMainDlg::OnNotify( int idCtrl, LPNMHDR pnmh )
 
   // not handled
   return FALSE;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void MainDlg::OnItemChanged( LPNMLISTVIEW pnmv )
+{
+  HWND hwnd = *this;
+
+  HWND hwndNote = ::GetDlgItem( hwnd, IDC_ROMNOTE );
+
+  RECT rc;
+  GetWindowRect(hwndNote, &rc);
+  ScreenToClient( hwnd, (LPPOINT)&rc );
+  ScreenToClient( hwnd, ((LPPOINT)&rc)+1 );
+
+  int iItem = ListView_GetNextItem(pnmv->hdr.hwndFrom, -1, LVNI_SELECTED);
+  if (iItem == -1)
+  {
+    SetWindowText( hwndNote, _T("") );
+    EnableWindow( GetDlgItem( hwnd, IDC_PLAY ), FALSE );
+    InvalidateRect( hwnd, &rc, TRUE );
+    return;
+  }
+
+  Game* g = (Game*)ListView_GetItemData( pnmv->hdr.hwndFrom, pnmv->iItem );
+  SetWindowText( hwndNote, g->note().c_str() );
+  InvalidateRect( hwnd, &rc, TRUE );
+  EnableWindow( GetDlgItem( hwnd, IDC_PLAY ), TRUE );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -370,7 +372,7 @@ static void FillSolidRect( HDC hdc, LPCRECT lpRect, COLORREF clr )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-BOOL CMainDlg::OnEraseBkgnd( HDC hdc )
+BOOL MainDlg::OnEraseBkgnd( HDC hdc )
 {
   // don't do this in 256 color
 
@@ -419,7 +421,7 @@ BOOL CMainDlg::OnEraseBkgnd( HDC hdc )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-HBRUSH CMainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
+HBRUSH MainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
 {
   // don't do this in 256 color
 
@@ -435,21 +437,20 @@ HBRUSH CMainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-void CMainDlg::UpdateRomList( void )
+void MainDlg::UpdateRomList( void )
 {
   HWND hwndText;
   RECT rc;
 
-  DWORD dwError = PopulateRomList();
-  if ( dwError != ERROR_SUCCESS )
-    MessageBoxFromWinError( dwError, _T("PopulateRomList") );
+  if ( !PopulateRomList() )
+    MessageBoxFromWinError( 0, _T("PopulateRomList") );
 
   // if items added, select first item and enable play button
   int nCount = ListView_GetItemCount( myHwndList );
   if (nCount != 0)
   {
     myHeader.SetSortCol( 0, TRUE );
-    ListView_SortItems( myHwndList, ListViewCompareFunc, (LPARAM)this ); 
+//    ListView_SortItems( myHwndList, ListViewCompareFunc, (LPARAM)this ); 
     ListView_SetItemState( myHwndList, 0, LVIS_SELECTED | LVIS_FOCUSED,
                            LVIS_SELECTED | LVIS_FOCUSED );
   }
@@ -480,287 +481,200 @@ void CMainDlg::UpdateRomList( void )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-DWORD CMainDlg::PopulateRomList( void )
+bool MainDlg::PopulateRomList( void )
 {
-  DWORD dwRet;
-  ClearList();
+  bool result = false;
+  bool cacheFileExists = myGlobalData.settings().fileExists("stellax.cache");
+  bool cacheIsStale = false; // FIXME
 
-  TCHAR pszPath[ MAX_PATH ];
+  if(cacheFileExists && !cacheIsStale)
+    result = LoadRomListFromCache();
+  else
+    result = LoadRomListFromDisk();
 
-  lstrcpy( pszPath, myGlobalData.settings().getString("romdir").c_str() );
-  lstrcat( pszPath, _T("\\*.bin") );
+  return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+bool MainDlg::LoadRomListFromDisk()
+{
+  ListView_Clear();
+
+  // Get the location of the romfiles (*.bin)
+  string romdir = myGlobalData.settings().getString("romdir");
+  romdir += "\\";
+  string romfiles = romdir + "*.bin";
 
   WIN32_FIND_DATA ffd;
-  HANDLE hFind = FindFirstFile( pszPath, &ffd );
+  HANDLE hFind = FindFirstFile( romfiles.c_str(), &ffd );
 
   ListView_SetItemCount( myHwndList, 100 );
 
   int iItem = 0;
-  BOOL fDone = (hFind == INVALID_HANDLE_VALUE);
-  while(!fDone)
+  bool done = (hFind == INVALID_HANDLE_VALUE);
+  while(!done)
   {
-    // File metadata will be read in ReadRomData()
-    CListData* pListData  = new CListData;
-    if( pListData == NULL )
-      return ERROR_NOT_ENOUGH_MEMORY;
-
-    dwRet = pListData->Initialize();
-    if( dwRet != ERROR_SUCCESS )
-      return dwRet;
-
-    if ( !pListData->m_strFileName.Set( ffd.cFileName ) )
-      return FALSE;
+    Game* g = new Game();
+    if( g == NULL )
+      return false;
 
     LV_ITEM lvi;
     lvi.mask = LVIF_TEXT | LVIF_PARAM;
     lvi.iItem = iItem++;
     lvi.iSubItem = 0;
-    lvi.pszText = LPSTR_TEXTCALLBACK;
-    lvi.lParam = (LPARAM)pListData;
+    lvi.pszText = "";
+    lvi.lParam = (LPARAM) g;
     int nItem = ListView_InsertItem( myHwndList, &lvi );
 
     ASSERT( nItem != -1 );
 
-    ListView_SetItemText( myHwndList, nItem, 
-        CListData::FILENAME_COLUMN, LPSTR_TEXTCALLBACK );
-    ListView_SetItemText(myHwndList, nItem, 
-        CListData::MANUFACTURER_COLUMN, LPSTR_TEXTCALLBACK);
-    ListView_SetItemText( myHwndList, nItem, 
-        CListData::RARITY_COLUMN, LPSTR_TEXTCALLBACK );
+    g->setAvailable( true );
+    g->setRom( ffd.cFileName );
+
+    // Set the name (shown onscreen) to be the rom
+    // It will be overwritten later if a name is found in the properties set
+    g->setName( ffd.cFileName );
 
     // go to the next rom file
-    fDone = !FindNextFile(hFind, &ffd);
+    done = !FindNextFile(hFind, &ffd);
   }
 
   if( hFind != INVALID_HANDLE_VALUE )
     VERIFY( ::FindClose( hFind ) );
 
-  return ERROR_SUCCESS;
-}
+  // Create a propertiesset object and load the properties
+  // We don't create the propsSet until we need it, since it's
+  // a time-consuming process
+  PropertiesSet propsSet;
+  string theUserProFile   = myGlobalData.settings().userPropertiesFilename();
+  string theSystemProFile = myGlobalData.settings().systemPropertiesFilename();
+  if(theUserProFile != "")
+    propsSet.load(theUserProFile, true);
+  else if(theSystemProFile != "")
+    propsSet.load(theSystemProFile, true);
+  else
+    propsSet.load("", false);
 
-DWORD CMainDlg::ReadRomData(CListData* pListData) const
-{
-/*
-  // TODO: Move this method to ListData class (?)
-  if( pListData == NULL )
+  // Now, rescan the items in the listview and update the onscreen
+  // text and game properties
+  // Also generate a cache file so the program will start faster next time
+  ofstream cache("stellax.cache");
+  int count = ListView_GetItemCount( myHwndList );
+  cache << count << endl;
+  for (int i = 0; i < count; ++i)
   {
-    ASSERT( FALSE );
-    return ERROR_BAD_ARGUMENTS;
+    Game* g = (Game*) ListView_GetItemData(myHwndList, i);
+
+    // Get the MD5sum for this rom
+    // Use it to lookup the rom in the properties set
+    string rom = romdir + g->rom();
+    ifstream in(rom.c_str(), ios_base::binary);
+    if(!in)
+      return false;
+    uInt8* image = new uInt8[512 * 1024];
+    in.read((char*)image, 512 * 1024);
+    uInt32 size = in.gcount();
+    in.close(); 
+    string md5 = MD5( image, size );
+    delete[] image; 
+
+    // Get the properties for this rom
+    Properties props;
+    propsSet.getMD5( md5, props );
+
+    // For some braindead reason, the ListView_SetItemText won't
+    // allow std::string::c_str(), so we create C-strings instead
+    char name[256], manufacturer[256], rarity[256];
+    strncpy(name, props.get("Cartridge.Name").c_str(), 255);
+    strncpy(manufacturer, props.get("Cartridge.Manufacturer").c_str(), 255);
+    strncpy(rarity, props.get("Cartridge.Rarity").c_str(), 255);
+
+    // Make sure the onscreen 'Name' field isn't blank
+    if(props.get("Cartridge.Name") == "")
+      strncpy(name, g->name().c_str(), 255);
+
+    // Update the current game
+    // To save memory, 'Note' is the only item that needs to be saved
+    g->setNote( props.get("Cartridge.Note") );
+
+    // Update the cachefile with this game
+    cache << g->rom() << endl
+          << md5 << endl
+          << name << endl
+          << rarity << endl
+          << manufacturer << endl
+          << g->note() << endl;
+
+    // Finally, update the listview itself
+    ListView_SetItemText( myHwndList, i, 0, name );
+    ListView_SetItemText( myHwndList, i, 1, manufacturer );
+    ListView_SetItemText( myHwndList, i, 2, rarity );
   }
+  cache.close();
+  SetFocus( myHwndList );
 
-  // attempt to read the rom file
-  TCHAR pszPath[MAX_PATH + 1];
-  lstrcpy( pszPath, myGlobalData.settings().getString("romdir").c_str() );
-  lstrcat( pszPath, _T("\\") );
-  lstrcat( pszPath, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
-
-  HANDLE hFile;
-  hFile = CreateFile( pszPath, 
-                      GENERIC_READ, 
-                      FILE_SHARE_READ, 
-                      NULL, 
-                      OPEN_EXISTING, 
-                      FILE_ATTRIBUTE_NORMAL,
-                      NULL );
-  if(hFile == INVALID_HANDLE_VALUE)
-    return GetLastError();
-
-  DWORD dwFileSize = ::GetFileSize( hFile, NULL );
-  BYTE* pImage = new BYTE[dwFileSize];
-  if( pImage == NULL )
-    return ERROR_NOT_ENOUGH_MEMORY;
-    
-  DWORD dwRead;
-  if( ::ReadFile( hFile, pImage, dwFileSize, &dwRead, NULL ) )
-  {
-    // Read the file, now check the md5
-    std::string md5 = MD5( pImage, dwFileSize );
-        
-    // search through the properties set for this MD5
-    PropertiesSet& propertiesSet = m_stella.GetPropertiesSet();
-
-        uInt32 setSize = propertiesSet.size();
-        
-        for (uInt32 i = 0; i < setSize; ++i)
-        {
-            if (propertiesSet.get(i).get("Cartridge.MD5") == md5)
-            {
-                // got it!
-                break;
-            }
-        }
-        
-        if (i != setSize)
-        {
-            const Properties& properties = propertiesSet.get(i);
-            
-            if ( ! pListData->m_strManufacturer.Set( 
-                properties.get("Cartridge.Manufacturer").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! pListData->m_strName.Set( 
-                properties.get("Cartridge.Name").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if (! pListData->m_strRarity.Set( 
-                properties.get("Cartridge.Rarity").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-
-            if ( ! pListData->m_strNote.Set( 
-                properties.get("Cartridge.Note").c_str() ) )
-            {
-                return ERROR_NOT_ENOUGH_MEMORY;
-            }
-        }
-        else
-        {
-            //
-            // Any output here should be appended to the emucore\stella.pro file
-            //
-
-            TRACE( "\"Cartridge.MD5\" \"%s\"\n\"Cartridge.Name\" \"%s\"\n\"\"\n", 
-                   md5.c_str(), 
-                   pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
-        }
-    }
-    
-    delete[] pImage;
-    
-    VERIFY( ::CloseHandle( hFile ) );
-
-    pListData->m_fPopulated = TRUE;
-*/
-    return ERROR_SUCCESS;
+  return true;
 }
 
-void CMainDlg::OnColumnClick( LPNMLISTVIEW pnmv )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+bool MainDlg::LoadRomListFromCache()
 {
-    HCURSOR hcur = ::SetCursor(::LoadCursor(NULL, IDC_WAIT));
+  ListView_Clear();
+  char count[10], rom[256], md5[256], name[256], rarity[256],
+       manufacturer[256], note[256];
 
-    myHeader.SetSortCol(pnmv->iSubItem, TRUE);
-    ListView_SortItems(pnmv->hdr.hwndFrom, ListViewCompareFunc, (LPARAM)this);
+  // We don't scan the roms at all; just load directly from the cache file
+  ifstream in("stellax.cache");
+  if (!in)
+    return false;
 
-    // ensure the selected item is visible
+  in.getline(count, 9);
+  int numRoms = atoi(count);
+  ListView_SetItemCount( myHwndList, 100 );
 
-    int nItem = ListView_GetNextItem( myHwndList, -1, LVNI_SELECTED );
-    if (nItem != -1)
-    {
-        ListView_EnsureVisible( myHwndList, nItem, TRUE );
-    }
-
-    ::SetCursor(hcur);
-}
-
-void CMainDlg::OnItemChanged( LPNMLISTVIEW pnmv )
-{
-  HWND hwnd = *this;
-
-  HWND hwndNote = ::GetDlgItem( hwnd, IDC_ROMNOTE );
-
-  RECT rc;
-  GetWindowRect(hwndNote, &rc);
-  ScreenToClient( hwnd, (LPPOINT)&rc );
-  ScreenToClient( hwnd, ((LPPOINT)&rc)+1 );
-
-  int iItem = ListView_GetNextItem(pnmv->hdr.hwndFrom, -1, LVNI_SELECTED);
-  if (iItem == -1)
+  int iItem = 0;
+  for(int i = 0; i < numRoms; i++)
   {
-    SetWindowText( hwndNote, _T("") );
-    EnableWindow( ::GetDlgItem( hwnd, IDC_PLAY ), FALSE );
-    InvalidateRect( hwnd, &rc, TRUE );
-    return;
+    string line;
+    Game* g = new Game();
+    if( g == NULL )
+      return false;
+
+    // Get the data from the cache file
+    in.getline(rom, 255);
+    in.getline(md5, 255);
+    in.getline(name, 255);
+    in.getline(rarity, 255);
+    in.getline(manufacturer, 255);
+    in.getline(note, 255);
+
+    // These are the only things we really need to save
+    g->setAvailable( true );
+    g->setRom( rom );
+    g->setNote( note );
+
+    LV_ITEM lvi;
+    lvi.mask = LVIF_TEXT | LVIF_PARAM;
+    lvi.iItem = iItem++;
+    lvi.iSubItem = 0;
+    lvi.pszText = "";
+    lvi.lParam = (LPARAM) g;
+    int nItem = ListView_InsertItem( myHwndList, &lvi );
+
+    ASSERT( nItem != -1 );
+
+    ListView_SetItemText( myHwndList, nItem, 0, name );
+    ListView_SetItemText( myHwndList, nItem, 1, manufacturer );
+    ListView_SetItemText( myHwndList, nItem, 2, rarity );
   }
+  SetFocus( myHwndList );
 
-  CListData* pListData = (CListData*)ListView_GetItemData( 
-    pnmv->hdr.hwndFrom, 
-    pnmv->iItem );
-
-  SetWindowText( hwndNote, pListData->GetNote() );
-  InvalidateRect( hwnd, &rc, TRUE );
-  EnableWindow( ::GetDlgItem( hwnd, IDC_PLAY ), TRUE );
+  return true;
 }
 
-// ---------------------------------------------------------------------------
-// LPSTR_TEXTCALLBACK message handlers
-void CMainDlg::OnGetDispInfo(NMLVDISPINFO* pnmv)
-{
-  // Provide the item or subitem's text, if requested. 
-  if( !(pnmv->item.mask & LVIF_TEXT ) )
-    return;
-
-  CListData* pListData = (CListData*)
-             ListView_GetItemData( pnmv->hdr.hwndFrom, pnmv->item.iItem );
-  ASSERT( pListData );
-  if( pListData == NULL )
-    return;
-
-  if( !pListData->IsPopulated() )
-    ReadRomData( pListData );
-
-  pnmv->item.pszText = const_cast<LPTSTR>( pListData->GetTextForColumn(pnmv->item.iSubItem) );
-} 
-
-int CALLBACK CMainDlg::ListViewCompareFunc(
-    LPARAM lParam1, 
-    LPARAM lParam2, 
-    LPARAM lParamSort
-    )
-{
-    CMainDlg* pThis = reinterpret_cast<CMainDlg*>( lParamSort );
-
-    //
-    // I assume that the metadata for column 0 is always available,
-    // while other column metadata requires a call to ReadRomData
-    //
-
-    int nSortCol = pThis->myHeader.GetSortCol();
-
-    CListData* pItem1 = reinterpret_cast<CListData*>( lParam1 );
-    if ( ! pItem1->IsPopulated() && nSortCol != 0 )
-    {
-        pThis->ReadRomData( pItem1 );
-    }
-
-    CListData* pItem2 = reinterpret_cast<CListData*>( lParam2 );  
-    if ( ! pItem2->IsPopulated() && nSortCol != 0 )
-    {
-        pThis->ReadRomData( pItem2 );
-    }
-
-    LPCTSTR pszItem1 = pItem1->GetTextForColumn( nSortCol );
-    LPCTSTR pszItem2 = pItem2->GetTextForColumn( nSortCol );
-
-    //
-    // put blank items last
-    //
-
-    if ( pszItem1 == NULL || pszItem1[0] == _T('\0') )
-    {
-        return 1;
-    }
-
-    if ( pszItem2 == NULL || pszItem2[0] == _T('\0') )
-    {
-        return -1;
-    }
-    
-    //
-    // Compare the specified column. 
-    //
-
-    return lstrcmpi( pszItem1, pszItem2 );
-} 
-
-// ---------------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 // Cool caption message handlers
-
-void CMainDlg::OnDestroy(
+void MainDlg::OnDestroy(
     void
     )
 {
@@ -773,24 +687,51 @@ void CMainDlg::OnDestroy(
     }
 }
 
-void CMainDlg::OnNcPaint(
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void MainDlg::OnNcPaint(
     HRGN hrgn
     )
 {
     m_CoolCaption.OnNcPaint( hrgn );
 }
 
-void CMainDlg::OnNcActivate(
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void MainDlg::OnNcActivate(
     BOOL fActive
     )
 {
     m_CoolCaption.OnNcActivate( fActive );
 }
 
-BOOL CMainDlg::OnNcLButtonDown(
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+BOOL MainDlg::OnNcLButtonDown(
     INT nHitTest,
     POINTS pts
     )
 {
     return m_CoolCaption.OnNCLButtonDown( nHitTest, pts );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+LPARAM MainDlg::ListView_GetItemData( HWND hwndList, int iItem )
+{
+  LVITEM lvi;
+  lvi.mask = LVIF_PARAM;
+  lvi.iItem = iItem;
+  lvi.iSubItem = 0;
+
+  ListView_GetItem(hwndList, &lvi);
+
+  return lvi.lParam;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+void MainDlg::ListView_Clear( void )
+{
+  int nCount = ListView_GetItemCount( myHwndList );
+
+  for (int i = 0; i < nCount; ++i)
+    delete (Game*) ListView_GetItemData( myHwndList, i );
+
+  ListView_DeleteAllItems( myHwndList );
 }
