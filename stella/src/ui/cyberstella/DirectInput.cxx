@@ -13,174 +13,141 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.cxx,v 1.2 2003-11-11 18:55:39 stephena Exp $
+// $Id: DirectInput.cxx,v 1.3 2003-11-13 00:25:07 stephena Exp $
 //============================================================================
-
-#define DIRECTINPUT_VERSION 0x700
 
 #include "pch.hxx"
 #include "resource.h"
 
 #include "DirectInput.hxx"
 
-
-//
-// DirectInput
-//
-
-DirectInput::DirectInput(HWND hwnd, DWORD dwDevType, int nButtonCount)
-         : m_hwnd( hwnd )
-         , m_piDID(NULL)
-         , m_piDI(NULL)
-         , m_dwDevType(dwDevType)
-         , m_nButtonCount(nButtonCount)
-         , m_pButtons(NULL)
-         , m_lX(0)
-         , m_lY(0)
-         , m_fInitialized( FALSE )
+DirectInput::DirectInput()
+  : myHWND(NULL),
+    mylpdi(NULL),
+    myKeyboard(NULL),
+    myMouse(NULL),
+    myLeftJoystick(NULL),
+    myRightJoystick(NULL)
 {
-	TRACE("DirectInput::DirectInput");
 }
 
-DirectInput::~DirectInput(
-    )
+DirectInput::~DirectInput()
 {
-	TRACE("DirectInput::~DirectInput");
-
-	Cleanup();
+	cleanup();
 }
 
-HRESULT DirectInput::Initialize(
-    void
-    )
+bool DirectInput::initialize(HWND hwnd)
 {
-    TRACE("DirectInput::Initialize");
+  // FIXME - this should move to the constructor
+  if(FAILED(DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION,
+                               IID_IDirectInput8, (void**)&mylpdi, NULL)))
+    return false;
 
-    HINSTANCE hInstance = (HINSTANCE)::GetWindowLong( m_hwnd, GWL_HINSTANCE );
+  // initialize the keyboard
+  if(FAILED(mylpdi->CreateDevice(GUID_SysKeyboard, &myKeyboard, NULL)))
+    return false;
+  if(FAILED(myKeyboard->SetDataFormat(&c_dfDIKeyboard)))
+    return false;
+  if(FAILED(myKeyboard->SetCooperativeLevel(hwnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
+    return false;
 
-    if ( m_fInitialized )
-    {
-        return S_OK;
-    }
+  DIPROPDWORD dipdw;
+  dipdw.diph.dwSize       = sizeof(DIPROPDWORD);
+  dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+  dipdw.diph.dwObj        = 0;
+  dipdw.diph.dwHow        = DIPH_DEVICE;
+  dipdw.dwData            = 256;
+  if(FAILED(myKeyboard->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
+    return false;
 
-    if ( m_hwnd == NULL )
-    {
-        // This is for CDisabledJoystick
+  if(FAILED(myKeyboard->Acquire()))
+    return false;
 
-        return S_OK;
-    }
+  // Make sure to reset the event buffer
+  myEventBufferPos = 0;
 
-	HRESULT hr = S_OK;
-    UINT uMsg = 0; // if ( FAILED(hr) )
-    
-    hr = ::CoCreateInstance( CLSID_DirectInput, 
-                             NULL, 
-                             CLSCTX_SERVER, 
-                             IID_IDirectInput, 
-                             (void**)&m_piDI );
-    if ( FAILED(hr) )
-    {
-        TRACE( "WARNING: CCI on DirectInput failed, error=%X", hr );
-
-        //
-        // Note -- I don't fail here so that machines with NT4 (which doesn't
-        // have DirectX 5.0) don't fail
-        //
-        // For this to work, Update() must begin with
-        // if (GetDevice() == NULL) { return E_FAIL; }
-        //
-
-        // uMsg = IDS_NODIRECTINPUT;
-        hr = S_FALSE;
-        goto cleanup;
-    }
-
-    //
-    // Initialize it
-    //
-
-    hr = m_piDI->Initialize( hInstance, DIRECTINPUT_VERSION );
-    if ( FAILED(hr) )
-    {
-        TRACE("IDI::Initialize failed");
-        uMsg = IDS_DI_INIT_FAILED;
-        goto cleanup;
-    }
-
-    //
-	// enumerate to find proper device
-    // The callback will set m_piDID
-    //
-
-	TRACE("\tCalling EnumDevices");
-
-	hr = m_piDI->EnumDevices( m_dwDevType, 
-                              EnumDevicesProc, 
-		                      this, 
-                              DIEDFL_ATTACHEDONLY );
-	if ( m_piDID )
-	{
-		TRACE("\tGot a device!");
-
-		(void)m_piDID->SetCooperativeLevel( m_hwnd, 
-                                            DISCL_NONEXCLUSIVE 
-			                                | DISCL_FOREGROUND);
-
-		hr = GetDevice()->Acquire();
-        if ( hr == DIERR_OTHERAPPHASPRIO )
-        {
-            return S_FALSE;
-        }
-	}
-
-	m_pButtons = new BYTE[GetButtonCount()];
-    if ( m_pButtons == NULL )
-    {
-        hr = E_OUTOFMEMORY;
-        goto cleanup;
-    }
-
-    m_fInitialized = TRUE;
-
-cleanup:
-
-    if ( FAILED(hr) )
-    {
-        Cleanup();
-
-        if ( uMsg != 0 )
-        {
-            MessageBox( hInstance, m_hwnd, uMsg );
-        }
-    }
-
-    return hr;
+  return true;
 }
 
-void DirectInput::Cleanup(
-    void
-    )
+void DirectInput::update()
 {
-	TRACE("DirectInput::Cleanup");
+  HRESULT hr;
 
-	delete[] m_pButtons;
+  if(myKeyboard != NULL)
+  {
+    DIDEVICEOBJECTDATA keyEvents[256];
+    DWORD numKeyEvents = 256;
 
-	if (m_piDID)
-	{
-		m_piDID->Unacquire();
-		m_piDID->Release();
-		m_piDID = NULL;
-	}
+    hr = myKeyboard->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
+                                   keyEvents, &numKeyEvents, 0 );
 
-	if (m_piDI)
-	{
-		m_piDI->Release();
-        m_piDI = NULL;
-	}
+    if(hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED)
+    {
+      hr = myKeyboard->Acquire();
+      if(hr == DIERR_OTHERAPPHASPRIO)
+        return;
 
-    m_fInitialized = FALSE;
+      hr = myKeyboard->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), 
+                                     keyEvents, &numKeyEvents, 0 );
+    }
+
+    // add these new key events to the event buffer
+    for(unsigned int i = 0; i < numKeyEvents; i++ ) 
+    {
+      uInt32 j = myEventBufferPos;
+      if(j < 100)
+      {
+        myEventBuffer[j].type      = (keyEvents[i].dwData & 0x80) ? KEY_DOWN : KEY_UP;
+        myEventBuffer[j].key.key   = keyEvents[i].dwOfs;
+        myEventBuffer[j].key.state = (myEventBuffer[j].type == KEY_DOWN) ? 1 : 0;
+        myEventBufferPos++;
+      }
+      else  // if we run out of room, then ignore new events
+      {
+        myEventBufferPos = 100;
+        break;
+      }
+    }
+  }
+  //  else check mouse
 }
 
+bool DirectInput::pollEvent(DI_Event* event)
+{
+  // Pump the event buffer and return if a new event is found
+  if(myEventBufferPos > 0)
+  {
+    *event = myEventBuffer[--myEventBufferPos];
+    return true;
+  }
+  else
+    return false;
+}
+
+void DirectInput::cleanup()
+{
+  if(myMouse)
+  {
+    myMouse->Unacquire();
+    myMouse->Release();
+    myMouse = NULL;
+  }
+
+  if(myKeyboard)
+  {
+    myKeyboard->Unacquire();
+    myKeyboard->Release();
+    myKeyboard = NULL;
+  }
+
+  if(mylpdi)
+  {
+    mylpdi->Release();
+    mylpdi = NULL;
+  }
+}
+
+/*
 BOOL CALLBACK DirectInput::EnumDevicesProc
 (
 	const DIDEVICEINSTANCE* lpddi, 
@@ -271,46 +238,6 @@ BOOL DirectInput::IsButtonPressed
 
 // ---------------------------------------------------------------------------
 
-DirectKeyboard::DirectKeyboard(
-	HWND hwnd
-    ) : \
-	DirectInput( hwnd, DIDEVTYPE_KEYBOARD, 256 )
-{
-	TRACE( "DirectKeyboard::DirectKeyboard" );
-}
-
-HRESULT DirectKeyboard::Update(
-    void
-    )
-{
-	if ( GetDevice() == NULL )
-    {
-		return E_FAIL;
-    }
-
-	HRESULT hr;
-
-	GetDevice()->Poll();
-
-	hr = GetDevice()->GetDeviceState( GetButtonCount(), m_pButtons );
-	if ( hr == DIERR_INPUTLOST ||
-         hr == DIERR_NOTACQUIRED )
-	{
-		hr = GetDevice()->Acquire();
-        if ( hr == DIERR_OTHERAPPHASPRIO )
-        {
-            return S_FALSE;
-        }
-
-        TRACE( "Acquire = %X", hr );
-
-		GetDevice()->Poll();
-		hr = GetDevice()->GetDeviceState( GetButtonCount(), m_pButtons );
-	}
-
-	ASSERT(hr == S_OK && "Keyboard GetDeviceState failed");
-	return hr;
-}
 
 // ---------------------------------------------------------------------------
 
@@ -546,3 +473,70 @@ HRESULT DirectMouse::Update(
 
 	return hr;
 }
+*/
+
+///////////////////////////////////////
+// The following was part of initialize
+///////////////////////////////////////
+/*
+  // initialize the mouse
+  if (FAILED(lpdi->CreateDevice(GUID_SysMouse, &m_mouse, NULL)))
+    return false;
+  if (FAILED(m_mouse->SetCooperativeLevel(hWnd, DISCL_BACKGROUND |
+                                          DISCL_NONEXCLUSIVE)))
+    return false;
+  if (FAILED(m_mouse->SetDataFormat(&c_dfDIMouse)))
+    return false;
+  if (FAILED(m_mouse->Acquire()))
+    return false;
+*/
+/*
+    //
+	// enumerate to find proper device
+    // The callback will set m_piDID
+    //
+
+	TRACE("\tCalling EnumDevices");
+
+	hr = m_piDI->EnumDevices( m_dwDevType, 
+                              EnumDevicesProc, 
+		                      this, 
+                              DIEDFL_ATTACHEDONLY );
+	if ( m_piDID )
+	{
+		TRACE("\tGot a device!");
+
+		(void)m_piDID->SetCooperativeLevel( m_hwnd, 
+                                            DISCL_NONEXCLUSIVE 
+			                                | DISCL_FOREGROUND);
+
+		hr = GetDevice()->Acquire();
+        if ( hr == DIERR_OTHERAPPHASPRIO )
+        {
+            return S_FALSE;
+        }
+	}
+
+	m_pButtons = new BYTE[GetButtonCount()];
+    if ( m_pButtons == NULL )
+    {
+        hr = E_OUTOFMEMORY;
+        goto cleanup;
+    }
+
+    m_fInitialized = TRUE;
+
+cleanup:
+
+    if ( FAILED(hr) )
+    {
+        Cleanup();
+
+        if ( uMsg != 0 )
+        {
+            MessageBox( hInstance, m_hwnd, uMsg );
+        }
+    }
+
+    return hr;
+*/

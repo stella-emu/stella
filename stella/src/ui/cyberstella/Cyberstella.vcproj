@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dxguid.lib ddraw.lib dsound.lib"
+				AdditionalDependencies="dxguid.lib ddraw.lib dsound.lib dinput8.lib"
 				OutputFile=".\Debug/Cyberstella.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

@@ -13,267 +13,361 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.cxx,v 1.1 2003-11-11 18:55:39 stephena Exp $
+// $Id: FrameBufferWin32.cxx,v 1.2 2003-11-13 00:25:07 stephena Exp $
 //============================================================================
 
-#include <SDL.h>
-#include <SDL_syswm.h>
 #include <sstream>
 
+#include "pch.hxx"
+#include "resource.h"
+
+#include "bspf.hxx"
 #include "Console.hxx"
+#include "EventHandler.hxx"
+#include "StellaEvent.hxx"
 #include "FrameBuffer.hxx"
 #include "FrameBufferWin32.hxx"
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
 
+LPCTSTR FrameBufferWin32::pszClassName = _T("StellaXClass");
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferWin32::FrameBufferWin32()
-   :  theZoomLevel(1),
+   :  m_piDD( NULL ),
+      m_piDDSPrimary( NULL ),
+      m_piDDSBack( NULL ),
+      m_piDDPalette( NULL ),
+      m_fActiveWindow( TRUE ),
+      theZoomLevel(1),
       theMaxZoomLevel(1),
       isFullscreen(false)
 {
-cerr << "FrameBufferWin32::FrameBufferWin32()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferWin32::~FrameBufferWin32()
 {
-cerr << "FrameBufferWin32::~FrameBufferWin32()\n";
+  cleanup();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferWin32::cleanup()
+{
+  if(m_piDDPalette)
+  {
+    m_piDDPalette->Release();
+    m_piDDPalette = NULL;
+  }
+
+  if ( m_piDDSBack )
+  {
+    m_piDDSBack->Release();
+    m_piDDSBack = NULL;
+  }
+
+  if ( m_piDD )
+  {
+    if ( m_piDDSPrimary )
+    {
+      m_piDDSPrimary->Release();
+      m_piDDSPrimary = NULL;
+    }
+
+    m_piDD->Release();
+    m_piDD = NULL;
+  }
+
+	if(myHWND)
+	{
+    ::DestroyWindow( myHWND );
+
+        //
+        // Remove the WM_QUIT which will be in the message queue
+        // so that the main window doesn't exit
+        //
+
+        MSG msg;
+        ::PeekMessage( &msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE );
+
+        myHWND = NULL;
+	}
+
+    ::UnregisterClass( pszClassName, GetModuleHandle(NULL));
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferWin32::init()
 {
-cerr << "FrameBufferWin32::init()\n";
+  HRESULT hrCoInit = ::CoInitialize( NULL );
+
+  // Get the game's width and height
+  mySizeGame.cx = myMediaSource->width() << 1;
+  mySizeGame.cy = myMediaSource->height();
+
+  // Initialize the pixel data table
+  for(uInt32 i = 0; i < 256; ++i)
+    myPalette[i] = i | (i << 8);
+
+  HRESULT hr = S_OK;
+  const unsigned int* pPalette = myMediaSource->palette();
+
+	WNDCLASSEX wcex;
+	ZeroMemory( &wcex, sizeof(wcex) );
+	wcex.cbSize        = sizeof( wcex );
+	wcex.hInstance     = GetModuleHandle(NULL);
+	wcex.lpszClassName = pszClassName;
+	wcex.lpfnWndProc   = StaticWindowProc;
+	wcex.style         = CS_OWNDC;
+	wcex.hIcon         = LoadIcon( NULL, IDI_APPLICATION );
+	wcex.hIconSm       = LoadIcon( NULL, IDI_WINLOGO );
+	wcex.hCursor       = LoadCursor( NULL, IDC_ARROW );
+	wcex.hbrBackground = (HBRUSH)GetStockObject( NULL_BRUSH );
+
+  if( ! ::RegisterClassEx( &wcex ) )
+  {
+OutputDebugString("got here  failed 1");
+    hr = HRESULT_FROM_WIN32( ::GetLastError() );
+    cleanup();
+    return false;
+  }
+
+  myHWND = CreateWindowEx( WS_EX_TOPMOST, 
+                           pszClassName, 
+                           _T("StellaX"), 
+		                       WS_VISIBLE | WS_POPUP, 
+		                       0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+		                       NULL, 
+                           NULL, 
+                           GetModuleHandle(NULL), 
+                           this );
+	if( myHWND == NULL )
+	{
+OutputDebugString("got here  failed 2");
+    hr = HRESULT_FROM_WIN32( GetLastError() );
+    cleanup();
+    return false;
+	}
+
+  ::SetFocus( myHWND );
+  ::ShowWindow( myHWND, SW_SHOW );
+  ::UpdateWindow( myHWND );
+	
+  ::ShowCursor( FALSE );
+
+  //
+  // Initialize DirectDraw 
+  //
+  hr = ::CoCreateInstance( CLSID_DirectDraw, 
+                           NULL, 
+                           CLSCTX_SERVER, 
+                           IID_IDirectDraw, 
+                           (void**)&m_piDD );
+  if( FAILED(hr) )
+  {
+OutputDebugString("got here  failed 3");
+    cleanup();
+  }
+
+  //
+  // Initialize it
+  // This method takes the driver GUID parameter that the DirectDrawCreate 
+  // function typically uses (NULL is active display driver)
+  //
+  hr = m_piDD->Initialize( NULL );
+  if ( FAILED(hr) )
+  {
+OutputDebugString("got here  failed 4");
+    cleanup();
+    return false;
+  }
+
+  //
+  // Get the best video mode for game width
+  //
+int cx = 320; int cy = 240;
+    ::SetRect( &m_rectScreen, 0, 0, cx, cy );
+
+    if ( cx == 0 || cy == 0 )
+    {
+    	hr = m_piDD->EnumDisplayModes( 0, NULL, this, EnumModesCallback );
+        if ( FAILED(hr) )
+        {
+OutputDebugString("got here  failed 5");
+cleanup();
 return false;
-#if 0
-  // Get the desired width and height of the display
-  myWidth  = myMediaSource->width() << 1;
-  myHeight = myMediaSource->height();
+        }
+    }
 
-  // Now create the software SDL screen
-  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
-  if(SDL_Init(initflags) < 0)
-    return false;
+	if ( m_rectScreen.right == 0 || m_rectScreen.bottom == 0 )
+	{
+OutputDebugString("got here  failed 6");
+        hr = E_INVALIDARG;
+cleanup();
+return false;
+	}
 
-  // Check which system we are running under
-  x11Available = false;
-/*  SDL_VERSION(&myWMInfo.version);
-  if(SDL_GetWMInfo(&myWMInfo) > 0)
-    if(myWMInfo.subsystem == SDL_SYSWM_X11)
-      x11Available = true;
-*/
-  // Get the maximum size of a window for THIS screen
-  theMaxZoomLevel = maxWindowSizeForScreen();
+	TRACE( "Video Mode Selected: %d x %d", m_rectScreen.right, m_rectScreen.bottom );
 
-  // Check to see if window size will fit in the screen
-  if((uInt32)myConsole->settings().getInt("zoom") > theMaxZoomLevel)
-    theZoomLevel = theMaxZoomLevel;
-  else
-    theZoomLevel = myConsole->settings().getInt("zoom");
+	// compute blit offset to center image
 
-  mySDLFlags = SDL_SWSURFACE;
-  mySDLFlags |= myConsole->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
+	m_ptBlitOffset.x = ( ( m_rectScreen.right - mySizeGame.cx ) / 2 );
+	m_ptBlitOffset.y = ( ( m_rectScreen.bottom - mySizeGame.cy ) / 2 );
 
-  // Set up the rectangle list to be used in the dirty update
-  myRectList = new RectList();
-  if(!myRectList)
+	// Set cooperative level
+
+	hr = m_piDD->SetCooperativeLevel( myHWND, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN );
+	if ( FAILED(hr) )
+	{
+OutputDebugString("got here  failed 7");
+cleanup();
+return false;
+	}
+
+	hr = m_piDD->SetDisplayMode( m_rectScreen.right, m_rectScreen.bottom, 8 );
+	if ( FAILED(hr) )
+	{
+OutputDebugString("got here  failed 8");
+cleanup();
+return false;
+	}
+
+    //
+	// Create the primary surface
+    //
+
+  DDSURFACEDESC ddsd;
+  ZeroMemory(&ddsd, sizeof(ddsd));
+  ddsd.dwSize         = sizeof(ddsd);
+  ddsd.dwFlags        = DDSD_CAPS;
+  ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+
+	hr = m_piDD->CreateSurface(&ddsd, &m_piDDSPrimary, NULL);
+	if (FAILED(hr))
+	{
+OutputDebugString("got here  failed 9");
+cleanup();
+return false;
+	}
+
+    //
+	// Create the offscreen surface
+    //
+
+	ZeroMemory(&ddsd, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+	ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
+	ddsd.dwWidth  = mySizeGame.cx;
+	ddsd.dwHeight = mySizeGame.cy;
+	hr = m_piDD->CreateSurface(&ddsd, &m_piDDSBack, NULL);
+	if (FAILED(hr))
+	{
+OutputDebugString("got here  failed 10");
+cleanup();
+return false;
+	}
+
+    //
+	// Erase the surface
+    //
+
+    HDC hdc;
+	hr = m_piDDSBack->GetDC( &hdc );
+	if ( hr == DD_OK )
+	{
+		::SetBkColor( hdc, RGB(0, 0, 0) );
+        RECT rc;
+        ::SetRect( &rc, 0, 0, 
+                   mySizeGame.cx,
+                   mySizeGame.cy );
+		::ExtTextOut( hdc, 0, 0, ETO_OPAQUE, &rc, NULL, 0, NULL );
+
+		(void)m_piDDSBack->ReleaseDC( hdc );
+	}
+
+    //
+    // Create Palette
+    //
+
+	PALETTEENTRY pe[256];
+
+	for ( int i = 0; i < 256; ++i )
+	{
+		pe[i].peRed   = (BYTE)( (pPalette[i] & 0x00FF0000) >> 16 );
+		pe[i].peGreen = (BYTE)( (pPalette[i] & 0x0000FF00) >> 8 );
+		pe[i].peBlue  = (BYTE)( (pPalette[i] & 0x000000FF) );
+		pe[i].peFlags = 0;
+	}
+
+    hr = m_piDD->CreatePalette( DDPCAPS_8BIT, 
+                                pe, 
+                                &m_piDDPalette, 
+                                NULL );
+  if( FAILED(hr) )
   {
-    cerr << "ERROR: Unable to get memory for SDL rects" << endl;
+OutputDebugString("got here  failed 11");
+    cleanup();
     return false;
   }
 
-  // Set the window title and icon
-  ostringstream name;
-  name << "Stella: \"" << myConsole->properties().get("Cartridge.Name") << "\"";
-  SDL_WM_SetCaption(name.str().c_str(), "stella");
-
-  // Create the screen
-  if(!createScreen())
+  hr = m_piDDSPrimary->SetPalette( m_piDDPalette );
+  if( FAILED(hr) )
+  {
+OutputDebugString("got here  failed 12");
+    cleanup();
     return false;
-  setupPalette(1.0);
-
-  // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  theGrabMouseIndicator  = myConsole->settings().getBool("grabmouse");
-  theHideCursorIndicator = myConsole->settings().getBool("hidecursor");
-  if(myConsole->settings().getBool("fullscreen"))
-  {
-    grabMouse(true);
-    showCursor(false);
-    isFullscreen = true;
   }
-  else
-  {
-    // Keep mouse in game window if grabmouse is selected
-    grabMouse(theGrabMouseIndicator);
-
-    // Show or hide the cursor depending on the 'hidecursor' argument
-    showCursor(!theHideCursorIndicator);
-  }
-
-  // Center the window if centering is selected and not fullscreen
-  if(myConsole->settings().getBool("center") &&
-     !myConsole->settings().getBool("fullscreen"))
-    centerScreen();
-
+OutputDebugString("got here init exited with true");
+  // If we get this far, then assume that there were no problems
   return true;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawMediaSource()
 {
-cerr << "FrameBufferWin32::drawMediaSource()\n";
-#if 0
-  uInt8* currentFrame   = myMediaSource->currentFrameBuffer();
-  uInt8* previousFrame  = myMediaSource->previousFrameBuffer();
-  uInt16 screenMultiple = (uInt16) theZoomLevel;
+  if(m_piDDSPrimary == NULL || !m_fActiveWindow)
+    return;
 
-  uInt32 width  = myMediaSource->width();
-  uInt32 height = myMediaSource->height();
+  HRESULT hr;
+  const BYTE* current  = myMediaSource->currentFrameBuffer();
+  const BYTE* previous = myMediaSource->previousFrameBuffer();
 
-  struct Rectangle
+  // acquire pointer to linear video ram
+  DDSURFACEDESC ddsd;
+  ZeroMemory( &ddsd, sizeof(ddsd) );
+  ddsd.dwSize = sizeof(ddsd);
+
+  hr = m_piDDSBack->Lock( NULL, 
+                          &ddsd, 
+                          /* DDLOCK_SURFACEMEMORYPTR | */ DDLOCK_WAIT, 
+                          NULL );
+  // BUGBUG: Check for error
+
+  BYTE* pbBackBytes = (BYTE*)ddsd.lpSurface;
+
+  register int y;
+  for(y = 0; y < mySizeGame.cy; ++y)
   {
-    uInt8 color;
-    uInt16 x, y, width, height;
-  } rectangles[2][160];
+    const WORD bufofsY = (WORD) ( y * mySizeGame.cx >> 1 );
+    const DWORD screenofsY = ( y * ddsd.lPitch );
 
-  // This array represents the rectangles that need displaying
-  // on the current scanline we're processing
-  Rectangle* currentRectangles = rectangles[0];
-
-  // This array represents the rectangles that are still active
-  // from the previous scanlines we have processed
-  Rectangle* activeRectangles = rectangles[1];
-
-  // Indicates the number of active rectangles
-  uInt16 activeCount = 0;
-
-  // This update procedure requires theWidth to be a multiple of four.  
-  // This is validated when the properties are loaded.
-  for(uInt16 y = 0; y < height; ++y)
-  {
-    // Indicates the number of current rectangles
-    uInt16 currentCount = 0;
-
-    // Look at four pixels at a time to see if anything has changed
-    uInt32* current = (uInt32*)(currentFrame); 
-    uInt32* previous = (uInt32*)(previousFrame);
-
-    for(uInt16 x = 0; x < width; x += 4, ++current, ++previous)
+    register int x;
+    for(x = 0; x < mySizeGame.cx >> 1; ++x )
     {
-      // Has something changed in this set of four pixels?
-      if((*current != *previous) || theRedrawEntireFrameIndicator)
-      {
-        uInt8* c = (uInt8*)current;
-        uInt8* p = (uInt8*)previous;
+      const WORD bufofs = bufofsY + x;
+      BYTE v = current[ bufofs ];
+      if(v == previous[ bufofs ])
+        continue;
 
-        // Look at each of the bytes that make up the uInt32
-        for(uInt16 i = 0; i < 4; ++i, ++c, ++p)
-        {
-          // See if this pixel has changed
-          if((*c != *p) || theRedrawEntireFrameIndicator)
-          {
-            // Can we extend a rectangle or do we have to create a new one?
-            if((currentCount != 0) && 
-               (currentRectangles[currentCount - 1].color == *c) &&
-               ((currentRectangles[currentCount - 1].x + 
-                 currentRectangles[currentCount - 1].width) == (x + i)))
-            {
-              currentRectangles[currentCount - 1].width += 1;
-            }
-            else
-            {
-              currentRectangles[currentCount].x = x + i;
-              currentRectangles[currentCount].y = y;
-              currentRectangles[currentCount].width = 1;
-              currentRectangles[currentCount].height = 1;
-              currentRectangles[currentCount].color = *c;
-              currentCount++;
-            }
-          }
-        }
-      }
+      // x << 1 is times 2 ( doubling width ) WIDTH_FACTOR
+      const DWORD pos = screenofsY + ( x << 1 );
+      pbBackBytes[ pos + 0 ] = pbBackBytes[ pos + 1 ] = myPalette[v];
     }
-
-    // Merge the active and current rectangles flushing any that are of no use
-    uInt16 activeIndex = 0;
-
-    for(uInt16 t = 0; (t < currentCount) && (activeIndex < activeCount); ++t)
-    {
-      Rectangle& current = currentRectangles[t];
-      Rectangle& active = activeRectangles[activeIndex];
-
-      // Can we merge the current rectangle with an active one?
-      if((current.x == active.x) && (current.width == active.width) &&
-         (current.color == active.color))
-      {
-        current.y = active.y;
-        current.height = active.height + 1;
-
-        ++activeIndex;
-      }
-      // Is it impossible for this active rectangle to be merged?
-      else if(current.x >= active.x)
-      {
-        // Flush the active rectangle
-        SDL_Rect temp;
-
-        temp.x = active.x * screenMultiple << 1;
-        temp.y = active.y * screenMultiple;
-        temp.w = active.width  * screenMultiple << 1;
-        temp.h = active.height * screenMultiple;
-
-        myRectList->add(&temp);
-        SDL_FillRect(myScreen, &temp, palette[active.color]);
-
-        ++activeIndex;
-      }
-    }
-
-    // Flush any remaining active rectangles
-    for(uInt16 s = activeIndex; s < activeCount; ++s)
-    {
-      Rectangle& active = activeRectangles[s];
-
-      SDL_Rect temp;
-      temp.x = active.x * screenMultiple << 1;
-      temp.y = active.y * screenMultiple;
-      temp.w = active.width  * screenMultiple << 1;
-      temp.h = active.height * screenMultiple;
-
-      myRectList->add(&temp);
-      SDL_FillRect(myScreen, &temp, palette[active.color]);
-    }
-
-    // We can now make the current rectangles into the active rectangles
-    Rectangle* tmp = currentRectangles;
-    currentRectangles = activeRectangles;
-    activeRectangles = tmp;
-    activeCount = currentCount;
- 
-    currentFrame  += width;
-    previousFrame += width;
   }
 
-  // Flush any rectangles that are still active
-  for(uInt16 t = 0; t < activeCount; ++t)
-  {
-    Rectangle& active = activeRectangles[t];
-
-    SDL_Rect temp;
-    temp.x = active.x * screenMultiple << 1;
-    temp.y = active.y * screenMultiple;
-    temp.w = active.width  * screenMultiple << 1;
-    temp.h = active.height * screenMultiple;
-
-    myRectList->add(&temp);
-    SDL_FillRect(myScreen, &temp, palette[active.color]);
-  }
-
-  // The frame doesn't need to be completely redrawn anymore
-  theRedrawEntireFrameIndicator = false;
-#endif
+  (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -284,323 +378,194 @@ void FrameBufferWin32::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::postFrameUpdate()
 {
+  // We only send any changes to the screen once per frame
+
+  // Blit offscreen to onscreen
+  RECT rc = { 0, 0, mySizeGame.cx, mySizeGame.cy };
+
+  HRESULT hr = m_piDDSPrimary->BltFast( m_ptBlitOffset.x, m_ptBlitOffset.y,
+                                m_piDDSBack, 
+                                &rc, 
+                                // DDBLTFAST_WAIT |DDBLTFAST_DESTCOLORKEY   );
+                                DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferWin32::createScreen()
+void FrameBufferWin32::pauseEvent(bool status)
 {
-return false;
-#if 0
-  int w = myWidth  * theZoomLevel;
-  int h = myHeight * theZoomLevel;
-
-  myScreen = SDL_SetVideoMode(w, h, 0, mySDLFlags);
-  if(myScreen == NULL)
-  {
-    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
-    return false;
-  }
-
-  theRedrawEntireFrameIndicator = true;
-  return true;
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferWin32::setupPalette(float shade)
-{
-#if 0
-  const uInt32* gamePalette = myMediaSource->palette();
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b;
-
-    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
-    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
-    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
-
-    switch(myScreen->format->BitsPerPixel)
-    {
-      case 15:
-        palette[i] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-        break;
-
-      case 16:
-        palette[i] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
-        break;
-
-      case 24:
-      case 32:
-        palette[i] = (r << 16) | (g << 8) | b;
-        break;
-    }
-  }
-
-  theRedrawEntireFrameIndicator = true;
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferWin32::pause(bool status)
-{
-#if 0
-  myPauseStatus = status;
-
-  // Shade the palette to 75% normal value in pause mode
-  if(myPauseStatus)
-    setupPalette(0.75);
-  else
-    setupPalette(1.0);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::toggleFullscreen()
 {
-#if 0
-  isFullscreen = !isFullscreen;
-  if(isFullscreen)
-    mySDLFlags |= SDL_FULLSCREEN;
-  else
-    mySDLFlags &= ~SDL_FULLSCREEN;
-
-  if(!createScreen())
-    return;
-
-  if(isFullscreen)  // now in fullscreen mode
-  {
-    grabMouse(true);
-    showCursor(false);
-  }
-  else    // now in windowed mode
-  {
-    grabMouse(theGrabMouseIndicator);
-    showCursor(!theHideCursorIndicator);
-
-    if(myConsole->settings().getBool("center"))
-      centerScreen();
-  }
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferWin32::resize(int mode)
-{
-#if 0
-  // reset size to that given in properties
-  // this is a special case of allowing a resize while in fullscreen mode
-  if(mode == 0)
-  {
-    myWidth  = myMediaSource->width() << 1;
-    myHeight = myMediaSource->height();
-  }
-  else if(mode == 1)   // increase size
-  {
-    if(isFullscreen)
-      return;
-
-    if(theZoomLevel == theMaxZoomLevel)
-      theZoomLevel = 1;
-    else
-      theZoomLevel++;
-  }
-  else if(mode == -1)   // decrease size
-  {
-    if(isFullscreen)
-      return;
-
-    if(theZoomLevel == 1)
-      theZoomLevel = theMaxZoomLevel;
-    else
-      theZoomLevel--;
-  }
-
-  if(!createScreen())
-    return;
-
-  // A resize may mean that the window is no longer centered
-  isCentered = false;
-
-  if(myConsole->settings().getBool("center"))
-    centerScreen();
-
-  // Now update the settings
-  ostringstream tmp;
-  tmp << theZoomLevel;
-  myConsole->settings().set("zoom", tmp.str());
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferWin32::showCursor(bool show)
-{
-#if 0
-  if(isFullscreen)
-    return;
-
-  if(show)
-    SDL_ShowCursor(SDL_ENABLE);
-  else
-    SDL_ShowCursor(SDL_DISABLE);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferWin32::grabMouse(bool grab)
-{
-#if 0
-  if(isFullscreen)
-    return;
-
-  if(grab)
-    SDL_WM_GrabInput(SDL_GRAB_ON);
-  else
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBufferWin32::maxWindowSizeForScreen()
-{
-return 1;
-#if 0
-  if(!x11Available)
-    return 1;
-/*  FIXME
-  // Otherwise, lock the screen and get the width and height
-  myWMInfo.info.x11.lock_func();
-  Display* theX11Display = myWMInfo.info.x11.display;
-  myWMInfo.info.x11.unlock_func();
-
-  int screenWidth  = DisplayWidth(theX11Display, DefaultScreen(theX11Display));
-  int screenHeight = DisplayHeight(theX11Display, DefaultScreen(theX11Display));
-
-  uInt32 multiplier = screenWidth / myWidth;
-  bool found = false;
-
-  while(!found && (multiplier > 0))
-  {
-    // Figure out the desired size of the window
-    int width  = myWidth  * multiplier;
-    int height = myHeight * multiplier;
-
-    if((width < screenWidth) && (height < screenHeight))
-      found = true;
-    else
-      multiplier--;
-  }
-
-  if(found)
-    return multiplier;
-  else
-    return 1;
-*/
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
-cerr << "FrameBufferWin32::drawBoundedBox()\n";
-#if 0
-  SDL_Rect tmp;
-
-  // Scale all values to the current window size
-  x *= theZoomLevel;
-  y *= theZoomLevel;
-  w *= theZoomLevel;
-  h *= theZoomLevel;
-
-  // First draw the underlying box
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = w;
-  tmp.h = h;
-  myRectList->add(&tmp);
-  SDL_FillRect(myScreen, &tmp, palette[bg]);
-
-  // Now draw the bounding sides
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = w;
-  tmp.h = theZoomLevel;
-  SDL_FillRect(myScreen, &tmp, palette[fg]);  // top
-
-  tmp.x = x;
-  tmp.y = y + h - theZoomLevel;
-  tmp.w = w;
-  tmp.h = theZoomLevel;
-  SDL_FillRect(myScreen, &tmp, palette[fg]);  // bottom
-
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = theZoomLevel;
-  tmp.h = h;
-  SDL_FillRect(myScreen, &tmp, palette[fg]);  // left
-
-  tmp.x = x + w - theZoomLevel;
-  tmp.y = y;
-  tmp.w = theZoomLevel;
-  tmp.h = h;
-  SDL_FillRect(myScreen, &tmp, palette[fg]);  // right
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawText(uInt32 xorig, uInt32 yorig, const string& message)
 {
-cerr << "FrameBufferWin32::drawText()\n";
-#if 0
-  SDL_Rect tmp;
-
-  uInt8 length = message.length();
-  for(uInt32 x = 0; x < length; x++)
-  {
-    for(uInt32 y = 0; y < 8; y++)
-    {
-      for(uInt32 z = 0; z < 8; z++)
-      {
-        char letter = message[x];
-        if((ourFontData[(letter << 3) + y] >> z) & 1)
-        {
-//          myFrameBuffer[(y + yorig)*myWidth + (x<<3) + z + xorig] = 0xF0F0F0;
-          tmp.x = ((x<<3) + z + xorig) * theZoomLevel;
-          tmp.y = (y + yorig) * theZoomLevel;
-          tmp.w = tmp.h = theZoomLevel;
-          SDL_FillRect(myScreen, &tmp, palette[fg]);
-// FIXME - this can be a lot more efficient
-        }
-      }
-    }
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
 {
-cerr << "FrameBufferWin32::drawChar()\n";
-#if 0
-  if(c >= 256 )
-    return;
+}
 
-  SDL_Rect tmp;
+LRESULT CALLBACK FrameBufferWin32::StaticWindowProc(
+	HWND hwnd, 
+	UINT uMsg, 
+	WPARAM wParam, 
+	LPARAM lParam
+    )
+{
+	FrameBufferWin32* pThis;
 
-  for(uInt32 y = 0; y < 8; y++)
-  {
-    for(uInt32 z = 0; z < 8; z++)
+    if ( uMsg == WM_CREATE )
     {
-      if((ourFontData[(c << 3) + y] >> z) & 1)
-      {
-//        myFrameBuffer[(y + yorig)*myWidth + z + xorig] = 0xF0F0F0;
-        tmp.x = (z + xorig) * theZoomLevel;
-        tmp.y = (y + yorig) * theZoomLevel;
-        tmp.w = tmp.h = theZoomLevel;
-        myRectList->add(&tmp);
-        SDL_FillRect(myScreen, &tmp, palette[fg]);
-// FIXME - this can be a lot more efficient
-      }
+        pThis = reinterpret_cast<FrameBufferWin32*>( 
+            reinterpret_cast<CREATESTRUCT*>( lParam )->lpCreateParams );
+
+        ::SetWindowLong( hwnd, 
+                         GWL_USERDATA, 
+                         reinterpret_cast<LONG>( pThis ) );
     }
-  }
-#endif
+    else
+    {
+        pThis = reinterpret_cast<FrameBufferWin32*>( 
+            ::GetWindowLong( hwnd, GWL_USERDATA ) );
+    }
+
+    if ( pThis )
+    {
+        if ( pThis->WndProc( uMsg, wParam, lParam ) )
+        {
+            //
+            // Handled message
+            //
+
+            return 0L;
+        }
+    }
+
+    //
+    // Unhandled message
+    //
+
+    return ::DefWindowProc( hwnd, uMsg, wParam, lParam );
+}
+
+
+BOOL FrameBufferWin32::WndProc(
+    UINT uMsg,
+    WPARAM wParam,
+    LPARAM lParam
+    )
+{
+    switch (uMsg)
+	{
+	case WM_ACTIVATE:
+        m_fActiveWindow = ( wParam != WA_INACTIVE );
+		break;
+
+	case WM_DESTROY:
+        ::PostQuitMessage( 0 );
+		break;
+
+    case WM_KEYDOWN:
+		switch ( (int)wParam )
+		{
+		case VK_ESCAPE:
+            //
+            // Escape = Exit
+            //
+
+            ::PostMessage( myHWND, WM_CLOSE, 0, 0 );
+			break;
+
+		}
+		break;
+
+    case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            ::BeginPaint( myHWND, &ps );
+            ::EndPaint( myHWND, &ps );
+        }
+        break;
+
+    default:
+        //
+        // Unhandled message
+        //
+
+        return FALSE;
+	}
+
+    //
+	// Handled message
+    //
+
+    return TRUE;
+}
+
+HRESULT WINAPI FrameBufferWin32::EnumModesCallback(
+    LPDDSURFACEDESC lpDDSurfaceDesc,
+    LPVOID lpContext)
+{
+  FrameBufferWin32* pThis = (FrameBufferWin32*)lpContext;
+
+  DWORD dwWidthReq  = pThis->mySizeGame.cx;
+  DWORD dwHeightReq = pThis->mySizeGame.cy;
+
+  DWORD dwWidth = lpDDSurfaceDesc->dwWidth;
+  DWORD dwHeight = lpDDSurfaceDesc->dwHeight;
+  DWORD dwRGBBitCount = lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount;
+
+    //
+    // must be 8 bit mode
+    //
+
+	if (dwRGBBitCount != 8)
+    {
+        return DDENUMRET_OK;
+    }
+
+    //
+    // must be larger then required screen size
+    //
+
+    if ( dwWidth < dwWidthReq || dwHeight < dwHeightReq )
+    {
+        return DDENUMRET_OK;
+    }
+
+    if ( pThis->m_rectScreen.right != 0 && pThis->m_rectScreen.bottom != 0 )
+    {
+        //
+        // check to see if this is better than the previous choice
+        //
+
+        if ( (dwWidth - dwWidthReq) > (pThis->m_rectScreen.right - dwWidthReq) )
+        {
+            return DDENUMRET_OK;
+        }
+
+        if ( (dwHeight - dwHeightReq) > (pThis->m_rectScreen.bottom - dwHeightReq) )
+        {
+            return DDENUMRET_OK;
+        }
+    }
+
+    //
+    // use it!
+    //
+
+    pThis->m_rectScreen.right = dwWidth;
+    pThis->m_rectScreen.bottom = dwHeight;
+
+	return DDENUMRET_OK;
 }

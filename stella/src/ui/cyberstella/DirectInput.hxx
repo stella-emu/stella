@@ -13,162 +13,60 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.hxx,v 1.3 2003-11-11 18:55:39 stephena Exp $
+// $Id: DirectInput.hxx,v 1.4 2003-11-13 00:25:07 stephena Exp $
 //============================================================================
 
 #ifndef DIRECT_INPUT_HXX
 #define DIRECT_INPUT_HXX
 
+#include "bspf.hxx"
 #include "dinput.h"
 
 class DirectInput
 {
   public:
-	DirectInput( HWND hwnd, DWORD dwDevType, int nButtonCount );
-	virtual ~DirectInput( );
+    DirectInput();
+    ~DirectInput();
 
   public:
-	virtual HRESULT Initialize( void );
+    enum type_tt { KEY_DOWN, KEY_UP };
 
-	virtual HRESULT Update( void ) = 0;
+    struct KeyboardEvent
+    {
+      uInt32 key;
+      uInt8  state;
+    };
 
-	void GetPos( LONG* pX, LONG* pY ) const;
+    struct DI_Event
+    {
+      type_tt type;
+      union
+      {
+        KeyboardEvent key;
+      };
+    };
 
-	virtual BOOL IsButtonPressed( int nButton ) const;
-	virtual int GetButtonCount( void ) const;
+    bool initialize(HWND hwnd);
 
-	// I need IDID2 for the Poll method
+    void update();
 
-	IDirectInputDevice2* GetDevice( void ) const;
+    bool pollEvent(DI_Event* event);
 
-protected:
+  private:
+    DI_Event myEventBuffer[100];
+    uInt32 myEventBufferPos;
 
-	LONG m_lX;
-	LONG m_lY;
-	BYTE* m_pButtons;
+    void cleanup();
 
-private:
+    static BOOL CALLBACK EnumDevicesProc(const DIDEVICEINSTANCE* lpddi, LPVOID pvRef );
 
-	void Cleanup();
+    HWND myHWND;
 
-	static BOOL CALLBACK EnumDevicesProc( const DIDEVICEINSTANCE* lpddi, 
-		                                  LPVOID pvRef );
-
-	IDirectInput* m_piDI;
-
-    HWND m_hwnd;
-	IDirectInputDevice2* m_piDID;
-	DWORD m_dwDevType;
-
-	const int m_nButtonCount;
-
-    BOOL m_fInitialized;
-
-	DirectInput( const DirectInput& );  // no implementation
-	void operator=( const DirectInput& );  // no implementation
-
-};
-
-inline int DirectInput::GetButtonCount(
-	void
-    ) const
-{
-	return m_nButtonCount;
-}
-
-
-inline IDirectInputDevice2* DirectInput::GetDevice(
-	void
-    ) const
-{
-	// 060499: Dont assert here, as it's okay if a device isn't available
-	// (client must check for NULL return)
-	return m_piDID;
-}
-
-inline void DirectInput::GetPos(
-	LONG* pX,
-	LONG* pY
-    ) const
-{
-	if (pX != NULL)
-	{
-		*pX = m_lX;
-	}
-
-	if (pY != NULL)
-	{
-		*pY = m_lY;
-	}
-}
-
-
-// ---------------------------------------------------------------------------
-
-class DirectMouse : public DirectInput
-{
-public:
-
-	DirectMouse( HWND hwnd );
-
-	HRESULT Update( void );
-
-private:
-
-	DirectMouse( const DirectMouse& );  // no implementation
-	void operator=( const DirectMouse& );  // no implementation
-
-};
-
-
-// ---------------------------------------------------------------------------
-
-class DirectJoystick : public DirectInput
-{
-public:
-
-	DirectJoystick( HWND hwnd );
-
-    HRESULT Initialize( void );
-	HRESULT Update( void );
-
-private:
-
-	DirectJoystick( const DirectJoystick& );  // no implementation
-	void operator=( const DirectJoystick& );  // no implementation
-
-};
-
-class CDisabledJoystick : public DirectInput
-{
-public:
-
-    CDisabledJoystick( HWND hwnd );
-    
-    HRESULT Update( void );
-
-private:
-
-	CDisabledJoystick( const CDisabledJoystick& );  // no implementation
-	void operator=( const CDisabledJoystick& );  // no implementation
-
-};
-
-// ---------------------------------------------------------------------------
-
-class DirectKeyboard : public DirectInput
-{
-public:
-
-	DirectKeyboard( HWND hwnd );
-
-	HRESULT Update( void );
-
-private:
-
-	DirectKeyboard( const DirectKeyboard& );  // no implementation
-	void operator=( const DirectKeyboard& );  // no implementation
-
+    LPDIRECTINPUT8       mylpdi;
+    LPDIRECTINPUTDEVICE8 myKeyboard;
+    LPDIRECTINPUTDEVICE8 myMouse;
+    LPDIRECTINPUTDEVICE8 myLeftJoystick;
+    LPDIRECTINPUTDEVICE8 myRightJoystick;
 };
 
 #endif

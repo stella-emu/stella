@@ -118,9 +118,9 @@ BOOL CCyberstellaView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CCyberstellaView::OnInitialUpdate()
 {
-    CFormView::OnInitialUpdate();
-	GetParentFrame()->RecalcLayout();
-	ResizeParentToFit();
+  CFormView::OnInitialUpdate();
+  GetParentFrame()->RecalcLayout();
+  ResizeParentToFit();
 
     // Init ListControl, parse stella.pro
     PostMessage(MSG_VIEW_INITIALIZE);
@@ -318,65 +318,3 @@ void CCyberstellaView::playRom(LONG gameID)
   // Set focus back to the rom list
   m_List.SetFocus();
 }
-
-#if 0 // MainWin32
-  try
-  {
-    // If this throws an exception, then it's probably a bad cartridge
-    pConsole = new Console( pImage, dwActualSize, pszFileName, *pSettings,
-                            *thePropertiesSet, 31400 );
-    if ( pConsole == NULL )
-      goto exit;
-  }
-    catch (...)
-    {
-
-        // FIXME ::MessageBox(GetModuleHandle(NULL),
-           // NULL, IDS_CANTSTARTCONSOLE);
-
-        goto exit;
-    }
-
-#ifdef USE_FS
-    pwnd = new CDirectXFullScreen( m_pGlobalData, pConsole, pSound );
-#else
-    pwnd = new CDirectXWindow( m_pGlobalData, pConsole, pSound );
-#endif
-    if( pwnd == NULL )
-        goto exit;
-
-    HRESULT hr;
-
-#ifdef USE_FS
-    if (m_pGlobalData->bAutoSelectVideoMode)
-    {
-        hr = pwnd->Initialize( );
-    }
-    else
-    {
-        //
-        // Initialize with 640 x 480
-        //
-
-        hr = pwnd->Initialize( FORCED_VIDEO_CX, FORCED_VIDEO_CY );
-    }
-#else
-    hr = pwnd->Initialize(*this, m_List.getCurrentName());
-#endif
-    if ( FAILED(hr) )
-    {
-        TRACE( "CWindow::Initialize failed, err = %X", hr );
-        goto exit;
-    }
-
-    if(!m_pGlobalData->bNoSound)
-    {
-      SoundWin32* pSoundWin32 = static_cast<SoundWin32*>( pSound );
-
-      hr = pSoundWin32->Initialize(*pwnd);
-      if(FAILED(hr))
-      {
-        TRACE( "Sndwin32 Initialize failed, err = %X", hr );
-      }
-    }
-#endif

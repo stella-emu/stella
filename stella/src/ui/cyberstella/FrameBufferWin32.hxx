@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.hxx,v 1.1 2003-11-11 18:55:39 stephena Exp $
+// $Id: FrameBufferWin32.hxx,v 1.2 2003-11-13 00:25:07 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WIN32_HXX
@@ -25,7 +25,12 @@
 class Console;
 class MediaSource;
 
+/**
+  This class implements a DirectX software framebuffer.
 
+  @author  Stephen Anthony
+  @version $Id: FrameBufferWin32.hxx,v 1.2 2003-11-13 00:25:07 stephena Exp $
+*/ 
 class FrameBufferWin32 : public FrameBuffer
 {
   public:
@@ -38,6 +43,9 @@ class FrameBufferWin32 : public FrameBuffer
       Destructor
     */
     virtual ~FrameBufferWin32();
+
+    HWND hwnd() const { return myHWND; }
+    bool windowActive() { return m_fActiveWindow; }
 
     /**
       This routine should be called once the console is created to setup
@@ -92,12 +100,12 @@ class FrameBufferWin32 : public FrameBuffer
     virtual void postFrameUpdate();
 
     /**
-      This routine is called when the emulation has been paused.
+      This routine is called when the emulation has received
+      a pause event.
 
-      @param status  Toggle pause based on status
+      @param status  The received pause status
     */
-    virtual void pause(bool status);
-
+    virtual void pauseEvent(bool status);
     /**
       Toggles between fullscreen and window mode.  Grabmouse and hidecursor
       activated when in fullscreen mode.
@@ -115,70 +123,47 @@ class FrameBufferWin32 : public FrameBuffer
     void resize(int mode);
 
     /**
-      Shows or hides the cursor based on the given boolean value.
-    */
-    void showCursor(bool show);
-
-    /**
-      Grabs or ungrabs the mouse based on the given boolean value.
-    */
-    void grabMouse(bool grab);
-
-    /**
       Answers if the display is currently in fullscreen mode.
     */
     bool fullScreen() { return isFullscreen; }
 
     /**
-      Answers the current zoom level of the SDL 
+      Answers the current zoom level of the window
     */
     uInt32 zoomLevel() { return theZoomLevel; }
 
-    /**
-      This routine is called whenever the screen needs to be recreated.
-      It updates the global screen variable.
-    */
-    bool createScreen();
-
-    /**
-      Calculate the maximum window size that the current screen can hold.
-      Only works in X11 for now.  If not running under X11, always return 4.
-    */
-    uInt32 maxWindowSizeForScreen();
-
-    /**
-      Set up the palette for a screen of any depth > 8.
-      Scales the palette by 'shade'.
-    */
-    void setupPalette(float shade);
-
   private:
-    // The SDL video buffer
-//    SDL_Surface* myScreen;
+    static LRESULT CALLBACK StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    BOOL WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static HRESULT WINAPI EnumModesCallback(LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext);
 
-    // Used in the dirty update of the SDL surface
-//    RectList* myRectList;
+    void cleanup();
 
-    // SDL initialization flags
-//    uInt32 mySDLFlags;
+    HWND myHWND;
+    bool m_fActiveWindow;
 
-    // SDL palette
-//    Uint32 palette[256];
+    RECT m_rectScreen;
+    POINT m_ptBlitOffset;
 
-    // Used to get window-manager specifics
-//    SDL_SysWMinfo myWMInfo;
+    // Stella objects
+    SIZE mySizeGame;
+    BYTE myPalette[256];
 
-    // Indicates the current zoom level of the SDL screen
+    //
+    // DirectX
+    //
+    IDirectDraw* m_piDD;
+    IDirectDrawSurface* m_piDDSPrimary;
+    IDirectDrawSurface* m_piDDSBack;
+    IDirectDrawPalette* m_piDDPalette;
+
+    static LPCTSTR pszClassName;
+
+    // Indicates the current zoom level of the window
     uInt32 theZoomLevel;
 
-    // Indicates the maximum zoom of the SDL screen
+    // Indicates the maximum zoom of the window
     uInt32 theMaxZoomLevel;
-
-    // Indicates if the mouse should be grabbed
-    bool theGrabMouseIndicator;
-
-    // Indicates if the mouse cursor should be hidden
-    bool theHideCursorIndicator;
 
     // Indicates whether the game is currently in fullscreen
     bool isFullscreen;

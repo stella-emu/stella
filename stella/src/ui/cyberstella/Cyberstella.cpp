@@ -50,7 +50,7 @@ LPCTSTR g_ctszDebugLog = _T("stella.log");
 BOOL CCyberstellaApp::InitInstance()
 {
     // Delete previous Debug Log
-    (void)::DeleteFile(g_ctszDebugLog);
+ (void)::DeleteFile(g_ctszDebugLog);
 
 	// Avoid Second instance
 	CreateMutex(NULL,TRUE,_T("StellaXMutex"));
