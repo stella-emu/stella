@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.1 2002-01-08 19:11:13 stephena Exp $
+// $Id: mainSDL.cxx,v 1.2 2002-01-10 19:53:33 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -49,8 +49,9 @@ SDL_Joystick* theLeftJoystick;
 SDL_Joystick* theRightJoystick;
 
 // function prototypes
-void setupDisplay();
-void setupJoystick();
+bool setupDisplay();
+bool setupJoystick();
+void cleanup();
 
 void updateDisplay(MediaSource& mediaSource);
 void handleEvents();
@@ -218,13 +219,14 @@ uInt32 thePaddleMode = 0;
 
 /**
   This routine should be called once the console is created to setup
-  the SDL window for us to use
+  the SDL window for us to use.  Return false if any operation fails,
+  otherwise return true.
 */
-void setupDisplay()
+bool setupDisplay()
 {
   Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK;
   if(SDL_Init(initflags) < 0)
-    exit(1);
+    return false;
 
   atexit(doQuit);
 
@@ -232,8 +234,8 @@ void setupDisplay()
   sdlflags |= theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
 
   // Get the desired width and height of the display
-  theHeight = theConsole->mediaSource().height();
   theWidth = theConsole->mediaSource().width();
+  theHeight = theConsole->mediaSource().height();
 
   // Get the maximum size of a window for THIS screen
   // Must be called after display and screen are known, as well as
@@ -264,8 +266,8 @@ void setupDisplay()
   screen = SDL_SetVideoMode(width, height, 0, sdlflags);
   if(screen == NULL)
   {
-    cerr << "Unable to open SDL window: " << SDL_GetError() << endl;
-    exit(1);
+    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    return false;
   }
   bpp = screen->format->BitsPerPixel;
 
@@ -344,21 +346,23 @@ void setupDisplay()
     }
   }
 #endif
+
+  return true;
 }
 
 
 /**
   This routine should be called once setupDisplay is called
-  to create the joystick stuff
+  to create the joystick stuff.
 */
-void setupJoystick()
+bool setupJoystick()
 {
   if(SDL_NumJoysticks() <= 0)
   {
     cout << "No joysticks present, use the keyboard.\n";
     SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
     theLeftJoystick = theRightJoystick = 0;
-    return;
+    return true;
   }
 
   if((theLeftJoystick = SDL_JoystickOpen(0)) != NULL)
@@ -372,6 +376,8 @@ void setupJoystick()
       " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
   else
     cout << "Right joystick not present, use keyboard instead.\n";
+
+  return true;
 }
 
 
@@ -846,7 +852,7 @@ void handleEvents()
       {
         if(!thePauseIndicator)
         {
-          togglePause();
+          // togglePause();
           cerr << "todo: Pause on minimize.\n";
         }
       }
@@ -1108,9 +1114,9 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "SDL stella version 1.2",
+    "SDL Stella version 1.2",
     "",
-    "Usage: sdlstella [option ...] file",
+    "Usage: stella.sdl [option ...] file",
     "",
     "Valid options are:",
     "",
@@ -1403,6 +1409,23 @@ void parseRCOptions(istream& in)
 }
 
 
+/**
+  Does general cleanup in case any operation failed (or at end of program).
+*/
+void cleanup()
+{
+  if(theConsole)
+    delete theConsole;
+
+  if(SDL_JoystickOpened(0))
+    SDL_JoystickClose(theLeftJoystick);
+  if(SDL_JoystickOpened(1))
+    SDL_JoystickClose(theRightJoystick);
+
+  SDL_Quit();
+}
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
@@ -1446,8 +1469,16 @@ int main(int argc, char* argv[])
   delete[] image;
 
   // Setup the SDL window and joystick
-  setupDisplay();
-  setupJoystick();
+  if(!setupDisplay())
+  {
+    cerr << "ERROR: Couldn't set up display.\n";
+    cleanup();
+  }
+  if(!setupJoystick())
+  {
+    cerr << "ERROR: Couldn't set up joysticks.\n";
+    cleanup();
+  }
 
   // Get the starting time in case we need to print statistics
   timeval startingTime;
@@ -1502,12 +1533,5 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
-  delete theConsole;
-
-  if(SDL_JoystickOpened(0))
-    SDL_JoystickClose(theLeftJoystick);
-  if(SDL_JoystickOpened(1))
-    SDL_JoystickClose(theRightJoystick);
-
-  SDL_Quit();
+  cleanup();
 }
