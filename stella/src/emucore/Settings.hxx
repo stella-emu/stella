@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.5 2003-09-19 15:45:01 stephena Exp $
+// $Id: Settings.hxx,v 1.6 2003-09-23 00:58:31 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.5 2003-09-19 15:45:01 stephena Exp $
+  @version $Id: Settings.hxx,v 1.6 2003-09-23 00:58:31 stephena Exp $
 */
 class Settings
 {
@@ -63,26 +63,46 @@ class Settings
     */
     bool loadCommandLine(Int32 argc, char** argv);
 
+    /**
+      Get the value assigned to the specified key.  If the key does
+      not exist then -1 is returned.
+
+      @param key The key of the setting to lookup
+      @return The integer value of the setting
+    */
+    Int32 getInt(const string& key) const;
+
+    /**
+      Get the value assigned to the specified key.  If the key does
+      not exist then false is returned.
+
+      @param key The key of the setting to lookup
+      @return The boolean value of the setting
+    */
+    bool getBool(const string& key) const;
+
+    /**
+      Get the value assigned to the specified key.  If the key does
+      not exist then the empty string is returned.
+
+      @param key The key of the setting to lookup
+      @return The string value of the setting
+    */
+    string getString(const string& key) const;
+
+    /**
+      Set the value associated with key to the given value.
+
+      @param key The key of the setting
+      @param value The value to assign to the setting
+    */
+    void set(const string& key, const string& value);
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
-
-    /**
-      This method should be called to set arguments.
-
-      @param key   The variable to be set
-      @param value The value for the variable to hold
-    */
-    virtual void setArgument(string& key, string& value) = 0;
-
-    /**
-      This method should be called to get system-specific settings.
-
-      @return  A string representing all the key/value pairs.
-    */
-    virtual string getArguments() = 0;
 
     /**
       This method should be called to get the filename of a state file
@@ -99,7 +119,13 @@ class Settings
     */
     virtual string snapshotFilename() = 0;
 
-    //////////////////////////////////////////////////////////////////////
+    /**
+      This method should be called to display usage information.
+
+      @param  message A short message about this version of Stella
+    */
+    virtual void usage(string& message) = 0;
+
   public:
     /**
       This method should be called when the emulation core sets
@@ -165,45 +191,22 @@ class Settings
     */
     string systemConfigFilename() { return mySystemConfigFile; }
 
+    /**
+      Return the default directory for storing data.
+    */
+    string baseDir() { return myBaseDir; }
+
   public:
-    // The following settings are needed by the emulation core and are
-    // common among all settings objects
-
-    // Indicates what the desired frame rate is
-    uInt32 theDesiredFrameRate;
-
-    // The keymap to use
-    string theKeymapList;
-
-    // The joymap to use
-    string theJoymapList;
-
-    // The scale factor for the window/screen
-    uInt32 theZoomLevel;
-
-    // The path to save snapshot files
-    string theSnapshotDir;
-
-    // What the snapshot should be called (romname or md5sum)
-    string theSnapshotName;
-
-    // Indicates whether to generate multiple snapshots or keep
-    // overwriting the same file.
-    bool theMultipleSnapshotFlag;
-
 #ifdef DEVELOPER_SUPPORT
     // User-modified properties
     Properties userDefinedProperties;
-
-    // Whether to save user-defined properties to a file or
-    // merge into the propertiesset file for future use
-    bool theMergePropertiesFlag;
 #endif
 
   protected:
     bool myPauseIndicator;
     bool myQuitIndicator;
 
+    string myBaseDir;
     string myStateDir;
     string myStateFile;
     string mySnapshotFile;
@@ -228,7 +231,21 @@ class Settings
     // Assignment operator isn't supported by this class so make it private
     Settings& operator = (const Settings&);
 
-    void set(string& key, string& value);
+    // Structure used for storing properties
+    struct Setting
+    {
+      string key;
+      string value;
+    };
+
+    // Pointer to a dynamically allocated array of settings
+    Setting* mySettings;
+
+    // Current capacity of the settings array
+    unsigned int myCapacity;
+
+    // Size of the settings array (i.e. the number of <key,value> pairs)
+    unsigned int mySize;
 };
 
 #endif

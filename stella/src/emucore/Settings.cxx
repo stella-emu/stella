@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.6 2003-09-21 14:33:33 stephena Exp $
+// $Id: Settings.cxx,v 1.7 2003-09-23 00:58:31 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -29,7 +29,6 @@
   #include "Props.hxx"
 #endif
 
-class Console;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
@@ -37,15 +36,24 @@ Settings::Settings()
       myQuitIndicator(false),
       myConsole(0)
 {
-  theDesiredFrameRate = 60;
-  theKeymapList = "";
-  theJoymapList = "";
-  theZoomLevel = 1;
+  // First create the settings array
+  myCapacity = 30;
+  mySettings = new Setting[myCapacity];
+  mySize = 0;
+
+  // Now fill it with options that are common to all versions of Stella
+  set("framerate", "60");
+  set("keymap", "");
+  set("joymap", "");
+  set("zoom", "1");
+  set("showinfo", "false");
+  set("mergeprops", "false");
+  set("paddle", "0");
 
 #ifdef SNAPSHOT_SUPPORT
-  theSnapshotDir = "";
-  theSnapshotName = "romname";
-  theMultipleSnapshotFlag = true;
+  set("ssdir", "");
+  set("ssname", "");
+  set("sssingle", "false");
 #endif
 #ifdef DEVELOPER_SUPPORT
   userDefinedProperties.set("Display.Format", "-1");
@@ -53,14 +61,14 @@ Settings::Settings()
   userDefinedProperties.set("Display.Width", "-1");
   userDefinedProperties.set("Display.YStart", "-1");
   userDefinedProperties.set("Display.Height", "-1");
-
-  theMergePropertiesFlag = false;
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::~Settings()
 {
+  // Free the settings array
+  delete[] mySettings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,92 +159,101 @@ void Settings::saveConfig()
       << ";  without the '-' character." << endl
       << ";" << endl
       << ";  Values are the same as those allowed on the commandline." << endl
-      << ";  Boolean values are specified as 1 (for true) and 0 (for false)" << endl
-      << ";" << endl
-      << "fps = " << theDesiredFrameRate << endl
-      << "zoom = " << theZoomLevel << endl
-      << "keymap = " << myConsole->eventHandler().getKeymap() << endl
-      << "joymap = " << myConsole->eventHandler().getJoymap() << endl
-#ifdef SNAPSHOT_SUPPORT
-      << "ssdir = " << theSnapshotDir << endl
-      << "ssname = " << theSnapshotName << endl
-      << "sssingle = " << theMultipleSnapshotFlag << endl
-#endif
-#ifdef DEVELOPER_SUPPORT
-      << "Dmerge = " << theMergePropertiesFlag << endl
-#endif
-      << getArguments() << endl;
+      << ";  Boolean values are specified as 1 (or true) and 0 (or false)" << endl
+      << ";" << endl;
+
+  // Write out each of the key and value pairs
+  for(uInt32 i = 0; i < mySize; ++i)
+    out << mySettings[i].key << " = " << mySettings[i].value << endl;
 
   out.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::set(string& key, string& value)
+void Settings::set(const string& key, const string& value)
 {
-  // Now set up the options by key
-  if(key == "fps")
+  // See if the setting already exists
+  for(uInt32 i = 0; i < mySize; ++i)
   {
-    // They're setting the desired frame rate
-    uInt32 rate = atoi(value.c_str());
-    if(rate < 1)
-      cout << "Invalid rate " << rate << endl;
-    else
-      theDesiredFrameRate = rate;
+    if(key == mySettings[i].key)
+    {
+      mySettings[i].value = value;
+      return;
+    }
   }
-  else if(key == "zoom")
+
+  // See if the array needs to be resized
+  if(mySize == myCapacity)
   {
-    // They're setting the initial window size
-    uInt32 zoom = atoi(value.c_str());
-    if(zoom < 1)
-      cout << "Invalid zoom value " << zoom << endl;
-    else
-      theZoomLevel = zoom;
-  }
-  else if(key == "keymap")
+    // Yes, so we'll make the array twice as large
+    Setting* newSettings = new Setting[myCapacity * 2];
+
+    for(uInt32 i = 0; i < mySize; ++i)
+    {
+      newSettings[i] = mySettings[i];
+    }
+
+    delete[] mySettings;
+
+    mySettings = newSettings;
+    myCapacity *= 2;
+  } 
+
+  // Add new property to the array
+  mySettings[mySize].key = key;
+  mySettings[mySize].value = value;
+
+  ++mySize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 Settings::getInt(const string& key) const
+{
+  // Try to find the named setting and answer its value
+  for(uInt32 i = 0; i < mySize; ++i)
   {
-    theKeymapList = value;
+    if(key == mySettings[i].key)
+    {
+      return atoi(mySettings[i].value.c_str());
+    }
   }
-  else if(key == "joymap")
+
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Settings::getBool(const string& key) const
+{
+  // Try to find the named setting and answer its value
+  for(uInt32 i = 0; i < mySize; ++i)
   {
-    theJoymapList = value;
+    if(key == mySettings[i].key)
+    {
+      if(mySettings[i].value == "1" || mySettings[i].value == "true")
+        return true;
+      else if(mySettings[i].value == "0" || mySettings[i].value == "false")
+        return false;
+      else
+        return false;
+    }
   }
-#ifdef SNAPSHOT_SUPPORT
-  else if(key == "ssdir")
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Settings::getString(const string& key) const
+{
+  // Try to find the named setting and answer its value
+  for(uInt32 i = 0; i < mySize; ++i)
   {
-    theSnapshotDir = value;
+    if(key == mySettings[i].key)
+    {
+      return mySettings[i].value;
+    }
   }
-  else if(key == "ssname")
-  {
-    if((value != "md5sum") && (value != "romname"))
-      cout << "Invalid snapshot name " << value << endl;
-    else
-      theSnapshotName = value;
-  }
-  else if(key == "sssingle")
-  {
-    uInt32 option = atoi(value.c_str());
-    if(option == 1)
-      theMultipleSnapshotFlag = false;
-    else if(option == 0)
-      theMultipleSnapshotFlag = true;
-  }
-#endif
-#ifdef DEVELOPER_SUPPORT
-  else if(key == "Dmerge")
-  {
-    uInt32 option = atoi(value.c_str());
-    if(option == 1)
-      theMergePropertiesFlag = true;
-    else if(option == 0)
-      theMergePropertiesFlag = false;
-  }
-#endif
-  else
-  {
-    // Pass the key to the derived class to see if it knows
-    // what to do with it
-    setArgument(key, value);
-  }
+
+  return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

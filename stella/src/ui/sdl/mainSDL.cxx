@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.51 2003-09-19 15:45:01 stephena Exp $
+// $Id: mainSDL.cxx,v 1.52 2003-09-23 00:58:31 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -117,9 +117,7 @@ static Console* theConsole = (Console*) NULL;
 static Sound* theSound = (Sound*) NULL;
 
 // Pointer to the settings object or the null pointer
-#ifdef UNIX
-  static SettingsUNIX* theSettings = (SettingsUNIX*) NULL;
-#endif
+static Settings* theSettings = (Settings*) NULL;
 
 // Indicates if the mouse should be grabbed
 static bool theGrabMouseIndicator = false;
@@ -135,6 +133,12 @@ static bool isFullscreen = false;
 
 // Indicates whether the window is currently centered
 static bool isCentered = false;
+
+// Indicates the current paddle mode
+static Int32 thePaddleMode;
+
+// Indicates whether to show information during program execution
+static bool theShowInfoFlag;
 
 struct Switches
 {
@@ -290,8 +294,8 @@ bool setupDisplay()
       x11Available = true;
 
   sdlflags = SDL_SWSURFACE;
-  sdlflags |= theSettings->theUseFullScreenFlag ? SDL_FULLSCREEN : 0;
-  sdlflags |= theSettings->theUsePrivateColormapFlag ? SDL_HWPALETTE : 0;
+  sdlflags |= theConsole->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
+  sdlflags |= theConsole->settings().getBool("owncmap") ? SDL_HWPALETTE : 0;
 
   // Get the desired width and height of the display
   theWidth  = theConsole->mediaSource().width();
@@ -303,10 +307,10 @@ bool setupDisplay()
   theMaxWindowSize = maxWindowSizeForScreen();
 
   // Check to see if window size will fit in the screen
-  if(theSettings->theZoomLevel > theMaxWindowSize)
+  if((uInt32)theConsole->settings().getInt("zoom") > theMaxWindowSize)
     theWindowSize = theMaxWindowSize;
   else
-    theWindowSize = theSettings->theZoomLevel;
+    theWindowSize = theConsole->settings().getInt("zoom");
 
   // Set up the rectangle list to be used in updateDisplay
   rectList = new RectList();
@@ -327,9 +331,9 @@ bool setupDisplay()
   setupPalette();
 
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  theGrabMouseIndicator  = theSettings->theGrabMouseFlag;
-  theHideCursorIndicator = theSettings->theHideCursorFlag;
-  if(theSettings->theUseFullScreenFlag)
+  theGrabMouseIndicator  = theConsole->settings().getBool("grabmouse");
+  theHideCursorIndicator = theConsole->settings().getBool("hidecursor");
+  if(theConsole->settings().getBool("fullscreen"))
   {
     grabMouse(true);
     showCursor(false);
@@ -345,7 +349,8 @@ bool setupDisplay()
   }
 
   // Center the window if centering is selected and not fullscreen
-  if(theSettings->theCenterWindowFlag && !theSettings->theUseFullScreenFlag)
+  if(theConsole->settings().getBool("center") &&
+     !theConsole->settings().getBool("fullscreen"))
     centerWindow();
 
   return true;
@@ -362,35 +367,37 @@ bool setupJoystick()
   // Initialize the joystick subsystem
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "No joysticks present, use the keyboard.\n";
     theLeftJoystick = theRightJoystick = 0;
     return true;
   }
 
-  if((theLeftJoystick = SDL_JoystickOpen(theSettings->theLeftJoystickNumber)) != NULL)
+  theLeftJoystickNumber = (uInt32) theConsole->settings().getInt("joyleft");
+  if((theLeftJoystick = SDL_JoystickOpen(theLeftJoystickNumber)) != NULL)
   {
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Left joystick is a "
-           << SDL_JoystickName(theSettings->theLeftJoystickNumber)
+           << SDL_JoystickName(theLeftJoystickNumber)
            << " with " << SDL_JoystickNumButtons(theLeftJoystick) << " buttons.\n";
   }
   else
   {
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Left joystick not present, use keyboard instead.\n";
   }
 
-  if((theRightJoystick = SDL_JoystickOpen(theSettings->theRightJoystickNumber)) != NULL)
+  theRightJoystickNumber = theConsole->settings().getInt("joyright");
+  if((theRightJoystick = SDL_JoystickOpen(theRightJoystickNumber)) != NULL)
   {
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Right joystick is a "
-           << SDL_JoystickName(theSettings->theRightJoystickNumber)
+           << SDL_JoystickName(theRightJoystickNumber)
            << " with " << SDL_JoystickNumButtons(theRightJoystick) << " buttons.\n";
   }
   else
   {
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Right joystick not present, use keyboard instead.\n";
   }
 #endif
@@ -559,7 +566,7 @@ void resizeWindow(int mode)
   // A resize may mean that the window is no longer centered
   isCentered = false;
 
-  if(theSettings->theCenterWindowFlag)
+  if(theConsole->settings().getBool("center"))
     centerWindow();
 }
 
@@ -603,9 +610,6 @@ void centerWindow()
 */
 void toggleFullscreen()
 {
-  int width  = theWidth  * theWindowSize * 2;
-  int height = theHeight * theWindowSize;
-
   isFullscreen = !isFullscreen;
   if(isFullscreen)
     sdlflags |= SDL_FULLSCREEN;
@@ -625,7 +629,7 @@ void toggleFullscreen()
     grabMouse(theGrabMouseIndicator);
     showCursor(!theHideCursorIndicator);
 
-    if(theSettings->theCenterWindowFlag)
+    if(theConsole->settings().getBool("center"))
         centerWindow();
   }
 }
@@ -823,7 +827,6 @@ void updateDisplay(MediaSource& mediaSource)
 void handleEvents()
 {
   SDL_Event event;
-  Uint8 button;
   Uint8 type;
   SDLKey key;
   SDLMod mod;
@@ -918,13 +921,13 @@ void handleEvents()
       }
       else if((mod & KMOD_ALT) && key == SDLK_s)    // Alt-s saves properties to a file
       {
-        if(theSettings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
+        if(theConsole->settings().getBool("mergeprops"))  // Attempt to merge with propertiesSet
         {
           theConsole->saveProperties(theSettings->userPropertiesFilename(), true);
         }
         else  // Save to file in home directory
         {
-          string newPropertiesFile = theSettings->userHomeDir() + "/" + \
+          string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
             theConsole->properties().get("Cartridge.Name") + ".pro";
           replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
           theConsole->saveProperties(newPropertiesFile);
@@ -980,13 +983,13 @@ void handleEvents()
       resistance = (Int32)((fudgeFactor * x) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
-      if(theSettings->thePaddleMode == 0)
+      if(thePaddleMode == 0)
         type = Event::PaddleZeroResistance;
-      else if(theSettings->thePaddleMode == 1)
+      else if(thePaddleMode == 1)
         type = Event::PaddleOneResistance;
-      else if(theSettings->thePaddleMode == 2)
+      else if(thePaddleMode == 2)
         type = Event::PaddleTwoResistance;
-      else if(theSettings->thePaddleMode == 3)
+      else if(thePaddleMode == 3)
         type = Event::PaddleThreeResistance;
 
       theConsole->eventHandler().sendEvent(type, resistance);
@@ -1001,13 +1004,13 @@ void handleEvents()
       else
         value = 0;
 
-      if(theSettings->thePaddleMode == 0)
+      if(thePaddleMode == 0)
         type = Event::PaddleZeroFire;
-      else if(theSettings->thePaddleMode == 1)
+      else if(thePaddleMode == 1)
         type = Event::PaddleOneFire;
-      else if(theSettings->thePaddleMode == 2)
+      else if(thePaddleMode == 2)
         type = Event::PaddleTwoFire;
-      else if(theSettings->thePaddleMode == 3)
+      else if(thePaddleMode == 3)
         type = Event::PaddleThreeFire;
 
       theConsole->eventHandler().sendEvent(type, value);
@@ -1127,31 +1130,33 @@ uInt32 maxWindowSizeForScreen()
 bool setupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
+  string theAlternateProFile = theSettings->getString("altpro");
+  string theUserProFile = theSettings->userPropertiesFilename();
+  string theSystemProFile = theSettings->systemPropertiesFilename();
 
 #ifdef DEVELOPER_SUPPORT
   // If the user wishes to merge any property modifications to the
   // PropertiesSet file, then the PropertiesSet file MUST be loaded
   // into memory.
-  useMemList = theSettings->theMergePropertiesFlag;
+  useMemList = theSettings->getBool("mergeprops");
 #endif
 
   // Check to see if the user has specified an alternate .pro file.
-  if(theSettings->theAlternateProFile != "")
+
+  if(theAlternateProFile != "")
   {
-    set.load(theSettings->theAlternateProFile, &Console::defaultProperties(), useMemList);
+    set.load(theAlternateProFile, &Console::defaultProperties(), useMemList);
     return true;
   }
 
-  if(theSettings->userPropertiesFilename() != "")
+  if(theUserProFile != "")
   {
-    set.load(theSettings->userPropertiesFilename(),
-             &Console::defaultProperties(), useMemList);
+    set.load(theUserProFile, &Console::defaultProperties(), useMemList);
     return true;
   }
-  else if(theSettings->systemPropertiesFilename() != "")
+  else if(theSystemProFile != "")
   {
-    set.load(theSettings->systemPropertiesFilename(),
-             &Console::defaultProperties(), useMemList);
+    set.load(theSystemProFile, &Console::defaultProperties(), useMemList);
     return true;
   }
   else
@@ -1215,6 +1220,10 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  // Cache some settings so they don't have to be repeatedly searched for
+  thePaddleMode = theSettings->getInt("paddle");
+  theShowInfoFlag = theSettings->getBool("showinfo");
+
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
 
@@ -1242,45 +1251,45 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  if(theSettings->theSoundDriver == "0")
+  string driver = theSettings->getString("sound");
+  if(driver == "0")
   {
     // even if sound has been disabled, we still need a sound object
     theSound = new Sound();
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
-  else if(theSettings->theSoundDriver == "alsa")
+  else if(driver == "alsa")
   {
     theSound = new SoundALSA();
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Using ALSA for sound.\n";
   }
 #endif
 #ifdef SOUND_OSS
-  else if(theSettings->theSoundDriver == "oss")
+  else if(driver == "oss")
   {
     theSound = new SoundOSS();
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Using OSS for sound.\n";
   }
 #endif
 #ifdef SOUND_SDL
-  else if(theSettings->theSoundDriver == "sdl")
+  else if(driver == "sdl")
   {
     theSound = new SoundSDL();
-    if(theSettings->theShowInfoFlag)
+    if(theShowInfoFlag)
       cout << "Using SDL for sound.\n";
   }
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {
-    cerr << "ERROR: Sound support for "
-         << theSettings->theSoundDriver << " not available.\n";
+    cerr << "ERROR: Sound support for " << driver << " not available.\n";
     theSound = new Sound();
   }
 
-  theSound->setSoundVolume(theSettings->theDesiredVolume);
+  theSound->setSoundVolume(theSettings->getInt("volume"));
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
@@ -1310,11 +1319,11 @@ int main(int argc, char* argv[])
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(theSettings->theAccurateTimingFlag)   // normal, CPU-intensive timing
+  if(theSettings->getBool("accurate"))   // normal, CPU-intensive timing
   {
     // Set up accurate timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->getInt("framerate"));
 
     // Set the base for the timers
     frameTime = 0;
@@ -1359,7 +1368,7 @@ int main(int argc, char* argv[])
   {
     // Set up less accurate timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->getInt("framerate"));
 
     // Set the base for the timers
     virtualTime = getTicks();
@@ -1396,7 +1405,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(theSettings->theShowInfoFlag)
+  if(theShowInfoFlag)
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;

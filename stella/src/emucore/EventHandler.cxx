@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.8 2003-09-21 14:33:33 stephena Exp $
+// $Id: EventHandler.cxx,v 1.9 2003-09-23 00:58:31 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -212,7 +212,7 @@ void EventHandler::setKeymap()
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  string list = myConsole->settings().theKeymapList;
+  string list = myConsole->settings().getString("keymap");
   replace(list.begin(), list.end(), ':', ' ');
 
   if(isValidList(list, StellaEvent::LastKCODE))
@@ -236,7 +236,7 @@ void EventHandler::setJoymap()
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  string list = myConsole->settings().theJoymapList;
+  string list = myConsole->settings().getString("joymap");
   replace(list.begin(), list.end(), ':', ' ');
 
   if(isValidList(list, StellaEvent::LastJSTICK*StellaEvent::LastJCODE))
@@ -452,7 +452,7 @@ void EventHandler::takeSnapshot()
   // Now save the snapshot file
   filename = myConsole->settings().snapshotFilename();
   myConsole->snapshot().savePNG(filename, myConsole->mediaSource(),
-      myConsole->settings().theZoomLevel);
+      myConsole->settings().getInt("zoom"));
 
   message = "Snapshot saved";
   myConsole->mediaSource().showMessage(message, 120);
