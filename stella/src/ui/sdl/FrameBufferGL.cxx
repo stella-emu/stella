@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.11 2003-12-03 18:11:25 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.12 2003-12-06 00:17:29 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -70,6 +70,17 @@ bool FrameBufferGL::createScreen()
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity();
+
+#ifdef TEXTURES_ARE_LOST
+  createTextures();
+
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_CULL_FACE);
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_TEXTURE_2D);
+#endif
 
   theRedrawEntireFrameIndicator = true;
   return true;
@@ -194,8 +205,10 @@ bool FrameBufferGL::init()
   SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, (int*)&myRGB[2] );
   SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, (int*)&myRGB[3] );
 
+#ifndef TEXTURES_ARE_LOST
   // Create the texture surface and texture fonts
   createTextures();
+#endif
 
   // Set up the palette *after* we know the color components
   // and the textures
@@ -349,6 +362,12 @@ void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createTextures()
 {
+  if(myTexture)
+    SDL_FreeSurface(myTexture);
+
+  glDeleteTextures(1, &myTextureID);
+  glDeleteTextures(256, myFontTextureID);
+
   uInt32 w = power_of_two(myWidth);
   uInt32 h = power_of_two(myHeight);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
+// $Id: Snapshot.cxx,v 1.9 2003-12-06 00:17:28 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -88,7 +88,7 @@ uInt32 Snapshot::savePNG(string filename, uInt32 multiplier)
   uInt32 width     = myMediaSource->width();
   uInt32 height    = myMediaSource->height();
 
-  ofstream* out = new ofstream(filename.c_str());
+  ofstream* out = new ofstream(filename.c_str(), ios_base::binary);
   if(!out)
     return 0;
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.65 2003-12-05 19:51:09 stephena Exp $
+// $Id: mainSDL.cxx,v 1.66 2003-12-06 00:17:29 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -342,7 +342,12 @@ void handleEvents()
         else if(key == SDLK_MINUS)
           theDisplay->resize(-1);
         else if(key == SDLK_RETURN)
+        {
           theDisplay->toggleFullscreen();
+          // Pause when switching modes
+          if(!theConsole->eventHandler().doPause())
+            theConsole->eventHandler().sendEvent(Event::Pause, 1);
+        }
 #ifdef DISPLAY_OPENGL
         else if(key == SDLK_f && theUseOpenGLFlag)
           ((FrameBufferGL*)theDisplay)->toggleFilter();
