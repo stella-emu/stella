@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.36 2002-11-11 22:09:07 stephena Exp $
+// $Id: mainSDL.cxx,v 1.37 2002-11-12 01:50:06 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1286,9 +1286,13 @@ void handleEvents()
 void takeSnapshot()
 {
 #ifdef HAVE_PNG
+  string message;
+
   if(!snapshot)
   {
-    cerr << "Snapshot support disabled.\n";
+    message = "Snapshots disabled";
+    theConsole->mediaSource().showMessage(message,
+      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
     return;
   }
 
@@ -1336,11 +1340,21 @@ void takeSnapshot()
   snapshot->savePNG(filename, theConsole->mediaSource(), settings->theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
-    cerr << "Snapshot saved as " << filename << endl;
+  {
+    message = "Snapshot saved";
+    theConsole->mediaSource().showMessage(message,
+      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+  }
   else
-    cerr << "Couldn't create snapshot " << filename << endl;
+  {
+    message = "Snapshot not saved";
+    theConsole->mediaSource().showMessage(message,
+      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+  }
 #else
-  cerr << "Snapshot mode not supported.\n";
+  string message = "Snapshots unsupported";
+  theConsole->mediaSource().showMessage(message,
+    MESSAGE_INTERVAL * settings->theDesiredFrameRate);
 #endif
 }
 

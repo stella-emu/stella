@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.31 2002-11-11 21:11:48 stephena Exp $
+// $Id: mainX11.cxx,v 1.32 2002-11-12 01:50:06 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -209,6 +209,10 @@ static bool isCentered = false;
 
 // Indicates the current state to use for state saving
 static uInt32 currentState = 0;
+
+static string homePropertiesFile;
+static string systemPropertiesFile;
+
 
 /**
   This routine should be called once the console is created to setup
@@ -683,10 +687,18 @@ void handleEvents()
       {
         if(event.xkey.state & Mod1Mask)
         {
-          string newPropertiesFile = getenv("HOME");
-          newPropertiesFile = newPropertiesFile + "/" + \
-            theConsole->properties().get("Cartridge.Name") + ".pro";
-          theConsole->saveProperties(newPropertiesFile);
+          if(settings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
+          {
+            theConsole->saveProperties(homePropertiesFile, true);
+          }
+          else  // Save to file in home directory
+          {
+            string newPropertiesFile = getenv("HOME");
+            newPropertiesFile = newPropertiesFile + "/" + \
+              theConsole->properties().get("Cartridge.Name") + ".pro";
+            replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
+            theConsole->saveProperties(newPropertiesFile);
+          }
         }
       }
 #endif
@@ -1184,9 +1196,13 @@ bool createCursors()
 void takeSnapshot()
 {
 #ifdef HAVE_PNG
+  string message;
+
   if(!snapshot)
   {
-    cerr << "Snapshot support disabled.\n";
+    message = "Snapshots disabled";
+    theConsole->mediaSource().showMessage(message,
+      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
     return;
   }
 
@@ -1234,11 +1250,21 @@ void takeSnapshot()
   snapshot->savePNG(filename, theConsole->mediaSource(), settings->theWindowSize);
 
   if(access(filename.c_str(), F_OK) == 0)
-    cerr << "Snapshot saved as " << filename << endl;
+  {
+    message = "Snapshot saved";
+    theConsole->mediaSource().showMessage(message,
+      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+  }
   else
-    cerr << "Couldn't create snapshot " << filename << endl;
+  {
+    message = "Snapshot not saved";
+    theConsole->mediaSource().showMessage(message,
+      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+  }
 #else
-  cerr << "Snapshot mode not supported.\n";
+  string message = "Snapshots unsupported";
+  theConsole->mediaSource().showMessage(message,
+    MESSAGE_INTERVAL * settings->theDesiredFrameRate);
 #endif
 }
 
@@ -1278,7 +1304,7 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "X Stella version 1.2",
+    "X Stella version 1.3",
     "",
     "Usage: stella.x11 [option ...] file",
     "",
@@ -1314,6 +1340,8 @@ void usage()
     "  -Dwidth                     Sets \"Display.Width\"",
     "  -Dystart                    Sets \"Display.YStart\"",
     "  -Dheight                    Sets \"Display.Height\"",
+    "  -Dmerge     <0|1>           Merge changed properties into properties file,",
+    "                              or save into a separate file",
 #endif
     0
   };
@@ -1334,9 +1362,14 @@ void usage()
 */
 bool setupProperties(PropertiesSet& set)
 {
-  string homePropertiesFile = getenv("HOME");
-  homePropertiesFile += "/.stella/stella.pro";
-  string systemPropertiesFile = "/etc/stella.pro";
+  bool useMemList = false;
+
+#ifdef DEVELOPER_SUPPORT
+  // If the user wishes to merge any property modifications to the
+  // PropertiesSet file, then the PropertiesSet file MUST be loaded
+  // into memory.
+  useMemList = settings->theMergePropertiesFlag;
+#endif
 
   // Check to see if the user has specified an alternate .pro file.
   // If it exists, use it.
@@ -1344,26 +1377,25 @@ bool setupProperties(PropertiesSet& set)
   {
     if(access(settings->theAlternateProFile.c_str(), R_OK) == 0)
     {
-      set.load(settings->theAlternateProFile, 
-          &Console::defaultProperties(), false);
+      set.load(settings->theAlternateProFile, &Console::defaultProperties(), useMemList);
       return true;
     }
     else
     {
-      cerr << "ERROR: Couldn't find \"" << settings->theAlternateProFile <<
-              "\" properties file." << endl;
+      cerr << "ERROR: Couldn't find \"" << settings->theAlternateProFile
+          << "\" properties file." << endl;
       return false;
     }
   }
 
   if(access(homePropertiesFile.c_str(), R_OK) == 0)
   {
-    set.load(homePropertiesFile, &Console::defaultProperties(), false);
+    set.load(homePropertiesFile, &Console::defaultProperties(), useMemList);
     return true;
   }
   else if(access(systemPropertiesFile.c_str(), R_OK) == 0)
   {
-    set.load(systemPropertiesFile, &Console::defaultProperties(), false);
+    set.load(systemPropertiesFile, &Console::defaultProperties(), useMemList);
     return true;
   }
   else
@@ -1434,6 +1466,7 @@ void cleanup()
 /**
   Creates some directories under $HOME.
   Required directories are $HOME/.stella and $HOME/.stella/state
+  Also sets up various locations for properties files, etc.
 */
 bool setupDirs()
 {
@@ -1455,6 +1488,10 @@ bool setupDirs()
       return false;
   }
 
+  homePropertiesFile   = getenv("HOME");
+  homePropertiesFile  += "/.stella/stella.pro";
+  systemPropertiesFile = "/etc/stella.pro";
+  
   return true;
 }
 
@@ -1573,6 +1610,7 @@ int main(int argc, char* argv[])
       }
 
       // Call handleEvents here to see if user pressed pause
+      startTime = getTicks();
       handleEvents();
       if(thePauseIndicator)
       {
@@ -1581,7 +1619,6 @@ int main(int argc, char* argv[])
         continue;
       }
 
-      startTime = getTicks();
       theConsole->mediaSource().update();
       sound.updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
@@ -1620,13 +1657,13 @@ int main(int argc, char* argv[])
       }
 
       startTime = getTicks();
+      handleEvents();
       if(!thePauseIndicator)
       {
         theConsole->mediaSource().update();
         sound.updateSound(theConsole->mediaSource());
       }
       updateDisplay(theConsole->mediaSource());
-      handleEvents();
 
       currentTime = getTicks();
       virtualTime += timePerFrame;
