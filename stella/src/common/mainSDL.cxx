@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.28 2005-03-14 04:08:13 stephena Exp $
+// $Id: mainSDL.cxx,v 1.29 2005-03-26 04:19:53 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -844,6 +844,10 @@ int main(int argc, char* argv[])
     Cleanup();
     return 0;
   }
+
+  // Finally, make sure the settings are valid
+  // We do it once here, so the rest of the program can assume valid settings
+//FIXME  theSettings->validate();
 
   // Create the event handler for the system
   theEventHandler = new EventHandler(theOSystem);

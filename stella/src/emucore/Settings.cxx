@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.33 2005-02-22 18:41:12 stephena Exp $
+// $Id: Settings.cxx,v 1.34 2005-03-26 04:19:56 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -40,11 +40,9 @@ Settings::Settings(OSystem* osystem)
   // Now fill it with options that are common to all versions of Stella
   set("video", "soft");
   set("video_driver", "");
-#ifdef DISPLAY_OPENGL
   set("gl_filter", "nearest");
-  set("gl_aspect", "2");
+  set("gl_aspect", "2.0");
   set("gl_fsmax", "false");
-#endif
   set("sound", "true");
   set("fragsize", "512");
   set("fullscreen", "false");
@@ -60,11 +58,9 @@ Settings::Settings(OSystem* osystem)
   set("mergeprops", "false");
   set("paddle", "0");
   set("palette", "standard");
-#ifdef SNAPSHOT_SUPPORT
   set("ssdir", ".");
   set("ssname", "romname");
   set("sssingle", "false");
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

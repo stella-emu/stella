@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.2 2005-03-15 22:28:05 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.3 2005-03-26 04:19:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <sstream>
 
 #include "OSystem.hxx"
 #include "Settings.hxx"
@@ -39,73 +41,80 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
-    : Dialog(osystem, x, y, w, h),
-      myDriver(NULL)
+    : Dialog(osystem, x, y, w, h)
 {
-  int yoff = 10;
-  const int xoff = 2;
-  const int woff = _w - 120;
-  const int labelWidth = 65;
+  int yoff = 10,
+      xoff = 2,
+      woff = _w - 130,
+      labelWidth = 65;
 
-  // Video driver (query FrameBuffer for what's supported)
-  myDriver = new PopUpWidget(this, xoff, yoff, woff, kLineHeight, "(*)Driver: ", labelWidth);
-  myDriver->appendEntry("<default>", 0);
-  myDriver->appendEntry("");
-  myDriver->appendEntry("First one", 1);
-  myDriver->appendEntry("Another one", 2);
+  // Video driver (query OSystem for what's supported)
+  myDriverPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
+                                  "(*)Driver: ", labelWidth);
+  myDriverPopup->appendEntry("First one", 1);
+  myDriverPopup->appendEntry("Another one", 2);
   yoff += kVideoRowHeight + 4;
 
   // Video renderer
-  myRenderer = new PopUpWidget(this, xoff, yoff, woff, kLineHeight, "(*)Renderer: ", labelWidth);
-  myRenderer->appendEntry("<default>", 0);
-  myRenderer->appendEntry("");
-  myRenderer->appendEntry("Software", 1);
-  myRenderer->appendEntry("OpenGL", 2);
+  myRendererPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
+                                    "(*)Renderer: ", labelWidth, kRendererChanged);
+  myRendererPopup->appendEntry("Software", 1);
+  myRendererPopup->appendEntry("OpenGL", 2);
   yoff += kVideoRowHeight + 4;
 
   // Video filter
-  myFilter = new PopUpWidget(this, xoff, yoff, woff, kLineHeight, "Filter: ", labelWidth);
-  myFilter->appendEntry("<default>", 0);
-  myFilter->appendEntry("");
-  myFilter->appendEntry("Linear", 1);
-  myFilter->appendEntry("Nearest", 2);
+  myFilterPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
+                                  "GL Filter: ", labelWidth);
+  myFilterPopup->appendEntry("Linear", 1);
+  myFilterPopup->appendEntry("Nearest", 2);
   yoff += kVideoRowHeight + 4;
 
-  // Aspect ratio   FIXME - maybe this should be a slider ??
-  myAspectRatio = new PopUpWidget(this, xoff, yoff, woff, kLineHeight, "(*)Aspect: ", labelWidth);
-  myAspectRatio->appendEntry("<default>", 0);
-  myAspectRatio->appendEntry("");
-  myAspectRatio->appendEntry("1.0", 1);
-  myAspectRatio->appendEntry("1.1", 2);
-  myAspectRatio->appendEntry("1.2", 3);
-  myAspectRatio->appendEntry("1.3", 4);
-  myAspectRatio->appendEntry("1.4", 5);
-/*
-  myAspectRatio->appendEntry("1.5", 6);
-  myAspectRatio->appendEntry("1.6", 7);
-  myAspectRatio->appendEntry("1.7", 8);
-  myAspectRatio->appendEntry("1.8", 9);
-  myAspectRatio->appendEntry("1.9", 10);
-  myAspectRatio->appendEntry("2.0", 11);
-*/
+  // Aspect ratio
+  myAspectRatioSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
+                                         "(*)GL Aspect: ", labelWidth, kAspectRatioChanged);
+  myAspectRatioSlider->setMinValue(1); myAspectRatioSlider->setMaxValue(100);
+  myAspectRatioLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 24, kLineHeight,
+                       "", kTextAlignLeft);
+  myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   yoff += kVideoRowHeight + 4;
 
   // Palette
-  myPalette = new PopUpWidget(this, xoff, yoff, woff, kLineHeight, "Palette: ", labelWidth);
-  myPalette->appendEntry("<default>", 0);
-  myPalette->appendEntry("");
-  myPalette->appendEntry("Standard", 1);
-  myPalette->appendEntry("Original", 2);
-  myPalette->appendEntry("Z26", 3);
+  myPalettePopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight, "Palette: ", labelWidth);
+  myPalettePopup->appendEntry("Standard", 1);
+  myPalettePopup->appendEntry("Original", 2);
+  myPalettePopup->appendEntry("Z26", 3);
   yoff += kVideoRowHeight + 4;
 
-  // Add OK & Cancel buttons
+  // Move over to the next column
+  yoff = 10;
+  xoff = xoff + 115;
+
+  // Framerate
+  myFrameRateSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
+                                       "Framerate: ", labelWidth, kFrameRateChanged);
+  myFrameRateSlider->setMinValue(1); myFrameRateSlider->setMaxValue(300);
+  myFrameRateLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 20, kLineHeight,
+                                          "", kTextAlignLeft);
+  myFrameRateLabel->setFlags(WIDGET_CLEARBG);
+  yoff += kVideoRowHeight + 4;
+
+  // Zoom level
+  myZoomSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
+                                  "Zoom: ", labelWidth, kZoomChanged);
+  myZoomSlider->setMinValue(0); myZoomSlider->setMaxValue(50);
+  myZoomLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 20, kLineHeight,
+                                     "", kTextAlignLeft);
+  myZoomLabel->setFlags(WIDGET_CLEARBG);
+  yoff += kVideoRowHeight + 4;
+
+  // Add Defaults, OK and Cancel buttons
+  addButton( 10, _h - 24, "Defaults", kDefaultsCmd, 0);
 #ifndef MAC_OSX
   addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
   addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 
 // FIXME - get list of video drivers from OSystem
@@ -113,6 +122,8 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
 //  for (; l->code; ++l) {
 //    _langPopUp->appendEntry(l->description, l->id);
 //  }
+
+  setDefaults();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,59 +134,156 @@ VideoDialog::~VideoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::loadConfig()
 {
-cerr << "VideoDialog::loadConfig()\n";
   string s;
   bool b;
   uInt32 i;
+  float f;
 
   // Driver setting
-  myDriver->setSelectedTag(0); // FIXME
+  myDriverPopup->setSelectedTag(0); // FIXME
 
   // Renderer setting
   s = instance()->settings().getString("video");
   if(s == "soft")
-    myRenderer->setSelectedTag(1);
+    myRendererPopup->setSelectedTag(1);
   else if(s == "gl")
-    myRenderer->setSelectedTag(2);
-  else
-    myRenderer->setSelectedTag(0);
+    myRendererPopup->setSelectedTag(2);
 
   // Filter setting
   s = instance()->settings().getString("gl_filter");
   if(s == "linear")
-    myFilter->setSelectedTag(1);
+    myFilterPopup->setSelectedTag(1);
   else if(s == "nearest")
-    myFilter->setSelectedTag(2);
-  else
-    myFilter->setSelectedTag(0);
+    myFilterPopup->setSelectedTag(2);
 
-  // Aspect ratio
+  // Aspect ratio - another huge hack
   s = instance()->settings().getString("gl_aspect");
-  // TODO
+  f = instance()->settings().getFloat("gl_aspect");
+  if(f == -1.0)
+  {
+    f = 1.1;
+    s = "1.1";
+  }
+  else if(f < 1.1)
+  {
+    f = 1.1;
+    s = "1.1";
+  }
+  else if(f > 2.0)
+  {
+    f = 2.0;
+    s = "2.0";
+  }
+  i = (uInt32)((f * 10) - 10) * 10;
+  myAspectRatioSlider->setValue(i);
+  myAspectRatioLabel->setLabel(s);
 
   // Palette
-  // Filter setting
   s = instance()->settings().getString("palette");
   if(s == "standard")
-    myPalette->setSelectedTag(1);
+    myPalettePopup->setSelectedTag(1);
   else if(s == "original")
-    myPalette->setSelectedTag(2);
+    myPalettePopup->setSelectedTag(2);
   else if(s == "z26")
-    myPalette->setSelectedTag(3);
-  else
-    myPalette->setSelectedTag(0);
+    myPalettePopup->setSelectedTag(3);
+
+  // Framerate
+  myFrameRateSlider->setValue(instance()->settings().getInt("framerate"));
+  myFrameRateLabel->setLabel(instance()->settings().getString("framerate"));
+
+  // Zoom
+  i = (instance()->settings().getInt("zoom") - 1) * 10;
+  myZoomSlider->setValue(i);
+  myZoomLabel->setLabel(instance()->settings().getString("zoom"));
+
+  // Make sure that mutually-exclusive items are not enabled at the same time
+  i = myRendererPopup->getSelectedTag() - 1;
+  handleRendererChange(i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::saveConfig()
 {
-cerr << "VideoDialog::saveConfig()\n";
   string s;
+  uInt32 i;
+
+  // Driver setting
+  instance()->settings().setString("video_driver", ""); // FIXME
+
+  // Renderer setting
+  i = myRendererPopup->getSelectedTag();
+  if(i == 1)
+    instance()->settings().setString("video", "soft");
+  else if(i == 2)
+    instance()->settings().setString("video", "gl");
+
+  // Filter setting
+  i = myFilterPopup->getSelectedTag();
+  if(i == 1)
+    instance()->settings().setString("gl_filter", "linear");
+  else if(i == 2)
+    instance()->settings().setString("gl_filter", "nearest");
+// FIXME - immediately change the filtering
+
+  // Aspect ratio
+  s = myAspectRatioLabel->getLabel();
+  instance()->settings().setString("gl_aspect", s);
 
   // Palette
-  s = myPalette->getSelectedString();
-  instance()->settings().setString("palette", s);
+  i = myPalettePopup->getSelectedTag();
+  if(i == 1)
+    instance()->settings().setString("palette", "standard");
+  else if(i == 2)
+    instance()->settings().setString("palette", "original");
+  else if(i == 3)
+    instance()->settings().setString("palette", "z26");
+  s = myPalettePopup->getSelectedString();
+  instance()->settings().setString("palette", s); // FIXME - make this more efficient
   instance()->console().togglePalette(s);
+
+  // Framerate
+  i = myFrameRateSlider->getValue();
+  instance()->settings().setInt("framerate", i);
+// FIXME - immediately change the framerate
+
+  // Zoom
+  i = (myZoomSlider->getValue() / 10) + 1;
+  instance()->settings().setInt("zoom", i);
+// FIXME - immediately change the zoom
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::setDefaults()
+{
+  myDriverPopup->setSelectedTag(0);
+  myRendererPopup->setSelectedTag(1);
+  myFilterPopup->setSelectedTag(1);
+  myPalettePopup->setSelectedTag(1);
+  myFrameRateSlider->setValue(60);
+  myFrameRateLabel->setLabel("60");
+
+  // For some unknown reason (ie, a bug), slider widgets can only
+  // take certain ranges of numbers.  So we have to fudge things ...
+  myZoomSlider->setValue(10);
+  myZoomLabel->setLabel("2");
+  myAspectRatioSlider->setValue(100);
+  myAspectRatioLabel->setLabel("2.0");
+
+  // Make sure that mutually-exclusive items are not enabled at the same time
+  handleRendererChange(0);  // 0 indicates software mode
+
+  instance()->frameBuffer().refresh();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleRendererChange(uInt32 item)
+{
+  // When we're in software mode, certain OpenGL-related options are disabled
+  bool active = item == 0 ? false : true;
+
+  myFilterPopup->setEnabled(active);
+  myAspectRatioSlider->setEnabled(active);
+  myAspectRatioLabel->setEnabled(active);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,6 +294,35 @@ void VideoDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
     case kOKCmd:
       saveConfig();
       close();
+      break;
+
+    case kDefaultsCmd:
+      setDefaults();
+      break;
+
+    case kRendererChanged:
+      handleRendererChange(data);
+      break;
+
+    case kAspectRatioChanged:
+    {
+      // This is terribly dirty, but what can we do?
+      float ratio = (((myAspectRatioSlider->getValue() + 9) / 10) / 10.0) + 1.0;
+      ostringstream r;
+      if(ratio == 2.0)
+        r << ratio << ".0";
+      else
+        r << ratio;
+      myAspectRatioLabel->setLabel(r.str());
+      break;
+    }
+
+    case kFrameRateChanged:
+      myFrameRateLabel->setValue(myFrameRateSlider->getValue());
+      break;
+
+    case kZoomChanged:
+      myZoomLabel->setValue((myZoomSlider->getValue() + 10) / 10);
       break;
 
     default:

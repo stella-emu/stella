@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.1 2005-03-14 04:08:15 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.2 2005-03-26 04:19:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -99,6 +99,9 @@ void PopUpDialog::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCou
   _clickX = -1;
   _clickY = -1;
   _openTime = (uInt32)-1;
+
+  if(_popUpBoss->_cmd)
+    _popUpBoss->sendCommand(_popUpBoss->_cmd, _selection);
 
   // We remove the dialog and delete the dialog when the user has selected an item
   _popUpBoss->instance()->menu().removeDialog();
@@ -263,11 +266,12 @@ void PopUpDialog::drawMenuEntry(Int32 entry, bool hilite)
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h,
-                         const string& label, uInt32 labelWidth)
+                         const string& label, uInt32 labelWidth, Int32 cmd)
     : Widget(boss, x, y - 1, w, h + 2),
       CommandSender(boss),
       _label(label),
-      _labelWidth(labelWidth)
+      _labelWidth(labelWidth),
+      _cmd(cmd)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kPopUpWidget;

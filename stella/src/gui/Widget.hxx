@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.6 2005-03-15 22:28:05 stephena Exp $
+// $Id: Widget.hxx,v 1.7 2005-03-26 04:19:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,7 +56,7 @@ enum {
 };
 
 enum {
-  kButtonWidth  = 72,
+  kButtonWidth  = 50,
   kButtonHeight = 16
 };
 
@@ -64,7 +64,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.6 2005-03-15 22:28:05 stephena Exp $
+  @version $Id: Widget.hxx,v 1.7 2005-03-26 04:19:56 stephena Exp $
 */
 class Widget : public GuiObject
 {

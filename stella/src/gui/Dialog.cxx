@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.7 2005-03-15 22:28:05 stephena Exp $
+// $Id: Dialog.cxx,v 1.8 2005-03-26 04:19:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,7 +75,6 @@ void Dialog::open()
   // Load the config only on the first open (ie, since close was last called)
   if(_openCount++ == 0)
     loadConfig();
-cerr << "_openCount = " << _openCount << endl;
 
   Widget* w = _firstWidget;
 

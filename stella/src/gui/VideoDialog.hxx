@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.1 2005-03-14 04:08:15 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.2 2005-03-26 04:19:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,8 @@
 class CommandSender;
 class Dialog;
 class PopUpWidget;
+class SliderWidget;
+class StaticTextWidget;
 
 #include "OSystem.hxx"
 #include "bspf.hxx"
@@ -38,15 +40,23 @@ class VideoDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
 
   protected:
-    PopUpWidget* myDriver;
-    PopUpWidget* myRenderer;
-    PopUpWidget* myFilter;
-    PopUpWidget* myAspectRatio;
-    PopUpWidget* myPalette;
+    PopUpWidget*      myDriverPopup;
+    PopUpWidget*      myRendererPopup;
+    PopUpWidget*      myFilterPopup;
+    SliderWidget*     myAspectRatioSlider;
+    StaticTextWidget* myAspectRatioLabel;
+    PopUpWidget*      myPalettePopup;
+    SliderWidget*     myFrameRateSlider;
+    StaticTextWidget* myFrameRateLabel;
+    SliderWidget*     myZoomSlider;
+    StaticTextWidget* myZoomLabel;
 
   private:
     void loadConfig();
     void saveConfig();
+
+    void setDefaults();
+    void handleRendererChange(uInt32 item);
 };
 
 #endif
