@@ -52,6 +52,7 @@ New in this Release
 
   * A new Windows port has been created, with the GUI based on StellaX.
     This is the first new release for Windows since Stella 1.2.
+    (software  mode is not yet optimized; OpenGL mode works much better)
 
   * A new Mac OSX port has been created by Mark Grebe. This is the first new
     release for Mac OSX since Stella 1.2.
