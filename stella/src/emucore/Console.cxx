@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.31 2004-06-20 23:30:48 stephena Exp $
+// $Id: Console.cxx,v 1.32 2004-06-25 03:50:47 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -143,14 +143,13 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   mySystem = new System(13, 6);
 
   M6502* m6502;
-  if((myProperties.get("Emulation.CPU") == "High") ||
-      ((myProperties.get("Emulation.CPU") == "Auto-detect") && !(size % 8448)))
+  if(myProperties.get("Emulation.CPU") == "Low")
   {
-    m6502 = new M6502High(1);
+    m6502 = new M6502Low(1);
   }
   else
   {
-    m6502 = new M6502Low(1);
+    m6502 = new M6502High(1);
   }
 
   M6532* m6532 = new M6532(*this);
