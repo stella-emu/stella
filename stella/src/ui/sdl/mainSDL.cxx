@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.20 2002-04-10 04:09:59 bwmott Exp $
+// $Id: mainSDL.cxx,v 1.21 2002-04-10 23:51:18 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -79,19 +79,19 @@ static void handleRCFile();
 static void usage();
 
 // Globals for the SDL stuff
-static SDL_Surface* screen;
+static SDL_Surface* screen = (SDL_Surface*) NULL;
 static Uint32 palette[256];
 static int bpp;
-static Display* theX11Display;
-static Window theX11Window;
-static int theX11Screen;
+static Display* theX11Display = (Display*) NULL;
+static Window theX11Window = 0;
+static int theX11Screen = 0;
 static int mouseX = 0;
 static bool x11Available = false;
 static SDL_SysWMinfo info;
 static int sdlflags;
-static RectList* rectList;
-static SDL_Joystick* theLeftJoystick;
-static SDL_Joystick* theRightJoystick;
+static RectList* rectList = (RectList*) NULL;
+static SDL_Joystick* theLeftJoystick = (SDL_Joystick*) NULL;
+static SDL_Joystick* theRightJoystick = (SDL_Joystick*) NULL;
 
 #ifdef HAVE_PNG
   static Snapshot* snapshot;
@@ -171,10 +171,10 @@ static Event theEvent;
 static Event keyboardEvent;
 
 // Pointer to the console object or the null pointer
-static Console* theConsole;
+static Console* theConsole = (Console*) NULL;
 
 // Pointer to the settings object or the null pointer
-static Settings* settings;
+static Settings* settings = (Settings*) NULL;
 
 // Indicates if the user wants to quit
 static bool theQuitIndicator = false;
@@ -357,6 +357,11 @@ void recalculate8BitPalette()
   if(bpp != 8)
     return;
 
+  // Make the palette be half-bright if pause is selected
+  uInt8 shift = 0;
+  if(thePauseIndicator)
+    shift = 1;
+
   // Map 2600 colors to the current screen
   const uInt32* gamePalette = theConsole->mediaSource().palette();
   SDL_Color colors[256];
@@ -364,9 +369,9 @@ void recalculate8BitPalette()
   {
     Uint8 r, g, b;
 
-    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16);
-    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8);
-    b = (Uint8) (gamePalette[i] & 0x000000ff);
+    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16) >> shift;
+    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8) >> shift;
+    b = (Uint8) (gamePalette[i] & 0x000000ff) >> shift;
 
     colors[i].r = r;
     colors[i].g = g;
@@ -390,21 +395,30 @@ void recalculate8BitPalette()
 
 
 /**
-  Set up the palette for a screen with > 8 bits
+  Set up the palette for a screen of any depth.
+  Calls recalculate8BitPalette if necessary.
 */
 void setupPalette()
 {
   if(bpp == 8)
+  {
+    recalculate8BitPalette();
     return;
+  }
+
+  // Make the palette be half-bright if pause is selected
+  uInt8 shift = 0;
+  if(thePauseIndicator)
+    shift = 1;
 
   const uInt32* gamePalette = theConsole->mediaSource().palette();
   for(uInt32 i = 0; i < 256; ++i)
   {
     Uint8 r, g, b;
 
-    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16);
-    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8);
-    b = (Uint8) (gamePalette[i] & 0x000000ff);
+    r = (Uint8) ((gamePalette[i] & 0x00ff0000) >> 16) >> shift;
+    g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8) >> shift;
+    b = (Uint8) (gamePalette[i] & 0x000000ff) >> shift;
 
     switch(bpp)
     {
@@ -560,7 +574,12 @@ void togglePause()
     thePauseIndicator = true;
   }
 
+  // Pause the console
   theConsole->mediaSource().pause(thePauseIndicator);
+
+  // Show a different palette depending on pause state
+  setupPalette();
+  theRedrawEntireFrameIndicator = true;
 }
 
 

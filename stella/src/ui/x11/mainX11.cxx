@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.21 2002-04-10 04:09:59 bwmott Exp $
+// $Id: mainX11.cxx,v 1.22 2002-04-10 23:51:18 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -60,6 +60,7 @@ static GC theGCTable[256];
 static bool setupDisplay();
 static bool setupJoystick();
 static bool createCursors();
+static void setupPalette();
 static void cleanup();
 
 static void updateDisplay(MediaSource& mediaSource);
@@ -81,14 +82,14 @@ static void handleRCFile();
 static void usage();
 
 // Globals for X windows stuff
-static Display* theDisplay;
+static Display* theDisplay = (Display*) NULL;
 static string theDisplayName = "";
-static int theScreen;
-static Visual* theVisual;
-static Window theWindow;
-static Colormap thePrivateColormap;
-static Cursor normalCursor;
-static Cursor blankCursor;
+static int theScreen = 0;
+static Visual* theVisual = (Visual*) NULL;
+static Window theWindow = 0;
+static Colormap thePrivateColormap = 0;
+static Cursor normalCursor = 0;
+static Cursor blankCursor = 0;
 static uInt32 eventMask;
 static Atom wm_delete_window;
 
@@ -177,10 +178,10 @@ static Event theEvent;
 static Event keyboardEvent;
 
 // Pointer to the console object or the null pointer
-static Console* theConsole;
+static Console* theConsole = (Console*) NULL;
 
 // Pointer to the settings object or the null pointer
-static Settings* settings;
+static Settings* settings = (Settings*) NULL;
 
 // Indicates if the user wants to quit
 static bool theQuitIndicator = false;
@@ -265,13 +266,6 @@ bool setupDisplay()
     return false;
   }
 
-  // If requested create a private colormap for the window
-  if(settings->theUsePrivateColormapFlag)
-  {
-    thePrivateColormap = XCreateColormap(theDisplay, theWindow, 
-        theVisual, AllocNone);
-  }
-
   XSizeHints hints;
   hints.flags = PSize | PMinSize | PMaxSize;
   hints.min_width = hints.max_width = hints.width = width;
@@ -283,26 +277,8 @@ bool setupDisplay()
       theConsole->properties().get("Cartridge.Name").c_str());
   XmbSetWMProperties(theDisplay, theWindow, name, "stella", 0, 0, &hints, None, None);
 
-  // Allocate colors in the default colormap
-  const uInt32* palette = theConsole->mediaSource().palette();
-  for(uInt32 t = 0; t < 256; ++t)
-  {
-    XColor color;
-
-    color.red = (palette[t] & 0x00ff0000) >> 8 ;
-    color.green = (palette[t] & 0x0000ff00) ;
-    color.blue = (palette[t] & 0x000000ff) << 8;
-    color.flags = DoRed | DoGreen | DoBlue;
-
-    if(settings->theUsePrivateColormapFlag)
-      XAllocColor(theDisplay, thePrivateColormap, &color);
-    else
-      XAllocColor(theDisplay, DefaultColormap(theDisplay, theScreen), &color);
-
-    XGCValues values;
-    values.foreground = color.pixel;
-    theGCTable[t] = XCreateGC(theDisplay, theWindow, GCForeground, &values);
-  }
+  // Set up the palette for the screen
+  setupPalette();
 
   // Set up the delete window stuff ...
   wm_delete_window = XInternAtom(theDisplay, "WM_DELETE_WINDOW", False);
@@ -372,6 +348,52 @@ bool setupJoystick()
 #endif
 
   return true;
+}
+
+/**
+  Set up the palette for a screen of any depth.
+*/
+void setupPalette()
+{
+  // If we're using a private colormap then let's free it to be safe
+  if(settings->theUsePrivateColormapFlag && theDisplay)
+  {
+    if(thePrivateColormap)
+      XFreeColormap(theDisplay, thePrivateColormap);
+
+     thePrivateColormap = XCreateColormap(theDisplay, theWindow, 
+       theVisual, AllocNone);
+  }
+
+  // Make the palette be half-bright if pause is selected
+  uInt8 shift = 0;
+  if(thePauseIndicator)
+    shift = 1;
+
+  // Allocate colors in the default colormap
+  const uInt32* palette = theConsole->mediaSource().palette();
+  for(uInt32 t = 0; t < 256; ++t)
+  {
+    XColor color;
+
+    color.red   = ((palette[t] & 0x00ff0000) >> 8) >> shift;
+    color.green = (palette[t] & 0x0000ff00) >> shift;
+    color.blue  = ((palette[t] & 0x000000ff) << 8) >> shift;
+    color.flags = DoRed | DoGreen | DoBlue;
+
+    if(settings->theUsePrivateColormapFlag)
+      XAllocColor(theDisplay, thePrivateColormap, &color);
+    else
+      XAllocColor(theDisplay, DefaultColormap(theDisplay, theScreen), &color);
+
+    XGCValues values;
+    values.foreground = color.pixel;
+
+    if(theGCTable[t])
+      XFreeGC(theDisplay, theGCTable[t]);
+
+    theGCTable[t] = XCreateGC(theDisplay, theWindow, GCForeground, &values);
+  }
 }
 
 /**
@@ -883,7 +905,12 @@ void togglePause()
     thePauseIndicator = true;
   }
 
+  // Pause the console
   theConsole->mediaSource().pause(thePauseIndicator);
+
+  // Show a different palette depending on pause state
+  setupPalette();
+  theRedrawEntireFrameIndicator = true;
 }
 
 /**
