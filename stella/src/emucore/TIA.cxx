@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.1.1.1 2001-12-27 19:54:25 bwmott Exp $
+// $Id: TIA.cxx,v 1.2 2001-12-30 18:38:54 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -1560,49 +1560,53 @@ uInt8 TIA::peek(uInt16 addr)
   // Update frame to current color clock before we look at anything!
   updateFrame(mySystem->cycles() * 3);
 
+  uInt8 noise = mySystem->getDataBusState();
+  uInt8 noise1 = noise & 0x7F;
+  uInt8 noise2 = noise & 0x3F;
+
   switch(addr & 0x000f)
   {
     case 0x00:    // CXM0P
       return ((myCollision & 0x0001) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0002) ? 0x40 : 0x00);
+          ((myCollision & 0x0002) ? 0x40 : 0x00) | noise2;
 
     case 0x01:    // CXM1P
       return ((myCollision & 0x0004) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0008) ? 0x40 : 0x00) | 0x01;
+          ((myCollision & 0x0008) ? 0x40 : 0x00) | noise2;
 
     case 0x02:    // CXP0FB
       return ((myCollision & 0x0010) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0020) ? 0x40 : 0x00) | 0x02;
+          ((myCollision & 0x0020) ? 0x40 : 0x00) | noise2;
 
     case 0x03:    // CXP1FB
       return ((myCollision & 0x0040) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0080) ? 0x40 : 0x00) | 0x03;
+          ((myCollision & 0x0080) ? 0x40 : 0x00) | noise2;
 
     case 0x04:    // CXM0FB
       return ((myCollision & 0x0100) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0200) ? 0x40 : 0x00) | 0x04;
+          ((myCollision & 0x0200) ? 0x40 : 0x00) | noise2;
 
     case 0x05:    // CXM1FB
       return ((myCollision & 0x0400) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0800) ? 0x40 : 0x00) | 0x05;
+          ((myCollision & 0x0800) ? 0x40 : 0x00) | noise2;
 
     case 0x06:    // CXBLPF
-      return ((myCollision & 0x1000) ? 0x80 : 0x00) | 0x06;
+      return ((myCollision & 0x1000) ? 0x80 : 0x00) | noise1;
 
     case 0x07:    // CXPPMM
       return ((myCollision & 0x2000) ? 0x80 : 0x00) | 
-          ((myCollision & 0x4000) ? 0x40 : 0x00);
+          ((myCollision & 0x4000) ? 0x40 : 0x00) | noise2;
 
     case 0x08:    // INPT0
     {
       Int32 r = myConsole.controller(Controller::Left).read(Controller::Nine);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise1;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise1;
       }
       else
       {
@@ -1610,11 +1614,11 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise1;
         }
         else
         {
-          return 0x7F;
+          return noise1;
         }
       }
     }
@@ -1624,11 +1628,11 @@ uInt8 TIA::peek(uInt16 addr)
       Int32 r = myConsole.controller(Controller::Left).read(Controller::Five);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise1;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise1;
       }
       else
       {
@@ -1636,11 +1640,11 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise1;
         }
         else
         {
-          return 0x7F;
+          return noise1;
         }
       }
     }
@@ -1650,11 +1654,11 @@ uInt8 TIA::peek(uInt16 addr)
       Int32 r = myConsole.controller(Controller::Right).read(Controller::Nine);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise1;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise1;
       }
       else
       {
@@ -1662,11 +1666,11 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise1;
         }
         else
         {
-          return 0x7F;
+          return noise1;
         }
       }
     }
@@ -1676,11 +1680,11 @@ uInt8 TIA::peek(uInt16 addr)
       Int32 r = myConsole.controller(Controller::Right).read(Controller::Five);
       if(r == Controller::minimumResistance)
       {
-        return 0xFF; 
+        return 0x80 | noise1;
       }
       else if((r == Controller::maximumResistance) || myDumpEnabled)
       {
-        return 0x7F;
+        return noise1;
       }
       else
       {
@@ -1688,28 +1692,28 @@ uInt8 TIA::peek(uInt16 addr)
         uInt32 needed = (uInt32)(t * 1.19E6);
         if(mySystem->cycles() > (myDumpDisabledCycle + needed))
         {
-          return 0xFF;
+          return 0x80 | noise1;
         }
         else
         {
-          return 0x7F;
+          return noise1;
         }
       }
     }
 
     case 0x0C:    // INPT4
       return myConsole.controller(Controller::Left).read(Controller::Six) ?
-          0xFF : 0x7F;
+          (0x80 | noise1) : noise1;
 
     case 0x0D:    // INPT5
       return myConsole.controller(Controller::Right).read(Controller::Six) ?
-          0xFF : 0x7F;
+          (0x80 | noise1) : noise1;
 
     case 0x0e:
-      return 0x0e;
+      return noise;
 
     default:
-      return 0x0f;
+      return noise;
   }
 }
 
