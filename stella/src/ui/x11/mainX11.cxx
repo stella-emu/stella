@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.19 2002-03-28 23:11:21 stephena Exp $
+// $Id: mainX11.cxx,v 1.20 2002-04-09 16:06:28 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1287,7 +1287,7 @@ int main(int argc, char* argv[])
   // Set up timing stuff
   uInt32 startTime, frameTime, virtualTime, currentTime;
   uInt32 numberOfFrames = 0;
-  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) theDesiredFrameRate);
+  uInt32 timePerFrame = (uInt32) (1000000.0 / (double) settings->theDesiredFrameRate);
 
   // Set the base for the timers
   virtualTime = getTicks();
