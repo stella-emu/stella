@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
+// $Id: Deserializer.hxx,v 1.4 2002-08-11 17:48:13 stephena Exp $
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
@@ -32,7 +32,7 @@
   return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
+  @version $Id: Deserializer.hxx,v 1.4 2002-08-11 17:48:13 stephena Exp $
 */
 class Deserializer
 {
@@ -88,7 +88,7 @@ class Deserializer
 
   private:
     // The stream to get the deserialized data from.
-    ifstream myStream;
+    ifstream* myStream;
 
     // A long pattern that represents a boolean value of true.
     long TruePattern;

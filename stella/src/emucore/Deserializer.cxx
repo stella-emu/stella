@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.1 2002-05-13 19:14:17 stephena Exp $
+// $Id: Deserializer.cxx,v 1.2 2002-08-11 17:48:13 stephena Exp $
 //============================================================================
 
 #include <iostream>
@@ -27,41 +27,47 @@ Deserializer::Deserializer(void)
 {
   TruePattern = 0xfab1fab2;
   FalsePattern = 0xbad1bad2;
+
+  myStream = (ifstream*) 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Deserializer::~Deserializer(void)
 {
   close();
-  if(myStream.is_open())
-    myStream.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Deserializer::open(string& fileName)
 {
   close();
-  myStream.open(fileName.c_str(), ios::in | ios::binary);
+  myStream = new ifstream(fileName.c_str(), ios::in | ios::binary);
 
-  return myStream.is_open();
+  return (myStream && myStream->is_open());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Deserializer::close(void)
 {
-  if(myStream.is_open())
-    myStream.close();
+  if(myStream)
+  {
+    if(myStream->is_open())
+      myStream->close();
+
+    delete myStream;
+    myStream = (ifstream*) 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 long Deserializer::getLong(void)
 {
-  if(myStream.eof())
+  if(myStream->eof())
     throw "Deserializer: end of file";
 
   long l;
-  myStream.read(reinterpret_cast<char *> (&l), sizeof (long));
-  if(myStream.bad())
+  myStream->read(reinterpret_cast<char *> (&l), sizeof (long));
+  if(myStream->bad())
     throw "Deserializer: file read failed";
 
   return l;
@@ -73,9 +79,9 @@ string Deserializer::getString(void)
   long len = getLong();
   string str;
   str.resize(len);
-  myStream.read(&str[0], len);
+  myStream->read(&str[0], len);
 
-  if(myStream.bad())
+  if(myStream->bad())
     throw "Deserializer: file read failed";
 
   return str;
@@ -87,7 +93,7 @@ bool Deserializer::getBool(void)
   bool result = false;
 
   long b = getLong();
-  if(myStream.bad())
+  if(myStream->bad())
     throw "Deserializer: file read failed";
 
   if(b == TruePattern)

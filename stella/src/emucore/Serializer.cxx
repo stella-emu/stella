@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.cxx,v 1.1 2002-05-13 19:14:17 stephena Exp $
+// $Id: Serializer.cxx,v 1.2 2002-08-11 17:48:13 stephena Exp $
 //============================================================================
 
 #include <iostream>
@@ -27,6 +27,8 @@ Serializer::Serializer(void)
 {
   TruePattern = 0xfab1fab2;
   FalsePattern = 0xbad1bad2;
+
+  myStream = (ofstream*) 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,23 +41,29 @@ Serializer::~Serializer(void)
 bool Serializer::open(string& fileName)
 {
   close();
-  myStream.open(fileName.c_str(), ios::out | ios::binary);
+  myStream = new ofstream(fileName.c_str(), ios::out | ios::binary);
 
-  return myStream.is_open();
+  return (myStream && myStream->is_open());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::close(void)
 {
-  if(myStream.is_open())
-    myStream.close();
+  if(myStream)
+  {
+    if(myStream->is_open())
+      myStream->close();
+
+    delete myStream;
+    myStream = (ofstream*) 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putLong(long value)
 {
-  myStream.write(reinterpret_cast<char *> (&value), sizeof (long));
-  if(myStream.bad())
+  myStream->write(reinterpret_cast<char *> (&value), sizeof (long));
+  if(myStream->bad())
     throw "Serializer: file write failed";
 }
 
@@ -64,9 +72,9 @@ void Serializer::putString(string& str)
 {
   int len = str.length();
   putLong(len);
-  myStream.write(str.data(), len);
+  myStream->write(str.data(), len);
 
-  if(myStream.bad())
+  if(myStream->bad())
     throw "Serializer: file write failed";
 }
 
@@ -76,6 +84,6 @@ void Serializer::putBool(bool b)
   long l = b ? TruePattern: FalsePattern;
   putLong(l);
 
-  if(myStream.bad ())
+  if(myStream->bad ())
     throw "Serializer: file write failed";
 }

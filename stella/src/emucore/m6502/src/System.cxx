@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.3 2002-05-13 19:10:25 stephena Exp $
+// $Id: System.cxx,v 1.4 2002-08-11 17:48:13 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -209,7 +209,10 @@ int System::saveState(string &fileName, string& md5sum)
 {
   // Open the file as a new Serializer
   if(!serializer->open(fileName))
+  {
+    serializer->close();
     return 2;
+  }
 
   // Prepend the state file with the md5sum of this cartridge
   // This is the first defensive check for an invalid state file
@@ -217,17 +220,26 @@ int System::saveState(string &fileName, string& md5sum)
 
   // First save state for this system
   if(!save(*serializer))
+  {
+    serializer->close();
     return 3;
+  }
 
   // Next, save state for the CPU
   if(!myM6502->save(*serializer))
+  {
+    serializer->close();
     return 3;
+  }
 
   // Now save the state of each device
   for(uInt32 i = 0; i < myNumberOfDevices; ++i)
   {
     if(!myDevices[i]->save(*serializer))
+    {
+      serializer->close();
       return 3;
+    }
   }
 
   serializer->close();
@@ -239,26 +251,41 @@ int System::loadState(string &fileName, string& md5sum)
 {
   // Open the file as a new Deserializer
   if(!deserializer->open(fileName))
+  {
+    deserializer->close();
     return 2;
+  }
 
   // Look at the beginning of the state file.  It should contain the md5sum
   // of the current cartridge.  If it doesn't, this state file is invalid.
   if(deserializer->getString() != md5sum)
+  {
+    deserializer->close();
     return 3;
+  }
 
   // First load state for this system
   if(!load(*deserializer))
+  {
+    deserializer->close();
     return 3;
+  }
 
   // Next, load state for the CPU
   if(!myM6502->load(*deserializer))
+  {
+    deserializer->close();
     return 3;
+  }
 
   // Now load the state of each device
   for(uInt32 i = 0; i < myNumberOfDevices; ++i)
   {
     if(!myDevices[i]->load(*deserializer))
+    {
+      deserializer->close();
       return 3;
+    }
   }
 
   deserializer->close();
