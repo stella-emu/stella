@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.9 2005-02-21 19:32:07 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.10 2005-02-26 22:16:37 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -53,6 +53,7 @@
 
 extern "C" {
 int stellaMain(int argc, char* argv[]);
+void soundMute(int state);
 void setPaddleMode(int mode);
 void setLeftJoystickMode(int mode);
 void setRightJoystickMode(int mode);
@@ -995,6 +996,14 @@ void cleanup()
 
   if(SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO)
     SDL_Quit();
+}
+
+void soundMute(int state)
+{
+    if (state)
+        theSound->mute(true);
+    else
+        theSound->mute(false);
 }
 
 

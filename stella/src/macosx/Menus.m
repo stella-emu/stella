@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.4 2005-02-18 05:31:47 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.5 2005-02-26 22:16:24 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "Menus.h"
@@ -16,6 +16,7 @@
 #define QZ_SLASH		0x2C
 #define QZ_COMMA		0x2B
 
+extern void soundMute(int state);
 extern void setPaddleMode(int mode);
 extern void getPrefsSettings(int *gl, int *volume, float *aspect, const char **romdir);
 extern void setPrefsSettings(int gl, int volume, float aspect, const char *romdir);
@@ -57,9 +58,13 @@ char *browseFile(void) {
 	NSString *dirName;
 	char cdirName[FILENAME_MAX];
 	
+	soundMute(1);	
 	fileName = malloc(FILENAME_MAX);
 	if (fileName == NULL)
+	    {
+		soundMute(0);	
 	    return NULL;
+		}
 	
 	getRomdirSetting(cdirName);
 	dirName = [NSString stringWithCString:cdirName];
@@ -72,11 +77,13 @@ char *browseFile(void) {
 		[[[openPanel filenames] objectAtIndex:0] getCString:fileName];
         releaseCmdKeys(@"o",QZ_o);
 		[dirName release];
+		soundMute(0);
 		return fileName;
 		}
     else {
         releaseCmdKeys(@"o",QZ_o);
 		[dirName release];
+		soundMute(0);
         return NULL;
 		}
     }
@@ -195,7 +202,8 @@ static Menus *sharedInstance = nil;
 	const char *romdir;
 	const char *newRomdir;
 	NSString *romDirString;
-	
+
+    soundMute(1);	
 	getPrefsSettings(&gl, &volume, &aspectRatio, &romdir);
 	romDirString = [NSString stringWithCString:romdir];
 	
@@ -213,6 +221,7 @@ static Menus *sharedInstance = nil;
 	newRomdir = [romDirString cString];
 	
 	setPrefsSettings(gl, volume, aspectRatio, newRomdir);
+	soundMute(0);	
 }
 
 - (IBAction) prefsOK:(id) sender
