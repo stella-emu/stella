@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.34 2004-07-10 13:20:26 stephena Exp $
+// $Id: Console.cxx,v 1.35 2004-07-22 01:54:08 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -167,7 +167,8 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   myFrameBuffer.initDisplay(this, myMediaSource);
 
   // Initialize the sound interface.
-  mySound.init(this, myMediaSource, mySystem);
+  uInt32 framerate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
+  mySound.init(this, myMediaSource, mySystem, framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.10 2004-06-23 03:43:47 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.11 2004-07-22 01:54:08 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.10 2004-06-23 03:43:47 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.11 2004-07-22 01:54:08 stephena Exp $
 */
 class FrameBuffer
 {
@@ -337,7 +337,7 @@ class FrameBuffer
     static MainMenuItem ourMainMenu[2];
 
     // Holds static strings for the remap menu
-    static RemapMenuItem ourRemapMenu[57];
+    static RemapMenuItem ourRemapMenu[58];
 
     // Holds the current key mappings
     Event::Type* myKeyTable;

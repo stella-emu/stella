@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.5 2004-06-20 01:12:12 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.6 2004-07-22 01:54:08 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -166,7 +166,7 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
       (1193191.66666667));
 
   // Now, adjust the time based on the frame rate the user has selected
-  delta = delta * (60.0 / (double)myConsole->frameRate());
+  delta = delta * (myDisplayFrameRate / (double)myConsole->frameRate());
 
   RegWrite info;
   info.addr = addr;
@@ -189,10 +189,10 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
   }
 
   // If there are excessive items on the queue then we'll remove some
-  if(myRegWriteQueue.duration() > (myFragmentSizeLogBase2 / 60.0))
+  if(myRegWriteQueue.duration() > (myFragmentSizeLogBase2 / myDisplayFrameRate))
   {
     double removed = 0.0;
-    while(removed < ((myFragmentSizeLogBase2 - 1) / 60.0))
+    while(removed < ((myFragmentSizeLogBase2 - 1) / myDisplayFrameRate))
     {
       RegWrite& info = myRegWriteQueue.front();
       removed += info.delta;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.12 2004-06-13 04:54:25 bwmott Exp $
+// $Id: Sound.cxx,v 1.13 2004-07-22 01:54:08 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -44,12 +44,14 @@ void Sound::mute(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::init(Console* console, MediaSource* mediasrc, System* system)
+void Sound::init(Console* console, MediaSource* mediasrc, System* system,
+                 double displayframerate)
 {
   myConsole = console;
   myMediaSource = mediasrc;
   mySystem = system;
   myLastRegisterSetCycle = 0;
+  myDisplayFrameRate = displayframerate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

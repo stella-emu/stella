@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.11 2004-06-13 04:54:25 bwmott Exp $
+// $Id: Sound.hxx,v 1.12 2004-07-22 01:54:08 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -33,7 +33,7 @@ class System;
   to compile Stella with no sound support whatsoever.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: Sound.hxx,v 1.11 2004-06-13 04:54:25 bwmott Exp $
+  @version $Id: Sound.hxx,v 1.12 2004-07-22 01:54:08 stephena Exp $
 */
 class Sound
 {
@@ -65,8 +65,10 @@ class Sound
       @param console   The console
       @param mediasrc  The mediasource
       @param system    The system
+      @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    virtual void init(Console* console, MediaSource* mediasrc, System* system);
+    virtual void init(Console* console, MediaSource* mediasrc, System* system,
+                      double displayframerate);
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -134,6 +136,9 @@ public:
 
     // Indicates the cycle when a sound register was last set
     Int32 myLastRegisterSetCycle;
+
+    // Indicates the base framerate depending on whether the ROM is NTSC or PAL
+    double myDisplayFrameRate;
 };
 
 #endif
