@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.8 2002-03-18 14:38:34 gunfight Exp $
+// $Id: TIA.cxx,v 1.9 2002-03-28 02:02:24 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -31,13 +31,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const Console& console, Sound& sound)
-    : myConsole(console)
-    ,mySound(sound)
-    ,myCOLUBK(myColor[0])
-    ,myCOLUPF(myColor[1])
-    ,myCOLUP0(myColor[2])
-    ,myCOLUP1(myColor[3])
-    ,pauseState(false)
+    : myConsole(console),
+      mySound(sound),
+      myPauseState(false),
+      myLastSoundUpdateCycle(0),
+      myCOLUBK(myColor[0]),
+      myCOLUPF(myColor[1]),
+      myCOLUP0(myColor[2]),
+      myCOLUP1(myColor[3])
 {
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];
@@ -111,6 +112,9 @@ const char* TIA::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::reset()
 {
+  // Reset sound cycle indicator
+  myLastSoundUpdateCycle = 0;
+
   // Clear frame buffers
   for(uInt32 i = 0; i < 160 * 300; ++i)
   {
@@ -219,6 +223,9 @@ void TIA::systemCyclesReset()
   // Get the current system cycle
   uInt32 cycles = mySystem->cycles();
 
+  // Adjust the sound cycle indicator
+  myLastSoundUpdateCycle -= cycles;
+
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
 
@@ -264,8 +271,10 @@ void TIA::install(System& system)
 void TIA::update()
 {
   // Don't do an update if the emulator is paused
-  if(pauseState)
+  if(myPauseState)
+  {
     return;
+  }
 
   uInt8* tmp = myCurrentFrameBuffer;
   myCurrentFrameBuffer = myPreviousFrameBuffer;
@@ -303,16 +312,20 @@ void TIA::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::pause(bool state)
 {
-  // Ignore multiple calls to do the same thing
-  if(pauseState == state)
+  if(myPauseState == state)
+  {
+    // Ignore multiple calls to do the same thing
     return false;
+  }
+  else
+  {
+    myPauseState = state;
 
-  pauseState = state;
+    // Propagate the pause state to the sound object
+    mySound.mute(myPauseState);
 
-  // Now pause the Sound device
-  mySound.mute(pauseState);
-
-  return true;
+    return true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2079,37 +2092,49 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x15:    // Audio control 0
     {
-      mySound.set(Sound::AUDC0, value);
+      mySound.set(Sound::AUDC0, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x16:    // Audio control 1
     {
-      mySound.set(Sound::AUDC1, value);
+      mySound.set(Sound::AUDC1, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x17:    // Audio frequency 0
     {
-      mySound.set(Sound::AUDF0, value);
+      mySound.set(Sound::AUDF0, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x18:    // Audio frequency 1
     {
-      mySound.set(Sound::AUDF1, value);
+      mySound.set(Sound::AUDF1, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x19:    // Audio volume 0
     {
-      mySound.set(Sound::AUDV0, value);
+      mySound.set(Sound::AUDV0, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
   
     case 0x1A:    // Audio volume 1
     {
-      mySound.set(Sound::AUDV1, value);
+      mySound.set(Sound::AUDV1, value,
+          mySystem->cycles() - myLastSoundUpdateCycle);
+      myLastSoundUpdateCycle = mySystem->cycles();
       break;
     }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.2 2002-03-17 19:37:00 stephena Exp $
+// $Id: TIA.hxx,v 1.3 2002-03-28 02:02:24 bwmott Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -38,7 +38,7 @@ class System;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.2 2002-03-17 19:37:00 stephena Exp $
+  @version $Id: TIA.hxx,v 1.3 2002-03-28 02:02:24 bwmott Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -196,6 +196,13 @@ class TIA : public Device , public MediaSource
 
     // Sound object used by the TIA
     Sound& mySound;
+
+    // Indicates whether the emulation is paused or not
+    bool myPauseState;
+
+  private:
+    // Indicates the CPU cycle when a TIA sound register was last updated
+    Int32 myLastSoundUpdateCycle;
 
   private:
     // Pointer to the current frame buffer
@@ -426,8 +433,5 @@ class TIA : public Device , public MediaSource
 
     // Assignment operator isn't supported by this class so make it private
     TIA& operator = (const TIA&);
-
-    // Indicates whether the current emulation cycle should is paused
-    bool pauseState;
 };
 #endif
