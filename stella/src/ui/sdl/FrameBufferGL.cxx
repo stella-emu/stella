@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.2 2003-11-09 23:53:20 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.3 2003-11-12 15:12:06 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -38,6 +38,9 @@ FrameBufferGL::~FrameBufferGL()
 {
   if(myTexture)
     SDL_FreeSurface(myTexture);
+
+  glDeleteTextures(1, &myTextureID);
+  glDeleteTextures(256, myFontTextureID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,7 +246,6 @@ void FrameBufferGL::drawMediaSource() // FIXME - maybe less copying can be done?
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
                   GL_RGBA, GL_UNSIGNED_BYTE, myTexture->pixels);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-  glColor3f(0.0, 0.0, 0.0);
 
   glBegin(GL_QUADS);
     glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
@@ -285,26 +287,10 @@ void FrameBufferGL::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawText(uInt32 xorig, uInt32 yorig, const string& message)
+void FrameBufferGL::drawText(uInt32 x, uInt32 y, const string& message)
 {
-  glBindTexture(GL_TEXTURE_2D, myFontTextureID);
-  glEnable(GL_BLEND);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-
-  // We place the loop here to avoid multiple calls to glBegin/glEnd
-  glBegin(GL_QUADS);
   for(uInt32 i = 0; i < message.length(); i++)
-  {
-    uInt32 x = xorig + i*8;
-    uInt32 y = yorig;
-    uInt8 c = message[i];
-
-    glTexCoord2f(myFontCoord[c].minX, myFontCoord[c].minY); glVertex2i(x,   y  );
-    glTexCoord2f(myFontCoord[c].maxX, myFontCoord[c].minY); glVertex2i(x+8, y  );
-    glTexCoord2f(myFontCoord[c].maxX, myFontCoord[c].maxY); glVertex2i(x+8, y+8);
-    glTexCoord2f(myFontCoord[c].minX, myFontCoord[c].maxY); glVertex2i(x,   y+8);
-  }
-  glEnd();
+    drawChar(x + i*8, y, (uInt32) message[i]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -313,14 +299,14 @@ void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c)
   if(c >= 256 )
     return;
 
-  glBindTexture(GL_TEXTURE_2D, myFontTextureID);
+  glBindTexture(GL_TEXTURE_2D, myFontTextureID[c]);
   glEnable(GL_BLEND);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
   glBegin(GL_QUADS);
-    glTexCoord2f(myFontCoord[c].minX, myFontCoord[c].minY); glVertex2i(x,   y  );
-    glTexCoord2f(myFontCoord[c].maxX, myFontCoord[c].minY); glVertex2i(x+8, y  );
-    glTexCoord2f(myFontCoord[c].maxX, myFontCoord[c].maxY); glVertex2i(x+8, y+8);
-    glTexCoord2f(myFontCoord[c].minX, myFontCoord[c].maxY); glVertex2i(x,   y+8);
+    glTexCoord2f(0, 0); glVertex2i(x,   y  );
+    glTexCoord2f(1, 0); glVertex2i(x+8, y  );
+    glTexCoord2f(1, 1); glVertex2i(x+8, y+8);
+    glTexCoord2f(0, 1); glVertex2i(x,   y+8);
   glEnd();
 }
 
@@ -364,15 +350,16 @@ bool FrameBufferGL::createTextures()
 
   glGenTextures(1, &myTextureID);
   glBindTexture(GL_TEXTURE_2D, myTextureID);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                myTexture->pixels);
 
-  // Now create the font texture.  There are 256 fonts of 8x8 pixels.
-  // These will be stored in a texture of size 256x64, which is 32 characters
-  // per line, and 8 lines.
-  SDL_Surface* fontTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, 256, 64, 32,
+  // Now create the font textures.  There are 256 fonts of 8x8 pixels.
+  // These will be stored in 256 textures of size 8x8.
+  SDL_Surface* fontTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, 8, 8, 32,
   #if SDL_BYTEORDER == SDL_LIL_ENDIAN 
     0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
   #else
@@ -382,52 +369,41 @@ bool FrameBufferGL::createTextures()
   if(fontTexture == NULL)
     return false;
 
-  // First clear the texture
-  SDL_Rect tmp;
-  tmp.x = 0; tmp.y = 0; tmp.w = 256; tmp.h = 64;
-  SDL_FillRect(fontTexture, &tmp,
-               SDL_MapRGBA(fontTexture->format, 0xff, 0xff, 0xff, 0x0));
+  // Create a texture for each character
+  glGenTextures(256, myFontTextureID);
 
-  // Now fill the texture with font data
-  for(uInt32 lines = 0; lines < 8; lines++)
+  for(uInt32 c = 0; c < 256; c++)
   {
-    for(uInt32 x = lines*32; x < (lines+1)*32; x++)
+    // First clear the texture
+    SDL_Rect tmp;
+    tmp.x = 0; tmp.y = 0; tmp.w = 8; tmp.h = 8;
+    SDL_FillRect(fontTexture, &tmp,
+                 SDL_MapRGBA(fontTexture->format, 0xff, 0xff, 0xff, 0x0));
+
+    // Now fill the texture with font data
+    for(uInt32 y = 0; y < 8; y++)
     {
-      for(uInt32 y = 0; y < 8; y++)
+      for(uInt32 x = 0; x < 8; x++)
       {
-        for(uInt32 z = 0; z < 8; z++)
+        if((ourFontData[(c << 3) + y] >> x) & 1)
         {
-          if((ourFontData[(x << 3) + y] >> z) & 1)
-          {
-            tmp.x = ((x-lines*32)<<3) + z;
-            tmp.y = y + lines*8;
-            tmp.w = tmp.h = 1;
-            SDL_FillRect(fontTexture, &tmp,
-                SDL_MapRGBA(fontTexture->format, 0x10, 0x10, 0x10, 0xff));
-          }
+          tmp.x = x;
+          tmp.y = y;
+          tmp.w = tmp.h = 1;
+          SDL_FillRect(fontTexture, &tmp,
+            SDL_MapRGBA(fontTexture->format, 0x10, 0x10, 0x10, 0xff));
         }
       }
     }
-  }
 
-  // Generate the character coordinates
-  for(uInt32 i = 0; i < 256; i++)
-  {
-    uInt32 row = i / 32;
-    uInt32 col = i - (row*32);
-
-    myFontCoord[i].minX = (GLfloat) (col*8)   / 256;
-    myFontCoord[i].maxX = (GLfloat) (col*8+8) / 256;
-    myFontCoord[i].minY = (GLfloat) (row*8)   / 64;
-    myFontCoord[i].maxY = (GLfloat) (row*8+8) / 64;
-  }
-
-  glGenTextures(1, &myFontTextureID);
-  glBindTexture(GL_TEXTURE_2D, myFontTextureID);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+    glBindTexture(GL_TEXTURE_2D, myFontTextureID[c]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                fontTexture->pixels);
+  }
 
   SDL_FreeSurface(fontTexture);
 
