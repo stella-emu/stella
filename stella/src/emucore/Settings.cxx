@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.10 2003-09-04 16:50:48 stephena Exp $
+// $Id: Settings.cxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
 //============================================================================
 
 #include <fstream>

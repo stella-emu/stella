@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.31 2003-09-03 20:10:58 stephena Exp $
+## $Id: makefile,v 1.32 2003-09-05 18:02:58 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -265,7 +265,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartMB.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
-            Serializer.o Deserializer.o TIASound.o EventHandler.o \
+            Serializer.o Deserializer.o TIASound.o EventHandler.o Frontend.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)
@@ -312,6 +312,9 @@ Event.o: $(CORE)/Event.cxx
 
 EventHandler.o: $(CORE)/EventHandler.cxx $(CORE)/EventHandler.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/EventHandler.cxx
+
+Frontend.o: $(CORE)/Frontend.cxx $(CORE)/Frontend.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Frontend.cxx
 
 Control.o: $(CORE)/Control.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Control.cxx
@@ -424,8 +427,8 @@ Serializer.o: $(CORE)/Serializer.cxx
 Deserializer.o: $(CORE)/Deserializer.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Deserializer.cxx
 
-Settings.o: $(UI)/common/Settings.cxx $(UI)/common/Settings.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Settings.cxx
+Settings.o: $(CORE)/Settings.cxx $(CORE)/Settings.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Settings.cxx
 
 Terminal.o: $(UI)/x11/Terminal.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/x11/Terminal.cxx
