@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.7 2002-11-11 02:46:34 stephena Exp $
+// $Id: Console.cxx,v 1.8 2002-11-12 01:02:16 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <algorithm>
 
 #include "Booster.hxx"
 #include "Cart.hxx"
