@@ -600,7 +600,7 @@ void Tia_process (register unsigned char *buffer, register uint16 n)
 
           /* calculate the latest output value and place in buffer */
 #ifdef MAC_OSX		  
-          *(buffer++) = (outvol_0 + outvol_1)/2 + 128;
+          *(buffer++) = ((uint8) ((((uint32)outvol_0 + (uint32)outvol_1) * volume) / 100))/2 + 128;
 #else
           *(buffer++) = ((((uint32)outvol_0 + (uint32)outvol_1) * volume) / 100);
 #endif		  
