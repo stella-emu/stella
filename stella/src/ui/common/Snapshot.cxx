@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.3 2002-08-03 22:52:39 stephena Exp $
+// $Id: Snapshot.cxx,v 1.4 2002-12-05 16:44:56 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -90,17 +90,11 @@ int Snapshot::savePNG(string filename, MediaSource& mediaSource, int multiplier)
     }
 
     const uInt32* gamePalette = mediaSource.palette();
-    for(uInt32 i = 0; i < 256; i += 2)
+    for(uInt32 i = 0; i < 256; ++i)
     {
-      uInt8 r, g, b;
-
-      r = (uInt8) ((gamePalette[i] & 0x00ff0000) >> 16);
-      g = (uInt8) ((gamePalette[i] & 0x0000ff00) >> 8);
-      b = (uInt8) (gamePalette[i] & 0x000000ff);
-
-      palette[i].red   = palette[i+1].red   = r;
-      palette[i].green = palette[i+1].green = g;
-      palette[i].blue  = palette[i+1].blue  = b;
+      palette[i].red   = (uInt8) ((gamePalette[i] & 0x00ff0000) >> 16);
+      palette[i].green = (uInt8) ((gamePalette[i] & 0x0000ff00) >> 8);
+      palette[i].blue  = (uInt8) (gamePalette[i] & 0x000000ff);
     }
   }
 
