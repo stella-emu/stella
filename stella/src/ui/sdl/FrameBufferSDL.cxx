@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.12 2004-04-20 21:08:03 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.13 2004-04-21 16:27:34 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -179,8 +179,7 @@ uInt32 FrameBufferSDL::maxWindowSizeForScreen()
   if(!x11Available)
     return 4;
 
-  /* Every UNIX except Darwin with Cocoa. */
-#if UNIX && (!__APPLE__)
+#ifdef UNIX
   // Otherwise, lock the screen and get the width and height
   myWMInfo.info.x11.lock_func();
   Display* theX11Display = myWMInfo.info.x11.display;
@@ -221,6 +220,7 @@ void FrameBufferSDL::setWindowAttributes()
   name << "Stella: \"" << myConsole->properties().get("Cartridge.Name") << "\"";
   SDL_WM_SetCaption(name.str().c_str(), "stella");
 
+#ifndef MAC_OSX
   // Set the window icon
   uInt32 w, h, ncols, nbytes;
   uInt32 rgba[256], icon[32 * 32];
@@ -273,4 +273,5 @@ void FrameBufferSDL::setWindowAttributes()
                          32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
   SDL_WM_SetIcon(surface, (unsigned char *) mask);
   SDL_FreeSurface(surface);
+#endif
 }

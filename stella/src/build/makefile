@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.50 2004-04-20 21:07:35 stephena Exp $
+## $Id: makefile,v 1.51 2004-04-21 16:27:14 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -42,9 +42,6 @@ OPTIMIZATIONS  =
 ### to build on SMP (or distcc-based) machines
 ### change to number of CPU's you have
  NUMBER_CPU = 1
-
-### you want a 6507 trace written to stdout
-# DEBUG = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends

@@ -596,8 +596,11 @@ void Tia_process (register unsigned char *buffer, register uint16 n)
           Samp_n_cnt += Samp_n_max;
 
           /* calculate the latest output value and place in buffer */
+#ifdef MAC_OSX		  
+          *(buffer++) = (outvol_0 + outvol_1)/2 + 128;
+#else
           *(buffer++) = outvol_0 + outvol_1;
-
+#endif		  
           /* and indicate one less byte to process */
           n--;
        }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.11 2003-11-24 01:14:38 stephena Exp $
+// $Id: Settings.hxx,v 1.12 2004-04-21 16:27:18 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.11 2003-11-24 01:14:38 stephena Exp $
+  @version $Id: Settings.hxx,v 1.12 2004-04-21 16:27:18 stephena Exp $
 */
 class Settings
 {
@@ -51,12 +51,12 @@ class Settings
     /**
       This method should be called to load the current settings from an rc file.
     */
-    void loadConfig();
+    virtual void loadConfig();
 
     /**
       This method should be called to save the current settings to an rc file.
     */
-    void saveConfig();
+    virtual void saveConfig();
 
     /**
       This method should be called to load the arguments from the commandline.
@@ -233,17 +233,7 @@ class Settings
 
     // The full pathname of the settings file for output
     string mySettingsOutputFilename;
-
-  private:
-    // Copy constructor isn't supported by this class so make it private
-    Settings(const Settings&);
-
-    // Assignment operator isn't supported by this class so make it private
-    Settings& operator = (const Settings&);
-
-    // Test whether the given setting is present in the array
-    bool contains(const string& key);
-
+	
     // Structure used for storing settings
     struct Setting
     {
@@ -255,11 +245,22 @@ class Settings
     // Pointer to a dynamically allocated array of settings
     Setting* mySettings;
 
-    // Current capacity of the settings array
-    unsigned int myCapacity;
-
     // Size of the settings array (i.e. the number of <key,value> pairs)
     unsigned int mySize;
+	
+    // Test whether the given setting is present in the array
+    bool contains(const string& key);
+
+	
+  private:
+    // Copy constructor isn't supported by this class so make it private
+    Settings(const Settings&);
+
+    // Assignment operator isn't supported by this class so make it private
+    Settings& operator = (const Settings&);
+
+    // Current capacity of the settings array
+    unsigned int myCapacity;
 };
 
 #endif
