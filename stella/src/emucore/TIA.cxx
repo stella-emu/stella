@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.32 2004-04-27 00:50:51 stephena Exp $
+// $Id: TIA.cxx,v 1.33 2004-06-13 04:53:04 bwmott Exp $
 //============================================================================
 
 #include <cassert>
@@ -41,7 +41,8 @@ TIA::TIA(const Console& console, Sound& sound)
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
       myCOLUP0(myColor[2]),
-      myCOLUP1(myColor[3])
+      myCOLUP1(myColor[3]),
+      myMaximumNumberOfScanlines(262)
 {
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];
@@ -222,10 +223,12 @@ void TIA::reset()
   if(myConsole.properties().get("Display.Format") == "PAL")
   {
     myColorLossEnabled = true;
+    myMaximumNumberOfScanlines = 342;
   }
   else
   {
     myColorLossEnabled = false;
+    myMaximumNumberOfScanlines = 290;
   }
 }
 
@@ -236,7 +239,7 @@ void TIA::systemCyclesReset()
   uInt32 cycles = mySystem->cycles();
 
   // Adjust the sound cycle indicator
-  mySound.setCycles(-cycles);
+  mySound.adjustCycleCounter(-cycles);
 
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
@@ -1632,9 +1635,6 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
     }
   }
   myFramePointer = ending;
-
-  // Add sound bytes to the sound queue every scanline
-  mySound.update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1962,6 +1962,12 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
   // Update frame to current CPU cycle before we make any changes!
   updateFrame(clock + delay);
+
+  // If a VSYNC hasn't been generated in time go ahead and end the frame
+  if(((clock - myClockWhenFrameStarted) / 228) > myMaximumNumberOfScanlines)
+  {
+    mySystem->m6502().stop();
+  }
 
   switch(addr)
   {
@@ -2341,37 +2347,37 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x15:    // Audio control 0
     {
-      mySound.set(addr, value);
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x16:    // Audio control 1
     {
-      mySound.set(addr, value);
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x17:    // Audio frequency 0
     {
-      mySound.set(addr, value);
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x18:    // Audio frequency 1
     {
-      mySound.set(addr, value);
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x19:    // Audio volume 0
     {
-      mySound.set(addr, value);
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x1A:    // Audio volume 1
     {
-      mySound.set(addr, value);
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
 
