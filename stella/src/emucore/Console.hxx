@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.11 2003-09-19 15:45:01 stephena Exp $
+// $Id: Console.hxx,v 1.12 2003-09-25 16:20:33 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -30,6 +30,7 @@ class Snapshot;
 class Sound;
 class Switches;
 class System;
+class UserInterface;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -40,7 +41,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.11 2003-09-19 15:45:01 stephena Exp $
+  @version $Id: Console.hxx,v 1.12 2003-09-25 16:20:33 stephena Exp $
 */
 class Console
 {
@@ -135,6 +136,16 @@ class Console
     EventHandler& eventHandler() const
     {
       return *myEventHandler;
+    }
+
+    /**
+      Get the user interfacee of the console
+
+      @return The graphical user interface
+    */
+    UserInterface& gui() const
+    {
+      return *myUserInterface;
     }
 
   public:
@@ -246,6 +257,9 @@ class Console
 
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;
+
+    // Pointer to the UserInterface object
+    UserInterface* myUserInterface;
 
   private:
     // Default properties to use for properties objects

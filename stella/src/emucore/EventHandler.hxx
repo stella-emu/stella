@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.6 2003-09-12 18:08:53 stephena Exp $
+// $Id: EventHandler.hxx,v 1.7 2003-09-25 16:20:34 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -40,7 +40,7 @@ class MediaSource;
   unchanged to the remap class, where key remapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.6 2003-09-12 18:08:53 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.7 2003-09-25 16:20:34 stephena Exp $
 */
 class EventHandler
 {
@@ -124,6 +124,9 @@ class EventHandler
     void loadState();
     void takeSnapshot();
 
+    void processMenuEvent(StellaEvent::KeyCode key);
+//    void processMenuEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code);
+
   private:
     // Array of key events
     Event::Type myKeyTable[StellaEvent::LastKCODE];
@@ -154,6 +157,15 @@ class EventHandler
 
     // The current joymap in string form
     string myJoymapString;
+
+    // Indicates that a menu should be entered
+    bool myMenuStatus;
+
+    // These are used for the state machine that processes menu events
+    bool myReturnPressedFlag, myRemapModeFlag, myEventSelectedFlag;
+
+    // 
+    Event::Type mySelectedEvent;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.9 2003-09-23 00:58:31 stephena Exp $
+// $Id: EventHandler.cxx,v 1.10 2003-09-25 16:20:34 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -26,6 +26,7 @@
 #include "Settings.hxx"
 #include "StellaEvent.hxx"
 #include "System.hxx"
+#include "UserInterface.hxx"
 #include "bspf.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
@@ -35,7 +36,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(Console* console)
     : myConsole(console),
-      myCurrentState(0)
+      myCurrentState(0),
+      myMenuStatus(false),
+      myReturnPressedFlag(false),
+      myRemapModeFlag(false),
+      myEventSelectedFlag(false)
 {
   Int32 i;
 
@@ -44,12 +49,12 @@ EventHandler::EventHandler(Console* console)
 
   // Erase the KeyEvent array 
   for(i = 0; i < StellaEvent::LastKCODE; ++i)
-    myKeyTable[i] = Event::LastType;
+    myKeyTable[i] = Event::NoType;
 
   // Erase the JoyEvent array
   for(i = 0; i < StellaEvent::LastJSTICK; ++i)
     for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
-      myJoyTable[i][j] = Event::LastType;
+      myJoyTable[i][j] = Event::NoType;
 
   // Erase the Message array 
   for(i = 0; i < Event::LastType; ++i)
@@ -72,6 +77,8 @@ EventHandler::~EventHandler()
 {
   if(myEvent)
     delete myEvent;
+
+  myEvent = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,64 +90,90 @@ Event* EventHandler::event()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
-  Event::Type event = myKeyTable[key];
-
-  // Ignore unmapped events
-  if(event == Event::LastType)
-    return;
-
-  // Take care of special events that aren't technically part of
-  // the emulation core
-  if(state == 1)
+  // First check if we are entering menu mode
+  if(key == StellaEvent::KCODE_TAB && state == 1)
   {
-    if(event == Event::SaveState)
-    {
-      saveState();
-      return;
-    }
-    else if(event == Event::ChangeState)
-    {
-      changeState();
-      return;
-    }
-    else if(event == Event::LoadState)
-    {
-      loadState();
-      return;
-    }
-    else if(event == Event::TakeSnapshot)
-    {
-      takeSnapshot();
-      return;
-    }
-    else if(event == Event::Pause)
-    {
-      myConsole->settings().setPauseEvent();
-      return;
-    }
-    else if(event == Event::Quit)
-    {
-      myConsole->settings().saveConfig();
-      myConsole->settings().setQuitEvent();
-      return;
-    }
+    myMenuStatus = !myMenuStatus;
+    myConsole->gui().showMainMenu(myMenuStatus);
+    if(!myMenuStatus)
+      myReturnPressedFlag = myRemapModeFlag = myEventSelectedFlag = false;
 
-    if(ourMessageTable[event] != "")
-      myConsole->mediaSource().showMessage(ourMessageTable[event], 120);
+    return;
   }
 
-  // Otherwise, pass it to the emulation core
-  myEvent->set(event, state);
+  // Determine where the event should be sent
+  if(myMenuStatus && state == 1)
+  {
+    if(key == StellaEvent::KCODE_RETURN)
+      myReturnPressedFlag = true;
+
+    processMenuEvent(key);
+  }
+  else
+  {
+    sendEvent(myKeyTable[key], state);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::processMenuEvent(StellaEvent::KeyCode key)
+{
+  if(myRemapModeFlag && myEventSelectedFlag)
+  {
+    if(key == StellaEvent::KCODE_ESCAPE)
+      // associate nothing with the selected event
+      cerr << "delete binding for " << mySelectedEvent << endl;
+    else
+      // associate this stellaevent with the selected event
+      cerr << "add binding " << key << " for " << mySelectedEvent << endl;
+
+    myReturnPressedFlag = myEventSelectedFlag = false;
+  }
+  else if(myReturnPressedFlag && myRemapModeFlag)
+  {
+    cerr << "return pressed while in remap mode\n";
+    mySelectedEvent = Event::ConsoleSelect; // FIXME - get from gui() which event is currently selected
+    myEventSelectedFlag = true;
+    myReturnPressedFlag = false;
+  }
+  else if(myReturnPressedFlag)
+  {
+    // FIXME - get selected menu
+    if(1)//menu == REMAP)
+    {
+      // draw remap menu
+cerr << "entering remap mode\n";
+      myRemapModeFlag = true;
+    }
+/*    else if(1)//menu == INFO)
+    {
+      // draw info menu
+    }
+*/
+    myReturnPressedFlag = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
      StellaEvent::JoyCode code, Int32 state)
 {
-  Event::Type event = myJoyTable[stick][code];
+  // Determine where the event should be sent
+  if(myMenuStatus && state == 1)
+  {
+    cerr << "send joy event to remap class\n";
+  }
+  else
+  {
+    sendEvent(myJoyTable[stick][code], state);
+  }
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::sendEvent(Event::Type event, Int32 state)
+{
   // Ignore unmapped events
-  if(event == Event::LastType)
+  if(event == Event::NoType)
     return;
 
   // Take care of special events that aren't technically part of
@@ -184,26 +217,6 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
   }
 
   // Otherwise, pass it to the emulation core
-  myEvent->set(event, state);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::sendEvent(Event::Type event, Int32 state)
-{
-  // Take care of special events that aren't technically part of
-  // the emulation core
-  if(event == Event::Pause && state == 1)
-  {
-    myConsole->settings().setPauseEvent();
-    return;
-  }
-  else if(event == Event::Quit && state == 1)
-  {
-    myConsole->settings().saveConfig();
-    myConsole->settings().setQuitEvent();
-    return;
-  }
-
   myEvent->set(event, state);
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.3 2003-09-06 21:17:48 stephena Exp $
+// $Id: Event.hxx,v 1.4 2003-09-25 16:20:34 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.3 2003-09-06 21:17:48 stephena Exp $
+  @version $Id: Event.hxx,v 1.4 2003-09-25 16:20:34 stephena Exp $
 */
 class Event
 {
@@ -35,6 +35,7 @@ class Event
     */
     enum Type
     {
+      NoType,
       ConsoleOn, ConsoleOff, ConsoleColor, ConsoleBlackWhite,
       ConsoleLeftDifficultyA, ConsoleLeftDifficultyB,
       ConsoleRightDifficultyA, ConsoleRightDifficultyB,

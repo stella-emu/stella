@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.15 2003-09-19 15:45:01 stephena Exp $
+// $Id: Console.cxx,v 1.16 2003-09-25 16:20:33 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -42,6 +42,7 @@
 #include "Switches.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
+#include "UserInterface.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
@@ -166,6 +167,9 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Remember what my media source is
   myMediaSource = tia;
 
+  // Create the graphical user interface to draw menus, text, etc.
+  myUserInterface = new UserInterface(this, myMediaSource);
+
   // Reset, the system to its power-on state
   mySystem->reset();
 }
@@ -187,6 +191,7 @@ Console::~Console()
   delete myControllers[0];
   delete myControllers[1];
   delete myEventHandler;
+  delete myUserInterface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

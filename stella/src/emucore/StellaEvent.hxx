@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaEvent.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
+// $Id: StellaEvent.hxx,v 1.3 2003-09-25 16:20:34 stephena Exp $
 //============================================================================
 
 #ifndef STELLAEVENT_HXX
@@ -28,7 +28,7 @@
   by the frontends directly.
 
   @author Stephen Anthony
-  @version $Id: StellaEvent.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
+  @version $Id: StellaEvent.hxx,v 1.3 2003-09-25 16:20:34 stephena Exp $
 */
 class StellaEvent
 {
@@ -38,6 +38,7 @@ class StellaEvent
     */
     enum KeyCode
     {
+      KCODE_NONE,
       KCODE_a, KCODE_b, KCODE_c, KCODE_d, KCODE_e, KCODE_f, KCODE_g, KCODE_h,
       KCODE_i, KCODE_j, KCODE_k, KCODE_l, KCODE_m, KCODE_n, KCODE_o, KCODE_p,
       KCODE_q, KCODE_r, KCODE_s, KCODE_t, KCODE_u, KCODE_v, KCODE_w, KCODE_x,
@@ -69,12 +70,14 @@ class StellaEvent
     */
     enum JoyStick
     {
+      JSTICK_NONE,
       JSTICK_0, JSTICK_1, JSTICK_2, JSTICK_3,
       LastJSTICK
     };
 
     enum JoyCode
     {
+      JCODE_NONE,
       JAXIS_UP, JAXIS_DOWN, JAXIS_LEFT, JAXIS_RIGHT,
       JBUTTON_0, JBUTTON_1, JBUTTON_2, JBUTTON_3, JBUTTON_4,
       JBUTTON_5, JBUTTON_6, JBUTTON_7, JBUTTON_8, JBUTTON_9,
