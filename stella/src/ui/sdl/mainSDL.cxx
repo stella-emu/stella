@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.69 2004-04-04 02:03:15 stephena Exp $
+// $Id: mainSDL.cxx,v 1.70 2004-04-12 23:28:43 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -334,9 +334,6 @@ void handleEvents()
         else if(key == SDLK_RETURN)
         {
           theDisplay->toggleFullscreen();
-          // Pause when switching modes
-          if(!theConsole->eventHandler().doPause())
-            theConsole->eventHandler().sendEvent(Event::Pause, 1);
         }
 #ifdef DISPLAY_OPENGL
         else if(key == SDLK_f && theUseOpenGLFlag)
@@ -687,11 +684,7 @@ int main(int argc, char* argv[])
   theShowInfoFlag = theSettings->getBool("showinfo");
 
   // Request that the SDL window be centered, if possible
-#if defined(UNIX)
-  setenv("SDL_VIDEO_CENTERED", "1", 1);
-#else
   putenv("SDL_VIDEO_CENTERED=1");
-#endif
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
@@ -746,6 +739,7 @@ int main(int argc, char* argv[])
   if(!theDisplay)
   {
     cerr << "ERROR: Couldn't set up display.\n";
+    delete[] image;
     cleanup();
     return 0;
   }

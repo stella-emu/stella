@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.27 2004-04-04 02:03:15 stephena Exp $
+// $Id: TIA.cxx,v 1.28 2004-04-12 23:28:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -1637,7 +1637,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
   myFramePointer = ending;
 
   // Add sound bytes to the sound queue every scanline
-  mySound.update();
+//FIXME  mySound.update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.14 2004-04-04 02:03:15 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.15 2004-04-12 23:28:42 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -47,10 +47,33 @@ FrameBufferGL::~FrameBufferGL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createScreen()
 {
-  uInt32 w = (uInt32) (myWidth  * theZoomLevel * theAspectRatio);
-  uInt32 h = myHeight * theZoomLevel;
+  GLint viewportX = 0, viewportY = 0;
+  uInt32 screenWidth  = 0;
+  uInt32 screenHeight = 0;
 
-  myScreen = SDL_SetVideoMode(w, h, 0, mySDLFlags);
+  uInt32 imageWidth  = (uInt32) (myWidth  * theZoomLevel * theAspectRatio);
+  uInt32 imageHeight = myHeight * theZoomLevel;
+
+  // Determine if we're in fullscreen or windowed mode
+  // In fullscreen mode, we clip the SDL screen to known resolutions
+  // In windowed mode, we use the actual image resolution for the SDL screen
+  if(mySDLFlags & SDL_FULLSCREEN)
+  {
+    SDL_Rect rect = viewport(imageWidth, imageHeight);
+
+    viewportX = rect.x;
+    viewportY = rect.y;
+    screenWidth  = rect.w;
+    screenHeight = rect.h;
+  }
+  else
+  {
+    screenWidth  = imageWidth;
+    screenHeight = imageHeight;
+    viewportX = viewportY = 0;
+  }
+
+  myScreen = SDL_SetVideoMode(screenWidth, screenHeight, 0, mySDLFlags);
   if(myScreen == NULL)
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
@@ -58,14 +81,16 @@ bool FrameBufferGL::createScreen()
   }
 
   glPushAttrib(GL_ENABLE_BIT);
-  glViewport(0, 0, myScreen->w, myScreen->h);
+
+  // Center the screen horizontally and vertically
+  glViewport(viewportX, viewportY, imageWidth, imageHeight);
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
 
-  glOrtho(0.0, (GLdouble) myScreen->w/(theZoomLevel * theAspectRatio),
-          (GLdouble) myScreen->h/theZoomLevel, 0.0, 0.0, 1.0);
+  glOrtho(0.0, (GLdouble) imageWidth/(theZoomLevel * theAspectRatio),
+          (GLdouble) imageHeight/theZoomLevel, 0.0, 0.0, 1.0);
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
@@ -81,6 +106,9 @@ bool FrameBufferGL::createScreen()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_TEXTURE_2D);
 #endif
+
+  // Make sure any old parts of the screen are erased
+  glClear(GL_COLOR_BUFFER_BIT);
 
   theRedrawEntireFrameIndicator = true;
   return true;
@@ -464,7 +492,7 @@ void FrameBufferGL::toggleFilter()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
 
-  for(uInt32 i =0; i < 256; i++)
+  for(uInt32 i = 0; i < 256; i++)
   {
     glBindTexture(GL_TEXTURE_2D, myFontTextureID[i]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -475,4 +503,45 @@ void FrameBufferGL::toggleFilter()
 
   // The filtering has changed, so redraw the entire screen
   theRedrawEntireFrameIndicator = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SDL_Rect FrameBufferGL::viewport(uInt32 width, uInt32 height)
+{
+  SDL_Rect rect;
+  rect.x = rect.y = 0;
+  rect.w = width; rect.h = height;
+
+  struct Screenmode
+  {
+    uInt32 w;
+    uInt32 h;
+  };
+
+  // List of valid fullscreen OpenGL modes
+  Screenmode myScreenmode[6] = {
+    {320,  200 },
+    {640,  480 },
+    {800,  600 },
+    {1024, 768 },
+    {1280, 1024},
+    {1600, 1200}
+  };
+
+  for(uInt32 i = 0; i < 6; i++)
+  {
+    if(width <= myScreenmode[i].w && height <= myScreenmode[i].h)
+    {
+      rect.x = (myScreenmode[i].w - width) / 2;
+      rect.y = (myScreenmode[i].h - height) / 2;
+      rect.w = myScreenmode[i].w;
+      rect.h = myScreenmode[i].h;
+
+      return rect;
+    }
+  }
+
+  // If we get here, it probably indicates an error
+  // But we have to return something ...
+  return rect;
 }
