@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2003 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.6 2003-02-17 04:59:54 bwmott Exp $
+// $Id: Cart.cxx,v 1.7 2004-06-25 03:44:12 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -37,6 +37,7 @@
 #include "CartMC.hxx"
 #include "CartMB.hxx"
 #include "CartCV.hxx"
+#include "CartUA.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
 
@@ -92,6 +93,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeMB(image);
   else if(type == "CV")
     cartridge = new CartridgeCV(image, size);
+  else if(type == "UA")
+    cartridge = new CartridgeUA(image);
   else
   {
     // TODO: At some point this should be handled in a better way...
@@ -142,6 +145,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     {"ac7c2260378975614192ca2bc3d20e0b", "FE"},    // Decathlon
     {"4f618c2429138e0280969193ed6c107e", "FE"},    // Robot Tank
     {"6d842c96d5a01967be9680080dd5be54", "DPC"},   // Pitfall II
+    {"d3bb42228a6cd452c111c1932503cc03", "UA"},    // Funky Fish
+    {"8bbfd951c89cc09c148bfabdefa08bec", "UA"},    // Pleiades
     {(char*)0,                           (char*)0}
   };
 
