@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.22 2002-10-09 04:38:11 bwmott Exp $
+## $Id: makefile,v 1.23 2002-10-11 13:06:59 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -179,7 +179,7 @@ linux-x:
 
 linux-sdl:
 	make stella.sdl \
-          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
+          INCLUDES="$(INCLUDES) -I$(UI)/sdl" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.SDL)" \
@@ -187,7 +187,7 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SndSDL.o RectList.o" \
+          OBJS="mainSDL.o SoundSDL.o RectList.o" \
           OBJS+="$(OBJS.SDL)"
 
 bsdi-x:
@@ -408,8 +408,8 @@ SoundX11.o: $(UI)/x11/SoundX11.cxx
 mainSDL.o: $(UI)/sdl/mainSDL.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
 
-SndSDL.o: $(UI)/sdl/SndSDL.cxx $(UI)/sdl/SndSDL.hxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SndSDL.cxx
+SoundSDL.o: $(UI)/sdl/SoundSDL.cxx $(UI)/sdl/SoundSDL.hxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SoundSDL.cxx
 
 RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx

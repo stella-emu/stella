@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.29 2002-10-05 12:49:49 stephena Exp $
+// $Id: mainSDL.cxx,v 1.30 2002-10-11 13:07:01 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -36,10 +36,9 @@
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
 #include "System.hxx"
-#include "SndUnix.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
-#include "SndSDL.hxx"
+#include "SoundSDL.hxx"
 
 #ifdef HAVE_PNG
   #include "Snapshot.hxx"
@@ -1563,15 +1562,16 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  // Create a sound object for use with the console
-  SoundSDL sound(settings->theDesiredVolume);
+  // Create a sound object for playing audio
+  SoundSDL sound;
+  sound.setSoundVolume(settings->theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound);
+      theEvent, propertiesSet, sound.getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -1580,12 +1580,14 @@ int main(int argc, char* argv[])
   if(!setupDisplay())
   {
     cerr << "ERROR: Couldn't set up display.\n";
+    sound.close();
     cleanup();
     return 0;
   }
   if(!setupJoystick())
   {
     cerr << "ERROR: Couldn't set up joysticks.\n";
+    sound.close();
     cleanup();
     return 0;
   }
@@ -1623,6 +1625,7 @@ int main(int argc, char* argv[])
 
       startTime = getTicks();
       theConsole->mediaSource().update();
+      sound.updateSound(theConsole->mediaSource());
       updateDisplay(theConsole->mediaSource());
       handleEvents();
 
@@ -1662,6 +1665,7 @@ int main(int argc, char* argv[])
       if(!thePauseIndicator)
       {
         theConsole->mediaSource().update();
+        sound.updateSound(theConsole->mediaSource());
       }
       updateDisplay(theConsole->mediaSource());
       handleEvents();
@@ -1695,6 +1699,7 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
+  sound.close();
   cleanup();
   return 0;
 }
