@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.15 2004-04-12 23:28:42 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.16 2004-04-15 21:27:31 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -47,6 +47,12 @@ FrameBufferGL::~FrameBufferGL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createScreen()
 {
+  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, myRGB[0] );
+  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
+  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, myRGB[2] );
+  SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
+  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
   GLint viewportX = 0, viewportY = 0;
   uInt32 screenWidth  = 0;
   uInt32 screenHeight = 0;
@@ -63,8 +69,8 @@ bool FrameBufferGL::createScreen()
 
     viewportX = rect.x;
     viewportY = rect.y;
-    screenWidth  = rect.w;
-    screenHeight = rect.h;
+    screenWidth  = rect.w - 1;
+    screenHeight = rect.h - 1;
   }
   else
   {
@@ -98,13 +104,6 @@ bool FrameBufferGL::createScreen()
 
 #ifdef TEXTURES_ARE_LOST
   createTextures();
-
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_CULL_FACE);
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_TEXTURE_2D);
 #endif
 
   // Make sure any old parts of the screen are erased
@@ -199,11 +198,6 @@ bool FrameBufferGL::init()
     default:  // This should never happen
       break;
   }
-  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, myRGB[0] );
-  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
-  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, myRGB[2] );
-  SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
-  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
   // Create the screen
   if(!createScreen())
@@ -255,14 +249,6 @@ bool FrameBufferGL::init()
     // Show or hide the cursor depending on the 'hidecursor' argument
     showCursor(!theHideCursorIndicator);
   }
-
-  // Set up global GL stuff
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_CULL_FACE);
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_TEXTURE_2D);
 
   return true;
 }
@@ -467,6 +453,13 @@ bool FrameBufferGL::createTextures()
 
   SDL_FreeSurface(fontTexture);
 
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_CULL_FACE);
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_TEXTURE_2D);
+
   return true;
 }
 
@@ -520,7 +513,7 @@ SDL_Rect FrameBufferGL::viewport(uInt32 width, uInt32 height)
 
   // List of valid fullscreen OpenGL modes
   Screenmode myScreenmode[6] = {
-    {320,  200 },
+    {320,  240 },
     {640,  480 },
     {800,  600 },
     {1024, 768 },
