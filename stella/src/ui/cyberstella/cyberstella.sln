@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cyberstella", "Cyberstella.vcproj", "{6B7A0EFC-814C-48E5-AA07-39EDB383289E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{6B7A0EFC-814C-48E5-AA07-39EDB383289E}.Debug.ActiveCfg = Debug|Win32
+		{6B7A0EFC-814C-48E5-AA07-39EDB383289E}.Debug.Build.0 = Debug|Win32
+		{6B7A0EFC-814C-48E5-AA07-39EDB383289E}.Release.ActiveCfg = Release|Win32
+		{6B7A0EFC-814C-48E5-AA07-39EDB383289E}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
