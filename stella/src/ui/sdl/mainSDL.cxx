@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.53 2003-09-23 17:27:11 stephena Exp $
+// $Id: mainSDL.cxx,v 1.54 2003-09-29 18:10:56 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -147,6 +147,8 @@ struct Switches
 };
 
 // Place the most used keys first to speed up access
+// Todo - initialize this array in the same order as the SDLK
+// keys are defined, so it can be a constant-time LUT
 static Switches keyList[] = {
     { SDLK_F1,          StellaEvent::KCODE_F1         },
     { SDLK_F2,          StellaEvent::KCODE_F2         },
@@ -160,16 +162,22 @@ static Switches keyList[] = {
     { SDLK_F10,         StellaEvent::KCODE_F10        },
     { SDLK_F11,         StellaEvent::KCODE_F11        },
     { SDLK_F12,         StellaEvent::KCODE_F12        },
+    { SDLK_F13,         StellaEvent::KCODE_F13        },
+    { SDLK_F14,         StellaEvent::KCODE_F14        },
+    { SDLK_F15,         StellaEvent::KCODE_F15        },
 
     { SDLK_UP,          StellaEvent::KCODE_UP         },
     { SDLK_DOWN,        StellaEvent::KCODE_DOWN       },
     { SDLK_LEFT,        StellaEvent::KCODE_LEFT       },
     { SDLK_RIGHT,       StellaEvent::KCODE_RIGHT      },
     { SDLK_SPACE,       StellaEvent::KCODE_SPACE      },
-    { SDLK_LCTRL,       StellaEvent::KCODE_CTRL       },
-    { SDLK_RCTRL,       StellaEvent::KCODE_CTRL       },
-    { SDLK_LALT,        StellaEvent::KCODE_ALT        },
-    { SDLK_RALT,        StellaEvent::KCODE_ALT        },
+    { SDLK_LCTRL,       StellaEvent::KCODE_LCTRL      },
+    { SDLK_RCTRL,       StellaEvent::KCODE_RCTRL      },
+    { SDLK_LALT,        StellaEvent::KCODE_LALT       },
+    { SDLK_RALT,        StellaEvent::KCODE_RALT       },
+    { SDLK_LSUPER,      StellaEvent::KCODE_LWIN       },
+    { SDLK_RSUPER,      StellaEvent::KCODE_RWIN       },
+    { SDLK_MENU,        StellaEvent::KCODE_MENU       },
 
     { SDLK_a,           StellaEvent::KCODE_a          },
     { SDLK_b,           StellaEvent::KCODE_b          },
@@ -229,18 +237,31 @@ static Switches keyList[] = {
 
     { SDLK_BACKSPACE,   StellaEvent::KCODE_BACKSPACE  },
     { SDLK_TAB,         StellaEvent::KCODE_TAB        },
+    { SDLK_CLEAR,       StellaEvent::KCODE_CLEAR      },
     { SDLK_RETURN,      StellaEvent::KCODE_RETURN     },
-    { SDLK_PAUSE,       StellaEvent::KCODE_PAUSE      },
     { SDLK_ESCAPE,      StellaEvent::KCODE_ESCAPE     },
+    { SDLK_SPACE,       StellaEvent::KCODE_SPACE      },
     { SDLK_COMMA,       StellaEvent::KCODE_COMMA      },
+    { SDLK_MINUS,       StellaEvent::KCODE_MINUS      },
     { SDLK_PERIOD,      StellaEvent::KCODE_PERIOD     },
     { SDLK_SLASH,       StellaEvent::KCODE_SLASH      },
     { SDLK_BACKSLASH,   StellaEvent::KCODE_BACKSLASH  },
     { SDLK_SEMICOLON,   StellaEvent::KCODE_SEMICOLON  },
+    { SDLK_EQUALS,      StellaEvent::KCODE_EQUALS     },
     { SDLK_QUOTE,       StellaEvent::KCODE_QUOTE      },
     { SDLK_BACKQUOTE,   StellaEvent::KCODE_BACKQUOTE  },
     { SDLK_LEFTBRACKET, StellaEvent::KCODE_LEFTBRACKET},
-    { SDLK_RIGHTBRACKET,StellaEvent::KCODE_RIGHTBRACKET}
+    { SDLK_RIGHTBRACKET,StellaEvent::KCODE_RIGHTBRACKET},
+
+    { SDLK_PRINT,       StellaEvent::KCODE_PRTSCREEN  },
+    { SDLK_MODE,        StellaEvent::KCODE_SCRLOCK    },
+    { SDLK_PAUSE,       StellaEvent::KCODE_PAUSE      },
+    { SDLK_INSERT,      StellaEvent::KCODE_INSERT     },
+    { SDLK_HOME,        StellaEvent::KCODE_HOME       },
+    { SDLK_PAGEUP,      StellaEvent::KCODE_PAGEUP     },
+    { SDLK_DELETE,      StellaEvent::KCODE_DELETE     },
+    { SDLK_END,         StellaEvent::KCODE_END        },
+    { SDLK_PAGEDOWN,    StellaEvent::KCODE_PAGEDOWN   }
   };
 
 // Lookup table for joystick numbers and events
@@ -841,99 +862,102 @@ void handleEvents()
       mod = event.key.keysym.mod;
       type = event.type;
 
-      if(key == SDLK_EQUALS)
+      // An attempt to speed up event processing
+      // All SDL-specific event actions are accessed by either
+      // Control or Alt keys.  So we quickly check for those.
+      if(mod & KMOD_ALT)
       {
-        resizeWindow(1);
-      }
-      else if(key == SDLK_MINUS)
-      {
-        resizeWindow(0);
-      }
-      else if((mod & KMOD_ALT) && key == SDLK_RETURN)
-      {
-        toggleFullscreen();
-      }
-      else if((mod & KMOD_CTRL) && key == SDLK_g)
-      {
-        // don't change grabmouse in fullscreen mode
-        if(!isFullscreen)
-        {
-          theGrabMouseIndicator = !theGrabMouseIndicator;
-          grabMouse(theGrabMouseIndicator);
-        }
-      }
-      else if((mod & KMOD_CTRL) && key == SDLK_h)
-      {
-        // don't change hidecursor in fullscreen mode
-        if(!isFullscreen)
-        {
-          theHideCursorIndicator = !theHideCursorIndicator;
-          showCursor(!theHideCursorIndicator);
-        }
-      }
+        if(key == SDLK_EQUALS)
+          resizeWindow(1);
+        else if(key == SDLK_MINUS)
+          resizeWindow(0);
+        else if(key == SDLK_RETURN)
+          toggleFullscreen();
 #ifdef DEVELOPER_SUPPORT
-      else if((mod & KMOD_ALT) && key == SDLK_f)     // Alt-f switches between NTSC and PAL
-      {
-        theConsole->toggleFormat();
-
-        // update the palette
-        setupPalette();
-      }
-      else if(key == SDLK_END)        // End decreases XStart
-      {                               // Alt-End decreases Width
-        if(mod & KMOD_ALT)
-          theConsole->changeWidth(0);
-        else
-          theConsole->changeXStart(0);
-
-        // Make sure changes to the properties are reflected onscreen
-        resizeWindow(-1);
-      }
-      else if(key == SDLK_HOME)       // Home increases XStart
-      {                               // Alt-Home increases Width
-        if(mod & KMOD_ALT)
-          theConsole->changeWidth(1);
-        else
+        else if(key == SDLK_END)       // Alt-End increases XStart
+        {
           theConsole->changeXStart(1);
-
-        // Make sure changes to the properties are reflected onscreen
-        resizeWindow(-1);
-      }
-      else if(key == SDLK_PAGEDOWN)   // PageDown decreases YStart
-      {                               // Alt-PageDown decreases Height
-        if(mod & KMOD_ALT)
-          theConsole->changeHeight(0);
-        else
-          theConsole->changeYStart(0);
-
-        // Make sure changes to the properties are reflected onscreen
-        resizeWindow(-1);
-      }
-      else if(key == SDLK_PAGEUP)     // PageUp increases YStart
-      {                               // Alt-PageUp increases Height
-        if(mod & KMOD_ALT)
-          theConsole->changeHeight(1);
-        else
+          resizeWindow(-1);
+        }
+        else if(key == SDLK_HOME)      // Alt-Home decreases XStart
+        {
+          theConsole->changeXStart(0);
+          resizeWindow(-1);
+        }
+        else if(key == SDLK_PAGEUP)    // Alt-PageUp increases YStart
+        {
           theConsole->changeYStart(1);
-
-        // Make sure changes to the properties are reflected onscreen
-        resizeWindow(-1);
-      }
-      else if((mod & KMOD_ALT) && key == SDLK_s)    // Alt-s saves properties to a file
-      {
-        if(theConsole->settings().getBool("mergeprops"))  // Attempt to merge with propertiesSet
-        {
-          theConsole->saveProperties(theSettings->userPropertiesFilename(), true);
+          resizeWindow(-1);
         }
-        else  // Save to file in home directory
+        else if(key == SDLK_PAGEDOWN)  // Alt-PageDown decreases YStart
         {
-          string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
-            theConsole->properties().get("Cartridge.Name") + ".pro";
-          replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
-          theConsole->saveProperties(newPropertiesFile);
+          theConsole->changeYStart(0);
+          resizeWindow(-1);
         }
-      }
 #endif
+      }
+      else if(mod & KMOD_CTRL)
+      {
+        if(key == SDLK_g)
+        {
+          // don't change grabmouse in fullscreen mode
+          if(!isFullscreen)
+          {
+            theGrabMouseIndicator = !theGrabMouseIndicator;
+            grabMouse(theGrabMouseIndicator);
+          }
+        }
+        else if(key == SDLK_h)
+        {
+          // don't change hidecursor in fullscreen mode
+          if(!isFullscreen)
+          {
+            theHideCursorIndicator = !theHideCursorIndicator;
+            showCursor(!theHideCursorIndicator);
+          }
+        }
+#ifdef DEVELOPER_SUPPORT
+        else if(key == SDLK_f)         // Ctrl-f toggles NTSC/PAL mode
+        {
+          theConsole->toggleFormat();
+          setupPalette();
+        }
+        else if(key == SDLK_END)       // Ctrl-End increases Width
+        {
+          theConsole->changeWidth(1);
+          resizeWindow(-1);
+        }
+        else if(key == SDLK_HOME)      // Ctrl-Home decreases Width
+        {
+          theConsole->changeWidth(0);
+          resizeWindow(-1);
+        }
+        else if(key == SDLK_PAGEUP)    // Ctrl-PageUp increases Height
+        {
+          theConsole->changeHeight(1);
+          resizeWindow(-1);
+        }
+        else if(key == SDLK_PAGEDOWN)  // Ctrl-PageDown decreases Height
+        {
+          theConsole->changeHeight(0);
+          resizeWindow(-1);
+        }
+        else if(key == SDLK_s)         // Ctrl-s saves properties to a file
+        {
+          if(theConsole->settings().getBool("mergeprops"))  // Attempt to merge with propertiesSet
+          {
+            theConsole->saveProperties(theSettings->userPropertiesFilename(), true);
+          }
+          else  // Save to file in home directory
+          {
+            string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
+              theConsole->properties().get("Cartridge.Name") + ".pro";
+            replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
+            theConsole->saveProperties(newPropertiesFile);
+          }
+        }
+#endif
+      }
       else // check all the other keys
       {
         for(unsigned int i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)

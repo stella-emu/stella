@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.5 2003-09-28 21:59:24 stephena Exp $
+// $Id: UserInterface.cxx,v 1.6 2003-09-29 18:10:56 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -510,11 +510,15 @@ const char* UserInterface::ourEventName[StellaEvent::LastKCODE] = {
   "KP 0", "KP 1", "KP 2", "KP 3", "KP 4", "KP 5", "KP 6", "KP 7", "KP 8",
   "KP 9", "KP .", "KP /", "KP *", "KP -", "KP +", "KP ENTER", "KP =",
 
-  "BACKSP", "TAB", "ENTER", "PAUSE", "ESC", ",", ".", "/", ";", "\\", "\"",
-  "[", "]", "`",
+  "BACKSP", "TAB", "CLEAR", "ENTER", "ESC", "SPACE", ",", "-", ".",
+  "/", "\\", ";", "=", "\"", "`", "[", "]",
 
-  "CTRL", "ALT", "UP", "DOWN", "LEFT", "RIGHT", "SPACE",
+  "PRT SCRN", "SCR LOCK", "PAUSE", "INS", "HOME", "PGUP",
+  "DEL", "END", "PGDN",
 
-  "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"
+  "LCTRL", "RCTRL", "LALT", "RALT", "LWIN", "RWIN", "MENU",
+  "UP", "DOWN", "LEFT", "RIGHT",
+
+  "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10",
+  "F11", "F12", "F13", "F14", "F15",
 };
-
