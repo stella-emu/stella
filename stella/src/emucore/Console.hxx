@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.4 2002-11-09 23:29:51 stephena Exp $
+// $Id: Console.hxx,v 1.5 2002-11-10 19:05:57 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,7 +36,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.4 2002-11-09 23:29:51 stephena Exp $
+  @version $Id: Console.hxx,v 1.5 2002-11-10 19:05:57 stephena Exp $
 */
 class Console
 {
@@ -174,12 +174,11 @@ class Console
     void changeHeight(const uInt32 direction);
 
     /**
-      Save a copy of the current properties.
-      after the change.
+      Save a copy of the current properties after any changes.
 
       @param filename Filename to save the properties into.
     */
-    void saveProperties(const string& filename);
+    void saveProperties(string& filename);
 #endif
 
   private:

@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.5 2002-11-09 23:29:51 stephena Exp $
+// $Id: Console.cxx,v 1.6 2002-11-10 19:05:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 
 #include "Booster.hxx"
 #include "Cart.hxx"
@@ -398,9 +399,12 @@ void Console::changeHeight(const uInt32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::saveProperties(const string& filename)
+void Console::saveProperties(string& filename)
 {
   string message;
+
+  // Replace all spaces in filename with underscores
+  replace(filename.begin(), filename.end(), ' ', '_');
   ofstream out(filename.c_str(), ios::out);
 
   if(out && out.is_open())
