@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.4 2002-11-10 00:27:26 stephena Exp $
+// $Id: Settings.hxx,v 1.5 2002-11-11 02:55:16 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -97,6 +97,10 @@ class Settings
 #ifdef DEVELOPER_SUPPORT
     // User-modified properties
     Properties userDefinedProperties;
+
+    // Whether to save user-defined properties to a file or
+    // merge into the propertiesset file for future use
+    bool theMergePropertiesFlag;
 #endif
 };
 

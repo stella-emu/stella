@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.4 2002-11-10 00:27:26 stephena Exp $
+// $Id: Settings.cxx,v 1.5 2002-11-11 02:55:15 stephena Exp $
 //============================================================================
 
 #ifdef DEVELOPER_SUPPORT
@@ -50,6 +50,8 @@ Settings::Settings()
   userDefinedProperties.set("Display.Width", "-1");
   userDefinedProperties.set("Display.YStart", "-1");
   userDefinedProperties.set("Display.Height", "-1");
+
+  theMergePropertiesFlag = false;
 #endif
 }
 
@@ -221,6 +223,14 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
       uInt32 value = atoi(argv[++i]);
       if((value >= 100) && (value <= 256))
         userDefinedProperties.set("Display.Height", option);
+    }
+    else if(string(argv[i]) == "-Dmerge")
+    {
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theMergePropertiesFlag = true;
+      else if(option == 0)
+        theMergePropertiesFlag = false;
     }
 #endif
     else
