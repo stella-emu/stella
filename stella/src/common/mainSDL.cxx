@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.2 2004-06-04 12:22:12 stephena Exp $
+// $Id: mainSDL.cxx,v 1.3 2004-06-13 05:09:37 bwmott Exp $
 //============================================================================
 
 #include <fstream>
@@ -879,12 +879,11 @@ int main(int argc, char* argv[])
   if(theSettings->getBool("sound"))
   {
     uInt32 fragsize = theSettings->getInt("fragsize");
-    uInt32 bufsize  = theSettings->getInt("bufsize");
-    theSound = new SoundSDL(fragsize, bufsize);
+    theSound = new SoundSDL(fragsize);
     if(theShowInfoFlag)
     {
       cout << "Sound enabled, using fragment size = " << fragsize;
-      cout << " and buffer size = " << bufsize << "." << endl;
+      cout << "." << endl;
     }
   }
   else  // even if sound has been disabled, we still need a sound object
@@ -900,7 +899,7 @@ int main(int argc, char* argv[])
 
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
-                           *theDisplay, *theSound);
+                           *theDisplay, *theSound, theSettings->getInt("framerate"));
 
   // Free the image since we don't need it any longer
   delete[] image;
