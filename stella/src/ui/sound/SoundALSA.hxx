@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.hxx,v 1.1 2002-12-01 02:12:26 stephena Exp $
+// $Id: SoundALSA.hxx,v 1.2 2002-12-05 16:43:57 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDALSA_HXX
@@ -30,7 +30,7 @@
   Advanced Linux Sound Architecture (ALSA) version 0.9.x API.
 
   @author  Stephen Anthony
-  @version $Id: SoundALSA.hxx,v 1.1 2002-12-01 02:12:26 stephena Exp $
+  @version $Id: SoundALSA.hxx,v 1.2 2002-12-05 16:43:57 stephena Exp $
 */
 class SoundALSA : public Sound
 {
@@ -80,6 +80,12 @@ class SoundALSA : public Sound
       @param mediaSource The media source to get audio samples from.
     */
     void updateSound(MediaSource& mediaSource);
+
+  private:
+    /**
+      Prints the given error message, and frees any resources used.
+    */
+    void alsaError(Int32 error);
 
   private:
     // Indicates if the sound device was successfully initialized

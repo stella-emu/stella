@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.cxx,v 1.1 2002-12-01 02:12:26 stephena Exp $
+// $Id: SoundALSA.cxx,v 1.2 2002-12-05 16:43:57 stephena Exp $
 //============================================================================
 
 #include <alsa/asoundlib.h>
@@ -45,15 +45,14 @@ SoundALSA::SoundALSA()
   // Open the PCM device for writing
   if((err = snd_pcm_open(&myPcmHandle, pcmName, SND_PCM_STREAM_PLAYBACK, 0)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
+    alsaError(err);
     return;
   }
 
   // Init hwparams with full configuration space
   if((err = snd_pcm_hw_params_any(myPcmHandle, hwparams)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
+    alsaError(err);
     return;
   }
 
@@ -61,24 +60,21 @@ SoundALSA::SoundALSA()
   if((err = snd_pcm_hw_params_set_access(myPcmHandle, hwparams,
     SND_PCM_ACCESS_RW_INTERLEAVED)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
+    alsaError(err);
     return;
   }
 
   // Set the audio data format
   if((err = snd_pcm_hw_params_set_format(myPcmHandle, hwparams, SND_PCM_FORMAT_U8)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
+    alsaError(err);
     return;
   }
  
   // Set the number of audio channels to 1 (mono mode)
   if((err = snd_pcm_hw_params_set_channels(myPcmHandle, hwparams, 1)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
+    alsaError(err);
     return;
   }
 
@@ -87,18 +83,14 @@ SoundALSA::SoundALSA()
   mySampleRate = 31400;
   if((err = snd_pcm_hw_params_set_rate_near(myPcmHandle, hwparams, mySampleRate, 0)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
   // Set number of fragments to 2
   if((err = snd_pcm_hw_params_set_periods(myPcmHandle, hwparams, 2, 0)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
@@ -107,18 +99,14 @@ SoundALSA::SoundALSA()
   if((err = snd_pcm_hw_params_set_period_size(myPcmHandle, hwparams,
     myBufferSize, 0)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
   // Apply HW parameter settings to PCM device
   if((err = snd_pcm_hw_params(myPcmHandle, hwparams)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
  
@@ -138,48 +126,34 @@ SoundALSA::SoundALSA()
   // Open the mixer device
   if((err = snd_mixer_open(&myMixerHandle, 0)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
   // Attach the mixer to the default sound card
   if((err = snd_mixer_attach(myMixerHandle, mixerCard)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-	snd_mixer_close(myMixerHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
   // Register the mixer with the sound system
   if((err = snd_mixer_selem_register(myMixerHandle, NULL, NULL)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-	snd_mixer_close(myMixerHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
   if((err = snd_mixer_load(myMixerHandle)) < 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-	snd_mixer_close(myMixerHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
   // Get the mixer element that will be used to control volume
   if((myMixerElem = snd_mixer_find_selem(myMixerHandle, mixerID)) == 0)
   {
-    cerr << "SoundALSA:  " << snd_strerror(err) << endl;
-    snd_pcm_close(myPcmHandle);
-	snd_mixer_close(myMixerHandle);
-    mySampleRate = 0;
+    alsaError(err);
     return;
   }
 
@@ -305,4 +279,17 @@ void SoundALSA::updateSound(MediaSource& mediaSource)
       }
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundALSA::alsaError(Int32 error)
+{
+  cerr << "SoundALSA:  " << snd_strerror(error) << endl;
+
+  if(myMixerHandle)
+    snd_mixer_close(myMixerHandle);
+  if(myPcmHandle)
+    snd_pcm_close(myPcmHandle);
+
+  mySampleRate = 0;
 }
