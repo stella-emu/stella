@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.37 2004-08-12 23:36:15 stephena Exp $
+// $Id: Console.cxx,v 1.38 2004-08-12 23:54:36 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -250,19 +250,19 @@ Console& Console::operator = (const Console&)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
-  mySystem->reset();
-
   string format = myProperties.get("Display.Format");
 
   if(format == "NTSC")
   {
-    myFrameBuffer.showMessage("PAL Mode");
     myProperties.set("Display.Format", "PAL");
+    mySystem->reset();
+    myFrameBuffer.showMessage("PAL Mode");
   }
   else if(format == "PAL")
   {
-    myFrameBuffer.showMessage("NTSC Mode");
     myProperties.set("Display.Format", "NTSC");
+    mySystem->reset();
+    myFrameBuffer.showMessage("NTSC Mode");
   }
 }
 
