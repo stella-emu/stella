@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.15 2005-02-22 02:59:54 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.16 2005-02-22 18:40:59 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -93,22 +93,32 @@ FrameBuffer::~FrameBuffer(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::initialize(const string title, uInt32 width, uInt32 height)
 {
-  myWidth   = width;
-  myHeight  = height;
+  bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO) > 0;
 
+  myWidth     = width;
+  myHeight    = height;
   myFrameRate = myOSystem->settings().getInt("framerate");
 
-  // Now initialize the SDL screen
-  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
-  if(SDL_Init(initflags) < 0)
-    return;
+  // Now (re)initialize the SDL video system
+  if(!isAlreadyInitialized)
+  {
+    Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
 
-  // Get the system-specific WM information
-  SDL_VERSION(&myWMInfo.version);
-  if(SDL_GetWMInfo(&myWMInfo) > 0)
-    myWMAvailable = true;
+    if(SDL_Init(initflags) < 0)
+      return;
+
+    // Get the system-specific WM information
+    SDL_VERSION(&myWMInfo.version);
+    if(SDL_GetWMInfo(&myWMInfo) > 0)
+      myWMAvailable = true;
+
+    setWindowIcon();
+  }
 
   mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
+
+  // Set window title
+  setWindowTitle(title);
 
   // Initialize video subsystem
   initSubsystem();
@@ -1029,13 +1039,14 @@ uInt32 FrameBuffer::screenHeight()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setWindowAttributes()
+void FrameBuffer::setWindowTitle(const string title)
 {
-  // Set the window title
-  ostringstream name;
-  name << "Stella: \"" << myOSystem->console().properties().get("Cartridge.Name") << "\"";
-  SDL_WM_SetCaption(name.str().c_str(), "stella");
+  SDL_WM_SetCaption(title.c_str(), "stella");
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setWindowIcon()
+{
 #ifndef MAC_OSX
   // Set the window icon
   uInt32 w, h, ncols, nbytes;
@@ -1052,7 +1063,7 @@ void FrameBuffer::setWindowAttributes()
   for(uInt32 i = 0; i < ncols; i++)
   {
     unsigned char code;
-	char color[32];
+    char color[32];
     uInt32 col;
 
     sscanf(stella_icon[1 + i], "%c c %s", &code, color);

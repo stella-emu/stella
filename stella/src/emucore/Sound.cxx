@@ -13,13 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.16 2005-02-22 02:59:54 stephena Exp $
+// $Id: Sound.cxx,v 1.17 2005-02-22 18:41:15 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
 
+#include "bspf.hxx"
+
 #include "OSystem.hxx"
+#include "Settings.hxx"
 #include "Sound.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,6 +33,11 @@ Sound::Sound(OSystem* osystem)
 {
   // Add the sound object to the system
   myOSystem->attach(this);
+
+  // Show some info
+  if(myOSystem->settings().getBool("showinfo") &&
+     !myOSystem->settings().getBool("sound"))
+    cout << "Sound disabled." << endl << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

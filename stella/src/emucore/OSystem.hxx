@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.2 2005-02-21 20:43:20 stephena Exp $
+// $Id: OSystem.hxx,v 1.3 2005-02-22 18:41:12 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -35,7 +35,7 @@ class PropertiesSet;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.2 2005-02-21 20:43:20 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.3 2005-02-22 18:41:12 stephena Exp $
 */
 class OSystem
 {
@@ -51,12 +51,6 @@ class OSystem
     virtual ~OSystem();
 
   public:
-    /**
-      Updates the osystem by one frame.  Determines which subsystem should
-      be updated.  Generally will be called 'framerate' times per second.
-    */
-    void update();
-
     /**
       Adds the specified eventhandler to the system.
 
@@ -146,6 +140,68 @@ class OSystem
     */
     Console& console(void) const { return *myConsole; }
 
+    /**
+      Set the base directory for all configuration files
+    */
+    void setBaseDir(const string& basedir) { myBaseDir = basedir; }
+
+    /**
+      Set the directory where state files are stored
+    */
+    void setStateDir(const string& statedir) { myStateDir = statedir; }
+
+    /**
+      Set the locations of game properties files
+    */
+    void setPropertiesFiles(const string& userprops, const string& systemprops);
+
+    /**
+      Set the locations of config files
+    */
+    void setConfigFiles(const string& userconfig, const string& systemconfig);
+
+    /**
+      Return the default directory for storing data.
+    */
+    string baseDir() { return myBaseDir; }
+
+    /**
+      Return the directory for storing state files.
+    */
+    string stateDir() { return myStateDir; }
+
+    /**
+      This method should be called to get the filename of the
+      properties (stella.pro) file for the purpose of loading.
+
+      @return String representing the full path of the properties filename.
+    */
+    string propertiesInputFilename() { return myPropertiesInputFile; }
+
+    /**
+      This method should be called to get the filename of the
+      properties (stella.pro) file for the purpose of saving.
+
+      @return String representing the full path of the properties filename.
+    */
+    string propertiesOutputFilename() { return myPropertiesOutputFile; }
+
+    /**
+      This method should be called to get the filename of the config file
+      for the purpose of loading.
+
+      @return String representing the full path of the config filename.
+    */
+    string configInputFilename() { return myConfigInputFile; }
+
+    /**
+      This method should be called to get the filename of the config file
+      for the purpose of saving.
+
+      @return String representing the full path of the config filename.
+    */
+    string configOutputFilename() { return myConfigOutputFile; }
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
@@ -171,6 +227,15 @@ class OSystem
     */
     virtual bool fileExists(const string& filename) = 0;
 
+    /**
+      This method should be called to create the specified directory.
+
+      @param path   The directory to create
+
+      @return       boolean representing whether or not the directory was created
+    */
+    virtual bool makeDir(const string& path) = 0;
+
   protected:
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;
@@ -189,6 +254,15 @@ class OSystem
 
     // Pointer to the (currently defined) Console object
     Console* myConsole;
+
+  private:
+    string myBaseDir;
+    string myStateDir;
+
+    string myPropertiesInputFile;
+    string myPropertiesOutputFile;
+    string myConfigInputFile;
+    string myConfigOutputFile;
 
   private:
     // Copy constructor isn't supported by this class so make it private

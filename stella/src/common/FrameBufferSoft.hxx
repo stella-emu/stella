@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.6 2005-02-21 20:41:19 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.7 2005-02-22 18:40:55 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -34,7 +34,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.6 2005-02-21 20:41:19 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.7 2005-02-22 18:40:55 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -73,6 +73,12 @@ class FrameBufferSoft : public FrameBuffer
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
       { return SDL_MapRGB(myScreen->format, r, g, b); }
+
+    /**
+      Switches between the filtering options in software mode.
+      Currently, none exist.
+    */
+    virtual void toggleFilter();
 
     /**
       This routine should be called anytime the MediaSource needs to be redrawn

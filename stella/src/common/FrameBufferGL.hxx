@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.7 2005-02-21 02:23:48 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.8 2005-02-22 18:40:53 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -23,6 +23,8 @@
 #include <SDL_opengl.h>
 #include <SDL_syswm.h>
 
+class OSystem;
+
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
 
@@ -31,7 +33,7 @@
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.7 2005-02-21 02:23:48 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.8 2005-02-22 18:40:53 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -39,22 +41,22 @@ class FrameBufferGL : public FrameBuffer
     /**
       Creates a new OpenGL framebuffer
     */
-    FrameBufferGL();
+    FrameBufferGL(OSystem* osystem);
 
     /**
       Destructor
     */
     virtual ~FrameBufferGL();
 
-    /**
-      Switches between the two filtering options in OpenGL.
-      Currently, these are GL_NEAREST and GL_LINEAR.
-    */
-	void toggleFilter();
-
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
+    /**
+      This routine is called to initialize OpenGL video mode.
+      Return false if any operation fails, otherwise return true.
+    */
+    virtual bool initSubsystem();
+
     /**
       This routine is called whenever the screen needs to be recreated.
       It updates the global screen variable.
@@ -69,21 +71,13 @@ class FrameBufferGL : public FrameBuffer
       @param b  The blue component of the color.
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
-      { return SDL_MapRGB(myTexture->format, r, g, b); }
+      { return SDL_MapRGB(myScreen->format, r, g, b); }
 
     /**
-      This routine is called to get the specified scanline data.
-
-      @param row  The row we are looking for
-      @param data The actual pixel data (in bytes)
+      Switches between the two filtering options in OpenGL.
+      Currently, these are GL_NEAREST and GL_LINEAR.
     */
-    virtual void scanline(uInt32 row, uInt8* data);
-
-    /**
-      This routine should be called to setup the video system for us to use.
-      Return false if any operation fails, otherwise return true.
-    */
-    virtual bool initSubsystem();
+    virtual void toggleFilter();
 
     /**
       This routine should be called anytime the MediaSource needs to be redrawn
@@ -130,8 +124,15 @@ class FrameBufferGL : public FrameBuffer
     */
     virtual void postFrameUpdate();
 
-  private:
+    /**
+      This routine is called to get the specified scanline data.
 
+      @param row  The row we are looking for
+      @param data The actual pixel data (in bytes)
+    */
+    virtual void scanline(uInt32 row, uInt8* data);
+
+  private:
     bool createTextures();
 
     void viewport(uInt32* screenWidth, uInt32* screenHeight,

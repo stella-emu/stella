@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.2 2005-02-21 20:43:53 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.3 2005-02-22 18:41:16 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.2 2005-02-21 20:43:53 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.3 2005-02-22 18:41:16 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {
@@ -62,6 +62,15 @@ class OSystemUNIX : public OSystem
       @return boolean representing whether or not the file exists
     */
     virtual bool fileExists(const string& filename);
+
+    /**
+      This method should be called to create the specified directory.
+
+      @param path   The directory to create
+
+      @return       boolean representing whether or not the directory was created
+    */
+    virtual bool makeDir(const string& path);
 };
 
 #endif

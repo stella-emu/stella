@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.8 2005-02-21 20:41:18 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.9 2005-02-22 18:40:55 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -62,9 +62,6 @@ bool FrameBufferSoft::initSubsystem()
   else
     theZoomLevel = myOSystem->settings().getInt("zoom");
 
-  // Set the window title and icon
-  setWindowAttributes();
-
   // Create the screen
   if(!createScreen())
     return false;
@@ -93,6 +90,12 @@ bool FrameBufferSoft::createScreen()
 
   theRedrawEntireFrameIndicator = true;
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::toggleFilter()
+{
+  // No filter added yet ...
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

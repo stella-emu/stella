@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.2 2005-02-21 20:43:47 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.3 2005-02-22 18:41:15 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -42,7 +42,7 @@ OSystemUNIX::~OSystemUNIX()
 string OSystemUNIX::stateFilename(const string& md5, uInt32 state)
 {
   ostringstream buf;
-//FIXME  buf << myStateDir << md5 << ".st" << state;
+  buf << stateDir() << "/" << md5 << ".st" << state;
 
   return buf.str();
 }
@@ -50,5 +50,11 @@ string OSystemUNIX::stateFilename(const string& md5, uInt32 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystemUNIX::fileExists(const string& filename)
 {
-  return (access(filename.c_str(), F_OK) == 0);
+  return access(filename.c_str(), F_OK) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystemUNIX::makeDir(const string& path)
+{
+  return mkdir(path.c_str(), 0777) == 0;
 }

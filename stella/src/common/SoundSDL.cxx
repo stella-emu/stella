@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.10 2005-02-22 02:59:53 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.11 2005-02-22 18:40:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -37,9 +37,6 @@ SoundSDL::SoundSDL(OSystem* osystem)
       myFragmentSizeLogBase2(0),
       myIsMuted(false)
 {
-  uInt32 fragsize = myOSystem->settings().getInt("fragsize");
-  myVolume = myOSystem->settings().getInt("volume");
-
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
   {
     cerr << "WARNING: Couldn't initialize SDL audio system! " << endl;
@@ -48,6 +45,8 @@ SoundSDL::SoundSDL(OSystem* osystem)
   }
   else
   {
+    uInt32 fragsize = myOSystem->settings().getInt("fragsize");
+
     SDL_AudioSpec desired;
     desired.freq = 31400;
     desired.format = AUDIO_U8;
@@ -93,6 +92,16 @@ SoundSDL::SoundSDL(OSystem* osystem)
 
     // And start the SDL sound subsystem ...
     SDL_PauseAudio(0);
+
+    // Adjust volume to that defined in settings
+    myVolume = myOSystem->settings().getInt("volume");
+    setVolume(myVolume);
+
+    // Show some info
+    if(myOSystem->settings().getBool("showinfo"))
+      cout << "Sound enabled:" << endl
+           << "  Volume   : "  << myVolume << endl
+           << "  Frag size: "  << fragsize << endl << endl;
   }
 }
 

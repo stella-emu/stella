@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.2 2005-02-21 20:43:20 stephena Exp $
+// $Id: OSystem.cxx,v 1.3 2005-02-22 18:41:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -39,9 +39,33 @@ OSystem::~OSystem()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::update()
+void OSystem::setPropertiesFiles(const string& userprops,
+                                 const string& systemprops)
 {
-//  myFrameBuffer.update();
+  // Set up the input and output properties files
+  myPropertiesOutputFile = userprops;
+
+  if(fileExists(userprops))
+    myPropertiesInputFile = userprops;
+  else if(fileExists(systemprops))
+    myPropertiesInputFile = systemprops;
+  else
+    myPropertiesInputFile = "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setConfigFiles(const string& userconfig,
+                             const string& systemconfig)
+{
+  // Set up the names of the input and output config files
+  myConfigOutputFile = userconfig;
+
+  if(fileExists(userconfig))
+    myConfigInputFile = userconfig;
+  else if(fileExists(systemconfig))
+    myConfigInputFile = systemconfig;
+  else
+    myConfigInputFile = "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

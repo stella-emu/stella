@@ -13,16 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.9 2005-02-21 20:43:53 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.10 2005-02-22 18:41:16 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
-#include <sstream>
-#include <fstream>
-
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include "bspf.hxx"
 #include "OSystem.hxx"
@@ -33,40 +27,26 @@
 SettingsUNIX::SettingsUNIX(OSystem* osystem)
     : Settings(osystem)
 {
-  // First set variables that the parent class needs
-  myBaseDir = getenv("HOME");
-  string stelladir = myBaseDir + "/.stella";
+  // First set variables that the OSystem needs
+  string basedir = getenv("HOME");
+  myOSystem->setBaseDir(basedir);
 
+  string stelladir = basedir + "/.stella";
   if(!myOSystem->fileExists(stelladir))
-    mkdir(stelladir.c_str(), 0777);
-// FIXME - add a OSystem mkdir
+    myOSystem->makeDir(stelladir);
 
-  myStateDir = stelladir + "/state/";
-  if(!myOSystem->fileExists(myStateDir))
-    mkdir(myStateDir.c_str(), 0777);
+  string statedir = stelladir + "/state/";
+  if(!myOSystem->fileExists(statedir))
+    myOSystem->makeDir(statedir);
+  myOSystem->setStateDir(statedir);
 
   string userPropertiesFile   = stelladir + "/stella.pro";
   string systemPropertiesFile = "/etc/stella.pro";
-  string userConfigFile       = stelladir + "/stellarc";
-  string systemConfigFile     = "/etc/stellarc";
+  myOSystem->setPropertiesFiles(userPropertiesFile, systemPropertiesFile);
 
-  // Set up the names of the input and output config files
-  myConfigOutputFile = userConfigFile;
-  if(myOSystem->fileExists(userConfigFile))
-    myConfigInputFile = userConfigFile;
-  else if(myOSystem->fileExists(systemConfigFile))
-    myConfigInputFile = systemConfigFile;
-  else
-    myConfigInputFile = "";
-
-  // Set up the input and output properties files
-  myPropertiesOutputFile = userPropertiesFile;
-  if(myOSystem->fileExists(userPropertiesFile))
-    myPropertiesInputFile = userPropertiesFile;
-  else if(myOSystem->fileExists(systemPropertiesFile))
-    myPropertiesInputFile = systemPropertiesFile;
-  else
-    myPropertiesInputFile = "";
+  string userConfigFile   = stelladir + "/stellarc";
+  string systemConfigFile = "/etc/stellarc";
+  myOSystem->setConfigFiles(userConfigFile, systemConfigFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

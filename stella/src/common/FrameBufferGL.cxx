@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.13 2005-02-21 02:23:48 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.14 2005-02-22 18:40:52 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -22,14 +22,15 @@
 
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
-#include "FrameBufferSDL.hxx"
 #include "FrameBufferGL.hxx"
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
+#include "OSystem.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferGL::FrameBufferGL()
-   :  myTexture(0),
+FrameBufferGL::FrameBufferGL(OSystem* osystem)
+   :  FrameBuffer(osystem),
+      myTexture(0),
       myScreenmode(0),
       myScreenmodeCount(0),
       myFilterParam(GL_NEAREST),
@@ -50,42 +51,23 @@ FrameBufferGL::~FrameBufferGL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::initSubsystem()
 {
-  // Get the desired width and height of the display
-  myWidth  = myMediaSource->width() << 1;
-  myHeight = myMediaSource->height();
+  mySDLFlags |= SDL_OPENGL;
 
   // Get the aspect ratio for the display
   // Since the display is already doubled horizontally, we half the
   // ratio that is provided
-  theAspectRatio = myConsole->settings().getFloat("gl_aspect") / 2;
+  theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
   if(theAspectRatio <= 0.0)
     theAspectRatio = 1.0;
-
-  // Now create the OpenGL SDL screen
-  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
-  if(SDL_Init(initflags) < 0)
-    return false;
-
-  // Check which system we are running under
-  // Get the system-specific WM information
-  SDL_VERSION(&myWMInfo.version);
-  if(SDL_GetWMInfo(&myWMInfo) > 0)
-    myWMAvailable = true;
 
   // Get the maximum size of a window for THIS screen
   theMaxZoomLevel = maxWindowSizeForScreen();
 
   // Check to see if window size will fit in the screen
-  if((uInt32)myConsole->settings().getInt("zoom") > theMaxZoomLevel)
+  if((uInt32)myOSystem->settings().getInt("zoom") > theMaxZoomLevel)
     theZoomLevel = theMaxZoomLevel;
   else
-    theZoomLevel = myConsole->settings().getInt("zoom");
-
-  mySDLFlags = SDL_OPENGL;
-  mySDLFlags |= myConsole->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
-
-  // Set the window title and icon
-  setWindowAttributes();
+    theZoomLevel = myOSystem->settings().getInt("zoom");
 
   // Set up the OpenGL attributes
   myDepth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
@@ -156,23 +138,8 @@ bool FrameBufferGL::initSubsystem()
   // and the textures
   setupPalette();
 
-  // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  if(myConsole->settings().getBool("fullscreen"))
-  {
-    grabMouse(true);
-    showCursor(false);
-  }
-  else
-  {
-    // Keep mouse in game window if grabmouse is selected
-    grabMouse(myConsole->settings().getBool("grabmouse"));
-
-    // Show or hide the cursor depending on the 'hidecursor' argument
-    showCursor(!myConsole->settings().getBool("hidecursor"));
-  }
-
   // Show some OpenGL info
-  if(myConsole->settings().getBool("showinfo"))
+  if(myOSystem->settings().getBool("showinfo"))
   {
     cout << "Video rendering: OpenGL mode" << endl;
 
@@ -247,11 +214,13 @@ bool FrameBufferGL::createScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawMediaSource()
 {
+  MediaSource& mediasrc = myOSystem->console().mediaSource();
+
   // Copy the mediasource framebuffer to the RGB texture
-  uInt8* currentFrame  = myMediaSource->currentFrameBuffer();
-  uInt8* previousFrame = myMediaSource->previousFrameBuffer();
-  uInt32 width         = myMediaSource->width();
-  uInt32 height        = myMediaSource->height();
+  uInt8* currentFrame  = mediasrc.currentFrameBuffer();
+  uInt8* previousFrame = mediasrc.previousFrameBuffer();
+  uInt32 width         = mediasrc.width();
+  uInt32 height        = mediasrc.height();
   uInt16* buffer       = (uInt16*) myTexture->pixels;
 
   register uInt32 y;
@@ -384,7 +353,7 @@ bool FrameBufferGL::createTextures()
     return false;
 
   // Create an OpenGL texture from the SDL texture
-  string filter = myConsole->settings().getString("gl_filter");
+  string filter = myOSystem->settings().getString("gl_filter");
   if(filter == "linear")
   {
     myFilterParam     = GL_LINEAR;
@@ -471,13 +440,13 @@ void FrameBufferGL::toggleFilter()
   if(myFilterParam == GL_NEAREST)
   {
     myFilterParam = GL_LINEAR;
-    myConsole->settings().setString("gl_filter", "linear");
+    myOSystem->settings().setString("gl_filter", "linear");
     showMessage("Filtering: GL_LINEAR");
   }
   else
   {
     myFilterParam = GL_NEAREST;
-    myConsole->settings().setString("gl_filter", "nearest");
+    myOSystem->settings().setString("gl_filter", "nearest");
     showMessage("Filtering: GL_NEAREST");
   }
 
@@ -523,7 +492,7 @@ void FrameBufferGL::viewport(uInt32* screenWidth, uInt32* screenHeight,
     uInt32 desktopWidth  = this->screenWidth();
     uInt32 desktopHeight = this->screenHeight();
 
-    if(myConsole->settings().getBool("gl_fsmax") &&
+    if(myOSystem->settings().getBool("gl_fsmax") &&
        desktopWidth != 0 && desktopHeight != 0)
     {
       // Use the largest available screen size
@@ -543,7 +512,7 @@ void FrameBufferGL::viewport(uInt32* screenWidth, uInt32* screenHeight,
       iwidth  = (Uint16) (scale * iwidth);
       iheight = (Uint16) (scale * iheight);
     }
-    else if(myConsole->settings().getBool("gl_fsmax") &&
+    else if(myOSystem->settings().getBool("gl_fsmax") &&
             myScreenmode != (SDL_Rect**) -1)
     {
       // Use the largest available screen size

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.15 2005-02-21 20:43:10 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.16 2005-02-22 18:41:11 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -39,7 +39,7 @@ FIXME  This class also implements a MAME-like user interface where Stella settin
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.15 2005-02-21 20:43:10 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.16 2005-02-22 18:41:11 stephena Exp $
 */
 class FrameBuffer
 {
@@ -55,7 +55,7 @@ class FrameBuffer
     virtual ~FrameBuffer();
 
     /**
-      Initializes the framebuffer display.  This must be called before any
+      (Re)initializes the framebuffer display.  This must be called before any
       calls are made to derived methods.
 
       @param title     The title of the window
@@ -207,9 +207,9 @@ FIXME
     uInt32 maxWindowSizeForScreen();
 
     /**
-      Set the title and icon for the main SDL window.
+      Set the title for the main SDL window.
     */
-    void setWindowAttributes();
+    void setWindowTitle(const string title);
 
     /**
       Set up the palette for a screen of any depth > 8.
@@ -240,6 +240,11 @@ FIXME
       @param b  The blue component of the color.
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
+
+    /**
+      Switches between the filtering options in the video subsystem.
+    */
+    virtual void toggleFilter() = 0;
 
     /**
       This routine should be called anytime the MediaSource needs to be redrawn
@@ -351,6 +356,11 @@ FIXME
     float theAspectRatio;
 
   private:
+    /**
+      Set the icon for the main SDL window.
+    */
+    void setWindowIcon();
+
     // Enumeration representing the different types of user interface widgets
     enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU };
 

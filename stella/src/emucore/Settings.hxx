@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.20 2005-02-21 20:43:21 stephena Exp $
+// $Id: Settings.hxx,v 1.21 2005-02-22 18:41:14 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.20 2005-02-21 20:43:21 stephena Exp $
+  @version $Id: Settings.hxx,v 1.21 2005-02-22 18:41:14 stephena Exp $
 */
 class Settings
 {
@@ -138,61 +138,10 @@ class Settings
     */
     void setString(const string& key, const string& value, bool save = true);
 
-  public:
-    /**
-      This method should be called to get the filename of the
-      properties (stella.pro) file for the purpose of loading.
-
-      @return String representing the full path of the properties filename.
-    */
-    string propertiesInputFilename() { return myPropertiesInputFile; }
-
-    /**
-      This method should be called to get the filename of the
-      properties (stella.pro) file for the purpose of saving.
-
-      @return String representing the full path of the properties filename.
-    */
-    string propertiesOutputFilename() { return myPropertiesOutputFile; }
-
-
-    /**
-      This method should be called to get the filename of the config file
-      for the purpose of loading.
-
-      @return String representing the full path of the config filename.
-    */
-    string configInputFilename() { return myConfigInputFile; }
-
-    /**
-      This method should be called to get the filename of the config file
-      for the purpose of saving.
-
-      @return String representing the full path of the config filename.
-    */
-    string configOutputFilename() { return myConfigOutputFile; }
-
-    /**
-      Return the default directory for storing data.
-    */
-    string baseDir() { return myBaseDir; }
-
-    /**
-      Set the OSystem object for this settings class
-    */
-    void setOSystem(OSystem* osystem) { myOSystem = osystem; }
-
   protected:
     void set(const string& key, const string& value, bool save = true);
 
-    string myBaseDir;
-    string myStateDir;
-
-    string myPropertiesInputFile;
-    string myPropertiesOutputFile;
-    string myConfigInputFile;
-    string myConfigOutputFile;
-
+    // The parent OSystem object
     OSystem* myOSystem;
 
     // Structure used for storing settings

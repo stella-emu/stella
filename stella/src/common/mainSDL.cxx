@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.23 2005-02-22 02:59:53 stephena Exp $
+// $Id: mainSDL.cxx,v 1.24 2005-02-22 18:40:56 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -45,9 +45,6 @@
 
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
-
-  // Indicates whether to use OpenGL mode
-  static bool theUseOpenGLFlag;
 #endif
 
 #if defined(UNIX)
@@ -442,12 +439,10 @@ void HandleEvents()
               theSound->adjustVolume(1);
               break;
 
-#ifdef DISPLAY_OPENGL
             case SDLK_f:
-              if(theUseOpenGLFlag)
-                ((FrameBufferGL*)theDisplay)->toggleFilter();
+              theDisplay->toggleFilter();
               break;
-#endif
+
 #ifdef DEVELOPER_SUPPORT
             case SDLK_END:       // Alt-End increases XStart
               theOSystem->console().changeXStart(1);
@@ -545,10 +540,10 @@ void HandleEvents()
             case SDLK_s:         // Ctrl-s saves properties to a file
               // Attempt to merge with propertiesSet
               if(theSettings->getBool("mergeprops"))
-                theOSystem->console().saveProperties(theSettings->propertiesOutputFilename(), true);
+                theOSystem->console().saveProperties(theOSystem->propertiesOutputFilename(), true);
               else  // Save to file in home directory
               {
-                string newPropertiesFile = theSettings->baseDir() + "/" + \
+                string newPropertiesFile = theOSystem->baseDir() + "/" + \
                   theOSystem->console().properties().get("Cartridge.Name") + ".pro";
                 theOSystem->console().saveProperties(newPropertiesFile);
               }
@@ -766,7 +761,7 @@ void SetupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
   string theAltPropertiesFile = theSettings->getString("altpro");
-  string thePropertiesFile    = theSettings->propertiesInputFilename();
+  string thePropertiesFile    = theOSystem->propertiesInputFilename();
 
   // When 'listrominfo' or 'mergeprops' is specified, we need to have the
   // full list in memory
@@ -897,20 +892,13 @@ int main(int argc, char* argv[])
   // Create an SDL window
   string videodriver = theSettings->getString("video");
   if(videodriver == "soft")
-  {
     theDisplay = new FrameBufferSoft(theOSystem);
-  }
 #ifdef DISPLAY_OPENGL
   else if(videodriver == "gl")
-  {
-    theDisplay = new FrameBufferGL();
-    theUseOpenGLFlag = true;
-  }
+    theDisplay = new FrameBufferGL(theOSystem);
 #endif
   else   // a driver that doesn't exist was requested, so use software mode
-  {
     theDisplay = new FrameBufferSoft(theOSystem);
-  }
 
   if(!theDisplay)
   {
@@ -920,22 +908,11 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  // Create a sound object for playing audio
+  // Create a sound object for playing audio, even if sound has been disabled
   if(theSettings->getBool("sound"))
-  {
     theSound = new SoundSDL(theOSystem);
-
-    ostringstream message;
-    message << "Sound enabled:" << endl;
-//FIXME            << "  Volume   : " << volume << endl
-//            << "  Frag size: " << fragsize << endl;
-    ShowInfo(message.str());
-  }
-  else  // even if sound has been disabled, we still need a sound object
-  {
+  else
     theSound = new Sound(theOSystem);
-    ShowInfo("Sound disabled");
-  }
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];
@@ -954,7 +931,7 @@ int main(int argc, char* argv[])
   uInt32 size = in.gcount();
   in.close();
 
-  // Create the 2600 game console
+  // Create an instance of the 2600 game console
   Console* theConsole = (Console*) NULL;
   theConsole = new Console(image, size, theOSystem);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.32 2005-02-21 20:43:20 stephena Exp $
+// $Id: Settings.cxx,v 1.33 2005-02-22 18:41:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -80,7 +80,7 @@ void Settings::loadConfig()
   string line, key, value;
   uInt32 equalPos;
 
-  ifstream in(myConfigInputFile.c_str());
+  ifstream in(myOSystem->configInputFilename().c_str());
   if(!in || !in.is_open())
   {
     cout << "Error: Couldn't load settings file\n";
@@ -217,7 +217,7 @@ void Settings::usage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
-  ofstream out(myConfigOutputFile.c_str());
+  ofstream out(myOSystem->configOutputFilename().c_str());
   if(!out || !out.is_open())
   {
     cout << "Error: Couldn't save settings file\n";
