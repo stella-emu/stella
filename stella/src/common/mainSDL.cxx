@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.4 2004-06-13 16:51:15 stephena Exp $
+// $Id: mainSDL.cxx,v 1.5 2004-06-13 18:14:03 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -781,8 +781,7 @@ void cleanup()
   if(theDisplay)
     delete theDisplay;
 
-  Uint32 subsystem_mask = SDL_INIT_VIDEO|SDL_INIT_AUDIO;
-  if(SDL_WasInit(subsystem_mask) == subsystem_mask)
+  if(SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO)
     SDL_Quit();
 }
 
