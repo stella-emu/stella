@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.10 2004-08-06 01:53:50 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.11 2004-08-18 21:20:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -40,17 +40,28 @@ SettingsWin32::SettingsWin32()
   myStateDir = stelladir + "state\\";
   _mkdir(myStateDir.c_str());
 
-  myUserPropertiesFile   = stelladir + "stella.pro";
-  mySystemPropertiesFile = stelladir + "stella.pro";
-  myUserConfigFile       = stelladir + "stella.ini";
-  mySystemConfigFile     = stelladir + "stella.ini";
+  string userPropertiesFile   = stelladir + "stella.pro";
+//  string systemPropertiesFile = stelladir + "stella.pro";
+  string userConfigFile       = stelladir + "stella.ini";
+//  string systemConfigFile     = stelladir + "stella.ini";
 
   // Set up the names of the input and output config files
-  mySettingsOutputFilename = myUserConfigFile;
-  if(fileExists(myUserConfigFile))
-    mySettingsInputFilename = myUserConfigFile;
+  myConfigOutputFile = userConfigFile;
+  if(fileExists(userConfigFile))
+    myConfigInputFile = userConfigFile;
+//  else if(fileExists(systemConfigFile))
+//    myConfigInputFile = systemConfigFile;
   else
-    mySettingsInputFilename = mySystemConfigFile;
+    myConfigInputFile = "";
+
+  // Set up the input and output properties files
+  myPropertiesOutputFile = userPropertiesFile;
+  if(fileExists(userPropertiesFile))
+    myPropertiesInputFile = userPropertiesFile;
+//  else if(fileExists(systemPropertiesFile))
+//    myPropertiesInputFile = systemPropertiesFile;
+  else
+    myPropertiesInputFile = "";
 
   // Now create Win32 specific settings
   set("romdir", "roms");
