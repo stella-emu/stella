@@ -12,6 +12,7 @@
 #include "Console.hxx"
 #include "Event.hxx"
 #include "MediaSrc.hxx"
+#include "debug.hxx"
 
 /*
 
@@ -28,7 +29,7 @@ idle time
 LPCTSTR CDirectXFullScreen::pszClassName = _T("StellaXClass");
 
 CDirectXFullScreen::CDirectXFullScreen(
-    const CGlobalData& rGlobalData,
+    const CGlobalData* rGlobalData,
     const Console* pConsole,
     Event& rEvent
     ) : \
@@ -99,7 +100,7 @@ HRESULT CDirectXFullScreen::Initialize(
 	WNDCLASSEX wcex;
 	ZeroMemory( &wcex, sizeof(wcex) );
 	wcex.cbSize = sizeof( wcex );
-	wcex.hInstance = m_rGlobalData.ModuleInstance();
+	wcex.hInstance = m_rGlobalData->ModuleInstance();
 	wcex.lpszClassName = pszClassName;
 	wcex.lpfnWndProc = StaticWindowProc;
 	wcex.style = CS_OWNDC;
@@ -126,13 +127,13 @@ HRESULT CDirectXFullScreen::Initialize(
 		                       0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
 		                       NULL, 
                                NULL, 
-                               m_rGlobalData.ModuleInstance(), 
+                               m_rGlobalData->ModuleInstance(), 
                                this );
 	if ( m_hwnd == NULL )
 	{
         TRACE( "CreateWindow failed" );
         hr = HRESULT_FROM_WIN32( GetLastError() );
-        MessageBox( m_rGlobalData.ModuleInstance(), NULL, IDS_CW_FAILED );
+        MessageBox( m_rGlobalData->ModuleInstance(), NULL, IDS_CW_FAILED );
         goto cleanup;
 	}
 
@@ -322,7 +323,7 @@ HRESULT CDirectXFullScreen::Initialize(
         goto cleanup;
     }
 
-    if ( m_rGlobalData.DisableJoystick() )
+    if ( m_rGlobalData->DisableJoystick() )
     {
         m_pDirectJoystick = new CDisabledJoystick( m_hwnd );
     }
@@ -425,7 +426,7 @@ void CDirectXFullScreen::Cleanup(
         m_hwnd = NULL;
 	}
 
-    ::UnregisterClass( pszClassName, m_rGlobalData.ModuleInstance() );
+    ::UnregisterClass( pszClassName, m_rGlobalData->ModuleInstance() );
 
     m_fInitialized = FALSE;
 }
@@ -572,7 +573,7 @@ DWORD CDirectXFullScreen::Run(
     ::QueryPerformanceFrequency( (LARGE_INTEGER*)&uiCountsPerSecond );
 
 	const unsigned __int64 uiCountsPerFrame = 
-        ( uiCountsPerSecond / m_rGlobalData.DesiredFrameRate() );
+        ( uiCountsPerSecond / m_rGlobalData->DesiredFrameRate() );
 
     TRACE( "uiCountsPerSecond=%ld", uiCountsPerSecond );
     TRACE( "uiCountsPerFrame = %ld", uiCountsPerFrame );
@@ -666,7 +667,7 @@ DWORD CDirectXFullScreen::Run(
 
 	// Main message loop done
 
-	if ( m_rGlobalData.ShowFPS() )
+	if ( m_rGlobalData->ShowFPS() )
 	{
 		// get number of scanlines in last frame
 
@@ -885,9 +886,9 @@ void CDirectXFullScreen::UpdateEvents(
 
 		// Mouse resistance is measured between 0...1000000
 
-    	rgEventState[ m_rGlobalData.PaddleResistanceEvent() ] = (999-x)*1000;
+    	rgEventState[ m_rGlobalData->PaddleResistanceEvent() ] = (999-x)*1000;
 		
-		rgEventState[ m_rGlobalData.PaddleFireEvent() ] |= m_pDirectMouse->IsButtonPressed(0);
+		rgEventState[ m_rGlobalData->PaddleFireEvent() ] |= m_pDirectMouse->IsButtonPressed(0);
 	}
 
     //
@@ -969,7 +970,6 @@ BOOL CDirectXFullScreen::UpdateDisplay(
     (void)m_piDDSBack->Unlock( ddsd.lpSurface );
 	
 	// Blit offscreen to onscreen
-	
 
 	RECT rc = { 0, 0, 
                 m_sizeGame.cx*2, // WIDTH_FACTOR 

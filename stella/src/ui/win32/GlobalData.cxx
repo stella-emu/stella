@@ -153,30 +153,3 @@ CGlobalData::~CGlobalData(
                                   g_pszIniFile );
     }
 }
-
-BOOL CGlobalData::ParseCommandLine(
-    int argc,
-    TCHAR** argv
-    )
-{
-    // parse arguments
-
-    for (int i = 1; i < argc; ++i)
-    {
-        LPCTSTR ctszArg = argv[i];
-
-        if (ctszArg && (ctszArg[0] != _T('-')))
-        {
-            // assume this is the start rom name
-
-            lstrcpy( m_pszPathName, ctszArg );
-        }
-        else
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-

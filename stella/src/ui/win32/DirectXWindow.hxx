@@ -18,7 +18,7 @@ class CDirectXWindow
 {
 public:
 
-	CDirectXWindow( const CGlobalData& rGlobalData,
+	CDirectXWindow( const CGlobalData* rGlobalData,
                     const Console* pConsole, 
                     Event& rEvent );
 	~CDirectXWindow();
@@ -67,7 +67,7 @@ private:
 	const Console* m_pConsole;
 	Event& m_rEvent;
 
-    const CGlobalData& m_rGlobalData;
+    const CGlobalData* m_rGlobalData;
     SIZE m_sizeGame;
 	BYTE m_rgbPixelDataTable[256];
 

@@ -16,10 +16,8 @@ class CGlobalData
 
 public:
 
-    CGlobalData( HINSTANCE hInstance );
-    ~CGlobalData( );
-
-    BOOL ParseCommandLine( int argc, TCHAR* argv[] );
+    CGlobalData(HINSTANCE hInstance);
+    ~CGlobalData();
 
     int DesiredFrameRate( void ) const
         {
@@ -90,11 +88,8 @@ public:
             return m_fIsModified;
         }
 
-private:
-
     // Basic options
-
-    TCHAR m_pszRomDir[ MAX_PATH ];
+    TCHAR* m_pszRomDir;
     int m_nPaddleMode;
     BOOL m_fNoSound;
     BOOL m_fDisableJoystick;

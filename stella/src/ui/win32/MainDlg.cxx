@@ -5,20 +5,14 @@
 #include "pch.hxx"
 #include "MainDlg.hxx"
 
-#include "GlobalData.hxx"
-
 #include "PropertySheet.hxx"
-#include "AboutPage.hxx"
-#include "DocPage.hxx"
 #include "ConfigPage.hxx"
+#include "AboutPage.hxx"
 
 #include "MD5.hxx"
 #include "PropsSet.hxx"
 
 #include "resource.h"
-
-#define BKGND_BITMAP_TOP  64
-#define BKGND_BITMAP_BOTTOM  355
 
 // NOTE: LVS_OWNERDATA doesn't support LVM_SORTITEMS!
 
@@ -35,13 +29,15 @@ inline LPARAM ListView_GetItemData(
     return lvi.lParam;
 }
 
-CMainDlg::CMainDlg(
-    CGlobalData& rGlobalData,
-    HINSTANCE hInstance
-    ) : \
-    m_rGlobalData(rGlobalData),
-    m_hInstance(hInstance)
+CMainDlg::CMainDlg(HINSTANCE hInstance)
+        : m_hInstance(hInstance)
 {
+    m_pGlobalData = new CGlobalData(hInstance);
+}
+
+CMainDlg::~CMainDlg()
+{
+    delete m_pGlobalData;
 }
 
 void CMainDlg::ClearList(
@@ -101,97 +97,32 @@ BOOL CALLBACK CMainDlg::StaticDialogFunc(
     return pDlg->DialogFunc( uMsg, wParam, lParam );
 }
 
-BOOL CALLBACK CMainDlg::DialogFunc(
-    UINT uMsg,
-    WPARAM wParam, 
-    LPARAM lParam
-    )
+BOOL CALLBACK CMainDlg::DialogFunc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    BOOL b;
-
     switch (uMsg)
     {
-    case WM_COMMAND:
-        return OnCommand( LOWORD(wParam), (HWND)lParam, HIWORD(wParam) );
+        case WM_COMMAND:
+            return OnCommand( LOWORD(wParam), (HWND)lParam, HIWORD(wParam) );
 
-    case WM_CTLCOLORSTATIC:
-        b = (BOOL)OnCtlColorStatic( (HDC)wParam, (HWND)lParam );
-        if (b)
-        {
-            return b;
-        }
-        break;
+        case WM_INITDIALOG:
+            return OnInitDialog( );
 
-    case WM_ERASEBKGND:
-        if ( OnEraseBkgnd( (HDC)wParam ) )
-        {
-            return TRUE;
-        }
-        break;
+        case WM_NOTIFY:
+            return OnNotify( (int)wParam, (LPNMHDR)lParam );
 
-    case WM_INITDIALOG:
-        return OnInitDialog( );
-
-    case WM_NOTIFY:
-        return OnNotify( (int)wParam, (LPNMHDR)lParam );
-
-    case WM_PALETTECHANGED:
-        TRACE( "WM_PALETTECHANGED from maindlg" );
-        return FALSE;
-
-    case WM_QUERYNEWPALETTE:
-        TRACE( "WM_QUERYNEWPALETTE from maindlg" );
-        return FALSE;
-
-    //
-    // Cool caption handlers
-    //
-
-    case WM_DESTROY:
-        OnDestroy( );
-        break;
-
-    case WM_DRAWITEM:
-        // Forward this onto the control
-        ::SendMessage( ((LPDRAWITEMSTRUCT)lParam)->hwndItem, WM_DRAWITEM,
-            wParam, lParam );
-        return TRUE;
-
-    case WM_NCPAINT:
-        // DefWindowProc(hDlg, uMsg, wParam, lParam);
-        OnNcPaint( (HRGN)wParam );
-        return TRUE;
-
-    case WM_NCACTIVATE:
-        OnNcActivate( (BOOL)wParam );
-        // When the fActive parameter is FALSE, an application should return 
-        // TRUE to indicate that the system should proceed with the default 
-        // processing
-        SetWindowLong( m_hwnd, DWL_MSGRESULT, TRUE );
-        return TRUE;
-
-    case WM_NCLBUTTONDOWN:
-        return OnNcLButtonDown( (INT)wParam, MAKEPOINTS(lParam) );
-
-    case WM_SYSCOMMAND:
-        // Allow Alt-F4 to close the window
-        if ( wParam == SC_CLOSE )
-        {
-            ::EndDialog( m_hwnd, IDCANCEL );
-        }
-        break;
+        case WM_SYSCOMMAND:
+            // Allow Alt-F4 to close the window
+            if ( wParam == SC_CLOSE )
+            {
+                ::EndDialog( m_hwnd, IDCANCEL );
+            }
+            break;
     }
-
-    //
-    // Message not handled
-    //
 
     return FALSE;
 }
 
-BOOL CMainDlg::OnInitDialog(
-    void
-    )
+BOOL CMainDlg::OnInitDialog(void)
 {
     DWORD dwRet;
 
@@ -232,14 +163,7 @@ BOOL CMainDlg::OnInitDialog(
     }
 
     // Do subclassing
-
-    m_CoolCaption.OnInitDialog( hwnd );
     m_header.SubclassDlgItem( hwnd, IDC_ROMLIST );
-    m_btn3d.SubclassDlgItem( hwnd, IDC_TITLE );
-    m_btnPlay.SubclassDlgItem( hwnd, IDC_PLAY );
-    m_btnHelp.SubclassDlgItem( hwnd, IDC_ABOUT );
-    m_btnConfig.SubclassDlgItem( hwnd, IDC_CONFIG );
-    m_btnExit.SubclassDlgItem( hwnd, IDC_EXIT );
 
     const int nMaxString = 256;
     TCHAR psz[nMaxString + 1];
@@ -322,7 +246,7 @@ BOOL CMainDlg::OnInitDialog(
     // Show rom path
     //
 
-    SetDlgItemText( hwnd, IDC_ROMPATH, m_rGlobalData.RomDir() );
+    SetDlgItemText( hwnd, IDC_ROMPATH, m_pGlobalData->RomDir() );
 
     //
     // Set default button
@@ -381,7 +305,7 @@ BOOL CMainDlg::OnCommand(
         pListData = (CListData*)ListView_GetItemData( m_hwndList, nItem );
 
         TCHAR pszPathName[ MAX_PATH + 1 ];
-        lstrcpy( pszPathName, m_rGlobalData.RomDir() );
+        lstrcpy( pszPathName, m_pGlobalData->RomDir() );
         lstrcat( pszPathName, _T("\\") );
         lstrcat( pszPathName, 
                  pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
@@ -393,7 +317,7 @@ BOOL CMainDlg::OnCommand(
         (void)m_stella.PlayROM( hwnd, 
                                 pszPathName,
                                 pListData->GetTextForColumn( CListData::NAME_COLUMN ),
-                                m_rGlobalData );
+                                m_pGlobalData);
 
         ::EnableWindow( hwnd, TRUE );
 
@@ -412,26 +336,22 @@ BOOL CMainDlg::OnCommand(
         {
             CPropertySheet ps( _T("Configure"), hwnd );
 
-            CConfigPage pgConfig( m_rGlobalData );
+            CConfigPage pgConfig(m_pGlobalData);
             ps.AddPage( &pgConfig );
 
             (void)ps.DoModal();
         }
         return TRUE;
 
-    case IDC_ABOUT:
+        case IDC_ABOUT:
         {
-            CPropertySheet ps(_T("Help"), hwnd);
+            CPropertySheet ps( _T("Help"), hwnd );
 
             CHelpPage pgAbout;
-            ps.AddPage(&pgAbout);
+            ps.AddPage( &pgAbout );
 
-            CDocPage pgDoc;
-            ps.AddPage(&pgDoc);
-
-            ps.DoModal();
+            (void)ps.DoModal();
         }
-        return TRUE;
     }
 
     return FALSE;
@@ -489,83 +409,6 @@ static void FillSolidRect(
     ::SetBkColor(hdc, crOld);
 }
 
-BOOL CMainDlg::OnEraseBkgnd(
-    HDC hdc
-    )
-{
-    // don't do this in 256 color
-
-    if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
-    {
-        return FALSE;
-    }
-
-    RECT rcWindow;
-    ::GetWindowRect( *this, &rcWindow );
-    ::ScreenToClient( *this, &rcWindow );
-
-    FillSolidRect( hdc, &rcWindow, ::GetSysColor( COLOR_3DFACE ) );
-
-    RECT rc;
-    ::SetRect( &rc, rcWindow.left, BKGND_BITMAP_TOP, 
-        rcWindow.right, BKGND_BITMAP_BOTTOM );
-
-    long lWidth = rc.right - rc.left;
-    long lHeight = rc.bottom - rc.top;
-
-    HDC hdcMem = CreateCompatibleDC(hdc);
-
-    HBITMAP hbmpTile = LoadBitmap( m_hInstance, 
-                                   MAKEINTRESOURCE(IDB_TILE) );
-
-    BITMAP bm;
-    GetObject(hbmpTile, sizeof(bm), &bm);
-
-    HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcMem, hbmpTile);
-
-    for (long x = 0; x < lWidth; x += bm.bmWidth)
-    {
-        for (long y = 0; y < lHeight; y += bm.bmHeight)
-        {
-            ::BitBlt( hdc, 
-                rc.left + x, rc.top + y,
-                ( (rc.left + x + bm.bmWidth) > rc.right ) ? rc.right-(rc.left+x) : bm.bmWidth,
-                ( (rc.top + y + bm.bmHeight) > rc.bottom ) ? rc.bottom-(rc.top+y) : bm.bmHeight,
-                hdcMem, 
-                0, 0, SRCCOPY );
-        }
-    }
-
-    SelectObject(hdcMem, hbmpOld);
-
-    DeleteObject(hbmpTile);
-
-    DeleteDC(hdcMem);
-
-    return TRUE;
-}
-
-HBRUSH CMainDlg::OnCtlColorStatic(
-    HDC hdcStatic, 
-    HWND hwndStatic
-    )
-{
-    // don't do this in 256 color
-
-    if (GetDeviceCaps(hdcStatic, RASTERCAPS) & RC_PALETTE)
-    {
-        return FALSE;
-    }
-
-    if ((GetWindowLong(hwndStatic, GWL_STYLE) & SS_ICON) == SS_ICON)
-    {
-        return NULL;
-    }
-
-    SetBkMode(hdcStatic, TRANSPARENT);
-    return (HBRUSH)GetStockObject(NULL_BRUSH);
-}
-
 // ---------------------------------------------------------------------------
 
 DWORD CMainDlg::PopulateRomList(
@@ -587,7 +430,7 @@ DWORD CMainDlg::PopulateRomList(
 
     TCHAR pszPath[ MAX_PATH ];
 
-    lstrcpy( pszPath, m_rGlobalData.RomDir() );
+    lstrcpy( pszPath, m_pGlobalData->RomDir() );
     lstrcat( pszPath, _T("\\*.bin") );
 
     WIN32_FIND_DATA ffd;
@@ -672,7 +515,7 @@ DWORD CMainDlg::ReadRomData(
 
     TCHAR pszPath[MAX_PATH + 1];
 
-    lstrcpy( pszPath, m_rGlobalData.RomDir() );
+    lstrcpy( pszPath, m_pGlobalData->RomDir() );
     lstrcat( pszPath, _T("\\") );
     lstrcat( pszPath, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
 
@@ -878,42 +721,4 @@ int CALLBACK CMainDlg::ListViewCompareFunc(
     //
 
     return lstrcmpi( pszItem1, pszItem2 );
-} 
-
-// ---------------------------------------------------------------------------
-// Cool caption message handlers
-
-void CMainDlg::OnDestroy(
-    void
-    )
-{
-    m_CoolCaption.OnDestroy();
-
-    if ( m_hfontRomNote )
-    {
-        ::DeleteObject( m_hfontRomNote );
-        m_hfontRomNote = NULL;
-    }
-}
-
-void CMainDlg::OnNcPaint(
-    HRGN hrgn
-    )
-{
-    m_CoolCaption.OnNcPaint( hrgn );
-}
-
-void CMainDlg::OnNcActivate(
-    BOOL fActive
-    )
-{
-    m_CoolCaption.OnNcActivate( fActive );
-}
-
-BOOL CMainDlg::OnNcLButtonDown(
-    INT nHitTest,
-    POINTS pts
-    )
-{
-    return m_CoolCaption.OnNCLButtonDown( nHitTest, pts );
 }

@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.1 2002-05-13 19:14:17 stephena Exp $
+// $Id: Deserializer.hxx,v 1.2 2002-05-14 10:56:03 gunfight Exp $
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
 #define DESERIALIZER_HXX
 
+#include "bspf.hxx"
 #include <fstream>
 #include <string>
 
@@ -31,7 +32,7 @@
   return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.1 2002-05-13 19:14:17 stephena Exp $
+  @version $Id: Deserializer.hxx,v 1.2 2002-05-14 10:56:03 gunfight Exp $
 */
 class Deserializer
 {

@@ -14,7 +14,7 @@ class CConfigPage : public CPropertyPage
 {
 public:
 
-	CConfigPage( CGlobalData& rGlobalData );
+	CConfigPage(CGlobalData* rGlobalData);
 
 protected:
 
@@ -26,7 +26,7 @@ protected:
 
 private:
 
-    CGlobalData& m_rGlobalData;
+    CGlobalData* m_rGlobalData;
     HWND m_hwnd;
 
 	CConfigPage( const CConfigPage& );  // no implementation

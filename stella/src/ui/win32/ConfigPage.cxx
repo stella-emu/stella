@@ -10,7 +10,7 @@
 #include "BrowseForFolder.hxx"
 
 CConfigPage::CConfigPage(
-    CGlobalData& rGlobalData
+    CGlobalData* rGlobalData
     ) : \
     m_rGlobalData( rGlobalData ),
 	CPropertyPage( IDD_CONFIG_PAGE )
@@ -33,7 +33,7 @@ BOOL CConfigPage::OnInitDialog(
 
     hwndCtrl = ::GetDlgItem( hwnd, IDC_ROMPATH );
     ::SendMessage( hwndCtrl, EM_LIMITTEXT, MAX_PATH, 0 );
-    ::SetWindowText( hwndCtrl, m_rGlobalData.RomDir() );
+    ::SetWindowText( hwndCtrl, m_rGlobalData->RomDir() );
 
     //
     // Set up PADDLE
@@ -50,7 +50,7 @@ BOOL CConfigPage::OnInitDialog(
     }
 
     ::SendMessage( hwndCtrl, CB_SETCURSEL, 
-                   m_rGlobalData.PaddleMode(), 0 );
+                   m_rGlobalData->PaddleMode(), 0 );
 
     //
     // Set up SOUND
@@ -58,7 +58,7 @@ BOOL CConfigPage::OnInitDialog(
 
     hwndCtrl = ::GetDlgItem( hwnd, IDC_SOUND );
     ::SendMessage( hwndCtrl, BM_SETCHECK, 
-                   m_rGlobalData.NoSound() ? BST_CHECKED : BST_UNCHECKED,
+                   m_rGlobalData->NoSound() ? BST_CHECKED : BST_UNCHECKED,
                    0 );
 
     //
@@ -68,7 +68,7 @@ BOOL CConfigPage::OnInitDialog(
 
     hwndCtrl = ::GetDlgItem( hwnd, IDC_AUTO_SELECT_VIDEOMODE );
     ::SendMessage( hwndCtrl, BM_SETCHECK, 
-                   m_rGlobalData.AutoSelectVideoMode() ? BST_CHECKED : BST_UNCHECKED,
+                   m_rGlobalData->AutoSelectVideoMode() ? BST_CHECKED : BST_UNCHECKED,
                    0 );
 
     //
@@ -77,7 +77,7 @@ BOOL CConfigPage::OnInitDialog(
 
     hwndCtrl = ::GetDlgItem( hwnd, IDC_JOYSTICK );
     ::SendMessage( hwndCtrl, BM_SETCHECK, 
-                   m_rGlobalData.DisableJoystick() ? BST_CHECKED : BST_UNCHECKED,
+                   m_rGlobalData->DisableJoystick() ? BST_CHECKED : BST_UNCHECKED,
                    0 );
 
 	return TRUE;
@@ -105,28 +105,28 @@ LONG CConfigPage::OnApply(
 
     hwndCtrl = ::GetDlgItem( m_hwnd, IDC_ROMPATH );
     ASSERT( hwndCtrl );
-    ::GetWindowText( hwndCtrl, m_rGlobalData.m_pszRomDir, MAX_PATH );
+    ::GetWindowText( hwndCtrl, m_rGlobalData->m_pszRomDir, MAX_PATH );
 
     hwndCtrl = ::GetDlgItem( m_hwnd, IDC_PADDLE );
     ASSERT( hwndCtrl );
-    m_rGlobalData.m_nPaddleMode = ::SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 );
+    m_rGlobalData->m_nPaddleMode = ::SendMessage( hwndCtrl, CB_GETCURSEL, 0, 0 );
 
     hwndCtrl = ::GetDlgItem( m_hwnd, IDC_SOUND );
     ASSERT( hwndCtrl );
-    m_rGlobalData.m_fNoSound = ( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 )
+    m_rGlobalData->m_fNoSound = ( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 )
         == BST_CHECKED );
 
     hwndCtrl = ::GetDlgItem( m_hwnd, IDC_AUTO_SELECT_VIDEOMODE );
     ASSERT( hwndCtrl );
-    m_rGlobalData.m_fAutoSelectVideoMode = ( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 )
+    m_rGlobalData->m_fAutoSelectVideoMode = ( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 )
         == BST_CHECKED );
 
     hwndCtrl = ::GetDlgItem( m_hwnd, IDC_JOYSTICK );
     ASSERT( hwndCtrl );
-    m_rGlobalData.m_fDisableJoystick= ( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 )
+    m_rGlobalData->m_fDisableJoystick= ( ::SendMessage( hwndCtrl, BM_GETCHECK, 0, 0 )
         == BST_CHECKED );
 
-    m_rGlobalData.SetModified();
+    m_rGlobalData->SetModified();
 
     return PSNRET_NOERROR;
 }

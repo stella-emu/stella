@@ -200,6 +200,14 @@ SOURCE=..\..\emucore\CartAR.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\emucore\CartCV.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\CartCV.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\emucore\CartDPC.cxx
 # End Source File
 # Begin Source File
@@ -277,6 +285,14 @@ SOURCE=..\..\emucore\CartFE.cxx
 # Begin Source File
 
 SOURCE=..\..\emucore\CartFE.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\CartMB.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\CartMB.hxx
 # End Source File
 # Begin Source File
 
@@ -452,22 +468,6 @@ SOURCE=.\ConfigPage.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\ControlHost.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\ControlHost.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\CoolCaption.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\CoolCaption.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\debug.cxx
 # End Source File
 # Begin Source File
@@ -505,14 +505,6 @@ SOURCE=.\DirectXWindow.cxx
 # Begin Source File
 
 SOURCE=.\DirectXWindow.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocPage.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocPage.hxx
 # End Source File
 # Begin Source File
 
@@ -568,23 +560,7 @@ SOURCE=.\pch.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\PropertySheet.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertySheet.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\resource.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\RoundButton.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\RoundButton.hxx
 # End Source File
 # Begin Source File
 
@@ -605,14 +581,6 @@ SOURCE=.\StellaXMain.cxx
 # Begin Source File
 
 SOURCE=.\StellaXMain.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\TextButton3d.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\TextButton3d.hxx
 # End Source File
 # Begin Source File
 
@@ -657,11 +625,15 @@ SOURCE=..\..\build\M6502Low.ins
 # End Source File
 # Begin Source File
 
-SOURCE=.\STELLA.ICO
+SOURCE=.\PropertySheet.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\tile.bmp
+SOURCE=.\PropertySheet.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\STELLA.ICO
 # End Source File
 # End Target
 # End Project

@@ -20,7 +20,7 @@ public:
 
     HRESULT PlayROM( HWND hwnd, LPCTSTR ctszPathName, 
                      LPCTSTR pszFriendlyName, 
-                     CGlobalData& rGlobalData );
+                     CGlobalData* rGlobalData );
     PropertiesSet& GetPropertiesSet() const;
 
 private:

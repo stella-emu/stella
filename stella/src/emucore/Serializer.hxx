@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.1 2002-05-13 19:14:17 stephena Exp $
+// $Id: Serializer.hxx,v 1.2 2002-05-14 10:56:03 gunfight Exp $
 //============================================================================
 
 #ifndef SERIALIZER_HXX
 #define SERIALIZER_HXX
 
+#include "bspf.hxx"
 #include <fstream>
 #include <string>
 
@@ -32,7 +33,7 @@
   Boolean values are written using a special pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.1 2002-05-13 19:14:17 stephena Exp $
+  @version $Id: Serializer.hxx,v 1.2 2002-05-14 10:56:03 gunfight Exp $
 */
 class Serializer
 {

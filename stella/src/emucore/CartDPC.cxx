@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.4 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartDPC.cxx,v 1.5 2002-05-14 10:56:03 gunfight Exp $
 //============================================================================
 
 #include <assert.h>
@@ -331,8 +331,11 @@ void CartridgeDPC::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::save(Serializer& out)
 {
-  cerr << "save from CartDPC  !!\n";
-  string cart = name();
+    uInt32 i;
+
+    cerr << "save from CartDPC  !!\n";
+
+    string cart = name();
 
   try
   {
@@ -343,17 +346,17 @@ bool CartridgeDPC::save(Serializer& out)
 
     // The bottom registers for the data fetchers
     out.putLong(8);
-    for(uInt32 i = 0; i < 8; ++i)
+    for(i = 0; i < 8; ++i)
       out.putLong(myBottoms[i]);
 
     // The counter registers for the data fetchers
     out.putLong(8);
-    for(uInt32 i = 0; i < 8; ++i)
+    for(i = 0; i < 8; ++i)
       out.putLong(myCounters[i]);
 
     // The flag registers for the data fetchers
     out.putLong(8);
-    for(uInt32 i = 0; i < 8; ++i)
+    for(i = 0; i < 8; ++i)
       out.putLong(myFlags[i]);
 
     // The random number generator register
@@ -361,7 +364,7 @@ bool CartridgeDPC::save(Serializer& out)
 
     // The top registers for the data fetchers
     out.putLong(8);
-    for(uInt32 i = 0; i < 8; ++i)
+    for(i = 0; i < 8; ++i)
       out.putLong(myTops[i]);
   }
   catch(char *msg)
@@ -381,8 +384,11 @@ bool CartridgeDPC::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::load(Deserializer& in)
 {
-  cerr << "load from CartDPC  !!\n";
-  string cart = name();
+    uInt32 i;
+    
+    cerr << "load from CartDPC  !!\n";
+    
+    string cart = name();
 
   try
   {
@@ -396,17 +402,17 @@ bool CartridgeDPC::load(Deserializer& in)
 
     // The bottom registers for the data fetchers
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myBottoms[i] = (uInt8) in.getLong();
 
     // The counter registers for the data fetchers
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myCounters[i] = (uInt16) in.getLong();
 
     // The flag registers for the data fetchers
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myFlags[i] = (uInt8) in.getLong();
 
     // The random number generator register
@@ -414,7 +420,7 @@ bool CartridgeDPC::load(Deserializer& in)
 
     // The top registers for the data fetchers
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myTops[i] = (uInt8) in.getLong();
   }
   catch(char *msg)

@@ -49,7 +49,7 @@ static inline void ClientToScreen(
 }
 
 CDirectXWindow::CDirectXWindow(
-    const CGlobalData& rGlobalData,
+    const CGlobalData* rGlobalData,
     const Console* pConsole,
     Event& rEvent 
     ) : \
@@ -118,7 +118,7 @@ CDirectXWindow::~CDirectXWindow
         m_piDD = NULL;
     }
 
-    ::UnregisterClass( pszClassName, m_rGlobalData.ModuleInstance() );
+    ::UnregisterClass( pszClassName, m_rGlobalData->ModuleInstance() );
 }
 
 HRESULT CDirectXWindow::Initialize(
@@ -142,8 +142,8 @@ HRESULT CDirectXWindow::Initialize(
     wc.lpszClassName = pszClassName;
     wc.lpfnWndProc = StaticWindowProc;
     wc.style = CS_HREDRAW | CS_VREDRAW; // CS_OWNDC
-    wc.hInstance = m_rGlobalData.ModuleInstance();
-    wc.hIcon = ::LoadIcon( m_rGlobalData.ModuleInstance(), 
+    wc.hInstance = m_rGlobalData->ModuleInstance();
+    wc.hIcon = ::LoadIcon( m_rGlobalData->ModuleInstance(), 
                            MAKEINTRESOURCE( IDI_APP ) );
     wc.hCursor = ::LoadCursor( NULL, IDC_ARROW );
     wc.hbrBackground = (HBRUSH)::GetStockObject( NULL_BRUSH );
@@ -175,13 +175,13 @@ HRESULT CDirectXWindow::Initialize(
                                0, 0, 0, 0,
                                NULL, 
                                NULL, 
-                               m_rGlobalData.ModuleInstance(), 
+                               m_rGlobalData->ModuleInstance(), 
                                this );
     if ( m_hwnd == NULL )
     {
         TRACE( "CreateWindow failed" );
         hr = HRESULT_FROM_WIN32( GetLastError() );
-        MessageBox( m_rGlobalData.ModuleInstance(), NULL, IDS_CW_FAILED );
+        MessageBox( m_rGlobalData->ModuleInstance(), NULL, IDS_CW_FAILED );
         goto cleanup;
     }
 
@@ -310,7 +310,7 @@ HRESULT CDirectXWindow::Initialize(
         goto cleanup;
     }
 
-    if ( m_rGlobalData.DisableJoystick() )
+    if ( m_rGlobalData->DisableJoystick() )
     {
         m_pDirectJoystick = new CDisabledJoystick( m_hwnd );
     }
@@ -711,6 +711,20 @@ BOOL CDirectXWindow::WndProc(
             ::PostMessage( m_hwnd, WM_CLOSE, 0, 0 );
             return TRUE;
 
+        case VK_F3:
+            //
+            // F11 = toggle fullscreen/windowed
+            //
+            if (m_fActive && m_fReady)
+            {
+                if (m_fWindowed)
+                {
+                    MessageBox(NULL, "Hallo!", "Hallo!", MB_OK);
+                }
+            }
+            break;
+
+
         case VK_F11:
             //
             // F11 = toggle fullscreen/windowed
@@ -907,7 +921,7 @@ DWORD CDirectXWindow::Run(
     ::QueryPerformanceFrequency( (LARGE_INTEGER*)&uiCountsPerSecond );
 
     const unsigned __int64 uiCountsPerFrame = 
-        ( uiCountsPerSecond / m_rGlobalData.DesiredFrameRate() );
+        ( uiCountsPerSecond / m_rGlobalData->DesiredFrameRate() );
 
     TRACE( "uiCountsPerSecond=%ld", uiCountsPerSecond );
     TRACE( "uiCountsPerFrame = %ld", uiCountsPerFrame );
@@ -1033,7 +1047,7 @@ DWORD CDirectXWindow::Run(
 
     // Main message loop done
 
-    if ( m_rGlobalData.ShowFPS() )
+    if ( m_rGlobalData->ShowFPS() )
     {
         // get number of scanlines in last frame
 
@@ -1257,9 +1271,9 @@ void CDirectXWindow::UpdateEvents(
 
         // Mouse resistance is measured between 0...1000000
 
-        rgEventState[ m_rGlobalData.PaddleResistanceEvent() ] = (999-x)*1000;
+        rgEventState[ m_rGlobalData->PaddleResistanceEvent() ] = (999-x)*1000;
         
-        rgEventState[ m_rGlobalData.PaddleFireEvent() ] |= m_pDirectMouse->IsButtonPressed(0);
+        rgEventState[ m_rGlobalData->PaddleFireEvent() ] |= m_pDirectMouse->IsButtonPressed(0);
     }
 
     //

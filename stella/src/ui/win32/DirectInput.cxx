@@ -13,19 +13,16 @@
 // CDirectInput
 //
 
-CDirectInput::CDirectInput(
-	HWND hwnd,
-	DWORD dwDevType,
-	int nButtonCount
-    ) : \
-    m_hwnd( hwnd ),
-	m_piDID(NULL),
-	m_dwDevType(dwDevType),
-	m_nButtonCount(nButtonCount),
-	m_pButtons(NULL),
-	m_lX(0),
-	m_lY(0),
-    m_fInitialized( FALSE )
+CDirectInput::CDirectInput(HWND hwnd, DWORD dwDevType, int nButtonCount)
+         : m_hwnd( hwnd )
+         , m_piDID(NULL)
+         , m_piDI(NULL)
+         , m_dwDevType(dwDevType)
+         , m_nButtonCount(nButtonCount)
+         , m_pButtons(NULL)
+         , m_lX(0)
+         , m_lY(0)
+         , m_fInitialized( FALSE )
 {
 	TRACE("CDirectInput::CDirectInput");
 }

@@ -126,7 +126,7 @@ HRESULT CStellaXMain::PlayROM(
     HWND hwnd,
     LPCTSTR pszPathName,
     LPCTSTR pszFriendlyName,
-    CGlobalData& rGlobalData
+    CGlobalData* rGlobalData
     )
 {
     UNUSED_ALWAYS( hwnd );
@@ -243,7 +243,7 @@ HRESULT CStellaXMain::PlayROM(
     // (Will be initialized once we have a window handle below)
     //
 
-    if (rGlobalData.NoSound())
+    if (rGlobalData->NoSound())
     {
         TRACE("Creating Sound driver");
         pSound = new Sound;
@@ -291,7 +291,7 @@ HRESULT CStellaXMain::PlayROM(
     }
     catch (...)
     {
-        MessageBox(rGlobalData.ModuleInstance(),
+        MessageBox(rGlobalData->ModuleInstance(),
             NULL, IDS_CANTSTARTCONSOLE);
 
         goto exit;
@@ -313,7 +313,7 @@ HRESULT CStellaXMain::PlayROM(
     }
 
 #ifdef USE_FS
-    if ( rGlobalData.AutoSelectVideoMode() )
+    if ( rGlobalData->AutoSelectVideoMode() )
     {
         hr = pwnd->Initialize( );
     }
@@ -334,7 +334,7 @@ HRESULT CStellaXMain::PlayROM(
         goto exit;
     }
 
-    if (!rGlobalData.NoSound())
+    if (!rGlobalData->NoSound())
     {
         //
         // 060499: Pass pwnd->GetHWND() in instead of hwnd as some systems

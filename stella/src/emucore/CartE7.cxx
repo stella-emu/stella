@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartE7.cxx,v 1.3 2002-05-14 10:56:03 gunfight Exp $
 //============================================================================
 
 #include <assert.h>
@@ -218,22 +218,25 @@ void CartridgeE7::bankRAM(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::save(Serializer& out)
 {
-  cerr << "save from CartE7  !!\n";
-  string cart = name();
+    uInt32 i;
+
+    cerr << "save from CartE7  !!\n";
+
+    string cart = name();
 
   try
   {
     out.putString(cart);
 
     out.putLong(2);
-    for(uInt32 i = 0; i < 2; ++i)
+    for(i = 0; i < 2; ++i)
       out.putLong(myCurrentSlice[i]);
 
     out.putLong(myCurrentRAM);
 
     // The 2048 bytes of RAM
     out.putLong(2048);
-    for(uInt32 i = 0; i < 2048; ++i)
+    for(i = 0; i < 2048; ++i)
       out.putLong(myRAM[i]);
   }
   catch(char *msg)
@@ -253,8 +256,11 @@ bool CartridgeE7::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::load(Deserializer& in)
 {
-  cerr << "load from CartE7  !!\n";
-  string cart = name();
+    uInt32 i;
+
+    cerr << "load from CartE7  !!\n";
+  
+    string cart = name();
 
   try
   {
@@ -264,14 +270,14 @@ bool CartridgeE7::load(Deserializer& in)
     uInt32 limit;
 
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myCurrentSlice[i] = (uInt16) in.getLong();
 
     myCurrentRAM = (uInt16) in.getLong();
 
     // The 2048 bytes of RAM
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myRAM[i] = (uInt8) in.getLong();
   }
   catch(char *msg)

@@ -8,13 +8,9 @@
 
 #include "resource.h"
 
-class CGlobalData;
-
+#include "GlobalData.hxx"
 #include "StellaXMain.hxx"
-#include "CoolCaption.hxx"
-#include "TextButton3d.hxx"
 #include "HeaderCtrl.hxx"
-#include "RoundButton.hxx"
 
 class CMainDlg;
 
@@ -174,7 +170,8 @@ public:
 
     enum { IDD = IDD_MAIN };
 
-    CMainDlg( CGlobalData& rGlobalData, HINSTANCE hInstance );
+    CMainDlg(HINSTANCE hInstance);
+    ~CMainDlg();
 
     virtual int DoModal( HWND hwndParent );
 
@@ -186,14 +183,7 @@ public:
 private:
 
     HWND m_hwnd;
-
-    CCoolCaption m_CoolCaption;
-    CTextButton3d m_btn3d;
     CHeaderCtrl m_header;
-    CRoundButton m_btnPlay;
-    CRoundButton m_btnHelp;
-    CRoundButton m_btnConfig;
-    CRoundButton m_btnExit;
 
     //
     // Message handlers
@@ -202,7 +192,6 @@ private:
     BOOL OnInitDialog( void );
     BOOL OnCommand( int id, HWND hwndCtl, UINT codeNotify );
     BOOL OnNotify( int idCtrl, LPNMHDR pnmh );
-    BOOL OnEraseBkgnd( HDC hdc );
     HBRUSH OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic );
 
     //
@@ -248,7 +237,7 @@ private:
 
     // Stella stuff
 
-    CGlobalData&    m_rGlobalData;
+    CGlobalData* m_pGlobalData;
     CStellaXMain    m_stella;
 
 	CMainDlg( const CMainDlg& );  // no implementation
