@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.h,v 1.4 2003-11-24 01:14:38 stephena Exp $
+// $Id: GameList.h,v 1.5 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #ifndef GAME_LIST_H
@@ -51,12 +51,11 @@ class GameList : public CListCtrl
     CString getCurrentName();
 
   private:
-    // members saved in registry
-    CString myRomPath;
-    uInt32 myRomCount;
-    CWnd* m_pParent;
+    CWnd* myParent;
     PropertiesSet* myPropertiesSet;
     SettingsWin32* mySettings;
+    CString myRomPath;
+    uInt32 myRomCount;
 
   private:
     void displayDrives();

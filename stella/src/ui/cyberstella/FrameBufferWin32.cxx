@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.cxx,v 1.6 2003-11-24 01:14:38 stephena Exp $
+// $Id: FrameBufferWin32.cxx,v 1.7 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -179,10 +179,11 @@ bool FrameBufferWin32::init()
   }
 
   // Get the best video mode for game width
-  //int cx = 640; int cy = 480;
-  int cx = 320; int cy = 240;
-  SetRect(&myScreenRect, 0, 0, cx, cy);
+  int cx = 640; int cy = 480;
+  if(myConsole->settings().getBool("autoselect_video"))
+    cx = cy = 0;
 
+  SetRect(&myScreenRect, 0, 0, cx, cy);
   if(cx == 0 || cy == 0)
   {
     hr = myDD->EnumDisplayModes(0, NULL, this, EnumModesCallback);
@@ -267,12 +268,36 @@ bool FrameBufferWin32::init()
   }
 
   // Create Palette
+  hr = setupPalette(1.0);
+  if(FAILED(hr))
+  {
+    OutputDebugString("Error:  setupPalette FAILED");
+    cleanup();
+    return false;
+  }
+
+  // If we get this far, then assume that there were no problems
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+HRESULT FrameBufferWin32::setupPalette(float shade)
+{
+  HRESULT hr;
+  
+  if(myDDPalette)
+  {
+    myDDPalette->Release();
+    myDDPalette = NULL;
+  }
+
+  const uInt32* pPalette = myMediaSource->palette();
   PALETTEENTRY pe[256];
   for(uInt32 i = 0; i < 256; ++i)
   {
-    pe[i].peRed   = (BYTE)( (pPalette[i] & 0x00FF0000) >> 16 );
-    pe[i].peGreen = (BYTE)( (pPalette[i] & 0x0000FF00) >> 8 );
-    pe[i].peBlue  = (BYTE)( (pPalette[i] & 0x000000FF) );
+    pe[i].peRed   = (BYTE) (((pPalette[i] & 0x00ff0000) >> 16) * shade);
+    pe[i].peGreen = (BYTE) (((pPalette[i] & 0x0000ff00) >> 8) * shade);
+    pe[i].peBlue  = (BYTE) ((pPalette[i] & 0x000000ff) * shade);
     pe[i].peFlags = 0;
   }
 
@@ -281,7 +306,7 @@ bool FrameBufferWin32::init()
   {
     OutputDebugString("Error:  CreatePalette FAILED");
     cleanup();
-    return false;
+    return hr;
   }
 
   hr = myPrimarySurface->SetPalette(myDDPalette);
@@ -289,11 +314,10 @@ bool FrameBufferWin32::init()
   {
     OutputDebugString("Error:  SetPalette FAILED");
     cleanup();
-    return false;
+    return hr;
   }
 
-  // If we get this far, then assume that there were no problems
-  return true;
+  return hr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -358,6 +382,10 @@ void FrameBufferWin32::postFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferWin32::pauseEvent(bool status)
 {
+  if(status)
+    setupPalette(0.75);
+  else
+    setupPalette(1.0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

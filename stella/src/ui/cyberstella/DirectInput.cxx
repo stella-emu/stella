@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.cxx,v 1.5 2003-11-16 19:32:50 stephena Exp $
+// $Id: DirectInput.cxx,v 1.6 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -21,12 +21,13 @@
 
 #include "DirectInput.hxx"
 
-DirectInput::DirectInput()
+DirectInput::DirectInput(bool disablejoystick)
   : myHWND(NULL),
     mylpdi(NULL),
     myKeyboard(NULL),
     myMouse(NULL),
-    myJoystickCount(0)
+    myJoystickCount(0),
+    myDisableJoystick(disablejoystick)
 {
   for(uInt32 i = 0; i < 8; i++)
     myJoystick[i] = NULL;
@@ -87,6 +88,10 @@ bool DirectInput::initialize(HWND hwnd)
 
   if(FAILED(myMouse->Acquire()))
     return false;
+
+  // Don't go any further if using joysticks has been disabled
+  if(myDisableJoystick)
+    return true;
 
   // Initialize all joysticks
   // Since a joystick isn't absolutely required, we won't return

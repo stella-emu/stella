@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferWin32.hxx,v 1.3 2003-11-24 01:14:38 stephena Exp $
+// $Id: FrameBufferWin32.hxx,v 1.4 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WIN32_HXX
@@ -30,7 +30,7 @@ class MediaSource;
   Only fullscreen mode is supported for now.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferWin32.hxx,v 1.3 2003-11-24 01:14:38 stephena Exp $
+  @version $Id: FrameBufferWin32.hxx,v 1.4 2003-11-24 23:56:10 stephena Exp $
 */ 
 class FrameBufferWin32 : public FrameBuffer
 {
@@ -54,6 +54,14 @@ class FrameBufferWin32 : public FrameBuffer
       otherwise return true.
     */
     virtual bool init();
+
+    /**
+      Set up the palette for a screen of depth = 8.
+
+      @param shade  Scales the palette by the given amount
+      @return       The result of the CreatePalette method
+    */ 
+    HRESULT setupPalette(float shade);
 
     /**
       This routine should be called anytime the MediaSource needs to be redrawn

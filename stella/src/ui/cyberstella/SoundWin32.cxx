@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundWin32.cxx,v 1.4 2003-11-24 01:14:38 stephena Exp $
+// $Id: SoundWin32.cxx,v 1.5 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -27,7 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundWin32::SoundWin32()
     : myIsInitializedFlag(false),
-      myBufferSize(512),
+      myBufferSize(4096),
       mySampleRate(31400),
       myDSBuffer(NULL)
 {
@@ -53,7 +53,7 @@ HRESULT SoundWin32::Initialize(HWND hWnd)
   }
 
   // Set DirectSound coop level 
-  if( FAILED(hr = myDSDevice->SetCooperativeLevel(hWnd, DSSCL_PRIORITY)) )
+  if( FAILED(hr = myDSDevice->SetCooperativeLevel(hWnd, DSSCL_EXCLUSIVE)) )
   {
     SoundError("SetCooperativeLevel");
     return hr;
@@ -73,7 +73,7 @@ HRESULT SoundWin32::Initialize(HWND hWnd)
    
   ZeroMemory(&dsbdesc, sizeof(dsbdesc));
   dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-  dsbdesc.dwFlags = DSBCAPS_CTRLVOLUME;
+  dsbdesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_STATIC;
   dsbdesc.dwBufferBytes = myBufferSize;
   dsbdesc.lpwfxFormat = &wfx;
 
@@ -87,6 +87,18 @@ HRESULT SoundWin32::Initialize(HWND hWnd)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundWin32::closeDevice()
 {
+  if(myDSBuffer)
+  {
+    myDSBuffer->Stop();
+    myDSBuffer->Release();
+    myDSBuffer = NULL;
+  }
+
+  if(myDSDevice)
+  {
+    myDSDevice->Release();
+    myDSDevice = NULL;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,6 +116,19 @@ bool SoundWin32::isSuccessfullyInitialized() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundWin32::setVolume(Int32 percent)
 {
+  // By default, use the system volume
+  if(percent < 0 || percent > 100)
+    return;
+
+// FIXME - let the percentage accurately represent decibel level
+//         ie, so volume 50 is half as loud as volume 100
+
+  // Scale the volume over the given range
+  if(myDSBuffer)
+  {
+    long offset = (long)((DSBVOLUME_MAX - DSBVOLUME_MIN) * (percent/100.0));
+    myDSBuffer->SetVolume(DSBVOLUME_MIN + offset);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,6 +139,12 @@ void SoundWin32::update()
     HRESULT hr;
     uInt8 periodCount = 0;
     uInt8* buffer = new uInt8[myBufferSize];
+
+    if(myPauseStatus)  // FIXME - don't stop the buffer so many times
+    {
+      myDSBuffer->Stop();
+      return;
+    }
 
     // Dequeue samples as long as full fragments are available
     while(myMediaSource->numberOfAudioSamples() >= myBufferSize)
@@ -128,7 +159,7 @@ void SoundWin32::update()
         memcpy(lpvWrite, buffer, dwLength);
         myDSBuffer->Unlock(lpvWrite, dwLength, NULL, 0);
         myDSBuffer->SetCurrentPosition(0);
-        myDSBuffer->Play(0, 0, 0);
+        myDSBuffer->Play(0, 0, DSBPLAY_LOOPING);
         periodCount++;
       }
     }
@@ -145,21 +176,3 @@ void SoundWin32::SoundError(const char* message)
 
   myIsInitializedFlag = false;
 }
-
-/*    // Fill any unused fragments with silence so that we have a lower
-    // risk of having playback underruns
-    for(int i = 0; i < 1-periodCount; ++i)
-    {
-      frames = snd_pcm_avail_update(myPcmHandle);
-      if (frames > 0)
-      {
-        uInt8 buffer[frames];
-        memset((void*)buffer, 0, frames);
-        snd_pcm_writei(myPcmHandle, buffer, frames);
-      }
-      else if(frames == -EPIPE)   // this should never happen
-      {
-        cerr << "EPIPE after write\n";
-        break;
-      }
-    }*/

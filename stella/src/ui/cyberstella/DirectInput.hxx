@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DirectInput.hxx,v 1.6 2003-11-16 19:32:51 stephena Exp $
+// $Id: DirectInput.hxx,v 1.7 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #ifndef DIRECT_INPUT_HXX
@@ -27,7 +27,7 @@
 class DirectInput
 {
   public:
-    DirectInput();
+    DirectInput(bool usejoystick);
     ~DirectInput();
 
     bool getKeyEvents(DIDEVICEOBJECTDATA* keyEvents, DWORD* numKeyEvents);
@@ -54,6 +54,7 @@ class DirectInput
     LPDIRECTINPUTDEVICE8 myMouse;
     LPDIRECTINPUTDEVICE8 myJoystick[8];
     uInt32 myJoystickCount;
+    bool myDisableJoystick;
 };
 
 #endif

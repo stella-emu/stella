@@ -24,14 +24,15 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CCyberstellaView, CFormView)
 
 BEGIN_MESSAGE_MAP(CCyberstellaView, CFormView)
-	//{{AFX_MSG_MAP(CCyberstellaView)
+	// {{AFX_MSG_MAP(CCyberstellaView)
 	ON_BN_CLICKED(IDC_CONFIG, OnConfig)
 	ON_BN_CLICKED(IDC_PLAY, OnPlay)
 	ON_WM_DESTROY()
+	ON_WM_SIZE()
     ON_MESSAGE(MSG_GAMELIST_UPDATE, updateListInfos)
     ON_MESSAGE(MSG_GAMELIST_DISPLAYNOTE, displayNote)
     ON_MESSAGE(MSG_VIEW_INITIALIZE, initialize)
-	//}}AFX_MSG_MAP
+	// }}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -40,10 +41,6 @@ END_MESSAGE_MAP()
 CCyberstellaView::CCyberstellaView()
 	: CFormView(CCyberstellaView::IDD)
 {
-	//{{AFX_DATA_INIT(CCyberstellaView)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
-
   // Create SettingsWin32 object
   // This should be done before any other xxxWin32 objects are created
   theSettings = new SettingsWin32();
@@ -85,9 +82,9 @@ CCyberstellaView::~CCyberstellaView()
 void CCyberstellaView::DoDataExchange(CDataExchange* pDX)
 {
     CFormView::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CCyberstellaView)
-	DDX_Control(pDX, IDC_ROMLIST, m_List);
-	//}}AFX_DATA_MAP
+	// {{AFX_DATA_MAP(CCyberstellaView)
+	DDX_Control(pDX, IDC_ROMLIST, myGameList);
+	// }}AFX_DATA_MAP
 }
 
 BOOL CCyberstellaView::PreCreateWindow(CREATESTRUCT& cs)
@@ -102,10 +99,22 @@ void CCyberstellaView::OnInitialUpdate()
 {
   CFormView::OnInitialUpdate();
   GetParentFrame()->RecalcLayout();
+  ResizeParentToFit(FALSE);
   ResizeParentToFit();
 
-    // Init ListControl, parse stella.pro
-    PostMessage(MSG_VIEW_INITIALIZE);
+  // Init ListControl, parse stella.pro
+  PostMessage(MSG_VIEW_INITIALIZE);
+}
+
+void CCyberstellaView::OnSize(UINT nType, int cx, int cy)
+{
+  CFormView::OnSize(nType, cx, cy);
+
+  // FIXME - this is a horrible way to do it, since the fonts may change
+  // There should be a way to do percentage resize (or at least figure
+  // out how big the current font is)
+  if(IsWindow(myGameList.m_hWnd))
+    myGameList.SetWindowPos(NULL, 10, 35, cx-20, cy-45, SWP_NOZORDER);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -137,7 +146,7 @@ void CCyberstellaView::OnConfig()
 
 void CCyberstellaView::OnPlay() 
 {
-    playRom();
+  playRom();
 }
 
 LRESULT CCyberstellaView::initialize(WPARAM wParam, LPARAM lParam)
@@ -157,11 +166,11 @@ LRESULT CCyberstellaView::initialize(WPARAM wParam, LPARAM lParam)
   m_imglist.Add (hFolder);
   m_imglist.Add (hAtari);
 
-  m_List.SetImageList (&m_imglist, LVSIL_SMALL);
+  myGameList.SetImageList (&m_imglist, LVSIL_SMALL);
 
   // Init ListCtrl
-  m_List.init(thePropertiesSet, theSettings, this);
-  m_List.populateRomList();
+  myGameList.init(thePropertiesSet, theSettings, this);
+  myGameList.populateRomList();
 
   return 0;
 }
@@ -169,18 +178,18 @@ LRESULT CCyberstellaView::initialize(WPARAM wParam, LPARAM lParam)
 void CCyberstellaView::OnDestroy() 
 {
   CFormView::OnDestroy();
-  m_List.deleteItemsAndProperties();
+  myGameList.deleteItemsAndProperties();
 }
 
 LRESULT CCyberstellaView::updateListInfos(WPARAM wParam, LPARAM lParam)
 {
   // Show status text
   CString status;
-  status.Format(IDS_STATUSTEXT, m_List.getRomCount());
+  status.Format(IDS_STATUSTEXT, myGameList.getRomCount());
   SetDlgItemText(IDC_ROMCOUNT,status);
 
   // Show rom path
-  SetDlgItemText(IDC_ROMPATH, m_List.getPath());
+  SetDlgItemText(IDC_ROMPATH, myGameList.getPath());
 
   return 0;
 }
@@ -189,10 +198,10 @@ LRESULT CCyberstellaView::displayNote(WPARAM wParam, LPARAM lParam)
 {
   // Show rom path
   CString note;
-  note.Format(IDS_NOTETEXT, m_List.getCurrentNote());
+  note.Format(IDS_NOTETEXT, myGameList.getCurrentNote());
   ((CMainFrame*)AfxGetMainWnd())->setStatusText(note);
 
-  return 0;    
+  return 0;
 }
 
 void CCyberstellaView::playRom(LONG gameID)
@@ -205,7 +214,7 @@ void CCyberstellaView::playRom(LONG gameID)
   DWORD dwImageSize;
   DWORD dwActualSize;
 
-  fileName = m_List.getCurrentFile();
+  fileName = myGameList.getCurrentFile();
   if(fileName.GetLength() <= 0)
     return;
 
@@ -284,7 +293,7 @@ void CCyberstellaView::playRom(LONG gameID)
 
   // Create a new main instance for this cartridge
   MainWin32* mainWin32 = new MainWin32(pImage, dwActualSize, pszFileName,
-                          *theSettings, *thePropertiesSet);
+                                       *theSettings, *thePropertiesSet);
   // And start the main emulation loop
   mainWin32->run();
 
@@ -297,5 +306,5 @@ void CCyberstellaView::playRom(LONG gameID)
   EnableWindow(TRUE);
 
   // Set focus back to the rom list
-  m_List.SetFocus();
+  myGameList.SetFocus();
 }

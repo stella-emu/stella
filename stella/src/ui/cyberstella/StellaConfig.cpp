@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaConfig.cpp,v 1.3 2003-11-24 01:14:38 stephena Exp $
+// $Id: StellaConfig.cpp,v 1.4 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -113,7 +113,7 @@ void StellaConfig::retrieveData()
   mySettings->setBool("autoselect_video",
     ((CButton*)GetDlgItem(IDC_AUTO_SELECT_VIDEOMODE))->GetCheck());
 
-  mySettings->setBool("joystick_disabled",
+  mySettings->setBool("disable_joystick",
     ((CButton*)GetDlgItem(IDC_JOYSTICK))->GetCheck());
 
   // Save any settings that were changed

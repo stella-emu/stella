@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainWin32.cxx,v 1.5 2003-11-24 01:14:38 stephena Exp $
+// $Id: MainWin32.cxx,v 1.6 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #define STRICT
@@ -66,8 +66,6 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
     return;
   }
 
-  theSound->setVolume(theSettings.getInt("volume"));
-
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, theSettings, thePropertiesSet,
                            *theDisplay, *theSound);
@@ -80,9 +78,10 @@ MainWin32::MainWin32(const uInt8* image, uInt32 size, const char* filename,
   // Initialize SoundWin32
   if(sounddriver == "win32")
     ((SoundWin32*)theSound)->Initialize(theDisplay->hwnd());
+  theSound->setVolume(theSettings.getInt("volume"));
 
   // Initialize DirectInput
-  theInput = new DirectInput();
+  theInput = new DirectInput(theSettings.getBool("disable_joystick"));
   if(!theInput)
   {
     cleanup();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cpp,v 1.5 2003-11-24 01:14:38 stephena Exp $
+// $Id: GameList.cpp,v 1.6 2003-11-24 23:56:10 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -121,28 +121,25 @@ void GameList::insertColumns()
 
 void GameList::populateRomList()
 {
-    CWaitCursor c;
+  CWaitCursor c;
 
-    // Remove previous content
-    deleteItemsAndProperties();
+  // Remove previous content
+  deleteItemsAndProperties();
 
-    // Add new content
-    if(myRomPath.GetLength() > 0)
-    {
-        displayPath();
-    }
-    else
-    {
-        displayDrives();
-    }
+  // Add new content
+  if(myRomPath.GetLength() > 0)
+    displayPath();
+  else
+    displayDrives();
 
-    // Sort content
-    SortItems(MyCompareProc, (LPARAM)(CListCtrl*)this);
+  // Sort content
+  SortItems(MyCompareProc, (LPARAM)(CListCtrl*)this);
 
-    // Select first item
-    SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+  // Select first item
+  SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 
-    if(m_pParent)   m_pParent->SendMessage(MSG_GAMELIST_UPDATE);
+  if(myParent)
+    myParent->SendMessage(MSG_GAMELIST_UPDATE);
 
   // Save the current path
   mySettings->setString("rompath", (const char*) myRomPath);
@@ -343,7 +340,7 @@ void GameList::OnItemActivate(NMHDR* pNMHDR, LRESULT* pResult)
         {
             // Notify parent to play the current game by 
             // sending a faked 'Play Button Pressed' message.
-            if (m_pParent)  m_pParent->PostMessage(WM_COMMAND, BN_CLICKED | IDC_PLAY);
+            if (myParent)  myParent->PostMessage(WM_COMMAND, BN_CLICKED | IDC_PLAY);
         }
     }
     *pResult = 0;
@@ -429,7 +426,7 @@ CString GameList::getCurrentNote()
 void GameList::init(PropertiesSet* newPropertiesSet,
                     SettingsWin32* settings, CWnd* newParent)
 {
-  m_pParent = newParent;
+  myParent = newParent;
   myPropertiesSet = newPropertiesSet;
   mySettings = settings;
 
@@ -443,7 +440,7 @@ void GameList::OnItemchanged(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 
-    if(m_pParent)   m_pParent->SendMessage(MSG_GAMELIST_DISPLAYNOTE);
+    if(myParent)   myParent->SendMessage(MSG_GAMELIST_DISPLAYNOTE);
 
     *pResult = 0;
 }

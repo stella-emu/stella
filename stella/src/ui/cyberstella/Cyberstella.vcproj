@@ -88,7 +88,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\games,..\..\build,..\..\emucore,..\..\emucore\m6502\src,..\..\emucore\m6502\src\bspf\src,..\sound"
+				AdditionalIncludeDirectories=".\;..\..\emucore;..\..\emucore\m6502\src;..\..\emucore\m6502\src\bspf\src;..\sound"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;BSPF_WIN32;DIRECTINPUT_VERSION=0x0800"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -105,7 +105,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dxguid.lib ddraw.lib dsound.lib"
+				AdditionalDependencies="dxguid.lib ddraw.lib dsound.lib dinput8.lib"
 				OutputFile=".\Release/Cyberstella.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

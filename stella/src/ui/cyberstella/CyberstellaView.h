@@ -20,10 +20,10 @@ protected: // create from serialization only
 	DECLARE_DYNCREATE(CCyberstellaView)
 
 public:
-	//{{AFX_DATA(CCyberstellaView)
+	// {{AFX_DATA(CCyberstellaView)
 	enum { IDD = IDD_CYBERSTELLA_FORM };
-	GameList m_List;
-	//}}AFX_DATA
+	GameList myGameList;
+	// }}AFX_DATA
 
 // Attributes
 public:
@@ -35,13 +35,15 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CCyberstellaView)
+	// {{AFX_VIRTUAL(CCyberstellaView)
 	public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual void OnInitialUpdate(); // called first time after construct
-	//}}AFX_VIRTUAL
+  virtual void OnSize(UINT nType, int cx, int cy);
+          
+	// }}AFX_VIRTUAL
 
 // Implementation
 public:
@@ -81,7 +83,7 @@ inline CCyberstellaDoc* CCyberstellaView::GetDocument()
 
 /////////////////////////////////////////////////////////////////////////////
 
-//{{AFX_INSERT_LOCATION}}
+// {{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_CYBERSTELLAVIEW_H__7FB621FE_3CB8_11D6_ACFC_0048546D2F04__INCLUDED_)
