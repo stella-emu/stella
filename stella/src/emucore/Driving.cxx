@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: Driving.cxx,v 1.2 2004-05-28 19:08:12 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -52,22 +52,22 @@ bool Driving::read(DigitalPin pin)
 
       if(myJack == Left)
       {
-        if(myEvent.get(Event::JoystickZeroLeft) != 0)
+        if(myEvent.get(Event::DrivingZeroCounterClockwise) != 0)
         {
           return (counterclockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
         }
-        else if(myEvent.get(Event::JoystickZeroRight) != 0)
+        else if(myEvent.get(Event::DrivingZeroClockwise) != 0)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
         }
       }
       else
       {
-        if(myEvent.get(Event::JoystickOneLeft) != 0)
+        if(myEvent.get(Event::DrivingOneCounterClockwise) != 0)
         {
           return (counterclockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
         }
-        else if(myEvent.get(Event::JoystickOneRight) != 0)
+        else if(myEvent.get(Event::DrivingOneClockwise) != 0)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
         }
@@ -76,22 +76,22 @@ bool Driving::read(DigitalPin pin)
     case Two:
       if(myJack == Left)
       {
-        if(myEvent.get(Event::JoystickZeroLeft) != 0)
+        if(myEvent.get(Event::DrivingZeroCounterClockwise) != 0)
         {
           return (counterclockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
         }
-        else if(myEvent.get(Event::JoystickZeroRight) != 0)
+        else if(myEvent.get(Event::DrivingZeroClockwise) != 0)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
         }
       }
       else
       {
-        if(myEvent.get(Event::JoystickOneLeft) != 0)
+        if(myEvent.get(Event::DrivingOneCounterClockwise) != 0)
         {
           return (counterclockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
         }
-        else if(myEvent.get(Event::JoystickOneRight) != 0)
+        else if(myEvent.get(Event::DrivingOneClockwise) != 0)
         {
           return (clockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
         }
@@ -104,8 +104,8 @@ bool Driving::read(DigitalPin pin)
       return true;
 
     case Six:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroFire) == 0) : 
-          (myEvent.get(Event::JoystickOneFire) == 0);
+      return (myJack == Left) ? (myEvent.get(Event::DrivingZeroFire) == 0) : 
+          (myEvent.get(Event::DrivingOneFire) == 0);
 
     default:
       return true;
