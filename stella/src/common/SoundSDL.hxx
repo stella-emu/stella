@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.2 2004-06-13 05:03:26 bwmott Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,155 +29,162 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.1 2004-05-24 17:18:22 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.2 2004-06-13 05:03:26 bwmott Exp $
 */
 class SoundSDL : public Sound
 {
   public:
     /**
-      Create a new sound object
+      Create a new sound object.  The init method must be invoked before
+      using the object.
     */
-    SoundSDL(uInt32 fragsize, uInt32 queuesize);
+    SoundSDL(uInt32 fragsize);
  
     /**
       Destructor
     */
     virtual ~SoundSDL();
 
-  public: 
-    /**
-      Closes the sound device
-    */
-    void closeDevice();
-
-    /**
-      Return the playback sample rate for the sound device.
-    
-      @return The playback sample rate
-    */
-    uInt32 getSampleRate() const;
-
+  public:
     /**
       Return true iff the sound device was successfully initialized.
 
       @return true iff the sound device was successfully initialized
     */
-    bool isSuccessfullyInitialized() const;
+    virtual bool isSuccessfullyInitialized() const;
 
     /**
-      Set the mute state of the sound object.
+      Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false
     */
-    void mute(bool state);
+    virtual void mute(bool state);
 
     /**
-      Sets the volume of the sound device to the specified level.  The
-      volume is given as a percentage from 0 to 100.  A -1 indicates
-      that the volume shouldn't be changed at all.
-
-      @param percent The new volume percentage level for the sound device
+      Resets the sound device.
     */
-    void setVolume(Int32 percent);
-
-    /**
-      Generates audio samples to fill the sample queue.
-    */
-    void update();
+    virtual void reset();
 
     /**
       Sets the sound register to a given value.
 
-      @param addr  The register address
+      @param addr The register address
       @param value The value to save into the register
+      @param cycle The CPU cycle at which the register is being updated
     */
-    void set(uInt16 addr, uInt8 value);
+    virtual void set(uInt16 addr, uInt8 value, Int32 cycle);
+
+    /**
+      Sets the volume of the sound device to the specified level.  The
+      volume is given as a percentage from 0 to 100.  Values outside
+      this range indicate that the volume shouldn't be changed at all.
+
+      @param percent The new volume percentage level for the sound device
+    */
+    virtual void setVolume(Int32 percent);
+
+  public:
+    /**
+      Loads the current state of this device from the given Deserializer.
+
+      @param in The deserializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Deserializer& in);
 
     /**
       Saves the current state of this device to the given Serializer.
 
-      @param out  The serializer device to save to.
-      @return     The result of the save.  True on success, false on failure.
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
     */
     bool save(Serializer& out);
 
+  protected:
     /**
-      Loads the current state of this device from the given Deserializer.
+      Invoked by the sound callback to process the next sound fragment.
 
-      @param in  The deserializer device to load from.
-      @return    The result of the load.  True on success, false on failure.
+      @param stream Pointer to the start of the fragment
+      @param length Length of the fragment
     */
-    bool load(Deserializer& in);
+    void processFragment(uInt8* stream, Int32 length);
 
-  private:
+  protected:
+    // Struct to hold information regarding a TIA sound register write
+    struct RegWrite
+    {
+      uInt16 addr;
+      uInt8 value;
+      double delta;
+    };
+
     /**
-      A bounded queue class used to hold audio samples after they are
-      produced by the MediaSource.
+      A queue class used to hold TIA sound register writes before being
+      processed while creating a sound fragment.
     */
-    class SampleQueue
+    class RegWriteQueue
     {
       public:
         /**
-          Create a new SampleQueue instance which can hold the specified
-          number of samples.  If the queue ever reaches its capacity then
-          older samples are discarded.
+          Create a new queue instance with the specified initial
+          capacity.  If the queue ever reaches its capacity then it will
+          automatically increase its size.
         */
-        SampleQueue(uInt32 capacity);
+        RegWriteQueue(uInt32 capacity = 512);
 
         /**
-          Destroy this SampleQueue instance.
+          Destroy this queue instance.
         */
-        virtual ~SampleQueue();
+        virtual ~RegWriteQueue();
 
       public:
         /**
-          Clear any samples stored in the queue.
+          Clear any items stored in the queue.
         */
         void clear();
 
         /**
-          Dequeue the upto the specified number of samples and store them
-          in the buffer.  Returns the actual number of samples removed from
-          the queue.
-
-          @return the actual number of samples removed from the queue.
+          Dequeue the first object in the queue.
         */
-        uInt32 dequeue(uInt8* buffer, uInt32 size);
+        void dequeue();
 
         /**
-          Enqueue the specified number of samples from the buffer.
+          Return the duration of all the items in the queue.
         */
-        void enqueue(uInt8* buffer, uInt32 size);
+        double duration();
 
         /**
-          Answers the number of samples currently in the queue.
+          Enqueue the specified object.
+        */
+        void enqueue(const RegWrite& info);
 
-          @return The number of samples in the queue.
+        /**
+          Return the item at the front on the queue.
+
+          @return The item at the front of the queue.
+        */
+        RegWrite& front();
+
+        /**
+          Answers the number of items currently in the queue.
+
+          @return The number of items in the queue.
         */
         uInt32 size() const;
 
-        /**
-          Answers the maximum number of samples the queue can hold.
-
-          @return The maximum number of samples in the queue.
-        */
-        uInt32 capacity() const { return myCapacity; }
+      private:
+        // Increase the size of the queue
+        void grow();
 
       private:
-        const uInt32 myCapacity;
-        uInt8* myBuffer;
+        uInt32 myCapacity;
+        RegWrite* myBuffer;
         uInt32 mySize;
         uInt32 myHead;
         uInt32 myTail;
     };
 
   private:
-    // Current volume
-    uInt32 myCurrentVolume;
-
-    // SDL fragment size
-    uInt32 myFragmentSize;
-
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
     
@@ -187,14 +194,11 @@ class SoundSDL : public Sound
     // Indicates if the sound is currently muted
     bool myIsMuted;
 
-    // DSP sample rate
-    uInt32 mySampleRate;
+    // Current volume as a percentage (0 - 100)
+    uInt32 myVolume;
 
-    // The sample queue size (which is auto-adapting)
-    uInt32 mySampleQueueSize;
-
-    // Queue which holds samples from the media source before they are played
-    SampleQueue mySampleQueue;
+    // Queue of TIA register writes
+    RegWriteQueue myRegWriteQueue;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data
