@@ -13,51 +13,118 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.2 2001-12-30 18:43:30 bwmott Exp $
+## $Id: makefile,v 1.3 2002-01-08 17:11:32 stephena Exp $
 ##============================================================================
 
 ##============================================================================
+## Development environment options
 ##
-## The following options are used during compiling.  You may need to
-## define some of these on the CXXFLAGS line if you're running on an
-## "unsupported" system
-##
-##   -DBSPF_BOOL         if your C++ compiler doesn't support the bool type
-##
-##   -DSHOW_TIMING       if your want some timing information displayed when
-##                       you exit the program
-##
-##   -DDEBUG             if you want a 6507 trace written to stdout
-##
-##   -DLINUX_JOYSTICK    to include linux joystick driver support
-##                       (requires you to install the joystick kernel module)
-##
+## The following options are used during compiling.
+## Comment a line out to disable that option, remove comment to enable it.
 ##============================================================================
 
-CXX      = g++
-LD       = g++
+### for normal optimization, full warnings
+OPTIMIZATIONS    = -O -Wall
+### for common optimizations, full warnings except unused vars
+# OPTIMIZATIONS    = -O2 -Wall -Wno-unused
+### this should work with all compilers 
+# OPTIMIZATIONS    =
+### to get full optimization under gcc/x Intel based OS's..
+# OPTIMIZATIONS    = -O3 -mcpu=pentiumpro -march=pentiumpro -Wall -Wno-unused \
+#	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
+#	-malign-functions=2 -malign-jumps=2 -malign-loops=2
 
-LDFLAGS  = 
-LDLIBS   = 
 
-SRC      = ..
-CORE     = $(SRC)/emucore
-UI       = $(SRC)/ui
+### if your C++ compiler doesn't support the bool type
+# BSPF_BOOL = 1
+
+### if your want some timing information displayed when you exit the program
+# SHOW_TIMING = 1
+
+### you want a 6507 trace written to stdout
+# DEBUG = 1
+
+### to include linux joystick driver support in the X11 version
+### (requires you to install the joystick kernel module)
+# LINUX_JOYSTICK = 1
+
+### to include support for saving snapshots in png format
+### (X and SDL versions only)
+### (requires you to install Imlib2)
+# IMLIB2_SNAPSHOT = 1
+
+##============================================================================
+## All done, type make to get a list of frontends
+## No configurable options below this line ...
+##============================================================================
+
+CXX	= g++
+LD	= g++
+
+LDFLAGS = 
+LDLIBS	= 
+
+OPTS.X11   =
+LIBS.X11   =
+CFLAGS.X11 =
+
+OPTS.SDL   =
+LIBS.SDL   =
+CFLAGS.SDL =
+
+OPTS.DOS   =
+
+SRC	= ..
+CORE	= $(SRC)/emucore
+UI	= $(SRC)/ui
 
 INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src
 
-CXXFLAGS = -O -Wall $(INCLUDES) $(SYS_INCLUDES)
+CXXFLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
+
+## set the user-defined options
+ifdef BSPF_BOOL
+OPTS.X11 += -DBSPF_BOOL
+OPTS.DOS += -DBSPF_BOOL
+endif
+
+ifdef SHOW_TIMING
+OPTS.X11 += -DSHOW_TIMING
+OPTS.SDL += -DSHOW_TIMING
+OPTS.DOS += -DSHOW_TIMING
+endif
+
+ifdef DEBUG
+OPTS.X11 += -DDEBUG
+OPTS.SDL += -DDEBUG
+OPTS.DOS += -DDEBUG
+endif
+
+ifdef LINUX_JOYSTICK
+OPTS.X11 += -DLINUX_JOYSTICK
+endif
+
+ifdef IMLIB2_SNAPSHOT
+OPTS.X11 += -DIMLIB2_SNAPSHOT
+LIBS.X11 += `imlib2-config --libs`
+CFLAGS.X11 += `imlib2-config --cflags`
+OPTS.SDL += -DIMLIB2_SNAPSHOT
+LIBS.SDL += `imlib2-config --libs`
+CFLAGS.SDL += `imlib2-config --cflags`
+endif
+
 
 default:
 	@echo ""
 	@echo "To build Stella type: 'make <version>'"
+	@echo "You should edit the makefile for extra options"
 	@echo ""
-	@echo "where <version> is one of:"
+	@echo "<version> is one of:"
 	@echo ""
 	@echo "  dos                  DOS version using DJGPP"
 	@echo "  unix-x               Generic Unix X windows version"
 	@echo "  linux-x              Linux X windows version"
-	@echo "  linux-x-joy          Linux X windows version with joystick"
+	@echo "  linux-sdl            Linux SDL version"
 	@echo "  bsdi-x               BSD/OS 4.0 X Windows version"
 	@echo "  solaris-x            Solaris X windows version"
 	@echo ""
@@ -70,53 +137,69 @@ dos:
           CXX="gcc" \
           INCLUDES="$(INCLUDES) -I$(UI)/dos -I$(UI)/sound" \
           OPTIONS="-DBSPF_DOS" \
+          OPTIONS+="$(OPTS.DOS)" \
           LDFLAGS="" \
           LDLIBS="" \
           OBJS="mainDOS.o PCJoys.o SndDOS.o sbdrv.o TIASound.o"
 
 unix-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
+          LDLIBS+="$(LIBS.X11)" \
           OBJS="mainX11.o SndUnix.o"
 
 linux-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
+          LDLIBS+="$(LIBS.X11)" \
           OBJS="mainX11.o SndUnix.o"
 
-linux-x-joy:
-	make xstella \
-          INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
+linux-sdl:
+	make stella.sdl \
+          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/sound" \
           SYS_INCLUDES="" \
-          OPTIONS="-DBSPF_UNIX -DLINUX_JOYSTICK" \
+          OPTIONS="-DBSPF_UNIX" \
+          OPTIONS+="$(OPTS.SDL)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
-          OBJS="mainX11.o SndUnix.o"
+          LDLIBS+="$(LIBS.SDL)" \
+          OBJS="mainSDL.o SndUnix.o"
 
 bsdi-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/X11R6/include" \
           OPTIONS="-DBSPF_UNIX" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/X11R6/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
+          LDLIBS+="$(LIBS.X11)" \
           OBJS="mainX11.o SndUnix.o"
 
 solaris-x:
-	make xstella \
+	make stella.x11 \
           INCLUDES="$(INCLUDES) -I$(UI)/x11 -I$(UI)/sound" \
           SYS_INCLUDES="-I/usr/openwin/include" \
           OPTIONS="-DBSPF_UNIX" \
+          OPTIONS+="$(OPTS.X11)" \
           LDFLAGS="-L/usr/openwin/lib" \
+          LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
+          LDLIBS+="$(LIBS.X11)" \
           OBJS="mainX11.o SndUnix.o"
 
 ###############################################################################
@@ -140,8 +223,11 @@ stella.exe: $(CORE_OBJS) $(OBJS)
 	del a
 	del a.exe
 
-xstella: $(CORE_OBJS) $(OBJS)
-	$(LD) -o xstella $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
+stella.x11: $(CORE_OBJS) $(OBJS)
+	$(LD) -o stella.x11 $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
+
+stella.sdl: $(CORE_OBJS) $(OBJS)
+	$(LD) -o stella.sdl $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
 
 M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
 	m4 $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4 > M6502Low.ins
@@ -164,7 +250,7 @@ cleandos:
 	del M6502Hi.ins
 
 clean:
-	rm -f *.o stella xstella stella.exe core
+	rm -f *.o stella stella.x11 stella.sdl stella.exe core
 
 cleanall: clean
 	rm -f DefProps.def M6502Low.ins M6502Hi.ins
@@ -294,7 +380,10 @@ TermX11.o: $(UI)/x11/TermX11.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/TermX11.cxx
 
 mainX11.o: $(UI)/x11/mainX11.cxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/x11/mainX11.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/mainX11.cxx
+
+mainSDL.o: $(UI)/sdl/mainSDL.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
 
 SndUnix.o: $(UI)/sound/SndUnix.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(UI)/sound/SndUnix.cxx

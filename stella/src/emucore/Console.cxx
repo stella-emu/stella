@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: Console.cxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -37,31 +37,7 @@
 #include "System.hxx"
 #include "TIA.hxx"
 
-/**
-  Compare the two strings s1 and s2 ignoring the case of the 
-  characters.  Answers true iff they are equal.
-
-  @param s1 The first string to compare
-  @param s2 The second string to compare
-  @return true iff the two strings are equal
-*/
-static bool compare(const string& s1, const string& s2)
-{
-  if(s1.length() != s2.length())
-  {
-    return false;
-  }
-
-  for(uInt32 i = 0; i < s1.length(); ++i)
-  {
-    if(tolower(s1[i]) != tolower(s2[i]))
-    {
-      return false;
-    }
-  }
-
-  return true;
-}
+#include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
@@ -78,34 +54,10 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Get the MD5 message-digest for the ROM image
   string md5 = MD5(image, size);
 
-  // Search through the properties set to see if some exist for this game
-  for(uInt32 i = 0; i < propertiesSet.size(); ++i)
-  {
-    const Properties& properties = propertiesSet.get(i);
-
-    if(properties.get("Cartridge.MD5") == md5)
-    {
-      // We have a match so let's use those properties
-      myProperties = properties;
-      break;
-    }
-  } 
-
-  // If there was no MD5 match then let's search based on filename
-  if(md5 != myProperties.get("Cartridge.MD5"))
-  {
-    for(uInt32 i = 0; i < propertiesSet.size(); ++i)
-    {
-      const Properties& properties = propertiesSet.get(i);
-
-      if(compare(properties.get("Cartridge.Filename"), filename))
-      {
-        // We have a match so let's use those properties
-        myProperties = properties;
-        break;
-      }
-    } 
-  }
+  // Search for the properties based on MD5
+  const Properties* properties = propertiesSet.getMD5(md5);
+  if(properties)
+    myProperties = properties;
 
   // TODO: At some point I belive we'll need to set the properties'
   // MD5 value so the user will be able to edit it.  
@@ -258,4 +210,3 @@ const Properties& Console::defaultProperties()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Properties Console::ourDefaultProperties;
-

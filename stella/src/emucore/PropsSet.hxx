@@ -13,79 +13,51 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: PropsSet.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIESSET_HXX
 #define PROPERTIESSET_HXX
 
-class Properties;
+#include <string>
 
 #include "bspf.hxx"
 #include "Props.hxx"
 
+class Properties;
+
 /**
-  This class maintains a sorted collection of properties.  Upon
-  construction one property is distinguished as the key for sorting.
+  This class maintains a sorted collection of properties.  The objects
+  are maintained in a binary search tree sorted by md5, since this is
+  the attribute most likely to be present in each entry in stella.pro
+  and least likely to change.  A change in MD5 would mean a change in
+  the game rom image (essentially a different game) and this would
+  necessitate a new entry in the stella.pro file anyway.
   
-  @author  Bradford W. Mott
-  @version $Id: PropsSet.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+  @author  Stephen Anthony
 */
 class PropertiesSet
 {
   public:
     /**
-      Create an empty properties set object using the specified
-      property as the key for sorting.
-
-      @param key The property to use as the key
+      Create an empty properties set object using the md5 as the
+      key to the BST.
     */
-    PropertiesSet(const string& key);
-
-    /**
-      Create a properties set object by copying another one
-
-      @param set The properties set to copy
-    */
-    PropertiesSet(const PropertiesSet& set);
+    PropertiesSet();
 
     /**
       Destructor
     */
     virtual ~PropertiesSet();
 
-  public:
     /**
-      Get the i'th properties from the set
+      Get the property from the set with the given MD5.
 
-      @param i The index of the properties to get
-      @return The properties stored at the i'th location
+      @param md5 The md5 of the property to get
+      @return The property with the given MD5, or 0 if not found
     */
-    const Properties& get(uInt32 i);
+    Properties* getMD5(string md5);
 
-    /**
-      Insert the properties into the set.  If a duplicate is inserted 
-      the old properties are overwritten with the new ones.
-
-      @param properties The collection of properties
-    */
-    void insert(const Properties& properties);
-
-    /**
-      Get the number of properties in the collection.
-
-      @return The number of properties in the collection
-    */
-    uInt32 size() const;
-
-    /**
-      Erase the i'th properties from the collection.
-
-      @param i The profile index
-    */
-    void erase(uInt32 i);
-
-  public:
     /** 
       Load properties from the specified input stream.  Use the given 
       defaults properties as the defaults for any properties loaded.
@@ -102,27 +74,61 @@ class PropertiesSet
     */
     void save(ostream& out);
 
-  public:
     /**
-      Overloaded assignment operator
+      Get the number of properties in the collection.
 
-      @param propertiesSet The properties set to set myself equal to
-      @return Myself after assignment has taken place
+      @return The number of properties in the collection
     */
-    PropertiesSet& operator = (const PropertiesSet& propertiesSet);
+    uInt32 size() const;
 
   private:
+
+	struct TreeNode
+	{
+   	    Properties *props;
+		TreeNode *left;
+		TreeNode *right;
+
+	};
+
+    /**
+      Insert the properties into the set.  If a duplicate is inserted 
+      the old properties are overwritten with the new ones.
+
+      @param properties The collection of properties
+    */
+    void insert(const Properties& properties);
+
+    /**
+      Insert a node in the bst, keeping the tree sorted.
+
+      @param node The current subroot of the tree
+      @param properties The collection of properties
+    */
+    void insertNode(TreeNode* &node, const Properties& properties);
+
+    /**
+      Deletes a node from the bst.  Does not preserve bst sorting.
+
+      @param node The current subroot of the tree
+    */
+    void deleteNode(TreeNode *node);
+
+    /**
+      Save current node properties to the specified output stream 
+
+      @param out The output stream to use
+      @param node The current subroot of the tree
+    */
+    void saveNode(ostream& out, TreeNode *node);
+
+    // The root of the BST
+    TreeNode* root;
+
     // Property to use as the key
     string myKey;
 
-    // Pointer to a dynamically allocated array of properties
-    Properties* myProperties;
-
-    // Current capacity of the properties array 
-    unsigned int myCapacity;
-
-    // The size of the properties array (i.e. the number of properties in it)
-    unsigned int mySize;
+    // The size of the properties bst (i.e. the number of properties in it)
+    uInt32 mySize;
 };
 #endif
-

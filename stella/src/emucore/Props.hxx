@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: Props.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -30,7 +30,7 @@
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+  @version $Id: Props.hxx,v 1.2 2002-01-08 17:11:32 stephena Exp $
 */
 class Properties
 {
@@ -147,4 +147,3 @@ class Properties
     unsigned int mySize;
 };
 #endif
-
