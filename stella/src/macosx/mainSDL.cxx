@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.3 2004-07-14 06:54:17 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.4 2004-07-28 23:54:39 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -558,13 +558,13 @@ void handleEvents()
         {
 		  if (theSettings->getInt("framerate") != 10000000)
 		  {
-			theSettings->setInt("framerate",10000000);
+			theSettings->setInt("framerate",10000000, false);
 			timePerFrame = 1.0 / 10000000.0;
             setSpeedLimitMenu(0);
 		  }
 		  else
 		  {
-			theSettings->setInt("framerate",60);
+			theSettings->setInt("framerate",60, false);
 			timePerFrame = 1.0 / 60.0;
             setSpeedLimitMenu(1);
 		  }

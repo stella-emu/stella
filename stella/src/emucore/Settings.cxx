@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.26 2004-07-12 02:26:57 stephena Exp $
+// $Id: Settings.cxx,v 1.27 2004-07-28 23:54:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -45,7 +45,7 @@ Settings::Settings()
   set("hidecursor", "false");
   set("volume", "-1");
   set("accurate", "false");
-  set("framerate", "60");
+  set("framerate", "-1");
   set("keymap", "");
   set("joymap", "");
   set("zoom", "1");
@@ -167,7 +167,7 @@ void Settings::usage()
 {
 #ifndef MAC_OSX
   cout << endl
-    << "Stella version 1.4\n\nUsage: stella [options ...] romfile" << endl
+    << "Stella version 1.4.1_cvs\n\nUsage: stella [options ...] romfile" << endl
     << endl
     << "Valid options are:" << endl
     << endl
@@ -282,39 +282,39 @@ void Settings::set(const string& key, const string& value, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setInt(const string& key, const uInt32 value)
+void Settings::setInt(const string& key, const uInt32 value, bool save)
 {
   ostringstream stream;
   stream << value;
 
-  set(key, stream.str());
+  set(key, stream.str(), save);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setFloat(const string& key, const float value)
+void Settings::setFloat(const string& key, const float value, bool save)
 {
   ostringstream stream;
   stream << value;
 
-  set(key, stream.str());
+  set(key, stream.str(), save);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setBool(const string& key, const bool value)
+void Settings::setBool(const string& key, const bool value, bool save)
 {
   ostringstream stream;
   stream << value;
 
-  set(key, stream.str());
+  set(key, stream.str(), save);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setString(const string& key, const string& value)
+void Settings::setString(const string& key, const string& value, bool save)
 {
   ostringstream stream;
   stream << value;
 
-  set(key, stream.str());
+  set(key, stream.str(), save);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

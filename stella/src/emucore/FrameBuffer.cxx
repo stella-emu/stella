@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.11 2004-07-22 01:54:08 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.12 2004-07-28 23:54:39 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -696,7 +696,7 @@ FrameBuffer::MainMenuItem FrameBuffer::ourMainMenu[2] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::RemapMenuItem FrameBuffer::ourRemapMenu[58] = {
+FrameBuffer::RemapMenuItem FrameBuffer::ourRemapMenu[57] = {
   { Event::ConsoleSelect,           "Select",               "" },
   { Event::ConsoleReset,            "Reset",                "" },
   { Event::ConsoleColor,            "Color TV",             "" },
@@ -710,7 +710,7 @@ FrameBuffer::RemapMenuItem FrameBuffer::ourRemapMenu[58] = {
   { Event::LoadState,               "Load State",           "" },
   { Event::TakeSnapshot,            "Snapshot",             "" },
   { Event::Pause,                   "Pause",                "" },
-  { Event::Quit,                    "Quit",                 "" },
+//  { Event::Quit,                    "Quit",                 "" },
 
   { Event::JoystickZeroUp,          "Left-Joy Up",          "" },
   { Event::JoystickZeroDown,        "Left-Joy Down",        "" },

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.7 2004-07-12 04:05:03 stephena Exp $
+// $Id: Props.cxx,v 1.8 2004-07-28 23:54:39 stephena Exp $
 //============================================================================
 
 #include "Props.hxx"
@@ -151,10 +151,14 @@ void Properties::save(ostream& out)
   // Write out each of the key and value pairs
   for(uInt32 i = 0; i < mySize; ++i)
   {
-    writeQuotedString(out, myProperties[i].key);
-    out.put(' ');
-    writeQuotedString(out, myProperties[i].value);
-    out.put('\n');
+    // Try to save some space by only saving the items that differ from default
+    if(myProperties[i].value !=  myDefaults->get(myProperties[i].key))
+    {
+      writeQuotedString(out, myProperties[i].key);
+      out.put(' ');
+      writeQuotedString(out, myProperties[i].value);
+      out.put('\n');
+    }
   }
 
   // Put a trailing null string so we know when to stop reading

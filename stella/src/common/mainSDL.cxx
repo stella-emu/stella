@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.13 2004-07-21 00:15:08 stephena Exp $
+// $Id: mainSDL.cxx,v 1.14 2004-07-28 23:54:38 stephena Exp $
 //============================================================================
 
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <algorithm>
 #include <cstdlib>
 
@@ -57,15 +58,14 @@
   #error Unsupported platform!
 #endif
 
-static void cleanup();
-static bool setupJoystick();
-static void handleEvents();
-static uInt32 getTicks();
-static void setupProperties(PropertiesSet& set);
+static void Cleanup();
+static bool SetupJoystick();
+static void HandleEvents();
+static uInt32 GetTicks();
+static void SetupProperties(PropertiesSet& set);
+static void ShowInfo(const string& msg);
 
 #ifdef JOYSTICK_SUPPORT
-//  static uInt32 thePaddleNumber;
-
   // Lookup table for joystick numbers and events
   StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK] = {
     StellaEvent::JSTICK_0, StellaEvent::JSTICK_1, StellaEvent::JSTICK_2,
@@ -102,6 +102,18 @@ static void setupProperties(PropertiesSet& set);
     Event::DrivingZeroValue, Event::DrivingOneValue
   };
 #endif
+
+// Lookup table for paddle resistance events
+static Event::Type Paddle_Resistance[4] = {
+  Event::PaddleZeroResistance, Event::PaddleOneResistance,
+  Event::PaddleTwoResistance,  Event::PaddleThreeResistance
+};
+
+// Lookup table for paddle button events
+static Event::Type Paddle_Button[4] = {
+  Event::PaddleZeroFire, Event::PaddleOneFire,
+  Event::PaddleTwoFire,  Event::PaddleThreeFire
+};
 
 // Pointer to the console object or the null pointer
 static Console* theConsole = (Console*) NULL;
@@ -253,11 +265,22 @@ static KeyList keyList[] = {
     { SDLK_PAGEDOWN,    StellaEvent::KCODE_PAGEDOWN   }
   };
 
+
+/**
+  Prints given message based on 'theShowInfoFlag'
+*/
+static void ShowInfo(const string& msg)
+{
+  if(theShowInfoFlag)
+    cout << msg << endl;
+}
+
+
 /**
   Returns number of ticks in microseconds
 */
 #ifdef HAVE_GETTIMEOFDAY
-inline uInt32 getTicks()
+inline uInt32 GetTicks()
 {
   timeval now;
   gettimeofday(&now, 0);
@@ -265,7 +288,7 @@ inline uInt32 getTicks()
   return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
 }
 #else
-inline uInt32 getTicks()
+inline uInt32 GetTicks()
 {
   return (uInt32) SDL_GetTicks() * 1000;
 }
@@ -276,9 +299,11 @@ inline uInt32 getTicks()
   This routine should be called once setupDisplay is called
   to create the joystick stuff.
 */
-bool setupJoystick()
+bool SetupJoystick()
 {
 #ifdef JOYSTICK_SUPPORT
+  ostringstream message;
+
   // Keep track of how many Stelladaptors we've found
   uInt8 saCount = 0;
 
@@ -292,9 +317,7 @@ bool setupJoystick()
   // Initialize the joystick subsystem
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
-    if(theShowInfoFlag)
-      cout << "No joysticks present, use the keyboard.\n";
-
+    ShowInfo("No joysticks present, use the keyboard.");
     return true;
   }
 
@@ -303,6 +326,8 @@ bool setupJoystick()
                  SDL_NumJoysticks() : StellaEvent::LastJSTICK;
   for(uInt32 i = 0; i < limit; i++)
   {
+    message.str("");
+
     string name = SDL_JoystickName(i);
     theJoysticks[i].stick = SDL_JoystickOpen(i);
 
@@ -330,18 +355,17 @@ bool setupJoystick()
         theJoysticks[i].type = JT_STELLADAPTOR_2;
       }
 
-      if(theShowInfoFlag)
-        cout << "Joystick " << i << ": " << name << endl;
+      message << "Joystick " << i << ": " << name;
+      ShowInfo(message.str());
     }
     else
     {
       theJoysticks[i].type = JT_REGULAR;
-      if(theShowInfoFlag)
-      {
-        cout << "Joystick " << i << ": " << SDL_JoystickName(i)
-             << " with " << SDL_JoystickNumButtons(theJoysticks[i].stick)
-             << " buttons.\n";
-      }
+
+      message << "Joystick " << i << ": " << SDL_JoystickName(i)
+              << " with " << SDL_JoystickNumButtons(theJoysticks[i].stick)
+              << " buttons.";
+      ShowInfo(message.str());
     }
   }
 #endif
@@ -353,226 +377,206 @@ bool setupJoystick()
 /**
   This routine should be called regularly to handle events
 */
-void handleEvents()
+void HandleEvents()
 {
   SDL_Event event;
-  Uint8 type;
-  SDLKey key;
-  SDLMod mod;
 
   // Check for an event
   while(SDL_PollEvent(&event))
   {
-    // keyboard events
-    if(event.type == SDL_KEYDOWN)
+    switch(event.type)
     {
-      key = event.key.keysym.sym;
-      mod = event.key.keysym.mod;
-      type = event.type;
-
-      // An attempt to speed up event processing
-      // All SDL-specific event actions are accessed by either
-      // Control or Alt keys.  So we quickly check for those.
-      if(mod & KMOD_ALT)
+      // keyboard events
+      case SDL_KEYUP:
+      case SDL_KEYDOWN:
       {
-        if(key == SDLK_EQUALS)
-          theDisplay->resize(1);
-        else if(key == SDLK_MINUS)
-          theDisplay->resize(-1);
-        else if(key == SDLK_RETURN)
-          theDisplay->toggleFullscreen();
+        SDLKey key   = event.key.keysym.sym;
+        SDLMod mod   = event.key.keysym.mod;
+        uInt32 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
+
+        // An attempt to speed up event processing
+        // All SDL-specific event actions are accessed by either
+        // Control or Alt keys.  So we quickly check for those.
+        if(mod & KMOD_ALT && state)
+        {
+          switch(int(key))
+          {
+            case SDLK_EQUALS:
+              theDisplay->resize(1);
+              break;
+
+            case SDLK_MINUS:
+              theDisplay->resize(-1);
+              break;
+
+            case SDLK_RETURN:
+              theDisplay->toggleFullscreen();
+              break;
 #ifdef DISPLAY_OPENGL
-        else if(key == SDLK_f && theUseOpenGLFlag)
-          ((FrameBufferGL*)theDisplay)->toggleFilter();
+            case SDLK_f:
+              if(theUseOpenGLFlag)
+                ((FrameBufferGL*)theDisplay)->toggleFilter();
 #endif
 #ifdef DEVELOPER_SUPPORT
-        else if(key == SDLK_END)       // Alt-End increases XStart
-        {
-          theConsole->changeXStart(1);
-          theDisplay->resize(0);
-        }
-        else if(key == SDLK_HOME)      // Alt-Home decreases XStart
-        {
-          theConsole->changeXStart(0);
-          theDisplay->resize(0);
-        }
-        else if(key == SDLK_PAGEUP)    // Alt-PageUp increases YStart
-        {
-          theConsole->changeYStart(1);
-          theDisplay->resize(0);
-        }
-        else if(key == SDLK_PAGEDOWN)  // Alt-PageDown decreases YStart
-        {
-          theConsole->changeYStart(0);
-          theDisplay->resize(0);
-        }
+            case SDLK_END:       // Alt-End increases XStart
+              theConsole->changeXStart(1);
+              theDisplay->resize(0);
+              break;
+
+            case SDLK_HOME:      // Alt-Home decreases XStart
+              theConsole->changeXStart(0);
+              theDisplay->resize(0);
+              break;
+
+            case SDLK_PAGEUP:    // Alt-PageUp increases YStart
+              theConsole->changeYStart(1);
+              theDisplay->resize(0);
+              break;
+
+            case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
+              theConsole->changeYStart(0);
+              theDisplay->resize(0);
+              break;
+          }
 #endif
-      }
-      else if(mod & KMOD_CTRL)
-      {
-        if(key == SDLK_g)
+        }
+        else if(mod & KMOD_CTRL && state)
         {
-          // don't change grabmouse in fullscreen mode
-          if(!theDisplay->fullScreen())
+          switch(int(key))
           {
-            theGrabMouseIndicator = !theGrabMouseIndicator;
-            theSettings->setBool("grabmouse", theGrabMouseIndicator);
-            theDisplay->grabMouse(theGrabMouseIndicator);
-          }
-        }
-        else if(key == SDLK_h)
-        {
-          // don't change hidecursor in fullscreen mode
-          if(!theDisplay->fullScreen())
-          {
-            theHideCursorIndicator = !theHideCursorIndicator;
-            theSettings->setBool("hidecursor", theHideCursorIndicator);
-            theDisplay->showCursor(!theHideCursorIndicator);
-          }
-        }
-        else if(key == SDLK_f)         // Ctrl-f toggles NTSC/PAL mode
-        {
-          theConsole->toggleFormat();
-          theDisplay->setupPalette();
-        }
-        else if(key == SDLK_p)         // Ctrl-p toggles different palettes
-        {
-          theConsole->togglePalette();
-          theDisplay->setupPalette();
-        }
+            case SDLK_g:
+              // don't change grabmouse in fullscreen mode
+              if(!theDisplay->fullScreen())
+              {
+                theGrabMouseIndicator = !theGrabMouseIndicator;
+                theSettings->setBool("grabmouse", theGrabMouseIndicator);
+                theDisplay->grabMouse(theGrabMouseIndicator);
+              }
+              break;
+
+            case SDLK_h:
+              // don't change hidecursor in fullscreen mode
+              if(!theDisplay->fullScreen())
+              {
+                theHideCursorIndicator = !theHideCursorIndicator;
+                theSettings->setBool("hidecursor", theHideCursorIndicator);
+                theDisplay->showCursor(!theHideCursorIndicator);
+              }
+              break;
+
+            case SDLK_f:         // Ctrl-f toggles NTSC/PAL mode
+              theConsole->toggleFormat();
+              theDisplay->setupPalette();
+              break;
+
+            case SDLK_p:         // Ctrl-p toggles different palettes
+              theConsole->togglePalette();
+              theDisplay->setupPalette();
+              break;
+
 #ifdef DEVELOPER_SUPPORT
-        else if(key == SDLK_END)       // Ctrl-End increases Width
-        {
-          theConsole->changeWidth(1);
-          theDisplay->resize(0);
-        }
-        else if(key == SDLK_HOME)      // Ctrl-Home decreases Width
-        {
-          theConsole->changeWidth(0);
-          theDisplay->resize(0);
-        }
-        else if(key == SDLK_PAGEUP)    // Ctrl-PageUp increases Height
-        {
-          theConsole->changeHeight(1);
-          theDisplay->resize(0);
-        }
-        else if(key == SDLK_PAGEDOWN)  // Ctrl-PageDown decreases Height
-        {
-          theConsole->changeHeight(0);
-          theDisplay->resize(0);
-        }
+            case SDLK_END:       // Ctrl-End increases Width
+              theConsole->changeWidth(1);
+              theDisplay->resize(0);
+              break;
+
+            case SDLK_HOME:      // Ctrl-Home decreases Width
+              theConsole->changeWidth(0);
+              theDisplay->resize(0);
+              break;
+
+            case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
+              theConsole->changeHeight(1);
+              theDisplay->resize(0);
+              break;
+
+            case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
+              theConsole->changeHeight(0);
+              theDisplay->resize(0);
+              break;
 #endif
-        else if(key == SDLK_s)         // Ctrl-s saves properties to a file
-        {
-          if(theConsole->settings().getBool("mergeprops"))  // Attempt to merge with propertiesSet
-          {
-            theConsole->saveProperties(theSettings->userPropertiesFilename(), true);
-          }
-          else  // Save to file in home directory
-          {
-            string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
-              theConsole->properties().get("Cartridge.Name") + ".pro";
-            theConsole->saveProperties(newPropertiesFile);
+            case SDLK_s:         // Ctrl-s saves properties to a file
+              // Attempt to merge with propertiesSet
+              if(theConsole->settings().getBool("mergeprops"))
+                theConsole->saveProperties(theSettings->userPropertiesFilename(), true);
+              else  // Save to file in home directory
+              {
+                string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
+                  theConsole->properties().get("Cartridge.Name") + ".pro";
+                theConsole->saveProperties(newPropertiesFile);
+              }
+              break;
           }
         }
-      }
-      else // check all the other keys
-      {
-        for(unsigned int i = 0; i < sizeof(keyList) / sizeof(KeyList); ++i)
-        {
+
+        // check all the other keys
+        for(uInt32 i = 0; i < sizeof(keyList) / sizeof(KeyList); ++i)
           if(keyList[i].scanCode == key)
-            theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, 1);
-        }
-      }
-    }
-    else if(event.type == SDL_KEYUP)
-    {
-      key  = event.key.keysym.sym;
-      type = event.type;
+            theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
 
-      for(unsigned int i = 0; i < sizeof(keyList) / sizeof(KeyList); ++i)
-      { 
-        if(keyList[i].scanCode == key)
-          theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, 0);
+        break;  // SDL_KEYUP, SDL_KEYDOWN
       }
-    }
-    else if(event.type == SDL_MOUSEMOTION)
-    {
-      Int32 resistance;
-      uInt32 zoom  = theDisplay->zoomLevel();
-      Int32 width = theDisplay->width() * zoom;
-      Event::Type type = Event::NoType;
 
-      // Grabmouse and hidecursor introduce some lag into the mouse movement,
-      // so we need to fudge the numbers a bit
-      if(theGrabMouseIndicator && theHideCursorIndicator)
+      case SDL_MOUSEMOTION:
       {
-        mouseX = (int)((float)mouseX + (float)event.motion.xrel
-                 * 1.5 * (float) zoom);
-      }
-      else
-      {
-        mouseX = mouseX + event.motion.xrel * zoom;
-      }
+        uInt32 zoom      = theDisplay->zoomLevel();
+        Int32 width      = theDisplay->width() * zoom;
 
-      // Check to make sure mouseX is within the game window
-      if(mouseX < 0)
-        mouseX = 0;
-      else if(mouseX > width)
-        mouseX = width;
+        // Grabmouse and hidecursor introduce some lag into the mouse movement,
+        // so we need to fudge the numbers a bit
+        if(theGrabMouseIndicator && theHideCursorIndicator)
+          mouseX = (int)((float)mouseX + (float)event.motion.xrel
+                   * 1.5 * (float) zoom);
+        else
+          mouseX = mouseX + event.motion.xrel * zoom;
+
+        // Check to make sure mouseX is within the game window
+        if(mouseX < 0)
+          mouseX = 0;
+        else if(mouseX > width)
+          mouseX = width;
   
-      resistance = (Int32)(1000000.0 * (width - mouseX) / width);
+        Int32 resistance = (Int32)(1000000.0 * (width - mouseX) / width);
 
-      // Now, set the event of the correct paddle to the calculated resistance
-      if(thePaddleMode == 0)
-        type = Event::PaddleZeroResistance;
-      else if(thePaddleMode == 1)
-        type = Event::PaddleOneResistance;
-      else if(thePaddleMode == 2)
-        type = Event::PaddleTwoResistance;
-      else if(thePaddleMode == 3)
-        type = Event::PaddleThreeResistance;
+        theConsole->eventHandler().sendEvent(Paddle_Resistance[thePaddleMode], resistance);
 
-      theConsole->eventHandler().sendEvent(type, resistance);
-    }
-    else if(event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
-    {
-      Event::Type type = Event::LastType;
-      Int32 value;
-
-      if(event.type == SDL_MOUSEBUTTONDOWN)
-        value = 1;
-      else
-        value = 0;
-
-      if(thePaddleMode == 0)
-        type = Event::PaddleZeroFire;
-      else if(thePaddleMode == 1)
-        type = Event::PaddleOneFire;
-      else if(thePaddleMode == 2)
-        type = Event::PaddleTwoFire;
-      else if(thePaddleMode == 3)
-        type = Event::PaddleThreeFire;
-
-      theConsole->eventHandler().sendEvent(type, value);
-    }
-    else if(event.type == SDL_ACTIVEEVENT)
-    {
-      if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
-      {
-        if(!theConsole->eventHandler().doPause())
-        {
-          theConsole->eventHandler().sendEvent(Event::Pause, 1);
-        }
+        break; // SDL_MOUSEMOTION
       }
-    }
-    else if(event.type == SDL_QUIT)
-    {
-      theConsole->eventHandler().sendEvent(Event::Quit, 1);
-    }
-    else if(event.type == SDL_VIDEOEXPOSE)
-    {
-      theDisplay->refresh();
+
+      case SDL_MOUSEBUTTONUP:
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        Int32 value = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
+
+        theConsole->eventHandler().sendEvent(Paddle_Button[thePaddleMode], value);
+
+        break;  // SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN
+      }
+
+      case SDL_ACTIVEEVENT:
+      {
+        if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
+        {
+          if(!theConsole->eventHandler().doPause())
+            theConsole->eventHandler().sendEvent(Event::Pause, 1);
+        }
+
+        break; // SDL_ACTIVEEVENT
+      }
+
+      case SDL_QUIT:
+      {
+        theConsole->eventHandler().sendEvent(Event::Quit, 1);
+
+        break;  // SDL_QUIT
+      }
+
+      case SDL_VIDEOEXPOSE:
+      {
+        theDisplay->refresh();
+
+        break;  // SDL_VIDEOEXPOSE
+      }
     }
 
 #ifdef JOYSTICK_SUPPORT
@@ -600,98 +604,102 @@ void handleEvents()
         break;
 
       case JT_REGULAR:
-
-        if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+        switch(event.type)
         {
-          if(event.jbutton.button >= StellaEvent::LastJCODE)
-            return;
+          case SDL_JOYBUTTONUP:
+          case SDL_JOYBUTTONDOWN:
+            if(event.jbutton.button >= StellaEvent::LastJCODE)
+              return;
 
-          code  = joyButtonList[event.jbutton.button];
-          state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+            code  = joyButtonList[event.jbutton.button];
+            state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-          theConsole->eventHandler().sendJoyEvent(stick, code, state);
-        }
-        else if(event.type == SDL_JOYAXISMOTION)
-        {
-          axis = event.jaxis.axis;
-          value = event.jaxis.value;
+            theConsole->eventHandler().sendJoyEvent(stick, code, state);
+            break;
 
-          if(axis == 0)  // x-axis
-          {
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
-              (value < -16384) ? 1 : 0);
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
-              (value > 16384) ? 1 : 0);
-          }
-          else if(axis == 1)  // y-axis
-          {
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
-              (value < -16384) ? 1 : 0);
-            theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
-              (value > 16384) ? 1 : 0);
-          }
+          case SDL_JOYAXISMOTION:
+            axis = event.jaxis.axis;
+            value = event.jaxis.value;
+
+            if(axis == 0)  // x-axis
+            {
+              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
+                (value < -16384) ? 1 : 0);
+              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
+                (value > 16384) ? 1 : 0);
+            }
+            else if(axis == 1)  // y-axis
+            {
+              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
+                (value < -16384) ? 1 : 0);
+              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
+                (value > 16384) ? 1 : 0);
+            }
+            break;
         }
         break;  // Regular joystick
 
       case JT_STELLADAPTOR_1:
       case JT_STELLADAPTOR_2:
-
-        if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
+        switch(event.type)
         {
-          button = event.jbutton.button;
-          state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+          case SDL_JOYBUTTONUP:
+          case SDL_JOYBUTTONDOWN:
+            button = event.jbutton.button;
+            state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-          // Send button events for the joysticks/paddles
-          if(button == 0)
-          {
-            if(type == JT_STELLADAPTOR_1)
+            // Send button events for the joysticks/paddles
+            if(button == 0)
             {
-              theConsole->eventHandler().sendEvent(Event::JoystickZeroFire, state);
-              theConsole->eventHandler().sendEvent(Event::DrivingZeroFire, state);
-              theConsole->eventHandler().sendEvent(Event::PaddleZeroFire, state);
+              if(type == JT_STELLADAPTOR_1)
+              {
+                theConsole->eventHandler().sendEvent(Event::JoystickZeroFire, state);
+                theConsole->eventHandler().sendEvent(Event::DrivingZeroFire, state);
+                theConsole->eventHandler().sendEvent(Event::PaddleZeroFire, state);
+              }
+              else
+              {
+                theConsole->eventHandler().sendEvent(Event::JoystickOneFire, state);
+                theConsole->eventHandler().sendEvent(Event::DrivingOneFire, state);
+                theConsole->eventHandler().sendEvent(Event::PaddleTwoFire, state);
+              }
             }
-            else
+            else if(button == 1)
             {
-              theConsole->eventHandler().sendEvent(Event::JoystickOneFire, state);
-              theConsole->eventHandler().sendEvent(Event::DrivingOneFire, state);
-              theConsole->eventHandler().sendEvent(Event::PaddleTwoFire, state);
+              if(type == JT_STELLADAPTOR_1)
+                theConsole->eventHandler().sendEvent(Event::PaddleOneFire, state);
+              else
+                theConsole->eventHandler().sendEvent(Event::PaddleThreeFire, state);
             }
-          }
-          else if(button == 1)
-          {
-            if(type == JT_STELLADAPTOR_1)
-              theConsole->eventHandler().sendEvent(Event::PaddleOneFire, state);
-            else
-              theConsole->eventHandler().sendEvent(Event::PaddleThreeFire, state);
-          }
-        }
-        else if(event.type == SDL_JOYAXISMOTION)
-        {
-          axis = event.jaxis.axis;
-          value = event.jaxis.value;
+            break;
 
-          // Send axis events for the joysticks
-          theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][0],
-                      (value < -16384) ? 1 : 0);
-          theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][1],
-                      (value > 16384) ? 1 : 0);
+          case SDL_JOYAXISMOTION:
+            axis = event.jaxis.axis;
+            value = event.jaxis.value;
 
-          // Send axis events for the paddles
-          resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
-          theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
+            // Send axis events for the joysticks
+            theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][0],
+                        (value < -16384) ? 1 : 0);
+            theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][1],
+                        (value > 16384) ? 1 : 0);
+
+            // Send axis events for the paddles
+            resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
+            theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
 		  
-          // Send events for the driving controllers
-          if(axis == 1)
-          {
-            if(value <= -16384-4096)
-              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],2);
-            else if(value > 16384+4096)
-              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],1);
-            else if(value >= 16384-4096)
-              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],0);
-            else 
-              theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],3);
-          }
+            // Send events for the driving controllers
+            if(axis == 1)
+            {
+              if(value <= -16384-4096)
+                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],2);
+              else if(value > 16384+4096)
+                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],1);
+              else if(value >= 16384-4096)
+                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],0);
+              else 
+                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],3);
+            }
+            break;
         }
         break;  // Stelladaptor joystick
 
@@ -707,7 +715,7 @@ void handleEvents()
   Setup the properties set by first checking for a user file,
   then a system-wide file.
 */
-void setupProperties(PropertiesSet& set)
+void SetupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
   string theAlternateProFile = theSettings->getString("altpro");
@@ -731,9 +739,9 @@ void setupProperties(PropertiesSet& set)
 
 
 /**
-  Does general cleanup in case any operation failed (or at end of program).
+  Does general Cleanup in case any operation failed (or at end of program).
 */
-void cleanup()
+void Cleanup()
 {
 #ifdef JOYSTICK_SUPPORT
   if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
@@ -775,7 +783,7 @@ int main(int argc, char* argv[])
 #endif
   if(!theSettings)
   {
-    cleanup();
+    Cleanup();
     return 0;
   }
   theSettings->loadConfig();
@@ -783,20 +791,20 @@ int main(int argc, char* argv[])
   // Take care of commandline arguments
   if(!theSettings->loadCommandLine(argc, argv))
   {
-    cleanup();
+    Cleanup();
     return 0;
   }
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
-  setupProperties(propertiesSet);
+  SetupProperties(propertiesSet);
 
   // Check to see if the 'listroms' argument was given
   // If so, list the roms and immediately exit
   if(theSettings->getBool("listrominfo"))
   {
     propertiesSet.print();
-    cleanup();
+    Cleanup();
     return 0;
   }
 
@@ -817,7 +825,7 @@ int main(int argc, char* argv[])
   if(!in)
   {
     cerr << "ERROR: Couldn't open " << file << "..." << endl;
-    cleanup();
+    Cleanup();
     return 0;
   }
 
@@ -831,30 +839,27 @@ int main(int argc, char* argv[])
   if(videodriver == "soft")
   {
     theDisplay = new FrameBufferSoft();
-    if(theShowInfoFlag)
-      cout << "Using software mode for video.\n";
+    ShowInfo("Using software mode for video.");
   }
 #ifdef DISPLAY_OPENGL
   else if(videodriver == "gl")
   {
     theDisplay = new FrameBufferGL();
     theUseOpenGLFlag = true;
-    if(theShowInfoFlag)
-      cout << "Using OpenGL mode for video.\n";
+    ShowInfo("Using OpenGL mode for video.");
   }
 #endif
   else   // a driver that doesn't exist was requested, so use software mode
   {
     theDisplay = new FrameBufferSoft();
-    if(theShowInfoFlag)
-      cout << "Using software mode for video.\n";
+    ShowInfo("Using software mode for video.");
   }
 
   if(!theDisplay)
   {
     cerr << "ERROR: Couldn't set up display.\n";
     delete[] image;
-    cleanup();
+    Cleanup();
     return 0;
   }
 
@@ -863,17 +868,15 @@ int main(int argc, char* argv[])
   {
     uInt32 fragsize = theSettings->getInt("fragsize");
     theSound = new SoundSDL(fragsize);
-    if(theShowInfoFlag)
-    {
-      cout << "Sound enabled, using fragment size = " << fragsize;
-      cout << "." << endl;
-    }
+
+    ostringstream message;
+    message << "Sound enabled, using fragment size = " << fragsize << ".";
+    ShowInfo(message.str());
   }
   else  // even if sound has been disabled, we still need a sound object
   {
     theSound = new Sound();
-    if(theShowInfoFlag)
-      cout << "Sound disabled.\n";
+    ShowInfo("Sound disabled.");
   }
   theSound->setVolume(theSettings->getInt("volume"));
 
@@ -887,12 +890,17 @@ int main(int argc, char* argv[])
   // Free the image since we don't need it any longer
   delete[] image;
 
+  // Print message about the framerate
+  ostringstream message;
+  message << "Using framerate = " << theSettings->getInt("framerate") << ".";
+  ShowInfo(message.str());
+
   // Setup the SDL joysticks
   // This must be done after the console is created
-  if(!setupJoystick())
+  if(!SetupJoystick())
   {
     cerr << "ERROR: Couldn't set up joysticks.\n";
-    cleanup();
+    Cleanup();
     return 0;
   }
 
@@ -904,7 +912,7 @@ int main(int argc, char* argv[])
   {
     // Set up accurate timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->getInt("framerate"));
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theSettings->getInt("framerate"));
 
     // Set the base for the timers
     frameTime = 0;
@@ -918,20 +926,20 @@ int main(int argc, char* argv[])
         break;
       }
 
-      startTime = getTicks();
-      handleEvents();
+      startTime = GetTicks();
+      HandleEvents();
       theConsole->update();
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
       {
-        delta = getTicks() - startTime;
+        delta = GetTicks() - startTime;
 
         if(delta >= timePerFrame)
           break;
       }
 
-      frameTime += getTicks() - startTime;
+      frameTime += GetTicks() - startTime;
       ++numberOfFrames;
     }
   }
@@ -939,10 +947,10 @@ int main(int argc, char* argv[])
   {
     // Set up less accurate timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)theSettings->getInt("framerate"));
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theSettings->getInt("framerate"));
 
     // Set the base for the timers
-    virtualTime = getTicks();
+    virtualTime = GetTicks();
     frameTime = 0;
 
     // Main game loop
@@ -954,18 +962,18 @@ int main(int argc, char* argv[])
         break;
       }
 
-      startTime = getTicks();
-      handleEvents();
+      startTime = GetTicks();
+      HandleEvents();
       theConsole->update();
 
-      currentTime = getTicks();
+      currentTime = GetTicks();
       virtualTime += timePerFrame;
       if(currentTime < virtualTime)
       {
         SDL_Delay((virtualTime - currentTime)/1000);
       }
 
-      currentTime = getTicks() - startTime;
+      currentTime = GetTicks() - startTime;
       frameTime += currentTime;
       ++numberOfFrames;
     }
@@ -987,6 +995,6 @@ int main(int argc, char* argv[])
   }
 
   // Cleanup time ...
-  cleanup();
+  Cleanup();
   return 0;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.35 2004-07-22 01:54:08 stephena Exp $
+// $Id: Console.cxx,v 1.36 2004-07-28 23:54:38 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -64,8 +64,6 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   mySwitches = 0;
   mySystem = 0;
   myEvent = 0;
-
-  myFrameRate = mySettings.getInt("framerate");
 
   // Create an event handler which will collect and dispatch events
   myEventHandler = new EventHandler(this);
@@ -162,13 +160,25 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Reset, the system to its power-on state
   mySystem->reset();
 
+  // Set the correct framerate based on the format of the ROM
+  // This can be overridden by the '-framerate' option
+  myFrameRate = 60;
+  if(mySettings.getInt("framerate") > 0)
+    myFrameRate = mySettings.getInt("framerate");
+//  else if(myProperties.get("Display.Format") == "NTSC")
+//    myFrameRate = 60;
+//  else if(myProperties.get("Display.Format") == "PAL")
+//    myFrameRate = 50;
+//  mySettings.setInt("framerate", myFrameRate, false);
+  mySettings.setInt("framerate", myFrameRate);
+
   // Initialize the framebuffer interface.
   // This must be done *after* a reset, since it needs updated values.
   myFrameBuffer.initDisplay(this, myMediaSource);
 
   // Initialize the sound interface.
-  uInt32 framerate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
-  mySound.init(this, myMediaSource, mySystem, framerate);
+  uInt32 soundFrameRate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
+  mySound.init(this, myMediaSource, mySystem, soundFrameRate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

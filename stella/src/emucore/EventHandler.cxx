@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.28 2004-07-21 00:15:08 stephena Exp $
+// $Id: EventHandler.cxx,v 1.29 2004-07-28 23:54:39 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -338,15 +338,13 @@ bool EventHandler::isValidList(string list, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveState()
 {
-  ostringstream buf;
-
   // Do a state save using the System
   string md5      = myConsole->properties().get("Cartridge.MD5");
   string filename = myConsole->settings().stateFilename(md5, myCurrentState);
   int result      = myConsole->system().saveState(filename, md5);
 
   // Print appropriate message
-  buf.str("");
+  ostringstream buf;
   if(result == 1)
     buf << "State " << myCurrentState << " saved";
   else if(result == 2)
@@ -375,13 +373,13 @@ void EventHandler::changeState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::loadState()
 {
-  ostringstream buf;
-
   // Do a state save using the System
   string md5      = myConsole->properties().get("Cartridge.MD5");
   string filename = myConsole->settings().stateFilename(md5, myCurrentState);
   int result      = myConsole->system().loadState(filename, md5);
 
+  // Print appropriate message
+  ostringstream buf;
   if(result == 1)
     buf << "State " << myCurrentState << " loaded";
   else if(result == 2)

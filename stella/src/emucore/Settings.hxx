@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.16 2004-07-09 00:27:39 stephena Exp $
+// $Id: Settings.hxx,v 1.17 2004-07-28 23:54:39 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -26,7 +26,7 @@
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.16 2004-07-09 00:27:39 stephena Exp $
+  @version $Id: Settings.hxx,v 1.17 2004-07-28 23:54:39 stephena Exp $
 */
 class Settings
 {
@@ -107,7 +107,7 @@ class Settings
       @param value The value to assign to the setting
       @param save  Whether this setting should be saved to the rc-file.
     */
-    void setInt(const string& key, const uInt32 value);
+    void setInt(const string& key, const uInt32 value, bool save = true);
 
     /**
       Set the value associated with key to the given value.
@@ -116,7 +116,7 @@ class Settings
       @param value The value to assign to the setting
       @param save  Whether this setting should be saved to the rc-file.
     */
-    void setFloat(const string& key, const float value);
+    void setFloat(const string& key, const float value, bool save = true);
 
     /**
       Set the value associated with key to the given value.
@@ -125,7 +125,7 @@ class Settings
       @param value The value to assign to the setting
       @param save  Whether this setting should be saved to the rc-file.
     */
-    void setBool(const string& key, const bool value);
+    void setBool(const string& key, const bool value, bool save = true);
 
     /**
       Set the value associated with key to the given value.
@@ -134,7 +134,7 @@ class Settings
       @param value The value to assign to the setting
       @param save  Whether this setting should be saved to the rc-file.
     */
-    void setString(const string& key, const string& value);
+    void setString(const string& key, const string& value, bool save = true);
 
   public:
     //////////////////////////////////////////////////////////////////////
