@@ -6,33 +6,10 @@
 #include "pch.hxx"
 #include "BrowseForFolder.hxx"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 //////////////////////////////////////////////////////////////////////
 //
 // Construction/Destruction
 //
-
-#ifdef MFC
-CBrowseForFolder::CBrowseForFolder(
-    const HWND hParent /*= NULL*/, 
-    const LPITEMIDLIST pidl /*= NULL*/, 
-    const int nTitleID /*= 0*/
-    )
-{
-	m_hwnd = NULL;
-	SetOwner(hParent);
-	SetRoot(pidl);
-	SetTitle(nTitleID);
-	m_bi.lpfn = BrowseCallbackProc;
-	m_bi.lParam = reinterpret_cast<LPARAM>( this );
-	m_bi.pszDisplayName = m_szSelected;
-}
-#endif
 
 CBrowseForFolder::CBrowseForFolder(
     const HWND hParent, 
@@ -41,20 +18,18 @@ CBrowseForFolder::CBrowseForFolder(
 {
 	m_hwnd = NULL;
 
-	SetOwner(hParent);
+	myBrowseInfo.pidlRoot = pidl;
+  myBrowseInfo.hwndOwner = NULL;
+	myBrowseInfo.pszDisplayName = mySelected;
+  myBrowseInfo.lpszTitle = "Open ROM Folder ";
+  myBrowseInfo.ulFlags = BIF_RETURNONLYFSDIRS|BIF_RETURNFSANCESTORS;
+	myBrowseInfo.lParam = reinterpret_cast<LPARAM>( this );
 
-	SetRoot(pidl);
-
-	SetTitle(strTitle);
-
-	m_bi.lpfn = BrowseCallbackProc;
-	m_bi.lParam = reinterpret_cast<LPARAM>( this );
-	m_bi.pszDisplayName = m_szSelected;
+//	myBrowseInfo.lpfn = BrowseCallbackProc;
 }
 
 CBrowseForFolder::~CBrowseForFolder()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -67,7 +42,7 @@ void CBrowseForFolder::SetOwner(const HWND hwndOwner)
 	if (m_hwnd != NULL)
 		return;
 
-	m_bi.hwndOwner = hwndOwner;
+	myBrowseInfo.hwndOwner = hwndOwner;
 }
 
 void CBrowseForFolder::SetRoot(const LPITEMIDLIST pidl)
@@ -75,12 +50,12 @@ void CBrowseForFolder::SetRoot(const LPITEMIDLIST pidl)
 	if (m_hwnd != NULL)
 		return;
 
-	m_bi.pidlRoot = pidl;
+	myBrowseInfo.pidlRoot = pidl;
 }
 
 LPCTSTR CBrowseForFolder::GetTitle() const
 {
-	return m_bi.lpszTitle;
+	return myBrowseInfo.lpszTitle;
 }
 
 bool CBrowseForFolder::SetTitle(
@@ -100,40 +75,24 @@ bool CBrowseForFolder::SetTitle(
         return false;
     }
 
-	m_bi.lpszTitle = m_pchTitle.Get();
+	myBrowseInfo.lpszTitle = m_pchTitle.Get();
 
     return true;
 }
-
-#ifdef MFC
-bool CBrowseForFolder::SetTitle(const int nTitle)
-{
-	if (nTitle <= 0)
-		return false;
-
-	CString strTitle;
-	if(!strTitle.LoadString(static_cast(nTitle)))
-	{
-		return false;
-	}
-	SetTitle(strTitle);
-	return true;
-}
-#endif
 
 void CBrowseForFolder::SetFlags(const UINT ulFlags)
 {
 	if (m_hwnd != NULL)
 		return;
 
-	m_bi.ulFlags = ulFlags;
+	myBrowseInfo.ulFlags = ulFlags;
 }
 
 LPCTSTR CBrowseForFolder::GetSelectedFolder(
     void
     ) const
 {
-	return m_szSelected;
+	return mySelected;
 }
 
 bool CBrowseForFolder::SelectFolder()
@@ -141,13 +100,13 @@ bool CBrowseForFolder::SelectFolder()
 	bool bRet = false;
 
 	LPITEMIDLIST pidl;
-	if ((pidl = ::SHBrowseForFolder(&m_bi)) != NULL)
+	if ((pidl = ::SHBrowseForFolder(&myBrowseInfo)) != NULL)
 	{
-		m_strPath.Set( _T("") );
-		if (SUCCEEDED(::SHGetPathFromIDList(pidl, m_szSelected)))
+		myPath.Set( _T("") );
+		if (SUCCEEDED(::SHGetPathFromIDList(pidl, mySelected)))
 		{
 			bRet = true;
-			m_strPath.Set( m_szSelected );
+			myPath.Set( mySelected );
 		}
 
 		LPMALLOC pMalloc;

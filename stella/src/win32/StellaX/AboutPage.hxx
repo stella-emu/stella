@@ -14,12 +14,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutPage.hxx,v 1.1 2004-06-28 23:13:54 stephena Exp $
+// $Id: AboutPage.hxx,v 1.2 2004-07-04 20:16:03 stephena Exp $
 //============================================================================ 
 
 #ifndef ABOUTPG_H
 #define ABOUTPG_H
-//FIXME#pragma once
 
 #include "PropertySheet.hxx"
 #include "HyperLink.hxx"

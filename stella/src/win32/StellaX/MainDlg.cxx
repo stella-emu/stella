@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.1 2004-06-28 23:13:54 stephena Exp $
+// $Id: MainDlg.cxx,v 1.2 2004-07-04 20:16:03 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -176,14 +176,6 @@ BOOL CMainDlg::OnInitDialog( void  )
 
   HWND hwnd = *this;
 
-  dwRet = m_stella.Initialize();
-  if ( dwRet != ERROR_SUCCESS )
-  {
-    MessageBoxFromWinError( dwRet, _T("CStellaX::Initialize") );
-    SendMessage( hwnd, WM_CLOSE, 0, 0 );
-    return FALSE;
-  }
-
   // Set dialog icon
   HICON hicon = ::LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_APP));
   ::SendMessage( hwnd, WM_SETICON, ICON_BIG, (LPARAM)hicon );
@@ -309,17 +301,9 @@ BOOL CMainDlg::OnCommand( int id, HWND hwndCtl, UINT codeNotify )
       TCHAR pszPathName[ MAX_PATH + 1 ];
       lstrcpy( pszPathName, myGlobalData.settings().getString("romdir").c_str() );
       lstrcat( pszPathName, _T("\\") );
-      lstrcat( pszPathName, 
-      pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
+      lstrcat( pszPathName, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
 
-      // Play the game!
-      ::EnableWindow( hwnd, FALSE );
-
-      (void)m_stella.PlayROM( hwnd, pszPathName,
-                              pListData->GetTextForColumn( CListData::NAME_COLUMN ),
-                              myGlobalData );
-
-      ::EnableWindow( hwnd, TRUE );
+      (void)m_stella.PlayROM( pszPathName, myGlobalData );
 
       // Set focus back to the rom list
       ::SetFocus( m_hwndList );
@@ -474,147 +458,103 @@ HBRUSH CMainDlg::OnCtlColorStatic( HDC hdcStatic, HWND hwndStatic )
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 DWORD CMainDlg::PopulateRomList( void )
 {
-  TRACE("CMainDlg::PopulateRomList");
-
   DWORD dwRet;
+  ClearList();
 
-#ifdef _DEBUG
-    DWORD dwStartTick = ::GetTickCount();
-#endif
+  // REVIEW: Support .zip files?
+  TCHAR pszPath[ MAX_PATH ];
 
-    ClearList();
+  lstrcpy( pszPath, myGlobalData.settings().getString("romdir").c_str() );
+  lstrcat( pszPath, _T("\\*.bin") );
 
-    // REVIEW: Support .zip files?
+  WIN32_FIND_DATA ffd;
+  HANDLE hFind = FindFirstFile( pszPath, &ffd );
 
-    TCHAR pszPath[ MAX_PATH ];
+  ListView_SetItemCount( m_hwndList, 100 );
 
-    lstrcpy( pszPath, myGlobalData.settings().getString("romdir").c_str() );
-    lstrcat( pszPath, _T("\\*.bin") );
+  int iItem = 0;
+  BOOL fDone = (hFind == INVALID_HANDLE_VALUE);
+  while(!fDone)
+  {
+    // File metadata will be read in ReadRomData()
+    CListData* pListData  = new CListData;
+    if( pListData == NULL )
+      return ERROR_NOT_ENOUGH_MEMORY;
 
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = FindFirstFile( pszPath, &ffd );
+    dwRet = pListData->Initialize();
+    if( dwRet != ERROR_SUCCESS )
+      return dwRet;
 
-    ListView_SetItemCount( m_hwndList, 100 );
+    if ( !pListData->m_strFileName.Set( ffd.cFileName ) )
+      return FALSE;
 
-    int iItem = 0;
+    LV_ITEM lvi;
+    lvi.mask = LVIF_TEXT | LVIF_PARAM;
+    lvi.iItem = iItem++;
+    lvi.iSubItem = 0;
+    lvi.pszText = LPSTR_TEXTCALLBACK;
+    lvi.lParam = (LPARAM)pListData;
+    int nItem = ListView_InsertItem( m_hwndList, &lvi );
 
-    BOOL fDone = (hFind == INVALID_HANDLE_VALUE);
-    while (!fDone)
-    {
-        //
-        // File metadata will be read in ReadRomData()
-        //
+    ASSERT( nItem != -1 );
 
-        CListData* pListData  = new CListData;
-        if( pListData == NULL )
-        {
-            return ERROR_NOT_ENOUGH_MEMORY;
-        }
+    ListView_SetItemText( m_hwndList, nItem, 
+        CListData::FILENAME_COLUMN, LPSTR_TEXTCALLBACK );
+    ListView_SetItemText(m_hwndList, nItem, 
+        CListData::MANUFACTURER_COLUMN, LPSTR_TEXTCALLBACK);
+    ListView_SetItemText( m_hwndList, nItem, 
+        CListData::RARITY_COLUMN, LPSTR_TEXTCALLBACK );
 
-        dwRet = pListData->Initialize();
-        if ( dwRet != ERROR_SUCCESS )
-        {
-            return dwRet;
-        }
+    // go to the next rom file
+    fDone = !FindNextFile(hFind, &ffd);
+  }
 
-        if ( ! pListData->m_strFileName.Set( ffd.cFileName ) )
-        {
-            return FALSE;
-        }
+  if( hFind != INVALID_HANDLE_VALUE )
+    VERIFY( ::FindClose( hFind ) );
 
-        LV_ITEM lvi;
-        
-        lvi.mask = LVIF_TEXT | LVIF_PARAM;
-        lvi.iItem = iItem++;
-        lvi.iSubItem = 0;
-        lvi.pszText = LPSTR_TEXTCALLBACK;
-        lvi.lParam = (LPARAM)pListData;
-        int nItem = ListView_InsertItem( m_hwndList, &lvi );
-
-        ASSERT( nItem != -1 );
-
-        ListView_SetItemText( m_hwndList, nItem, 
-            CListData::FILENAME_COLUMN, LPSTR_TEXTCALLBACK );
-        ListView_SetItemText(m_hwndList, nItem, 
-            CListData::MANUFACTURER_COLUMN, LPSTR_TEXTCALLBACK);
-        ListView_SetItemText( m_hwndList, nItem, 
-            CListData::RARITY_COLUMN, LPSTR_TEXTCALLBACK );
-
-        // go to the next rom file
-
-        fDone = !FindNextFile(hFind, &ffd);
-    }
-
-    if ( hFind != INVALID_HANDLE_VALUE )
-    {
-        VERIFY( ::FindClose( hFind ) );
-    }
-
-#ifdef _DEBUG
-    TRACE("\tElapsed ticks for PopulateRomList = %ld", ::GetTickCount()-dwStartTick);
-#endif
-
-    return ERROR_SUCCESS;
+  return ERROR_SUCCESS;
 }
 
-DWORD CMainDlg::ReadRomData(
-    CListData* pListData
-    ) const
+DWORD CMainDlg::ReadRomData(CListData* pListData) const
 {
-	// Add stella binary output for stella.pro info
-	// There should be no parsing of stella.pro in this application
-	// FIXME
 /*
-	
-	// TODO: Move this method to ListData class (?)
+  // TODO: Move this method to ListData class (?)
+  if( pListData == NULL )
+  {
+    ASSERT( FALSE );
+    return ERROR_BAD_ARGUMENTS;
+  }
 
-    if ( pListData == NULL )
-    {
-        ASSERT( FALSE );
-        return ERROR_BAD_ARGUMENTS;
-    }
+  // attempt to read the rom file
+  TCHAR pszPath[MAX_PATH + 1];
+  lstrcpy( pszPath, myGlobalData.settings().getString("romdir").c_str() );
+  lstrcat( pszPath, _T("\\") );
+  lstrcat( pszPath, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
 
-    // attempt to read the rom file
+  HANDLE hFile;
+  hFile = CreateFile( pszPath, 
+                      GENERIC_READ, 
+                      FILE_SHARE_READ, 
+                      NULL, 
+                      OPEN_EXISTING, 
+                      FILE_ATTRIBUTE_NORMAL,
+                      NULL );
+  if(hFile == INVALID_HANDLE_VALUE)
+    return GetLastError();
 
-    TCHAR pszPath[MAX_PATH + 1];
-
-    lstrcpy( pszPath, myGlobalData.RomDir() );
-    lstrcat( pszPath, _T("\\") );
-    lstrcat( pszPath, pListData->GetTextForColumn( CListData::FILENAME_COLUMN ) );
-
-    HANDLE hFile;
+  DWORD dwFileSize = ::GetFileSize( hFile, NULL );
+  BYTE* pImage = new BYTE[dwFileSize];
+  if( pImage == NULL )
+    return ERROR_NOT_ENOUGH_MEMORY;
     
-    hFile = CreateFile( pszPath, 
-                        GENERIC_READ, 
-                        FILE_SHARE_READ, 
-                        NULL, 
-                        OPEN_EXISTING, 
-                        FILE_ATTRIBUTE_NORMAL,
-                        NULL );
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        return GetLastError();
-    }
-
-    DWORD dwFileSize = ::GetFileSize( hFile, NULL );
-
-    BYTE* pImage = new BYTE[dwFileSize];
-    if ( pImage == NULL )
-    {
-        return ERROR_NOT_ENOUGH_MEMORY;
-    }
-    
-    DWORD dwRead;
-
-    if ( ::ReadFile( hFile, pImage, dwFileSize, &dwRead, NULL ) )
-    {
-        // Read the file, now check the md5
+  DWORD dwRead;
+  if( ::ReadFile( hFile, pImage, dwFileSize, &dwRead, NULL ) )
+  {
+    // Read the file, now check the md5
+    std::string md5 = MD5( pImage, dwFileSize );
         
-        std::string md5 = MD5( pImage, dwFileSize );
-        
-        // search through the properties set for this MD5
-
-        PropertiesSet& propertiesSet = m_stella.GetPropertiesSet();
+    // search through the properties set for this MD5
+    PropertiesSet& propertiesSet = m_stella.GetPropertiesSet();
 
         uInt32 setSize = propertiesSet.size();
         
@@ -729,34 +669,22 @@ void CMainDlg::OnItemChanged(
 
 // ---------------------------------------------------------------------------
 // LPSTR_TEXTCALLBACK message handlers
-
-void CMainDlg::OnGetDispInfo(
-    NMLVDISPINFO* pnmv
-    )
+void CMainDlg::OnGetDispInfo(NMLVDISPINFO* pnmv)
 {
-    // Provide the item or subitem's text, if requested. 
+  // Provide the item or subitem's text, if requested. 
+  if( !(pnmv->item.mask & LVIF_TEXT ) )
+    return;
 
-    if ( ! (pnmv->item.mask & LVIF_TEXT ) )
-    {
-        return;
-    }
+  CListData* pListData = (CListData*)
+             ListView_GetItemData( pnmv->hdr.hwndFrom, pnmv->item.iItem );
+  ASSERT( pListData );
+  if( pListData == NULL )
+    return;
 
-    CListData* pListData = (CListData*)ListView_GetItemData(
-        pnmv->hdr.hwndFrom, 
-        pnmv->item.iItem );
-    ASSERT( pListData );
-    if ( pListData == NULL )
-    {
-        return;
-    }
+  if( !pListData->IsPopulated() )
+    ReadRomData( pListData );
 
-    if ( ! pListData->IsPopulated() )
-    {
-        ReadRomData( pListData );
-    }
-
-    pnmv->item.pszText = const_cast<LPTSTR>( pListData->GetTextForColumn(pnmv->item.iSubItem) );
-    // ASSERT( pnmv->item.pszText );
+  pnmv->item.pszText = const_cast<LPTSTR>( pListData->GetTextForColumn(pnmv->item.iSubItem) );
 } 
 
 int CALLBACK CMainDlg::ListViewCompareFunc(

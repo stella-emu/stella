@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalData.cxx,v 1.1 2004-06-28 23:13:54 stephena Exp $
+// $Id: GlobalData.cxx,v 1.2 2004-07-04 20:16:03 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -30,6 +30,7 @@ CGlobalData::CGlobalData( HINSTANCE hInstance )
 {
   myPathName[0] = _T('\0');
   mySettings = new SettingsWin32();
+  mySettings->loadConfig();
 }
 
 CGlobalData::~CGlobalData()

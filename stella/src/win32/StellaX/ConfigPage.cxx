@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ConfigPage.cxx,v 1.1 2004-06-28 23:13:54 stephena Exp $
+// $Id: ConfigPage.cxx,v 1.2 2004-07-04 20:16:03 stephena Exp $
 //============================================================================ 
 
 #include "pch.hxx"
@@ -155,9 +155,9 @@ BOOL CConfigPage::OnCommand( WORD wNotifyCode, WORD wID, HWND hwndCtl )
   if ( wID == IDC_BROWSE )
   {
     CBrowseForFolder bff( m_hwnd );
-    bff.SetFlags( BIF_RETURNONLYFSDIRS );
     if ( bff.SelectFolder() )
-      ::SetDlgItemText( m_hwnd, IDC_ROMPATH, bff.GetSelectedFolder() );
+;
+//      ::SetDlgItemText( m_hwnd, IDC_ROMPATH, bff.GetSelectedFolder() );
   }
 
   return FALSE;

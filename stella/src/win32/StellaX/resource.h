@@ -7,7 +7,6 @@
 #define IDD_ABOUT                       103
 #define IDD_MAIN                        104
 #define IDD_ABOUT_PAGE                  106
-#define IDD_DOC_PAGE                    107
 #define IDD_CONFIG_PAGE                 108
 #define IDS_ALREADYRUNNING              200
 #define IDS_BADARGUMENT                 201

@@ -6,12 +6,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef __SHELLBROWSER_H__
-#define __SHELLBROWSER_H__
-
-#if _MSC_VER >= 1000
-#pragma once
-#endif // _MSC_VER >= 1000
+#ifndef __BROWSE_FOR_FOLDER_
+#define __BROWSE_FOR_FOLDER_
 
 #include <shlobj.h>
 
@@ -23,12 +19,6 @@
 class CBrowseForFolder
 {
 public:
-#ifdef MFC
-	CBrowseForFolder(const HWND hParent = NULL,
-			 const LPITEMIDLIST pidl = NULL,
-			 const int nTitleID = 0);
-#endif
-
 	CBrowseForFolder(const HWND hParent = NULL,
 			 const LPITEMIDLIST pidl = NULL,
 			 LPCTSTR strTitle = NULL );
@@ -56,9 +46,6 @@ public:
 	//
 	LPCTSTR GetTitle() const;
 	bool SetTitle(LPCTSTR strTitle);
-#ifdef MFC
-	bool SetTitle(const int nTitle);
-#endif
 
 	//
 	// ulFlags = Value specifying the types of folders to be listed in the dialog box
@@ -156,20 +143,20 @@ private:
 
 	CSimpleString m_pchTitle;
 
-	BROWSEINFO m_bi;
-	char m_szSelected[MAX_PATH];
-	CSimpleString m_strPath;
+	BROWSEINFO myBrowseInfo;
+	char mySelected[MAX_PATH];
+	CSimpleString myPath;
 	HWND m_hwnd;
 };
 
 inline UINT CBrowseForFolder::GetFlags() const
 {
-	return m_bi.ulFlags;
+	return myBrowseInfo.ulFlags;
 }
 
 inline int CBrowseForFolder::GetImage() const
 {
-	return m_bi.iImage;
+	return myBrowseInfo.iImage;
 }
 
-#endif // __SHELLBROWSER_H__
+#endif

@@ -130,9 +130,6 @@
 				RelativePath=".\debug.cxx">
 			</File>
 			<File
-				RelativePath=".\FileDialog.cxx">
-			</File>
-			<File
 				RelativePath=".\GlobalData.cxx">
 			</File>
 			<File
@@ -190,9 +187,6 @@
 			</File>
 			<File
 				RelativePath=".\debug.hxx">
-			</File>
-			<File
-				RelativePath=".\FileDialog.hxx">
 			</File>
 			<File
 				RelativePath=".\GlobalData.hxx">

@@ -1,183 +1,62 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/13/2000
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
+// Copyright (c) 1995-2000 by Jeff Miller
+// Copyright (c) 2004 by Stephen Anthony
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: StellaXMain.cxx,v 1.2 2004-07-04 20:16:03 stephena Exp $
+//============================================================================ 
 
 #include <iostream>
-#include <strstream>
+#include <sstream>
 #include <fstream>
 #include <string>
+#include <windows.h>
+#include <shellapi.h>
 
 #include "resource.h"
 #include "GlobalData.hxx"
+#include "Settings.hxx"
 #include "pch.hxx"
 #include "StellaXMain.hxx"
 
-//
 // CStellaXMain
-//
 // equivalent to main() in the DOS version of stella
-//
 
-
-CStellaXMain::CStellaXMain(
-    ) : \
-    m_pPropertiesSet( NULL )
+CStellaXMain::CStellaXMain()
 {
-    TRACE( "CStellaXMain::CStellaXMain" );
 }
 
-CStellaXMain::~CStellaXMain(
-    )
+CStellaXMain::~CStellaXMain()
 {
-    TRACE( "CStellaXMain::~CStellaXMain" );
 }
 
-DWORD CStellaXMain::Initialize(
-    void
-    )
+void CStellaXMain::PlayROM( LPCTSTR filename, CGlobalData& globaldata )
 {
-    return ERROR_SUCCESS;
-}
+  string rom = filename;
 
-HRESULT CStellaXMain::PlayROM(
-    HWND hwnd,
-    LPCTSTR pszPathName,
-    LPCTSTR pszFriendlyName,
-    CGlobalData& rGlobalData
-    )
-{
-    UNUSED_ALWAYS( hwnd );
+  // Make sure the specfied ROM exists
+  if(!globaldata.settings().fileExists(filename))
+  {
+    ostringstream out;
+    out << "\"" << rom << "\" doesn't exist";
 
-    HRESULT hr = S_OK;
+    MessageBox( NULL, out.str().c_str(), "Unknown ROM", MB_ICONEXCLAMATION|MB_OK);
+    return;
+  }
 
-    TRACE("CStellaXMain::PlayROM");
-
-    //
-    // show wait cursor while loading
-    //
-
-    HCURSOR hcur = ::SetCursor( ::LoadCursor( NULL, IDC_WAIT ) );
-
-    //
-    // setup objects used here
-    //
-
-    BYTE* pImage = NULL;
-    LPCTSTR pszFileName = NULL;
-
-    //
-    // Load the rom file
-    //
-
-    HANDLE hFile;
-    DWORD dwImageSize;
-
-    hFile = ::CreateFile( pszPathName, 
-                          GENERIC_READ, 
-                          FILE_SHARE_READ, 
-                          NULL, 
-                          OPEN_EXISTING, 
-                          FILE_ATTRIBUTE_NORMAL,
-                          NULL );
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        HINSTANCE hInstance = (HINSTANCE)::GetWindowLong( hwnd, GWL_HINSTANCE );
-
-        DWORD dwLastError = ::GetLastError();
-
-        TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
-        ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
-
-        // ::MessageBoxFromGetLastError( pszPathName );
-        TCHAR pszFormat[ 1024 ];
-        LoadString( hInstance,
-                    IDS_ROM_LOAD_FAILED,
-                    pszFormat, 1023 );
-
-        LPTSTR pszLastError = NULL;
-
-        FormatMessage(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-            NULL, 
-            dwLastError, 
-            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPTSTR)&pszLastError, 
-            0, 
-            NULL);
-
-        TCHAR pszError[ 1024 ];
-        wsprintf( pszError, 
-                  pszFormat, 
-                  pszCurrentDirectory,
-                  pszPathName, 
-                  dwLastError,
-                  pszLastError );
-
-        ::MessageBox( hwnd, 
-                      pszError, 
-                      _T("Error"),
-                      MB_OK | MB_ICONEXCLAMATION );
-
-        ::LocalFree( pszLastError );
-
-        hr = HRESULT_FROM_WIN32( ::GetLastError() ); 
-        goto exit;
-    }
-
-    dwImageSize = ::GetFileSize( hFile, NULL );
-
-    pImage = new BYTE[dwImageSize + 1];
-    if ( pImage == NULL )
-    {
-        hr = E_OUTOFMEMORY;
-        goto exit;
-    }
-
-    DWORD dwActualSize;
-    if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
-    {
-        VERIFY( ::CloseHandle( hFile ) );
-
-        MessageBoxFromGetLastError( pszPathName );
-
-        hr = HRESULT_FROM_WIN32( ::GetLastError() );
-        goto exit;
-    }
-
-    VERIFY( ::CloseHandle(hFile) );
-
-    //
-    // get just the filename
-    //
-
-    pszFileName = _tcsrchr( pszPathName, _T('\\') );
-    if ( pszFileName )
-    {
-        ++pszFileName;
-    }
-    else
-    {
-        pszFileName = pszPathName;
-    }
-
-    // restore cursor
-
-    ::SetCursor( hcur );
-    hcur = NULL;
-
-    ::ShowWindow( hwnd, SW_HIDE );
-
-// launch game here
-
-    ::ShowWindow( hwnd, SW_SHOW );
-
-exit:
-
-    if ( hcur )
-    {
-        ::SetCursor( hcur );
-    }
-
-	return hr;
+  // Assume that the ROM file does exist, attempt to run external Stella
+  // Since all settings are saved to the stella.ini file, we don't need
+  // to pass any arguments here ...
+  ShellExecute(NULL, "open", "stella.exe", rom.c_str(), NULL, 0);
 }
