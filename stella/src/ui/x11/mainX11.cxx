@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.40 2003-09-11 20:53:51 stephena Exp $
+// $Id: mainX11.cxx,v 1.41 2003-09-12 18:08:54 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -21,8 +21,6 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
-
-#include <unistd.h>
 
 #ifdef HAVE_GETTIMEOFDAY
   #include <time.h>
@@ -53,10 +51,6 @@
 
 #ifdef SOUND_OSS
   #include "SoundOSS.hxx"
-#endif
-
-#ifdef HAVE_PNG
-  #include "Snapshot.hxx"
 #endif
 
 #ifdef HAVE_JOYSTICK
@@ -104,22 +98,10 @@ static void cleanup();
 static bool setupJoystick();
 static void handleEvents();
 
-static void takeSnapshot();
-
 static uInt32 getTicks();
 static bool setupProperties(PropertiesSet& set);
 static void handleRCFile();
 static void usage();
-
-static void loadState();
-static void saveState();
-static void changeState(int direction);
-
-static string theSnapShotDir, theSnapShotName;
-
-#ifdef HAVE_PNG
-  static Snapshot* theSnapshot;
-#endif
 
 #ifdef HAVE_JOYSTICK
   // File descriptors for the joystick devices
@@ -327,10 +309,10 @@ bool setupDisplay()
   theMaxWindowSize = maxWindowSizeForScreen();
 
   // Check to see if window size will fit in the screen
-  if(theSettings->theWindowSize > theMaxWindowSize)
+  if(theSettings->theZoomLevel > theMaxWindowSize)
     theWindowSize = theMaxWindowSize;
   else
-    theWindowSize = theSettings->theWindowSize;
+    theWindowSize = theSettings->theZoomLevel;
 
   // Figure out the desired size of the window
   int width  = theWidth  * theWindowSize * 2;
@@ -672,10 +654,6 @@ void handleEvents()
       else if((key == XK_minus) && (event.type == KeyPress))
       {
         resizeWindow(0);
-      }
-      else if((key == XK_F12) && (event.type == KeyPress))
-      {
-        takeSnapshot();
       }
 // FIXME - change x to Ctrl-x
       else if((key == XK_g) && (event.type == KeyPress))
@@ -1091,86 +1069,6 @@ bool createCursors()
   return true;
 }
 
-/**
-  Called when the user wants to take a snapshot of the current display.
-  Images are stored in png format in the directory specified by the 'ssdir'
-  argument, or in $HOME by default.
-  Images are named consecutively as "NAME".png, where name is specified by
-  the 'ssname' argument.  If that name exists, they are named as "Name"_x.png,
-  where x starts with 1 and increases if the previous name already exists.
-  All spaces in filenames are converted to underscore '_'.
-  If theMultipleSnapShotFlag is false, then consecutive images are overwritten.
-*/
-void takeSnapshot()
-{
-#ifdef HAVE_PNG
-  string message;
-
-  if(!theSnapshot)
-  {
-    message = "Snapshots disabled";
-    theConsole->mediaSource().showMessage(message, 120);
-    return;
-  }
-
-  // Now find the correct name for the snapshot
-  string path = theSettings->theSnapShotDir;
-  string filename;
-
-  if(theSettings->theSnapShotName == "romname")
-    path = path + "/" + theConsole->properties().get("Cartridge.Name");
-  else if(theSettings->theSnapShotName == "md5sum")
-    path = path + "/" + theConsole->properties().get("Cartridge.MD5");
-  else
-  {
-    cerr << "ERROR: unknown name " << theSettings->theSnapShotName
-         << " for snapshot type" << endl;
-    return;
-  }
-
-  // Replace all spaces in name with underscores
-  replace(path.begin(), path.end(), ' ', '_');
-
-  // Check whether we want multiple snapshots created
-  if(theSettings->theMultipleSnapShotFlag)
-  {
-    // Determine if the file already exists, checking each successive filename
-    // until one doesn't exist
-    filename = path + ".png";
-    if(access(filename.c_str(), F_OK) == 0 )
-    {
-      ostringstream buf;
-      for(uInt32 i = 1; ;++i)
-      {
-        buf.str("");
-        buf << path << "_" << i << ".png";
-        if(access(buf.str().c_str(), F_OK) == -1 )
-          break;
-      }
-      filename = buf.str();
-    }
-  }
-  else
-    filename = path + ".png";
-
-  // Now save the snapshot file
-  theSnapshot->savePNG(filename, theConsole->mediaSource(), theSettings->theWindowSize);
-
-  if(access(filename.c_str(), F_OK) == 0)
-  {
-    message = "Snapshot saved";
-    theConsole->mediaSource().showMessage(message, 120);
-  }
-  else
-  {
-    message = "Snapshot not saved";
-    theConsole->mediaSource().showMessage(message, 120);
-  }
-#else
-  string message = "Snapshots unsupported";
-  theConsole->mediaSource().showMessage(message, 120);
-#endif
-}
 
 /**
   Calculate the maximum window size that the current screen can hold
@@ -1261,11 +1159,6 @@ void cleanup()
   if(theConsole)
     delete theConsole;
 
-#ifdef HAVE_PNG
-  if(theSnapshot)
-    delete theSnapshot;
-#endif
-
   if(theSound)
   {
     theSound->closeDevice();
@@ -1332,21 +1225,6 @@ int main(int argc, char* argv[])
     cleanup();
     return 0;
   }
-
-#ifdef HAVE_PNG
-  // Take care of the snapshot stuff.
-  theSnapshot = new Snapshot();
-
-  if(theSettings->theSnapShotDir == "")
-    theSnapShotDir = theFrontend->userHomeDir();
-  else
-    theSnapShotDir = theSettings->theSnapShotDir;
-
-  if(theSettings->theSnapShotName == "")
-    theSnapShotName = "romname";
-  else
-    theSnapShotName = theSettings->theSnapShotName;
-#endif
 
   // Get a pointer to the file which contains the cartridge ROM
   const char* file = argv[argc - 1];

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.3 2003-09-11 20:53:51 stephena Exp $
+// $Id: Settings.hxx,v 1.4 2003-09-12 18:08:53 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.3 2003-09-11 20:53:51 stephena Exp $
+  @version $Id: Settings.hxx,v 1.4 2003-09-12 18:08:53 stephena Exp $
 */
 class Settings
 {
@@ -68,7 +68,7 @@ class Settings
     virtual void setConsole(Console* console) = 0;
 
   public:
-    // The following settings are used by the emulation core and are
+    // The following settings are needed by the emulation core and are
     // common among all settings objects
 
     // The keymap to use
@@ -76,6 +76,19 @@ class Settings
 
     // The joymap to use
     string theJoymapList;
+
+    // The path to save snapshot files
+    string theSnapshotDir;
+
+    // What the snapshot should be called (romname or md5sum)
+    string theSnapshotName;
+
+    // Indicates whether to generate multiple snapshots or keep
+    // overwriting the same file.
+    bool theMultipleSnapshotFlag;
+
+    // The amount the of zoom for the window/screen
+    uInt32 theZoomLevel;
 
 #ifdef DEVELOPER_SUPPORT
     // User-modified properties

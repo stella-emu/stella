@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.4 2002-12-05 16:44:56 stephena Exp $
+// $Id: Snapshot.cxx,v 1.5 2003-09-12 18:08:54 stephena Exp $
 //============================================================================
 
 #include <png.h>
 #include <iostream>
 #include <fstream>
 
+#include "bspf.hxx"
 #include "Snapshot.hxx"
 
 
@@ -60,7 +61,7 @@ void Snapshot::png_user_error(png_structp ctx, png_const_charp str)
   This routine saves the current frame buffer to a 256 color PNG file,
   appropriately scaled by the amount specified in 'multiplier'.
 */
-int Snapshot::savePNG(string filename, MediaSource& mediaSource, int multiplier)
+int Snapshot::savePNG(string filename, MediaSource& mediaSource, uInt32 multiplier)
 {
   png_structp png_ptr = 0;
   png_infop info_ptr = 0;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrontendUNIX.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
+// $Id: FrontendUNIX.hxx,v 1.4 2003-09-12 18:08:54 stephena Exp $
 //============================================================================
 
 #ifndef FRONTEND_UNIX_HXX
@@ -29,7 +29,7 @@ class Console;
   and events.
 
   @author  Stephen Anthony
-  @version $Id: FrontendUNIX.hxx,v 1.3 2003-09-07 18:30:28 stephena Exp $
+  @version $Id: FrontendUNIX.hxx,v 1.4 2003-09-12 18:08:54 stephena Exp $
 */
 class FrontendUNIX : public Frontend
 {
@@ -80,13 +80,11 @@ class FrontendUNIX : public Frontend
     virtual string stateFilename(string& md5, uInt32 state);
 
     /**
-      Returns the UNIX filename representing a state file.
+      Returns the UNIX filename representing a snapshot file.
 
-      @param md5   The md5 string to use as part of the filename.
-      @param state The state number to use as part of the filename.
       @return      The full path and filename of the snapshot file.
     */
-    virtual string snapshotFilename(string& md5, uInt32 state);
+    virtual string snapshotFilename();
 
     /**
       Returns the UNIX filename representing a users properties file.

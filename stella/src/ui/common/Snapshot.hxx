@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.1 2002-03-10 01:29:54 stephena Exp $
+// $Id: Snapshot.hxx,v 1.2 2003-09-12 18:08:54 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
 #define SNAPSHOT_HXX
 
 #include <png.h>
-#include <string>
 
+#include "bspf.hxx"
 #include "MediaSrc.hxx"
 
 class Snapshot
@@ -30,7 +30,7 @@ class Snapshot
     Snapshot();
     ~Snapshot();
 
-    int savePNG(string filename, MediaSource& mediaSource, int multiplier = 1);
+    int savePNG(string filename, MediaSource& mediaSource, uInt32 multiplier = 1);
 
   private:
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);

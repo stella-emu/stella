@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Frontend.hxx,v 1.4 2003-09-11 20:53:51 stephena Exp $
+// $Id: Frontend.hxx,v 1.5 2003-09-12 18:08:53 stephena Exp $
 //============================================================================
 
 #ifndef FRONTEND_HXX
@@ -27,7 +27,7 @@ class Console;
   This class provides an interface for accessing frontend specific data.
 
   @author  Stephen Anthony
-  @version $Id: Frontend.hxx,v 1.4 2003-09-11 20:53:51 stephena Exp $
+  @version $Id: Frontend.hxx,v 1.5 2003-09-12 18:08:53 stephena Exp $
 */
 class Frontend
 {
@@ -84,12 +84,11 @@ class Frontend
     virtual string stateFilename(string& md5, uInt32 state) = 0;
 
     /**
-      This method should be called to get the filename of a snapshot
-      file given the md5 and state number.
+      This method should be called to get the filename of a snapshot.
 
       @return String representing the full path of the snapshot filename.
     */
-    virtual string snapshotFilename(string& md5, uInt32 state) = 0;
+    virtual string snapshotFilename() = 0;
 
     /**
       This method should be called to get the filename of the users

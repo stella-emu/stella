@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.5 2003-09-07 18:30:28 stephena Exp $
+// $Id: EventHandler.cxx,v 1.6 2003-09-12 18:08:53 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -29,6 +29,9 @@
 #include "System.hxx"
 #include "bspf.hxx"
 
+#ifdef SNAPSHOT_SUPPORT
+  #include "Snapshot.hxx"
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(Console* console)
@@ -77,12 +80,6 @@ Event* EventHandler::event()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setMediaSource(MediaSource* mediaSource)
-{
-  myMediaSource = mediaSource;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
   Event::Type event = myKeyTable[key];
@@ -110,11 +107,11 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
       loadState();
       return;
     }
-//    else if(event == Event::TakeSnapshot)
-//    {
-//      FIXME ... make a call to takeSnapshot()
-//      return;
-//    }
+    else if(event == Event::TakeSnapshot)
+    {
+      takeSnapshot();
+      return;
+    }
     else if(event == Event::Pause)
     {
       myConsole->frontend().setPauseEvent();
@@ -128,7 +125,7 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
     }
 
     if(ourMessageTable[event] != "")
-      myMediaSource->showMessage(ourMessageTable[event], 120);
+      myConsole->mediaSource().showMessage(ourMessageTable[event], 120);
   }
 
   // Otherwise, pass it to the emulation core
@@ -164,11 +161,11 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
       loadState();
       return;
     }
-//    else if(event == Event::TakeSnapshot)
-//    {
-//      FIXME ... make a call to takeSnapshot()
-//      return;
-//    }
+    else if(event == Event::TakeSnapshot)
+    {
+      takeSnapshot();
+      return;
+    }
     else if(event == Event::Pause)
     {
       myConsole->frontend().setPauseEvent();
@@ -182,7 +179,7 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
     }
 
     if(ourMessageTable[event] != "")
-      myMediaSource->showMessage(ourMessageTable[event], 120);
+      myConsole->mediaSource().showMessage(ourMessageTable[event], 120);
   }
 
   // Otherwise, pass it to the emulation core
@@ -408,7 +405,7 @@ void EventHandler::saveState()
     buf << "Invalid state " << myCurrentState << " file";
 
   string message = buf.str();
-  myMediaSource->showMessage(message, 120);
+  myConsole->mediaSource().showMessage(message, 120);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -423,7 +420,7 @@ void EventHandler::changeState()
   ostringstream buf;
   buf << "Changed to slot " << myCurrentState;
   string message = buf.str();
-  myMediaSource->showMessage(message, 120);
+  myConsole->mediaSource().showMessage(message, 120);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -444,5 +441,24 @@ void EventHandler::loadState()
     buf << "Invalid state " << myCurrentState << " file";
 
   string message = buf.str();
-  myMediaSource->showMessage(message, 120);
+  myConsole->mediaSource().showMessage(message, 120);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::takeSnapshot()
+{
+#ifdef SNAPSHOT_SUPPORT
+  string message, filename;
+
+  // Now save the snapshot file
+  filename = myConsole->frontend().snapshotFilename();
+  myConsole->snapshot().savePNG(filename, myConsole->mediaSource(),
+      myConsole->settings().theZoomLevel);
+
+  message = "Snapshot saved";
+  myConsole->mediaSource().showMessage(message, 120);
+#else
+  string message = "Snapshots unsupported";
+  myConsole->mediaSource().showMessage(message, 120);
+#endif
 }

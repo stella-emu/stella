@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.3 2003-09-11 20:53:51 stephena Exp $
+// $Id: Settings.cxx,v 1.4 2003-09-12 18:08:53 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -22,6 +22,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
 {
+  theKeymapList = "";
+  theJoymapList = "";
+  theSnapshotDir = "";
+  theSnapshotName = "romname";
+  theMultipleSnapshotFlag = true;
+  theZoomLevel = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

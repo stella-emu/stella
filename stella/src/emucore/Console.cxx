@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.13 2003-09-07 18:30:28 stephena Exp $
+// $Id: Console.cxx,v 1.14 2003-09-12 18:08:53 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -44,6 +44,10 @@
 #include "System.hxx"
 #include "TIA.hxx"
 
+#ifdef SNAPSHOT_SUPPORT
+  #include "Snapshot.hxx"
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
     Settings& rcsettings, PropertiesSet& propertiesSet, Frontend& frontend,
@@ -68,6 +72,11 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Create an event handler which will collect and dispatch events
   myEventHandler = new EventHandler(this);
   myEvent = myEventHandler->event();
+
+#ifdef SNAPSHOT_SUPPORT
+  // Create a snapshot object which will handle taking snapshots
+  mySnapshot = new Snapshot();
+#endif
 
   // Get the MD5 message-digest for the ROM image
   string md5 = MD5(image, size);
@@ -162,9 +171,6 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
 
   // Remember what my media source is
   myMediaSource = tia;
-
-  // Let the event handler know about the mediasource
-  myEventHandler->setMediaSource(myMediaSource);
 
   // Reset, the system to its power-on state
   mySystem->reset();

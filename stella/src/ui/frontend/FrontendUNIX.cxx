@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrontendUNIX.cxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
+// $Id: FrontendUNIX.cxx,v 1.3 2003-09-12 18:08:54 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -26,11 +26,13 @@
 #include "bspf.hxx"
 #include "Console.hxx"
 #include "FrontendUNIX.hxx"
+#include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrontendUNIX::FrontendUNIX()
     : myPauseIndicator(false),
-      myQuitIndicator(false)
+      myQuitIndicator(false),
+      myConsole(0)
 {
   myHomeDir = getenv("HOME");
   string path = myHomeDir + "/.stella";
@@ -97,8 +99,45 @@ string FrontendUNIX::stateFilename(string& md5, uInt32 state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrontendUNIX::snapshotFilename(string& md5, uInt32 state)
+string FrontendUNIX::snapshotFilename()
 {
+  if(!myConsole)
+    return "";
+
+  string path = myConsole->settings().theSnapshotDir;
+  string filename;
+
+  if(myConsole->settings().theSnapshotName == "romname")
+    path = path + "/" + myConsole->properties().get("Cartridge.Name");
+  else if(myConsole->settings().theSnapshotName == "md5sum")
+    path = path + "/" + myConsole->properties().get("Cartridge.MD5");
+
+  // Replace all spaces in name with underscores
+  replace(path.begin(), path.end(), ' ', '_');
+
+  // Check whether we want multiple snapshots created
+  if(myConsole->settings().theMultipleSnapshotFlag)
+  {
+    // Determine if the file already exists, checking each successive filename
+    // until one doesn't exist
+    filename = path + ".png";
+    if(access(filename.c_str(), F_OK) == 0 )
+    {
+      ostringstream buf;
+      for(uInt32 i = 1; ;++i)
+      {
+        buf.str("");
+        buf << path << "_" << i << ".png";
+        if(access(buf.str().c_str(), F_OK) == -1 )
+          break;
+      }
+      filename = buf.str();
+    }
+  }
+  else
+    filename = path + ".png";
+
+  mySnapshotFile = filename;
   return mySnapshotFile;
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.hxx,v 1.1 2003-09-11 20:53:51 stephena Exp $
+// $Id: SettingsUNIX.hxx,v 1.2 2003-09-12 18:08:54 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_UNIX_HXX
@@ -28,7 +28,7 @@ class Console;
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: SettingsUNIX.hxx,v 1.1 2003-09-11 20:53:51 stephena Exp $
+  @version $Id: SettingsUNIX.hxx,v 1.2 2003-09-12 18:08:54 stephena Exp $
 */
 class SettingsUNIX : public Settings
 {
@@ -86,10 +86,6 @@ class SettingsUNIX : public Settings
     // Indicates whether to allocate colors from a private color map
     bool theUsePrivateColormapFlag;
 
-    // Indicates whether to generate multiple snapshots or keep
-    // overwriting the same file.  Set to true by default.
-    bool theMultipleSnapShotFlag;
-
     // Indicates whether to use more/less accurate emulation,
     // resulting in more/less CPU usage.
     bool theAccurateTimingFlag;
@@ -111,17 +107,8 @@ class SettingsUNIX : public Settings
     // An alternate properties file to use
     string theAlternateProFile;
 
-    // The path to save snapshot files
-    string theSnapShotDir;
-
-    // What the snapshot should be called (romname or md5sum)
-    string theSnapShotName;
-
     // Indicates which sound driver to use at run-time
     string theSoundDriver;
-
-    // The size of the window/screen
-    uInt32 theWindowSize;
 
     // The left joystick number (0 .. StellaEvent::LastJSTICK)
     Int32 theLeftJoystickNumber;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.1 2003-09-11 20:53:51 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.2 2003-09-12 18:08:53 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -34,24 +34,18 @@ SettingsUNIX::SettingsUNIX(const string& infile, const string& outfile)
     : mySettingsInputFilename(infile),
       mySettingsOutputFilename(outfile)
 {
-  theKeymapList = "";
-  theJoymapList = "";
   theUseFullScreenFlag = false;
   theGrabMouseFlag = false;
   theCenterWindowFlag = false;
   theShowInfoFlag = false;
   theHideCursorFlag = false;
   theUsePrivateColormapFlag = false;
-  theMultipleSnapShotFlag = true;
   theAccurateTimingFlag = true;
   theDesiredVolume = -1;
   theDesiredFrameRate = 60;
   thePaddleMode = 0;
   theAlternateProFile = "";
-  theSnapShotDir = "";
-  theSnapShotName = "";
   theSoundDriver = "oss";
-  theWindowSize = 1;
   theLeftJoystickNumber = 0;
   theRightJoystickNumber = 1;
 
@@ -146,8 +140,8 @@ void SettingsUNIX::parseArg(string& key, string& value)
   {
     // They're setting the desired frame rate
     uInt32 rate = atoi(value.c_str());
-    if((rate < 1) || (rate > 300))
-      cout << "Invalid rate " << rate << " (1-300)\n";
+    if(rate < 1)
+      cout << "Invalid rate " << rate << endl;
     else
       theDesiredFrameRate = rate;
   }
@@ -225,11 +219,11 @@ void SettingsUNIX::parseArg(string& key, string& value)
   else if(key == "zoom")
   {
     // They're setting the initial window size
-    uInt32 size = atoi(value.c_str());
-    if((size < 1) || (size > 4))
-      cout << "Invalid zoom value " << size << " (1-4)\n";
+    uInt32 zoom = atoi(value.c_str());
+    if(zoom < 1)
+      cout << "Invalid zoom value " << zoom << endl;
     else
-      theWindowSize = size;
+      theZoomLevel = zoom;
   }
   else if(key == "volume")
   {
@@ -244,19 +238,22 @@ void SettingsUNIX::parseArg(string& key, string& value)
   }
   else if(key == "ssdir")
   {
-    theSnapShotDir = value;
+    theSnapshotDir = value;
   }
   else if(key == "ssname")
   {
-    theSnapShotName = value;
+    if((value != "md5sum") && (value != "romname"))
+      cout << "Invalid snapshot name " << value << endl;
+    else
+      theSnapshotName = value;
   }
   else if(key == "sssingle")
   {
     uInt32 option = atoi(value.c_str());
     if(option == 1)
-      theMultipleSnapShotFlag = false;
+      theMultipleSnapshotFlag = false;
     else if(option == 0)
-      theMultipleSnapShotFlag = true;
+      theMultipleSnapshotFlag = true;
   }
   else if(key == "sound")
   {
@@ -324,11 +321,11 @@ void SettingsUNIX::save()
       << "center = " << theCenterWindowFlag << endl
       << "showinfo = " << theShowInfoFlag << endl
       << "accurate = " << theAccurateTimingFlag << endl
-      << "zoom = " << theWindowSize << endl
+      << "zoom = " << theZoomLevel << endl
       << "volume = " << theDesiredVolume << endl
-      << "ssdir = " << theSnapShotDir << endl
-      << "ssname = " << theSnapShotName << endl
-      << "sssingle = " << theMultipleSnapShotFlag << endl
+      << "ssdir = " << theSnapshotDir << endl
+      << "ssname = " << theSnapshotName << endl
+      << "sssingle = " << theMultipleSnapshotFlag << endl
       << "sound = " << theSoundDriver << endl
 #ifdef DEVELOPER_SUPPORT
       << "Dmerge = " << theMergePropertiesFlag << endl

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.37 2003-09-11 20:53:51 stephena Exp $
+## $Id: makefile,v 1.38 2003-09-12 18:08:52 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -30,9 +30,9 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
 ### SDL sound not yet supported in the X11 version
 ### comment out all lines to completely disable sound
 ###
-SOUND_ALSA = 1
-SOUND_OSS  = 1
-SOUND_SDL  = 1
+#SOUND_ALSA = 1
+#SOUND_OSS  = 1
+#SOUND_SDL  = 1
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -47,8 +47,8 @@ SOUND_SDL  = 1
  JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
-### (requires PNG library)
-### Only X11 and SDL ports supported for now
+### (requires PNG library) FIXME
+### Only X11 and SDL ports supported for now FIXME
  SNAPSHOT_SUPPORT = 1
 
 ### comment this out if your system doesn't
@@ -118,11 +118,11 @@ endif
 
 ifdef SNAPSHOT_SUPPORT
 OBJS.X11 += Snapshot.o
-OPTS.X11 += -DHAVE_PNG=1
+OPTS.X11 += -DSNAPSHOT_SUPPORT=1
 LIBS.X11 += -lpng -lz
 
 OBJS.SDL += Snapshot.o
-OPTS.SDL += -DHAVE_PNG=1
+OPTS.SDL += -DSNAPSHOT_SUPPORT=1
 LIBS.SDL += -lpng -lz
 endif
 
