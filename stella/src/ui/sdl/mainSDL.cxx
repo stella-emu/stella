@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.59 2003-11-18 21:39:02 stephena Exp $
+// $Id: mainSDL.cxx,v 1.60 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -816,8 +816,7 @@ int main(int argc, char* argv[])
 
       startTime = getTicks();
       handleEvents();
-      theDisplay->update();
-      theSound->updateSound(*theDisplay->mediaSource());
+      theConsole->update();
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -853,8 +852,7 @@ int main(int argc, char* argv[])
 
       startTime = getTicks();
       handleEvents();
-      theDisplay->update();
-      theSound->updateSound(*theDisplay->mediaSource());
+      theConsole->update();
 
       currentTime = getTicks();
       virtualTime += timePerFrame;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.21 2003-11-13 12:50:11 stephena Exp $
+// $Id: EventHandler.cxx,v 1.22 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -421,10 +421,10 @@ void EventHandler::takeSnapshot()
 {
 #ifdef SNAPSHOT_SUPPORT
   // Now save the snapshot file
-  string filename = myConsole->settings().snapshotFilename();
-  myConsole->snapshot().savePNG(filename, myConsole->frameBuffer(),
-      myConsole->settings().getInt("zoom"));
+  string filename   = myConsole->settings().snapshotFilename();
+  uInt32 multiplier = myConsole->settings().getInt("zoom");
 
+  myConsole->snapshot().savePNG(filename, multiplier);
   myConsole->frameBuffer().showMessage("Snapshot saved");
 #else
   myConsole->frameBuffer().showMessage("Snapshots unsupported");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -81,12 +81,10 @@ class SoundSDL : public Sound
     void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the specified
+      Update the sound device using the audio sample from the
       media source.
-
-      @param mediaSource The media source to get audio samples from.
     */
-    void updateSound(MediaSource& mediaSource);
+    void update();
 
   private:
     /**

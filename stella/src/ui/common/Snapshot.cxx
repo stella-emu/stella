@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.7 2003-11-06 22:22:32 stephena Exp $
+// $Id: Snapshot.cxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #include <png.h>
@@ -22,60 +22,71 @@
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
+#include "Console.hxx"
 #include "MediaSrc.hxx"
 #include "Snapshot.hxx"
 
-
-Snapshot::Snapshot()
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Snapshot::Snapshot(Console* console, MediaSource* mediasrc)
+  : myConsole(console),
+    myMediaSource(mediasrc),
+    palette((png_colorp) NULL)
 {
-  palette = (png_colorp) NULL;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Snapshot::~Snapshot()
 {
   if(palette)
     delete[] palette;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Snapshot::png_write_data(png_structp ctx, png_bytep area, png_size_t size)
 {
   ofstream* out = (ofstream *) png_get_io_ptr(ctx);
   out->write((const char *)area, size);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Snapshot::png_io_flush(png_structp ctx)
 {
   ofstream* out = (ofstream *) png_get_io_ptr(ctx);
   out->flush();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Snapshot::png_user_warn(png_structp ctx, png_const_charp str)
 {
   cerr << "Snapshot:  libpng warning: " << str << endl;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Snapshot::png_user_error(png_structp ctx, png_const_charp str)
 {
   cerr << "Snapshot:  libpng error: " << str << endl;
 }
 
-/**
-  This routine saves the current frame buffer to a 256 color PNG file,
-  appropriately scaled by the amount specified in 'multiplier'.
-*/
-int Snapshot::savePNG(string filename, FrameBuffer& framebuffer, uInt32 multiplier)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Snapshot::savePNG(string filename, uInt32 multiplier)
 {
+  // FIXME - we shouldn't use the mediasource, but should instead use
+  // the framebuffer.
+  // Right now, the snapshot doesn't take into account any special effects
+  // that the framebuffer may be performing (aspect correction, OpenGL, etc)
+  // This will require framebuffer support for exporting its actual pixels,
+  // so it will have to wait ...
+
   png_structp png_ptr = 0;
   png_infop info_ptr = 0;
-  MediaSource* source = framebuffer.mediaSource();
 
-  uInt8* pixels = source->currentFrameBuffer();
+  uInt8* pixels = myMediaSource->currentFrameBuffer();
 
   // PNG and window dimensions will be different because of scaling
-  int picWidth  = framebuffer.width()  * multiplier;
-  int picHeight = framebuffer.height() * multiplier;
-  int width  = source->width();
-  int height = source->height();
+  uInt32 picWidth  = myMediaSource->width()  * multiplier << 1;
+  uInt32 picHeight = myMediaSource->height() * multiplier;
+  uInt32 width     = myMediaSource->width();
+  uInt32 height    = myMediaSource->height();
 
   ofstream* out = new ofstream(filename.c_str());
   if(!out)
@@ -93,7 +104,7 @@ int Snapshot::savePNG(string filename, FrameBuffer& framebuffer, uInt32 multipli
       return 0;
     }
 
-    const uInt32* gamePalette = source->palette();
+    const uInt32* gamePalette = myMediaSource->palette();
     for(uInt32 i = 0; i < 256; ++i)
     {
       palette[i].red   = (uInt8) ((gamePalette[i] & 0x00ff0000) >> 16);
@@ -138,26 +149,26 @@ int Snapshot::savePNG(string filename, FrameBuffer& framebuffer, uInt32 multipli
 
   // The width has to be scaled by 2 * multiplier.  Each pixel must be
   // present scaleX times.  Each scanline must be present scaleY times.
-  int scaleX = multiplier << 1;
-  int scaleY = multiplier;  
+  uInt32 scaleX = multiplier << 1;
+  uInt32 scaleY = multiplier;  
 
   // Create a buffer to hold the new scanline.
   uInt8* newScanline = new uInt8[width * scaleX];
   uInt8* oldScanline;
 
   // Look at each original scanline
-  for(int y = 0; y < height; y++)
+  for(uInt32 y = 0; y < height; y++)
   {
     // First construct a new scanline that is scaled
     oldScanline = (uInt8*) pixels + y*width;
 
-    int px = 0;
-    for(int x = 0; x < width; x++)
-      for(int offx = 0; offx < scaleX; offx++)
+    uInt32 px = 0;
+    for(uInt32 x = 0; x < width; x++)
+      for(uInt32 offx = 0; offx < scaleX; offx++)
         newScanline[px++] = oldScanline[x];
 
     // Now output the new scanline 'scaleY' times
-    for(int offy = 0; offy < scaleY; offy++)
+    for(uInt32 offy = 0; offy < scaleY; offy++)
     {
       png_bytep row_pointer = (uInt8*) newScanline;
       png_write_row(png_ptr, row_pointer);

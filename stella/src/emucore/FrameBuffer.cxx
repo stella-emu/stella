@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.5 2003-11-12 19:36:25 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.6 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -47,8 +47,8 @@
 FrameBuffer::FrameBuffer()
    :  myConsole(0),
       myMediaSource(0),
-      myWidth(160),
-      myHeight(300),
+      myWidth(0),
+      myHeight(0),
       theRedrawEntireFrameIndicator(true),
       myFGColor(10),
       myBGColor(0),
@@ -441,15 +441,6 @@ void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MediaSource* FrameBuffer::mediaSource() const
-{
-  if(myMediaSource)
-    return myMediaSource;
-  else
-    return (MediaSource*) NULL;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::pause(bool status)
 {
   myPauseStatus = status;
@@ -489,10 +480,10 @@ void FrameBuffer::moveCursorUp(uInt32 amt)
       break;
 
     case REMAP_MENU:
-      // First move cursor down by the given amt
+      // First move cursor up by the given amt
       myRemapMenuIndex -= amt;
 
-      // Move down the boundaries
+      // Move up the boundaries
       if(myRemapMenuIndex < myRemapMenuLowIndex)
       {
         Int32 x = myRemapMenuLowIndex - myRemapMenuIndex;
@@ -500,7 +491,7 @@ void FrameBuffer::moveCursorUp(uInt32 amt)
         myRemapMenuHighIndex -= x;
       }
 
-      // Then scale back up, if necessary
+      // Then scale back down, if necessary
       if(myRemapMenuLowIndex < 0)
       {
         Int32 x = 0 - myRemapMenuLowIndex;
@@ -528,10 +519,10 @@ void FrameBuffer::moveCursorDown(uInt32 amt)
       break;
 
     case REMAP_MENU:
-      // First move cursor up by the given amount
+      // First move cursor down by the given amount
       myRemapMenuIndex += amt;
 
-      // Move up the boundaries
+      // Move down the boundaries
       if(myRemapMenuIndex >= myRemapMenuHighIndex)
       {
         Int32 x = myRemapMenuIndex - myRemapMenuHighIndex + 1;
@@ -540,11 +531,10 @@ void FrameBuffer::moveCursorDown(uInt32 amt)
         myRemapMenuHighIndex += x;
       }
 
-      // Then scale back down, if necessary
+      // Then scale back up, if necessary
       if(myRemapMenuHighIndex >= myRemapMenuItems)
       {
         Int32 x = myRemapMenuHighIndex - myRemapMenuItems;
-
         myRemapMenuIndex -= x;
         myRemapMenuLowIndex -= x;
         myRemapMenuHighIndex -= x;
@@ -674,7 +664,7 @@ const uInt8 FrameBuffer::ourFontData[2048] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::MainMenuItem FrameBuffer::ourMainMenu[2] = {
-  { REMAP_MENU,  "Event Remapping"    },
+  { REMAP_MENU,  "Event Remapping"  },
   { INFO_MENU,   "Game Information" }
 };
 

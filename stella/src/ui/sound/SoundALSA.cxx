@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.cxx,v 1.5 2003-11-18 21:39:02 stephena Exp $
+// $Id: SoundALSA.cxx,v 1.6 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #include <alsa/asoundlib.h>
@@ -238,7 +238,7 @@ void SoundALSA::setVolume(Int32 percent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundALSA::updateSound(MediaSource& mediaSource)
+void SoundALSA::update()
 {
   if(myIsInitializedFlag)
   {
@@ -249,10 +249,10 @@ void SoundALSA::updateSound(MediaSource& mediaSource)
     uInt8 periodCount = 0;
 
     // Dequeue samples as long as full fragments are available
-    while(mediaSource.numberOfAudioSamples() >= myBufferSize)
+    while(myMediaSource->numberOfAudioSamples() >= myBufferSize)
     {
       uInt8 buffer[myBufferSize];
-      mediaSource.dequeueAudioSamples(buffer, myBufferSize);
+      myMediaSource->dequeueAudioSamples(buffer, myBufferSize);
 
       if((frames = snd_pcm_writei(myPcmHandle, buffer, myBufferSize)) == -EPIPE)
       {

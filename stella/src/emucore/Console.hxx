@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.15 2003-11-06 22:22:32 stephena Exp $
+// $Id: Console.hxx,v 1.16 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -41,7 +41,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.15 2003-11-06 22:22:32 stephena Exp $
+  @version $Id: Console.hxx,v 1.16 2003-11-19 15:57:10 stephena Exp $
 */
 class Console
 {
@@ -75,6 +75,12 @@ class Console
     virtual ~Console();
 
   public:
+    /**
+      Updates the console by one frame.  Each frontend should
+      call this method 'framerate' times per second.
+    */
+    void update();
+
     /**
       Get the controller plugged into the specified jack
 

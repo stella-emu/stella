@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.20 2003-11-06 22:22:32 stephena Exp $
+// $Id: Console.cxx,v 1.21 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -71,11 +71,6 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Create an event handler which will collect and dispatch events
   myEventHandler = new EventHandler(this);
   myEvent = myEventHandler->event();
-
-#ifdef SNAPSHOT_SUPPORT
-  // Create a snapshot object which will handle taking snapshots
-  mySnapshot = new Snapshot();
-#endif
 
   // Get the MD5 message-digest for the ROM image
   string md5 = MD5(image, size);
@@ -177,6 +172,14 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Initialize the framebuffer interface.
   // This must be done *after* a reset, since it needs updated values.
   myFrameBuffer.initDisplay(this, myMediaSource);
+
+  // Initialize the sound interface.
+  mySound.init(this, myMediaSource);
+
+#ifdef SNAPSHOT_SUPPORT
+  // Create a snapshot object which will handle taking snapshots
+  mySnapshot = new Snapshot(this, myMediaSource);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,6 +201,13 @@ Console::~Console()
   delete myControllers[0];
   delete myControllers[1];
   delete myEventHandler;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::update()
+{
+  myFrameBuffer.update();
+  mySound.update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

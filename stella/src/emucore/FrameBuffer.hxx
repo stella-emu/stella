@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.5 2003-11-12 19:36:25 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.6 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -35,7 +35,7 @@ class Console;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.5 2003-11-12 19:36:25 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.6 2003-11-19 15:57:10 stephena Exp $
 */
 class FrameBuffer
 {
@@ -55,7 +55,7 @@ class FrameBuffer
       calls are made to derived methods.
 
       @param console   The console
-      @param mediasrc  The console
+      @param mediasrc  The mediasource
     */
     void initDisplay(Console* console, MediaSource* mediasrc);
 
@@ -112,13 +112,6 @@ class FrameBuffer
     */
     void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
          Int32 state);
-
-    /**
-      Returns the mediasource used in the framebuffer.
-
-      @result  The mediasource for this framebuffer
-    */
-    MediaSource* mediaSource() const;
 
      /**
       Sets the pause status.  While pause is selected, the

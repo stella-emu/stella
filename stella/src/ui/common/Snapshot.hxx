@@ -13,25 +13,44 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.4 2003-11-06 22:22:32 stephena Exp $
+// $Id: Snapshot.hxx,v 1.5 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
 #define SNAPSHOT_HXX
 
+class Console;
+class MediaSource;
+
 #include <png.h>
-
 #include "bspf.hxx"
-
-class FrameBuffer;
 
 class Snapshot
 {
   public:
-    Snapshot();
+    /**
+      Create a new shapshot class for taking snapshots in PNG format.
+
+      @param console   The console
+      @param mediasrc  The mediasource
+    */
+    Snapshot(Console* console, MediaSource* mediasrc);
+
+    /**
+      The destructor.
+    */
     ~Snapshot();
 
-    int savePNG(string filename, FrameBuffer& framebuffer, uInt32 multiplier = 1);
+    /**
+      This routine saves the current frame buffer to a PNG file,
+      appropriately scaled by the amount specified in 'multiplier'.
+
+      @param filename    The filename of the PNG file
+      @param multiplier  The amount that multiplication (zoom level)
+
+      @return  The resulting error code
+    */
+    uInt32 savePNG(string filename, uInt32 multiplier = 1);
 
   private:
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
@@ -41,6 +60,13 @@ class Snapshot
     static void png_user_warn(png_structp ctx, png_const_charp str);
 
     static void png_user_error(png_structp ctx, png_const_charp str);
+
+  private:
+    // The Console for the system
+    Console* myConsole;
+
+    // The Mediasource for the system
+    MediaSource* myMediaSource;
 
     // The PNG palette
     png_colorp palette;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundOSS.cxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
+// $Id: SoundOSS.cxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
 //============================================================================
 
 #include <fcntl.h>
@@ -193,7 +193,7 @@ void SoundOSS::setVolume(Int32 percent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundOSS::updateSound(MediaSource& mediaSource)
+void SoundOSS::update()
 {
   if(myIsInitializedFlag)
   {
@@ -208,10 +208,10 @@ void SoundOSS::updateSound(MediaSource& mediaSource)
     }
 
     // Dequeue samples as long as full fragments are available
-    while(mediaSource.numberOfAudioSamples() >= (uInt32)info.fragsize)
+    while(myMediaSource->numberOfAudioSamples() >= (uInt32)info.fragsize)
     {
       uInt8 buffer[info.fragsize];
-      mediaSource.dequeueAudioSamples(buffer, (uInt32)info.fragsize);
+      myMediaSource->dequeueAudioSamples(buffer, (uInt32)info.fragsize);
       write(myDspFd, buffer, info.fragsize);
     }
 

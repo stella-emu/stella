@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundOSS.hxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
+// $Id: SoundOSS.hxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDOSS_HXX
@@ -28,7 +28,7 @@
   Open Sound System (OSS) API.
 
   @author  Bradford W. Mott
-  @version $Id: SoundOSS.hxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
+  @version $Id: SoundOSS.hxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
 */
 class SoundOSS : public Sound
 {
@@ -73,12 +73,10 @@ class SoundOSS : public Sound
     void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the specified
+      Update the sound device using the audio sample from the
       media source.
-
-      @param mediaSource The media source to get audio samples from.
     */
-    void updateSound(MediaSource& mediaSource);
+    void update();
 
   private:
     // Indicates if the sound device was successfully initialized

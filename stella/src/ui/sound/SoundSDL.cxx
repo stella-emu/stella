@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.4 2003-11-18 21:39:02 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.5 2003-11-19 15:57:11 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -161,7 +161,7 @@ void SoundSDL::setVolume(Int32 percent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::updateSound(MediaSource& mediaSource)
+void SoundSDL::update()
 {
   if(myIsInitializedFlag)
   {
@@ -173,9 +173,9 @@ void SoundSDL::updateSound(MediaSource& mediaSource)
 
     // Move all of the generated samples into the our private sample queue
     uInt8 buffer[4096];
-    while(mediaSource.numberOfAudioSamples() > 0)
+    while(myMediaSource->numberOfAudioSamples() > 0)
     {
-      uInt32 size = mediaSource.dequeueAudioSamples(buffer, 4096);
+      uInt32 size = myMediaSource->dequeueAudioSamples(buffer, 4096);
       mySampleQueue.enqueue(buffer, size);
     }
 

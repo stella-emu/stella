@@ -13,14 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.7 2003-11-18 21:39:02 stephena Exp $
+// $Id: Sound.hxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
 #define SOUND_HXX
 
+class Console;
+class MediaSource;
+
 #include "bspf.hxx"
-#include "MediaSrc.hxx"
 
 /**
   This class is a base class for the various sound objects.
@@ -28,7 +30,7 @@
   to compile Stella with no sound support whatsoever.
 
   @author  Stephen Anthony
-  @version $Id: Sound.hxx,v 1.7 2003-11-18 21:39:02 stephena Exp $
+  @version $Id: Sound.hxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
 */
 class Sound
 {
@@ -44,6 +46,15 @@ class Sound
     virtual ~Sound();
 
   public: 
+    /**
+      Initializes the sound device.  This must be called before any
+      calls are made to derived methods.
+
+      @param console   The console
+      @param mediasrc  The mediasource
+    */
+    void init(Console* console, MediaSource* mediasrc);
+
     /**
       Closes the sound device
     */
@@ -73,12 +84,10 @@ class Sound
     virtual void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the specified
+      Update the sound device using the audio sample from the
       media source.
-
-      @param mediaSource The media source to get audio samples from.
     */
-    virtual void updateSound(MediaSource& mediaSource);
+    virtual void update();
 
     /**
       Sets the pause status.  While pause is selected, update()
@@ -89,7 +98,14 @@ class Sound
     void pause(bool status) { myPauseStatus = status; }
 
   protected:
+    // The Console for the system
+    Console* myConsole;
+
+    // The Mediasource for the system
+    MediaSource* myMediaSource;
+
     // The pause status
     bool myPauseStatus;
 };
+
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.hxx,v 1.5 2003-11-18 21:39:02 stephena Exp $
+// $Id: SoundALSA.hxx,v 1.6 2003-11-19 15:57:11 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDALSA_HXX
@@ -23,6 +23,7 @@
 
 #include "Sound.hxx"
 #include "bspf.hxx"
+#include "Console.hxx"
 #include "MediaSrc.hxx"
 
 /**
@@ -30,7 +31,7 @@
   Advanced Linux Sound Architecture (ALSA) version 0.9.x API.
 
   @author  Stephen Anthony
-  @version $Id: SoundALSA.hxx,v 1.5 2003-11-18 21:39:02 stephena Exp $
+  @version $Id: SoundALSA.hxx,v 1.6 2003-11-19 15:57:11 stephena Exp $
 */
 class SoundALSA : public Sound
 {
@@ -75,12 +76,10 @@ class SoundALSA : public Sound
     void setVolume(Int32 percent);
 
     /**
-      Update the sound device using the audio sample from the specified
+      Update the sound device using the audio sample from the
       media source.
-
-      @param mediaSource The media source to get audio samples from.
     */
-    void updateSound(MediaSource& mediaSource);
+    void update();
 
   private:
     /**
@@ -111,4 +110,5 @@ class SoundALSA : public Sound
     // PCM sample rate
     uInt32 mySampleRate;
 };
+
 #endif

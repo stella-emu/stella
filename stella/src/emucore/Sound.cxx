@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.7 2003-11-18 21:39:02 stephena Exp $
+// $Id: Sound.cxx,v 1.8 2003-11-19 15:57:10 stephena Exp $
 //============================================================================
 
 #include "Sound.hxx"
@@ -27,6 +27,13 @@ Sound::Sound()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Sound::~Sound()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::init(Console* console, MediaSource* mediasrc)
+{
+  myConsole     = console;
+  myMediaSource = mediasrc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,6 +59,6 @@ void Sound::setVolume(Int32 volume)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::updateSound(MediaSource& mediaSource)
+void Sound::update()
 {
 }
