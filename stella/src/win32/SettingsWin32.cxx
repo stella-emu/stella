@@ -13,12 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.5 2004-06-19 21:51:12 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.6 2004-06-28 23:13:53 stephena Exp $
 //============================================================================
 
 #include <sstream>
 #include <fstream>
-
 #include <direct.h>
 
 #include "bspf.hxx"
@@ -134,5 +133,14 @@ string SettingsWin32::stateFilename(const string& md5, uInt32 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SettingsWin32::fileExists(const string& filename)
 {
-  return false;//FIXME(access(filename.c_str(), F_OK|W_OK) == 0);
+  // FIXME - Since I don't have time to figure out the correct
+  // and fast 'Win32' way of doing this, I'll cheat a bit
+  ifstream in(filename.c_str());
+  if(in)
+  {
+    in.close();
+    return true;
+  }
+
+  return false;
 }

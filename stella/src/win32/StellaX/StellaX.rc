@@ -1,0 +1,346 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "winresrc.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""winresrc.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""resource.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,4,0,0
+ PRODUCTVERSION 1,4,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x29L
+#else
+ FILEFLAGS 0x28L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "This version of StellaX is released under the GPL."
+            VALUE "CompanyName", "Stephen Anthony (stephena@users.sourceforge.net)"
+            VALUE "FileDescription", "StellaX"
+            VALUE "FileVersion", "1, 4, 0, 0"
+            VALUE "InternalName", "StellaX"
+            VALUE "LegalCopyright", "Copyright (C) 2004 Jeff Miller, Copyright (C) 2004 Stephen Anthony"
+            VALUE "LegalTrademarks", "n/a"
+            VALUE "OriginalFilename", "StellaX.exe"
+            VALUE "PrivateBuild", "n/a"
+            VALUE "ProductName", "StellaX"
+            VALUE "ProductVersion", "1, 4, 0, 0"
+            VALUE "SpecialBuild", "n/a"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN DIALOGEX 0, 0, 409, 249
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | 
+    WS_VISIBLE | WS_CAPTION
+CAPTION "StellaX"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "&Files found in:",-1,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,7,45,44,8
+    CONTROL         "List1",IDC_ROMLIST,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | 
+                    WS_BORDER | WS_TABSTOP,7,57,395,143,WS_EX_STATICEDGE
+    CONTROL         "&Play",IDC_PLAY,"Button",BS_OWNERDRAW | WS_TABSTOP,7,
+                    226,200,16
+    CONTROL         "&Options",IDC_CONFIG,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    230,226,54,16
+    CONTROL         "&Help",IDC_ABOUT,"Button",BS_OWNERDRAW | WS_TABSTOP,289,
+                    226,54,16
+    CONTROL         "E&xit",IDC_EXIT,"Button",BS_OWNERDRAW | WS_TABSTOP,348,
+                    226,54,16
+    CTEXT           "Written by Jeff Miller (miller@zipcon.net)\nStella core by Bradford W. Mott (bwmott@acm.org)",
+                    IDC_STATIC,175,13,227,19,SS_NOPREFIX
+    RTEXT           "<status>",IDC_ROMCOUNT,322,45,80,8,SS_NOPREFIX
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,39,411,1
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,218,411,1
+    CONTROL         "StellaX v1.4",IDC_TITLE,"Button",BS_OWNERDRAW | 
+                    BS_CENTER | BS_TOP | WS_DISABLED | WS_TABSTOP,7,7,145,22
+    CONTROL         "Static",IDC_ROMPATH,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,57,45,254,8
+    CONTROL         "",IDC_ROMNOTE,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,93,205,309,8
+    LTEXT           "Game notes (if available):",-1,7,205,98,8
+END
+
+IDD_DOC_PAGE DIALOG  0, 0, 390, 196
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Documentation"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "To view the online documentation, you need to first install Adobe Acrobat Reader 4.0 software.  Once you have done this, return to this page and you will be able to read the documentation.",
+                    IDC_INSTRUCTIONS,7,7,376,21,NOT WS_VISIBLE
+    LTEXT           "Click here to download the Adobe Acrobat Reader software",
+                    IDC_ADOBE,7,35,376,10,SS_NOTIFY | NOT WS_VISIBLE
+END
+
+IDD_ABOUT_PAGE DIALOGEX 0, 0, 298, 136
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Information"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "You must own legal copies of all ROM images you are using.  The Stella team can't tell you where to find ROM images so DON'T ASK.  All requests will either be deleted or sent to the appropriate authorities.  StellaX is GPL software.",
+                    -1,7,7,283,30,SS_NOPREFIX
+    LTEXT           "If you have a question or a problem, please try one of these contacts:",
+                    -1,7,44,283,8,SS_NOPREFIX
+    LTEXT           "Steve Anthony:",-1,7,58,53,8,SS_NOPREFIX
+    LTEXT           "sa666_666@hotmail.com",IDC_EMAIL_MAINTAINER,73,58,122,8,
+                    SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "http://minbar.org",IDC_WEB_MAINTAINER,202,58,72,8,
+                    SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "Stella dev team:",-1,7,70,52,8,SS_NOPREFIX
+    LTEXT           "stella-main@lists.sourceforge.net",IDC_EMAIL_STELLA,73,
+                    70,122,8,SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "http://stella.sf.net",IDC_WEB_STELLA,202,70,68,8,
+                    SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "God, Suzi and Noah",-1,60,94,69,8,SS_NOPREFIX
+    LTEXT           "Bradford Mott, Mike Balfour and Roger Onslow.",-1,60,
+                    107,204,8,SS_NOPREFIX
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,86,283,1
+    LTEXT           "Beta Tester:",-1,7,120,44,8,SS_NOPREFIX
+    LTEXT           "John Hardy IV",IDC_WWW_MAME,60,120,46,8,SS_NOPREFIX | 
+                    SS_NOTIFY
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,37,283,1
+    LTEXT           "Thanks To:",-1,7,107,38,8
+    LTEXT           "Dedicated To:",-1,7,94,46,8
+END
+
+IDD_CONFIG_PAGE DIALOGEX 0, 0, 306, 199
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Options"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "&ROM (.bin) file path:",-1,7,10,64,8
+    EDITTEXT        IDC_ROMPATH,82,7,152,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Browse...",IDC_BROWSE,241,7,50,14
+    LTEXT           "Set this to the path where your .bin rom files are located.",
+                    -1,7,25,292,8
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,39,292,1
+    LTEXT           "Mouse should emulate &paddle:",-1,7,49,111,8
+    COMBOBOX        IDC_PADDLE,122,47,48,82,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Set this to specify which paddle the mouse should emulate.  This can be any number from 0 to 3 inclusive.",
+                    -1,7,66,198,18
+    CONTROL         "Disable &Sound",IDC_SOUND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,164,62,10
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,91,291,1
+    LTEXT           "Video Driver:",-1,7,101,67,10
+    COMBOBOX        IDC_VIDEO,67,99,51,35,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Aspect Ratio:",-1,7,120,55,10
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,136,290,1
+    EDITTEXT        IDC_ASPECT,66,118,50,12,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 402
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 242
+    END
+
+    IDD_DOC_PAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 383
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 189
+    END
+
+    IDD_ABOUT_PAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 290
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_CONFIG_PAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 299
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 192
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_APP                 ICON                    "STELLAX.ICO"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_TILE                BITMAP                  "tile.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_STATUSTEXT          "%d files found"
+    IDS_STELLA              "StellaX"
+    IDS_NODIRECTINPUT       "DirectInput could not be initialized.  Be sure you have DirectX 5.0 or later installed."
+    IDS_CANTSTARTCONSOLE    "Error starting console.  You may have chosen an invalid ROM file."
+    IDS_COINIT_FAILED       "Unable to initialize COM subsystem"
+    IDS_ASS_FAILED          "Unable to initialize audio subsystem"
+    IDS_PAS_FAILED          "Unable to create audio stream"
+    IDS_DD_INIT_FAILED      "Unable to initialize DirectDraw object"
+    IDS_DD_ENUMMODES_FAILED "Unable to enumerate display modes"
+    IDS_NO_VID_MODE         "No compatible video modes were found"
+    IDS_DI_INIT_FAILED      "Unable to initialize DirectInput object"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ALREADYRUNNING      "StellaX is already running!"
+    IDS_BADARGUMENT         "Unknown argument given on command line"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DDSDM_FAILED        "Unable to set video mode.  Your video adapter might be incompatible with stella."
+    IDS_DSCSBFAILED         "IDirectSound::CreateSoundBuffer failed"
+    IDS_DSSCLFAILED         "IDirectSound::SetCooperativeLevel failed"
+    IDS_FILEFILTER          "Stella Files (*.bin)|*.bin|All Files (*.*)|*.*||"
+    IDS_FILENAME            "Filename"
+    IDS_MANUFACTURER        "Manufacturer"
+    IDS_MIKE                """I've heard some folks discussing the possibility of writing an 2600 emulator in a high level language - forget it, not possible."" -- Mike Livesay on rec.games.video.classic"
+    IDS_NAME                "Name"
+    IDS_NODIRECTDRAW        "DirectDraw does not appear to be installed on this system!"
+    IDS_RARITY              "Rarity"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CW_FAILED           "CreateWindow failed"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DDSCL_FAILED        "IDirectDraw::SetCooperativeLevel failed"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DDCS_FAILED         "IDirectDraw::CreateSurface failed"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DDCP_FAILED         "IDirectDraw::CreatePalette failed"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ROM_LOAD_FAILED     "Unable to load ROM image\n\nCurrent Directory: %s\nPath: %s\nError code: %d - %s"
+    IDS_NO_ITEM_SELECTED    "Before pressing play you must first select a game from the list!"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

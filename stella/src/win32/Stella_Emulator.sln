@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StellaX", "StellaX\StellaX.vcproj", "{EB852944-92EA-4A83-B13F-E800ADA48A4D}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stella", "Stella\Stella.vcproj", "{45875C96-4084-4C54-B570-FC92F8791A2F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{EB852944-92EA-4A83-B13F-E800ADA48A4D}.Debug.ActiveCfg = Debug|Win32
+		{EB852944-92EA-4A83-B13F-E800ADA48A4D}.Debug.Build.0 = Debug|Win32
+		{EB852944-92EA-4A83-B13F-E800ADA48A4D}.Release.ActiveCfg = Release|Win32
+		{EB852944-92EA-4A83-B13F-E800ADA48A4D}.Release.Build.0 = Release|Win32
+		{45875C96-4084-4C54-B570-FC92F8791A2F}.Debug.ActiveCfg = Debug|Win32
+		{45875C96-4084-4C54-B570-FC92F8791A2F}.Debug.Build.0 = Debug|Win32
+		{45875C96-4084-4C54-B570-FC92F8791A2F}.Release.ActiveCfg = Release|Win32
+		{45875C96-4084-4C54-B570-FC92F8791A2F}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
