@@ -28,7 +28,7 @@
 
 	<br><br><br><br><br>
 
-	<center><b>February 1999 - FIXME (April 2002)</b></center>
+	<center><b>February 1999 - February 2003</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -210,7 +210,18 @@
 	<h2><b>New in Release 1.3</b></h2>
 
 	<ul>
-		<li><h1>FIXME - Some other stuff from Brad and company</h1></li>
+		<li>Improved TIA sound system so that games with digitized audio work</li>
+		<li>Added saving and loading of game state to the core; X11, SDL, and DOS
+			versions current support saving and loading game state</li>
+		<li>Added support for F4 bankswitching method</li>
+		<li>Pitfall II DPC sound emulation completed</li>
+		<li>Fixed a bug which caused the difficulty switches to operate backwards</li>
+		<li>Changed DPC auto-detection to use file size so that Pitfall II mods work</li>
+		<li>Modified RIOT timer emulation so that startup values are random</li>
+		<li>Added 3F bankswitching auto-detection routine so that homebrews and
+			demos work without a stella.pro entry</li>
+		<li>Updated the TIA message boxes so they look a little nicer</li>
+		<li>Latest stella.pro file included in distribution</li>
 		<li>Added some <b>developer</b> options to the core, and the ability to change
 			game width, height, xstart, ystart, etc. while the emulation is running.  Added
 			ability to switch between NTSC and PAL at runtime, and the ability to save the
@@ -225,7 +236,6 @@
 			in "<i>$HOME/.stella/stella.pro</i>"
 		<li>Changed the way options are supplied on the commandline.  Now all commandline
 			options take <b>exactly</b> the same arguments as in the INI file</li>
-		<li>Made the TIA message boxes look a little nicer</li>
 		<li>Added "<i>-accurate</i>" command line option to choose between accurate
 			(CPU-intensive) timing or less accurate (CPU-friendly) timing to X11 and SDL
 			versions.  This is the final version of what was considered experimental timing code
@@ -242,58 +252,23 @@
 				<li><i>-Dystart</i></li>
 				<li><i>-Dmerge</i></li>
 			</ul></li>
-	</ul>
-
-<h1> FIXME - possibly delete this next part ...</h1>
-	<p>
-	<h2><b>New in Release 1.2</b></h2>
-
-	<ul>
-		<li>License change to the GNU General Public License (GPL)</li>
-		<li>Website moved to SourceForge</li>
-		<li>Improved illegal CPU instruction support (Thrust and Qb work now)</li>
-		<li>Emulation of undefined TIA bits was improved (Video Pinball works)</li>
-		<li>TIA emulation improved to fix some problems with
-			Pole Position, Fatal Run, Dolphin, Decathlon, Robot Tank,
-			and Hole Hunter.</li>
-		<li>Added support for Pitfall II, however, the enhanced sound is not
-			currently supported</li>
-		<li>Improved Supercharger emulation including a new BIOS that shows
-			the vertical blue progress bars like the real thing.</li>
-		<li>Added support for Megaboy cartridge and Commavid bank-switching method</li>
-		<li>Unix version ported to SDL (requires SDL 1.2.0 or greater)</li>
-		<li>Much improved startup time in all versions</li>
-		<li>X11, SDL, DOS versions no longer load whole stella.pro file in memory
-			(huge memory savings)</li>
-		<li>Stella.pro file now required, it is no longer optional</li>
-		<li>INI file support added to X11 and SDL versions</li>
-		<li>PNG snapshot support added to X11 and SDL versions (requires PNG library)</li>
-		<li>Added pause ability to the core, DOS, X11 and SDL versions supported for now</li>
-		<li>Updated PAL & NTSC palettes with more accurate colors</li>
-		<li>Added experimental timing code to X11 and SDL versions. Reduces CPU
-			usage at the expense of smooth framerates.</li>
-		<li>Added "<i>-zoom</i>" command line option to set initial window size
-			to X11 and SDL versions</li>
-		<li>Added "<i>-grabmouse</i>" command line option to keep mouse in game
-			window to X11 and SDL versions</li>
-		<li>Added "<i>-hidecursor</i>" command line option to hide cursor in game
-			window to X11 and SDL versions</li>
-		<li>Added "<i>-center</i>" command line option to center initial game window
-			to X11 and SDL versions</li>
-		<li>Added "<i>-volume</i>" command line option to set volume level
-			to X11 and SDL versions</li>
-		<li>Added "<i>-showinfo</i>" command line option to see some useful info on
-			emulator exit to DOS, X11, and SDL versions</li>
-		<li>Added "<i>-ssdir</i>" command line option to specify where to save
-			snapshots to X11 and SDL versions</li>
-		<li>Added "<i>-ssname</i>" command line option to specify where how to name
-			snapshots to X11 and SDL versions</li>
-		<li>Added "<i>-sssingle</i>" command line option to specify whether to generate
-			single (vs. multiple) snapshots to X11 and SDL versions</li>
-		<li>Added "<i>-pro</i>" command line option to specify to use another
-			properties file (instead of stella.pro) to DOS, X11, and SDL versions</li>
-		<li>Added "<i>-fullscreen</i>" command line option to switch to fullscreen
-			mode to SDL version</li>
+		<li>Fixed window resize bug in the X11 port</li>
+		<li>Added "<i>-nosound</i>" command line option to the DOS port to disable audio</li>
+  		<li>DOS port supports a "<i>-vsync</i>" option to synchronize emulation with the
+			video blank of the video card</li>
+  		<li>Changed VGA code in the DOS port to use a 60Hz 320x200 and a 60Hz
+			320x240 graphics mode</li>
+		<li>DOS port has been updated to run better under Windows NT, 2000, and XP.
+			There are still issues with the sound, however, it is usable.</li>
+		<li>DOS port is using a new Sound Blaster driver created by Matt Conte which
+			supports auto-detection of sound cards.</li>
+		<li>DOS port supports a STELLA_HOME environment variable that defines
+			the location of config files.</li>
+		<li>In the DOS port the stella.pro file is searched for first in the
+			current working director and then in the <i>%STELLA_HOME%</i> directory
+		<li>In the DOS port the ROM image is searched for first using the
+			specified path, then in <i>%STELLA_HOME%/ROMS</i>, and finally
+			in <i>%STELLA_HOME%</i></li>
 	</ul>
 
 	<p>
@@ -350,7 +325,7 @@
 		<li>DOS 5.0 or higher
 		<li>8 MB of RAM
 		<li>256 color VGA graphics card
-		<li>486/120 MHz required; 586/166 MHz highly recommended
+		<li>586/166 MHz required
 		<li>At least 2 megabytes of hard disk space available
 		<li>Sound Blaster or 100% compatible sound card required for sound
 		<li>Joysticks or gamepads are highly recommended
@@ -412,8 +387,9 @@
 
 	<p>The DOS version of Stella is distributed as a ZIP archive containing the DOS
 	executable as well as some other files.  The DOS version of Stella 
-	works with DOS as well as Windows 9x, however, it does not work very
-	well with Windows NT and 2000. You should install it as follows:</p>
+	works with DOS as well as Windows 9x.  The DOS version will run under
+        Windows NT, 2000, and XP, however, the sound may not operate correctly.
+	You should install it as follows:</p>
 
 	<ol>
 		<li>Change directories to the root directory:<br>
@@ -427,6 +403,8 @@
 
 		<li>If you have a Sound Blaster or 100% compatible sound card make sure
 		the <b>BLASTER</b> environment variable is set in your <b>AUTOEXEC.BAT</b> file.
+                The sound driver will attempt to auto-detect your card if the <b>BLASTER</b> variable
+                isn't correctly specified.
 		For example:
 			<pre>   SET BLASTER=A220 I7 D1</pre></li>
 
@@ -616,6 +594,11 @@
 		</tr>
 
 		<tr>
+			<td><pre>-nosound</pre></td>
+			<td>Indicates that the sound blaster support should be disabled</td>
+		</tr>
+
+		<tr>
 			<td><pre>-paddle &lt;0|1|2|3|real&gt;</pre></td>
 			<td>Indicates which paddle the mouse should emulate or that real Atari
 				2600 paddles are being used (defaults to paddle 0)</td>
@@ -628,6 +611,13 @@
 			<td><pre>-showinfo</pre></td>
 			<td>Shows some game info on exit</td>
 		</tr>
+
+		<tr>
+			<td><pre>-vsync</pre></td>
+			<td>Indicates that the emulation should synchronize with the video card instead
+				of the system timer</td>
+		</tr>
+
 	</table>
 
 	<p><b>Emulator Game Shells</b></p>
@@ -1487,10 +1477,10 @@
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Filename:</i></td>
 			<td>This property indicates the name of the file containing the ROM image.
-			In general this property is not needed, however, if present Stella uses it
+			<!--In general this property is not needed, however, if present Stella uses it
 			while attempting to match a game with its block of properties.  If the
 			value of the property matches the filename of the ROM image then Stella
-			uses that block of properties for the game.</td>
+			uses that block of properties for the game.--></td>
 		</tr>
 
 		<tr>
