@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.6 2004-06-27 22:43:49 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.7 2005-01-03 19:16:09 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -32,7 +32,8 @@ FrameBufferGL::FrameBufferGL()
    :  myTexture(0),
       myScreenmode(0),
       myScreenmodeCount(0),
-      myFilterParam(GL_NEAREST)
+      myFilterParam(GL_NEAREST),
+      myFilterParamName("GL_NEAREST")
 {
 }
 
@@ -210,20 +211,6 @@ bool FrameBufferGL::init()
   // and the textures
   setupPalette();
 
-  // Show some OpenGL info
-  if(myConsole->settings().getBool("showinfo"))
-  {
-    ostringstream colormode;
-    colormode << "Color   : " << myDepth << " bit, " << myRGB[0] << "-"
-              << myRGB[1] << "-" << myRGB[2] << "-" << myRGB[3];
-
-    cout << endl
-         << "Vendor  : " << glGetString(GL_VENDOR) << endl
-         << "Renderer: " << glGetString(GL_RENDERER) << endl
-         << "Version : " << glGetString(GL_VERSION) << endl
-         << colormode.str() << endl << endl;
-  }
-
   // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
   if(myConsole->settings().getBool("fullscreen"))
   {
@@ -237,6 +224,23 @@ bool FrameBufferGL::init()
 
     // Show or hide the cursor depending on the 'hidecursor' argument
     showCursor(!myConsole->settings().getBool("hidecursor"));
+  }
+
+  // Show some OpenGL info
+  if(myConsole->settings().getBool("showinfo"))
+  {
+    cout << "Video rendering: OpenGL mode" << endl;
+
+    ostringstream colormode;
+    colormode << "  Color   : " << myDepth << " bit, " << myRGB[0] << "-"
+              << myRGB[1] << "-" << myRGB[2] << "-" << myRGB[3];
+
+    cout << "  Vendor  : " << glGetString(GL_VENDOR) << endl
+         << "  Renderer: " << glGetString(GL_RENDERER) << endl
+         << "  Version : " << glGetString(GL_VERSION) << endl
+         << colormode.str() << endl
+         << "  Filter  : " << myFilterParamName << endl
+         << endl;
   }
 
   return true;
@@ -382,19 +386,16 @@ bool FrameBufferGL::createTextures()
     return false;
 
   // Create an OpenGL texture from the SDL texture
-  bool showinfo = myConsole->settings().getBool("showinfo");
   string filter = myConsole->settings().getString("gl_filter");
   if(filter == "linear")
   {
-    myFilterParam = GL_LINEAR;
-    if(showinfo)
-      cout << "Using GL_LINEAR filtering.\n";
+    myFilterParam     = GL_LINEAR;
+    myFilterParamName = "GL_LINEAR";
   }
   else if(filter == "nearest")
   {
-    myFilterParam = GL_NEAREST;
-    if(showinfo)
-      cout << "Using GL_NEAREST filtering.\n";
+    myFilterParam     = GL_NEAREST;
+    myFilterParamName = "GL_NEAREST";
   }
 
   glGenTextures(1, &myTextureID);
@@ -473,13 +474,13 @@ void FrameBufferGL::toggleFilter()
   {
     myFilterParam = GL_LINEAR;
     myConsole->settings().setString("gl_filter", "linear");
-    showMessage("GL_LINEAR filtering");
+    showMessage("Filtering: GL_LINEAR");
   }
   else
   {
     myFilterParam = GL_NEAREST;
     myConsole->settings().setString("gl_filter", "nearest");
-    showMessage("GL_NEAREST filtering");
+    showMessage("Filtering: GL_NEAREST");
   }
 
   glBindTexture(GL_TEXTURE_2D, myTextureID);

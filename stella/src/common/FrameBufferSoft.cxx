@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.3 2004-06-23 03:43:47 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.4 2005-01-03 19:16:09 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -120,6 +120,10 @@ bool FrameBufferSoft::init()
     // Show or hide the cursor depending on the 'hidecursor' argument
     showCursor(!myConsole->settings().getBool("hidecursor"));
   }
+
+  // Show some info
+  if(myConsole->settings().getBool("showinfo"))
+    cout << "Video rendering: Software mode" << endl << endl;
 
   return true;
 }

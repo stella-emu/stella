@@ -303,127 +303,6 @@ void Update_tia_sound (uint16 addr, uint8 val)
 
 
 /*****************************************************************************/
-/* Module:  Tia_process_2()                                                  */
-/* Purpose: To fill the output buffer with the sound output based on the     */
-/*          tia chip parameters.  This routine has not been optimized.       */
-/*          Though it is not used by the program, I've left it for reference.*/
-/*                                                                           */
-/* Author:  Ron Fries                                                        */
-/* Date:    September 10, 1996                                               */
-/*                                                                           */
-/* Inputs:  *buffer - pointer to the buffer where the audio output will      */
-/*                    be placed                                              */
-/*          n - size of the playback buffer                                  */
-/*                                                                           */
-/* Outputs: the buffer will be filled with n bytes of audio - no return val  */
-/*                                                                           */
-/*****************************************************************************/
-
-void Tia_process_2 (register unsigned char *buffer, register uint16 n)
-{
-    register uint8 chan;
-
-    /* loop until the buffer is filled */
-    while (n)
-    {
-       /* loop through the channels */
-       for (chan = CHAN1; chan <= CHAN2; chan++)
-       {
-          /* NOTE: this routine intentionally does not count down to zero */
-          /* since 0 is used as a special case - no clock */
-
-          /* if the divide by N counter can count down */
-          if (Div_n_cnt[chan] > 1)
-          {
-             /* decrement and loop */
-             Div_n_cnt[chan]--;
-          }
-          /* otherwise if we've reached the bottom */
-          else if (Div_n_cnt[chan] == 1)
-          {
-             /* reset the counter */
-             Div_n_cnt[chan] = Div_n_max[chan];
-
-             /* the P5 counter has multiple uses, so we inc it here */
-             P5[chan]++;
-             if (P5[chan] == POLY5_SIZE)
-                P5[chan] = 0;
-
-             /* check clock modifier for clock tick */
-
-             /* if we're using pure tones OR
-                   we're using DIV31 and the DIV31 bit is set OR
-                   we're using POLY5 and the POLY5 bit is set */
-             if  (((AUDC[chan] & 0x02) == 0) ||
-                 (((AUDC[chan] & 0x01) == 0) && Div31[P5[chan]]) ||
-                 (((AUDC[chan] & 0x01) == 1) &&  Bit5[P5[chan]]))
-             {
-                if (AUDC[chan] & 0x04)       /* pure modified clock selected */
-                {
-                   if (Outvol[chan])         /* if the output was set */
-                      Outvol[chan] = 0;      /* turn it off */
-                   else
-                      Outvol[chan] = AUDV[chan];   /* else turn it on */
-                }
-                else if (AUDC[chan] & 0x08)  /* check for p5/p9 */
-                {
-                   if (AUDC[chan] == POLY9)  /* check for poly9 */
-                   {
-                      /* inc the poly9 counter */
-                      P9[chan]++;
-                      if (P9[chan] == POLY9_SIZE)
-                         P9[chan] = 0;
-
-                      if (Bit9[P9[chan]])    /* if poly9 bit is set */
-                         Outvol[chan] = AUDV[chan];
-                      else
-                         Outvol[chan] = 0;
-                   }
-                   else                      /* must be poly5 */
-                   {
-                      if (Bit5[P5[chan]])
-                         Outvol[chan] = AUDV[chan];
-                      else
-                         Outvol[chan] = 0;
-                   }
-                }
-                else  /* poly4 is the only remaining option */
-                {
-                   /* inc the poly4 counter */
-                   P4[chan]++;
-                   if (P4[chan] == POLY4_SIZE)
-                      P4[chan] = 0;
-
-                   if (Bit4[P4[chan]])
-                      Outvol[chan] = AUDV[chan];
-                   else
-                      Outvol[chan] = 0;
-                }
-             }
-          }
-       }
-
-       /* decrement the sample counter - value is 256 since the lower
-          byte contains the fractional part */
-       Samp_n_cnt -= 256;
-
-       /* if the count down has reached zero */
-       if (Samp_n_cnt < 256)
-       {
-          /* adjust the sample counter */
-          Samp_n_cnt += Samp_n_max;
-
-          /* calculate the latest output value and place in buffer */
-          *(buffer++) = Outvol[0] + Outvol[1];
-
-          /* and indicate one less byte to process */
-          n--;
-       }
-    }
-}
-
-
-/*****************************************************************************/
 /* Module:  Tia_process()                                                    */
 /* Purpose: To fill the output buffer with the sound output based on the     */
 /*          tia chip parameters.  This routine has been optimized.           */
@@ -598,12 +477,12 @@ void Tia_process (register unsigned char *buffer, register uint16 n)
           /* adjust the sample counter */
           Samp_n_cnt += Samp_n_max;
 
-          /* calculate the latest output value and place in buffer */
-#ifdef MAC_OSX		  
+          /* calculate the latest output value and place in buffer
+             scale the volume by 128, since this is the default silence value
+             when using unsigned 8-bit samples in SDL */
           *(buffer++) = ((uint8) ((((uint32)outvol_0 + (uint32)outvol_1) * volume) / 100))/2 + 128;
-#else
-          *(buffer++) = ((((uint32)outvol_0 + (uint32)outvol_1) * volume) / 100);
-#endif		  
+          /* *(buffer++) = ((((uint32)outvol_0 + (uint32)outvol_1) * volume) / 100); */
+
           /* and indicate one less byte to process */
           n--;
        }
@@ -685,5 +564,127 @@ void Tia_volume (unsigned int percent)
 }
 
 #ifdef __cplusplus
+}
+#endif
+
+#if 0
+/*****************************************************************************/
+/* Module:  Tia_process_2()                                                  */
+/* Purpose: To fill the output buffer with the sound output based on the     */
+/*          tia chip parameters.  This routine has not been optimized.       */
+/*          Though it is not used by the program, I've left it for reference.*/
+/*                                                                           */
+/* Author:  Ron Fries                                                        */
+/* Date:    September 10, 1996                                               */
+/*                                                                           */
+/* Inputs:  *buffer - pointer to the buffer where the audio output will      */
+/*                    be placed                                              */
+/*          n - size of the playback buffer                                  */
+/*                                                                           */
+/* Outputs: the buffer will be filled with n bytes of audio - no return val  */
+/*                                                                           */
+/*****************************************************************************/
+
+void Tia_process_2 (register unsigned char *buffer, register uint16 n)
+{
+    register uint8 chan;
+
+    /* loop until the buffer is filled */
+    while (n)
+    {
+       /* loop through the channels */
+       for (chan = CHAN1; chan <= CHAN2; chan++)
+       {
+          /* NOTE: this routine intentionally does not count down to zero */
+          /* since 0 is used as a special case - no clock */
+
+          /* if the divide by N counter can count down */
+          if (Div_n_cnt[chan] > 1)
+          {
+             /* decrement and loop */
+             Div_n_cnt[chan]--;
+          }
+          /* otherwise if we've reached the bottom */
+          else if (Div_n_cnt[chan] == 1)
+          {
+             /* reset the counter */
+             Div_n_cnt[chan] = Div_n_max[chan];
+
+             /* the P5 counter has multiple uses, so we inc it here */
+             P5[chan]++;
+             if (P5[chan] == POLY5_SIZE)
+                P5[chan] = 0;
+
+             /* check clock modifier for clock tick */
+
+             /* if we're using pure tones OR
+                   we're using DIV31 and the DIV31 bit is set OR
+                   we're using POLY5 and the POLY5 bit is set */
+             if  (((AUDC[chan] & 0x02) == 0) ||
+                 (((AUDC[chan] & 0x01) == 0) && Div31[P5[chan]]) ||
+                 (((AUDC[chan] & 0x01) == 1) &&  Bit5[P5[chan]]))
+             {
+                if (AUDC[chan] & 0x04)       /* pure modified clock selected */
+                {
+                   if (Outvol[chan])         /* if the output was set */
+                      Outvol[chan] = 0;      /* turn it off */
+                   else
+                      Outvol[chan] = AUDV[chan];   /* else turn it on */
+                }
+                else if (AUDC[chan] & 0x08)  /* check for p5/p9 */
+                {
+                   if (AUDC[chan] == POLY9)  /* check for poly9 */
+                   {
+                      /* inc the poly9 counter */
+                      P9[chan]++;
+                      if (P9[chan] == POLY9_SIZE)
+                         P9[chan] = 0;
+
+                      if (Bit9[P9[chan]])    /* if poly9 bit is set */
+                         Outvol[chan] = AUDV[chan];
+                      else
+                         Outvol[chan] = 0;
+                   }
+                   else                      /* must be poly5 */
+                   {
+                      if (Bit5[P5[chan]])
+                         Outvol[chan] = AUDV[chan];
+                      else
+                         Outvol[chan] = 0;
+                   }
+                }
+                else  /* poly4 is the only remaining option */
+                {
+                   /* inc the poly4 counter */
+                   P4[chan]++;
+                   if (P4[chan] == POLY4_SIZE)
+                      P4[chan] = 0;
+
+                   if (Bit4[P4[chan]])
+                      Outvol[chan] = AUDV[chan];
+                   else
+                      Outvol[chan] = 0;
+                }
+             }
+          }
+       }
+
+       /* decrement the sample counter - value is 256 since the lower
+          byte contains the fractional part */
+       Samp_n_cnt -= 256;
+
+       /* if the count down has reached zero */
+       if (Samp_n_cnt < 256)
+       {
+          /* adjust the sample counter */
+          Samp_n_cnt += Samp_n_max;
+
+          /* calculate the latest output value and place in buffer */
+          *(buffer++) = Outvol[0] + Outvol[1];
+
+          /* and indicate one less byte to process */
+          n--;
+       }
+    }
 }
 #endif

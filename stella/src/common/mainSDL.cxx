@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.17 2004-09-14 16:10:27 stephena Exp $
+// $Id: mainSDL.cxx,v 1.18 2005-01-03 19:16:09 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -730,12 +730,12 @@ void SetupProperties(PropertiesSet& set)
   stringstream buf;
   if(theAltPropertiesFile != "")
   {
-    buf << "Reading game properties from \'" << theAltPropertiesFile << "\'\n";
+    buf << "Game properties: \'" << theAltPropertiesFile << "\'\n";
     set.load(theAltPropertiesFile, useMemList);
   }
   else if(thePropertiesFile != "")
   {
-    buf << "Reading game properties from \'" << thePropertiesFile << "\'\n";
+    buf << "Game properties: \'" << thePropertiesFile << "\'\n";
     set.load(thePropertiesFile, useMemList);
   }
   else
@@ -832,7 +832,7 @@ int main(int argc, char* argv[])
     putenv((char*) buf.str().c_str());
 
     buf.str("");
-    buf << "Using SDL video driver = " << theSettings->getString("video_driver") << ".";
+    buf << "Video driver: " << theSettings->getString("video_driver");
     ShowInfo(buf.str());
   }
 
@@ -858,20 +858,17 @@ int main(int argc, char* argv[])
   if(videodriver == "soft")
   {
     theDisplay = new FrameBufferSoft();
-    ShowInfo("Using software mode for video rendering.");
   }
 #ifdef DISPLAY_OPENGL
   else if(videodriver == "gl")
   {
     theDisplay = new FrameBufferGL();
     theUseOpenGLFlag = true;
-    ShowInfo("Using OpenGL mode for video rendering.");
   }
 #endif
   else   // a driver that doesn't exist was requested, so use software mode
   {
     theDisplay = new FrameBufferSoft();
-    ShowInfo("Using software mode for video rendering.");
   }
 
   if(!theDisplay)
@@ -886,18 +883,21 @@ int main(int argc, char* argv[])
   if(theSettings->getBool("sound"))
   {
     uInt32 fragsize = theSettings->getInt("fragsize");
+    Int32 volume    = theSettings->getInt("volume");
     theSound = new SoundSDL(fragsize);
+    theSound->setVolume(volume);
 
     ostringstream message;
-    message << "Sound enabled, using fragment size = " << fragsize << ".";
+    message << "Sound enabled:" << endl
+            << "  Volume   : " << volume << endl
+            << "  Frag size: " << fragsize << endl;
     ShowInfo(message.str());
   }
   else  // even if sound has been disabled, we still need a sound object
   {
     theSound = new Sound();
-    ShowInfo("Sound disabled.");
+    ShowInfo("Sound disabled");
   }
-  theSound->setVolume(theSettings->getInt("volume"));
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
@@ -911,7 +911,7 @@ int main(int argc, char* argv[])
 
   // Print message about the framerate
   ostringstream message;
-  message << "Using framerate = " << theSettings->getInt("framerate") << ".";
+  message << "Framerate:  " << theSettings->getInt("framerate");
   ShowInfo(message.str());
 
   // Setup the SDL joysticks

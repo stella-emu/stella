@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.4 2004-06-27 22:44:04 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.5 2005-01-03 19:16:09 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.4 2004-06-27 22:44:04 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.5 2005-01-03 19:16:09 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {
@@ -179,6 +179,9 @@ class FrameBufferGL : public FrameBufferSDL
 
     // The texture filtering to use
     GLint myFilterParam;
+
+    // The name of the texture filtering to use
+    string myFilterParamName;
 };
 
 #endif
