@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaEvent.hxx,v 1.1 2003-09-03 20:10:58 stephena Exp $
+// $Id: StellaEvent.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #ifndef STELLAEVENT_HXX
@@ -28,13 +28,13 @@
   by the frontends directly.
 
   @author Stephen Anthony
-  @version $Id: StellaEvent.hxx,v 1.1 2003-09-03 20:10:58 stephena Exp $
+  @version $Id: StellaEvent.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
 */
 class StellaEvent
 {
   public:
     /**
-      Enumeration of keyboard keycodes and states
+      Enumeration of keyboard keycodes
     */
     enum KeyCode
     {
@@ -64,10 +64,21 @@ class StellaEvent
       LastKCODE
     };
 
-    enum KeyState
+    /**
+      Enumeration of joystick codes and states
+    */
+    enum JoyStick
     {
-      KSTATE_RELEASED, KSTATE_PRESSED,
-      LastKSTATE
+      JSTICK_0, JSTICK_1, JSTICK_2, JSTICK_3,
+      LastJSTICK
+    };
+
+    enum JoyCode
+    {
+      JAXIS_UP, JAXIS_DOWN, JAXIS_LEFT, JAXIS_RIGHT,
+      JBUTTON_0, JBUTTON_1, JBUTTON_2, JBUTTON_3, JBUTTON_4,
+      JBUTTON_5, JBUTTON_6, JBUTTON_7, JBUTTON_8, JBUTTON_9,
+      LastJCODE
     };
 };
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Frontend.hxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
+// $Id: Frontend.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #ifndef FRONTEND_HXX
@@ -27,7 +27,7 @@ class Console;
   This class provides an interface for accessing frontend specific data.
 
   @author  Stephen Anthony
-  @version $Id: Frontend.hxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
+  @version $Id: Frontend.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
 */
 class Frontend
 {
@@ -53,13 +53,27 @@ class Frontend
       This method should be called when the emulation core receives
       a QUIT event.
     */
-    virtual void quit() = 0;
+    virtual void setQuitEvent() = 0;
+
+    /**
+      This method determines whether the QUIT event has been received.
+
+      @return Boolean representing whether a QUIT event has been received
+    */
+    virtual bool quit() = 0;
 
     /**
       This method should be called at when the emulation core receives
       a PAUSE event.
     */
-    virtual void pause(bool status) = 0;
+    virtual void setPauseEvent() = 0;
+
+    /**
+      This method determines whether the PAUSE event has been received.
+
+      @return Boolean representing whether a PAUSE event has been received
+    */
+    virtual bool pause() = 0;
 
     /**
       This method should be called to get the filename of a state file
@@ -67,7 +81,7 @@ class Frontend
 
       @return String representing the full path of the state filename.
     */
-    virtual string& stateFilename(string& md5, uInt32 state) = 0;
+    virtual string stateFilename(string& md5, uInt32 state) = 0;
 
     /**
       This method should be called to get the filename of a snapshot
@@ -75,7 +89,7 @@ class Frontend
 
       @return String representing the full path of the snapshot filename.
     */
-    virtual string& snapshotFilename(string& md5, uInt32 state) = 0;
+    virtual string snapshotFilename(string& md5, uInt32 state) = 0;
 
     /**
       This method should be called to get the filename of the users
@@ -83,7 +97,7 @@ class Frontend
 
       @return String representing the full path of the user properties filename.
     */
-    virtual string& userPropertiesFilename() = 0;
+    virtual string userPropertiesFilename() = 0;
 
     /**
       This method should be called to get the filename of the system
@@ -91,7 +105,7 @@ class Frontend
 
       @return String representing the full path of the system properties filename.
     */
-    virtual string& systemPropertiesFilename() = 0;
+    virtual string systemPropertiesFilename() = 0;
 
     /**
       This method should be called to get the filename of the users
@@ -99,7 +113,7 @@ class Frontend
 
       @return String representing the full path of the users config filename.
     */
-    virtual string& userConfigFilename() = 0;
+    virtual string userConfigFilename() = 0;
 
     /**
       This method should be called to get the filename of the system
@@ -107,7 +121,7 @@ class Frontend
 
       @return String representing the full path of the system config filename.
     */
-    virtual string& systemConfigFilename() = 0;
+    virtual string systemConfigFilename() = 0;
 
 
   private:

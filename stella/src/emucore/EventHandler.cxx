@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.3 2003-09-04 23:23:06 stephena Exp $
+// $Id: EventHandler.cxx,v 1.4 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -21,6 +21,7 @@
 #include "Console.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
+#include "Frontend.hxx"
 #include "MediaSrc.hxx"
 #include "StellaEvent.hxx"
 #include "System.hxx"
@@ -37,10 +38,24 @@ EventHandler::EventHandler(Console* console)
 
   // Erase the KeyEvent array 
   for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
-  {
-    keyTable[i].type    = Event::LastType;
-    keyTable[i].message = "";
-  }
+    myKeyTable[i] = Event::LastType;
+
+  // Erase the JoyEvent array
+  for(Int32 i = 0; i < StellaEvent::LastJSTICK; ++i)
+    for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
+      myJoyTable[i][j] = Event::LastType;
+
+  // Erase the Message array 
+  for(Int32 i = 0; i < Event::LastType; ++i)
+    myMessageTable[i] = "";
+
+  // Set unchanging messages
+  myMessageTable[Event::ConsoleColor]            = "Color Mode";
+  myMessageTable[Event::ConsoleBlackWhite]       = "BW Mode";
+  myMessageTable[Event::ConsoleLeftDifficultyA]  = "Left Difficulty A";
+  myMessageTable[Event::ConsoleLeftDifficultyB]  = "Left Difficulty B";
+  myMessageTable[Event::ConsoleRightDifficultyA] = "Right Difficulty A";
+  myMessageTable[Event::ConsoleRightDifficultyB] = "Right Difficulty B";
 
   setDefaultKeymap();
   setDefaultJoymap();
@@ -66,107 +81,176 @@ void EventHandler::setMediaSource(MediaSource* mediaSource)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::sendKeyEvent(StellaEvent::KeyCode key,
-     StellaEvent::KeyState state)
+void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
-  // Ignore unmapped keys
-  if(keyTable[key].type == Event::LastType)
+  Event::Type event = myKeyTable[key];
+
+  // Ignore unmapped events
+  if(event == Event::LastType)
     return;
 
   // Take care of special events that aren't technically part of
   // the emulation core
-  if(state == StellaEvent::KSTATE_PRESSED)
+  if(state == 1)
   {
-    if(keyTable[key].type == Event::SaveState)
+    if(event == Event::SaveState)
     {
       saveState();
       return;
     }
-    else if(keyTable[key].type == Event::ChangeState)
+    else if(event == Event::ChangeState)
     {
       changeState();
       return;
     }
-    else if(keyTable[key].type == Event::LoadState)
+    else if(event == Event::LoadState)
     {
       loadState();
       return;
     }
-//    else if(keyTable[key].type == Event::TakeSnapshot)
-//      cerr << "Event::TakeSnapshot received\n";
+//    else if(event == Event::TakeSnapshot)
+//    {
+//      FIXME ... make a call to takeSnapshot()
+//      return;
+//    }
+    else if(event == Event::Pause)
+    {
+      myConsole->frontend().setPauseEvent();
+      return;
+    }
+    else if(event == Event::Quit)
+    {
+      myConsole->frontend().setQuitEvent();
+      return;
+    }
 
-    if(keyTable[key].message != "")
-      myMediaSource->showMessage(keyTable[key].message, 120);
+    if(myMessageTable[event] != "")
+      myMediaSource->showMessage(myMessageTable[event], 120);
   }
 
   // Otherwise, pass it to the emulation core
-  myEvent->set(keyTable[key].type, state);
+  myEvent->set(event, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
+     StellaEvent::JoyCode code, Int32 state)
+{
+  Event::Type event = myJoyTable[stick][code];
+
+  // Ignore unmapped events
+  if(event == Event::LastType)
+    return;
+
+  // Take care of special events that aren't technically part of
+  // the emulation core
+  if(state == 1)
+  {
+    if(event == Event::SaveState)
+    {
+      saveState();
+      return;
+    }
+    else if(event == Event::ChangeState)
+    {
+      changeState();
+      return;
+    }
+    else if(event == Event::LoadState)
+    {
+      loadState();
+      return;
+    }
+//    else if(event == Event::TakeSnapshot)
+//    {
+//      FIXME ... make a call to takeSnapshot()
+//      return;
+//    }
+    else if(event == Event::Pause)
+    {
+      myConsole->frontend().setPauseEvent();
+      return;
+    }
+    else if(event == Event::Quit)
+    {
+      myConsole->frontend().setQuitEvent();
+      return;
+    }
+
+    if(myMessageTable[event] != "")
+      myMediaSource->showMessage(myMessageTable[event], 120);
+  }
+
+  // Otherwise, pass it to the emulation core
+  myEvent->set(event, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::sendEvent(Event::Type type, Int32 value)
+{
+  myEvent->set(type, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultKeymap()
 {
-  keyTable[StellaEvent::KCODE_1].type         = Event::KeyboardZero1;
-  keyTable[StellaEvent::KCODE_2].type         = Event::KeyboardZero2;
-  keyTable[StellaEvent::KCODE_3].type         = Event::KeyboardZero3;
-  keyTable[StellaEvent::KCODE_q].type         = Event::KeyboardZero4;
-  keyTable[StellaEvent::KCODE_w].type         = Event::KeyboardZero5;
-  keyTable[StellaEvent::KCODE_e].type         = Event::KeyboardZero6;
-  keyTable[StellaEvent::KCODE_a].type         = Event::KeyboardZero7;
-  keyTable[StellaEvent::KCODE_s].type         = Event::KeyboardZero8;
-  keyTable[StellaEvent::KCODE_d].type         = Event::KeyboardZero9;
-  keyTable[StellaEvent::KCODE_z].type         = Event::KeyboardZeroStar;
-  keyTable[StellaEvent::KCODE_x].type         = Event::KeyboardZero0;
-  keyTable[StellaEvent::KCODE_c].type         = Event::KeyboardZeroPound;
+  myKeyTable[StellaEvent::KCODE_1]         = Event::KeyboardZero1;
+  myKeyTable[StellaEvent::KCODE_2]         = Event::KeyboardZero2;
+  myKeyTable[StellaEvent::KCODE_3]         = Event::KeyboardZero3;
+  myKeyTable[StellaEvent::KCODE_q]         = Event::KeyboardZero4;
+  myKeyTable[StellaEvent::KCODE_w]         = Event::KeyboardZero5;
+  myKeyTable[StellaEvent::KCODE_e]         = Event::KeyboardZero6;
+  myKeyTable[StellaEvent::KCODE_a]         = Event::KeyboardZero7;
+  myKeyTable[StellaEvent::KCODE_s]         = Event::KeyboardZero8;
+  myKeyTable[StellaEvent::KCODE_d]         = Event::KeyboardZero9;
+  myKeyTable[StellaEvent::KCODE_z]         = Event::KeyboardZeroStar;
+  myKeyTable[StellaEvent::KCODE_x]         = Event::KeyboardZero0;
+  myKeyTable[StellaEvent::KCODE_c]         = Event::KeyboardZeroPound;
 
-  keyTable[StellaEvent::KCODE_8].type         = Event::KeyboardOne1;
-  keyTable[StellaEvent::KCODE_9].type         = Event::KeyboardOne2;
-  keyTable[StellaEvent::KCODE_0].type         = Event::KeyboardOne3;
-  keyTable[StellaEvent::KCODE_i].type         = Event::KeyboardOne4;
-  keyTable[StellaEvent::KCODE_o].type         = Event::KeyboardOne5;
-  keyTable[StellaEvent::KCODE_p].type         = Event::KeyboardOne6;
-  keyTable[StellaEvent::KCODE_k].type         = Event::KeyboardOne7;
-  keyTable[StellaEvent::KCODE_l].type         = Event::KeyboardOne8;
-  keyTable[StellaEvent::KCODE_SEMICOLON].type = Event::KeyboardOne9;
-  keyTable[StellaEvent::KCODE_COMMA].type     = Event::KeyboardOneStar;
-  keyTable[StellaEvent::KCODE_PERIOD].type    = Event::KeyboardOne0;
-  keyTable[StellaEvent::KCODE_SLASH].type     = Event::KeyboardOnePound;
+  myKeyTable[StellaEvent::KCODE_8]         = Event::KeyboardOne1;
+  myKeyTable[StellaEvent::KCODE_9]         = Event::KeyboardOne2;
+  myKeyTable[StellaEvent::KCODE_0]         = Event::KeyboardOne3;
+  myKeyTable[StellaEvent::KCODE_i]         = Event::KeyboardOne4;
+  myKeyTable[StellaEvent::KCODE_o]         = Event::KeyboardOne5;
+  myKeyTable[StellaEvent::KCODE_p]         = Event::KeyboardOne6;
+  myKeyTable[StellaEvent::KCODE_k]         = Event::KeyboardOne7;
+  myKeyTable[StellaEvent::KCODE_l]         = Event::KeyboardOne8;
+  myKeyTable[StellaEvent::KCODE_SEMICOLON] = Event::KeyboardOne9;
+  myKeyTable[StellaEvent::KCODE_COMMA]     = Event::KeyboardOneStar;
+  myKeyTable[StellaEvent::KCODE_PERIOD]    = Event::KeyboardOne0;
+  myKeyTable[StellaEvent::KCODE_SLASH]     = Event::KeyboardOnePound;
 
-  keyTable[StellaEvent::KCODE_UP].type        = Event::JoystickZeroUp;
-  keyTable[StellaEvent::KCODE_DOWN].type      = Event::JoystickZeroDown;
-  keyTable[StellaEvent::KCODE_LEFT].type      = Event::JoystickZeroLeft;
-  keyTable[StellaEvent::KCODE_RIGHT].type     = Event::JoystickZeroRight;
-  keyTable[StellaEvent::KCODE_SPACE].type     = Event::JoystickZeroFire;
-//  keyTable[StellaEvent::KCODE_].type         = Event::BoosterGripZeroTrigger;
-//  keyTable[StellaEvent::KCODE_].type         = Event::BoosterGripZeroBooster;
+  myKeyTable[StellaEvent::KCODE_UP]        = Event::JoystickZeroUp;
+  myKeyTable[StellaEvent::KCODE_DOWN]      = Event::JoystickZeroDown;
+  myKeyTable[StellaEvent::KCODE_LEFT]      = Event::JoystickZeroLeft;
+  myKeyTable[StellaEvent::KCODE_RIGHT]     = Event::JoystickZeroRight;
+  myKeyTable[StellaEvent::KCODE_SPACE]     = Event::JoystickZeroFire;
+//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripZeroTrigger;
+//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripZeroBooster;
 
-  keyTable[StellaEvent::KCODE_y].type         = Event::JoystickOneUp;
-  keyTable[StellaEvent::KCODE_h].type         = Event::JoystickOneDown;
-  keyTable[StellaEvent::KCODE_g].type         = Event::JoystickOneLeft;
-  keyTable[StellaEvent::KCODE_j].type         = Event::JoystickOneRight;
-  keyTable[StellaEvent::KCODE_f].type         = Event::JoystickOneFire;
-//  keyTable[StellaEvent::KCODE_].type         = Event::BoosterGripOneTrigger;
-//  keyTable[StellaEvent::KCODE_].type         = Event::BoosterGripOneBooster;
+  myKeyTable[StellaEvent::KCODE_y]         = Event::JoystickOneUp;
+  myKeyTable[StellaEvent::KCODE_h]         = Event::JoystickOneDown;
+  myKeyTable[StellaEvent::KCODE_g]         = Event::JoystickOneLeft;
+  myKeyTable[StellaEvent::KCODE_j]         = Event::JoystickOneRight;
+  myKeyTable[StellaEvent::KCODE_f]         = Event::JoystickOneFire;
+//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripOneTrigger;
+//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripOneBooster;
 
-  keyTable[StellaEvent::KCODE_F1].type        = Event::ConsoleSelect;
-  keyTable[StellaEvent::KCODE_F2].type        = Event::ConsoleReset;
-  keyTable[StellaEvent::KCODE_F3].type        = Event::ConsoleColor;
-  keyTable[StellaEvent::KCODE_F4].type        = Event::ConsoleBlackWhite;
-  keyTable[StellaEvent::KCODE_F5].type        = Event::ConsoleLeftDifficultyA;
-  keyTable[StellaEvent::KCODE_F6].type        = Event::ConsoleLeftDifficultyB;
-  keyTable[StellaEvent::KCODE_F7].type        = Event::ConsoleRightDifficultyA;
-  keyTable[StellaEvent::KCODE_F8].type        = Event::ConsoleRightDifficultyB;
-  keyTable[StellaEvent::KCODE_F9].type        = Event::SaveState;
-  keyTable[StellaEvent::KCODE_F10].type       = Event::ChangeState;
-  keyTable[StellaEvent::KCODE_F11].type       = Event::LoadState;
-  keyTable[StellaEvent::KCODE_F12].type       = Event::TakeSnapshot;
+  myKeyTable[StellaEvent::KCODE_F1]        = Event::ConsoleSelect;
+  myKeyTable[StellaEvent::KCODE_F2]        = Event::ConsoleReset;
+  myKeyTable[StellaEvent::KCODE_F3]        = Event::ConsoleColor;
+  myKeyTable[StellaEvent::KCODE_F4]        = Event::ConsoleBlackWhite;
+  myKeyTable[StellaEvent::KCODE_F5]        = Event::ConsoleLeftDifficultyA;
+  myKeyTable[StellaEvent::KCODE_F6]        = Event::ConsoleLeftDifficultyB;
+  myKeyTable[StellaEvent::KCODE_F7]        = Event::ConsoleRightDifficultyA;
+  myKeyTable[StellaEvent::KCODE_F8]        = Event::ConsoleRightDifficultyB;
+  myKeyTable[StellaEvent::KCODE_F9]        = Event::SaveState;
+  myKeyTable[StellaEvent::KCODE_F10]       = Event::ChangeState;
+  myKeyTable[StellaEvent::KCODE_F11]       = Event::LoadState;
+  myKeyTable[StellaEvent::KCODE_F12]       = Event::TakeSnapshot;
 
-  keyTable[StellaEvent::KCODE_F3].message      = "Color Mode";
-  keyTable[StellaEvent::KCODE_F4].message      = "BW Mode";
-  keyTable[StellaEvent::KCODE_F5].message      = "Left Difficulty A";
-  keyTable[StellaEvent::KCODE_F6].message      = "Left Difficulty B";
-  keyTable[StellaEvent::KCODE_F7].message      = "Right Difficulty A";
-  keyTable[StellaEvent::KCODE_F8].message      = "Right Difficulty B";
+  myKeyTable[StellaEvent::KCODE_PAUSE]     = Event::Pause;
+  myKeyTable[StellaEvent::KCODE_ESCAPE]    = Event::Quit;
 
 #if 0
       DrivingZeroClockwise, DrivingZeroCounterClockwise, DrivingZeroFire,
@@ -177,23 +261,30 @@ void EventHandler::setDefaultKeymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultJoymap()
 {
+  // Left joystick
+  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_UP]    = Event::JoystickZeroUp;
+  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_DOWN]  = Event::JoystickZeroDown;
+  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_LEFT]  = Event::JoystickZeroLeft;
+  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JAXIS_RIGHT] = Event::JoystickZeroRight;
+  myJoyTable[StellaEvent::JSTICK_0][StellaEvent::JBUTTON_0]   = Event::JoystickZeroFire;
+
+  // Right joystick
+  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_UP]    = Event::JoystickOneUp;
+  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_DOWN]  = Event::JoystickOneDown;
+  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_LEFT]  = Event::JoystickOneLeft;
+  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JAXIS_RIGHT] = Event::JoystickOneRight;
+  myJoyTable[StellaEvent::JSTICK_1][StellaEvent::JBUTTON_0]   = Event::JoystickOneFire;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveState()
 {
   ostringstream buf;
-  string md5 = myConsole->properties().get("Cartridge.MD5");
-//  string filename = frontend->stateFilename(md5, myCurrentState);
-
-// FIXME !!!  This MUST be changed to reflect the frontend/OS being used
-  string stateDir = "/home/stephena/.stella/state/";
-  buf << stateDir << md5 << ".st" << myCurrentState;
-  string filename = buf.str();
-/////////////////////////////////////////////////////////
 
   // Do a state save using the System
-  int result = myConsole->system().saveState(filename, md5);
+  string md5      = myConsole->properties().get("Cartridge.MD5");
+  string filename = myConsole->frontend().stateFilename(md5, myCurrentState);
+  int result      = myConsole->system().saveState(filename, md5);
 
   // Print appropriate message
   buf.str("");
@@ -227,20 +318,12 @@ void EventHandler::changeState()
 void EventHandler::loadState()
 {
   ostringstream buf;
-  string md5 = myConsole->properties().get("Cartridge.MD5");
-//  string filename = frontend->stateFilename(md5, myCurrentState);
-
-// FIXME !!!  This MUST be changed to reflect the frontend/OS being used
-  string stateDir = "/home/stephena/.stella/state/";
-  buf << stateDir << md5 << ".st" << myCurrentState;
-  string filename = buf.str();
-/////////////////////////////////////////////////////////
 
   // Do a state save using the System
-  int result = myConsole->system().loadState(filename, md5);
+  string md5      = myConsole->properties().get("Cartridge.MD5");
+  string filename = myConsole->frontend().stateFilename(md5, myCurrentState);
+  int result      = myConsole->system().loadState(filename, md5);
 
-  // Print appropriate message
-  buf.str("");
   if(result == 1)
     buf << "State " << myCurrentState << " loaded";
   else if(result == 2)

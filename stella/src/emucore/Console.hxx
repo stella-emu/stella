@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.7 2003-09-04 16:50:48 stephena Exp $
+// $Id: Console.hxx,v 1.8 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -23,6 +23,7 @@ class Console;
 class Controller;
 class Event;
 class EventHandler;
+class Frontend;
 class MediaSource;
 class PropertiesSet;
 class Settings;
@@ -38,7 +39,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.7 2003-09-04 16:50:48 stephena Exp $
+  @version $Id: Console.hxx,v 1.8 2003-09-06 21:17:48 stephena Exp $
 */
 class Console
 {
@@ -56,8 +57,8 @@ class Console
       @param userDefinedProperties User properties that should override the defaults
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
-        Settings& rcsettings, PropertiesSet& propertiesSet, uInt32 sampleRate,
-        const Properties* userDefinedProperties = 0);
+        Settings& rcsettings, PropertiesSet& propertiesSet, Frontend& frontend,
+        uInt32 sampleRate, const Properties* userDefinedProperties = 0);
 
     /**
       Create a new console object by copying another one
@@ -91,6 +92,13 @@ class Console
     {
       return *myMediaSource;
     }
+
+    /**
+      Get the frontend used by the console
+
+      @return The frontend used by the console
+    */
+    Frontend& frontend() const;
 
     /**
       Get the properties being used by the game
@@ -224,6 +232,9 @@ class Console
 
     // Reference to the PropertiesSet object
     PropertiesSet& myPropSet;
+
+    // Reference to the Frontend object
+    Frontend& myFrontend;
 
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;

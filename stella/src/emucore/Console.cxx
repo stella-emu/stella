@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.11 2003-09-04 16:50:48 stephena Exp $
+// $Id: Console.cxx,v 1.12 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -28,6 +28,7 @@
 #include "Driving.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
+#include "Frontend.hxx"
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
 #include "M6502Low.hxx"
@@ -45,10 +46,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
-    Settings& rcsettings, PropertiesSet& propertiesSet, uInt32 sampleRate,
-    const Properties* userDefinedProperties)
+    Settings& rcsettings, PropertiesSet& propertiesSet, Frontend& frontend,
+    uInt32 sampleRate, const Properties* userDefinedProperties)
     : mySettings(rcsettings),
-      myPropSet(propertiesSet)
+      myPropSet(propertiesSet),
+      myFrontend(frontend)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -59,6 +61,9 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
 
   // Inform the settings object about the console
   mySettings.setConsole(this);
+
+  // Inform the frontend object about the console
+  myFrontend.setConsole(this);
 
   // Create an event handler which will collect and dispatch events
   myEventHandler = new EventHandler(this);
@@ -169,7 +174,8 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const Console& console)
     : mySettings(console.mySettings),
-      myPropSet(console.myPropSet)
+      myPropSet(console.myPropSet),
+      myFrontend(console.myFrontend)
 {
   // TODO: Write this method
   assert(false);
@@ -183,6 +189,12 @@ Console::~Console()
   delete myControllers[0];
   delete myControllers[1];
   delete myEventHandler;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Frontend& Console::frontend() const
+{
+  return myFrontend;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

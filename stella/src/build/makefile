@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.32 2003-09-05 18:02:58 stephena Exp $
+## $Id: makefile,v 1.33 2003-09-06 21:17:48 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -30,8 +30,8 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
 ### SDL sound not yet supported in the X11 version
 ### comment out all lines to completely disable sound
 ###
-#SOUND_ALSA = 1
-SOUND_OSS  = 1
+SOUND_ALSA = 1
+#SOUND_OSS  = 1
 #SOUND_SDL  = 1
 
 ### if your C++ compiler doesn't support the bool type
@@ -89,7 +89,7 @@ SRC	= ..
 CORE	= $(SRC)/emucore
 UI	= $(SRC)/ui
 
-INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(UI)/common
+INCLUDES = -I. -I$(CORE) -I$(CORE)/m6502/src -I$(CORE)/m6502/src/bspf/src -I$(UI)/common -I$(UI)/frontend
 
 FLAGS = $(OPTIMIZATIONS) $(INCLUDES) $(SYS_INCLUDES)
 
@@ -199,7 +199,7 @@ unix-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o"
+          OBJS="mainX11.o FrontendUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 linux-x:
@@ -212,7 +212,7 @@ linux-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o" \
+          OBJS="mainX11.o FrontendUNIX.o" \
           OBJS+="$(OBJS.X11)"
 
 linux-sdl:
@@ -225,7 +225,7 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o RectList.o" \
+          OBJS="mainSDL.o RectList.o FrontendUNIX.o" \
           OBJS+="$(OBJS.SDL)"
 
 bsdi-x:
@@ -238,7 +238,7 @@ bsdi-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o"
+          OBJS="mainX11.o FrontendUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 solaris-x:
@@ -251,7 +251,7 @@ solaris-x:
           LDFLAGS+="$(CFLAGS.X11)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.X11)" \
-          OBJS="mainX11.o"
+          OBJS="mainX11.o FrontendUNIX.o"
           OBJS+="$(OBJS.X11)"
 
 ###############################################################################
@@ -456,6 +456,9 @@ SoundOSS.o: $(UI)/sound/SoundOSS.cxx $(UI)/sound/SoundOSS.hxx
 
 SoundSDL.o: $(UI)/sound/SoundSDL.cxx $(UI)/sound/SoundSDL.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundSDL.cxx
+
+FrontendUNIX.o: $(UI)/frontend/FrontendUNIX.cxx $(UI)/frontend/FrontendUNIX.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/frontend/FrontendUNIX.cxx
 
 TermX11.o: $(UI)/x11/TermX11.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/x11/TermX11.cxx

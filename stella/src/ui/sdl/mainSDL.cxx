@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.44 2003-09-04 23:23:06 stephena Exp $
+// $Id: mainSDL.cxx,v 1.45 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -22,11 +22,8 @@
 #include <string>
 #include <algorithm>
 
-#include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include <SDL.h>
 #include <SDL_syswm.h>
@@ -36,11 +33,12 @@
 #include "Event.hxx"
 #include "StellaEvent.hxx"
 #include "EventHandler.hxx"
+#include "Frontend.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
-#include "RectList.hxx"
 #include "Settings.hxx"
+#include "RectList.hxx"
 
 #ifdef SOUND_ALSA
   #include "SoundALSA.hxx"
@@ -58,6 +56,10 @@
   #include "Snapshot.hxx"
 #endif
 
+//#ifdef UNIX
+  #include "FrontendUNIX.hxx"
+//#endif
+
 // Hack for SDL < 1.2.0
 #ifndef SDL_ENABLE
   #define SDL_ENABLE 1
@@ -66,34 +68,20 @@
   #define SDL_DISABLE 0
 #endif
 
-#define MESSAGE_INTERVAL 2
 
 // function prototypes
+// FIXME the following will be placed in a Display class eventually ...
 static bool setupDisplay();
-static bool setupJoystick();
 static bool createScreen();
 static void recalculate8BitPalette();
 static void setupPalette();
-static void cleanup();
-static bool setupDirs();
-
 static void updateDisplay(MediaSource& mediaSource);
-static void handleEvents();
-
-static void doQuit();
 static void resizeWindow(int mode);
 static void centerWindow();
 static void showCursor(bool show);
 static void grabMouse(bool grab);
 static void toggleFullscreen();
-static void takeSnapshot();
-static void togglePause();
 static uInt32 maxWindowSizeForScreen();
-static uInt32 getTicks();
-
-static bool setupProperties(PropertiesSet& set);
-static void handleRCFile();
-static void usage();
 
 // Globals for the SDL stuff
 static SDL_Surface* screen = (SDL_Surface*) NULL;
@@ -108,6 +96,19 @@ static SDL_SysWMinfo info;
 static int sdlflags;
 static RectList* rectList = (RectList*) NULL;
 static uInt32 theWidth, theHeight, theMaxWindowSize, theWindowSize;
+////////////////////////////////////////////
+
+static void cleanup();
+static bool setupJoystick();
+static void handleEvents();
+
+static void takeSnapshot();
+
+static uInt32 getTicks();
+static bool setupProperties(PropertiesSet& set);
+static void handleRCFile();
+static void usage();
+
 static string theSnapShotDir, theSnapShotName;
 
 #ifdef HAVE_JOYSTICK
@@ -119,6 +120,39 @@ static string theSnapShotDir, theSnapShotName;
   static Snapshot* snapshot;
 #endif
 
+// FIXME - these are going to disappear 
+//static Event theEvent;
+
+// Pointer to the console object or the null pointer
+static Console* theConsole = (Console*) NULL;
+
+// Pointer to the sound object or the null pointer
+static Sound* sound = (Sound*) NULL;
+
+// Pointer to the frontend object or the null pointer
+static Frontend* frontend = (Frontend*) NULL;
+
+// Indicates if the user wants to quit
+//static bool theQuitIndicator = false;
+
+// Indicates if the emulator should be paused
+//static bool thePauseIndicator = false;
+
+// Indicates if the mouse should be grabbed
+static bool theGrabMouseIndicator = false;
+
+// Indicates if the mouse cursor should be hidden
+static bool theHideCursorIndicator = false;
+
+// Indicates if the entire frame should be redrawn
+static bool theRedrawEntireFrameIndicator = true;
+
+// Indicates whether the game is currently in fullscreen
+static bool isFullscreen = false;
+
+// Indicates whether the window is currently centered
+static bool isCentered = false;
+
 struct Switches
 {
   SDLKey scanCode;
@@ -126,7 +160,7 @@ struct Switches
 };
 
 // Place the most used keys first to speed up access
-static Switches list[] = {
+static Switches keyList[] = {
     { SDLK_F1,          StellaEvent::KCODE_F1         },
     { SDLK_F2,          StellaEvent::KCODE_F2         },
     { SDLK_F3,          StellaEvent::KCODE_F3         },
@@ -222,43 +256,18 @@ static Switches list[] = {
     { SDLK_RIGHTBRACKET,StellaEvent::KCODE_RIGHTBRACKET}
   };
 
-static Event theEvent;
-static Event keyboardEvent;
+// Lookup table for joystick numbers and events
+StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK] = {
+    StellaEvent::JSTICK_0, StellaEvent::JSTICK_1,
+    StellaEvent::JSTICK_2, StellaEvent::JSTICK_3
+};
 
-// Pointer to the console object or the null pointer
-static Console* theConsole = (Console*) NULL;
-
-// Pointer to the sound object or the null pointer
-static Sound* sound = (Sound*) NULL;
-
-// Indicates if the user wants to quit
-static bool theQuitIndicator = false;
-
-// Indicates if the emulator should be paused
-static bool thePauseIndicator = false;
-
-// Indicates if the mouse should be grabbed
-static bool theGrabMouseIndicator = false;
-
-// Indicates if the mouse cursor should be hidden
-static bool theHideCursorIndicator = false;
-
-// Indicates if the entire frame should be redrawn
-static bool theRedrawEntireFrameIndicator = true;
-
-// Indicates whether the game is currently in fullscreen
-static bool isFullscreen = false;
-
-// Indicates whether the window is currently centered
-static bool isCentered = false;
-
-// The locations for various required files
-static string homeDir;
-static string stateDir;
-static string homePropertiesFile;
-static string systemPropertiesFile;
-static string homeRCFile;
-static string systemRCFile;
+StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
+    StellaEvent::JBUTTON_0, StellaEvent::JBUTTON_1, StellaEvent::JBUTTON_2, 
+    StellaEvent::JBUTTON_3, StellaEvent::JBUTTON_4, StellaEvent::JBUTTON_5, 
+    StellaEvent::JBUTTON_6, StellaEvent::JBUTTON_7, StellaEvent::JBUTTON_8, 
+    StellaEvent::JBUTTON_9
+};
 
 
 /**
@@ -312,7 +321,8 @@ bool setupDisplay()
       theWindowSize = 2;
   }
 
-#ifdef HAVE_PNG
+#if 0
+//#ifdef HAVE_PNG
   // Take care of the snapshot stuff.
   snapshot = new Snapshot();
 
@@ -498,7 +508,7 @@ void setupPalette()
 
   // Make the palette be 75% as bright if pause is selected
   float shade = 1.0;
-  if(thePauseIndicator)
+  if(frontend->pause())
     shade = 0.75;
 
   const uInt32* gamePalette = theConsole->mediaSource().palette();
@@ -528,15 +538,6 @@ void setupPalette()
   }
 
   theRedrawEntireFrameIndicator = true;
-}
-
-
-/**
-  This routine is called when the program is about to quit.
-*/
-void doQuit()
-{
-  theQuitIndicator = true;
 }
 
 
@@ -654,28 +655,6 @@ void toggleFullscreen()
     if(theConsole->settings().theCenterWindowFlag)
         centerWindow();
   }
-}
-
-
-/**
-  Toggles pausing of the emulator
-*/
-void togglePause()
-{
-  if(thePauseIndicator)	// emulator is already paused so continue
-  {
-    thePauseIndicator = false;
-  }
-  else	// we want to pause the game
-  {
-    thePauseIndicator = true;
-  }
-
-  // Pause the console
-  theConsole->mediaSource().pause(thePauseIndicator);
-
-  // Show a different palette depending on pause state
-  setupPalette();
 }
 
 
@@ -871,11 +850,8 @@ void updateDisplay(MediaSource& mediaSource)
 void handleEvents()
 {
   SDL_Event event;
-  Uint8 axis;
   Uint8 button;
-  Sint16 value;
   Uint8 type;
-  Uint8 state;
   SDLKey key;
   SDLMod mod;
 
@@ -889,11 +865,7 @@ void handleEvents()
       mod = event.key.keysym.mod;
       type = event.type;
 
-      if(key == SDLK_ESCAPE)
-      {
-        doQuit();
-      }
-      else if(key == SDLK_EQUALS)
+      if(key == SDLK_EQUALS)
       {
         resizeWindow(1);
       }
@@ -901,7 +873,7 @@ void handleEvents()
       {
         resizeWindow(0);
       }
-      else if(key == SDLK_RETURN && mod & KMOD_ALT)
+      else if((mod & KMOD_ALT) && key == SDLK_RETURN)
       {
         toggleFullscreen();
       }
@@ -909,11 +881,7 @@ void handleEvents()
       {
         takeSnapshot();
       }
-      else if(key == SDLK_PAUSE)
-      {
-        togglePause();
-      }
-      else if(key == SDLK_g)
+      else if((mod & KMOD_CTRL) && key == SDLK_g)
       {
         // don't change grabmouse in fullscreen mode
         if(!isFullscreen)
@@ -922,7 +890,7 @@ void handleEvents()
           grabMouse(theGrabMouseIndicator);
         }
       }
-      else if(key == SDLK_h)
+      else if((mod & KMOD_CTRL) && key == SDLK_h)
       {
         // don't change hidecursor in fullscreen mode
         if(!isFullscreen)
@@ -932,15 +900,12 @@ void handleEvents()
         }
       }
 #ifdef DEVELOPER_SUPPORT
-      if(key == SDLK_f)               // Alt-f switches between NTSC and PAL
+      else if((mod & KMOD_ALT) && key == SDLK_f)     // Alt-f switches between NTSC and PAL
       {
-        if(mod & KMOD_ALT)
-        {
-          theConsole->toggleFormat();
+        theConsole->toggleFormat();
 
-          // update the palette
-          setupPalette();
-        }
+        // update the palette
+        setupPalette();
       }
 
       else if(key == SDLK_END)        // End decreases XStart
@@ -983,55 +948,47 @@ void handleEvents()
         // Make sure changes to the properties are reflected onscreen
         resizeWindow(-1);
       }
-      else if(key == SDLK_s)          // Alt-s saves properties to a file
+      else if((mod & KMOD_ALT) && key == SDLK_s)    // Alt-s saves properties to a file
       {
-        if(mod & KMOD_ALT)
+        if(theConsole->settings().theMergePropertiesFlag)  // Attempt to merge with propertiesSet
         {
-          if(theConsole->settings().theMergePropertiesFlag)  // Attempt to merge with propertiesSet
-          {
-            theConsole->saveProperties(homePropertiesFile, true);
-          }
-          else  // Save to file in home directory
-          {
-            string newPropertiesFile = homeDir + "/" + \
-              theConsole->properties().get("Cartridge.Name") + ".pro";
-            replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
-            theConsole->saveProperties(newPropertiesFile);
-          }
+          theConsole->saveProperties(homePropertiesFile, true);
+        }
+        else  // Save to file in home directory
+        {
+          string newPropertiesFile = homeDir + "/" + \
+            theConsole->properties().get("Cartridge.Name") + ".pro";
+          replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
+          theConsole->saveProperties(newPropertiesFile);
         }
       }
 #endif
       else // check all the other keys
       {
-        for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
+        for(unsigned int i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)
         {
-          if(list[i].scanCode == key)
-          {
-            theConsole->eventHandler().sendKeyEvent(list[i].keyCode,
-              StellaEvent::KSTATE_PRESSED);
-          }
+          if(keyList[i].scanCode == key)
+            theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, 1);
         }
       }
     }
     else if(event.type == SDL_KEYUP)
     {
-      key = event.key.keysym.sym;
+      key  = event.key.keysym.sym;
       type = event.type;
 
-      for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
+      for(unsigned int i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)
       { 
-        if(list[i].scanCode == key)
-        {
-          theConsole->eventHandler().sendKeyEvent(list[i].keyCode,
-            StellaEvent::KSTATE_RELEASED);
-        }
+        if(keyList[i].scanCode == key)
+          theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, 0);
       }
     }
     else if(event.type == SDL_MOUSEMOTION)
     {
-      int resistance = 0, x = 0;
       float fudgeFactor = 1000000.0;
+      Int32 resistance = 0, x = 0;
       Int32 width   = theWidth * theWindowSize * 2;
+      Event::Type type;
 
       // Grabmouse and hidecursor introduce some lag into the mouse movement,
       // so we need to fudge the numbers a bit
@@ -1056,117 +1013,114 @@ void handleEvents()
 
       // Now, set the event of the correct paddle to the calculated resistance
       if(theConsole->settings().thePaddleMode == 0)
-        theEvent.set(Event::PaddleZeroResistance, resistance);
+        type = Event::PaddleZeroResistance;
       else if(theConsole->settings().thePaddleMode == 1)
-        theEvent.set(Event::PaddleOneResistance, resistance);
+        type = Event::PaddleOneResistance;
       else if(theConsole->settings().thePaddleMode == 2)
-        theEvent.set(Event::PaddleTwoResistance, resistance);
+        type = Event::PaddleTwoResistance;
       else if(theConsole->settings().thePaddleMode == 3)
-        theEvent.set(Event::PaddleThreeResistance, resistance);
+        type = Event::PaddleThreeResistance;
+
+      theConsole->eventHandler().sendEvent(type, resistance);
     }
-    else if(event.type == SDL_MOUSEBUTTONDOWN)
+    else if(event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
     {
+      Event::Type type;
+      Int32 value;
+
+      if(event.type == SDL_MOUSEBUTTONDOWN)
+        value = 1;
+      else
+        value = 0;
+
       if(theConsole->settings().thePaddleMode == 0)
-        theEvent.set(Event::PaddleZeroFire, 1);
+        type = Event::PaddleZeroFire;
       else if(theConsole->settings().thePaddleMode == 1)
-        theEvent.set(Event::PaddleOneFire, 1);
+        type = Event::PaddleOneFire;
       else if(theConsole->settings().thePaddleMode == 2)
-        theEvent.set(Event::PaddleTwoFire, 1);
+        type = Event::PaddleTwoFire;
       else if(theConsole->settings().thePaddleMode == 3)
-        theEvent.set(Event::PaddleThreeFire, 1);
-    }
-    else if(event.type == SDL_MOUSEBUTTONUP)
-    {
-      if(theConsole->settings().thePaddleMode == 0)
-        theEvent.set(Event::PaddleZeroFire, 0);
-      else if(theConsole->settings().thePaddleMode == 1)
-        theEvent.set(Event::PaddleOneFire, 0);
-      else if(theConsole->settings().thePaddleMode == 2)
-        theEvent.set(Event::PaddleTwoFire, 0);
-      else if(theConsole->settings().thePaddleMode == 3)
-        theEvent.set(Event::PaddleThreeFire, 0);
+        type = Event::PaddleThreeFire;
+
+      theConsole->eventHandler().sendEvent(type, value);
     }
     else if(event.type == SDL_ACTIVEEVENT)
     {
       if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
       {
-        if(!thePauseIndicator)
+        if(!frontend->pause())
         {
-          togglePause();
+          frontend->setPauseEvent();
         }
       }
     }
     else if(event.type == SDL_QUIT)
     {
-      doQuit();
+      frontend->setQuitEvent();
     }
 
 #ifdef HAVE_JOYSTICK
     // Read joystick events and modify event states
-    if(theLeftJoystick)
+    StellaEvent::JoyStick stick;
+    StellaEvent::JoyCode code;
+    Int32 state;
+    Uint8 axis;
+    Sint16 value;
+
+    if(event.jbutton.which >= StellaEvent::LastJSTICK)
+      return;
+    stick = joyList[event.jbutton.which];
+
+    if((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
     {
-      if(((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
-          && (event.jbutton.which == 0))
-      {
-        button = event.jbutton.button;
-        state = event.jbutton.state;
-        state = (state == SDL_PRESSED) ? 1 : 0;
+      if(event.jbutton.button >= StellaEvent::LastJCODE)
+        return;
 
-        if(button == 0)  // fire button
-        {
-          theEvent.set(Event::JoystickZeroFire, state ? 
-              1 : keyboardEvent.get(Event::JoystickZeroFire));
+      code  = joyButtonList[event.jbutton.button];
+      state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-          // If we're using real paddles then set paddle event as well
-          if(theConsole->settings().thePaddleMode == 4)
-            theEvent.set(Event::PaddleZeroFire, state);
-        }
-        else if(button == 1)  // booster button
-        {
-          theEvent.set(Event::BoosterGripZeroTrigger, state ? 
-              1 : keyboardEvent.get(Event::BoosterGripZeroTrigger));
-
-          // If we're using real paddles then set paddle event as well
-          if(theConsole->settings().thePaddleMode == 4)
-            theEvent.set(Event::PaddleOneFire, state);
-        }
-      }
-      else if((event.type == SDL_JOYAXISMOTION) && (event.jaxis.which == 0))
-      {
-        axis = event.jaxis.axis;
-        value = event.jaxis.value;
-
-        if(axis == 0)  // x-axis
-        {
-          theEvent.set(Event::JoystickZeroLeft, (value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroLeft));
-          theEvent.set(Event::JoystickZeroRight, (value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroRight));
-
-          // If we're using real paddles then set paddle events as well
-          if(theConsole->settings().thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleZeroResistance, r);
-          }
-        }
-        else if(axis == 1)  // y-axis
-        {
-          theEvent.set(Event::JoystickZeroUp, (value < -16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroUp));
-          theEvent.set(Event::JoystickZeroDown, (value > 16384) ? 
-              1 : keyboardEvent.get(Event::JoystickZeroDown));
-
-          // If we're using real paddles then set paddle events as well
-          if(theConsole->settings().thePaddleMode == 4)
-          {
-            uInt32 r = (uInt32)((1.0E6L * (value + 32767L)) / 65536);
-            theEvent.set(Event::PaddleOneResistance, r);
-          }
-        }
-      }
+      theConsole->eventHandler().sendJoyEvent(stick, code, state);
     }
+    else if(event.type == SDL_JOYAXISMOTION)
+    {
+      code  = StellaEvent::LastJCODE;
+      state = 1;
 
+      axis = event.jaxis.axis;
+      value = event.jaxis.value;
+
+      if(axis == 0)  // x-axis
+      {
+        if(value < -16384)
+          code = StellaEvent::JAXIS_LEFT;
+        else if(value > 16384)
+          code = StellaEvent::JAXIS_RIGHT;
+        else
+        {
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT, 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT, 0);
+
+          return;
+        }
+      }
+      else if(axis == 1)  // y-axis
+      {
+        if(value < -16384)
+          code = StellaEvent::JAXIS_UP;
+        else if(value > 16384)
+          code = StellaEvent::JAXIS_DOWN;
+        else
+        {
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP, 0);
+          theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN, 0);
+
+          return;
+        }
+      }
+
+      theConsole->eventHandler().sendJoyEvent(stick, code, state);
+    }
+/*
     if(theRightJoystick)
     {
       if(((event.type == SDL_JOYBUTTONDOWN) || (event.type == SDL_JOYBUTTONUP))
@@ -1230,6 +1184,7 @@ void handleEvents()
         }
       }
     }
+*/
 #endif
   }
 }
@@ -1448,30 +1403,22 @@ bool setupProperties(PropertiesSet& set, Settings& settings)
 #endif
 
   // Check to see if the user has specified an alternate .pro file.
-  // If it exists, use it.
   if(settings.theAlternateProFile != "")
   {
-    if(access(settings.theAlternateProFile.c_str(), R_OK) == 0)
-    {
-      set.load(settings.theAlternateProFile, &Console::defaultProperties(), useMemList);
-      return true;
-    }
-    else
-    {
-      cerr << "ERROR: Couldn't find \"" << settings.theAlternateProFile
-          << "\" properties file." << endl;
-      return false;
-    }
-  }
-
-  if(access(homePropertiesFile.c_str(), R_OK) == 0)
-  {
-    set.load(homePropertiesFile, &Console::defaultProperties(), useMemList);
+    set.load(settings.theAlternateProFile, &Console::defaultProperties(), useMemList);
     return true;
   }
-  else if(access(systemPropertiesFile.c_str(), R_OK) == 0)
+
+  if(frontend->userPropertiesFilename() != "")
   {
-    set.load(systemPropertiesFile, &Console::defaultProperties(), useMemList);
+    set.load(frontend->userPropertiesFilename(),
+             &Console::defaultProperties(), useMemList);
+    return true;
+  }
+  else if(frontend->systemPropertiesFilename() != "")
+  {
+    set.load(frontend->systemPropertiesFilename(),
+             &Console::defaultProperties(), useMemList);
     return true;
   }
   else
@@ -1487,6 +1434,9 @@ bool setupProperties(PropertiesSet& set, Settings& settings)
 */
 void cleanup()
 {
+  if(frontend)
+    delete frontend;
+
   if(theConsole)
     delete theConsole;
 
@@ -1518,58 +1468,27 @@ void cleanup()
 }
 
 
-/**
-  Creates some directories under $HOME.
-  Required directories are $HOME/.stella and $HOME/.stella/state
-  Also sets up various locations for properties files, etc.
-
-  This must be called before any other function.
-*/
-bool setupDirs()
-{
-  homeDir = getenv("HOME");
-  string path = homeDir + "/.stella";
-
-  if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
-  {
-    if(mkdir(path.c_str(), 0777) != 0)
-      return false;
-  }
-
-  stateDir = homeDir + "/.stella/state/";
-  if(access(stateDir.c_str(), R_OK|W_OK|X_OK) != 0 )
-  {
-    if(mkdir(stateDir.c_str(), 0777) != 0)
-      return false;
-  }
-
-  homePropertiesFile   = homeDir + "/.stella/stella.pro";
-  systemPropertiesFile = "/etc/stella.pro";
-  homeRCFile           = homeDir + "/.stella/stellarc";
-  systemRCFile         = "/etc/stellarc";
-
-  return true;
-}
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
-  // First set up the directories where Stella will find RC and state files
-  if(!setupDirs())
+  // First set up the frontend to communicate with the emulation core
+//#ifdef UNIX
+  frontend = new FrontendUNIX();
+//#endif
+  if(!frontend)
   {
-    cerr << "ERROR: Couldn't set up config directories.\n";
+    cerr << "ERROR: Couldn't set up the frontend.\n";
     cleanup();
     return 0;
   }
 
   // Create some settings for the emulator
   string infile   = "";
-  string outfile  = homeRCFile;
-  if(access(homeRCFile.c_str(), R_OK) == 0 )
-    infile = homeRCFile;
-  else if(access(systemRCFile.c_str(), R_OK) == 0 )
-    infile = systemRCFile;
+  string outfile  = frontend->userConfigFilename();
+  if(frontend->userConfigFilename() != "")
+    infile = frontend->userConfigFilename();
+  else if(frontend->systemConfigFilename() != "")
+    infile = frontend->systemConfigFilename();
 
   Settings settings(infile, outfile);
 
@@ -1654,11 +1573,11 @@ int main(int argc, char* argv[])
   // Create the 2600 game console for users or developers
 #ifdef DEVELOPER_SUPPORT
   theConsole = new Console(image, size, filename, 
-      settings, propertiesSet, sound->getSampleRate(),
+      settings, propertiesSet, *frontend, sound->getSampleRate(),
       &settings.userDefinedProperties);
 #else
   theConsole = new Console(image, size, filename, 
-      settings, propertiesSet, sound->getSampleRate());
+      settings, propertiesSet, *frontend, sound->getSampleRate());
 #endif
 
   // Free the image since we don't need it any longer
@@ -1695,7 +1614,7 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theQuitIndicator)
+      if(frontend->quit())
       {
         break;
       }
@@ -1703,7 +1622,7 @@ int main(int argc, char* argv[])
       // Call handleEvents here to see if user pressed pause
       startTime = getTicks();
       handleEvents();
-      if(thePauseIndicator)
+      if(frontend->pause())
       {
         updateDisplay(theConsole->mediaSource());
         SDL_Delay(10);
@@ -1741,14 +1660,14 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theQuitIndicator)
+      if(frontend->quit())
       {
         break;
       }
 
       startTime = getTicks();
       handleEvents();
-      if(!thePauseIndicator)
+      if(!frontend->pause())
       {
         theConsole->mediaSource().update();
         sound->updateSound(theConsole->mediaSource());

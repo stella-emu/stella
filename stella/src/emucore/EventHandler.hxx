@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.3 2003-09-04 23:23:06 stephena Exp $
+// $Id: EventHandler.hxx,v 1.4 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -40,7 +40,7 @@ class MediaSource;
   unchanged to the remap class, where key remapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.3 2003-09-04 23:23:06 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.4 2003-09-06 21:17:48 stephena Exp $
 */
 class EventHandler
 {
@@ -65,11 +65,30 @@ class EventHandler
     /**
       Send a keyboard event to the handler.
 
-      @param key   The StellaEvent key
-      @param state The StellaEvent state (pressed or released)
+      @param code  The StellaEvent code
+      @param state The StellaEvent state
     */
-    void sendKeyEvent(StellaEvent::KeyCode key, StellaEvent::KeyState state);
+    void sendKeyEvent(StellaEvent::KeyCode code, Int32 state);
 
+    /**
+      Send a joystick button event to the handler.
+
+      @param stick The joystick activated
+      @param code  The StellaEvent joystick code
+      @param state The StellaEvent state
+    */
+    void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
+         Int32 state);
+
+    /**
+      Send an event directly to the event handler.
+      These events cannot be remapped.
+
+      @param type  The event
+      @param value The value for the event
+    */
+    void sendEvent(Event::Type type, Int32 value);
+	
     /**
       Set the mediasource.
 
@@ -101,14 +120,14 @@ class EventHandler
     void loadState();
 
   private:
-    struct KeyEvent
-    {
-      Event::Type type;
-      string message;
-    };
-
     // Array of key events
-    KeyEvent keyTable[StellaEvent::LastKCODE];
+    Event::Type myKeyTable[StellaEvent::LastKCODE];
+
+    // Array of joystick events
+    Event::Type myJoyTable[StellaEvent::LastJSTICK][StellaEvent::LastJCODE];
+
+    // Array of messages for each Event
+    string myMessageTable[Event::LastType];
 
     // Global Console object
     Console* myConsole;
@@ -121,6 +140,9 @@ class EventHandler
 
     // Indicates the current state to use for state loading/saving
     uInt32 myCurrentState;
+
+    // Indicates the current pause status
+    bool myPauseStatus;
 };
 
 #endif

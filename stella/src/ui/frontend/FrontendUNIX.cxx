@@ -13,11 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrontendUNIX.cxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
+// $Id: FrontendUNIX.cxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
-#ifndef FRONTEND_UNIX_HXX
-#define FRONTEND_UNIX_HXX
+#include <cstdlib>
+#include <sstream>
+
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "bspf.hxx"
 #include "Console.hxx"
@@ -25,9 +29,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrontendUNIX::FrontendUNIX()
+    : myPauseIndicator(false),
+      myQuitIndicator(false)
 {
   myHomeDir = getenv("HOME");
-  string path = homeDir + "/.stella";
+  string path = myHomeDir + "/.stella";
 
   if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
     mkdir(path.c_str(), 0777);
@@ -41,8 +47,8 @@ FrontendUNIX::FrontendUNIX()
   myHomeRCFile           = myHomeDir + "/.stella/stellarc";
   mySystemRCFile         = "/etc/stellarc";
 
-  mySnapshotFilename = "";
-  myStateFilename = "";
+  mySnapshotFile = "";
+  myStateFile    = "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,47 +63,65 @@ void FrontendUNIX::setConsole(Console* console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrontendUNIX::quit()
+void FrontendUNIX::setQuitEvent()
 {
-  theQuitIndicator = true;
+  myQuitIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrontendUNIX::pause(bool status)
+bool FrontendUNIX::quit()
 {
-  thePauseIndicator = status;
+  return myQuitIndicator;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string& FrontendUNIX::stateFilename(string& md5, uInt32 state)
+void FrontendUNIX::setPauseEvent()
 {
+  myPauseIndicator = !myPauseIndicator;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string& FrontendUNIX::snapshotFilename(string& md5, uInt32 state)
+bool FrontendUNIX::pause()
 {
+  return myPauseIndicator;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string& FrontendUNIX::userPropertiesFilename()
+string FrontendUNIX::stateFilename(string& md5, uInt32 state)
+{
+  ostringstream buf;
+  buf << myStateDir << md5 << ".st" << state;
+
+  myStateFile = buf.str();
+  return myStateFile;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrontendUNIX::snapshotFilename(string& md5, uInt32 state)
+{
+  return mySnapshotFile;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrontendUNIX::userPropertiesFilename()
 {
   return myHomePropertiesFile;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string& FrontendUNIX::systemPropertiesFilename()
+string FrontendUNIX::systemPropertiesFilename()
 {
   return mySystemPropertiesFile;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string& FrontendUNIX::userConfigFilename()
+string FrontendUNIX::userConfigFilename()
 {
   return myHomeRCFile;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string& FrontendUNIX::systemConfigFilename()
+string FrontendUNIX::systemConfigFilename()
 {
   return mySystemRCFile;
 }

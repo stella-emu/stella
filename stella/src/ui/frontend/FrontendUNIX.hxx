@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrontendUNIX.hxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
+// $Id: FrontendUNIX.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
 //============================================================================
 
 #ifndef FRONTEND_UNIX_HXX
@@ -29,16 +29,13 @@ class Console;
   and events.
 
   @author  Stephen Anthony
-  @version $Id: FrontendUNIX.hxx,v 1.1 2003-09-05 18:02:58 stephena Exp $
+  @version $Id: FrontendUNIX.hxx,v 1.2 2003-09-06 21:17:48 stephena Exp $
 */
 class FrontendUNIX : public Frontend
 {
   public:
     /**
       Create a new UNIX frontend
-
-//      @param console The console the TIA is associated with
-//      @param sampleRate The sample rate to create audio samples at
     */
     FrontendUNIX();
  
@@ -56,12 +53,22 @@ class FrontendUNIX : public Frontend
     /**
       Called when the emulation core receives a QUIT event.
     */
-    virtual void quit();
+    virtual void setQuitEvent();
+
+    /**
+      Check whether a QUIT event has been received.
+    */
+    virtual bool quit();
 
     /**
       Called when the emulation core receives a PAUSE event.
     */
-    virtual void pause(bool status);
+    virtual void setPauseEvent();
+
+    /**
+      Check whether a PAUSE event has been received.
+    */
+    virtual bool pause();
 
     /**
       Returns the UNIX filename representing a state file.
@@ -70,7 +77,7 @@ class FrontendUNIX : public Frontend
       @param state The state number to use as part of the filename.
       @return      The full path and filename of the state file.
     */
-    virtual string& stateFilename(string& md5, uInt32 state);
+    virtual string stateFilename(string& md5, uInt32 state);
 
     /**
       Returns the UNIX filename representing a state file.
@@ -79,41 +86,47 @@ class FrontendUNIX : public Frontend
       @param state The state number to use as part of the filename.
       @return      The full path and filename of the snapshot file.
     */
-    virtual string& snapshotFilename(string& md5, uInt32 state);
+    virtual string snapshotFilename(string& md5, uInt32 state);
 
     /**
       Returns the UNIX filename representing a users properties file.
 
       @return      The full path and filename of the user properties file.
     */
-    virtual string& userPropertiesFilename();
+    virtual string userPropertiesFilename();
 
     /**
       Returns the UNIX filename representing a system properties file.
 
       @return      The full path and filename of the system properties file.
     */
-    virtual string& systemPropertiesFilename();
+    virtual string systemPropertiesFilename();
 
     /**
       Returns the UNIX filename representing a users config file.
 
       @return      The full path and filename of the user config file.
     */
-    virtual string& userConfigFilename();
+    virtual string userConfigFilename();
 
     /**
       Returns the UNIX filename representing a system config file.
 
       @return      The full path and filename of the system config file.
     */
-    virtual string& systemConfigFilename();
+    virtual string systemConfigFilename();
 
-  public:
-    bool theQuitIndicator;
-    bool thePauseIndicator
+    /**
+      Returns the UNIX filename representing a system config file.
+
+      @return      The full path and filename of the system config file.
+    */
+    string userHomeDir() { return myHomeDir; }
 
   private:
+    bool myPauseIndicator;
+    bool myQuitIndicator;
+
     string myHomeDir;
     string myStateDir;
 
