@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.32 2004-06-25 03:50:47 bwmott Exp $
+// $Id: Console.cxx,v 1.33 2004-07-07 22:46:01 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -76,11 +76,6 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
 
   // Search for the properties based on MD5
   myPropSet.getMD5(md5, myProperties);
-
-#ifdef DEVELOPER_SUPPORT
-  // Merge any user-defined properties
-  myProperties.merge(mySettings.userDefinedProperties);
-#endif
 
   // Make sure the MD5 value of the cartridge is set in the properties
   if(myProperties.get("Cartridge.MD5") == "")
@@ -276,7 +271,6 @@ const Properties& Console::defaultProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Properties Console::ourDefaultProperties;
 
-#ifdef DEVELOPER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
@@ -321,6 +315,35 @@ void Console::togglePalette()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::saveProperties(string filename, bool merge)
+{
+  // Merge the current properties into the PropertiesSet file
+  if(merge)
+  {
+    if(myPropSet.merge(myProperties, filename))
+      myFrameBuffer.showMessage("Properties merged");
+    else
+      myFrameBuffer.showMessage("Properties not merged");
+  }
+  else  // Save to the specified file directly
+  {
+    ofstream out(filename.c_str(), ios::out);
+
+    if(out && out.is_open())
+    {
+      myProperties.save(out);
+      out.close();
+      myFrameBuffer.showMessage("Properties saved");
+    }
+    else
+    {
+      myFrameBuffer.showMessage("Properties not saved");
+    }
+  }
+}
+
+#ifdef DEVELOPER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeXStart(const uInt32 direction)
 {
@@ -471,33 +494,5 @@ void Console::changeHeight(const uInt32 direction)
   message = "Height ";
   message += strval.str();
   myFrameBuffer.showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::saveProperties(string filename, bool merge)
-{
-  // Merge the current properties into the PropertiesSet file
-  if(merge)
-  {
-    if(myPropSet.merge(myProperties, filename))
-      myFrameBuffer.showMessage("Properties merged");
-    else
-      myFrameBuffer.showMessage("Properties not merged");
-  }
-  else  // Save to the specified file directly
-  {
-    ofstream out(filename.c_str(), ios::out);
-
-    if(out && out.is_open())
-    {
-      myProperties.save(out);
-      out.close();
-      myFrameBuffer.showMessage("Properties saved");
-    }
-    else
-    {
-      myFrameBuffer.showMessage("Properties not saved");
-    }
-  }
 }
 #endif

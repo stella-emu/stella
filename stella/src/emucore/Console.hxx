@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.20 2004-06-20 23:30:48 stephena Exp $
+// $Id: Console.hxx,v 1.21 2004-07-07 22:46:01 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -40,7 +40,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.20 2004-06-20 23:30:48 stephena Exp $
+  @version $Id: Console.hxx,v 1.21 2004-07-07 22:46:01 stephena Exp $
 */
 class Console
 {
@@ -170,8 +170,6 @@ class Console
     */
     static const Properties& defaultProperties();
 
-#ifdef DEVELOPER_SUPPORT
-  public:
     /**
       Toggle between NTSC and PAL mode.  The frontends will need to
       reload their palette.
@@ -184,6 +182,17 @@ class Console
     */
     void togglePalette();
 
+    /**
+      Save a copy of the current properties after any changes.
+
+      @param filename Filename to save the properties into.
+      @param merge Whether or not to merge the changes into the
+                   main properties file.
+    */
+    void saveProperties(string filename, bool merge = false);
+
+#ifdef DEVELOPER_SUPPORT
+  public:
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
       after the change.  GUI's may need to resize their viewports.
@@ -215,15 +224,6 @@ class Console
       @param direction A 1 indicates increase, 0 indicates decrease.
     */
     void changeHeight(const uInt32 direction);
-
-    /**
-      Save a copy of the current properties after any changes.
-
-      @param filename Filename to save the properties into.
-      @param merge Whether or not to merge the changes into the
-                   main properties file.
-    */
-    void saveProperties(string filename, bool merge = false);
 #endif
 
   private:

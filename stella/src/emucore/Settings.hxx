@@ -13,15 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.14 2004-07-05 00:53:48 stephena Exp $
+// $Id: Settings.hxx,v 1.15 2004-07-07 22:46:01 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
 #define SETTINGS_HXX
-
-#ifdef DEVELOPER_SUPPORT
-  #include "Props.hxx"
-#endif
 
 #include "bspf.hxx"
 
@@ -30,7 +26,7 @@
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.14 2004-07-05 00:53:48 stephena Exp $
+  @version $Id: Settings.hxx,v 1.15 2004-07-07 22:46:01 stephena Exp $
 */
 class Settings
 {
@@ -203,12 +199,6 @@ class Settings
       Return the default directory for storing data.
     */
     string baseDir() { return myBaseDir; }
-
-  public:
-#ifdef DEVELOPER_SUPPORT
-    // User-modified properties
-    Properties userDefinedProperties;
-#endif
 
   protected:
     void set(const string& key, const string& value, bool save = true);

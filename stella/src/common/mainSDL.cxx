@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.10 2004-07-05 00:53:48 stephena Exp $
+// $Id: mainSDL.cxx,v 1.11 2004-07-07 22:46:01 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -430,7 +430,6 @@ void handleEvents()
             theDisplay->showCursor(!theHideCursorIndicator);
           }
         }
-#ifdef DEVELOPER_SUPPORT
         else if(key == SDLK_f)         // Ctrl-f toggles NTSC/PAL mode
         {
           theConsole->toggleFormat();
@@ -441,6 +440,7 @@ void handleEvents()
           theConsole->togglePalette();
           theDisplay->setupPalette();
         }
+#ifdef DEVELOPER_SUPPORT
         else if(key == SDLK_END)       // Ctrl-End increases Width
         {
           theConsole->changeWidth(1);
@@ -461,6 +461,7 @@ void handleEvents()
           theConsole->changeHeight(0);
           theDisplay->resize(0);
         }
+#endif
         else if(key == SDLK_s)         // Ctrl-s saves properties to a file
         {
           if(theConsole->settings().getBool("mergeprops"))  // Attempt to merge with propertiesSet
@@ -475,7 +476,6 @@ void handleEvents()
             theConsole->saveProperties(newPropertiesFile);
           }
         }
-#endif
       }
       else // check all the other keys
       {
@@ -715,19 +715,10 @@ void setupProperties(PropertiesSet& set)
   string theUserProFile      = theSettings->userPropertiesFilename();
   string theSystemProFile    = theSettings->systemPropertiesFilename();
 
-  // When 'listroms' is specified, we need to have the full list in memory
-  if(theSettings->getBool("listrominfo"))
+  // When 'listrominfo' or 'mergeprops' is specified, we need to have the
+  // full list in memory
+  if(theSettings->getBool("listrominfo") || theSettings->getBool("mergeprops"))
     useMemList = true;
-
-#ifdef DEVELOPER_SUPPORT
-  // If the user wishes to merge any property modifications to the
-  // PropertiesSet file, then the PropertiesSet file MUST be loaded
-  // into memory.
-
-  // If 'useMemList' is true, do not override it
-  if(!useMemList)
-    useMemList = theSettings->getBool("mergeprops");
-#endif
 
   if(theAlternateProFile != "")
     set.load(theAlternateProFile, &Console::defaultProperties(), useMemList);

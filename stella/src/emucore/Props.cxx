@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.5 2004-07-05 00:53:48 stephena Exp $
+// $Id: Props.cxx,v 1.6 2004-07-07 22:46:01 stephena Exp $
 //============================================================================
 
 #include "Props.hxx"
@@ -282,11 +282,10 @@ void Properties::merge(const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::print()
 {
-  cout << "|"
-       << get("Cartridge.MD5") << "|"
+  cout << get("Cartridge.MD5") << "|"
        << get("Cartridge.Name") << "|"
        << get("Cartridge.Rarity") << "|"
        << get("Cartridge.Manufactuer") << "|"
-       << get("Cartridge.Note") << "|"
+       << get("Cartridge.Note")
        << endl;
 }
