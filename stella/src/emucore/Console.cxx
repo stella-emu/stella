@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.18 2003-10-17 18:02:16 stephena Exp $
+// $Id: Console.cxx,v 1.19 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -174,7 +174,7 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
 
   // Initialize the framebuffer interface.
   // This must be done *after* a reset, since it needs updated values.
-  myFrameBuffer.init(this, myMediaSource);
+  myFrameBuffer.initDisplay(this, myMediaSource);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -268,12 +268,12 @@ void Console::toggleFormat()
 
   if(format == "NTSC")
   {
-    myFrameBuffer->showMessage("PAL Mode");
+    myFrameBuffer.showMessage("PAL Mode");
     myProperties.set("Display.Format", "PAL");
   }
   else if(format == "PAL")
   {
-    myFrameBuffer->showMessage("NTSC Mode");
+    myFrameBuffer.showMessage("NTSC Mode");
     myProperties.set("Display.Format", "NTSC");
   }
 }
@@ -291,12 +291,12 @@ void Console::changeXStart(const uInt32 direction)
     xstart += 4;
     if(xstart > 80)
     {
-      myFrameBuffer->showMessage("XStart at maximum");
+      myFrameBuffer.showMessage("XStart at maximum");
       return;
     }
     else if((width + xstart) > 160)
     {
-      myFrameBuffer->showMessage("XStart no effect");
+      myFrameBuffer.showMessage("XStart no effect");
       return;
     }
   }
@@ -305,7 +305,7 @@ void Console::changeXStart(const uInt32 direction)
     xstart -= 4;
     if(xstart < 0)
     {
-      myFrameBuffer->showMessage("XStart at minimum");
+      myFrameBuffer.showMessage("XStart at minimum");
       return;
     }
   }
@@ -316,7 +316,7 @@ void Console::changeXStart(const uInt32 direction)
 
   message = "XStart ";
   message += strval.str();
-  myFrameBuffer->showMessage(message);
+  myFrameBuffer.showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -331,7 +331,7 @@ void Console::changeYStart(const uInt32 direction)
     ystart++;
     if(ystart > 64)
     {
-      myFrameBuffer->showMessage("YStart at maximum");
+      myFrameBuffer.showMessage("YStart at maximum");
       return;
     }
   }
@@ -340,7 +340,7 @@ void Console::changeYStart(const uInt32 direction)
     ystart--;
     if(ystart < 0)
     {
-      myFrameBuffer->showMessage("YStart at minimum");
+      myFrameBuffer.showMessage("YStart at minimum");
       return;
     }
   }
@@ -351,7 +351,7 @@ void Console::changeYStart(const uInt32 direction)
 
   message = "YStart ";
   message += strval.str();
-  myFrameBuffer->showMessage(message);
+  myFrameBuffer.showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -367,12 +367,12 @@ void Console::changeWidth(const uInt32 direction)
     width += 4;
     if((width > 160) || ((width % 4) != 0))
     {
-      myFrameBuffer->showMessage("Width at maximum");
+      myFrameBuffer.showMessage("Width at maximum");
       return;
     }
     else if((width + xstart) > 160)
     {
-      myFrameBuffer->showMessage("Width no effect");
+      myFrameBuffer.showMessage("Width no effect");
       return;
     }
   }
@@ -381,7 +381,7 @@ void Console::changeWidth(const uInt32 direction)
     width -= 4;
     if(width < 80)
     {
-      myFrameBuffer->showMessage("Width at minimum");
+      myFrameBuffer.showMessage("Width at minimum");
       return;
     }
   }
@@ -392,7 +392,7 @@ void Console::changeWidth(const uInt32 direction)
 
   message = "Width ";
   message += strval.str();
-  myFrameBuffer->showMessage(message);
+  myFrameBuffer.showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -407,7 +407,7 @@ void Console::changeHeight(const uInt32 direction)
     height++;
     if(height > 256)
     {
-      myFrameBuffer->showMessage("Height at maximum");
+      myFrameBuffer.showMessage("Height at maximum");
       return;
     }
   }
@@ -416,7 +416,7 @@ void Console::changeHeight(const uInt32 direction)
     height--;
     if(height < 100)
     {
-      myFrameBuffer->showMessage("Height at minimum");
+      myFrameBuffer.showMessage("Height at minimum");
       return;
     }
   }
@@ -427,7 +427,7 @@ void Console::changeHeight(const uInt32 direction)
 
   message = "Height ";
   message += strval.str();
-  myFrameBuffer->showMessage(message);
+  myFrameBuffer.showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -437,9 +437,9 @@ void Console::saveProperties(string filename, bool merge)
   if(merge)
   {
     if(myPropSet.merge(myProperties, filename))
-      myFrameBuffer->showMessage("Properties merged");
+      myFrameBuffer.showMessage("Properties merged");
     else
-      myFrameBuffer->showMessage("Properties not merged");
+      myFrameBuffer.showMessage("Properties not merged");
   }
   else  // Save to the specified file directly
   {
@@ -449,11 +449,11 @@ void Console::saveProperties(string filename, bool merge)
     {
       myProperties.save(out);
       out.close();
-      myFrameBuffer->showMessage("Properties saved");
+      myFrameBuffer.showMessage("Properties saved");
     }
     else
     {
-      myFrameBuffer->showMessage("Properties not saved");
+      myFrameBuffer.showMessage("Properties not saved");
     }
   }
 }

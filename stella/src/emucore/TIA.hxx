@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
+// $Id: TIA.hxx,v 1.10 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -43,7 +43,7 @@ class Deserializer;
   in a bounded queue.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
+  @version $Id: TIA.hxx,v 1.10 2003-10-26 19:40:39 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -127,15 +127,6 @@ class TIA : public Device , public MediaSource
       the desired frame rate to update the media source.
     */
     virtual void update();
-
-    /**
-      This method should be called to cause further calls to 'update'
-      to be ignored until an unpause is given.  Will also send a mute to
-      the Sound device.
-
-      @return Status of the pause, success (true) or failure (false)
-    */
-    virtual bool pause(bool state);
 
     /**
       Answers the current frame buffer
@@ -306,9 +297,6 @@ class TIA : public Device , public MediaSource
   private:
     // Console the TIA is associated with
     const Console& myConsole;
-
-    // Indicates whether the emulation is paused or not
-    bool myPauseState;
 
   private:
     // Indicates the CPU cycle when a TIA sound register was last updated

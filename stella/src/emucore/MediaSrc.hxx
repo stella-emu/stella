@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.5 2003-09-26 22:39:36 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.6 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -29,7 +29,7 @@ class MediaSource;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.5 2003-09-26 22:39:36 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.6 2003-10-26 19:40:39 stephena Exp $
 */
 class MediaSource
 {
@@ -52,16 +52,6 @@ class MediaSource
       samples.
     */
     virtual void update() = 0;
-
-    /**
-      This method should be called to change the pause state of the
-      media source.  Once the media source is paused further calls to
-      the update method will be ignored until the media source is
-      unpaused.
-
-      @return Status of the pause, success (true) or failure (false)
-    */
-    virtual bool pause(bool state) = 0;
 
     /**
       Answers the current frame buffer

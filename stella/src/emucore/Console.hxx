@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.13 2003-10-17 18:02:16 stephena Exp $
+// $Id: Console.hxx,v 1.14 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -41,7 +41,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.13 2003-10-17 18:02:16 stephena Exp $
+  @version $Id: Console.hxx,v 1.14 2003-10-26 19:40:39 stephena Exp $
 */
 class Console
 {
@@ -55,6 +55,7 @@ class Console
       @param filename The name of the file that contained the ROM image
       @param rcsettings The settings object to use
       @param profiles The game profiles object to use
+      @param framebuffer The framebuffer object to use
       @param sampleRate The rate to create audio samples at
     */
     Console(const uInt8* image, uInt32 size, const char* filename,

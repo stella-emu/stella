@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.55 2003-10-17 18:02:16 stephena Exp $
+// $Id: mainSDL.cxx,v 1.56 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -94,6 +94,9 @@ static bool theHideCursorIndicator = false;
 
 // Indicates the current paddle mode
 static Int32 thePaddleMode;
+
+// Indicates relative mouse position horizontally
+static Int32 mouseX = 0;
 
 // Indicates whether to show information during program execution
 static bool theShowInfoFlag;
@@ -331,29 +334,29 @@ void handleEvents()
         if(key == SDLK_EQUALS)
           theDisplay->resize(1);
         else if(key == SDLK_MINUS)
-          theDisplay->resize(0);
+          theDisplay->resize(-1);
         else if(key == SDLK_RETURN)
           theDisplay->toggleFullscreen();
 #ifdef DEVELOPER_SUPPORT
         else if(key == SDLK_END)       // Alt-End increases XStart
         {
           theConsole->changeXStart(1);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
         else if(key == SDLK_HOME)      // Alt-Home decreases XStart
         {
           theConsole->changeXStart(0);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
         else if(key == SDLK_PAGEUP)    // Alt-PageUp increases YStart
         {
           theConsole->changeYStart(1);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
         else if(key == SDLK_PAGEDOWN)  // Alt-PageDown decreases YStart
         {
           theConsole->changeYStart(0);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
 #endif
       }
@@ -381,27 +384,27 @@ void handleEvents()
         else if(key == SDLK_f)         // Ctrl-f toggles NTSC/PAL mode
         {
           theConsole->toggleFormat();
-          theDisplay->setupPalette();
+          theDisplay->setupPalette(1.0);
         }
         else if(key == SDLK_END)       // Ctrl-End increases Width
         {
           theConsole->changeWidth(1);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
         else if(key == SDLK_HOME)      // Ctrl-Home decreases Width
         {
           theConsole->changeWidth(0);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
         else if(key == SDLK_PAGEUP)    // Ctrl-PageUp increases Height
         {
           theConsole->changeHeight(1);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
         else if(key == SDLK_PAGEDOWN)  // Ctrl-PageDown decreases Height
         {
           theConsole->changeHeight(0);
-          theDisplay->resize(-1);
+          theDisplay->resize(0);
         }
         else if(key == SDLK_s)         // Ctrl-s saves properties to a file
         {
@@ -441,21 +444,21 @@ void handleEvents()
     }
     else if(event.type == SDL_MOUSEMOTION)
     {
-      float fudgeFactor = 1000000.0;
-      Int32 resistance = 0, x = 0, mouseX;
-      Int32 width   = 640;//theWidth * theWindowSize * 2; FIXME
-      Event::Type type = Event::LastType;
+      Int32 resistance;
+      uInt32 zoom  = theDisplay->zoomLevel();
+      Int32 width = theDisplay->width() * zoom;
+      Event::Type type = Event::NoType;
 
       // Grabmouse and hidecursor introduce some lag into the mouse movement,
       // so we need to fudge the numbers a bit
       if(theGrabMouseIndicator && theHideCursorIndicator)
       {
-//        mouseX = (int)((float)mouseX + (float)event.motion.xrel
-//                 * 1.5 * (float) theWindowSize); FIXME
+        mouseX = (int)((float)mouseX + (float)event.motion.xrel
+                 * 1.5 * (float) zoom);
       }
       else
       {
-//        mouseX = mouseX + event.motion.xrel * theWindowSize; FIXME
+        mouseX = mouseX + event.motion.xrel * zoom;
       }
 
       // Check to make sure mouseX is within the game window
@@ -464,8 +467,7 @@ void handleEvents()
       else if(mouseX > width)
         mouseX = width;
   
-      x = width - mouseX;
-      resistance = (Int32)((fudgeFactor * x) / width);
+      resistance = (Int32)(1000000.0 * (width - mouseX) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
       if(thePaddleMode == 0)
@@ -739,7 +741,7 @@ int main(int argc, char* argv[])
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
-  // Setup the SDL window and joystick
+  // Setup the SDL window
 #ifdef DISPLAY_OPENGL
   bool useGL = theSettings->getBool("opengl");
   if(useGL)
@@ -755,19 +757,21 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  if(!setupJoystick())
-  {
-    cerr << "ERROR: Couldn't set up joysticks.\n";
-    cleanup();
-    return 0;
-  }
-
   // Create the 2600 game console
   theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
                            *theDisplay, theSound->getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
+
+  // Setup the SDL joysticks
+  // This must be done after the console is created
+  if(!setupJoystick())
+  {
+    cerr << "ERROR: Couldn't set up joysticks.\n";
+    cleanup();
+    return 0;
+  }
 
   // These variables are common to both timing options
   // and are needed to calculate the overall frames per second.
@@ -802,7 +806,7 @@ int main(int argc, char* argv[])
       }
 
       theDisplay->update();
-//FIXME      theSound->updateSound(theConsole->mediaSource());
+      theSound->updateSound(*theDisplay->mediaSource());
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -835,15 +839,20 @@ int main(int argc, char* argv[])
       {
         break;
       }
-
+/*
       startTime = getTicks();
       handleEvents();
       if(!theSettings->pause())
       {
-//FIXME        theSound->updateSound(theConsole->mediaSource());
+        theSound->updateSound(*theDisplay->mediaSource());
       }
       theDisplay->update();
-
+*/
+      startTime = getTicks();
+      handleEvents();
+      theDisplay->update();
+      theSound->updateSound(*theDisplay->mediaSource());
+///
       currentTime = getTicks();
       virtualTime += timePerFrame;
       if(currentTime < virtualTime)

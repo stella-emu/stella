@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.24 2003-10-17 18:02:16 stephena Exp $
+// $Id: TIA.cxx,v 1.25 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -35,7 +35,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const Console& console, uInt32 sampleRate)
     : myConsole(console),
-      myPauseState(false),
       myLastSoundUpdateCycle(0),
       myColorLossEnabled(false),
       myCOLUBK(myColor[0]),
@@ -510,12 +509,6 @@ bool TIA::load(Deserializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::update()
 {
-  // Don't do an update if the emulator is paused
-  if(myPauseState)
-  {
-    return;
-  }
-
   uInt8* tmp = myCurrentFrameBuffer;
   myCurrentFrameBuffer = myPreviousFrameBuffer;
   myPreviousFrameBuffer = tmp;
@@ -570,21 +563,6 @@ void TIA::update()
   // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myScanlineCountForLastFrame = totalClocks / 228;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::pause(bool state)
-{
-  if(myPauseState == state)
-  {
-    // Ignore multiple calls to do the same thing
-    return false;
-  }
-  else
-  {
-    myPauseState = state;
-    return true;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3217,4 +3195,3 @@ uInt32 TIA::SampleQueue::size() const
 {
   return mySize;
 }
-

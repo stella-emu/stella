@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.10 2003-09-30 01:22:45 stephena Exp $
+// $Id: EventHandler.hxx,v 1.11 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -41,7 +41,7 @@ class MediaSource;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.10 2003-09-30 01:22:45 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.11 2003-10-26 19:40:39 stephena Exp $
 */
 class EventHandler
 {
@@ -111,6 +111,13 @@ class EventHandler
     */
     string getJoymap();
 
+    /**
+      Enable/disable remapping mode.
+
+      @param status  The toggle for enable/disable
+    */
+    void enableRemapping(bool status) { myRemapEnabledFlag = status; }
+
     void getKeymapArray(Event::Type** array, uInt32* size);
     void getJoymapArray(Event::Type** array, uInt32* size);
 
@@ -160,6 +167,9 @@ class EventHandler
 
     // Indicates that the main menu is being entered
     bool myMenuStatus;
+
+    // Indicates that remapping mode is enabled
+    bool myRemapEnabledFlag;
 };
 
 #endif

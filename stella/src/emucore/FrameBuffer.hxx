@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.1 2003-10-17 18:02:16 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.2 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -27,11 +27,15 @@
 class Console;
 
 /**
-  This class implements a MAME-like user interface where Stella settings
-  can be changed.  It also encapsulates the MediaSource.
+  This class encapsulates the MediaSource and is the basis for the video
+  display in Stella.  All ports should derive from this class for
+  platform-specific video stuff.
+
+  This class also implements a MAME-like user interface where Stella settings
+  can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.1 2003-10-17 18:02:16 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.2 2003-10-26 19:40:39 stephena Exp $
 */
 class FrameBuffer
 {
@@ -44,13 +48,58 @@ class FrameBuffer
     /**
       Destructor
     */
-    virtual ~FrameBuffer(void);
+    virtual ~FrameBuffer();
+
+    /**
+      Initializes the framebuffer display.  This must be called before any
+      calls are made to derived methods.
+
+      @param console   The console
+      @param mediasrc  The console
+    */
+    void initDisplay(Console* console, MediaSource* mediasrc);
+
+    /**
+      Updates the display.  Also draws any pending menus, etc.
+    */
+    void update();
+
+    /**
+      Shows the main menu onscreen.  This will only be called if event
+      remapping has been enabled in the event handler.
+
+      @param show  Show/hide the menu based on the boolean value
+    */
+    void showMainMenu(bool show);
+
+    /**
+      Shows a message onscreen.
+
+      @param message  The message to be shown
+    */
+    void showMessage(const string& message);
+
+    /**
+      Returns the current width of the framebuffer.
+      Note that this will take into account the current scaling (if any).
+
+      @return  The current width
+    */
+    uInt32 width()  { return myWidth; }
+
+    /**
+      Returns the current height of the framebuffer.
+      Note that this will take into account the current scaling (if any).
+
+      @return  The current height
+    */
+    uInt32 height() { return myHeight; }
 
     /**
       Send a keyboard event to the user interface.
 
-      @param code  The StellaEvent code
-      @param state The StellaEvent state
+      @param code   The StellaEvent code
+      @param state  The StellaEvent state
     */
     void sendKeyEvent(StellaEvent::KeyCode code, Int32 state);
 
@@ -64,40 +113,104 @@ class FrameBuffer
     void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
          Int32 state);
 
-    void showMainMenu(bool show);
-    void showMessage(const string& message);
-
-    uInt32 width()  { return myWidth; }
-    uInt32 height() { return myHeight; }
-
-    uInt16* pixels() const;
-
     /**
-      Answers if the display is currently in fullscreen mode.
+      Returns the mediasource used in the framebuffer.
+
+      @result  The mediasource for this framebuffer
     */
-    bool fullScreen() { return isFullscreen; }
+    MediaSource* mediaSource() const;
 
   public:
+    //////////////////////////////////////////////////////////////////////
+    // The following methods are system-specific and must be implemented
+    // in derived classes.
+    //////////////////////////////////////////////////////////////////////
+
     /**
       This routine should be called once the console is created to setup
       the video system for us to use.  Return false if any operation fails,
       otherwise return true.
     */
-    virtual bool init(Console* console, MediaSource* mediasrc) = 0;
+    virtual bool init() = 0;
 
     /**
-      This routine should be called anytime the display needs to be updated
+      This routine should be called anytime the MediaSource needs to be redrawn
+      to the screen.
     */
-    virtual void update() = 0;
+    virtual void drawMediaSource() = 0;
 
     /**
-      Toggles between fullscreen and windowed mode.
+      This routine should be called to draw a rectangular box with sides
+      at the specified coordinates.
+
+      @param x   The x coordinate
+      @param y   The y coordinate
+      @param w   The width of the box
+      @param h   The height of the box
+      @param fg  The color of the bounding sides
+      @param bg  The color of the background
     */
-    virtual void toggleFullscreen() = 0;
+    virtual void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt8 fg, uInt8 bg) = 0;
+
+    /**
+      This routine should be called to draw text at the specified coordinates.
+
+      @param x        The x coordinate
+      @param y        The y coordinate
+      @param message  The message text
+      @param fg       The color of the text
+    */
+    virtual void drawText(uInt32 x, uInt32 y, const string& message, uInt8 fg) = 0;
+
+    /**
+      This routine should be called to draw character 'c' at the specified coordinates.
+
+      @param x   The x coordinate
+      @param y   The y coordinate
+      @param c   The character to draw
+      @param fg  The color of the character
+    */
+    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c, uInt8 fg) = 0;
+
+    /**
+      This routine is called before any drawing is done (per-frame).
+    */
+    virtual void preFrameUpdate() = 0;
+
+    /**
+      This routine is called after any drawing is done (per-frame).
+    */
+    virtual void postFrameUpdate() = 0;
+
+    /**
+      This routine is called when the emulation has been paused.
+
+      @param status  Toggle pause based on status
+    */
+    virtual void pause(bool status) = 0;
 
   protected:
+    // The Console for the system
+    Console* myConsole;
+
+    // The Mediasource for the system
+    MediaSource* myMediaSource;
+
+    // Bounds for the window frame
+    uInt32 myWidth, myHeight;
+
+    // Indicates if the entire frame should be redrawn
+    bool theRedrawEntireFrameIndicator;
+
+    // Indicates the current pause status
+    bool myPauseStatus;
+
+    // Table of bitmapped fonts.
+    static const uInt8 ourFontData[2048];
+
+  private:
     // Enumeration representing the different types of user interface widgets
-    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU, FONTS_MENU };
+    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU };
 
     Widget currentSelectedWidget();
     Event::Type currentSelectedEvent();
@@ -111,6 +224,15 @@ class FrameBuffer
 
     // Remove all bindings for this core event
     void deleteBinding(Event::Type event);
+
+    // Draw the main menu
+    void drawMainMenu();
+
+    // Draw the remap menu
+    void drawRemapMenu();
+
+    // Draw the info menu
+    void drawInfoMenu();
 
     // Move the cursor up 1 line, possibly scrolling the list of items
     void moveCursorUp();
@@ -127,15 +249,7 @@ class FrameBuffer
     // scan the mapping arrays and update the remap menu
     void loadRemapMenu();
 
-    void initBase(Console* console, MediaSource* mediasrc);
-
-  protected:
-    // The Console for the system
-    Console* myConsole;
-
-    // The Mediasource for the system
-    MediaSource* myMediaSource;
-
+  private:
     // Indicates the current framerate of the system
     uInt32 myFrameRate;
 
@@ -153,12 +267,6 @@ class FrameBuffer
       string action;
       string key;
     };
-
-    // Bounds for the window frame
-    uInt32 myXStart, myYStart, myWidth, myHeight;
-
-    // Table of bitmapped fonts.
-    static const uInt8 ourFontData[2048];
 
     // Table of strings representing the various StellaEvent codes
     static const char* ourEventName[StellaEvent::LastKCODE];
@@ -195,7 +303,7 @@ class FrameBuffer
     string ourPropertiesInfo[6];
 
     // Holds static strings for the main menu
-    static MainMenuItem ourMainMenu[3];
+    static MainMenuItem ourMainMenu[2];
 
     // Holds static strings for the remap menu
     static RemapMenuItem ourRemapMenu[57];
@@ -211,9 +319,6 @@ class FrameBuffer
 
     // Holds the number of items in the joytable array
     uInt32 myJoyTableSize;
-
-    // Indicates whether the emulator is currently in fullscreen mode
-    bool isFullscreen; // FIXME - remove from here, its specific
 };
 
 #endif

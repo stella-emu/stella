@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.42 2003-10-17 18:02:15 stephena Exp $
+## $Id: makefile,v 1.43 2003-10-26 19:40:39 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -30,14 +30,14 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wunused
 ### comment out all lines to completely disable sound
 ###
 #SOUND_ALSA = 1
-#SOUND_OSS  = 1
+SOUND_OSS  = 1
 #SOUND_SDL  = 1
 
 ### to include OpenGL video support (SDL)
 #DISPLAY_OPENGL = 1
 
 ### to include joystick support (SDL)
-# JOYSTICK_SUPPORT = 1
+ JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library) FIXME

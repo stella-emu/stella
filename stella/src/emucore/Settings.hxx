@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.7 2003-09-23 17:27:11 stephena Exp $
+// $Id: Settings.hxx,v 1.8 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -32,7 +32,7 @@ class Console;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.7 2003-09-23 17:27:11 stephena Exp $
+  @version $Id: Settings.hxx,v 1.8 2003-10-26 19:40:39 stephena Exp $
 */
 class Settings
 {
@@ -151,7 +151,7 @@ class Settings
       This method should be called at when the emulation core receives
       a PAUSE event.
     */
-    void setPauseEvent() { myPauseIndicator = !myPauseIndicator; }
+    void setPauseEvent(bool status) { myPauseIndicator = status; }
 
     /**
       This method determines whether the PAUSE event has been received.

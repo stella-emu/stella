@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.16 2003-10-17 18:02:16 stephena Exp $
+// $Id: EventHandler.cxx,v 1.17 2003-10-26 19:40:39 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -37,23 +37,23 @@
 EventHandler::EventHandler(Console* console)
     : myConsole(console),
       myCurrentState(0),
-      myMenuStatus(false)
+      myPauseStatus(false),
+      myMenuStatus(false),
+      myRemapEnabledFlag(true)
 {
-  Int32 i;
-
   // Create the event object which will be used for this handler
   myEvent = new Event();
 
   // Erase the KeyEvent array 
-  for(i = 0; i < StellaEvent::LastKCODE; ++i)
+  for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
     myKeyTable[i] = Event::NoType;
 
   // Erase the JoyEvent array
-  for(i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
     myJoyTable[i] = Event::NoType;
 
   // Erase the Message array 
-  for(i = 0; i < Event::LastType; ++i)
+  for(Int32 i = 0; i < Event::LastType; ++i)
     ourMessageTable[i] = "";
 
   // Set unchanging messages
@@ -85,7 +85,7 @@ Event* EventHandler::event()
 void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
 {
   // First check if we are entering menu mode
-  if(key == StellaEvent::KCODE_TAB && state == 1)
+  if(myRemapEnabledFlag && key == StellaEvent::KCODE_TAB && state == 1)
   {
     myMenuStatus = !myMenuStatus;
     myConsole->frameBuffer().showMainMenu(myMenuStatus);
@@ -143,7 +143,9 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     }
     else if(event == Event::Pause)
     {
-      myConsole->settings().setPauseEvent();
+      myPauseStatus = !myPauseStatus;
+      myConsole->frameBuffer().pause(myPauseStatus);
+//FIXME  myConsole->sound().pause(myPauseStatus);
       return;
     }
     else if(event == Event::Quit)
@@ -417,7 +419,7 @@ void EventHandler::takeSnapshot()
   // Now save the snapshot file
   string filename = myConsole->settings().snapshotFilename();
   myConsole->snapshot().savePNG(filename, myConsole->frameBuffer(),
-      myConsole->settings().getInt("zoom")); // FIXME - update zoom in resizewindow
+      myConsole->settings().getInt("zoom"));
 
   myConsole->frameBuffer().showMessage("Snapshot saved");
 #else
