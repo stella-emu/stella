@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.51 2004-04-21 16:27:14 stephena Exp $
+## $Id: makefile,v 1.52 2004-05-24 17:49:43 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -60,12 +60,10 @@ SMP      =
 
 SRC      = ..
 CORE     = $(SRC)/emucore
-UI       = $(SRC)/ui
-COMMON   = $(SRC)/ui/common
+COMMON   = $(SRC)/common
 
 INCLUDES  = -I. -I$(CORE) -I$(CORE)/m6502/src \
-            -I$(CORE)/m6502/src/bspf/src -I$(COMMON) -I$(UI)/sdl -I$(UI)/sound \
-            -I/sw/include
+            -I$(CORE)/m6502/src/bspf/src -I$(COMMON) -I$(SRC)/unix -I$(SRC)/win32
 
 ## set some sane optimizations if none have been provided
 ifndef OPTIMIZATIONS
@@ -301,59 +299,29 @@ Deserializer.o: $(CORE)/Deserializer.cxx $(CORE)/Deserializer.hxx
 Settings.o: $(CORE)/Settings.cxx $(CORE)/Settings.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Settings.cxx
 
-SettingsUNIX.o: $(UI)/sdl/SettingsUNIX.cxx $(UI)/sdl/SettingsUNIX.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SettingsUNIX.cxx
+SettingsUNIX.o: $(SRC)/unix/SettingsUNIX.cxx $(SRC)/unix/SettingsUNIX.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/unix/SettingsUNIX.cxx
 
-SettingsWin32.o: $(UI)/sdl/SettingsWin32.cxx $(UI)/sdl/SettingsWin32.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/SettingsWin32.cxx
+SettingsWin32.o: $(SRC)/win32/SettingsWin32.cxx $(SRC)/win32/SettingsWin32.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/win32/SettingsWin32.cxx
 
-Terminal.o: $(UI)/x11/Terminal.cxx $(UI)/x11/Terminal.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/x11/Terminal.cxx
+SoundSDL.o: $(COMMON)/SoundSDL.cxx $(COMMON)/SoundSDL.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/SoundSDL.cxx
 
-mainDOS.o: $(UI)/dos/mainDOS.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/dos/mainDOS.cxx
+mainSDL.o: $(COMMON)/mainSDL.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/mainSDL.cxx
 
-PCJoys.o: $(UI)/dos/PCJoys.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/dos/PCJoys.cxx
+FrameBufferSDL.o: $(COMMON)/FrameBufferSDL.cxx $(COMMON)/FrameBufferSDL.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/FrameBufferSDL.cxx
 
-SndDOS.o: $(UI)/dos/SndDOS.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/dos/SndDOS.cxx
+FrameBufferSoft.o: $(COMMON)/FrameBufferSoft.cxx $(COMMON)/FrameBufferSoft.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/FrameBufferSoft.cxx
 
-dos_sb.o: $(UI)/dos/dos_sb.c
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/dos/dos_sb.c
+FrameBufferGL.o: $(COMMON)/FrameBufferGL.cxx $(COMMON)/FrameBufferGL.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/FrameBufferGL.cxx
 
-vga.o: $(UI)/dos/vga.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(UI)/dos/vga.cxx
-
-SoundALSA.o: $(UI)/sound/SoundALSA.cxx $(UI)/sound/SoundALSA.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundALSA.cxx
-
-SoundOSS.o: $(UI)/sound/SoundOSS.cxx $(UI)/sound/SoundOSS.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundOSS.cxx
-
-SoundSDL.o: $(UI)/sound/SoundSDL.cxx $(UI)/sound/SoundSDL.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sound/SoundSDL.cxx
-
-mainX11.o: $(UI)/x11/mainX11.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/x11/mainX11.cxx
-
-mainSDL.o: $(UI)/sdl/mainSDL.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/mainSDL.cxx
-
-RectList.o: $(UI)/sdl/RectList.cxx $(UI)/sdl/RectList.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/RectList.cxx
-
-FrameBufferSDL.o: $(UI)/sdl/FrameBufferSDL.cxx $(UI)/sdl/FrameBufferSDL.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferSDL.cxx
-
-FrameBufferSoft.o: $(UI)/sdl/FrameBufferSoft.cxx $(UI)/sdl/FrameBufferSoft.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferSoft.cxx
-
-FrameBufferGL.o: $(UI)/sdl/FrameBufferGL.cxx $(UI)/sdl/FrameBufferGL.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/sdl/FrameBufferGL.cxx
-
-Snapshot.o: $(UI)/common/Snapshot.cxx $(UI)/common/Snapshot.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Snapshot.cxx
+Snapshot.o: $(COMMON)/Snapshot.cxx $(COMMON)/Snapshot.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/Snapshot.cxx
 
 D6502.o: $(CORE)/m6502/src/D6502.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/D6502.cxx
