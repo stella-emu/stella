@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.34 2003-09-07 18:30:28 stephena Exp $
+## $Id: makefile,v 1.35 2003-09-09 16:45:47 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -30,7 +30,7 @@ OPTIMIZATIONS  = $(CXXFLAGS) -Wall -Wno-unused
 ### SDL sound not yet supported in the X11 version
 ### comment out all lines to completely disable sound
 ###
-SOUND_ALSA = 1
+#SOUND_ALSA = 1
 #SOUND_OSS  = 1
 #SOUND_SDL  = 1
 
@@ -44,7 +44,7 @@ SOUND_ALSA = 1
 # DEBUG = 1
 
 ### to include joystick support in the X11 and SDL versions
- JOYSTICK_SUPPORT = 1
+# JOYSTICK_SUPPORT = 1
 
 ### to include support for saving snapshots in png format
 ### (requires PNG library)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.46 2003-09-07 18:30:28 stephena Exp $
+// $Id: mainSDL.cxx,v 1.47 2003-09-09 16:45:47 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -22,8 +22,10 @@
 #include <string>
 #include <algorithm>
 
-#include <time.h>
-#include <sys/time.h>
+#ifdef HAVE_GETTIMEOFDAY
+  #include <time.h>
+  #include <sys/time.h>
+#endif
 
 #include <SDL.h>
 #include <SDL_syswm.h>
@@ -119,9 +121,6 @@ static string theSnapShotDir, theSnapShotName;
 #ifdef HAVE_PNG
   static Snapshot* snapshot;
 #endif
-
-// FIXME - these are going to disappear 
-//static Event theEvent;
 
 // Pointer to the console object or the null pointer
 static Console* theConsole = (Console*) NULL;

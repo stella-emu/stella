@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.37 2002-12-15 04:10:56 bwmott Exp $
+// $Id: mainX11.cxx,v 1.38 2003-09-09 16:45:47 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -38,10 +38,12 @@
 #include "bspf.hxx"
 #include "Console.hxx"
 #include "Event.hxx"
+#include "StellaEvent.hxx"
+#include "EventHandler.hxx"
+#include "Frontend.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
-#include "System.hxx"
 #include "Settings.hxx"
 
 #ifdef SOUND_ALSA
@@ -62,40 +64,24 @@
   #include <linux/joystick.h>
 #endif
 
-#define MESSAGE_INTERVAL 2
-
-// A graphic context for each of the 2600's colors
-static GC theGCTable[256];
+//#ifdef UNIX
+  #include "FrontendUNIX.hxx"
+//#endif
 
 // function prototypes
+// FIXME the following will be placed in a Display class eventually ...
+// A graphic context for each of the 2600's colors
+static GC theGCTable[256];
 static bool setupDisplay();
-static bool setupJoystick();
 static bool createCursors();
 static void setupPalette();
-static void cleanup();
-static bool setupDirs();
-
 static void updateDisplay(MediaSource& mediaSource);
-static void handleEvents();
-
-static void doQuit();
 static void resizeWindow(int mode);
 static void centerWindow();
 static void showCursor(bool show);
 static void grabMouse(bool grab);
 static void toggleFullscreen();
-static void takeSnapshot();
-static void togglePause();
 static uInt32 maxWindowSizeForScreen();
-static uInt32 getTicks();
-
-static bool setupProperties(PropertiesSet& set);
-static void handleRCFile();
-static void usage();
-
-static void loadState();
-static void saveState();
-static void changeState(int direction);
 
 // Globals for X windows stuff
 static Display* theDisplay = (Display*) NULL;
@@ -108,6 +94,25 @@ static Cursor normalCursor = 0;
 static Cursor blankCursor = 0;
 static uInt32 eventMask;
 static Atom wm_delete_window;
+static uInt32 theWidth, theHeight, theMaxWindowSize, theWindowSize;
+////////////////////////////////////////////
+
+static void cleanup();
+static bool setupJoystick();
+static void handleEvents();
+
+static void takeSnapshot();
+
+static uInt32 getTicks();
+static bool setupProperties(PropertiesSet& set);
+static void handleRCFile();
+static void usage();
+
+static void loadState();
+static void saveState();
+static void changeState(int direction);
+
+static string theSnapShotDir, theSnapShotName;
 
 #ifdef HAVE_PNG
   static Snapshot* snapshot;
@@ -119,95 +124,20 @@ static Atom wm_delete_window;
   static int theRightJoystickFd;
 #endif
 
-// Global event stuff
-struct Switches
-{
-  KeySym scanCode;
-  Event::Type eventCode;
-  string message;
-};
-
-static Switches list[] = {
-  { XK_1,           Event::KeyboardZero1,            "" },
-  { XK_2,           Event::KeyboardZero2,            "" },
-  { XK_3,           Event::KeyboardZero3,            "" },
-  { XK_q,           Event::KeyboardZero4,            "" },
-  { XK_w,           Event::KeyboardZero5,            "" },
-  { XK_e,           Event::KeyboardZero6,            "" },
-  { XK_a,           Event::KeyboardZero7,            "" },
-  { XK_s,           Event::KeyboardZero8,            "" },
-  { XK_d,           Event::KeyboardZero9,            "" },
-  { XK_z,           Event::KeyboardZeroStar,         "" },
-  { XK_x,           Event::KeyboardZero0,            "" },
-  { XK_c,           Event::KeyboardZeroPound,        "" },
-
-  { XK_8,           Event::KeyboardOne1,            "" },
-  { XK_9,           Event::KeyboardOne2,            "" },
-  { XK_0,           Event::KeyboardOne3,            "" },
-  { XK_i,           Event::KeyboardOne4,            "" },
-  { XK_o,           Event::KeyboardOne5,            "" },
-  { XK_p,           Event::KeyboardOne6,            "" },
-  { XK_k,           Event::KeyboardOne7,            "" },
-  { XK_l,           Event::KeyboardOne8,            "" },
-  { XK_semicolon,   Event::KeyboardOne9,            "" },
-  { XK_comma,       Event::KeyboardOneStar,         "" },
-  { XK_period,      Event::KeyboardOne0,            "" },
-  { XK_slash,       Event::KeyboardOnePound,        "" },
-
-  { XK_Down,        Event::JoystickZeroDown,        "" },
-  { XK_Up,          Event::JoystickZeroUp,          "" },
-  { XK_Left,        Event::JoystickZeroLeft,        "" },
-  { XK_Right,       Event::JoystickZeroRight,       "" },
-  { XK_space,       Event::JoystickZeroFire,        "" },
-  { XK_Return,      Event::JoystickZeroFire,        "" },
-  { XK_Control_L,   Event::JoystickZeroFire,        "" },
-  { XK_z,           Event::BoosterGripZeroTrigger,  "" },
-  { XK_x,           Event::BoosterGripZeroBooster,  "" },
-
-  { XK_w,           Event::JoystickZeroUp,          "" },
-  { XK_s,           Event::JoystickZeroDown,        "" },
-  { XK_a,           Event::JoystickZeroLeft,        "" },
-  { XK_d,           Event::JoystickZeroRight,       "" },
-  { XK_Tab,         Event::JoystickZeroFire,        "" },
-  { XK_1,           Event::BoosterGripZeroTrigger,  "" },
-  { XK_2,           Event::BoosterGripZeroBooster,  "" },
-
-  { XK_l,           Event::JoystickOneDown,         "" },
-  { XK_o,           Event::JoystickOneUp,           "" },
-  { XK_k,           Event::JoystickOneLeft,         "" },
-  { XK_semicolon,   Event::JoystickOneRight,        "" },
-  { XK_j,           Event::JoystickOneFire,         "" },
-  { XK_n,           Event::BoosterGripOneTrigger,   "" },
-  { XK_m,           Event::BoosterGripOneBooster,   "" },
-
-  { XK_F1,          Event::ConsoleSelect,           "" },
-  { XK_F2,          Event::ConsoleReset,            "" },
-  { XK_F3,          Event::ConsoleColor,            "Color Mode" },
-  { XK_F4,          Event::ConsoleBlackWhite,       "BW Mode" },
-  { XK_F5,          Event::ConsoleLeftDifficultyA,  "Left Difficulty A" },
-  { XK_F6,          Event::ConsoleLeftDifficultyB,  "Left Difficulty B" },
-  { XK_F7,          Event::ConsoleRightDifficultyA, "Right Difficulty A" },
-  { XK_F8,          Event::ConsoleRightDifficultyB, "Right Difficulty B" }
-};
-
-// Event objects to use
-static Event theEvent;
-static Event keyboardEvent;
-
 // Pointer to the console object or the null pointer
 static Console* theConsole = (Console*) NULL;
-
-// Pointer to the settings object or the null pointer
-static Settings* settings = (Settings*) NULL;
 
 // Pointer to the sound object or the null pointer
 static Sound* sound = (Sound*) NULL;
 
-// Indicates if the user wants to quit
-static bool theQuitIndicator = false;
+// Pointer to the frontend object or the null pointer
+static Frontend* frontend = (Frontend*) NULL;
 
-// Indicates if the emulator should be paused
-static bool thePauseIndicator = false;
+// Indicates if the mouse should be grabbed
+static bool theGrabMouseIndicator = false;
+
+// Indicates if the mouse cursor should be hidden
+static bool theHideCursorIndicator = false;
 
 // Indicates if the entire frame should be redrawn
 static bool theRedrawEntireFrameIndicator = true;
@@ -218,16 +148,138 @@ static bool isFullscreen = false;
 // Indicates whether the window is currently centered
 static bool isCentered = false;
 
-// Indicates the current state to use for state saving
-static uInt32 currentState = 0;
+struct Switches
+{
+  KeySym scanCode;
+  StellaEvent::KeyCode keyCode;
+};
 
-// The locations for various required files
-static string homeDir;
-static string stateDir;
-static string homePropertiesFile;
-static string systemPropertiesFile;
-static string homeRCFile;
-static string systemRCFile;
+// Place the most used keys first to speed up access
+static Switches keyList[] = {
+    { XK_F1,          StellaEvent::KCODE_F1         },
+    { XK_F2,          StellaEvent::KCODE_F2         },
+    { XK_F3,          StellaEvent::KCODE_F3         },
+    { XK_F4,          StellaEvent::KCODE_F4         },
+    { XK_F5,          StellaEvent::KCODE_F5         },
+    { XK_F6,          StellaEvent::KCODE_F6         },
+    { XK_F7,          StellaEvent::KCODE_F7         },
+    { XK_F8,          StellaEvent::KCODE_F8         },
+    { XK_F9,          StellaEvent::KCODE_F9         },
+    { XK_F10,         StellaEvent::KCODE_F10        },
+    { XK_F11,         StellaEvent::KCODE_F11        },
+    { XK_F12,         StellaEvent::KCODE_F12        },
+
+    { XK_Up,          StellaEvent::KCODE_UP         },
+    { XK_Down,        StellaEvent::KCODE_DOWN       },
+    { XK_Left,        StellaEvent::KCODE_LEFT       },
+    { XK_Right,       StellaEvent::KCODE_RIGHT      },
+    { XK_space,       StellaEvent::KCODE_SPACE      },
+    { XK_Control_L,   StellaEvent::KCODE_CTRL       },
+    { XK_Control_R,   StellaEvent::KCODE_CTRL       },
+    { XK_Alt_L,       StellaEvent::KCODE_ALT        },
+    { XK_Alt_R,       StellaEvent::KCODE_ALT        },
+
+    { XK_a,           StellaEvent::KCODE_a          },
+    { XK_b,           StellaEvent::KCODE_b          },
+    { XK_c,           StellaEvent::KCODE_c          },
+    { XK_d,           StellaEvent::KCODE_d          },
+    { XK_e,           StellaEvent::KCODE_e          },
+    { XK_f,           StellaEvent::KCODE_f          },
+    { XK_g,           StellaEvent::KCODE_g          },
+    { XK_h,           StellaEvent::KCODE_h          },
+    { XK_i,           StellaEvent::KCODE_i          },
+    { XK_j,           StellaEvent::KCODE_j          },
+    { XK_k,           StellaEvent::KCODE_k          },
+    { XK_l,           StellaEvent::KCODE_l          },
+    { XK_m,           StellaEvent::KCODE_m          },
+    { XK_n,           StellaEvent::KCODE_n          },
+    { XK_o,           StellaEvent::KCODE_o          },
+    { XK_p,           StellaEvent::KCODE_p          },
+    { XK_q,           StellaEvent::KCODE_q          },
+    { XK_r,           StellaEvent::KCODE_r          },
+    { XK_s,           StellaEvent::KCODE_s          },
+    { XK_t,           StellaEvent::KCODE_t          },
+    { XK_u,           StellaEvent::KCODE_u          },
+    { XK_v,           StellaEvent::KCODE_v          },
+    { XK_w,           StellaEvent::KCODE_w          },
+    { XK_x,           StellaEvent::KCODE_x          },
+    { XK_y,           StellaEvent::KCODE_y          },
+    { XK_z,           StellaEvent::KCODE_z          },
+
+    { XK_0,           StellaEvent::KCODE_0          },
+    { XK_1,           StellaEvent::KCODE_1          },
+    { XK_2,           StellaEvent::KCODE_2          },
+    { XK_3,           StellaEvent::KCODE_3          },
+    { XK_4,           StellaEvent::KCODE_4          },
+    { XK_5,           StellaEvent::KCODE_5          },
+    { XK_6,           StellaEvent::KCODE_6          },
+    { XK_7,           StellaEvent::KCODE_7          },
+    { XK_8,           StellaEvent::KCODE_8          },
+    { XK_9,           StellaEvent::KCODE_9          },
+
+    { XK_KP_0,        StellaEvent::KCODE_KP0        },
+    { XK_KP_1,        StellaEvent::KCODE_KP1        },
+    { XK_KP_2,        StellaEvent::KCODE_KP2        },
+    { XK_KP_3,        StellaEvent::KCODE_KP3        },
+    { XK_KP_4,        StellaEvent::KCODE_KP4        },
+    { XK_KP_5,        StellaEvent::KCODE_KP5        },
+    { XK_KP_6,        StellaEvent::KCODE_KP6        },
+    { XK_KP_7,        StellaEvent::KCODE_KP7        },
+    { XK_KP_8,        StellaEvent::KCODE_KP8        },
+    { XK_KP_9,        StellaEvent::KCODE_KP9        },
+    { XK_KP_Decimal,  StellaEvent::KCODE_KP_PERIOD  },
+    { XK_KP_Divide,   StellaEvent::KCODE_KP_DIVIDE  },
+    { XK_KP_Multiply, StellaEvent::KCODE_KP_MULTIPLY},
+    { XK_KP_Subtract, StellaEvent::KCODE_KP_MINUS   },
+    { XK_KP_Add,      StellaEvent::KCODE_KP_PLUS    },
+    { XK_KP_Enter,    StellaEvent::KCODE_KP_ENTER   },
+    { XK_KP_Equal,    StellaEvent::KCODE_KP_EQUALS  },
+
+    { XK_BackSpace,   StellaEvent::KCODE_BACKSPACE  },
+    { XK_Tab,         StellaEvent::KCODE_TAB        },
+    { XK_Return,      StellaEvent::KCODE_RETURN     },
+    { XK_Pause,       StellaEvent::KCODE_PAUSE      },
+    { XK_Escape,      StellaEvent::KCODE_ESCAPE     },
+    { XK_comma,       StellaEvent::KCODE_COMMA      },
+    { XK_period,      StellaEvent::KCODE_PERIOD     },
+    { XK_slash,       StellaEvent::KCODE_SLASH      },
+    { XK_backslash,   StellaEvent::KCODE_BACKSLASH  },
+    { XK_semicolon,   StellaEvent::KCODE_SEMICOLON  },
+    { XK_apostrophe,  StellaEvent::KCODE_QUOTE      },
+    { XK_grave,       StellaEvent::KCODE_BACKQUOTE  },
+    { XK_bracketleft, StellaEvent::KCODE_LEFTBRACKET},
+    { XK_bracketright,StellaEvent::KCODE_RIGHTBRACKET}
+  };
+
+// Lookup table for joystick numbers and events
+StellaEvent::JoyStick joyList[StellaEvent::LastJSTICK] = {
+    StellaEvent::JSTICK_0, StellaEvent::JSTICK_1,
+    StellaEvent::JSTICK_2, StellaEvent::JSTICK_3
+};
+StellaEvent::JoyCode joyButtonList[StellaEvent::LastJCODE] = {
+    StellaEvent::JBUTTON_0, StellaEvent::JBUTTON_1, StellaEvent::JBUTTON_2, 
+    StellaEvent::JBUTTON_3, StellaEvent::JBUTTON_4, StellaEvent::JBUTTON_5, 
+    StellaEvent::JBUTTON_6, StellaEvent::JBUTTON_7, StellaEvent::JBUTTON_8, 
+    StellaEvent::JBUTTON_9
+};
+
+
+/**
+  Returns number of ticks in microseconds
+*/
+#ifdef HAVE_GETTIMEOFDAY
+inline uInt32 getTicks()
+{
+  timeval now;
+  gettimeofday(&now, 0);
+
+  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
+
+  return ticks;
+}
+#else
+  #error We need gettimeofday for the X11 version!!!
+#endif
 
 
 /**
@@ -255,34 +307,38 @@ bool setupDisplay()
   Window rootWindow = RootWindow(theDisplay, theScreen);
 
   // Get the desired width and height of the display
-  settings->theWidth  = theConsole->mediaSource().width();
-  settings->theHeight = theConsole->mediaSource().height();
+  theWidth  = theConsole->mediaSource().width();
+  theHeight = theConsole->mediaSource().height();
 
   // Get the maximum size of a window for THIS screen
   // Must be called after display and screen are known, as well as
   // theWidth and theHeight
-  settings->theMaxWindowSize = maxWindowSizeForScreen();
+  theMaxWindowSize = maxWindowSizeForScreen();
 
+// FIXME  - add this error checking to the Settings class
   // If theWindowSize is not 0, then it must have been set on the commandline
   // Now we check to see if it is within bounds
-  if(settings->theWindowSize != 0)
+  if(theConsole->settings().theWindowSize != 0)
   {
-    if(settings->theWindowSize < 1)
-      settings->theWindowSize = 1;
-    else if(settings->theWindowSize > settings->theMaxWindowSize)
-      settings->theWindowSize = settings->theMaxWindowSize;
+    if(theConsole->settings().theWindowSize < 1)
+      theWindowSize = 1;
+    else if(theConsole->settings().theWindowSize > theMaxWindowSize)
+      theWindowSize = theMaxWindowSize;
+    else
+      theWindowSize = theConsole->settings().theWindowSize;
   }
   else  // theWindowSize hasn't been set so we do the default
   {
-    if(settings->theMaxWindowSize < 2)
-      settings->theWindowSize = 1;
+    if(theMaxWindowSize < 2)
+      theWindowSize = 1;
     else
-      settings->theWindowSize = 2;
+      theWindowSize = 2;
   }
+///////////////////////////////
 
   // Figure out the desired size of the window
-  int width  = settings->theWidth  * settings->theWindowSize * 2;
-  int height = settings->theHeight * settings->theWindowSize;
+  int width  = theWidth  * theWindowSize * 2;
+  int height = theHeight * theWindowSize;
 
   theWindow = XCreateSimpleWindow(theDisplay, rootWindow, 0, 0,
       width, height, CopyFromParent, CopyFromParent, 
@@ -317,7 +373,7 @@ bool setupDisplay()
   XSetWMProtocols(theDisplay, theWindow, &wm_delete_window, 1);
 
   // If requested install a private colormap for the window
-  if(settings->theUsePrivateColormapFlag)
+  if(theConsole->settings().theUsePrivateColormapFlag)
   {
     XSetWindowColormap(theDisplay, theWindow, thePrivateColormap);
   }
@@ -326,7 +382,7 @@ bool setupDisplay()
   XMapWindow(theDisplay, theWindow);
 
   // Center the window if centering is selected and not fullscreen
-  if(settings->theCenterWindowFlag)// && !theUseFullScreenFlag)
+  if(theConsole->settings().theCenterWindowFlag)// && !theUseFullScreenFlag)
     centerWindow();
 
   XEvent event;
@@ -341,16 +397,16 @@ bool setupDisplay()
   // If we're using the mouse for paddle emulation then enable mouse events
   if(((theConsole->properties().get("Controller.Left") == "Paddles") ||
       (theConsole->properties().get("Controller.Right") == "Paddles"))
-    && (settings->thePaddleMode != 4)) 
+    && (theConsole->settings().thePaddleMode != 4)) 
   {
     eventMask |= (PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
   }
 
   // Keep mouse in game window if grabmouse is selected
-  grabMouse(settings->theGrabMouseFlag);
+  grabMouse(theGrabMouseIndicator);
 
   // Show or hide the cursor depending on the 'hidecursor' argument
-  showCursor(!settings->theHideCursorFlag);
+  showCursor(!theHideCursorIndicator);
 
   XSelectInput(theDisplay, theWindow, eventMask);
 
@@ -358,10 +414,15 @@ bool setupDisplay()
   // Take care of the snapshot stuff.
   snapshot = new Snapshot();
 
-  if(settings->theSnapShotDir == "")
-    settings->theSnapShotDir = homeDir;
-  if(settings->theSnapShotName == "")
-    settings->theSnapShotName = "romname";
+  if(theConsole->settings().theSnapShotDir == "")
+    theSnapShotDir = homeDir;
+  else
+    theSnapShotDir = theConsole->settings().theSnapShotDir;
+
+  if(theConsole->settings().theSnapShotName == "")
+    theSnapShotName = "romname";
+  else
+    theSnapShotName = theConsole->settings().theSnapShotName;
 #endif
 
   return true;
@@ -406,7 +467,7 @@ bool setupJoystick()
 void setupPalette()
 {
   // If we're using a private colormap then let's free it to be safe
-  if(settings->theUsePrivateColormapFlag && theDisplay)
+  if(theConsole->settings().theUsePrivateColormapFlag && theDisplay)
   {
     if(thePrivateColormap)
       XFreeColormap(theDisplay, thePrivateColormap);
@@ -417,7 +478,7 @@ void setupPalette()
 
   // Make the palette be 75% as bright if pause is selected
   float shade = 1.0;
-  if(thePauseIndicator)
+  if(frontend->pause())
     shade = 0.75;
 
   // Allocate colors in the default colormap
@@ -431,7 +492,7 @@ void setupPalette()
     color.blue = (short unsigned int)(((palette[t] & 0x000000ff) << 8) * shade);
     color.flags = DoRed | DoGreen | DoBlue;
 
-    if(settings->theUsePrivateColormapFlag)
+    if(theConsole->settings().theUsePrivateColormapFlag)
       XAllocColor(theDisplay, thePrivateColormap, &color);
     else
       XAllocColor(theDisplay, DefaultColormap(theDisplay, theScreen), &color);
@@ -455,10 +516,10 @@ void updateDisplay(MediaSource& mediaSource)
 {
   uInt8* currentFrame = mediaSource.currentFrameBuffer();
   uInt8* previousFrame = mediaSource.previousFrameBuffer();
-  uInt16 screenMultiple = (uInt16) settings->theWindowSize;
+  uInt16 screenMultiple = (uInt16) theWindowSize;
 
-  uInt32 width  = settings->theWidth;
-  uInt32 height = settings->theHeight;
+  uInt32 width  = theWidth;
+  uInt32 height = theHeight;
 
   struct Rectangle
   {
@@ -599,8 +660,7 @@ void handleEvents()
   {
     if((unsigned long)event.xclient.data.l[0] == wm_delete_window)
     {
-      doQuit();
-      return;
+      theConsole->eventHandler().sendEvent(Event::Quit, 1);
     }
   }
 
@@ -613,11 +673,7 @@ void handleEvents()
     if((event.type == KeyPress) || (event.type == KeyRelease))
     {
       XLookupString(&event.xkey, buffer, 20, &key, &compose);
-      if((key == XK_Escape) && (event.type == KeyPress))
-      {
-        doQuit();
-      }
-      else if((key == XK_equal) && (event.type == KeyPress))
+      if((key == XK_equal) && (event.type == KeyPress))
       {
         resizeWindow(1);
       }
@@ -625,36 +681,18 @@ void handleEvents()
       {
         resizeWindow(0);
       }
-      else if((key == XK_F9) && (event.type == KeyPress))
-      {
-        saveState();
-      }
-      else if((key == XK_F10) && (event.type == KeyPress))
-      {
-        if(event.xkey.state & ShiftMask)
-          changeState(0);
-        else
-          changeState(1);
-      }
-      else if((key == XK_F11) && (event.type == KeyPress))
-      {
-        loadState();
-      }
       else if((key == XK_F12) && (event.type == KeyPress))
       {
         takeSnapshot();
       }
-      else if((key == XK_Pause) && (event.type == KeyPress))
-      {
-        togglePause();
-      }
+// FIXME - change x to Ctrl-x
       else if((key == XK_g) && (event.type == KeyPress))
       {
         // don't change grabmouse in fullscreen mode
         if(!isFullscreen)
         {
-          settings->theGrabMouseFlag = !settings->theGrabMouseFlag;
-          grabMouse(settings->theGrabMouseFlag);
+          theGrabMouseIndicator = !theGrabMouseIndicator;
+          grabMouse(theGrabMouseIndicator);
         }
       }
       else if((key == XK_h) && (event.type == KeyPress))
@@ -662,8 +700,8 @@ void handleEvents()
         // don't change hidecursor in fullscreen mode
         if(!isFullscreen)
         {
-          settings->theHideCursorFlag = !settings->theHideCursorFlag;
-          showCursor(!settings->theHideCursorFlag);
+          theHideCursorIndicator = !theHideCursorIndicator;
+          showCursor(!theHideCursorIndicator);
         }
       }
 #ifdef DEVELOPER_SUPPORT
@@ -721,13 +759,13 @@ void handleEvents()
       {
         if(event.xkey.state & Mod1Mask)
         {
-          if(settings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
+          if(theConsole->settings().theMergePropertiesFlag)  // Attempt to merge with propertiesSet
           {
-            theConsole->saveProperties(homePropertiesFile, true);
+            theConsole->saveProperties(theConsole->frontend().userPropertiesFilename(), true);
           }
           else  // Save to file in home directory
           {
-            string newPropertiesFile = homeDir + "/" + \
+            string newPropertiesFile = theConsole->frontend().userHomeDir() + "/" + \
               theConsole->properties().get("Cartridge.Name") + ".pro";
             replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
             theConsole->saveProperties(newPropertiesFile);
@@ -737,61 +775,52 @@ void handleEvents()
 #endif
       else
       { 
-        for(unsigned int i = 0; i < sizeof(list) / sizeof(Switches); ++i)
-        { 
-          if(list[i].scanCode == key)
-          {
-            theEvent.set(list[i].eventCode, 
-                (event.type == KeyPress) ? 1 : 0);
-            keyboardEvent.set(list[i].eventCode, 
-                (event.type == KeyPress) ? 1 : 0);
-
-            if((event.type == KeyPress) && (list[i].message != ""))
-              theConsole->mediaSource().showMessage(list[i].message,
-                  MESSAGE_INTERVAL * settings->theDesiredFrameRate);
-          }
+        int state = (event.type == KeyPress) ? 1 : 0;
+        for(unsigned int i = 0; i < sizeof(keyList) / sizeof(Switches); ++i)
+        {
+          if(keyList[i].scanCode == key)
+            theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
         }
       }
     }
     else if(event.type == MotionNotify)
     {
       Int32 resistance = 0;
-      uInt32 width = settings->theWidth * settings->theWindowSize * 2;
+      uInt32 width = theWidth * theWindowSize * 2;
+      Event::Type type;
 
       int x = width - event.xmotion.x;
       resistance = (Int32)((1000000.0 * x) / width);
 
       // Now, set the event of the correct paddle to the calculated resistance
-      if(settings->thePaddleMode == 0)
-        theEvent.set(Event::PaddleZeroResistance, resistance);
-      else if(settings->thePaddleMode == 1)
-        theEvent.set(Event::PaddleOneResistance, resistance);
-      else if(settings->thePaddleMode == 2)
-        theEvent.set(Event::PaddleTwoResistance, resistance);
-      else if(settings->thePaddleMode == 3)
-        theEvent.set(Event::PaddleThreeResistance, resistance);
+      if(theConsole->settings().thePaddleMode == 0)
+        type = Event::PaddleZeroResistance;
+      else if(theConsole->settings().thePaddleMode == 1)
+        type = Event::PaddleOneResistance;
+      else if(theConsole->settings().thePaddleMode == 2)
+        type = Event::PaddleTwoResistance;
+      else if(theConsole->settings().thePaddleMode == 3)
+        type = Event::PaddleThreeResistance;
+
+      theConsole->eventHandler().sendEvent(type, resistance);
     }
-    else if(event.type == ButtonPress) 
+    else if(event.type == ButtonPress || event.type == ButtonRelease)
     {
-      if(settings->thePaddleMode == 0)
-        theEvent.set(Event::PaddleZeroFire, 1);
-      else if(settings->thePaddleMode == 1)
-        theEvent.set(Event::PaddleOneFire, 1);
-      else if(settings->thePaddleMode == 2)
-        theEvent.set(Event::PaddleTwoFire, 1);
-      else if(settings->thePaddleMode == 3)
-        theEvent.set(Event::PaddleThreeFire, 1);
-    }
-    else if(event.type == ButtonRelease)
-    {
-      if(settings->thePaddleMode == 0)
-        theEvent.set(Event::PaddleZeroFire, 0);
-      else if(settings->thePaddleMode == 1)
-        theEvent.set(Event::PaddleOneFire, 0);
-      else if(settings->thePaddleMode == 2)
-        theEvent.set(Event::PaddleTwoFire, 0);
-      else if(settings->thePaddleMode == 3)
-        theEvent.set(Event::PaddleThreeFire, 0);
+      Event::Type type;
+      Int32 value;
+
+      value = (event.type == ButtonPress) ? 1 : 0;
+
+      if(theConsole->settings().thePaddleMode == 0)
+        type = Event::PaddleZeroFire;
+      else if(theConsole->settings().thePaddleMode == 1)
+        type = Event::PaddleOneFire;
+      else if(theConsole->settings().thePaddleMode == 2)
+        type = Event::PaddleTwoFire;
+      else if(theConsole->settings().thePaddleMode == 3)
+        type = Event::PaddleThreeFire;
+
+      theConsole->eventHandler().sendEvent(type, value);
     }
     else if(event.type == Expose)
     {
@@ -799,9 +828,9 @@ void handleEvents()
     }
     else if(event.type == UnmapNotify)
     {
-      if(!thePauseIndicator)
+      if(!frontend->pause())
       {
-        togglePause();
+        theConsole->eventHandler().sendEvent(Event::Pause, 1);
       }
     }
   }
@@ -934,13 +963,6 @@ void handleEvents()
 #endif
 }
 
-/**
-  This routine is called when the program is about to quit.
-*/
-void doQuit()
-{
-  theQuitIndicator = true;
-}
 
 /**
   This routine is called when the user wants to resize the window.
@@ -956,34 +978,33 @@ void resizeWindow(int mode)
   // this is a special case of allowing a resize while in fullscreen mode
   if(mode == -1)
   {
-    settings->theWidth         = theConsole->mediaSource().width();
-    settings->theHeight        = theConsole->mediaSource().height();
-    settings->theMaxWindowSize = maxWindowSizeForScreen();
+    theWidth  = theConsole->mediaSource().width();
+    theHeight = theConsole->mediaSource().height();
   }
   else if(mode == 1)   // increase size
   {
     if(isFullscreen)
       return;
 
-    if(settings->theWindowSize == settings->theMaxWindowSize)
-      settings->theWindowSize = 1;
+    if(theWindowSize == theMaxWindowSize)
+      theWindowSize = 1;
     else
-      settings->theWindowSize++;
+      theWindowSize++;
   }
   else if(mode == 0)   // decrease size
   {
     if(isFullscreen)
       return;
 
-    if(settings->theWindowSize == 1)
-      settings->theWindowSize = settings->theMaxWindowSize;
+    if(theWindowSize == 1)
+      theWindowSize = theMaxWindowSize;
     else
-      settings->theWindowSize--;
+      theWindowSize--;
   }
 
   // Figure out the desired size of the window
-  int width  = settings->theWidth  * settings->theWindowSize * 2;
-  int height = settings->theHeight * settings->theWindowSize;
+  int width  = theWidth  * theWindowSize * 2;
+  int height = theHeight * theWindowSize;
 
   XSizeHints hints;
   hints.flags = PSize | PMinSize | PMaxSize;
@@ -1001,7 +1022,7 @@ void resizeWindow(int mode)
   // A resize probably means that the window is no longer centered
   isCentered = false;
 
-  if(settings->theCenterWindowFlag)
+  if(theConsole->settings().theCenterWindowFlag)
     centerWindow();
 }
 
@@ -1017,8 +1038,8 @@ void centerWindow()
 
   w = DisplayWidth(theDisplay, theScreen);
   h = DisplayHeight(theDisplay, theScreen);
-  x = (w - (settings->theWidth * settings->theWindowSize * 2)) / 2;
-  y = (h - (settings->theHeight * settings->theWindowSize)) / 2;
+  x = (w - (theWidth * theWindowSize * 2)) / 2;
+  y = (h - (theHeight * theWindowSize)) / 2;
 
   XWindowChanges wc;
   wc.x = x;
@@ -1044,108 +1065,6 @@ void toggleFullscreen()
   cerr << "Fullscreen mode not supported.\n";
 }
 
-/**
-  Toggles pausing of the emulator
-*/
-void togglePause()
-{
-  if(thePauseIndicator)	// emulator is already paused so continue
-  {
-    thePauseIndicator = false;
-  }
-  else	// we want to pause the game
-  {
-    thePauseIndicator = true;
-  }
-
-  // Pause the console
-  theConsole->mediaSource().pause(thePauseIndicator);
-
-  // Show a different palette depending on pause state
-  setupPalette();
-}
-
-/**
-  Saves state of the current game in the current slot.
-*/
-void saveState()
-{
-  ostringstream buf;
-  string md5 = theConsole->properties().get("Cartridge.MD5");
-  buf << stateDir << md5 << ".st" << currentState;
-  string filename = buf.str();
-
-  // Do a state save using the System
-  int result = theConsole->system().saveState(filename, md5);
-
-  // Print appropriate message
-  buf.str("");
-  if(result == 1)
-    buf << "State " << currentState << " saved";
-  else if(result == 2)
-    buf << "Error saving state " << currentState;
-  else if(result == 3)
-    buf << "Invalid state " << currentState << " file";
-
-  string message = buf.str();
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
-}
-
-/**
-  Changes the current state slot.
-*/
-void changeState(int direction)
-{
-  if(direction == 1)   // increase current state slot
-  {
-    if(currentState == 9)
-      currentState = 0;
-    else
-      ++currentState;
-  }
-  else   // decrease current state slot
-  {
-    if(currentState == 0)
-      currentState = 9;
-    else
-      --currentState;
-  }
-
-  // Print appropriate message
-  ostringstream buf;
-  buf << "Changed to slot " << currentState;
-  string message = buf.str();
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
-}
-
-/**
-  Loads state from the current slot for the current game.
-*/
-void loadState()
-{
-  ostringstream buf;
-  string md5 = theConsole->properties().get("Cartridge.MD5");
-  buf << stateDir << md5 << ".st" << currentState;
-  string filename = buf.str();
-
-  // Do a state load using the System
-  int result = theConsole->system().loadState(filename, md5);
-
-  // Print appropriate message
-  buf.str("");
-  if(result == 1)
-    buf << "State " << currentState << " loaded";
-  else if(result == 2)
-    buf << "Error loading state " << currentState;
-  else if(result == 3)
-    buf << "Invalid state " << currentState << " file";
-
-  string message = buf.str();
-  theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
-    settings->theDesiredFrameRate);
-}
 
 /**
   Shows or hides the cursor based on the given boolean value.
@@ -1234,8 +1153,7 @@ void takeSnapshot()
   if(!snapshot)
   {
     message = "Snapshots disabled";
-    theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+    theConsole->mediaSource().showMessage(message, 120);
     return;
   }
 
@@ -1285,19 +1203,16 @@ void takeSnapshot()
   if(access(filename.c_str(), F_OK) == 0)
   {
     message = "Snapshot saved";
-    theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+    theConsole->mediaSource().showMessage(message, 120);
   }
   else
   {
     message = "Snapshot not saved";
-    theConsole->mediaSource().showMessage(message,
-      MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+    theConsole->mediaSource().showMessage(message, 120);
   }
 #else
   string message = "Snapshots unsupported";
-  theConsole->mediaSource().showMessage(message,
-    MESSAGE_INTERVAL * settings->theDesiredFrameRate);
+  theConsole->mediaSource().showMessage(message, 120);
 #endif
 }
 
@@ -1309,14 +1224,14 @@ uInt32 maxWindowSizeForScreen()
   int screenWidth  = DisplayWidth(theDisplay, theScreen);
   int screenHeight = DisplayHeight(theDisplay, theScreen);
 
-  uInt32 multiplier = screenWidth / (settings->theWidth * 2);
+  uInt32 multiplier = screenWidth / (theWidth * 2);
   bool found = false;
 
   while(!found && (multiplier > 0))
   {
     // Figure out the desired size of the window
-    int width  = settings->theWidth  * multiplier * 2;
-    int height = settings->theHeight * multiplier;
+    int width  = theWidth  * multiplier * 2;
+    int height = theHeight * multiplier;
 
     if((width < screenWidth) && (height < screenHeight))
       found = true;
@@ -1337,7 +1252,7 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "X Stella version 1.3",
+    "X Stella version 1.4pre",
     "",
     "Usage: stella.x11 [option ...] file",
     "",
@@ -1402,7 +1317,7 @@ void usage()
 
   @param set The properties set to setup
 */
-bool setupProperties(PropertiesSet& set)
+bool setupProperties(PropertiesSet& set, Settings& settings)
 {
   bool useMemList = false;
 
@@ -1410,34 +1325,26 @@ bool setupProperties(PropertiesSet& set)
   // If the user wishes to merge any property modifications to the
   // PropertiesSet file, then the PropertiesSet file MUST be loaded
   // into memory.
-  useMemList = settings->theMergePropertiesFlag;
+  useMemList = settings.theMergePropertiesFlag;
 #endif
 
   // Check to see if the user has specified an alternate .pro file.
-  // If it exists, use it.
-  if(settings->theAlternateProFile != "")
+  if(settings.theAlternateProFile != "")
   {
-    if(access(settings->theAlternateProFile.c_str(), R_OK) == 0)
-    {
-      set.load(settings->theAlternateProFile, &Console::defaultProperties(), useMemList);
-      return true;
-    }
-    else
-    {
-      cerr << "ERROR: Couldn't find \"" << settings->theAlternateProFile
-          << "\" properties file." << endl;
-      return false;
-    }
-  }
-
-  if(access(homePropertiesFile.c_str(), R_OK) == 0)
-  {
-    set.load(homePropertiesFile, &Console::defaultProperties(), useMemList);
+    set.load(settings.theAlternateProFile, &Console::defaultProperties(), useMemList);
     return true;
   }
-  else if(access(systemPropertiesFile.c_str(), R_OK) == 0)
+
+  if(frontend->userPropertiesFilename() != "")
   {
-    set.load(systemPropertiesFile, &Console::defaultProperties(), useMemList);
+    set.load(frontend->userPropertiesFilename(),
+             &Console::defaultProperties(), useMemList);
+    return true;
+  }
+  else if(frontend->systemPropertiesFilename() != "")
+  {
+    set.load(frontend->systemPropertiesFilename(),
+             &Console::defaultProperties(), useMemList);
     return true;
   }
   else
@@ -1447,35 +1354,17 @@ bool setupProperties(PropertiesSet& set)
   }
 }
 
-/**
-  Should be called to determine if an rc file exists.  First checks if there
-  is a user specified file "$HOME/.stella/stellarc" and then if there is a
-  system-wide file "/etc/stellarc".
-*/
-void handleRCFile()
-{
-  if(access(homeRCFile.c_str(), R_OK) == 0 )
-  {
-    ifstream homeStream(homeRCFile.c_str());
-    settings->handleRCFile(homeStream);
-  }
-  else if(access(systemRCFile.c_str(), R_OK) == 0 )
-  {
-    ifstream systemStream(systemRCFile.c_str());
-    settings->handleRCFile(systemStream);
-  }
-}
 
 /**
   Does general cleanup in case any operation failed (or at end of program).
 */
 void cleanup()
 {
+  if(frontend)
+    delete frontend;
+
   if(theConsole)
     delete theConsole;
-
-  if(settings)
-    delete settings;
 
 #ifdef HAVE_PNG
   if(snapshot)
@@ -1494,7 +1383,7 @@ void cleanup()
     XFreeCursor(theDisplay, blankCursor);
 
   // If we're using a private colormap then let's free it to be safe
-  if(settings->theUsePrivateColormapFlag && theDisplay)
+  if(theConsole->settings().theUsePrivateColormapFlag && theDisplay)
   {
      XFreeColormap(theDisplay, thePrivateColormap);
   }
@@ -1508,64 +1397,33 @@ void cleanup()
 #endif
 }
 
-/**
-  Creates some directories under $HOME.
-  Required directories are $HOME/.stella and $HOME/.stella/state
-  Also sets up various locations for properties files, etc.
-
-  This must be called before any other function.
-*/
-bool setupDirs()
-{
-  homeDir = getenv("HOME");
-  string path = homeDir + "/.stella";
-
-  if(access(path.c_str(), R_OK|W_OK|X_OK) != 0 )
-  {
-    if(mkdir(path.c_str(), 0777) != 0)
-      return false;
-  }
-
-  stateDir = homeDir + "/.stella/state/";
-  if(access(stateDir.c_str(), R_OK|W_OK|X_OK) != 0 )
-  {
-    if(mkdir(stateDir.c_str(), 0777) != 0)
-      return false;
-  }
-
-  homePropertiesFile   = homeDir + "/.stella/stella.pro";
-  systemPropertiesFile = "/etc/stella.pro";
-  homeRCFile           = homeDir + "/.stella/stellarc";
-  systemRCFile         = "/etc/stellarc";
-
-  return true;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
-  // First set up the directories where Stella will find RC and state files
-  if(!setupDirs())
+  // First set up the frontend to communicate with the emulation core
+//#ifdef UNIX
+  frontend = new FrontendUNIX();
+//#endif
+  if(!frontend)
   {
-    cerr << "ERROR: Couldn't set up config directories.\n";
+    cerr << "ERROR: Couldn't set up the frontend.\n";
     cleanup();
     return 0;
   }
 
   // Create some settings for the emulator
-  settings = new Settings();
-  if(!settings)
-  {
-    cerr << "ERROR: Couldn't create settings." << endl;
-    cleanup();
-    return 0;
-  }
+  string infile   = "";
+  string outfile  = frontend->userConfigFilename();
+  if(frontend->userConfigFilename() != "")
+    infile = frontend->userConfigFilename();
+  else if(frontend->systemConfigFilename() != "")
+    infile = frontend->systemConfigFilename();
 
-  // Load in any user defined settings from an RC file
-  handleRCFile();
+  Settings settings(infile, outfile);
 
   // Handle the command line arguments
-  if(!settings->handleCommandLineArgs(argc, argv))
+  if(!settings.handleCommandLineArgs(argc, argv))
   {
     usage();
     cleanup();
@@ -1591,7 +1449,7 @@ int main(int argc, char* argv[])
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
-  if(!setupProperties(propertiesSet))
+  if(!setupProperties(propertiesSet, settings))
   {
     delete[] image;
     cleanup();
@@ -1599,50 +1457,44 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio
-  if(settings->theSoundDriver == "0")
+  if(settings.theSoundDriver == "0")
   {
     // if sound has been disabled, we still need a sound object
     sound = new Sound();
-    if(settings->theShowInfoFlag)
+    if(settings.theShowInfoFlag)
       cout << "Sound disabled.\n";
   }
 #ifdef SOUND_ALSA
-  else if(settings->theSoundDriver == "alsa")
+  else if(settings.theSoundDriver == "alsa")
   {
     sound = new SoundALSA();
-    if(settings->theShowInfoFlag)
+    if(settings.theShowInfoFlag)
       cout << "Using ALSA for sound.\n";
   }
 #endif
 #ifdef SOUND_OSS
-  else if(settings->theSoundDriver == "oss")
+  else if(settings.theSoundDriver == "oss")
   {
     sound = new SoundOSS();
-    if(settings->theShowInfoFlag)
+    if(settings.theShowInfoFlag)
       cout << "Using OSS for sound.\n";
   }
 #endif
   else   // a driver that doesn't exist was requested, so disable sound
   {
     cerr << "ERROR: Sound support for "
-         << settings->theSoundDriver << " not available.\n";
+         << settings.theSoundDriver << " not available.\n";
     sound = new Sound();
   }
 
-  sound->setSoundVolume(settings->theDesiredVolume);
+  sound->setSoundVolume(settings.theDesiredVolume);
 
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
-  // Create the 2600 game console for users or developers
-#ifdef DEVELOPER_SUPPORT
-  theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound->getSampleRate(),
-      &settings->userDefinedProperties);
-#else
-  theConsole = new Console(image, size, filename, 
-      theEvent, propertiesSet, sound->getSampleRate());
-#endif
+  // Create the 2600 game console
+  theConsole = new Console(image, size, filename, settings, propertiesSet,
+                           *frontend, sound->getSampleRate());
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -1665,12 +1517,12 @@ int main(int argc, char* argv[])
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(settings->theAccurateTimingFlag)   // normal, CPU-intensive timing
+  if(theConsole->settings().theAccurateTimingFlag)   // normal, CPU-intensive timing
   {
     // Set up timing stuff
     uInt32 startTime, delta;
     uInt32 timePerFrame = 
-        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
+        (uInt32)(1000000.0 / (double)theConsole->settings().theDesiredFrameRate);
 
     // Set the base for the timers
     frameTime = 0;
@@ -1679,7 +1531,7 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theQuitIndicator)
+      if(frontend->quit())
       {
         break;
       }
@@ -1687,7 +1539,7 @@ int main(int argc, char* argv[])
       // Call handleEvents here to see if user pressed pause
       startTime = getTicks();
       handleEvents();
-      if(thePauseIndicator)
+      if(frontend->pause())
       {
         updateDisplay(theConsole->mediaSource());
         usleep(10000);
@@ -1716,7 +1568,7 @@ int main(int argc, char* argv[])
     // Set up timing stuff
     uInt32 startTime, virtualTime, currentTime;
     uInt32 timePerFrame = 
-        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
+        (uInt32)(1000000.0 / (double)settings.theDesiredFrameRate);
 
     // Set the base for the timers
     virtualTime = getTicks();
@@ -1726,14 +1578,14 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theQuitIndicator)
+      if(frontend->quit())
       {
         break;
       }
 
       startTime = getTicks();
       handleEvents();
-      if(!thePauseIndicator)
+      if(!frontend->pause())
       {
         theConsole->mediaSource().update();
         sound->updateSound(theConsole->mediaSource());
@@ -1753,7 +1605,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(settings->theShowInfoFlag)
+  if(settings.theShowInfoFlag)
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;
@@ -1774,21 +1626,3 @@ int main(int argc, char* argv[])
   cleanup();
   return 0;
 }
-
-/**
-  Returns number of ticks in microseconds
-*/
-#ifdef HAVE_GETTIMEOFDAY
-inline uInt32 getTicks()
-{
-  timeval now;
-  gettimeofday(&now, 0);
-
-  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
-
-  return ticks;
-}
-#else
-#error We need gettimeofday for the X11 version!!!
-#endif
-
