@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.53 2004-06-25 13:33:11 stephena Exp $
+## $Id: makefile,v 1.54 2004-06-28 02:06:21 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -159,19 +159,16 @@ stella: $(CORE_OBJS) $(OBJS)
 	strip $(EXE_NAME)
 
 M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
-	m4 $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4 > M6502Low.ins
+	m4 $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4 > $(CORE)/m6502/src/M6502Low.ins
 
 M6502Hi.ins: $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4
-	m4 $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4 > M6502Hi.ins
+	m4 $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4 > $(CORE)/m6502/src/M6502Hi.ins
 
-M6502Low.o: M6502Low.ins
-M6502Hi.o: M6502Hi.ins
+#M6502Low.o: M6502Low.ins
+#M6502Hi.o: M6502Hi.ins
 
 clean:
 	rm -f *.o stella stella.exe core
-
-cleanall: clean
-	rm -f M6502Low.ins M6502Hi.ins
 
 Driving.o: $(CORE)/Driving.cxx $(CORE)/Driving.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Driving.cxx
