@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.9 2002-12-15 04:40:55 bwmott Exp $
+// $Id: Console.cxx,v 1.10 2002-12-15 05:13:19 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -209,7 +209,7 @@ const Properties& Console::defaultProperties()
   ourDefaultProperties.set("Display.Format", "NTSC");
   ourDefaultProperties.set("Display.XStart", "0");
   ourDefaultProperties.set("Display.Width", "160");
-  ourDefaultProperties.set("Display.YStart", "38");
+  ourDefaultProperties.set("Display.YStart", "34");
   ourDefaultProperties.set("Display.Height", "210");
 
   ourDefaultProperties.set("Emulation.CPU", "Auto-detect");
