@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundX11.cxx,v 1.1 2002-10-09 04:38:12 bwmott Exp $
+// $Id: SoundX11.cxx,v 1.2 2002-11-11 22:02:59 stephena Exp $
 //============================================================================
 
 #include <fcntl.h>
@@ -127,23 +127,34 @@ SoundX11::SoundX11()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundX11::~SoundX11()
 {
-  if(myMixerFd != -1)
+  closeDevice();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundX11::closeDevice()
+{
+  if(myIsInitializedFlag)
   {
-    if(myOriginalVolume != -1)
+    if(myMixerFd != -1)
     {
-      if(ioctl(myMixerFd, MIXER_WRITE(SOUND_MIXER_PCM), 
-          &myOriginalVolume) == -1)
+      if(myOriginalVolume != -1)
       {
-        perror(MIXER_DEVICE);
+        if(ioctl(myMixerFd, MIXER_WRITE(SOUND_MIXER_PCM), 
+            &myOriginalVolume) == -1)
+        {
+          perror(MIXER_DEVICE);
+        }
       }
+
+      close(myMixerFd);
     }
 
-    close(myMixerFd);
-  }
+    if(myDspFd != -1)
+    {
+      close(myDspFd);
+    }
 
-  if(myDspFd != -1)
-  {
-    close(myDspFd);
+    myIsInitializedFlag = false;
   }
 }
 
@@ -226,4 +237,3 @@ void SoundX11::updateSound(MediaSource& mediaSource)
     }
   }
 }
-

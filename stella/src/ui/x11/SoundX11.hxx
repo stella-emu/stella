@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundX11.hxx,v 1.1 2002-10-09 04:38:12 bwmott Exp $
+// $Id: SoundX11.hxx,v 1.2 2002-11-11 22:03:00 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDX11_HXX
@@ -27,7 +27,7 @@
   Open Sound System (OSS) API is currently supported.
 
   @author  Bradford W. Mott
-  @version $Id: SoundX11.hxx,v 1.1 2002-10-09 04:38:12 bwmott Exp $
+  @version $Id: SoundX11.hxx,v 1.2 2002-11-11 22:03:00 stephena Exp $
 */
 class SoundX11
 {
@@ -43,6 +43,11 @@ class SoundX11
     virtual ~SoundX11();
 
   public: 
+    /**
+      Closes the sound device
+    */
+    void closeDevice();
+
     /**
       Return the playback sample rate for the sound device.
     
