@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainDOS.cxx,v 1.1.1.1 2001-12-27 19:54:33 bwmott Exp $
+// $Id: mainDOS.cxx,v 1.2 2002-01-10 20:03:05 stephena Exp $
 //============================================================================
 
 #include <go32.h>
@@ -710,7 +710,7 @@ int main(int argc, char* argv[])
   in.close();
 
   // Create a properties set for us to use and set it up
-  PropertiesSet propertiesSet("Cartridge.Name");
+  PropertiesSet propertiesSet;
   setupProperties(propertiesSet);
 
   // Create a sound object for use with the console
