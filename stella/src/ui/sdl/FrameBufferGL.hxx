@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.8 2004-04-12 23:28:42 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.9 2004-04-15 22:52:43 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.8 2004-04-12 23:28:42 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.9 2004-04-15 22:52:43 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {
@@ -63,6 +63,16 @@ class FrameBufferGL : public FrameBufferSDL
       It updates the global screen variable.
     */
     virtual bool createScreen();
+
+    /**
+      This routine is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
+      { return SDL_MapRGB(myTexture->format, r, g, b); }
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx

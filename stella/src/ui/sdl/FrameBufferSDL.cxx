@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.cxx,v 1.10 2003-12-10 18:58:56 stephena Exp $
+// $Id: FrameBufferSDL.cxx,v 1.11 2004-04-15 22:52:43 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -70,7 +70,7 @@ void FrameBufferSDL::setupPalette()
     g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
     b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
 
-    myPalette[i] = SDL_MapRGB(myScreen->format, r, g, b);
+    myPalette[i] = mapRGB(r, g, b);
   }
 
   theRedrawEntireFrameIndicator = true;

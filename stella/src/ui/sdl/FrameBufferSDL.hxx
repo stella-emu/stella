@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSDL.hxx,v 1.9 2003-12-10 18:58:56 stephena Exp $
+// $Id: FrameBufferSDL.hxx,v 1.10 2004-04-15 22:52:43 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SDL_HXX
@@ -34,7 +34,7 @@
   the core FrameBuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSDL.hxx,v 1.9 2003-12-10 18:58:56 stephena Exp $
+  @version $Id: FrameBufferSDL.hxx,v 1.10 2004-04-15 22:52:43 stephena Exp $
 */
 class FrameBufferSDL : public FrameBuffer
 {
@@ -120,6 +120,15 @@ class FrameBufferSDL : public FrameBuffer
       It updates the global screen variable.
     */
     virtual bool createScreen() = 0;
+
+    /**
+      This routine is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
 
   protected:
     // The SDL video buffer
