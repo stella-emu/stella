@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.3 2005-03-26 19:26:47 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.4 2005-04-04 02:19:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -89,8 +89,6 @@ void PopUpDialog::drawDialog()
   Int32 count = _popUpBoss->_entries.size();
   for(Int32 i = 0; i < count; i++)
     drawMenuEntry(i, i == _selection);
-
-  fb.addDirtyRect(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,6 +184,8 @@ void PopUpDialog::setSelection(Int32 item)
     // Draw new selection
     if(item >= 0)
       drawMenuEntry(item, true);
+
+    _popUpBoss->instance()->frameBuffer().refresh();
   }
 }
 
@@ -257,8 +257,6 @@ void PopUpDialog::drawMenuEntry(Int32 entry, bool hilite)
   }
   else
     fb.font().drawString(name, x + 1, y + 2, w - 2, hilite ? kBGColor : kTextColor);
-
-  fb.addDirtyRect(x, y, w, kLineHeight);
 }
 
 //

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.11 2005-03-28 00:04:53 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.12 2005-04-04 02:19:20 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -34,7 +34,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.11 2005-03-28 00:04:53 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.12 2005-04-04 02:19:20 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -148,18 +148,6 @@ class FrameBufferSoft : public FrameBuffer
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                           OverlayColor color);
-
-    /**
-      This routine is called to draw a framed rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the surrounding frame
-    */
-    virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           OverlayColor color);
 
     /**
       This routine is called to draw the specified character.

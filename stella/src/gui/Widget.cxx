@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.6 2005-03-26 19:26:48 stephena Exp $
+// $Id: Widget.cxx,v 1.7 2005-04-04 02:19:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -92,9 +92,6 @@ void Widget::draw()
     _h += 8;
   }
 
-  // Flag the draw area as dirty
-  fb.addDirtyRect(_x, _y, _w, _h);
-
   _x = oldX;
   _y = oldY;
 
@@ -141,6 +138,10 @@ void StaticTextWidget::setValue(Int32 value)
   char buf[256];
   sprintf(buf, "%d", value);
   _label = buf;
+
+  // Refresh the screen when the text has changed
+  // FIXME - eventually, this should be a dirty rectangle
+  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,6 +221,10 @@ void CheckboxWidget::setState(bool state)
     draw();
   }
   sendCommand(_cmd, _state);
+
+  // Refresh the screen after the checkbox is drawn
+  // FIXME - eventually, this should be a dirty rectangle
+  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,6 +282,9 @@ void SliderWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
       draw();
       sendCommand(_cmd, _value);
     }
+    // Refresh the screen while the slider is being redrawn
+    // FIXME - eventually, this should be a dirty rectangle
+    _boss->instance()->frameBuffer().refresh();
   }
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.15 2005-03-28 20:36:39 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.16 2005-04-04 02:19:20 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -383,13 +383,6 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   tmp.h = h * theZoomLevel;
   myRectList->add(&tmp);
   SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                                OverlayColor color)
-{
-  cerr << "FrameBufferSoft::frameRect()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

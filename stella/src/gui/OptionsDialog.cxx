@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.8 2005-03-28 00:04:54 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.9 2005-04-04 02:19:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@
 #include "Control.hxx"
 #include "VideoDialog.hxx"
 #include "AudioDialog.hxx"
+#include "EventMappingDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "HelpDialog.hxx"
 #include "OptionsDialog.hxx"
@@ -85,10 +86,14 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myAudioDialog = new AudioDialog(myOSystem, x, y, w, h);
 
-/*
-  myEventMappingDialog = new EventMappingDialog(myOSystem);
-  myMiscDialog         = new MiscDialog(myOSystem);
-*/
+  w = 280; h = 180;
+  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+  myEventMappingDialog = new EventMappingDialog(myOSystem, x, y, w, h);
+
+//  w = 250; h = 150;
+//  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+//  myMiscDialog         = new MiscDialog(myOSystem, x, y, w, h);
+
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myGameInfoDialog = new GameInfoDialog(myOSystem, x, y, w, h);
@@ -103,7 +108,7 @@ OptionsDialog::~OptionsDialog()
 {
   delete myVideoDialog;
   delete myAudioDialog;
-//  delete myEventMappingDialog;
+  delete myEventMappingDialog;
 //  delete myMiscDialog;
   delete myGameInfoDialog;
   delete myHelpDialog;
@@ -133,8 +138,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data
       break;
 
     case kEMapCmd:
-//      instance()->menu().addDialog(myEventMappingDialog);
-cerr << "push EventMappingDialog to top of stack\n";
+      instance()->menu().addDialog(myEventMappingDialog);
       break;
 
     case kMiscCmd:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.9 2005-03-28 00:04:53 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.10 2005-04-04 02:19:20 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -33,7 +33,7 @@ class OSystem;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.9 2005-03-28 00:04:53 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.10 2005-04-04 02:19:20 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -147,18 +147,6 @@ class FrameBufferGL : public FrameBuffer
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                           OverlayColor color);
-
-    /**
-      This routine is called to draw a framed rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the surrounding frame
-    */
-    virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           OverlayColor color);
 
     /**
       This routine is called to draw the specified character.

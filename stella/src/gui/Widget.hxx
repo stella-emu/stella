@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.7 2005-03-26 04:19:56 stephena Exp $
+// $Id: Widget.hxx,v 1.8 2005-04-04 02:19:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@ class Dialog;
 
 #include <assert.h>
 
+#include "OSystem.hxx"
 #include "StellaFont.hxx"
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
@@ -64,7 +65,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.7 2005-03-26 04:19:56 stephena Exp $
+  @version $Id: Widget.hxx,v 1.8 2005-04-04 02:19:22 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -92,8 +93,12 @@ class Widget : public GuiObject
     void lostFocus() { _hasFocus = false; lostFocusWidget(); }
     virtual bool wantsFocus() { return false; };
 
-    void setFlags(Int32 flags)    { _flags |= flags; }
-    void clearFlags(Int32 flags)  { _flags &= ~flags; }
+    void setFlags(Int32 flags)    { _flags |= flags;
+                                    _boss->instance()->frameBuffer().refresh();
+                                  }
+    void clearFlags(Int32 flags)  { _flags &= ~flags;
+                                    _boss->instance()->frameBuffer().refresh();
+                                  }
     Int32 getFlags() const     { return _flags; }
 
     void setEnabled(bool e)     { if (e) setFlags(WIDGET_ENABLED); else clearFlags(WIDGET_ENABLED); }
@@ -135,7 +140,9 @@ class StaticTextWidget : public Widget
                      Int32 x, Int32 y, Int32 w, Int32 h,
                      const string& text, TextAlignment align);
     void setValue(Int32 value);
-    void setLabel(const string& label)  { _label = label; }
+    void setLabel(const string& label)  { _label = label;
+                                          _boss->instance()->frameBuffer().refresh();
+                                        }
     const string& getLabel() const      { return _label; }
 
   protected:

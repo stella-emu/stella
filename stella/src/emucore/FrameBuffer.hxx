@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.24 2005-04-03 19:37:32 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.25 2005-04-04 02:19:21 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.24 2005-04-03 19:37:32 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.25 2005-04-04 02:19:21 stephena Exp $
 */
 class FrameBuffer
 {
@@ -133,7 +133,7 @@ class FrameBuffer
     */
     void refresh(bool now = false)
     {
-//FIXME cerr << "refresh() " << val++ << endl;
+//cerr << "refresh() " << val++ << endl;
       theRedrawEntireFrameIndicator = true;
       myMenuRedraws = 2;
       if(now) drawMediaSource();
@@ -220,6 +220,19 @@ class FrameBuffer
     */
     void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
              OverlayColor colorA, OverlayColor colorB);
+
+    /**
+      This routine should be called to draw a framed rectangle.
+      I'm not exactly sure what it is, so I can't explain it :)
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the surrounding frame
+    */
+    void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                   OverlayColor color);
 
     /**
       Indicate that the specified area should be redrawn.
@@ -325,18 +338,6 @@ class FrameBuffer
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                           OverlayColor color) = 0;
-
-    /**
-      This routine should be called to draw a framed rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the surrounding frame
-    */
-    virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           OverlayColor color) = 0;
 
     /**
       This routine should be called to draw the specified character.
@@ -501,14 +502,6 @@ FIXME
       string action;
     };
 
-    // Structure used for remap menu items
-    struct RemapMenuItem
-    {
-      Event::Type event;
-      string action;
-      string key;
-    };
-
     // Table of strings representing the various StellaEvent codes
     static const char* ourEventName[StellaEvent::LastKCODE];
 
@@ -545,9 +538,6 @@ FIXME
 
     // Holds static strings for the main menu
     static MainMenuItem ourMainMenu[2];
-
-    // Holds static strings for the remap menu
-    static RemapMenuItem ourRemapMenu[57];
 
     // Holds the current key mappings
     Event::Type* myKeyTable;

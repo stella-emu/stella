@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.8 2005-03-26 04:19:56 stephena Exp $
+// $Id: Dialog.cxx,v 1.9 2005-04-04 02:19:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -116,7 +116,6 @@ void Dialog::releaseFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::draw()
 {
-  instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -137,9 +136,6 @@ void Dialog::drawDialog()
     w->draw();
     w = w->_next;
   }
-
-  // Flag the draw area as dirty
-  fb.addDirtyRect(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

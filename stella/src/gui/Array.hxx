@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Array.hxx,v 1.1 2005-03-14 04:08:15 stephena Exp $
+// $Id: Array.hxx,v 1.2 2005-04-04 02:19:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -125,60 +125,67 @@ class Array
 
     void clear()
     {
-		if (_data) {
-			delete [] _data;
-			_data = 0;
-		}
-		_size = 0;
-		_capacity = 0;
-	}
+      if(_data)
+      {
+        delete [] _data;
+        _data = 0;
+      }
+      _size = 0;
+      _capacity = 0;
+    }
 	
-	bool isEmpty() const { 
-		return (_size == 0);
-	}
+    bool isEmpty() const
+    {
+      return (_size == 0);
+    }
 
+    iterator begin()
+    {
+      return _data;
+    }
 
-	iterator		begin() {
-		return _data;
-	}
+    iterator end()
+    {
+      return _data + _size;
+    }
 
-	iterator		end() {
-		return _data + _size;
-	}
+    const_iterator begin() const
+    {
+      return _data;
+    }
 
-	const_iterator	begin() const {
-		return _data;
-	}
+    const_iterator end() const
+    {
+      return _data + _size;
+    }
 
-	const_iterator	end() const {
-		return _data + _size;
-	}
+    bool contains(const T &key) const
+    {
+      for (const_iterator i = begin(); i != end(); ++i) {
+        if (*i == key)
+          return true;
+      }
+      return false;
+    }
 
-	bool contains(const T &key) const {
-		for (const_iterator i = begin(); i != end(); ++i) {
-			if (*i == key)
-				return true;
-		}
-		return false;
-	}
+  protected:
+    void ensureCapacity(int new_len)
+    {
+      if (new_len <= _capacity)
+        return;
 
+      T *old_data = _data;
+      _capacity = new_len + 32;
+      _data = new T[_capacity];
 
-protected:
-	void ensureCapacity(int new_len) {
-		if (new_len <= _capacity)
-			return;
-
-		T *old_data = _data;
-		_capacity = new_len + 32;
-		_data = new T[_capacity];
-
-		if (old_data) {
-			// Copy old data
-			for (int i = 0; i < _size; i++)
-				_data[i] = old_data[i];
-			delete [] old_data;
-		}
-	}
+      if (old_data)
+      {
+        // Copy old data
+        for (int i = 0; i < _size; i++)
+          _data[i] = old_data[i];
+        delete [] old_data;
+      }
+    }
 };
 
 #endif

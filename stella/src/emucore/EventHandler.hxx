@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.20 2005-04-03 19:37:32 stephena Exp $
+// $Id: EventHandler.hxx,v 1.21 2005-04-04 02:19:21 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -37,6 +37,13 @@ enum MouseButton {
   EVENT_WHEELUP
 };
 
+// Structure used for action menu items
+struct ActionList {
+  Event::Type event;
+  string action;
+  string keys;
+};
+
 /**
   This class takes care of event remapping and dispatching for the
   Stella core, as well as keeping track of the current 'mode'.
@@ -50,7 +57,7 @@ enum MouseButton {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.20 2005-04-03 19:37:32 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.21 2005-04-04 02:19:21 stephena Exp $
 */
 class EventHandler
 {
@@ -110,6 +117,9 @@ class EventHandler
       This method indicates whether a quit event has been received.
     */
     inline bool doQuit() { return myQuitFlag; }
+
+    // Holds static strings for the remap menu
+    static ActionList ourActionList[58];
 
     void getKeymapArray(Event::Type** array, uInt32* size);
     void getJoymapArray(Event::Type** array, uInt32* size);
