@@ -108,6 +108,7 @@ static uint8 AUDV[2];    /* AUDVx (19, 1A) */
 
 static uint8 Outvol[2];  /* last output volume for each channel */
 
+static uint32 volume;    /* output sample volume percentage */
 
 /* Initialze the bit patterns for the polynomials. */
 
@@ -195,6 +196,8 @@ void Tia_sound_init (uint16 sample_freq, uint16 playback_freq)
       P5[chan] = 0;
       P9[chan] = 0;
    }
+
+   volume = 100;
 }
 
 
@@ -599,7 +602,7 @@ void Tia_process (register unsigned char *buffer, register uint16 n)
 #ifdef MAC_OSX		  
           *(buffer++) = (outvol_0 + outvol_1)/2 + 128;
 #else
-          *(buffer++) = outvol_0 + outvol_1;
+          *(buffer++) = ((((uint32)outvol_0 + (uint32)outvol_1) * volume) / 100);
 #endif		  
           /* and indicate one less byte to process */
           n--;
@@ -613,7 +616,6 @@ void Tia_process (register unsigned char *buffer, register uint16 n)
     Outvol[1] = outvol_1;
     Div_n_cnt[0] = div_n_cnt0;
     Div_n_cnt[1] = div_n_cnt1;
-
 }
 
 
@@ -663,6 +665,23 @@ void Tia_set_registers (unsigned char reg1, unsigned char reg2, unsigned char re
     AUDF[1] = reg4;
     AUDV[0] = reg5;
     AUDV[1] = reg6;
+}
+
+
+/*****************************************************************************/
+/* Module:  Tia_volume()                                                     */
+/* Purpose: Set volume to the specified percentage                           */
+/*                                                                           */
+/* Author:  Bradford W. Mott                                                 */
+/* Date:    June 12, 2004                                                    */
+/*                                                                           */
+/*****************************************************************************/
+void Tia_volume (unsigned int percent)
+{
+  if((percent >= 0) && (percent <= 100))
+  {
+    volume = percent;
+  }
 }
 
 #ifdef __cplusplus
