@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.1.1.1 2001-12-27 19:54:31 bwmott Exp $
+// $Id: System.hxx,v 1.2 2001-12-30 18:36:02 bwmott Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -44,7 +44,7 @@ class NullDevice;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.1.1.1 2001-12-27 19:54:31 bwmott Exp $
+  @version $Id: System.hxx,v 1.2 2001-12-30 18:36:02 bwmott Exp $
 */
 class System
 {
@@ -172,7 +172,15 @@ class System
     void resetCycles();
 
   public:
-    /*
+    /**
+      Get the current state of the data bus in the system.  The current
+      state is the last data that was accessed by the system.
+
+      @return the data bus state
+    */  
+    uInt8 getDataBusState() const;
+
+    /**
       Get the byte at the specified address.  No masking of the
       address occurs before it's sent to the device mapped at
       the address.
@@ -267,6 +275,9 @@ class System
     // Null device to use for page which are not installed
     NullDevice myNullDevice; 
 
+    // The current state of the Data Bus
+    uInt8 myDataBusState;
+
   private:
     // Copy constructor isn't supported by this class so make it private
     System(const System&);
@@ -276,19 +287,31 @@ class System
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline uInt8 System::getDataBusState() const
+{
+  return myDataBusState;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 System::peek(uInt16 addr)
 {
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+
+  uInt8 result;
  
   // See if this page uses direct accessing or not 
   if(access.directPeekBase != 0)
   {
-    return *(access.directPeekBase + (addr & myPageMask));
+    result = *(access.directPeekBase + (addr & myPageMask));
   }
   else
   {
-    return access.device->peek(addr);
+    result = access.device->peek(addr);
   }
+
+  myDataBusState = result;
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -305,6 +328,8 @@ inline void System::poke(uInt16 addr, uInt8 value)
   {
     access.device->poke(addr, value);
   }
+
+  myDataBusState = value;
 }
 #endif
  
