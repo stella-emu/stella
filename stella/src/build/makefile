@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.10 2002-03-10 01:29:54 stephena Exp $
+## $Id: makefile,v 1.11 2002-03-17 19:37:00 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -34,7 +34,7 @@ OPTIMIZATIONS    =
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
 #	-malign-functions=2 -malign-jumps=2 -malign-loops=2
 ### to get full optimization under gcc/x Athlon based OS's..
-# OPTIMIZATIONS    = -O3 -march=athlon -Wall -Wno-unused \
+# OPTIMIZATIONS    = -O3 -mcpu=athlon -march=athlon -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
 #	-malign-functions=2 -malign-jumps=2 -malign-loops=2
 

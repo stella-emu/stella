@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.12 2002-03-10 01:29:55 stephena Exp $
+// $Id: mainSDL.cxx,v 1.13 2002-03-17 19:37:00 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -49,6 +49,7 @@
   #define SDL_DISABLE 0
 #endif
 
+#define HAVE_GETTIMEOFDAY
 
 SDL_Joystick* theLeftJoystick;
 SDL_Joystick* theRightJoystick;
@@ -73,6 +74,7 @@ void toggleFullscreen();
 void takeSnapshot();
 void togglePause();
 uInt32 maxWindowSizeForScreen();
+uInt32 getTicks();
 
 bool setupProperties(PropertiesSet& set);
 void handleCommandLineArguments(int ac, char* av[]);
@@ -608,8 +610,6 @@ void toggleFullscreen()
 */
 void togglePause()
 {
-// todo: implement pause functionality
-
   if(thePauseIndicator)	// emulator is already paused so continue
   {
     thePauseIndicator = false;
@@ -618,6 +618,8 @@ void togglePause()
   {
     thePauseIndicator = true;
   }
+
+  theConsole->mediaSource().pause(thePauseIndicator);
 }
 
 
@@ -961,8 +963,7 @@ void handleEvents()
       {
         if(!thePauseIndicator)
         {
-          // togglePause();
-          cerr << "todo: Pause on minimize.\n";
+          togglePause();
         }
       }
     }
@@ -1673,13 +1674,13 @@ int main(int argc, char* argv[])
     cleanup();
   }
 
-  // Get the starting time in case we need to print statistics
-  timeval startingTime;
-  gettimeofday(&startingTime, 0);
+  // Set up timing stuff
+  Uint32 before, delta, frameTime = 0, eventTime = 0;
+  Uint32 timePerFrame = 1000000 / theDesiredFrameRate;
+  Uint32 numberOfFrames = 0;
 
-  uInt32 numberOfFrames = 0;
-  uInt32 frameTime = 1000000 / theDesiredFrameRate;
-  for( ; ; ++numberOfFrames)
+  // Main game loop
+  for(;;)
   {
     // Exit if the user wants to quit
     if(theQuitIndicator)
@@ -1687,36 +1688,37 @@ int main(int argc, char* argv[])
       break;
     }
 
-    // Remember the current time before we start drawing the frame
-    timeval before;
-    gettimeofday(&before, 0);
+    // Call handleEvents here to see if user pressed pause
+    handleEvents();
+    if(thePauseIndicator)
+    {
+      updateDisplay(theConsole->mediaSource());
+      SDL_Delay(10);
+      continue;
+    }
 
+    before = getTicks();
     theConsole->mediaSource().update();
     updateDisplay(theConsole->mediaSource());
     handleEvents();
 
     // Now, waste time if we need to so that we are at the desired frame rate
-    timeval after;
     for(;;)
     {
-      gettimeofday(&after, 0);
+      delta = getTicks() - before;
 
-      uInt32 delta = (uInt32)((after.tv_sec - before.tv_sec) * 1000000 +
-          (after.tv_usec - before.tv_usec));
-
-      if(delta > frameTime)
+      if(delta >= timePerFrame)
         break;
-//else SDL_Delay(1);
     }
+
+    frameTime += (getTicks() - before);
+    ++numberOfFrames;
   }
 
   if(theShowInfoFlag)
   {
-    timeval endingTime;
-    gettimeofday(&endingTime, 0);
-    double executionTime = (endingTime.tv_sec - startingTime.tv_sec) +
-            ((endingTime.tv_usec - startingTime.tv_usec) / 1000000.0);
-    double framesPerSecond = numberOfFrames / executionTime;
+    double executionTime = (double) frameTime / 1000000.0;
+    double framesPerSecond = (double) numberOfFrames / executionTime;
 
     cout << endl;
     cout << numberOfFrames << " total frames drawn\n";
@@ -1732,3 +1734,24 @@ int main(int argc, char* argv[])
   // Cleanup time ...
   cleanup();
 }
+
+
+/**
+  Returns number of ticks in microseconds
+*/
+#ifdef HAVE_GETTIMEOFDAY
+inline uInt32 getTicks()
+{
+  timeval now;
+  gettimeofday(&now, 0);
+
+  uInt32 ticks = now.tv_sec * 1000000 + now.tv_usec;
+
+  return ticks;
+}
+#else
+inline uInt32 getTicks()
+{
+  return SDL_GetTicks() * 1000;
+}
+#endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.6 2002-01-27 02:10:04 stephena Exp $
+// $Id: TIA.cxx,v 1.7 2002-03-17 19:37:00 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -262,6 +262,10 @@ void TIA::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::update()
 {
+  // Don't do an update if the emulator is paused
+  if(pauseState)
+    return;
+
   uInt8* tmp = myCurrentFrameBuffer;
   myCurrentFrameBuffer = myPreviousFrameBuffer;
   myPreviousFrameBuffer = tmp;
@@ -293,6 +297,21 @@ void TIA::update()
   // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myScanlineCountForFrame = totalClocks / 228;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::pause(bool state)
+{
+  // Ignore multiple calls to do the same thing
+  if(pauseState == state)
+    return false;
+
+  pauseState = state;
+
+  // Now pause the Sound device
+  mySound.mute(pauseState);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
