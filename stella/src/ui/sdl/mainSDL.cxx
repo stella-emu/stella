@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.34 2002-11-11 02:07:21 bwmott Exp $
+// $Id: mainSDL.cxx,v 1.35 2002-11-11 02:56:27 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -206,6 +206,9 @@ static bool isCentered = false;
 // Indicates the current state to use for state saving
 static uInt32 currentState = 0;
 
+static string homePropertiesFile;
+static string systemPropertiesFile;
+
 
 /**
   This routine should be called once the console is created to setup
@@ -276,8 +279,7 @@ bool setupDisplay()
 
   // Set the window title and icon
   ostringstream name;
-  name << "Stella: \"" << theConsole->properties().get("Cartridge.Name") 
-      << "\"";
+  name << "Stella: \"" << theConsole->properties().get("Cartridge.Name") << "\"";
   SDL_WM_SetCaption(name.str().c_str(), "stella");
 
   // Create the screen
@@ -1014,10 +1016,18 @@ void handleEvents()
       {
         if(mod & KMOD_ALT)
         {
-          string newPropertiesFile = getenv("HOME");
-          newPropertiesFile = newPropertiesFile + "/" + \
-            theConsole->properties().get("Cartridge.Name") + ".pro";
-          theConsole->saveProperties(newPropertiesFile);
+          if(settings->theMergePropertiesFlag)  // Attempt to merge with propertiesSet
+          {
+            theConsole->saveProperties(homePropertiesFile, true);
+          }
+          else  // Save to file in home directory
+          {
+            string newPropertiesFile = getenv("HOME");
+            newPropertiesFile = newPropertiesFile + "/" + \
+              theConsole->properties().get("Cartridge.Name") + ".pro";
+            replace(newPropertiesFile.begin(), newPropertiesFile.end(), ' ', '_');
+            theConsole->saveProperties(newPropertiesFile);
+          }
         }
       }
 #endif
@@ -1380,7 +1390,7 @@ void usage()
 {
   static const char* message[] = {
     "",
-    "SDL Stella version 1.2",
+    "SDL Stella version 1.3",
     "",
     "Usage: stella.sdl [option ...] file",
     "",
@@ -1416,6 +1426,8 @@ void usage()
     "  -Dwidth                     Sets \"Display.Width\"",
     "  -Dystart                    Sets \"Display.YStart\"",
     "  -Dheight                    Sets \"Display.Height\"",
+    "  -Dmerge     <0|1>           Merge changed properties into properties file,",
+    "                              or save into a separate file",
 #endif
     0
   };
@@ -1437,9 +1449,14 @@ void usage()
 */
 bool setupProperties(PropertiesSet& set)
 {
-  string homePropertiesFile = getenv("HOME");
-  homePropertiesFile += "/.stella/stella.pro";
-  string systemPropertiesFile = "/etc/stella.pro";
+  bool useMemList = false;
+
+#ifdef DEVELOPER_SUPPORT
+  // If the user wishes to merge any property modifications to the
+  // PropertiesSet file, then the PropertiesSet file MUST be loaded
+  // into memory.
+  useMemList = settings->theMergePropertiesFlag;
+#endif
 
   // Check to see if the user has specified an alternate .pro file.
   // If it exists, use it.
@@ -1447,8 +1464,7 @@ bool setupProperties(PropertiesSet& set)
   {
     if(access(settings->theAlternateProFile.c_str(), R_OK) == 0)
     {
-      set.load(settings->theAlternateProFile, &Console::defaultProperties(),
-          false);
+      set.load(settings->theAlternateProFile, &Console::defaultProperties(), useMemList);
       return true;
     }
     else
@@ -1461,12 +1477,12 @@ bool setupProperties(PropertiesSet& set)
 
   if(access(homePropertiesFile.c_str(), R_OK) == 0)
   {
-    set.load(homePropertiesFile, &Console::defaultProperties(), false);
+    set.load(homePropertiesFile, &Console::defaultProperties(), useMemList);
     return true;
   }
   else if(access(systemPropertiesFile.c_str(), R_OK) == 0)
   {
-    set.load(systemPropertiesFile, &Console::defaultProperties(), false);
+    set.load(systemPropertiesFile, &Console::defaultProperties(), useMemList);
     return true;
   }
   else
@@ -1555,6 +1571,7 @@ inline uInt32 getTicks()
 /**
   Creates some directories under $HOME.
   Required directories are $HOME/.stella and $HOME/.stella/state
+  Also sets up various locations for properties files, etc.
 */
 bool setupDirs()
 {
@@ -1576,6 +1593,10 @@ bool setupDirs()
       return false;
   }
 
+  homePropertiesFile   = getenv("HOME");
+  homePropertiesFile  += "/.stella/stella.pro";
+  systemPropertiesFile = "/etc/stella.pro";
+  
   return true;
 }
 
@@ -1728,8 +1749,7 @@ int main(int argc, char* argv[])
   {
     // Set up less accurate timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame =
-        (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double)settings->theDesiredFrameRate);
 
     // Set the base for the timers
     virtualTime = getTicks();
