@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.2 2005-04-05 00:40:55 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.3 2005-04-06 19:50:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,6 +72,14 @@ EventMappingDialog::~EventMappingDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingDialog::loadConfig()
+{
+  // Make sure remapping is turned off, just in case the user didn't properly
+  // exit from the dialog last time
+  stopRemapping();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingDialog::startRemapping()
 {
   if(myActionSelected < 0 || myRemapStatus)
@@ -113,8 +121,8 @@ void EventMappingDialog::stopRemapping()
 
   // And re-enable all the widgets
   myActionsList->setEnabled(true);
-  myMapButton->setEnabled(true);
-  myEraseButton->setEnabled(true);
+  myMapButton->setEnabled(false);
+  myEraseButton->setEnabled(false);
   myDefaultsButton->setEnabled(true);
   myOKButton->setEnabled(true);
   myCancelMapButton->setEnabled(false);
@@ -126,6 +134,9 @@ void EventMappingDialog::stopRemapping()
     buf << "Key(s) : "
 	    << EventHandler::ourActionList[ myActionSelected ].key;
     myKeyMapping->setLabel(buf.str());
+
+    myMapButton->setEnabled(true);
+    myEraseButton->setEnabled(true);
   }
 }
 
@@ -149,6 +160,9 @@ void EventMappingDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32
             << EventHandler::ourActionList[ myActionSelected ].key;
 
         myKeyMapping->setLabel(buf.str());
+        myMapButton->setEnabled(true);
+        myEraseButton->setEnabled(true);
+        myCancelMapButton->setEnabled(false);
       }
       break;
 
