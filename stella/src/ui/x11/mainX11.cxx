@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.9 2002-02-17 04:41:42 stephena Exp $
+// $Id: mainX11.cxx,v 1.10 2002-02-23 16:05:52 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -53,6 +53,10 @@
 
   // What the snapshot should be called (romname or md5sum)
   string theSnapShotName = "";
+
+  // Indicates whether to generate multiple snapshots or keep
+  // overwriting the same file.  Set to true by default.
+  bool theMultipleSnapShotFlag = true;
 #endif
 
 #ifdef LINUX_JOYSTICK
@@ -75,6 +79,7 @@ Colormap thePrivateColormap;
 Cursor normalCursor;
 Cursor blankCursor;
 uInt32 eventMask;
+Atom wm_delete_window;
 
 // A graphic context for each of the 2600's colors
 GC theGCTable[256];
@@ -351,6 +356,10 @@ bool setupDisplay()
     theGCTable[t + 1] = theGCTable[t];
   }
 
+  // Set up the delete window stuff ...
+  wm_delete_window = XInternAtom(theDisplay, "WM_DELETE_WINDOW", False);
+  XSetWMProtocols(theDisplay, theWindow, &wm_delete_window, 1);
+
   // If requested install a private colormap for the window
   if(theUsePrivateColormapFlag)
   {
@@ -562,6 +571,16 @@ void updateDisplay(MediaSource& mediaSource)
 void handleEvents()
 {
   XEvent event;
+
+  // Handle the WM_DELETE_WINDOW message outside the event loop
+  if(XCheckTypedWindowEvent(theDisplay, theWindow, ClientMessage, &event))
+  {
+    if(event.xclient.data.l[0] == wm_delete_window)
+    {
+      doQuit();
+      return;
+    }
+  }
 
   while(XCheckWindowEvent(theDisplay, theWindow, eventMask, &event))
   {
@@ -1041,24 +1060,30 @@ void takeSnapshot()
   // Replace all spaces in name with underscores
   replace(filename.begin(), filename.end(), ' ', '_');
 
-  // Determine if the file already exists, checking each successive filename
-  // until one doesn't exist
-  string extFilename = filename + ".png";
-  if(access(extFilename.c_str(), F_OK) == 0 )
+  // Check whether we want multiple snapshots created
+  if(theMultipleSnapShotFlag)
   {
-    uInt32 i;
-    char buffer[1024];
-
-    for(i = 1; ;++i)
+    // Determine if the file already exists, checking each successive filename
+    // until one doesn't exist
+    string extFilename = filename + ".png";
+    if(access(extFilename.c_str(), F_OK) == 0 )
     {
-      snprintf(buffer, 1023, "%s_%d.png", filename.c_str(), i);
-      if(access(buffer, F_OK) == -1 )
-        break;
+      uInt32 i;
+      char buffer[1024];
+
+      for(i = 1; ;++i)
+      {
+        snprintf(buffer, 1023, "%s_%d.png", filename.c_str(), i);
+        if(access(buffer, F_OK) == -1 )
+          break;
+      }
+      filename = buffer;
     }
-    filename = buffer;
+    else
+      filename = extFilename;
   }
   else
-    filename = extFilename;
+    filename = filename + ".png";
 
   // Now save the snapshot file
   Imlib_save_image(imlibData, image, (char*)filename.c_str(), NULL);
@@ -1134,6 +1159,7 @@ void usage()
 #ifdef HAVE_IMLIB
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
+    "  -sssingle               Generate single snapshot instead of many",
 #endif
     "  -pro <props file>       Use the given properties file instead of stella.pro",
     "",
@@ -1289,6 +1315,10 @@ void handleCommandLineArguments(int argc, char* argv[])
     else if(string(argv[i]) == "-ssname")
     {
       theSnapShotName = argv[++i];
+    }
+    else if(string(argv[i]) == "-sssingle")
+    {
+      theMultipleSnapShotFlag = false;
     }
 #endif
     else if(string(argv[i]) == "-pro")
@@ -1463,6 +1493,14 @@ void parseRCOptions(istream& in)
     else if(key == "ssname")
     {
       theSnapShotName = value;
+    }
+    else if(key == "sssingle")
+    {
+      uInt32 option = atoi(value.c_str());
+      if(option == 1)
+        theMultipleSnapShotFlag = false;
+      else if(option == 0)
+        theMultipleSnapShotFlag = true;
     }
 #endif
   }

@@ -26,3 +26,4 @@
 ;fullscreen = <0|1>
 ;ssdir = <pathname>
 ;ssname = <romname|md5sum>
+;sssingle = <0|1>

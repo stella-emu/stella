@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.9 2002-02-17 04:41:41 stephena Exp $
+// $Id: mainSDL.cxx,v 1.10 2002-02-23 16:05:52 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -227,6 +227,10 @@ string theSnapShotDir = "";
 // What the snapshot should be called (romname or md5sum)
 string theSnapShotName = "";
 
+// Indicates whether to generate multiple snapshots or keep
+// overwriting the same file.  Set to true by default.
+bool theMultipleSnapShotFlag = true;
+
 
 /**
   This routine should be called once the console is created to setup
@@ -400,8 +404,7 @@ bool createScreen(int w, int h)
     g = format->palette->colors[i].g;
     b = format->palette->colors[i].b;
 
-    palette[i] = SDL_MapRGB(format, r, g, b);
-    palette[i+1] = palette[i];
+    palette[i] = palette[i+1] = SDL_MapRGB(format, r, g, b);
   }
 
   return true;
@@ -466,14 +469,14 @@ void resizeWindow(int mode)
 */
 void centerWindow()
 {
-  if(isFullscreen || isCentered)
-    return;
-
   if(!x11Available)
   {
     cerr << "Window centering only available under X11.\n";
     return;
   }
+
+  if(isFullscreen || isCentered)
+    return;
 
   int x, y, w, h;
   info.info.x11.lock_func();
@@ -1030,6 +1033,7 @@ void handleEvents()
   the 'ssname' argument.  If that name exists, they are named as "Name"_x.png,
   where x starts with 1 and increases if the previous name already exists.
   All spaces in filenames are converted to underscore '_'.
+  If theMultipleSnapShotFlag is false, then consecutive images are overwritten.
 */
 void takeSnapshot()
 {
@@ -1038,12 +1042,7 @@ void takeSnapshot()
     cerr << "Snapshot support disabled.\n";
     return;
   }
-/*  else if(isFullscreen)
-  {
-    cerr << "Snapshot support unavailable in fullscreen (for now).\n";
-    return;
-  }
-*/
+
   int width  = screen->w;
   int height = screen->h;
 
@@ -1063,24 +1062,30 @@ void takeSnapshot()
   // Replace all spaces in name with underscores
   replace(filename.begin(), filename.end(), ' ', '_');
 
-  // Determine if the file already exists, checking each successive filename
-  // until one doesn't exist
-  string extFilename = filename + ".png";
-  if(access(extFilename.c_str(), F_OK) == 0 )
+  // Check whether we want multiple snapshots created
+  if(theMultipleSnapShotFlag)
   {
-    uInt32 i;
-    char buffer[1024];
-
-    for(i = 1; ;++i)
+    // Determine if the file already exists, checking each successive filename
+    // until one doesn't exist
+    string extFilename = filename + ".png";
+    if(access(extFilename.c_str(), F_OK) == 0 )
     {
-      snprintf(buffer, 1023, "%s_%d.png", filename.c_str(), i);
-      if(access(buffer, F_OK) == -1 )
-        break;
+      uInt32 i;
+      char buffer[1024];
+
+      for(i = 1; ;++i)
+      {
+        snprintf(buffer, 1023, "%s_%d.png", filename.c_str(), i);
+        if(access(buffer, F_OK) == -1 )
+          break;
+      }
+      filename = buffer;
     }
-    filename = buffer;
+    else
+      filename = extFilename;
   }
   else
-    filename = extFilename;
+    filename = filename + ".png";
 
   // Now save the snapshot file
   snapshot->savePNG(screen, filename.c_str());
@@ -1161,6 +1166,7 @@ void usage()
     "  -showinfo               Shows some game info on exit",
     "  -ssdir <path>           The directory to save snapshot files to",
     "  -ssname <name>          How to name the snapshot (romname or md5sum)",
+    "  -sssingle               Generate single snapshot instead of many",
     "  -pro <props file>       Use the given properties file instead of stella.pro",
     "",
     0
@@ -1312,6 +1318,10 @@ void handleCommandLineArguments(int argc, char* argv[])
     else if(string(argv[i]) == "-ssname")
     {
       theSnapShotName = argv[++i];
+    }
+    else if(string(argv[i]) == "-sssingle")
+    {
+      theMultipleSnapShotFlag = false;
     }
     else if(string(argv[i]) == "-pro")
     {
@@ -1482,6 +1492,14 @@ void parseRCOptions(istream& in)
     else if(key == "ssname")
     {
       theSnapShotName = value;
+    }
+    else if(key == "sssingle")
+    {
+      uInt32 option = atoi(value.c_str());
+      if(option == 1)
+        theMultipleSnapShotFlag = false;
+      else if(option == 0)
+        theMultipleSnapShotFlag = true;
     }
   }
 }

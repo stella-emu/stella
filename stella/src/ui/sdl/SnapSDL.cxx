@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SnapSDL.cxx,v 1.1 2002-02-17 04:41:41 stephena Exp $
+// $Id: SnapSDL.cxx,v 1.2 2002-02-23 16:05:52 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -36,7 +36,7 @@ int SnapshotSDL::savePNG(SDL_Surface *surface, const char *file)
 {
   SDL_RWops *out = SDL_RWFromFile(file, "wb");
   if(!out)
-    return -1;
+    return 0;
 
   int ret = IMG_SavePNG_RW(surface, out);
   SDL_RWclose(out);
@@ -96,7 +96,7 @@ int SnapshotSDL::IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *src)
   if(png_ptr == NULL)
   {
     cerr << "SnapshotSDL:  Couldn't allocate memory for PNG file\n";
-    return -1;
+    return 0;
   }
 
   /* Allocate/initialize the image information data.  REQUIRED */
@@ -117,7 +117,6 @@ int SnapshotSDL::IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *src)
    * PNG_INTERLACE_ADAM7, and the compression_type and filter_type MUST
    * currently be PNG_COMPRESSION_TYPE_BASE and PNG_FILTER_TYPE_BASE. REQUIRED
    */
-
   colortype = png_colortype_from_surface(surface);
   png_set_IHDR(png_ptr, info_ptr, surface->w, surface->h, 8,
     colortype, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE,
