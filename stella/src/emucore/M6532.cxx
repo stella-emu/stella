@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: M6532.cxx,v 1.3 2002-12-15 04:58:14 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -56,7 +56,9 @@ const char* M6532::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {
-  myTimer = 100;
+  Random random;
+
+  myTimer = 25 + (random.next() % 75);
   myIntervalShift = 6;
   myCyclesWhenTimerSet = 0;
   myCyclesWhenInterruptReset = 0;
