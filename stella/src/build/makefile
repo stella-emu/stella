@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.19 2002-08-04 00:28:18 stephena Exp $
+## $Id: makefile,v 1.20 2002-08-14 02:30:52 bwmott Exp $
 ##============================================================================
 
 ##============================================================================
@@ -24,11 +24,11 @@
 ##============================================================================
 
 ### this should work with all compilers 
-OPTIMIZATIONS    =
+# OPTIMIZATIONS    =
 ### for normal optimization, full warnings
 # OPTIMIZATIONS    = -O -Wall
 ### for common optimizations, full warnings except unused vars
-# OPTIMIZATIONS    = -O2 -Wall -Wno-unused
+OPTIMIZATIONS    = -O2 -Wall -Wno-unused
 ### to get full optimization under gcc/x Intel based OS's..
 # OPTIMIZATIONS    = -O3 -mcpu=pentiumpro -march=pentiumpro -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
@@ -224,9 +224,9 @@ solaris-x:
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
-            CartE0.o CartE7.o CartF4SC.o CartF6.o CartF6SC.o CartF8.o \
-            CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o CartMB.o \
-            Console.o Control.o Driving.o \
+            CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
+            CartF8.o CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o \
+            CartMB.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o \
@@ -312,6 +312,9 @@ CartE0.o: $(CORE)/CartE0.cxx
 
 CartE7.o: $(CORE)/CartE7.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartE7.cxx
+
+CartF4.o: $(CORE)/CartF4.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartF4.cxx
 
 CartF4SC.o: $(CORE)/CartF4SC.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartF4SC.cxx

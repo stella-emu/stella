@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.3 2002-01-18 16:03:48 estolberg Exp $
+// $Id: Cart.cxx,v 1.4 2002-08-14 02:30:52 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -26,6 +26,7 @@
 #include "CartDPC.hxx"
 #include "CartE0.hxx"
 #include "CartE7.hxx"
+#include "CartF4.hxx"
 #include "CartF4SC.hxx"
 #include "CartF6.hxx"
 #include "CartF6SC.hxx"
@@ -69,6 +70,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeE0(image);
   else if(type == "E7")
     cartridge = new CartridgeE7(image);
+  else if(type == "F4")
+    cartridge = new CartridgeF4(image);
   else if(type == "F4SC")
     cartridge = new CartridgeF4SC(image);
   else if(type == "F6")
@@ -183,7 +186,19 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     }
     else if(size == 32768)
     {
+      // Assume this is a 32K super-cart then check to see if it is
       type = "F4SC";
+
+      uInt8 first = image[0];
+      for(uInt32 i = 0; i < 256; ++i)
+      {
+        if(image[i] != first)
+        {
+          // It's not a super cart (probably)
+          type = "F4";
+          break;
+        }
+      }
     }
     else if(size == 65536)
     {
