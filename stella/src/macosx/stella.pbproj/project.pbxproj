@@ -689,7 +689,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[! -a build/StellaOSX.app/Contents/Resources/docs/index.html ]];\nthen\nmv build/StellaOSX.app/Contents/Resources/docs/stella.html build/StellaOSX.app/Contents/Resources/docs/index.html;\nfi\n";
+			shellScript = "cp ../../docs/stella.html build/StellaOSX.app/Contents/Resources/docs/index.html;\n";
 		};
 		2D4764C806683C5F00F63D87 = {
 			isa = PBXFileReference;
