@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.21 2004-06-13 16:51:15 stephena Exp $
+// $Id: Settings.cxx,v 1.22 2004-06-27 22:44:04 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -41,6 +41,7 @@ Settings::Settings()
 #ifdef DISPLAY_OPENGL
   set("gl_filter", "nearest");
   set("gl_aspect", "2");
+  set("gl_fsmax", "false");
 #endif
   set("sound", "true");
   set("fragsize", "512");

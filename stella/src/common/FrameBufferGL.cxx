@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.5 2004-06-23 03:43:47 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.6 2004-06-27 22:43:49 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -30,6 +30,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL()
    :  myTexture(0),
+      myScreenmode(0),
+      myScreenmodeCount(0),
       myFilterParam(GL_NEAREST)
 {
 }
@@ -53,30 +55,13 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-  uInt32 screenWidth  = 0;
-  uInt32 screenHeight = 0;
+  uInt32 screenWidth   = 0;
+  uInt32 screenHeight  = 0;
+  GLdouble orthoWidth  = 0.0;
+  GLdouble orthoHeight = 0.0;
 
-  myDimensions.w = (Uint16) (myWidth  * theZoomLevel * theAspectRatio);
-  myDimensions.h = (Uint16) myHeight * theZoomLevel;
-
-  // Determine if we're in fullscreen or windowed mode
-  // In fullscreen mode, we clip the SDL screen to known resolutions
-  // In windowed mode, we use the actual image resolution for the SDL screen
-  if(mySDLFlags & SDL_FULLSCREEN)
-  {
-    SDL_Rect rect = viewport(myDimensions.w, myDimensions.h);
-
-    myDimensions.x = rect.x;
-    myDimensions.y = rect.y;
-    screenWidth  = rect.w;
-    screenHeight = rect.h;
-  }
-  else
-  {
-    myDimensions.x = myDimensions.y = 0;
-    screenWidth  = myDimensions.w;
-    screenHeight = myDimensions.h;
-  }
+  // Get the screen coordinates
+  viewport(&screenWidth, &screenHeight, &orthoWidth, &orthoHeight);
 
   myScreen = SDL_SetVideoMode(screenWidth, screenHeight, 0, mySDLFlags);
   if(myScreen == NULL)
@@ -94,8 +79,7 @@ bool FrameBufferGL::createScreen()
   glPushMatrix();
   glLoadIdentity();
 
-  glOrtho(0.0, (GLdouble) myDimensions.w/(theZoomLevel * theAspectRatio),
-          (GLdouble) myDimensions.h/theZoomLevel, 0.0, 0.0, 1.0);
+  glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
@@ -200,6 +184,12 @@ bool FrameBufferGL::init()
     default:  // This should never happen
       break;
   }
+
+  // Get the valid OpenGL screenmodes
+  myScreenmode = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
+  if((myScreenmode != (SDL_Rect**) -1) && (myScreenmode != (SDL_Rect**) 0))
+    for(uInt32 i = 0; myScreenmode[i]; ++i)
+      myScreenmodeCount++;
 
   // Create the screen
   if(!createScreen())
@@ -512,42 +502,93 @@ void FrameBufferGL::toggleFilter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SDL_Rect FrameBufferGL::viewport(uInt32 width, uInt32 height)
+void FrameBufferGL::viewport(uInt32* screenWidth, uInt32* screenHeight,
+                             GLdouble* orthoWidth, GLdouble* orthoHeight)
 {
-  SDL_Rect rect;
-  rect.x = rect.y = 0;
-  rect.w = width; rect.h = height;
-
-  struct Screenmode
+  // Determine if we're in fullscreen or windowed mode
+  // In fullscreen mode, we clip the SDL screen to known resolutions
+  // In windowed mode, we use the actual image resolution for the SDL screen
+  if(mySDLFlags & SDL_FULLSCREEN)
   {
-    uInt32 w;
-    uInt32 h;
-  };
+    Uint16 iwidth  = (Uint16) (myWidth * theZoomLevel * theAspectRatio);
+    Uint16 iheight = (Uint16) (myHeight * theZoomLevel);
+    Uint16 swidth  = 0;
+    Uint16 sheight = 0;
+    float scaleX   = 0.0f;
+    float scaleY   = 0.0f;
+    float scale    = 1.0f;
 
-  // List of valid fullscreen OpenGL modes
-  Screenmode myScreenmode[6] = {
-    {320,  240 },
-    {640,  480 },
-    {800,  600 },
-    {1024, 768 },
-    {1280, 1024},
-    {1600, 1200}
-  };
+/*    cerr << "original image width   = " << iwidth  << endl
+         << "original image height  = " << iheight << endl
+         << endl; */
 
-  for(uInt32 i = 0; i < 6; i++)
-  {
-    if(width <= myScreenmode[i].w && height <= myScreenmode[i].h)
+    if(myConsole->settings().getBool("gl_fsmax") &&
+       myScreenmode != (SDL_Rect**) -1)
     {
-      rect.x = (myScreenmode[i].w - width) / 2;
-      rect.y = (myScreenmode[i].h - height) / 2;
-      rect.w = myScreenmode[i].w;
-      rect.h = myScreenmode[i].h;
+      // Use the largest available screen size
+      swidth  = myScreenmode[0]->w;
+      sheight = myScreenmode[0]->h;
 
-      return rect;
+      scaleX = float(iwidth)  / swidth;
+      scaleY = float(iheight) / sheight;
+
+      // Figure out which dimension is closest to the 10% mark,
+      // and calculate the scaling required to bring it to exactly 10%
+      if(scaleX > scaleY)
+        scale = (swidth * 0.9) / iwidth;
+      else
+        scale = (sheight * 0.9) / iheight;
+
+      iwidth  = (Uint16) (scale * iwidth);
+      iheight = (Uint16) (scale * iheight);
     }
-  }
+    else if(myScreenmode == (SDL_Rect**) -1)
+    {
+      // All modes are available, so use the exact image resolution
+      swidth  = iwidth;
+      sheight = iheight;
+    }
+    else  // otherwise, search for a valid screenmode
+    {
+      for(uInt32 i = myScreenmodeCount-1; i >= 0; i--)
+      {
+        if(iwidth <= myScreenmode[i]->w && iheight <= myScreenmode[i]->h)
+        {
+          swidth  = myScreenmode[i]->w;
+          sheight = myScreenmode[i]->h;
+          break;
+        }
+      }
+    }
 
-  // If we get here, it probably indicates an error
-  // But we have to return something ...
-  return rect;
+/*    cerr << "image width   = " << iwidth  << endl
+         << "image height  = " << iheight << endl
+         << "screen width  = " << swidth  << endl
+         << "screen height = " << sheight << endl
+         << "scale factor  = " << scale   << endl
+         << endl; */
+
+    // Now calculate the OpenGL coordinates
+    myDimensions.x = (swidth  - iwidth)  / 2;
+    myDimensions.y = (sheight - iheight) / 2;
+    myDimensions.w = iwidth;
+    myDimensions.h = iheight;
+
+    *screenWidth  = swidth;
+    *screenHeight = sheight;
+    *orthoWidth   = (GLdouble) (myDimensions.w / (theZoomLevel * theAspectRatio * scale));
+    *orthoHeight  = (GLdouble) (myDimensions.h / (theZoomLevel * scale));
+  }
+  else
+  {
+    myDimensions.x = 0;
+    myDimensions.y = 0;
+    myDimensions.w = (Uint16) (myWidth * theZoomLevel * theAspectRatio);
+    myDimensions.h = (Uint16) myHeight * theZoomLevel;
+
+    *screenWidth  = myDimensions.w;
+    *screenHeight = myDimensions.h;
+    *orthoWidth   = (GLdouble) (myDimensions.w / (theZoomLevel * theAspectRatio));
+    *orthoHeight  = (GLdouble) (myDimensions.h / theZoomLevel);
+  }
 }

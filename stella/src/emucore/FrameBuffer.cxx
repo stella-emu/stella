@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.9 2004-06-23 03:43:47 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.10 2004-06-27 22:44:04 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -355,6 +355,10 @@ void FrameBuffer::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
         moveCursorUp(1);
       else if(key == StellaEvent::KCODE_DOWN)
         moveCursorDown(1);
+      else if(key == StellaEvent::KCODE_PAGEUP)
+        moveCursorUp(4);
+      else if(key == StellaEvent::KCODE_PAGEDOWN)
+        moveCursorDown(4);
 
       break;  // MAIN_MENU
 

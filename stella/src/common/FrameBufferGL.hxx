@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.4 2004-06-27 22:44:04 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class MediaSource;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.3 2004-06-23 00:15:32 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.4 2004-06-27 22:44:04 stephena Exp $
 */
 class FrameBufferGL : public FrameBufferSDL
 {
@@ -141,7 +141,8 @@ class FrameBufferGL : public FrameBufferSDL
 
     bool createTextures();
 
-    SDL_Rect viewport(uInt32 width, uInt32 height);
+    void viewport(uInt32* screenWidth, uInt32* screenHeight,
+                  GLdouble* orthoWidth, GLdouble* orthoHeight);
 
     uInt32 power_of_two(uInt32 input)
     {
@@ -154,6 +155,12 @@ class FrameBufferGL : public FrameBufferSDL
   private:
     // The main texture buffer
     SDL_Surface* myTexture;
+
+    // The possible OpenGL screenmodes to use
+    SDL_Rect** myScreenmode;
+
+    // The number of usable OpenGL screenmodes
+    uInt32 myScreenmodeCount;
 
     // The depth of the texture buffer
     uInt32 myDepth;
