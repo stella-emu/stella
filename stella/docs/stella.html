@@ -230,8 +230,10 @@
 			(CPU-intensive) timing or less accurate (CPU-friendly) timing to X11 and SDL
 			versions.  This is the final version of what was considered experimental timing code
 			in Stella 1.2</li>
-		<li>Added "<i>-sound</i>" command line option to choose which sound backend to use;
-			X11 and SDL versions supported for now</li>
+		<li>Added "<i>-sound</i>" command line option to choose which sound backend to use
+			(alsa, oss, sdl) with the X11 and SDL versions</li>
+		<li>Added "<i>-help</i>" command line option to describe the options available.
+			Previously, help was always shown.  X11 and SDL versions supported for now</li>
 		<li>Added the following <b>developer</b> command line options to the X11 and SDL
 			versions, which are only activated in <b>developer</b> builds:
 			<ul>
@@ -498,17 +500,17 @@
 			<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
 	</ol>
 
-	<p>Currently, sound is supported using the Open Sound System, using OSS
-	emulation under ALSA, or using SDL.  Sound has been tested and is known to work under
-	Linux and BSDI.  For additional information	on OSS or ALSA see the following
-	web sites:</p>
+	<p>Currently, sound is supported using the ALSA v0.9 API (-sound alsa), the Open Sound
+	System or OSS emulation under ALSA (-sound oss), or SDL (-sound sdl).  As of this time,
+	the X11 version cannot use SDL sound.  Sound has been tested and is known to work under
+	Linux and BSDI.  For additional information on OSS or ALSA see the following web sites:</p>
 
 	<p><a href="http://www.4front-tech.com">4Front Technologies (OSS)</a><br>
 	<a href="http://www.alsa-project.org">Advanced Linux Sound Architecture (ALSA)</a>
 	</p>
 
 	<p>Support for the external sound server has been deprecated as of Stella 1.3.  The sound
-	code has been integrated into the core.  Native ALSA support will be coming soon.</p>
+	code has been integrated into the core.</p>
 
 	<br><br>
 	<p><h1>
@@ -661,6 +663,11 @@
 		</tr>
 
 		<tr>
+			<td><pre>-help</pre></td>
+			<td>Show this table on the commandline</td>
+		</tr>
+
+		<tr>
 			<td><pre>-display &lt;display&gt;</pre></td>
 			<td>Connect to the designated X display (<i>X11 version only</i>)</td>
 		</tr>
@@ -713,7 +720,7 @@
 
 		<tr>
 			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
-			<td>Shows some game info on exit</td>
+			<td>Shows some game info while the emulator is running</td>
 		</tr>
 
 		<tr>
@@ -744,8 +751,8 @@
 				less CPU).</td>
 		</tr>
 		<tr>
-			<td><pre>-sound &lt;0|oss|sdl&gt;</pre></td>
-			<td>Disable sound entirely, or use the OSS or SDL backend (<i>depending on
+			<td><pre>-sound &lt;0|alsa|oss|sdl&gt;</pre></td>
+			<td>Disable sound entirely, or use the given backend (<i>depending on
 				support included</i>).</td>
 		</tr>
 		<tr>
@@ -1374,7 +1381,7 @@
 
 		<tr>
 			<td>Alt + s</td>
-			<td>Save the current properties</td>
+			<td>Save (or merge) the current properties</td>
 		</tr>
 
 	</table>
