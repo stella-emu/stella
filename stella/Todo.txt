@@ -34,6 +34,10 @@ For all ports:
   * Add a debugger to Stella for game developers or create an external
     debugger to be used by Stella and z26 (and add hooks into Stella for it)
 
+  * Further optimize the software mode, especially on Win32.  The software
+    renderer in Linux takes 4% CPU (it's actually faster than OpenGL); the same
+    code on a faster computer running Windows XP takes 60-70%!  I knew SDL
+    wasn't as optimized for Windows, but I didn't think it was that bad ...
 
 For the Windows GUI frontend (StellaX)
 

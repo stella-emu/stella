@@ -222,7 +222,8 @@
 			are actively maintained.  That means simultaneous (and hopefully
 			more frequent) releases.</li>
 		<li>A new Windows port has been created, with the GUI based on StellaX.
-			This is the first new release for Windows since Stella 1.2.</li>
+			This is the first new release for Windows since Stella 1.2.
+			(software mode is not yet optimized; OpenGL mode works much better)</li>
 		<li>A new Mac OSX port has been created by Mark Grebe.  This is the first new
 			release for Mac OSX	since Stella 1.2.</li>
 		<li>Added OpenGL rendering support.</li>
@@ -356,7 +357,6 @@
 	<ul>
   		<li>Mac OSX 10.1 or Above </li>
   		<li>500 MHz highly recommended </li>
-  		<li>Joysticks or gamepads are highly recommended </li>
 	</ul>
 
 	<p>
@@ -406,14 +406,14 @@
 		<li><b>Source RPM</b> (stella-<i>release</i>-1.src.rpm)</li>
 		<ol>
 			<li>Rebuild the archive with the following command:
-				<pre>   rpmbuild --rebuild stella-<i>release</i>.src.rpm</pre></li>
+				<pre>   rpmbuild --rebuild stella-<i>release</i>-1.src.rpm</pre></li>
 			<li>Follow the instructions under <i>Binary RPM</i> to install
-				the stella-<i>release</i>.ix86.rpm file</li>
+				the stella-<i>release</i>-1.ix86.rpm file</li>
 		</ol>
 		<li><b>Binary RPM</b> (stella-<i>release</i>-1.ix86.rpm)</li>
 		<ol>
 			<li>Install the binary RPM with the following command:
-				<pre>   rpm -Uvh stella-<i>release</i>.ix86.rpm</pre></li>
+				<pre>   rpm -Uvh stella-<i>release</i>-1.ix86.rpm</pre></li>
 		</ol>
 	</ul>
 
@@ -689,7 +689,7 @@
 	<p>Most of the options of the Macintosh version are selectable by using
 	the menus, or the Cmd keys associated with the menu entries.&nbsp;
 	Note, most of the non-remappable keys are different for the Mac version
-	than those listed in section 6. Keyboard Layout.<br>
+	than those listed in <b>Section 7 - <a href="#Keyboard">Keyboard Layout</a></b>.
 	</p>
 	<p>The menu choices/Cmd keys for the Mac version are as follows:<br>
 	</p>
@@ -943,7 +943,7 @@
 
 		<tr>
 			<td>Exit emulator (can't be remapped)</td>
-			<td>Escape (Cmd-Q for Macintosh)</td>
+			<td>Escape</td>
 		</tr>
 
 		<tr>
