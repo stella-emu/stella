@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.3 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartCV.cxx,v 1.4 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -134,7 +134,6 @@ void CartridgeCV::poke(uInt16, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::save(Serializer& out)
 {
-  cerr << "save from CartCV  !!\n";
   string cart = name();
 
   try
@@ -163,7 +162,6 @@ bool CartridgeCV::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::load(Deserializer& in)
 {
-  cerr << "load from CartCV  !!\n";
   string cart = name();
 
   try

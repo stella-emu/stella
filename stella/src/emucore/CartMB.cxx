@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMB.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartMB.cxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -124,7 +124,6 @@ void CartridgeMB::incbank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMB::save(Serializer& out)
 {
-  cerr << "save from CartMB  !!\n";
   string cart = name();
 
   try
@@ -150,7 +149,6 @@ bool CartridgeMB::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMB::load(Deserializer& in)
 {
-  cerr << "load from CartMB  !!\n";
   string cart = name();
 
   try

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.2 2002-05-14 10:56:03 gunfight Exp $
+// $Id: Deserializer.hxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
@@ -32,7 +32,7 @@
   return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.2 2002-05-14 10:56:03 gunfight Exp $
+  @version $Id: Deserializer.hxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
 */
 class Deserializer
 {

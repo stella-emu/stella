@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.3 2002-05-14 10:56:03 gunfight Exp $
+// $Id: CartE7.cxx,v 1.4 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -218,14 +218,12 @@ void CartridgeE7::bankRAM(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::save(Serializer& out)
 {
-    uInt32 i;
-
-    cerr << "save from CartE7  !!\n";
-
-    string cart = name();
+  string cart = name();
 
   try
   {
+    uInt32 i;
+
     out.putString(cart);
 
     out.putLong(2);
@@ -256,18 +254,14 @@ bool CartridgeE7::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::load(Deserializer& in)
 {
-    uInt32 i;
-
-    cerr << "load from CartE7  !!\n";
-  
-    string cart = name();
+  string cart = name();
 
   try
   {
     if(in.getString() != cart)
       return false;
 
-    uInt32 limit;
+    uInt32 i, limit;
 
     limit = (uInt32) in.getLong();
     for(i = 0; i < limit; ++i)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.5 2002-05-14 10:56:03 gunfight Exp $
+// $Id: CartDPC.cxx,v 1.6 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -331,14 +331,12 @@ void CartridgeDPC::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::save(Serializer& out)
 {
-    uInt32 i;
-
-    cerr << "save from CartDPC  !!\n";
-
-    string cart = name();
+  string cart = name();
 
   try
   {
+    uInt32 i;
+
     out.putString(cart);
 
     // Indicates which bank is currently active
@@ -384,18 +382,14 @@ bool CartridgeDPC::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::load(Deserializer& in)
 {
-    uInt32 i;
-    
-    cerr << "load from CartDPC  !!\n";
-    
-    string cart = name();
+  string cart = name();
 
   try
   {
     if(in.getString() != cart)
       return false;
 
-    uInt32 limit;
+    uInt32 i, limit;
 
     // Indicates which bank is currently active
     myCurrentBank = (uInt16) in.getLong();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartF8.cxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -149,7 +149,6 @@ void CartridgeF8::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF8::save(Serializer& out)
 {
-  cerr << "save from CartF8  !!\n";
   string cart = name();
 
   try
@@ -175,7 +174,6 @@ bool CartridgeF8::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF8::load(Deserializer& in)
 {
-  cerr << "load from CartF8  !!\n";
   string cart = name();
 
   try

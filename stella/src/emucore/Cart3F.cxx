@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: Cart3F.cxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -152,7 +152,6 @@ void Cartridge3F::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3F::save(Serializer& out)
 {
-  cerr << "save from Cart3F  !!\n";
   string cart = name();
 
   try
@@ -177,7 +176,6 @@ bool Cartridge3F::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3F::load(Deserializer& in)
 {
-  cerr << "load from Cart3F  !!\n";
   string cart = name();
 
   try

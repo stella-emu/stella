@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4K.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: Cart4K.cxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -86,7 +86,6 @@ void Cartridge4K::poke(uInt16, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4K::save(Serializer& out)
 {
-  cerr << "save from Cart4K  !!\n";
   string cart = name();
 
   try
@@ -110,8 +109,6 @@ bool Cartridge4K::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4K::load(Deserializer& in)
 {
-  cerr << "load from Cart4K  !!\n";
-
   string cart = name();
 
   try

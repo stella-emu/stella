@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.3 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartAR.cxx,v 1.4 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -425,13 +425,134 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::save(Serializer& out)
 {
-  cerr << "save from CartAR  \n";
+  string cart = name();
+
+  try
+  {
+    uInt32 i;
+
+    out.putString(cart);
+
+    // Indicates the offest within the image for the corresponding bank
+    out.putLong(2);
+    for(i = 0; i < 2; ++i)
+      out.putLong(myImageOffset[i]);
+
+    // The 6K of RAM and 2K of ROM contained in the Supercharger
+    out.putLong(8192);
+    for(i = 0; i < 8192; ++i)
+      out.putLong(myImage[i]);
+
+    // The 256 byte header for the current 8448 byte load
+    out.putLong(256);
+    for(i = 0; i < 256; ++i)
+      out.putLong(myHeader[i]);
+
+    // All of the 8448 byte loads associated with the game 
+    // Note that the size of this array is myNumberOfLoadImages * 8448
+    out.putLong(myNumberOfLoadImages * 8448);
+    for(i = 0; i < myNumberOfLoadImages * 8448; ++i)
+      out.putLong(myLoadImages[i]);
+
+    // Indicates how many 8448 loads there are
+    out.putLong(myNumberOfLoadImages);
+
+    // Indicates if the RAM is write enabled
+    out.putBool(myWriteEnabled);
+
+    // Indicates if the ROM's power is on or off
+    out.putBool(myPower);
+
+    // Indicates when the power was last turned on
+    out.putLong(myPowerRomCycle);
+
+    // Data hold register used for writing
+    out.putLong(myDataHoldRegister);
+
+    // Indicates number of distinct accesses when data hold register was set
+    out.putLong(myNumberOfDistinctAccesses);
+
+    // Indicates if a write is pending or not
+    out.putBool(myWritePending);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::load(Deserializer& in)
 {
-  cerr << "load from CartAR  \n";
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    uInt32 i, limit;
+
+    // Indicates the offest within the image for the corresponding bank
+    limit = (uInt32) in.getLong();
+    for(i = 0; i < limit; ++i)
+      myImageOffset[i] = (uInt32) in.getLong();
+
+    // The 6K of RAM and 2K of ROM contained in the Supercharger
+    limit = (uInt32) in.getLong();
+    for(i = 0; i < limit; ++i)
+      myImage[i] = (uInt8) in.getLong();
+
+    // The 256 byte header for the current 8448 byte load
+    limit = (uInt32) in.getLong();
+    for(i = 0; i < limit; ++i)
+      myHeader[i] = (uInt8) in.getLong();
+
+    // All of the 8448 byte loads associated with the game 
+    // Note that the size of this array is myNumberOfLoadImages * 8448
+    limit = (uInt32) in.getLong();
+    for(i = 0; i < limit; ++i)
+      myLoadImages[i] = (uInt8) in.getLong();
+
+    // Indicates how many 8448 loads there are
+    myNumberOfLoadImages = (uInt8) in.getLong();
+
+    // Indicates if the RAM is write enabled
+    myWriteEnabled = in.getBool();
+
+    // Indicates if the ROM's power is on or off
+    myPower = in.getBool();
+
+    // Indicates when the power was last turned on
+    myPowerRomCycle = (Int32) in.getLong();
+
+    // Data hold register used for writing
+    myDataHoldRegister = (uInt8) in.getLong();
+
+    // Indicates number of distinct accesses when data hold register was set
+    myNumberOfDistinctAccesses = (uInt32) in.getLong();
+
+    // Indicates if a write is pending or not
+    myWritePending = in.getBool();
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
   return true;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4SC.cxx,v 1.2 2002-05-13 19:17:32 stephena Exp $
+// $Id: CartF4SC.cxx,v 1.3 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -158,7 +158,6 @@ void CartridgeF4SC::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::save(Serializer& out)
 {
-  cerr << "save from CartF4SC  !!\n";
   string cart = name();
 
   try
@@ -189,7 +188,6 @@ bool CartridgeF4SC::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::load(Deserializer& in)
 {
-  cerr << "load from CartF4SC  !!\n";
   string cart = name();
 
   try

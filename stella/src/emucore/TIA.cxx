@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.13 2002-05-13 19:17:32 stephena Exp $
+// $Id: TIA.cxx,v 1.14 2002-05-14 15:22:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -285,7 +285,6 @@ void TIA::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::save(Serializer& out)
 {
-  cerr << "save from TIA  !!\n";
   string device = name();
 
   try
@@ -369,7 +368,7 @@ bool TIA::save(Serializer& out)
   }
   catch(...)
   {
-    cerr << "Unknown error in TIA save state\n";
+    cerr << "Unknown error in save state for " << device << endl;
     return false;
   }
 
@@ -379,7 +378,6 @@ bool TIA::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::load(Deserializer& in)
 {
-  cerr << "load from TIA  !!\n";
   string device = name();
 
   try
@@ -464,7 +462,7 @@ bool TIA::load(Deserializer& in)
   }
   catch(...)
   {
-    cerr << "Unknown error in TIA load state\n";
+    cerr << "Unknown error in load state for " << device << endl;
     return false;
   }
 
