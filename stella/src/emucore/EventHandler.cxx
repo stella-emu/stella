@@ -13,13 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.20 2003-11-13 00:26:58 stephena Exp $
+// $Id: EventHandler.cxx,v 1.21 2003-11-13 12:50:11 stephena Exp $
 //============================================================================
 
 #include <algorithm>
 #include <sstream>
-
-#include "pch.hxx"
 
 #include "Console.hxx"
 #include "Event.hxx"
