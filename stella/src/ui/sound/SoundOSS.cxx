@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundOSS.cxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
+// $Id: SoundOSS.cxx,v 1.2 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #include <fcntl.h>
@@ -171,26 +171,24 @@ bool SoundOSS::isSuccessfullyInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundOSS::setSoundVolume(uInt32 volume)
+void SoundOSS::setSoundVolume(Int32 percent)
 {
   if(myIsInitializedFlag && (myMixerFd != -1))
   {
-    if(volume < 0)
+    if((percent >= 0) && (percent <= 100))
     {
-      volume = 0;
+      int v = percent | (percent << 8);
+      if(ioctl(myMixerFd, MIXER_WRITE(SOUND_MIXER_PCM), &v) == -1)
+      {
+        perror(MIXER_DEVICE);
+        close(myMixerFd);
+        myMixerFd = -1;
+      }
     }
-    if(volume > 100)
+    else if(percent == -1)   // If -1 has been specified, play sound at default volume
     {
-      volume = 100;
-    }
-
-    int v = volume | (volume << 8);
-    if(ioctl(myMixerFd, MIXER_WRITE(SOUND_MIXER_PCM), &v) == -1)
-    {
-      perror(MIXER_DEVICE);
-      close(myMixerFd);
-      myMixerFd = -1;
-    }
+      myOriginalVolume = -1;
+    }      
   }
 }
 

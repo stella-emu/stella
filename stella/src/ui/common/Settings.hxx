@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.6 2002-11-13 16:19:20 stephena Exp $
+// $Id: Settings.hxx,v 1.7 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -62,7 +62,7 @@ class Settings
     bool theAccurateTimingFlag;
 
     // Indicates what the desired volume is
-    uInt32 theDesiredVolume;
+    Int32 theDesiredVolume;
 
     // Indicates what the desired frame rate is
     uInt32 theDesiredFrameRate;

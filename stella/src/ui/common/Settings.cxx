@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.8 2002-12-01 17:06:18 stephena Exp $
+// $Id: Settings.cxx,v 1.9 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #ifdef DEVELOPER_SUPPORT
@@ -33,7 +33,7 @@ Settings::Settings()
   theUsePrivateColormapFlag = false;
   theMultipleSnapShotFlag = true;
   theAccurateTimingFlag = true;
-  theDesiredVolume = 75;
+  theDesiredVolume = -1;
   theDesiredFrameRate = 60;
   thePaddleMode = 0;
   theAlternateProFile = "";
@@ -163,9 +163,9 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
     {
       // They're setting the desired volume
       Int32 volume = atoi(argv[++i]);
-      if(volume < 0)
-        volume = 0;
-      if(volume > 100)
+      if(volume < -1)
+        volume = -1;
+      else if(volume > 100)
         volume = 100;
 
       theDesiredVolume = volume;
@@ -369,10 +369,10 @@ void Settings::handleRCFile(istream& in)
     else if(key == "volume")
     {
       // They're setting the desired volume
-      uInt32 volume = atoi(value.c_str());
-      if(volume < 0)
-        volume = 0;
-      if(volume > 100)
+      Int32 volume = atoi(value.c_str());
+      if(volume < -1)
+        volume = -1;
+      else if(volume > 100)
         volume = 100;
 
       theDesiredVolume = volume;

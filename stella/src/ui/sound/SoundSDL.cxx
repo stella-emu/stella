@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.2 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -143,7 +143,7 @@ void SoundSDL::closeDevice()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::setSoundVolume(uInt32 percent)
+void SoundSDL::setSoundVolume(Int32 percent)
 {
   if(myIsInitializedFlag)
   {
@@ -152,6 +152,10 @@ void SoundSDL::setSoundVolume(uInt32 percent)
       SDL_LockAudio();
       myCurrentVolume = (uInt32)(((float)percent / 100.0) * SDL_MIX_MAXVOLUME);
       SDL_UnlockAudio();
+    }
+    else if(percent == -1)   // If -1 has been specified, play sound at default volume
+    {
+      myCurrentVolume = SDL_MIX_MAXVOLUME;
     }
   }
 }

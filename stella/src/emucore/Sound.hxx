@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.4 2002-11-13 16:19:20 stephena Exp $
+// $Id: Sound.hxx,v 1.5 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -28,7 +28,7 @@
   to compile Stella with no sound support whatsoever.
 
   @author  Stephen Anthony
-  @version $Id: Sound.hxx,v 1.4 2002-11-13 16:19:20 stephena Exp $
+  @version $Id: Sound.hxx,v 1.5 2003-02-25 03:12:55 stephena Exp $
 */
 class Sound
 {
@@ -65,11 +65,12 @@ class Sound
 
     /**
       Sets the volume of the sound device to the specified level.  The
-      volume is given as a precentage from 0 to 100.
+      volume is given as a percentage from 0 to 100.  A -1 indicates
+      that the volume shouldn't be changed at all.
 
-      @param volume The new volume for the sound device
+      @param percent The new volume percentage level for the sound device
     */
-    virtual void setSoundVolume(uInt32 volume);
+    virtual void setSoundVolume(Int32 percent);
 
     /**
       Update the sound device using the audio sample from the specified

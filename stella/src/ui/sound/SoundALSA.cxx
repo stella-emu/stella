@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.cxx,v 1.2 2002-12-05 16:43:57 stephena Exp $
+// $Id: SoundALSA.cxx,v 1.3 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #include <alsa/asoundlib.h>
@@ -215,27 +215,25 @@ bool SoundALSA::isSuccessfullyInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundALSA::setSoundVolume(uInt32 volume)
+void SoundALSA::setSoundVolume(Int32 percent)
 {
   if(myIsInitializedFlag && myMixerElem)
   {
-    if(volume < 0)
+    if((percent >= 0) && (percent <= 100))
     {
-      volume = 0;
+      long int lowerBound, upperBound, newVolume;
+      snd_mixer_selem_get_playback_volume_range(myMixerElem, &lowerBound, &upperBound);
+
+      newVolume = (long int) (((upperBound - lowerBound) * percent / 100.0) + lowerBound);
+      snd_mixer_selem_set_playback_volume(myMixerElem, (_snd_mixer_selem_channel_id) 0,
+        newVolume);
+      snd_mixer_selem_set_playback_volume(myMixerElem, (_snd_mixer_selem_channel_id) 1,
+        newVolume);
     }
-    if(volume > 100)
+    else if(percent == -1)   // If -1 has been specified, play sound at default volume
     {
-      volume = 100;
+      myOriginalVolumeRight = myOriginalVolumeRight = -1;
     }
-
-    long int lowerBound, upperBound, newVolume;
-    snd_mixer_selem_get_playback_volume_range(myMixerElem, &lowerBound, &upperBound);
-
-    newVolume = (long int) (((upperBound - lowerBound) * volume / 100.0) + lowerBound);
-    snd_mixer_selem_set_playback_volume(myMixerElem, (_snd_mixer_selem_channel_id) 0,
-      newVolume);
-    snd_mixer_selem_set_playback_volume(myMixerElem, (_snd_mixer_selem_channel_id) 1,
-      newVolume);
   }
 }
 

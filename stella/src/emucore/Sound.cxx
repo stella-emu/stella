@@ -13,10 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.4 2002-11-13 16:19:20 stephena Exp $
+// $Id: Sound.cxx,v 1.5 2003-02-25 03:12:54 stephena Exp $
 //============================================================================
 
-#include "SoundOSS.hxx"
+#include "Sound.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Sound::Sound()
@@ -46,7 +46,7 @@ bool Sound::isSuccessfullyInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::setSoundVolume(uInt32 volume)
+void Sound::setSoundVolume(Int32 volume)
 {
 }
 

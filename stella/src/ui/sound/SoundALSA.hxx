@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundALSA.hxx,v 1.2 2002-12-05 16:43:57 stephena Exp $
+// $Id: SoundALSA.hxx,v 1.3 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDALSA_HXX
@@ -30,7 +30,7 @@
   Advanced Linux Sound Architecture (ALSA) version 0.9.x API.
 
   @author  Stephen Anthony
-  @version $Id: SoundALSA.hxx,v 1.2 2002-12-05 16:43:57 stephena Exp $
+  @version $Id: SoundALSA.hxx,v 1.3 2003-02-25 03:12:55 stephena Exp $
 */
 class SoundALSA : public Sound
 {
@@ -67,11 +67,12 @@ class SoundALSA : public Sound
 
     /**
       Sets the volume of the sound device to the specified level.  The
-      volume is given as a precentage from 0 to 100.
+      volume is given as a percentage from 0 to 100.  A -1 indicates
+      that the volume shouldn't be changed at all.
 
-      @param volume The new volume for the sound device
+      @param percent The new volume percentage level for the sound device
     */
-    void setSoundVolume(uInt32 volume);
+    void setSoundVolume(Int32 percent);
 
     /**
       Update the sound device using the audio sample from the specified

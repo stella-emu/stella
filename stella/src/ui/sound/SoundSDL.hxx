@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.2 2003-02-25 03:12:55 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -29,7 +29,7 @@
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.1 2002-11-13 16:19:21 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.2 2003-02-25 03:12:55 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -73,11 +73,12 @@ class SoundSDL : public Sound
 
     /**
       Sets the volume of the sound device to the specified level.  The
-      volume is given as a precentage from 0 to 100.
+      volume is given as a percentage from 0 to 100.  A -1 indicates
+      that the volume shouldn't be changed at all.
 
-      @param volume The new volume for the sound device
+      @param percent The new volume percentage level for the sound device
     */
-    void setSoundVolume(uInt32 volume);
+    void setSoundVolume(Int32 percent);
 
     /**
       Update the sound device using the audio sample from the specified
