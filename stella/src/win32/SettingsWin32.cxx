@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.9 2004-07-11 22:04:21 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.10 2004-08-06 01:53:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -52,9 +52,6 @@ SettingsWin32::SettingsWin32()
   else
     mySettingsInputFilename = mySystemConfigFile;
 
-  mySnapshotFile = "";
-  myStateFile    = "";
-
   // Now create Win32 specific settings
   set("romdir", "roms");
   set("accurate", "false");  // Don't change this, or the sound will skip
@@ -82,9 +79,7 @@ string SettingsWin32::stateFilename(const string& md5, uInt32 state)
   ostringstream buf;
   buf << myStateDir << md5 << ".st" << state;
 
-  myStateFile = buf.str();
-
-  return myStateFile;
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
