@@ -13,16 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.4 2004-06-13 16:51:15 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.5 2004-06-19 21:51:12 stephena Exp $
 //============================================================================
 
-//#include <cstdlib>
 #include <sstream>
 #include <fstream>
 
-//#include <unistd.h>
-//#include <sys/stat.h>
-//#include <sys/types.h>
+#include <direct.h>
 
 #include "bspf.hxx"
 #include "Settings.hxx"
@@ -31,16 +28,18 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsWin32::SettingsWin32()
 {
+  // FIXME - there really should be code here to determine which version
+  // of Windows is being used.
+  // If using a version which supports multiple users (NT and above),
+  // the relevant directories should be created in per-user locations.
+  // For now, we just put it in the same directory as the executable.
+
   // First set variables that the parent class needs
   myBaseDir = ".\\";
   string stelladir = myBaseDir;
 
-//  if(access(stelladir.c_str(), R_OK|W_OK|X_OK) != 0 )
-//    mkdir(stelladir.c_str(), 0777);
-
   myStateDir = stelladir + "state\\";
-//  if(access(myStateDir.c_str(), R_OK|W_OK|X_OK) != 0 )
-//    mkdir(myStateDir.c_str(), 0777);
+  _mkdir(myStateDir.c_str());
 
   myUserPropertiesFile   = stelladir + "stella.pro";
   mySystemPropertiesFile = stelladir + "stella.pro";
@@ -49,10 +48,10 @@ SettingsWin32::SettingsWin32()
 
   // Set up the names of the input and output config files
   mySettingsOutputFilename = myUserConfigFile;
-//  if(access(myUserConfigFile.c_str(), R_OK) == 0)
+  if(fileExists(myUserConfigFile))
     mySettingsInputFilename = myUserConfigFile;
-//  else
-//    mySettingsInputFilename = mySystemConfigFile;
+  else
+    mySettingsInputFilename = mySystemConfigFile;
 
   mySnapshotFile = "";
   myStateFile    = "";
@@ -92,19 +91,13 @@ void SettingsWin32::usage(string& message)
   #endif
     << "  -sound      <0|1>          Enable sound generation\n"
     << "  -fragsize   <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -bufsize    <number>       The size of the sound buffer\n"
     << "  -framerate  <number>       Display the given number of frames per second\n"
     << "  -zoom       <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen <0|1>          Play the game in fullscreen mode\n"
     << "  -grabmouse  <0|1>          Keeps the mouse in the game window\n"
     << "  -hidecursor <0|1>          Hides the mouse cursor in the game window\n"
     << "  -volume     <number>       Set the volume (0 - 100)\n"
-  #ifdef JOYSTICK_SUPPORT
-    << "  -paddle     <0|1|2|3|real> Indicates which paddle the mouse should emulate\n"
-    << "                             or that real Atari 2600 paddles are being used\n"
-  #else
     << "  -paddle     <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
-  #endif
     << "  -altpro     <props file>   Use the given properties file instead of stella.pro\n"
     << "  -showinfo   <0|1>          Shows some game info\n"
     << "  -accurate   <0|1>          Accurate game timing (uses more CPU)\n"
@@ -116,13 +109,13 @@ void SettingsWin32::usage(string& message)
     << endl
   #ifdef DEVELOPER_SUPPORT
     << " DEVELOPER options (see Stella manual for details)\n"
-    << "  -Dformat                    Sets \"Display.Format\"\n"
-    << "  -Dxstart                    Sets \"Display.XStart\"\n"
-    << "  -Dwidth                     Sets \"Display.Width\"\n"
-    << "  -Dystart                    Sets \"Display.YStart\"\n"
-    << "  -Dheight                    Sets \"Display.Height\"\n"
-    << "  -mergeprops  <0|1>          Merge changed properties into properties file,\n"
-    << "                              or save into a separate file\n"
+    << "  -Dformat                   Sets \"Display.Format\"\n"
+    << "  -Dxstart                   Sets \"Display.XStart\"\n"
+    << "  -Dwidth                    Sets \"Display.Width\"\n"
+    << "  -Dystart                   Sets \"Display.YStart\"\n"
+    << "  -Dheight                   Sets \"Display.Height\"\n"
+    << "  -mergeprops  <0|1>         Merge changed properties into properties file,\n"
+    << "                             or save into a separate file\n"
   #endif
     << endl;
 }
