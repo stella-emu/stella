@@ -18,6 +18,7 @@ class GameList : public CListCtrl
 private:
     // memebers saved in registry
     CString m_Path;
+    int m_RomCount;
     CWnd* m_pParent;
     PropertiesSet* m_pPropertiesSet;
 
@@ -33,6 +34,11 @@ private:
 public:
 	GameList();
 	virtual ~GameList();
+    // Methods
+    CString getCurrentNote();
+    CString getPath() {return m_Path;}
+    int getRomCount() {return m_RomCount;}
+
 
 // Operations
 public:
@@ -40,6 +46,8 @@ public:
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(GameList)
+	public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -56,6 +64,7 @@ protected:
 	//{{AFX_MSG(GameList)
 	afx_msg void OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnItemActivate(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnItemchanged(NMHDR* pNMHDR, LRESULT* pResult);
 	//}}AFX_MSG
 
 	DECLARE_MESSAGE_MAP()

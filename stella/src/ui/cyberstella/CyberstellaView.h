@@ -58,8 +58,12 @@ protected:
 protected:
 	//{{AFX_MSG(CCyberstellaView)
 	afx_msg void OnConfig();
-	afx_msg void OnPlay();
+	afx_msg void OnPlay(LONG gameID);
 	afx_msg void OnDestroy();
+	afx_msg void OnGunfight();
+	afx_msg void OnJammed();
+	afx_msg void OnQb();
+	afx_msg void OnThrust();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -67,6 +71,9 @@ private:
     // methods
     void togglePause();
     void Initialize();
+    void updateListInfos();
+    void displayNote();
+
     // members
     PropertiesSet* m_pPropertiesSet;
     bool m_bIsPause;

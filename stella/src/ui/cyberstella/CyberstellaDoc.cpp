@@ -3,7 +3,6 @@
 
 #include "pch.hxx"
 #include "Cyberstella.h"
-
 #include "CyberstellaDoc.h"
 
 #ifdef _DEBUG

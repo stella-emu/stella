@@ -29,7 +29,7 @@ BEGIN_MESSAGE_MAP(GameList, CListCtrl)
 	//{{AFX_MSG_MAP(GameList)
 	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnclick)
 	ON_NOTIFY_REFLECT(LVN_ITEMACTIVATE, OnItemActivate)
-	ON_WM_KEYDOWN()
+	ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, OnItemchanged)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -126,6 +126,8 @@ void GameList::populateRomList()
 
     // Select first item
     SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+
+    m_pParent->SendMessage(MSG_GAMELIST_UPDATE);
 }
 
 void GameList::displayPath()
@@ -144,6 +146,9 @@ void GameList::displayPath()
 		searchpath = m_Path + "\\*.*";
   
 	bFind = find.FindFile(searchpath);
+
+    // Init Rom count
+    m_RomCount = 0;
 
 	while (bFind)
 	{
@@ -197,6 +202,13 @@ void GameList::displayPath()
 
             lvi.iSubItem = 1;
             name = props->get("Cartridge.Name").c_str();
+
+            // If entry is not found in stella.pro, set filename
+            if(strcmpi(name,"untitled") == 0)
+            {
+                props->set("Cartridge.Name", find.GetFileName().GetBuffer(name.GetLength()));
+            }
+
             lvi.pszText = name.GetBuffer(name.GetLength());
 			SetItem(&lvi);
 
@@ -209,6 +221,8 @@ void GameList::displayPath()
             name = props->get("Cartridge.Rarity").c_str();
             lvi.pszText = name.GetBuffer(name.GetLength());
 			SetItem(&lvi);
+
+            m_RomCount++;
         }
 	}
 
@@ -380,7 +394,17 @@ CString GameList::getCurrentName()
     {
         return GetItemText(curSel,1);
     }
+    return "";
+}
 
+CString GameList::getCurrentNote()
+{
+    int curSel = GetSelectionMark();
+    if(curSel >= 0)
+    {
+        Properties* props = (Properties*)GetItemData(curSel);
+        return props->get("Cartridge.Note").c_str();
+    }
     return "";
 }
 
@@ -390,4 +414,29 @@ void GameList::init(PropertiesSet* newPropertiesSet, CWnd* newParent)
     m_pPropertiesSet = newPropertiesSet;
     SetExtendedStyle(LVS_EX_FULLROWSELECT);
     insertColumns();
+}
+
+
+void GameList::OnItemchanged(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+
+    m_pParent->SendMessage(MSG_GAMELIST_DISPLAYNOTE);
+
+    *pResult = 0;
+}
+
+BOOL GameList::PreTranslateMessage(MSG* pMsg) 
+{
+	if( pMsg->message == WM_KEYDOWN )
+	{
+		if(pMsg->wParam == VK_RETURN)
+        {
+            ::TranslateMessage(pMsg);
+			::DispatchMessage(pMsg);
+			return TRUE;		    	// DO NOT process further
+		}
+	}
+
+	return CListCtrl::PreTranslateMessage(pMsg);
 }

@@ -5,7 +5,6 @@
 #include "pch.hxx"
 #include <stdio.h>
 #include <stdarg.h>
-
 #include "resource.h"
 
 // This will force in the DirectX library

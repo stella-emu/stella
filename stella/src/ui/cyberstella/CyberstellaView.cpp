@@ -9,6 +9,10 @@
 #include "StellaConfig.h"
 #include "Console.hxx"
 #include "SoundWin32.hxx"
+#include "Gunfight.h"
+#include "Jammed.h"
+#include "Qb.h"
+#include "Thrust.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,6 +45,12 @@ BEGIN_MESSAGE_MAP(CCyberstellaView, CFormView)
 	ON_BN_CLICKED(IDC_CONFIG, OnConfig)
 	ON_BN_CLICKED(IDC_PLAY, OnPlay)
 	ON_WM_DESTROY()
+	ON_COMMAND(IDG_GUNFIGHT, OnGunfight)
+	ON_COMMAND(IDG_JAMMED, OnJammed)
+	ON_COMMAND(IDG_QB, OnQb)
+	ON_COMMAND(IDG_THRUST, OnThrust)
+    ON_MESSAGE(MSG_GAMELIST_UPDATE, updateListInfos)
+    ON_MESSAGE(MSG_GAMELIST_DISPLAYNOTE, displayNote)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -88,14 +98,6 @@ void CCyberstellaView::OnInitialUpdate()
 
     // Init ListControl, parse stella.pro
     Initialize();
-
-    // Show status text
-    CString status;
-    status.Format(IDS_STATUSTEXT, m_List.GetItemCount());
-    SetDlgItemText(IDC_ROMCOUNT,status);
-
-    // Show rom path
-    //ToDo: SetDlgItemText(IDC_ROMPATH, m_pGlobalData->romDir);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -125,14 +127,9 @@ void CCyberstellaView::OnConfig()
     dlg.DoModal();
 }
 
-void CCyberstellaView::OnPlay() 
+void CCyberstellaView::OnPlay(LONG gameID) 
 {
     EnableWindow(FALSE);
-
-    CString fileName = m_List.getCurrentFile();
-
-    // Safety Bail Out
-    if(fileName.GetLength() <= 0)   return;
 
 #ifdef USE_FS
     CDirectXFullScreen* pwnd = NULL;
@@ -140,92 +137,17 @@ void CCyberstellaView::OnPlay()
     CDirectXWindow* pwnd = NULL;
 #endif
 
+    CString fileName;
     BYTE* pImage = NULL;
     LPCTSTR pszFileName = NULL;
     Console* pConsole = NULL;
     Sound* pSound = NULL;
+    DWORD dwImageSize;
+    DWORD dwActualSize;
     Event rEvent;
 
-    // show wait cursor while loading
-    HCURSOR hcur = ::SetCursor(::LoadCursor(NULL, IDC_WAIT));
-
-    // Load the rom file
-    HANDLE hFile;
-    DWORD dwImageSize;
-    hFile = ::CreateFile( fileName, 
-                          GENERIC_READ, 
-                          FILE_SHARE_READ, 
-                          NULL, 
-                          OPEN_EXISTING, 
-                          FILE_ATTRIBUTE_NORMAL,
-                          NULL );
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        DWORD dwLastError = ::GetLastError();
-
-        TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
-        ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
-
-        // ::MessageBoxFromGetLastError( pszPathName );
-        TCHAR pszFormat[ 1024 ];
-        LoadString(GetModuleHandle(NULL),
-                    IDS_ROM_LOAD_FAILED,
-                    pszFormat, 1023 );
-
-        LPTSTR pszLastError = NULL;
-
-        FormatMessage(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-            NULL, 
-            dwLastError, 
-            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPTSTR)&pszLastError, 
-            0, 
-            NULL);
-
-        TCHAR pszError[ 1024 ];
-        wsprintf( pszError, 
-                  pszFormat, 
-                  pszCurrentDirectory,
-                  fileName, 
-                  dwLastError,
-                  pszLastError );
-
-        ::MessageBox( *this, 
-                      pszError, 
-                      _T("Error"),
-                      MB_OK | MB_ICONEXCLAMATION );
-
-        ::LocalFree( pszLastError );
-
-        goto exit;
-    }
-
-    dwImageSize = ::GetFileSize( hFile, NULL );
-
-    pImage = new BYTE[dwImageSize + 1];
-    if ( pImage == NULL )
-    {
-        goto exit;
-    }
-
-    DWORD dwActualSize;
-    if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
-    {
-        VERIFY( ::CloseHandle( hFile ) );
-
-        MessageBoxFromGetLastError(fileName);
-
-        goto exit;
-    }
-
-    VERIFY( ::CloseHandle(hFile) );
-
-    //
     // Create Sound driver object
     // (Will be initialized once we have a window handle below)
-    //
-
     if (m_pGlobalData->bNoSound)
     {
         TRACE("Creating Sound driver");
@@ -241,24 +163,146 @@ void CCyberstellaView::OnPlay()
         goto exit;
     }
 
-    //
-    // get just the filename
-    //
+    // Special handling for special games
+    switch(gameID)
+    {
+        case IDG_GUNFIGHT:
+        {
+            pszFileName = "Gunfight";
+            dwActualSize = sizeof gunfight;
+            pImage = new BYTE[dwActualSize];
+            for(int i=0; i<dwActualSize; i++)
+            {
+				pImage[i] = gunfight[i]^(pszFileName[i%strlen(pszFileName)]);
+            }
+            break;
+        }
+        case IDG_JAMMED:
+        {
+            pszFileName = "Jammed";
+            dwActualSize = sizeof jammed;
+            pImage = new BYTE[dwActualSize];
+            for(int i=0; i<dwActualSize; i++)
+            {
+				pImage[i] = jammed[i]^(pszFileName[i%strlen(pszFileName)]);
+            }
+            break;
+        }
+        case IDG_QB:
+        {
+            pszFileName = "Qb";
+            dwActualSize = sizeof qb;
+            pImage = new BYTE[dwActualSize];
+            for(int i=0; i<dwActualSize; i++)
+            {
+				pImage[i] = qb[i]^(pszFileName[i%strlen(pszFileName)]);
+            }
+            break;
+        }
+        case IDG_THRUST:
+        {
+            pszFileName = "Thrust";
+            dwActualSize = sizeof thrust;
+            pImage = new BYTE[dwActualSize];
+            for(int i=0; i<dwActualSize; i++)
+            {
+				pImage[i] = thrust[i]^(pszFileName[i%strlen(pszFileName)]);
+            }
+            break;
+        }
+        default:
+        {
+            fileName = m_List.getCurrentFile();
 
-    pszFileName = _tcsrchr( fileName, _T('\\') );
-    if ( pszFileName )
-    {
-        ++pszFileName;
-    }
-    else
-    {
-        pszFileName = fileName;
+            // Safety Bail Out
+            if(fileName.GetLength() <= 0)   return;
+
+            // Load the rom file
+            HANDLE hFile;
+            hFile = ::CreateFile( fileName, 
+                                  GENERIC_READ, 
+                                  FILE_SHARE_READ, 
+                                  NULL, 
+                                  OPEN_EXISTING, 
+                                  FILE_ATTRIBUTE_NORMAL,
+                                  NULL );
+
+            if (hFile == INVALID_HANDLE_VALUE)
+            {
+                DWORD dwLastError = ::GetLastError();
+
+                TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
+                ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
+
+                // ::MessageBoxFromGetLastError( pszPathName );
+                TCHAR pszFormat[ 1024 ];
+                LoadString(GetModuleHandle(NULL),
+                            IDS_ROM_LOAD_FAILED,
+                            pszFormat, 1023 );
+
+                LPTSTR pszLastError = NULL;
+
+                FormatMessage(
+                    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                    NULL, 
+                    dwLastError, 
+                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                    (LPTSTR)&pszLastError, 
+                    0, 
+                    NULL);
+
+                TCHAR pszError[ 1024 ];
+                wsprintf( pszError, 
+                          pszFormat, 
+                          pszCurrentDirectory,
+                          fileName, 
+                          dwLastError,
+                          pszLastError );
+
+                ::MessageBox( *this, 
+                              pszError, 
+                              _T("Error"),
+                              MB_OK | MB_ICONEXCLAMATION );
+
+                ::LocalFree( pszLastError );
+
+                goto exit;
+            }
+
+            dwImageSize = ::GetFileSize( hFile, NULL );
+
+            pImage = new BYTE[dwImageSize + 1];
+            if ( pImage == NULL )
+            {
+                goto exit;
+            }
+
+            if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
+            {
+                VERIFY( ::CloseHandle( hFile ) );
+
+                MessageBoxFromGetLastError(fileName);
+
+                goto exit;
+            }
+
+            VERIFY( ::CloseHandle(hFile) );
+        }
+        // get just the filename
+        pszFileName = _tcsrchr( fileName, _T('\\') );
+        if ( pszFileName )
+        {
+            ++pszFileName;
+        }
+        else
+        {
+            pszFileName = fileName;
+        }
     }
 
     try
     {
         // If this throws an exception, then it's probably a bad cartridge
-
         pConsole = new Console( pImage, 
                                 dwActualSize,
                                 pszFileName, 
@@ -334,11 +378,6 @@ void CCyberstellaView::OnPlay()
         }
     }
 
-    // restore cursor
-
-    ::SetCursor( hcur );
-    hcur = NULL;
-
     ::ShowWindow( *this, SW_HIDE );
 
     (void)pwnd->Run();
@@ -346,14 +385,7 @@ void CCyberstellaView::OnPlay()
     ::ShowWindow( *this, SW_SHOW );
 
 exit:
-
-    if ( hcur )
-    {
-        ::SetCursor( hcur );
-    }
-
     delete pwnd;
-
     delete pConsole;
     delete pSound;
     delete pImage;
@@ -398,7 +430,7 @@ void CCyberstellaView::Initialize()
     m_List.init(m_pPropertiesSet,this);
 
     // Try to load the file stella.pro file
-    string filename( "stella.pro" );
+    string filename("stella.pro");
     
     // See if we can open the file and load properties from it
     ifstream stream(filename.c_str()); 
@@ -411,6 +443,7 @@ void CCyberstellaView::Initialize()
     else
     {
         m_pPropertiesSet->load("", &Console::defaultProperties());
+        MessageBox("stella.pro not found in working directory!", "Warning!", MB_OK|MB_ICONEXCLAMATION);
     }
 
     // Fill our game list
@@ -421,4 +454,47 @@ void CCyberstellaView::OnDestroy()
 {
 	CFormView::OnDestroy();
     m_List.deleteItemsAndProperties();
+}
+
+void CCyberstellaView::updateListInfos()
+{
+    // Show status text
+    CString status;
+    status.Format(IDS_STATUSTEXT, m_List.getRomCount());
+    SetDlgItemText(IDC_ROMCOUNT,status);
+
+    // Show rom path
+    SetDlgItemText(IDC_ROMPATH, m_List.getPath());
+}
+
+void CCyberstellaView::displayNote()
+{
+    // Show rom path
+    CString note;
+    note.Format(IDS_NOTETEXT, m_List.getCurrentNote());
+    ((CMainFrame*)AfxGetMainWnd())->setStatusText(note);
+}
+
+void CCyberstellaView::OnGunfight()
+{
+    OnPlay(IDG_GUNFIGHT);
+    MessageBox("If you'd like to play Gunfight on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+}    
+
+void CCyberstellaView::OnJammed() 
+{
+    OnPlay(IDG_JAMMED);
+    MessageBox("If you'd like to play Jammed on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+}
+
+void CCyberstellaView::OnQb() 
+{
+    OnPlay(IDG_QB);
+    MessageBox("If you'd like to play Qb on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+}
+
+void CCyberstellaView::OnThrust() 
+{
+    OnPlay(IDG_THRUST);
+    MessageBox("If you'd like to play Thrust on a real VCS, you can order a cartridge for only $25\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }

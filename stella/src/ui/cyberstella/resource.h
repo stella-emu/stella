@@ -27,6 +27,7 @@
 #define IDS_RARITY                      284
 #define IDS_STATUSTEXT                  289
 #define IDS_STELLA                      290
+#define IDS_NOTETEXT                    291
 #define IDS_NODIRECTINPUT               293
 #define IDS_CANTSTARTCONSOLE            295
 #define IDS_COINIT_FAILED               296
@@ -54,6 +55,10 @@
 #define IDC_AUTO_SELECT_VIDEOMODE       1020
 #define IDC_BROWSE                      1021
 #define ID_BUTTON32774                  32774
+#define IDG_GUNFIGHT                    32775
+#define IDG_JAMMED                      32776
+#define IDG_QB                          32777
+#define IDG_THRUST                      32778
 
 // Next default values for new objects
 // 
@@ -61,7 +66,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_COMMAND_VALUE         32780
 #define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

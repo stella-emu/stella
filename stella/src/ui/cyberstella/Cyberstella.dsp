@@ -66,9 +66,10 @@ LINK32=link.exe
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\build" /I "..\..\emucore" /I "..\..\emucore\m6502\src" /I "..\..\emucore\m6502\src\bspf\src" /I "..\sound" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "BSPF_WIN32" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\games" /I "..\..\build" /I "..\..\emucore" /I "..\..\emucore\m6502\src" /I "..\..\emucore\m6502\src\bspf\src" /I "..\sound" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "BSPF_WIN32" /FR /FD /GZ /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -629,6 +630,26 @@ SOURCE=..\sound\TIASound.c
 # Begin Source File
 
 SOURCE=..\sound\TIASound.h
+# End Source File
+# End Group
+# Begin Group "Games"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\games\Gunfight.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\games\Jammed.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\games\Qb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\games\Thrust.h
 # End Source File
 # End Group
 # Begin Source File

@@ -125,9 +125,16 @@ BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
     END
-    POPUP "Configuration"
+    POPUP "&Configuration"
     BEGIN
         MENUITEM "&Cyberstella",                IDC_CONFIG
+    END
+    POPUP "&Games"
+    BEGIN
+        MENUITEM "&Gunfight",                   IDG_GUNFIGHT
+        MENUITEM "&Jammed",                     IDG_JAMMED
+        MENUITEM "&QB",                         IDG_QB
+        MENUITEM "&Thrust",                     IDG_THRUST
     END
     POPUP "&Help"
     BEGIN
@@ -143,19 +150,19 @@ END
 
 IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
 BEGIN
-    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
-    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
-    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
-    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
 END
 
 
@@ -166,7 +173,7 @@ END
 
 IDD_CYBERSTELLA_FORM DIALOGEX 0, 0, 409, 169
 STYLE WS_CHILD
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
+FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "&Files found in:",-1,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,7,7,44,8
@@ -340,6 +347,11 @@ END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
+    IDC_PLAY                "Play the currently selected Game\nPlay"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
 END
@@ -457,6 +469,7 @@ STRINGTABLE DISCARDABLE
 BEGIN
     IDS_STATUSTEXT          "%d files found"
     IDS_STELLA              "StellaX"
+    IDS_NOTETEXT            "Note: %s"
     IDS_NODIRECTINPUT       "DirectInput could not be initialized.  Be sure you have DirectX 5.0 or later installed."
     IDS_CANTSTARTCONSOLE    "Error starting console.  You may have chosen an invalid ROM file."
     IDS_COINIT_FAILED       "Unable to initialize COM subsystem"

@@ -157,7 +157,7 @@ void CHyperLink::PreSubclassWindow()
     SetDefaultCursor();      // Try and load up a "hand" cursor
 
     // Create the tooltip
-    CRect rect; 
+    CRect rect;
     GetClientRect(rect);
     m_ToolTip.Create(this);
     m_ToolTip.AddTool(this, m_strURL, rect, TOOLTIP_ID);

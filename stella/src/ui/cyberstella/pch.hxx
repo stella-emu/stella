@@ -38,6 +38,10 @@
 #include <dsound.h>
 #include <dinput.h>
 
+// Stella Messages:
+#define MSG_GAMELIST_UPDATE         WM_USER+0x100
+#define MSG_GAMELIST_DISPLAYNOTE    WM_USER+0x101
+
 #define _countof(array) (sizeof(array)/sizeof(array[0]))
 
 // ---------------------------------------------------------------------------

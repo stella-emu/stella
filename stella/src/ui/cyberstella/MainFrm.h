@@ -31,7 +31,6 @@ public:
 // Implementation
 public:
 	virtual ~CMainFrame();
-
     void setStatusText(CString text);
 
 #ifdef _DEBUG
