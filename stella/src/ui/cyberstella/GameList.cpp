@@ -6,6 +6,8 @@
 #include "GameList.h"
 #include "MD5.hxx"
 
+class CyberstellaView;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -127,7 +129,7 @@ void GameList::populateRomList()
     // Select first item
     SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 
-    m_pParent->SendMessage(MSG_GAMELIST_UPDATE);
+    if(m_pParent)   m_pParent->SendMessage(MSG_GAMELIST_UPDATE);
 }
 
 void GameList::displayPath()
@@ -421,7 +423,7 @@ void GameList::OnItemchanged(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 
-    m_pParent->SendMessage(MSG_GAMELIST_DISPLAYNOTE);
+    if(m_pParent)   m_pParent->SendMessage(MSG_GAMELIST_DISPLAYNOTE);
 
     *pResult = 0;
 }

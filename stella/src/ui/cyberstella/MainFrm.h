@@ -32,6 +32,8 @@ public:
 public:
 	virtual ~CMainFrame();
     void setStatusText(CString text);
+    void updateListInfos();
+    void displayNote();
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;

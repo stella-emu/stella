@@ -58,7 +58,7 @@ protected:
 protected:
 	//{{AFX_MSG(CCyberstellaView)
 	afx_msg void OnConfig();
-	afx_msg void OnPlay(LONG gameID);
+	afx_msg void OnPlay();
 	afx_msg void OnDestroy();
 	afx_msg void OnGunfight();
 	afx_msg void OnJammed();
@@ -70,9 +70,11 @@ protected:
 private:
     // methods
     void togglePause();
-    void Initialize();
-    void updateListInfos();
-    void displayNote();
+    void playRom(LONG gameID = NULL);
+
+    LRESULT initialize(WPARAM wParam, LPARAM lParam);
+    LRESULT displayNote(WPARAM wParam, LPARAM lParam);
+    LRESULT updateListInfos(WPARAM wParam, LPARAM lParam);
 
     // members
     PropertiesSet* m_pPropertiesSet;

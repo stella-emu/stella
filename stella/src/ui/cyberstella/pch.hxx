@@ -39,8 +39,9 @@
 #include <dinput.h>
 
 // Stella Messages:
-#define MSG_GAMELIST_UPDATE         WM_USER+0x100
-#define MSG_GAMELIST_DISPLAYNOTE    WM_USER+0x101
+#define MSG_GAMELIST_UPDATE         WM_USER+0x1000
+#define MSG_GAMELIST_DISPLAYNOTE    WM_USER+0x1001
+#define MSG_VIEW_INITIALIZE         WM_USER+0x1002
 
 #define _countof(array) (sizeof(array)/sizeof(array[0]))
 

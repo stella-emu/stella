@@ -49,7 +49,7 @@ LPCTSTR g_ctszDebugLog = _T("stella.log");
 
 BOOL CCyberstellaApp::InitInstance()
 {
-	// Delete previous Debug Log
+    // Delete previous Debug Log
     (void)::DeleteFile(g_ctszDebugLog);
 
 	// Avoid Second instance
@@ -82,7 +82,7 @@ BOOL CCyberstellaApp::InitInstance()
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views.
 
-	CSingleDocTemplate* pDocTemplate;
+    CSingleDocTemplate* pDocTemplate;
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CCyberstellaDoc),

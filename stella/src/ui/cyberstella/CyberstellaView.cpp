@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(CCyberstellaView, CFormView)
 	ON_COMMAND(IDG_THRUST, OnThrust)
     ON_MESSAGE(MSG_GAMELIST_UPDATE, updateListInfos)
     ON_MESSAGE(MSG_GAMELIST_DISPLAYNOTE, displayNote)
+    ON_MESSAGE(MSG_VIEW_INITIALIZE, initialize)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -76,7 +77,7 @@ CCyberstellaView::~CCyberstellaView()
 
 void CCyberstellaView::DoDataExchange(CDataExchange* pDX)
 {
-	CFormView::DoDataExchange(pDX);
+    CFormView::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CCyberstellaView)
 	DDX_Control(pDX, IDC_ROMLIST, m_List);
 	//}}AFX_DATA_MAP
@@ -92,12 +93,12 @@ BOOL CCyberstellaView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CCyberstellaView::OnInitialUpdate()
 {
-	CFormView::OnInitialUpdate();
+    CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
 	ResizeParentToFit();
 
     // Init ListControl, parse stella.pro
-    Initialize();
+    PostMessage(MSG_VIEW_INITIALIZE);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -127,8 +128,121 @@ void CCyberstellaView::OnConfig()
     dlg.DoModal();
 }
 
-void CCyberstellaView::OnPlay(LONG gameID) 
+void CCyberstellaView::OnPlay() 
 {
+    playRom();
+}
+
+//  Toggles pausing of the emulator
+void CCyberstellaView::togglePause()
+{
+    m_bIsPause = !m_bIsPause;
+
+    //TODO: theConsole->mediaSource().pause(m_bIsPause);
+}
+
+LRESULT CCyberstellaView::initialize(WPARAM wParam, LPARAM lParam)
+{
+    // Create a properties set for us to use
+    m_pPropertiesSet = new PropertiesSet(); 
+
+	// Set up the image list.
+    HICON hFolder, hAtari;
+
+    m_imglist.Create ( 16, 16, ILC_COLOR16 | ILC_MASK, 4, 1 );
+
+    hFolder = reinterpret_cast<HICON>(
+                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_FOLDER),
+                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
+    hAtari = reinterpret_cast<HICON>(
+                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME),
+                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
+
+    m_imglist.Add (hFolder);
+    m_imglist.Add (hAtari);
+
+    m_List.SetImageList (&m_imglist, LVSIL_SMALL);
+
+    // Init ListCtrl
+    m_List.init(m_pPropertiesSet,this);
+
+    // Try to load the file stella.pro file
+    string filename("stella.pro");
+    
+    // See if we can open the file and load properties from it
+    ifstream stream(filename.c_str()); 
+    if(stream)
+    {
+        // File was opened so load properties from it
+        stream.close();
+        m_pPropertiesSet->load(filename, &Console::defaultProperties());
+    }
+    else
+    {
+        m_pPropertiesSet->load("", &Console::defaultProperties());
+        MessageBox("stella.pro not found in working directory!", "Warning!", MB_OK|MB_ICONEXCLAMATION);
+    }
+
+    m_List.populateRomList();
+
+    return 0;
+}
+
+void CCyberstellaView::OnDestroy() 
+{
+	CFormView::OnDestroy();
+    m_List.deleteItemsAndProperties();
+}
+
+LRESULT CCyberstellaView::updateListInfos(WPARAM wParam, LPARAM lParam)
+{
+    // Show status text
+    CString status;
+    status.Format(IDS_STATUSTEXT, m_List.getRomCount());
+    SetDlgItemText(IDC_ROMCOUNT,status);
+
+    // Show rom path
+    SetDlgItemText(IDC_ROMPATH, m_List.getPath());
+    return 0;
+}
+
+LRESULT CCyberstellaView::displayNote(WPARAM wParam, LPARAM lParam)
+{
+
+    // Show rom path
+    CString note;
+    note.Format(IDS_NOTETEXT, m_List.getCurrentNote());
+    ((CMainFrame*)AfxGetMainWnd())->setStatusText(note);
+    return 0;    
+}
+
+void CCyberstellaView::OnGunfight()
+{
+    playRom(IDG_GUNFIGHT);
+    MessageBox("If you'd like to play Gunfight on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+}    
+
+void CCyberstellaView::OnJammed() 
+{
+    playRom(IDG_JAMMED);
+    MessageBox("If you'd like to play Jammed on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+}
+
+void CCyberstellaView::OnQb() 
+{
+    playRom(IDG_QB);
+    MessageBox("If you'd like to play Qb on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+}
+
+void CCyberstellaView::OnThrust() 
+{
+    playRom(IDG_THRUST);
+    MessageBox("If you'd like to play Thrust on a real VCS, you can order a cartridge for only $25\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+}
+
+void CCyberstellaView::playRom(LONG gameID)
+{
+    
     EnableWindow(FALSE);
 
 #ifdef USE_FS
@@ -388,113 +502,10 @@ exit:
     delete pwnd;
     delete pConsole;
     delete pSound;
-    delete pImage;
+    if (pImage) delete pImage;
 
     EnableWindow(TRUE);
 
     // Set focus back to the rom list
     m_List.SetFocus();
-}
-
-//  Toggles pausing of the emulator
-void CCyberstellaView::togglePause()
-{
-    m_bIsPause = !m_bIsPause;
-
-    //TODO: theConsole->mediaSource().pause(m_bIsPause);
-}
-
-void CCyberstellaView::Initialize()
-{
-    // Create a properties set for us to use
-    m_pPropertiesSet = new PropertiesSet(); 
-
-	// Set up the image list.
-    HICON hFolder, hAtari;
-
-    m_imglist.Create ( 16, 16, ILC_COLOR16 | ILC_MASK, 4, 1 );
-
-    hFolder = reinterpret_cast<HICON>(
-                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_FOLDER),
-                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
-    hAtari = reinterpret_cast<HICON>(
-                ::LoadImage ( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME),
-                              IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR ));
-
-    m_imglist.Add (hFolder);
-    m_imglist.Add (hAtari);
-
-    m_List.SetImageList (&m_imglist, LVSIL_SMALL);
-
-    // Init ListCtrl
-    m_List.init(m_pPropertiesSet,this);
-
-    // Try to load the file stella.pro file
-    string filename("stella.pro");
-    
-    // See if we can open the file and load properties from it
-    ifstream stream(filename.c_str()); 
-    if(stream)
-    {
-        // File was opened so load properties from it
-        stream.close();
-        m_pPropertiesSet->load(filename, &Console::defaultProperties());
-    }
-    else
-    {
-        m_pPropertiesSet->load("", &Console::defaultProperties());
-        MessageBox("stella.pro not found in working directory!", "Warning!", MB_OK|MB_ICONEXCLAMATION);
-    }
-
-    // Fill our game list
-    m_List.populateRomList();
-}
-
-void CCyberstellaView::OnDestroy() 
-{
-	CFormView::OnDestroy();
-    m_List.deleteItemsAndProperties();
-}
-
-void CCyberstellaView::updateListInfos()
-{
-    // Show status text
-    CString status;
-    status.Format(IDS_STATUSTEXT, m_List.getRomCount());
-    SetDlgItemText(IDC_ROMCOUNT,status);
-
-    // Show rom path
-    SetDlgItemText(IDC_ROMPATH, m_List.getPath());
-}
-
-void CCyberstellaView::displayNote()
-{
-    // Show rom path
-    CString note;
-    note.Format(IDS_NOTETEXT, m_List.getCurrentNote());
-    ((CMainFrame*)AfxGetMainWnd())->setStatusText(note);
-}
-
-void CCyberstellaView::OnGunfight()
-{
-    OnPlay(IDG_GUNFIGHT);
-    MessageBox("If you'd like to play Gunfight on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
-}    
-
-void CCyberstellaView::OnJammed() 
-{
-    OnPlay(IDG_JAMMED);
-    MessageBox("If you'd like to play Jammed on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
-}
-
-void CCyberstellaView::OnQb() 
-{
-    OnPlay(IDG_QB);
-    MessageBox("If you'd like to play Qb on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
-}
-
-void CCyberstellaView::OnThrust() 
-{
-    OnPlay(IDG_THRUST);
-    MessageBox("If you'd like to play Thrust on a real VCS, you can order a cartridge for only $25\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }

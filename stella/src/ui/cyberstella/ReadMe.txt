@@ -12,6 +12,7 @@ Later:
 - Add Pause - F3
 - Add Fullscreen / Windowed mode -F4
 - Check Direct Draw implementation / upgrade to DX8
+- Integrate manuals for the built in games
 
 ToDos from Brad Mott:
 - Is the keyboard mapping correct (e.g., do both of the Joysticks
