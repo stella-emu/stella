@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.2 2002-03-28 02:08:50 bwmott Exp $
+// $Id: bspf.hxx,v 1.3 2002-04-10 04:07:39 bwmott Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.2 2002-03-28 02:08:50 bwmott Exp $
+  @version $Id: bspf.hxx,v 1.3 2002-04-10 04:07:39 bwmott Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -41,21 +41,23 @@ typedef unsigned int uInt32;
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
-#ifdef BSPF_WIN32
+#ifdef BSPF_OLD_STYLE_CXX_HEADERS
+  #include <iostream.h>
+  #include <iomanip.h>
+  #include <string>
+#else
   #include <iostream>
   #include <iomanip>
   #include <string>
   using namespace std;
-
-  // pragma to avoid all of the int <-> bool conversion warnings
-  #pragma warning(disable: 4800)
-#else
-  #include <iostream.h>
-  #include <iomanip.h>
-  #include <string>
 #endif
 
-// Some compilers do not support the bool type yet :-(
+#ifdef BSPF_WIN32
+  // pragma to avoid all of the int <-> bool conversion warnings
+  #pragma warning(disable: 4800)
+#endif
+
+// Some old compilers do not support the bool type
 #ifdef BSPF_BOOL
   #define bool int
   #define true 1
