@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.37 2005-03-12 01:47:15 stephena Exp $
+// $Id: EventHandler.cxx,v 1.38 2005-03-14 04:08:14 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -112,16 +112,17 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
     if(myState == S_EMULATE)
     {
       myState = S_MENU;
-      myOSystem->menu().reset();
+      myOSystem->menu().reStack();
       myOSystem->frameBuffer().refresh();
+      myOSystem->frameBuffer().setCursorState();
       myOSystem->sound().mute(true);
       return;
     }
     else if(myState == S_MENU)
     {
       myState = S_EMULATE;
-      myOSystem->menu().reset();
       myOSystem->frameBuffer().refresh();
+      myOSystem->frameBuffer().setCursorState();
       myOSystem->sound().mute(false);
       return;
     }
@@ -145,6 +146,124 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 
     case S_BROWSER:
 //FIXME      myOSystem->browser().handleKeyEvent(key, mod, state);
+      break;
+
+    case S_DEBUGGER:
+      // Not yet implemented
+      break;
+
+    case S_NONE:
+      return;
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleMouseMotionEvent(SDL_Event& event)
+{
+  // Determine which mode we're in, then send the event to the appropriate place
+  switch(myState)
+  {
+    case S_EMULATE:
+// FIXME - add code here to generate paddle events
+/*
+        uInt32 zoom = theDisplay->zoomLevel();
+        Int32 width = theDisplay->width() * zoom;
+
+        // Grabmouse and hidecursor introduce some lag into the mouse movement,
+        // so we need to fudge the numbers a bit
+        if(theGrabMouseIndicator && theHideCursorIndicator)
+          mouseX = (int)((float)mouseX + (float)event.motion.xrel
+                   * 1.5 * (float) zoom);
+        else
+          mouseX = mouseX + event.motion.xrel * zoom;
+
+        // Check to make sure mouseX is within the game window
+        if(mouseX < 0)
+          mouseX = 0;
+        else if(mouseX > width)
+          mouseX = width;
+
+        Int32 resistance = (Int32)(1000000.0 * (width - mouseX) / width);
+
+        theOSystem->eventHandler().handleEvent(Paddle_Resistance[thePaddleMode], resistance);
+*/
+
+      break;
+
+    case S_MENU:
+    {
+      // Take window zooming into account
+      Int32 x = event.motion.x / myOSystem->frameBuffer().zoomLevel();
+      Int32 y = event.motion.y / myOSystem->frameBuffer().zoomLevel();
+
+      myOSystem->menu().handleMouseMotionEvent(x, y, 0);
+      break;
+    }
+
+    case S_BROWSER:
+      // Not yet implemented
+      break;
+
+    case S_DEBUGGER:
+      // Not yet implemented
+      break;
+
+    case S_NONE:
+      return;
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
+{
+  // Determine which mode we're in, then send the event to the appropriate place
+  switch(myState)
+  {
+    case S_EMULATE:
+// FIXME - add code here to generate paddle buttons
+/*
+        Int32 value = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
+        theOSystem->eventHandler().handleEvent(Paddle_Button[thePaddleMode], value);
+*/
+      break;
+
+    case S_MENU:
+    {
+      // Take window zooming into account
+      Int32 x = event.button.x / myOSystem->frameBuffer().zoomLevel();
+      Int32 y = event.button.y / myOSystem->frameBuffer().zoomLevel();
+      MouseButton button;
+
+      if(state == 1)
+      {
+        if(event.button.button == SDL_BUTTON_LEFT)
+          button = EVENT_LBUTTONDOWN;
+        else if(event.button.button == SDL_BUTTON_RIGHT)
+          button = EVENT_RBUTTONDOWN;
+        else if(event.button.button == SDL_BUTTON_WHEELUP)
+          button = EVENT_WHEELUP;
+        else if(event.button.button == SDL_BUTTON_WHEELDOWN)
+          button = EVENT_WHEELDOWN;
+        else
+          break;
+      }
+      else
+      {
+        if(event.button.button == SDL_BUTTON_LEFT)
+          button = EVENT_LBUTTONUP;
+        else if(event.button.button == SDL_BUTTON_RIGHT)
+          button = EVENT_RBUTTONUP;
+        else
+          break;
+      }
+      myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
+      break;
+    }
+
+    case S_BROWSER:
+      // Not yet implemented
       break;
 
     case S_DEBUGGER:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.4 2005-03-13 03:38:40 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "Control.hxx"
+#include "VideoDialog.hxx"
 #include "OptionsDialog.hxx"
 
 #include "bspf.hxx"
@@ -45,19 +46,17 @@ enum {
 };
 
 #define addBigButton(label, cmd, hotkey) \
-	new ButtonWidget(this, x, y, kBigButtonWidth, 18, label, cmd, hotkey); y += kRowHeight
+	new ButtonWidget(this, xoffset, yoffset, kBigButtonWidth, 18, label, cmd, hotkey); yoffset += kRowHeight
 
 OptionsDialog::OptionsDialog(OSystem* osystem)
-    : Dialog(osystem, (320 - kMainMenuWidth) / 2, (200 - kMainMenuHeight)/2, kMainMenuWidth, kMainMenuHeight)
-/* FIXME - make this depend on the framebuffer dimensions
     : Dialog(osystem, (osystem->frameBuffer().width() - kMainMenuWidth) / 2,
                       (osystem->frameBuffer().height() - kMainMenuHeight)/2,
-                      kMainMenuWidth, kMainMenuHeight)
-*/
+                      kMainMenuWidth, kMainMenuHeight),
+      myVideoDialog(NULL)
 {
-  int y = 7;
+  int yoffset = 7;
+  const int xoffset = (_w - kBigButtonWidth) / 2;
 
-  const int x = (_w - kBigButtonWidth) / 2;
   addBigButton("Video Settings", kVidCmd, 'V');
   addBigButton("Audio Settings", kAudCmd, 'A');
   addBigButton("Event Remapping", kEMapCmd, 'E');
@@ -65,9 +64,23 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
   addBigButton("Game Information", kInfoCmd, 'I');
   addBigButton("Help", kHelpCmd, 'H');
 
-/*
+  // Set some sane values for the dialog boxes
+  uInt32 fbWidth  = osystem->frameBuffer().width();
+  uInt32 fbHeight = osystem->frameBuffer().height();
+  uInt16 x, y, w, h;
+
   // Now create all the dialogs attached to each menu button
-  myVideoDialog        = new VideoDialog(myOSystem);
+  w = 250; h = 150;
+  if(w > fbWidth) w = fbWidth;
+  if(h > fbHeight) h = fbHeight;
+  x = (fbWidth - w) / 2;
+  y = (fbHeight - h) / 2;
+
+  myVideoDialog        = new VideoDialog(myOSystem, x, y, w, h);
+
+
+
+/*
   myAudioDialog        = new AudioDialog(myOSystem);
   myEventMappingDialog = new EventMappingDialog(myOSystem);
   myMiscDialog         = new MiscDialog(myOSystem);
@@ -78,8 +91,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
 
 OptionsDialog::~OptionsDialog()
 {
-/* FIXME
   delete myVideoDialog;
+/* FIXME
   delete myAudioDialog;
   delete myEventMappingDialog;
   delete myMiscDialog;
@@ -93,8 +106,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data
   switch(cmd)
   {
     case kVidCmd:
-//      instance()->menu().addDialog(myVideoDialog);
-cerr << "push VideoDialog to top of stack\n";
+      instance()->menu().addDialog(myVideoDialog);
       break;
 
     case kAudCmd:

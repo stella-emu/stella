@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.5 2005-03-13 03:38:40 stephena Exp $
+// $Id: Dialog.cxx,v 1.6 2005-03-14 04:08:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,16 +42,13 @@ Dialog::Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
       _focusedWidget(0),
       _visible(true)
 {
-  cerr << "Dialog::Dialog()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
-  cerr << "Dialog::~Dialog()\n";
-
   delete _firstWidget;
-  _firstWidget = 0;
+  _firstWidget = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,7 +58,7 @@ int Dialog::runModal() // FIXME
   open();
 
   // Start processing events
-//  g_gui.runLoop();
+  //  g_gui.runLoop();
 
   // Return the result code
   return _result;
@@ -71,6 +68,7 @@ int Dialog::runModal() // FIXME
 void Dialog::open()
 {
   _result = 0;
+  _visible = true;
 
   Widget* w = _firstWidget;
 
@@ -94,6 +92,7 @@ void Dialog::close()
   }
 
   releaseFocus();
+  instance()->menu().removeDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -204,8 +203,6 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 {
-cerr << "Dialog::handleKeyDown()\n";
-
   if(_focusedWidget)
     if (_focusedWidget->handleKeyDown(ascii, keycode, modifiers))
       return;
@@ -228,14 +225,6 @@ cerr << "Dialog::handleKeyDown()\n";
       w = w->_next;
     }
   }
-
-  // ESC closes all dialogs by default
-  if (keycode == 27) {
-    setResult(-1);
-    close();
-  }
-
-  // TODO: tab/shift-tab should focus the next/previous focusable widget
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

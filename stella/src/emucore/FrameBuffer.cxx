@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.20 2005-03-13 03:38:40 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.21 2005-03-14 04:08:15 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -67,7 +67,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       theMenuChangedIndicator(false),
       myMessageTime(0),
       myMessageText(""),
-      myMenuRedraws(2)
+      myMenuRedraws(2),
+val(0) // FIXME
 {
   // Add the framebuffer to the system
   myOSystem->attach(this);
@@ -143,21 +144,8 @@ void FrameBuffer::initialize(const string title, uInt32 width, uInt32 height)
   // Initialize video subsystem
   initSubsystem();
 
-  // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  if(myOSystem->settings().getBool("fullscreen"))
-  {
-    grabMouse(true);
-    showCursor(false);
-  }
-  else
-  {
-    // Keep mouse in game window if grabmouse is selected
-    grabMouse(myOSystem->settings().getBool("grabmouse"));
-
-    // Show or hide the cursor depending on the 'hidecursor' argument
-    showCursor(!myOSystem->settings().getBool("hidecursor"));
-  }
-
+  // Show or hide the cursor based on the current state
+  setCursorState();
 
 /*
   // Fill the properties info array with game information
@@ -253,7 +241,7 @@ void FrameBuffer::update()
     case EventHandler::S_MENU:
     {
       // Only update the screen if it's been invalidated or the menus have changed  
-      if(theMenuChangedIndicator || theRedrawEntireFrameIndicator)
+      if(theRedrawEntireFrameIndicator)
       {
         drawMediaSource();
 
@@ -907,16 +895,7 @@ void FrameBuffer::toggleFullscreen()
   if(!createScreen())
     return;
 
-  if(isFullscreen)  // now in fullscreen mode
-  {
-    grabMouse(true);
-    showCursor(false);
-  }
-  else    // now in windowed mode
-  {
-    grabMouse(myOSystem->settings().getBool("grabmouse"));
-    showCursor(!myOSystem->settings().getBool("hidecursor"));
-  }
+  setCursorState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -955,6 +934,33 @@ void FrameBuffer::resize(int mode)
 
   // Update the settings
   myOSystem->settings().setInt("zoom", theZoomLevel);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setCursorState()
+{
+  bool isFullscreen = myOSystem->settings().getBool("fullscreen");
+  if(isFullscreen)
+    grabMouse(true);
+
+  switch(myOSystem->eventHandler().state())
+  {
+    case EventHandler::S_EMULATE:
+      if(isFullscreen)
+        showCursor(false);
+      else
+      {
+        // Keep mouse in game window if grabmouse is selected
+        grabMouse(myOSystem->settings().getBool("grabmouse"));
+
+        // Show or hide the cursor depending on the 'hidecursor' argument
+        showCursor(!myOSystem->settings().getBool("hidecursor"));
+      }
+      break;
+
+    default:
+      showCursor(true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

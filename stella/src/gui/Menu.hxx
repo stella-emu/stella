@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+// $Id: Menu.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
 //============================================================================
 
 #ifndef MENU_HXX
@@ -26,6 +26,7 @@ class OptionsDialog;
 #include <SDL.h>
 
 #include "Stack.hxx"
+#include "EventHandler.hxx"
 #include "bspf.hxx"
 
 typedef FixedStack<Dialog *> DialogStack;
@@ -37,7 +38,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: Menu.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+  @version $Id: Menu.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
 */
 class Menu
 {
@@ -60,9 +61,34 @@ class Menu
       @param mod   modifiers
       @param state state of key
     */
-    void handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state);
+    void handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state); //FIXME - this shouldn't refer to SDL directly
 
-// FIXME - add mouse and joystick handlers  
+    /**
+      Handle a mouse motion event.
+
+      @param x      The x location
+      @param y      The y location
+      @param button The currently pressed button
+    */
+    void handleMouseMotionEvent(Int32 x, Int32 y, Int32 button);
+
+    /**
+      Handle a mouse button event.
+
+      @param b     The mouse button
+      @param x     The x location
+      @param y     The y location
+      @param state The state (pressed or released)
+    */
+    void handleMouseButtonEvent(MouseButton b, Int32 x, Int32 y, uInt8 state);
+
+// FIXME - add joystick handler
+
+    /**
+      (Re)initialize the menuing system.  This is necessary if a new Console
+      has been loaded, since in most cases the screen dimensions will have changed.
+    */
+    void initialize();
 
     /**
       Draw the stack of menus.
@@ -82,7 +108,7 @@ class Menu
     /**
       Reset dialog stack to the main configuration menu
     */
-    void reset();
+    void reStack();
 
   private:
     OSystem* myOSystem;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.42 2005-02-25 02:29:37 stephena Exp $
+// $Id: Console.cxx,v 1.43 2005-03-14 04:08:13 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -45,6 +45,7 @@
 #include "TIA.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
+#include "Menu.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
@@ -182,6 +183,9 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   // Initialize the sound interface.
   uInt32 soundFrameRate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
   myOSystem->sound().initialize(soundFrameRate);
+
+  // Initialize the menuing system with updated values from the framebuffer
+  myOSystem->menu().initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -236,30 +240,51 @@ void Console::toggleFormat()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::togglePalette()
+void Console::togglePalette(const string& palette)
 {
-  string type = myOSystem->settings().getString("palette");
+  string message, type;
 
+  // Since the toggle cycles in order, if we know which palette to switch
+  // to we set the 'type' to the previous one in the sequence
+  if(palette != "")
+  {
+    if(palette == "Standard")
+      type = "z26";
+    else if(palette == "Original")
+      type = "standard";
+    else if(palette == "Z26")
+      type = "original";
+    else
+      type = "";
+  }
+  else
+    type = myOSystem->settings().getString("palette");
+
+ 
   if(type == "standard")  // switch to original
   {
-    myOSystem->frameBuffer().showMessage("Original Stella colors");
-    myOSystem->settings().setString("palette", "original");
+    type    = "original";
+    message = "Original Stella colors";
   }
   else if(type == "original")  // switch to z26
   {
-    myOSystem->frameBuffer().showMessage("Z26 colors");
-    myOSystem->settings().setString("palette", "z26");
+    type    = "z26";
+    message = "Z26 colors";
   }
   else if(type == "z26")  // switch to standard
   {
-    myOSystem->frameBuffer().showMessage("Standard Stella colors");
-    myOSystem->settings().setString("palette", "standard");
+    type    = "standard";
+    message = "Standard Stella colors";
   }
   else  // switch to standard mode if we get this far
   {
-    myOSystem->frameBuffer().showMessage("Standard Stella colors");
-    myOSystem->settings().setString("palette", "standard");
+    type    = "standard";
+    message = "Standard Stella colors";
   }
+
+  myOSystem->settings().setString("palette", type);
+  myOSystem->frameBuffer().setupPalette();
+  myOSystem->frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

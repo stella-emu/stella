@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.20 2005-03-13 03:38:40 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.21 2005-03-14 04:08:15 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.20 2005-03-13 03:38:40 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.21 2005-03-14 04:08:15 stephena Exp $
 */
 class FrameBuffer
 {
@@ -142,6 +142,7 @@ FIXME
     */
     void refresh(bool now = false)
     {
+//FIXME cerr << "refresh() " << val++ << endl;
       theRedrawEntireFrameIndicator = true;
       myMenuRedraws = 2;
       if(now) drawMediaSource();
@@ -164,6 +165,12 @@ FIXME
     void resize(int mode);
 
     /**
+      Sets the state of the cursor (hidden or grabbed) based on the
+      current mode.
+    */
+    void setCursorState();
+
+    /**
       Shows or hides the cursor based on the given boolean value.
     */
     void showCursor(bool show);
@@ -179,13 +186,13 @@ FIXME
     bool fullScreen();
 
     /**
-      Answers the current zoom level of the SDL 
+      Answers the current zoom level of the SDL window.
     */
-    uInt32 zoomLevel() { return theZoomLevel; }
+    inline uInt32 zoomLevel() { return theZoomLevel; }
 
     /**
       Calculate the maximum window size that the current screen can hold.
-      Only works in X11 for now.  If not running under X11, always return 4.
+      Only works in X11/Win32 for now, otherwise always return 4.
     */
     uInt32 maxWindowSizeForScreen();
 
@@ -215,9 +222,9 @@ FIXME
 
     /**
       Indicate that the specified area should be redrawn.
-      Currently this is a null-op.
+      Currently we just redraw the entire screen.
     */
-    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) {}
+    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { refresh(); }
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -460,6 +467,7 @@ FIXME
     // Number of times menu have been drawn
     uInt32 myMenuRedraws;
 
+int val;
 /*
     // Structure used for main menu items
     struct MainMenuItem

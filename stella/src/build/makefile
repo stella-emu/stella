@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.65 2005-03-13 03:38:39 stephena Exp $
+## $Id: makefile,v 1.66 2005-03-14 04:08:12 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -153,7 +153,8 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
-            OSystem.o StellaFont.o Menu.o Widget.o Dialog.o OptionsDialog.o\
+            OSystem.o StellaFont.o Menu.o Widget.o PopUpWidget.o Dialog.o \
+            OptionsDialog.o VideoDialog.o \
             $(M6502_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
@@ -361,8 +362,14 @@ Menu.o: $(GUI)/Menu.cxx $(GUI)/Menu.hxx
 Widget.o: $(GUI)/Widget.cxx $(GUI)/Widget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Widget.cxx
 
+PopUpWidget.o: $(GUI)/PopUpWidget.cxx $(GUI)/PopUpWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/PopUpWidget.cxx
+
 Dialog.o: $(GUI)/Dialog.cxx $(GUI)/Dialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Dialog.cxx
 
 OptionsDialog.o: $(GUI)/OptionsDialog.cxx $(GUI)/OptionsDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/OptionsDialog.cxx
+
+VideoDialog.o: $(GUI)/VideoDialog.cxx $(GUI)/VideoDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/VideoDialog.cxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+// $Id: GuiObject.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 
 class OSystem;
 class Widget;
+class Menu;
 
 #include "Command.hxx"
 #include "bspf.hxx"
@@ -32,11 +33,12 @@ class Widget;
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.3 2005-03-11 23:36:30 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
   friend class Widget;
+  friend class Menu;
 
   public:
     GuiObject(OSystem* osystem, int x, int y, int w, int h)

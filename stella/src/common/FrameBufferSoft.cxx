@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.11 2005-03-13 03:38:39 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.12 2005-03-14 04:08:13 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -259,56 +259,6 @@ void FrameBufferSoft::drawMediaSource()
   // The frame doesn't need to be completely redrawn anymore
   theRedrawEntireFrameIndicator = false;
 }
-
-/*
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawText(uInt32 xorig, uInt32 yorig, const string& message)
-{
-  SDL_Rect tmp;
-
-  uInt8 length = message.length();
-  for(uInt32 x = 0; x < length; x++)
-  {
-    for(uInt32 y = 0; y < 8; y++)
-    {
-      for(uInt32 z = 0; z < 8; z++)
-      {
-        char letter = message[x];
-        if((ourFontData[(letter << 3) + y] >> z) & 1)
-        {
-          tmp.x = ((x<<3) + z + xorig) * theZoomLevel;
-          tmp.y = (y + yorig) * theZoomLevel;
-          tmp.w = tmp.h = theZoomLevel;
-          SDL_FillRect(myScreen, &tmp, myPalette[10]);
-        }
-      }
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
-{
-  if(c >= 256 )
-    return;
-
-  SDL_Rect tmp;
-
-  for(uInt32 y = 0; y < 8; y++)
-  {
-    for(uInt32 z = 0; z < 8; z++)
-    {
-      if((ourFontData[(c << 3) + y] >> z) & 1)
-      {
-        tmp.x = (z + xorig) * theZoomLevel;
-        tmp.y = (y + yorig) * theZoomLevel;
-        tmp.w = tmp.h = theZoomLevel;
-        SDL_FillRect(myScreen, &tmp, myPalette[10]);
-      }
-    }
-  }
-}
-*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::preFrameUpdate()

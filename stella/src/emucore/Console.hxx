@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.24 2005-02-21 20:41:26 stephena Exp $
+// $Id: Console.hxx,v 1.25 2005-03-14 04:08:14 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,7 +36,7 @@ class OSystem;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.24 2005-02-21 20:41:26 stephena Exp $
+  @version $Id: Console.hxx,v 1.25 2005-03-14 04:08:14 stephena Exp $
 */
 class Console
 {
@@ -127,8 +127,11 @@ class Console
     /**
       Toggle between the available palettes.  The frontends will need to
       reload their palette.
+
+      @param palette  The palette to switch to, or just switch in order
+                      if no palette is specified.
     */
-    void togglePalette();
+    void togglePalette(const string& palette = "");
 
     /**
       Save a copy of the current properties after any changes.

@@ -13,42 +13,40 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.2 2005-03-14 04:08:15 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.1 2005-03-14 04:08:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef UTILITIES_HXX
-#define UTILITIES_HXX
+#ifndef VIDEO_DIALOG_HXX
+#define VIDEO_DIALOG_HXX
 
+class CommandSender;
+class Dialog;
+class PopUpWidget;
+
+#include "OSystem.hxx"
 #include "bspf.hxx"
 
-/**
-  A place to put GUI-related things that don't fit anywhere else.
-  Probably not very neat, but at least it works ...
+class VideoDialog : public Dialog
+{
+  public:
+    VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+    ~VideoDialog();
 
-  @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.2 2005-03-14 04:08:15 stephena Exp $
-*/
+    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
 
-// Colors indices to use for the various GUI elements
-enum OverlayColor {
-  kColor,
-  kBGColor,
-  kShadowColor,
-  kTextColor,
-  kTextColorHi
+  protected:
+    PopUpWidget* myDriver;
+    PopUpWidget* myRenderer;
+    PopUpWidget* myFilter;
+    PopUpWidget* myAspectRatio;
+    PopUpWidget* myPalette;
+
+  private:
+    void loadConfig();
+    void saveConfig();
 };
-
-// Standard entries for OK/Cancel buttons
-enum {
-  kOKCmd    = 'ok  ',
-  kCloseCmd = 'clos'
-};
-
-static const string EmptyString("");
-
-#define kLineHeight 12
 
 #endif

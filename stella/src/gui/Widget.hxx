@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.4 2005-03-13 03:38:41 stephena Exp $
+// $Id: Widget.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,7 +62,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.4 2005-03-13 03:38:41 stephena Exp $
+  @version $Id: Widget.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -199,13 +199,13 @@ class SliderWidget : public ButtonWidget
     SliderWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h, const string& label = "",
                  Int32 labelWidth = 0, Int32 cmd = 0, uInt8 hotkey = 0);
 
-    void setValue(Int32 value) { _value = value; }
-    Int32 getValue() const     { return _value; }
+    void  setValue(Int32 value) { _value = value; }
+    Int32 getValue() const      { return _value; }
 
-    void   setMinValue(Int32 value) { _valueMin = value; }
-    Int32 getMinValue() const       { return _valueMin; }
-    void   setMaxValue(Int32 value) { _valueMax = value; }
-    Int32 getMaxValue() const       { return _valueMax; }
+    void  setMinValue(Int32 value) { _valueMin = value; }
+    Int32 getMinValue() const      { return _valueMin; }
+    void  setMaxValue(Int32 value) { _valueMax = value; }
+    Int32 getMaxValue() const      { return _valueMax; }
 
     void handleMouseMoved(Int32 x, Int32 y, Int32 button);
     void handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount);

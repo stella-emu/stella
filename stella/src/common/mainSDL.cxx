@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.27 2005-02-27 23:41:17 stephena Exp $
+// $Id: mainSDL.cxx,v 1.28 2005-03-14 04:08:13 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -410,7 +410,7 @@ void HandleEvents()
 
               case SDLK_p:         // Ctrl-p toggles different palettes
                 theOSystem->console().togglePalette();
-                theDisplay->setupPalette();
+//                theDisplay->setupPalette();
                 break;
 
 #ifdef DEVELOPER_SUPPORT
@@ -456,37 +456,15 @@ void HandleEvents()
 
       case SDL_MOUSEMOTION:
       {
-        uInt32 zoom = theDisplay->zoomLevel();
-        Int32 width = theDisplay->width() * zoom;
-
-        // Grabmouse and hidecursor introduce some lag into the mouse movement,
-        // so we need to fudge the numbers a bit
-        if(theGrabMouseIndicator && theHideCursorIndicator)
-          mouseX = (int)((float)mouseX + (float)event.motion.xrel
-                   * 1.5 * (float) zoom);
-        else
-          mouseX = mouseX + event.motion.xrel * zoom;
-
-        // Check to make sure mouseX is within the game window
-        if(mouseX < 0)
-          mouseX = 0;
-        else if(mouseX > width)
-          mouseX = width;
-
-        Int32 resistance = (Int32)(1000000.0 * (width - mouseX) / width);
-
-        theOSystem->eventHandler().handleEvent(Paddle_Resistance[thePaddleMode], resistance);
-
+        theOSystem->eventHandler().handleMouseMotionEvent(event);
         break; // SDL_MOUSEMOTION
       }
 
       case SDL_MOUSEBUTTONUP:
       case SDL_MOUSEBUTTONDOWN:
       {
-        Int32 value = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
-
-        theOSystem->eventHandler().handleEvent(Paddle_Button[thePaddleMode], value);
-
+        uInt8 state = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
+        theOSystem->eventHandler().handleMouseButtonEvent(event, state);
         break;  // SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN
       }
 
@@ -497,7 +475,6 @@ void HandleEvents()
           if(!theOSystem->eventHandler().doPause())
             theOSystem->eventHandler().handleEvent(Event::Pause, 1);
         }
-
         break; // SDL_ACTIVEEVENT
       }
 

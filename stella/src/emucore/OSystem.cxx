@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.5 2005-03-10 22:59:40 stephena Exp $
+// $Id: OSystem.cxx,v 1.6 2005-03-14 04:08:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -43,7 +43,6 @@ OSystem::OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
-cerr << "OSystem::~OSystem()\n";
   delete myMenu;
 //  delete myBrowser;
 

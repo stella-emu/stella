@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.4 2005-03-12 01:47:15 stephena Exp $
+// $Id: Dialog.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define DIALOG_HXX
 
 class OSystem;
+class Menu;
 
 #include "Command.hxx"
 #include "Widget.hxx"
@@ -30,19 +31,16 @@ class OSystem;
 
 #include "bspf.hxx"
 
-// Some "common" commands sent to handleCommand()
-enum {
-  kCloseCmd = 'clos'
-};
-
 /**
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.4 2005-03-12 01:47:15 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
 */
 class Dialog : public GuiObject
 {
+  friend class Menu;
+
   public:
     Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
 
