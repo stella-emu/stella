@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.14 2003-11-24 14:51:06 stephena Exp $
+// $Id: Settings.cxx,v 1.15 2003-12-04 19:18:45 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -47,6 +47,7 @@ Settings::Settings()
   set("showinfo", "false");
   set("mergeprops", "false");
   set("paddle", "0");
+  set("palette", "standard");
 
 #ifdef SNAPSHOT_SUPPORT
   set("ssdir", "");

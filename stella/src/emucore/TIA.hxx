@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.10 2003-10-26 19:40:39 stephena Exp $
+// $Id: TIA.hxx,v 1.11 2003-12-04 19:18:45 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -43,7 +43,7 @@ class Deserializer;
   in a bounded queue.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.10 2003-10-26 19:40:39 stephena Exp $
+  @version $Id: TIA.hxx,v 1.11 2003-12-04 19:18:45 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -538,6 +538,18 @@ class TIA : public Device , public MediaSource
     // this array are always shades of grey.  This is used to implement
     // the PAL color loss effect.
     static const uInt32 ourPALPalette[256];
+
+    // Table of RGB values for NTSC - Stella 1.1 version
+    static const uInt32 ourNTSCPalette11[256];
+
+    // Table of RGB values for PAL - Stella 1.1 version
+    static const uInt32 ourPALPalette11[256];
+
+    // Table of RGB values for NTSC - Z26 version
+    static const uInt32 ourNTSCPaletteZ26[256];
+
+    // Table of RGB values for PAL - Z26 version
+    static const uInt32 ourPALPaletteZ26[256];
 
   private:
     // Copy constructor isn't supported by this class so make it private

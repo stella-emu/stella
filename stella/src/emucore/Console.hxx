@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.16 2003-11-19 15:57:10 stephena Exp $
+// $Id: Console.hxx,v 1.17 2003-12-04 19:18:45 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -41,7 +41,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.16 2003-11-19 15:57:10 stephena Exp $
+  @version $Id: Console.hxx,v 1.17 2003-12-04 19:18:45 stephena Exp $
 */
 class Console
 {
@@ -185,9 +185,16 @@ class Console
 #ifdef DEVELOPER_SUPPORT
   public:
     /**
-      Toggle between NTSC and PAL mode.  The frontends may need to reload their palette.
+      Toggle between NTSC and PAL mode.  The frontends will need to
+      reload their palette.
     */
     void toggleFormat();
+
+    /**
+      Toggle between the available palettes.  The frontends will need to
+      reload their palette.
+    */
+    void togglePalette();
 
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued

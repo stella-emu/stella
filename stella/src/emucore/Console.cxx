@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.21 2003-11-19 15:57:10 stephena Exp $
+// $Id: Console.cxx,v 1.22 2003-12-04 19:18:45 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -283,7 +283,6 @@ Properties Console::ourDefaultProperties;
 void Console::toggleFormat()
 {
   string format = myProperties.get("Display.Format");
-  string message;
 
   if(format == "NTSC")
   {
@@ -294,6 +293,33 @@ void Console::toggleFormat()
   {
     myFrameBuffer.showMessage("NTSC Mode");
     myProperties.set("Display.Format", "NTSC");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::togglePalette()
+{
+  string type = mySettings.getString("palette");
+
+  if(type == "standard")  // switch to original
+  {
+    myFrameBuffer.showMessage("Original Stella colors");
+    mySettings.setString("palette", "original");
+  }
+  else if(type == "original")  // switch to z26
+  {
+    myFrameBuffer.showMessage("Z26 colors");
+    mySettings.setString("palette", "z26");
+  }
+  else if(type == "z26")  // switch to standard
+  {
+    myFrameBuffer.showMessage("Standard Stella colors");
+    mySettings.setString("palette", "standard");
+  }
+  else  // switch to standard mode if we get this far
+  {
+    myFrameBuffer.showMessage("Standard Stella colors");
+    mySettings.setString("palette", "standard");
   }
 }
 
