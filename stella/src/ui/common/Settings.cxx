@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.2 2002-08-04 00:28:18 stephena Exp $
+// $Id: Settings.cxx,v 1.3 2002-09-29 14:11:10 stephena Exp $
 //============================================================================
 
 #include "Settings.hxx"
@@ -28,7 +28,7 @@ Settings::Settings()
   theHideCursorFlag = false;
   theUsePrivateColormapFlag = false;
   theMultipleSnapShotFlag = true;
-  theHogCPUFlag = true;
+  theAccurateTimingFlag = true;
   theDesiredVolume = 75;
   theDesiredFrameRate = 60;
   thePaddleMode = 0;
@@ -85,31 +85,59 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
     }
     else if(string(argv[i]) == "-owncmap")
     {
-      theUsePrivateColormapFlag = true;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theUsePrivateColormapFlag = true;
+      else if(option == 0)
+        theUsePrivateColormapFlag = false;
     }
     else if(string(argv[i]) == "-fullscreen")
     {
-      theUseFullScreenFlag = true;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theUseFullScreenFlag = true;
+      else if(option == 0)
+        theUseFullScreenFlag = false;
     }
     else if(string(argv[i]) == "-grabmouse")
     {
-      theGrabMouseFlag = true;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theGrabMouseFlag = true;
+      else if(option == 0)
+        theGrabMouseFlag = false;
     }
     else if(string(argv[i]) == "-hidecursor")
     {
-      theHideCursorFlag = true;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theHideCursorFlag = true;
+      else if(option == 0)
+        theHideCursorFlag = false;
     }
     else if(string(argv[i]) == "-center")
     {
-      theCenterWindowFlag = true;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theCenterWindowFlag = true;
+      else if(option == 0)
+        theCenterWindowFlag = false;
     }
     else if(string(argv[i]) == "-showinfo")
     {
-      theShowInfoFlag = true;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theShowInfoFlag = true;
+      else if(option == 0)
+        theShowInfoFlag = false;
     }
-    else if(string(argv[i]) == "-nohog")
+    else if(string(argv[i]) == "-accurate")
     {
-      theHogCPUFlag = false;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theAccurateTimingFlag = true;
+      else if(option == 0)
+        theAccurateTimingFlag = false;
     }
     else if(string(argv[i]) == "-zoom")
     {
@@ -137,7 +165,11 @@ bool Settings::handleCommandLineArgs(int argc, char* argv[])
     }
     else if(string(argv[i]) == "-sssingle")
     {
-      theMultipleSnapShotFlag = false;
+      uInt32 option = atoi(argv[++i]);
+      if(option == 1)
+        theMultipleSnapShotFlag = false;
+      else if(option == 0)
+        theMultipleSnapShotFlag = true;
     }
     else if(string(argv[i]) == "-pro")
     {
@@ -256,13 +288,13 @@ void Settings::handleRCFile(istream& in)
       else if(option == 0)
         theShowInfoFlag = false;
     }
-    else if(key == "nohog")
+    else if(key == "accurate")
     {
       uInt32 option = atoi(value.c_str());
       if(option == 1)
-        theHogCPUFlag = false;
+        theAccurateTimingFlag = true;
       else if(option == 0)
-        theShowInfoFlag = true;
+        theAccurateTimingFlag = false;
     }
     else if(key == "zoom")
     {

@@ -13,18 +13,18 @@
 ;  Boolean values are specified as 1 (for true) and 0 (for false)
 ;
                        
-;display = <display>
-;fps     = <number>
-;owncmap = <0|1>
-;zoom = <size>
-;grabmouse <0|1>
-;hidecursor <0|1>
-;center  = <0|1>
-;volume  = <number>
-;paddle  = <0|1|2|3|real>
-;showinfo = <0|1>
+;display    = <display>
+;fps        = <number>
+;owncmap    = <0|1>
+;zoom       = <size>
+;grabmouse  = <0|1>
+;hidecursor = <0|1>
+;center     = <0|1>
+;volume     = <number>
+;paddle     = <0|1|2|3|real>
+;showinfo   = <0|1>
 ;fullscreen = <0|1>
-;ssdir = <pathname>
-;ssname = <romname|md5sum>
-;sssingle = <0|1>
-;nohog = <0|1>
+;ssdir      = <pathname>
+;ssname     = <romname|md5sum>
+;sssingle   = <0|1>
+;accurate   = <0|1>

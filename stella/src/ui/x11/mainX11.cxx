@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.25 2002-08-04 00:28:18 stephena Exp $
+// $Id: mainX11.cxx,v 1.26 2002-09-29 14:11:11 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1201,28 +1201,28 @@ void usage()
     "",
     "Valid options are:",
     "",
-    "  -display <display>      Connect to the designated X display",
-    "  -fps <number>           Display the given number of frames per second",
-    "  -owncmap                Install a private colormap",
-    "  -zoom <size>            Makes window be 'size' times normal (1 - 4)",
-//    "  -fullscreen             Play the game in fullscreen mode",
-    "  -grabmouse              Keeps the mouse in the game window",
-    "  -hidecursor             Hides the mouse cursor in the game window",
-    "  -center                 Centers the game window onscreen",
-    "  -volume <number>        Set the volume (0 - 100)",
+    "  -fps        <number>        Display the given number of frames per second",
+    "  -owncmap    <0|1>           Install a private colormap",
+    "  -zoom       <size>          Makes window be 'size' times normal (1 - 4)",
+//    "  -fullscreen <0|1>           Play the game in fullscreen mode",
+    "  -grabmouse  <0|1>           Keeps the mouse in the game window",
+    "  -hidecursor <0|1>           Hides the mouse cursor in the game window",
+    "  -center     <0|1>           Centers the game window onscreen",
+    "  -volume     <number>        Set the volume (0 - 100)",
 #ifdef HAVE_JOYSTICK
-    "  -paddle <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
-    "                          or that real Atari 2600 paddles are being used",
+    "  -paddle     <0|1|2|3|real>  Indicates which paddle the mouse should emulate",
+    "                              or that real Atari 2600 paddles are being used",
 #else
-    "  -paddle <0|1|2|3>       Indicates which paddle the mouse should emulate",
+    "  -paddle     <0|1|2|3>       Indicates which paddle the mouse should emulate",
 #endif
-    "  -showinfo               Shows some game info on exit",
+    "  -showinfo   <0|1>           Shows some game info on exit",
 #ifdef HAVE_PNG
-    "  -ssdir <path>           The directory to save snapshot files to",
-    "  -ssname <name>          How to name the snapshot (romname or md5sum)",
-    "  -sssingle               Generate single snapshot instead of many",
+    "  -ssdir      <path>          The directory to save snapshot files to",
+    "  -ssname     <name>          How to name the snapshot (romname or md5sum)",
+    "  -sssingle   <0|1>           Generate single snapshot instead of many",
 #endif
-    "  -pro <props file>       Use the given properties file instead of stella.pro",
+    "  -pro        <props file>    Use the given properties file instead of stella.pro",
+    "  -accurate   <0|1>           Accurate game timing (uses more CPU)",
     "",
     0
   };
@@ -1471,7 +1471,7 @@ int main(int argc, char* argv[])
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(settings->theHogCPUFlag)   // normal, CPU-intensive timing
+  if(settings->theAccurateTimingFlag)   // normal, CPU-intensive timing
   {
     // Set up timing stuff
     uInt32 startTime, delta;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.2 2002-08-04 00:28:18 stephena Exp $
+// $Id: Settings.hxx,v 1.3 2002-09-29 14:11:11 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -55,7 +55,7 @@ class Settings
 
     // Indicates whether to use more/less accurate emulation,
     // resulting in more/less CPU usage.
-    bool theHogCPUFlag;
+    bool theAccurateTimingFlag;
 
     // Indicates what the desired volume is
     uInt32 theDesiredVolume;
