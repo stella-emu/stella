@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.8 2005-02-18 05:31:47 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.9 2005-02-21 19:32:07 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -1209,7 +1209,7 @@ static double Atari_time(void)
   struct timeval tp;
 
   gettimeofday(&tp, NULL);
-  return 1000000 * tp.tv_sec + 1e-6 * tp.tv_usec;
+  return tp.tv_sec + 1e-6 * tp.tv_usec;
 }
 
 
