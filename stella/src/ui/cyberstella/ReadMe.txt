@@ -2,10 +2,21 @@ Cyberstella V1.2
 
 Currently Open Todos:
 
+Urgent:
+- Reasonably reduce the appearance of advertisment MessgageBoxes.
+- Check if games are running without stella.pro (?!?)
+
 Later:
 - More Columns / Advanced sorting
-- Clean OnPlay Routine
 - Make whole screen resizable
+    like this:
+
+        void CViewList::OnSize(UINT nType, int cx, int cy) 
+        {
+             CFormView::OnSize(nType, cx, cy);
+             if ( m_listCtrl.m_hWnd ) m_listCtrl.MoveWindow (0, 0, cx, cy);
+        }
+     ???????
 - Check other versions command line params
 - Check other versions keyboard mapping
 - Add Screenshots - F12
@@ -13,6 +24,7 @@ Later:
 - Add Fullscreen / Windowed mode -F4
 - Check Direct Draw implementation / upgrade to DX8
 - Integrate manuals for the built in games
+- Think about french localisation
 
 ToDos from Brad Mott:
 - Is the keyboard mapping correct (e.g., do both of the Joysticks
@@ -25,8 +37,51 @@ ToDos from Brad Mott:
   map joystick buttons to the 2600 Select/Reset as well as the
   other 2600 functions...)
 
+ToDos from Stephen Anthony:
+1)  In the information dialog box, could you change the 
+Stella homepage to 
+stella.sourceforge.net, and change the mailing list to 
+stella-main@lists.sourceforge.net?  These are the new 
+addresses, and the 
+older ones you have used will be eventually phased out.
+
+2)  Sometimes, when resizing the window, the inner file-
+list contents aren't 
+resized.  Maybe you haven't associated the resize event 
+with the resize 
+listview event?
+
+3)  There seems to be some lines of text missing in the 
+various dialog boxes. 
+I'm not sure if that is a problem with the version of 
+Windows I using (Win98 
+under VMWare) or not.
+
+ToDos from Thomas Jetzsch:
+-> Private Mail + (Update path earlier, etc...)
+>> Maybe just adding some friendly game-info menu, that 
+>> doesn't pop-up on remote at all.
+
+>Auch 'ne gute Idee, könnte man auch schön mit den Anleitungen 
+>kombinieren. Und bei jedem Spiel vielleicht nur einmalig darauf 
+>verweisen.
+
 Own Ideas:
-->Private Mail to Stephen Anthony
+- Add a Sprite/Animation Editor 
+- Add a PF Editor
+- Add a Sourcecode Editor
+- Either Support DASM as frontend or integrate a 6507 
+Assembler
+- Either Support Distella as frontend or integrate a 
+6507 Disassembler
+- AVI/MPEG export
+- WAV/MP3 export
+- Client/Server networked play for up to 4 Computers via 
+LAN/Internet
+- Tracking Hiscores
+- Record and Playback games - not as real movie, but by 
+logging Input/RAM/processor states in given intervals.
+- Cheatcodes
 
 Suggestions from Brian Luttrull:
 Are you planning or would you be interested in adding

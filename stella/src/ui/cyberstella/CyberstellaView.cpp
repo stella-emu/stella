@@ -9,10 +9,6 @@
 #include "StellaConfig.h"
 #include "Console.hxx"
 #include "SoundWin32.hxx"
-#include "Gunfight.h"
-#include "Jammed.h"
-#include "Qb.h"
-#include "Thrust.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -282,47 +278,55 @@ void CCyberstellaView::playRom(LONG gameID)
     {
         case IDG_GUNFIGHT:
         {
-            pszFileName = "Gunfight";
+            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+            
+            /*pszFileName = "Gunfight";
             dwActualSize = sizeof gunfight;
             pImage = new BYTE[dwActualSize];
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = gunfight[i]^(pszFileName[i%strlen(pszFileName)]);
             }
-            break;
+            break;*/
         }
         case IDG_JAMMED:
         {
-            pszFileName = "Jammed";
+            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+
+            /*pszFileName = "Jammed";
             dwActualSize = sizeof jammed;
             pImage = new BYTE[dwActualSize];
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = jammed[i]^(pszFileName[i%strlen(pszFileName)]);
             }
-            break;
+            break;*/
         }
         case IDG_QB:
         {
-            pszFileName = "Qb";
+            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+
+            /*pszFileName = "Qb";
             dwActualSize = sizeof qb;
             pImage = new BYTE[dwActualSize];
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = qb[i]^(pszFileName[i%strlen(pszFileName)]);
             }
-            break;
+            break;*/
         }
         case IDG_THRUST:
         {
-            pszFileName = "Thrust";
+            MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
+                        
+            /*pszFileName = "Thrust";
             dwActualSize = sizeof thrust;
             pImage = new BYTE[dwActualSize];
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = thrust[i]^(pszFileName[i%strlen(pszFileName)]);
             }
-            break;
+            break;*/
         }
         default:
         {
