@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.3 2002-01-08 17:11:32 stephena Exp $
+## $Id: makefile,v 1.4 2002-01-08 19:17:58 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -69,8 +69,8 @@ LIBS.X11   =
 CFLAGS.X11 =
 
 OPTS.SDL   =
-LIBS.SDL   =
-CFLAGS.SDL =
+LIBS.SDL   = `sdl-config --libs`
+CFLAGS.SDL = `sdl-config --cflags`
 
 OPTS.DOS   =
 
