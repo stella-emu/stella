@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.4 2002-08-14 02:30:52 bwmott Exp $
+// $Id: Cart.cxx,v 1.5 2002-12-15 05:49:04 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -179,6 +179,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else if((size == 8192) || (memcmp(image, image + 8192, 8192) == 0))
     {
       type = "F8";
+    }
+    else if((size == 10495) || (size == 10240))
+    {
+      type = "DPC";
     }
     else if(size == 12288)
     {
