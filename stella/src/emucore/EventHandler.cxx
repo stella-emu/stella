@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.14 2003-09-28 21:59:24 stephena Exp $
+// $Id: EventHandler.cxx,v 1.15 2003-09-30 01:22:45 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -66,9 +66,6 @@ EventHandler::EventHandler(Console* console)
 
   setKeymap();
   setJoymap();
-
-  // Now send the filled event arrays to the GUI for display and remapping
-//  myConsole->gui().
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,18 +236,17 @@ string EventHandler::getJoymap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getKeymapArray(Event::Type** array, uInt32* sizex)
+void EventHandler::getKeymapArray(Event::Type** array, uInt32* size)
 {
   *array = myKeyTable;
-  *sizex = StellaEvent::LastKCODE;
+  *size  = StellaEvent::LastKCODE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getJoymapArray(Event::Type** array, uInt32* sizex, uInt32* sizey)
+void EventHandler::getJoymapArray(Event::Type** array, uInt32* size)
 {
   *array = myJoyTable;
-  *sizex = StellaEvent::LastJSTICK;
-  *sizey = StellaEvent::LastJCODE;
+  *size  = StellaEvent::LastJSTICK * StellaEvent::LastJCODE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -287,16 +283,24 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[StellaEvent::KCODE_LEFT]      = Event::JoystickZeroLeft;
   myKeyTable[StellaEvent::KCODE_RIGHT]     = Event::JoystickZeroRight;
   myKeyTable[StellaEvent::KCODE_SPACE]     = Event::JoystickZeroFire;
-//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripZeroTrigger;
-//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripZeroBooster;
+  myKeyTable[StellaEvent::KCODE_4]         = Event::BoosterGripZeroTrigger;
+  myKeyTable[StellaEvent::KCODE_5]         = Event::BoosterGripZeroBooster;
 
   myKeyTable[StellaEvent::KCODE_y]         = Event::JoystickOneUp;
   myKeyTable[StellaEvent::KCODE_h]         = Event::JoystickOneDown;
   myKeyTable[StellaEvent::KCODE_g]         = Event::JoystickOneLeft;
   myKeyTable[StellaEvent::KCODE_j]         = Event::JoystickOneRight;
   myKeyTable[StellaEvent::KCODE_f]         = Event::JoystickOneFire;
-//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripOneTrigger;
-//  myKeyTable[StellaEvent::KCODE_]         = Event::BoosterGripOneBooster;
+  myKeyTable[StellaEvent::KCODE_6]         = Event::BoosterGripOneTrigger;
+  myKeyTable[StellaEvent::KCODE_7]         = Event::BoosterGripOneBooster;
+
+  myKeyTable[StellaEvent::KCODE_INSERT]    = Event::DrivingZeroCounterClockwise;
+  myKeyTable[StellaEvent::KCODE_PAGEUP]    = Event::DrivingZeroClockwise;
+  myKeyTable[StellaEvent::KCODE_HOME]      = Event::DrivingZeroFire;
+
+  myKeyTable[StellaEvent::KCODE_DELETE]    = Event::DrivingOneCounterClockwise;
+  myKeyTable[StellaEvent::KCODE_PAGEDOWN]  = Event::DrivingOneClockwise;
+  myKeyTable[StellaEvent::KCODE_END]       = Event::DrivingOneFire;
 
   myKeyTable[StellaEvent::KCODE_F1]        = Event::ConsoleSelect;
   myKeyTable[StellaEvent::KCODE_F2]        = Event::ConsoleReset;
@@ -313,11 +317,6 @@ void EventHandler::setDefaultKeymap()
 
   myKeyTable[StellaEvent::KCODE_PAUSE]     = Event::Pause;
   myKeyTable[StellaEvent::KCODE_ESCAPE]    = Event::Quit;
-
-#if 0
-      DrivingZeroClockwise, DrivingZeroCounterClockwise, DrivingZeroFire,
-      DrivingOneClockwise, DrivingOneCounterClockwise, DrivingOneFire,
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -418,7 +417,7 @@ void EventHandler::takeSnapshot()
   // Now save the snapshot file
   string filename = myConsole->settings().snapshotFilename();
   myConsole->snapshot().savePNG(filename, myConsole->mediaSource(),
-      myConsole->settings().getInt("zoom"));
+      myConsole->settings().getInt("zoom")); // FIXME - update zoom in resizewindow
 
   myConsole->gui().showMessage("Snapshot saved");
 #else

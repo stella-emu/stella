@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.cxx,v 1.6 2003-09-29 18:10:56 stephena Exp $
+// $Id: UserInterface.cxx,v 1.7 2003-09-30 01:22:45 stephena Exp $
 //============================================================================
+
+#include <sstream>
 
 #include "bspf.hxx"
 #include "Console.hxx"
@@ -97,7 +99,7 @@ UserInterface::UserInterface(Console* console, MediaSource* mediasrc)
 
   // Get the arrays containing key and joystick mappings
   myConsole->eventHandler().getKeymapArray(&myKeyTable, &myKeyTableSize);
-//  myConsole->eventHandler().getJoymapArray(&myJoyTable, &jsize);
+  myConsole->eventHandler().getJoymapArray(&myJoyTable, &myJoyTableSize);
 
   loadRemapMenu();
 }
@@ -154,6 +156,10 @@ cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "' selected for remappin
         moveCursorUp();
       else if(key == StellaEvent::KCODE_DOWN)
         moveCursorDown();
+      else if(key == StellaEvent::KCODE_PAGEUP)
+        movePageUp();
+      else if(key == StellaEvent::KCODE_PAGEDOWN)
+        movePageDown();
       else if(key == StellaEvent::KCODE_ESCAPE)
         myCurrentWidget = MAIN_MENU;
 
@@ -174,6 +180,46 @@ cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "' selected for remappin
 void UserInterface::sendJoyEvent(StellaEvent::JoyStick stick,
      StellaEvent::JoyCode code, Int32 state)
 {
+  if(myCurrentWidget == W_NONE || state != 1)
+    return;
+
+cerr << "stick = " << stick << ", button = " << code << endl;
+
+  // Check which type of widget is pending
+  switch(myCurrentWidget)
+  {
+    case MAIN_MENU:
+//      if(key == StellaEvent::KCODE_RETURN)
+//        myCurrentWidget = currentSelectedWidget();
+      if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_UP)
+        moveCursorUp();
+      else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_DOWN)
+        moveCursorDown();
+
+      break;  // MAIN_MENU
+
+    case REMAP_MENU:
+      if(myRemapEventSelectedFlag)
+      {
+        addJoyBinding(mySelectedEvent, stick, code);
+        myRemapEventSelectedFlag = false;
+      }
+      else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_UP)
+        moveCursorUp();
+      else if(stick == StellaEvent::JSTICK_0 && code == StellaEvent::JAXIS_DOWN)
+        moveCursorDown();
+//      else if(key == StellaEvent::KCODE_PAGEUP)
+//        movePageUp();
+//      else if(key == StellaEvent::KCODE_PAGEDOWN)
+//        movePageDown();
+//      else if(key == StellaEvent::KCODE_ESCAPE)
+//        myCurrentWidget = MAIN_MENU;
+
+      break;  // REMAP_MENU
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -297,7 +343,6 @@ void UserInterface::moveCursorUp()
       if(myRemapMenuIndex > myRemapMenuLowIndex)
       {
         myRemapMenuIndex--;
-cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "'\n";
       }
       else if(myRemapMenuIndex == myRemapMenuLowIndex)
       {
@@ -306,7 +351,6 @@ cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "'\n";
           myRemapMenuLowIndex--;
           myRemapMenuHighIndex--;
           myRemapMenuIndex--;
-cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "'\n";
         }
       }
 
@@ -334,7 +378,6 @@ void UserInterface::moveCursorDown()
       if(myRemapMenuIndex < myRemapMenuHighIndex - 1)
       {
         myRemapMenuIndex++;
-cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "'\n";
       }
       else if(myRemapMenuIndex == myRemapMenuHighIndex - 1)
       {
@@ -343,9 +386,72 @@ cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "'\n";
           myRemapMenuLowIndex++;
           myRemapMenuHighIndex++;
           myRemapMenuIndex++;
-cerr << "'" << ourRemapMenu[myRemapMenuIndex].action << "'\n";
         }
       }
+
+      break;
+
+    default:  // This should never happen
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::movePageUp()
+{
+  switch(myCurrentWidget)
+  {
+    case MAIN_MENU:
+      break;
+
+    case REMAP_MENU:
+      if(myRemapMenuLowIndex < myMaxLines)
+      {
+        myRemapMenuLowIndex  = 0;
+        myRemapMenuHighIndex = myMaxLines;
+      }
+      else
+      {
+        myRemapMenuLowIndex  -= myMaxLines;
+        myRemapMenuHighIndex -= myMaxLines;
+      }
+
+      // Don't scroll the cursor if it falls within the screen
+      if(myRemapMenuIndex < myRemapMenuLowIndex ||
+         myRemapMenuIndex > myRemapMenuHighIndex-1)
+        myRemapMenuIndex = myRemapMenuHighIndex - 1;
+
+      break;
+
+    default:  // This should never happen
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::movePageDown()
+{
+  switch(myCurrentWidget)
+  {
+    case MAIN_MENU:
+      break;
+
+    case REMAP_MENU:
+      if(myRemapMenuHighIndex + myMaxLines >= myRemapMenuItems)
+      {
+        myRemapMenuHighIndex = myRemapMenuItems;
+        myRemapMenuLowIndex = myRemapMenuHighIndex - myMaxLines;
+      }
+      else
+      {
+        myRemapMenuLowIndex  += myMaxLines;
+        myRemapMenuHighIndex += myMaxLines;
+      }
+
+      // Don't scroll the cursor if it falls within the screen
+      if(myRemapMenuIndex < myRemapMenuLowIndex ||
+         myRemapMenuIndex > myRemapMenuHighIndex-1)
+        myRemapMenuIndex = myRemapMenuLowIndex;
 
       break;
 
@@ -403,7 +509,7 @@ void UserInterface::drawText(uInt32 xorig, uInt32 yorig, const string& message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::loadRemapMenu()
 {
-  // Fill the remap menu with the current key mappings
+  // Fill the remap menu with the current key and joystick mappings
   for(uInt32 i = 0; i < myRemapMenuItems; ++i)
   {
     Event::Type event = ourRemapMenu[i].event;
@@ -417,10 +523,26 @@ void UserInterface::loadRemapMenu()
           key = key + ourEventName[j];
         else
           key = key + ", " + ourEventName[j];
-
-        ourRemapMenu[i].key = key;
       }
     }
+    for(uInt32 j = 0; j < myJoyTableSize; ++j)
+    {
+      if(myJoyTable[j] == event)
+      {
+        ostringstream joyevent;
+        uInt32 stick  = j / StellaEvent::LastJCODE;
+        uInt32 button = j % StellaEvent::LastJCODE;
+        joyevent << "Joy " << stick << " B" << button;
+
+        if(key == "")
+          key = key + joyevent.str();
+        else
+          key = key + ", " + joyevent.str();
+      }
+    }
+
+    if(key != "")
+      ourRemapMenu[i].key = key;
   }
 }
 
@@ -433,11 +555,24 @@ void UserInterface::addKeyBinding(Event::Type event, StellaEvent::KeyCode key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UserInterface::addJoyBinding(Event::Type event,
+       StellaEvent::JoyStick stick, StellaEvent::JoyCode code)
+{
+  myJoyTable[stick * StellaEvent::LastJCODE + code] = event;
+
+  loadRemapMenu();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UserInterface::deleteBinding(Event::Type event)
 {
   for(uInt32 i = 0; i < myKeyTableSize; ++i)
     if(myKeyTable[i] == event)
       myKeyTable[i] = Event::NoType;
+
+  for(uInt32 j = 0; j < myJoyTableSize; ++j)
+    if(myJoyTable[j] == event)
+      myJoyTable[j] = Event::NoType;
 
   loadRemapMenu();
 }
@@ -461,34 +596,72 @@ UserInterface::MainMenuItem UserInterface::ourMainMenu[2] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UserInterface::RemapMenuItem UserInterface::ourRemapMenu[23] = {
-  { Event::ConsoleSelect,           "Select",       "" },
-  { Event::ConsoleReset,            "Reset",        "" },
-  { Event::ConsoleColor,            "Color TV",     "" },
-  { Event::ConsoleBlackWhite,       "B/W TV",       "" },
-  { Event::ConsoleLeftDifficultyB,  "P1 Diff. B",   "" },
-  { Event::ConsoleLeftDifficultyA,  "P1 Diff. A",   "" },
-  { Event::ConsoleRightDifficultyB, "P2 Diff. B",   "" },
-  { Event::ConsoleRightDifficultyA, "P2 Diff. A",   "" },
-  { Event::SaveState,               "Save State",   "" },
-  { Event::ChangeState,             "Change State", "" },
-  { Event::LoadState,               "Load State",   "" },
-  { Event::TakeSnapshot,            "Snapshot",     "" },
-  { Event::Pause,                   "Pause",        "" },
+UserInterface::RemapMenuItem UserInterface::ourRemapMenu[57] = {
+  { Event::ConsoleSelect,           "Select",               "" },
+  { Event::ConsoleReset,            "Reset",                "" },
+  { Event::ConsoleColor,            "Color TV",             "" },
+  { Event::ConsoleBlackWhite,       "B/W TV",               "" },
+  { Event::ConsoleLeftDifficultyB,  "Left Diff. B",         "" },
+  { Event::ConsoleLeftDifficultyA,  "Left Diff. A",         "" },
+  { Event::ConsoleRightDifficultyB, "Right Diff. B",        "" },
+  { Event::ConsoleRightDifficultyA, "Right Diff. A",        "" },
+  { Event::SaveState,               "Save State",           "" },
+  { Event::ChangeState,             "Change State",         "" },
+  { Event::LoadState,               "Load State",           "" },
+  { Event::TakeSnapshot,            "Snapshot",             "" },
+  { Event::Pause,                   "Pause",                "" },
 
-  { Event::JoystickZeroUp,          "P1 Up",        "" },
-  { Event::JoystickZeroDown,        "P1 Down",      "" },
-  { Event::JoystickZeroLeft,        "P1 Left",      "" },
-  { Event::JoystickZeroRight,       "P1 Right",     "" },
-  { Event::JoystickZeroFire,        "P1 Fire",      "" },
+  { Event::JoystickZeroUp,          "Left-Joy Up",          "" },
+  { Event::JoystickZeroDown,        "Left-Joy Down",        "" },
+  { Event::JoystickZeroLeft,        "Left-Joy Left",        "" },
+  { Event::JoystickZeroRight,       "Left-Joy Right",       "" },
+  { Event::JoystickZeroFire,        "Left-Joy Fire",        "" },
 
-  { Event::JoystickOneUp,           "P2 Up",        "" },
-  { Event::JoystickOneDown,         "P2 Down",      "" },
-  { Event::JoystickOneLeft,         "P2 Left",      "" },
-  { Event::JoystickOneRight,        "P2 Right",     "" },
-  { Event::JoystickOneFire,         "P2 Fire",      "" }
+  { Event::JoystickOneUp,           "Right-Joy Up",         "" },
+  { Event::JoystickOneDown,         "Right-Joy Down",       "" },
+  { Event::JoystickOneLeft,         "Right-Joy Left",       "" },
+  { Event::JoystickOneRight,        "Right-Joy Right",      "" },
+  { Event::JoystickOneFire,         "Right-Joy Fire",       "" },
 
-//  { Event::, ""  },
+  { Event::BoosterGripZeroTrigger,  "Left-BGrip Trigger",   "" },
+  { Event::BoosterGripZeroBooster,  "Left-BGrip Booster",   "" },
+
+  { Event::BoosterGripOneTrigger,   "Right-BGrip Trigger",  "" },
+  { Event::BoosterGripOneBooster,   "Right-BGrip Booster",  "" },
+
+  { Event::DrivingZeroCounterClockwise, "Left-Driving Left",  "" },
+  { Event::DrivingZeroClockwise,        "Left-Driving Right", "" },
+  { Event::DrivingZeroFire,             "Left-Driving Fire",  "" },
+
+  { Event::DrivingOneCounterClockwise, "Right-Driving Left",  "" },
+  { Event::DrivingOneClockwise,        "Right-Driving Right", "" },
+  { Event::DrivingOneFire,             "Right-Driving Fire",  "" },
+
+  { Event::KeyboardZero1,           "Left-Pad 1",           "" },
+  { Event::KeyboardZero2,           "Left-Pad 2",           "" },
+  { Event::KeyboardZero3,           "Left-Pad 3",           "" },
+  { Event::KeyboardZero4,           "Left-Pad 4",           "" },
+  { Event::KeyboardZero5,           "Left-Pad 5",           "" },
+  { Event::KeyboardZero6,           "Left-Pad 6",           "" },
+  { Event::KeyboardZero7,           "Left-Pad 7",           "" },
+  { Event::KeyboardZero8,           "Left-Pad 8",           "" },
+  { Event::KeyboardZero9,           "Left-Pad 9",           "" },
+  { Event::KeyboardZeroStar,        "Left-Pad *",           "" },
+  { Event::KeyboardZero0,           "Left-Pad 0",           "" },
+  { Event::KeyboardZeroPound,       "Left-Pad #",           "" },
+
+  { Event::KeyboardOne1,            "Right-Pad 1",          "" },
+  { Event::KeyboardOne2,            "Right-Pad 2",          "" },
+  { Event::KeyboardOne3,            "Right-Pad 3",          "" },
+  { Event::KeyboardOne4,            "Right-Pad 4",          "" },
+  { Event::KeyboardOne5,            "Right-Pad 5",          "" },
+  { Event::KeyboardOne6,            "Right-Pad 6",          "" },
+  { Event::KeyboardOne7,            "Right-Pad 7",          "" },
+  { Event::KeyboardOne8,            "Right-Pad 8",          "" },
+  { Event::KeyboardOne9,            "Right-Pad 9",          "" },
+  { Event::KeyboardOneStar,         "Right-Pad *",          "" },
+  { Event::KeyboardOne0,            "Right-Pad 0",          "" },
+  { Event::KeyboardOnePound,        "Right-Pad #",          "" }
 };
 
 /**

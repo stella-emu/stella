@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
+// $Id: EventHandler.hxx,v 1.10 2003-09-30 01:22:45 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -41,7 +41,7 @@ class MediaSource;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.9 2003-09-28 21:59:24 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.10 2003-09-30 01:22:45 stephena Exp $
 */
 class EventHandler
 {
@@ -111,8 +111,8 @@ class EventHandler
     */
     string getJoymap();
 
-    void getKeymapArray(Event::Type** array, uInt32* sizex);
-    void getJoymapArray(Event::Type** array, uInt32* sizex, uInt32* sizey);
+    void getKeymapArray(Event::Type** array, uInt32* size);
+    void getJoymapArray(Event::Type** array, uInt32* size);
 
   private:
     void setKeymap();

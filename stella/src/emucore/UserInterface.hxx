@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UserInterface.hxx,v 1.5 2003-09-28 21:59:24 stephena Exp $
+// $Id: UserInterface.hxx,v 1.6 2003-09-30 01:22:45 stephena Exp $
 //============================================================================
 
 #ifndef USERINTERFACE_HXX
@@ -31,7 +31,7 @@ class MediaSource;
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: UserInterface.hxx,v 1.5 2003-09-28 21:59:24 stephena Exp $
+  @version $Id: UserInterface.hxx,v 1.6 2003-09-30 01:22:45 stephena Exp $
 */
 class UserInterface
 {
@@ -79,8 +79,17 @@ class UserInterface
     Widget currentSelectedWidget();
     Event::Type currentSelectedEvent();
 
+    // Move the cursor up 1 line, possibly scrolling the list of items
     void moveCursorUp();
+
+    // Move the cursor down 1 line, possibly scrolling the list of items
     void moveCursorDown();
+
+    // Move the list up 1 page and put the cursor at the top
+    void movePageUp();
+
+    // Move the list down 1 page and put the cursor at the top
+    void movePageDown();
 
     // Draw a bounded box at the specified coordinates
     void drawBoundedBox(uInt32 x, uInt32 y, uInt32 width, uInt32 height);
@@ -93,6 +102,10 @@ class UserInterface
 
     // Add binding between a StellaEvent key and a core event
     void addKeyBinding(Event::Type event, StellaEvent::KeyCode key);
+
+    // Add binding between a StellaEvent joystick and a core event
+    void addJoyBinding(Event::Type event, StellaEvent::JoyStick stick,
+                       StellaEvent::JoyCode code);
 
     // Remove all bindings for this core event
     void deleteBinding(Event::Type event);
@@ -164,7 +177,7 @@ class UserInterface
     static MainMenuItem ourMainMenu[2];
 
     // Holds static strings for the remap menu
-    static RemapMenuItem ourRemapMenu[23];
+    static RemapMenuItem ourRemapMenu[57];
 
     // Holds the current key mappings
     Event::Type* myKeyTable;
