@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2003 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SndDOS.cxx,v 1.2 2002-11-13 03:47:55 bwmott Exp $
+// $Id: SndDOS.cxx,v 1.3 2003-02-17 05:09:21 bwmott Exp $
 //============================================================================
 
 #include "SndDOS.hxx"
@@ -23,7 +23,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundDOS::SoundDOS(bool activate)
     : myCurrentVolume(100),
-      myFragmentSize(1024),
+      myFragmentSize(2048),
       myIsInitializedFlag(false),
       myUpdateLock(false),
       myIsMuted(false),
@@ -143,9 +143,9 @@ void SoundDOS::updateSound(MediaSource& mediaSource)
       mySampleQueue.enqueue(buffer, size);
     }
 
-    // Block until the sound interrupt has consumed all but 125 milliseconds
+    // Block until the sound interrupt has consumed all but 142 milliseconds
     // of the available audio samples
-    uInt32 leave = mySampleRate / 8;
+    uInt32 leave = mySampleRate / 7;
     while(mySampleQueue.size() > leave)
     {
     }
