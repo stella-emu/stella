@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.20 2005-02-13 19:17:02 stephena Exp $
+// $Id: mainSDL.cxx,v 1.21 2005-02-21 02:23:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -36,12 +36,12 @@
 #include "StellaEvent.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
-#include "FrameBufferSDL.hxx"
 #include "FrameBufferSoft.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
 #include "SoundSDL.hxx"
 #include "Settings.hxx"
+#include "OSystem.hxx"
 
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
@@ -52,8 +52,10 @@
 
 #if defined(UNIX)
   #include "SettingsUNIX.hxx"
+  #include "OSystemUNIX.hxx"
 #elif defined(WIN32)
   #include "SettingsWin32.hxx"
+  #include "OSystemWin32.hxx"
 #else
   #error Unsupported platform!
 #endif
@@ -116,11 +118,11 @@ static Event::Type Paddle_Button[4] = {
   Event::PaddleTwoFire,  Event::PaddleThreeFire
 };
 
-// Pointer to the console object or the null pointer
-static Console* theConsole = (Console*) NULL;
+// Pointer to the main parent osystem object or the null pointer
+static OSystem* theOSystem = (OSystem*) NULL;
 
 // Pointer to the display object or the null pointer
-static FrameBufferSDL* theDisplay = (FrameBufferSDL*) NULL;
+static FrameBuffer* theDisplay = (FrameBuffer*) NULL;
 
 // Pointer to the sound object or the null pointer
 static Sound* theSound = (Sound*) NULL;
@@ -445,22 +447,22 @@ void HandleEvents()
 #endif
 #ifdef DEVELOPER_SUPPORT
             case SDLK_END:       // Alt-End increases XStart
-              theConsole->changeXStart(1);
+              theOSystem->console().changeXStart(1);
               theDisplay->resize(0);
               break;
 
             case SDLK_HOME:      // Alt-Home decreases XStart
-              theConsole->changeXStart(0);
+              theOSystem->console().changeXStart(0);
               theDisplay->resize(0);
               break;
 
             case SDLK_PAGEUP:    // Alt-PageUp increases YStart
-              theConsole->changeYStart(1);
+              theOSystem->console().changeYStart(1);
               theDisplay->resize(0);
               break;
 
             case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
-              theConsole->changeYStart(0);
+              theOSystem->console().changeYStart(0);
               theDisplay->resize(0);
               break;
           }
@@ -491,12 +493,12 @@ void HandleEvents()
               break;
 
             case SDLK_f:         // Ctrl-f toggles NTSC/PAL mode
-              theConsole->toggleFormat();
+              theOSystem->console().toggleFormat();
               theDisplay->setupPalette();
               break;
 
             case SDLK_p:         // Ctrl-p toggles different palettes
-              theConsole->togglePalette();
+              theOSystem->console().togglePalette();
               theDisplay->setupPalette();
               break;
 
@@ -518,34 +520,34 @@ void HandleEvents()
 
 #ifdef DEVELOPER_SUPPORT
             case SDLK_END:       // Ctrl-End increases Width
-              theConsole->changeWidth(1);
+              theOSystem->console().changeWidth(1);
               theDisplay->resize(0);
               break;
 
             case SDLK_HOME:      // Ctrl-Home decreases Width
-              theConsole->changeWidth(0);
+              theOSystem->console().changeWidth(0);
               theDisplay->resize(0);
               break;
 
             case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
-              theConsole->changeHeight(1);
+              theOSystem->console().changeHeight(1);
               theDisplay->resize(0);
               break;
 
             case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-              theConsole->changeHeight(0);
+              theOSystem->console().changeHeight(0);
               theDisplay->resize(0);
               break;
 #endif
             case SDLK_s:         // Ctrl-s saves properties to a file
               // Attempt to merge with propertiesSet
-              if(theConsole->settings().getBool("mergeprops"))
-                theConsole->saveProperties(theSettings->propertiesOutputFilename(), true);
+              if(theSettings->getBool("mergeprops"))
+                theOSystem->console().saveProperties(theSettings->propertiesOutputFilename(), true);
               else  // Save to file in home directory
               {
-                string newPropertiesFile = theConsole->settings().baseDir() + "/" + \
-                  theConsole->properties().get("Cartridge.Name") + ".pro";
-                theConsole->saveProperties(newPropertiesFile);
+                string newPropertiesFile = theSettings->baseDir() + "/" + \
+                  theOSystem->console().properties().get("Cartridge.Name") + ".pro";
+                theOSystem->console().saveProperties(newPropertiesFile);
               }
               break;
           }
@@ -554,7 +556,7 @@ void HandleEvents()
         // check all the other keys
         for(uInt32 i = 0; i < sizeof(keyList) / sizeof(KeyList); ++i)
           if(keyList[i].scanCode == key)
-            theConsole->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
+            theOSystem->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
 
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
@@ -580,7 +582,7 @@ void HandleEvents()
 
         Int32 resistance = (Int32)(1000000.0 * (width - mouseX) / width);
 
-        theConsole->eventHandler().sendEvent(Paddle_Resistance[thePaddleMode], resistance);
+        theOSystem->eventHandler().sendEvent(Paddle_Resistance[thePaddleMode], resistance);
 
         break; // SDL_MOUSEMOTION
       }
@@ -590,7 +592,7 @@ void HandleEvents()
       {
         Int32 value = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
 
-        theConsole->eventHandler().sendEvent(Paddle_Button[thePaddleMode], value);
+        theOSystem->eventHandler().sendEvent(Paddle_Button[thePaddleMode], value);
 
         break;  // SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN
       }
@@ -599,8 +601,8 @@ void HandleEvents()
       {
         if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
         {
-          if(!theConsole->eventHandler().doPause())
-            theConsole->eventHandler().sendEvent(Event::Pause, 1);
+          if(!theOSystem->eventHandler().doPause())
+            theOSystem->eventHandler().sendEvent(Event::Pause, 1);
         }
 
         break; // SDL_ACTIVEEVENT
@@ -608,7 +610,7 @@ void HandleEvents()
 
       case SDL_QUIT:
       {
-        theConsole->eventHandler().sendEvent(Event::Quit, 1);
+        theOSystem->eventHandler().sendEvent(Event::Quit, 1);
 
         break;  // SDL_QUIT
       }
@@ -656,7 +658,7 @@ void HandleEvents()
             code  = joyButtonList[event.jbutton.button];
             state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-            theConsole->eventHandler().sendJoyEvent(stick, code, state);
+            theOSystem->eventHandler().sendJoyEvent(stick, code, state);
             break;
 
           case SDL_JOYAXISMOTION:
@@ -665,16 +667,16 @@ void HandleEvents()
 
             if(axis == 0)  // x-axis
             {
-              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
+              theOSystem->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_LEFT,
                 (value < -16384) ? 1 : 0);
-              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
+              theOSystem->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_RIGHT,
                 (value > 16384) ? 1 : 0);
             }
             else if(axis == 1)  // y-axis
             {
-              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
+              theOSystem->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_UP,
                 (value < -16384) ? 1 : 0);
-              theConsole->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
+              theOSystem->eventHandler().sendJoyEvent(stick, StellaEvent::JAXIS_DOWN,
                 (value > 16384) ? 1 : 0);
             }
             break;
@@ -695,23 +697,23 @@ void HandleEvents()
             {
               if(type == JT_STELLADAPTOR_1)
               {
-                theConsole->eventHandler().sendEvent(Event::JoystickZeroFire, state);
-                theConsole->eventHandler().sendEvent(Event::DrivingZeroFire, state);
-                theConsole->eventHandler().sendEvent(Event::PaddleZeroFire, state);
+                theOSystem->eventHandler().sendEvent(Event::JoystickZeroFire, state);
+                theOSystem->eventHandler().sendEvent(Event::DrivingZeroFire, state);
+                theOSystem->eventHandler().sendEvent(Event::PaddleZeroFire, state);
               }
               else
               {
-                theConsole->eventHandler().sendEvent(Event::JoystickOneFire, state);
-                theConsole->eventHandler().sendEvent(Event::DrivingOneFire, state);
-                theConsole->eventHandler().sendEvent(Event::PaddleTwoFire, state);
+                theOSystem->eventHandler().sendEvent(Event::JoystickOneFire, state);
+                theOSystem->eventHandler().sendEvent(Event::DrivingOneFire, state);
+                theOSystem->eventHandler().sendEvent(Event::PaddleTwoFire, state);
               }
             }
             else if(button == 1)
             {
               if(type == JT_STELLADAPTOR_1)
-                theConsole->eventHandler().sendEvent(Event::PaddleOneFire, state);
+                theOSystem->eventHandler().sendEvent(Event::PaddleOneFire, state);
               else
-                theConsole->eventHandler().sendEvent(Event::PaddleThreeFire, state);
+                theOSystem->eventHandler().sendEvent(Event::PaddleThreeFire, state);
             }
             break;
 
@@ -720,26 +722,26 @@ void HandleEvents()
             value = event.jaxis.value;
 
             // Send axis events for the joysticks
-            theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][0],
+            theOSystem->eventHandler().sendEvent(SA_Axis[type-2][axis][0],
                         (value < -16384) ? 1 : 0);
-            theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][1],
+            theOSystem->eventHandler().sendEvent(SA_Axis[type-2][axis][1],
                         (value > 16384) ? 1 : 0);
 
             // Send axis events for the paddles
             resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
-            theConsole->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
+            theOSystem->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
 
             // Send events for the driving controllers
             if(axis == 1)
             {
               if(value <= -16384-4096)
-                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],2);
+                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],2);
               else if(value > 16384+4096)
-                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],1);
+                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],1);
               else if(value >= 16384-4096)
-                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],0);
+                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],0);
               else
-                theConsole->eventHandler().sendEvent(SA_DrivingValue[type-2],3);
+                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],3);
             }
             break;
         }
@@ -802,9 +804,9 @@ void Cleanup()
   }
 #endif
 
-  if(theSettings)
-    delete theSettings;
-
+  if(theOSystem)
+    delete theOSystem;
+/*
   if(theConsole)
     delete theConsole;
 
@@ -813,7 +815,7 @@ void Cleanup()
 
   if(theDisplay)
     delete theDisplay;
-
+*/
   if(SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO)
     SDL_Quit();
 }
@@ -822,6 +824,8 @@ void Cleanup()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int argc, char* argv[])
 {
+  uInt8* image = NULL;
+
 #if defined(UNIX)
   theSettings = new SettingsUNIX();
 #elif defined(WIN32)
@@ -877,23 +881,6 @@ int main(int argc, char* argv[])
     ShowInfo(buf.str());
   }
 
-  // Get a pointer to the file which contains the cartridge ROM
-  const char* file = argv[argc - 1];
-
-  // Open the cartridge image and read it in
-  ifstream in(file, ios_base::binary);
-  if(!in)
-  {
-    cerr << "ERROR: Couldn't open " << file << "..." << endl;
-    Cleanup();
-    return 0;
-  }
-
-  uInt8* image = new uInt8[512 * 1024];
-  in.read((char*)image, 512 * 1024);
-  uInt32 size = in.gcount();
-  in.close();
-
   // Create an SDL window
   string videodriver = theSettings->getString("video");
   if(videodriver == "soft")
@@ -940,12 +927,38 @@ int main(int argc, char* argv[])
     ShowInfo("Sound disabled");
   }
 
+  // Create the parent OSystem object
+#if defined(UNIX)
+  theOSystem = new OSystemUNIX(*theDisplay, *theSound, *theSettings, propertiesSet);
+#elif defined(WIN32)
+  theSettings = new SettingsWin32();
+#else
+  #error Unsupported platform!
+#endif
+
+  // Get a pointer to the file which contains the cartridge ROM
+  const char* file = argv[argc - 1];
+
+  // Open the cartridge image and read it in
+  ifstream in(file, ios_base::binary);
+  if(!in)
+  {
+    cerr << "ERROR: Couldn't open " << file << "..." << endl;
+    Cleanup();
+    return 0;
+  }
+
+  image = new uInt8[512 * 1024];
+  in.read((char*)image, 512 * 1024);
+  uInt32 size = in.gcount();
+  in.close();
+
   // Get just the filename of the file containing the ROM image
   const char* filename = (!strrchr(file, '/')) ? file : strrchr(file, '/') + 1;
 
   // Create the 2600 game console
-  theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
-                           *theDisplay, *theSound);
+//  theConsole = new Console(image, size, filename, *theSettings, propertiesSet,
+//                           *theDisplay, *theSound);
 
   // Free the image since we don't need it any longer
   delete[] image;
@@ -981,14 +994,14 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theConsole->eventHandler().doQuit())
+      if(theOSystem->eventHandler().doQuit())
       {
         break;
       }
 
       startTime = GetTicks();
       HandleEvents();
-      theConsole->update();
+      theOSystem->frameBuffer().update();
 
       // Now, waste time if we need to so that we are at the desired frame rate
       for(;;)
@@ -1017,14 +1030,14 @@ int main(int argc, char* argv[])
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theConsole->eventHandler().doQuit())
+      if(theOSystem->eventHandler().doQuit())
       {
         break;
       }
 
       startTime = GetTicks();
       HandleEvents();
-      theConsole->update();
+      theOSystem->frameBuffer().update();
 
       currentTime = GetTicks();
       virtualTime += timePerFrame;
@@ -1048,9 +1061,9 @@ int main(int argc, char* argv[])
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
     cout << endl;
-    cout << "Cartridge Name: " << theConsole->properties().get("Cartridge.Name");
+    cout << "Cartridge Name: " << theOSystem->console().properties().get("Cartridge.Name");
     cout << endl;
-    cout << "Cartridge MD5:  " << theConsole->properties().get("Cartridge.MD5");
+    cout << "Cartridge MD5:  " << theOSystem->console().properties().get("Cartridge.MD5");
     cout << endl << endl;
   }
 

@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.18 2004-08-17 01:17:08 stephena Exp $
+// $Id: Settings.hxx,v 1.19 2005-02-21 02:23:57 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
 #define SETTINGS_HXX
+
+class OSystem;
 
 #include "bspf.hxx"
 
@@ -26,7 +28,7 @@
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.18 2004-08-17 01:17:08 stephena Exp $
+  @version $Id: Settings.hxx,v 1.19 2005-02-21 02:23:57 stephena Exp $
 */
 class Settings
 {
@@ -137,32 +139,6 @@ class Settings
     void setString(const string& key, const string& value, bool save = true);
 
   public:
-    //////////////////////////////////////////////////////////////////////
-    // The following methods are system-specific and must be implemented
-    // in derived classes.
-    //////////////////////////////////////////////////////////////////////
-
-    /**
-      This method should be called to get the filename of a state file
-      given the state number.
-
-      @param md5   The md5sum to use as part of the filename.
-      @param state The state to use as part of the filename.
-
-      @return String representing the full path of the state filename.
-    */
-    virtual string stateFilename(const string& md5, uInt32 state) = 0;
-
-    /**
-      This method should be called to test whether the given file exists.
-
-      @param filename The filename to test for existence.
-
-      @return boolean representing whether or not the file exists
-    */
-    virtual bool fileExists(const string& filename) = 0;
-
-  public:
     /**
       This method should be called to get the filename of the
       properties (stella.pro) file for the purpose of loading.
@@ -201,6 +177,11 @@ class Settings
     */
     string baseDir() { return myBaseDir; }
 
+    /**
+      Set the OSystem object for this settings class
+    */
+    void setOSystem(OSystem* osystem) { myOSystem = osystem; }
+
   protected:
     void set(const string& key, const string& value, bool save = true);
 
@@ -211,6 +192,8 @@ class Settings
     string myPropertiesOutputFile;
     string myConfigInputFile;
     string myConfigOutputFile;
+
+    OSystem* myOSystem;
 
     // Structure used for storing settings
     struct Setting
@@ -229,7 +212,6 @@ class Settings
     // Test whether the given setting is present in the array
     bool contains(const string& key);
 
-	
   private:
     // Copy constructor isn't supported by this class so make it private
     Settings(const Settings&);

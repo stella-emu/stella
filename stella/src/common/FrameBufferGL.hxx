@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.6 2005-02-13 19:17:01 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.7 2005-02-21 02:23:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -23,24 +23,21 @@
 #include <SDL_opengl.h>
 #include <SDL_syswm.h>
 
-#include "FrameBuffer.hxx"
-#include "FrameBufferSDL.hxx"
 #include "bspf.hxx"
+#include "FrameBuffer.hxx"
 
-class Console;
-class MediaSource;
 
 /**
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.6 2005-02-13 19:17:01 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.7 2005-02-21 02:23:48 stephena Exp $
 */
-class FrameBufferGL : public FrameBufferSDL
+class FrameBufferGL : public FrameBuffer
 {
   public:
     /**
-      Creates a new SDL OpenGL framebuffer
+      Creates a new OpenGL framebuffer
     */
     FrameBufferGL();
 
@@ -56,7 +53,7 @@ class FrameBufferGL : public FrameBufferSDL
 	void toggleFilter();
 
     //////////////////////////////////////////////////////////////////////
-    // The following methods are derived from FrameBufferSDL.hxx
+    // The following methods are derived from FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
     /**
       This routine is called whenever the screen needs to be recreated.
@@ -82,15 +79,11 @@ class FrameBufferGL : public FrameBufferSDL
     */
     virtual void scanline(uInt32 row, uInt8* data);
 
-    //////////////////////////////////////////////////////////////////////
-    // The following methods are derived from FrameBuffer.hxx
-    //////////////////////////////////////////////////////////////////////
     /**
-      This routine should be called once the console is created to setup
-      the video system for us to use.  Return false if any operation fails,
-      otherwise return true.
+      This routine should be called to setup the video system for us to use.
+      Return false if any operation fails, otherwise return true.
     */
-    virtual bool init();
+    virtual bool initSubsystem();
 
     /**
       This routine should be called anytime the MediaSource needs to be redrawn

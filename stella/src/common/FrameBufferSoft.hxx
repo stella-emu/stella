@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.4 2005-02-13 19:17:02 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.5 2005-02-21 02:23:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -22,12 +22,9 @@
 #include <SDL.h>
 #include <SDL_syswm.h>
 
-#include "FrameBuffer.hxx"
-#include "FrameBufferSDL.hxx"
 #include "bspf.hxx"
+#include "FrameBuffer.hxx"
 
-class Console;
-class MediaSource;
 class RectList;
 
 
@@ -35,13 +32,13 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.4 2005-02-13 19:17:02 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.5 2005-02-21 02:23:48 stephena Exp $
 */
-class FrameBufferSoft : public FrameBufferSDL
+class FrameBufferSoft : public FrameBuffer
 {
   public:
     /**
-      Creates a new SDL software framebuffer
+      Creates a new software framebuffer
     */
     FrameBufferSoft();
 
@@ -51,8 +48,14 @@ class FrameBufferSoft : public FrameBufferSDL
     virtual ~FrameBufferSoft();
 
     //////////////////////////////////////////////////////////////////////
-    // The following methods are derived from FrameBufferSDL.hxx
+    // The following methods are derived from FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
+    /**
+      This routine is called to initialize software video mode.
+      Return false if any operation fails, otherwise return true.
+    */
+    virtual bool initSubsystem();
+
     /**
       This routine is called whenever the screen needs to be recreated.
       It updates the global screen variable.
@@ -68,24 +71,6 @@ class FrameBufferSoft : public FrameBufferSDL
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
       { return SDL_MapRGB(myScreen->format, r, g, b); }
-
-    /**
-      This routine is called to get the specified scanline data.
-
-      @param row  The row we are looking for
-      @param data The actual pixel data (in bytes)
-    */
-    virtual void scanline(uInt32 row, uInt8* data);
-
-    //////////////////////////////////////////////////////////////////////
-    // The following methods are derived from FrameBuffer.hxx
-    //////////////////////////////////////////////////////////////////////
-    /**
-      This routine should be called once the console is created to setup
-      the video system for us to use.  Return false if any operation fails,
-      otherwise return true.
-    */
-    virtual bool init();
 
     /**
       This routine should be called anytime the MediaSource needs to be redrawn
@@ -132,14 +117,19 @@ class FrameBufferSoft : public FrameBufferSDL
     */
     virtual void postFrameUpdate();
 
+    /**
+      This routine is called to get the specified scanline data.
+
+      @param row  The row we are looking for
+      @param data The actual pixel data (in bytes)
+    */
+    virtual void scanline(uInt32 row, uInt8* data);
+
   private:
     // Used in the dirty update of the SDL surface
     RectList* myRectList;
 };
 
-/**
-
- */
 class RectList
 {
   public:

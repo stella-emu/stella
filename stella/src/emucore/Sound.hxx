@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.13 2005-01-04 02:29:31 stephena Exp $
+// $Id: Sound.hxx,v 1.14 2005-02-21 02:23:57 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
 #define SOUND_HXX
 
-class Console;
-class MediaSource;
+class OSystem;
 class Serializer;
 class Deserializer;
 class System;
@@ -33,7 +32,7 @@ class System;
   to compile Stella with no sound support whatsoever.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: Sound.hxx,v 1.13 2005-01-04 02:29:31 stephena Exp $
+  @version $Id: Sound.hxx,v 1.14 2005-02-21 02:23:57 stephena Exp $
 */
 class Sound
 {
@@ -62,13 +61,11 @@ class Sound
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
 
-      @param console   The console
-      @param mediasrc  The mediasource
-      @param system    The system
+      @param osystem   The OSystem
+      @param system    The M6502 system
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    virtual void init(Console* console, MediaSource* mediasrc, System* system,
-                      double displayframerate);
+    virtual void initialize(OSystem* osystem, System* system, double displayframerate);
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -133,13 +130,10 @@ public:
     virtual bool save(Serializer& out);
 
   protected:
-    // The Console for the system
-    Console* myConsole;
+    // The OSystem for this sound object
+    OSystem* myOSystem;
 
-    // The Mediasource for the system
-    MediaSource* myMediaSource;
-
-    // The System for the system
+    // The M6502 system for this sound object
     System* mySystem;
 
     // Indicates the cycle when a sound register was last set

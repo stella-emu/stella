@@ -13,11 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.13 2005-02-18 21:26:31 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.14 2005-02-21 02:23:49 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
 #define FRAMEBUFFER_HXX
+
+#include <SDL.h>
+#include <SDL_syswm.h>
 
 #include "bspf.hxx"
 #include "Event.hxx"
@@ -25,17 +28,18 @@
 #include "StellaEvent.hxx"
 
 class Console;
+class OSystem;
 
 /**
   This class encapsulates the MediaSource and is the basis for the video
-  display in Stella.  All ports should derive from this class for
+  display in Stella.  All graphics ports should derive from this class for
   platform-specific video stuff.
 
-  This class also implements a MAME-like user interface where Stella settings
+FIXME  This class also implements a MAME-like user interface where Stella settings
   can be changed.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.13 2005-02-18 21:26:31 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.14 2005-02-21 02:23:49 stephena Exp $
 */
 class FrameBuffer
 {
@@ -54,13 +58,16 @@ class FrameBuffer
       Initializes the framebuffer display.  This must be called before any
       calls are made to derived methods.
 
-      @param console   The console
-      @param mediasrc  The mediasource
+      @param osystem   The parent osystem 
+      @param title     The title of the window
+      @param width     The width of the framebuffer
+      @param height    The height of the framebuffer
     */
-    void initDisplay(Console* console, MediaSource* mediasrc);
+    void initialize(OSystem* osystem, const string title, uInt32 width, uInt32 height);
 
     /**
-      Updates the display.  Also draws any pending menus, etc.
+      Updates the display, which depending on the current mode could mean
+      drawing the mediasource, any pending menus, etc.
     */
     void update();
 
@@ -94,6 +101,29 @@ class FrameBuffer
       @return  The current height
     */
     uInt32 height() { return myHeight; }
+
+#if 0
+FIXME
+    /**
+      This routine is called to get the width of the onscreen image.
+    */
+    uInt32 imageWidth() { return myDimensions.w; }
+
+    /**
+      This routine is called to get the height of the onscreen image.
+    */
+    uInt32 imageHeight() { return myDimensions.h; }
+#endif
+
+    /**
+      This routine is called to get the width of the system desktop.
+    */
+    uInt32 screenWidth();
+
+    /**
+      This routine is called to get the height of the system desktop.
+    */
+    uInt32 screenHeight();
 
     /**
       Send a keyboard event to the user interface.
@@ -135,18 +165,82 @@ class FrameBuffer
         drawMediaSource();
     }
 
+    /**
+      Toggles between fullscreen and window mode.  Grabmouse and hidecursor
+      activated when in fullscreen mode.
+    */
+    void toggleFullscreen();
+
+    /**
+      This routine is called when the user wants to resize the window.
+      A '1' argument indicates that the window should increase in size, while '-1'
+      indicates that the windows should decrease in size.  A '0' indicates that
+      the window should be sized according to the current properties.
+      Can't resize in fullscreen mode.  Will only resize up to the maximum size
+      of the screen.
+    */
+    void resize(int mode);
+
+    /**
+      Shows or hides the cursor based on the given boolean value.
+    */
+    void showCursor(bool show);
+
+    /**
+      Grabs or ungrabs the mouse based on the given boolean value.
+    */
+    void grabMouse(bool grab);
+
+    /**
+      Answers if the display is currently in fullscreen mode.
+    */
+    bool fullScreen();
+
+    /**
+      Answers the current zoom level of the SDL 
+    */
+    uInt32 zoomLevel() { return theZoomLevel; }
+
+    /**
+      Calculate the maximum window size that the current screen can hold.
+      Only works in X11 for now.  If not running under X11, always return 4.
+    */
+    uInt32 maxWindowSizeForScreen();
+
+    /**
+      Set the title and icon for the main SDL window.
+    */
+    void setWindowAttributes();
+
+    /**
+      Set up the palette for a screen of any depth > 8.
+    */
+    void setupPalette();
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
+    /**
+      This routine is called to initialize the subsystem-specific video mode.
+    */
+    virtual bool initSubsystem() = 0;
 
     /**
-      This routine should be called once the console is created to setup
-      the video system for us to use.  Return false if any operation fails,
-      otherwise return true.
+      This routine is called whenever the screen needs to be recreated.
+      It updates the global screen variable.
     */
-    virtual bool init() = 0;
+    virtual bool createScreen() = 0;
+
+    /**
+      This routine is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
 
     /**
       This routine should be called anytime the MediaSource needs to be redrawn
@@ -194,24 +288,6 @@ class FrameBuffer
     virtual void postFrameUpdate() = 0;
 
     /**
-      This routine is called when the emulation has received
-      a pause event.
-
-      @param status  The received pause status
-    */
-    virtual void pauseEvent(bool status) = 0;
-
-    /**
-      This routine is called to get the width of the onscreen image.
-    */
-    virtual uInt32 imageWidth() = 0;
-
-    /**
-      This routine is called to get the height of the onscreen image.
-    */
-    virtual uInt32 imageHeight() = 0;
-
-    /**
       This routine is called to get the specified scanline data.
 
       @param row  The row we are looking for
@@ -219,12 +295,21 @@ class FrameBuffer
     */
     virtual void scanline(uInt32 row, uInt8* data) = 0;
 
-  protected:
-    // The Console for the system
-    Console* myConsole;
+#if 0
+FIXME
+    /**
+      This routine is called when the emulation has received
+      a pause event.
 
-    // The Mediasource for the system
-    MediaSource* myMediaSource;
+      @param status  The received pause status
+    */
+    virtual void pauseEvent(bool status) = 0;
+#endif
+
+
+  protected:
+    // The parent system for the framebuffer
+    OSystem* myOSystem;
 
     // Bounds for the window frame
     uInt32 myWidth, myHeight;
@@ -237,6 +322,34 @@ class FrameBuffer
 
     // Holds the foreground and background color table indices
     uInt8 myFGColor, myBGColor;
+
+    // The SDL video buffer
+    SDL_Surface* myScreen;
+
+    // SDL initialization flags
+    uInt32 mySDLFlags;
+
+    // SDL palette
+    Uint32 myPalette[256];
+
+    // Used to get window-manager specifics
+    SDL_SysWMinfo myWMInfo;
+
+    // Indicates the width/height and origin x/y of the onscreen image
+    // (these may be different than the screen/window dimensions)
+    SDL_Rect myDimensions;
+
+    // Indicates if the system-specific WM information is available
+    bool myWMAvailable;
+
+    // Indicates the current zoom level of the SDL screen
+    uInt32 theZoomLevel;
+
+    // Indicates the maximum zoom of the SDL screen
+    uInt32 theMaxZoomLevel;
+
+    // The aspect ratio of the window
+    float theAspectRatio;
 
   private:
     // Enumeration representing the different types of user interface widgets

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.14 2004-06-13 04:53:04 bwmott Exp $
+// $Id: TIA.hxx,v 1.15 2005-02-21 02:23:57 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -24,8 +24,7 @@ class Sound;
 class System;
 class Serializer;
 class Deserializer;
-
-#include <string>
+class OSystem;
 
 #include "bspf.hxx"
 #include "Device.hxx"
@@ -43,7 +42,7 @@ class Deserializer;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.14 2004-06-13 04:53:04 bwmott Exp $
+  @version $Id: TIA.hxx,v 1.15 2005-02-21 02:23:57 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -54,7 +53,7 @@ class TIA : public Device , public MediaSource
       @param console The console the TIA is associated with
       @param sound   The sound object the TIA is associated with
     */
-    TIA(const Console& console, Sound& sound);
+    TIA(OSystem& osystem);
  
     /**
       Destructor
@@ -204,6 +203,9 @@ class TIA : public Device , public MediaSource
     void waitHorizontalSync();
 
   private:
+    // OSsystem the TIA is associated with
+    const OSystem& myOSystem;
+
     // Console the TIA is associated with
     const Console& myConsole;
 

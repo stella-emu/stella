@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.hxx,v 1.3 2004-07-05 00:53:48 stephena Exp $
+// $Id: SettingsUNIX.hxx,v 1.4 2005-02-21 02:23:57 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_UNIX_HXX
@@ -21,12 +21,11 @@
 
 #include "bspf.hxx"
 
-
 /**
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: SettingsUNIX.hxx,v 1.3 2004-07-05 00:53:48 stephena Exp $
+  @version $Id: SettingsUNIX.hxx,v 1.4 2005-02-21 02:23:57 stephena Exp $
 */
 class SettingsUNIX : public Settings
 {
@@ -40,28 +39,6 @@ class SettingsUNIX : public Settings
       Destructor
     */
     virtual ~SettingsUNIX();
-
-  public:
-    /**
-      This method should be called to get the filename of a state file
-      given the state number.
-
-      @param md5   The md5sum to use as part of the filename.
-      @param state The state to use as part of the filename.
-
-      @return String representing the full path of the state filename.
-    */
-    virtual string stateFilename(const string& md5, uInt32 state);
-
-
-    /**
-      This method should be called to test whether the given file exists.
-
-      @param filename The filename to test for existence.
-
-      @return boolean representing whether or not the file exists
-    */
-    virtual bool fileExists(const string& filename);
 };
 
 #endif

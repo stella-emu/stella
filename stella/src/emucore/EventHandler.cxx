@@ -13,13 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.30 2005-02-18 21:26:31 stephena Exp $
+// $Id: EventHandler.cxx,v 1.31 2005-02-21 02:23:49 stephena Exp $
 //============================================================================
 
 #include <algorithm>
 #include <sstream>
 
-#include "Console.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
 #include "Settings.hxx"
@@ -27,6 +26,7 @@
 #include "System.hxx"
 #include "FrameBuffer.hxx"
 #include "Sound.hxx"
+#include "OSystem.hxx"
 #include "bspf.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
@@ -34,8 +34,8 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::EventHandler(Console* console)
-    : myConsole(console),
+EventHandler::EventHandler(OSystem& osystem)
+    : myOSystem(osystem),
       myCurrentState(0),
       myPauseStatus(false),
       myQuitStatus(false),
@@ -90,14 +90,14 @@ void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
   if(myRemapEnabledFlag && key == StellaEvent::KCODE_TAB && state == 1 && !myPauseStatus)
   {
     myMenuStatus = !myMenuStatus;
-    myConsole->frameBuffer().showMenu(myMenuStatus);
-    myConsole->sound().mute(myMenuStatus);
+    myOSystem.frameBuffer().showMenu(myMenuStatus);
+    myOSystem.sound().mute(myMenuStatus);
     return;
   }
 
   // Determine where the event should be sent
   if(myMenuStatus)
-    myConsole->frameBuffer().sendKeyEvent(key, state);
+    myOSystem.frameBuffer().sendKeyEvent(key, state);
   else
     sendEvent(myKeyTable[key], state);
 }
@@ -108,7 +108,7 @@ void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
 {
   // Determine where the event should be sent
   if(myMenuStatus)
-    myConsole->frameBuffer().sendJoyEvent(stick, code, state);
+    myOSystem.frameBuffer().sendJoyEvent(stick, code, state);
   else
     sendEvent(myJoyTable[stick*StellaEvent::LastJCODE + code], state);
 }
@@ -147,19 +147,19 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     else if(event == Event::Pause)
     {
       myPauseStatus = !myPauseStatus;
-      myConsole->frameBuffer().pause(myPauseStatus);
-      myConsole->sound().mute(myPauseStatus);
+      myOSystem.frameBuffer().pause(myPauseStatus);
+      myOSystem.sound().mute(myPauseStatus);
       return;
     }
     else if(event == Event::Quit)
     {
       myQuitStatus = !myQuitStatus;
-      myConsole->settings().saveConfig();
+      myOSystem.settings().saveConfig();
       return;
     }
 
     if(ourMessageTable[event] != "")
-      myConsole->frameBuffer().showMessage(ourMessageTable[event]);
+      myOSystem.frameBuffer().showMessage(ourMessageTable[event]);
   }
 
   // Otherwise, pass it to the emulation core
@@ -171,7 +171,7 @@ void EventHandler::setKeymap()
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  string list = myConsole->settings().getString("keymap");
+  string list = myOSystem.settings().getString("keymap");
   replace(list.begin(), list.end(), ':', ' ');
 
   if(isValidList(list, StellaEvent::LastKCODE))
@@ -195,7 +195,7 @@ void EventHandler::setJoymap()
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  string list = myConsole->settings().getString("joymap");
+  string list = myOSystem.settings().getString("joymap");
   replace(list.begin(), list.end(), ':', ' ');
 
   if(isValidList(list, StellaEvent::LastJSTICK*StellaEvent::LastJCODE))
@@ -339,9 +339,9 @@ bool EventHandler::isValidList(string list, uInt32 length)
 void EventHandler::saveState()
 {
   // Do a state save using the System
-  string md5      = myConsole->properties().get("Cartridge.MD5");
-  string filename = myConsole->settings().stateFilename(md5, myCurrentState);
-  int result      = myConsole->system().saveState(filename, md5);
+  string md5      = myOSystem.console().properties().get("Cartridge.MD5");
+  string filename = myOSystem.stateFilename(md5, myCurrentState);
+  int result      = myOSystem.console().system().saveState(filename, md5);
 
   // Print appropriate message
   ostringstream buf;
@@ -352,7 +352,7 @@ void EventHandler::saveState()
   else if(result == 3)
     buf << "Invalid state " << myCurrentState << " file";
 
-  myConsole->frameBuffer().showMessage(buf.str());
+  myOSystem.frameBuffer().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -367,16 +367,16 @@ void EventHandler::changeState()
   ostringstream buf;
   buf << "Changed to slot " << myCurrentState;
 
-  myConsole->frameBuffer().showMessage(buf.str());
+  myOSystem.frameBuffer().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::loadState()
 {
   // Do a state save using the System
-  string md5      = myConsole->properties().get("Cartridge.MD5");
-  string filename = myConsole->settings().stateFilename(md5, myCurrentState);
-  int result      = myConsole->system().loadState(filename, md5);
+  string md5      = myOSystem.console().properties().get("Cartridge.MD5");
+  string filename = myOSystem.stateFilename(md5, myCurrentState);
+  int result      = myOSystem.console().system().loadState(filename, md5);
 
   // Print appropriate message
   ostringstream buf;
@@ -387,7 +387,7 @@ void EventHandler::loadState()
   else if(result == 3)
     buf << "Invalid state " << myCurrentState << " file";
 
-  myConsole->frameBuffer().showMessage(buf.str());
+  myOSystem.frameBuffer().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,28 +396,30 @@ void EventHandler::takeSnapshot()
 #ifdef SNAPSHOT_SUPPORT
   // Figure out the correct snapshot name
   string filename;
-  string sspath = myConsole->settings().getString("ssdir");
-  string ssname = myConsole->settings().getString("ssname");
+  string sspath = myOSystem.settings().getString("ssdir");
+  string ssname = myOSystem.settings().getString("ssname");
 
   if(ssname == "romname")
-    sspath = sspath + BSPF_PATH_SEPARATOR + myConsole->properties().get("Cartridge.Name");
+    sspath = sspath + BSPF_PATH_SEPARATOR +
+             myOSystem.console().properties().get("Cartridge.Name");
   else if(ssname == "md5sum")
-    sspath = sspath + BSPF_PATH_SEPARATOR + myConsole->properties().get("Cartridge.MD5");
+    sspath = sspath + BSPF_PATH_SEPARATOR +
+             myOSystem.console().properties().get("Cartridge.MD5");
 
   // Check whether we want multiple snapshots created
-  if(!myConsole->settings().getBool("sssingle"))
+  if(!myOSystem.settings().getBool("sssingle"))
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
     filename = sspath + ".png";
-    if(myConsole->settings().fileExists(filename))
+    if(myOSystem.fileExists(filename))
     {
       ostringstream buf;
       for(uInt32 i = 1; ;++i)
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-        if(!myConsole->settings().fileExists(buf.str()))
+        if(!myOSystem.fileExists(buf.str()))
           break;
       }
       filename = buf.str();
@@ -427,11 +429,11 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a Snapshot object and save the PNG
-  myConsole->frameBuffer().refresh(true);
-  Snapshot snapshot(myConsole->frameBuffer());
+  myOSystem.frameBuffer().refresh(true);
+  Snapshot snapshot(myOSystem.frameBuffer());
   string result = snapshot.savePNG(filename);
-  myConsole->frameBuffer().showMessage(result);
+  myOSystem.frameBuffer().showMessage(result);
 #else
-  myConsole->frameBuffer().showMessage("Snapshots unsupported");
+  myOSystem.frameBuffer().showMessage("Snapshots unsupported");
 #endif
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.38 2004-08-12 23:54:36 stephena Exp $
+// $Id: Console.cxx,v 1.39 2005-02-21 02:23:49 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -44,6 +44,7 @@
 #include "System.hxx"
 #include "TIA.hxx"
 #include "FrameBuffer.hxx"
+#include "OSystem.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
@@ -51,12 +52,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
-    Settings& settings, PropertiesSet& propertiesSet, 
-    FrameBuffer& framebuffer, Sound& sound)
-    : mySettings(settings),
-      myPropSet(propertiesSet),
-      myFrameBuffer(framebuffer),
-      mySound(sound)
+                 OSystem& osystem)
+    : myOSystem(osystem)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -65,21 +62,21 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   mySystem = 0;
   myEvent = 0;
 
-  // Create an event handler which will collect and dispatch events
-  myEventHandler = new EventHandler(this);
-  myEvent = myEventHandler->event();
+  // Add the current console to the system
+  myOSystem.addConsole(this);
+
+  // Attach the event subsystem to the current console
+  myEvent = myOSystem.eventHandler().event();
 
   // Get the MD5 message-digest for the ROM image
   string md5 = MD5(image, size);
 
   // Search for the properties based on MD5
-  myPropSet.getMD5(md5, myProperties);
+  myOSystem.propSet().getMD5(md5, myProperties);
 
   // Make sure the MD5 value of the cartridge is set in the properties
   if(myProperties.get("Cartridge.MD5") == "")
-  {
     myProperties.set("Cartridge.MD5", md5);
-  }
 
   // Setup the controllers based on properties
   string left = myProperties.get("Controller.Left");
@@ -146,7 +143,7 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   }
 
   M6532* m6532 = new M6532(*this);
-  TIA* tia = new TIA(*this, mySound);
+  TIA* tia = new TIA(myOSystem);
   Cartridge* cartridge = Cartridge::create(image, size, myProperties);
 
   mySystem->attach(m6502);
@@ -163,30 +160,32 @@ Console::Console(const uInt8* image, uInt32 size, const char* filename,
   // Set the correct framerate based on the format of the ROM
   // This can be overridden by the '-framerate' option
   myFrameRate = 60;
-  if(mySettings.getInt("framerate") > 0)
-    myFrameRate = mySettings.getInt("framerate");
+  if(myOSystem.settings().getInt("framerate") > 0)
+    myFrameRate = myOSystem.settings().getInt("framerate");
 //  else if(myProperties.get("Display.Format") == "NTSC")
 //    myFrameRate = 60;
 //  else if(myProperties.get("Display.Format") == "PAL")
 //    myFrameRate = 50;
 //  mySettings.setInt("framerate", myFrameRate, false);
-  mySettings.setInt("framerate", myFrameRate);
+  myOSystem.settings().setInt("framerate", myFrameRate);
 
   // Initialize the framebuffer interface.
   // This must be done *after* a reset, since it needs updated values.
-  myFrameBuffer.initDisplay(this, myMediaSource);
+  ostringstream title;
+  title << "Stella: \"" << myProperties.get("Cartridge.Name") << "\"";
+  myOSystem.frameBuffer().initialize(&myOSystem,
+                                     title.str(),
+                                     myMediaSource->width() << 1,
+                                     myMediaSource->height());
 
   // Initialize the sound interface.
   uInt32 soundFrameRate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
-  mySound.init(this, myMediaSource, mySystem, soundFrameRate);
+  myOSystem.sound().initialize(&myOSystem, mySystem, soundFrameRate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const Console& console)
-    : mySettings(console.mySettings),
-      myPropSet(console.myPropSet),
-      myFrameBuffer(console.myFrameBuffer),
-      mySound(console.mySound)
+    : myOSystem(console.myOSystem)
 {
   // TODO: Write this method
   assert(false);
@@ -199,43 +198,12 @@ Console::~Console()
   delete mySwitches;
   delete myControllers[0];
   delete myControllers[1];
-  delete myEventHandler;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::update()
-{
-  myFrameBuffer.update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Properties& Console::properties() const
 {
   return myProperties;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Settings& Console::settings() const
-{
-  return mySettings;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer& Console::frameBuffer() const
-{
-  return myFrameBuffer;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::frameRate() const
-{
-  return myFrameRate;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sound& Console::sound() const
-{
-  return mySound;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -256,40 +224,40 @@ void Console::toggleFormat()
   {
     myProperties.set("Display.Format", "PAL");
     mySystem->reset();
-    myFrameBuffer.showMessage("PAL Mode");
+    myOSystem.frameBuffer().showMessage("PAL Mode");
   }
   else if(format == "PAL")
   {
     myProperties.set("Display.Format", "NTSC");
     mySystem->reset();
-    myFrameBuffer.showMessage("NTSC Mode");
+    myOSystem.frameBuffer().showMessage("NTSC Mode");
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePalette()
 {
-  string type = mySettings.getString("palette");
+  string type = myOSystem.settings().getString("palette");
 
   if(type == "standard")  // switch to original
   {
-    myFrameBuffer.showMessage("Original Stella colors");
-    mySettings.setString("palette", "original");
+    myOSystem.frameBuffer().showMessage("Original Stella colors");
+    myOSystem.settings().setString("palette", "original");
   }
   else if(type == "original")  // switch to z26
   {
-    myFrameBuffer.showMessage("Z26 colors");
-    mySettings.setString("palette", "z26");
+    myOSystem.frameBuffer().showMessage("Z26 colors");
+    myOSystem.settings().setString("palette", "z26");
   }
   else if(type == "z26")  // switch to standard
   {
-    myFrameBuffer.showMessage("Standard Stella colors");
-    mySettings.setString("palette", "standard");
+    myOSystem.frameBuffer().showMessage("Standard Stella colors");
+    myOSystem.settings().setString("palette", "standard");
   }
   else  // switch to standard mode if we get this far
   {
-    myFrameBuffer.showMessage("Standard Stella colors");
-    mySettings.setString("palette", "standard");
+    myOSystem.frameBuffer().showMessage("Standard Stella colors");
+    myOSystem.settings().setString("palette", "standard");
   }
 }
 
@@ -299,10 +267,10 @@ void Console::saveProperties(string filename, bool merge)
   // Merge the current properties into the PropertiesSet file
   if(merge)
   {
-    if(myPropSet.merge(myProperties, filename))
-      myFrameBuffer.showMessage("Properties merged");
+    if(myOSystem.propSet().merge(myProperties, filename))
+      myOSystem.frameBuffer().showMessage("Properties merged");
     else
-      myFrameBuffer.showMessage("Properties not merged");
+      myOSystem.frameBuffer().showMessage("Properties not merged");
   }
   else  // Save to the specified file directly
   {
@@ -312,11 +280,11 @@ void Console::saveProperties(string filename, bool merge)
     {
       myProperties.save(out);
       out.close();
-      myFrameBuffer.showMessage("Properties saved");
+      myOSystem.frameBuffer().showMessage("Properties saved");
     }
     else
     {
-      myFrameBuffer.showMessage("Properties not saved");
+      myOSystem.frameBuffer().showMessage("Properties not saved");
     }
   }
 }
@@ -335,12 +303,12 @@ void Console::changeXStart(const uInt32 direction)
     xstart += 4;
     if(xstart > 80)
     {
-      myFrameBuffer.showMessage("XStart at maximum");
+      myOSystem.frameBuffer().showMessage("XStart at maximum");
       return;
     }
     else if((width + xstart) > 160)
     {
-      myFrameBuffer.showMessage("XStart no effect");
+      myOSystem.frameBuffer().showMessage("XStart no effect");
       return;
     }
   }
@@ -349,7 +317,7 @@ void Console::changeXStart(const uInt32 direction)
     xstart -= 4;
     if(xstart < 0)
     {
-      myFrameBuffer.showMessage("XStart at minimum");
+      myOSystem.frameBuffer().showMessage("XStart at minimum");
       return;
     }
   }
@@ -360,7 +328,7 @@ void Console::changeXStart(const uInt32 direction)
 
   message = "XStart ";
   message += strval.str();
-  myFrameBuffer.showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -375,7 +343,7 @@ void Console::changeYStart(const uInt32 direction)
     ystart++;
     if(ystart > 64)
     {
-      myFrameBuffer.showMessage("YStart at maximum");
+      myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
     }
   }
@@ -384,7 +352,7 @@ void Console::changeYStart(const uInt32 direction)
     ystart--;
     if(ystart < 0)
     {
-      myFrameBuffer.showMessage("YStart at minimum");
+      myOSystem.frameBuffer().showMessage("YStart at minimum");
       return;
     }
   }
@@ -395,7 +363,7 @@ void Console::changeYStart(const uInt32 direction)
 
   message = "YStart ";
   message += strval.str();
-  myFrameBuffer.showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -411,12 +379,12 @@ void Console::changeWidth(const uInt32 direction)
     width += 4;
     if((width > 160) || ((width % 4) != 0))
     {
-      myFrameBuffer.showMessage("Width at maximum");
+      myOSystem.frameBuffer().showMessage("Width at maximum");
       return;
     }
     else if((width + xstart) > 160)
     {
-      myFrameBuffer.showMessage("Width no effect");
+      myOSystem.frameBuffer().showMessage("Width no effect");
       return;
     }
   }
@@ -425,7 +393,7 @@ void Console::changeWidth(const uInt32 direction)
     width -= 4;
     if(width < 80)
     {
-      myFrameBuffer.showMessage("Width at minimum");
+      myOSystem.frameBuffer().showMessage("Width at minimum");
       return;
     }
   }
@@ -436,7 +404,7 @@ void Console::changeWidth(const uInt32 direction)
 
   message = "Width ";
   message += strval.str();
-  myFrameBuffer.showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -451,7 +419,7 @@ void Console::changeHeight(const uInt32 direction)
     height++;
     if(height > 256)
     {
-      myFrameBuffer.showMessage("Height at maximum");
+      myOSystem.frameBuffer().showMessage("Height at maximum");
       return;
     }
   }
@@ -460,7 +428,7 @@ void Console::changeHeight(const uInt32 direction)
     height--;
     if(height < 100)
     {
-      myFrameBuffer.showMessage("Height at minimum");
+      myOSystem.frameBuffer().showMessage("Height at minimum");
       return;
     }
   }
@@ -471,6 +439,6 @@ void Console::changeHeight(const uInt32 direction)
 
   message = "Height ";
   message += strval.str();
-  myFrameBuffer.showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 #endif

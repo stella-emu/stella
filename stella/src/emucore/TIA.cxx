@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.35 2005-01-05 02:57:58 bwmott Exp $
+// $Id: TIA.cxx,v 1.36 2005-02-21 02:23:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -30,13 +30,15 @@
 #include "Deserializer.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
+#include "OSystem.hxx"
 
 #define HBLANK 68
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(const Console& console, Sound& sound)
-    : myConsole(console),
-      mySound(sound),
+TIA::TIA(OSystem& osystem)
+    : myOSystem(osystem),
+      myConsole(osystem.console()),
+      mySound(osystem.sound()),
       myColorLossEnabled(false),
       myMaximumNumberOfScanlines(262),
       myCOLUBK(myColor[0]),
@@ -533,7 +535,7 @@ void TIA::update()
 const uInt32* TIA::palette() const
 {
   // See which palette we should be using
-  string type   = myConsole.settings().getString("palette");
+  string type   = myOSystem.settings().getString("palette");
   string format = myConsole.properties().get("Display.Format");
 
   if(type == "standard")
@@ -3270,7 +3272,8 @@ const uInt32 TIA::ourPALPaletteZ26[256] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const TIA& c)
-    : myConsole(c.myConsole),
+    : myOSystem(c.myOSystem),
+      myConsole(c.myConsole),
       mySound(c.mySound),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),

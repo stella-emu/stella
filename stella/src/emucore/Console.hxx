@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.22 2004-07-10 13:20:35 stephena Exp $
+// $Id: Console.hxx,v 1.23 2005-02-21 02:23:49 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -22,44 +22,36 @@
 class Console;
 class Controller;
 class Event;
-class EventHandler;
 class MediaSource;
-class PropertiesSet;
-class Settings;
-class Sound;
 class Switches;
 class System;
-class FrameBuffer;
+
+class OSystem;
 
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
 
-
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.22 2004-07-10 13:20:35 stephena Exp $
+  @version $Id: Console.hxx,v 1.23 2005-02-21 02:23:49 stephena Exp $
 */
 class Console
 {
   public:
     /**
       Create a new console for emulating the specified game using the
-      given event object and game profiles.
+      given game image and operating system.
 
       @param image       The ROM image of the game to emulate
       @param size        The size of the ROM image  
       @param filename    The name of the file that contained the ROM image
-      @param settings    The settings object to use
-      @param profiles    The game profiles object to use
-      @param framebuffer The framebuffer object to use
-      @param sound       The sound object to use
+      @param osystem     The OSystem object to use
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
-        Settings& settings, PropertiesSet& propertiesSet,
-        FrameBuffer& framebuffer, Sound& sound);
+            OSystem& osystem);
 
     /**
       Create a new console object by copying another one
@@ -75,12 +67,6 @@ class Console
 
   public:
     /**
-      Updates the console by one frame.  Each frontend should
-      call this method 'framerate' times per second.
-    */
-    void update();
-
-    /**
       Get the controller plugged into the specified jack
 
       @return The specified controller
@@ -91,6 +77,13 @@ class Console
     }
 
     /**
+      Get the MediaSource for this console
+
+      @return The mediasource
+    */
+    MediaSource& mediaSource() const { return *myMediaSource; }
+
+    /**
       Get the properties being used by the game
 
       @return The properties being used by the game
@@ -98,60 +91,23 @@ class Console
     const Properties& properties() const;
 
     /**
-      Get the settings of the console
-
-      @return The settings for this console
-    */
-    Settings& settings() const;
-
-    /**
-      Get the frame buffer of the console
-
-      @return The frame buffer
-    */
-    FrameBuffer& frameBuffer() const;
-
-    /**
       Get the frame rate for the emulation
     */
     uInt32 frameRate() const;
-
-    /**
-      Get the sound object of the console
-
-      @return The sound object for this console
-    */
-    Sound& sound() const;
 
     /**
       Get the console switches
 
       @return The console switches
     */
-    Switches& switches() const
-    {
-      return *mySwitches;
-    }
+    Switches& switches() const { return *mySwitches; }
 
     /**
       Get the 6502 based system used by the console to emulate the game
 
       @return The 6502 based system
     */
-    System& system() const
-    {
-      return *mySystem;
-    }
-
-    /**
-      Get the event handler of the console
-
-      @return The event handler
-    */
-    EventHandler& eventHandler() const
-    {
-      return *myEventHandler;
-    }
+    System& system() const { return *mySystem; }
 
   public:
     /**
@@ -221,6 +177,9 @@ class Console
 #endif
 
   private:
+    // Reference to the osystem object
+    OSystem& myOSystem;
+
     // Pointers to the left and right controllers
     Controller* myControllers[2];
 
@@ -239,22 +198,8 @@ class Console
     // Pointer to the 6502 based system being emulated 
     System* mySystem;
 
-    // Reference to the Settings object
-    Settings& mySettings;
-
-    // Reference to the PropertiesSet object
-    PropertiesSet& myPropSet;
-
-    // Reference to the FrameBuffer object
-    FrameBuffer& myFrameBuffer;
-
-    // Reference to the Sound object
-    Sound& mySound;
-
     // Frame rate being used by the emulator
     uInt32 myFrameRate;
-
-    // Pointer to the EventHandler object
-    EventHandler* myEventHandler;
 };
+
 #endif

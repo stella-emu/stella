@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.58 2005-01-03 19:16:55 stephena Exp $
+## $Id: makefile,v 1.59 2005-02-21 02:23:47 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -41,7 +41,7 @@ OPTIMIZATIONS  =
 
 ### to build on SMP (or distcc-based) machines
 ### change to number of CPU's you have
-# NUMBER_CPU = 3
+ NUMBER_CPU = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -53,7 +53,7 @@ LD	= g++
 
 LDFLAGS  = `sdl-config --cflags`
 LDLIBS   = `sdl-config --libs`
-OBJECTS  =  mainSDL.o SoundSDL.o FrameBufferSDL.o FrameBufferSoft.o
+OBJECTS  =  mainSDL.o SoundSDL.o FrameBufferSoft.o
 OPTIONS  =
 EXE_NAME =
 SMP      =
@@ -116,7 +116,7 @@ linux:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella" \
           OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY" \
-          OBJS="$(OBJECTS) SettingsUNIX.o"
+          OBJS="$(OBJECTS) SettingsUNIX.o OSystemUNIX.o"
 
 linux-gl:
 	$(MAKE) $(SMP) stella \
@@ -124,20 +124,20 @@ linux-gl:
           LDFLAGS="$(LDFLAGS) -L/usr/X11R6/lib" \
           LDLIBS="$(LDLIBS) -lGL" \
           OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY -DDISPLAY_OPENGL" \
-          OBJS="$(OBJECTS) FrameBufferGL.o SettingsUNIX.o"
+          OBJS="$(OBJECTS) FrameBufferGL.o SettingsUNIX.o OSystemUNIX.o"
 
 win32:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32" \
-          OBJS="$(OBJECTS) SettingsWin32.o"
+          OBJS="$(OBJECTS) SettingsWin32.o  OSystemWin32.o"
 
 win32-gl:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
           LDLIBS="$(LDLIBS) -lopengl32" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST" \
-          OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o"
+          OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o  OSystemWin32.o"
 
 
 ###############################################################################
@@ -152,6 +152,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
+            OSystem.o \
             $(M6502_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
@@ -177,7 +178,7 @@ Event.o: $(CORE)/Event.cxx $(CORE)/Event.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Event.cxx
 
 EventHandler.o: $(CORE)/EventHandler.cxx $(CORE)/EventHandler.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/EventHandler.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/EventHandler.cxx
 
 Control.o: $(CORE)/Control.cxx $(CORE)/Control.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Control.cxx
@@ -264,7 +265,7 @@ TIASound.o: $(CORE)/TIASound.c $(CORE)/TIASound.h
 	$(CXX) -c -DWIN32 $(FLAGS) $(OPTIONS) $(CORE)/TIASound.c
 
 Console.o: $(CORE)/Console.cxx $(CORE)/Console.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Console.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Console.cxx
 
 MD5.o: $(CORE)/MD5.cxx $(CORE)/MD5.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/MD5.cxx
@@ -273,7 +274,7 @@ MediaSrc.o: $(CORE)/MediaSrc.cxx $(CORE)/MediaSrc.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/MediaSrc.cxx
 
 FrameBuffer.o: $(CORE)/FrameBuffer.cxx $(CORE)/FrameBuffer.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/FrameBuffer.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/FrameBuffer.cxx
 
 PropsSet.o: $(CORE)/PropsSet.cxx $(CORE)/PropsSet.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/PropsSet.cxx
@@ -299,20 +300,26 @@ Deserializer.o: $(CORE)/Deserializer.cxx $(CORE)/Deserializer.hxx
 Settings.o: $(CORE)/Settings.cxx $(CORE)/Settings.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Settings.cxx
 
+OSystem.o: $(CORE)/OSystem.cxx $(CORE)/OSystem.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/OSystem.cxx
+
 SettingsUNIX.o: $(SRC)/unix/SettingsUNIX.cxx $(SRC)/unix/SettingsUNIX.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/unix/SettingsUNIX.cxx
 
+OSystemUNIX.o: $(SRC)/unix/OSystemUNIX.cxx $(SRC)/unix/OSystemUNIX.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/unix/OSystemUNIX.cxx
+
 SettingsWin32.o: $(SRC)/win32/SettingsWin32.cxx $(SRC)/win32/SettingsWin32.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/win32/SettingsWin32.cxx
+
+OSystemWin32.o: $(SRC)/win32/OSystemWin32.cxx $(SRC)/win32/OSystemWin32.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/win32/OSystemWin32.cxx
 
 SoundSDL.o: $(COMMON)/SoundSDL.cxx $(COMMON)/SoundSDL.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/SoundSDL.cxx
 
 mainSDL.o: $(COMMON)/mainSDL.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/mainSDL.cxx
-
-FrameBufferSDL.o: $(COMMON)/FrameBufferSDL.cxx $(COMMON)/FrameBufferSDL.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/FrameBufferSDL.cxx
 
 FrameBufferSoft.o: $(COMMON)/FrameBufferSoft.cxx $(COMMON)/FrameBufferSoft.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/FrameBufferSoft.cxx

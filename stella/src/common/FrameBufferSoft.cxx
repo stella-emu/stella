@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.6 2005-02-13 19:17:02 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.7 2005-02-21 02:23:48 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -22,13 +22,14 @@
 
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
-#include "FrameBufferSDL.hxx"
 #include "FrameBufferSoft.hxx"
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
+#include "OSystem.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft()
+    : FrameBuffer()
 {
 }
 
@@ -37,6 +38,43 @@ FrameBufferSoft::~FrameBufferSoft()
 {
   if(myRectList)
     delete myRectList;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSoft::initSubsystem()
+{
+  mySDLFlags |= SDL_SWSURFACE;
+
+  // Set up the rectangle list to be used in the dirty update
+  myRectList = new RectList();
+  if(!myRectList)
+  {
+    cerr << "ERROR: Unable to get memory for SDL rects" << endl;
+    return false;
+  }
+
+  // Get the maximum size of a window for the desktop
+  theMaxZoomLevel = maxWindowSizeForScreen();
+
+  // Check to see if window size will fit in the screen
+  if((uInt32)myOSystem->settings().getInt("zoom") > theMaxZoomLevel)
+    theZoomLevel = theMaxZoomLevel;
+  else
+    theZoomLevel = myOSystem->settings().getInt("zoom");
+
+  // Set the window title and icon
+  setWindowAttributes();
+
+  // Create the screen
+  if(!createScreen())
+    return false;
+  setupPalette();
+
+  // Show some info
+  if(myOSystem->settings().getBool("showinfo"))
+    cout << "Video rendering: Software mode" << endl << endl;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,81 +96,16 @@ bool FrameBufferSoft::createScreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSoft::init()
-{
-  // Get the desired width and height of the display
-  myWidth  = myMediaSource->width() << 1;
-  myHeight = myMediaSource->height();
-
-  // Now create the software SDL screen
-  Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
-  if(SDL_Init(initflags) < 0)
-    return false;
-
-  // Get the system-specific WM information
-  SDL_VERSION(&myWMInfo.version);
-  if(SDL_GetWMInfo(&myWMInfo) > 0)
-    myWMAvailable = true;
-
-  // Get the maximum size of a window for the desktop
-  theMaxZoomLevel = maxWindowSizeForScreen();
-
-  // Check to see if window size will fit in the screen
-  if((uInt32)myConsole->settings().getInt("zoom") > theMaxZoomLevel)
-    theZoomLevel = theMaxZoomLevel;
-  else
-    theZoomLevel = myConsole->settings().getInt("zoom");
-
-  mySDLFlags = SDL_SWSURFACE;
-  mySDLFlags |= myConsole->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
-
-  // Set up the rectangle list to be used in the dirty update
-  myRectList = new RectList();
-  if(!myRectList)
-  {
-    cerr << "ERROR: Unable to get memory for SDL rects" << endl;
-    return false;
-  }
-
-  // Set the window title and icon
-  setWindowAttributes();
-
-  // Create the screen
-  if(!createScreen())
-    return false;
-  setupPalette();
-
-  // Make sure that theUseFullScreenFlag sets up fullscreen mode correctly
-  if(myConsole->settings().getBool("fullscreen"))
-  {
-    grabMouse(true);
-    showCursor(false);
-  }
-  else
-  {
-    // Keep mouse in game window if grabmouse is selected
-    grabMouse(myConsole->settings().getBool("grabmouse"));
-
-    // Show or hide the cursor depending on the 'hidecursor' argument
-    showCursor(!myConsole->settings().getBool("hidecursor"));
-  }
-
-  // Show some info
-  if(myConsole->settings().getBool("showinfo"))
-    cout << "Video rendering: Software mode" << endl << endl;
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::drawMediaSource()
 {
-  uInt8* currentFrame   = myMediaSource->currentFrameBuffer();
-  uInt8* previousFrame  = myMediaSource->previousFrameBuffer();
+  MediaSource& mediasrc = myOSystem->console().mediaSource();
+
+  uInt8* currentFrame   = mediasrc.currentFrameBuffer();
+  uInt8* previousFrame  = mediasrc.previousFrameBuffer();
   uInt16 screenMultiple = (uInt16) theZoomLevel;
 
-  uInt32 width  = myMediaSource->width();
-  uInt32 height = myMediaSource->height();
+  uInt32 width  = mediasrc.width();
+  uInt32 height = mediasrc.height();
 
   struct Rectangle
   {
@@ -278,20 +251,6 @@ void FrameBufferSoft::drawMediaSource()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::preFrameUpdate()
-{
-  // Start a new rectlist on each display update
-  myRectList->start();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::postFrameUpdate()
-{
-  // Now update all the rectangles at once
-  SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   SDL_Rect tmp;
@@ -382,6 +341,20 @@ void FrameBufferSoft::drawChar(uInt32 xorig, uInt32 yorig, uInt32 c)
       }
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::preFrameUpdate()
+{
+  // Start a new rectlist on each display update
+  myRectList->start();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::postFrameUpdate()
+{
+  // Now update all the rectangles at once
+  SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

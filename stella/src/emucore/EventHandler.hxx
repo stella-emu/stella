@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.14 2004-06-20 23:30:48 stephena Exp $
+// $Id: EventHandler.hxx,v 1.15 2005-02-21 02:23:49 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -24,7 +24,7 @@
 #include "StellaEvent.hxx"
 
 class Console;
-
+class OSystem;
 
 /**
   This class takes care of event remapping and dispatching for the
@@ -40,7 +40,7 @@ class Console;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.14 2004-06-20 23:30:48 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.15 2005-02-21 02:23:49 stephena Exp $
 */
 class EventHandler
 {
@@ -48,7 +48,7 @@ class EventHandler
     /**
       Create a new event handler object
     */
-    EventHandler(Console* console);
+    EventHandler(OSystem& osystem);
  
     /**
       Destructor
@@ -123,6 +123,9 @@ class EventHandler
     void takeSnapshot();
 
   private:
+    // Global Console object
+    OSystem& myOSystem;
+
     // Array of key events
     Event::Type myKeyTable[StellaEvent::LastKCODE];
 
@@ -131,9 +134,6 @@ class EventHandler
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
-
-    // Global Console object
-    Console* myConsole;
 
     // Global Event object
     Event* myEvent;

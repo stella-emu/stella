@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.12 2005-02-18 23:33:32 markgrebe Exp $
+// $Id: FrameBufferGL.cxx,v 1.13 2005-02-21 02:23:48 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -48,60 +48,7 @@ FrameBufferGL::~FrameBufferGL()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::createScreen()
-{
-  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, myRGB[0] );
-  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
-  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, myRGB[2] );
-  SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
-  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-  uInt32 screenWidth   = 0;
-  uInt32 screenHeight  = 0;
-  GLdouble orthoWidth  = 0.0;
-  GLdouble orthoHeight = 0.0;
-
-  // Get the screen coordinates
-  viewport(&screenWidth, &screenHeight, &orthoWidth, &orthoHeight);
-
-  myScreen = SDL_SetVideoMode(screenWidth, screenHeight, 0, mySDLFlags);
-  if(myScreen == NULL)
-  {
-    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
-    return false;
-  }
-
-  glPushAttrib(GL_ENABLE_BIT);
-
-  // Center the screen horizontally and vertically
-  glViewport(myDimensions.x, myDimensions.y, myDimensions.w, myDimensions.h);
-
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-
-  glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
-
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
-
-#ifdef TEXTURES_ARE_LOST
-  createTextures();
-#endif
-
-  // Make sure any old parts of the screen are erased
-  // Do it for both buffers!
-  glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  theRedrawEntireFrameIndicator = true;
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::init()
+bool FrameBufferGL::initSubsystem()
 {
   // Get the desired width and height of the display
   myWidth  = myMediaSource->width() << 1;
@@ -245,6 +192,59 @@ bool FrameBufferGL::init()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::createScreen()
+{
+  SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   myRGB[0] );
+  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
+  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
+  SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
+  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+  uInt32 screenWidth   = 0;
+  uInt32 screenHeight  = 0;
+  GLdouble orthoWidth  = 0.0;
+  GLdouble orthoHeight = 0.0;
+
+  // Get the screen coordinates
+  viewport(&screenWidth, &screenHeight, &orthoWidth, &orthoHeight);
+
+  myScreen = SDL_SetVideoMode(screenWidth, screenHeight, 0, mySDLFlags);
+  if(myScreen == NULL)
+  {
+    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    return false;
+  }
+
+  glPushAttrib(GL_ENABLE_BIT);
+
+  // Center the screen horizontally and vertically
+  glViewport(myDimensions.x, myDimensions.y, myDimensions.w, myDimensions.h);
+
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glLoadIdentity();
+
+  glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
+
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glLoadIdentity();
+
+#ifdef TEXTURES_ARE_LOST
+  createTextures();
+#endif
+
+  // Make sure any old parts of the screen are erased
+  // Do it for both buffers!
+  glClear(GL_COLOR_BUFFER_BIT);
+  SDL_GL_SwapBuffers();
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  theRedrawEntireFrameIndicator = true;
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawMediaSource()
 {
   // Copy the mediasource framebuffer to the RGB texture
@@ -297,18 +297,6 @@ void FrameBufferGL::drawMediaSource()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::preFrameUpdate()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::postFrameUpdate()
-{
-  // Now show all changes made to the textures
-  SDL_GL_SwapBuffers();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   // First draw the box in the background, alpha-blended
@@ -347,6 +335,18 @@ void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c)
     glTexCoord2f(1, 1); glVertex2i(x+8, y+8);
     glTexCoord2f(0, 1); glVertex2i(x,   y+8);
   glEnd();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::preFrameUpdate()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::postFrameUpdate()
+{
+  // Now show all changes made to the textures
+  SDL_GL_SwapBuffers();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

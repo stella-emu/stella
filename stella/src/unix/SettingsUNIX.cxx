@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.7 2004-08-17 01:17:08 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.8 2005-02-21 02:23:57 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -25,6 +25,7 @@
 #include <sys/types.h>
 
 #include "bspf.hxx"
+#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SettingsUNIX.hxx"
 
@@ -35,11 +36,12 @@ SettingsUNIX::SettingsUNIX()
   myBaseDir = getenv("HOME");
   string stelladir = myBaseDir + "/.stella";
 
-  if(!fileExists(stelladir))
+  if(!myOSystem->fileExists(stelladir))
     mkdir(stelladir.c_str(), 0777);
+// FIXME - add a OSystem mkdir
 
   myStateDir = stelladir + "/state/";
-  if(!fileExists(myStateDir))
+  if(!myOSystem->fileExists(myStateDir))
     mkdir(myStateDir.c_str(), 0777);
 
   string userPropertiesFile   = stelladir + "/stella.pro";
@@ -49,18 +51,18 @@ SettingsUNIX::SettingsUNIX()
 
   // Set up the names of the input and output config files
   myConfigOutputFile = userConfigFile;
-  if(fileExists(userConfigFile))
+  if(myOSystem->fileExists(userConfigFile))
     myConfigInputFile = userConfigFile;
-  else if(fileExists(systemConfigFile))
+  else if(myOSystem->fileExists(systemConfigFile))
     myConfigInputFile = systemConfigFile;
   else
     myConfigInputFile = "";
 
   // Set up the input and output properties files
   myPropertiesOutputFile = userPropertiesFile;
-  if(fileExists(userPropertiesFile))
+  if(myOSystem->fileExists(userPropertiesFile))
     myPropertiesInputFile = userPropertiesFile;
-  else if(fileExists(systemPropertiesFile))
+  else if(myOSystem->fileExists(systemPropertiesFile))
     myPropertiesInputFile = systemPropertiesFile;
   else
     myPropertiesInputFile = "";
@@ -69,19 +71,4 @@ SettingsUNIX::SettingsUNIX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsUNIX::~SettingsUNIX()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string SettingsUNIX::stateFilename(const string& md5, uInt32 state)
-{
-  ostringstream buf;
-  buf << myStateDir << md5 << ".st" << state;
-
-  return buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SettingsUNIX::fileExists(const string& filename)
-{
-  return (access(filename.c_str(), F_OK) == 0);
 }

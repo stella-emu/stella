@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.8 2005-02-13 19:17:02 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.9 2005-02-21 02:23:48 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -22,12 +22,13 @@
 #include <SDL.h>
 
 #include "TIASound.h"
-#include "Console.hxx"
 #include "FrameBuffer.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
+#include "OSystem.hxx"
+
 #include "SoundSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,8 +182,8 @@ void SoundSDL::adjustVolume(Int8 direction)
   message = "Volume set to ";
   message += strval.str();
 
-  myConsole->frameBuffer().showMessage(message);
-  myConsole->settings().setInt("volume", percent);
+  myOSystem->frameBuffer().showMessage(message);
+  myOSystem->settings().setInt("volume", percent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,7 +197,7 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
       (1193191.66666667));
 
   // Now, adjust the time based on the frame rate the user has selected
-  delta = delta * (myDisplayFrameRate / (double)myConsole->frameRate());
+  delta = delta * (myDisplayFrameRate / 60.0);//FIXME (double)myOSystem->console().frameRate());
 
   RegWrite info;
   info.addr = addr;
