@@ -12,6 +12,14 @@
                                Release History
 ===============================================================================
 
+Cyberstella 1.2.1 (May 16, 2002)
+
+  * Removed the built-in games until some legal stuff is sorted out
+
+Cyberstella 1.2 (May 10, 2002)
+
+  * Initial release of a new WIN 32 port of Stella
+
 DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
   * Fixed a bug with control keys being confused with the pause key

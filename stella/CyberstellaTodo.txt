@@ -1,7 +1,5 @@
 Cyberstella V1.2
 
-Currently Open Todos:
-
 Urgent:
 - Reasonably reduce the appearance of advertisment MessgageBoxes.
 - Check if games are running without stella.pro (?!?)

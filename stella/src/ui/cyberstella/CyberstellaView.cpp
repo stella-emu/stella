@@ -215,25 +215,25 @@ LRESULT CCyberstellaView::displayNote(WPARAM wParam, LPARAM lParam)
 void CCyberstellaView::OnGunfight()
 {
     playRom(IDG_GUNFIGHT);
-    MessageBox("If you'd like to play Gunfight on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+    //MessageBox("If you'd like to play Gunfight on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }    
 
 void CCyberstellaView::OnJammed() 
 {
     playRom(IDG_JAMMED);
-    MessageBox("If you'd like to play Jammed on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+    //MessageBox("If you'd like to play Jammed on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }
 
 void CCyberstellaView::OnQb() 
 {
     playRom(IDG_QB);
-    MessageBox("If you'd like to play Qb on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+    //MessageBox("If you'd like to play Qb on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }
 
 void CCyberstellaView::OnThrust() 
 {
     playRom(IDG_THRUST);
-    MessageBox("If you'd like to play Thrust on a real VCS, you can order a cartridge for only $25\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
+    //MessageBox("If you'd like to play Thrust on a real VCS, you can order a cartridge for only $25\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
 }
 
 void CCyberstellaView::playRom(LONG gameID)
@@ -286,8 +286,8 @@ void CCyberstellaView::playRom(LONG gameID)
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = gunfight[i]^(pszFileName[i%strlen(pszFileName)]);
-            }
-            break;*/
+            }*/
+            break;
         }
         case IDG_JAMMED:
         {
@@ -299,8 +299,8 @@ void CCyberstellaView::playRom(LONG gameID)
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = jammed[i]^(pszFileName[i%strlen(pszFileName)]);
-            }
-            break;*/
+            }*/
+            break;
         }
         case IDG_QB:
         {
@@ -312,8 +312,8 @@ void CCyberstellaView::playRom(LONG gameID)
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = qb[i]^(pszFileName[i%strlen(pszFileName)]);
-            }
-            break;*/
+            }*/
+            break;
         }
         case IDG_THRUST:
         {
@@ -325,8 +325,8 @@ void CCyberstellaView::playRom(LONG gameID)
             for(int i=0; i<dwActualSize; i++)
             {
 				pImage[i] = thrust[i]^(pszFileName[i%strlen(pszFileName)]);
-            }
-            break;*/
+            }*/
+            break;
         }
         default:
         {

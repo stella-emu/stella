@@ -449,6 +449,14 @@ SOURCE=..\..\emucore\Control.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\emucore\Deserializer.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\Deserializer.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\emucore\Driving.cxx
 # End Source File
 # Begin Source File
@@ -534,6 +542,14 @@ SOURCE=..\..\emucore\Random.cxx
 # Begin Source File
 
 SOURCE=..\..\emucore\Random.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\Serializer.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\Serializer.hxx
 # End Source File
 # Begin Source File
 
@@ -658,15 +674,15 @@ SOURCE=..\..\emucore\m6502\src\bspf\src\bspf.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\CyberstellaTodo.txt
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\build\M6502Hi.ins
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\build\M6502Low.ins
-# End Source File
-# Begin Source File
-
-SOURCE=.\ReadMe.txt
 # End Source File
 # End Target
 # End Project
