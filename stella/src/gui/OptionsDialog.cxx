@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.7 2005-03-27 03:07:34 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.8 2005-03-28 00:04:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,8 +53,11 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem)
-    : Dialog(osystem, (osystem->frameBuffer().width() - kMainMenuWidth) / 2,
-                      (osystem->frameBuffer().height() - kMainMenuHeight)/2,
+// FIXME - we have to initialize the video system at least once *before*
+//         creating a new console.  For now, just use predefined values.
+//         Eventually, this subsystem will have to take into account screen size changes
+    : Dialog(osystem, (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2,
+                      (osystem->frameBuffer().baseHeight() - kMainMenuHeight)/2,
                       kMainMenuWidth, kMainMenuHeight),
       myVideoDialog(NULL)
 {
@@ -69,8 +72,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
   addBigButton("Help", kHelpCmd, 'H');
 
   // Set some sane values for the dialog boxes
-  uInt32 fbWidth  = osystem->frameBuffer().width();
-  uInt32 fbHeight = osystem->frameBuffer().height();
+  uInt16 fbWidth  = osystem->frameBuffer().baseWidth();
+  uInt16 fbHeight = osystem->frameBuffer().baseHeight();
   uInt16 x, y, w, h;
 
   // Now create all the dialogs attached to each menu button
@@ -107,7 +110,7 @@ OptionsDialog::~OptionsDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::checkBounds(uInt32 width, uInt32 height,
+void OptionsDialog::checkBounds(uInt16 width, uInt16 height,
                                 uInt16* x, uInt16* y, uInt16* w, uInt16* h)
 {
   if(*w > width) *w = width;

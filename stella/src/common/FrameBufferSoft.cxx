@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.13 2005-03-26 19:26:47 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.14 2005-03-28 00:04:53 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -84,11 +84,14 @@ bool FrameBufferSoft::initSubsystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSoft::createScreen()
 {
-  myDimensions.x = myDimensions.y = 0;
-  myDimensions.w = myWidth  * theZoomLevel;
-  myDimensions.h = myHeight * theZoomLevel;
+  myScreenDim.x = myScreenDim.y = 0;
+  myScreenDim.w = myBaseDim.w * theZoomLevel;
+  myScreenDim.h = myBaseDim.h * theZoomLevel;
 
-  myScreen = SDL_SetVideoMode(myDimensions.w, myDimensions.h, 0, mySDLFlags);
+  // In software mode, the image and screen dimensions are always the same
+  myImageDim = myScreenDim;
+
+  myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 0, mySDLFlags);
   if(myScreen == NULL)
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
@@ -97,12 +100,6 @@ bool FrameBufferSoft::createScreen()
 
   theRedrawEntireFrameIndicator = true;
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::toggleFilter()
-{
-  // No filter added yet ...
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,6 +322,12 @@ void FrameBufferSoft::scanline(uInt32 row, uInt8* data)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::toggleFilter()
+{
+  // No filter added yet ...
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 {
   SDL_Rect tmp;
@@ -351,8 +354,8 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::blendRect(int x, int y, int w, int h,
-                                OverlayColor color, int level)
+void FrameBufferSoft::blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                                OverlayColor color, uInt32 level)
 {
 // FIXME - make this do alpha-blending
   SDL_Rect tmp;
@@ -362,6 +365,7 @@ void FrameBufferSoft::blendRect(int x, int y, int w, int h,
   tmp.y = y * theZoomLevel;
   tmp.w = w * theZoomLevel;
   tmp.h = h * theZoomLevel;
+
   myRectList->add(&tmp);
   SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }
@@ -457,6 +461,15 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::translateCoords(Int32* x, Int32* y)
+{
+  // We don't bother checking offsets or aspect ratios, since
+  // they're not yet supported in software mode.
+  *x /= theZoomLevel;
+  *y /= theZoomLevel;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RectList::RectList(Uint32 size)
 {
   currentSize = size;
@@ -485,6 +498,9 @@ void RectList::add(SDL_Rect* newRect)
     delete[] rectArray;
     rectArray = temp;
   }
+
+//cerr << "RectList::add():  "
+//     << "x=" << newRect->x << ", y=" << newRect->y << ", w=" << newRect->w << ", h=" << newRect->h << endl;
 
   rectArray[currentRect].x = newRect->x;
   rectArray[currentRect].y = newRect->y;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.38 2005-03-14 04:08:14 stephena Exp $
+// $Id: EventHandler.cxx,v 1.39 2005-03-28 00:04:53 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -194,9 +194,9 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
     case S_MENU:
     {
       // Take window zooming into account
-      Int32 x = event.motion.x / myOSystem->frameBuffer().zoomLevel();
-      Int32 y = event.motion.y / myOSystem->frameBuffer().zoomLevel();
-
+      Int32 x = event.motion.x, y = event.motion.y;
+      myOSystem->frameBuffer().translateCoords(&x, &y);
+//cerr << "Motion:  x = " << x << ", y = " << y << endl;
       myOSystem->menu().handleMouseMotionEvent(x, y, 0);
       break;
     }
@@ -232,8 +232,10 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
     case S_MENU:
     {
       // Take window zooming into account
-      Int32 x = event.button.x / myOSystem->frameBuffer().zoomLevel();
-      Int32 y = event.button.y / myOSystem->frameBuffer().zoomLevel();
+      Int32 x = event.button.x, y = event.button.y;
+//if (state) cerr << "B: x = " << x << ", y = " << y << endl;
+      myOSystem->frameBuffer().translateCoords(&x, &y);
+//if (state) cerr << "A: x = " << x << ", y = " << y << endl << endl;
       MouseButton button;
 
       if(state == 1)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.22 2005-03-26 19:26:47 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.23 2005-03-28 00:04:54 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.22 2005-03-26 19:26:47 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.23 2005-03-28 00:04:54 stephena Exp $
 */
 class FrameBuffer
 {
@@ -87,43 +87,34 @@ class FrameBuffer
     void showMessage(const string& message);
 
     /**
-      Returns the current width of the framebuffer.
+      Returns the current width of the framebuffer *before* any scaling.
+
+      @return  The current unscaled width
+    */
+    inline const uInt32 baseWidth()  { return myBaseDim.w; }
+
+    /**
+      Returns the current height of the framebuffer *before* any scaling.
+
+      @return  The current unscaled height
+    */
+    inline const uInt32 baseHeight() { return myBaseDim.h; }
+
+    /**
+      Returns the current width of the framebuffer image.
       Note that this will take into account the current scaling (if any).
 
       @return  The current width
     */
-    uInt32 width()  { return myWidth; }
+//    inline const uInt32 imageWidth()  { return myImageDim.w; }
 
     /**
-      Returns the current height of the framebuffer.
+      Returns the current height of the framebuffer image.
       Note that this will take into account the current scaling (if any).
 
       @return  The current height
     */
-    uInt32 height() { return myHeight; }
-
-#if 0
-FIXME
-    /**
-      This routine is called to get the width of the onscreen image.
-    */
-    uInt32 imageWidth() { return myDimensions.w; }
-
-    /**
-      This routine is called to get the height of the onscreen image.
-    */
-    uInt32 imageHeight() { return myDimensions.h; }
-#endif
-
-    /**
-      This routine is called to get the width of the system desktop.
-    */
-    uInt32 screenWidth();
-
-    /**
-      This routine is called to get the height of the system desktop.
-    */
-    uInt32 screenHeight();
+//    inline const uInt32 imageHeight() { return myImageDim.h; }
 
      /**
       Sets the pause status.  While pause is selected, the
@@ -191,9 +182,14 @@ FIXME
     bool fullScreen();
 
     /**
-      Answers the current zoom level of the SDL window.
+      Answers the current zoom level of the framebuffer image in the X axis.
     */
-    inline uInt32 zoomLevel() { return theZoomLevel; }
+    inline const float zoomLevelX() { return theZoomLevel * theAspectRatio; }
+
+    /**
+      Answers the current zoom level of the framebuffer image in the X axis.
+    */
+    inline const float zoomLevelY() { return (float) theZoomLevel; }
 
     /**
       Calculate the maximum window size that the current screen can hold.
@@ -315,8 +311,8 @@ FIXME
       @param color  FIXME
       @param level  FIXME
     */
-    virtual void blendRect(int x, int y, int w, int h,
-                           OverlayColor color, int level = 3) = 0;
+    virtual void blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           OverlayColor color, uInt32 level = 3) = 0;
 
     /**
       This routine should be called to draw a filled rectangle.
@@ -364,6 +360,15 @@ FIXME
     virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
                             Int32 h = 8) = 0;
 
+    /**
+      This routine should be called to translate the given coordinates
+      to their unzoomed/unscaled equivalents.
+
+      @param x  X coordinate to translate
+      @param y  Y coordinate to translate
+    */
+    virtual void translateCoords(Int32* x, Int32* y) = 0;
+
 #if 0
 FIXME
     /**
@@ -380,8 +385,20 @@ FIXME
     // The parent system for the framebuffer
     OSystem* myOSystem;
 
-    // Bounds for the window frame
-    uInt32 myWidth, myHeight;
+    // Dimensions of the base image, before zooming.
+    // All external GUI items should refer to these dimensions,
+    //  since this is the *real* size of the image.
+    // The other sizes are simply scaled versions of these dimensions.
+    SDL_Rect myBaseDim;
+
+    // Dimensions of the actual image, after zooming
+    SDL_Rect myImageDim;
+
+    // Dimensions of the SDL window (not always the same as the image)
+    SDL_Rect myScreenDim;
+
+    // Dimensions of the desktop area
+    SDL_Rect myDesktopDim;
 
     // Indicates if the entire frame should be redrawn
     bool theRedrawEntireFrameIndicator;
@@ -397,16 +414,6 @@ FIXME
 
     // Holds the palette for GUI elements
     uInt8 myGUIColors[5][3];
-
-    // Used to get window-manager specifics
-    SDL_SysWMinfo myWMInfo;
-
-    // Indicates the width/height and origin x/y of the onscreen image
-    // (these may be different than the screen/window dimensions)
-    SDL_Rect myDimensions;
-
-    // Indicates if the system-specific WM information is available
-    bool myWMAvailable;
 
     // Indicates the current zoom level of the SDL screen
     uInt32 theZoomLevel;
@@ -425,6 +432,30 @@ FIXME
       Set the icon for the main SDL window.
     */
     void setWindowIcon();
+
+  private:
+    // Indicates the current framerate of the system
+    uInt32 myFrameRate;
+
+    // Indicates the current pause status
+    bool myPauseStatus;
+
+    // Indicates if the menus should be redrawn
+    bool theMenuChangedIndicator;
+
+    // Message timer
+    Int32 myMessageTime;
+
+    // Message text
+    string myMessageText;
+
+    // Number of times menu have been drawn
+    uInt32 myMenuRedraws;
+
+  int val; // FIXME - remove
+};
+
+#endif
 
 /*
     // Enumeration representing the different types of user interface widgets
@@ -461,26 +492,7 @@ FIXME
     // scan the mapping arrays and update the remap menu
     void loadRemapMenu();
 */
-  private:
-    // Indicates the current framerate of the system
-    uInt32 myFrameRate;
 
-    // Indicates the current pause status
-    bool myPauseStatus;
-
-    // Indicates if the menus should be redrawn
-    bool theMenuChangedIndicator;
-
-    // Message timer
-    Int32 myMessageTime;
-
-    // Message text
-    string myMessageText;
-
-    // Number of times menu have been drawn
-    uInt32 myMenuRedraws;
-
-int val;
 /*
     // Structure used for main menu items
     struct MainMenuItem
@@ -549,6 +561,3 @@ int val;
     // Holds the number of items in the joytable array
     uInt32 myJoyTableSize;
 */
-};
-
-#endif

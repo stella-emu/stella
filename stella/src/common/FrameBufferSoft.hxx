@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.10 2005-03-26 19:26:47 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.11 2005-03-28 00:04:53 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -34,7 +34,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.10 2005-03-26 19:26:47 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.11 2005-03-28 00:04:53 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -134,8 +134,8 @@ class FrameBufferSoft : public FrameBuffer
       @param color  FIXME
       @param level  FIXME
     */
-    virtual void blendRect(int x, int y, int w, int h,
-                           OverlayColor color, int level = 3);
+    virtual void blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           OverlayColor color, uInt32 level = 3);
 
     /**
       This routine is called to draw a filled rectangle.
@@ -182,6 +182,15 @@ class FrameBufferSoft : public FrameBuffer
     */
     virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
                             Int32 h = 8);
+
+    /**
+      This routine translates the given coordinates to their
+      unzoomed/unscaled equivalents.
+
+      @param x  X coordinate to translate
+      @param y  Y coordinate to translate
+    */
+    inline virtual void translateCoords(Int32* x, Int32* y);
 
   private:
     // Used in the dirty update of the SDL surface

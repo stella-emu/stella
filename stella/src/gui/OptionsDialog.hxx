@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.3 2005-03-27 03:07:34 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.4 2005-03-28 00:04:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,7 +54,7 @@ class OptionsDialog : public Dialog
     HelpDialog*         myHelpDialog;
 
   private:
-    void checkBounds(uInt32 width, uInt32 height,
+    void checkBounds(uInt16 width, uInt16 height,
                      uInt16* x, uInt16* y, uInt16* w, uInt16* h);
 };
 

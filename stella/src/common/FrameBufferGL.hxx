@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.8 2005-02-22 18:40:53 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.9 2005-03-28 00:04:53 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -33,7 +33,7 @@ class OSystem;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.8 2005-02-22 18:40:53 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.9 2005-03-28 00:04:53 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -64,16 +64,6 @@ class FrameBufferGL : public FrameBuffer
     virtual bool createScreen();
 
     /**
-      This routine is called to map a given r,g,b triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
-      { return SDL_MapRGB(myScreen->format, r, g, b); }
-
-    /**
       Switches between the two filtering options in OpenGL.
       Currently, these are GL_NEAREST and GL_LINEAR.
     */
@@ -84,35 +74,6 @@ class FrameBufferGL : public FrameBuffer
       to the screen.
     */
     virtual void drawMediaSource();
-
-    /**
-      This routine should be called to draw a rectangular box with sides
-      at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param w   The width of the box
-      @param h   The height of the box
-    */
-    virtual void drawBoundedBox(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-
-    /**
-      This routine should be called to draw text at the specified coordinates.
-
-      @param x        The x coordinate
-      @param y        The y coordinate
-      @param message  The message text
-    */
-    virtual void drawText(uInt32 x, uInt32 y, const string& message);
-
-    /**
-      This routine should be called to draw character 'c' at the specified coordinates.
-
-      @param x   The x coordinate
-      @param y   The y coordinate
-      @param c   The character to draw
-    */
-    virtual void drawChar(uInt32 x, uInt32 y, uInt32 c);
 
     /**
       This routine is called before any drawing is done (per-frame).
@@ -132,11 +93,108 @@ class FrameBufferGL : public FrameBuffer
     */
     virtual void scanline(uInt32 row, uInt8* data);
 
+    /**
+      This routine is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
+      { return SDL_MapRGB(myScreen->format, r, g, b); }
+
+    /**
+      This routine is called to draw a horizontal line.
+
+      @param x     The first x coordinate
+      @param y     The y coordinate
+      @param x2    The second x coordinate
+      @param color The color of the line
+    */
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color);
+
+    /**
+      This routine is called to draw a vertical line.
+
+      @param x     The x coordinate
+      @param y     The first y coordinate
+      @param y2    The second y coordinate
+      @param color The color of the line
+    */
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
+
+    /**
+      This routine is called to draw a blended rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the box
+      @param h      The height of the box
+      @param color  FIXME
+      @param level  FIXME
+    */
+    virtual void blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           OverlayColor color, uInt32 level = 3);
+
+    /**
+      This routine is called to draw a filled rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the area
+    */
+    virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                          OverlayColor color);
+
+    /**
+      This routine is called to draw a framed rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the surrounding frame
+    */
+    virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           OverlayColor color);
+
+    /**
+      This routine is called to draw the specified character.
+
+      @param c      The character to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the character
+    */
+    virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color);
+
+    /**
+      This routine is called to draw the bitmap image.
+
+      @param bitmap The data to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the character
+      @param h      The height of the data image
+    */
+    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
+                            Int32 h = 8);
+
+    /**
+      This routine translates the given coordinates to their
+      unzoomed/unscaled equivalents.
+
+      @param x  X coordinate to translate
+      @param y  Y coordinate to translate
+    */
+    inline virtual void translateCoords(Int32* x, Int32* y);
+
   private:
     bool createTextures();
 
-    void viewport(uInt32* screenWidth, uInt32* screenHeight,
-                  GLdouble* orthoWidth, GLdouble* orthoHeight);
+    void setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight);
 
     uInt32 power_of_two(uInt32 input)
     {
@@ -171,11 +229,18 @@ class FrameBufferGL : public FrameBuffer
     // The OpenGL font texture handles (one for each character)
     GLuint myFontTextureID[256];
 
+    // GUI palette
+    GLfloat myGUIPalette[5][3];
+
     // The texture filtering to use
     GLint myFilterParam;
 
     // The name of the texture filtering to use
     string myFilterParamName;
+
+    // The scaling to use in fullscreen mode
+    // This is separate from both zoomlevel and aspect ratio
+    float myFSScaleFactor;
 };
 
 #endif
