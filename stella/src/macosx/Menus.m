@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.3 2004-08-02 04:08:10 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.4 2005-02-18 05:31:47 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "Menus.h"
@@ -268,6 +268,11 @@ static Menus *sharedInstance = nil;
 - (IBAction)openCart:(id)sender
 {
 	[self pushKeyEvent:SDLK_o:NO];
+}
+
+- (IBAction)restartGame:(id)sender
+{
+	[self pushKeyEvent:SDLK_r:NO];
 }
 
 - (IBAction)speedLimit:(id)sender

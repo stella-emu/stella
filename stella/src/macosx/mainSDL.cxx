@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.7 2005-02-18 01:05:23 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.8 2005-02-18 05:31:47 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -156,7 +156,6 @@ static double timePerFrame;
 static char *gameFile;
 
 static bool fileToLoad = false;
-
 
 struct Switches
 {
@@ -548,6 +547,12 @@ void handleEvents()
 				}
 			    theConsole->eventHandler().sendEvent(Event::Quit, 1);
 			}
+		}
+        else if(key == SDLK_r)         // Command-r restarts the game
+		{
+            newGame = true;
+		    fileToLoad = true;
+		    theConsole->eventHandler().sendEvent(Event::Quit, 1);
 		}
         else if(key == SDLK_g)
         {
@@ -1082,7 +1087,7 @@ int stellaMain(int argc, char* argv[])
   
 while(1) {
   // Get a pointer to the file which contains the cartridge ROM
-  char* file;
+  char* file = NULL;
 
   if (fileToLoad)
   {
@@ -1092,6 +1097,8 @@ while(1) {
   {
     do 
 	{
+      if (file != NULL)
+        free(file);
       file = browseFile();
       if (file == NULL) 
 	  {
@@ -1101,6 +1108,7 @@ while(1) {
 	} while (file == NULL);
   }
   fileToLoad = false;
+  gameFile = file;
   
   // Open the cartridge image and read it in
   ifstream in(file, ios_base::binary);
@@ -1134,7 +1142,7 @@ while(1) {
 
   // Free the image since we don't need it any longer
   delete[] image;
-  free(file);
+  // free(file);
 
   // Setup the SDL joysticks
   // This must be done after the console is created

@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.3 2004-08-02 04:08:10 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.4 2005-02-18 05:31:47 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
@@ -36,6 +36,7 @@
 - (IBAction)smallerScreen:(id)sender;
 - (IBAction)fullScreen:(id)sender;
 - (IBAction)openCart:(id)sender;
+- (IBAction)restartGame:(id)sender;
 - (IBAction)speedLimit:(id)sender;
 - (IBAction)pauseGame:(id)sender;
 - (IBAction)ntscPalMode:(id)sender;
