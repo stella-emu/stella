@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.1 2001-12-30 18:43:30 bwmott Exp $
+// $Id: CartDPC.cxx,v 1.2 2002-03-18 14:40:07 gunfight Exp $
 //============================================================================
 
 #include <assert.h>
@@ -23,14 +23,16 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 {
-  // Copy the program ROM image into my buffer
-  for(uInt32 addr = 0; addr < 8192; ++addr)
+	uInt32 addr;
+
+	// Copy the program ROM image into my buffer
+  for(addr = 0; addr < 8192; ++addr)
   {
     myProgramImage[addr] = image[addr];
   }
 
   // Copy the display ROM image into my buffer
-  for(uInt32 addr = 0; addr < 2048; ++addr)
+  for(addr = 0; addr < 2048; ++addr)
   {
     myDisplayImage[addr] = image[8192 + addr];
   }

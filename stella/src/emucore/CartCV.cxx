@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.1 2002-01-18 15:58:46 estolberg Exp $
+// $Id: CartCV.cxx,v 1.2 2002-03-18 14:40:07 gunfight Exp $
 //============================================================================
 
 #include <assert.h>
@@ -24,7 +24,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
 {
-  if(size == 2048)
+	uInt32 addr;
+
+	if(size == 2048)
   {
     // Copy the ROM image into my buffer
     for(uInt32 addr = 0; addr < 2048; ++addr)
@@ -45,13 +47,13 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
     // Usefull for MagiCard program listings
 
     // Copy the ROM image into my buffer
-    for(uInt32 addr = 0; addr < 2048; ++addr)
+    for(addr = 0; addr < 2048; ++addr)
     {
       myImage[addr] = image[addr + 2048];
     }
 
     // Copy the RAM image into my buffer
-    for(uInt32 addr = 0; addr < 1024; ++addr)
+    for(addr = 0; addr < 1024; ++addr)
     {
       myRAM[addr] = image[addr];
     }
