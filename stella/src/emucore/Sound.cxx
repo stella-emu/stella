@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.cxx,v 1.17 2005-02-22 18:41:15 stephena Exp $
+// $Id: Sound.cxx,v 1.18 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -52,15 +52,21 @@ void Sound::adjustCycleCounter(Int32 amount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Sound::setFrameRate(uInt32 framerate)
+{
+  myDisplayFrameRate = framerate;
+  myLastRegisterSetCycle = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sound::mute(bool state)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Sound::initialize(double displayframerate)
+void Sound::initialize(bool forcerestart)
 {
   myLastRegisterSetCycle = 0;
-  myDisplayFrameRate = displayframerate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

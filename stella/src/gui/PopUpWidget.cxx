@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.2 2005-03-26 04:19:56 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.3 2005-03-26 19:26:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -353,8 +353,8 @@ void PopUpWidget::drawWidget(bool hilite)
   fb.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
 
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-//  fb.drawBitmap(up_down_arrows, x+w - 10, _y+2,
-// FIXME                !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);
+  fb.drawBitmap(up_down_arrows, x+w - 10, _y+2,
+                !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);
 
   // Draw the selected entry, if any
   if(_selectedItem >= 0)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.9 2005-03-13 03:38:39 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.10 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -34,7 +34,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.9 2005-03-13 03:38:39 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.10 2005-03-26 19:26:47 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -170,6 +170,18 @@ class FrameBufferSoft : public FrameBuffer
       @param color  The color of the character
     */
     virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color);
+
+    /**
+      This routine is called to draw the bitmap image.
+
+      @param bitmap The data to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the character
+      @param h      The height of the data image
+    */
+    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
+                            Int32 h = 8);
 
   private:
     // Used in the dirty update of the SDL surface

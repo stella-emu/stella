@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.3 2005-03-26 04:19:56 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.4 2005-03-26 19:26:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,9 +51,15 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
   // Video driver (query OSystem for what's supported)
   myDriverPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
                                   "(*)Driver: ", labelWidth);
-  myDriverPopup->appendEntry("First one", 1);
-  myDriverPopup->appendEntry("Another one", 2);
+//  myDriverPopup->appendEntry("First one", 1);
+//  myDriverPopup->appendEntry("Another one", 2);
   yoff += kVideoRowHeight + 4;
+
+// FIXME - get list of video drivers from OSystem
+//  const Common::LanguageDescription *l = Common::g_languages;
+//  for (; l->code; ++l) {
+//    _langPopUp->appendEntry(l->description, l->id);
+//  }
 
   // Video renderer
   myRendererPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
@@ -105,7 +111,22 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
   myZoomLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 20, kLineHeight,
                                      "", kTextAlignLeft);
   myZoomLabel->setFlags(WIDGET_CLEARBG);
+  yoff += kVideoRowHeight + 10;
+
+  myFullscreenCheckbox = new CheckboxWidget(this, xoff + 25, yoff, woff - 14, kLineHeight,
+                                            "Fullscreen mode");
   yoff += kVideoRowHeight + 4;
+
+  myUseDeskResCheckbox = new CheckboxWidget(this, xoff + 25, yoff, woff - 14, kLineHeight,
+                                            "Desktop Res in FS");
+  yoff += kVideoRowHeight + 20;
+
+  // Add a short message about options that need a restart
+  new StaticTextWidget(this, xoff-40, yoff, 170, kLineHeight,
+                       "* Note that these options take effect", kTextAlignLeft);
+  yoff += kVideoRowHeight;
+  new StaticTextWidget(this, xoff-40, yoff, 170, kLineHeight,
+                       "the next time you restart Stella.", kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
   addButton( 10, _h - 24, "Defaults", kDefaultsCmd, 0);
@@ -116,12 +137,6 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
   addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
   addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
-
-// FIXME - get list of video drivers from OSystem
-//  const Common::LanguageDescription *l = Common::g_languages;
-//  for (; l->code; ++l) {
-//    _langPopUp->appendEntry(l->description, l->id);
-//  }
 
   setDefaults();
 }
@@ -196,6 +211,14 @@ void VideoDialog::loadConfig()
   myZoomSlider->setValue(i);
   myZoomLabel->setLabel(instance()->settings().getString("zoom"));
 
+  // Fullscreen
+  b = instance()->settings().getBool("fullscreen");
+  myFullscreenCheckbox->setState(b);
+
+  // Use desktop resolution in fullscreen mode
+  b = instance()->settings().getBool("gl_fsmax");
+  myUseDeskResCheckbox->setState(b);
+
   // Make sure that mutually-exclusive items are not enabled at the same time
   i = myRendererPopup->getSelectedTag() - 1;
   handleRendererChange(i);
@@ -206,9 +229,11 @@ void VideoDialog::saveConfig()
 {
   string s;
   uInt32 i;
+  bool b;
 
   // Driver setting
-  instance()->settings().setString("video_driver", ""); // FIXME
+  s = myDriverPopup->getSelectedString();
+  instance()->settings().setString("video_driver", s);
 
   // Renderer setting
   i = myRendererPopup->getSelectedTag();
@@ -249,13 +274,25 @@ void VideoDialog::saveConfig()
   // Zoom
   i = (myZoomSlider->getValue() / 10) + 1;
   instance()->settings().setInt("zoom", i);
-// FIXME - immediately change the zoom
+  instance()->frameBuffer().resize(0, i);
+
+  // Fullscreen (the toggleFullscreen function takes care of updating settings)
+  b = myFullscreenCheckbox->getState();
+  instance()->frameBuffer().toggleFullscreen(true, b);
+
+  // Use desktop resolution in fullscreen mode
+  b = myUseDeskResCheckbox->getState();
+  instance()->settings().setBool("gl_fsmax", b);
+// FIXME - immediately toggle gl_fsmax
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::setDefaults()
 {
+  // FIXME - for now, this option isn't available
   myDriverPopup->setSelectedTag(0);
+  myDriverPopup->setEnabled(false);
+
   myRendererPopup->setSelectedTag(1);
   myFilterPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(1);
@@ -268,6 +305,9 @@ void VideoDialog::setDefaults()
   myZoomLabel->setLabel("2");
   myAspectRatioSlider->setValue(100);
   myAspectRatioLabel->setLabel("2.0");
+
+  myFullscreenCheckbox->setState(false);
+  myUseDeskResCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleRendererChange(0);  // 0 indicates software mode
@@ -284,6 +324,7 @@ void VideoDialog::handleRendererChange(uInt32 item)
   myFilterPopup->setEnabled(active);
   myAspectRatioSlider->setEnabled(active);
   myAspectRatioLabel->setEnabled(active);
+  myUseDeskResCheckbox->setEnabled(active);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

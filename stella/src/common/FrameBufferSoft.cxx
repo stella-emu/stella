@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.12 2005-03-14 04:08:13 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.13 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -420,6 +420,32 @@ void FrameBufferSoft::drawChar(uInt8 chr, uInt32 xorig, uInt32 yorig,
 //      if (tx + x < 0 || tx + x >= dst->w)
 //        continue;
       if ((buffer & mask) != 0)
+      {
+        rect.x = (x + xorig) * theZoomLevel;
+        rect.y = (y + yorig) * theZoomLevel;
+        rect.w = rect.h = theZoomLevel;
+        SDL_FillRect(myScreen, &rect, myGUIPalette[color]);
+      }
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
+                                 OverlayColor color, Int32 h)
+{
+  SDL_Rect rect;
+  for(int y = 0; y < h; y++)
+  {
+    uInt32 mask = 0xF0000000;
+//    if(ty + y < 0 || ty + y >= _screen.h)
+//      continue;
+
+    for(int x = 0; x < 8; x++, mask >>= 4)
+    {
+//      if(tx + x < 0 || tx + x >= _screen.w)
+//        continue;
+      if(bitmap[y] & mask)
       {
         rect.x = (x + xorig) * theZoomLevel;
         rect.y = (y + yorig) * theZoomLevel;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.6 2005-03-26 19:26:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 #include "Widget.hxx"
 #include "Control.hxx"
 #include "VideoDialog.hxx"
+#include "AudioDialog.hxx"
 #include "OptionsDialog.hxx"
 
 #include "bspf.hxx"
@@ -48,6 +49,7 @@ enum {
 #define addBigButton(label, cmd, hotkey) \
 	new ButtonWidget(this, xoffset, yoffset, kBigButtonWidth, 18, label, cmd, hotkey); yoffset += kRowHeight
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem)
     : Dialog(osystem, (osystem->frameBuffer().width() - kMainMenuWidth) / 2,
                       (osystem->frameBuffer().height() - kMainMenuHeight)/2,
@@ -71,17 +73,14 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
 
   // Now create all the dialogs attached to each menu button
   w = 250; h = 150;
-  if(w > fbWidth) w = fbWidth;
-  if(h > fbHeight) h = fbHeight;
-  x = (fbWidth - w) / 2;
-  y = (fbHeight - h) / 2;
+  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+  myVideoDialog = new VideoDialog(myOSystem, x, y, w, h);
 
-  myVideoDialog        = new VideoDialog(myOSystem, x, y, w, h);
-
-
+  w = 220; h = 120;
+  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+  myAudioDialog        = new AudioDialog(myOSystem, x, y, w, h);
 
 /*
-  myAudioDialog        = new AudioDialog(myOSystem);
   myEventMappingDialog = new EventMappingDialog(myOSystem);
   myMiscDialog         = new MiscDialog(myOSystem);
   myGameInfoDialog     = new GameInfoDialog(myOSystem);
@@ -89,11 +88,12 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
 */
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::~OptionsDialog()
 {
   delete myVideoDialog;
-/* FIXME
   delete myAudioDialog;
+/* FIXME
   delete myEventMappingDialog;
   delete myMiscDialog;
   delete myGameInfoDialog;
@@ -101,6 +101,17 @@ OptionsDialog::~OptionsDialog()
 */
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OptionsDialog::checkBounds(uInt32 width, uInt32 height,
+                                uInt16* x, uInt16* y, uInt16* w, uInt16* h)
+{
+  if(*w > width) *w = width;
+  if(*h > height) *h = height;
+  *x = (width - *w) / 2;
+  *y = (height - *h) / 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OptionsDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
 {
   switch(cmd)
@@ -110,8 +121,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data
       break;
 
     case kAudCmd:
-//      instance()->menu().addDialog(myAudioDialog);
-cerr << "push AudioDialog to top of stack\n";
+      instance()->menu().addDialog(myAudioDialog);
       break;
 
     case kEMapCmd:

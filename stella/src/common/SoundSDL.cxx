@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.11 2005-02-22 18:40:55 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.12 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -37,72 +37,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
       myFragmentSizeLogBase2(0),
       myIsMuted(false)
 {
-  if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
-  {
-    cerr << "WARNING: Couldn't initialize SDL audio system! " << endl;
-    cerr << "         " << SDL_GetError() << endl;
-    return;
-  }
-  else
-  {
-    uInt32 fragsize = myOSystem->settings().getInt("fragsize");
-
-    SDL_AudioSpec desired;
-    desired.freq = 31400;
-    desired.format = AUDIO_U8;
-    desired.channels = 1;
-    desired.samples = fragsize;
-    desired.callback = callback;
-    desired.userdata = (void*)this;
-
-    if(SDL_OpenAudio(&desired, &myHardwareSpec) < 0)
-    {
-      cerr << "WARNING: Couldn't open SDL audio system! " << endl;
-      cerr << "         " << SDL_GetError() << endl;
-      return;
-    }
-
-    // Make sure the sample buffer isn't to big (if it is the sound code
-    // will not work so we'll need to disable the audio support)
-    if(((float)myHardwareSpec.samples / (float)myHardwareSpec.freq) >= 0.25)
-    {
-      cerr << "WARNING: Sound device doesn't support realtime audio! Make ";
-      cerr << "sure a sound" << endl;
-      cerr << "         server isn't running.  Audio is disabled." << endl;
-
-      SDL_CloseAudio();
-      return;
-    }
-
-    myIsInitializedFlag = true;
-    myIsMuted = false;
-    myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
-
-/*
-    cerr << "Freq: " << (int)myHardwareSpec.freq << endl;
-    cerr << "Format: " << (int)myHardwareSpec.format << endl;
-    cerr << "Channels: " << (int)myHardwareSpec.channels << endl;
-    cerr << "Silence: " << (int)myHardwareSpec.silence << endl;
-    cerr << "Samples: " << (int)myHardwareSpec.samples << endl;
-    cerr << "Size: " << (int)myHardwareSpec.size << endl;
-*/
-
-    // Now initialize the TIASound object which will actually generate sound
-    Tia_sound_init(31400, myHardwareSpec.freq);
-
-    // And start the SDL sound subsystem ...
-    SDL_PauseAudio(0);
-
-    // Adjust volume to that defined in settings
-    myVolume = myOSystem->settings().getInt("volume");
-    setVolume(myVolume);
-
-    // Show some info
-    if(myOSystem->settings().getBool("showinfo"))
-      cout << "Sound enabled:" << endl
-           << "  Volume   : "  << myVolume << endl
-           << "  Frag size: "  << fragsize << endl << endl;
-  }
+  initialize(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,6 +51,95 @@ SoundSDL::~SoundSDL()
   }
 
   myIsInitializedFlag = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::initialize(bool forcerestart)
+{
+  if(forcerestart && myIsInitializedFlag)
+  {
+    SDL_PauseAudio(1);
+    SDL_CloseAudio();
+    myIsInitializedFlag = false;
+  }
+
+  bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_AUDIO) & SDL_INIT_AUDIO) > 0;
+
+  if(!isAlreadyInitialized)
+  {
+    myIsInitializedFlag = false;
+    myIsMuted = false;
+    myLastRegisterSetCycle = 0;
+
+    if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
+    {
+      cerr << "WARNING: Couldn't initialize SDL audio system! " << endl;
+      cerr << "         " << SDL_GetError() << endl;
+      return;
+    }
+    else
+    {
+      uInt32 fragsize = myOSystem->settings().getInt("fragsize");
+
+      SDL_AudioSpec desired;
+      desired.freq = 31400;
+      desired.format = AUDIO_U8;
+      desired.channels = 1;
+      desired.samples = fragsize;
+      desired.callback = callback;
+      desired.userdata = (void*)this;
+
+      if(SDL_OpenAudio(&desired, &myHardwareSpec) < 0)
+      {
+        cerr << "WARNING: Couldn't open SDL audio system! " << endl;
+        cerr << "         " << SDL_GetError() << endl;
+        return;
+      }
+
+      // Make sure the sample buffer isn't to big (if it is the sound code
+      // will not work so we'll need to disable the audio support)
+      if(((float)myHardwareSpec.samples / (float)myHardwareSpec.freq) >= 0.25)
+      {
+        cerr << "WARNING: Sound device doesn't support realtime audio! Make ";
+        cerr << "sure a sound" << endl;
+        cerr << "         server isn't running.  Audio is disabled." << endl;
+
+        SDL_CloseAudio();
+        return;
+      }
+
+      myIsInitializedFlag = true;
+      myIsMuted = false;
+      myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
+
+      /*
+        cerr << "Freq: " << (int)myHardwareSpec.freq << endl;
+        cerr << "Format: " << (int)myHardwareSpec.format << endl;
+        cerr << "Channels: " << (int)myHardwareSpec.channels << endl;
+        cerr << "Silence: " << (int)myHardwareSpec.silence << endl;
+        cerr << "Samples: " << (int)myHardwareSpec.samples << endl;
+        cerr << "Size: " << (int)myHardwareSpec.size << endl;
+      */
+
+      // Now initialize the TIASound object which will actually generate sound
+      Tia_sound_init(31400, myHardwareSpec.freq);
+
+      // And start the SDL sound subsystem ...
+      SDL_PauseAudio(0);
+
+      // Adjust volume to that defined in settings
+      myVolume = myOSystem->settings().getInt("volume");
+      setVolume(myVolume);
+
+      // Show some info
+      if(myOSystem->settings().getBool("showinfo"))
+        cout << "Sound enabled:" << endl
+             << "  Volume   : "  << myVolume << endl
+             << "  Frag size: "  << fragsize << endl << endl;
+    }
+  }
+
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

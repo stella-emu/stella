@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.3 2005-03-26 04:19:56 stephena Exp $
+// $Id: GuiUtils.hxx,v 1.4 2005-03-26 19:26:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,8 +29,10 @@
   Probably not very neat, but at least it works ...
 
   @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.3 2005-03-26 04:19:56 stephena Exp $
+  @version $Id: GuiUtils.hxx,v 1.4 2005-03-26 19:26:47 stephena Exp $
 */
+
+#define kLineHeight 12
 
 // Colors indices to use for the various GUI elements
 enum OverlayColor {
@@ -47,14 +49,18 @@ enum {
   kCloseCmd = 'clos',
   kDefaultsCmd,
   kRendererChanged,
-  kVolumeChanged,
   kAspectRatioChanged,
   kFrameRateChanged,
-  kZoomChanged
+  kZoomChanged,
+  kVolumeChanged,
+  kSoundEnableChanged
 };
 
 static const string EmptyString("");
 
-#define kLineHeight 12
+template<typename T> inline void SWAP(T &a, T &b) { T tmp = a; a = b; b = tmp; }
+template<typename T> inline T ABS (T x) { return (x>=0) ? x : -x; }
+
+#define ARRAYSIZE(x) ((int)(sizeof(x) / sizeof(x[0])))
 
 #endif

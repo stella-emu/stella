@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.66 2005-03-14 04:08:12 stephena Exp $
+## $Id: makefile,v 1.67 2005-03-26 19:26:47 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -146,6 +146,9 @@ win32-gl:
 ###############################################################################
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
+GUI_OBJS = StellaFont.o Menu.o Widget.o PopUpWidget.o Dialog.o \
+           OptionsDialog.o VideoDialog.o AudioDialog.o
+
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
             CartF8.o CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o \
@@ -153,9 +156,8 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
-            OSystem.o StellaFont.o Menu.o Widget.o PopUpWidget.o Dialog.o \
-            OptionsDialog.o VideoDialog.o \
-            $(M6502_OBJS)
+            OSystem.o \
+            $(M6502_OBJS) $(GUI_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
 	$(LD) -o $(EXE_NAME) $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
@@ -373,3 +375,6 @@ OptionsDialog.o: $(GUI)/OptionsDialog.cxx $(GUI)/OptionsDialog.hxx
 
 VideoDialog.o: $(GUI)/VideoDialog.cxx $(GUI)/VideoDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/VideoDialog.cxx
+
+AudioDialog.o: $(GUI)/AudioDialog.cxx $(GUI)/AudioDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/AudioDialog.cxx

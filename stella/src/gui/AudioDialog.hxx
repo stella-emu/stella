@@ -13,46 +13,44 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.2 2005-03-26 19:26:47 stephena Exp $
+// $Id: AudioDialog.hxx,v 1.1 2005-03-26 19:26:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef OPTIONS_DIALOG_HXX
-#define OPTIONS_DIALOG_HXX
+#ifndef AUDIO_DIALOG_HXX
+#define AUDIO_DIALOG_HXX
 
 class CommandSender;
 class Dialog;
-class VideoDialog;
-class AudioDialog;
-class EventMappingDialog;
-class MiscDialog;
-class GameInfoDialog;
-class HelpDialog;
+class PopUpWidget;
+class SliderWidget;
+class StaticTextWidget;
+class CheckboxWidget;
 
 #include "OSystem.hxx"
 #include "bspf.hxx"
 
-class OptionsDialog : public Dialog
+class AudioDialog : public Dialog
 {
   public:
-    OptionsDialog(OSystem* osystem);
-    ~OptionsDialog();
-
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    AudioDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+    ~AudioDialog();
 
   protected:
-    VideoDialog*        myVideoDialog;
-    AudioDialog*        myAudioDialog;
-    EventMappingDialog* myEventMappingDialog;
-    MiscDialog*         myMiscDialog;
-    GameInfoDialog*     myGameInfoDialog;
-    HelpDialog*         myHelpDialog;
+    SliderWidget*     myVolumeSlider;
+    StaticTextWidget* myVolumeLabel;
+    PopUpWidget*      myFragsizePopup;
+    CheckboxWidget*   mySoundEnableCheckbox;
 
   private:
-    void checkBounds(uInt32 width, uInt32 height,
-                     uInt16* x, uInt16* y, uInt16* w, uInt16* h);
+    void loadConfig();
+    void saveConfig();
+    void setDefaults();
+
+    void handleSoundEnableChange(bool active);
+    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
 };
 
 #endif

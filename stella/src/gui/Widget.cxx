@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
+// $Id: Widget.cxx,v 1.6 2005-03-26 19:26:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -73,7 +73,7 @@ void Widget::draw()
     OverlayColor colorA = kColor;
     OverlayColor colorB = kShadowColor;
     if((_flags & WIDGET_INV_BORDER) == WIDGET_INV_BORDER)
-      ; //FIXME - add swap function SWAP(colorA, colorB);
+      SWAP(colorA, colorB);
     fb.box(_x, _y, _w, _h, colorA, colorB);
     _x += 4;
     _y += 4;
@@ -232,9 +232,8 @@ void CheckboxWidget::drawWidget(bool hilite)
 
   // If checked, draw cross inside the box
   if(_state)
-; // FIXME - change bitmap to be a character in the font set, then draw that
-//    fb.drawBitmap(checked_img, _x + 3, _y + 3,
-//                 isEnabled() ? fb.textcolor : fb.color);
+    fb.drawBitmap(checked_img, _x + 3, _y + 3,
+                  isEnabled() ? kTextColor : kColor);
   else
     fb.fillRect(_x + 2, _y + 2, 10, 10, kBGColor);
 
@@ -276,7 +275,7 @@ void SliderWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
     {
       _value = newValue; 
       draw();
-      sendCommand(_cmd, _value);	// FIXME - hack to allow for "live update" in sound dialog
+      sendCommand(_cmd, _value);
     }
   }
 }

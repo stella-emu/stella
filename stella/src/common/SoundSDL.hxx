@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.8 2005-02-22 02:59:53 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.9 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #ifndef SOUNDSDL_HXX
@@ -31,7 +31,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.8 2005-02-22 02:59:53 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.9 2005-03-26 19:26:47 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -48,6 +48,14 @@ class SoundSDL : public Sound
     virtual ~SoundSDL();
 
   public:
+    /**
+      Initializes the sound device.  This must be called before any
+      calls are made to derived methods.
+
+      @param forcerestart  Do a soft or hard reset of the sound subsystem
+    */
+    virtual void initialize(bool forcerestart = false);
+
     /**
       Return true iff the sound device was successfully initialized.
 

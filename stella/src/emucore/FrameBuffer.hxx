@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.21 2005-03-14 04:08:15 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.22 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.21 2005-03-14 04:08:15 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.22 2005-03-26 19:26:47 stephena Exp $
 */
 class FrameBuffer
 {
@@ -71,7 +71,7 @@ class FrameBuffer
       @param width     The width of the framebuffer
       @param height    The height of the framebuffer
     */
-    void initialize(const string title, uInt32 width, uInt32 height);
+    void initialize(const string& title, uInt32 width, uInt32 height);
 
     /**
       Updates the display, which depending on the current mode could mean
@@ -149,20 +149,25 @@ FIXME
     }
 
     /**
-      Toggles between fullscreen and window mode.  Grabmouse and hidecursor
-      activated when in fullscreen mode.
+      Toggles between fullscreen and window mode. either automatically
+      or based on the given flag.  Grabmouse activated when in fullscreen mode.  
+
+      @param given   Indicates whether to use the specified 'toggle' or
+                     decide based on current status
+      @param toggle  Set the fullscreen mode to this value
     */
-    void toggleFullscreen();
+    void toggleFullscreen(bool given = false, bool toggle = false);
 
     /**
       This routine is called when the user wants to resize the window.
-      A '1' argument indicates that the window should increase in size, while '-1'
-      indicates that the windows should decrease in size.  A '0' indicates that
-      the window should be sized according to the current properties.
-      Can't resize in fullscreen mode.  Will only resize up to the maximum size
-      of the screen.
+      Mode = '1' means window should increase in size
+      Mode = '-1' means window should decrease in size
+      Mode = '0' means window should be resized to defaults
+
+      @param mode  How the window should be resized
+      @param zoom  The zoom level to use if something other than 0
     */
-    void resize(int mode);
+    void resize(Int8 mode, Int8 zoom = 0);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -199,7 +204,7 @@ FIXME
     /**
       Set the title for the main SDL window.
     */
-    void setWindowTitle(const string title);
+    void setWindowTitle(const string& title);
 
     /**
       Set up the palette for a screen of any depth > 8.
@@ -347,9 +352,17 @@ FIXME
     */
     virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color) = 0;
 
-/* FIXME
-void drawBitmap(uint32 *bitmap, int x, int y, OverlayColor color, int h = 8);
-*/
+    /**
+      This routine should be called to draw the bitmap image.
+
+      @param bitmap The data to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the character
+      @param h      The height of the data image
+    */
+    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
+                            Int32 h = 8) = 0;
 
 #if 0
 FIXME

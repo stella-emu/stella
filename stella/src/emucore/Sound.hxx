@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.15 2005-02-22 02:59:54 stephena Exp $
+// $Id: Sound.hxx,v 1.16 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   to compile Stella with no sound support whatsoever.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: Sound.hxx,v 1.15 2005-02-22 02:59:54 stephena Exp $
+  @version $Id: Sound.hxx,v 1.16 2005-03-26 19:26:47 stephena Exp $
 */
 class Sound
 {
@@ -57,12 +57,20 @@ class Sound
     virtual void adjustCycleCounter(Int32 amount);
 
     /**
-      Initializes the sound device.  This must be called before any
-      calls are made to derived methods.
+      Sets the display framerate.  Sound generation for NTSC and PAL games
+      depends on the framerate, so we need to set it here.
 
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    virtual void initialize(double displayframerate);
+    virtual void setFrameRate(uInt32 framerate);
+
+    /**
+      Initializes the sound device.  This must be called before any
+      calls are made to derived methods.
+
+      @param forcerestart  Do a soft or hard reset of the sound subsystem
+    */
+    virtual void initialize(bool forcerestart = false);
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -137,7 +145,7 @@ public:
     Int32 myLastRegisterSetCycle;
 
     // Indicates the base framerate depending on whether the ROM is NTSC or PAL
-    double myDisplayFrameRate;
+    uInt32 myDisplayFrameRate;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.21 2005-03-14 04:08:15 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.22 2005-03-26 19:26:47 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -112,7 +112,7 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::initialize(const string title, uInt32 width, uInt32 height)
+void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 {
   bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO) > 0;
 
@@ -220,14 +220,14 @@ void FrameBuffer::update()
         if(myMessageTime > 0)
         {
           uInt32 w = myFont->getStringWidth(myMessageText) + 10;
-          uInt32 h = myFont->getFontHeight() + 5;
+          uInt32 h = myFont->getFontHeight() + 8;
           uInt32 x = (myWidth >> 1) - (w >> 1);
           uInt32 y = myHeight - h - LINEOFFSET/2;
 
           // Draw the bounded box and text
-          fillRect(x+1, y+2, w-2, h-4, kBGColor);  // FIXME - possibly change this to blended rect
+          blendRect(x+1, y+2, w-2, h-4, kBGColor);
           box(x, y+1, w, h-2, kColor, kColor);
-          myFont->drawString(myMessageText, x, y, w, kTextColor, kTextAlignCenter);
+          myFont->drawString(myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
           myMessageTime--;
 
           // Erase this message on next update
@@ -880,9 +880,17 @@ void FrameBuffer::setupPalette()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFullscreen()
+void FrameBuffer::toggleFullscreen(bool given, bool toggle)
 {
-  bool isFullscreen = !myOSystem->settings().getBool("fullscreen");
+  bool isFullscreen;
+  if(given)
+  {
+    if(myOSystem->settings().getBool("fullscreen") == toggle)
+      return;
+    isFullscreen = toggle;
+  }
+  else
+    isFullscreen = !myOSystem->settings().getBool("fullscreen");
 
   // Update the settings
   myOSystem->settings().setBool("fullscreen", isFullscreen);
@@ -899,34 +907,51 @@ void FrameBuffer::toggleFullscreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::resize(int mode)
+void FrameBuffer::resize(Int8 mode, Int8 zoom)
 {
-  // reset size to that given in properties
-  // this is a special case of allowing a resize while in fullscreen mode
-  if(mode == 0)
+  // Use the specific zoom level if one is given
+  // Otherwise use 'mode' to pick the next zoom level
+  if(zoom != 0)
   {
-    myWidth  = 1;//FIXME myMediaSource->width() << 1;
-    myHeight = 1;//FIXME myMediaSource->height();
-  }
-  else if(mode == 1)   // increase size
-  {
-    if(myOSystem->settings().getBool("fullscreen"))
-      return;
+//    if(myOSystem->settings().getBool("fullscreen"))
+//      return;
 
-    if(theZoomLevel == theMaxZoomLevel)
+    if(zoom < 1)
       theZoomLevel = 1;
-    else
-      theZoomLevel++;
-  }
-  else if(mode == -1)   // decrease size
-  {
-    if(myOSystem->settings().getBool("fullscreen"))
-      return;
-
-    if(theZoomLevel == 1)
+    else if((uInt32)zoom > theMaxZoomLevel)
       theZoomLevel = theMaxZoomLevel;
     else
-      theZoomLevel--;
+      theZoomLevel = zoom;
+  }
+  else
+  {
+    // reset size to that given in properties
+    // this is a special case of allowing a resize while in fullscreen mode
+    if(mode == 0)
+    {
+      myWidth  = 1;//FIXME myMediaSource->width() << 1;
+      myHeight = 1;//FIXME myMediaSource->height();
+    }
+    else if(mode == 1)   // increase size
+    {
+      if(myOSystem->settings().getBool("fullscreen"))
+        return;
+
+      if(theZoomLevel == theMaxZoomLevel)
+        theZoomLevel = 1;
+      else
+        theZoomLevel++;
+    }
+    else if(mode == -1)   // decrease size
+    {
+      if(myOSystem->settings().getBool("fullscreen"))
+        return;
+
+      if(theZoomLevel == 1)
+        theZoomLevel = theMaxZoomLevel;
+      else
+        theZoomLevel--;
+    }
   }
 
   if(!createScreen())
@@ -1068,7 +1093,7 @@ uInt32 FrameBuffer::screenHeight()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setWindowTitle(const string title)
+void FrameBuffer::setWindowTitle(const string& title)
 {
   SDL_WM_SetCaption(title.c_str(), "stella");
 }
