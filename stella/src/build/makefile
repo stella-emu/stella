@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.25 2002-11-09 23:34:35 stephena Exp $
+## $Id: makefile,v 1.26 2002-11-11 22:01:28 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -36,6 +36,11 @@ OPTIMIZATIONS    = -O2 -Wall -Wno-unused
 # OPTIMIZATIONS    = -O3 -mcpu=athlon-xp -march=athlon-xp -Wall -Wno-unused \
 #	-funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math \
 #	-falign-functions=2 -falign-jumps=2 -falign-loops=2
+
+### which sound code to use for the SDL version
+### choices are "oss" or "sdl"
+### OSS is most compatible, SDL for platforms where OSS not available
+SDL_SOUND = oss
 
 ### if your C++ compiler doesn't support the bool type
 # BSPF_BOOL = 1
@@ -140,6 +145,20 @@ OPTS.SDL += -DDEVELOPER_SUPPORT=1
 OPTS.DOS += -DDEVELOPER_SUPPORT=1
 endif
 
+ifdef SDL_SOUND
+  ifeq ($(SDL_SOUND), oss)
+    OPTS.SDL += -DUSE_OSS_SOUND=1
+    OBJS.SDL += SoundX11.o
+  endif
+  ifeq ($(SDL_SOUND), sdl)
+    OBJS.SDL += SoundSDL.o
+  endif
+else
+  OPTS.SDL += -DUSE_OSS_SOUND=1
+  OBJS.SDL += SoundX11.o
+endif
+
+
 default:
 	@echo ""
 	@echo "To build Stella type: 'make <version>'"
@@ -195,7 +214,7 @@ linux-x:
 
 linux-sdl:
 	make stella.sdl \
-          INCLUDES="$(INCLUDES) -I$(UI)/sdl" \
+          INCLUDES="$(INCLUDES) -I$(UI)/sdl -I$(UI)/x11" \
           SYS_INCLUDES="" \
           OPTIONS="-DBSPF_UNIX=1" \
           OPTIONS+="$(OPTS.SDL)" \
@@ -203,7 +222,7 @@ linux-sdl:
           LDFLAGS+="$(CFLAGS.SDL)" \
           LDLIBS="-lX11 -lXext" \
           LDLIBS+="$(LIBS.SDL)" \
-          OBJS="mainSDL.o SoundSDL.o RectList.o" \
+          OBJS="mainSDL.o RectList.o" \
           OBJS+="$(OBJS.SDL)"
 
 bsdi-x:
