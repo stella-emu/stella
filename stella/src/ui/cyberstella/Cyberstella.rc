@@ -129,13 +129,6 @@ BEGIN
     BEGIN
         MENUITEM "&Cyberstella",                IDC_CONFIG
     END
-    POPUP "&Games"
-    BEGIN
-        MENUITEM "&Gunfight",                   IDG_GUNFIGHT
-        MENUITEM "&Jammed",                     IDG_JAMMED
-        MENUITEM "&QB",                         IDG_QB
-        MENUITEM "&Thrust",                     IDG_THRUST
-    END
     POPUP "&Help"
     BEGIN
         MENUITEM "&About Cyberstella...",       ID_APP_ABOUT
@@ -173,7 +166,7 @@ END
 
 IDD_CYBERSTELLA_FORM DIALOGEX 0, 0, 409, 169
 STYLE WS_CHILD
-FONT 8, "MS Shell Dlg"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "&Files found in:",-1,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,7,7,44,8
@@ -185,29 +178,29 @@ BEGIN
                     SS_NOPREFIX | WS_GROUP,57,7,254,8
 END
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 390, 133
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 285, 128
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Information"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "You must own legal copies of all ROM images you are using.  Neither Manuel Polik nor the rest of the Stella team can tell you where to find ROM images so DON'T ASK.  All requests will either be deleted or sent to the appropriate authorities.",
-                    -1,7,27,376,18,SS_NOPREFIX
+    LTEXT           "You must own legal copies of all ROM images you are using.  The Stella team cannot tell you where to find ROM images, so DON'T ASK.  All requests will either be deleted or sent to the appropriate authorities.",
+                    -1,7,21,266,26,SS_NOPREFIX
     LTEXT           "If you have a question or a problem with Cyberstella, please try one of these contacts:",
-                    -1,7,58,376,8,SS_NOPREFIX
-    LTEXT           "Manuel Polik:",-1,7,76,62,8,SS_NOPREFIX
-    LTEXT           "cybergoth@nexgo.de",IDC_EMAIL_JEFFMILL,73,76,103,8,
+                    -1,7,58,271,8,SS_NOPREFIX
+    LTEXT           "Stephen Anthony",-1,7,76,62,8,SS_NOPREFIX
+    LTEXT           "stephena@users.sourceforge.net",IDC_EMAIL_MAINTAINER,73,
+                    76,103,8,SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "http://minbar.org",IDC_WEB_MAINTAINER,190,76,82,8,
                     SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "http://www.emuunlim.com/stellax/",IDC_WEB_JEFFMILL,178,
-                    76,110,8,SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "Stella dev team:",-1,7,88,52,8,SS_NOPREFIX
-    LTEXT           "stella@csc.ncsu.edu",IDC_EMAIL_STELLA,73,88,67,8,
-                    SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "http://stella.atari.org",IDC_WEB_STELLA,178,88,65,8,
-                    SS_NOPREFIX | SS_NOTIFY
-    LTEXT           "Cyberstella is free software.  It may not be sold or offered as part of a collection for sale without permission from Manuel Polik.  When distributing Cyberstella, the original distribution (the .zip file) must not be altered.",
-                    -1,7,7,376,19,SS_NOPREFIX
-    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,50,375,1
-    PUSHBUTTON      "&Continue",IDC_CONTINUE,136,111,118,14
+    LTEXT           "Stella dev team:",-1,7,89,52,8,SS_NOPREFIX
+    LTEXT           "stella-main@lists.sourceforge.net",IDC_EMAIL_STELLA,73,
+                    89,105,8,SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "http://stella.sourceforge.net",IDC_WEB_STELLA,190,89,88,
+                    8,SS_NOPREFIX | SS_NOTIFY
+    LTEXT           "Cyberstella v1.4 is GPL software.",-1,7,7,271,9,
+                    SS_NOPREFIX
+    CONTROL         "",-1,"Static",SS_ETCHEDHORZ,7,50,268,1
+    PUSHBUTTON      "&Continue",IDC_CONTINUE,112,107,60,14
 END
 
 IDD_CONFIG_PAGE DIALOG DISCARDABLE  0, 0, 390, 112
@@ -239,8 +232,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -253,17 +246,20 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040904B0"
+        BLOCK "040904b0"
         BEGIN
+            VALUE "Comments", "\0"
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "Cyberstella MFC Application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "FileVersion", "1.4\0"
             VALUE "InternalName", "Cyberstella\0"
-            VALUE "LegalCopyright", "Copyright (C) 2002\0"
+            VALUE "LegalCopyright", "Copyright (C) 2003\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Cyberstella.EXE\0"
+            VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "Cyberstella Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "ProductVersion", "1.4\0"
+            VALUE "SpecialBuild", "\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -294,9 +290,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 383
+        RIGHTMARGIN, 278
         TOPMARGIN, 7
-        BOTTOMMARGIN, 126
+        BOTTOMMARGIN, 121
     END
 
     IDD_CONFIG_PAGE, DIALOG

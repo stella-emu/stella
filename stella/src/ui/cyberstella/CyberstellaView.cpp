@@ -9,6 +9,7 @@
 #include "StellaConfig.h"
 #include "Console.hxx"
 #include "SoundWin32.hxx"
+#include "SettingsWin32.hxx"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,10 +42,6 @@ BEGIN_MESSAGE_MAP(CCyberstellaView, CFormView)
 	ON_BN_CLICKED(IDC_CONFIG, OnConfig)
 	ON_BN_CLICKED(IDC_PLAY, OnPlay)
 	ON_WM_DESTROY()
-	ON_COMMAND(IDG_GUNFIGHT, OnGunfight)
-	ON_COMMAND(IDG_JAMMED, OnJammed)
-	ON_COMMAND(IDG_QB, OnQb)
-	ON_COMMAND(IDG_THRUST, OnThrust)
     ON_MESSAGE(MSG_GAMELIST_UPDATE, updateListInfos)
     ON_MESSAGE(MSG_GAMELIST_DISPLAYNOTE, displayNote)
     ON_MESSAGE(MSG_VIEW_INITIALIZE, initialize)
@@ -142,6 +139,10 @@ LRESULT CCyberstellaView::initialize(WPARAM wParam, LPARAM lParam)
     // Create a properties set for us to use
     m_pPropertiesSet = new PropertiesSet(); 
 
+    // Create SettingsWin32 object
+    pSettings = new SettingsWin32();
+    pSettings->loadConfig();
+
 	// Set up the image list.
     HICON hFolder, hAtari;
 
@@ -212,34 +213,6 @@ LRESULT CCyberstellaView::displayNote(WPARAM wParam, LPARAM lParam)
     return 0;    
 }
 
-void CCyberstellaView::OnGunfight()
-{
-    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-    //playRom(IDG_GUNFIGHT);
-    //MessageBox("If you'd like to play Gunfight on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
-}    
-
-void CCyberstellaView::OnJammed() 
-{
-    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-    //playRom(IDG_JAMMED);
-    //MessageBox("If you'd like to play Jammed on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
-}
-
-void CCyberstellaView::OnQb() 
-{
-    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-    //playRom(IDG_QB);
-    //MessageBox("If you'd like to play Qb on a real VCS, you can order a cartridge for only $16\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
-}
-
-void CCyberstellaView::OnThrust() 
-{
-    MessageBox("To avoid probable GPL violations by including non-GPL games into this project, this function is currently disabled. We're working on a GPL conform solution though, so check back soon.", "Sorry, currently not available!", MB_OK);
-    //playRom(IDG_THRUST);
-    //MessageBox("If you'd like to play Thrust on a real VCS, you can order a cartridge for only $25\nfrom http://webpages.charter.net/hozervideo!", "Commercial Break", MB_OK);
-}
-
 void CCyberstellaView::playRom(LONG gameID)
 {
     
@@ -254,179 +227,116 @@ void CCyberstellaView::playRom(LONG gameID)
     CString fileName;
     BYTE* pImage = NULL;
     LPCTSTR pszFileName = NULL;
-    Console* pConsole = NULL;
-    Sound* pSound = NULL;
     DWORD dwImageSize;
     DWORD dwActualSize;
-    Event rEvent;
+    Console* pConsole = NULL;
 
     // Create Sound driver object
     // (Will be initialized once we have a window handle below)
-    if (m_pGlobalData->bNoSound)
+    if(m_pGlobalData->bNoSound)
     {
         TRACE("Creating Sound driver");
-        pSound = new Sound;
+        pSound = new Sound();
     }
     else
     {
         TRACE("Creating SoundWin32 driver");
-        pSound = new SoundWin32;
+        pSound = new SoundWin32();
     }
     if ( pSound == NULL )
     {
         goto exit;
     }
 
-    // Special handling for special games
-    switch(gameID)
+
+    fileName = m_List.getCurrentFile();
+
+    // Safety Bail Out
+    if(fileName.GetLength() <= 0)
+      return;
+
+    // Load the rom file
+    HANDLE hFile;
+    hFile = ::CreateFile( fileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+
+    if(hFile == INVALID_HANDLE_VALUE)
     {
-        case IDG_GUNFIGHT:
-        {
-            /*pszFileName = "Gunfight";
-            dwActualSize = sizeof gunfight;
-            pImage = new BYTE[dwActualSize];
-            for(int i=0; i<dwActualSize; i++)
-            {
-				pImage[i] = gunfight[i]^(pszFileName[i%strlen(pszFileName)]);
-            }*/
-            break;
-        }
-        case IDG_JAMMED:
-        {
-            /*pszFileName = "Jammed";
-            dwActualSize = sizeof jammed;
-            pImage = new BYTE[dwActualSize];
-            for(int i=0; i<dwActualSize; i++)
-            {
-				pImage[i] = jammed[i]^(pszFileName[i%strlen(pszFileName)]);
-            }*/
-            break;
-        }
-        case IDG_QB:
-        {
-            /*pszFileName = "Qb";
-            dwActualSize = sizeof qb;
-            pImage = new BYTE[dwActualSize];
-            for(int i=0; i<dwActualSize; i++)
-            {
-				pImage[i] = qb[i]^(pszFileName[i%strlen(pszFileName)]);
-            }*/
-            break;
-        }
-        case IDG_THRUST:
-        {
-            /*pszFileName = "Thrust";
-            dwActualSize = sizeof thrust;
-            pImage = new BYTE[dwActualSize];
-            for(int i=0; i<dwActualSize; i++)
-            {
-				pImage[i] = thrust[i]^(pszFileName[i%strlen(pszFileName)]);
-            }*/
-            break;
-        }
-        default:
-        {
-            fileName = m_List.getCurrentFile();
+        DWORD dwLastError = ::GetLastError();
 
-            // Safety Bail Out
-            if(fileName.GetLength() <= 0)   return;
+        TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
+        ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
 
-            // Load the rom file
-            HANDLE hFile;
-            hFile = ::CreateFile( fileName, 
-                                  GENERIC_READ, 
-                                  FILE_SHARE_READ, 
-                                  NULL, 
-                                  OPEN_EXISTING, 
-                                  FILE_ATTRIBUTE_NORMAL,
-                                  NULL );
+        // ::MessageBoxFromGetLastError( pszPathName );
+        TCHAR pszFormat[ 1024 ];
+        LoadString(GetModuleHandle(NULL),
+                    IDS_ROM_LOAD_FAILED,
+                    pszFormat, 1023 );
 
-            if (hFile == INVALID_HANDLE_VALUE)
-            {
-                DWORD dwLastError = ::GetLastError();
+        LPTSTR pszLastError = NULL;
 
-                TCHAR pszCurrentDirectory[ MAX_PATH + 1 ];
-                ::GetCurrentDirectory( MAX_PATH, pszCurrentDirectory );
+        FormatMessage(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL, 
+            dwLastError, 
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+            (LPTSTR)&pszLastError, 
+            0, 
+            NULL);
 
-                // ::MessageBoxFromGetLastError( pszPathName );
-                TCHAR pszFormat[ 1024 ];
-                LoadString(GetModuleHandle(NULL),
-                            IDS_ROM_LOAD_FAILED,
-                            pszFormat, 1023 );
+        TCHAR pszError[ 1024 ];
+        wsprintf( pszError, 
+                  pszFormat, 
+                  pszCurrentDirectory,
+                  fileName, 
+                  dwLastError,
+                  pszLastError );
 
-                LPTSTR pszLastError = NULL;
+        ::MessageBox( *this, 
+                      pszError, 
+                      _T("Error"),
+                      MB_OK | MB_ICONEXCLAMATION );
 
-                FormatMessage(
-                    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-                    NULL, 
-                    dwLastError, 
-                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                    (LPTSTR)&pszLastError, 
-                    0, 
-                    NULL);
+        ::LocalFree( pszLastError );
 
-                TCHAR pszError[ 1024 ];
-                wsprintf( pszError, 
-                          pszFormat, 
-                          pszCurrentDirectory,
-                          fileName, 
-                          dwLastError,
-                          pszLastError );
+        goto exit;
+    }
 
-                ::MessageBox( *this, 
-                              pszError, 
-                              _T("Error"),
-                              MB_OK | MB_ICONEXCLAMATION );
+    dwImageSize = ::GetFileSize( hFile, NULL );
 
-                ::LocalFree( pszLastError );
+    pImage = new BYTE[dwImageSize + 1];
+    if ( pImage == NULL )
+        goto exit;
 
-                goto exit;
-            }
+    if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
+    {
+        VERIFY( ::CloseHandle( hFile ) );
 
-            dwImageSize = ::GetFileSize( hFile, NULL );
+        MessageBoxFromGetLastError(fileName);
 
-            pImage = new BYTE[dwImageSize + 1];
-            if ( pImage == NULL )
-            {
-                goto exit;
-            }
+        goto exit;
+    }
 
-            if ( ! ::ReadFile( hFile, pImage, dwImageSize, &dwActualSize, NULL ) )
-            {
-                VERIFY( ::CloseHandle( hFile ) );
+    VERIFY( ::CloseHandle(hFile) );
 
-                MessageBoxFromGetLastError(fileName);
-
-                goto exit;
-            }
-
-            VERIFY( ::CloseHandle(hFile) );
-        }
-        // get just the filename
-        pszFileName = _tcsrchr( fileName, _T('\\') );
-        if ( pszFileName )
-        {
-            ++pszFileName;
-        }
-        else
-        {
-            pszFileName = fileName;
-        }
+    // get just the filename
+    pszFileName = _tcsrchr( fileName, _T('\\') );
+    if ( pszFileName )
+    {
+        ++pszFileName;
+    }
+    else
+    {
+        pszFileName = fileName;
     }
 
     try
     {
         // If this throws an exception, then it's probably a bad cartridge
-        pConsole = new Console( pImage, 
-                                dwActualSize,
-                                pszFileName, 
-                                rEvent, 
-                                *m_pPropertiesSet, 
-                                *pSound );
+        pConsole = new Console( pImage, dwActualSize, pszFileName, *pSettings,
+                                *m_pPropertiesSet, 31400 );
         if ( pConsole == NULL )
-        {
             goto exit;
-        }
     }
     catch (...)
     {
@@ -438,18 +348,12 @@ void CCyberstellaView::playRom(LONG gameID)
     }
 
 #ifdef USE_FS
-    pwnd = new CDirectXFullScreen( m_pGlobalData,
-                                   pConsole, 
-                                   rEvent );
+    pwnd = new CDirectXFullScreen( m_pGlobalData, pConsole, pSound );
 #else
-    pwnd = new CDirectXWindow( m_pGlobalData,
-                               pConsole,
-                               rEvent );
+    pwnd = new CDirectXWindow( m_pGlobalData, pConsole, pSound );
 #endif
-    if ( pwnd == NULL )
-    {
+    if( pwnd == NULL )
         goto exit;
-    }
 
     HRESULT hr;
 
@@ -475,21 +379,15 @@ void CCyberstellaView::playRom(LONG gameID)
         goto exit;
     }
 
-    if (!m_pGlobalData->bNoSound)
+    if(!m_pGlobalData->bNoSound)
     {
-        //
-        // 060499: Pass pwnd->GetHWND() in instead of hwnd as some systems
-        // will not play sound if this isn't set to the active window
-        //
+      SoundWin32* pSoundWin32 = static_cast<SoundWin32*>( pSound );
 
-        SoundWin32* pSoundWin32 = static_cast<SoundWin32*>( pSound );
-
-        hr = pSoundWin32->Initialize( *pwnd );
-        if ( FAILED(hr) )
-        {
-            TRACE( "Sndwin32 Initialize failed, err = %X", hr );
-            goto exit;
-        }
+      hr = pSoundWin32->Initialize(*pwnd);
+      if(FAILED(hr))
+      {
+        TRACE( "Sndwin32 Initialize failed, err = %X", hr );
+      }
     }
 
     ::ShowWindow( *this, SW_HIDE );
@@ -502,7 +400,9 @@ exit:
     delete pwnd;
     delete pConsole;
     delete pSound;
-    if (pImage) delete pImage;
+
+    if(pImage)
+      delete pImage;
 
     EnableWindow(TRUE);
 

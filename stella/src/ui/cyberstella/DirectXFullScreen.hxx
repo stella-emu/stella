@@ -8,6 +8,7 @@
 
 class Console;
 class MediaSource;
+class Sound;
 
 class CDirectInput;
 
@@ -16,12 +17,10 @@ class CDirectInput;
 
 class CDirectXFullScreen
 {
-public:
-
-	CDirectXFullScreen( const CGlobalData* rGlobalData,
-                        const Console* pConsole,
-                        Event& rEvent );
-	~CDirectXFullScreen();
+  public:
+    CDirectXFullScreen(const CGlobalData* rGlobalData, const Console* pConsole,
+                       Sound* pSound);
+    ~CDirectXFullScreen();
 
     HRESULT Initialize( int cx = 0, int cy = 0 );
 
@@ -55,10 +54,9 @@ private:
 
 	// Stella objects
 
-	const Console* m_pConsole;
-	Event& m_rEvent;
-
-    const CGlobalData* m_rGlobalData;
+  const Console* m_pConsole;
+  const CGlobalData* m_rGlobalData;
+  Sound* m_pSound;
 	SIZE m_sizeGame;
 	BYTE m_rgbPixelDataTable[256];
 

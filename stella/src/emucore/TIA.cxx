@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.19 2002-11-19 04:33:48 bwmott Exp $
+// $Id: TIA.cxx,v 1.20 2003-09-21 14:33:33 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -656,9 +656,10 @@ void TIA::drawMessageText()
   }
 
   // Then, draw the text
-  for(uInt8 x = 0; x < length; ++x)
+//FIXME - change back to x
+  for(uInt8 x1 = 0; x1 < length; ++x1)
   {
-    char letter = myMessageText[x];
+    char letter = myMessageText[x1];
 
     if((letter >= 'A') && (letter <= 'Z'))
       data = ourFontData[(int)letter - 65];

@@ -51,17 +51,17 @@ BOOL AboutDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-    m_hlMail_JSM.SubclassDlgItem(IDC_EMAIL_JEFFMILL, this);
-	m_hlMail_JSM.SetURL( _T("mailto:miller@zipcon.net?Subject=StellaX") );
+  m_hlMail_JSM.SubclassDlgItem(IDC_EMAIL_JEFFMILL, this);
+	m_hlMail_JSM.SetURL( _T("mailto:stephena@users.sourceforge.net?Subject=Cyberstella") );
 
 	m_hlWWW_JSM.SubclassDlgItem(IDC_WEB_JEFFMILL, this);
-	m_hlWWW_JSM.SetURL( _T("http://www.emuunlim.com/stellax/") );
+	m_hlWWW_JSM.SetURL( _T("http://minbar.org") );
 
 	m_hlMail_Stella.SubclassDlgItem(IDC_EMAIL_STELLA, this);
-	m_hlMail_Stella.SetURL( _T("mailto:stella@csc.ncsu.edu") );
+	m_hlMail_Stella.SetURL( _T("mailto:stella-main@lists.sourceforge.net") );
 
 	m_hlWWW_Stella.SubclassDlgItem(IDC_WEB_STELLA, this);
-	m_hlWWW_Stella.SetURL( _T("http://stella.atari.org/") );
+	m_hlWWW_Stella.SetURL( _T("http://stella.sourceforge.net") );
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE

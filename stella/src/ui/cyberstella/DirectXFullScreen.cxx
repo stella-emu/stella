@@ -2,6 +2,8 @@
 // StellaX
 // Jeff Miller 05/12/2000
 //
+#define STRICT
+
 #include "pch.hxx"
 #include "DirectXFullScreen.hxx"
 #include "resource.h"
@@ -10,7 +12,9 @@
 
 #include "bspf.hxx"
 #include "Console.hxx"
-#include "Event.hxx"
+#include "EventHandler.hxx"
+#include "StellaEvent.hxx"
+#include "Sound.hxx"
 #include "MediaSrc.hxx"
 
 /*
@@ -30,14 +34,14 @@ LPCTSTR CDirectXFullScreen::pszClassName = _T("StellaXClass");
 CDirectXFullScreen::CDirectXFullScreen(
     const CGlobalData* rGlobalData,
     const Console* pConsole,
-    Event& rEvent
+    Sound* pSound
     ) : \
     m_rGlobalData( rGlobalData ),
-	m_pConsole( pConsole ),
-	m_rEvent( rEvent ),
+    m_pConsole( pConsole ),
+    m_pSound( pSound ),
 
     m_fInitialized( FALSE ),
-	m_hwnd( NULL ),
+    m_hwnd( NULL ),
 
 	m_piDD( NULL ),
 	m_piDDSPrimary( NULL ),
@@ -635,6 +639,9 @@ DWORD CDirectXFullScreen::Run(
                 break;
 			}
 
+// FIXME - clean up this logic here, make it more like main in mainSDL
+      m_pSound->updateSound(rMediaSource);
+
             //
 			// Check for keyboard, mouse, joystick input
             //
@@ -695,108 +702,101 @@ DWORD CDirectXFullScreen::Run(
 	return msg.wParam;
 }
 
+// FIXME - Event handling should be stripped out of this class
+// This class should only be a Display class, similar to DisplaySDL
+// or DisplayX11
+
 // ---------------------------------------------------------------------------
 // Event Handling
 // VK_* is defined in winuser.h
-
 struct KeyEventStruct
 {
 	int nVirtKey;
 	int nAsyncVirtKey;
-	Event::Type eventCode;
+	StellaEvent::KeyCode keyCode;
 };
-
 
 static KeyEventStruct KeyEventMap[] = 
 {
-	/* -------------------------------------------------------------------- */
-	/* left keypad */
+	{ DIK_F1,		VK_F1,		StellaEvent::KCODE_F1 },
+	{ DIK_F2,		VK_F2,		StellaEvent::KCODE_F2 },
+	{ DIK_F3,		VK_F3,		StellaEvent::KCODE_F3 },
+	{ DIK_F4,		VK_F4,		StellaEvent::KCODE_F4 },
+	{ DIK_F5,		VK_F5,		StellaEvent::KCODE_F5 },
+	{ DIK_F6,		VK_F6,		StellaEvent::KCODE_F6 },
+	{ DIK_F7,		VK_F7,		StellaEvent::KCODE_F7 },
+	{ DIK_F8,		VK_F8,		StellaEvent::KCODE_F8 },
+	{ DIK_F9,		VK_F9,		StellaEvent::KCODE_F9 },
+	{ DIK_F10,		VK_F10,		StellaEvent::KCODE_F10 },
+	{ DIK_F11,		VK_F11,		StellaEvent::KCODE_F11 },
+	{ DIK_F12,		VK_F12,		StellaEvent::KCODE_F12 },
 
-	{ DIK_1,		'1',		Event::KeyboardZero1 },
-	{ DIK_2,		'2',		Event::KeyboardZero2 },
-	{ DIK_3,		'3',		Event::KeyboardZero3 },
-	{ DIK_Q,		'Q',		Event::KeyboardZero4 },
-	{ DIK_W,		'W',		Event::KeyboardZero5 },
-	{ DIK_E,		'E',		Event::KeyboardZero6 },
-	{ DIK_A,		'A',		Event::KeyboardZero7 },
-	{ DIK_S,		'S',		Event::KeyboardZero8 },
-	{ DIK_D,		'D',		Event::KeyboardZero9 },
-	{ DIK_Z,		'Z',		Event::KeyboardZeroStar },
-	{ DIK_X,		'X',		Event::KeyboardZero0 },
-	{ DIK_C,		'C',		Event::KeyboardZeroPound },
+	{ DIK_UP,		VK_UP,		StellaEvent::KCODE_UP },
+	{ DIK_DOWN,		VK_DOWN,	StellaEvent::KCODE_DOWN },
+	{ DIK_LEFT,		VK_LEFT,	StellaEvent::KCODE_LEFT },
+	{ DIK_RIGHT,	VK_RIGHT,	StellaEvent::KCODE_RIGHT },
+	{ DIK_SPACE,	VK_SPACE,	StellaEvent::KCODE_SPACE },
+	{ DIK_LCONTROL,	VK_CONTROL,	StellaEvent::KCODE_CTRL },
+	{ DIK_RCONTROL,	VK_CONTROL,	StellaEvent::KCODE_CTRL },
+// FIXME
+//    { SDLK_LALT,        StellaEvent::KCODE_ALT        },
+//    { SDLK_RALT,        StellaEvent::KCODE_ALT        },
 
-	/* -------------------------------------------------------------------- */
-	/* right keypad */
+	{ DIK_A,		'A',		StellaEvent::KCODE_a },
+	{ DIK_B,		'B',		StellaEvent::KCODE_b },
+	{ DIK_C,		'C',		StellaEvent::KCODE_c },
+	{ DIK_D,		'D',		StellaEvent::KCODE_d },
+	{ DIK_E,		'E',		StellaEvent::KCODE_e },
+	{ DIK_F,		'F',		StellaEvent::KCODE_f },
+	{ DIK_G,		'G',		StellaEvent::KCODE_g },
+	{ DIK_H,		'H',		StellaEvent::KCODE_h },
+	{ DIK_I,		'I',		StellaEvent::KCODE_i },
+	{ DIK_J,		'J',		StellaEvent::KCODE_j },
+	{ DIK_K,		'K',		StellaEvent::KCODE_k },
+	{ DIK_L,		'L',		StellaEvent::KCODE_l },
+	{ DIK_M,		'M',		StellaEvent::KCODE_m },
+	{ DIK_N,		'N',		StellaEvent::KCODE_n },
+	{ DIK_O,		'O',		StellaEvent::KCODE_o },
+	{ DIK_P,		'P',		StellaEvent::KCODE_p },
+	{ DIK_Q,		'Q',		StellaEvent::KCODE_q },
+	{ DIK_R,		'R',		StellaEvent::KCODE_r },
+	{ DIK_S,		'S',		StellaEvent::KCODE_s },
+	{ DIK_T,		'T',		StellaEvent::KCODE_t },
+	{ DIK_U,		'U',		StellaEvent::KCODE_u },
+	{ DIK_V,		'V',		StellaEvent::KCODE_v },
+	{ DIK_W,		'W',		StellaEvent::KCODE_w },
+	{ DIK_X,		'X',		StellaEvent::KCODE_x },
+	{ DIK_Y,		'Y',		StellaEvent::KCODE_y },
+	{ DIK_Z,		'Z',		StellaEvent::KCODE_z },
 
-	{ DIK_8,		'8',		Event::KeyboardOne1 },
-	{ DIK_9,		'9',		Event::KeyboardOne2 },
-	{ DIK_0,		'0',		Event::KeyboardOne3 },
-	{ DIK_I,		'I',		Event::KeyboardOne4 },
-	{ DIK_O,		'O',		Event::KeyboardOne5 },
-	{ DIK_P,		'P',		Event::KeyboardOne6 },
-	{ DIK_K,		'K',		Event::KeyboardOne7 },
-	{ DIK_L,		'L',		Event::KeyboardOne8 },
-	{ DIK_SEMICOLON,';',		Event::KeyboardOne9 },
-	{ DIK_COMMA,	',',		Event::KeyboardOneStar },
-	{ DIK_PERIOD,	'.',		Event::KeyboardOne0 },
-	{ DIK_SLASH,	'/',		Event::KeyboardOnePound },
+	{ DIK_0,		'0',		StellaEvent::KCODE_0 },
+	{ DIK_1,		'1',		StellaEvent::KCODE_1 },
+	{ DIK_2,		'2',		StellaEvent::KCODE_2 },
+	{ DIK_3,		'3',		StellaEvent::KCODE_3 },
+	{ DIK_4,		'4',		StellaEvent::KCODE_4 },
+	{ DIK_5,		'5',		StellaEvent::KCODE_5 },
+	{ DIK_6,		'6',		StellaEvent::KCODE_6 },
+	{ DIK_7,		'7',		StellaEvent::KCODE_7 },
+	{ DIK_8,		'8',		StellaEvent::KCODE_8 },
+	{ DIK_9,		'9',		StellaEvent::KCODE_9 },
 
-	/* -------------------------------------------------------------------- */
-	/* left joystick */
+// FIXME - add keypad codes here ...
 
-	{ DIK_DOWN,		VK_DOWN,	Event::JoystickZeroDown },
-	{ DIK_UP,		VK_UP,		Event::JoystickZeroUp },
-	{ DIK_LEFT,		VK_LEFT,	Event::JoystickZeroLeft },
-	{ DIK_RIGHT,	VK_RIGHT,	Event::JoystickZeroRight },
-	{ DIK_SPACE,	VK_SPACE,	Event::JoystickZeroFire },
-
-	/* left joystick (alt.) */
-
-	{ DIK_W,		'W',		Event::JoystickZeroUp },
-	{ DIK_S,		'S',		Event::JoystickZeroDown },
-	{ DIK_A,		'A',		Event::JoystickZeroLeft },
-	{ DIK_D,		'D',		Event::JoystickZeroRight },
-	{ DIK_TAB,		VK_TAB,		Event::JoystickZeroFire },
-
-	/* I added this one (for my powerramp joystick) */
-
-	{ DIK_LCONTROL,	VK_CONTROL,	Event::JoystickZeroFire },
-
-	/* left joystick booster-grip */
-
-	{ DIK_Z,		'Z',		Event::BoosterGripZeroTrigger },
-	{ DIK_X,		'X',		Event::BoosterGripZeroBooster },
-
-	/* left joystick booster-grip (alt.) */
-
-	{ DIK_1,		'1',		Event::BoosterGripZeroTrigger },
-	{ DIK_2,		'2',		Event::BoosterGripZeroBooster },
-
-	/* -------------------------------------------------------------------- */
-	/* right joystick */
-
-	{ DIK_L,		'L',		Event::JoystickOneDown },
-	{ DIK_O,		'O',		Event::JoystickOneUp },
-	{ DIK_K,		'K',		Event::JoystickOneLeft },
-	{ DIK_SEMICOLON,';',		Event::JoystickOneRight },
-	{ DIK_J,		'J',		Event::JoystickOneFire },
-
-	/* right joystick booster-grip */
-
-	{ DIK_N,		'N',		Event::BoosterGripOneTrigger },
-	{ DIK_M,		'M',		Event::BoosterGripOneBooster },
-
-	/* -------------------------------------------------------------------- */
-	/* console controls */
-
-	{ DIK_F1,		VK_F1,		Event::ConsoleSelect },
-	{ DIK_F2,		VK_F2,		Event::ConsoleReset },
-	{ DIK_F3,		VK_F3,		Event::ConsoleColor },
-	{ DIK_F4,		VK_F4,		Event::ConsoleBlackWhite },
-	{ DIK_F5,		VK_F5,		Event::ConsoleLeftDifficultyA },
-	{ DIK_F6,		VK_F6,		Event::ConsoleLeftDifficultyB },
-	{ DIK_F7,		VK_F7,		Event::ConsoleRightDifficultyA },
-	{ DIK_F8,		VK_F8,		Event::ConsoleRightDifficultyB }
+// FIXME - get rest of codes ...
+//	{ SDLK_BACKSPACE,   StellaEvent::KCODE_BACKSPACE  },
+	{ DIK_TAB,		VK_TAB,		StellaEvent::KCODE_TAB        },
+//	{ SDLK_RETURN,      StellaEvent::KCODE_RETURN     },
+//	{ SDLK_PAUSE,       StellaEvent::KCODE_PAUSE      },
+//	{ SDLK_ESCAPE,      StellaEvent::KCODE_ESCAPE     },
+	{ DIK_COMMA,	',',		StellaEvent::KCODE_COMMA      },
+	{ DIK_PERIOD,	'.',		StellaEvent::KCODE_PERIOD     },
+	{ DIK_SLASH,	'/',		StellaEvent::KCODE_SLASH      },
+//	{ SDLK_BACKSLASH,   StellaEvent::KCODE_BACKSLASH  },
+	{ DIK_SEMICOLON,';',		StellaEvent::KCODE_SEMICOLON  }
+//	{ SDLK_QUOTE,       StellaEvent::KCODE_QUOTE      },
+//	{ SDLK_BACKQUOTE,   StellaEvent::KCODE_BACKQUOTE  },
+//	{ SDLK_LEFTBRACKET, StellaEvent::KCODE_LEFTBRACKET},
+//	{ SDLK_RIGHTBRACKET,StellaEvent::KCODE_RIGHTBRACKET}
 };
 
 void CDirectXFullScreen::UpdateEvents(
@@ -808,9 +808,9 @@ void CDirectXFullScreen::UpdateEvents(
 	// and I don't want to undo a set i may have done earlier in the loop
     //
 
-	const int nEventCount = Event::LastType;
-    long rgEventState[ nEventCount ];
-	ZeroMemory( rgEventState, nEventCount * sizeof(long) );
+	const int nSize = _countof(KeyEventMap);
+//    long rgKeyEventState[ nSize ];
+//	ZeroMemory( rgKeyEventState, nSize * sizeof(StellaEvent::KeyCode) );
 
 	int i;
 
@@ -820,25 +820,20 @@ void CDirectXFullScreen::UpdateEvents(
 
 	if (m_pDirectKeyboard->Update() == S_OK)
 	{
-		int nSize = _countof(KeyEventMap);
-
 		for (i = 0; i < nSize; ++i)
 		{
-			rgEventState[KeyEventMap[i].eventCode] |= 
-				m_pDirectKeyboard->IsButtonPressed(KeyEventMap[i].nVirtKey);
+			int state = (m_pDirectKeyboard->IsButtonPressed(KeyEventMap[i].nVirtKey)) ? 1 : 0;
+			m_pConsole->eventHandler().sendKeyEvent(KeyEventMap[i].keyCode, state);
 		}
 	}
 	else
 	{
 		// Fallback -- if Keyboard update failed (most likely due to 
 		// DirectInput not being available), then use the old async
-
-		int nSize = _countof(KeyEventMap);
-
 		for (i = 0; i < nSize; ++i)
 		{
-			rgEventState[KeyEventMap[i].eventCode] |=
-				(::GetAsyncKeyState(KeyEventMap[i].nAsyncVirtKey) ? 1: 0);
+			int state = (::GetAsyncKeyState(KeyEventMap[i].nAsyncVirtKey)) ? 1 : 0;
+			m_pConsole->eventHandler().sendKeyEvent(KeyEventMap[i].keyCode, state);
 		}
 	}
 
@@ -846,6 +841,7 @@ void CDirectXFullScreen::UpdateEvents(
 	// Update joystick
     //
 
+/*  FIXME - add multiple joysticks 
 	if (m_pDirectJoystick->Update() == S_OK)
 	{
 		rgEventState[Event::JoystickZeroFire] |=
@@ -871,7 +867,7 @@ void CDirectXFullScreen::UpdateEvents(
         {
 			rgEventState[Event::JoystickZeroDown] = 1;
         }
-	}
+	} */
 
     //
 	// Update mouse
@@ -886,19 +882,19 @@ void CDirectXFullScreen::UpdateEvents(
 
 		// Mouse resistance is measured between 0...1000000
 
-    	rgEventState[ m_rGlobalData->PaddleResistanceEvent() ] = (999-x)*1000;
+//    	rgEventState[ m_rGlobalData->PaddleResistanceEvent() ] = (999-x)*1000;
 		
-		rgEventState[ m_rGlobalData->PaddleFireEvent() ] |= m_pDirectMouse->IsButtonPressed(0);
+//		rgEventState[ m_rGlobalData->PaddleFireEvent() ] |= m_pDirectMouse->IsButtonPressed(0);
 	}
 
     //
 	// Write new event state
     //
 
-	for (i = 0; i < nEventCount; ++i)
-	{
-		m_rEvent.set( (Event::Type)i, rgEventState[i] );
-	}
+//	for (i = 0; i < nEventCount; ++i)
+//	{
+//		m_rEvent.set( (Event::Type)i, rgEventState[i] );
+//	}
 }
 
 // ---------------------------------------------------------------------------

@@ -1,109 +1,117 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/01/2000
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
-#ifndef SNDWIN32_H
-#define SNDWIN32_H
+// Copyright (c) 1995-2002 by Bradford W. Mott
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: SoundWin32.hxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+//============================================================================
+
+#ifndef SOUND_WIN32_HXX
+#define SOUND_WIN32_HXX
+
+#include <dsound.h>
 
 #include "bspf.hxx"
+#include "MediaSrc.hxx"
 #include "Sound.hxx"
-#include "TIASound.h"
 
+/**
+  This class implements a sound class using the
+  Win32 DirectSound API.
 
-class AudioStreamServices;
-class AudioStream;
-
-#define SAMPLES_PER_SEC 22050
-#define NUM_CHANNELS 1
-#define BITS_PER_SAMPLE 8
-
-class WaveFile
-{
-public:
-
-    WaveFile( void )
-        {
-            ZeroMemory( &wfx, sizeof(wfx) );
-            wfx.cbSize = sizeof( wfx );
-            wfx.wFormatTag = WAVE_FORMAT_PCM;
-            wfx.nChannels = NUM_CHANNELS;
-            wfx.nSamplesPerSec = SAMPLES_PER_SEC;
-            wfx.wBitsPerSample = BITS_PER_SAMPLE;
-            wfx.nBlockAlign = wfx.wBitsPerSample / 8 * wfx.nChannels;
-            wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
-
-        }
-
-    ~WaveFile( void )
-        {
-        }
-
-    BOOL Open( void )
-        {
-            Tia_sound_init( 31400, wfx.nSamplesPerSec );
-
-            return TRUE;
-        }
-
-    BOOL Cue( void )
-        {
-            return TRUE;
-        }
-
-    void Read( BYTE* pbDest, UINT cbSize )
-        {
-            Tia_process ( pbDest, cbSize );
-        }
-
-    UINT GetAvgDataRate (void) 
-        {   
-            return wfx.nAvgBytesPerSec;
-        }
-
-    BYTE GetSilenceData (void)
-        {
-            return 0;
-        }
-
-    WAVEFORMATEX* GetWaveFormatEx( void )
-        {
-            return &wfx;
-        }
-
-private:
-
-    WAVEFORMATEX wfx;
-
-	WaveFile( const WaveFile& );  // no implementation
-	void operator=( const WaveFile& );  // no implementation
-};
-
+  @author  Stephen Anthony
+  @version $Id: SoundWin32.hxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+*/
 class SoundWin32 : public Sound
 {
-public:
+  public:
+    /**
+      Create a new sound object
+    */
+    SoundWin32();
 
-	SoundWin32();
-	virtual ~SoundWin32();
+    /**
+      Destructor
+    */
+    virtual ~SoundWin32();
 
-	HRESULT Initialize( HWND hwnd );
-	
-    //
-    // base class virtuals
-    //
+  public:
+    /**
+      Closes the sound device
+    */
+    void closeDevice();
 
-	virtual void set(Sound::Register reg, uInt8 value);
+    /**
+      Return the playback sample rate for the sound device.
 
-	virtual void mute( bool state );
-	
-private:
+      @return The playback sample rate
+    */
+    uInt32 getSampleRate() const;
 
-    BOOL m_fInitialized;
+    /**
+      Return true iff the sound device was successfully initlaized.
 
-    AudioStreamServices* m_pass;
-    AudioStream* m_pasCurrent;
+      @return true iff the sound device was successfully initlaized.
+    */
+    bool isSuccessfullyInitialized() const;
 
-    SoundWin32( const SoundWin32& );  // no implementation
-	void operator=( const SoundWin32& );  // no implementation
+    /**
+      Sets the volume of the sound device to the specified level.  The
+      volume is given as a percentage from 0 to 100.  A -1 indicates
+      that the volume shouldn't be changed at all.
+
+      @param percent The new volume percentage level for the sound device
+    */
+    void setSoundVolume(Int32 percent);
+
+    /**
+      Update the sound device using the audio sample from the specified
+      media source.
+
+      @param mediaSource The media source to get audio samples from.
+    */
+    void updateSound(MediaSource& mediaSource);
+
+    /**
+      Initialize the DirectSound subsystem/
+
+      @return The result of initialization.
+    */
+    HRESULT Initialize(HWND hwnd);
+
+  private:
+    // Print error messages and clean up
+    void SoundError(const char* message);
+
+    // Indicates if the sound device was successfully initialized
+    bool myIsInitializedFlag;
+
+    // DirectSound device
+    LPDIRECTSOUND8 myDSDevice;
+
+    // DirectSound secondary buffer
+    LPDIRECTSOUNDBUFFER myDSBuffer;
+
+    // Mixer file descriptor
+    int myMixerFd;
+
+    // Original mixer volume when the sound device was opened
+    int myOriginalVolume;
+
+    // PCM buffer size
+    uInt32 myBufferSize;
+
+    // DSP sample rate
+    uInt32 mySampleRate;
 };
 #endif
-

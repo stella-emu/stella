@@ -1,173 +1,162 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 04/26/2000
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
-#include "pch.hxx"
+// Copyright (c) 1995-2002 by Bradford W. Mott
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: SoundWin32.cxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+//============================================================================
+
+#include <assert.h>
+
+#include <dsound.h>
+
+#include "bspf.hxx"
+#include "MediaSrc.hxx"
 #include "SoundWin32.hxx"
-#include "resource.h"
 
-#include "AudioStream.hxx"
-
-SoundWin32::SoundWin32(
-    ) :
-    m_fInitialized( FALSE ),
-    m_pass( NULL ),
-    m_pasCurrent( NULL )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SoundWin32::SoundWin32()
+    : myIsInitializedFlag(false),
+      myBufferSize(512),
+      mySampleRate(31400),
+      myDSBuffer(NULL)
 {
-	TRACE("SoundWin32::SoundWin32");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SoundWin32::~SoundWin32()
+{
+  closeDevice();
 }
 
 
-HRESULT SoundWin32::Initialize(
-	HWND hwnd
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+HRESULT SoundWin32::Initialize(HWND hWnd)
 {
-	TRACE( "SoundWin32::Initialize hwnd=%08X", hwnd );
+  HRESULT hr;
 
-    if ( m_fInitialized )
-    {
-        TRACE( "SoundWin32::Initialize - already initialized" );
-        return S_OK;
-    }
-
-    HRESULT hr = S_OK;
-
-    m_pass = new AudioStreamServices;
-    if ( m_pass == NULL )
-    {
-        hr = E_OUTOFMEMORY;
-        goto cleanup;
-    }
-
-    if ( ! m_pass->Initialize( hwnd ) )
-    {
-        TRACE( "ASS Initialize failed" );
-        MessageBox( (HINSTANCE)::GetWindowLong( hwnd, GWL_HINSTANCE ), 
-                    hwnd, 
-                    IDS_ASS_FAILED );
-        hr = E_FAIL;
-        goto cleanup;
-    }
-
-    m_pasCurrent = new AudioStream;
-    if ( m_pasCurrent == NULL )
-    {
-        hr = E_OUTOFMEMORY;
-        goto cleanup;
-    }
-
-    if ( ! m_pasCurrent->Create( m_pass ) )
-    {
-        TRACE( "PAS Create failed" );
-        MessageBox( (HINSTANCE)::GetWindowLong( hwnd, GWL_HINSTANCE ), 
-                    hwnd, 
-                    IDS_PAS_FAILED );
-        hr = E_FAIL;
-        goto cleanup;
-    }
-
-    m_pasCurrent->Play();
-
-    m_fInitialized = TRUE;
-cleanup:
-
-    if ( FAILED(hr) )
-    {
-        if ( m_pasCurrent )
-        {
-            m_pasCurrent->Destroy();
-            delete m_pasCurrent;
-            m_pasCurrent = NULL;
-        }
-
-        if ( m_pass )
-        {
-            delete m_pass;
-            m_pass = NULL;
-        }
-    }
-
+  // Create IDirectSound using the primary sound device
+  if( FAILED( hr = DirectSoundCreate8( NULL, &myDSDevice, NULL ) ) )
+  {
+    SoundError("DirectSoundCreate8");
     return hr;
+  }
+
+  // Set DirectSound coop level 
+  if( FAILED(hr = myDSDevice->SetCooperativeLevel(hWnd, DSSCL_PRIORITY)) )
+  {
+    SoundError("SetCooperativeLevel");
+    return hr;
+  }
+
+  // Set up the static sound buffer
+  WAVEFORMATEX wfx;
+  DSBUFFERDESC dsbdesc;
+
+  ZeroMemory(&wfx, sizeof(wfx));
+  wfx.wFormatTag = WAVE_FORMAT_PCM;
+  wfx.nChannels = 1;
+  wfx.nSamplesPerSec = mySampleRate;
+  wfx.wBitsPerSample = 8;
+  wfx.nBlockAlign = 1;      //wfx.wBitsPerSample / 8 * wfx.nChannels;
+  wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
+   
+  ZeroMemory(&dsbdesc, sizeof(dsbdesc));
+  dsbdesc.dwSize = sizeof(DSBUFFERDESC);
+  dsbdesc.dwFlags = DSBCAPS_CTRLVOLUME;
+  dsbdesc.dwBufferBytes = myBufferSize;
+  dsbdesc.lpwfxFormat = &wfx;
+
+  hr = myDSDevice->CreateSoundBuffer(&dsbdesc, &myDSBuffer, NULL);
+  if(SUCCEEDED(hr)) 
+    myIsInitializedFlag = true;
+
+  return hr;
 }
- 
-SoundWin32::~SoundWin32(
-    )
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundWin32::closeDevice()
 {
-	TRACE("SoundWin32::~SoundWin32");
-
-    if ( m_pasCurrent )
-    {
-        m_pasCurrent->Destroy();
-        delete m_pasCurrent;
-        m_pasCurrent = NULL;
-    }
-
-    delete m_pass;
-    m_pass = NULL;
 }
 
-
-void SoundWin32::set(Sound::Register reg, uInt8 value)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 SoundWin32::getSampleRate() const
 {
-    if ( ! m_fInitialized )
-    {
-        TRACE( "SoundWin32::set -- not initialized" );
-		return;
-    }
-
-    //
-    // Process TIA data
-    //
-    
-    switch( reg ) 
-    {
-    case AUDC0:
-        Update_tia_sound( 0x15, value );
-        break;
-        
-    case AUDC1:
-        Update_tia_sound( 0x16, value );
-        break;
-        
-    case AUDF0:
-        Update_tia_sound( 0x17, value );
-        break;
-        
-    case AUDF1:
-        Update_tia_sound( 0x18, value );
-        break;
-        
-    case AUDV0:
-        Update_tia_sound( 0x19, value );
-        break;
-        
-    case AUDV1:
-        Update_tia_sound( 0x1A, value );
-        break;
-    }
-
+  return myIsInitializedFlag ? mySampleRate : 0;
 }
 
-void SoundWin32::mute(
-	bool mute
-    )
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundWin32::isSuccessfullyInitialized() const
 {
-    if ( ! m_fInitialized )
-    {
-        TRACE( "SoundWin32::mute -- not initialized" );
-        return;
-    }
-
-    if ( m_pasCurrent )
-    {
-        if ( mute )
-        {
-            m_pasCurrent->Stop();
-        }
-        else
-        {
-            m_pasCurrent->Play();
-        }
-    }
+  return myIsInitializedFlag;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundWin32::setSoundVolume(Int32 percent)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundWin32::updateSound(MediaSource& mediaSource)
+{
+  if(myIsInitializedFlag)
+  {
+    HRESULT hr;
+    uInt8 periodCount = 0;
+    uInt8* buffer = new uInt8[myBufferSize];
+
+    // Dequeue samples as long as full fragments are available
+    while(mediaSource.numberOfAudioSamples() >= myBufferSize)
+    {
+      mediaSource.dequeueAudioSamples(buffer, myBufferSize);
+
+      LPVOID lpvWrite;
+      DWORD  dwLength;
+      hr = myDSBuffer->Lock(0, 0, &lpvWrite, &dwLength, NULL, NULL, DSBLOCK_ENTIREBUFFER);
+      if(hr == DS_OK)
+      {
+        memcpy(lpvWrite, buffer, dwLength);
+        myDSBuffer->Unlock(lpvWrite, dwLength, NULL, 0);
+        myDSBuffer->SetCurrentPosition(0);
+        myDSBuffer->Play(0, 0, 0);
+        periodCount++;
+      }
+    }
+    delete[] buffer;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundWin32::SoundError(const char* message)
+{
+  cout << "ERROR in SOUND: " << message << endl;
+  myIsInitializedFlag = false;
+}
+
+/*    // Fill any unused fragments with silence so that we have a lower
+    // risk of having playback underruns
+    for(int i = 0; i < 1-periodCount; ++i)
+    {
+      frames = snd_pcm_avail_update(myPcmHandle);
+      if (frames > 0)
+      {
+        uInt8 buffer[frames];
+        memset((void*)buffer, 0, frames);
+        snd_pcm_writei(myPcmHandle, buffer, frames);
+      }
+      else if(frames == -EPIPE)   // this should never happen
+      {
+        cerr << "EPIPE after write\n";
+        break;
+      }
+    }*/

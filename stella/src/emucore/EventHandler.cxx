@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.7 2003-09-19 15:45:01 stephena Exp $
+// $Id: EventHandler.cxx,v 1.8 2003-09-21 14:33:33 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -37,20 +37,22 @@ EventHandler::EventHandler(Console* console)
     : myConsole(console),
       myCurrentState(0)
 {
+  Int32 i;
+
   // Create the event object which will be used for this handler
   myEvent = new Event();
 
   // Erase the KeyEvent array 
-  for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
+  for(i = 0; i < StellaEvent::LastKCODE; ++i)
     myKeyTable[i] = Event::LastType;
 
   // Erase the JoyEvent array
-  for(Int32 i = 0; i < StellaEvent::LastJSTICK; ++i)
+  for(i = 0; i < StellaEvent::LastJSTICK; ++i)
     for(Int32 j = 0; j < StellaEvent::LastJCODE; ++j)
       myJoyTable[i][j] = Event::LastType;
 
   // Erase the Message array 
-  for(Int32 i = 0; i < Event::LastType; ++i)
+  for(i = 0; i < Event::LastType; ++i)
     ourMessageTable[i] = "";
 
   // Set unchanging messages
@@ -215,7 +217,6 @@ void EventHandler::setKeymap()
 
   if(isValidList(list, StellaEvent::LastKCODE))
   {
-    Event::Type event;
     istringstream buf(list);
     string key;
 
@@ -240,7 +241,6 @@ void EventHandler::setJoymap()
 
   if(isValidList(list, StellaEvent::LastJSTICK*StellaEvent::LastJCODE))
   {
-    Event::Type event;
     istringstream buf(list);
     string key;
 

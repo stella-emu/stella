@@ -13,9 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.5 2003-09-19 15:45:01 stephena Exp $
+// $Id: Settings.cxx,v 1.6 2003-09-21 14:33:33 stephena Exp $
 //============================================================================
 
+#include <assert.h>
 #include <sstream>
 #include <fstream>
 
@@ -138,7 +139,21 @@ void Settings::saveConfig()
     return;
   }
 
-  out << "fps = " << theDesiredFrameRate << endl
+  out << ";  Stella configuration file" << endl
+      << ";" << endl
+      << ";  Lines starting with ';' are comments and are ignored." << endl
+      << ";  Spaces and tabs are ignored." << endl
+      << ";" << endl
+      << ";  Format MUST be as follows:" << endl
+      << ";    command = value" << endl
+      << ";" << endl
+      << ";  Commmands are the same as those specified on the commandline," << endl
+      << ";  without the '-' character." << endl
+      << ";" << endl
+      << ";  Values are the same as those allowed on the commandline." << endl
+      << ";  Boolean values are specified as 1 (for true) and 0 (for false)" << endl
+      << ";" << endl
+      << "fps = " << theDesiredFrameRate << endl
       << "zoom = " << theZoomLevel << endl
       << "keymap = " << myConsole->eventHandler().getKeymap() << endl
       << "joymap = " << myConsole->eventHandler().getJoymap() << endl

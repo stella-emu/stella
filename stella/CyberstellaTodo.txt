@@ -1,12 +1,7 @@
-Cyberstella V1.2
+What needs to be done ASAP (will be done eventually):
 
-Urgent:
-- Reasonably reduce the appearance of advertisment MessgageBoxes.
-- Check if games are running without stella.pro (?!?)
-
-Later:
-- More Columns / Advanced sorting
-- Make whole screen resizable
+  - More Columns / Advanced sorting
+  - Make whole screen resizable
     like this:
 
         void CViewList::OnSize(UINT nType, int cx, int cy) 
@@ -15,80 +10,40 @@ Later:
              if ( m_listCtrl.m_hWnd ) m_listCtrl.MoveWindow (0, 0, cx, cy);
         }
      ???????
-- Check other versions command line params
-- Check other versions keyboard mapping
-- Add Screenshots - F12
-- Add Pause - F3
-- Add Fullscreen / Windowed mode -F4
-- Check Direct Draw implementation / upgrade to DX8
-- Integrate manuals for the built in games
-- Think about french localisation
+  - Add Fullscreen / Windowed mode - Alt-Enter
+  - Check Direct Draw implementation / upgrade to DX8
+  - Improve the DirectSound support
+  - Can you have two PC controllers connected?
+  - Make all dialog boxes resizable for any size text
 
-ToDos from Brad Mott:
-- Is the keyboard mapping correct (e.g., do both of the Joysticks
-  work via the keyboard)
-- Can you have two PC controllers connected?
-- Finish the windowed version of StellaX (e.g., so that it'll run in
-  a window as well as fullscreen)
-- Improve the DirectSound support
-- Provide custom keyboard / controller mapping (e.g., be able to
-  map joystick buttons to the 2600 Select/Reset as well as the
-  other 2600 functions...)
+Integrated into the core, but not necessarily active in Cyberstella:
 
-ToDos from Stephen Anthony:
-1)  In the information dialog box, could you change the 
-Stella homepage to 
-stella.sourceforge.net, and change the mailing list to 
-stella-main@lists.sourceforge.net?  These are the new 
-addresses, and the 
-older ones you have used will be eventually phased out.
+  - Check other versions command line params
+  - Check other versions keyboard mapping
+  - Add Screenshots - F12
+  - Add Pause - Pause
+  - Is the keyboard mapping correct (e.g., do both of the Joysticks
+    work via the keyboard)
+  - Provide custom keyboard / controller mapping (e.g., be able to
+    map joystick buttons to the 2600 Select/Reset as well as the
+    other 2600 functions...)
 
-2)  Sometimes, when resizing the window, the inner file-
-list contents aren't 
-resized.  Maybe you haven't associated the resize event 
-with the resize 
-listview event?
+Future / never (depending on user enthusiasm and developer availability):
 
-3)  There seems to be some lines of text missing in the 
-various dialog boxes. 
-I'm not sure if that is a problem with the version of 
-Windows I using (Win98 
-under VMWare) or not.
-
-ToDos from Thomas Jetzsch:
--> Private Mail + (Update path earlier, etc...)
->> Maybe just adding some friendly game-info menu, that 
->> doesn't pop-up on remote at all.
-
->Auch 'ne gute Idee, könnte man auch schön mit den Anleitungen 
->kombinieren. Und bei jedem Spiel vielleicht nur einmalig darauf 
->verweisen.
-
-Own Ideas:
-- Add a Sprite/Animation Editor 
-- Add a PF Editor
-- Add a Sourcecode Editor
-- Either Support DASM as frontend or integrate a 6507 
-Assembler
-- Either Support Distella as frontend or integrate a 
-6507 Disassembler
-- AVI/MPEG export
-- WAV/MP3 export
-- Client/Server networked play for up to 4 Computers via 
-LAN/Internet
-- Tracking Hiscores
-- Record and Playback games - not as real movie, but by 
-logging Input/RAM/processor states in given intervals.
-- Cheatcodes
-
-Suggestions from Brian Luttrull:
-Are you planning or would you be interested in adding
-more features to the front end of Stella?  For
-example, the ability to display screenshots, cart
-pics, docs, details, etc.  The Kstella frontend has
-these features and the very friendly and helpful
-author, Stephen Anthony, said you would be free to
-take ideas and code from his frontend (under GPL).
+  - Add a Sprite/Animation Editor 
+  - Add a PF Editor
+  - Add a Sourcecode Editor
+  - Either Support DASM as frontend or integrate a 6507 Assembler
+  - Either Support Distella as frontend or integrate a 6507 Disassembler
+  - AVI/MPEG export
+  - WAV/MP3 export
+  - Client/Server networked play for up to 4 Computers via LAN/Internet
+  - Tracking Hiscores
+  - Record and Playback games - not as real movie, but by logging
+    Input/RAM/processor states in given intervals.
+  - Cheatcodes
+  - Improve frontend by adding snapshots, labels, manuals, etc.
+    Like KStella for Linux. (Suggestion from Brian Luttrull)
 
 Suggestions from Glenn Saunders:
 A couple things I'd like to see in a 2600 emulator that Brad was working on 

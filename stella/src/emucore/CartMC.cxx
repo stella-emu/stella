@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.3 2002-12-01 15:59:47 stephena Exp $
+// $Id: CartMC.cxx,v 1.4 2003-09-21 14:33:33 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -222,6 +222,7 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::save(Serializer& out)
 {
+  uInt32 i;
   string cart = name();
 
   try
@@ -230,12 +231,12 @@ bool CartridgeMC::save(Serializer& out)
 
     // The currentBlock array
     out.putLong(4);
-    for(uInt32 i = 0; i < 4; ++i)
+    for(i = 0; i < 4; ++i)
       out.putLong(myCurrentBlock[i]);
 
     // The 32K of RAM
     out.putLong(32 * 1024);
-    for(uInt32 i = 0; i < 32 * 1024; ++i)
+    for(i = 0; i < 32 * 1024; ++i)
       out.putLong(myRAM[i]);
   }
   catch(char *msg)
@@ -255,6 +256,7 @@ bool CartridgeMC::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::load(Deserializer& in)
 {
+  uInt32 i;
   string cart = name();
 
   try
@@ -266,12 +268,12 @@ bool CartridgeMC::load(Deserializer& in)
 
     // The currentBlock array
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myCurrentBlock[i] = (uInt8) in.getLong();
 
     // The 32K of RAM
     limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
+    for(i = 0; i < limit; ++i)
       myRAM[i] = (uInt8) in.getLong();
   }
   catch(char *msg)

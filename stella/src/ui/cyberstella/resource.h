@@ -40,12 +40,12 @@
 #define IDS_ROM_LOAD_FAILED             304
 #define IDS_NO_ITEM_SELECTED            305
 #define IDC_CONTINUE                    1000
-#define IDC_EMAIL_JEFFMILL              1002
+#define IDC_EMAIL_MAINTAINER            1002
 #define IDC_EMAIL_STELLA                1003
 #define IDC_PLAY                        1005
 #define IDC_ROMCOUNT                    1006
 #define IDC_ROMLIST                     1007
-#define IDC_WEB_JEFFMILL                1010
+#define IDC_WEB_MAINTAINER              1010
 #define IDC_WEB_STELLA                  1011
 #define IDC_ROMPATH                     1013
 #define IDC_CONFIG                      1015

@@ -40,9 +40,10 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /Yu"stdafx.h" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\games" /I "..\..\build" /I "..\..\emucore" /I "..\..\emucore\m6502\src" /I "..\..\emucore\m6502\src\bspf\src" /I "..\sound" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "BSPF_WIN32" /FR /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\games" /I "..\..\build" /I "..\..\emucore" /I "..\..\emucore\m6502\src" /I "..\..\emucore\m6502\src\bspf\src" /I "..\sound" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "BSPF_WIN32" /D DIRECTINPUT_VERSION=0x0800 /FR /FD /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -53,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /machine:I386
-# ADD LINK32 /nologo /subsystem:windows /machine:I386
+# ADD LINK32 dxguid.lib ddraw.lib dsound.lib /nologo /subsystem:windows /machine:I386
 
 !ELSEIF  "$(CFG)" == "Cyberstella - Win32 Debug"
 
@@ -69,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\games" /I "..\..\build" /I "..\..\emucore" /I "..\..\emucore\m6502\src" /I "..\..\emucore\m6502\src\bspf\src" /I "..\sound" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "BSPF_WIN32" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\games" /I "..\..\build" /I "..\..\emucore" /I "..\..\emucore\m6502\src" /I "..\..\emucore\m6502\src\bspf\src" /I "..\sound" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "BSPF_WIN32" /D DIRECTINPUT_VERSION=0x0800 /FR /FD /GZ /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -80,7 +81,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 dxguid.lib ddraw.lib dsound.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 
 !ENDIF 
 
@@ -94,10 +95,6 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\AboutDlg.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\AudioStream.cxx
 # End Source File
 # Begin Source File
 
@@ -157,6 +154,10 @@ SOURCE=.\pch.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\SettingsWin32.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\SoundWin32.cxx
 # End Source File
 # Begin Source File
@@ -174,10 +175,6 @@ SOURCE=.\Timer.cxx
 # Begin Source File
 
 SOURCE=.\AboutDlg.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\AudioStream.hxx
 # End Source File
 # Begin Source File
 
@@ -237,6 +234,10 @@ SOURCE=.\Resource.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\SettingsWin32.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\SoundWin32.hxx
 # End Source File
 # Begin Source File
@@ -257,19 +258,11 @@ SOURCE=.\res\Cyberstella.rc2
 # End Source File
 # Begin Source File
 
-SOURCE=.\Dir.ico
-# End Source File
-# Begin Source File
-
 SOURCE=.\res\Dir.ico
 # End Source File
 # Begin Source File
 
 SOURCE=.\res\Stella.ico
-# End Source File
-# Begin Source File
-
-SOURCE=.\Stella.ico
 # End Source File
 # Begin Source File
 
@@ -358,6 +351,14 @@ SOURCE=..\..\emucore\CartE7.cxx
 # Begin Source File
 
 SOURCE=..\..\emucore\CartE7.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\CartF4.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\CartF4.hxx
 # End Source File
 # Begin Source File
 
@@ -473,6 +474,14 @@ SOURCE=..\..\emucore\Event.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\emucore\EventHandler.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\EventHandler.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\emucore\Joystick.cxx
 # End Source File
 # Begin Source File
@@ -553,11 +562,23 @@ SOURCE=..\..\emucore\Serializer.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\emucore\Settings.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\Settings.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\emucore\Sound.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\emucore\Sound.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\StellaEvent.hxx
 # End Source File
 # Begin Source File
 
@@ -574,6 +595,14 @@ SOURCE=..\..\emucore\TIA.cxx
 # Begin Source File
 
 SOURCE=..\..\emucore\TIA.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\TIASound.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\emucore\TIASound.h
 # End Source File
 # End Group
 # Begin Group "M6502"
@@ -636,38 +665,6 @@ SOURCE=..\..\emucore\m6502\src\System.cxx
 SOURCE=..\..\emucore\m6502\src\System.hxx
 # End Source File
 # End Group
-# Begin Group "Sound"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\sound\TIASound.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\sound\TIASound.h
-# End Source File
-# End Group
-# Begin Group "Games"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\games\Gunfight.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\games\Jammed.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\games\Qb.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\games\Thrust.h
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=..\..\emucore\m6502\src\bspf\src\bspf.hxx
@@ -675,14 +672,6 @@ SOURCE=..\..\emucore\m6502\src\bspf\src\bspf.hxx
 # Begin Source File
 
 SOURCE=..\..\..\CyberstellaTodo.txt
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\build\M6502Hi.ins
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\build\M6502Low.ins
 # End Source File
 # End Target
 # End Project

@@ -11,6 +11,8 @@
 
 #include "GlobalData.hxx"
 #include "PropsSet.hxx"
+#include "Sound.hxx"
+#include "SettingsWin32.hxx"
 #include "GameList.h"
 
 class CCyberstellaView : public CFormView
@@ -60,10 +62,6 @@ protected:
 	afx_msg void OnConfig();
 	afx_msg void OnPlay();
 	afx_msg void OnDestroy();
-	afx_msg void OnGunfight();
-	afx_msg void OnJammed();
-	afx_msg void OnQb();
-	afx_msg void OnThrust();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -78,6 +76,8 @@ private:
 
     // members
     PropertiesSet* m_pPropertiesSet;
+    Sound* pSound;
+    SettingsWin32* pSettings;
     bool m_bIsPause;
 };
 

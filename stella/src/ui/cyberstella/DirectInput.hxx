@@ -1,18 +1,32 @@
+//============================================================================
 //
-// StellaX
-// Jeff Miller 05/01/2000
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
 //
-#ifndef DIRECTIN_H
-#define DIRECTIN_H
+// Copyright (c) 1995-1999 by Bradford W. Mott
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: DirectInput.hxx,v 1.2 2003-09-21 14:33:34 stephena Exp $
+//============================================================================
+
+#ifndef DIRECT_INPUT_HXX
+#define DIRECT_INPUT_HXX
 
 class CDirectInput
 {
-public:
-
+  public:
 	CDirectInput( HWND hwnd, DWORD dwDevType, int nButtonCount );
-    virtual ~CDirectInput( );
+	virtual ~CDirectInput( );
 
-    virtual HRESULT Initialize( void );
+  public:
+	virtual HRESULT Initialize( void );
 
 	virtual HRESULT Update( void ) = 0;
 
