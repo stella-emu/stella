@@ -13,20 +13,21 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
+// $Id: Menu.hxx,v 1.5 2005-03-27 03:07:34 stephena Exp $
 //============================================================================
 
 #ifndef MENU_HXX
 #define MENU_HXX
 
-class Dialog;
+class Properties;
 class OSystem;
-class OptionsDialog;
 
 #include <SDL.h>
 
 #include "Stack.hxx"
 #include "EventHandler.hxx"
+#include "Dialog.hxx"
+#include "OptionsDialog.hxx"
 #include "bspf.hxx"
 
 typedef FixedStack<Dialog *> DialogStack;
@@ -38,7 +39,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: Menu.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
+  @version $Id: Menu.hxx,v 1.5 2005-03-27 03:07:34 stephena Exp $
 */
 class Menu
 {
@@ -109,6 +110,13 @@ class Menu
       Reset dialog stack to the main configuration menu
     */
     void reStack();
+
+    /**
+      Adds the specified game info to the appropriate menu item
+
+      @param props  The properties of the current game
+    */
+    void setGameProfile(Properties& props) { myOptionsDialog->setGameProfile(props); }
 
   private:
     OSystem* myOSystem;

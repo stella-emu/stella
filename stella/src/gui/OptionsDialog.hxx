@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.2 2005-03-26 19:26:47 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.3 2005-03-27 03:07:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,16 +22,17 @@
 #ifndef OPTIONS_DIALOG_HXX
 #define OPTIONS_DIALOG_HXX
 
+class Properties;
 class CommandSender;
 class Dialog;
 class VideoDialog;
 class AudioDialog;
 class EventMappingDialog;
 class MiscDialog;
-class GameInfoDialog;
 class HelpDialog;
 
 #include "OSystem.hxx"
+#include "GameInfoDialog.hxx"
 #include "bspf.hxx"
 
 class OptionsDialog : public Dialog
@@ -41,6 +42,8 @@ class OptionsDialog : public Dialog
     ~OptionsDialog();
 
     virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+
+    void setGameProfile(Properties& props) { myGameInfoDialog->setGameProfile(props); }
 
   protected:
     VideoDialog*        myVideoDialog;

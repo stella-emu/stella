@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.6 2005-03-26 19:26:47 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.7 2005-03-27 03:07:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,8 @@
 #include "Control.hxx"
 #include "VideoDialog.hxx"
 #include "AudioDialog.hxx"
+#include "GameInfoDialog.hxx"
+#include "HelpDialog.hxx"
 #include "OptionsDialog.hxx"
 
 #include "bspf.hxx"
@@ -78,14 +80,19 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
 
   w = 220; h = 120;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myAudioDialog        = new AudioDialog(myOSystem, x, y, w, h);
+  myAudioDialog = new AudioDialog(myOSystem, x, y, w, h);
 
 /*
   myEventMappingDialog = new EventMappingDialog(myOSystem);
   myMiscDialog         = new MiscDialog(myOSystem);
-  myGameInfoDialog     = new GameInfoDialog(myOSystem);
-  myHelpDialog         = new HelpDialog(myOSystem);
 */
+  w = 255; h = 150;
+  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+  myGameInfoDialog = new GameInfoDialog(myOSystem, x, y, w, h);
+
+  w = 255; h = 150;
+  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+  myHelpDialog = new HelpDialog(myOSystem, x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,12 +100,10 @@ OptionsDialog::~OptionsDialog()
 {
   delete myVideoDialog;
   delete myAudioDialog;
-/* FIXME
-  delete myEventMappingDialog;
-  delete myMiscDialog;
+//  delete myEventMappingDialog;
+//  delete myMiscDialog;
   delete myGameInfoDialog;
   delete myHelpDialog;
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,13 +140,11 @@ cerr << "push MiscDialog to top of stack\n";
       break;
 
     case kInfoCmd:
-//      instance()->menu().addDialog(myGameInfoDialog);
-cerr << "push GameInfoDialog to top of stack\n";
+      instance()->menu().addDialog(myGameInfoDialog);
       break;
 
     case kHelpCmd:
-//      instance()->menu().addDialog(myHelpDialog);
-cerr << "push HelpDialog to top of stack\n";
+      instance()->menu().addDialog(myHelpDialog);
       break;
 
     default:

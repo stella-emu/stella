@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.44 2005-03-26 19:26:47 stephena Exp $
+// $Id: Console.cxx,v 1.45 2005-03-27 03:07:33 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -187,6 +187,7 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
 
   // Initialize the menuing system with updated values from the framebuffer
   myOSystem->menu().initialize();
+  myOSystem->menu().setGameProfile(myProperties);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

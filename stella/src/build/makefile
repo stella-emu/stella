@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.67 2005-03-26 19:26:47 stephena Exp $
+## $Id: makefile,v 1.68 2005-03-27 03:07:33 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -147,7 +147,8 @@ win32-gl:
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
 GUI_OBJS = StellaFont.o Menu.o Widget.o PopUpWidget.o Dialog.o \
-           OptionsDialog.o VideoDialog.o AudioDialog.o
+           OptionsDialog.o VideoDialog.o AudioDialog.o \
+           GameInfoDialog.o HelpDialog.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -378,3 +379,9 @@ VideoDialog.o: $(GUI)/VideoDialog.cxx $(GUI)/VideoDialog.hxx
 
 AudioDialog.o: $(GUI)/AudioDialog.cxx $(GUI)/AudioDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/AudioDialog.cxx
+
+GameInfoDialog.o: $(GUI)/GameInfoDialog.cxx $(GUI)/GameInfoDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/GameInfoDialog.cxx
+
+HelpDialog.o: $(GUI)/HelpDialog.cxx $(GUI)/HelpDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/HelpDialog.cxx
