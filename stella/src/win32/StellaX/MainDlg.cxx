@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MainDlg.cxx,v 1.8 2004-07-17 19:34:01 stephena Exp $
+// $Id: MainDlg.cxx,v 1.9 2004-08-06 01:53:05 stephena Exp $
 //============================================================================
 
 #include "pch.hxx"
@@ -571,7 +571,7 @@ bool MainDlg::LoadRomListFromDisk()
   // Get the location of the romfiles (*.bin)
   string romdir = myGlobalData.settings().getString("romdir");
   romdir += "\\";
-  string romfiles = romdir + "*.bin";
+  string romfiles = romdir + "*";
 
   WIN32_FIND_DATA ffd;
   HANDLE hFind = FindFirstFile( romfiles.c_str(), &ffd );
@@ -582,26 +582,28 @@ bool MainDlg::LoadRomListFromDisk()
   bool done = (hFind == INVALID_HANDLE_VALUE);
   while(!done)
   {
-    Game* g = new Game();
-    if( g == NULL )
-      return false;
+    // Make sure we're only looking at files
+    if( !(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+    {
+      Game* g = new Game();
+      if( g == NULL )
+        return false;
 
-    LV_ITEM lvi;
-    lvi.mask = LVIF_TEXT | LVIF_PARAM;
-    lvi.iItem = iItem++;
-    lvi.iSubItem = 0;
-    lvi.pszText = "";
-    lvi.lParam = (LPARAM) g;
-    int nItem = ListView_InsertItem( myHwndList, &lvi );
+      LV_ITEM lvi;
+      lvi.mask = LVIF_TEXT | LVIF_PARAM;
+      lvi.iItem = iItem++;
+      lvi.iSubItem = 0;
+      lvi.pszText = "";
+      lvi.lParam = (LPARAM) g;
+      int nItem = ListView_InsertItem( myHwndList, &lvi );
 
-    ASSERT( nItem != -1 );
+      g->setAvailable( true );
+      g->setRom( ffd.cFileName );
 
-    g->setAvailable( true );
-    g->setRom( ffd.cFileName );
-
-    // Set the name (shown onscreen) to be the rom
-    // It will be overwritten later if a name is found in the properties set
-    g->setName( ffd.cFileName );
+      // Set the name (shown onscreen) to be the rom
+      // It will be overwritten later if a name is found in the properties set
+      g->setName( ffd.cFileName );
+    }
 
     // go to the next rom file
     done = !FindNextFile(hFind, &ffd);
@@ -638,7 +640,7 @@ bool MainDlg::LoadRomListFromDisk()
     string rom = romdir + g->rom();
     ifstream in(rom.c_str(), ios_base::binary);
     if(!in)
-      return false;
+      continue;
     uInt8* image = new uInt8[512 * 1024];
     in.read((char*)image, 512 * 1024);
     uInt32 size = in.gcount();

@@ -125,7 +125,7 @@ BEGIN
     RTEXT           "<status>",IDC_ROMCOUNT,322,45,80,8,SS_NOPREFIX
     CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,39,411,1
     CONTROL         "",-1,"Static",SS_ETCHEDHORZ,0,218,411,1
-    CONTROL         "StellaX v1.4",IDC_TITLE,"Button",BS_OWNERDRAW | 
+    CONTROL         "StellaX v1.4.1",IDC_TITLE,"Button",BS_OWNERDRAW | 
                     BS_CENTER | BS_TOP | WS_DISABLED | WS_TABSTOP,7,7,145,22
     CONTROL         "Static",IDC_ROMPATH,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,57,45,254,8
