@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.15 2002-03-21 22:50:36 stephena Exp $
+// $Id: mainSDL.cxx,v 1.16 2002-03-28 05:13:13 bwmott Exp $
 //============================================================================
 
 #include <fstream>
@@ -362,7 +362,7 @@ void recalculate8BitPalette()
   // Map 2600 colors to the current screen
   const uInt32* gamePalette = theConsole->mediaSource().palette();
   SDL_Color colors[256];
-  for(uInt32 i = 0; i < 256; i += 2)
+  for(uInt32 i = 0; i < 256; ++i)
   {
     Uint8 r, g, b;
 
@@ -370,15 +370,15 @@ void recalculate8BitPalette()
     g = (Uint8) ((gamePalette[i] & 0x0000ff00) >> 8);
     b = (Uint8) (gamePalette[i] & 0x000000ff);
 
-    colors[i].r = colors[i+1].r = r;
-    colors[i].g = colors[i+1].g = g;
-    colors[i].b = colors[i+1].b = b;
+    colors[i].r = r;
+    colors[i].g = g;
+    colors[i].b = b;
   }
   SDL_SetColors(screen, colors, 0, 256);
 
   // Now see which colors we actually got
   SDL_PixelFormat* format = screen->format;
-  for(uInt32 i = 0; i < 256; i += 2)
+  for(uInt32 i = 0; i < 256; ++i)
   {
     Uint8 r, g, b;
 
@@ -386,7 +386,7 @@ void recalculate8BitPalette()
     g = format->palette->colors[i].g;
     b = format->palette->colors[i].b;
 
-    palette[i] = palette[i+1] = SDL_MapRGB(format, r, g, b);
+    palette[i] = SDL_MapRGB(format, r, g, b);
   }
 }
 
@@ -400,7 +400,7 @@ void setupPalette()
     return;
 
   const uInt32* gamePalette = theConsole->mediaSource().palette();
-  for(uInt32 i = 0; i < 256; i += 2)
+  for(uInt32 i = 0; i < 256; ++i)
   {
     Uint8 r, g, b;
 
@@ -411,16 +411,16 @@ void setupPalette()
     switch(bpp)
     {
       case 15:
-        palette[i] = palette[i+1] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+        palette[i] = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
         break;
 
       case 16:
-        palette[i] = palette[i+1] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+        palette[i] = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
         break;
 
       case 24:
       case 32:
-        palette[i] = palette[i+1] = (r << 16) | (g << 8) | b;
+        palette[i] = (r << 16) | (g << 8) | b;
         break;
     }
   }

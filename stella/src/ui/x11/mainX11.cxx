@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2002 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.16 2002-03-21 22:50:36 stephena Exp $
+// $Id: mainX11.cxx,v 1.17 2002-03-28 05:13:13 bwmott Exp $
 //============================================================================
 
 #include <fstream>
@@ -285,7 +285,7 @@ bool setupDisplay()
 
   // Allocate colors in the default colormap
   const uInt32* palette = theConsole->mediaSource().palette();
-  for(uInt32 t = 0; t < 256; t += 2)
+  for(uInt32 t = 0; t < 256; ++t)
   {
     XColor color;
 
@@ -302,7 +302,6 @@ bool setupDisplay()
     XGCValues values;
     values.foreground = color.pixel;
     theGCTable[t] = XCreateGC(theDisplay, theWindow, GCForeground, &values);
-    theGCTable[t + 1] = theGCTable[t];
   }
 
   // Set up the delete window stuff ...
