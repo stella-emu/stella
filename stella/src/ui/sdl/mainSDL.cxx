@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.32 2002-11-10 19:18:35 stephena Exp $
+// $Id: mainSDL.cxx,v 1.33 2002-11-10 19:43:16 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1415,8 +1415,6 @@ void usage()
     "  -Dwidth                     Sets \"Display.Width\"",
     "  -Dystart                    Sets \"Display.YStart\"",
     "  -Dheight                    Sets \"Display.Height\"",
-    "  -Dcpu                       Sets \"Emulation.CPU\"",
-    "  -Dhmoveblanks               Sets \"Emulation.HmoveBlanks\"",
 #endif
     0
   };

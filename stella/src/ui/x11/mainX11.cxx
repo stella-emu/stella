@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.29 2002-11-10 19:18:35 stephena Exp $
+// $Id: mainX11.cxx,v 1.30 2002-11-10 19:43:17 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1314,8 +1314,6 @@ void usage()
     "  -Dwidth                     Sets \"Display.Width\"",
     "  -Dystart                    Sets \"Display.YStart\"",
     "  -Dheight                    Sets \"Display.Height\"",
-    "  -Dcpu                       Sets \"Emulation.CPU\"",
-    "  -Dhmoveblanks               Sets \"Emulation.HmoveBlanks\"",
 #endif
     0
   };
