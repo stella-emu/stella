@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.23 2003-11-24 14:51:05 stephena Exp $
+// $Id: EventHandler.cxx,v 1.24 2004-05-28 18:25:19 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -296,7 +296,10 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[StellaEvent::KCODE_F12]       = Event::TakeSnapshot;
 
   myKeyTable[StellaEvent::KCODE_PAUSE]     = Event::Pause;
+
+#ifndef MAC_OSX
   myKeyTable[StellaEvent::KCODE_ESCAPE]    = Event::Quit;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
