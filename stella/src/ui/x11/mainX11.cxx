@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainX11.cxx,v 1.4 2002-01-16 02:14:25 stephena Exp $
+// $Id: mainX11.cxx,v 1.5 2002-01-16 15:09:21 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -37,7 +37,6 @@
 
 #include "bspf.hxx"
 #include "Console.hxx"
-#include "DefProps.hxx"
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"

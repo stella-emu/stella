@@ -304,14 +304,6 @@ SOURCE=..\..\emucore\Control.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\emucore\DefProps.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\emucore\DefProps.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\emucore\Driving.cxx
 # End Source File
 # Begin Source File

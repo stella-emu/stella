@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.4 2002-01-08 19:17:58 stephena Exp $
+## $Id: makefile,v 1.5 2002-01-16 15:09:21 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -210,7 +210,7 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4SC.o CartF6.o CartF6SC.o CartF8.o \
             CartF8SC.o CartFASC.o CartFE.o CartMC.o Console.o \
-            Control.o DefProps.o Driving.o \
+            Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o TIA.o \
             $(M6502_OBJS)
@@ -235,17 +235,12 @@ M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
 M6502Hi.ins: $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4
 	m4 $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4 > M6502Hi.ins
 
-DefProps.def: $(CORE)/stella.pro
-	sed 's/"/\\\"/g;s/^/"/g;s/$$/",/g' $(CORE)/stella.pro > DefProps.def
-
-DefProps.o: DefProps.def
 M6502Low.o: M6502Low.ins
 M6502Hi.o: M6502Hi.ins
 
 cleandos:
 	del *.o
 	del stella.exe 
-	del DefProps.def 
 	del M6502Low.ins 
 	del M6502Hi.ins
 
@@ -253,7 +248,7 @@ clean:
 	rm -f *.o stella stella.x11 stella.sdl stella.exe core
 
 cleanall: clean
-	rm -f DefProps.def M6502Low.ins M6502Hi.ins
+	rm -f M6502Low.ins M6502Hi.ins
 
 Driving.o: $(CORE)/Driving.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Driving.cxx
@@ -323,9 +318,6 @@ CartFE.o: $(CORE)/CartFE.cxx
 
 CartMC.o: $(CORE)/CartMC.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/CartMC.cxx
-
-DefProps.o: $(CORE)/DefProps.cxx
-	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/DefProps.cxx
 
 M6532.o: $(CORE)/M6532.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/M6532.cxx

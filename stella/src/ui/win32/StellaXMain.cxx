@@ -12,7 +12,6 @@
 
 #include "bspf.hxx"
 #include "Console.hxx"
-#include "DefProps.hxx"
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "PropsSet.hxx"
