@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.8 2004-07-10 13:20:35 stephena Exp $
+// $Id: PropsSet.cxx,v 1.9 2005-02-25 02:29:38 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -66,7 +66,7 @@ void PropertiesSet::getMD5(string md5, Properties &properties)
     }
 
     // Else, do a BST search for the node with the given md5
-    TreeNode *current = myRoot;
+    TreeNode* current = myRoot;
 
     while(current)
     {

@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.16 2005-02-21 20:42:21 stephena Exp $
+// $Id: EventHandler.hxx,v 1.17 2005-02-25 02:29:38 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
 #define EVENTHANDLER_HXX
+
+#include <SDL.h>
 
 #include "bspf.hxx"
 #include "Event.hxx"
@@ -40,7 +42,7 @@ class OSystem;
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.16 2005-02-21 20:42:21 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.17 2005-02-25 02:29:38 stephena Exp $
 */
 class EventHandler
 {
@@ -55,6 +57,9 @@ class EventHandler
     */
     virtual ~EventHandler();
 
+    // Enumeration representing the different states of operation
+    enum State { S_NONE, S_EMULATE, S_BROWSER, S_MENU, S_DEBUGGER };
+
     /**
       Returns the event object associated with this handler class.
 
@@ -63,12 +68,36 @@ class EventHandler
     Event* event();
 
     /**
+      Returns the current state of the EventHandler
+
+      @return The State type
+    */
+    inline State state() { return myState; }
+
+    /**
+      Resets the state machine of the EventHandler to the defaults
+
+      @param The current state to set
+    */
+    void reset(State state);
+
+    /**
+      Send an event directly to the event handler.
+      These events cannot be remapped.
+
+      @param type  The event
+      @param value The value for the event
+    */
+    void handleEvent(Event::Type type, Int32 value);
+
+    /**
       Send a keyboard event to the handler.
 
-      @param code  The StellaEvent code
-      @param state The StellaEvent state
+      @param key   keysym
+      @param mod   modifiers
+      @param state state of key
     */
-    void sendKeyEvent(StellaEvent::KeyCode code, Int32 state);
+    void handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state);
 
     /**
       Send a joystick button event to the handler.
@@ -79,32 +108,21 @@ class EventHandler
     */
     void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
          Int32 state);
-
-    /**
-      Send an event directly to the event handler.
-      These events cannot be remapped.
-
-      @param type  The event
-      @param value The value for the event
-    */
-    void sendEvent(Event::Type type, Int32 value);
 	
-    /**
-      Enable/disable remapping mode.
-
-      @param status  The toggle for enable/disable
-    */
-    void enableRemapping(bool status) { myRemapEnabledFlag = status; }
-
     /**
       This method indicates whether a pause event has been received.
     */
-    bool doPause() { return myPauseStatus; }
+    inline bool doPause() { return myPauseFlag; }
+
+    /**
+      This method indicates whether a exit game event has been received.
+    */
+    inline bool doExitGame() { return myExitGameFlag; }
 
     /**
       This method indicates whether a quit event has been received.
     */
-    bool doQuit() { return myQuitStatus; }
+    inline bool doQuit() { return myQuitFlag; }
 
     void getKeymapArray(Event::Type** array, uInt32* size);
     void getJoymapArray(Event::Type** array, uInt32* size);
@@ -126,8 +144,14 @@ class EventHandler
     // Global OSystem object
     OSystem* myOSystem;
 
-    // Array of key events
-    Event::Type myKeyTable[StellaEvent::LastKCODE];
+    // Array of key events, indexed by SDLKey
+    Event::Type myKeyTable[256];
+
+    // Array of alt-key events, indexed by SDLKey
+    Event::Type myAltKeyTable[256];
+
+    // Array of ctrl-key events, indexed by SDLKey
+    Event::Type myCtrlKeyTable[256];
 
     // Array of joystick events
     Event::Type myJoyTable[StellaEvent::LastJSTICK*StellaEvent::LastJCODE];
@@ -135,29 +159,29 @@ class EventHandler
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
 
+    // Indicates the current state of the system (ie, which mode is current)
+    State myState;
+
     // Global Event object
     Event* myEvent;
 
     // Indicates the current state to use for state loading/saving
-    uInt32 myCurrentState;
+    uInt32 myLSState;
 
     // Indicates the current pause status
-    bool myPauseStatus;
+    bool myPauseFlag;
 
-    // Indicates the current quit status
-    bool myQuitStatus;
+    // Indicates whether to quit the current game
+    bool myExitGameFlag;
+
+    // Indicates whether to quit the emulator
+    bool myQuitFlag;
 
     // The current keymap in string form
     string myKeymapString;
 
     // The current joymap in string form
     string myJoymapString;
-
-    // Indicates that the main menu is being entered
-    bool myMenuStatus;
-
-    // Indicates that remapping mode is enabled
-    bool myRemapEnabledFlag;
 };
 
 #endif

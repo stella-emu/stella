@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.33 2005-02-22 02:59:53 stephena Exp $
+// $Id: EventHandler.cxx,v 1.34 2005-02-25 02:29:38 stephena Exp $
 //============================================================================
 
 #include <algorithm>
 #include <sstream>
+#include <SDL.h>
 
 #include "Event.hxx"
 #include "EventHandler.hxx"
@@ -36,11 +37,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
     : myOSystem(osystem),
-      myCurrentState(0),
-      myPauseStatus(false),
-      myQuitStatus(false),
-      myMenuStatus(false),
-      myRemapEnabledFlag(true)
+      myState(S_NONE),
+      myLSState(0),
+      myPauseFlag(false),
+      myExitGameFlag(false),
+      myQuitFlag(false)
 {
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
@@ -48,9 +49,13 @@ EventHandler::EventHandler(OSystem* osystem)
   // Create the event object which will be used for this handler
   myEvent = new Event();
 
-  // Erase the KeyEvent array 
-  for(Int32 i = 0; i < StellaEvent::LastKCODE; ++i)
-    myKeyTable[i] = Event::NoType;
+  // Erase the KeyEvent arrays
+  for(Int32 i = 0; i < 256; ++i)
+  {
+    myKeyTable[i]     = Event::NoType;
+    myAltKeyTable[i]  = Event::NoType;
+    myCtrlKeyTable[i] = Event::NoType;
+  }
 
   // Erase the JoyEvent array
   for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
@@ -86,45 +91,91 @@ Event* EventHandler::event()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
+void EventHandler::reset(State state)
 {
-  // First check if we are changing menu mode, and only change when not paused
-  // Sound is paused when entering menu mode, but the framebuffer is kept active
-  if(myRemapEnabledFlag && key == StellaEvent::KCODE_TAB && state == 1 && !myPauseStatus)
+  myState = state;
+  myLSState = 0;
+  myPauseFlag = false;
+  myExitGameFlag = false;
+  myQuitFlag = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
+{
+  // Handle keys here that are accessible no matter which mode we're in
+
+  // Toggle menu mode
+  if(key == SDLK_TAB && state == 1 && !myPauseFlag)
   {
-    myMenuStatus = !myMenuStatus;
-    myOSystem->frameBuffer().showMenu(myMenuStatus);
-    myOSystem->sound().mute(myMenuStatus);
-    return;
+    if(myState == S_EMULATE)
+    {
+      myState = S_MENU;
+      myOSystem->frameBuffer().showMenu(true);  // FIXME - move this into gui class
+      myOSystem->sound().mute(true);
+      return;
+    }
+    else if(myState == S_MENU)
+    {
+      myState = S_EMULATE;
+      myOSystem->frameBuffer().showMenu(false);  // FIXME - move this into gui class
+      myOSystem->sound().mute(false);
+      return;
+    }
   }
 
-  // Determine where the event should be sent
-  if(myMenuStatus)
-    myOSystem->frameBuffer().sendKeyEvent(key, state);
-  else
-    sendEvent(myKeyTable[key], state);
+  // Determine which mode we're in, then send the event to the appropriate place
+  switch(myState)
+  {
+    case S_NONE:
+      return;
+      break;
+
+    case S_EMULATE:
+//      if(mod & KMOD_ALT && state)
+//        handleEvent(myAltKeyTable[key], state);
+//      else if(mod & KMOD_CTRL && state)
+//        handleEvent(myCtrlKeyTable[key], state);
+//      else
+      handleEvent(myKeyTable[key], state);
+      break;
+
+    case S_BROWSER:
+//FIXME      myOSystem->gui().browser().handleKeyEvent(key, mod, state);
+      break;
+
+    case S_MENU:
+//FIXME      myOSystem->gui().menu().handleKeyEvent(key, mod, state);
+      break;
+
+    case S_DEBUGGER:
+      // Not yet implemented
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
      StellaEvent::JoyCode code, Int32 state)
 {
+// FIXME
+/*
   // Determine where the event should be sent
   if(myMenuStatus)
     myOSystem->frameBuffer().sendJoyEvent(stick, code, state);
   else
-    sendEvent(myJoyTable[stick*StellaEvent::LastJCODE + code], state);
+    handleEvent(myJoyTable[stick*StellaEvent::LastJCODE + code], state);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::sendEvent(Event::Type event, Int32 state)
+void EventHandler::handleEvent(Event::Type event, Int32 state)
 {
   // Ignore unmapped events
   if(event == Event::NoType)
     return;
 
-  // Take care of special events that aren't technically part of
-  // the emulation core
+  // Take care of special events that aren't part of the emulation core
   if(state == 1)
   {
     if(event == Event::SaveState)
@@ -149,14 +200,20 @@ void EventHandler::sendEvent(Event::Type event, Int32 state)
     }
     else if(event == Event::Pause)
     {
-      myPauseStatus = !myPauseStatus;
-      myOSystem->frameBuffer().pause(myPauseStatus);
-      myOSystem->sound().mute(myPauseStatus);
+      myPauseFlag = !myPauseFlag;
+      myOSystem->frameBuffer().pause(myPauseFlag);
+      myOSystem->sound().mute(myPauseFlag);
+      return;
+    }
+    else if(event == Event::ExitGame)
+    {
+      myExitGameFlag = true;
+      myOSystem->sound().mute(true);
       return;
     }
     else if(event == Event::Quit)
     {
-      myQuitStatus = !myQuitStatus;
+      myQuitFlag = true;
       myOSystem->settings().saveConfig();
       return;
     }
@@ -234,73 +291,72 @@ void EventHandler::getJoymapArray(Event::Type** array, uInt32* size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultKeymap()
 {
-  myKeyTable[StellaEvent::KCODE_1]         = Event::KeyboardZero1;
-  myKeyTable[StellaEvent::KCODE_2]         = Event::KeyboardZero2;
-  myKeyTable[StellaEvent::KCODE_3]         = Event::KeyboardZero3;
-  myKeyTable[StellaEvent::KCODE_q]         = Event::KeyboardZero4;
-  myKeyTable[StellaEvent::KCODE_w]         = Event::KeyboardZero5;
-  myKeyTable[StellaEvent::KCODE_e]         = Event::KeyboardZero6;
-  myKeyTable[StellaEvent::KCODE_a]         = Event::KeyboardZero7;
-  myKeyTable[StellaEvent::KCODE_s]         = Event::KeyboardZero8;
-  myKeyTable[StellaEvent::KCODE_d]         = Event::KeyboardZero9;
-  myKeyTable[StellaEvent::KCODE_z]         = Event::KeyboardZeroStar;
-  myKeyTable[StellaEvent::KCODE_x]         = Event::KeyboardZero0;
-  myKeyTable[StellaEvent::KCODE_c]         = Event::KeyboardZeroPound;
+  myKeyTable[ SDLK_1 ]         = Event::KeyboardZero1;
+  myKeyTable[ SDLK_2 ]         = Event::KeyboardZero2;
+  myKeyTable[ SDLK_3 ]         = Event::KeyboardZero3;
+  myKeyTable[ SDLK_q ]         = Event::KeyboardZero4;
+  myKeyTable[ SDLK_w ]         = Event::KeyboardZero5;
+  myKeyTable[ SDLK_e ]         = Event::KeyboardZero6;
+  myKeyTable[ SDLK_a ]         = Event::KeyboardZero7;
+  myKeyTable[ SDLK_s ]         = Event::KeyboardZero8;
+  myKeyTable[ SDLK_d ]         = Event::KeyboardZero9;
+  myKeyTable[ SDLK_z ]         = Event::KeyboardZeroStar;
+  myKeyTable[ SDLK_x ]         = Event::KeyboardZero0;
+  myKeyTable[ SDLK_c ]         = Event::KeyboardZeroPound;
 
-  myKeyTable[StellaEvent::KCODE_8]         = Event::KeyboardOne1;
-  myKeyTable[StellaEvent::KCODE_9]         = Event::KeyboardOne2;
-  myKeyTable[StellaEvent::KCODE_0]         = Event::KeyboardOne3;
-  myKeyTable[StellaEvent::KCODE_i]         = Event::KeyboardOne4;
-  myKeyTable[StellaEvent::KCODE_o]         = Event::KeyboardOne5;
-  myKeyTable[StellaEvent::KCODE_p]         = Event::KeyboardOne6;
-  myKeyTable[StellaEvent::KCODE_k]         = Event::KeyboardOne7;
-  myKeyTable[StellaEvent::KCODE_l]         = Event::KeyboardOne8;
-  myKeyTable[StellaEvent::KCODE_SEMICOLON] = Event::KeyboardOne9;
-  myKeyTable[StellaEvent::KCODE_COMMA]     = Event::KeyboardOneStar;
-  myKeyTable[StellaEvent::KCODE_PERIOD]    = Event::KeyboardOne0;
-  myKeyTable[StellaEvent::KCODE_SLASH]     = Event::KeyboardOnePound;
+  myKeyTable[ SDLK_8 ]         = Event::KeyboardOne1;
+  myKeyTable[ SDLK_9 ]         = Event::KeyboardOne2;
+  myKeyTable[ SDLK_0 ]         = Event::KeyboardOne3;
+  myKeyTable[ SDLK_i ]         = Event::KeyboardOne4;
+  myKeyTable[ SDLK_o ]         = Event::KeyboardOne5;
+  myKeyTable[ SDLK_p ]         = Event::KeyboardOne6;
+  myKeyTable[ SDLK_k ]         = Event::KeyboardOne7;
+  myKeyTable[ SDLK_l ]         = Event::KeyboardOne8;
+  myKeyTable[ SDLK_SEMICOLON ] = Event::KeyboardOne9;
+  myKeyTable[ SDLK_COMMA ]     = Event::KeyboardOneStar;
+  myKeyTable[ SDLK_PERIOD ]    = Event::KeyboardOne0;
+  myKeyTable[ SDLK_SLASH ]     = Event::KeyboardOnePound;
 
-  myKeyTable[StellaEvent::KCODE_UP]        = Event::JoystickZeroUp;
-  myKeyTable[StellaEvent::KCODE_DOWN]      = Event::JoystickZeroDown;
-  myKeyTable[StellaEvent::KCODE_LEFT]      = Event::JoystickZeroLeft;
-  myKeyTable[StellaEvent::KCODE_RIGHT]     = Event::JoystickZeroRight;
-  myKeyTable[StellaEvent::KCODE_SPACE]     = Event::JoystickZeroFire;
-  myKeyTable[StellaEvent::KCODE_4]         = Event::BoosterGripZeroTrigger;
-  myKeyTable[StellaEvent::KCODE_5]         = Event::BoosterGripZeroBooster;
+  myKeyTable[ SDLK_UP ]        = Event::JoystickZeroUp;
+  myKeyTable[ SDLK_DOWN ]      = Event::JoystickZeroDown;
+  myKeyTable[ SDLK_LEFT ]      = Event::JoystickZeroLeft;
+  myKeyTable[ SDLK_RIGHT ]     = Event::JoystickZeroRight;
+  myKeyTable[ SDLK_SPACE ]     = Event::JoystickZeroFire;
+  myKeyTable[ SDLK_4 ]         = Event::BoosterGripZeroTrigger;
+  myKeyTable[ SDLK_5 ]         = Event::BoosterGripZeroBooster;
 
-  myKeyTable[StellaEvent::KCODE_y]         = Event::JoystickOneUp;
-  myKeyTable[StellaEvent::KCODE_h]         = Event::JoystickOneDown;
-  myKeyTable[StellaEvent::KCODE_g]         = Event::JoystickOneLeft;
-  myKeyTable[StellaEvent::KCODE_j]         = Event::JoystickOneRight;
-  myKeyTable[StellaEvent::KCODE_f]         = Event::JoystickOneFire;
-  myKeyTable[StellaEvent::KCODE_6]         = Event::BoosterGripOneTrigger;
-  myKeyTable[StellaEvent::KCODE_7]         = Event::BoosterGripOneBooster;
+  myKeyTable[ SDLK_y ]         = Event::JoystickOneUp;
+  myKeyTable[ SDLK_h ]         = Event::JoystickOneDown;
+  myKeyTable[ SDLK_g ]         = Event::JoystickOneLeft;
+  myKeyTable[ SDLK_j ]         = Event::JoystickOneRight;
+  myKeyTable[ SDLK_f ]         = Event::JoystickOneFire;
+  myKeyTable[ SDLK_6 ]         = Event::BoosterGripOneTrigger;
+  myKeyTable[ SDLK_7 ]         = Event::BoosterGripOneBooster;
 
-  myKeyTable[StellaEvent::KCODE_INSERT]    = Event::DrivingZeroCounterClockwise;
-  myKeyTable[StellaEvent::KCODE_PAGEUP]    = Event::DrivingZeroClockwise;
-  myKeyTable[StellaEvent::KCODE_HOME]      = Event::DrivingZeroFire;
+  myKeyTable[ SDLK_INSERT ]    = Event::DrivingZeroCounterClockwise;
+  myKeyTable[ SDLK_PAGEUP ]    = Event::DrivingZeroClockwise;
+  myKeyTable[ SDLK_HOME ]      = Event::DrivingZeroFire;
 
-  myKeyTable[StellaEvent::KCODE_DELETE]    = Event::DrivingOneCounterClockwise;
-  myKeyTable[StellaEvent::KCODE_PAGEDOWN]  = Event::DrivingOneClockwise;
-  myKeyTable[StellaEvent::KCODE_END]       = Event::DrivingOneFire;
+  myKeyTable[ SDLK_DELETE ]    = Event::DrivingOneCounterClockwise;
+  myKeyTable[ SDLK_PAGEDOWN ]  = Event::DrivingOneClockwise;
+  myKeyTable[ SDLK_END ]       = Event::DrivingOneFire;
 
-  myKeyTable[StellaEvent::KCODE_F1]        = Event::ConsoleSelect;
-  myKeyTable[StellaEvent::KCODE_F2]        = Event::ConsoleReset;
-  myKeyTable[StellaEvent::KCODE_F3]        = Event::ConsoleColor;
-  myKeyTable[StellaEvent::KCODE_F4]        = Event::ConsoleBlackWhite;
-  myKeyTable[StellaEvent::KCODE_F5]        = Event::ConsoleLeftDifficultyA;
-  myKeyTable[StellaEvent::KCODE_F6]        = Event::ConsoleLeftDifficultyB;
-  myKeyTable[StellaEvent::KCODE_F7]        = Event::ConsoleRightDifficultyA;
-  myKeyTable[StellaEvent::KCODE_F8]        = Event::ConsoleRightDifficultyB;
-  myKeyTable[StellaEvent::KCODE_F9]        = Event::SaveState;
-  myKeyTable[StellaEvent::KCODE_F10]       = Event::ChangeState;
-  myKeyTable[StellaEvent::KCODE_F11]       = Event::LoadState;
-  myKeyTable[StellaEvent::KCODE_F12]       = Event::TakeSnapshot;
+  myKeyTable[ SDLK_F1 ]        = Event::ConsoleSelect;
+  myKeyTable[ SDLK_F2 ]        = Event::ConsoleReset;
+  myKeyTable[ SDLK_F3 ]        = Event::ConsoleColor;
+  myKeyTable[ SDLK_F4 ]        = Event::ConsoleBlackWhite;
+  myKeyTable[ SDLK_F5 ]        = Event::ConsoleLeftDifficultyA;
+  myKeyTable[ SDLK_F6 ]        = Event::ConsoleLeftDifficultyB;
+  myKeyTable[ SDLK_F7 ]        = Event::ConsoleRightDifficultyA;
+  myKeyTable[ SDLK_F8 ]        = Event::ConsoleRightDifficultyB;
+  myKeyTable[ SDLK_F9 ]        = Event::SaveState;
+  myKeyTable[ SDLK_F10 ]       = Event::ChangeState;
+  myKeyTable[ SDLK_F11 ]       = Event::LoadState;
+  myKeyTable[ SDLK_F12 ]       = Event::TakeSnapshot;
 
-  myKeyTable[StellaEvent::KCODE_PAUSE]     = Event::Pause;
-
+  myKeyTable[ SDLK_PAUSE ]     = Event::Pause;
 #ifndef MAC_OSX
-  myKeyTable[StellaEvent::KCODE_ESCAPE]    = Event::Quit;
+  myKeyTable[ SDLK_ESCAPE ]    = Event::ExitGame;
 #endif
 }
 
@@ -343,17 +399,17 @@ void EventHandler::saveState()
 {
   // Do a state save using the System
   string md5      = myOSystem->console().properties().get("Cartridge.MD5");
-  string filename = myOSystem->stateFilename(md5, myCurrentState);
+  string filename = myOSystem->stateFilename(md5, myLSState);
   int result      = myOSystem->console().system().saveState(filename, md5);
 
   // Print appropriate message
   ostringstream buf;
   if(result == 1)
-    buf << "State " << myCurrentState << " saved";
+    buf << "State " << myLSState << " saved";
   else if(result == 2)
-    buf << "Error saving state " << myCurrentState;
+    buf << "Error saving state " << myLSState;
   else if(result == 3)
-    buf << "Invalid state " << myCurrentState << " file";
+    buf << "Invalid state " << myLSState << " file";
 
   myOSystem->frameBuffer().showMessage(buf.str());
 }
@@ -361,14 +417,14 @@ void EventHandler::saveState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeState()
 {
-  if(myCurrentState == 9)
-    myCurrentState = 0;
+  if(myLSState == 9)
+    myLSState = 0;
   else
-    ++myCurrentState;
+    ++myLSState;
 
   // Print appropriate message
   ostringstream buf;
-  buf << "Changed to slot " << myCurrentState;
+  buf << "Changed to slot " << myLSState;
 
   myOSystem->frameBuffer().showMessage(buf.str());
 }
@@ -378,17 +434,17 @@ void EventHandler::loadState()
 {
   // Do a state save using the System
   string md5      = myOSystem->console().properties().get("Cartridge.MD5");
-  string filename = myOSystem->stateFilename(md5, myCurrentState);
+  string filename = myOSystem->stateFilename(md5, myLSState);
   int result      = myOSystem->console().system().loadState(filename, md5);
 
   // Print appropriate message
   ostringstream buf;
   if(result == 1)
-    buf << "State " << myCurrentState << " loaded";
+    buf << "State " << myLSState << " loaded";
   else if(result == 2)
-    buf << "Error loading state " << myCurrentState;
+    buf << "Error loading state " << myLSState;
   else if(result == 3)
-    buf << "Invalid state " << myCurrentState << " file";
+    buf << "Invalid state " << myLSState << " file";
 
   myOSystem->frameBuffer().showMessage(buf.str());
 }

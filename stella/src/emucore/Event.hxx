@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.5 2004-06-04 12:22:12 stephena Exp $
+// $Id: Event.hxx,v 1.6 2005-02-25 02:29:38 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,13 +25,15 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.5 2004-06-04 12:22:12 stephena Exp $
+  @version $Id: Event.hxx,v 1.6 2005-02-25 02:29:38 stephena Exp $
 */
 class Event
 {
   public:
     /**
-      Enumeration of console and controller event types
+      Enumeration of all possible events in Stella, including both
+      console and controller event types as well as events that aren't
+      technically part of the core
     */
     enum Type
     {
@@ -69,7 +71,7 @@ class Event
       DrivingOneClockwise, DrivingOneCounterClockwise, DrivingOneValue,
 	  DrivingOneFire,
 	  
-      ChangeState, LoadState, SaveState, TakeSnapshot, Pause, Quit,
+      ChangeState, LoadState, SaveState, TakeSnapshot, Pause, Quit, ExitGame,
 
       LastType
     };
@@ -103,5 +105,5 @@ class Event
     // Array of values associated with each event type
     Int32 myValues[LastType];
 };
-#endif
 
+#endif

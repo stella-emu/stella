@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.25 2005-02-22 20:19:24 stephena Exp $
+// $Id: mainSDL.cxx,v 1.26 2005-02-25 02:29:37 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -152,123 +152,6 @@ struct KeyList
   SDLKey scanCode;
   StellaEvent::KeyCode keyCode;
 };
-
-// Place the most used keys first to speed up access
-// Todo - initialize this array in the same order as the SDLK
-// keys are defined, so it can be a constant-time LUT
-static KeyList keyList[] = {
-    { SDLK_F1,          StellaEvent::KCODE_F1         },
-    { SDLK_F2,          StellaEvent::KCODE_F2         },
-    { SDLK_F3,          StellaEvent::KCODE_F3         },
-    { SDLK_F4,          StellaEvent::KCODE_F4         },
-    { SDLK_F5,          StellaEvent::KCODE_F5         },
-    { SDLK_F6,          StellaEvent::KCODE_F6         },
-    { SDLK_F7,          StellaEvent::KCODE_F7         },
-    { SDLK_F8,          StellaEvent::KCODE_F8         },
-    { SDLK_F9,          StellaEvent::KCODE_F9         },
-    { SDLK_F10,         StellaEvent::KCODE_F10        },
-    { SDLK_F11,         StellaEvent::KCODE_F11        },
-    { SDLK_F12,         StellaEvent::KCODE_F12        },
-    { SDLK_F13,         StellaEvent::KCODE_F13        },
-    { SDLK_F14,         StellaEvent::KCODE_F14        },
-    { SDLK_F15,         StellaEvent::KCODE_F15        },
-
-    { SDLK_UP,          StellaEvent::KCODE_UP         },
-    { SDLK_DOWN,        StellaEvent::KCODE_DOWN       },
-    { SDLK_LEFT,        StellaEvent::KCODE_LEFT       },
-    { SDLK_RIGHT,       StellaEvent::KCODE_RIGHT      },
-    { SDLK_SPACE,       StellaEvent::KCODE_SPACE      },
-    { SDLK_LCTRL,       StellaEvent::KCODE_LCTRL      },
-    { SDLK_RCTRL,       StellaEvent::KCODE_RCTRL      },
-    { SDLK_LALT,        StellaEvent::KCODE_LALT       },
-    { SDLK_RALT,        StellaEvent::KCODE_RALT       },
-    { SDLK_LSUPER,      StellaEvent::KCODE_LWIN       },
-    { SDLK_RSUPER,      StellaEvent::KCODE_RWIN       },
-    { SDLK_MENU,        StellaEvent::KCODE_MENU       },
-
-    { SDLK_a,           StellaEvent::KCODE_a          },
-    { SDLK_b,           StellaEvent::KCODE_b          },
-    { SDLK_c,           StellaEvent::KCODE_c          },
-    { SDLK_d,           StellaEvent::KCODE_d          },
-    { SDLK_e,           StellaEvent::KCODE_e          },
-    { SDLK_f,           StellaEvent::KCODE_f          },
-    { SDLK_g,           StellaEvent::KCODE_g          },
-    { SDLK_h,           StellaEvent::KCODE_h          },
-    { SDLK_i,           StellaEvent::KCODE_i          },
-    { SDLK_j,           StellaEvent::KCODE_j          },
-    { SDLK_k,           StellaEvent::KCODE_k          },
-    { SDLK_l,           StellaEvent::KCODE_l          },
-    { SDLK_m,           StellaEvent::KCODE_m          },
-    { SDLK_n,           StellaEvent::KCODE_n          },
-    { SDLK_o,           StellaEvent::KCODE_o          },
-    { SDLK_p,           StellaEvent::KCODE_p          },
-    { SDLK_q,           StellaEvent::KCODE_q          },
-    { SDLK_r,           StellaEvent::KCODE_r          },
-    { SDLK_s,           StellaEvent::KCODE_s          },
-    { SDLK_t,           StellaEvent::KCODE_t          },
-    { SDLK_u,           StellaEvent::KCODE_u          },
-    { SDLK_v,           StellaEvent::KCODE_v          },
-    { SDLK_w,           StellaEvent::KCODE_w          },
-    { SDLK_x,           StellaEvent::KCODE_x          },
-    { SDLK_y,           StellaEvent::KCODE_y          },
-    { SDLK_z,           StellaEvent::KCODE_z          },
-
-    { SDLK_0,           StellaEvent::KCODE_0          },
-    { SDLK_1,           StellaEvent::KCODE_1          },
-    { SDLK_2,           StellaEvent::KCODE_2          },
-    { SDLK_3,           StellaEvent::KCODE_3          },
-    { SDLK_4,           StellaEvent::KCODE_4          },
-    { SDLK_5,           StellaEvent::KCODE_5          },
-    { SDLK_6,           StellaEvent::KCODE_6          },
-    { SDLK_7,           StellaEvent::KCODE_7          },
-    { SDLK_8,           StellaEvent::KCODE_8          },
-    { SDLK_9,           StellaEvent::KCODE_9          },
-
-    { SDLK_KP0,         StellaEvent::KCODE_KP0        },
-    { SDLK_KP1,         StellaEvent::KCODE_KP1        },
-    { SDLK_KP2,         StellaEvent::KCODE_KP2        },
-    { SDLK_KP3,         StellaEvent::KCODE_KP3        },
-    { SDLK_KP4,         StellaEvent::KCODE_KP4        },
-    { SDLK_KP5,         StellaEvent::KCODE_KP5        },
-    { SDLK_KP6,         StellaEvent::KCODE_KP6        },
-    { SDLK_KP7,         StellaEvent::KCODE_KP7        },
-    { SDLK_KP8,         StellaEvent::KCODE_KP8        },
-    { SDLK_KP9,         StellaEvent::KCODE_KP9        },
-    { SDLK_KP_PERIOD,   StellaEvent::KCODE_KP_PERIOD  },
-    { SDLK_KP_DIVIDE,   StellaEvent::KCODE_KP_DIVIDE  },
-    { SDLK_KP_MULTIPLY, StellaEvent::KCODE_KP_MULTIPLY},
-    { SDLK_KP_MINUS,    StellaEvent::KCODE_KP_MINUS   },
-    { SDLK_KP_PLUS,     StellaEvent::KCODE_KP_PLUS    },
-    { SDLK_KP_ENTER,    StellaEvent::KCODE_KP_ENTER   },
-    { SDLK_KP_EQUALS,   StellaEvent::KCODE_KP_EQUALS  },
-
-    { SDLK_BACKSPACE,   StellaEvent::KCODE_BACKSPACE  },
-    { SDLK_TAB,         StellaEvent::KCODE_TAB        },
-    { SDLK_CLEAR,       StellaEvent::KCODE_CLEAR      },
-    { SDLK_RETURN,      StellaEvent::KCODE_RETURN     },
-    { SDLK_ESCAPE,      StellaEvent::KCODE_ESCAPE     },
-    { SDLK_COMMA,       StellaEvent::KCODE_COMMA      },
-    { SDLK_MINUS,       StellaEvent::KCODE_MINUS      },
-    { SDLK_PERIOD,      StellaEvent::KCODE_PERIOD     },
-    { SDLK_SLASH,       StellaEvent::KCODE_SLASH      },
-    { SDLK_BACKSLASH,   StellaEvent::KCODE_BACKSLASH  },
-    { SDLK_SEMICOLON,   StellaEvent::KCODE_SEMICOLON  },
-    { SDLK_EQUALS,      StellaEvent::KCODE_EQUALS     },
-    { SDLK_QUOTE,       StellaEvent::KCODE_QUOTE      },
-    { SDLK_BACKQUOTE,   StellaEvent::KCODE_BACKQUOTE  },
-    { SDLK_LEFTBRACKET, StellaEvent::KCODE_LEFTBRACKET},
-    { SDLK_RIGHTBRACKET,StellaEvent::KCODE_RIGHTBRACKET},
-
-    { SDLK_PRINT,       StellaEvent::KCODE_PRTSCREEN  },
-    { SDLK_MODE,        StellaEvent::KCODE_SCRLOCK    },
-    { SDLK_PAUSE,       StellaEvent::KCODE_PAUSE      },
-    { SDLK_INSERT,      StellaEvent::KCODE_INSERT     },
-    { SDLK_HOME,        StellaEvent::KCODE_HOME       },
-    { SDLK_PAGEUP,      StellaEvent::KCODE_PAGEUP     },
-    { SDLK_DELETE,      StellaEvent::KCODE_DELETE     },
-    { SDLK_END,         StellaEvent::KCODE_END        },
-    { SDLK_PAGEDOWN,    StellaEvent::KCODE_PAGEDOWN   }
-  };
 
 
 /**
@@ -410,9 +293,9 @@ void HandleEvents()
       case SDL_KEYUP:
       case SDL_KEYDOWN:
       {
-        SDLKey key   = event.key.keysym.sym;
-        SDLMod mod   = event.key.keysym.mod;
-        uInt32 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
+        SDLKey key  = event.key.keysym.sym;
+        SDLMod mod  = event.key.keysym.mod;
+        uInt8 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
 
         // An attempt to speed up event processing
         // All SDL-specific event actions are accessed by either
@@ -444,120 +327,130 @@ void HandleEvents()
             case SDLK_f:
               theDisplay->toggleFilter();
               break;
+          }
 
 #ifdef DEVELOPER_SUPPORT
-            case SDLK_END:       // Alt-End increases XStart
-              theOSystem->console().changeXStart(1);
-              theDisplay->resize(0);
-              break;
+          if(theOSystem->eventHandler().state() == EventHandler::S_EMULATE)
+          {
+            switch(int(key))
+            {
+              case SDLK_END:       // Alt-End increases XStart
+                theOSystem->console().changeXStart(1);
+                theDisplay->resize(0);
+                break;
 
-            case SDLK_HOME:      // Alt-Home decreases XStart
-              theOSystem->console().changeXStart(0);
-              theDisplay->resize(0);
-              break;
+              case SDLK_HOME:      // Alt-Home decreases XStart
+                theOSystem->console().changeXStart(0);
+                theDisplay->resize(0);
+                break;
 
-            case SDLK_PAGEUP:    // Alt-PageUp increases YStart
-              theOSystem->console().changeYStart(1);
-              theDisplay->resize(0);
-              break;
+              case SDLK_PAGEUP:    // Alt-PageUp increases YStart
+                theOSystem->console().changeYStart(1);
+                theDisplay->resize(0);
+                break;
 
-            case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
-              theOSystem->console().changeYStart(0);
-              theDisplay->resize(0);
-              break;
+              case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
+                theOSystem->console().changeYStart(0);
+                theDisplay->resize(0);
+                break;
+            }
           }
 #endif
         }
         else if(mod & KMOD_CTRL && state)
         {
-          switch(int(key))
+          if(key == SDLK_q)
           {
-            case SDLK_g:
-              // don't change grabmouse in fullscreen mode
-              if(!theDisplay->fullScreen())
-              {
-                theGrabMouseIndicator = !theGrabMouseIndicator;
-                theSettings->setBool("grabmouse", theGrabMouseIndicator);
-                theDisplay->grabMouse(theGrabMouseIndicator);
-              }
-              break;
+            theOSystem->eventHandler().handleEvent(Event::Quit, 1);
+          }
+          else if(theOSystem->eventHandler().state() == EventHandler::S_EMULATE)
+          {
+            switch(int(key))
+            {
+              case SDLK_g:
+                // don't change grabmouse in fullscreen mode
+                if(!theDisplay->fullScreen())
+                {
+                  theGrabMouseIndicator = !theGrabMouseIndicator;
+                  theSettings->setBool("grabmouse", theGrabMouseIndicator);
+                  theDisplay->grabMouse(theGrabMouseIndicator);
+                }
+                break;
 
-            case SDLK_h:
-              // don't change hidecursor in fullscreen mode
-              if(!theDisplay->fullScreen())
-              {
-                theHideCursorIndicator = !theHideCursorIndicator;
-                theSettings->setBool("hidecursor", theHideCursorIndicator);
-                theDisplay->showCursor(!theHideCursorIndicator);
-              }
-              break;
+              case SDLK_h:
+                // don't change hidecursor in fullscreen mode
+                if(!theDisplay->fullScreen())
+                {
+                  theHideCursorIndicator = !theHideCursorIndicator;
+                  theSettings->setBool("hidecursor", theHideCursorIndicator);
+                  theDisplay->showCursor(!theHideCursorIndicator);
+                }
+                break;
 
-            case SDLK_f:         // Ctrl-f toggles NTSC/PAL mode
-              theOSystem->console().toggleFormat();
-              theDisplay->setupPalette();
-              break;
+              case SDLK_0:         // Ctrl-0 sets the mouse to paddle 0
+                SetPaddleMode(0);
+                break;
 
-            case SDLK_p:         // Ctrl-p toggles different palettes
-              theOSystem->console().togglePalette();
-              theDisplay->setupPalette();
-              break;
+              case SDLK_1:         // Ctrl-1 sets the mouse to paddle 1
+                SetPaddleMode(1);
+                break;
 
-            case SDLK_0:         // Ctrl-0 sets the mouse to paddle 0
-              SetPaddleMode(0);
-              break;
+              case SDLK_2:         // Ctrl-2 sets the mouse to paddle 2
+                SetPaddleMode(2);
+                break;
 
-            case SDLK_1:         // Ctrl-1 sets the mouse to paddle 1
-              SetPaddleMode(1);
-              break;
+              case SDLK_3:         // Ctrl-3 sets the mouse to paddle 3
+                SetPaddleMode(3);
+                break;
 
-            case SDLK_2:         // Ctrl-2 sets the mouse to paddle 2
-              SetPaddleMode(2);
-              break;
+              case SDLK_f:         // Ctrl-f toggles NTSC/PAL mode
+                theOSystem->console().toggleFormat();
+                theDisplay->setupPalette();
+                break;
 
-            case SDLK_3:         // Ctrl-3 sets the mouse to paddle 3
-              SetPaddleMode(3);
-              break;
+              case SDLK_p:         // Ctrl-p toggles different palettes
+                theOSystem->console().togglePalette();
+                theDisplay->setupPalette();
+                break;
 
 #ifdef DEVELOPER_SUPPORT
-            case SDLK_END:       // Ctrl-End increases Width
-              theOSystem->console().changeWidth(1);
-              theDisplay->resize(0);
-              break;
+              case SDLK_END:       // Ctrl-End increases Width
+                theOSystem->console().changeWidth(1);
+                theDisplay->resize(0);
+                break;
 
-            case SDLK_HOME:      // Ctrl-Home decreases Width
-              theOSystem->console().changeWidth(0);
-              theDisplay->resize(0);
-              break;
+              case SDLK_HOME:      // Ctrl-Home decreases Width
+                theOSystem->console().changeWidth(0);
+                theDisplay->resize(0);
+                break;
 
-            case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
-              theOSystem->console().changeHeight(1);
-              theDisplay->resize(0);
-              break;
+              case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
+                theOSystem->console().changeHeight(1);
+                theDisplay->resize(0);
+                break;
 
-            case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-              theOSystem->console().changeHeight(0);
-              theDisplay->resize(0);
-              break;
+              case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
+                theOSystem->console().changeHeight(0);
+                theDisplay->resize(0);
+                break;
 #endif
-            case SDLK_s:         // Ctrl-s saves properties to a file
-              // Attempt to merge with propertiesSet
-              if(theSettings->getBool("mergeprops"))
-                theOSystem->console().saveProperties(theOSystem->propertiesOutputFilename(), true);
-              else  // Save to file in home directory
-              {
-                string newPropertiesFile = theOSystem->baseDir() + "/" + \
-                  theOSystem->console().properties().get("Cartridge.Name") + ".pro";
-                theOSystem->console().saveProperties(newPropertiesFile);
-              }
-              break;
+              case SDLK_s:         // Ctrl-s saves properties to a file
+                // Attempt to merge with propertiesSet
+                if(theSettings->getBool("mergeprops"))
+                  theOSystem->console().saveProperties(theOSystem->propertiesOutputFilename(), true);
+                else  // Save to file in home directory
+                {
+                  string newPropertiesFile = theOSystem->baseDir() + "/" + \
+                    theOSystem->console().properties().get("Cartridge.Name") + ".pro";
+                  theOSystem->console().saveProperties(newPropertiesFile);
+                }
+                break;
+            }
           }
         }
 
-        // check all the other keys
-        for(uInt32 i = 0; i < sizeof(keyList) / sizeof(KeyList); ++i)
-          if(keyList[i].scanCode == key)
-            theOSystem->eventHandler().sendKeyEvent(keyList[i].keyCode, state);
-
+        // Otherwise, let the event handler deal with it
+        theOSystem->eventHandler().handleKeyEvent(key, mod, state);
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
 
@@ -582,7 +475,7 @@ void HandleEvents()
 
         Int32 resistance = (Int32)(1000000.0 * (width - mouseX) / width);
 
-        theOSystem->eventHandler().sendEvent(Paddle_Resistance[thePaddleMode], resistance);
+        theOSystem->eventHandler().handleEvent(Paddle_Resistance[thePaddleMode], resistance);
 
         break; // SDL_MOUSEMOTION
       }
@@ -592,7 +485,7 @@ void HandleEvents()
       {
         Int32 value = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
 
-        theOSystem->eventHandler().sendEvent(Paddle_Button[thePaddleMode], value);
+        theOSystem->eventHandler().handleEvent(Paddle_Button[thePaddleMode], value);
 
         break;  // SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN
       }
@@ -602,7 +495,7 @@ void HandleEvents()
         if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
         {
           if(!theOSystem->eventHandler().doPause())
-            theOSystem->eventHandler().sendEvent(Event::Pause, 1);
+            theOSystem->eventHandler().handleEvent(Event::Pause, 1);
         }
 
         break; // SDL_ACTIVEEVENT
@@ -610,15 +503,13 @@ void HandleEvents()
 
       case SDL_QUIT:
       {
-        theOSystem->eventHandler().sendEvent(Event::Quit, 1);
-
+        theOSystem->eventHandler().handleEvent(Event::Quit, 1);
         break;  // SDL_QUIT
       }
 
       case SDL_VIDEOEXPOSE:
       {
         theDisplay->refresh();
-
         break;  // SDL_VIDEOEXPOSE
       }
     }
@@ -697,23 +588,23 @@ void HandleEvents()
             {
               if(type == JT_STELLADAPTOR_1)
               {
-                theOSystem->eventHandler().sendEvent(Event::JoystickZeroFire, state);
-                theOSystem->eventHandler().sendEvent(Event::DrivingZeroFire, state);
-                theOSystem->eventHandler().sendEvent(Event::PaddleZeroFire, state);
+                theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire, state);
+                theOSystem->eventHandler().handleEvent(Event::DrivingZeroFire, state);
+                theOSystem->eventHandler().handleEvent(Event::PaddleZeroFire, state);
               }
               else
               {
-                theOSystem->eventHandler().sendEvent(Event::JoystickOneFire, state);
-                theOSystem->eventHandler().sendEvent(Event::DrivingOneFire, state);
-                theOSystem->eventHandler().sendEvent(Event::PaddleTwoFire, state);
+                theOSystem->eventHandler().handleEvent(Event::JoystickOneFire, state);
+                theOSystem->eventHandler().handleEvent(Event::DrivingOneFire, state);
+                theOSystem->eventHandler().handleEvent(Event::PaddleTwoFire, state);
               }
             }
             else if(button == 1)
             {
               if(type == JT_STELLADAPTOR_1)
-                theOSystem->eventHandler().sendEvent(Event::PaddleOneFire, state);
+                theOSystem->eventHandler().handleEvent(Event::PaddleOneFire, state);
               else
-                theOSystem->eventHandler().sendEvent(Event::PaddleThreeFire, state);
+                theOSystem->eventHandler().handleEvent(Event::PaddleThreeFire, state);
             }
             break;
 
@@ -722,26 +613,26 @@ void HandleEvents()
             value = event.jaxis.value;
 
             // Send axis events for the joysticks
-            theOSystem->eventHandler().sendEvent(SA_Axis[type-2][axis][0],
+            theOSystem->eventHandler().handleEvent(SA_Axis[type-2][axis][0],
                         (value < -16384) ? 1 : 0);
-            theOSystem->eventHandler().sendEvent(SA_Axis[type-2][axis][1],
+            theOSystem->eventHandler().handleEvent(SA_Axis[type-2][axis][1],
                         (value > 16384) ? 1 : 0);
 
             // Send axis events for the paddles
             resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
-            theOSystem->eventHandler().sendEvent(SA_Axis[type-2][axis][2], resistance);
+            theOSystem->eventHandler().handleEvent(SA_Axis[type-2][axis][2], resistance);
 
             // Send events for the driving controllers
             if(axis == 1)
             {
               if(value <= -16384-4096)
-                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],2);
+                theOSystem->eventHandler().handleEvent(SA_DrivingValue[type-2],2);
               else if(value > 16384+4096)
-                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],1);
+                theOSystem->eventHandler().handleEvent(SA_DrivingValue[type-2],1);
               else if(value >= 16384-4096)
-                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],0);
+                theOSystem->eventHandler().handleEvent(SA_DrivingValue[type-2],0);
               else
-                theOSystem->eventHandler().sendEvent(SA_DrivingValue[type-2],3);
+                theOSystem->eventHandler().handleEvent(SA_DrivingValue[type-2],3);
             }
             break;
         }
@@ -767,7 +658,8 @@ void SetupProperties(PropertiesSet& set)
 
   // When 'listrominfo' or 'mergeprops' is specified, we need to have the
   // full list in memory
-  if(theSettings->getBool("listrominfo") || theSettings->getBool("mergeprops"))
+// FIXME - we need the whole list in memory
+//  if(theSettings->getBool("listrominfo") || theSettings->getBool("mergeprops"))
     useMemList = true;
 
   stringstream buf;
@@ -843,10 +735,9 @@ void mainGameLoop()
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theOSystem->eventHandler().doQuit())
-      {
+      if(theOSystem->eventHandler().doExitGame() ||
+         theOSystem->eventHandler().doQuit())
         break;
-      }
 
       startTime = GetTicks();
       HandleEvents();
@@ -879,10 +770,9 @@ void mainGameLoop()
     for(;;)
     {
       // Exit if the user wants to quit
-      if(theOSystem->eventHandler().doQuit())
-      {
+      if(theOSystem->eventHandler().doExitGame() ||
+         theOSystem->eventHandler().doQuit())
         break;
-      }
 
       startTime = GetTicks();
       HandleEvents();
@@ -1070,16 +960,21 @@ int main(int argc, char* argv[])
     for(;;)
     {
 //      theOSystem->gui().showRomLauncher();
-      cerr << "GUI not yet written, run game again (y or n): ";
-      char runagain;
-      cin >> runagain;
-      if(runagain == 'n')
+      if(theOSystem->eventHandler().doQuit())
         break;
-      else
+      else  // FIXME - add code here to delay a little
       {
-cerr << "Attempting to open " << romfile << endl;
-        theConsole = CreateConsole(romfile);
-        mainGameLoop();
+        cerr << "GUI not yet written, run game again (y or n): ";
+        char runagain;
+        cin >> runagain;
+        if(runagain == 'n')
+          break;
+        else
+        {
+          cerr << "Attempting to open " << romfile << endl;
+          theConsole = CreateConsole(romfile);
+          mainGameLoop();
+        }
       }
     }
   }

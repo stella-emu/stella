@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.41 2005-02-22 02:59:53 stephena Exp $
+// $Id: Console.cxx,v 1.42 2005-02-25 02:29:37 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -63,6 +63,9 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
 
   // Add the current console to the system
   myOSystem->attach(this);
+
+  // Indicate that emulation should start now
+  myOSystem->eventHandler().reset(EventHandler::S_EMULATE);
 
   // Attach the event subsystem to the current console
   myEvent = myOSystem->eventHandler().event();
