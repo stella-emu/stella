@@ -617,7 +617,7 @@
 
 	<p><b>Version</b> is either x11 or sdl, depending on which version you compiled.</p>
 
-	<p><b>Options</b></p>
+	<p><b>Options</b> (0 indicates false, 1 indicates true, others are self-explanatory)</p>
 
 	<table BORDER=2>
 		<tr>
@@ -636,7 +636,7 @@
 		</tr>
 
 		<tr>
-			<td><pre>-owncmap</pre></td>
+			<td><pre>-owncmap &lt;0|1&gt;</pre></td>
 			<td>Install a private colormap</td>
 		</tr>
 
@@ -646,22 +646,22 @@
 		</tr>
 
 		<tr>
-			<td><pre>-fullscreen</pre></td>
+			<td><pre>-fullscreen &lt;0|1&gt;</pre></td>
 			<td>Play the game in fullscreen mode (<i>SDL version only</i>)</td>
 		</tr>
 
 		<tr>
-			<td><pre>-grabmouse</pre></td>
+			<td><pre>-grabmouse &lt;0|1&gt;</pre></td>
 			<td>Keeps the mouse in the game window</td>
 		</tr>
 
 		<tr>
-			<td><pre>-hidecursor</pre></td>
+			<td><pre>-hidecursor &lt;0|1&gt;</pre></td>
 			<td>Hides the mouse cursor in the game window</td>
 		</tr>
 
 		<tr>
-			<td><pre>-center</pre></td>
+			<td><pre>-center &lt;0|1&gt;</pre></td>
 			<td>Centers the game window onscreen</td>
 		</tr>
 
@@ -677,7 +677,7 @@
 		</tr>
 
 		<tr>
-			<td><pre>-showinfo</pre></td>
+			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
 			<td>Shows some game info on exit</td>
 		</tr>
 
@@ -694,7 +694,7 @@
 		</tr>
 
 		<tr>
-			<td><pre>-sssingle</pre></td>
+			<td><pre>-sssingle &lt;0|1&gt;</pre></td>
 			<td>Generate single snapshot instead of many (<i>If SNAPSHOT support is
 				included</i>)</td>
 		</tr>
@@ -702,6 +702,11 @@
 		<tr>
 			<td><pre>-pro &lt;props file&gt;</pre></td>
 			<td>Use the given properties file instead of stella.pro</td>
+		</tr>
+		<tr>
+			<td><pre>-accurate &lt;0|1&gt;</pre></td>
+			<td>Use accurate game timing (and more CPU), or less accurate timing (and
+				less CPU).</td>
 		</tr>
 	</table>
 
@@ -725,7 +730,7 @@
 	options specified on the command line will override those in the INI file.</p>
 
 	<p>Stella searches for an INI file in two places.  First, it will look for
-	<i>.stellarc</i> in your home directory.  Then, it will look for <i>stellarc</i>
+	<i>stellarc</i> in your $HOME/.stella directory.  Then, it will look for <i>stellarc</i>
 	in the <i>/etc</i> directory.</p>
 
 	<p>The syntax for the INI file is very straightforward.  Any line starting with
@@ -754,7 +759,7 @@
 		</tr>
 
 		<tr>
-			<td>-showinfo</td>
+			<td>-showinfo 1</td>
 			<td>showinfo = 1</td>
 		</tr>
 	</table>
