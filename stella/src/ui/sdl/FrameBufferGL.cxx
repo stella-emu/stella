@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.9 2003-11-30 22:50:15 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.10 2003-12-02 01:46:40 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -450,11 +450,13 @@ void FrameBufferGL::toggleFilter()
   {
     myFilterParam = GL_LINEAR;
     myConsole->settings().setString("gl_filter", "linear");
+    showMessage("GL_LINEAR filtering");
   }
   else
   {
     myFilterParam = GL_NEAREST;
     myConsole->settings().setString("gl_filter", "nearest");
+    showMessage("GL_NEAREST filtering");
   }
 
   glBindTexture(GL_TEXTURE_2D, myTextureID);
