@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.15 2002-04-22 00:53:19 bwmott Exp $
+## $Id: makefile,v 1.16 2002-05-13 19:29:44 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -229,6 +229,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
+            Serializer.o Deserializer.o \
             $(M6502_OBJS)
 
 stella.exe: $(CORE_OBJS) $(OBJS)
@@ -372,6 +373,12 @@ Switches.o: $(CORE)/Switches.cxx
 Sound.o: $(CORE)/Sound.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Sound.cxx
 
+Serializer.o: $(CORE)/Serializer.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Serializer.cxx
+
+Deserializer.o: $(CORE)/Deserializer.cxx
+	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/Deserializer.cxx
+
 Settings.o: $(UI)/common/Settings.cxx $(UI)/common/Settings.hxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(LDFLAGS) $(UI)/common/Settings.cxx
 
@@ -431,4 +438,3 @@ NullDev.o: $(CORE)/m6502/src/NullDev.cxx
 
 System.o: $(CORE)/m6502/src/System.cxx
 	$(CXX) -c $(CXXFLAGS) $(OPTIONS) $(CORE)/m6502/src/System.cxx
-

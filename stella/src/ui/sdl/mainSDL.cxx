@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.22 2002-04-18 17:18:48 stephena Exp $
+// $Id: mainSDL.cxx,v 1.23 2002-05-13 19:29:44 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -199,7 +199,6 @@ static bool isCentered = false;
 
 // Indicates the current state to use for state saving
 static uInt32 currentState = 0;
-
 
 
 /**
@@ -622,23 +621,25 @@ void grabMouse(bool grab)
 */
 void saveState()
 {
-#if 0
-  // Do a state save using the MediaSource
-  // ...
+  char buf[40];
+
+  // First get the name for the current state file
+  string md5 = theConsole->properties().get("Cartridge.MD5");
+  snprintf(buf, 39, "%s.st%d", md5.c_str(), currentState);
+  string fileName = buf;
+
+  // Do a state save using the System
+  int result = theConsole->system().saveState(fileName, md5);
 
   // Print appropriate message
-  char buf[40];
-  if(true) // if the state saved correctly
+  if(result == 1)
     snprintf(buf, 39, "State %d saved", currentState);
   else
-    snprintf(buf, 39, "Error saving state %d", currentState);
+    snprintf(buf, 39, "Error saving state %d  %d", currentState, result);
 
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
-#else
-  cerr << "State saving not yet implemented\n";
-#endif
 }
 
 
@@ -652,14 +653,12 @@ void changeState()
   else
     ++currentState;
 
-#if 0
   // Print appropriate message
   char buf[40];
   snprintf(buf, 39, "Changed to state slot %d", currentState);
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
-#endif
 }
 
 
@@ -668,23 +667,25 @@ void changeState()
 */
 void loadState()
 {
-#if 0
-  // Do a state load using the MediaSource
-  // ...
+  char buf[40];
+
+  // First get the name for the current state file
+  string md5 = theConsole->properties().get("Cartridge.MD5");
+  snprintf(buf, 39, "%s.st%d", md5.c_str(), currentState);
+  string fileName = buf;
+
+  // Do a state load using the System
+  int result = theConsole->system().loadState(fileName, md5);
 
   // Print appropriate message
-  char buf[40];
-  if(true) // if the state loaded correctly
+  if(result == 1)
     snprintf(buf, 39, "State %d loaded", currentState);
   else
-    snprintf(buf, 39, "Error loading state %d", currentState);
+    snprintf(buf, 39, "Error loading state %d  %d", currentState, result);
 
   string message = buf;
   theConsole->mediaSource().showMessage(message, MESSAGE_INTERVAL *
     settings->theDesiredFrameRate);
-#else
-  cerr << "State loading not yet implemented\n";
-#endif
 }
 
 
