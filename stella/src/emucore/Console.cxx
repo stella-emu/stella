@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.28 2004-05-28 22:07:57 stephena Exp $
+// $Id: Console.cxx,v 1.29 2004-06-13 04:59:40 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -52,11 +52,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const char* filename,
     Settings& settings, PropertiesSet& propertiesSet, 
-    FrameBuffer& framebuffer, Sound& sound)
+    FrameBuffer& framebuffer, Sound& sound, uInt32 frameRate)
     : mySettings(settings),
       myPropSet(propertiesSet),
       myFrameBuffer(framebuffer),
-      mySound(sound)
+      mySound(sound),
+      myFrameRate(frameRate)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -222,6 +223,12 @@ Settings& Console::settings() const
 FrameBuffer& Console::frameBuffer() const
 {
   return myFrameBuffer;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Console::frameRate() const
+{
+  return myFrameRate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2004 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.17 2003-12-04 19:18:45 stephena Exp $
+// $Id: Console.hxx,v 1.18 2004-06-13 04:59:40 bwmott Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -41,7 +41,7 @@ class FrameBuffer;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.17 2003-12-04 19:18:45 stephena Exp $
+  @version $Id: Console.hxx,v 1.18 2004-06-13 04:59:40 bwmott Exp $
 */
 class Console
 {
@@ -57,10 +57,11 @@ class Console
       @param profiles    The game profiles object to use
       @param framebuffer The framebuffer object to use
       @param sound       The sound object to use
+      @param framerate   The framerate being used
     */
     Console(const uInt8* image, uInt32 size, const char* filename,
         Settings& settings, PropertiesSet& propertiesSet,
-        FrameBuffer& framebuffer, Sound& sound);
+        FrameBuffer& framebuffer, Sound& sound, uInt32 frameRate);
 
     /**
       Create a new console object by copying another one
@@ -111,6 +112,11 @@ class Console
       @return The frame buffer
     */
     FrameBuffer& frameBuffer() const;
+
+    /**
+      Get the frame rate for the emulation
+    */
+    uInt32 frameRate() const;
 
     /**
       Get the sound object of the console
@@ -268,6 +274,9 @@ class Console
 
     // Reference to the Sound object
     Sound& mySound;
+
+    // Frame rate being used by the emulator
+    uInt32 myFrameRate;
 
     // Pointer to the EventHandler object
     EventHandler* myEventHandler;
