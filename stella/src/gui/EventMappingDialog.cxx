@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.4 2005-04-06 23:47:07 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.5 2005-04-11 19:02:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -97,7 +97,11 @@ void EventMappingDialog::startRemapping()
   myCancelMapButton->setEnabled(true);
 
   // And show a message indicating which key is being remapped
-  drawKeyMapping();
+  ostringstream buf;
+  buf << "Select a new event for the '"	 	
+      << EventHandler::ourActionList[ myActionSelected ].action	 	
+      << "' action";	 	
+  myKeyMapping->setLabel(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
