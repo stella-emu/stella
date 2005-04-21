@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.16 2005-02-21 20:43:25 stephena Exp $
+// $Id: TIA.hxx,v 1.17 2005-04-21 18:55:15 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.16 2005-02-21 20:43:25 stephena Exp $
+  @version $Id: TIA.hxx,v 1.17 2005-04-21 18:55:15 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -170,6 +170,29 @@ class TIA : public Device , public MediaSource
       @return The total number of scanlines generated
     */
     uInt32 scanlines() const;
+
+    enum TIABit {
+      P0,   // Descriptor for Player 0 Bit
+      M0,   // Descriptor for Missle 0 Bit
+      P1,   // Descriptor for Player 1 Bit
+      M1,   // Descriptor for Missle 1 Bit
+      BL,   // Descriptor for Ball Bit
+      PF    // Descriptor for Playfield Bit
+    };
+
+    /**
+      Enables/disables the specified TIA bit.
+
+      @return  Whether the bit was enabled or disabled
+    */
+    bool enableBit(TIABit b, bool mode) { myBitEnabled[b] = mode; return mode; }
+
+    /**
+      Toggles the specified TIA bit.
+
+      @return  Whether the bit was enabled or disabled
+    */
+    bool toggleBit(TIABit b) { myBitEnabled[b] = !myBitEnabled[b]; return myBitEnabled[b]; }
 
   private:
     // Compute the ball mask table
@@ -313,7 +336,7 @@ class TIA : public Device , public MediaSource
     bool myREFP0;         // Indicates if player 0 is being reflected
     bool myREFP1;         // Indicates if player 1 is being reflected
 
-    uInt32 myPF;           // Playfield graphics (19-12:PF2 11-4:PF1 3-0:PF0)
+    uInt32 myPF;          // Playfield graphics (19-12:PF2 11-4:PF1 3-0:PF0)
 
     uInt8 myGRP0;         // Player 0 graphics register
     uInt8 myGRP1;         // Player 1 graphics register
@@ -403,6 +426,9 @@ class TIA : public Device , public MediaSource
 
     // Counter used for TIA M0 "bug" 
     uInt32 myM0CosmicArkCounter;
+
+    // Answers whether specified bits (from TIABit) are enabled or disabled
+    bool myBitEnabled[6];
 
   private:
     // Ball mask table (entries are true or false)

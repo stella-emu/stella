@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.38 2005-02-22 02:59:54 stephena Exp $
+// $Id: TIA.cxx,v 1.39 2005-04-21 18:55:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,6 +48,9 @@ TIA::TIA(const Console& console, Sound& sound, Settings& settings)
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];
   myPreviousFrameBuffer = new uInt8[160 * 300];
+
+  for(uInt32 i = 0; i < 6; ++i)
+    myBitEnabled[i] = true;
 
   for(uInt16 x = 0; x < 2; ++x)
   {
@@ -186,7 +189,6 @@ void TIA::reset()
   myPOSM1 = 0;
   myPOSBL = 0;
 
-
   // Some default values for the "current" variables
   myCurrentGRP0 = 0;
   myCurrentGRP1 = 0;
@@ -201,6 +203,9 @@ void TIA::reset()
   myHMOVEBlankEnabled = false;
   myM0CosmicArkMotionEnabled = false;
   myM0CosmicArkCounter = 0;
+
+  for(uInt32 i = 0; i < 6; ++i)
+    myBitEnabled[i] = true;
 
   myDumpEnabled = false;
   myDumpDisabledCycle = 0;
@@ -358,6 +363,11 @@ bool TIA::save(Serializer& out)
     out.putBool(myM0CosmicArkMotionEnabled);
     out.putLong(myM0CosmicArkCounter);
 
+    // There are currently six bits defined in TIABit
+    out.putLong(6);
+    for(uInt32 i = 0; i < 6; ++i)
+      out.putBool(myBitEnabled[i]);
+
     out.putBool(myDumpEnabled);
     out.putLong(myDumpDisabledCycle);
 
@@ -453,6 +463,11 @@ bool TIA::load(Deserializer& in)
     myHMOVEBlankEnabled = in.getBool();
     myM0CosmicArkMotionEnabled = in.getBool();
     myM0CosmicArkCounter = (uInt32) in.getLong();
+
+    // We abuse the concept of 'enum' here
+    uInt32 limit = (uInt32) in.getLong();
+    for(uInt32 i = 0; i < limit; ++i)
+      myBitEnabled[i] = in.getBool();
 
     myDumpEnabled = in.getBool();
     myDumpDisabledCycle = (Int32) in.getLong();
@@ -2150,10 +2165,10 @@ void TIA::poke(uInt16 addr, uInt8 value)
     {
       myPF = (myPF & 0x000FFFF0) | ((value >> 4) & 0x0F);
 
-      if(myPF != 0)
-        myEnabledObjects |= myPFBit;
-      else
+      if(!myBitEnabled[TIA::PF] || myPF == 0)
         myEnabledObjects &= ~myPFBit;
+      else
+        myEnabledObjects |= myPFBit;
 
       break;
     }
@@ -2162,10 +2177,10 @@ void TIA::poke(uInt16 addr, uInt8 value)
     {
       myPF = (myPF & 0x000FF00F) | ((uInt32)value << 4);
 
-      if(myPF != 0)
-        myEnabledObjects |= myPFBit;
-      else
+      if(!myBitEnabled[TIA::PF] || myPF == 0)
         myEnabledObjects &= ~myPFBit;
+      else
+        myEnabledObjects |= myPFBit;
 
       break;
     }
@@ -2174,10 +2189,10 @@ void TIA::poke(uInt16 addr, uInt8 value)
     {
       myPF = (myPF & 0x00000FFF) | ((uInt32)value << 12);
 
-      if(myPF != 0)
-        myEnabledObjects |= myPFBit;
-      else
+      if(!myBitEnabled[TIA::PF] || myPF == 0)
         myEnabledObjects &= ~myPFBit;
+      else
+        myEnabledObjects |= myPFBit;
 
       break;
     }
@@ -2385,7 +2400,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
     case 0x1B:    // Graphics Player 0
     {
       // Set player 0 graphics
-      myGRP0 = value;
+      myGRP0 = (myBitEnabled[TIA::P0] ? value : 0);
 
       // Copy player 1 graphics into its delayed register
       myDGRP1 = myGRP1;
@@ -2415,7 +2430,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
     case 0x1C:    // Graphics Player 1
     {
       // Set player 1 graphics
-      myGRP1 = value;
+      myGRP1 = (myBitEnabled[TIA::P1] ? value : 0);
 
       // Copy player 0 graphics into its delayed register
       myDGRP0 = myGRP0;
@@ -2450,9 +2465,9 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x1D:    // Enable Missle 0 graphics
+    case 0x1D:    // Enable Missile 0 graphics
     {
-      myENAM0 = value & 0x02;
+      myENAM0 = (myBitEnabled[TIA::M0] ? value & 0x02 : 0);
 
       if(myENAM0 && !myRESMP0)
         myEnabledObjects |= myM0Bit;
@@ -2461,9 +2476,9 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x1E:    // Enable Missle 1 graphics
+    case 0x1E:    // Enable Missile 1 graphics
     {
-      myENAM1 = value & 0x02;
+      myENAM1 = (myBitEnabled[TIA::M1] ? value & 0x02 : 0);
 
       if(myENAM1 && !myRESMP1)
         myEnabledObjects |= myM1Bit;
@@ -2474,7 +2489,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x1F:    // Enable Ball graphics
     {
-      myENABL = value & 0x02;
+      myENABL = (myBitEnabled[TIA::BL] ? value & 0x02 : 0);
 
       if(myVDELBL ? myDENABL : myENABL)
         myEnabledObjects |= myBLBit;
