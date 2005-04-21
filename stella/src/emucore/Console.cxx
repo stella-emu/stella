@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.45 2005-03-27 03:07:33 stephena Exp $
+// $Id: Console.cxx,v 1.46 2005-04-21 21:18:37 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -286,6 +286,14 @@ void Console::togglePalette(const string& palette)
 
   myOSystem->settings().setString("palette", type);
   myOSystem->frameBuffer().setupPalette();
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show)
+{
+  bool result = ((TIA*)myMediaSource)->toggleBit(bit);
+  string message = bitname + (result ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
 }
 

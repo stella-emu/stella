@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.43 2005-04-06 23:47:06 stephena Exp $
+// $Id: EventHandler.cxx,v 1.44 2005-04-21 21:18:37 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -240,8 +240,37 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
     case S_EMULATE:
       // An attempt to speed up event processing
       // All SDL-specific event actions are accessed by either
-      // Control or Alt keys.  So we quickly check for those.
-      if(mod & KMOD_ALT && state)
+      // Control and/or Alt keys.  So we quickly check for those.
+      if((mod & KMOD_ALT) && (mod & KMOD_CTRL) && state)
+      {
+        switch(int(key))
+        {
+          case SDLK_1:
+            myOSystem->console().toggleP0Bit();
+            break;
+
+          case SDLK_2:
+            myOSystem->console().toggleP1Bit();
+            break;
+
+          case SDLK_3:
+            myOSystem->console().toggleM0Bit();
+            break;
+
+          case SDLK_4:
+            myOSystem->console().toggleM1Bit();
+            break;
+
+          case SDLK_5:
+            myOSystem->console().toggleBLBit();
+            break;
+
+          case SDLK_6:
+            myOSystem->console().togglePFBit();
+            break;
+        }
+      }
+      else if(mod & KMOD_ALT && state)
       {
         switch(int(key))
         {

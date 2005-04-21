@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.25 2005-03-14 04:08:14 stephena Exp $
+// $Id: Console.hxx,v 1.26 2005-04-21 21:18:37 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -31,12 +31,13 @@ class OSystem;
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
+#include "TIA.hxx"
 
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.25 2005-03-14 04:08:14 stephena Exp $
+  @version $Id: Console.hxx,v 1.26 2005-04-21 21:18:37 stephena Exp $
 */
 class Console
 {
@@ -134,6 +135,16 @@ class Console
     void togglePalette(const string& palette = "");
 
     /**
+      Toggles the TIA bit specified in the method name.
+    */
+    void toggleP0Bit() { toggleTIABit(TIA::P0, "P0"); }
+    void toggleP1Bit() { toggleTIABit(TIA::P1, "P1"); }
+    void toggleM0Bit() { toggleTIABit(TIA::M0, "M0"); }
+    void toggleM1Bit() { toggleTIABit(TIA::M1, "M1"); }
+    void toggleBLBit() { toggleTIABit(TIA::BL, "BL"); }
+    void togglePFBit() { toggleTIABit(TIA::PF, "PF"); }
+
+    /**
       Save a copy of the current properties after any changes.
 
       @param filename Filename to save the properties into.
@@ -176,6 +187,9 @@ class Console
     */
     void changeHeight(const uInt32 direction);
 #endif
+
+  private:
+    void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true);
 
   private:
     // Pointer to the osystem object

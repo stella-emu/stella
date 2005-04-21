@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.17 2005-04-21 18:55:15 stephena Exp $
+// $Id: TIA.hxx,v 1.18 2005-04-21 21:18:37 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.17 2005-04-21 18:55:15 stephena Exp $
+  @version $Id: TIA.hxx,v 1.18 2005-04-21 21:18:37 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -173,8 +173,8 @@ class TIA : public Device , public MediaSource
 
     enum TIABit {
       P0,   // Descriptor for Player 0 Bit
-      M0,   // Descriptor for Missle 0 Bit
       P1,   // Descriptor for Player 1 Bit
+      M0,   // Descriptor for Missle 0 Bit
       M1,   // Descriptor for Missle 1 Bit
       BL,   // Descriptor for Ball Bit
       PF    // Descriptor for Playfield Bit
