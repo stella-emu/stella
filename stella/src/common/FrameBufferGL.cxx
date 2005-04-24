@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.18 2005-04-24 01:57:46 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.19 2005-04-24 20:36:26 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -48,7 +48,6 @@ FrameBufferGL::~FrameBufferGL()
     SDL_FreeSurface(myTexture);
 
   glDeleteTextures(1, &myTextureID);
-  glDeleteTextures(256, myFontTextureID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,8 +160,7 @@ bool FrameBufferGL::initSubsystem()
   // Precompute the GUI palette
   // We abuse the concept of 'enum' by referring directly to the integer values
   for(uInt8 i = 0; i < 5; i++)
-    for(uInt8 j = 0; j < 3; j++)
-      myGUIPalette[i][j] = (float)(myGUIColors[i][j]) / 255.0;
+    myGUIPalette[i] = mapRGB(myGUIColors[i][0], myGUIColors[i][1], myGUIColors[i][2]);
 
   return true;
 }
@@ -249,25 +247,6 @@ void FrameBufferGL::drawMediaSource()
     }
   }
 
-  // If necessary, erase the screen
-  if(theRedrawEntireFrameIndicator)
-    glClear(GL_COLOR_BUFFER_BIT);
-
-  // Texturemap complete texture to surface so we have free scaling 
-  // and antialiasing 
-  glBindTexture(GL_TEXTURE_2D, myTextureID);
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
-                  GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-  uInt32 w = myBaseDim.w, h = myBaseDim.h;
-  glBegin(GL_QUADS);
-    glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
-    glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(w, 0);
-    glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
-    glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
-  glEnd();
-
   // The frame doesn't need to be completely redrawn anymore
   theRedrawEntireFrameIndicator = false;
 }
@@ -280,6 +259,20 @@ void FrameBufferGL::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
+  // Texturemap complete texture to surface so we have free scaling 
+  // and antialiasing 
+  glBindTexture(GL_TEXTURE_2D, myTextureID);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
+                  GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
+
+  uInt32 w = myBaseDim.w, h = myBaseDim.h;
+  glBegin(GL_QUADS);
+    glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
+    glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(w, 0);
+    glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
+    glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
+  glEnd();
+
   // Now show all changes made to the textures
   SDL_GL_SwapBuffers();
 }
@@ -317,15 +310,6 @@ void FrameBufferGL::toggleFilter()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
 
-  for(uInt32 i = 0; i < 256; i++)
-  {
-    glBindTexture(GL_TEXTURE_2D, myFontTextureID[i]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
-  }
-
   // The filtering has changed, so redraw the entire screen
   theRedrawEntireFrameIndicator = true;
 }
@@ -333,62 +317,56 @@ void FrameBufferGL::toggleFilter()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 {
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-  glLineWidth(2);
-  glColor4f(myGUIPalette[color][0],
-            myGUIPalette[color][1],
-            myGUIPalette[color][2],
-            1.0);
-  glBegin(GL_LINES);
-    glVertex2i(x,  y);
-    glVertex2i(x2, y);
-  glEnd();
+  SDL_Rect tmp;
+
+  // Horizontal line
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = x2 - x + 1;
+  tmp.h = 1;
+  SDL_FillRect(myTexture, &tmp, myGUIPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
 {
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-  glLineWidth(2);
-  glColor4f(myGUIPalette[color][0],
-            myGUIPalette[color][1],
-            myGUIPalette[color][2],
-            1.0);
-  glBegin(GL_LINES);
-    glVertex2i(x, y );
-    glVertex2i(x, y2);
-  glEnd();
+  SDL_Rect tmp;
+
+  // Vertical line
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = 1;
+  tmp.h = y2 - y + 1;
+  SDL_FillRect(myTexture, &tmp, myGUIPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                               OverlayColor color, uInt32 level)
 {
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-  glColor4f(myGUIPalette[color][0],
-            myGUIPalette[color][1],
-            myGUIPalette[color][2],
-            0.7);
-  glRecti(x, y, x+w-1, y+h-1);
+// FIXME - make this do alpha-blending
+//         for now, just do a normal fill
+  fillRect(x, y, w, h, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                              OverlayColor color)
 {
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-  glColor4f(myGUIPalette[color][0],
-            myGUIPalette[color][1],
-            myGUIPalette[color][2],
-            1.0);
-  glRecti(x, y, x+w-1, y+h-1);
+  SDL_Rect tmp;
+
+  // Fill the rectangle
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = w;
+  tmp.h = h;
+  SDL_FillRect(myTexture, &tmp, myGUIPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawChar(uInt8 chr, uInt32 xorig, uInt32 yorig,
                              OverlayColor color)
 {
-/*
   // If this character is not included in the font, use the default char.
   if(chr < myFont->desc().firstchar ||
      chr >= myFont->desc().firstchar + myFont->desc().size)
@@ -409,51 +387,40 @@ void FrameBufferGL::drawChar(uInt8 chr, uInt32 xorig, uInt32 yorig,
   {
     const uInt16 buffer = *tmp++;
     uInt16 mask = 0x8000;
-//    if(ty + y < 0 || ty + y >= dst->h)
-//      continue;
 
     for(int x = 0; x < w; x++, mask >>= 1)
     {
-//      if (tx + x < 0 || tx + x >= dst->w)
-//        continue;
       if ((buffer & mask) != 0)
       {
-        rect.x = (x + xorig) * theZoomLevel;
-        rect.y = (y + yorig) * theZoomLevel;
-        rect.w = rect.h = theZoomLevel;
-        SDL_FillRect(myScreen, &rect, myGUIPalette[color]);
+        rect.x = x + xorig;
+        rect.y = y + yorig;
+        rect.w = rect.h = 1;
+        SDL_FillRect(myTexture, &rect, myGUIPalette[color]);
       }
     }
   }
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
                                  OverlayColor color, Int32 h)
 {
-/*
   SDL_Rect rect;
   for(int y = 0; y < h; y++)
   {
     uInt32 mask = 0xF0000000;
-//    if(ty + y < 0 || ty + y >= _screen.h)
-//      continue;
 
     for(int x = 0; x < 8; x++, mask >>= 4)
     {
-//      if(tx + x < 0 || tx + x >= _screen.w)
-//        continue;
       if(bitmap[y] & mask)
       {
-        rect.x = (x + xorig) * theZoomLevel;
-        rect.y = (y + yorig) * theZoomLevel;
-        rect.w = rect.h = theZoomLevel;
-        SDL_FillRect(myScreen, &rect, myGUIPalette[color]);
+        rect.x = x + xorig;
+        rect.y = y + yorig;
+        rect.w = rect.h = 1;
+        SDL_FillRect(myTexture, &rect, myGUIPalette[color]);
       }
     }
   }
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -464,23 +431,6 @@ void FrameBufferGL::translateCoords(Int32* x, Int32* y)
   *y = (Int32) (((*y - myImageDim.y) / (theZoomLevel * myFSScaleFactor)));
 }
 
-/*
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawChar(uInt32 x, uInt32 y, uInt32 c)
-{
-  if(c >= 256 )
-    return;
-
-  glBindTexture(GL_TEXTURE_2D, myFontTextureID[c]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex2i(x,   y  );
-    glTexCoord2f(1, 0); glVertex2i(x+8, y  );
-    glTexCoord2f(1, 1); glVertex2i(x+8, y+8);
-    glTexCoord2f(0, 1); glVertex2i(x,   y+8);
-  glEnd();
-}
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createTextures()
 {
@@ -488,7 +438,6 @@ bool FrameBufferGL::createTextures()
     SDL_FreeSurface(myTexture);
 
   glDeleteTextures(1, &myTextureID);
-  glDeleteTextures(256, myFontTextureID);
 
   uInt32 w = power_of_two(myBaseDim.w);
   uInt32 h = power_of_two(myBaseDim.h);
@@ -526,64 +475,14 @@ bool FrameBufferGL::createTextures()
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
                myTexture->pixels);
 
-/*
-  // Now create the font textures.  There are 256 fonts of 8x8 pixels.
-  // These will be stored in 256 textures of size 8x8.
-  SDL_Surface* fontTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, 8, 8, 32,
-  #if SDL_BYTEORDER == SDL_LIL_ENDIAN 
-    0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-  #else
-    0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
-  #endif
-
-  if(fontTexture == NULL)
-    return false;
-
-  // Create a texture for each character
-  glGenTextures(256, myFontTextureID);
-
-  for(uInt32 c = 0; c < 256; c++)
-  {
-    // First clear the texture
-    SDL_Rect tmp;
-    tmp.x = 0; tmp.y = 0; tmp.w = 8; tmp.h = 8;
-    SDL_FillRect(fontTexture, &tmp,
-                 SDL_MapRGBA(fontTexture->format, 0xff, 0xff, 0xff, 0x0));
-
-    // Now fill the texture with font data
-    for(uInt32 y = 0; y < 8; y++)
-    {
-      for(uInt32 x = 0; x < 8; x++)
-      {
-        if((ourFontData[(c << 3) + y] >> x) & 1)
-        {
-          tmp.x = x;
-          tmp.y = y;
-          tmp.w = tmp.h = 1;
-          SDL_FillRect(fontTexture, &tmp,
-            SDL_MapRGBA(fontTexture->format, 0x10, 0x10, 0x10, 0xff));
-        }
-      }
-    }
-
-    glBindTexture(GL_TEXTURE_2D, myFontTextureID[c]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-               fontTexture->pixels);
-  }
-
-  SDL_FreeSurface(fontTexture);
-*/
-
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_TEXTURE_2D);
+
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
   return true;
 }

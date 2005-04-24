@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.10 2005-04-24 01:57:47 stephena Exp $
+// $Id: Dialog.cxx,v 1.11 2005-04-24 20:36:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -127,7 +127,7 @@ void Dialog::drawDialog()
 
   FrameBuffer& fb = instance()->frameBuffer();
 
-  fb.blendRect(_x, _y, _w, _h, kBGColor);
+  fb.blendRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
   fb.box(_x, _y, _w, _h, kColor, kShadowColor);
 
   // Draw all children

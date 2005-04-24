@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.17 2005-04-24 01:57:46 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.18 2005-04-24 20:36:35 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -335,7 +335,7 @@ void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
   // Horizontal line
   tmp.x = x * theZoomLevel;
   tmp.y = y * theZoomLevel;
-  tmp.w = (x2 - x) * theZoomLevel;
+  tmp.w = (x2 - x + 1) * theZoomLevel;
   tmp.h = theZoomLevel;
   SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }
@@ -349,7 +349,7 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
   tmp.x = x * theZoomLevel;
   tmp.y = y * theZoomLevel;
   tmp.w = theZoomLevel;
-  tmp.h = (y2 - y) * theZoomLevel;
+  tmp.h = (y2 - y + 1) * theZoomLevel;
   SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }
 
@@ -358,16 +358,8 @@ void FrameBufferSoft::blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                                 OverlayColor color, uInt32 level)
 {
 // FIXME - make this do alpha-blending
-  SDL_Rect tmp;
-
-  // Fill the rectangle
-  tmp.x = x * theZoomLevel;
-  tmp.y = y * theZoomLevel;
-  tmp.w = w * theZoomLevel;
-  tmp.h = h * theZoomLevel;
-
-  myRectList->add(&tmp);
-  SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
+//         for now, just do a normal fill
+  fillRect(x, y, w, h, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,13 +401,9 @@ void FrameBufferSoft::drawChar(uInt8 chr, uInt32 xorig, uInt32 yorig,
   {
     const uInt16 buffer = *tmp++;
     uInt16 mask = 0x8000;
-//    if(ty + y < 0 || ty + y >= dst->h)
-//      continue;
 
     for(int x = 0; x < w; x++, mask >>= 1)
     {
-//      if (tx + x < 0 || tx + x >= dst->w)
-//        continue;
       if ((buffer & mask) != 0)
       {
         rect.x = (x + xorig) * theZoomLevel;
@@ -435,13 +423,9 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
   for(int y = 0; y < h; y++)
   {
     uInt32 mask = 0xF0000000;
-//    if(ty + y < 0 || ty + y >= _screen.h)
-//      continue;
 
     for(int x = 0; x < 8; x++, mask >>= 4)
     {
-//      if(tx + x < 0 || tx + x >= _screen.w)
-//        continue;
       if(bitmap[y] & mask)
       {
         rect.x = (x + xorig) * theZoomLevel;

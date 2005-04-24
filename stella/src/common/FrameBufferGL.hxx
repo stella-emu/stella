@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.10 2005-04-04 02:19:20 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.11 2005-04-24 20:36:27 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -33,7 +33,7 @@ class OSystem;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.10 2005-04-04 02:19:20 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.11 2005-04-24 20:36:27 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -184,13 +184,16 @@ class FrameBufferGL : public FrameBuffer
 
     void setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight);
 
-    uInt32 power_of_two(uInt32 input)
+    inline uInt32 power_of_two(uInt32 input)
     {
       uInt32 value = 1;
       while( value < input )
         value <<= 1;
       return value;
     }
+
+    inline void* getBasePtr(uInt32 x, uInt32 y) const
+      { return (void *)((uInt16*)myTexture->pixels + y * myTexture->w + x); }
 
   private:
     // The main texture buffer
@@ -214,11 +217,8 @@ class FrameBufferGL : public FrameBuffer
     // OpenGL texture coordinates for the main surface
     GLfloat myTexCoord[4];
 
-    // The OpenGL font texture handles (one for each character)
-    GLuint myFontTextureID[256];
-
     // GUI palette
-    GLfloat myGUIPalette[5][3];
+    Uint32 myGUIPalette[5];
 
     // The texture filtering to use
     GLint myFilterParam;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.1 2005-04-04 02:19:22 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.2 2005-04-24 20:36:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -282,7 +282,7 @@ void ScrollBarWidget::drawWidget(bool hilite)
     int y = _y + _sliderPos + _sliderHeight / 2;
     OverlayColor color = (hilite && _part == kSliderPart) ? kColor : kShadowColor;
     fb.hLine(_x + 2, y - 2, _x + _w - 3, color);
-    fb.hLine(_x + 2, y, _x + _w - 3, color);
-    fb.hLine(_x + 2, y + 2, _x + _w-3, color);
+    fb.hLine(_x + 2, y,     _x + _w - 3, color);
+    fb.hLine(_x + 2, y + 2, _x + _w - 3, color);
   }
 }

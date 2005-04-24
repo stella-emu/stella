@@ -13,13 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.5 2005-04-11 19:02:25 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.6 2005-04-24 20:36:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
-
-#include <sstream>
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
@@ -97,11 +95,10 @@ void EventMappingDialog::startRemapping()
   myCancelMapButton->setEnabled(true);
 
   // And show a message indicating which key is being remapped
-  ostringstream buf;
-  buf << "Select a new event for the '"	 	
-      << EventHandler::ourActionList[ myActionSelected ].action	 	
-      << "' action";	 	
-  myKeyMapping->setLabel(buf.str());
+  string buf = "Select a new event for the '" +
+               EventHandler::ourActionList[ myActionSelected ].action +
+               "' action";	 	
+  myKeyMapping->setLabel(buf);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,10 +141,8 @@ void EventMappingDialog::drawKeyMapping()
 {
   if(myActionSelected >= 0)
   {
-    ostringstream buf;
-    buf << "Key(s) : "
-        << EventHandler::ourActionList[ myActionSelected ].key;
-    myKeyMapping->setLabel(buf.str());
+    string buf = "Key(s) : " + EventHandler::ourActionList[ myActionSelected ].key;
+    myKeyMapping->setLabel(buf);
   }
 }
 
@@ -197,7 +192,6 @@ void EventMappingDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32
     case kDefaultsCmd:
       instance()->eventHandler().setDefaultMapping();
       drawKeyMapping();
-
       break;
 
     default:
