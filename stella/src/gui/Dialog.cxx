@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.9 2005-04-04 02:19:22 stephena Exp $
+// $Id: Dialog.cxx,v 1.10 2005-04-24 01:57:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,6 +40,7 @@ Dialog::Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
     : GuiObject(instance, x, y, w, h),
       _mouseWidget(0),
       _focusedWidget(0),
+      _dragWidget(0),
       _visible(true),
       _openCount(0)
 {
@@ -144,14 +145,11 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
   Widget* w;
   w = findWidget(x, y);
 
+  _dragWidget = w;
+
   // If the click occured inside a widget which is not the currently
   // focused one, change the focus to that widget.
-  // TODO: use the wantsFocus() method to objects, so that only fields
-  // that want it get the focus (like edit fields, list field...)
-  // However, right now we "abuse" the focus also for the click&drag
-  // behaviour of buttons. This should probably be changed by adding
-  // a nother field, e.g. _clickedWidget or _dragWidget.
-  if(w && w != _focusedWidget)
+  if(w && w != _focusedWidget && w->wantsFocus())
   {
     // The focus will change. Tell the old focused widget (if any)
     // that it lost the focus.
@@ -164,8 +162,8 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
     _focusedWidget = w;
   }
 
-  if(w && w == _focusedWidget)
-    _focusedWidget->handleMouseDown(x - (_focusedWidget->getAbsX() - _x), y - (_focusedWidget->getAbsY() - _y), button, clickCount);
+  if(w)
+    w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,17 +173,19 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
 
   if(_focusedWidget)
   {
-    w = _focusedWidget;
+    //w = _focusedWidget;
 
     // Lose focus on mouseup unless the widget requested to retain the focus
     if(! (_focusedWidget->getFlags() & WIDGET_RETAIN_FOCUS ))
       releaseFocus();
   }
-  else
-    w = findWidget(x, y);
+
+  w = _dragWidget;
 
   if(w)
     w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
+
+  _dragWidget = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -244,7 +244,7 @@ void Dialog::handleMouseMoved(int x, int y, int button)
 {
   Widget* w;
 	
-  if(_focusedWidget)
+  if(_focusedWidget && !_dragWidget)
   {
     w = _focusedWidget;
     int wx = w->getAbsX() - _x;
@@ -255,6 +255,8 @@ void Dialog::handleMouseMoved(int x, int y, int button)
     bool mouseInFocusedWidget = (x >= wx && x < wx + w->_w && y >= wy && y < wy + w->_h);
     if(mouseInFocusedWidget && _mouseWidget != w)
     {
+      if(_mouseWidget)
+        _mouseWidget->handleMouseLeft(button);
       _mouseWidget = w;
       w->handleMouseEntered(button);
     }
@@ -267,22 +269,24 @@ void Dialog::handleMouseMoved(int x, int y, int button)
     w->handleMouseMoved(x - wx, y - wy, button);
   }
 
-  w = findWidget(x, y);
+  // While a "drag" is in process (i.e. mouse is moved while a button is pressed),
+  // only deal with the widget in which the click originated.
+  if (_dragWidget)
+    w = _dragWidget;
+  else
+    w = findWidget(x, y);
 
-  if(_mouseWidget != w)
+  if (_mouseWidget != w)
   {
-    if(_mouseWidget)
+    if (_mouseWidget)
       _mouseWidget->handleMouseLeft(button);
-    if(w)
+    if (w)
       w->handleMouseEntered(button);
-
     _mouseWidget = w;
   } 
 
-  if(!w || !(w->getFlags() & WIDGET_TRACK_MOUSE))
-    return;
-
-  w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);
+  if (w && (w->getFlags() & WIDGET_TRACK_MOUSE))
+    w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

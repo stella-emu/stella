@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.1 2005-04-04 02:19:22 stephena Exp $
+// $Id: ListWidget.cxx,v 1.2 2005-04-24 01:57:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -171,8 +171,6 @@ void ListWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCoun
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
 {
-  _scrollBar->handleMouseUp(x, y, button, clickCount);
-
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
   if (clickCount == 2 && (_selectedItem == (y - 1) / kLineHeight + _currentPos))

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.17 2005-04-04 02:19:20 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.18 2005-04-24 01:57:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -369,7 +369,7 @@ void FrameBufferGL::blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
             myGUIPalette[color][1],
             myGUIPalette[color][2],
             0.7);
-  glRecti(x, y, x+w, y+h);
+  glRecti(x, y, x+w-1, y+h-1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -381,7 +381,7 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
             myGUIPalette[color][1],
             myGUIPalette[color][2],
             1.0);
-  glRecti(x, y, x+w, y+h);
+  glRecti(x, y, x+w-1, y+h-1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

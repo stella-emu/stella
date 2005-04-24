@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.16 2005-04-04 02:19:20 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.17 2005-04-24 01:57:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -336,7 +336,7 @@ void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
   tmp.x = x * theZoomLevel;
   tmp.y = y * theZoomLevel;
   tmp.w = (x2 - x) * theZoomLevel;
-  tmp.h = 2;//theZoomLevel;
+  tmp.h = theZoomLevel;
   SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }
 
@@ -348,7 +348,7 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
   // Vertical line
   tmp.x = x * theZoomLevel;
   tmp.y = y * theZoomLevel;
-  tmp.w = 2;//theZoomLevel;
+  tmp.w = theZoomLevel;
   tmp.h = (y2 - y) * theZoomLevel;
   SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.7 2005-03-26 19:26:47 stephena Exp $
+// $Id: Dialog.hxx,v 1.8 2005-04-24 01:57:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class Menu;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.7 2005-03-26 19:26:47 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.8 2005-04-24 01:57:47 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -81,6 +81,7 @@ class Dialog : public GuiObject
   protected:
     Widget* _mouseWidget;
     Widget* _focusedWidget;
+    Widget* _dragWidget;
     bool    _visible;
     uInt32  _openCount;
 

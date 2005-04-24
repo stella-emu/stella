@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.25 2005-04-04 02:19:21 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.26 2005-04-24 01:57:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.25 2005-04-04 02:19:21 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.26 2005-04-24 01:57:47 stephena Exp $
 */
 class FrameBuffer
 {
@@ -133,7 +133,7 @@ class FrameBuffer
     */
     void refresh(bool now = false)
     {
-//cerr << "refresh() " << val++ << endl;
+      // cerr << "refresh() " << myNumRedraws++ << endl;
       theRedrawEntireFrameIndicator = true;
       myMenuRedraws = 2;
       if(now) drawMediaSource();
@@ -453,7 +453,9 @@ FIXME
     // Number of times menu have been drawn
     uInt32 myMenuRedraws;
 
-  int val; // FIXME - remove
+    // Indicates how many times the framebuffer has been redrawn
+    // Used only for debugging purposes
+    uInt32 myNumRedraws;
 };
 
 #endif

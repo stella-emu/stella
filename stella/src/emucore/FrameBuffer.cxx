@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.26 2005-04-06 23:47:07 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.27 2005-04-24 01:57:47 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -47,7 +47,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myMessageTime(0),
       myMessageText(""),
       myMenuRedraws(2),
-val(0) // FIXME
+      myNumRedraws(0)
 {
   // Add the framebuffer to the system
   myOSystem->attach(this);
