@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.2 2005-03-27 03:07:34 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.3 2005-04-28 19:28:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,9 +45,9 @@ AudioDialog::AudioDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
     : Dialog(osystem, x, y, w, h)
 {
   int yoff = 10,
-      xoff = 10,
-      woff = _w - 100,
-      labelWidth = 70;
+      xoff = 30,
+      woff = _w - 80,
+      labelWidth = 80;
 
   // Volume
   myVolumeSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
@@ -69,18 +69,17 @@ AudioDialog::AudioDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
   yoff += kAudioRowHeight + 4;
 
   // Enable sound
-  new StaticTextWidget(this, xoff+8, yoff+3, 20, kLineHeight,
-                       "(*)", kTextAlignLeft);
+  new StaticTextWidget(this, xoff+8, yoff+3, 20, kLineHeight, "", kTextAlignLeft);
   mySoundEnableCheckbox = new CheckboxWidget(this, xoff+28, yoff, woff - 14, kLineHeight,
                                              "Enable sound", kSoundEnableChanged);
   yoff += kAudioRowHeight + 12;
 
   // Add a short message about options that need a restart
-  new StaticTextWidget(this, xoff+30, yoff, 170, kLineHeight,
-                       "* Note that these options take effect", kTextAlignLeft);
-  yoff += kAudioRowHeight;
-  new StaticTextWidget(this, xoff+30, yoff, 170, kLineHeight,
-                       "the next time you restart Stella.", kTextAlignLeft);
+//  new StaticTextWidget(this, xoff+30, yoff, 170, kLineHeight,
+//                       "* Note that these options take effect", kTextAlignLeft);
+//  yoff += kAudioRowHeight;
+//  new StaticTextWidget(this, xoff+30, yoff, 170, kLineHeight,
+//                       "the next time you restart Stella.", kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
   addButton( 10, _h - 24, "Defaults", kDefaultsCmd, 0);
@@ -132,27 +131,36 @@ void AudioDialog::saveConfig()
 {
   string s;
   uInt32 i;
-  bool b;
+  bool b, restart = false;
 
   // Volume
   i = myVolumeSlider->getValue();
-  instance()->settings().setInt("volume", i);
   instance()->sound().setVolume(i);
 
-  // Fragsize
-  // This one requires a complete re-initialization of the sound subsystem,
-  // so we only do it if the fragsize really has changed
+  // Fragsize (requires a restart to take effect)
   i = 1;
   i <<= (myFragsizePopup->getSelectedTag() + 7);
   if(instance()->settings().getInt("fragsize") != (Int32)i)
   {
     instance()->settings().setInt("fragsize", i);
-    instance()->sound().initialize(true);  // force a re-initialization
+    restart = true;
   }
 
-  // Enable sound (requires a restart to take effect) // FIXME - let this work without a restart
+  // Enable/disable sound (requires a restart to take effect)
   b = mySoundEnableCheckbox->getState();
-  instance()->settings().setBool("sound", b);
+  if(instance()->settings().getBool("sound") != b)
+  {
+    instance()->sound().setEnabled(b);
+    restart = true;
+  }
+
+  // Only force a re-initialization when necessary, since it can
+  // be a time-consuming operation
+  if(restart)
+  {
+    instance()->sound().initialize(true);
+    instance()->sound().mute(true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,6 +169,7 @@ void AudioDialog::setDefaults()
   myVolumeSlider->setValue(100);
   myVolumeLabel->setLabel("100");
 
+// FIXME - get defaults from OSystem or Settings
 #ifdef WIN32
   myFragsizePopup->setSelectedTag(4);
 #else

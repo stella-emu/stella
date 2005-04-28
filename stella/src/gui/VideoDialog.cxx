@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.5 2005-03-27 03:07:34 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.6 2005-04-28 19:28:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,8 +45,8 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
 {
   int yoff = 10,
       xoff = 2,
-      woff = _w - 130,
-      labelWidth = 65;
+      woff = 110,
+      labelWidth = 55;
 
   // Video driver (query OSystem for what's supported)
   myDriverPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
@@ -61,9 +61,11 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
 //    _langPopUp->appendEntry(l->description, l->id);
 //  }
 
+// FIXME - get list of renderers from OSystem
+//         Also, make these options work without requiring a restart
   // Video renderer
   myRendererPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
-                                    "(*)Renderer: ", labelWidth, kRendererChanged);
+                                    "Renderer: ", labelWidth, kRendererChanged);
   myRendererPopup->appendEntry("Software", 1);
   myRendererPopup->appendEntry("OpenGL", 2);
   yoff += kVideoRowHeight + 4;
@@ -77,9 +79,9 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
 
   // Aspect ratio
   myAspectRatioSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
-                                         "(*)GL Aspect: ", labelWidth, kAspectRatioChanged);
+                                         "GL Aspect: ", labelWidth, kAspectRatioChanged);
   myAspectRatioSlider->setMinValue(1); myAspectRatioSlider->setMaxValue(100);
-  myAspectRatioLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 24, kLineHeight,
+  myAspectRatioLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 15, kLineHeight,
                        "", kTextAlignLeft);
   myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   yoff += kVideoRowHeight + 4;
@@ -96,36 +98,36 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
   xoff = xoff + 115;
 
   // Framerate
-  myFrameRateSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
+  myFrameRateSlider = new SliderWidget(this, xoff, yoff, woff - 25, kLineHeight,
                                        "Framerate: ", labelWidth, kFrameRateChanged);
   myFrameRateSlider->setMinValue(1); myFrameRateSlider->setMaxValue(300);
-  myFrameRateLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 20, kLineHeight,
+  myFrameRateLabel = new StaticTextWidget(this, xoff + woff - 22, yoff, 20, kLineHeight,
                                           "", kTextAlignLeft);
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
   yoff += kVideoRowHeight + 4;
 
   // Zoom level
-  myZoomSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
+  myZoomSlider = new SliderWidget(this, xoff, yoff, woff - 25, kLineHeight,
                                   "Zoom: ", labelWidth, kZoomChanged);
   myZoomSlider->setMinValue(0); myZoomSlider->setMaxValue(50);
-  myZoomLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 20, kLineHeight,
+  myZoomLabel = new StaticTextWidget(this, xoff + woff - 22, yoff, 20, kLineHeight,
                                      "", kTextAlignLeft);
   myZoomLabel->setFlags(WIDGET_CLEARBG);
   yoff += kVideoRowHeight + 10;
 
-  myFullscreenCheckbox = new CheckboxWidget(this, xoff + 25, yoff, woff - 14, kLineHeight,
+  myFullscreenCheckbox = new CheckboxWidget(this, xoff + 5, yoff, woff - 14, kLineHeight,
                                             "Fullscreen mode");
   yoff += kVideoRowHeight + 4;
 
-  myUseDeskResCheckbox = new CheckboxWidget(this, xoff + 25, yoff, woff - 14, kLineHeight,
+  myUseDeskResCheckbox = new CheckboxWidget(this, xoff + 5, yoff, woff - 14, kLineHeight,
                                             "Desktop Res in FS");
   yoff += kVideoRowHeight + 20;
 
   // Add a short message about options that need a restart
-  new StaticTextWidget(this, xoff-40, yoff, 170, kLineHeight,
+  new StaticTextWidget(this, _w - 175, yoff, 170, kLineHeight,
                        "* Note that these options take effect", kTextAlignLeft);
   yoff += kVideoRowHeight;
-  new StaticTextWidget(this, xoff-40, yoff, 170, kLineHeight,
+  new StaticTextWidget(this, _w - 175, yoff, 170, kLineHeight,
                        "the next time you restart Stella.", kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.12 2005-03-26 19:26:47 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.13 2005-04-28 19:28:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -34,9 +34,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::SoundSDL(OSystem* osystem)
     : Sound(osystem),
+      myIsEnabled(osystem->settings().getBool("sound")),
       myFragmentSizeLogBase2(0),
       myIsMuted(false)
 {
+  myOSystem->attach(this);
   initialize(true);
 }
 
@@ -44,24 +46,30 @@ SoundSDL::SoundSDL(OSystem* osystem)
 SoundSDL::~SoundSDL()
 {
   // Close the SDL audio system if it's initialized
-  if(myIsInitializedFlag)
-  {
-    SDL_PauseAudio(1);
-    SDL_CloseAudio();
-  }
+  closeAudio();
+}
 
-  myIsInitializedFlag = false;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::setEnabled(bool enable)
+{
+  myIsEnabled = enable;
+  myOSystem->settings().setBool("sound", enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::initialize(bool forcerestart)
 {
-  if(forcerestart && myIsInitializedFlag)
+  // Check whether to start the sound subsystem
+  if(!myIsEnabled)
   {
-    SDL_PauseAudio(1);
-    SDL_CloseAudio();
-    myIsInitializedFlag = false;
+    closeAudio();
+    if(myOSystem->settings().getBool("showinfo"))
+      cout << "Sound disabled." << endl << endl;
+    return;
   }
+
+  if(forcerestart && myIsInitializedFlag)
+    closeAudio();
 
   bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_AUDIO) & SDL_INIT_AUDIO) > 0;
 
@@ -138,8 +146,6 @@ void SoundSDL::initialize(bool forcerestart)
              << "  Frag size: "  << fragsize << endl << endl;
     }
   }
-
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,6 +192,7 @@ void SoundSDL::setVolume(Int32 percent)
   {
     if((percent >= 0) && (percent <= 100))
     {
+      myOSystem->settings().setInt("volume", percent);
       SDL_LockAudio();
       myVolume = percent;
       Tia_volume(percent);
@@ -218,7 +225,19 @@ void SoundSDL::adjustVolume(Int8 direction)
   message += strval.str();
 
   myOSystem->frameBuffer().showMessage(message);
-  myOSystem->settings().setInt("volume", percent);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::adjustCycleCounter(Int32 amount)
+{
+  myLastRegisterSetCycle += amount;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::setFrameRate(uInt32 framerate)
+{
+  myDisplayFrameRate = framerate;
+  myLastRegisterSetCycle = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -250,9 +269,7 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
 void SoundSDL::processFragment(uInt8* stream, Int32 length)
 {
   if(!myIsInitializedFlag)
-  {
     return;
-  }
 
   // If there are excessive items on the queue then we'll remove some
   if(myRegWriteQueue.duration() > (myFragmentSizeLogBase2 / myDisplayFrameRate))
@@ -332,6 +349,17 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
   sound->processFragment(stream, (Int32)len);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::closeAudio()
+{
+  if(myIsInitializedFlag)
+  {
+    SDL_PauseAudio(1);
+    SDL_CloseAudio();
+    myIsInitializedFlag = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

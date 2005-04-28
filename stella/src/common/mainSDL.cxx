@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.30 2005-04-03 19:37:32 stephena Exp $
+// $Id: mainSDL.cxx,v 1.31 2005-04-28 19:28:32 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -38,9 +38,14 @@
 #include "FrameBufferSoft.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
-#include "SoundSDL.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"
+
+#ifdef SOUND_SUPPORT
+  #include "SoundSDL.hxx"
+#else
+  #include "SoundNull.hxx"
+#endif
 
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
@@ -396,10 +401,11 @@ int main(int argc, char* argv[])
   }
 
   // Create a sound object for playing audio, even if sound has been disabled
-  if(theSettings->getBool("sound"))
-    theSound = new SoundSDL(theOSystem);
-  else
-    theSound = new Sound(theOSystem);
+#ifdef SOUND_SUPPORT
+  theSound = new SoundSDL(theOSystem);
+#else
+  theSound = new SoundNull(theOSystem);
+#endif
 
   // Setup the SDL joysticks (must be done after FrameBuffer is created)
 /*  FIXME - don't exit if joysticks can't be initialized

@@ -13,11 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.9 2005-03-26 19:26:47 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.10 2005-04-28 19:28:32 stephena Exp $
 //============================================================================
 
-#ifndef SOUNDSDL_HXX
-#define SOUNDSDL_HXX
+#ifndef SOUND_SDL_HXX
+#define SOUND_SDL_HXX
 
 class OSystem;
 
@@ -31,7 +31,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.9 2005-03-26 19:26:47 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.10 2005-04-28 19:28:32 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -49,40 +49,63 @@ class SoundSDL : public Sound
 
   public:
     /**
+      Enables/disables the sound subsystem.
+
+      @param enable  Either true or false, to enable or disable the sound system
+    */
+    void setEnabled(bool enable);
+
+    /**
+      The system cycle counter is being adjusting by the specified amount.  Any
+      members using the system cycle counter should be adjusted as needed.
+
+      @param amount The amount the cycle counter is being adjusted by
+    */
+    void adjustCycleCounter(Int32 amount);
+
+    /**
+      Sets the display framerate.  Sound generation for NTSC and PAL games
+      depends on the framerate, so we need to set it here.
+
+      @param framerate The base framerate depending on NTSC or PAL ROM
+    */
+    void setFrameRate(uInt32 framerate);
+
+    /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
 
       @param forcerestart  Do a soft or hard reset of the sound subsystem
     */
-    virtual void initialize(bool forcerestart = false);
+    void initialize(bool forcerestart = false);
 
     /**
       Return true iff the sound device was successfully initialized.
 
-      @return true iff the sound device was successfully initialized
+      @return true iff the sound device was successfully initialized.
     */
-    virtual bool isSuccessfullyInitialized() const;
+    bool isSuccessfullyInitialized() const;
 
     /**
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false
     */
-    virtual void mute(bool state);
+    void mute(bool state);
 
     /**
-      Resets the sound device.
+      Reset the sound device.
     */
-    virtual void reset();
+    void reset();
 
     /**
       Sets the sound register to a given value.
 
-      @param addr The register address
+      @param addr  The register address
       @param value The value to save into the register
-      @param cycle The CPU cycle at which the register is being updated
+      @param cycle The system cycle at which the register is being updated
     */
-    virtual void set(uInt16 addr, uInt8 value, Int32 cycle);
+    void set(uInt16 addr, uInt8 value, Int32 cycle);
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -91,7 +114,7 @@ class SoundSDL : public Sound
 
       @param percent The new volume percentage level for the sound device
     */
-    virtual void setVolume(Int32 percent);
+    void setVolume(Int32 percent);
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -99,7 +122,7 @@ class SoundSDL : public Sound
       @param direction  Increase or decrease the current volume by a predefined
                         amount based on the direction (1 = increase, -1 =decrease)
     */
-    virtual void adjustVolume(Int8 direction);
+    void adjustVolume(Int8 direction);
 
   public:
     /**
@@ -203,9 +226,18 @@ class SoundSDL : public Sound
     };
 
   private:
-    // Audio specification structure
-    SDL_AudioSpec myHardwareSpec;
-    
+	// Indicates if the sound subsystem is to be initialized
+	bool myIsEnabled;
+
+	// Indicates if the sound device was successfully initialized
+	bool myIsInitializedFlag;
+
+	// Indicates the cycle when a sound register was last set
+	Int32 myLastRegisterSetCycle;
+
+	// Indicates the base framerate depending on whether the ROM is NTSC or PAL
+	uInt32 myDisplayFrameRate;
+
     // Log base 2 of the selected fragment size
     double myFragmentSizeLogBase2;
 
@@ -215,12 +247,18 @@ class SoundSDL : public Sound
     // Current volume as a percentage (0 - 100)
     uInt32 myVolume;
 
+    // Audio specification structure
+    SDL_AudioSpec myHardwareSpec;
+
     // Queue of TIA register writes
     RegWriteQueue myRegWriteQueue;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data
     static void callback(void* udata, uInt8* stream, int len);
+
+    // Closes the audio device
+    void closeAudio();
 };
 
 #endif

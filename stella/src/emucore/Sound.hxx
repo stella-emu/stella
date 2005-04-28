@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.16 2005-03-26 19:26:47 stephena Exp $
+// $Id: Sound.hxx,v 1.17 2005-04-28 19:28:33 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -26,12 +26,11 @@ class Deserializer;
 #include "bspf.hxx"
 
 /**
-  This class is a base class for the various sound objects.
-  It has almost no functionality, but is useful if one wishes
-  to compile Stella with no sound support whatsoever.
+  This class is an abstract base class for the various sound objects.
+  It has no functionality whatsoever.
 
-  @author Stephen Anthony and Bradford W. Mott
-  @version $Id: Sound.hxx,v 1.16 2005-03-26 19:26:47 stephena Exp $
+  @author Stephen Anthony
+  @version $Id: Sound.hxx,v 1.17 2005-04-28 19:28:33 stephena Exp $
 */
 class Sound
 {
@@ -40,21 +39,23 @@ class Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    Sound(OSystem* osystem);
- 
-    /**
-      Destructor
-    */
-    virtual ~Sound();
+    Sound(OSystem* osystem) { myOSystem = osystem; }
 
   public: 
+    /**
+      Enables/disables the sound subsystem.
+
+      @param enable  Either true or false, to enable or disable the sound system
+    */
+    virtual void setEnabled(bool enable) = 0;
+
     /**
       The system cycle counter is being adjusting by the specified amount.  Any
       members using the system cycle counter should be adjusted as needed.
 
       @param amount The amount the cycle counter is being adjusted by
     */
-    virtual void adjustCycleCounter(Int32 amount);
+    virtual void adjustCycleCounter(Int32 amount) = 0;
 
     /**
       Sets the display framerate.  Sound generation for NTSC and PAL games
@@ -62,7 +63,7 @@ class Sound
 
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    virtual void setFrameRate(uInt32 framerate);
+    virtual void setFrameRate(uInt32 framerate) = 0;
 
     /**
       Initializes the sound device.  This must be called before any
@@ -70,26 +71,26 @@ class Sound
 
       @param forcerestart  Do a soft or hard reset of the sound subsystem
     */
-    virtual void initialize(bool forcerestart = false);
+    virtual void initialize(bool forcerestart = false) = 0;
 
     /**
       Return true iff the sound device was successfully initialized.
 
       @return true iff the sound device was successfully initialized.
     */
-    virtual bool isSuccessfullyInitialized() const;
+    virtual bool isSuccessfullyInitialized() const = 0;
 
     /**
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false
     */
-    virtual void mute(bool state);
+    virtual void mute(bool state) = 0;
 
     /**
       Reset the sound device.
     */
-    virtual void reset();
+    virtual void reset() = 0;
 
     /**
       Sets the sound register to a given value.
@@ -98,7 +99,7 @@ class Sound
       @param value The value to save into the register
       @param cycle The system cycle at which the register is being updated
     */
-    virtual void set(uInt16 addr, uInt8 value, Int32 cycle);
+    virtual void set(uInt16 addr, uInt8 value, Int32 cycle) = 0;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -107,7 +108,7 @@ class Sound
 
       @param percent The new volume percentage level for the sound device
     */
-    virtual void setVolume(Int32 percent);
+    virtual void setVolume(Int32 percent) = 0;
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -115,7 +116,7 @@ class Sound
       @param direction  Increase or decrease the current volume by a predefined
                         amount based on the direction (1 = increase, -1 =decrease)
     */
-    virtual void adjustVolume(Int8 direction);
+    virtual void adjustVolume(Int8 direction) = 0;
 
 public:
     /**
@@ -124,7 +125,7 @@ public:
       @param in The deserializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    virtual bool load(Deserializer& in);
+    virtual bool load(Deserializer& in) = 0;
 
     /**
       Saves the current state of this device to the given Serializer.
@@ -132,20 +133,11 @@ public:
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    virtual bool save(Serializer& out);
+    virtual bool save(Serializer& out) = 0;
 
   protected:
     // The OSystem for this sound object
     OSystem* myOSystem;
-
-    // Indicates if the sound device was successfully initialized
-    bool myIsInitializedFlag;
-
-    // Indicates the cycle when a sound register was last set
-    Int32 myLastRegisterSetCycle;
-
-    // Indicates the base framerate depending on whether the ROM is NTSC or PAL
-    uInt32 myDisplayFrameRate;
 };
 
 #endif

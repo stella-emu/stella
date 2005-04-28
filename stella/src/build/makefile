@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.71 2005-04-04 02:19:19 stephena Exp $
+## $Id: makefile,v 1.72 2005-04-28 19:28:31 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -39,6 +39,9 @@ OPTIMIZATIONS  =
 ### to override some emulation defaults
  DEVELOPER_SUPPORT = 1
 
+### to include sound support
+ SOUND_SUPPORT = 1
+
 ### to build on SMP (or distcc-based) machines
 ### change to number of CPU's you have
  NUMBER_CPU = 1
@@ -53,7 +56,7 @@ LD	= g++
 
 LDFLAGS  = `sdl-config --cflags`
 LDLIBS   = `sdl-config --libs`
-OBJECTS  =  mainSDL.o SoundSDL.o FrameBufferSoft.o
+OBJECTS  =  mainSDL.o FrameBufferSoft.o
 OPTIONS  =
 EXE_NAME =
 SMP      =
@@ -95,6 +98,11 @@ endif
 
 ifdef DEVELOPER_SUPPORT
   OPTIONS += -DDEVELOPER_SUPPORT
+endif
+
+ifdef SOUND_SUPPORT
+  OBJECTS += TIASound.o SoundSDL.o
+  OPTIONS += -DSOUND_SUPPORT
 endif
 
 
@@ -155,8 +163,8 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartF8.o CartF8SC.o CartFASC.o CartFE.o CartMC.o CartCV.o \
             CartMB.o CartUA.o Console.o Control.o Driving.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
-            Props.o PropsSet.o Random.o Sound.o Switches.o Settings.o TIA.o \
-            Serializer.o Deserializer.o TIASound.o EventHandler.o FrameBuffer.o \
+            Props.o PropsSet.o Random.o SoundNull.o Switches.o Settings.o TIA.o \
+            Serializer.o Deserializer.o EventHandler.o FrameBuffer.o \
             OSystem.o \
             $(M6502_OBJS) $(GUI_OBJS)
 
@@ -290,9 +298,6 @@ Props.o: $(CORE)/Props.cxx $(CORE)/Props.hxx
 Random.o: $(CORE)/Random.cxx $(CORE)/Random.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Random.cxx
 
-Sound.o: $(CORE)/Sound.cxx $(CORE)/Sound.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/Sound.cxx
-
 Switches.o: $(CORE)/Switches.cxx $(CORE)/Switches.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/Switches.cxx
 
@@ -319,6 +324,9 @@ SettingsWin32.o: $(SRC)/win32/SettingsWin32.cxx $(SRC)/win32/SettingsWin32.hxx
 
 OSystemWin32.o: $(SRC)/win32/OSystemWin32.cxx $(SRC)/win32/OSystemWin32.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/win32/OSystemWin32.cxx
+
+SoundNull.o: $(COMMON)/SoundNull.cxx $(COMMON)/SoundNull.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/SoundNull.cxx
 
 SoundSDL.o: $(COMMON)/SoundSDL.cxx $(COMMON)/SoundSDL.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/SoundSDL.cxx
