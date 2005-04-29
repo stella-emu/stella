@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.6 2005-04-28 19:28:33 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.7 2005-04-29 19:05:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,7 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
 
   // Video driver (query OSystem for what's supported)
   myDriverPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
-                                  "(*)Driver: ", labelWidth);
+                                  "Driver: ", labelWidth);
 //  myDriverPopup->appendEntry("First one", 1);
 //  myDriverPopup->appendEntry("Another one", 2);
   yoff += kVideoRowHeight + 4;
@@ -123,13 +123,6 @@ VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 
                                             "Desktop Res in FS");
   yoff += kVideoRowHeight + 20;
 
-  // Add a short message about options that need a restart
-  new StaticTextWidget(this, _w - 175, yoff, 170, kLineHeight,
-                       "* Note that these options take effect", kTextAlignLeft);
-  yoff += kVideoRowHeight;
-  new StaticTextWidget(this, _w - 175, yoff, 170, kLineHeight,
-                       "the next time you restart Stella.", kTextAlignLeft);
-
   // Add Defaults, OK and Cancel buttons
   addButton( 10, _h - 24, "Defaults", kDefaultsCmd, 0);
 #ifndef MAC_OSX
@@ -176,12 +169,7 @@ void VideoDialog::loadConfig()
   // Aspect ratio - another huge hack
   s = instance()->settings().getString("gl_aspect");
   f = instance()->settings().getFloat("gl_aspect");
-  if(f == -1.0)
-  {
-    f = 1.1;
-    s = "1.1";
-  }
-  else if(f < 1.1)
+  if(f < 1.1)
   {
     f = 1.1;
     s = "1.1";
@@ -231,30 +219,47 @@ void VideoDialog::saveConfig()
 {
   string s;
   uInt32 i;
-  bool b;
+  bool b, restart = false;
 
   // Driver setting
   s = myDriverPopup->getSelectedString();
-  instance()->settings().setString("video_driver", s);
+  if(s != instance()->settings().getString("video_driver"))
+  {
+    instance()->settings().setString("video_driver", s);
+    restart = true;
+  }
 
   // Renderer setting
   i = myRendererPopup->getSelectedTag();
   if(i == 1)
-    instance()->settings().setString("video", "soft");
+    s = "soft";
   else if(i == 2)
-    instance()->settings().setString("video", "gl");
+    s = "gl";
+  if(s != instance()->settings().getString("video"))
+  {
+    instance()->settings().setString("video", s);
+    restart = true;
+  }
 
   // Filter setting
   i = myFilterPopup->getSelectedTag();
   if(i == 1)
-    instance()->settings().setString("gl_filter", "linear");
+    s = "linear";
   else if(i == 2)
-    instance()->settings().setString("gl_filter", "nearest");
-// FIXME - immediately change the filtering
+    s = "nearest";
+  if(s != instance()->settings().getString("gl_filter"))
+  {
+    instance()->settings().setString("gl_filter", s);
+    restart = true;
+  }
 
   // Aspect ratio
   s = myAspectRatioLabel->getLabel();
-  instance()->settings().setString("gl_aspect", s);
+  if(s != instance()->settings().getString("gl_aspect"))
+  {
+    instance()->settings().setString("gl_aspect", s);
+    restart = true;
+  }
 
   // Palette
   i = myPalettePopup->getSelectedTag();
@@ -265,7 +270,7 @@ void VideoDialog::saveConfig()
   else if(i == 3)
     instance()->settings().setString("palette", "z26");
   s = myPalettePopup->getSelectedString();
-  instance()->settings().setString("palette", s); // FIXME - make this more efficient
+  instance()->settings().setString("palette", s);
   instance()->console().togglePalette(s);
 
   // Framerate
@@ -284,8 +289,17 @@ void VideoDialog::saveConfig()
 
   // Use desktop resolution in fullscreen mode
   b = myUseDeskResCheckbox->getState();
-  instance()->settings().setBool("gl_fsmax", b);
-// FIXME - immediately toggle gl_fsmax
+  if(b != instance()->settings().getBool("gl_fsmax"))
+  {
+    instance()->settings().setBool("gl_fsmax", b);
+    restart = true;
+  }
+
+  // Finally, issue a complete framebuffer re-initialization
+  // Not all options may require a full re-initialization, so we only
+  // do it when necessary
+  if(restart)
+  instance()->createFrameBuffer();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

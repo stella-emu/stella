@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.19 2005-04-24 20:36:26 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.20 2005-04-29 19:05:04 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -61,15 +61,6 @@ bool FrameBufferGL::initSubsystem()
   theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
   if(theAspectRatio <= 0.0)
     theAspectRatio = 1.0;
-
-  // Get the maximum size of a window for THIS screen
-  theMaxZoomLevel = maxWindowSizeForScreen();
-
-  // Check to see if window size will fit in the screen
-  if((uInt32)myOSystem->settings().getInt("zoom") > theMaxZoomLevel)
-    theZoomLevel = theMaxZoomLevel;
-  else
-    theZoomLevel = myOSystem->settings().getInt("zoom");
 
   // Set up the OpenGL attributes
   myDepth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
@@ -132,12 +123,11 @@ bool FrameBufferGL::initSubsystem()
   SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, (int*)&myRGB[3] );
 
 #ifndef TEXTURES_ARE_LOST
-  // Create the texture surface and texture fonts
+  // Create the texture surface
   createTextures();
 #endif
 
-  // Set up the palette *after* we know the color components
-  // and the textures
+  // Set up the palette *after* we know the color components and the textures
   setupPalette();
 
   // Show some OpenGL info

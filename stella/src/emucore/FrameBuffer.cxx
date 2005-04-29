@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.27 2005-04-24 01:57:47 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.28 2005-04-29 19:05:05 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -26,7 +26,6 @@
 #include "Settings.hxx"
 #include "MediaSrc.hxx"
 #include "FrameBuffer.hxx"
-#include "FontData.hxx"
 #include "StellaFont.hxx"
 #include "GuiUtils.hxx"
 #include "Menu.hxx"
@@ -49,9 +48,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myMenuRedraws(2),
       myNumRedraws(0)
 {
-  // Add the framebuffer to the system
-  myOSystem->attach(this);
-
   // Fill the GUI colors array
   // The specific video subsystem will know what to do with it
   uInt8 colors[5][3] = {
@@ -67,20 +63,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myGUIColors[i][j] = colors[i][j];
 
   // Create a font to draw text
-  const FontDesc desc = {
-    "04b-16b-10",
-    9,
-    10,
-    8,
-    33,
-    94,
-    _font_bits,
-    0,  /* no encode table*/
-    _sysfont_width,
-    33,
-    sizeof(_font_bits)/sizeof(uInt16)
-  };
-  myFont = new StellaFont(this, desc);
+  myFont = new StellaFont(this);
 
   myBaseDim.x = myBaseDim.y = myBaseDim.w = myBaseDim.h = 0;
   myImageDim = myScreenDim = myDesktopDim = myBaseDim;
@@ -110,38 +93,49 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     if(SDL_Init(initflags) < 0)
       return;
 
-    // Calculate the desktop size
-    myDesktopDim.w = myDesktopDim.h = 0;
-
-    // Get the system-specific WM information
-    SDL_SysWMinfo myWMInfo;
-    SDL_VERSION(&myWMInfo.version);
-    if(SDL_GetWMInfo(&myWMInfo) > 0)
-    {
-  #if defined(UNIX)
-      if(myWMInfo.subsystem == SDL_SYSWM_X11)
-      {
-        myWMInfo.info.x11.lock_func();
-        myDesktopDim.w = DisplayWidth(myWMInfo.info.x11.display,
-                           DefaultScreen(myWMInfo.info.x11.display));
-        myDesktopDim.h = DisplayHeight(myWMInfo.info.x11.display,
-                           DefaultScreen(myWMInfo.info.x11.display));
-        myWMInfo.info.x11.unlock_func();
-      }
-  #elif defined(WIN32)
-      myDesktopDim.w = (uInt16) GetSystemMetrics(SM_CXSCREEN);
-      myDesktopDim.h = (uInt16) GetSystemMetrics(SM_CYSCREEN);
-  #elif defined(MAC_OSX)
-      // FIXME - add OSX Desktop code here (I don't think SDL supports it yet)
-  #endif
-    }
     setWindowIcon();
   }
 
+  // Calculate the desktop size
+  myDesktopDim.w = myDesktopDim.h = 0;
+
+  // Get the system-specific WM information
+  SDL_SysWMinfo myWMInfo;
+  SDL_VERSION(&myWMInfo.version);
+  if(SDL_GetWMInfo(&myWMInfo) > 0)
+  {
+#if defined(UNIX)
+	if(myWMInfo.subsystem == SDL_SYSWM_X11)
+	{
+	  myWMInfo.info.x11.lock_func();
+	  myDesktopDim.w = DisplayWidth(myWMInfo.info.x11.display,
+						 DefaultScreen(myWMInfo.info.x11.display));
+	  myDesktopDim.h = DisplayHeight(myWMInfo.info.x11.display,
+						 DefaultScreen(myWMInfo.info.x11.display));
+	  myWMInfo.info.x11.unlock_func();
+	}
+#elif defined(WIN32)
+	myDesktopDim.w = (uInt16) GetSystemMetrics(SM_CXSCREEN);
+	myDesktopDim.h = (uInt16) GetSystemMetrics(SM_CYSCREEN);
+#elif defined(MAC_OSX)
+	// FIXME - add OSX Desktop code here (I don't think SDL supports it yet)
+#endif
+  }
+
+  // Set fullscreen flag
   mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
 
   // Set window title
   setWindowTitle(title);
+
+  // Get the maximum size of a window for the current desktop
+  theMaxZoomLevel = maxWindowSizeForScreen();
+
+  // Check to see if window size will fit in the screen
+  if((uInt32)myOSystem->settings().getInt("zoom") > theMaxZoomLevel)
+    theZoomLevel = theMaxZoomLevel;
+  else
+    theZoomLevel = myOSystem->settings().getInt("zoom");
 
   // Initialize video subsystem
   initSubsystem();

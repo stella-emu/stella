@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.18 2005-04-24 20:36:35 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.19 2005-04-29 19:05:04 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -54,15 +54,6 @@ bool FrameBufferSoft::initSubsystem()
     cerr << "ERROR: Unable to get memory for SDL rects" << endl;
     return false;
   }
-
-  // Get the maximum size of a window for the desktop
-  theMaxZoomLevel = maxWindowSizeForScreen();
-
-  // Check to see if window size will fit in the screen
-  if((uInt32)myOSystem->settings().getInt("zoom") > theMaxZoomLevel)
-    theZoomLevel = theMaxZoomLevel;
-  else
-    theZoomLevel = myOSystem->settings().getInt("zoom");
 
   // Create the screen
   if(!createScreen())

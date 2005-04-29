@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.26 2005-04-21 21:18:37 stephena Exp $
+// $Id: Console.hxx,v 1.27 2005-04-29 19:05:05 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class OSystem;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.26 2005-04-21 21:18:37 stephena Exp $
+  @version $Id: Console.hxx,v 1.27 2005-04-29 19:05:05 stephena Exp $
 */
 class Console
 {
@@ -152,6 +152,11 @@ class Console
                    main properties file.
     */
     void saveProperties(string filename, bool merge = false);
+
+    /**
+      Initialize this video subsystem wrt this class.
+    */
+    void initializeVideo();
 
 #ifdef DEVELOPER_SUPPORT
   public:

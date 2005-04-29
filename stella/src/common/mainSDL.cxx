@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.31 2005-04-28 19:28:32 stephena Exp $
+// $Id: mainSDL.cxx,v 1.32 2005-04-29 19:05:05 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -73,9 +73,6 @@ static OSystem* theOSystem = (OSystem*) NULL;
 
 // Pointer to the display object or the null pointer
 static EventHandler* theEventHandler = (EventHandler*) NULL;
-
-// Pointer to the display object or the null pointer
-static FrameBuffer* theDisplay = (FrameBuffer*) NULL;
 
 // Pointer to the sound object or the null pointer
 static Sound* theSound = (Sound*) NULL;
@@ -301,9 +298,6 @@ void Cleanup()
   if(theSound)
     delete theSound;
 
-  if(theDisplay)
-    delete theDisplay;
-
   if(theEventHandler)
     delete theEventHandler;
 
@@ -370,30 +364,8 @@ int main(int argc, char* argv[])
   // Request that the SDL window be centered, if possible
   putenv("SDL_VIDEO_CENTERED=1");
 
-  // Set the SDL_VIDEODRIVER environment variable, if possible
-  if(theSettings->getString("video_driver") != "")
-  {
-    ostringstream buf;
-    buf << "SDL_VIDEODRIVER=" << theSettings->getString("video_driver");
-    putenv((char*) buf.str().c_str());
-
-    buf.str("");
-    buf << "Video driver: " << theSettings->getString("video_driver");
-    ShowInfo(buf.str());
-  }
-
-  // Create an SDL window
-  string videodriver = theSettings->getString("video");
-  if(videodriver == "soft")
-    theDisplay = new FrameBufferSoft(theOSystem);
-#ifdef DISPLAY_OPENGL
-  else if(videodriver == "gl")
-    theDisplay = new FrameBufferGL(theOSystem);
-#endif
-  else   // a driver that doesn't exist was requested, so use software mode
-    theDisplay = new FrameBufferSoft(theOSystem);
-
-  if(!theDisplay)
+  // Create the SDL framebuffer
+  if(!theOSystem->createFrameBuffer())
   {
     cerr << "ERROR: Couldn't set up display.\n";
     Cleanup();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaFont.hxx,v 1.1 2005-03-13 03:38:41 stephena Exp $
+// $Id: StellaFont.hxx,v 1.2 2005-04-29 19:05:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,8 +54,7 @@ struct FontDesc
 class StellaFont
 {
   public:
-    StellaFont(FrameBuffer* buffer, const FontDesc& desc)
-      : myFrameBuffer(buffer), myFontDesc(desc) {}
+    StellaFont(FrameBuffer* buffer);
 	
     const FontDesc& desc() { return myFontDesc; }
 

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.6 2005-03-14 04:08:15 stephena Exp $
+// $Id: OSystem.cxx,v 1.7 2005-04-29 19:05:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -21,6 +21,11 @@
 #include <fstream>
 
 #include "FrameBuffer.hxx"
+#include "FrameBufferSoft.hxx"
+#ifdef DISPLAY_OPENGL
+  #include "FrameBufferGL.hxx"
+#endif
+
 #include "Sound.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
@@ -32,7 +37,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
-  : myMenu(NULL)
+  : myEventHandler(NULL),
+    myFrameBuffer(NULL),
+    mySound(NULL),
+    mySettings(NULL),
+    myPropSet(NULL),
+    myConsole(NULL),
+    myMenu(NULL)
 //    myBrowser(NULL)
 {
   // Create gui-related classes
@@ -48,6 +59,9 @@ OSystem::~OSystem()
 
   // Remove any game console that is currently attached
   detachConsole();
+
+  // OSystem takes responsibility for the framebuffer
+  delete myFrameBuffer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,6 +92,93 @@ void OSystem::setConfigFiles(const string& userconfig,
     myConfigInputFile = systemconfig;
   else
     myConfigInputFile = "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::createFrameBuffer(bool showmessage)
+{
+  // Set the SDL_VIDEODRIVER environment variable, if possible
+  string videodriver = mySettings->getString("video_driver");
+  if(videodriver != "")
+  {
+    string buf = "SDL_VIDEODRIVER=" + videodriver;
+    putenv((char*) buf.c_str());
+
+    if(mySettings->getBool("showinfo"))
+    {
+      buf = "Video driver: " + videodriver;
+      cout << buf << endl;
+    }
+  }
+
+  // Delete the old framebuffer
+  if(myFrameBuffer)
+  {
+    delete myFrameBuffer;
+    myFrameBuffer = NULL;
+  }
+
+  // And recreate a new one
+  string video = mySettings->getString("video");
+  if(video == "soft")
+    myFrameBuffer = new FrameBufferSoft(this);
+#ifdef DISPLAY_OPENGL
+  else if(video == "gl")
+    myFrameBuffer = new FrameBufferGL(this);
+#endif
+  else   // a driver that doesn't exist was requested, so use software mode
+    myFrameBuffer = new FrameBufferSoft(this);
+
+  if(!myFrameBuffer)
+    return false;
+
+  // Re-initialize the framebuffer to current settings
+  switch(myEventHandler->state())
+  {
+    case EventHandler::S_EMULATE:
+    case EventHandler::S_MENU:
+      myConsole->initializeVideo();
+      if(showmessage)
+      {
+        if(video == "soft")
+          myFrameBuffer->showMessage("Software mode");
+      #ifdef DISPLAY_OPENGL
+        else if(video == "gl")
+          myFrameBuffer->showMessage("OpenGL mode");
+      #endif
+        else   // a driver that doesn't exist was requested, so use software mode
+          myFrameBuffer->showMessage("Software mode");
+      }
+      break;  // S_EMULATE, S_MENU
+
+    case EventHandler::S_BROWSER:
+      break;  // S_BROWSER
+
+    case EventHandler::S_DEBUGGER:
+      break;
+
+    case EventHandler::S_NONE:
+      break;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::toggleFrameBuffer()
+{
+  // First figure out which mode to switch to
+  string video = mySettings->getString("video");
+  if(video == "soft")
+    video = "gl";
+  else if(video == "gl")
+    video = "soft";
+  else   // a driver that doesn't exist was requested, so use software mode
+    video = "soft";
+
+  // Update the settings and create the framebuffer
+  mySettings->setString("video", video);
+  createFrameBuffer(true);  // show onscreen message
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaFont.cxx,v 1.1 2005-03-13 03:38:40 stephena Exp $
+// $Id: StellaFont.cxx,v 1.2 2005-04-29 19:05:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,7 +21,29 @@
 
 #include "FrameBuffer.hxx"
 #include "GuiUtils.hxx"
+#include "FontData.hxx"
 #include "StellaFont.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StellaFont::StellaFont(FrameBuffer* buffer)
+    : myFrameBuffer(buffer)
+{
+  const FontDesc desc = {
+    "04b-16b-10",
+    9,
+    10,
+    8,
+    33,
+    94,
+    _font_bits,
+    0,  /* no encode table*/
+    _sysfont_width,
+    33,
+    sizeof(_font_bits)/sizeof(uInt16)
+  };
+
+  myFontDesc = desc;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 StellaFont::getCharWidth(uInt8 chr) const

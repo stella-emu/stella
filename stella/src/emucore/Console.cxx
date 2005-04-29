@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.46 2005-04-21 21:18:37 stephena Exp $
+// $Id: Console.cxx,v 1.47 2005-04-29 19:05:05 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -174,11 +174,7 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
 
   // Initialize the framebuffer interface.
   // This must be done *after* a reset, since it needs updated values.
-  ostringstream title;
-  title << "Stella: \"" << myProperties.get("Cartridge.Name") << "\"";
-  myOSystem->frameBuffer().initialize(title.str(),
-                                      myMediaSource->width() << 1,
-                                      myMediaSource->height());
+  initializeVideo();
 
   // Initialize the sound interface.
   uInt32 soundFrameRate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
@@ -323,6 +319,15 @@ void Console::saveProperties(string filename, bool merge)
       myOSystem->frameBuffer().showMessage("Properties not saved");
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::initializeVideo()
+{
+  string title = "Stella: \"" + myProperties.get("Cartridge.Name") + "\"";
+  myOSystem->frameBuffer().initialize(title,
+                                      myMediaSource->width() << 1,
+                                      myMediaSource->height());
 }
 
 #ifdef DEVELOPER_SUPPORT

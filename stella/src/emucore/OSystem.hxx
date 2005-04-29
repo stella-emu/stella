@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.4 2005-03-10 22:59:40 stephena Exp $
+// $Id: OSystem.hxx,v 1.5 2005-04-29 19:05:05 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -37,7 +37,7 @@ class Browser;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.4 2005-03-10 22:59:40 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.5 2005-04-29 19:05:05 stephena Exp $
 */
 class OSystem
 {
@@ -231,6 +231,19 @@ class OSystem
       @return String representing the full path of the config filename.
     */
     string configOutputFilename() { return myConfigOutputFile; }
+
+    /**
+      Creates the various framebuffers/renderers available in this system
+      (for now, that means either 'software' or 'opengl').
+
+      @return Success or failure of the framebuffer creation
+    */
+    bool createFrameBuffer(bool showmessage = false);
+
+    /**
+      Switches between software and OpenGL framebuffer modes.
+    */
+    void toggleFrameBuffer();
 
   public:
     //////////////////////////////////////////////////////////////////////

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.44 2005-04-21 21:18:37 stephena Exp $
+// $Id: EventHandler.cxx,v 1.45 2005-04-29 19:05:05 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -148,6 +148,10 @@ void EventHandler::poll()   // FIXME - add modifiers for OSX
 
             case SDLK_f:
               myOSystem->frameBuffer().toggleFilter();
+              break;
+
+            case SDLK_g:
+              myOSystem->toggleFrameBuffer();
               break;
           }
         }
