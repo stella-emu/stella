@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.29 2005-05-01 18:57:20 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.30 2005-05-01 20:11:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -270,24 +270,19 @@ void FrameBuffer::setupPalette()
   theRedrawEntireFrameIndicator = true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleFullscreen()
+{
+  setFullscreen(!myOSystem->settings().getBool("fullscreen"));
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFullscreen(bool given, bool toggle)
+void FrameBuffer::setFullscreen(bool enable)
 {
-  bool isFullscreen;
-  if(given)
-  {
-    if(myOSystem->settings().getBool("fullscreen") == toggle)
-      return;
-    isFullscreen = toggle;
-  }
-  else
-    isFullscreen = !myOSystem->settings().getBool("fullscreen");
-
   // Update the settings
-  myOSystem->settings().setBool("fullscreen", isFullscreen);
+  myOSystem->settings().setBool("fullscreen", enable);
 
-  if(isFullscreen)
+  if(enable)
     mySDLFlags |= SDL_FULLSCREEN;
   else
     mySDLFlags &= ~SDL_FULLSCREEN;
@@ -299,51 +294,40 @@ void FrameBuffer::toggleFullscreen(bool given, bool toggle)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::resize(Int8 mode, Int8 zoom)
+void FrameBuffer::resize(Size size, Int8 zoom)
 {
-  // Use the specific zoom level if one is given
-  // Otherwise use 'mode' to pick the next zoom level
-  if(zoom != 0)
+  switch(size)
   {
-//    if(myOSystem->settings().getBool("fullscreen"))
-//      return;
-
-    if(zoom < 1)
-      theZoomLevel = 1;
-    else if((uInt32)zoom > theMaxZoomLevel)
-      theZoomLevel = theMaxZoomLevel;
-    else
-      theZoomLevel = zoom;
-  }
-  else
-  {
-    // reset size to that given in properties
-    // this is a special case of allowing a resize while in fullscreen mode
-    if(mode == 0)
-    {
-      myScreenDim.w = myBaseDim.w;
-      myScreenDim.h = myBaseDim.h;
-    }
-    else if(mode == 1)   // increase size
-    {
+    case PreviousSize:   // decrease size
       if(myOSystem->settings().getBool("fullscreen"))
         return;
-
-      if(theZoomLevel == theMaxZoomLevel)
-        theZoomLevel = 1;
-      else
-        theZoomLevel++;
-    }
-    else if(mode == -1)   // decrease size
-    {
-      if(myOSystem->settings().getBool("fullscreen"))
-        return;
-
       if(theZoomLevel == 1)
         theZoomLevel = theMaxZoomLevel;
       else
         theZoomLevel--;
-    }
+      break;
+
+    case NextSize:       // increase size
+      if(myOSystem->settings().getBool("fullscreen"))
+        return;
+      if(theZoomLevel == theMaxZoomLevel)
+        theZoomLevel = 1;
+      else
+        theZoomLevel++;
+      break;
+
+    case GivenSize:      // use 'zoom' quantity
+      if(zoom < 1)
+        theZoomLevel = 1;
+      else if((uInt32)zoom > theMaxZoomLevel)
+        theZoomLevel = theMaxZoomLevel;
+      else
+        theZoomLevel = zoom;
+      break;
+
+    default:   // should never happen
+      return;
+      break;
   }
 
   if(!createScreen())

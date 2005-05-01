@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.46 2005-05-01 18:57:20 stephena Exp $
+// $Id: EventHandler.cxx,v 1.47 2005-05-01 20:11:07 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -30,6 +30,7 @@
 #include "OSystem.hxx"
 #include "Menu.hxx"
 #include "bspf.hxx"
+#include "GuiUtils.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
@@ -135,11 +136,11 @@ void EventHandler::poll()   // FIXME - add modifiers for OSX
           switch(int(key))
           {
             case SDLK_EQUALS:
-              myOSystem->frameBuffer().resize(1);
+              myOSystem->frameBuffer().resize(NextSize);
               break;
 
             case SDLK_MINUS:
-              myOSystem->frameBuffer().resize(-1);
+              myOSystem->frameBuffer().resize(PreviousSize);
               break;
 
             case SDLK_RETURN:
@@ -289,22 +290,18 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 #ifdef DEVELOPER_SUPPORT
           case SDLK_END:       // Alt-End increases XStart
             myOSystem->console().changeXStart(1);
-            myOSystem->frameBuffer().resize(0);
             break;
 
           case SDLK_HOME:      // Alt-Home decreases XStart
             myOSystem->console().changeXStart(0);
-            myOSystem->frameBuffer().resize(0);
             break;
 
           case SDLK_PAGEUP:    // Alt-PageUp increases YStart
             myOSystem->console().changeYStart(1);
-            myOSystem->frameBuffer().resize(0);
             break;
 
           case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
             myOSystem->console().changeYStart(0);
-            myOSystem->frameBuffer().resize(0);
             break;
 #endif
         }
@@ -342,22 +339,18 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 #ifdef DEVELOPER_SUPPORT
           case SDLK_END:       // Ctrl-End increases Width
             myOSystem->console().changeWidth(1);
-            myOSystem->frameBuffer().resize(0);
             break;
 
           case SDLK_HOME:      // Ctrl-Home decreases Width
             myOSystem->console().changeWidth(0);
-            myOSystem->frameBuffer().resize(0);
             break;
 
           case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
             myOSystem->console().changeHeight(1);
-            myOSystem->frameBuffer().resize(0);
             break;
 
           case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
             myOSystem->console().changeHeight(0);
-            myOSystem->frameBuffer().resize(0);
             break;
 #endif
           case SDLK_s:	 // Ctrl-s saves properties to a file

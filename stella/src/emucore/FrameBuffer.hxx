@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.26 2005-04-24 01:57:47 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.27 2005-05-01 20:11:07 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.26 2005-04-24 01:57:47 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.27 2005-05-01 20:11:07 stephena Exp $
 */
 class FrameBuffer
 {
@@ -140,25 +140,29 @@ class FrameBuffer
     }
 
     /**
-      Toggles between fullscreen and window mode. either automatically
-      or based on the given flag.  Grabmouse activated when in fullscreen mode.  
-
-      @param given   Indicates whether to use the specified 'toggle' or
-                     decide based on current status
-      @param toggle  Set the fullscreen mode to this value
+      Toggles between fullscreen and window mode.
+      Grabmouse activated when in fullscreen mode.  
     */
-    void toggleFullscreen(bool given = false, bool toggle = false);
+    void toggleFullscreen();
+
+    /**
+      Enables/disables fullscreen mode.
+      Grabmouse activated when in fullscreen mode.  
+
+      @param enable  Set the fullscreen mode to this value
+    */
+    void setFullscreen(bool enable);
 
     /**
       This routine is called when the user wants to resize the window.
-      Mode = '1' means window should increase in size
-      Mode = '-1' means window should decrease in size
-      Mode = '0' means window should be resized to defaults
+      Size = 'PreviousSize' means window should decrease in size
+      Size = 'NextSize' means window should increase in size
+      Size = 'GivenSize' means window should be resized to quantity given in 'zoom'
 
-      @param mode  How the window should be resized
-      @param zoom  The zoom level to use if something other than 0
+      @param size  Described above
+      @param zoom  The zoom level to use if size is set to 'sGiven'
     */
-    void resize(Int8 mode, Int8 zoom = 0);
+    void resize(Size size, Int8 zoom = 0);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the

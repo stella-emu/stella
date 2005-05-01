@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.7 2005-04-29 19:05:06 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.8 2005-05-01 20:11:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -281,11 +281,11 @@ void VideoDialog::saveConfig()
   // Zoom
   i = (myZoomSlider->getValue() / 10) + 1;
   instance()->settings().setInt("zoom", i);
-  instance()->frameBuffer().resize(0, i);
+  instance()->frameBuffer().resize(GivenSize, i);
 
-  // Fullscreen (the toggleFullscreen function takes care of updating settings)
+  // Fullscreen (the setFullscreen method takes care of updating settings)
   b = myFullscreenCheckbox->getState();
-  instance()->frameBuffer().toggleFullscreen(true, b);
+  instance()->frameBuffer().setFullscreen(b);
 
   // Use desktop resolution in fullscreen mode
   b = myUseDeskResCheckbox->getState();
@@ -299,7 +299,7 @@ void VideoDialog::saveConfig()
   // Not all options may require a full re-initialization, so we only
   // do it when necessary
   if(restart)
-  instance()->createFrameBuffer();
+    instance()->createFrameBuffer();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
