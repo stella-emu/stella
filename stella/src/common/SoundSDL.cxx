@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.13 2005-04-28 19:28:32 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.14 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -38,7 +38,6 @@ SoundSDL::SoundSDL(OSystem* osystem)
       myFragmentSizeLogBase2(0),
       myIsMuted(false)
 {
-  myOSystem->attach(this);
   initialize(true);
 }
 

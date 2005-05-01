@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.45 2005-04-29 19:05:05 stephena Exp $
+// $Id: EventHandler.cxx,v 1.46 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -285,27 +285,48 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
           case SDLK_RIGHTBRACKET:
             myOSystem->sound().adjustVolume(1);
             break;
+
+#ifdef DEVELOPER_SUPPORT
+          case SDLK_END:       // Alt-End increases XStart
+            myOSystem->console().changeXStart(1);
+            myOSystem->frameBuffer().resize(0);
+            break;
+
+          case SDLK_HOME:      // Alt-Home decreases XStart
+            myOSystem->console().changeXStart(0);
+            myOSystem->frameBuffer().resize(0);
+            break;
+
+          case SDLK_PAGEUP:    // Alt-PageUp increases YStart
+            myOSystem->console().changeYStart(1);
+            myOSystem->frameBuffer().resize(0);
+            break;
+
+          case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
+            myOSystem->console().changeYStart(0);
+            myOSystem->frameBuffer().resize(0);
+            break;
+#endif
         }
-	    // FIXME - alt developer stuff goes here
       }
       else if(mod & KMOD_CTRL && state)
       {
         switch(int(key))
         {
           case SDLK_0:   // Ctrl-0 sets the mouse to paddle 0
-            setPaddleMode(0);
+            setPaddleMode(0, true);
             break;
 
           case SDLK_1:	 // Ctrl-1 sets the mouse to paddle 1
-            setPaddleMode(1);
+            setPaddleMode(1, true);
             break;
 
           case SDLK_2:	 // Ctrl-2 sets the mouse to paddle 2
-            setPaddleMode(2);
+            setPaddleMode(2, true);
             break;
 
           case SDLK_3:	 // Ctrl-3 sets the mouse to paddle 3
-            setPaddleMode(3);
+            setPaddleMode(3, true);
             break;
 
           case SDLK_f:	 // Ctrl-f toggles NTSC/PAL mode
@@ -318,8 +339,27 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
             myOSystem->frameBuffer().setupPalette();
             break;
 
-          // FIXME - Ctrl developer support goes here
+#ifdef DEVELOPER_SUPPORT
+          case SDLK_END:       // Ctrl-End increases Width
+            myOSystem->console().changeWidth(1);
+            myOSystem->frameBuffer().resize(0);
+            break;
 
+          case SDLK_HOME:      // Ctrl-Home decreases Width
+            myOSystem->console().changeWidth(0);
+            myOSystem->frameBuffer().resize(0);
+            break;
+
+          case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
+            myOSystem->console().changeHeight(1);
+            myOSystem->frameBuffer().resize(0);
+            break;
+
+          case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
+            myOSystem->console().changeHeight(0);
+            myOSystem->frameBuffer().resize(0);
+            break;
+#endif
           case SDLK_s:	 // Ctrl-s saves properties to a file
             // Attempt to merge with propertiesSet
             if(myOSystem->settings().getBool("mergeprops"))
@@ -368,7 +408,7 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
         uInt32 zoom = theDisplay->zoomLevel();
         Int32 width = theDisplay->width() * zoom;
 
-        // Grabmouse and hidecursor introduce some lag into the mouse movement,
+        // Grabmouse introduces some lag into the mouse movement,
         // so we need to fudge the numbers a bit
         if(theGrabMouseIndicator && theHideCursorIndicator)
           mouseX = (int)((float)mouseX + (float)event.motion.xrel
@@ -958,13 +998,16 @@ void EventHandler::takeSnapshot()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setPaddleMode(uInt32 num)
+void EventHandler::setPaddleMode(uInt32 num, bool showmessage)
 {
   myPaddleMode = num;
 
-  ostringstream buf;
-  buf << "Mouse is paddle " << num;
-  myOSystem->frameBuffer().showMessage(buf.str());
+  if(showmessage)
+  {
+    ostringstream buf;
+    buf << "Mouse is paddle " << num;
+    myOSystem->frameBuffer().showMessage(buf.str());
+  }
 
   myOSystem->settings().setInt("paddle", myPaddleMode);
 }

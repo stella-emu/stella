@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.8 2004-07-14 16:15:06 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.9 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -22,6 +22,7 @@
 #include <string>
 
 class MediaSource;
+class Sound;
 
 #include "bspf.hxx"
 
@@ -29,7 +30,7 @@ class MediaSource;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.8 2004-07-14 16:15:06 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.9 2005-05-01 18:57:20 stephena Exp $
 */
 class MediaSource
 {
@@ -97,6 +98,11 @@ class MediaSource
       @return The total number of scanlines generated
     */
     virtual uInt32 scanlines() const = 0;
+
+    /**
+      Sets the sound device for the TIA.
+    */
+    virtual void setSound(Sound& sound) = 0;
 
   private:
     // Copy constructor isn't supported by this class so make it private

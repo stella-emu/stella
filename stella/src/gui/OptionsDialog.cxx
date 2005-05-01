@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.12 2005-04-29 19:05:06 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.13 2005-05-01 18:57:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -66,7 +66,12 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
   const int xoffset = (_w - kBigButtonWidth) / 2;
 
   addBigButton("Video Settings", kVidCmd, 'V');
+#ifdef SOUND_SUPPORT
   addBigButton("Audio Settings", kAudCmd, 'A');
+#else
+  ButtonWidget* b = addBigButton("Audio Settings", kAudCmd, 'A');
+  b->setEnabled(false);
+#endif
   addBigButton("Event Remapping", kEMapCmd, 'E');
   addBigButton("Miscellaneous", kMiscCmd, 'M');
   addBigButton("Game Information", kInfoCmd, 'I');

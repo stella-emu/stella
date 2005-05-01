@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.47 2005-04-29 19:05:05 stephena Exp $
+// $Id: Console.cxx,v 1.48 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -146,7 +146,8 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   }
 
   M6532* m6532 = new M6532(*this);
-  TIA* tia = new TIA(*this, myOSystem->sound(), myOSystem->settings());
+  TIA* tia = new TIA(*this, myOSystem->settings());
+  tia->setSound(myOSystem->sound());
   Cartridge* cartridge = Cartridge::create(image, size, myProperties);
 
   mySystem->attach(m6502);
@@ -330,6 +331,12 @@ void Console::initializeVideo()
                                       myMediaSource->height());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::initializeAudio()
+{
+  myMediaSource->setSound(myOSystem->sound());
+}
+
 #ifdef DEVELOPER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeXStart(const uInt32 direction)
@@ -366,6 +373,7 @@ void Console::changeXStart(const uInt32 direction)
   strval << xstart;
   myProperties.set("Display.XStart", strval.str());
   mySystem->reset();
+  initializeVideo();
 
   message = "XStart ";
   message += strval.str();
@@ -401,6 +409,7 @@ void Console::changeYStart(const uInt32 direction)
   strval << ystart;
   myProperties.set("Display.YStart", strval.str());
   mySystem->reset();
+  initializeVideo();
 
   message = "YStart ";
   message += strval.str();
@@ -442,6 +451,7 @@ void Console::changeWidth(const uInt32 direction)
   strval << width;
   myProperties.set("Display.Width", strval.str());
   mySystem->reset();
+  initializeVideo();
 
   message = "Width ";
   message += strval.str();
@@ -477,6 +487,7 @@ void Console::changeHeight(const uInt32 direction)
   strval << height;
   myProperties.set("Display.Height", strval.str());
   mySystem->reset();
+  initializeVideo();
 
   message = "Height ";
   message += strval.str();

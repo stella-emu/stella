@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.34 2005-03-26 04:19:56 stephena Exp $
+// $Id: Settings.cxx,v 1.35 2005-05-01 18:57:21 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -47,7 +47,6 @@ Settings::Settings(OSystem* osystem)
   set("fragsize", "512");
   set("fullscreen", "false");
   set("grabmouse", "false");
-  set("hidecursor", "false");
   set("volume", "-1");
   set("accurate", "false");
   set("framerate", "-1");
@@ -187,13 +186,14 @@ void Settings::usage()
     << "  -gl_fsmax     <1|0>          Use the largest available screenmode in fullscreen OpenGL\n"
     << endl
   #endif
+  #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
+  #endif
     << "  -framerate    <number>       Display the given number of frames per second\n"
     << "  -zoom         <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
-    << "  -hidecursor   <1|0>          Hides the mouse cursor in the game window\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -altpro       <props file>   Use the given properties file instead of stella.pro\n"

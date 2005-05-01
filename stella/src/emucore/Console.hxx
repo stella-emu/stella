@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.27 2005-04-29 19:05:05 stephena Exp $
+// $Id: Console.hxx,v 1.28 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -26,8 +26,6 @@ class MediaSource;
 class Switches;
 class System;
 
-class OSystem;
-
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
@@ -37,7 +35,7 @@ class OSystem;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.27 2005-04-29 19:05:05 stephena Exp $
+  @version $Id: Console.hxx,v 1.28 2005-05-01 18:57:20 stephena Exp $
 */
 class Console
 {
@@ -154,9 +152,14 @@ class Console
     void saveProperties(string filename, bool merge = false);
 
     /**
-      Initialize this video subsystem wrt this class.
+      Initialize the video subsystem wrt this class.
     */
     void initializeVideo();
+
+    /**
+      Initialize the audio subsystem wrt this class.
+    */
+    void initializeAudio();
 
 #ifdef DEVELOPER_SUPPORT
   public:

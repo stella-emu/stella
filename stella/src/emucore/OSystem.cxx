@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.7 2005-04-29 19:05:05 stephena Exp $
+// $Id: OSystem.cxx,v 1.8 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -27,6 +27,11 @@
 #endif
 
 #include "Sound.hxx"
+#include "SoundNull.hxx"
+#ifdef SOUND_SUPPORT
+  #include "SoundSDL.hxx"
+#endif
+
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
@@ -60,8 +65,10 @@ OSystem::~OSystem()
   // Remove any game console that is currently attached
   detachConsole();
 
-  // OSystem takes responsibility for the framebuffer
+  // OSystem takes responsibility for framebuffer and sound,
+  // since it created them
   delete myFrameBuffer;
+  delete mySound;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,6 +186,39 @@ void OSystem::toggleFrameBuffer()
   // Update the settings and create the framebuffer
   mySettings->setString("video", video);
   createFrameBuffer(true);  // show onscreen message
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::createSound()
+{
+  // Delete the old sound device
+  delete mySound;
+
+  // And recreate a new sound device
+#ifdef SOUND_SUPPORT
+  mySound = new SoundSDL(this);
+#else
+  mySettings->setBool("sound", false);
+  mySound = new SoundNull(this);
+#endif
+
+  // Re-initialize the framebuffer to current settings
+  switch(myEventHandler->state())
+  {
+    case EventHandler::S_EMULATE:
+    case EventHandler::S_MENU:
+      myConsole->initializeAudio();
+      break;  // S_EMULATE, S_MENU
+
+    case EventHandler::S_BROWSER:
+      break;  // S_BROWSER
+
+    case EventHandler::S_DEBUGGER:
+      break;
+
+    case EventHandler::S_NONE:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.5 2005-04-29 19:05:05 stephena Exp $
+// $Id: OSystem.hxx,v 1.6 2005-05-01 18:57:21 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -37,7 +37,7 @@ class Browser;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.5 2005-04-29 19:05:05 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.6 2005-05-01 18:57:21 stephena Exp $
 */
 class OSystem
 {
@@ -244,6 +244,12 @@ class OSystem
       Switches between software and OpenGL framebuffer modes.
     */
     void toggleFrameBuffer();
+
+    /**
+      Creates the various sound devices available in this system
+      (for now, that means either 'SDL' or 'Null').
+    */
+    void createSound();
 
   public:
     //////////////////////////////////////////////////////////////////////

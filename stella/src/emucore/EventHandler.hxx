@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.23 2005-04-06 23:47:07 stephena Exp $
+// $Id: EventHandler.hxx,v 1.24 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.23 2005-04-06 23:47:07 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.24 2005-05-01 18:57:20 stephena Exp $
 */
 class EventHandler
 {
@@ -186,9 +186,10 @@ class EventHandler
     /**
       Sets the mouse to act as paddle 'num'
 
-      @param num The paddle which the mouse should emulate
+      @param num          The paddle which the mouse should emulate
+      @param showmessage  Print a message to the framebuffer
     */
-    void setPaddleMode(uInt32 num);
+    void setPaddleMode(uInt32 num, bool showmessage = false);
 
     /**
       The following methods take care of assigning action mappings.

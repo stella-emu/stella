@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.28 2005-04-29 19:05:05 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.29 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -370,8 +370,8 @@ void FrameBuffer::setCursorState()
         // Keep mouse in game window if grabmouse is selected
         grabMouse(myOSystem->settings().getBool("grabmouse"));
 
-        // Show or hide the cursor depending on the 'hidecursor' argument
-        showCursor(!myOSystem->settings().getBool("hidecursor"));
+        // Never show cursor in normal emulation mode
+        showCursor(false);
       }
       break;
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.32 2005-04-29 19:05:05 stephena Exp $
+// $Id: mainSDL.cxx,v 1.33 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -35,21 +35,10 @@
 #include "Event.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
-#include "FrameBufferSoft.hxx"
 #include "PropsSet.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"
-
-#ifdef SOUND_SUPPORT
-  #include "SoundSDL.hxx"
-#else
-  #include "SoundNull.hxx"
-#endif
-
-#ifdef DISPLAY_OPENGL
-  #include "FrameBufferGL.hxx"
-#endif
 
 #if defined(UNIX)
   #include "SettingsUNIX.hxx"
@@ -70,15 +59,6 @@ static void ShowInfo(const string& msg);
 
 // Pointer to the main parent osystem object or the null pointer
 static OSystem* theOSystem = (OSystem*) NULL;
-
-// Pointer to the display object or the null pointer
-static EventHandler* theEventHandler = (EventHandler*) NULL;
-
-// Pointer to the sound object or the null pointer
-static Sound* theSound = (Sound*) NULL;
-
-// Pointer to the settings object or the null pointer
-static Settings* theSettings = (Settings*) NULL;
 
 // Indicates whether to show information during program execution
 static bool theShowInfoFlag;
@@ -120,7 +100,7 @@ inline uInt32 GetTicks()
 void SetupProperties(PropertiesSet& set)
 {
   bool useMemList = false;
-  string theAltPropertiesFile = theSettings->getString("altpro");
+  string theAltPropertiesFile = theOSystem->settings().getString("altpro");
   string thePropertiesFile    = theOSystem->propertiesInputFilename();
 
   // When 'listrominfo' or 'mergeprops' is specified, we need to have the
@@ -191,11 +171,11 @@ void mainGameLoop()
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(theSettings->getBool("accurate"))   // normal, CPU-intensive timing
+  if(theOSystem->settings().getBool("accurate"))   // normal, CPU-intensive timing
   {
     // Set up accurate timing stuff
     uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theSettings->getInt("framerate"));
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theOSystem->settings().getInt("framerate"));
 
     // Set the base for the timers
     frameTime = 0;
@@ -229,7 +209,7 @@ void mainGameLoop()
   {
     // Set up less accurate timing stuff
     uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theSettings->getInt("framerate"));
+    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theOSystem->settings().getInt("framerate"));
 
     // Set the base for the timers
     virtualTime = GetTicks();
@@ -294,13 +274,6 @@ void Cleanup()
   }
 #endif
 */
-
-  if(theSound)
-    delete theSound;
-
-  if(theEventHandler)
-    delete theEventHandler;
-
   if(theOSystem)
     delete theOSystem;
 
@@ -315,22 +288,17 @@ int main(int argc, char* argv[])
   // Create the parent OSystem object and settings
 #if defined(UNIX)
   theOSystem = new OSystemUNIX();
-  theSettings = new SettingsUNIX(theOSystem);
+  SettingsUNIX settings(theOSystem);
 #elif defined(WIN32)
   theOSystem = new OSystemWin32();
-  theSettings = new SettingsWin32(theOSystem);
+  SettingsWin32 settings(theOSystem);
 #else
   #error Unsupported platform!
 #endif
-  if(!theSettings)
-  {
-    Cleanup();
-    return 0;
-  }
-  theSettings->loadConfig();
+  theOSystem->settings().loadConfig();
 
   // Take care of commandline arguments
-  if(!theSettings->loadCommandLine(argc, argv))
+  if(!theOSystem->settings().loadCommandLine(argc, argv))
   {
     Cleanup();
     return 0;
@@ -338,13 +306,13 @@ int main(int argc, char* argv[])
 
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
-//FIXME  theSettings->validate();
+//FIXME  theOSystem->settings().validate();
 
   // Create the event handler for the system
-  theEventHandler = new EventHandler(theOSystem);
+  EventHandler handler(theOSystem);
 
   // Cache some settings so they don't have to be repeatedly searched for
-  theShowInfoFlag = theSettings->getBool("showinfo");
+  theShowInfoFlag = theOSystem->settings().getBool("showinfo");
   bool theRomLauncherFlag = false;//true;//FIXMEtheSettings->getBool("romlauncher");
 
   // Create a properties set for us to use and set it up
@@ -354,7 +322,7 @@ int main(int argc, char* argv[])
 
   // Check to see if the 'listroms' argument was given
   // If so, list the roms and immediately exit
-  if(theSettings->getBool("listrominfo"))
+  if(theOSystem->settings().getBool("listrominfo"))
   {
     propertiesSet.print();
     Cleanup();
@@ -364,7 +332,7 @@ int main(int argc, char* argv[])
   // Request that the SDL window be centered, if possible
   putenv("SDL_VIDEO_CENTERED=1");
 
-  // Create the SDL framebuffer
+  // Create the framebuffer(s)
   if(!theOSystem->createFrameBuffer())
   {
     cerr << "ERROR: Couldn't set up display.\n";
@@ -372,12 +340,8 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  // Create a sound object for playing audio, even if sound has been disabled
-#ifdef SOUND_SUPPORT
-  theSound = new SoundSDL(theOSystem);
-#else
-  theSound = new SoundNull(theOSystem);
-#endif
+  // Create the sound object
+  theOSystem->createSound();
 
   // Setup the SDL joysticks (must be done after FrameBuffer is created)
 /*  FIXME - don't exit if joysticks can't be initialized
@@ -391,7 +355,7 @@ int main(int argc, char* argv[])
 
   // Print message about the framerate
   ostringstream message;
-  message << "Framerate:  " << theSettings->getInt("framerate");
+  message << "Framerate:  " << theOSystem->settings().getInt("framerate");
   ShowInfo(message.str());
 
   //// Main loop ////

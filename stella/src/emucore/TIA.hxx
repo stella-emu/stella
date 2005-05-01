@@ -13,20 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.18 2005-04-21 21:18:37 stephena Exp $
+// $Id: TIA.hxx,v 1.19 2005-05-01 18:57:21 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
 #define TIA_HXX
 
 class Console;
-class Sound;
 class System;
 class Serializer;
 class Deserializer;
 class Settings;
 
 #include "bspf.hxx"
+#include "Sound.hxx"
 #include "Device.hxx"
 #include "MediaSrc.hxx"
 
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.18 2005-04-21 21:18:37 stephena Exp $
+  @version $Id: TIA.hxx,v 1.19 2005-05-01 18:57:21 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -50,11 +50,10 @@ class TIA : public Device , public MediaSource
     /**
       Create a new TIA for the specified console
 
-      @param console   The console the TIA is associated with
-      @param sound     The sound object the TIA is associated with
-      @param settings  The settings object the TIA is associated with
+      @param console  The console the TIA is associated with
+      @param settings The settings object for this TIA device
     */
-    TIA(const Console& console, Sound& sound, Settings& settings);
+    TIA(const Console& console, Settings& settings);
  
     /**
       Destructor
@@ -171,6 +170,11 @@ class TIA : public Device , public MediaSource
     */
     uInt32 scanlines() const;
 
+    /**
+      Sets the sound device for the TIA.
+    */
+    void setSound(Sound& sound);
+
     enum TIABit {
       P0,   // Descriptor for Player 0 Bit
       P1,   // Descriptor for Player 1 Bit
@@ -230,11 +234,11 @@ class TIA : public Device , public MediaSource
     // Console the TIA is associated with
     const Console& myConsole;
 
-    // Sound object the TIA is associated with
-    Sound& mySound;
-
     // Settings object the TIA is associated with
-    Settings& mySettings;
+    const Settings& mySettings;
+
+    // Sound object the TIA is associated with
+    Sound* mySound;
 
   private:
     // Indicates if color loss should be enabled or disabled.  Color loss

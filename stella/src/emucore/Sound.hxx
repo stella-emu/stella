@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.17 2005-04-28 19:28:33 stephena Exp $
+// $Id: Sound.hxx,v 1.18 2005-05-01 18:57:21 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -30,7 +30,7 @@ class Deserializer;
   It has no functionality whatsoever.
 
   @author Stephen Anthony
-  @version $Id: Sound.hxx,v 1.17 2005-04-28 19:28:33 stephena Exp $
+  @version $Id: Sound.hxx,v 1.18 2005-05-01 18:57:21 stephena Exp $
 */
 class Sound
 {
@@ -40,6 +40,11 @@ class Sound
       using the object.
     */
     Sound(OSystem* osystem) { myOSystem = osystem; }
+
+    /**
+      Destructor
+    */
+    virtual ~Sound() { };
 
   public: 
     /**

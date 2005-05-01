@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundNull.cxx,v 1.1 2005-04-28 19:30:26 stephena Exp $
+// $Id: SoundNull.cxx,v 1.2 2005-05-01 18:57:20 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -29,12 +29,9 @@
 SoundNull::SoundNull(OSystem* osystem)
     : Sound(osystem)
 {
-  // Add the sound object to the system
-  myOSystem->attach(this);
-
   // Show some info
   if(myOSystem->settings().getBool("showinfo"))
-    cout << "Sound support not available." << endl << endl;
+    cout << "Sound disabled." << endl << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

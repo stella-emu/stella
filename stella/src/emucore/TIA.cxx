@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.39 2005-04-21 18:55:15 stephena Exp $
+// $Id: TIA.cxx,v 1.40 2005-05-01 18:57:21 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -34,10 +34,10 @@
 #define HBLANK 68
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(const Console& console, Sound& sound, Settings& settings)
+TIA::TIA(const Console& console, Settings& settings)
     : myConsole(console),
-      mySound(sound),
       mySettings(settings),
+      mySound(NULL),
       myColorLossEnabled(false),
       myMaximumNumberOfScanlines(262),
       myCOLUBK(myColor[0]),
@@ -121,7 +121,7 @@ const char* TIA::name() const
 void TIA::reset()
 {
   // Reset the sound device
-  mySound.reset();
+  mySound->reset();
 
   // Clear frame buffers
   for(uInt32 i = 0; i < 160 * 300; ++i)
@@ -245,7 +245,7 @@ void TIA::systemCyclesReset()
   uInt32 cycles = mySystem->cycles();
 
   // Adjust the sound cycle indicator
-  mySound.adjustCycleCounter(-cycles);
+  mySound->adjustCycleCounter(-cycles);
 
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
@@ -372,7 +372,7 @@ bool TIA::save(Serializer& out)
     out.putLong(myDumpDisabledCycle);
 
     // Save the sound sample stuff ...
-    mySound.save(out);
+    mySound->save(out);
   }
   catch(char *msg)
   {
@@ -473,7 +473,7 @@ bool TIA::load(Deserializer& in)
     myDumpDisabledCycle = (Int32) in.getLong();
 
     // Load the sound sample stuff ...
-    mySound.load(in);
+    mySound->load(in);
   }
   catch(char *msg)
   {
@@ -578,6 +578,12 @@ uInt32 TIA::height() const
 uInt32 TIA::scanlines() const
 {
   return (uInt32)myScanlineCountForLastFrame;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setSound(Sound& sound)
+{
+  mySound = &sound;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2363,37 +2369,37 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x15:    // Audio control 0
     {
-      mySound.set(addr, value, mySystem->cycles());
+      mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x16:    // Audio control 1
     {
-      mySound.set(addr, value, mySystem->cycles());
+      mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x17:    // Audio frequency 0
     {
-      mySound.set(addr, value, mySystem->cycles());
+      mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x18:    // Audio frequency 1
     {
-      mySound.set(addr, value, mySystem->cycles());
+      mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x19:    // Audio volume 0
     {
-      mySound.set(addr, value, mySystem->cycles());
+      mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x1A:    // Audio volume 1
     {
-      mySound.set(addr, value, mySystem->cycles());
+      mySound->set(addr, value, mySystem->cycles());
       break;
     }
 
@@ -3287,8 +3293,8 @@ const uInt32 TIA::ourPALPaletteZ26[256] = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const TIA& c)
     : myConsole(c.myConsole),
-      mySound(c.mySound),
       mySettings(c.mySettings),
+      mySound(c.mySound),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
       myCOLUP0(myColor[2]),
