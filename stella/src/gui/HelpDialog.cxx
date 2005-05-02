@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.2 2005-04-28 19:28:33 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.3 2005-05-02 22:18:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,8 +46,6 @@ HelpDialog::HelpDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
     myKey[i]  = new StaticTextWidget(this, 10, 18 + (10 * i), 80, 16, "", kTextAlignLeft);
     myDesc[i] = new StaticTextWidget(this, 90, 18 + (10 * i), 160, 16, "", kTextAlignLeft);
   }
-
-  displayInfo();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.2 2005-04-28 19:28:33 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.3 2005-05-02 22:18:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,8 @@
 GameInfoDialog::GameInfoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
     : Dialog(osystem, x, y, w, h),
       myPage(1),
-      myNumPages(2)
+      myNumPages(2),
+      myGameProperties(NULL)
 {
   // Add Previous, Next and Close buttons
   myPrevButton = addButton(10, h - 24, "Previous", kPrevCmd, 'P');
@@ -47,8 +48,6 @@ GameInfoDialog::GameInfoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, u
     myKey[i]  = new StaticTextWidget(this, 10, 18 + (10 * i), 80, 16, "", kTextAlignLeft);
     myDesc[i] = new StaticTextWidget(this, 90, 18 + (10 * i), 160, 16, "", kTextAlignLeft);
   }
-
-  displayInfo();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,6 +59,9 @@ GameInfoDialog::~GameInfoDialog()
 void GameInfoDialog::updateStrings(uInt8 page, uInt8 lines,
                                    string& title, string*& key, string* &dsc)
 {
+  if(myGameProperties == NULL)
+    return;
+
   key = new string[lines];
   dsc = new string[lines];
 
@@ -68,29 +70,29 @@ void GameInfoDialog::updateStrings(uInt8 page, uInt8 lines,
   {
     case 1:
       title = "Common game properties";
-      ADD_BIND("Name:", myGameProperties.get("Cartridge.Name"));
+      ADD_BIND("Name:", myGameProperties->get("Cartridge.Name"));
       ADD_LINE;
-      ADD_BIND("Manufacturer:", myGameProperties.get("Cartridge.Manufacturer"));
-      ADD_BIND("Model:",        myGameProperties.get("Cartridge.ModelNo"));
-      ADD_BIND("Rarity:",       myGameProperties.get("Cartridge.Rarity"));
-      ADD_BIND("Note:",         myGameProperties.get("Cartridge.Note"));
-      ADD_BIND("Type:",         myGameProperties.get("Cartridge.Type"));
+      ADD_BIND("Manufacturer:", myGameProperties->get("Cartridge.Manufacturer"));
+      ADD_BIND("Model:",        myGameProperties->get("Cartridge.ModelNo"));
+      ADD_BIND("Rarity:",       myGameProperties->get("Cartridge.Rarity"));
+      ADD_BIND("Note:",         myGameProperties->get("Cartridge.Note"));
+      ADD_BIND("Type:",         myGameProperties->get("Cartridge.Type"));
       ADD_LINE;
-      ADD_BIND("MD5sum:",       myGameProperties.get("Cartridge.MD5"));
+      ADD_BIND("MD5sum:",       myGameProperties->get("Cartridge.MD5"));
       break;
 
     case 2:
       title = "Other game properties";
-      ADD_BIND("TV Type:",          myGameProperties.get("Console.TelevisionType"));
-      ADD_BIND("Left Controller:",  myGameProperties.get("Controller.Left"));
-      ADD_BIND("Right Controller:", myGameProperties.get("Controller.Left"));
-      ADD_BIND("Format:",           myGameProperties.get("Display.Format"));
-      ADD_BIND("XStart:",           myGameProperties.get("Display.XStart"));
-      ADD_BIND("Width:",            myGameProperties.get("Display.Width"));
-      ADD_BIND("YStart:",           myGameProperties.get("Display.YStart"));
-      ADD_BIND("Height:",           myGameProperties.get("Display.Height"));
-      ADD_BIND("CPU Type:",         myGameProperties.get("Emulation.CPU"));
-      ADD_BIND("Use HMoveBlanks:",  myGameProperties.get("Emulation.HmoveBlanks"));
+      ADD_BIND("TV Type:",          myGameProperties->get("Console.TelevisionType"));
+      ADD_BIND("Left Controller:",  myGameProperties->get("Controller.Left"));
+      ADD_BIND("Right Controller:", myGameProperties->get("Controller.Left"));
+      ADD_BIND("Format:",           myGameProperties->get("Display.Format"));
+      ADD_BIND("XStart:",           myGameProperties->get("Display.XStart"));
+      ADD_BIND("Width:",            myGameProperties->get("Display.Width"));
+      ADD_BIND("YStart:",           myGameProperties->get("Display.YStart"));
+      ADD_BIND("Height:",           myGameProperties->get("Display.Height"));
+      ADD_BIND("CPU Type:",         myGameProperties->get("Emulation.CPU"));
+      ADD_BIND("Use HMoveBlanks:",  myGameProperties->get("Emulation.HmoveBlanks"));
       break;
   }
 
