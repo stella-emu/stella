@@ -13,20 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.6 2005-05-01 18:57:21 stephena Exp $
+// $Id: OSystem.hxx,v 1.7 2005-05-02 19:36:05 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
-class EventHandler;
-class FrameBuffer;
-class Sound;
-class Settings;
 class PropertiesSet;
 class Menu;
 class Browser;
 
+#include "EventHandler.hxx"
+#include "FrameBuffer.hxx"
+#include "Sound.hxx"
+#include "Settings.hxx"
 #include "Console.hxx"
 #include "bspf.hxx"
 
@@ -37,7 +37,7 @@ class Browser;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.6 2005-05-01 18:57:21 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.7 2005-05-02 19:36:05 stephena Exp $
 */
 class OSystem
 {
@@ -59,20 +59,6 @@ class OSystem
       @param eventhandler The eventhandler to add 
     */
     void attach(EventHandler* eventhandler) { myEventHandler = eventhandler; }
-
-    /**
-      Adds the specified framebuffer to the system.
-
-      @param framebuffer The framebuffer to add 
-    */
-    void attach(FrameBuffer* framebuffer) { myFrameBuffer = framebuffer; }
-
-    /**
-      Adds the specified sound device to the system.
-
-      @param sound The sound device to add 
-    */
-    void attach(Sound* sound) { mySound = sound; }
 
     /**
       Adds the specified settings object to the system.
@@ -256,6 +242,20 @@ class OSystem
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
+    /**
+      This method runs the main gaming loop.  Since different platforms
+      may use different timing methods and/or algorithms, this method has
+      been abstracted to each platform.
+    */
+    virtual void mainGameLoop() = 0;
+
+    /**
+      This method returns number of ticks in microseconds.
+
+      @return Current time in microseconds.
+    */
+    virtual uInt32 getTicks() = 0;
+
     /**
       This method should be called to get the filename of a state file
       given the state number.

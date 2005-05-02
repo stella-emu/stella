@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.35 2005-05-01 18:57:21 stephena Exp $
+// $Id: Settings.cxx,v 1.36 2005-05-02 19:36:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -47,12 +47,11 @@ Settings::Settings(OSystem* osystem)
   set("fragsize", "512");
   set("fullscreen", "false");
   set("grabmouse", "false");
-  set("volume", "-1");
-  set("accurate", "false");
-  set("framerate", "-1");
+  set("volume", "100");
+  set("framerate", "60");
   set("keymap", "");
   set("joymap", "");
-  set("zoom", "1");
+  set("zoom", "2");
   set("showinfo", "false");
   set("mergeprops", "false");
   set("paddle", "0");
@@ -162,6 +161,62 @@ bool Settings::loadCommandLine(Int32 argc, char** argv)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::validate()
+{
+  string s;
+  uInt32 i;
+  float f;
+
+  s = getString("video");
+  if(s != "soft" && s != "gl")
+    set("video", "soft");
+
+#ifdef DISPLAY_OPENGL
+  s = getString("gl_filter");
+  if(s != "linear" && s != "nearest")
+    set("gl_filter", "nearest");
+
+  f = getFloat("gl_aspect");
+  if(f < 1.1 or f > 2.0)
+    set("gl_aspect", "2.0");
+#endif
+
+#ifdef SOUND_SUPPORT
+  i = getInt("fragsize");
+  if(i != 256 && i != 512 && i != 1024 && i != 2048 && i != 4096)
+  #ifdef WIN32
+    set("fragsize", "2048");
+  #else
+    set("fragsize", "512");
+  #endif
+
+  i = getInt("volume");
+  if(i < 0 || i > 100)
+    set("volume", "100");
+#endif
+
+  i = getInt("framerate");
+  if(i < 1 || i > 300)
+    set("framerate", "60");
+
+  i = getInt("zoom");
+  if(i < 1 || i > 6)
+    set("zoom", "2");
+
+  i = getInt("paddle");
+  if(i < 0 || i > 3)
+    set("paddle", "0");
+
+  s = getString("palette");
+  if(s != "standard" && s != "original" && s != "z26")
+    set("palette", "standard");
+
+  s = getString("romname");
+  if(s != "romname" && s != "md5sum")
+    set("ssname", "romname");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

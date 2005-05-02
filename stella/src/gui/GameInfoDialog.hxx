@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.1 2005-03-27 03:07:34 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.2 2005-05-02 19:36:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,7 @@ class GameInfoDialog : public Dialog
     GameInfoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
     ~GameInfoDialog();
 
-    void setGameProfile(Properties& props) { myGameProperties = props; }
+    void setGameProfile(Properties& props) { myGameProperties = &props; }
 
   protected:
     ButtonWidget* myNextButton;
@@ -63,7 +63,7 @@ class GameInfoDialog : public Dialog
     void loadConfig() { displayInfo(); }
 
   private:
-    Properties myGameProperties;
+    Properties* myGameProperties;
 };
 
 #endif

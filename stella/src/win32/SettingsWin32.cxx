@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.12 2004-09-14 19:10:28 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.13 2005-05-02 19:36:05 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -66,7 +66,6 @@ SettingsWin32::SettingsWin32()
   // Now create Win32 specific settings
   set("video_driver", "windib"); // This seems to be much faster than DirectX
   set("romdir", "roms");
-  set("accurate", "false");  // Don't change this, or the sound will skip
   set("fragsize", "2048");   // Anything less than this usually causes sound skipping
 #ifdef SNAPSHOT_SUPPORT
   set("ssdir", ".\\");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.21 2005-02-22 18:41:14 stephena Exp $
+// $Id: Settings.hxx,v 1.22 2005-05-02 19:36:05 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.21 2005-02-22 18:41:14 stephena Exp $
+  @version $Id: Settings.hxx,v 1.22 2005-05-02 19:36:05 stephena Exp $
 */
 class Settings
 {
@@ -60,6 +60,12 @@ class Settings
       @return False on any errors, otherwise true
     */
     bool loadCommandLine(Int32 argc, char** argv);
+
+    /**
+      This method should be called *after* settings have been read,
+      to validate (and change, if necessary) any improper settings.
+    */
+    void validate();
 
     /**
       This method should be called to display usage information.

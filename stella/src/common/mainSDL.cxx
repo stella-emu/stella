@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.33 2005-05-01 18:57:20 stephena Exp $
+// $Id: mainSDL.cxx,v 1.34 2005-05-02 19:35:57 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -22,11 +22,6 @@
 #include <sstream>
 #include <algorithm>
 #include <cstdlib>
-
-#ifdef HAVE_GETTIMEOFDAY
-  #include <time.h>
-  #include <sys/time.h>
-#endif
 
 #include <SDL.h>
 
@@ -50,47 +45,12 @@
   #error Unsupported platform!
 #endif
 
-static void mainGameLoop();
 static Console* CreateConsole(const string& romfile);
-static void Cleanup();
-static uInt32 GetTicks();
 static void SetupProperties(PropertiesSet& set);
-static void ShowInfo(const string& msg);
+static void Cleanup();
 
 // Pointer to the main parent osystem object or the null pointer
 static OSystem* theOSystem = (OSystem*) NULL;
-
-// Indicates whether to show information during program execution
-static bool theShowInfoFlag;
-
-
-/**
-  Prints given message based on 'theShowInfoFlag'
-*/
-static inline void ShowInfo(const string& msg)
-{
-  if(theShowInfoFlag && msg != "")
-    cout << msg << endl;
-}
-
-
-/**
-  Returns number of ticks in microseconds
-*/
-#ifdef HAVE_GETTIMEOFDAY
-inline uInt32 GetTicks()
-{
-  timeval now;
-  gettimeofday(&now, 0);
-
-  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
-}
-#else
-inline uInt32 GetTicks()
-{
-  return (uInt32) SDL_GetTicks() * 1000;
-}
-#endif
 
 
 /**
@@ -123,7 +83,8 @@ void SetupProperties(PropertiesSet& set)
   else
     set.load("", false);
 
-  ShowInfo(buf.str());
+  if(theOSystem->settings().getBool("showinfo"))
+    cout << buf.str() << endl;
 }
 
 
@@ -157,103 +118,6 @@ Console* CreateConsole(const string& romfile)
   }
 
   return console;
-}
-
-
-// FIXME - move this into OSystem, so that different systems can make use
-//         of system-specific timers (probably more accurate than SDL can provide)
-/**
-  Runs the main game loop until the current game exits.
-*/
-void mainGameLoop()
-{
-  // These variables are common to both timing options
-  // and are needed to calculate the overall frames per second.
-  uInt32 frameTime = 0, numberOfFrames = 0;
-
-  if(theOSystem->settings().getBool("accurate"))   // normal, CPU-intensive timing
-  {
-    // Set up accurate timing stuff
-    uInt32 startTime, delta;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theOSystem->settings().getInt("framerate"));
-
-    // Set the base for the timers
-    frameTime = 0;
-
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-      if(theOSystem->eventHandler().doExitGame() ||
-         theOSystem->eventHandler().doQuit())
-        break;
-
-      startTime = GetTicks();
-      theOSystem->eventHandler().poll();
-      theOSystem->frameBuffer().update();
-
-      // Now, waste time if we need to so that we are at the desired frame rate
-      for(;;)
-      {
-        delta = GetTicks() - startTime;
-
-        if(delta >= timePerFrame)
-          break;
-      }
-
-      frameTime += GetTicks() - startTime;
-      ++numberOfFrames;
-    }
-  }
-  else    // less accurate, less CPU-intensive timing
-  {
-    // Set up less accurate timing stuff
-    uInt32 startTime, virtualTime, currentTime;
-    uInt32 timePerFrame = (uInt32)(1000000.0 / (double) theOSystem->settings().getInt("framerate"));
-
-    // Set the base for the timers
-    virtualTime = GetTicks();
-    frameTime = 0;
-
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-      if(theOSystem->eventHandler().doExitGame() ||
-         theOSystem->eventHandler().doQuit())
-        break;
-
-      startTime = GetTicks();
-      theOSystem->eventHandler().poll();
-      theOSystem->frameBuffer().update();
-
-      currentTime = GetTicks();
-      virtualTime += timePerFrame;
-      if(currentTime < virtualTime)
-      {
-        SDL_Delay((virtualTime - currentTime)/1000);
-      }
-
-      currentTime = GetTicks() - startTime;
-      frameTime += currentTime;
-      ++numberOfFrames;
-    }
-  }
-
-  if(theShowInfoFlag)
-  {
-    double executionTime = (double) frameTime / 1000000.0;
-    double framesPerSecond = (double) numberOfFrames / executionTime;
-
-    cout << endl;
-    cout << numberOfFrames << " total frames drawn\n";
-    cout << framesPerSecond << " frames/second\n";
-    cout << endl;
-    cout << "Cartridge Name: " << theOSystem->console().properties().get("Cartridge.Name");
-    cout << endl;
-    cout << "Cartridge MD5:  " << theOSystem->console().properties().get("Cartridge.MD5");
-    cout << endl << endl;
-  }
 }
 
 
@@ -306,13 +170,12 @@ int main(int argc, char* argv[])
 
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
-//FIXME  theOSystem->settings().validate();
+  theOSystem->settings().validate();
 
   // Create the event handler for the system
   EventHandler handler(theOSystem);
 
   // Cache some settings so they don't have to be repeatedly searched for
-  theShowInfoFlag = theOSystem->settings().getBool("showinfo");
   bool theRomLauncherFlag = false;//true;//FIXMEtheSettings->getBool("romlauncher");
 
   // Create a properties set for us to use and set it up
@@ -354,9 +217,9 @@ int main(int argc, char* argv[])
 */
 
   // Print message about the framerate
-  ostringstream message;
-  message << "Framerate:  " << theOSystem->settings().getInt("framerate");
-  ShowInfo(message.str());
+  string framerate = "Framerate:  " + theOSystem->settings().getString("framerate");
+  if(theOSystem->settings().getBool("showinfo"))
+    cout << framerate << endl;
 
   //// Main loop ////
   // Load a ROM and start the main game loop
@@ -386,7 +249,7 @@ int main(int argc, char* argv[])
         else
         {
           if((theConsole = CreateConsole(romfile)) != NULL)
-            mainGameLoop();
+            theOSystem->mainGameLoop();
           else
             break;
         }
@@ -398,7 +261,7 @@ int main(int argc, char* argv[])
     ostringstream romfile;
     romfile << argv[argc - 1];
     theConsole = CreateConsole(romfile.str());
-    mainGameLoop();
+    theOSystem->mainGameLoop();
   }
 
   // Cleanup time ...
