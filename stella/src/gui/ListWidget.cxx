@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.2 2005-04-24 01:57:47 stephena Exp $
+// $Id: ListWidget.cxx,v 1.3 2005-05-03 19:11:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -201,9 +201,6 @@ static int matchingCharsIgnoringCase(const char* x, const char* y, bool& stop)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ListWidget::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 {
-cerr << "ListWidget::handleKeyDown()\n";
-return false; // FIXME - do something with this method ...
-/*
   bool handled = true;
   bool dirty = false;
   Int32 oldSelectedItem = _selectedItem;
@@ -215,12 +212,12 @@ return false; // FIXME - do something with this method ...
     // Only works in a useful fashion if the list entries are sorted.
     // TODO: Maybe this should be off by default, and instead we add a
     // method "enableQuickSelect()" or so ?
-    uInt32 time = g_system->getMillis();
+    uInt32 time = instance()->getTicks() / 1000;
     if (_quickSelectTime < time)
       _quickSelectStr = (char)ascii;
     else
       _quickSelectStr += (char)ascii;
-
+cerr << "_quickSelectStr = " << _quickSelectStr << endl;
     _quickSelectTime = time + 300;  // TODO: Turn this into a proper constant (kQuickSelectDelay ?)
 
     // FIXME: This is bad slow code (it scans the list linearly each time a
@@ -238,7 +235,9 @@ return false; // FIXME - do something with this method ...
         _selectedItem = newSelectedItem;
         bestMatch = match;
         if (stop)
+{cerr << *i << endl;
           break;
+}
       }
       newSelectedItem++;
     }
@@ -252,21 +251,21 @@ return false; // FIXME - do something with this method ...
 
     switch (keycode)
     {
-      case '\n':	// enter/return
+      case '\n':   // enter/return
       case '\r':
         // confirm edit and exit editmode
         _editMode = false;
         dirty = true;
         sendCommand(kListItemActivatedCmd, _selectedItem);
         break;
-      case 27:	// escape
+      case 27:  // escape
         // abort edit and exit editmode
         _editMode = false;
         dirty = true;
         _list[_selectedItem] = _backupString;
         break;
       case 8:		// backspace
-        _list[_selectedItem].deleteLastChar();
+        _list[_selectedItem].erase(_list[_selectedItem].length()-1);
         dirty = true;
         break;
       default:
@@ -279,65 +278,73 @@ return false; // FIXME - do something with this method ...
           handled = false;
     }
   }
-  else
+  else  // not editmode
   {
-    // not editmode
+    switch (keycode)
+    {
+      case '\n':   // enter/return
+      case '\r':
+        if (_selectedItem >= 0)
+        {
+          // override continuous enter keydown
+          if (_editable && (_currentKeyDown != '\n' && _currentKeyDown != '\r'))
+          {
+            dirty = true;
+            _editMode = true;
+            _backupString = _list[_selectedItem];
+          }
+          else
+            sendCommand(kListItemActivatedCmd, _selectedItem);
+        }
+        break;
 
-		switch (keycode) {
-		case '\n':	// enter/return
-		case '\r':
-			if (_selectedItem >= 0) {
-				// override continuous enter keydown
-				if (_editable && (_currentKeyDown != '\n' && _currentKeyDown != '\r')) {
-					dirty = true;
-					_editMode = true;
-					_backupString = _list[_selectedItem];
-				} else
-					sendCommand(kListItemActivatedCmd, _selectedItem);
-			}
-			break;
-		case 256+17:	// up arrow
-			if (_selectedItem > 0)
-				_selectedItem--;
-			break;
-		case 256+18:	// down arrow
-			if (_selectedItem < (int)_list.size() - 1)
-				_selectedItem++;
-			break;
-		case 256+24:	// pageup
-			_selectedItem -= _entriesPerPage - 1;
-			if (_selectedItem < 0)
-				_selectedItem = 0;
-			break;
-		case 256+25:	// pagedown
-			_selectedItem += _entriesPerPage - 1;
-			if (_selectedItem >= (int)_list.size() )
-				_selectedItem = _list.size() - 1;
-			break;
-		case 256+22:	// home
-			_selectedItem = 0;
-			break;
-		case 256+23:	// end
-			_selectedItem = _list.size() - 1;
-			break;
-		default:
-			handled = false;
-		}
+      case 256+17:   // up arrow
+        if (_selectedItem > 0)
+          _selectedItem--;
+        break;
 
-		scrollToCurrent();
-	}
+      case 256+18:   // down arrow
+        if (_selectedItem < (int)_list.size() - 1)
+          _selectedItem++;
+        break;
 
-	if (dirty || _selectedItem != oldSelectedItem)
-		draw();
+      case 256+24:   // pageup
+        _selectedItem -= _entriesPerPage - 1;
+        if (_selectedItem < 0)
+          _selectedItem = 0;
+        break;
 
-	if (_selectedItem != oldSelectedItem) {
-		sendCommand(kListSelectionChangedCmd, _selectedItem);
-		// also draw scrollbar
-		_scrollBar->draw();
-	}
+      case 256+25:   // pagedown
+        _selectedItem += _entriesPerPage - 1;
+          if (_selectedItem >= (int)_list.size() )
+            _selectedItem = _list.size() - 1;
+          break;
 
-	return handled;
-*/
+      case 256+22:   // home
+        _selectedItem = 0;
+        break;
+
+      case 256+23:   // end
+        _selectedItem = _list.size() - 1;
+        break;
+
+      default:
+        handled = false;
+    }
+    scrollToCurrent();
+  }
+
+  if (dirty || _selectedItem != oldSelectedItem)
+    draw();
+
+  if (_selectedItem != oldSelectedItem)
+  {
+    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    // also draw scrollbar
+    _scrollBar->draw();
+  }
+
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

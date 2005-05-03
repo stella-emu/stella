@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.5 2005-03-14 04:08:15 stephena Exp $
+// $Id: Menu.cxx,v 1.6 2005-05-03 19:11:27 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -31,6 +31,11 @@ Menu::Menu(OSystem* osystem)
       myOptionsDialog(NULL)
 {
   myOSystem->attach(this);  
+
+  myCurrentKeyDown.keycode = 0;
+  myLastClick.x = myLastClick.y = 0;
+  myLastClick.time = 0;
+  myLastClick.count = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,17 +136,42 @@ void Menu::handleMouseButtonEvent(MouseButton b, Int32 x, Int32 y, uInt8 state)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  // We don't currently use 'clickCount'
+  // Get the current time for detecting double clicks
+  uInt32 time = myOSystem->getTicks() / 1000;  // we only need millisecond precision
+
   switch(b)
   {
     case EVENT_LBUTTONDOWN:
     case EVENT_RBUTTONDOWN:
-      activeDialog->handleMouseDown(x - activeDialog->_x, y - activeDialog->_y, 1, 1);
+      // If more than two clicks have been recorded, we start over
+      if(myLastClick.count == 2)
+      {
+        myLastClick.x = myLastClick.y = 0;
+        myLastClick.time = 0;
+        myLastClick.count = 0;
+      }
+
+      if(myLastClick.count && (time < myLastClick.time + 500)  // DoubleClickDelay
+         && ABS(myLastClick.x - x) < 3
+         && ABS(myLastClick.y - y) < 3)
+      {
+        myLastClick.count++;
+      }
+      else
+      {
+        myLastClick.x = x;
+        myLastClick.y = y;
+        myLastClick.count = 1;
+      }
+      myLastClick.time = time;
+      activeDialog->handleMouseDown(x - activeDialog->_x, y - activeDialog->_y,
+                                    1, myLastClick.count);
       break;
 
     case EVENT_LBUTTONUP:
     case EVENT_RBUTTONUP:
-      activeDialog->handleMouseUp(x - activeDialog->_x, y - activeDialog->_y, 1, 1);
+      activeDialog->handleMouseUp(x - activeDialog->_x, y - activeDialog->_y,
+                                  1, myLastClick.count);
       break;
 
     case EVENT_WHEELUP:

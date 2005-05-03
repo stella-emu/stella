@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.hxx,v 1.5 2005-03-27 03:07:34 stephena Exp $
+// $Id: Menu.hxx,v 1.6 2005-05-03 19:11:27 stephena Exp $
 //============================================================================
 
 #ifndef MENU_HXX
@@ -39,7 +39,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: Menu.hxx,v 1.5 2005-03-27 03:07:34 stephena Exp $
+  @version $Id: Menu.hxx,v 1.6 2005-05-03 19:11:27 stephena Exp $
 */
 class Menu
 {
@@ -122,6 +122,21 @@ class Menu
     OSystem* myOSystem;
     OptionsDialog* myOptionsDialog;
     DialogStack myDialogStack;
+
+    // For continuous events (keyDown)
+    struct {
+      uInt16 ascii;
+      uInt8 flags;
+      uInt32 keycode;
+    } myCurrentKeyDown;
+    uInt32 myKeyRepeatTime;
+	
+    // Position and time of last mouse click (used to detect double clicks)
+    struct {
+      Int16 x, y;   // Position of mouse when the click occured
+      uInt32 time;  // Time
+      Int32 count;  // How often was it already pressed?
+    } myLastClick;
 };
 
 #endif
