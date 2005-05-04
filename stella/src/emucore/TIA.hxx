@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.19 2005-05-01 18:57:21 stephena Exp $
+// $Id: TIA.hxx,v 1.20 2005-05-04 00:43:22 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.19 2005-05-01 18:57:21 stephena Exp $
+  @version $Id: TIA.hxx,v 1.20 2005-05-04 00:43:22 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -197,6 +197,13 @@ class TIA : public Device , public MediaSource
       @return  Whether the bit was enabled or disabled
     */
     bool toggleBit(TIABit b) { myBitEnabled[b] = !myBitEnabled[b]; return myBitEnabled[b]; }
+
+    /**
+      Enables/disables all TIABit bits.
+
+      @param mode  Whether to enable or disable all bits
+    */
+    void enableBits(bool mode) { for(uInt8 i = 0; i < 6; ++i) myBitEnabled[i] = mode; }
 
   private:
     // Compute the ball mask table

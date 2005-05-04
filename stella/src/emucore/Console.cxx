@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.48 2005-05-01 18:57:20 stephena Exp $
+// $Id: Console.cxx,v 1.49 2005-05-04 00:43:22 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -287,14 +287,6 @@ void Console::togglePalette(const string& palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show)
-{
-  bool result = ((TIA*)myMediaSource)->toggleBit(bit);
-  string message = bitname + (result ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::saveProperties(string filename, bool merge)
 {
   // Merge the current properties into the PropertiesSet file
@@ -491,6 +483,22 @@ void Console::changeHeight(const uInt32 direction)
 
   message = "Height ";
   message += strval.str();
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show)
+{
+  bool result = ((TIA*)myMediaSource)->toggleBit(bit);
+  string message = bitname + (result ? " enabled" : " disabled");
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::enableBits(bool enable)
+{
+  ((TIA*)myMediaSource)->enableBits(enable);
+  string message = string("TIA bits") + (enable ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
 }
 #endif

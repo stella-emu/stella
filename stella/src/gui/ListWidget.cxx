@@ -13,11 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.3 2005-05-03 19:11:25 stephena Exp $
+// $Id: ListWidget.cxx,v 1.4 2005-05-04 00:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <cctype>
+#include <algorithm>
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
@@ -185,17 +188,16 @@ void ListWidget::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static int matchingCharsIgnoringCase(const char* x, const char* y, bool& stop)
+static bool matchingCharsIgnoringCase(string s, string pattern)
 {
-  int match = 0;
-  while (*x && *y && toupper(*x) == toupper(*y))
-  {
-    ++x;
-    ++y;
-    ++match;
-  }
-  stop = !*y || (*x && (toupper(*x) >= toupper(*y)));
-  return match;
+  // Make the strings uppercase so we can compare them
+  transform(s.begin(), s.end(), s.begin(), (int(*)(int)) toupper);
+  transform(pattern.begin(), pattern.end(), pattern.begin(), (int(*)(int)) toupper);
+
+  uInt32 pos = s.find(pattern, 0);
+
+  // Make sure that if the pattern is found, it occurs at the start of 's'
+  return (pos != string::npos && pos < pattern.length());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,7 +207,7 @@ bool ListWidget::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
   bool dirty = false;
   Int32 oldSelectedItem = _selectedItem;
 
-  if (!_editMode && isprint((char)ascii))
+  if (!_editMode && isalpha((char)ascii))
   {
     // Quick selection mode: Go to first list item starting with this key
     // (or a substring accumulated from the last couple key presses).
@@ -217,7 +219,7 @@ bool ListWidget::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
       _quickSelectStr = (char)ascii;
     else
       _quickSelectStr += (char)ascii;
-cerr << "_quickSelectStr = " << _quickSelectStr << endl;
+
     _quickSelectTime = time + 300;  // TODO: Turn this into a proper constant (kQuickSelectDelay ?)
 
     // FIXME: This is bad slow code (it scans the list linearly each time a
@@ -225,19 +227,13 @@ cerr << "_quickSelectStr = " << _quickSelectStr << endl;
     // quite big lists to deal with -- so for now we can live with this lazy
     // implementation :-)
     int newSelectedItem = 0;
-    int bestMatch = 0;
-    bool stop;
     for (StringList::const_iterator i = _list.begin(); i != _list.end(); ++i)
     {
-      const int match = matchingCharsIgnoringCase(i->c_str(), _quickSelectStr.c_str(), stop);
-      if (match > bestMatch || stop)
+      const bool match = matchingCharsIgnoringCase(*i, _quickSelectStr);
+      if (match)
       {
         _selectedItem = newSelectedItem;
-        bestMatch = match;
-        if (stop)
-{cerr << *i << endl;
-          break;
-}
+        break;
       }
       newSelectedItem++;
     }

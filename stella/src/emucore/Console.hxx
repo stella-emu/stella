@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.28 2005-05-01 18:57:20 stephena Exp $
+// $Id: Console.hxx,v 1.29 2005-05-04 00:43:22 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -35,7 +35,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.28 2005-05-01 18:57:20 stephena Exp $
+  @version $Id: Console.hxx,v 1.29 2005-05-04 00:43:22 stephena Exp $
 */
 class Console
 {
@@ -133,16 +133,6 @@ class Console
     void togglePalette(const string& palette = "");
 
     /**
-      Toggles the TIA bit specified in the method name.
-    */
-    void toggleP0Bit() { toggleTIABit(TIA::P0, "P0"); }
-    void toggleP1Bit() { toggleTIABit(TIA::P1, "P1"); }
-    void toggleM0Bit() { toggleTIABit(TIA::M0, "M0"); }
-    void toggleM1Bit() { toggleTIABit(TIA::M1, "M1"); }
-    void toggleBLBit() { toggleTIABit(TIA::BL, "BL"); }
-    void togglePFBit() { toggleTIABit(TIA::PF, "PF"); }
-
-    /**
       Save a copy of the current properties after any changes.
 
       @param filename Filename to save the properties into.
@@ -194,10 +184,21 @@ class Console
       @param direction A 1 indicates increase, 0 indicates decrease.
     */
     void changeHeight(const uInt32 direction);
-#endif
+
+    /**
+      Toggles the TIA bit specified in the method name.
+    */
+    void toggleP0Bit() { toggleTIABit(TIA::P0, "P0"); }
+    void toggleP1Bit() { toggleTIABit(TIA::P1, "P1"); }
+    void toggleM0Bit() { toggleTIABit(TIA::M0, "M0"); }
+    void toggleM1Bit() { toggleTIABit(TIA::M1, "M1"); }
+    void toggleBLBit() { toggleTIABit(TIA::BL, "BL"); }
+    void togglePFBit() { toggleTIABit(TIA::PF, "PF"); }
+    void enableBits(bool enable);
 
   private:
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true);
+#endif
 
   private:
     // Pointer to the osystem object

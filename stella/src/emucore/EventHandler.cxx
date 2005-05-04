@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.47 2005-05-01 20:11:07 stephena Exp $
+// $Id: EventHandler.cxx,v 1.48 2005-05-04 00:43:22 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -246,36 +246,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       // An attempt to speed up event processing
       // All SDL-specific event actions are accessed by either
       // Control and/or Alt keys.  So we quickly check for those.
-      if((mod & KMOD_ALT) && (mod & KMOD_CTRL) && state)
-      {
-        switch(int(key))
-        {
-          case SDLK_1:
-            myOSystem->console().toggleP0Bit();
-            break;
-
-          case SDLK_2:
-            myOSystem->console().toggleP1Bit();
-            break;
-
-          case SDLK_3:
-            myOSystem->console().toggleM0Bit();
-            break;
-
-          case SDLK_4:
-            myOSystem->console().toggleM1Bit();
-            break;
-
-          case SDLK_5:
-            myOSystem->console().toggleBLBit();
-            break;
-
-          case SDLK_6:
-            myOSystem->console().togglePFBit();
-            break;
-        }
-      }
-      else if(mod & KMOD_ALT && state)
+      if(mod & KMOD_ALT && state)
       {
         switch(int(key))
         {
@@ -302,6 +273,39 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 
           case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
             myOSystem->console().changeYStart(0);
+            break;
+#endif
+#ifdef DEVELOPER_SUPPORT
+          case SDLK_z:
+            myOSystem->console().toggleP0Bit();
+            break;
+
+          case SDLK_x:
+            myOSystem->console().toggleP1Bit();
+            break;
+
+          case SDLK_c:
+            myOSystem->console().toggleM0Bit();
+            break;
+
+          case SDLK_v:
+            myOSystem->console().toggleM1Bit();
+            break;
+
+          case SDLK_b:
+            myOSystem->console().toggleBLBit();
+            break;
+
+          case SDLK_n:
+            myOSystem->console().togglePFBit();
+            break;
+
+          case SDLK_PERIOD:
+            myOSystem->console().enableBits(false);
+            break;
+
+          case SDLK_SLASH:
+            myOSystem->console().enableBits(true);
             break;
 #endif
         }
