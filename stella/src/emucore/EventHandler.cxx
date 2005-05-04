@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.48 2005-05-04 00:43:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.49 2005-05-04 19:04:45 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -376,7 +376,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       break;  // S_EMULATE
 
     case S_MENU:
-      myOSystem->menu().handleKeyEvent(key, mod, state);
+      myOSystem->menu().handleKeyEvent((uInt16) key, (Int32) mod, state);
       break;
 
     case S_BROWSER:

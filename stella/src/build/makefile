@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.73 2005-05-01 20:11:06 stephena Exp $
+## $Id: makefile,v 1.74 2005-05-04 19:04:38 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -156,8 +156,8 @@ win32-gl:
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
 GUI_OBJS = StellaFont.o Menu.o Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o \
-           Dialog.o OptionsDialog.o VideoDialog.o AudioDialog.o \
-           EventMappingDialog.o GameInfoDialog.o HelpDialog.o 
+           Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
+           EventMappingDialog.o GameInfoDialog.o HelpDialog.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -385,6 +385,9 @@ ListWidget.o: $(GUI)/ListWidget.cxx $(GUI)/ListWidget.hxx
 
 Dialog.o: $(GUI)/Dialog.cxx $(GUI)/Dialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Dialog.cxx
+
+DialogContainer.o: $(GUI)/DialogContainer.cxx $(GUI)/DialogContainer.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/DialogContainer.cxx
 
 OptionsDialog.o: $(GUI)/OptionsDialog.cxx $(GUI)/OptionsDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/OptionsDialog.cxx

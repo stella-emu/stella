@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.8 2005-04-24 01:57:47 stephena Exp $
+// $Id: Dialog.hxx,v 1.9 2005-05-04 19:04:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,7 +23,7 @@
 #define DIALOG_HXX
 
 class OSystem;
-class Menu;
+class DialogContainer;
 
 #include "Command.hxx"
 #include "Widget.hxx"
@@ -35,11 +35,11 @@ class Menu;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.8 2005-04-24 01:57:47 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.9 2005-05-04 19:04:46 stephena Exp $
 */
 class Dialog : public GuiObject
 {
-  friend class Menu;
+  friend class DialogContainer;
 
   public:
     Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h);

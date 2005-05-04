@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.7 2005-05-02 19:36:05 stephena Exp $
+// $Id: OSystem.hxx,v 1.8 2005-05-04 19:04:46 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
 class PropertiesSet;
+
 class Menu;
 class Browser;
 
@@ -37,7 +38,7 @@ class Browser;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.7 2005-05-02 19:36:05 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.8 2005-05-04 19:04:46 stephena Exp $
 */
 class OSystem
 {
@@ -85,20 +86,6 @@ class OSystem
       Removes the currently attached console from the system.
     */
     void detachConsole(void) { delete myConsole; myConsole = NULL; }
-
-    /**
-      Adds the specified settings menu yo the system.
-
-      @param menu The menu object to add 
-    */
-    void attach(Menu* menu) { myMenu = menu; }
-
-    /**
-      Adds the specified ROM browser to the system.
-
-      @param browser The browser object to add 
-    */
-    void attach(Browser* browser) { myBrowser = browser; }
 
     /**
       Get the event handler of the system

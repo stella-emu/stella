@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.4 2005-05-04 00:43:22 stephena Exp $
+// $Id: ListWidget.cxx,v 1.5 2005-05-04 19:04:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -194,10 +194,8 @@ static bool matchingCharsIgnoringCase(string s, string pattern)
   transform(s.begin(), s.end(), s.begin(), (int(*)(int)) toupper);
   transform(pattern.begin(), pattern.end(), pattern.begin(), (int(*)(int)) toupper);
 
-  uInt32 pos = s.find(pattern, 0);
-
   // Make sure that if the pattern is found, it occurs at the start of 's'
-  return (pos != string::npos && pos < pattern.length());
+  return (s.find(pattern, 0) == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
