@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.7 2005-05-04 19:04:46 stephena Exp $
+// $Id: Menu.cxx,v 1.8 2005-05-04 21:32:25 stephena Exp $
 //============================================================================
 
 #include "Dialog.hxx"
@@ -35,8 +35,9 @@ Menu::~Menu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Menu::setBaseDialog()
+void Menu::initialize()
 {
+  delete myBaseDialog;
   myBaseDialog = new OptionsDialog(myOSystem);
 }
 
