@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.35 2005-05-05 00:10:43 stephena Exp $
+// $Id: mainSDL.cxx,v 1.36 2005-05-05 19:00:44 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -140,6 +140,7 @@ int main(int argc, char* argv[])
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
   theOSystem->settings().validate();
+  bool theShowInfoFlag = theOSystem->settings().getBool("showinfo");
 
   // Make sure the OSystem has a valid framerate set, since it's used for
   // more then just emulation mode
@@ -188,22 +189,22 @@ int main(int argc, char* argv[])
 
   // Print message about the framerate
   string framerate = "Framerate:  " + theOSystem->settings().getString("framerate");
-  if(theOSystem->settings().getBool("showinfo"))
+  if(theShowInfoFlag)
     cout << framerate << endl;
 
   //// Main loop ////
-  // If the ROM browser is being used, we enter 'browser' mode and let the
-  //   main event loop take care of opening a new console/ROM.
-  // Otherwise, we use the ROM specified on the commandline.
-  if(theOSystem->settings().getBool("browser"))
+  // First we check if a ROM is specified on the commandline.  If so, and if
+  //   the ROM actually exists, use it to create a new console.
+  // If not, use the built-in ROM browser.  In this case, we enter 'browser'
+  //   mode and let the main event loop take care of opening a new console/ROM.
+  string romfile = argv[argc - 1];
+  if(theOSystem->fileExists(romfile))
   {
-    theOSystem->eventHandler().reset(EventHandler::S_BROWSER);
+    theOSystem->createConsole(romfile);
   }
   else
   {
-    string romfile = argv[argc - 1];
-    theOSystem->setRom(romfile);
-    theOSystem->createConsole();
+    theOSystem->eventHandler().reset(EventHandler::S_BROWSER);
   }
 
   // Start the main loop, and don't exit until the user issues a QUIT command

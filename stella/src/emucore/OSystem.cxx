@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
+// $Id: OSystem.cxx,v 1.10 2005-05-05 19:00:47 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -223,22 +223,30 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::createConsole(bool showmessage)
+bool OSystem::createConsole(const string& romfile)
 {
-  if(myRomFile == "")
+  bool retval = false, showmessage = false;
+
+  // If a blank ROM has been given, we reload the current one (assuming one exists)
+  if(romfile == "")
   {
-    cerr << "ERROR: Rom file not specified ..." << endl;
-    myEventHandler->quit();
-    return;
+    showmessage = true;  // we show a message if a ROM is being reloaded
+    if(myRomFile == "")
+    {
+      cerr << "ERROR: Rom file not specified ..." << endl;
+      return false;
+    }
   }
+  else
+    myRomFile = romfile;
 
   // Open the cartridge image and read it in
   ifstream in(myRomFile.c_str(), ios_base::binary);
   if(!in)
   {
     cerr << "ERROR: Couldn't open " << myRomFile << "..." << endl;
-    myEventHandler->quit();
-    return;
+//    myEventHandler->quit();
+    retval = false;
   }
   else
   {
@@ -258,7 +266,13 @@ void OSystem::createConsole(bool showmessage)
 
     if(showmessage)
       myFrameBuffer->showMessage("New console created");
+    if(mySettings->getBool("showinfo"))
+      cout << "Game console created: " << myRomFile << endl;
+
+    retval = true;
   }
+
+  return retval;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

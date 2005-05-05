@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.50 2005-05-05 00:10:47 stephena Exp $
+// $Id: EventHandler.cxx,v 1.51 2005-05-05 19:00:46 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -339,7 +339,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
             break;
 
           case SDLK_r:	 // Ctrl-r reloads the currently loaded ROM
-            myOSystem->createConsole(true);
+            myOSystem->createConsole();
             break;
 
 #ifdef DEVELOPER_SUPPORT

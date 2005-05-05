@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.36 2005-05-02 19:36:05 stephena Exp $
+// $Id: Settings.cxx,v 1.37 2005-05-05 19:00:48 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -224,7 +224,10 @@ void Settings::usage()
 {
 #ifndef MAC_OSX
   cout << endl
-    << "Stella version 1.5_cvs\n\nUsage: stella [options ...] romfile" << endl
+    << "Stella version 1.5_cvs" << endl
+    << endl
+    << "Usage: stella [options ...] romfile" << endl
+    << "       Run without any options or romfile to use the ROM launcher" << endl
     << endl
     << "Valid options are:" << endl
     << endl
@@ -261,6 +264,8 @@ void Settings::usage()
   #endif
     << "  -mergeprops   <1|0>          Merge changed properties into properties file,\n"
     << "                               or save into a separate file\n"
+    << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
+    << "  -help                        Show the text you're now reading\n"
     << endl;
 #endif
 }

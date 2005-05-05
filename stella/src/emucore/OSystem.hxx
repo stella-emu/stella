@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
+// $Id: OSystem.hxx,v 1.10 2005-05-05 19:00:47 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -38,7 +38,7 @@ class Browser;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.10 2005-05-05 19:00:47 stephena Exp $
 */
 class OSystem
 {
@@ -141,11 +141,6 @@ class OSystem
          { myTimePerFrame = (uInt32)(1000000.0 / (double) framerate); }
 
     /**
-      Set the ROM file (filename of current ROM to load)
-    */
-    void setRom(const string& romfile) { myRomFile = romfile; }
-
-    /**
       Set the base directory for all configuration files
     */
     void setBaseDir(const string& basedir) { myBaseDir = basedir; }
@@ -227,13 +222,12 @@ class OSystem
     void createSound();
 
     /**
-      Creates a new game console.  It is assumed that setRom() has
-      been called before this method, to set actual ROM file name.
+      Creates a new game console from the specified romfile.
 
-      @param showmessage  Whether to show an onscreen message that
-                          the console has been (re)created
+      @param romfile  The full pathname of the ROM to use
+      @return  True on successful creation, otherwise false
     */
-    void createConsole(bool showmessage = false);
+    bool createConsole(const string& romfile = "");
 
   public:
     //////////////////////////////////////////////////////////////////////
