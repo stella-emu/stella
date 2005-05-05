@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.8 2005-05-04 19:04:46 stephena Exp $
+// $Id: OSystem.hxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -38,7 +38,7 @@ class Browser;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.8 2005-05-04 19:04:46 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
 */
 class OSystem
 {
@@ -74,18 +74,6 @@ class OSystem
       @param propset The properties set to add 
     */
     void attach(PropertiesSet* propset) { myPropSet = propset; }
-
-    /**
-      Adds the specified console to the system.
-
-      @param console  The console (game emulation object) to add 
-    */
-    void attach(Console* console) { myConsole = console; }
-
-    /**
-      Removes the currently attached console from the system.
-    */
-    void detachConsole(void) { delete myConsole; myConsole = NULL; }
 
     /**
       Get the event handler of the system
@@ -142,6 +130,20 @@ class OSystem
       @return The browser object
     */
     Browser& browser(void) const { return *myBrowser; }
+
+    /**
+      Set the framerate for the video system.  It's placed in this class since
+      the mainLoop() method is defined here.
+
+      @param framerate  The video framerate to use
+    */
+    void setFramerate(uInt32 framerate)
+         { myTimePerFrame = (uInt32)(1000000.0 / (double) framerate); }
+
+    /**
+      Set the ROM file (filename of current ROM to load)
+    */
+    void setRom(const string& romfile) { myRomFile = romfile; }
 
     /**
       Set the base directory for all configuration files
@@ -224,17 +226,26 @@ class OSystem
     */
     void createSound();
 
+    /**
+      Creates a new game console.  It is assumed that setRom() has
+      been called before this method, to set actual ROM file name.
+
+      @param showmessage  Whether to show an onscreen message that
+                          the console has been (re)created
+    */
+    void createConsole(bool showmessage = false);
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
     /**
-      This method runs the main gaming loop.  Since different platforms
+      This method runs the main loop.  Since different platforms
       may use different timing methods and/or algorithms, this method has
       been abstracted to each platform.
     */
-    virtual void mainGameLoop() = 0;
+    virtual void mainLoop() = 0;
 
     /**
       This method returns number of ticks in microseconds.
@@ -297,6 +308,9 @@ class OSystem
     // Pointer to the Browser object
     Browser* myBrowser;
 
+    // Time per frame for a video update, based on the current framerate
+    uInt32 myTimePerFrame;
+
   private:
     string myBaseDir;
     string myStateDir;
@@ -305,6 +319,8 @@ class OSystem
     string myPropertiesOutputFile;
     string myConfigInputFile;
     string myConfigOutputFile;
+
+    string myRomFile;
 
   private:
     // Copy constructor isn't supported by this class so make it private

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.20 2005-04-29 19:05:04 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.21 2005-05-05 00:10:43 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -126,9 +126,6 @@ bool FrameBufferGL::initSubsystem()
   // Create the texture surface
   createTextures();
 #endif
-
-  // Set up the palette *after* we know the color components and the textures
-  setupPalette();
 
   // Show some OpenGL info
   if(myOSystem->settings().getBool("showinfo"))

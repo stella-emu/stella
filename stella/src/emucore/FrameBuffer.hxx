@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.27 2005-05-01 20:11:07 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.28 2005-05-05 00:10:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.27 2005-05-01 20:11:07 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.28 2005-05-05 00:10:48 stephena Exp $
 */
 class FrameBuffer
 {
@@ -208,8 +208,10 @@ class FrameBuffer
 
     /**
       Set up the palette for a screen of any depth > 8.
+
+      @param palette  The array of colors
     */
-    void setupPalette();
+    void setPalette(const uInt32* palette);
 
     /**
       This routine should be called to draw a rectangular box with sides

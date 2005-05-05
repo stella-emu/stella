@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.4 2005-05-02 19:36:05 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.5 2005-05-05 00:10:49 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -44,12 +44,11 @@ OSystemUNIX::~OSystemUNIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemUNIX::mainGameLoop()
+void OSystemUNIX::mainLoop()
 {
   // These variables are common to both timing options
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
-  uInt32 timePerFrame = (uInt32)(1000000.0 / (double) mySettings->getInt("framerate"));
 
   if(mySettings->getBool("accurate"))   // normal, CPU-intensive timing
   {
@@ -75,7 +74,7 @@ void OSystemUNIX::mainGameLoop()
       {
         delta = getTicks() - startTime;
 
-        if(delta >= timePerFrame)
+        if(delta >= myTimePerFrame)
           break;
       }
 
@@ -104,7 +103,7 @@ void OSystemUNIX::mainGameLoop()
       myFrameBuffer->update();
 
       currentTime = getTicks();
-      virtualTime += timePerFrame;
+      virtualTime += myTimePerFrame;
       if(currentTime < virtualTime)
       {
         SDL_Delay((virtualTime - currentTime)/1000);

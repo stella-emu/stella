@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.8 2005-05-01 18:57:20 stephena Exp $
+// $Id: OSystem.cxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,8 +48,9 @@ OSystem::OSystem()
     mySettings(NULL),
     myPropSet(NULL),
     myConsole(NULL),
-    myMenu(NULL)
-//    myBrowser(NULL)
+    myMenu(NULL),
+//    myBrowser(NULL),
+    myRomFile("")
 {
   // Create gui-related classes
   myMenu = new Menu(this);
@@ -63,7 +64,7 @@ OSystem::~OSystem()
 //  delete myBrowser;
 
   // Remove any game console that is currently attached
-  detachConsole();
+  delete myConsole;
 
   // OSystem takes responsibility for framebuffer and sound,
   // since it created them
@@ -218,6 +219,45 @@ void OSystem::createSound()
 
     case EventHandler::S_NONE:
       break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::createConsole(bool showmessage)
+{
+  if(myRomFile == "")
+  {
+    cerr << "ERROR: Rom file not specified ..." << endl;
+    myEventHandler->quit();
+    return;
+  }
+
+  // Open the cartridge image and read it in
+  ifstream in(myRomFile.c_str(), ios_base::binary);
+  if(!in)
+  {
+    cerr << "ERROR: Couldn't open " << myRomFile << "..." << endl;
+    myEventHandler->quit();
+    return;
+  }
+  else
+  {
+    uInt8* image = new uInt8[512 * 1024];
+    in.read((char*)image, 512 * 1024);
+    uInt32 size = in.gcount();
+    in.close();
+
+    delete myConsole;
+
+    // Create an instance of the 2600 game console
+    // The Console c'tor takes care of updating the eventhandler state
+    myConsole = new Console(image, size, this);
+
+    // Free the image since we don't need it any longer
+    delete[] image;
+
+    if(showmessage)
+      myFrameBuffer->showMessage("New console created");
   }
 }
 

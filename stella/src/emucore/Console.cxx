@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.49 2005-05-04 00:43:22 stephena Exp $
+// $Id: Console.cxx,v 1.50 2005-05-05 00:10:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -61,9 +61,6 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   mySwitches = 0;
   mySystem = 0;
   myEvent = 0;
-
-  // Add the current console to the system
-  myOSystem->attach(this);
 
   // Indicate that emulation should start now
   myOSystem->eventHandler().reset(EventHandler::S_EMULATE);
@@ -223,19 +220,25 @@ Console& Console::operator = (const Console&)
 void Console::toggleFormat()
 {
   string format = myProperties.get("Display.Format");
+  uInt32 framerate = 60;
 
   if(format == "NTSC")
   {
     myProperties.set("Display.Format", "PAL");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("PAL Mode");
+    framerate = 50;
   }
   else if(format == "PAL")
   {
     myProperties.set("Display.Format", "NTSC");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("NTSC Mode");
+    framerate = 60;
   }
+
+  setPalette();
+  myOSystem->setFramerate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,8 +285,9 @@ void Console::togglePalette(const string& palette)
   }
 
   myOSystem->settings().setString("palette", type);
-  myOSystem->frameBuffer().setupPalette();
   myOSystem->frameBuffer().showMessage(message);
+
+  setPalette();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -321,12 +325,19 @@ void Console::initializeVideo()
   myOSystem->frameBuffer().initialize(title,
                                       myMediaSource->width() << 1,
                                       myMediaSource->height());
+  setPalette();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeAudio()
 {
   myMediaSource->setSound(myOSystem->sound());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::setPalette()
+{
+  myOSystem->frameBuffer().setPalette(myMediaSource->palette());
 }
 
 #ifdef DEVELOPER_SUPPORT

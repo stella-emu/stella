@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.24 2005-05-01 18:57:20 stephena Exp $
+// $Id: EventHandler.hxx,v 1.25 2005-05-05 00:10:48 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.24 2005-05-01 18:57:20 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.25 2005-05-05 00:10:48 stephena Exp $
 */
 class EventHandler
 {
@@ -136,6 +136,11 @@ class EventHandler
       This method indicates whether a quit event has been received.
     */
     inline bool doQuit() { return myQuitFlag; }
+
+    /**
+      This method indicates that the system should terminate.
+    */
+    inline void quit() { handleEvent(Event::Quit, 1); }
 
     // Holds static strings for the remap menu
     static ActionList ourActionList[58];

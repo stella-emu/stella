@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.30 2005-05-01 20:11:07 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.31 2005-05-05 00:10:48 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -241,28 +241,18 @@ void FrameBuffer::showMessage(const string& message)
 void FrameBuffer::pause(bool status)
 {
   myPauseStatus = status;
-
-  // Now notify the child object, in case it wants to do something
-  // special when pause is received
-//FIXME  pauseEvent(myPauseStatus); 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setupPalette()
+void FrameBuffer::setPalette(const uInt32* palette)
 {
-  // Shade the palette to 75% normal value in pause mode
-  float shade = 1.0;
-  if(myPauseStatus)
-    shade = 0.75;
-
-  const uInt32* gamePalette = myOSystem->console().mediaSource().palette();
   for(uInt32 i = 0; i < 256; ++i)
   {
     Uint8 r, g, b;
 
-    r = (Uint8) (((gamePalette[i] & 0x00ff0000) >> 16) * shade);
-    g = (Uint8) (((gamePalette[i] & 0x0000ff00) >> 8) * shade);
-    b = (Uint8) ((gamePalette[i] & 0x000000ff) * shade);
+    r = (Uint8) ((palette[i] & 0x00ff0000) >> 16);
+    g = (Uint8) ((palette[i] & 0x0000ff00) >> 8);
+    b = (Uint8) (palette[i] & 0x000000ff);
 
     myPalette[i] = mapRGB(r, g, b);
   }

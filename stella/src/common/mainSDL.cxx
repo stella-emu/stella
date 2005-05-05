@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.34 2005-05-02 19:35:57 stephena Exp $
+// $Id: mainSDL.cxx,v 1.35 2005-05-05 00:10:43 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -45,7 +45,6 @@
   #error Unsupported platform!
 #endif
 
-static Console* CreateConsole(const string& romfile);
 static void SetupProperties(PropertiesSet& set);
 static void Cleanup();
 
@@ -59,15 +58,18 @@ static OSystem* theOSystem = (OSystem*) NULL;
 */
 void SetupProperties(PropertiesSet& set)
 {
-  bool useMemList = false;
+  bool useMemList = true;  // It seems we always need the list in memory
   string theAltPropertiesFile = theOSystem->settings().getString("altpro");
   string thePropertiesFile    = theOSystem->propertiesInputFilename();
 
+/*
   // When 'listrominfo' or 'mergeprops' is specified, we need to have the
   // full list in memory
-// FIXME - we need the whole list in memory
-//  if(theSettings->getBool("listrominfo") || theSettings->getBool("mergeprops"))
+  if(theOSystem->settings().getBool("listrominfo") ||
+     theOSystem->settings().getBool("mergeprops")  ||
+     theOSystem->settings().getBool("browser"))
     useMemList = true;
+*/
 
   stringstream buf;
   if(theAltPropertiesFile != "")
@@ -85,39 +87,6 @@ void SetupProperties(PropertiesSet& set)
 
   if(theOSystem->settings().getBool("showinfo"))
     cout << buf.str() << endl;
-}
-
-
-/**
-  Creates a new game console for the specified game.
-*/
-
-Console* CreateConsole(const string& romfile)
-{
-  Console* console = (Console*) NULL;
-
-  // Open the cartridge image and read it in
-  ifstream in(romfile.c_str(), ios_base::binary);
-  if(!in)
-    cerr << "ERROR: Couldn't open " << romfile << "..." << endl;
-  else
-  {
-    uInt8* image = new uInt8[512 * 1024];
-    in.read((char*)image, 512 * 1024);
-    uInt32 size = in.gcount();
-    in.close();
-
-    // Remove old console from the OSystem
-    theOSystem->detachConsole();
-
-    // Create an instance of the 2600 game console
-    console = new Console(image, size, theOSystem);
-
-    // Free the image since we don't need it any longer
-    delete[] image;
-  }
-
-  return console;
 }
 
 
@@ -172,11 +141,12 @@ int main(int argc, char* argv[])
   // We do it once here, so the rest of the program can assume valid settings
   theOSystem->settings().validate();
 
+  // Make sure the OSystem has a valid framerate set, since it's used for
+  // more then just emulation mode
+  theOSystem->setFramerate(theOSystem->settings().getInt("framerate"));
+
   // Create the event handler for the system
   EventHandler handler(theOSystem);
-
-  // Cache some settings so they don't have to be repeatedly searched for
-  bool theRomLauncherFlag = false;//true;//FIXMEtheSettings->getBool("romlauncher");
 
   // Create a properties set for us to use and set it up
   PropertiesSet propertiesSet;
@@ -222,47 +192,22 @@ int main(int argc, char* argv[])
     cout << framerate << endl;
 
   //// Main loop ////
-  // Load a ROM and start the main game loop
-  // If the game is given from the commandline, exiting game means exit emulator
-  // If the game is loaded from the ROM launcher, exiting game means show launcher
-  string romfile = "";
-  Console* theConsole  = (Console*) NULL;
-////
-  ostringstream rom;
-  rom << argv[argc - 1];
-  romfile = rom.str();
-////
-  if(theRomLauncherFlag)
+  // If the ROM browser is being used, we enter 'browser' mode and let the
+  //   main event loop take care of opening a new console/ROM.
+  // Otherwise, we use the ROM specified on the commandline.
+  if(theOSystem->settings().getBool("browser"))
   {
-    for(;;)
-    {
-//      theOSystem->gui().showRomLauncher();
-      if(theOSystem->eventHandler().doQuit())
-        break;
-      else  // FIXME - add code here to delay a little
-      {
-        cerr << "GUI not yet written, run game again (y or n): ";
-        char runagain;
-        cin >> runagain;
-        if(runagain == 'n')
-          break;
-        else
-        {
-          if((theConsole = CreateConsole(romfile)) != NULL)
-            theOSystem->mainGameLoop();
-          else
-            break;
-        }
-      }
-    }
+    theOSystem->eventHandler().reset(EventHandler::S_BROWSER);
   }
   else
   {
-    ostringstream romfile;
-    romfile << argv[argc - 1];
-    theConsole = CreateConsole(romfile.str());
-    theOSystem->mainGameLoop();
+    string romfile = argv[argc - 1];
+    theOSystem->setRom(romfile);
+    theOSystem->createConsole();
   }
+
+  // Start the main loop, and don't exit until the user issues a QUIT command
+  theOSystem->mainLoop();
 
   // Cleanup time ...
   Cleanup();

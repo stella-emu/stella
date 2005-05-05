@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.49 2005-05-04 19:04:45 stephena Exp $
+// $Id: EventHandler.cxx,v 1.50 2005-05-05 00:10:47 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -332,12 +332,14 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 
           case SDLK_f:	 // Ctrl-f toggles NTSC/PAL mode
             myOSystem->console().toggleFormat();
-            myOSystem->frameBuffer().setupPalette();
             break;
 
           case SDLK_p:	 // Ctrl-p toggles different palettes
             myOSystem->console().togglePalette();
-            myOSystem->frameBuffer().setupPalette();
+            break;
+
+          case SDLK_r:	 // Ctrl-r reloads the currently loaded ROM
+            myOSystem->createConsole(true);
             break;
 
 #ifdef DEVELOPER_SUPPORT

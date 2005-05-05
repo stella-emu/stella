@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.8 2005-05-01 20:11:07 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -276,7 +276,7 @@ void VideoDialog::saveConfig()
   // Framerate
   i = myFrameRateSlider->getValue();
   instance()->settings().setInt("framerate", i);
-// FIXME - immediately change the framerate
+  instance()->setFramerate(i);
 
   // Zoom
   i = (myZoomSlider->getValue() / 10) + 1;

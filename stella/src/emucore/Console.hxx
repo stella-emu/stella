@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.29 2005-05-04 00:43:22 stephena Exp $
+// $Id: Console.hxx,v 1.30 2005-05-05 00:10:47 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -35,7 +35,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.29 2005-05-04 00:43:22 stephena Exp $
+  @version $Id: Console.hxx,v 1.30 2005-05-05 00:10:47 stephena Exp $
 */
 class Console
 {
@@ -150,6 +150,11 @@ class Console
       Initialize the audio subsystem wrt this class.
     */
     void initializeAudio();
+
+    /**
+      Sets the palette to that specified in the mediasource
+    */
+    void setPalette();
 
 #ifdef DEVELOPER_SUPPORT
   public:

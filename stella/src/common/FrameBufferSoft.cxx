@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.19 2005-04-29 19:05:04 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.20 2005-05-05 00:10:43 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -58,7 +58,6 @@ bool FrameBufferSoft::initSubsystem()
   // Create the screen
   if(!createScreen())
     return false;
-  setupPalette();
 
   // Show some info
   if(myOSystem->settings().getBool("showinfo"))
