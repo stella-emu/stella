@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.26 2005-05-06 18:38:59 stephena Exp $
+// $Id: EventHandler.hxx,v 1.27 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.26 2005-05-06 18:38:59 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.27 2005-05-06 22:50:15 stephena Exp $
 */
 class EventHandler
 {
@@ -143,7 +143,7 @@ class EventHandler
     inline void quit() { handleEvent(Event::Quit, 1); }
 
     // Holds static strings for the remap menu
-    static ActionList ourActionList[58];
+    static ActionList ourActionList[60];
 
   private:
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.28 2005-05-05 00:10:48 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.29 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.28 2005-05-05 00:10:48 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.29 2005-05-06 22:50:15 stephena Exp $
 */
 class FrameBuffer
 {
@@ -67,11 +67,13 @@ class FrameBuffer
       (Re)initializes the framebuffer display.  This must be called before any
       calls are made to derived methods.
 
-      @param title     The title of the window
-      @param width     The width of the framebuffer
-      @param height    The height of the framebuffer
+      @param title   The title of the window
+      @param width   The width of the framebuffer
+      @param height  The height of the framebuffer
+      @param aspect  Whether to use the aspect ratio setting
     */
-    void initialize(const string& title, uInt32 width, uInt32 height);
+    void initialize(const string& title, uInt32 width, uInt32 height,
+                    bool aspect = true);
 
     /**
       Updates the display, which depending on the current mode could mean
@@ -430,6 +432,9 @@ FIXME
 
     // The aspect ratio of the window
     float theAspectRatio;
+
+    // Indicates whether to use aspect ratio correction
+    bool theUseAspectRatioFlag;
 
     // The font object to use
     StellaFont* myFont;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.52 2005-05-06 18:38:59 stephena Exp $
+// $Id: EventHandler.cxx,v 1.53 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -110,6 +110,9 @@ void EventHandler::reset(State state)
   myExitGameFlag = false;
   myQuitFlag = false;
   myPaddleMode = 0;
+
+  myOSystem->frameBuffer().pause(myPauseFlag);
+  myOSystem->sound().mute(myPauseFlag);
 
   switch(myState)
   {
@@ -236,30 +239,6 @@ void EventHandler::poll()   // FIXME - add modifiers for OSX
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 {
-  // Handle keys here that are accessible no matter which mode we're in
-
-  // Toggle menu mode
-  if(key == SDLK_TAB && state == 1 && !myPauseFlag) // FIXME - add remappable 'enter menu mode key here'
-  {
-    if(myState == S_EMULATE)
-    {
-      myState = S_MENU;
-      myOSystem->menu().reStack();
-      myOSystem->frameBuffer().refresh();
-      myOSystem->frameBuffer().setCursorState();
-      myOSystem->sound().mute(true);
-      return;
-    }
-    else if(myState == S_MENU)
-    {
-      myState = S_EMULATE;
-      myOSystem->frameBuffer().refresh();
-      myOSystem->frameBuffer().setCursorState();
-      myOSystem->sound().mute(false);
-      return;
-    }
-  }
-
   // Determine which mode we're in, then send the event to the appropriate place
   switch(myState)
   {
@@ -393,12 +372,29 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
             break;
         }
       }
+      else if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
+      {
+        myState = S_MENU;
+        myOSystem->menu().reStack();
+        myOSystem->frameBuffer().refresh();
+        myOSystem->frameBuffer().setCursorState();
+        myOSystem->sound().mute(true);
+        return;
+      }
       else
         handleEvent(myKeyTable[key], state);
 
       break;  // S_EMULATE
 
     case S_MENU:
+      if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
+      {
+        myState = S_EMULATE;
+        myOSystem->frameBuffer().refresh();
+        myOSystem->frameBuffer().setCursorState();
+        myOSystem->sound().mute(false);
+        return;
+      }
       myOSystem->menu().handleKeyEvent((uInt16) key, (Int32) mod, state);
       break;
 
@@ -595,7 +591,18 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       myOSystem->sound().mute(myPauseFlag);
       return;
     }
-    else if(event == Event::ExitGame)
+    else if(event == Event::MenuMode)
+    {
+      // ExitGame will only work when we've launched stella using the ROM
+      // launcher.  Otherwise, the only way to exit the main loop is to Quit.
+      if(myState == S_EMULATE && myUseLauncherFlag)
+      {
+        myOSystem->settings().saveConfig();
+        myOSystem->createLauncher();
+        return;
+      }
+    }
+    else if(event == Event::LauncherMode)
     {
       // ExitGame will only work when we've launched stella using the ROM
       // launcher.  Otherwise, the only way to exit the main loop is to Quit.
@@ -625,7 +632,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
 void EventHandler::setActionMappings()
 {
   // Fill the ActionList with the current key and joystick mappings
-  for(Int32 i = 0; i < 58; ++i)
+  for(Int32 i = 0; i < 60; ++i)
   {
     Event::Type event = ourActionList[i].event;
     ourActionList[i].key = "None";
@@ -748,6 +755,10 @@ void EventHandler::setJoymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::addKeyMapping(Event::Type event, uInt16 key)
 {
+  // These keys cannot be remapped.
+  if(key == SDLK_TAB || key == SDLK_ESCAPE)
+    return;
+
   myKeyTable[key] = event;
 
   setActionMappings();
@@ -771,12 +782,12 @@ void EventHandler::eraseMapping(Event::Type event)
 {
   // Erase the KeyEvent arrays
   for(Int32 i = 0; i < SDLK_LAST; ++i)
-    if(myKeyTable[i] == event)
+    if(myKeyTable[i] == event && i != SDLK_TAB && i != SDLK_ESCAPE)
       myKeyTable[i] = Event::NoType;
 
   // Erase the JoyEvent array
   for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
-    if(myJoyTable[i] == event)
+    if(myJoyTable[i] == event && i != SDLK_TAB && i != SDLK_ESCAPE)
       myJoyTable[i] = Event::NoType;
 
   setActionMappings();
@@ -863,9 +874,8 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_F11 ]       = Event::LoadState;
   myKeyTable[ SDLK_F12 ]       = Event::TakeSnapshot;
   myKeyTable[ SDLK_PAUSE ]     = Event::Pause;
-#ifndef MAC_OSX
-  myKeyTable[ SDLK_ESCAPE ]    = Event::ExitGame;
-#endif
+  myKeyTable[ SDLK_TAB ]       = Event::MenuMode;
+  myKeyTable[ SDLK_ESCAPE ]    = Event::LauncherMode;
 
   saveMappings();
 }
@@ -1281,7 +1291,7 @@ void EventHandler::setSDLMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ActionList EventHandler::ourActionList[58] = {
+ActionList EventHandler::ourActionList[60] = {
   { Event::ConsoleSelect,           "Select",                                      "" },
   { Event::ConsoleReset,            "Reset",                                       "" },
   { Event::ConsoleColor,            "Color TV",                                    "" },
@@ -1295,6 +1305,8 @@ ActionList EventHandler::ourActionList[58] = {
   { Event::LoadState,               "Load State",                                  "" },
   { Event::TakeSnapshot,            "Snapshot",                                    "" },
   { Event::Pause,                   "Pause",                                       "" },
+  { Event::MenuMode,                "Enter/exit menu mode",                        "" },
+  { Event::LauncherMode,            "Enter ROM launcher",                          "" },
   { Event::Quit,                    "Quit",                                        "" },
 
   { Event::JoystickZeroUp,          "Left Joystick Up Direction",                  "" },

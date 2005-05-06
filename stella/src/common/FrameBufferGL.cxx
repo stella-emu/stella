@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.21 2005-05-05 00:10:43 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.22 2005-05-06 22:50:14 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -58,8 +58,13 @@ bool FrameBufferGL::initSubsystem()
   // Get the aspect ratio for the display
   // Since the display is already doubled horizontally, we half the
   // ratio that is provided
-  theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
-  if(theAspectRatio <= 0.0)
+  if(theUseAspectRatioFlag)
+  {
+    theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
+    if(theAspectRatio <= 0.0)
+      theAspectRatio = 1.0;
+  }
+  else
     theAspectRatio = 1.0;
 
   // Set up the OpenGL attributes

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.6 2005-04-24 20:36:36 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.7 2005-05-06 22:50:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,7 +58,7 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, uInt16 x, uInt16 y,
   // Get actions names
   StringList l;
 
-  for(int i = 0; i < 58; ++i)  // FIXME - create a size() method
+  for(int i = 0; i < 60; ++i)  // FIXME - create a size() method
     l.push_back(EventHandler::ourActionList[i].action);
 
   myActionsList->setList(l);

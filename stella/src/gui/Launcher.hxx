@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.hxx,v 1.1 2005-05-06 18:39:00 stephena Exp $
+// $Id: Launcher.hxx,v 1.2 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
 #ifndef LAUNCHER_HXX
@@ -32,7 +32,7 @@ enum {
   The base dialog for the ROM launcher in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Launcher.hxx,v 1.1 2005-05-06 18:39:00 stephena Exp $
+  @version $Id: Launcher.hxx,v 1.2 2005-05-06 22:50:15 stephena Exp $
 */
 class Launcher : public DialogContainer
 {
@@ -52,6 +52,11 @@ class Launcher : public DialogContainer
       Updates the basedialog to be of the type defined for this derived class.
     */
     void initialize();
+
+    /**
+      Initialize the video subsystem wrt this class.
+    */
+    void initializeVideo();
 };
 
 #endif

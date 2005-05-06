@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.1 2005-05-06 18:39:00 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.2 2005-05-06 22:50:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,8 +52,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, uInt16 x, uInt16 y,
     : Dialog(osystem, x, y, w, h)
 {
   // Show game name
-  new StaticTextWidget(this, 10, 8, 300, kLineHeight, "Select a game from the list ...",
-                       kTextAlignCenter);
+  new StaticTextWidget(this, 10, 8, _w - 20, kLineHeight,
+                       "Select a game from the list ...", kTextAlignCenter);
 
   // Add three buttons at the bottom
   const int border = 10;
@@ -72,7 +72,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, uInt16 x, uInt16 y,
     xpos += space + width;
 
   // Add list with game titles
-  myList = new ListWidget(this, 10, 24, 300, 142);
+  myList = new ListWidget(this, 10, 24, _w - 20, _h - 24 - 26 - 10);
   myList->setEditable(false);
   myList->setNumberingMode(kListNumberingOff);
 

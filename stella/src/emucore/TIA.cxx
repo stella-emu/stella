@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.40 2005-05-01 18:57:21 stephena Exp $
+// $Id: TIA.cxx,v 1.41 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -236,6 +236,8 @@ void TIA::reset()
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
   }
+
+  enableBits(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -363,11 +365,6 @@ bool TIA::save(Serializer& out)
     out.putBool(myM0CosmicArkMotionEnabled);
     out.putLong(myM0CosmicArkCounter);
 
-    // There are currently six bits defined in TIABit
-    out.putLong(6);
-    for(uInt32 i = 0; i < 6; ++i)
-      out.putBool(myBitEnabled[i]);
-
     out.putBool(myDumpEnabled);
     out.putLong(myDumpDisabledCycle);
 
@@ -464,16 +461,14 @@ bool TIA::load(Deserializer& in)
     myM0CosmicArkMotionEnabled = in.getBool();
     myM0CosmicArkCounter = (uInt32) in.getLong();
 
-    // We abuse the concept of 'enum' here
-    uInt32 limit = (uInt32) in.getLong();
-    for(uInt32 i = 0; i < limit; ++i)
-      myBitEnabled[i] = in.getBool();
-
     myDumpEnabled = in.getBool();
     myDumpDisabledCycle = (Int32) in.getLong();
 
     // Load the sound sample stuff ...
     mySound->load(in);
+
+    // Reset TIA bits to be on
+    enableBits(true);
   }
   catch(char *msg)
   {

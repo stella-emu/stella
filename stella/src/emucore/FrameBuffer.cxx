@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.32 2005-05-06 18:38:59 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.33 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -41,6 +41,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       theZoomLevel(1),
       theMaxZoomLevel(1),
       theAspectRatio(1.0),
+      theUseAspectRatioFlag(true),
       myFrameRate(0),
       myPauseStatus(false),
       theMenuChangedIndicator(false),
@@ -78,7 +79,8 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
+void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
+                             bool aspect)
 {
   bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO) > 0;
 
@@ -129,6 +131,9 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
   // Set window title
   setWindowTitle(title);
 
+  // Indicate whether we want to use aspect ratio correction
+  theUseAspectRatioFlag = aspect;
+
   // Get the maximum size of a window for the current desktop
   theMaxZoomLevel = maxWindowSizeForScreen();
 
@@ -140,9 +145,6 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 
   // Initialize video subsystem
   initSubsystem();
-
-  // Show or hide the cursor based on the current state
-  setCursorState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -350,22 +352,16 @@ void FrameBuffer::resize(Size size, Int8 zoom)
 void FrameBuffer::setCursorState()
 {
   bool isFullscreen = myOSystem->settings().getBool("fullscreen");
+
   if(isFullscreen)
     grabMouse(true);
+  else
+    grabMouse(myOSystem->settings().getBool("grabmouse"));
 
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
-      if(isFullscreen)
-        showCursor(false);
-      else
-      {
-        // Keep mouse in game window if grabmouse is selected
-        grabMouse(myOSystem->settings().getBool("grabmouse"));
-
-        // Never show cursor in normal emulation mode
-        showCursor(false);
-      }
+      showCursor(false);
       break;
 
     default:

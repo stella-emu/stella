@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.11 2005-05-06 18:38:59 stephena Exp $
+// $Id: OSystem.cxx,v 1.12 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -160,6 +160,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
       break;  // S_EMULATE, S_MENU
 
     case EventHandler::S_LAUNCHER:
+      myLauncher->initializeVideo();
       break;  // S_LAUNCHER
 
     case EventHandler::S_DEBUGGER:
@@ -270,6 +271,8 @@ bool OSystem::createConsole(const string& romfile)
       cout << "Game console created: " << myRomFile << endl;
 
     retval = true;
+    myEventHandler->reset(EventHandler::S_EMULATE);
+    myFrameBuffer->setCursorState();
   }
 
   return retval;
@@ -281,8 +284,7 @@ void OSystem::createLauncher()
   myEventHandler->reset(EventHandler::S_LAUNCHER);
 
   // Create the window
-  string title = "Stella: ROM Launcher"; // FIXME - include version of Stella
-  myFrameBuffer->initialize(title, kLauncherWidth, kLauncherHeight);
+  myLauncher->initializeVideo();
 
   // And start the base dialog
   myLauncher->initialize();

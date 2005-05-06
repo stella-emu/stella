@@ -13,9 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.1 2005-05-06 18:39:00 stephena Exp $
+// $Id: Launcher.cxx,v 1.2 2005-05-06 22:50:15 stephena Exp $
 //============================================================================
 
+#include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "LauncherDialog.hxx"
 #include "bspf.hxx"
 #include "Launcher.hxx"
@@ -36,4 +38,11 @@ void Launcher::initialize()
 {
   delete myBaseDialog;
   myBaseDialog = new LauncherDialog(myOSystem, 0, 0, kLauncherWidth, kLauncherHeight);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::initializeVideo()
+{
+  string title = "Stella: ROM Launcher"; // FIXME - include version of Stella
+  myOSystem->frameBuffer().initialize(title, kLauncherWidth, kLauncherHeight, false);
 }
