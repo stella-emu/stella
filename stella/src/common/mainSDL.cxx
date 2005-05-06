@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.36 2005-05-05 19:00:44 stephena Exp $
+// $Id: mainSDL.cxx,v 1.37 2005-05-06 18:38:59 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -61,15 +61,6 @@ void SetupProperties(PropertiesSet& set)
   bool useMemList = true;  // It seems we always need the list in memory
   string theAltPropertiesFile = theOSystem->settings().getString("altpro");
   string thePropertiesFile    = theOSystem->propertiesInputFilename();
-
-/*
-  // When 'listrominfo' or 'mergeprops' is specified, we need to have the
-  // full list in memory
-  if(theOSystem->settings().getBool("listrominfo") ||
-     theOSystem->settings().getBool("mergeprops")  ||
-     theOSystem->settings().getBool("browser"))
-    useMemList = true;
-*/
 
   stringstream buf;
   if(theAltPropertiesFile != "")
@@ -195,17 +186,13 @@ int main(int argc, char* argv[])
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if
   //   the ROM actually exists, use it to create a new console.
-  // If not, use the built-in ROM browser.  In this case, we enter 'browser'
+  // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
   string romfile = argv[argc - 1];
-  if(theOSystem->fileExists(romfile))
-  {
-    theOSystem->createConsole(romfile);
-  }
+  if(argc == 1 || !theOSystem->fileExists(romfile))
+    theOSystem->createLauncher();
   else
-  {
-    theOSystem->eventHandler().reset(EventHandler::S_BROWSER);
-  }
+    theOSystem->createConsole(romfile);
 
   // Start the main loop, and don't exit until the user issues a QUIT command
   theOSystem->mainLoop();

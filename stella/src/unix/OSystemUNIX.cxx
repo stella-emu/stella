@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.5 2005-05-05 00:10:49 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.6 2005-05-06 18:39:00 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -115,7 +115,8 @@ void OSystemUNIX::mainLoop()
     }
   }
 
-  if(mySettings->getBool("showinfo"))
+  // Only print console information if a console was actually created
+  if(mySettings->getBool("showinfo") && myConsole)
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;

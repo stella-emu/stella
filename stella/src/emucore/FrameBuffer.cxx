@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.31 2005-05-05 00:10:48 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.32 2005-05-06 18:38:59 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -29,6 +29,7 @@
 #include "StellaFont.hxx"
 #include "GuiUtils.hxx"
 #include "Menu.hxx"
+#include "Launcher.hxx"
 #include "OSystem.hxx"
 
 #include "stella.xpm"   // The Stella icon
@@ -55,7 +56,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     {0, 0, 0},
     {64, 64, 64},
     {32, 160, 32},
-    {0, 255, 0}
+    {0, 255, 0} // FIXME - add kTextColorEm
   };
 
   for(uInt8 i = 0; i < 5; i++)
@@ -212,9 +213,27 @@ void FrameBuffer::update()
       break;
     }
 
-    case EventHandler::S_BROWSER:
-      // FIXME myOSystem->gui().browser().draw();
+    case EventHandler::S_LAUNCHER:
+    {
+      // Only update the screen if it's been invalidated or the menus have changed  
+      if(theRedrawEntireFrameIndicator || theMenuChangedIndicator)
+      {
+        // Overlay the ROM launcher
+        myOSystem->launcher().draw();
+
+        // Now the screen is up to date
+        theRedrawEntireFrameIndicator = false;
+
+        // This is a performance hack to only draw the menus when necessary
+        // Software mode is single-buffered, so we don't have to worry
+        // However, OpenGL mode is double-buffered, so we need to draw the
+        // menus at least twice (so they'll be in both buffers)
+        // Otherwise, we get horrible flickering
+        myMenuRedraws--;
+        theMenuChangedIndicator = (myMenuRedraws != 0);
+      }
       break;
+    }
 
     case EventHandler::S_DEBUGGER:
       // Not yet implemented
@@ -497,124 +516,3 @@ void FrameBuffer::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   vLine(x,         y,         y + h - 1, color);
   vLine(x + w - 1, y,         y + h - 1, color);
 }
-
-/*
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::sendKeyEvent(StellaEvent::KeyCode key, Int32 state)
-{
-  if(myCurrentWidget == W_NONE || state != 1)
-    return;
-
-  // Redraw the menus whenever a key event is received
-  theMenuChangedIndicator = true;
-  myMenuRedraws = 2;
-
-  // Check which type of widget is pending
-  switch(myCurrentWidget)
-  {
-    case MAIN_MENU:
-      if(key == StellaEvent::KCODE_RETURN)
-        myCurrentWidget = currentSelectedWidget();
-      else if(key == StellaEvent::KCODE_UP)
-        moveCursorUp(1);
-      else if(key == StellaEvent::KCODE_DOWN)
-        moveCursorDown(1);
-      else if(key == StellaEvent::KCODE_PAGEUP)
-        moveCursorUp(4);
-      else if(key == StellaEvent::KCODE_PAGEDOWN)
-        moveCursorDown(4);
-
-      break;  // MAIN_MENU
-
-    case REMAP_MENU:
-      if(myRemapEventSelectedFlag)
-      {
-        if(key == StellaEvent::KCODE_ESCAPE)
-          deleteBinding(mySelectedEvent);
-        else
-          addKeyBinding(mySelectedEvent, key);
-
-        myRemapEventSelectedFlag = false;
-      }
-      else if(key == StellaEvent::KCODE_RETURN)
-      {
-        mySelectedEvent = currentSelectedEvent();
-        myRemapEventSelectedFlag = true;
-      }
-      else if(key == StellaEvent::KCODE_UP)
-        moveCursorUp(1);
-      else if(key == StellaEvent::KCODE_DOWN)
-        moveCursorDown(1);
-      else if(key == StellaEvent::KCODE_PAGEUP)
-        moveCursorUp(4);
-      else if(key == StellaEvent::KCODE_PAGEDOWN)
-        moveCursorDown(4);
-      else if(key == StellaEvent::KCODE_ESCAPE)
-      {
-        myCurrentWidget = MAIN_MENU;
-        theRedrawEntireFrameIndicator = true;
-      }
-
-      break;  // REMAP_MENU
-
-    case INFO_MENU:
-      if(key == StellaEvent::KCODE_ESCAPE)
-      {
-        myCurrentWidget = MAIN_MENU;
-        theRedrawEntireFrameIndicator = true;
-      }
-
-      break;  // INFO_MENU
-
-    default:
-      break;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::sendJoyEvent(StellaEvent::JoyStick stick,
-     StellaEvent::JoyCode code, Int32 state)
-{
-  if(myCurrentWidget == W_NONE || state != 1)
-    return;
-
-  // Redraw the menus whenever a joy event is received
-  theMenuChangedIndicator = true;
-
-  // Check which type of widget is pending
-  switch(myCurrentWidget)
-  {
-    case MAIN_MENU:
-//      if(key == StellaEvent::KCODE_RETURN)
-//        myCurrentWidget = currentSelectedWidget();
-      if(code == StellaEvent::JAXIS_UP)
-        moveCursorUp(1);
-      else if(code == StellaEvent::JAXIS_DOWN)
-        moveCursorDown(1);
-
-      break;  // MAIN_MENU
-
-    case REMAP_MENU:
-      if(myRemapEventSelectedFlag)
-      {
-        addJoyBinding(mySelectedEvent, stick, code);
-        myRemapEventSelectedFlag = false;
-      }
-      else if(code == StellaEvent::JAXIS_UP)
-        moveCursorUp(1);
-      else if(code == StellaEvent::JAXIS_DOWN)
-        moveCursorDown(1);
-//      else if(key == StellaEvent::KCODE_PAGEUP)
-//        movePageUp();
-//      else if(key == StellaEvent::KCODE_PAGEDOWN)
-//        movePageDown();
-//      else if(key == StellaEvent::KCODE_ESCAPE)
-//        myCurrentWidget = MAIN_MENU;
-
-      break;  // REMAP_MENU
-
-    default:
-      break;
-  }
-}
-*/

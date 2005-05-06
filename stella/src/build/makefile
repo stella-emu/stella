@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.74 2005-05-04 19:04:38 stephena Exp $
+## $Id: makefile,v 1.75 2005-05-06 18:38:59 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -155,9 +155,11 @@ win32-gl:
 ###############################################################################
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
-GUI_OBJS = StellaFont.o Menu.o Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o \
+GUI_OBJS = StellaFont.o Menu.o Launcher.o \
+           Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
-           EventMappingDialog.o GameInfoDialog.o HelpDialog.o
+           EventMappingDialog.o GameInfoDialog.o HelpDialog.o \
+           LauncherDialog.o BrowserDialog.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -371,6 +373,9 @@ StellaFont.o: $(GUI)/StellaFont.cxx $(GUI)/StellaFont.hxx
 Menu.o: $(GUI)/Menu.cxx $(GUI)/Menu.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Menu.cxx
 
+Launcher.o: $(GUI)/Launcher.cxx $(GUI)/Launcher.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Launcher.cxx
+
 Widget.o: $(GUI)/Widget.cxx $(GUI)/Widget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Widget.cxx
 
@@ -406,3 +411,9 @@ GameInfoDialog.o: $(GUI)/GameInfoDialog.cxx $(GUI)/GameInfoDialog.hxx
 
 HelpDialog.o: $(GUI)/HelpDialog.cxx $(GUI)/HelpDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/HelpDialog.cxx
+
+LauncherDialog.o: $(GUI)/LauncherDialog.cxx $(GUI)/LauncherDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/LauncherDialog.cxx
+
+BrowserDialog.o: $(GUI)/BrowserDialog.cxx $(GUI)/BrowserDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/BrowserDialog.cxx

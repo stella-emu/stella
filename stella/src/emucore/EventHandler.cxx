@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.51 2005-05-05 19:00:46 stephena Exp $
+// $Id: EventHandler.cxx,v 1.52 2005-05-06 18:38:59 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -29,6 +29,7 @@
 #include "Sound.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
+#include "Launcher.hxx"
 #include "bspf.hxx"
 #include "GuiUtils.hxx"
 
@@ -45,6 +46,7 @@ EventHandler::EventHandler(OSystem* osystem)
       myExitGameFlag(false),
       myQuitFlag(false),
       myGrabMouseFlag(false),
+      myUseLauncherFlag(false),
       myPaddleMode(0)
 {
   // Add this eventhandler object to the OSystem
@@ -108,6 +110,25 @@ void EventHandler::reset(State state)
   myExitGameFlag = false;
   myQuitFlag = false;
   myPaddleMode = 0;
+
+  switch(myState)
+  {
+    case S_EMULATE:
+      break;
+
+    case S_MENU:
+      break;
+
+    case S_LAUNCHER:
+      myUseLauncherFlag = true;
+      break;
+
+    case S_DEBUGGER:
+      break;
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -381,8 +402,8 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       myOSystem->menu().handleKeyEvent((uInt16) key, (Int32) mod, state);
       break;
 
-    case S_BROWSER:
-//FIXME      myOSystem->browser().handleKeyEvent(key, mod, state);
+    case S_LAUNCHER:
+      myOSystem->launcher().handleKeyEvent((uInt16) key, (Int32) mod, state);
       break;
 
     case S_DEBUGGER:
@@ -438,8 +459,15 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
       break;
     }
 
-    case S_BROWSER:
-      // Not yet implemented
+    case S_LAUNCHER:
+    {
+      // Take window zooming into account
+      Int32 x = event.motion.x, y = event.motion.y;
+      myOSystem->frameBuffer().translateCoords(&x, &y);
+//cerr << "Motion:  x = " << x << ", y = " << y << endl;
+      myOSystem->launcher().handleMouseMotionEvent(x, y, 0);
+      break;
+    }
       break;
 
     case S_DEBUGGER:
@@ -467,6 +495,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
       break;
 
     case S_MENU:
+    case S_LAUNCHER:
     {
       // Take window zooming into account
       Int32 x = event.button.x, y = event.button.y;
@@ -497,13 +526,13 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
         else
           break;
       }
-      myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
+
+      if(myState == S_MENU)
+        myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
+      else
+        myOSystem->launcher().handleMouseButtonEvent(button, x, y, state);
       break;
     }
-
-    case S_BROWSER:
-      // Not yet implemented
-      break;
 
     case S_DEBUGGER:
       // Not yet implemented
@@ -568,10 +597,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
     }
     else if(event == Event::ExitGame)
     {
-      myExitGameFlag = true;
-      myOSystem->sound().mute(true);
-      myOSystem->settings().saveConfig();
-      return;
+      // ExitGame will only work when we've launched stella using the ROM
+      // launcher.  Otherwise, the only way to exit the main loop is to Quit.
+      if(myState == S_EMULATE && myUseLauncherFlag)
+      {
+        myOSystem->settings().saveConfig();
+        myOSystem->createLauncher();
+        return;
+      }
     }
     else if(event == Event::Quit)
     {

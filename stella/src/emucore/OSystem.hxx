@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.10 2005-05-05 19:00:47 stephena Exp $
+// $Id: OSystem.hxx,v 1.11 2005-05-06 18:38:59 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -22,7 +22,7 @@
 class PropertiesSet;
 
 class Menu;
-class Browser;
+class Launcher;
 
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
@@ -38,7 +38,7 @@ class Browser;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.10 2005-05-05 19:00:47 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.11 2005-05-06 18:38:59 stephena Exp $
 */
 class OSystem
 {
@@ -125,11 +125,11 @@ class OSystem
     Menu& menu(void) const { return *myMenu; }
 
     /**
-      Get the ROM browser of the system.
+      Get the ROM launcher of the system.
 
-      @return The browser object
+      @return The launcher object
     */
-    Browser& browser(void) const { return *myBrowser; }
+    Launcher& launcher(void) const { return *myLauncher; }
 
     /**
       Set the framerate for the video system.  It's placed in this class since
@@ -229,6 +229,11 @@ class OSystem
     */
     bool createConsole(const string& romfile = "");
 
+    /**
+      Creates a new ROM launcher, to select a new ROM to emulate.
+    */
+    void createLauncher();
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
@@ -299,8 +304,8 @@ class OSystem
     // Pointer to the Menu object
     Menu* myMenu;
 
-    // Pointer to the Browser object
-    Browser* myBrowser;
+    // Pointer to the Launcher object
+    Launcher* myLauncher;
 
     // Time per frame for a video update, based on the current framerate
     uInt32 myTimePerFrame;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.37 2005-05-05 19:00:48 stephena Exp $
+// $Id: Settings.cxx,v 1.38 2005-05-06 18:38:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -119,13 +119,6 @@ void Settings::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Settings::loadCommandLine(Int32 argc, char** argv)
 {
-  // Make sure we have the correct number of command line arguments
-  if(argc == 1)
-  {
-    usage();
-    return false;
-  }
-
   for(Int32 i = 1; i < argc; ++i)
   {
     // strip off the '-' character

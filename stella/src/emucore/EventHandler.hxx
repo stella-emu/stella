@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.25 2005-05-05 00:10:48 stephena Exp $
+// $Id: EventHandler.hxx,v 1.26 2005-05-06 18:38:59 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.25 2005-05-05 00:10:48 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.26 2005-05-06 18:38:59 stephena Exp $
 */
 class EventHandler
 {
@@ -73,7 +73,7 @@ class EventHandler
     virtual ~EventHandler();
 
     // Enumeration representing the different states of operation
-    enum State { S_NONE, S_EMULATE, S_BROWSER, S_MENU, S_DEBUGGER };
+    enum State { S_NONE, S_EMULATE, S_LAUNCHER, S_MENU, S_DEBUGGER };
 
     /**
       Returns the event object associated with this handler class.
@@ -250,6 +250,9 @@ class EventHandler
 
     // Indicates whether the mouse cursor is grabbed
     bool myGrabMouseFlag;
+
+    // Indicates whether to use launcher mode when exiting a game
+    bool myUseLauncherFlag;
 
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;

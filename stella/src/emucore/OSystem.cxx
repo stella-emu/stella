@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.10 2005-05-05 19:00:47 stephena Exp $
+// $Id: OSystem.cxx,v 1.11 2005-05-06 18:38:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -36,7 +36,7 @@
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
 #include "Menu.hxx"
-//#include "Browser.hxx"
+#include "Launcher.hxx"
 #include "bspf.hxx"
 #include "OSystem.hxx"
 
@@ -49,19 +49,19 @@ OSystem::OSystem()
     myPropSet(NULL),
     myConsole(NULL),
     myMenu(NULL),
-//    myBrowser(NULL),
+    myLauncher(NULL),
     myRomFile("")
 {
-  // Create gui-related classes
+  // Create menu and launcher GUI objects
   myMenu = new Menu(this);
-//  myBrowser = new Browser(this);
+  myLauncher = new Launcher(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
   delete myMenu;
-//  delete myBrowser;
+  delete myLauncher;
 
   // Remove any game console that is currently attached
   delete myConsole;
@@ -159,8 +159,8 @@ bool OSystem::createFrameBuffer(bool showmessage)
       }
       break;  // S_EMULATE, S_MENU
 
-    case EventHandler::S_BROWSER:
-      break;  // S_BROWSER
+    case EventHandler::S_LAUNCHER:
+      break;  // S_LAUNCHER
 
     case EventHandler::S_DEBUGGER:
       break;
@@ -211,8 +211,8 @@ void OSystem::createSound()
       myConsole->initializeAudio();
       break;  // S_EMULATE, S_MENU
 
-    case EventHandler::S_BROWSER:
-      break;  // S_BROWSER
+    case EventHandler::S_LAUNCHER:
+      break;  // S_LAUNCHER
 
     case EventHandler::S_DEBUGGER:
       break;
@@ -273,6 +273,23 @@ bool OSystem::createConsole(const string& romfile)
   }
 
   return retval;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::createLauncher()
+{
+  myEventHandler->reset(EventHandler::S_LAUNCHER);
+
+  // Create the window
+  string title = "Stella: ROM Launcher"; // FIXME - include version of Stella
+  myFrameBuffer->initialize(title, kLauncherWidth, kLauncherHeight);
+
+  // And start the base dialog
+  myLauncher->initialize();
+  myLauncher->reStack();
+  myFrameBuffer->refresh();
+  myFrameBuffer->setCursorState();
+  mySound->mute(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
