@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.33 2005-05-06 22:50:15 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.34 2005-05-08 17:38:23 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -38,8 +38,8 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
    :  myOSystem(osystem),
       theRedrawEntireFrameIndicator(true),
-      theZoomLevel(1),
-      theMaxZoomLevel(1),
+      theZoomLevel(2),
+      theMaxZoomLevel(2),
       theAspectRatio(1.0),
       theUseAspectRatioFlag(true),
       myFrameRate(0),
@@ -345,7 +345,7 @@ void FrameBuffer::resize(Size size, Int8 zoom)
     return;
 
   // Update the settings
-  myOSystem->settings().setInt("zoom", theZoomLevel);
+//  myOSystem->settings().setInt("zoom", theZoomLevel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

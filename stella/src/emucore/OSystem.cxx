@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.12 2005-05-06 22:50:15 stephena Exp $
+// $Id: OSystem.cxx,v 1.13 2005-05-08 17:38:23 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -120,11 +120,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
   }
 
   // Delete the old framebuffer
-  if(myFrameBuffer)
-  {
-    delete myFrameBuffer;
-    myFrameBuffer = NULL;
-  }
+  delete myFrameBuffer;  myFrameBuffer = NULL;
 
   // And recreate a new one
   string video = mySettings->getString("video");
@@ -194,7 +190,7 @@ void OSystem::toggleFrameBuffer()
 void OSystem::createSound()
 {
   // Delete the old sound device
-  delete mySound;
+  delete mySound;  mySound = NULL;
 
   // And recreate a new sound device
 #ifdef SOUND_SUPPORT
@@ -256,7 +252,7 @@ bool OSystem::createConsole(const string& romfile)
     uInt32 size = in.gcount();
     in.close();
 
-    delete myConsole;
+    delete myConsole;  myConsole = NULL;
 
     // Create an instance of the 2600 game console
     // The Console c'tor takes care of updating the eventhandler state

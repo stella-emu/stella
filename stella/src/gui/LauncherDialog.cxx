@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.2 2005-05-06 22:50:15 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.3 2005-05-08 17:38:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,7 +49,9 @@ enum {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, uInt16 x, uInt16 y,
                                        uInt16 w, uInt16 h)
-    : Dialog(osystem, x, y, w, h)
+  : Dialog(osystem, x, y, w, h),
+    myList(NULL),
+    myBrowser(NULL)
 {
   // Show game name
   new StaticTextWidget(this, 10, 8, _w - 20, kLineHeight,

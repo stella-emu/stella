@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.53 2005-05-06 22:50:15 stephena Exp $
+// $Id: EventHandler.cxx,v 1.54 2005-05-08 17:38:23 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -590,17 +590,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       myOSystem->frameBuffer().pause(myPauseFlag);
       myOSystem->sound().mute(myPauseFlag);
       return;
-    }
-    else if(event == Event::MenuMode)
-    {
-      // ExitGame will only work when we've launched stella using the ROM
-      // launcher.  Otherwise, the only way to exit the main loop is to Quit.
-      if(myState == S_EMULATE && myUseLauncherFlag)
-      {
-        myOSystem->settings().saveConfig();
-        myOSystem->createLauncher();
-        return;
-      }
     }
     else if(event == Event::LauncherMode)
     {
