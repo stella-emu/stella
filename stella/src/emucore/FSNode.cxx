@@ -1,0 +1,114 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2005 by Bradford W. Mott
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: FSNode.cxx,v 1.1 2005-05-09 18:58:18 stephena Exp $
+//
+//   Based on code from ScummVM - Scumm Interpreter
+//   Copyright (C) 2002-2004 The ScummVM project
+//============================================================================
+
+#include "bspf.hxx"
+#include "GuiUtils.hxx"
+#include "FSNode.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FSList::sort()
+{
+  // Simple selection sort
+  for (Int32 i = 0; i < _size-1; i++)
+  {
+    Int32 min = i;
+    for (Int32 j = i+1; j < _size; j++)
+      if (_data[j] < _data[min])
+        min = j;
+      if (min != i)
+        SWAP(_data[min], _data[i]);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode AbstractFilesystemNode::wrap(AbstractFilesystemNode *node)
+{
+  FilesystemNode wrapper;
+  wrapper._realNode = node;
+
+  return wrapper;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode::FilesystemNode()
+{
+  _realNode = getRoot();
+  _refCount = new int(1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode::FilesystemNode(const FilesystemNode &node)
+    : AbstractFilesystemNode()
+{
+  _realNode = node._realNode;
+  _refCount = node._refCount;
+  ++(*_refCount);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#ifdef MACOSX
+FilesystemNode::FilesystemNode(const string& p)
+{
+  _realNode = getNodeForPath(p);
+  _refCount = new int(1);
+}
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode::~FilesystemNode()
+{
+  decRefCount();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FilesystemNode::decRefCount()
+{
+  --(*_refCount);
+  if (*_refCount <= 0)
+  {
+    delete _refCount;
+    delete _realNode;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode &FilesystemNode::operator  =(const FilesystemNode &node)
+{
+  ++(*node._refCount);
+
+  decRefCount();
+
+  _realNode = node._realNode;
+  _refCount = node._refCount;
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode FilesystemNode::getParent() const
+{
+  AbstractFilesystemNode *node = _realNode->parent();
+
+  if(node == 0)
+    return *this;
+  else
+    return AbstractFilesystemNode::wrap(node);
+}

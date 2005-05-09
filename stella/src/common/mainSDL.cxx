@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.37 2005-05-06 18:38:59 stephena Exp $
+// $Id: mainSDL.cxx,v 1.38 2005-05-09 18:58:18 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -33,6 +33,7 @@
 #include "PropsSet.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
+#include "FSNode.hxx"
 #include "OSystem.hxx"
 
 #if defined(UNIX)

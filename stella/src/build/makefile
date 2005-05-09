@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.75 2005-05-06 18:38:59 stephena Exp $
+## $Id: makefile,v 1.76 2005-05-09 18:58:17 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -126,7 +126,7 @@ linux:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella" \
           OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY" \
-          OBJS="$(OBJECTS) SettingsUNIX.o OSystemUNIX.o"
+          OBJS="$(OBJECTS) SettingsUNIX.o OSystemUNIX.o FSNodePOSIX.o"
 
 linux-gl:
 	$(MAKE) $(SMP) stella \
@@ -134,20 +134,20 @@ linux-gl:
           LDFLAGS="$(LDFLAGS) -L/usr/X11R6/lib" \
           LDLIBS="$(LDLIBS) -lGL" \
           OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY -DDISPLAY_OPENGL" \
-          OBJS="$(OBJECTS) FrameBufferGL.o SettingsUNIX.o OSystemUNIX.o"
+          OBJS="$(OBJECTS) FrameBufferGL.o SettingsUNIX.o OSystemUNIX.o FSNodePOSIX.o"
 
 win32:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32" \
-          OBJS="$(OBJECTS) SettingsWin32.o  OSystemWin32.o"
+          OBJS="$(OBJECTS) SettingsWin32.o  OSystemWin32.o FSNodeWin32.o"
 
 win32-gl:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
           LDLIBS="$(LDLIBS) -lopengl32" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST" \
-          OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o  OSystemWin32.o"
+          OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o FSNodeWin32.o"
 
 
 ###############################################################################
@@ -168,7 +168,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o SoundNull.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o EventHandler.o FrameBuffer.o \
-            OSystem.o \
+            OSystem.o FSNode.o \
             $(M6502_OBJS) $(GUI_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
@@ -316,17 +316,26 @@ Settings.o: $(CORE)/Settings.cxx $(CORE)/Settings.hxx
 OSystem.o: $(CORE)/OSystem.cxx $(CORE)/OSystem.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/OSystem.cxx
 
+FSNode.o: $(CORE)/FSNode.cxx $(CORE)/FSNode.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/FSNode.cxx
+
 SettingsUNIX.o: $(SRC)/unix/SettingsUNIX.cxx $(SRC)/unix/SettingsUNIX.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/unix/SettingsUNIX.cxx
 
 OSystemUNIX.o: $(SRC)/unix/OSystemUNIX.cxx $(SRC)/unix/OSystemUNIX.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/unix/OSystemUNIX.cxx
 
+FSNodePOSIX.o: $(SRC)/unix/FSNodePOSIX.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/unix/FSNodePOSIX.cxx
+
 SettingsWin32.o: $(SRC)/win32/SettingsWin32.cxx $(SRC)/win32/SettingsWin32.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/win32/SettingsWin32.cxx
 
 OSystemWin32.o: $(SRC)/win32/OSystemWin32.cxx $(SRC)/win32/OSystemWin32.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/win32/OSystemWin32.cxx
+
+FSNodeWin32.o: $(SRC)/win32/FSNodeWin32.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/win32/FSNodeWin32.cxx
 
 SoundNull.o: $(COMMON)/SoundNull.cxx $(COMMON)/SoundNull.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/SoundNull.cxx

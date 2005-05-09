@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.2 2005-05-06 22:50:15 stephena Exp $
+// $Id: Launcher.cxx,v 1.3 2005-05-09 18:58:19 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -36,8 +36,10 @@ Launcher::~Launcher()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::initialize()
 {
-  delete myBaseDialog;
-  myBaseDialog = new LauncherDialog(myOSystem, 0, 0, kLauncherWidth, kLauncherHeight);
+  // We only create one instance of this dialog, since each time we do so,
+  // the ROM listing is read from disk.  This can be very expensive.
+  if(myBaseDialog == NULL)
+    myBaseDialog = new LauncherDialog(myOSystem, 0, 0, kLauncherWidth, kLauncherHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

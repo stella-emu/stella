@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.3 2005-05-08 17:38:23 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.4 2005-05-09 18:58:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "OSystem.hxx"
+#include "FSNode.hxx"
 #include "Widget.hxx"
 #include "ListWidget.hxx"
 #include "Dialog.hxx"
@@ -78,9 +79,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, uInt16 x, uInt16 y,
   myList->setEditable(false);
   myList->setNumberingMode(kListNumberingOff);
 
-  // Populate the list
-  updateListing();
-
   // Restore last selection
 /*
   string last = ConfMan.get(String("lastselectedgame"), ConfigManager::kApplicationDomain);
@@ -114,6 +112,10 @@ LauncherDialog::~LauncherDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadConfig()
 {
+  // Assume that if the list is empty, this is the first time that loadConfig()
+  // has been called (and we should reload the list).
+  if(myList->getList().isEmpty())
+    updateListing();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,10 +137,35 @@ void LauncherDialog::close()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateListing()
 {
-// FIXME - add bulk of KStella code here wrt loading from stella.cache
 cerr << "LauncherDialog::updateListing()\n";
+
+  // Figure out if the ROM dir has changed since we last accessed it.
+  // If so, we do a full reload from disk (takes quite some time).
+  // Otherwise, we can use the cache file (which is much faster).
+// FIXME - actually implement the following code
 /*
-	Common::StringList l;
+  if(... ROM_DIR_CHANGED ...)
+    loadListFromDisk();
+  else if( ... CACHE_FILE_EXISTS)
+    loadListFromCache();
+  else  // we have no other choice
+    loadListFromDisk();
+*/
+
+  StringList l;
+
+  FilesystemNode t;
+  FilesystemNode dir(t);//"/local/emulators/atari/roms");  // FIXME
+  FSList files = dir.listDir(FilesystemNode::kListAll);
+  files.sort();
+
+  for (int idx = 0; idx < (int)files.size(); idx++)
+    l.push_back(files[idx].displayName());
+
+/*
+		// ...so let's determine a list of candidates, games that
+		// could be contained in the specified directory.
+		DetectedGameList candidates(PluginManager::instance().detectGames(files));
 
 	// Retrieve a list of all games defined in the config file
 	_domains.clear();
@@ -166,10 +193,9 @@ cerr << "LauncherDialog::updateListing()\n";
 			_domains.insert_at(pos, iter->_key);
 		}
 	}
-
-	_list->setList(l);
-	updateButtons();
 */
+  myList->setList(l);
+  updateButtons();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,19 +318,21 @@ void LauncherDialog::addGame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
 {
-  Int32 item = myList->getSelected();
-
   switch (cmd)
   {
     case kStartCmd:
     case kListItemActivatedCmd:
     case kListItemDoubleClickedCmd:
-      cerr << "Game selected: " << item << endl;
-      // FIXME - start a new console based on the filename selected
-      //         this is only here for testing
-      instance()->createConsole("frostbite.a26");
-      close();
+    {
+      if(myList->getSelected() >= 0)
+      {
+        string item = myList->getSelectedString();
+        cerr << "Game selected: " << item << endl;
+        instance()->createConsole(item);
+        close();
+      }
       break;
+    }
 
     case kLocationCmd:
       cerr << "kLocationCmd from LauncherDialog\n";
