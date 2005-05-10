@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.11 2005-05-02 19:36:05 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.12 2005-05-10 19:20:45 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -48,8 +48,7 @@ SettingsUNIX::SettingsUNIX(OSystem* osystem)
   string systemConfigFile = "/etc/stellarc";
   myOSystem->setConfigFiles(userConfigFile, systemConfigFile);
 
-  // This argument is only valid for Linux/UNIX, and will eventually
-  // be removed
+  // This argument is only valid for Linux/UNIX, and will eventually be removed
   set("accurate", "false");
 }
 

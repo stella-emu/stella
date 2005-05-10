@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.7 2005-04-04 02:19:22 stephena Exp $
+// $Id: Widget.cxx,v 1.8 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,7 +31,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget::Widget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h)
-    : GuiObject(boss->instance(), x, y, w, h),
+    : GuiObject(boss->instance(), boss->parent(), x, y, w, h),
       _type(0),
       _boss(boss),
       _id(0),

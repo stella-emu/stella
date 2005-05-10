@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.38 2005-05-06 18:38:59 stephena Exp $
+// $Id: Settings.cxx,v 1.39 2005-05-10 19:20:41 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -59,6 +59,7 @@ Settings::Settings(OSystem* osystem)
   set("ssdir", ".");
   set("ssname", "romname");
   set("sssingle", "false");
+  set("romdir", "");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

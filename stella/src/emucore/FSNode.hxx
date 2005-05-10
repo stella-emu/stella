@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.1 2005-05-09 18:58:18 stephena Exp $
+// $Id: FSNode.hxx,v 1.2 2005-05-10 19:20:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -161,9 +161,7 @@ class FilesystemNode : public AbstractFilesystemNode
   public:
     FilesystemNode();
     FilesystemNode(const FilesystemNode& node);
-#ifdef MACOSX
     FilesystemNode(const string& path);
-#endif
     ~FilesystemNode();
 
     FilesystemNode &operator  =(const FilesystemNode &node);
@@ -195,7 +193,6 @@ class FilesystemNode : public AbstractFilesystemNode
      */
     static AbstractFilesystemNode* getRoot();
 
-#ifdef MACOSX
     /*
      * Construct a node based on a path; the path is in the same format as it
      * would be for calls to fopen().
@@ -203,7 +200,6 @@ class FilesystemNode : public AbstractFilesystemNode
      * I.e. getNodeForPath(oldNode.path()) should create a new node identical to oldNode.
      */
     static AbstractFilesystemNode* getNodeForPath(const string& path);
-#endif
 };
 
 #endif

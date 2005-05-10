@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.2 2005-05-10 01:12:59 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.3 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,12 +22,14 @@
 #ifndef LAUNCHER_DIALOG_HXX
 #define LAUNCHER_DIALOG_HXX
 
+class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
 class ListWidget;
 class BrowserDialog;
 
+#include "GameList.hxx"
 #include "Dialog.hxx"
 #include "Launcher.hxx"
 #include "OSystem.hxx"
@@ -36,15 +38,14 @@ class BrowserDialog;
 class LauncherDialog : public Dialog
 {
   public:
-    LauncherDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+    LauncherDialog(OSystem* osystem, DialogContainer* parent,
+                   uInt16 x, uInt16 y, uInt16 w, uInt16 h);
     ~LauncherDialog();
 
     virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
 
   protected:
-    void updateListing();
-    void reloadListing();
-    void updateButtons();
+    void updateListing(bool full_reload = false);
 	
     void close();
     virtual void addGame();
@@ -56,6 +57,11 @@ class LauncherDialog : public Dialog
     ListWidget*       myList;
     BrowserDialog*    myBrowser;
     StaticTextWidget* myNote;
+    GameList*         myGameList;
+
+  private:
+    void loadListFromDisk();
+    void loadListFromCache();
 };
 
 #endif

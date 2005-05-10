@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.4 2005-03-28 00:04:54 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.5 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 class Properties;
 class CommandSender;
 class Dialog;
+class DialogContainer;
 class VideoDialog;
 class AudioDialog;
 class EventMappingDialog;
@@ -38,7 +39,7 @@ class HelpDialog;
 class OptionsDialog : public Dialog
 {
   public:
-    OptionsDialog(OSystem* osystem);
+    OptionsDialog(OSystem* osystem, DialogContainer* parent);
     ~OptionsDialog();
 
     virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);

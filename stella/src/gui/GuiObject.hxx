@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
+// $Id: GuiObject.hxx,v 1.5 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define GUI_OBJECT_HXX
 
 class OSystem;
+class DialogContainer;
 class Widget;
 class Menu;
 
@@ -33,7 +34,7 @@ class Menu;
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.4 2005-03-14 04:08:15 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.5 2005-05-10 19:20:43 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
@@ -41,8 +42,9 @@ class GuiObject : public CommandReceiver
   friend class Menu;
 
   public:
-    GuiObject(OSystem* osystem, int x, int y, int w, int h)
+    GuiObject(OSystem* osystem, DialogContainer* parent, int x, int y, int w, int h)
         : myOSystem(osystem),
+          myParent(parent),
           _x(x),
           _y(y),
           _w(w),
@@ -50,6 +52,7 @@ class GuiObject : public CommandReceiver
           _firstWidget(0) { }
 
     OSystem* instance() { return myOSystem; }
+    DialogContainer* parent() { return myParent; }
 
     virtual Int16  getAbsX() const     { return _x; }
     virtual Int16  getAbsY() const     { return _y; }
@@ -62,7 +65,8 @@ class GuiObject : public CommandReceiver
     virtual void draw() = 0;
 
   protected:
-    OSystem* myOSystem;
+    OSystem*         myOSystem;
+    DialogContainer* myParent;
 
     Int16   _x, _y;
     uInt16  _w, _h;

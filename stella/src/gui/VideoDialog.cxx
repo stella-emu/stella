@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.9 2005-05-05 00:10:49 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.10 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,8 +40,9 @@ enum {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VideoDialog::VideoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
-    : Dialog(osystem, x, y, w, h)
+VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
+                         uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+    : Dialog(osystem, parent, x, y, w, h)
 {
   int yoff = 10,
       xoff = 2,

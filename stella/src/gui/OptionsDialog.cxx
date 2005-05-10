@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.13 2005-05-01 18:57:21 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.14 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "OSystem.hxx"
-#include "Menu.hxx"
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "Widget.hxx"
 #include "Control.hxx"
 #include "VideoDialog.hxx"
@@ -53,13 +53,14 @@ enum {
 	new ButtonWidget(this, xoffset, yoffset, kBigButtonWidth, 18, label, cmd, hotkey); yoffset += kRowHeight
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OptionsDialog::OptionsDialog(OSystem* osystem)
+OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
 // FIXME - we have to initialize the video system at least once *before*
 //         creating a new console.  For now, just use predefined values.
 //         Eventually, this subsystem will have to take into account screen size changes
-    : Dialog(osystem, (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2,
-                      (osystem->frameBuffer().baseHeight() - kMainMenuHeight)/2,
-                      kMainMenuWidth, kMainMenuHeight),
+    : Dialog(osystem, parent,
+            (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2,
+            (osystem->frameBuffer().baseHeight() - kMainMenuHeight)/2,
+            kMainMenuWidth, kMainMenuHeight),
       myVideoDialog(NULL)
 {
   int yoffset = 7;
@@ -85,27 +86,27 @@ OptionsDialog::OptionsDialog(OSystem* osystem)
   // Now create all the dialogs attached to each menu button
   w = 230; h = 130;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myVideoDialog = new VideoDialog(myOSystem, x, y, w, h);
+  myVideoDialog = new VideoDialog(myOSystem, parent, x, y, w, h);
 
   w = 200; h = 100;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myAudioDialog = new AudioDialog(myOSystem, x, y, w, h);
+  myAudioDialog = new AudioDialog(myOSystem, parent, x, y, w, h);
 
   w = 280; h = 170;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myEventMappingDialog = new EventMappingDialog(myOSystem, x, y, w, h);
+  myEventMappingDialog = new EventMappingDialog(myOSystem, parent, x, y, w, h);
 
 //  w = 250; h = 150;
 //  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-//  myMiscDialog         = new MiscDialog(myOSystem, x, y, w, h);
+//  myMiscDialog         = new MiscDialog(myOSystem, parent, x, y, w, h);
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myGameInfoDialog = new GameInfoDialog(myOSystem, x, y, w, h);
+  myGameInfoDialog = new GameInfoDialog(myOSystem, parent, x, y, w, h);
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myHelpDialog = new HelpDialog(myOSystem, x, y, w, h);
+  myHelpDialog = new HelpDialog(myOSystem, parent, x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,28 +136,28 @@ void OptionsDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data
   switch(cmd)
   {
     case kVidCmd:
-      instance()->menu().addDialog(myVideoDialog);
+      parent()->addDialog(myVideoDialog);
       break;
 
     case kAudCmd:
-      instance()->menu().addDialog(myAudioDialog);
+      parent()->addDialog(myAudioDialog);
       break;
 
     case kEMapCmd:
-      instance()->menu().addDialog(myEventMappingDialog);
+      parent()->addDialog(myEventMappingDialog);
       break;
 
     case kMiscCmd:
-//      instance()->menu().addDialog(myMiscDialog);
+//      parent()->addDialog(myMiscDialog);
 cerr << "push MiscDialog to top of stack\n";
       break;
 
     case kInfoCmd:
-      instance()->menu().addDialog(myGameInfoDialog);
+      parent()->addDialog(myGameInfoDialog);
       break;
 
     case kHelpCmd:
-      instance()->menu().addDialog(myHelpDialog);
+      parent()->addDialog(myHelpDialog);
       break;
 
     default:

@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -13,36 +13,29 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.9 2005-05-10 19:20:44 stephena Exp $
+// $Id: GameList.cxx,v 1.1 2005-05-10 19:20:43 stephena Exp $
+//
+//   Copyright (C) 2005 by Stephen Anthony
+//   @author Stephen Anthony
 //============================================================================
 
-#include "Dialog.hxx"
-#include "OptionsDialog.hxx"
-#include "bspf.hxx"
-#include "Menu.hxx"
-
-class Properties;
+#include "GameList.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Menu::Menu(OSystem* osystem)
-    : DialogContainer(osystem)
+GameList::GameList()
 {
+cerr << "GameList::GameList()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Menu::~Menu()
+GameList::~GameList()
 {
+cerr << "GameList::~GameList()\n";
+  myArray.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Menu::initialize()
+void GameList::sortByName()
 {
-  delete myBaseDialog;
-  myBaseDialog = new OptionsDialog(myOSystem, this);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Menu::setGameProfile(Properties& props)
-{
-  ((OptionsDialog*)myBaseDialog)->setGameProfile(props);
+cerr << "GameList::sortByName()\n";
 }

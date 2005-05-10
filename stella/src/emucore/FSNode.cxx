@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.cxx,v 1.1 2005-05-09 18:58:18 stephena Exp $
+// $Id: FSNode.cxx,v 1.2 2005-05-10 19:20:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,13 +64,11 @@ FilesystemNode::FilesystemNode(const FilesystemNode &node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#ifdef MACOSX
 FilesystemNode::FilesystemNode(const string& p)
 {
   _realNode = getNodeForPath(p);
   _refCount = new int(1);
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::~FilesystemNode()

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.11 2005-04-24 20:36:36 stephena Exp $
+// $Id: Dialog.cxx,v 1.12 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,8 +36,9 @@
  * ...
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::Dialog(OSystem* instance, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
-    : GuiObject(instance, x, y, w, h),
+Dialog::Dialog(OSystem* instance, DialogContainer* parent,
+               uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+    : GuiObject(instance, parent, x, y, w, h),
       _mouseWidget(0),
       _focusedWidget(0),
       _dragWidget(0),
@@ -99,7 +100,7 @@ void Dialog::close()
   }
 
   releaseFocus();
-  instance()->menu().removeDialog();
+  parent()->removeDialog();
 
   _openCount = 0;
 }

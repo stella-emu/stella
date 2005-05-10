@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.1 2005-05-06 18:39:00 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.2 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,31 +23,125 @@
 #include "Widget.hxx"
 #include "ListWidget.hxx"
 #include "Dialog.hxx"
+#include "FSNode.hxx"
 #include "GuiUtils.hxx"
-#include "Event.hxx"
-#include "EventHandler.hxx"
 #include "BrowserDialog.hxx"
 
 #include "bspf.hxx"
 
+enum {
+  kChooseCmd = 'CHOS',
+  kGoUpCmd   = 'GOUP'
+};
+
+/* We want to use this as a general directory selector at some point... possible uses
+ * - to select the data dir for a game
+ * - to select the place where save games are stored
+ * - others???
+ */
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BrowserDialog::BrowserDialog(OSystem* osystem, uInt16 x, uInt16 y,
-                                       uInt16 w, uInt16 h)
-    : Dialog(osystem, x, y, w, h)
+BrowserDialog::BrowserDialog(OSystem* osystem, DialogContainer* parent,
+                             const string& title, const string& startpath,
+                             uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+  : Dialog(osystem, parent, x, y, w, h),
+    _fileList(NULL),
+    _currentPath(NULL),
+    _startPath(startpath)
 {
+  // Headline - TODO: should be customizable during creation time
+  new StaticTextWidget(this, 10, 8, _w - 2 * 10, kLineHeight, title, kTextAlignCenter);
+
+  // Current path - TODO: handle long paths ?
+  _currentPath = new StaticTextWidget(this, 10, 20, _w - 2 * 10, kLineHeight,
+                                      "DUMMY", kTextAlignLeft);
+
+  // Add file list
+  _fileList = new ListWidget(this, 10, 34, _w - 2 * 10, _h - 34 - 24 - 10);
+  _fileList->setNumberingMode(kListNumberingOff);
+  _fileList->setEditable(false);
+
+  // Buttons
+  addButton(10, _h - 24, "Go up", kGoUpCmd, 0);
+  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(_w - (kButtonWidth+10), _h - 24, "Choose", kChooseCmd, 0);
+
+  // If no node has been set, or the last used one is now invalid,
+  // go back to the root/default dir.
+  if (_startPath != "")
+    _choice = FilesystemNode(_startPath);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BrowserDialog::~BrowserDialog()
+void BrowserDialog::loadConfig()
 {
-}
+  // If no node has been set, or the last used one is now invalid,
+  // go back to the root/default dir.
+  if (_choice.isValid())
+    _node = _choice;
+  else if (!_node.isValid())
+    _node = FilesystemNode();
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
-{
+  // Alway refresh file list
+  updateListing();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
 {
+  switch (cmd)
+  {
+    case kChooseCmd:
+    {
+      // If nothing is selected in the list widget, choose the current dir.
+      // Else, choose the dir that is selected.
+      Int32 selection = _fileList->getSelected();
+      if (selection >= 0)
+        _choice = _nodeContent[selection];
+      else
+        _choice = _node;
+
+      setResult(1);
+      close();
+      break;
+    }
+
+    case kGoUpCmd:
+      _node = _node.getParent();
+      updateListing();
+      break;
+
+    case kListItemActivatedCmd:
+    case kListItemDoubleClickedCmd:
+      _node = _nodeContent[data];
+      updateListing();
+      break;
+
+    default:
+      Dialog::handleCommand(sender, cmd, data);
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::updateListing()
+{
+  // Update the path display
+  _currentPath->setLabel(_node.path());
+
+  // Read in the data from the file system
+  _nodeContent = _node.listDir();
+  _nodeContent.sort();
+
+  // Populate the ListWidget
+  StringList list;
+  Int32 size = _nodeContent.size();
+  for (Int32 i = 0; i < size; i++)
+    list.push_back(_nodeContent[i].displayName());
+
+  _fileList->setList(list);
+  _fileList->scrollTo(0);
+
+  // Finally, redraw
+  draw();
 }

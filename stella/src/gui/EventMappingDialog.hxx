@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.hxx,v 1.4 2005-04-06 23:47:08 stephena Exp $
+// $Id: EventMappingDialog.hxx,v 1.5 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #ifndef EVENT_MAPPING_DIALOG_HXX
 #define EVENT_MAPPING_DIALOG_HXX
 
+class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
@@ -33,7 +34,8 @@ class ListWidget;
 class EventMappingDialog : public Dialog
 {
   public:
-    EventMappingDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+    EventMappingDialog(OSystem* osystem, DialogContainer* parent,
+                       uInt16 x, uInt16 y, uInt16 w, uInt16 h);
     ~EventMappingDialog();
 
     virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);

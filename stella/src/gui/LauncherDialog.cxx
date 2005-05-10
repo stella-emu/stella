@@ -13,20 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.5 2005-05-10 01:12:59 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.6 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "OSystem.hxx"
+#include "Settings.hxx"
 #include "FSNode.hxx"
 #include "Widget.hxx"
 #include "ListWidget.hxx"
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "GuiUtils.hxx"
-#include "Event.hxx"
-#include "EventHandler.hxx"
 #include "BrowserDialog.hxx"
 #include "LauncherDialog.hxx"
 
@@ -48,11 +48,12 @@ enum {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LauncherDialog::LauncherDialog(OSystem* osystem, uInt16 x, uInt16 y,
-                                       uInt16 w, uInt16 h)
-  : Dialog(osystem, x, y, w, h),
+LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
+                               uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+  : Dialog(osystem, parent, x, y, w, h),
     myList(NULL),
-    myBrowser(NULL)
+    myBrowser(NULL),
+    myGameList(NULL)
 {
   // Show game name
   new StaticTextWidget(this, 10, 8, _w - 20, kLineHeight,
@@ -100,17 +101,22 @@ LauncherDialog::LauncherDialog(OSystem* osystem, uInt16 x, uInt16 y,
     }
   }
 */
-  // En-/Disable the buttons depending on the list selection
-  updateButtons();
 
   // Create file browser dialog
-//FIXME  myBrowser = new BrowserDialog("Select directory with game data");
+  string romdir = instance()->settings().getString("romdir");
+  myBrowser = new BrowserDialog(osystem, parent, "Select ROM directory", romdir,
+                                20, 20, _w - 40, _h - 40);
+
+  // Create a game list, which contains all the information about a ROM that
+  // the launcher needs
+  myGameList = new GameList();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::~LauncherDialog()
 {
   delete myBrowser;
+  delete myGameList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,6 +131,9 @@ void LauncherDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::close()
 {
+  // Save romdir specified by the browser
+  FilesystemNode dir(myBrowser->getResult());
+  instance()->settings().setString("romdir", dir.path());
 /*
   // Save last selection
   const int sel = _list->getSelected();
@@ -139,7 +148,7 @@ void LauncherDialog::close()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::updateListing()
+void LauncherDialog::updateListing(bool full_reload)
 {
 cerr << "LauncherDialog::updateListing()\n";
 
@@ -147,19 +156,18 @@ cerr << "LauncherDialog::updateListing()\n";
   // If so, we do a full reload from disk (takes quite some time).
   // Otherwise, we can use the cache file (which is much faster).
 // FIXME - actually implement the following code
-/*
-  if(... ROM_DIR_CHANGED ...)
+bool ROM_DIR_CHANGED = true;
+
+  if(ROM_DIR_CHANGED)
     loadListFromDisk();
-  else if( ... CACHE_FILE_EXISTS)
-    loadListFromCache();
+//  else if( ... CACHE_FILE_EXISTS)
+//    loadListFromCache();
   else  // we have no other choice
     loadListFromDisk();
-*/
 
   StringList l;
 
-  FilesystemNode t;
-  FilesystemNode dir(t);//"/local/emulators/atari/roms");  // FIXME
+  FilesystemNode dir(myBrowser->getResult());
   FSList files = dir.listDir(FilesystemNode::kListAll);
   files.sort();
 
@@ -199,14 +207,6 @@ cerr << "LauncherDialog::updateListing()\n";
 	}
 */
   myList->setList(l);
-  updateButtons();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::reloadListing()
-{
-// FIXME - add bulk of KStella code here wrt loading from disk
-cerr << "LauncherDialog::reloadListing()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -331,7 +331,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 dat
       if(myList->getSelected() >= 0)
       {
         string item = myList->getSelectedString();
-        cerr << "Game selected: " << item << endl;
         instance()->createConsole(item);
         close();
       }
@@ -339,16 +338,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 dat
     }
 
     case kLocationCmd:
-      cerr << "kLocationCmd from LauncherDialog\n";
-//      instance()->launcher().addDialog(myLocationDialog);
+      parent()->addDialog(myBrowser);
       break;
 
     case kReloadCmd:
-      reloadListing();
+      updateListing(true);  // force a reload from disk
       break;
 
     case kListSelectionChangedCmd:
-      cerr << "change note\n";
+//      cerr << "change note\n";
       break;
 
     case kQuitCmd:
@@ -362,13 +360,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 dat
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::updateButtons()
+void LauncherDialog::loadListFromDisk()
 {
-/*
-  bool enable = (myList->getSelected() >= 0);
-	if (enable != _startButton->isEnabled()) {
-		_startButton->setEnabled(enable);
-		_startButton->draw();
-	}
-*/
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::loadListFromCache()
+{
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.2 2005-04-24 20:36:36 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.3 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -118,8 +118,6 @@ void ScrollBarWidget::handleMouseDown(Int32 x, Int32 y, Int32 button,
 
   // Make sure that _currentPos is still inside the bounds
   checkBounds(old_pos);
-
-  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,7 +125,6 @@ void ScrollBarWidget::handleMouseUp(Int32 x, Int32 y, Int32 button,
                                     Int32 clickCount)
 {
   _draggingPart = kNoPart;
-  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,7 +142,6 @@ void ScrollBarWidget::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
 
   // Make sure that _currentPos is still inside the bounds
   checkBounds(old_pos);
-  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,9 +182,13 @@ void ScrollBarWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
       _part = kSliderPart;
 
     if (old_part != _part)
+    {
       draw();
+
+      // Refresh the FB, since the selected part has changed
+      _boss->instance()->frameBuffer().refresh();
+    }
   }
-  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,7 +222,7 @@ void ScrollBarWidget::checkBounds(Int32 old_pos)
 
   if (old_pos != _currentPos)
   {
-    recalc();
+    recalc();  // This takes care of the required refresh
     draw();
     sendCommand(kSetPositionCmd, _currentPos);
   }
@@ -247,6 +247,8 @@ void ScrollBarWidget::recalc()
     _sliderHeight = _h - 2 * UP_DOWN_BOX_HEIGHT;
     _sliderPos = UP_DOWN_BOX_HEIGHT;
   }
+
+  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

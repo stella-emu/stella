@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.3 2005-05-02 22:18:14 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.4 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,8 +28,9 @@
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HelpDialog::HelpDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
-    : Dialog(osystem, x, y, w, h),
+HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
+                       uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+    : Dialog(osystem, parent, x, y, w, h),
       myPage(1),
       myNumPages(4)
 {

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.76 2005-05-09 18:58:17 stephena Exp $
+## $Id: makefile,v 1.77 2005-05-10 19:20:38 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -159,7 +159,7 @@ GUI_OBJS = StellaFont.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o \
-           LauncherDialog.o BrowserDialog.o
+           LauncherDialog.o BrowserDialog.o GameList.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -426,3 +426,6 @@ LauncherDialog.o: $(GUI)/LauncherDialog.cxx $(GUI)/LauncherDialog.hxx
 
 BrowserDialog.o: $(GUI)/BrowserDialog.cxx $(GUI)/BrowserDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/BrowserDialog.cxx
+
+GameList.o: $(GUI)/GameList.cxx $(GUI)/GameList.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/GameList.cxx

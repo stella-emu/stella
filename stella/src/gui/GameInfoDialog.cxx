@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.3 2005-05-02 22:18:13 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.4 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,8 +29,9 @@
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::GameInfoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h)
-    : Dialog(osystem, x, y, w, h),
+GameInfoDialog::GameInfoDialog(OSystem* osystem, DialogContainer* parent,
+                               uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+    : Dialog(osystem, parent, x, y, w, h),
       myPage(1),
       myNumPages(2),
       myGameProperties(NULL)

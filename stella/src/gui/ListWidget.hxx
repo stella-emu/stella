@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.1 2005-04-04 02:19:22 stephena Exp $
+// $Id: ListWidget.hxx,v 1.2 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,8 +64,8 @@ class ListWidget : public Widget, public CommandSender
     virtual void handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount);
     virtual void handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount);
     virtual void handleMouseWheel(Int32 x, Int32 y, Int32 direction);
-    virtual void handleMouseEntered(Int32 button) { _scrollBar->handleMouseLeft(button); }
-    virtual void handleMouseLeft(Int32 button)    { _scrollBar->handleMouseLeft(button); }
+    virtual void handleMouseEntered(Int32 button) {};
+    virtual void handleMouseLeft(Int32 button)    {};
     virtual bool handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
     virtual bool handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers);
     virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);

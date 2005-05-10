@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.2 2005-05-02 19:36:05 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.3 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #ifndef GAME_INFO_DIALOG_HXX
 #define GAME_INFO_DIALOG_HXX
 
+class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
@@ -39,7 +40,8 @@ class StaticTextWidget;
 class GameInfoDialog : public Dialog
 {
   public:
-    GameInfoDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+    GameInfoDialog(OSystem* osystem, DialogContainer* parent,
+                   uInt16 x, uInt16 y, uInt16 w, uInt16 h);
     ~GameInfoDialog();
 
     void setGameProfile(Properties& props) { myGameProperties = &props; }

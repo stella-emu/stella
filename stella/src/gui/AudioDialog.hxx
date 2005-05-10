@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.hxx,v 1.1 2005-03-26 19:26:47 stephena Exp $
+// $Id: AudioDialog.hxx,v 1.2 2005-05-10 19:20:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 
 class CommandSender;
 class Dialog;
+class DialogContainer;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
@@ -35,7 +36,8 @@ class CheckboxWidget;
 class AudioDialog : public Dialog
 {
   public:
-    AudioDialog(OSystem* osystem, uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+    AudioDialog(OSystem* osystem, DialogContainer* parent,
+                uInt16 x, uInt16 y, uInt16 w, uInt16 h);
     ~AudioDialog();
 
   protected:

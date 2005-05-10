@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.1 2005-05-09 18:58:19 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.2 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -78,12 +78,10 @@ AbstractFilesystemNode* FilesystemNode::getRoot()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#ifdef MACOSX
 AbstractFilesystemNode* FilesystemNode::getNodeForPath(const string& path)
 {
   return new POSIXFilesystemNode(path);
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 POSIXFilesystemNode::POSIXFilesystemNode()

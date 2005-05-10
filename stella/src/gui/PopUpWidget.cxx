@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.4 2005-04-04 02:19:22 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.5 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,7 @@ static uInt32 up_down_arrows[8] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpDialog::PopUpDialog(PopUpWidget* boss, Int32 clickX, Int32 clickY)
-    : Dialog(boss->instance(), 0, 0, 16, 16),
+    : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
       _popUpBoss(boss)
 {
   // Copy the selection index

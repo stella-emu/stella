@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.5 2005-05-04 19:04:46 stephena Exp $
+// $Id: ListWidget.cxx,v 1.6 2005-05-10 19:20:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -165,9 +165,9 @@ void ListWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCoun
         drawCaret(true);
       }
       sendCommand(kListSelectionChangedCmd, _selectedItem);
+      _boss->instance()->frameBuffer().refresh();
     }
     draw();
-    _boss->instance()->frameBuffer().refresh();
   }
 }
 
@@ -184,7 +184,6 @@ void ListWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
 void ListWidget::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
 {
   _scrollBar->handleMouseWheel(x, y, direction);
-  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -336,6 +335,8 @@ bool ListWidget::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
     sendCommand(kListSelectionChangedCmd, _selectedItem);
     // also draw scrollbar
     _scrollBar->draw();
+
+    _boss->instance()->frameBuffer().refresh();
   }
 
   return handled;
