@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.1 2005-05-06 18:39:00 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.2 2005-05-10 01:12:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,8 +25,8 @@
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
-class BrowserDialog;
 class ListWidget;
+class BrowserDialog;
 
 #include "Dialog.hxx"
 #include "Launcher.hxx"
@@ -53,8 +53,9 @@ class LauncherDialog : public Dialog
     void loadConfig();
 
   protected:
-    ListWidget*    myList;
-    BrowserDialog* myBrowser;
+    ListWidget*       myList;
+    BrowserDialog*    myBrowser;
+    StaticTextWidget* myNote;
 };
 
 #endif
