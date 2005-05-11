@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.6 2005-05-06 18:39:00 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.7 2005-05-11 19:36:00 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -36,6 +36,29 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemUNIX::OSystemUNIX()
 {
+  // First set variables that the OSystem needs
+  string basedir = getenv("HOME");
+  setBaseDir(basedir);
+
+  string stelladir = basedir + "/.stella";
+  if(!fileExists(stelladir))
+    makeDir(stelladir);
+
+  string statedir = stelladir + "/state/";
+  if(!fileExists(statedir))
+    makeDir(statedir);
+  setStateDir(statedir);
+
+  string userPropertiesFile   = stelladir + "/stella.pro";
+  string systemPropertiesFile = "/etc/stella.pro";
+  setPropertiesFiles(userPropertiesFile, systemPropertiesFile);
+
+  string userConfigFile   = stelladir + "/stellarc";
+  string systemConfigFile = "/etc/stellarc";
+  setConfigFiles(userConfigFile, systemConfigFile);
+
+  string cacheFile = stelladir + "/stella.cache";
+  setCacheFile(cacheFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

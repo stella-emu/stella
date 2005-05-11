@@ -13,9 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.4 2005-05-10 19:20:43 stephena Exp $
+// $Id: Launcher.cxx,v 1.5 2005-05-11 19:36:00 stephena Exp $
 //============================================================================
 
+#include "Version.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "LauncherDialog.hxx"
@@ -46,6 +47,6 @@ void Launcher::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::initializeVideo()
 {
-  string title = "Stella: ROM Launcher"; // FIXME - include version of Stella
+  string title = string("Stella version ") + STELLA_VERSION;
   myOSystem->frameBuffer().initialize(title, kLauncherWidth, kLauncherHeight, false);
 }

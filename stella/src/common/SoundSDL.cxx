@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.14 2005-05-01 18:57:20 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.15 2005-05-11 19:35:59 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -250,6 +250,8 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
       (1193191.66666667));
 
   // Now, adjust the time based on the frame rate the user has selected
+// FIXME - not sure this is needed anymore, since the display framerate
+//         and sound framerate are always locked in sync; hence 1:1
   delta = delta * (myDisplayFrameRate / 60.0);//FIXME (double)myOSystem->console().frameRate());
 
   RegWrite info;

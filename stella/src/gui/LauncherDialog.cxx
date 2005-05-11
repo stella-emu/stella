@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.7 2005-05-11 01:44:39 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.8 2005-05-11 19:36:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -177,7 +177,8 @@ void LauncherDialog::updateListing(bool fullReload)
   // Start with empty lists
   myGameList->clear();
 
-  if(instance()->fileExists("stella.cache") && !fullReload)  // FIXME - get name from Settings
+  string cacheFile = instance()->cacheFile();
+  if(instance()->fileExists(cacheFile) && !fullReload)
     loadListFromCache();
   else
     loadListFromDisk();
@@ -235,7 +236,8 @@ void LauncherDialog::loadListFromDisk()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadListFromCache()
 {
-  ifstream in("stella.cache"); // FIXME - get name from Settings
+  string cacheFile = instance()->cacheFile();
+  ifstream in(cacheFile.c_str());
   if(!in)
   {
     loadListFromDisk();
@@ -273,7 +275,8 @@ void LauncherDialog::loadListFromCache()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::createListCache()
 {
-  ofstream out("stella.cache"); // FIXME - get name from Settings
+  string cacheFile = instance()->cacheFile();
+  ofstream out(cacheFile.c_str());
 
   // Write the gamelist to the cachefile (sorting is already done)
   for (Int32 i = 0; i < (Int32) myGameList->size(); ++i)

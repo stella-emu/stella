@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.11 2005-05-06 18:38:59 stephena Exp $
+// $Id: OSystem.hxx,v 1.12 2005-05-11 19:36:00 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -38,7 +38,7 @@ class Launcher;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.11 2005-05-06 18:38:59 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.12 2005-05-11 19:36:00 stephena Exp $
 */
 class OSystem
 {
@@ -161,14 +161,19 @@ class OSystem
     void setConfigFiles(const string& userconfig, const string& systemconfig);
 
     /**
+      Set the location of the gamelist cache file
+    */
+    void setCacheFile(const string& cachefile) { myGameListCacheFile = cachefile; }
+
+    /**
       Return the default directory for storing data.
     */
-    string baseDir() { return myBaseDir; }
+    const string& baseDir() { return myBaseDir; }
 
     /**
       Return the directory for storing state files.
     */
-    string stateDir() { return myStateDir; }
+    const string& stateDir() { return myStateDir; }
 
     /**
       This method should be called to get the filename of the
@@ -176,7 +181,7 @@ class OSystem
 
       @return String representing the full path of the properties filename.
     */
-    string propertiesInputFilename() { return myPropertiesInputFile; }
+    const string& propertiesInputFilename() { return myPropertiesInputFile; }
 
     /**
       This method should be called to get the filename of the
@@ -184,7 +189,7 @@ class OSystem
 
       @return String representing the full path of the properties filename.
     */
-    string propertiesOutputFilename() { return myPropertiesOutputFile; }
+    const string& propertiesOutputFilename() { return myPropertiesOutputFile; }
 
     /**
       This method should be called to get the filename of the config file
@@ -192,7 +197,7 @@ class OSystem
 
       @return String representing the full path of the config filename.
     */
-    string configInputFilename() { return myConfigInputFile; }
+    const string& configInputFilename() { return myConfigInputFile; }
 
     /**
       This method should be called to get the filename of the config file
@@ -200,7 +205,15 @@ class OSystem
 
       @return String representing the full path of the config filename.
     */
-    string configOutputFilename() { return myConfigOutputFile; }
+    const string& configOutputFilename() { return myConfigOutputFile; }
+
+    /**
+      This method should be called to get the filename of the gamelist
+      cache file (used by the Launcher to show a listing of available games).
+
+      @return String representing the full path of the gamelist cache file.
+    */
+    const string& cacheFile() { return myGameListCacheFile; }
 
     /**
       Creates the various framebuffers/renderers available in this system
@@ -319,6 +332,7 @@ class OSystem
     string myConfigInputFile;
     string myConfigOutputFile;
 
+    string myGameListCacheFile;
     string myRomFile;
 
   private:

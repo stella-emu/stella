@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.1 2005-05-04 21:32:25 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.2 2005-05-11 19:36:00 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -73,10 +73,8 @@ void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu
   while(!myDialogStack.empty())
-  {
-    Dialog* d = myDialogStack.pop();
-    d->close();
-  }
+    myDialogStack.pop();
+
   myDialogStack.push(myBaseDialog);
 }
 

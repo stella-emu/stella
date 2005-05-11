@@ -13,13 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.12 2005-05-10 19:20:45 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.13 2005-05-11 19:36:00 stephena Exp $
 //============================================================================
 
-#include <cstdlib>
-
 #include "bspf.hxx"
-#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SettingsUNIX.hxx"
 
@@ -27,27 +24,6 @@
 SettingsUNIX::SettingsUNIX(OSystem* osystem)
     : Settings(osystem)
 {
-  // First set variables that the OSystem needs
-  string basedir = getenv("HOME");
-  myOSystem->setBaseDir(basedir);
-
-  string stelladir = basedir + "/.stella";
-  if(!myOSystem->fileExists(stelladir))
-    myOSystem->makeDir(stelladir);
-
-  string statedir = stelladir + "/state/";
-  if(!myOSystem->fileExists(statedir))
-    myOSystem->makeDir(statedir);
-  myOSystem->setStateDir(statedir);
-
-  string userPropertiesFile   = stelladir + "/stella.pro";
-  string systemPropertiesFile = "/etc/stella.pro";
-  myOSystem->setPropertiesFiles(userPropertiesFile, systemPropertiesFile);
-
-  string userConfigFile   = stelladir + "/stellarc";
-  string systemConfigFile = "/etc/stellarc";
-  myOSystem->setConfigFiles(userConfigFile, systemConfigFile);
-
   // This argument is only valid for Linux/UNIX, and will eventually be removed
   set("accurate", "false");
 }

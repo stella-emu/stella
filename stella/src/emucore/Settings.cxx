@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.39 2005-05-10 19:20:41 stephena Exp $
+// $Id: Settings.cxx,v 1.40 2005-05-11 19:36:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -21,7 +21,7 @@
 #include <fstream>
 
 #include "OSystem.hxx"
-
+#include "Version.hxx"
 #include "bspf.hxx"
 #include "Settings.hxx"
 
@@ -218,7 +218,7 @@ void Settings::usage()
 {
 #ifndef MAC_OSX
   cout << endl
-    << "Stella version 1.5_cvs" << endl
+    << "Stella version " << STELLA_VERSION << endl
     << endl
     << "Usage: stella [options ...] romfile" << endl
     << "       Run without any options or romfile to use the ROM launcher" << endl
@@ -242,7 +242,6 @@ void Settings::usage()
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
   #endif
-    << "  -framerate    <number>       Display the given number of frames per second\n"
     << "  -zoom         <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.51 2005-05-06 22:50:14 stephena Exp $
+// $Id: Console.cxx,v 1.52 2005-05-11 19:36:00 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -156,29 +156,32 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   mySystem->reset();
 
   // Set the correct framerate based on the format of the ROM
-  // This can be overridden by the '-framerate' option
+  // This can be overridden by changing the framerate in the
+  // VideoDialog box, but it can't be saved (ie, framerate is now
+  // solely determined based on ROM format).
   myFrameRate = 60;
-  if(myOSystem->settings().getInt("framerate") > 0)
-    myFrameRate = myOSystem->settings().getInt("framerate");
-//  else if(myProperties.get("Display.Format") == "NTSC")
-//    myFrameRate = 60;
-//  else if(myProperties.get("Display.Format") == "PAL")
-//    myFrameRate = 50;
-//  mySettings.setInt("framerate", myFrameRate, false);
-  myOSystem->settings().setInt("framerate", myFrameRate);
+  if(myProperties.get("Display.Format") == "NTSC")
+    myFrameRate = 60;
+  else if(myProperties.get("Display.Format") == "PAL")
+    myFrameRate = 50;
+
+  // Don't save the framerate to the settings file; only use it internally
+  myOSystem->settings().setInt("framerate", myFrameRate, false);
 
   // Initialize the framebuffer interface.
   // This must be done *after* a reset, since it needs updated values.
   initializeVideo();
 
   // Initialize the sound interface.
-  uInt32 soundFrameRate = (myProperties.get("Display.Format") == "PAL") ? 50 : 60;
-  myOSystem->sound().setFrameRate(soundFrameRate);
+  myOSystem->sound().setFrameRate(myFrameRate);
   myOSystem->sound().initialize();
 
   // Initialize the menuing system with updated values from the framebuffer
   myOSystem->menu().initialize();
   myOSystem->menu().setGameProfile(myProperties);
+
+  // Finally, let the main loop know about the framerate
+  myOSystem->setFramerate(myFrameRate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -236,6 +239,9 @@ void Console::toggleFormat()
 
   setPalette();
   myOSystem->setFramerate(framerate);
+
+  // Don't save the framerate to the settings file; only use it internally
+  myOSystem->settings().setInt("framerate", framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
