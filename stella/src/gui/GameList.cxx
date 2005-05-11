@@ -13,29 +13,48 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cxx,v 1.1 2005-05-10 19:20:43 stephena Exp $
+// $Id: GameList.cxx,v 1.2 2005-05-11 01:44:39 stephena Exp $
 //
-//   Copyright (C) 2005 by Stephen Anthony
-//   @author Stephen Anthony
+//   Based on code from KStella - Stella frontend
+//   Copyright (C) 2003-2005 Stephen Anthony
 //============================================================================
 
+#include "GuiUtils.hxx"
 #include "GameList.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameList::GameList()
 {
-cerr << "GameList::GameList()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameList::~GameList()
 {
-cerr << "GameList::~GameList()\n";
   myArray.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameList::appendGame(const string& rom, const string& name, const string& note)
+{
+  Entry g;
+  g._rom  = rom;
+  g._name = name;
+  g._note = note;
+
+  myArray.push_back(g);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameList::sortByName()
 {
-cerr << "GameList::sortByName()\n";
+  // Simple selection sort
+  for(uInt32 i = 0; i < myArray.size()-1; i++)
+  {
+    uInt32 min = i;
+    for (uInt32 j = i+1; j < myArray.size(); j++)
+      if (myArray[j]._name < myArray[min]._name)
+        min = j;
+      if (min != i)
+        SWAP(myArray[min], myArray[i]);
+  }
 }

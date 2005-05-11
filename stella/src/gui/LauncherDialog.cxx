@@ -13,14 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.6 2005-05-10 19:20:44 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.7 2005-05-11 01:44:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include <algorithm>
+#include <sstream>
+
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#include "PropsSet.hxx"
+#include "Props.hxx"
+#include "MD5.hxx"
 #include "FSNode.hxx"
 #include "Widget.hxx"
 #include "ListWidget.hxx"
@@ -56,8 +62,11 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myGameList(NULL)
 {
   // Show game name
-  new StaticTextWidget(this, 10, 8, _w - 20, kLineHeight,
-                       "Select a game from the list ...", kTextAlignCenter);
+  new StaticTextWidget(this, 10, 8, 200, kLineHeight,
+                       "Select a game from the list ...", kTextAlignLeft);
+
+  myRomCount = new StaticTextWidget(this, _w - 100, 8, 90, kLineHeight,
+                                    "", kTextAlignRight);
 
   // Add three buttons at the bottom
   const int border = 10;
@@ -81,8 +90,9 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myList->setNumberingMode(kListNumberingOff);
 
   // Add note textwidget to show any notes for the currently selected ROM
-  myNote = new StaticTextWidget(this, 20, _h - 43, w - 20, 16,
-                                       "Note: ", kTextAlignLeft);
+  new StaticTextWidget(this, 20, _h - 43, 30, 16, "Note:", kTextAlignLeft);
+  myNote = new StaticTextWidget(this, 50, _h - 43, w - 70, 16,
+                                       "", kTextAlignLeft);
 
   // Restore last selection
 /*
@@ -148,194 +158,166 @@ void LauncherDialog::close()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::updateListing(bool full_reload)
+void LauncherDialog::updateListing(bool fullReload)
 {
-cerr << "LauncherDialog::updateListing()\n";
-
   // Figure out if the ROM dir has changed since we last accessed it.
   // If so, we do a full reload from disk (takes quite some time).
   // Otherwise, we can use the cache file (which is much faster).
-// FIXME - actually implement the following code
-bool ROM_DIR_CHANGED = true;
-
+// FIXME - actually implement the following code, where we use
+//         a function to detect last modification time, and compare
+//         it to the current modification time
+/*
   if(ROM_DIR_CHANGED)
     loadListFromDisk();
-//  else if( ... CACHE_FILE_EXISTS)
-//    loadListFromCache();
+  else if(CACHE_FILE_EXISTS)
+    loadListFromCache();
   else  // we have no other choice
     loadListFromDisk();
-
-  StringList l;
-
-  FilesystemNode dir(myBrowser->getResult());
-  FSList files = dir.listDir(FilesystemNode::kListAll);
-  files.sort();
-
-  for (int idx = 0; idx < (int)files.size(); idx++)
-    l.push_back(files[idx].displayName());
-
-/*
-		// ...so let's determine a list of candidates, games that
-		// could be contained in the specified directory.
-		DetectedGameList candidates(PluginManager::instance().detectGames(files));
-
-	// Retrieve a list of all games defined in the config file
-	_domains.clear();
-	const ConfigManager::DomainMap &domains = ConfMan.getGameDomains();
-	ConfigManager::DomainMap::const_iterator iter = domains.begin();
-	for (iter = domains.begin(); iter != domains.end(); ++iter) {
-		String name(iter->_value.get("gameid"));
-		String description(iter->_value.get("description"));
-
-		if (name.isEmpty())
-			name = iter->_key;
-		if (description.isEmpty()) {
-			GameSettings g = GameDetector::findGame(name);
-			if (g.description)
-				description = g.description;
-		}
-
-		if (!name.isEmpty() && !description.isEmpty()) {
-			// Insert the game into the launcher list
-			int pos = 0, size = l.size();
-
-			while (pos < size && (scumm_stricmp(description.c_str(), l[pos].c_str()) > 0))
-				pos++;
-			l.insert_at(pos, description);
-			_domains.insert_at(pos, iter->_key);
-		}
-	}
 */
+  // Start with empty lists
+  myGameList->clear();
+
+  if(instance()->fileExists("stella.cache") && !fullReload)  // FIXME - get name from Settings
+    loadListFromCache();
+  else
+    loadListFromDisk();
+
+  // Now fill the list widget with the contents of the GameList
+  StringList l;
+  for (Int32 i = 0; i < (Int32) myGameList->size(); ++i)
+    l.push_back(myGameList->name(i));
+
   myList->setList(l);
+
+  // Indicate how many files were found
+  ostringstream buf;
+  buf << myGameList->size() << " files found";
+  myRomCount->setLabel(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addGame()
+void LauncherDialog::loadListFromDisk()
 {
-/*
-	// Allow user to add a new game to the list.
-	// 1) show a dir selection dialog which lets the user pick the directory
-	//    the game data resides in.
-	// 2) try to auto detect which game is in the directory, if we cannot
-	//    determine it uniquely preent a list of candidates to the user 
-	//    to pick from
-	// 3) Display the 'Edit' dialog for that item, letting the user specify
-	//    an alternate description (to distinguish multiple versions of the
-	//    game, e.g. 'Monkey German' and 'Monkey English') and set default
-	//    options for that game.
+  Properties props;
 
-	if (_browser->runModal() > 0) {
-		// User made his choice...
-		FilesystemNode dir(_browser->getResult());
-		FSList files = dir.listDir(FilesystemNode::kListAll);
+  FilesystemNode dir(myBrowser->getResult());
+  FSList files = dir.listDir(FilesystemNode::kListAll);
 
-		// ...so let's determine a list of candidates, games that
-		// could be contained in the specified directory.
-		DetectedGameList candidates(PluginManager::instance().detectGames(files));
-		
-		int idx;
-		if (candidates.isEmpty()) {
-			// No game was found in the specified directory
-			MessageDialog alert("ScummVM could not find any game in the specified directory!");
-			alert.runModal();
-			idx = -1;
-		} else if (candidates.size() == 1) {
-			// Exact match
-			idx = 0;
-		} else {
-			// Display the candidates to the user and let her/him pick one
-			StringList list;
-			for (idx = 0; idx < (int)candidates.size(); idx++)
-				list.push_back(candidates[idx].description);
-			
-			ChooserDialog dialog("Pick the game:");
-			dialog.setList(list);
-			idx = dialog.runModal();
-		}
-		if (0 <= idx && idx < (int)candidates.size()) {
-			DetectedGame result = candidates[idx];
+  // Create a entry for the GameList for each file
+  string path = dir.path(), rom, md5, name, note;
+  for (int idx = 0; idx < (int)files.size(); idx++)
+  {
+    rom = path + files[idx].displayName();
 
-			// The auto detector or the user made a choice.
-			// Pick a domain name which does not yet exist (after all, we
-			// are *adding* a game to the config, not replacing).
-			String domain(result.name);
-			if (ConfMan.hasGameDomain(domain)) {
-				char suffix = 'a';
-				domain += suffix;
-				while (ConfMan.hasGameDomain(domain)) {
-					assert(suffix < 'z');
-					domain.deleteLastChar();
-					suffix++;
-					domain += suffix;
-				}
-				ConfMan.set("gameid", result.name, domain);
-				ConfMan.set("description", result.description, domain);
-			}
-			ConfMan.set("path", dir.path(), domain);
-			
-			const bool customLanguage = (result.language != Common::UNK_LANG);
-			const bool customPlatform = (result.platform != Common::kPlatformUnknown);
+    // Calculate the MD5 so we can get the rest of the info
+    // from the PropertiesSet (stella.pro)
+    md5 = MD5FromFile(rom);
+    instance()->propSet().getMD5(md5, props);
+    name = props.get("Cartridge.Name");
+    note = props.get("Cartridge.Note");
 
-			// Set language if specified
-			if (customLanguage)
-				ConfMan.set("language", Common::getLanguageCode(result.language), domain);
+    // Some games may not have a name, since there may not
+    // be an entry in stella.pro.  In that case, we use the rom name
+    if(name == "Untitled")
+      name = files[idx].displayName();
 
-			// Set platform if specified
-			if (customPlatform)
-				ConfMan.set("platform", Common::getPlatformCode(result.platform), domain);
+    myGameList->appendGame(rom, name, note);
+  }
 
-			// Adapt the description string if custom platform/language is set
-			if (customLanguage || customPlatform) {
-				String desc = result.description;
-				desc += " (";
-				if (customLanguage)
-					desc += Common::getLanguageDescription(result.language);
-				if (customLanguage && customPlatform)
-					desc += "/";
-				if (customPlatform)
-					desc += Common::getPlatformDescription(result.platform);
-				desc += ")";
+  // Sort the list by rom name (since that's what we see in the listview)
+  myGameList->sortByName();
 
-				ConfMan.set("description", desc, domain);
-			}
+  // And create a cache file, so that the next time Stella starts,
+  // we don't have to do this time-consuming operation again
+  createListCache();
+}
 
-			// Display edit dialog for the new entry
-			EditGameDialog editDialog(domain, result);
-			if (editDialog.runModal() > 0) {
-				// User pressed OK, so make changes permanent
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::loadListFromCache()
+{
+  ifstream in("stella.cache"); // FIXME - get name from Settings
+  if(!in)
+  {
+    loadListFromDisk();
+    return;
+  }
 
-				// Write config to disk
-				ConfMan.flushToDisk();
+  // It seems terribly ugly that we need to use char arrays
+  // instead of strings.  Or maybe I don't know the correct way ??
+  char buf[2048];
+  string line, rom, name, note;
+  uInt32 pos1, pos2;  // The locations of the two '|' characters
 
-				// Update the ListWidget and force a redraw
-				updateListing();
-				draw();
-			} else {
-				// User aborted, remove the the new domain again
-				ConfMan.removeGameDomain(domain);
-			}
-		}
-	}
-*/
+  // Keep reading until all lines have been inspected
+  while(!in.eof())
+  {
+    in.getline(buf, 2048);
+    line = buf;
+
+    // Now split the line into three parts
+    pos1 = line.find("|", 0);
+    if(pos1 == string::npos) continue;
+    pos2 = line.find("|", pos1+1);
+    if(pos2 == string::npos) continue;
+
+    rom  = line.substr(0, pos1);
+    name = line.substr(pos1+1, pos2-pos1-1);
+    note = line.substr(pos2+1);
+
+    // Add this game to the list
+    // We don't do sorting, since it's assumed to be done by loadListFromDisk()
+    myGameList->appendGame(rom, name, note);
+  }    
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::createListCache()
+{
+  ofstream out("stella.cache"); // FIXME - get name from Settings
+
+  // Write the gamelist to the cachefile (sorting is already done)
+  for (Int32 i = 0; i < (Int32) myGameList->size(); ++i)
+  {
+    out << myGameList->rom(i)  << "|"
+        << myGameList->name(i) << "|"
+        << myGameList->note(i)
+        << endl;
+  }
+  out.close();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string LauncherDialog::MD5FromFile(const string& path)
+{
+  ifstream in(path.c_str(), ios_base::binary);
+  if(!in)
+    return "";
+
+  uInt8* image = new uInt8[512 * 1024];
+  in.read((char*)image, 512 * 1024);
+  uInt32 size = in.gcount();
+  in.close();
+
+  return MD5(image, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
 {
+  Int32 item;
+
   switch (cmd)
   {
     case kStartCmd:
     case kListItemActivatedCmd:
     case kListItemDoubleClickedCmd:
-    {
-      if(myList->getSelected() >= 0)
+      item = myList->getSelected();
+      if(item >= 0)
       {
-        string item = myList->getSelectedString();
-        instance()->createConsole(item);
+        instance()->createConsole(myGameList->rom(item));
         close();
       }
       break;
-    }
 
     case kLocationCmd:
       parent()->addDialog(myBrowser);
@@ -346,7 +328,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 dat
       break;
 
     case kListSelectionChangedCmd:
-//      cerr << "change note\n";
+      item = myList->getSelected();
+      if(item >= 0)
+        myNote->setLabel(myGameList->note(item));
       break;
 
     case kQuitCmd:
@@ -357,14 +341,4 @@ void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 dat
     default:
       Dialog::handleCommand(sender, cmd, data);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::loadListFromDisk()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::loadListFromCache()
-{
 }

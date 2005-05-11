@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.hxx,v 1.1 2005-05-10 19:20:43 stephena Exp $
+// $Id: GameList.hxx,v 1.2 2005-05-11 01:44:39 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -30,24 +30,29 @@
 */
 class GameList
 {
-  struct Entry {
-    string _rom;
-    string _md5;
-    string _name;
-    string _note;
-  };
+  private:
+    struct Entry {
+      string _rom;
+      string _name;
+      string _note;
+    };
 
-  typedef Array<Entry> GameArray;
+    typedef Array<Entry> EntryList;
+
+    EntryList myArray;
 
   public:
     GameList();
     ~GameList();
 
-    void sortByName();
-    GameArray& getList() { return myArray; }
+    inline const string& rom(Int32 i)  { return myArray[i]._rom; }
+    inline const string& name(Int32 i) { return myArray[i]._name; }
+    inline const string& note(Int32 i) { return myArray[i]._note; }
+    inline Int32 size() { return myArray.size(); }
 
-  private:
-    GameArray myArray;
+    void clear() { myArray.clear(); }
+    void appendGame(const string& rom, const string& name, const string& note);
+    void sortByName();
 };
 
 #endif

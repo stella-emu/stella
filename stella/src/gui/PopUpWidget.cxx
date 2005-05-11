@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.5 2005-05-10 19:20:44 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.6 2005-05-11 01:44:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,8 +23,8 @@
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "Stack.hxx"
-#include "Menu.hxx"
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "GuiUtils.hxx"
 #include "PopUpWidget.hxx"
 
@@ -102,7 +102,7 @@ void PopUpDialog::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCou
     _popUpBoss->sendCommand(_popUpBoss->_cmd, _selection);
 
   // We remove the dialog and delete the dialog when the user has selected an item
-  _popUpBoss->instance()->menu().removeDialog();
+  parent()->removeDialog();
   delete this;
 }
 
@@ -286,7 +286,7 @@ void PopUpWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCou
   if(isEnabled())
   {
     myPopUpDialog = new PopUpDialog(this, x + getAbsX(), y + getAbsY());
-    instance()->menu().addDialog(myPopUpDialog);
+    parent()->addDialog(myPopUpDialog);
   }
 }
 
