@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cxx,v 1.2 2005-05-11 01:44:39 stephena Exp $
+// $Id: GameList.cxx,v 1.3 2005-05-11 23:06:52 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -47,6 +47,9 @@ void GameList::appendGame(const string& rom, const string& name, const string& n
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameList::sortByName()
 {
+  if(myArray.size() <= 1)
+    return;
+
   // Simple selection sort
   for(uInt32 i = 0; i < myArray.size()-1; i++)
   {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.8 2005-05-11 19:36:00 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.9 2005-05-11 23:06:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -174,7 +174,7 @@ void LauncherDialog::updateListing(bool fullReload)
   else  // we have no other choice
     loadListFromDisk();
 */
-  // Start with empty lists
+  // Start with empty list
   myGameList->clear();
 
   string cacheFile = instance()->cacheFile();
@@ -301,7 +301,10 @@ string LauncherDialog::MD5FromFile(const string& path)
   uInt32 size = in.gcount();
   in.close();
 
-  return MD5(image, size);
+  string md5 = MD5(image, size);
+  delete[] image;
+
+  return md5;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
