@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.40 2005-05-11 19:36:00 stephena Exp $
+// $Id: Settings.cxx,v 1.41 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -40,25 +40,31 @@ Settings::Settings(OSystem* osystem)
   // Now fill it with options that are common to all versions of Stella
   set("video", "soft");
   set("video_driver", "");
+
   set("gl_filter", "nearest");
   set("gl_aspect", "2.0");
   set("gl_fsmax", "false");
-  set("sound", "true");
-  set("fragsize", "512");
+
+  set("zoom", "2");
   set("fullscreen", "false");
   set("grabmouse", "false");
+  set("palette", "standard");
+
+  set("sound", "true");
+  set("fragsize", "512");
   set("volume", "100");
-  set("framerate", "60");
+
   set("keymap", "");
   set("joymap", "");
-  set("zoom", "2");
+  set("paddle", "0");
+
   set("showinfo", "false");
   set("mergeprops", "false");
-  set("paddle", "0");
-  set("palette", "standard");
+
   set("ssdir", ".");
   set("ssname", "romname");
   set("sssingle", "false");
+
   set("romdir", "");
 }
 
@@ -73,7 +79,7 @@ Settings::~Settings()
 void Settings::loadConfig()
 {
   string line, key, value;
-  uInt32 equalPos;
+  string::size_type equalPos, garbage;
 
   ifstream in(myOSystem->configInputFilename().c_str());
   if(!in || !in.is_open())
@@ -85,7 +91,6 @@ void Settings::loadConfig()
   while(getline(in, line))
   {
     // Strip all whitespace and tabs from the line
-    uInt32 garbage;
     while((garbage = line.find("\t")) != string::npos)
       line.erase(garbage, 1);
 
@@ -110,17 +115,15 @@ void Settings::loadConfig()
     // Only settings which have been previously set are valid
     if(contains(key))
       set(key, value);
-    else
-      cerr << "Invalid setting: " << key << endl;
   }
 
   in.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Settings::loadCommandLine(Int32 argc, char** argv)
+bool Settings::loadCommandLine(int argc, char** argv)
 {
-  for(Int32 i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     // strip off the '-' character
     string key = argv[i];
@@ -192,10 +195,6 @@ void Settings::validate()
     set("volume", "100");
 #endif
 
-  i = getInt("framerate");
-  if(i < 1 || i > 300)
-    set("framerate", "60");
-
   i = getInt("zoom");
   if(i < 1 || i > 6)
     set("zoom", "2");
@@ -238,27 +237,52 @@ void Settings::usage()
     << "  -gl_fsmax     <1|0>          Use the largest available screenmode in fullscreen OpenGL\n"
     << endl
   #endif
-  #ifdef SOUND_SUPPORT
-    << "  -sound        <1|0>          Enable sound generation\n"
-    << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
-  #endif
     << "  -zoom         <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
+    << "  -palette      <original|     Use the specified color palette\n"
+    << "                 standard|\n"
+    << "                 z26>\n"
+  #ifdef SOUND_SUPPORT
+    << "  -sound        <1|0>          Enable sound generation\n"
+    << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
+  #endif
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
-    << "  -altpro       <props file>   Use the given properties file instead of stella.pro\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
+    << "  -mergeprops   <1|0>          Merge changed properties into properties file,\n"
+    << "                               or save into a separate file\n"
+  #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
+  #endif
   #ifdef SNAPSHOT_SUPPORT
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -ssname       <name>         How to name the snapshot (romname or md5sum)\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
   #endif
-    << "  -mergeprops   <1|0>          Merge changed properties into properties file,\n"
-    << "                               or save into a separate file\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -help                        Show the text you're now reading\n"
+  #ifdef DEVELOPER_SUPPORT
+    << endl
+    << " The following options are meant for developers\n"
+    << " Arguments are more fully explained in the manual\n"
+    << endl
+    << "   -pro         <props file>   Use the given properties file instead of stella.pro\n"
+    << "   -type        <arg>          Sets the 'Cartridge.Type' property\n"
+    << "   -ld          <arg>          Sets the 'Console.LeftDifficulty' property\n"
+    << "   -rd          <arg>          Sets the 'Console.RightDifficulty' property\n"
+    << "   -tv          <arg>          Sets the 'Console.TelevisionType' property\n"
+    << "   -lc          <arg>          Sets the 'Controller.Left' property\n"
+    << "   -rc          <arg>          Sets the 'Controller.Right' property\n"
+    << "   -bc          <arg>          Same as using both -lc and -rc\n"
+    << "   -format      <arg>          Sets the 'Display.Format' property\n"
+    << "   -xstart      <arg>          Sets the 'Display.XStart' property\n"
+    << "   -ystart      <arg>          Sets the 'Display.YStart' property\n"
+    << "   -width       <arg>          Sets the 'Display.Width' property\n"
+    << "   -height      <arg>          Sets the 'Display.Height' property\n"
+    << "   -cpu         <arg>          Sets the 'Emulation.CPU' property\n"
+    << "   -hmove       <arg>          Sets the 'Emulation.HmoveBlanks' property\n"
+  #endif
     << endl;
 #endif
 }
@@ -375,14 +399,14 @@ void Settings::setString(const string& key, const string& value, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Settings::getInt(const string& key) const
+uInt32 Settings::getInt(const string& key) const
 {
   // Try to find the named setting and answer its value
   for(uInt32 i = 0; i < mySize; ++i)
     if(key == mySettings[i].key)
-      return atoi(mySettings[i].value.c_str());
+      return (uInt32) atoi(mySettings[i].value.c_str());
 
-  return -1;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

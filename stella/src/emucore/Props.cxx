@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.8 2004-07-28 23:54:39 stephena Exp $
+// $Id: Props.cxx,v 1.9 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #include "Props.hxx"
@@ -109,7 +109,7 @@ void Properties::load(istream& in)
   mySize = 0;
 
   string line, key, value;
-  uInt32 one, two, three, four, garbage;
+  string::size_type one, two, three, four, garbage;
 
   // Loop reading properties
   while(getline(in, line))

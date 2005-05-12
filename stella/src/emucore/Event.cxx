@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: Event.cxx,v 1.2 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -23,10 +23,7 @@ Event::Event()
     : myNumberOfTypes(Event::LastType)
 {
   // Set all of the events to 0 / false to start with
-  for(int i = 0; i < myNumberOfTypes; ++i)
-  {
-    myValues[i] = 0;
-  }
+  clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,3 +43,11 @@ void Event::set(Type type, Int32 value)
   myValues[type] = value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Event::clear()
+{
+  for(int i = 0; i < myNumberOfTypes; ++i)
+  {
+    myValues[i] = 0;
+  }
+}

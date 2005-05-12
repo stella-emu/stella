@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.34 2005-05-08 17:38:23 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.35 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -86,7 +86,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   myBaseDim.w = (uInt16) width;
   myBaseDim.h = (uInt16) height;
-  myFrameRate = myOSystem->settings().getInt("framerate");
+  myFrameRate = myOSystem->frameRate();
 
   // Now (re)initialize the SDL video system
   if(!isAlreadyInitialized)
@@ -145,6 +145,10 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   // Initialize video subsystem
   initSubsystem();
+
+  // Erase any messages from a previous run
+  myMessageTime = 0;
+  theRedrawEntireFrameIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

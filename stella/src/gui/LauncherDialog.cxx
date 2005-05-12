@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.9 2005-05-11 23:06:52 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.10 2005-05-12 18:45:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -248,7 +248,7 @@ void LauncherDialog::loadListFromCache()
   // instead of strings.  Or maybe I don't know the correct way ??
   char buf[2048];
   string line, rom, name, note;
-  uInt32 pos1, pos2;  // The locations of the two '|' characters
+  string::size_type pos1, pos2;  // The locations of the two '|' characters
 
   // Keep reading until all lines have been inspected
   while(!in.eof())

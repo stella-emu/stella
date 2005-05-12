@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.12 2005-05-11 19:36:00 stephena Exp $
+// $Id: OSystem.hxx,v 1.13 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -38,7 +38,7 @@ class Launcher;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.12 2005-05-11 19:36:00 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.13 2005-05-12 18:45:21 stephena Exp $
 */
 class OSystem
 {
@@ -138,7 +138,15 @@ class OSystem
       @param framerate  The video framerate to use
     */
     void setFramerate(uInt32 framerate)
-         { myTimePerFrame = (uInt32)(1000000.0 / (double) framerate); }
+         { myDisplayFrameRate = framerate;
+           myTimePerFrame = (uInt32)(1000000.0 / (double)myDisplayFrameRate); }
+
+    /**
+      Get the current framerate for the video system.
+
+      @return  The video framerate currently in use
+    */
+    uInt32 frameRate() { return myDisplayFrameRate; }
 
     /**
       Set the base directory for all configuration files
@@ -319,6 +327,9 @@ class OSystem
 
     // Pointer to the Launcher object
     Launcher* myLauncher;
+
+    // Number of times per second to iterate through the main loop
+    uInt32 myDisplayFrameRate;
 
     // Time per frame for a video update, based on the current framerate
     uInt32 myTimePerFrame;

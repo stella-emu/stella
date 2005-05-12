@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.4 2005-05-10 19:20:42 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.5 2005-05-12 18:45:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -141,7 +141,7 @@ void AudioDialog::saveConfig()
   // Fragsize (requires a restart to take effect)
   i = 1;
   i <<= (myFragsizePopup->getSelectedTag() + 7);
-  if(instance()->settings().getInt("fragsize") != (Int32)i)
+  if(instance()->settings().getInt("fragsize") != i)
   {
     instance()->settings().setInt("fragsize", i);
     restart = true;

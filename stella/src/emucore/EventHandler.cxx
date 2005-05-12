@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.54 2005-05-08 17:38:23 stephena Exp $
+// $Id: EventHandler.cxx,v 1.55 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -113,6 +113,7 @@ void EventHandler::reset(State state)
 
   myOSystem->frameBuffer().pause(myPauseFlag);
   myOSystem->sound().mute(myPauseFlag);
+  myEvent->clear();
 
   switch(myState)
   {
@@ -365,7 +366,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
               myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
             else  // Save to file in base directory
             {
-              string newPropertiesFile = myOSystem->baseDir() + "/" + \
+              string newPropertiesFile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
                 myOSystem->console().properties().get("Cartridge.Name") + ".pro";
               myOSystem->console().saveProperties(newPropertiesFile);
             }
@@ -379,6 +380,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
         myOSystem->frameBuffer().refresh();
         myOSystem->frameBuffer().setCursorState();
         myOSystem->sound().mute(true);
+        myEvent->clear();
         return;
       }
       else
@@ -393,6 +395,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
         myOSystem->frameBuffer().refresh();
         myOSystem->frameBuffer().setCursorState();
         myOSystem->sound().mute(false);
+        myEvent->clear();
         return;
       }
       myOSystem->menu().handleKeyEvent((uInt16) key, (Int32) mod, state);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.38 2005-05-09 18:58:18 stephena Exp $
+// $Id: mainSDL.cxx,v 1.39 2005-05-12 18:45:20 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -60,7 +60,7 @@ static OSystem* theOSystem = (OSystem*) NULL;
 void SetupProperties(PropertiesSet& set)
 {
   bool useMemList = true;  // It seems we always need the list in memory
-  string theAltPropertiesFile = theOSystem->settings().getString("altpro");
+  string theAltPropertiesFile = theOSystem->settings().getString("pro");
   string thePropertiesFile    = theOSystem->propertiesInputFilename();
 
   stringstream buf;
@@ -132,11 +132,6 @@ int main(int argc, char* argv[])
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
   theOSystem->settings().validate();
-  bool theShowInfoFlag = theOSystem->settings().getBool("showinfo");
-
-  // Make sure the OSystem has a valid framerate set, since it's used for
-  // more then just emulation mode
-  theOSystem->setFramerate(theOSystem->settings().getInt("framerate"));
 
   // Create the event handler for the system
   EventHandler handler(theOSystem);
@@ -178,11 +173,6 @@ int main(int argc, char* argv[])
     return 0;
   }
 */
-
-  // Print message about the framerate
-  string framerate = "Framerate:  " + theOSystem->settings().getString("framerate");
-  if(theShowInfoFlag)
-    cout << framerate << endl;
 
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if

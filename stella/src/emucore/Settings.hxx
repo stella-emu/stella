@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.22 2005-05-02 19:36:05 stephena Exp $
+// $Id: Settings.hxx,v 1.23 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.22 2005-05-02 19:36:05 stephena Exp $
+  @version $Id: Settings.hxx,v 1.23 2005-05-12 18:45:21 stephena Exp $
 */
 class Settings
 {
@@ -59,7 +59,7 @@ class Settings
 
       @return False on any errors, otherwise true
     */
-    bool loadCommandLine(Int32 argc, char** argv);
+    bool loadCommandLine(int argc, char** argv);
 
     /**
       This method should be called *after* settings have been read,
@@ -74,12 +74,12 @@ class Settings
 
     /**
       Get the value assigned to the specified key.  If the key does
-      not exist then -1 is returned.
+      not exist then 0 is returned.
 
       @param key The key of the setting to lookup
       @return The integer value of the setting
     */
-    Int32 getInt(const string& key) const;
+    uInt32 getInt(const string& key) const;
 
     /**
       Get the value assigned to the specified key.  If the key does

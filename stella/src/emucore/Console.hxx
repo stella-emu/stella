@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.30 2005-05-05 00:10:47 stephena Exp $
+// $Id: Console.hxx,v 1.31 2005-05-12 18:45:20 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -35,7 +35,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.30 2005-05-05 00:10:47 stephena Exp $
+  @version $Id: Console.hxx,v 1.31 2005-05-12 18:45:20 stephena Exp $
 */
 class Console
 {
@@ -86,11 +86,6 @@ class Console
       @return The properties being used by the game
     */
     const Properties& properties() const;
-
-    /**
-      Get the frame rate for the emulation
-    */
-    uInt32 frameRate() const;
 
     /**
       Get the console switches
@@ -203,6 +198,7 @@ class Console
 
   private:
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true);
+    void setDeveloperProperties();
 #endif
 
   private:
@@ -226,9 +222,6 @@ class Console
  
     // Pointer to the 6502 based system being emulated 
     System* mySystem;
-
-    // Frame rate being used by the emulator
-    uInt32 myFrameRate;
 };
 
 #endif

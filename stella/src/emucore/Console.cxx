@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.52 2005-05-11 19:36:00 stephena Exp $
+// $Id: Console.cxx,v 1.53 2005-05-12 18:45:20 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -74,6 +74,11 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   // Make sure the MD5 value of the cartridge is set in the properties
   if(myProperties.get("Cartridge.MD5") == "")
     myProperties.set("Cartridge.MD5", md5);
+
+#ifdef DEVELOPER_SUPPORT
+  // A developer can override properties from the commandline
+  setDeveloperProperties();
+#endif
 
   // Setup the controllers based on properties
   string left = myProperties.get("Controller.Left");
@@ -157,31 +162,31 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
 
   // Set the correct framerate based on the format of the ROM
   // This can be overridden by changing the framerate in the
-  // VideoDialog box, but it can't be saved (ie, framerate is now
-  // solely determined based on ROM format).
-  myFrameRate = 60;
-  if(myProperties.get("Display.Format") == "NTSC")
-    myFrameRate = 60;
-  else if(myProperties.get("Display.Format") == "PAL")
-    myFrameRate = 50;
-
-  // Don't save the framerate to the settings file; only use it internally
-  myOSystem->settings().setInt("framerate", myFrameRate, false);
+  // VideoDialog box or on the commandline, but it can't be saved
+  // (ie, framerate is now solely determined based on ROM format).
+  uInt32 framerate = myOSystem->settings().getInt("framerate");
+  if(framerate == 0)
+  {
+    if(myProperties.get("Display.Format") == "NTSC")
+      framerate = 60;
+    else if(myProperties.get("Display.Format") == "PAL")
+      framerate = 50;
+    else
+      framerate = 60;
+  }
+  myOSystem->setFramerate(framerate);
 
   // Initialize the framebuffer interface.
   // This must be done *after* a reset, since it needs updated values.
   initializeVideo();
 
   // Initialize the sound interface.
-  myOSystem->sound().setFrameRate(myFrameRate);
+  myOSystem->sound().setFrameRate(framerate);
   myOSystem->sound().initialize();
 
   // Initialize the menuing system with updated values from the framebuffer
   myOSystem->menu().initialize();
   myOSystem->menu().setGameProfile(myProperties);
-
-  // Finally, let the main loop know about the framerate
-  myOSystem->setFramerate(myFrameRate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,9 +244,7 @@ void Console::toggleFormat()
 
   setPalette();
   myOSystem->setFramerate(framerate);
-
-  // Don't save the framerate to the settings file; only use it internally
-  myOSystem->settings().setInt("framerate", framerate);
+//FIXME - should be change sound rate as well??
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -515,4 +518,71 @@ void Console::enableBits(bool enable)
   string message = string("TIA bits") + (enable ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::setDeveloperProperties()
+{
+  Settings& settings = myOSystem->settings();
+  string s;
+
+  s = settings.getString("type");
+  if(s != "")
+    myProperties.set("Cartridge.Type", s);
+
+  s = settings.getString("ld");
+  if(s != "")
+    myProperties.set("Console.LeftDifficulty", s);
+
+  s = settings.getString("rd");
+  if(s != "")
+    myProperties.set("Console.RightDifficulty", s);
+
+  s = settings.getString("tv");
+  if(s != "")
+    myProperties.set("Console.TelevisionType", s);
+
+  s = settings.getString("lc");
+  if(s != "")
+    myProperties.set("Controller.Left", s);
+
+  s = settings.getString("rc");
+  if(s != "")
+    myProperties.set("Controller.Right", s);
+
+  s = settings.getString("bc");
+  if(s != "")
+  {
+    myProperties.set("Controller.Left", s);
+    myProperties.set("Controller.Right", s);
+  }
+
+  s = settings.getString("format");
+  if(s != "")
+    myProperties.set("Display.Format", s);
+
+  s = settings.getString("xstart");
+  if(s != "")
+    myProperties.set("Display.XStart", s);
+
+  s = settings.getString("ystart");
+  if(s != "")
+    myProperties.set("Display.YStart", s);
+
+  s = settings.getString("width");
+  if(s != "")
+    myProperties.set("Display.Width", s);
+
+  s = settings.getString("height");
+  if(s != "")
+    myProperties.set("Display.Height", s);
+
+  s = settings.getString("cpu");
+  if(s != "")
+    myProperties.set("Emulation.CPU", s);
+
+  s = settings.getString("hmove");
+  if(s != "")
+    myProperties.set("Emulation.HmoveBlanks", s);
+}
+
 #endif

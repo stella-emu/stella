@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.31 2005-05-10 19:20:40 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.32 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.31 2005-05-10 19:20:40 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.32 2005-05-12 18:45:21 stephena Exp $
 */
 class FrameBuffer
 {
@@ -378,18 +378,6 @@ class FrameBuffer
     */
     virtual void translateCoords(Int32* x, Int32* y) = 0;
 
-#if 0
-FIXME
-    /**
-      This routine is called when the emulation has received
-      a pause event.
-
-      @param status  The received pause status
-    */
-    virtual void pauseEvent(bool status) = 0;
-#endif
-
-
   protected:
     // The parent system for the framebuffer
     OSystem* myOSystem;
@@ -470,97 +458,3 @@ FIXME
 };
 
 #endif
-
-/*
-    // Enumeration representing the different types of user interface widgets
-    enum Widget { W_NONE, MAIN_MENU, REMAP_MENU, INFO_MENU };
-
-    Widget currentSelectedWidget();
-    Event::Type currentSelectedEvent();
-
-    // Add binding between a StellaEvent key and a core event
-    void addKeyBinding(Event::Type event, StellaEvent::KeyCode key);
-
-    // Add binding between a StellaEvent joystick and a core event
-    void addJoyBinding(Event::Type event, StellaEvent::JoyStick stick,
-                       StellaEvent::JoyCode code);
-
-    // Remove all bindings for this core event
-    void deleteBinding(Event::Type event);
-
-    // Draw the main menu
-    void drawMainMenu();
-
-    // Draw the remap menu
-    void drawRemapMenu();
-
-    // Draw the info menu
-    void drawInfoMenu();
-
-    // Move the cursor up 'amt' lines, possibly scrolling the list of items
-    void moveCursorUp(uInt32 amt);
-
-    // Move the cursor down 'amt' lines, possibly scrolling the list of items
-    void moveCursorDown(uInt32 amt);
-
-    // scan the mapping arrays and update the remap menu
-    void loadRemapMenu();
-*/
-
-/*
-    // Structure used for main menu items
-    struct MainMenuItem
-    {
-      Widget widget;
-      string action;
-    };
-
-    // Table of strings representing the various StellaEvent codes
-    static const char* ourEventName[StellaEvent::LastKCODE];
-
-    // Type of interface item currently slated for redraw
-    Widget myCurrentWidget;
-
-    // Indicates that an event is currently being remapped
-    bool myRemapEventSelectedFlag;
-
-    // Indicates the current selected event being remapped
-    Event::Type mySelectedEvent;
-
-    // Indicates if we are in menu mode
-    bool myMenuMode;
-
-    // The maximum number of vertical lines of text that can be onscreen
-    Int32 myMaxRows;
-
-    // The maximum number of characters of text in a row
-    Int32 myMaxColumns;
-
-    // Keep track of current selected main menu item
-    uInt32 myMainMenuIndex, myMainMenuItems;
-
-    // Keep track of current selected remap menu item
-    Int32 myRemapMenuIndex, myRemapMenuLowIndex, myRemapMenuHighIndex;
-    Int32 myRemapMenuItems, myRemapMenuMaxLines;
-
-    // The width of the information menu, determined by the longest string
-    Int32 myInfoMenuWidth;
-
-    // Holds information about the current selected ROM image
-    string ourPropertiesInfo[9];
-
-    // Holds static strings for the main menu
-    static MainMenuItem ourMainMenu[2];
-
-    // Holds the current key mappings
-    Event::Type* myKeyTable;
-
-    // Holds the number of items in the keytable array
-    uInt32 myKeyTableSize;
-
-    // Holds the current joystick mappings
-    Event::Type* myJoyTable;
-
-    // Holds the number of items in the joytable array
-    uInt32 myJoyTableSize;
-*/

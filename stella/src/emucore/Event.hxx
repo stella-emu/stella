@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.8 2005-05-06 22:50:14 stephena Exp $
+// $Id: Event.hxx,v 1.9 2005-05-12 18:45:21 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.8 2005-05-06 22:50:14 stephena Exp $
+  @version $Id: Event.hxx,v 1.9 2005-05-12 18:45:21 stephena Exp $
 */
 class Event
 {
@@ -98,6 +98,11 @@ class Event
       Set the value associated with the event of the specified type
     */
     virtual void set(Type type, Int32 value);
+
+    /**
+      Clears the event array (resets to initial state)
+    */
+    virtual void clear();
 
   protected:
     // Number of event types there are
