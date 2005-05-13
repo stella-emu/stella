@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.3 2005-05-10 19:20:44 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.4 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,7 +38,7 @@
 #define UP_DOWN_BOX_HEIGHT	10
 
 // Up arrow
-static uInt32 up_arrow[8] = {
+static unsigned int up_arrow[8] = {
   0x00000000,
   0x00000000,
   0x00001000,
@@ -50,7 +50,7 @@ static uInt32 up_arrow[8] = {
 };
 
 // Down arrow
-static uInt32 down_arrow[8] = {
+static unsigned int down_arrow[8] = {
   0x00000000,
   0x00000000,
   0x00100010,
@@ -62,7 +62,7 @@ static uInt32 down_arrow[8] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ScrollBarWidget::ScrollBarWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h)
+ScrollBarWidget::ScrollBarWidget(GuiObject* boss, int x, int y, int w, int h)
     : Widget(boss, x, y, w, h), CommandSender(boss)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
@@ -81,10 +81,10 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseDown(Int32 x, Int32 y, Int32 button,
-                                      Int32 clickCount)
+void ScrollBarWidget::handleMouseDown(int x, int y, int button,
+                                      int clickCount)
 {
-  Int32 old_pos = _currentPos;
+  int old_pos = _currentPos;
 
   // Do nothing if there are less items than fit on one page
   if(_numEntries <= _entriesPerPage)
@@ -121,16 +121,16 @@ void ScrollBarWidget::handleMouseDown(Int32 x, Int32 y, Int32 button,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseUp(Int32 x, Int32 y, Int32 button,
-                                    Int32 clickCount)
+void ScrollBarWidget::handleMouseUp(int x, int y, int button,
+                                    int clickCount)
 {
   _draggingPart = kNoPart;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
+void ScrollBarWidget::handleMouseWheel(int x, int y, int direction)
 {
-  Int32 old_pos = _currentPos;
+  int old_pos = _currentPos;
 
   if(_numEntries < _entriesPerPage)
     return;
@@ -145,7 +145,7 @@ void ScrollBarWidget::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
+void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
 {
   // Do nothing if there are less items than fit on one page
   if(_numEntries <= _entriesPerPage)
@@ -153,7 +153,7 @@ void ScrollBarWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
 
   if(_draggingPart == kSliderPart)
   {
-    Int32 old_pos = _currentPos;
+    int old_pos = _currentPos;
     _sliderPos = y - _sliderDeltaMouseDownPos;
 
     if(_sliderPos < UP_DOWN_BOX_HEIGHT)
@@ -168,7 +168,7 @@ void ScrollBarWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
   }
   else
   {
-    Int32 old_part = _part;
+    int old_part = _part;
 
     if(y <= UP_DOWN_BOX_HEIGHT)   // Up arrow
       _part = kUpArrowPart;
@@ -213,7 +213,7 @@ void ScrollBarWidget::handleTickle() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::checkBounds(Int32 old_pos)
+void ScrollBarWidget::checkBounds(int old_pos)
 {
   if(_numEntries <= _entriesPerPage || _currentPos < 0)
     _currentPos = 0;

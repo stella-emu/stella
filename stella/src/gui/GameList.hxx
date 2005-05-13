@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.hxx,v 1.2 2005-05-11 01:44:39 stephena Exp $
+// $Id: GameList.hxx,v 1.3 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -45,10 +45,10 @@ class GameList
     GameList();
     ~GameList();
 
-    inline const string& rom(Int32 i)  { return myArray[i]._rom; }
-    inline const string& name(Int32 i) { return myArray[i]._name; }
-    inline const string& note(Int32 i) { return myArray[i]._note; }
-    inline Int32 size() { return myArray.size(); }
+    inline const string& rom(int i)  { return myArray[i]._rom; }
+    inline const string& name(int i) { return myArray[i]._name; }
+    inline const string& note(int i) { return myArray[i]._note; }
+    inline int size() { return myArray.size(); }
 
     void clear() { myArray.clear(); }
     void appendGame(const string& rom, const string& name, const string& note);

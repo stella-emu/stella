@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.7 2005-05-13 01:03:27 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.8 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,7 +31,7 @@
 #define UP_DOWN_BOX_HEIGHT	10
 
 // Little up/down arrow
-static uInt32 up_down_arrows[8] = {
+static unsigned int up_down_arrows[8] = {
   0x00000000,
   0x00001000,
   0x00011100,
@@ -43,7 +43,7 @@ static uInt32 up_down_arrows[8] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PopUpDialog::PopUpDialog(PopUpWidget* boss, Int32 clickX, Int32 clickY)
+PopUpDialog::PopUpDialog(PopUpWidget* boss, int clickX, int clickY)
     : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
       _popUpBoss(boss)
 {
@@ -84,28 +84,28 @@ void PopUpDialog::drawDialog()
   fb.vLine(_x + _w - 1, _y, _y + _h - 1, kShadowColor);
 
   // Draw the entries
-  Int32 count = _popUpBoss->_entries.size();
-  for(Int32 i = 0; i < count; i++)
+  int count = _popUpBoss->_entries.size();
+  for(int i = 0; i < count; i++)
     drawMenuEntry(i, i == _selection);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpDialog::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void PopUpDialog::handleMouseDown(int x, int y, int button, int clickCount)
 {
   _clickX = -1;
   _clickY = -1;
-  _openTime = (uInt32)-1;
+  _openTime = (int)-1;
 
   if(_popUpBoss->_cmd)
     _popUpBoss->sendCommand(_popUpBoss->_cmd, _selection);
 
   // We remove the dialog and delete the dialog when the user has selected an item
   parent()->removeDialog();
-  delete this;
+  delete this;   // FIXME - this is a memory leak
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpDialog::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
+void PopUpDialog::handleMouseWheel(int x, int y, int direction)
 {
   if(direction < 0)
     moveUp();
@@ -114,10 +114,10 @@ void PopUpDialog::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpDialog::handleMouseMoved(Int32 x, Int32 y, Int32 button)
+void PopUpDialog::handleMouseMoved(int x, int y, int button)
 {
   // Compute over which item the mouse is...
-  Int32 item = findItem(x, y);
+  int item = findItem(x, y);
 
   if(item >= 0 && _popUpBoss->_entries[item].name.size() == 0)
     item = -1;
@@ -130,7 +130,7 @@ void PopUpDialog::handleMouseMoved(Int32 x, Int32 y, Int32 button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpDialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
+void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   if(isMouseDown())
     return;
@@ -158,7 +158,7 @@ void PopUpDialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 PopUpDialog::findItem(Int32 x, Int32 y) const
+int PopUpDialog::findItem(int x, int y) const
 {
   if(x >= 0 && x < _w && y >= 0 && y < _h)
     return (y-2) / kLineHeight;
@@ -167,7 +167,7 @@ Int32 PopUpDialog::findItem(Int32 x, Int32 y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpDialog::setSelection(Int32 item)
+void PopUpDialog::setSelection(int item)
 {
   if(item != _selection)
   {
@@ -206,7 +206,7 @@ void PopUpDialog::moveUp()
   }
   else if(_selection > 0)
   {
-    Int32 item = _selection;
+    int item = _selection;
     do {
       item--;
     } while (item >= 0 && _popUpBoss->_entries[item].name.size() == 0);
@@ -218,7 +218,7 @@ void PopUpDialog::moveUp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpDialog::moveDown()
 {
-  Int32 lastItem = _popUpBoss->_entries.size() - 1;
+  int lastItem = _popUpBoss->_entries.size() - 1;
 
   if(_selection < 0)
   {
@@ -226,7 +226,7 @@ void PopUpDialog::moveDown()
   }
   else if(_selection < lastItem)
   {
-    Int32 item = _selection;
+    int item = _selection;
     do {
       item++;
     } while (item <= lastItem && _popUpBoss->_entries[item].name.size() == 0);
@@ -236,13 +236,13 @@ void PopUpDialog::moveDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpDialog::drawMenuEntry(Int32 entry, bool hilite)
+void PopUpDialog::drawMenuEntry(int entry, bool hilite)
 {
   // Draw one entry of the popup menu, including selection
   assert(entry >= 0);
-  Int32 x = _x + 1;
-  Int32 y = _y + 1 + kLineHeight * entry;
-  Int32 w = _w - 2;
+  int x = _x + 1;
+  int y = _y + 1 + kLineHeight * entry;
+  int w = _w - 2;
   string& name = _popUpBoss->_entries[entry].name;
 
   FrameBuffer& fb = _popUpBoss->instance()->frameBuffer();
@@ -261,8 +261,8 @@ void PopUpDialog::drawMenuEntry(Int32 entry, bool hilite)
 // PopUpWidget
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PopUpWidget::PopUpWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h,
-                         const string& label, uInt32 labelWidth, Int32 cmd)
+PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
+                         const string& label, int labelWidth, int cmd)
     : Widget(boss, x, y - 1, w, h + 2),
       CommandSender(boss),
       _label(label),
@@ -279,7 +279,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if(isEnabled())
   {
@@ -289,7 +289,7 @@ void PopUpWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCou
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::appendEntry(const string& entry, uInt32 tag)
+void PopUpWidget::appendEntry(const string& entry, int tag)
 {
   Entry e;
   e.name = entry;
@@ -305,7 +305,7 @@ void PopUpWidget::clearEntries()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::setSelected(Int32 item)
+void PopUpWidget::setSelected(int item)
 {
   if(item != _selectedItem)
   {
@@ -317,9 +317,9 @@ void PopUpWidget::setSelected(Int32 item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::setSelectedTag(uInt32 tag)
+void PopUpWidget::setSelectedTag(int tag)
 {
-  for(uInt32 item = 0; item < _entries.size(); ++item)
+  for(unsigned int item = 0; item < _entries.size(); ++item)
   {
     if(_entries[item].tag == tag)
     {
@@ -334,8 +334,8 @@ void PopUpWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = instance()->frameBuffer();
 
-  Int32 x = _x + _labelWidth;
-  Int32 w = _w - _labelWidth;
+  int x = _x + _labelWidth;
+  int w = _w - _labelWidth;
 
   // Draw the label, if any
   if (_labelWidth > 0)

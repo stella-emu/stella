@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.5 2005-05-13 01:03:27 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.6 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define LAUNCHER_DIALOG_HXX
 
 class DialogContainer;
+class LauncherOptionsDialog;
 class CommandSender;
 class StaticTextWidget;
 class ListWidget;
@@ -36,10 +37,10 @@ class LauncherDialog : public Dialog
 {
   public:
     LauncherDialog(OSystem* osystem, DialogContainer* parent,
-                   uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+                   int x, int y, int w, int h);
     ~LauncherDialog();
 
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
   protected:
     void updateListing(bool fullReload = false);
@@ -52,6 +53,8 @@ class LauncherDialog : public Dialog
     StaticTextWidget* myNote;
     StaticTextWidget* myRomCount;
     GameList*         myGameList;
+
+    LauncherOptionsDialog* myOptions;
 
   private:
     void loadListFromDisk();

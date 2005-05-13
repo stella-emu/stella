@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.23 2005-05-12 18:45:21 stephena Exp $
+// $Id: Settings.hxx,v 1.24 2005-05-13 18:28:05 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.23 2005-05-12 18:45:21 stephena Exp $
+  @version $Id: Settings.hxx,v 1.24 2005-05-13 18:28:05 stephena Exp $
 */
 class Settings
 {
@@ -79,7 +79,7 @@ class Settings
       @param key The key of the setting to lookup
       @return The integer value of the setting
     */
-    uInt32 getInt(const string& key) const;
+    int getInt(const string& key) const;
 
     /**
       Get the value assigned to the specified key.  If the key does
@@ -115,7 +115,7 @@ class Settings
       @param value The value to assign to the setting
       @param save  Whether this setting should be saved to the rc-file.
     */
-    void setInt(const string& key, const uInt32 value, bool save = true);
+    void setInt(const string& key, const int value, bool save = true);
 
     /**
       Set the value associated with key to the given value.

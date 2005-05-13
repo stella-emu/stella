@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.15 2005-05-13 01:03:27 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.16 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -76,9 +76,9 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   addBigButton("Help", kHelpCmd, 'H');
 
   // Set some sane values for the dialog boxes
-  uInt16 fbWidth  = osystem->frameBuffer().baseWidth();
-  uInt16 fbHeight = osystem->frameBuffer().baseHeight();
-  uInt16 x, y, w, h;
+  int fbWidth  = osystem->frameBuffer().baseWidth();
+  int fbHeight = osystem->frameBuffer().baseHeight();
+  int x, y, w, h;
 
   // Now create all the dialogs attached to each menu button
   w = 230; h = 130;
@@ -118,8 +118,8 @@ OptionsDialog::~OptionsDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::checkBounds(uInt16 width, uInt16 height,
-                                uInt16* x, uInt16* y, uInt16* w, uInt16* h)
+void OptionsDialog::checkBounds(int width, int height,
+                                int* x, int* y, int* w, int* h)
 {
   if(*w > width) *w = width;
   if(*h > height) *h = height;
@@ -128,7 +128,7 @@ void OptionsDialog::checkBounds(uInt16 width, uInt16 height,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void OptionsDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {

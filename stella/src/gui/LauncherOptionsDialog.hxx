@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.1 2005-05-13 01:03:27 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,75 +22,41 @@
 #ifndef LAUNCHER_OPTIONS_DIALOG_HXX
 #define LAUNCHER_OPTIONS_DIALOG_HXX
 
-#include "Dialog.hxx"
-
+class OSystem;
+class DialogContainer;
 class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
-class SliderWidget;
 class StaticTextWidget;
+
+#include "Dialog.hxx"
 
 class LauncherOptionsDialog : public Dialog
 {
   public:
-    LauncherOptionsDialog(const String &domain, int x, int y, int w, int h);
+    LauncherOptionsDialog(OSystem* osystem, DialogContainer* parent,
+                          int x, int y, int w, int h);
+    ~LauncherOptionsDialog();
 
-    void open();
-    void close();
-    void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    virtual void loadConfig();
+    virtual void saveConfig();
 
-  protected:
-    BrowserDialog    *myRomBrowser;
-    BrowserDialog    *mySnapBrowser;
-    StaticTextWidget *_savePath;
-    StaticTextWidget *_extraPath;
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
   protected:
-    /** Config domain this dialog is used to edit. */
-    string _domain;
-	
-	int addGraphicControls(GuiObject *boss, int yoffset);
-	int addMIDIControls(GuiObject *boss, int yoffset);
-	int addVolumeControls(GuiObject *boss, int yoffset);
+    BrowserDialog* myBrowser;
 
-	void setGraphicSettingsState(bool enabled);
-	void setAudioSettingsState(bool enabled);
-	void setVolumeSettingsState(bool enabled);
+    // Rom path controls
+    StaticTextWidget* myRomPath;
+
+    // Snapshot controls
+    StaticTextWidget* mySnapPath;
+	PopUpWidget*      mySnapType;
+	CheckboxWidget*   mySnapSingle;
 
   private:
-    //
-    // Graphics controls
-    //
-	bool _enableGraphicSettings;
-	PopUpWidget *_gfxPopUp;
-	CheckboxWidget *_fullscreenCheckbox;
-	CheckboxWidget *_aspectCheckbox;
-
-	//
-	// Audio controls
-	//
-	bool _enableAudioSettings;
-	PopUpWidget *_midiPopUp;
-	CheckboxWidget *_multiMidiCheckbox;
-	CheckboxWidget *_mt32Checkbox;
-	CheckboxWidget *_subCheckbox;
-
-	//
-	// Volume controls
-	//
-	bool _enableVolumeSettings;
-
-	SliderWidget *_masterVolumeSlider;
-	StaticTextWidget *_masterVolumeLabel;
-
-	SliderWidget *_musicVolumeSlider;
-	StaticTextWidget *_musicVolumeLabel;
-
-	SliderWidget *_sfxVolumeSlider;
-	StaticTextWidget *_sfxVolumeLabel;
-
-	SliderWidget *_speechVolumeSlider;
-	StaticTextWidget *_speechVolumeLabel;
+    void openRomBrowser();
+    void openSnapBrowser();
 };
 
 #endif

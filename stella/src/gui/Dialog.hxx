@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.11 2005-05-13 01:03:27 stephena Exp $
+// $Id: Dialog.hxx,v 1.12 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class DialogContainer;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.11 2005-05-13 01:03:27 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.12 2005-05-13 18:28:05 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -43,7 +43,7 @@ class Dialog : public GuiObject
 
   public:
     Dialog(OSystem* instance, DialogContainer* parent,
-           uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+           int x, int y, int w, int h);
 
     virtual ~Dialog();
 
@@ -61,18 +61,18 @@ class Dialog : public GuiObject
     void releaseFocus();
 
     virtual void handleTickle(); // Called periodically (in every guiloop() )
-    virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
-    virtual void handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers);
+    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
+    virtual void handleKeyUp(int ascii, int keycode, int modifiers);
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual void handleMouseMoved(int x, int y, int button);
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
     virtual void handleScreenChanged() {}
 	
     Widget* findWidget(int x, int y); // Find the widget at pos x,y if any
 
-    ButtonWidget* addButton(int x, int y, const string& label, uInt32 cmd, char hotkey);
+    ButtonWidget* addButton(int x, int y, const string& label, int cmd, char hotkey);
 
     void setResult(int result) { _result = result; }
     int getResult() const { return _result; }
@@ -82,7 +82,7 @@ class Dialog : public GuiObject
     Widget* _focusedWidget;
     Widget* _dragWidget;
     bool    _visible;
-    uInt32  _openCount;
+    int  _openCount;
 
   private:
     int _result;

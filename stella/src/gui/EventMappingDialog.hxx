@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.hxx,v 1.5 2005-05-10 19:20:43 stephena Exp $
+// $Id: EventMappingDialog.hxx,v 1.6 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,10 +35,10 @@ class EventMappingDialog : public Dialog
 {
   public:
     EventMappingDialog(OSystem* osystem, DialogContainer* parent,
-                       uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+                       int x, int y, int w, int h);
     ~EventMappingDialog();
 
-    virtual void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);
+    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
 
   protected:
     ButtonWidget*     myMapButton;
@@ -56,7 +56,7 @@ class EventMappingDialog : public Dialog
       kStopMapCmd  = 'smap'
     };
 
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
     void startRemapping();
     void eraseRemapping();
@@ -67,7 +67,7 @@ class EventMappingDialog : public Dialog
 
   private:
     // Indicates the event that is currently selected
-    Int32 myActionSelected;
+    int myActionSelected;
 
     // Indicates if we're currently in remap mode
     // In this mode, the next event received is remapped to some action

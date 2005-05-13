@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.41 2005-05-12 18:45:21 stephena Exp $
+// $Id: Settings.cxx,v 1.42 2005-05-13 18:28:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -164,7 +164,7 @@ bool Settings::loadCommandLine(int argc, char** argv)
 void Settings::validate()
 {
   string s;
-  uInt32 i;
+  int i;
   float f;
 
   s = getString("video");
@@ -313,7 +313,7 @@ void Settings::saveConfig()
       << ";" << endl;
 
   // Write out each of the key and value pairs
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(unsigned int i = 0; i < mySize; ++i)
     if(mySettings[i].save)
       out << mySettings[i].key << " = " << mySettings[i].value << endl;
 
@@ -324,7 +324,7 @@ void Settings::saveConfig()
 void Settings::set(const string& key, const string& value, bool save)
 {
   // See if the setting already exists
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(unsigned int i = 0; i < mySize; ++i)
   {
     // If a key is already present in the array, then we assume
     // that it was set by the emulation core and must be saved
@@ -343,7 +343,7 @@ void Settings::set(const string& key, const string& value, bool save)
     // Yes, so we'll make the array twice as large
     Setting* newSettings = new Setting[myCapacity * 2];
 
-    for(uInt32 i = 0; i < mySize; ++i)
+    for(unsigned int i = 0; i < mySize; ++i)
     {
       newSettings[i] = mySettings[i];
     }
@@ -363,7 +363,7 @@ void Settings::set(const string& key, const string& value, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setInt(const string& key, const uInt32 value, bool save)
+void Settings::setInt(const string& key, const int value, bool save)
 {
   ostringstream stream;
   stream << value;
@@ -399,12 +399,12 @@ void Settings::setString(const string& key, const string& value, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Settings::getInt(const string& key) const
+int Settings::getInt(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(unsigned int i = 0; i < mySize; ++i)
     if(key == mySettings[i].key)
-      return (uInt32) atoi(mySettings[i].value.c_str());
+      return (int) atoi(mySettings[i].value.c_str());
 
   return 0;
 }
@@ -413,7 +413,7 @@ uInt32 Settings::getInt(const string& key) const
 float Settings::getFloat(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(unsigned int i = 0; i < mySize; ++i)
     if(key == mySettings[i].key)
       return (float) atof(mySettings[i].value.c_str());
 
@@ -424,7 +424,7 @@ float Settings::getFloat(const string& key) const
 bool Settings::getBool(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(unsigned int i = 0; i < mySize; ++i)
   {
     if(key == mySettings[i].key)
     {
@@ -444,7 +444,7 @@ bool Settings::getBool(const string& key) const
 string Settings::getString(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(unsigned int i = 0; i < mySize; ++i)
     if(key == mySettings[i].key)
       return mySettings[i].value;
 
@@ -455,7 +455,7 @@ string Settings::getString(const string& key) const
 bool Settings::contains(const string& key)
 {
   // Try to find the named setting
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(unsigned int i = 0; i < mySize; ++i)
     if(key == mySettings[i].key)
       return true;
 

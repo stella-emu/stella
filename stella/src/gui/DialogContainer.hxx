@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.1 2005-05-04 21:32:25 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.1 2005-05-04 21:32:25 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
 */
 class DialogContainer
 {
@@ -60,7 +60,7 @@ class DialogContainer
       @param mod   modifiers
       @param state state of key
     */
-    void handleKeyEvent(uInt16 key, Int32 mod, uInt8 state);
+    void handleKeyEvent(int key, int mod, uInt8 state);
 
     /**
       Handle a mouse motion event.
@@ -69,7 +69,7 @@ class DialogContainer
       @param y      The y location
       @param button The currently pressed button
     */
-    void handleMouseMotionEvent(Int32 x, Int32 y, Int32 button);
+    void handleMouseMotionEvent(int x, int y, int button);
 
     /**
       Handle a mouse button event.
@@ -79,7 +79,7 @@ class DialogContainer
       @param y     The y location
       @param state The state (pressed or released)
     */
-    void handleMouseButtonEvent(MouseButton b, Int32 x, Int32 y, uInt8 state);
+    void handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 state);
 
 // FIXME - add joystick handler
 
@@ -116,17 +116,17 @@ class DialogContainer
 
     // For continuous events (keyDown)
     struct {
-      uInt16 ascii;
+      int ascii;
       uInt8 flags;
-      uInt32 keycode;
+      int keycode;
     } myCurrentKeyDown;
-    uInt32 myKeyRepeatTime;
+    int myKeyRepeatTime;
 	
     // Position and time of last mouse click (used to detect double clicks)
     struct {
-      Int16 x, y;   // Position of mouse when the click occured
-      uInt32 time;  // Time
-      Int32 count;  // How often was it already pressed?
+      int x, y;   // Position of mouse when the click occured
+      int time;  // Time
+      int count;  // How often was it already pressed?
     } myLastClick;
 };
 

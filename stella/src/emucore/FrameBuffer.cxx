@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.35 2005-05-12 18:45:21 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.36 2005-05-13 18:28:05 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -176,10 +176,10 @@ void FrameBuffer::update()
         // Draw any pending messages
         if(myMessageTime > 0)
         {
-          uInt32 w = myFont->getStringWidth(myMessageText) + 10;
-          uInt32 h = myFont->getFontHeight() + 8;
-          uInt32 x = (myBaseDim.w >> 1) - (w >> 1);
-          uInt32 y = myBaseDim.h - h - 10/2;
+          Int32 w = myFont->getStringWidth(myMessageText) + 10;
+          Int32 h = myFont->getFontHeight() + 8;
+          Int32 x = (myBaseDim.w >> 1) - (w >> 1);
+          Int32 y = myBaseDim.h - h - 10/2;
 
           // Draw the bounded box and text
           blendRect(x+1, y+2, w-2, h-4, kBGColor);

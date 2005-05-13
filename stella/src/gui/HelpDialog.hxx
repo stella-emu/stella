@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.hxx,v 1.2 2005-05-10 19:20:43 stephena Exp $
+// $Id: HelpDialog.hxx,v 1.3 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ class HelpDialog : public Dialog
 {
   public:
     HelpDialog(OSystem* osystem, DialogContainer* parent,
-               uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+               int x, int y, int w, int h);
     ~HelpDialog();
 
   protected:
@@ -56,7 +56,7 @@ class HelpDialog : public Dialog
     uInt8 myNumPages;
 
   private:
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
     virtual void updateStrings(uInt8 page, uInt8 lines,
                                string& title, string*& key, string* &dsc);
 	void displayInfo();

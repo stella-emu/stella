@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.11 2005-05-13 01:03:27 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.12 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,7 @@
 #include "DialogContainer.hxx"
 #include "GuiUtils.hxx"
 #include "BrowserDialog.hxx"
+#include "LauncherOptionsDialog.hxx"
 #include "LauncherDialog.hxx"
 
 #include "bspf.hxx"
@@ -55,7 +56,7 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
-                               uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+                               int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     myList(NULL),
     myGameList(NULL)
@@ -111,12 +112,10 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   }
 */
 
-/*
-  // Create file browser dialog
-  string romdir = instance()->settings().getString("romdir");
-  myBrowser = new BrowserDialog(osystem, parent, "Select ROM directory", romdir,
-                                20, 20, _w - 40, _h - 40);
-*/
+  // Create the launcher options dialog, where you can change ROM
+  // and snapshot paths
+  myOptions = new LauncherOptionsDialog(osystem, parent, 20, 40, _w - 40, _h - 80);
+
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
   myGameList = new GameList();
@@ -125,6 +124,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::~LauncherDialog()
 {
+  delete myOptions;
   delete myGameList;
 }
 
@@ -186,7 +186,7 @@ void LauncherDialog::updateListing(bool fullReload)
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
-  for (Int32 i = 0; i < (Int32) myGameList->size(); ++i)
+  for (int i = 0; i < (int) myGameList->size(); ++i)
     l.push_back(myGameList->name(i));
 
   myList->setList(l);
@@ -281,7 +281,7 @@ void LauncherDialog::createListCache()
   ofstream out(cacheFile.c_str());
 
   // Write the gamelist to the cachefile (sorting is already done)
-  for (Int32 i = 0; i < (Int32) myGameList->size(); ++i)
+  for (int i = 0; i < (int) myGameList->size(); ++i)
   {
     out << myGameList->rom(i)  << "|"
         << myGameList->name(i) << "|"
@@ -300,7 +300,7 @@ string LauncherDialog::MD5FromFile(const string& path)
 
   uInt8* image = new uInt8[512 * 1024];
   in.read((char*)image, 512 * 1024);
-  uInt32 size = in.gcount();
+  int size = in.gcount();
   in.close();
 
   string md5 = MD5(image, size);
@@ -310,9 +310,9 @@ string LauncherDialog::MD5FromFile(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void LauncherDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
-  Int32 item;
+  int item;
 
   switch (cmd)
   {
@@ -328,8 +328,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 dat
       break;
 
     case kOptionsCmd:
-      cerr << "add options to stack\n";
-//      parent()->addDialog(myBrowser);
+      parent()->addDialog(myOptions);
       break;
 
     case kReloadCmd:

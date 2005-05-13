@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.6 2005-05-13 01:03:27 stephena Exp $
+// $Id: GuiObject.hxx,v 1.7 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,7 +33,7 @@ class Widget;
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.6 2005-05-13 01:03:27 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.7 2005-05-13 18:28:05 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
@@ -53,12 +53,12 @@ class GuiObject : public CommandReceiver
     OSystem* instance() { return myOSystem; }
     DialogContainer* parent() { return myParent; }
 
-    virtual Int16  getAbsX() const     { return _x; }
-    virtual Int16  getAbsY() const     { return _y; }
-    virtual Int16  getChildX() const   { return getAbsX(); }
-    virtual Int16  getChildY() const   { return getAbsY(); }
-    virtual uInt16 getWidth() const    { return _w; }
-    virtual uInt16 getHeight() const   { return _h; }
+    virtual int getAbsX() const     { return _x; }
+    virtual int getAbsY() const     { return _y; }
+    virtual int getChildX() const   { return getAbsX(); }
+    virtual int getChildY() const   { return getAbsY(); }
+    virtual int getWidth() const    { return _w; }
+    virtual int getHeight() const   { return _h; }
 
     virtual bool isVisible() const = 0;
     virtual void draw() = 0;
@@ -67,8 +67,8 @@ class GuiObject : public CommandReceiver
     OSystem*         myOSystem;
     DialogContainer* myParent;
 
-    Int16   _x, _y;
-    uInt16  _w, _h;
+    int _x, _y;
+    int _w, _h;
 
     Widget* _firstWidget;
 

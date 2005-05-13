@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.2 2005-05-11 19:36:00 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.3 2005-05-13 18:28:05 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -44,7 +44,7 @@ DialogContainer::~DialogContainer()
 void DialogContainer::draw()
 {
   // Draw all the dialogs on the stack
-  for(Int32 i = 0; i < myDialogStack.size(); i++)
+  for(int i = 0; i < myDialogStack.size(); i++)
   {
     myDialogStack[i]->open();
     myDialogStack[i]->drawDialog();
@@ -79,7 +79,7 @@ void DialogContainer::reStack()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleKeyEvent(uInt16 key, Int32 mod, uInt8 state)
+void DialogContainer::handleKeyEvent(int key, int mod, uInt8 state)
 {
   if(myDialogStack.empty())
     return;
@@ -93,7 +93,7 @@ void DialogContainer::handleKeyEvent(uInt16 key, Int32 mod, uInt8 state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleMouseMotionEvent(Int32 x, Int32 y, Int32 button)
+void DialogContainer::handleMouseMotionEvent(int x, int y, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -106,7 +106,7 @@ void DialogContainer::handleMouseMotionEvent(Int32 x, Int32 y, Int32 button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleMouseButtonEvent(MouseButton b, Int32 x, Int32 y, uInt8 state)
+void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 state)
 {
   if(myDialogStack.empty())
     return;
@@ -115,7 +115,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, Int32 x, Int32 y, uI
   Dialog* activeDialog = myDialogStack.top();
 
   // Get the current time for detecting double clicks
-  uInt32 time = myOSystem->getTicks() / 1000;  // we only need millisecond precision
+  int time = myOSystem->getTicks() / 1000;  // we only need millisecond precision
 
   switch(b)
   {

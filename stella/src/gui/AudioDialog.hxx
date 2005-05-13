@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.hxx,v 1.2 2005-05-10 19:20:43 stephena Exp $
+// $Id: AudioDialog.hxx,v 1.3 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,7 +37,7 @@ class AudioDialog : public Dialog
 {
   public:
     AudioDialog(OSystem* osystem, DialogContainer* parent,
-                uInt16 x, uInt16 y, uInt16 w, uInt16 h);
+                int x, int y, int w, int h);
     ~AudioDialog();
 
   protected:
@@ -52,7 +52,7 @@ class AudioDialog : public Dialog
     void setDefaults();
 
     void handleSoundEnableChange(bool active);
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
 };
 
 #endif

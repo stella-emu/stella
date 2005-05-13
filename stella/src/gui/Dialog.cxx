@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.13 2005-05-13 01:03:27 stephena Exp $
+// $Id: Dialog.cxx,v 1.14 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,7 +37,7 @@
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem* instance, DialogContainer* parent,
-               uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+               int x, int y, int w, int h)
     : GuiObject(instance, parent, x, y, w, h),
       _mouseWidget(0),
       _focusedWidget(0),
@@ -193,7 +193,7 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
+void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   if(_focusedWidget)
     if (_focusedWidget->handleKeyDown(ascii, keycode, modifiers))
@@ -220,7 +220,7 @@ void Dialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers)
+void Dialog::handleKeyUp(int ascii, int keycode, int modifiers)
 {
   // Focused widget receives keyup events
   if(_focusedWidget)
@@ -286,7 +286,7 @@ void Dialog::handleTickle()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void Dialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {
@@ -307,8 +307,8 @@ Widget* Dialog::findWidget(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget* Dialog::addButton(Int32 x, Int32 y, const string& label,
-                                uInt32 cmd, char hotkey)
+ButtonWidget* Dialog::addButton(int x, int y, const string& label,
+                                int cmd, char hotkey)
 {
   return new ButtonWidget(this, x, y, kButtonWidth, 16, label, cmd, hotkey);
 }

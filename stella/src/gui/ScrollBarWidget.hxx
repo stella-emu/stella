@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.hxx,v 1.1 2005-04-04 02:19:22 stephena Exp $
+// $Id: ScrollBarWidget.hxx,v 1.2 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,14 +41,14 @@ class ScrollBarWidget : public Widget, public CommandSender
     } Part;
 
   public:
-    ScrollBarWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h);
+    ScrollBarWidget(GuiObject* boss, int x, int y, int w, int h);
 
-    virtual void handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount);
-    virtual void handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount);
-    virtual void handleMouseWheel(Int32 x, Int32 y, Int32 direction);
-    virtual void handleMouseMoved(Int32 x, Int32 y, Int32 button);
-    virtual void handleMouseEntered(Int32 button) { setFlags(WIDGET_HILITED); }
-    virtual void handleMouseLeft(Int32 button)    { clearFlags(WIDGET_HILITED); _part = kNoPart; draw(); }
+    virtual void handleMouseDown(int x, int y, int button, int clickCount);
+    virtual void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual void handleMouseWheel(int x, int y, int direction);
+    virtual void handleMouseMoved(int x, int y, int button);
+    virtual void handleMouseEntered(int button) { setFlags(WIDGET_HILITED); }
+    virtual void handleMouseLeft(int button)    { clearFlags(WIDGET_HILITED); _part = kNoPart; draw(); }
     virtual void handleTickle();
 
     // FIXME - this should be private, but then we also have to add accessors
@@ -57,9 +57,9 @@ class ScrollBarWidget : public Widget, public CommandSender
     void recalc();
 
   public:
-    Int32 _numEntries;
-    Int32 _entriesPerPage;
-    Int32 _currentPos;
+    int _numEntries;
+    int _entriesPerPage;
+    int _currentPos;
 
   protected:
     void drawWidget(bool hilite);
@@ -67,10 +67,10 @@ class ScrollBarWidget : public Widget, public CommandSender
 
   protected:
     Part  _part;
-    Int32 _sliderHeight;
-    Int32 _sliderPos;
+    int _sliderHeight;
+    int _sliderPos;
     Part  _draggingPart;
-    Int32 _sliderDeltaMouseDownPos;
+    int _sliderDeltaMouseDownPos;
 };
 
 #endif

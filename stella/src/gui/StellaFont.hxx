@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaFont.hxx,v 1.2 2005-04-29 19:05:06 stephena Exp $
+// $Id: StellaFont.hxx,v 1.3 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,15 +39,15 @@ enum TextAlignment {
 struct FontDesc
 {
   const char*   name;        /* font name */
-  Int32         maxwidth;    /* max width in pixels */
-  Int32         height;      /* height in pixels */
-  Int32         ascent;      /* ascent (baseline) height */
-  Int32         firstchar;   /* first character in bitmap */
-  Int32         size;        /* font size in glyphs */
+  int           maxwidth;    /* max width in pixels */
+  int           height;      /* height in pixels */
+  int           ascent;      /* ascent (baseline) height */
+  int           firstchar;   /* first character in bitmap */
+  int           size;        /* font size in glyphs */
   const uInt16* bits;        /* 16-bit right-padded bitmap data */
-  const uInt32* offset;      /* offsets into bitmap data */
+  const int*    offset;      /* offsets into bitmap data */
   const uInt8*  width;       /* character widths or NULL if fixed */
-  Int32         defaultchar; /* default char (not glyph index) */
+  int           defaultchar; /* default char (not glyph index) */
   long          bits_size;   /* # words of bitmap_t bits */
 };
 
@@ -58,15 +58,15 @@ class StellaFont
 	
     const FontDesc& desc() { return myFontDesc; }
 
-    Int32 getFontHeight() const { return myFontDesc.height; }
-    Int32 getMaxCharWidth() const { return myFontDesc.maxwidth; }
+    int getFontHeight() const { return myFontDesc.height; }
+    int getMaxCharWidth() const { return myFontDesc.maxwidth; }
 
-    Int32 getCharWidth(uInt8 chr) const;
+    int getCharWidth(uInt8 chr) const;
 
-    Int32 getStringWidth(const string& str) const;
-    void  drawString(const string& str, uInt32 x, uInt32 y, uInt32 w,
+    int getStringWidth(const string& str) const;
+    void  drawString(const string& str, int x, int y, int w,
                      OverlayColor color, TextAlignment align = kTextAlignLeft,
-                     Int32 deltax = 0, bool useEllipsis = true) const;
+                     int deltax = 0, bool useEllipsis = true) const;
 
   protected:
     FrameBuffer* myFrameBuffer;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cxx,v 1.3 2005-05-11 23:06:52 stephena Exp $
+// $Id: GameList.cxx,v 1.4 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -51,10 +51,10 @@ void GameList::sortByName()
     return;
 
   // Simple selection sort
-  for(uInt32 i = 0; i < myArray.size()-1; i++)
+  for(unsigned int i = 0; i < myArray.size()-1; i++)
   {
-    uInt32 min = i;
-    for (uInt32 j = i+1; j < myArray.size(); j++)
+    unsigned int min = i;
+    for (unsigned int j = i+1; j < myArray.size(); j++)
       if (myArray[j]._name < myArray[min]._name)
         min = j;
       if (min != i)

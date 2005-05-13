@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.8 2005-05-10 19:20:44 stephena Exp $
+// $Id: Widget.cxx,v 1.9 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +30,7 @@
 #include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget::Widget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h)
+Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
     : GuiObject(boss->instance(), boss->parent(), x, y, w, h),
       _type(0),
       _boss(boss),
@@ -58,7 +58,7 @@ void Widget::draw()
   if(!isVisible() || !_boss->isVisible())
     return;
 
-  Int32 oldX = _x, oldY = _y;
+  int oldX = _x, oldY = _y;
 
   // Account for our relative position in the dialog
   _x = getAbsX();
@@ -105,7 +105,7 @@ void Widget::draw()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::findWidgetInChain(Widget *w, Int32 x, Int32 y)
+Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
 {
   while(w)
   {
@@ -122,7 +122,7 @@ Widget* Widget::findWidgetInChain(Widget *w, Int32 x, Int32 y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
+StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
                                    const string& text, TextAlignment align)
     : Widget(boss, x, y, w, h),
       _align(align)
@@ -133,7 +133,7 @@ StaticTextWidget::StaticTextWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, I
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setValue(Int32 value)
+void StaticTextWidget::setValue(int value)
 {
   char buf[256];
   sprintf(buf, "%d", value);
@@ -153,8 +153,8 @@ void StaticTextWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
-                           const string& label, Int32 cmd, uInt8 hotkey)
+ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
+                           const string& label, int cmd, uInt8 hotkey)
     : StaticTextWidget(boss, x, y, w, h, label, kTextAlignCenter),
       CommandSender(boss),
 	  _cmd(cmd),
@@ -165,7 +165,7 @@ ButtonWidget::ButtonWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
     sendCommand(_cmd, 0);
@@ -182,7 +182,7 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
-static uInt32 checked_img[8] =
+static unsigned int checked_img[8] =
 {
 	0x00000000,
 	0x01000010,
@@ -195,8 +195,8 @@ static uInt32 checked_img[8] =
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheckboxWidget::CheckboxWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
-                               const string& label, Int32 cmd, uInt8 hotkey)
+CheckboxWidget::CheckboxWidget(GuiObject *boss, int x, int y, int w, int h,
+                               const string& label, int cmd, uInt8 hotkey)
     : ButtonWidget(boss, x, y, w, h, label, cmd, hotkey),
       _state(false)
 {
@@ -205,7 +205,7 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
     toggleState();
@@ -248,8 +248,8 @@ void CheckboxWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SliderWidget::SliderWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
-                           const string& label, Int32 labelWidth, Int32 cmd, uInt8 hotkey)
+SliderWidget::SliderWidget(GuiObject *boss, int x, int y, int w, int h,
+                           const string& label, int labelWidth, int cmd, uInt8 hotkey)
   : ButtonWidget(boss, x, y, w, h, label, cmd, hotkey),
     _value(0),
     _oldValue(0),
@@ -263,13 +263,13 @@ SliderWidget::SliderWidget(GuiObject *boss, Int32 x, Int32 y, Int32 w, Int32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
+void SliderWidget::handleMouseMoved(int x, int y, int button)
 {
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
   if(isEnabled() && _isDragging && x >= (int)_labelWidth)
   {
-    Int32 newValue = posToValue(x - _labelWidth);
+    int newValue = posToValue(x - _labelWidth);
 
     if(newValue < _valueMin)
       newValue = _valueMin;
@@ -289,7 +289,7 @@ void SliderWidget::handleMouseMoved(Int32 x, Int32 y, Int32 button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void SliderWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if(isEnabled())
   {
@@ -299,7 +299,7 @@ void SliderWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCo
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && _isDragging)
     sendCommand(_cmd, _value);
@@ -327,13 +327,13 @@ void SliderWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 SliderWidget::valueToPos(Int32 value)
+int SliderWidget::valueToPos(int value)
 {
   return ((_w - _labelWidth - 4) * (value - _valueMin) / (_valueMax - _valueMin));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 SliderWidget::posToValue(Int32 pos)
+int SliderWidget::posToValue(int pos)
 {
   return (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - 4) + _valueMin;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.4 2005-05-10 19:20:43 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.5 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +30,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::GameInfoDialog(OSystem* osystem, DialogContainer* parent,
-                               uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+                               int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h),
       myPage(1),
       myNumPages(2),
@@ -122,7 +122,7 @@ void GameInfoDialog::displayInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void GameInfoDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {

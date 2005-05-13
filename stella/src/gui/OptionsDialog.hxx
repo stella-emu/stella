@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.5 2005-05-10 19:20:44 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.6 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,7 @@ class OptionsDialog : public Dialog
     OptionsDialog(OSystem* osystem, DialogContainer* parent);
     ~OptionsDialog();
 
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
     void setGameProfile(Properties& props) { myGameInfoDialog->setGameProfile(props); }
 
@@ -55,8 +55,8 @@ class OptionsDialog : public Dialog
     HelpDialog*         myHelpDialog;
 
   private:
-    void checkBounds(uInt16 width, uInt16 height,
-                     uInt16* x, uInt16* y, uInt16* w, uInt16* h);
+    void checkBounds(int width, int height,
+                     int* x, int* y, int* w, int* h);
 };
 
 #endif

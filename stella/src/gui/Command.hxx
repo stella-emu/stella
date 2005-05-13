@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Command.hxx,v 1.1 2005-03-10 22:59:40 stephena Exp $
+// $Id: Command.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,7 +28,7 @@
   Allows base GUI objects to send and receive commands.
   
   @author  Stephen Anthony
-  @version $Id: Command.hxx,v 1.1 2005-03-10 22:59:40 stephena Exp $
+  @version $Id: Command.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
 */
 class CommandReceiver;
 class CommandSender;
@@ -38,7 +38,7 @@ class CommandReceiver
   friend class CommandSender;
 
   protected:
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data) {}
+    virtual void handleCommand(CommandSender* sender, int cmd, int data) {}
 };
 
 class CommandSender
@@ -52,7 +52,7 @@ class CommandSender
     void setTarget(CommandReceiver* target) { _target = target; }
     CommandReceiver* getTarget() const { return _target; }
 
-    virtual void sendCommand(uInt32 cmd, uInt32 data)
+    virtual void sendCommand(int cmd, int data)
     {
       if(_target && cmd)
         _target->handleCommand(this, cmd, data);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.2 2005-05-10 19:20:43 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.3 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 #include "ListWidget.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
+#include "GuiObject.hxx"
 #include "GuiUtils.hxx"
 #include "BrowserDialog.hxx"
 
@@ -41,16 +42,13 @@ enum {
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BrowserDialog::BrowserDialog(OSystem* osystem, DialogContainer* parent,
-                             const string& title, const string& startpath,
-                             uInt16 x, uInt16 y, uInt16 w, uInt16 h)
-  : Dialog(osystem, parent, x, y, w, h),
+BrowserDialog::BrowserDialog(GuiObject* boss, int x, int y, int w, int h)
+  : Dialog(boss->instance(), boss->parent(), x, y, w, h),
+    CommandSender(boss),
     _fileList(NULL),
-    _currentPath(NULL),
-    _startPath(startpath)
+    _currentPath(NULL)
 {
-  // Headline - TODO: should be customizable during creation time
-  new StaticTextWidget(this, 10, 8, _w - 2 * 10, kLineHeight, title, kTextAlignCenter);
+  _title = new StaticTextWidget(this, 10, 8, _w - 2 * 10, kLineHeight, "", kTextAlignCenter);
 
   // Current path - TODO: handle long paths ?
   _currentPath = new StaticTextWidget(this, 10, 20, _w - 2 * 10, kLineHeight,
@@ -65,18 +63,16 @@ BrowserDialog::BrowserDialog(OSystem* osystem, DialogContainer* parent,
   addButton(10, _h - 24, "Go up", kGoUpCmd, 0);
   addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
   addButton(_w - (kButtonWidth+10), _h - 24, "Choose", kChooseCmd, 0);
-
-  // If no node has been set, or the last used one is now invalid,
-  // go back to the root/default dir.
-  if (_startPath != "")
-    _choice = FilesystemNode(_startPath);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::loadConfig()
+void BrowserDialog::setStartPath(const string& startpath)
 {
   // If no node has been set, or the last used one is now invalid,
   // go back to the root/default dir.
+  if (startpath != "")
+    _choice = FilesystemNode(startpath);
+
   if (_choice.isValid())
     _node = _choice;
   else if (!_node.isValid())
@@ -87,7 +83,7 @@ void BrowserDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void BrowserDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch (cmd)
   {
@@ -95,13 +91,16 @@ void BrowserDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data
     {
       // If nothing is selected in the list widget, choose the current dir.
       // Else, choose the dir that is selected.
-      Int32 selection = _fileList->getSelected();
+      int selection = _fileList->getSelected();
       if (selection >= 0)
         _choice = _nodeContent[selection];
       else
         _choice = _node;
 
-      setResult(1);
+      // Send a signal to the calling class that a selection has been made
+      if(_cmd)
+        sendCommand(_cmd, 0);
+
       close();
       break;
     }
@@ -135,8 +134,8 @@ void BrowserDialog::updateListing()
 
   // Populate the ListWidget
   StringList list;
-  Int32 size = _nodeContent.size();
-  for (Int32 i = 0; i < size; i++)
+  int size = _nodeContent.size();
+  for (int i = 0; i < size; i++)
     list.push_back(_nodeContent[i].displayName());
 
   _fileList->setList(list);

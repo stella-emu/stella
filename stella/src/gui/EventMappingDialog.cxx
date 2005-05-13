@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.8 2005-05-10 19:20:43 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.9 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent,
-                                       uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+                                       int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h),
       myActionSelected(-1),
       myRemapStatus(false)
@@ -147,7 +147,7 @@ void EventMappingDialog::drawKeyMapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingDialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
+void EventMappingDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Remap keys in remap mode, otherwise pass to listwidget
   if(myRemapStatus && myActionSelected >= 0)
@@ -162,7 +162,7 @@ void EventMappingDialog::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifi
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void EventMappingDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {

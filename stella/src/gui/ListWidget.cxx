@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.7 2005-05-12 18:45:21 stephena Exp $
+// $Id: ListWidget.cxx,v 1.8 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ListWidget::ListWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h)
+ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
     : Widget(boss, x, y, w - kScrollBarWidth, h),
       CommandSender(boss)
 {
@@ -63,13 +63,13 @@ ListWidget::~ListWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::setSelected(Int32 item)
+void ListWidget::setSelected(int item)
 {
-  assert(item >= -1 && item < (Int32)_list.size());
+  assert(item >= -1 && item < (int)_list.size());
 
   if(isEnabled() && _selectedItem != item)
   {
-    Int32 oldSelectedItem = _selectedItem;
+    int oldSelectedItem = _selectedItem;
     _selectedItem = item;
 
     if (_editMode)
@@ -96,7 +96,7 @@ void ListWidget::setList(const StringList& list)
   if (_editMode && _caretVisible)
     drawCaret(true);
 
-  Int32 size = list.size();
+  int size = list.size();
   _list = list;
 
   if (_currentPos >= size)
@@ -109,9 +109,9 @@ void ListWidget::setList(const StringList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::scrollTo(Int32 item)
+void ListWidget::scrollTo(int item)
 {
-  Int32 size = _list.size();
+  int size = _list.size();
   if (item >= size)
     item = size - 1;
   if (item < 0)
@@ -146,13 +146,13 @@ void ListWidget::handleTickle()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if (isEnabled())
   {
-    Int32 oldSelectedItem = _selectedItem;
+    int oldSelectedItem = _selectedItem;
     _selectedItem = (y - 1) / kLineHeight + _currentPos;
-    if (_selectedItem > (Int32)_list.size() - 1)
+    if (_selectedItem > (int)_list.size() - 1)
       _selectedItem = -1;
 
     if (oldSelectedItem != _selectedItem)
@@ -172,7 +172,7 @@ void ListWidget::handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCoun
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
+void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
@@ -181,7 +181,7 @@ void ListWidget::handleMouseUp(Int32 x, Int32 y, Int32 button, Int32 clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseWheel(Int32 x, Int32 y, Int32 direction)
+void ListWidget::handleMouseWheel(int x, int y, int direction)
 {
   _scrollBar->handleMouseWheel(x, y, direction);
 }
@@ -198,11 +198,11 @@ static bool matchingCharsIgnoringCase(string s, string pattern)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
+bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   bool handled = true;
   bool dirty = false;
-  Int32 oldSelectedItem = _selectedItem;
+  int oldSelectedItem = _selectedItem;
 
   if (!_editMode && isalpha((char)ascii))
   {
@@ -211,7 +211,7 @@ bool ListWidget::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
     // Only works in a useful fashion if the list entries are sorted.
     // TODO: Maybe this should be off by default, and instead we add a
     // method "enableQuickSelect()" or so ?
-    uInt32 time = instance()->getTicks() / 1000;
+    int time = instance()->getTicks() / 1000;
     if (_quickSelectTime < time)
       _quickSelectStr = (char)ascii;
     else
@@ -343,7 +343,7 @@ bool ListWidget::handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyUp(uInt16 ascii, Int32 keycode, Int32 modifiers)
+bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 {
   if (keycode == _currentKeyDown)
     _currentKeyDown = 0;
@@ -359,7 +359,7 @@ void ListWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void ListWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch (cmd)
   {
@@ -411,9 +411,9 @@ void ListWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 ListWidget::getCaretPos() const
+int ListWidget::getCaretPos() const
 {
-  Int32 caretpos = 0;
+  int caretpos = 0;
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   if (_numberingMode == kListNumberingZero || _numberingMode == kListNumberingOne)

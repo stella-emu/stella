@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.5 2005-05-12 18:45:21 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.6 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,7 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
-                         uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+                         int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
   int yoff = 10,
@@ -104,7 +104,7 @@ AudioDialog::~AudioDialog()
 void AudioDialog::loadConfig()
 {
   bool b;
-  uInt32 i;
+  int i;
 
   // Volume
   myVolumeSlider->setValue(instance()->settings().getInt("volume"));
@@ -131,7 +131,7 @@ void AudioDialog::loadConfig()
 void AudioDialog::saveConfig()
 {
   string s;
-  uInt32 i;
+  int i;
   bool b, restart = false;
 
   // Volume
@@ -194,7 +194,7 @@ void AudioDialog::handleSoundEnableChange(bool active)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void AudioDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {

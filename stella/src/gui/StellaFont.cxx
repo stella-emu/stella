@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaFont.cxx,v 1.2 2005-04-29 19:05:06 stephena Exp $
+// $Id: StellaFont.cxx,v 1.3 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,7 @@ StellaFont::StellaFont(FrameBuffer* buffer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 StellaFont::getCharWidth(uInt8 chr) const
+int StellaFont::getCharWidth(uInt8 chr) const
 {
   // If no width table is specified, return the maximum width
   if(!myFontDesc.width)
@@ -64,24 +64,24 @@ Int32 StellaFont::getCharWidth(uInt8 chr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 StellaFont::getStringWidth(const string& str) const
+int StellaFont::getStringWidth(const string& str) const
 {
-  Int32 space = 0;
+  int space = 0;
 
-  for(uInt32 i = 0; i < str.size(); ++i)
+  for(unsigned int i = 0; i < str.size(); ++i)
     space += getCharWidth(str[i]);
 
   return space;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaFont::drawString(const string& s, uInt32 x, uInt32 y, uInt32 w,
+void StellaFont::drawString(const string& s, int x, int y, int w,
                             OverlayColor color, TextAlignment align,
-                            Int32 deltax, bool useEllipsis) const
+                            int deltax, bool useEllipsis) const
 {
-  const uInt32 leftX = x, rightX = x + w;
-  uInt32 i;
-  uInt32 width = getStringWidth(s);
+  const int leftX = x, rightX = x + w;
+  unsigned int i;
+  int width = getStringWidth(s);
   string str;
 	
   if(useEllipsis && width > w)

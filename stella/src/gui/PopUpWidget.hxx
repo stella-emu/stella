@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.3 2005-03-26 19:26:48 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.4 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,41 +47,41 @@ class PopUpWidget : public Widget, public CommandSender
 
   struct Entry {
     string name;
-    uInt32 tag;
+    int tag;
   };
 
   typedef Array<Entry> EntryList;
 
   protected:
     EntryList _entries;
-    Int32     _selectedItem;
+    int     _selectedItem;
     string    _label;
-	uInt32    _labelWidth;
+	int    _labelWidth;
 
   public:
-    PopUpWidget(GuiObject* boss, Int32 x, Int32 y, Int32 w, Int32 h,
-                const string& label, uInt32 labelWidth = 0, Int32 cmd = 0);
+    PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
+                const string& label, int labelWidth = 0, int cmd = 0);
 
-    void handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount);
+    void handleMouseDown(int x, int y, int button, int clickCount);
 
-    void appendEntry(const string& entry, uInt32 tag = (uInt32)-1);
+    void appendEntry(const string& entry, int tag = (int)-1);
     void clearEntries();
 
     /** Select the entry at the given index. */
-    void setSelected(Int32 item);
+    void setSelected(int item);
 	
     /** Select the first entry matching the given tag. */
-    void setSelectedTag(uInt32 tag);
+    void setSelectedTag(int tag);
 
-    Int32 getSelected() const               { return _selectedItem; }
-    uInt32 getSelectedTag() const           { return (_selectedItem >= 0) ? _entries[_selectedItem].tag : (uInt32)-1; }
+    int getSelected() const               { return _selectedItem; }
+    int getSelectedTag() const           { return (_selectedItem >= 0) ? _entries[_selectedItem].tag : (int)-1; }
     const string& getSelectedString() const { return (_selectedItem >= 0) ? _entries[_selectedItem].name : EmptyString; }
 
   protected:
     void drawWidget(bool hilite);
 
   protected:
-    uInt32	_cmd;
+    int	_cmd;
 
   private:
     PopUpDialog* myPopUpDialog;
@@ -94,26 +94,26 @@ class PopUpDialog : public Dialog
 {
   protected:
     PopUpWidget* _popUpBoss;
-    Int32        _clickX, _clickY;
+    int        _clickX, _clickY;
     uInt8*       _buffer;
-    Int32        _selection;
-    uInt32       _openTime;
+    int        _selection;
+    int       _openTime;
 
   public:
-    PopUpDialog(PopUpWidget* boss, Int32 clickX, Int32 clickY);
+    PopUpDialog(PopUpWidget* boss, int clickX, int clickY);
 	
     void drawDialog();
 
-    void handleMouseDown(Int32 x, Int32 y, Int32 button, Int32 clickCount);
-    void handleMouseWheel(Int32 x, Int32 y, Int32 direction);           // Scroll through entries with scroll wheel
-    void handleMouseMoved(Int32 x, Int32 y, Int32 button);              // Redraw selections depending on mouse position
-    void handleKeyDown(uInt16 ascii, Int32 keycode, Int32 modifiers);   // Scroll through entries with arrow keys etc.
+    void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseWheel(int x, int y, int direction);           // Scroll through entries with scroll wheel
+    void handleMouseMoved(int x, int y, int button);              // Redraw selections depending on mouse position
+    void handleKeyDown(int ascii, int keycode, int modifiers);   // Scroll through entries with arrow keys etc.
 
   protected:
-    void drawMenuEntry(Int32 entry, bool hilite);
+    void drawMenuEntry(int entry, bool hilite);
 	
-    Int32 findItem(Int32 x, Int32 y) const;
-    void setSelection(Int32 item);
+    int findItem(int x, int y) const;
+    void setSelection(int item);
     bool isMouseDown();
 	
     void moveUp();

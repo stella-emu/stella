@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.11 2005-05-11 19:36:00 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.12 2005-05-13 18:28:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
-                         uInt16 x, uInt16 y, uInt16 w, uInt16 h)
+                         int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
   int yoff = 10,
@@ -147,7 +147,7 @@ void VideoDialog::loadConfig()
 {
   string s;
   bool b;
-  uInt32 i;
+  int i;
   float f;
 
   // Driver setting
@@ -180,7 +180,7 @@ void VideoDialog::loadConfig()
     f = 2.0;
     s = "2.0";
   }
-  i = (uInt32)((f * 10) - 10) * 10;
+  i = (int)((f * 10) - 10) * 10;
   myAspectRatioSlider->setValue(i);
   myAspectRatioLabel->setLabel(s);
 
@@ -219,7 +219,7 @@ void VideoDialog::loadConfig()
 void VideoDialog::saveConfig()
 {
   string s;
-  uInt32 i;
+  int i;
   bool b, restart = false;
 
   // Driver setting
@@ -332,7 +332,7 @@ void VideoDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleRendererChange(uInt32 item)
+void VideoDialog::handleRendererChange(int item)
 {
   // When we're in software mode, certain OpenGL-related options are disabled
   bool active = item == 0 ? false : true;
@@ -344,7 +344,7 @@ void VideoDialog::handleRendererChange(uInt32 item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data)
+void VideoDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {

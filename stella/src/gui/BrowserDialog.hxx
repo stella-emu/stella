@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.hxx,v 1.2 2005-05-10 19:20:43 stephena Exp $
+// $Id: BrowserDialog.hxx,v 1.3 2005-05-13 18:28:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,38 +22,40 @@
 #ifndef BROWSER_DIALOG_HXX
 #define BROWSER_DIALOG_HXX
 
-class DialogContainer;
-class CommandSender;
-class ButtonWidget;
+class GuiObject;
 class StaticTextWidget;
 class ListWidget;
 
 #include "Dialog.hxx"
-#include "OSystem.hxx"
+#include "Command.hxx"
 #include "FSNode.hxx"
 #include "bspf.hxx"
 
-class BrowserDialog : public Dialog
+class BrowserDialog : public Dialog, public CommandSender
 {
   public:
-    BrowserDialog(OSystem* osystem, DialogContainer* parent,
-                  const string& title, const string& startpath,
-                  uInt16 x, uInt16 y, uInt16 w, uInt16 h);
-
-    virtual void loadConfig();
-    virtual void handleCommand(CommandSender* sender, uInt32 cmd, uInt32 data);
+    BrowserDialog(GuiObject* boss, int x, int y, int w, int h);
 
     const FilesystemNode& getResult() { return _choice; }
+
+    void setTitle(const string& title) { _title->setLabel(title); }
+    void setEmitSignal(int cmd) { _cmd = cmd; }
+    void setStartPath(const string& startpath);
+
+  protected:
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    void updateListing();
 
   protected:
     ListWidget*       _fileList;
     StaticTextWidget* _currentPath;
+    StaticTextWidget* _title;
     FilesystemNode    _node;
     FSList            _nodeContent;
     FilesystemNode    _choice;
-    string            _startPath;
 
-    void updateListing();
+  private:
+    int	_cmd;
 };
 
 #endif
