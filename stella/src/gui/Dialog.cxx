@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.12 2005-05-10 19:20:43 stephena Exp $
+// $Id: Dialog.cxx,v 1.13 2005-05-13 01:03:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,19 +52,6 @@ Dialog::~Dialog()
 {
   delete _firstWidget;
   _firstWidget = NULL;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Dialog::runModal() // FIXME
-{
-  // Open up
-  open();
-
-  // Start processing events
-  //  g_gui.runLoop();
-
-  // Return the result code
-  return _result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

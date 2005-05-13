@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.15 2005-05-11 19:35:59 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.16 2005-05-13 01:03:27 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -66,6 +66,12 @@ void SoundSDL::initialize(bool forcerestart)
       cout << "Sound disabled." << endl << endl;
     return;
   }
+
+  // Clear the sound queue  FIXME - still an annoying partial sound playing?
+  SDL_PauseAudio(1);
+  Tia_clear_registers();
+  myRegWriteQueue.clear();
+  SDL_PauseAudio(0);
 
   if(forcerestart && myIsInitializedFlag)
     closeAudio();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.10 2005-05-12 18:45:21 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.11 2005-05-13 01:03:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,10 +39,10 @@
 #include "bspf.hxx"
 
 enum {
-  kStartCmd = 'STRT',
-  kLocationCmd = 'LOCA',
-  kReloadCmd = 'RELO',
-  kQuitCmd = 'QUIT',
+  kStartCmd   = 'STRT',
+  kOptionsCmd = 'OPTI',
+  kReloadCmd  = 'RELO',
+  kQuitCmd    = 'QUIT',
 	
   kCmdGlobalGraphicsOverride = 'OGFX',
   kCmdGlobalAudioOverride = 'OSFX',
@@ -58,7 +58,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                uInt16 x, uInt16 y, uInt16 w, uInt16 h)
   : Dialog(osystem, parent, x, y, w, h),
     myList(NULL),
-    myBrowser(NULL),
     myGameList(NULL)
 {
   // Show game name
@@ -77,7 +76,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   new ButtonWidget(this, xpos, _h - 24, width, 16, "Play", kStartCmd, 'S');
     xpos += space + width;
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kLocationCmd, 'O');
+  new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
     xpos += space + width;
   new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
     xpos += space + width;
@@ -112,11 +111,12 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   }
 */
 
+/*
   // Create file browser dialog
   string romdir = instance()->settings().getString("romdir");
   myBrowser = new BrowserDialog(osystem, parent, "Select ROM directory", romdir,
                                 20, 20, _w - 40, _h - 40);
-
+*/
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
   myGameList = new GameList();
@@ -125,7 +125,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::~LauncherDialog()
 {
-  delete myBrowser;
   delete myGameList;
 }
 
@@ -142,8 +141,10 @@ void LauncherDialog::loadConfig()
 void LauncherDialog::close()
 {
   // Save romdir specified by the browser
+/*
   FilesystemNode dir(myBrowser->getResult());
   instance()->settings().setString("romdir", dir.path());
+*/
 /*
   // Save last selection
   const int sel = _list->getSelected();
@@ -201,7 +202,8 @@ void LauncherDialog::loadListFromDisk()
 {
   Properties props;
 
-  FilesystemNode dir(myBrowser->getResult());
+  string romdir = instance()->settings().getString("romdir");
+  FilesystemNode dir(romdir);
   FSList files = dir.listDir(FilesystemNode::kListAll);
 
   // Create a entry for the GameList for each file
@@ -325,8 +327,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, uInt32 cmd, uInt32 dat
       }
       break;
 
-    case kLocationCmd:
-      parent()->addDialog(myBrowser);
+    case kOptionsCmd:
+      cerr << "add options to stack\n";
+//      parent()->addDialog(myBrowser);
       break;
 
     case kReloadCmd:

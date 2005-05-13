@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.4 2005-05-11 01:44:39 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.5 2005-05-13 01:03:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,15 +24,12 @@
 
 class DialogContainer;
 class CommandSender;
-class ButtonWidget;
 class StaticTextWidget;
 class ListWidget;
-class BrowserDialog;
+class OSystem;
 
-#include "GameList.hxx"
 #include "Dialog.hxx"
-#include "Launcher.hxx"
-#include "OSystem.hxx"
+#include "GameList.hxx"
 #include "bspf.hxx"
 
 class LauncherDialog : public Dialog
@@ -52,7 +49,6 @@ class LauncherDialog : public Dialog
 
   protected:
     ListWidget*       myList;
-    BrowserDialog*    myBrowser;
     StaticTextWidget* myNote;
     StaticTextWidget* myRomCount;
     GameList*         myGameList;

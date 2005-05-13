@@ -52,6 +52,8 @@ void Tia_get_registers (unsigned char *reg1, unsigned char *reg2, unsigned char 
 void Tia_set_registers (unsigned char reg1, unsigned char reg2, unsigned char reg3,
                         unsigned char reg4, unsigned char reg5, unsigned char reg6);
 
+void Tia_clear_registers (void);
+
 void Tia_volume (unsigned int percent);
 
 #ifdef __cplusplus

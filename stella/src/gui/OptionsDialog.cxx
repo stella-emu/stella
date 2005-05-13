@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.14 2005-05-10 19:20:44 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.15 2005-05-13 01:03:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,9 +54,6 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
-// FIXME - we have to initialize the video system at least once *before*
-//         creating a new console.  For now, just use predefined values.
-//         Eventually, this subsystem will have to take into account screen size changes
     : Dialog(osystem, parent,
             (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2,
             (osystem->frameBuffer().baseHeight() - kMainMenuHeight)/2,

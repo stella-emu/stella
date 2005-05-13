@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.10 2005-05-10 19:20:43 stephena Exp $
+// $Id: Dialog.hxx,v 1.11 2005-05-13 01:03:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class DialogContainer;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.10 2005-05-10 19:20:43 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.11 2005-05-13 01:03:27 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -46,8 +46,6 @@ class Dialog : public GuiObject
            uInt16 x, uInt16 y, uInt16 w, uInt16 h);
 
     virtual ~Dialog();
-
-    virtual int runModal();
 
     bool isVisible() const { return _visible; }
 

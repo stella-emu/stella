@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.6 2005-05-11 01:44:39 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.7 2005-05-13 01:03:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,15 +57,13 @@ PopUpDialog::PopUpDialog(PopUpWidget* boss, Int32 clickX, Int32 clickY)
   _w = _popUpBoss->_w - 10 - _popUpBoss->_labelWidth;
 	
   // Perform clipping / switch to scrolling mode if we don't fit on the screen
-  // FIXME - hard coded screen height 200. We really need an API in OSystem to query the
-  // screen height, and also OSystem should send out notification messages when the screen
-  // resolution changes... we could generalize CommandReceiver and CommandSender.
-  if(_h >= 200) // FIXME - change this to actual height of the window
-    _h = 199;
+  int height = instance()->frameBuffer().baseHeight();
+  if(_h >= height)
+    _h = height - 1;
   if(_y < 0)
     _y = 0;
-  else if(_y + _h >= 200)
-    _y = 199 - _h;
+  else if(_y + _h >= height)
+    _y = height - _h - 1;
 
   // TODO - implement scrolling if we had to move the menu, or if there are too many entries
 

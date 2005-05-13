@@ -548,6 +548,33 @@ void Tia_set_registers (unsigned char reg1, unsigned char reg2, unsigned char re
 
 
 /*****************************************************************************/
+/* Module:  Tia_clear_registers()                                            */
+/* Purpose: Clears all TIA sound registers; soft reboot                      */
+/*                                                                           */
+/* Author:  Stephen Anthony                                                  */
+/* Date:    May 12, 2005                                                     */
+/*                                                                           */
+/*****************************************************************************/
+
+void Tia_clear_registers ()
+{
+   uint8 chan;
+   for (chan = CHAN1; chan <= CHAN2; chan++)
+   {
+      Outvol[chan] = 0;
+      Div_n_cnt[chan] = 0;
+      Div_n_max[chan] = 0;
+      AUDC[chan] = 0;
+      AUDF[chan] = 0;
+      AUDV[chan] = 0;
+      P4[chan] = 0;
+      P5[chan] = 0;
+      P9[chan] = 0;
+   }
+}
+
+
+/*****************************************************************************/
 /* Module:  Tia_volume()                                                     */
 /* Purpose: Set volume to the specified percentage                           */
 /*                                                                           */

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Array.hxx,v 1.2 2005-04-04 02:19:21 stephena Exp $
+// $Id: Array.hxx,v 1.3 2005-05-13 01:03:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -121,7 +121,7 @@ class Array
       return *this;
     }
 
-    uInt32 size() const { return _size; }
+    unsigned int size() const { return _size; }
 
     void clear()
     {
