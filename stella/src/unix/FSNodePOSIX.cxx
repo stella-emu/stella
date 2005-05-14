@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.3 2005-05-13 01:03:27 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.4 2005-05-14 03:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -71,6 +71,16 @@ static const char* lastPathComponent(const string& str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static string validatePath(const string& p)
+{
+  string path = p;
+  if(p.size() <= 0 || p[0] != '/')
+    path = "/";
+
+  return path;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* FilesystemNode::getRoot()
 {
   return new POSIXFilesystemNode();
@@ -79,7 +89,7 @@ AbstractFilesystemNode* FilesystemNode::getRoot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* FilesystemNode::getNodeForPath(const string& path)
 {
-  return new POSIXFilesystemNode(path);
+  return new POSIXFilesystemNode(validatePath(path));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,15 +108,15 @@ POSIXFilesystemNode::POSIXFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 POSIXFilesystemNode::POSIXFilesystemNode(const string& p)
 {
-  Int32 len = 0, offset = p.size();
+  string path = validatePath(p);
+
+  Int32 len = 0, offset = path.size();
   struct stat st;
 
-  assert(offset > 0);
-
-  _path = p;
+  _path = path;
 
   // Extract last component from path
-  const char *str = p.c_str();
+  const char *str = path.c_str();
   while (offset > 0 && str[offset-1] == '/')
     offset--;
   while (offset > 0 && str[offset-1] != '/')

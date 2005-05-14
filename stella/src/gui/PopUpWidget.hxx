@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.4 2005-05-13 18:28:06 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.5 2005-05-14 03:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,6 +61,7 @@ class PopUpWidget : public Widget, public CommandSender
   public:
     PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
                 const string& label, int labelWidth = 0, int cmd = 0);
+    ~PopUpWidget();
 
     void handleMouseDown(int x, int y, int button, int clickCount);
 
@@ -118,6 +119,9 @@ class PopUpDialog : public Dialog
 	
     void moveUp();
     void moveDown();
+
+  private:
+    void sendSelection();
 };
 
 #endif

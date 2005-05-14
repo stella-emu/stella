@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.3 2005-05-14 03:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,8 +51,8 @@ class LauncherOptionsDialog : public Dialog
 
     // Snapshot controls
     StaticTextWidget* mySnapPath;
-	PopUpWidget*      mySnapType;
-	CheckboxWidget*   mySnapSingle;
+    PopUpWidget*      mySnapTypePopup;
+    CheckboxWidget*   mySnapSingleCheckbox;
 
   private:
     void openRomBrowser();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.12 2005-05-13 18:28:05 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.13 2005-05-14 03:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,15 +43,7 @@ enum {
   kStartCmd   = 'STRT',
   kOptionsCmd = 'OPTI',
   kReloadCmd  = 'RELO',
-  kQuitCmd    = 'QUIT',
-	
-  kCmdGlobalGraphicsOverride = 'OGFX',
-  kCmdGlobalAudioOverride = 'OSFX',
-  kCmdGlobalVolumeOverride = 'OVOL',
-
-  kCmdExtraBrowser = 'PEXT',
-  kCmdGameBrowser = 'PGME',
-  kCmdSaveBrowser = 'PSAV'
+  kQuitCmd    = 'QUIT'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,6 +67,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   const int width = (_w - 2 * border - space * (buttons - 1)) / buttons;
   int xpos = border;
 
+#ifndef MAC_OSX
   new ButtonWidget(this, xpos, _h - 24, width, 16, "Play", kStartCmd, 'S');
     xpos += space + width;
   new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
@@ -83,6 +76,16 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     xpos += space + width;
   new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
     xpos += space + width;
+#else
+  new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
+    xpos += space + width;
+  new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
+    xpos += space + width;
+  new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
+    xpos += space + width;
+  new ButtonWidget(this, xpos, _h - 24, width, 16, "Start", kStartCmd, 'Q');
+    xpos += space + width;
+#endif
 
   // Add list with game titles
   myList = new ListWidget(this, 10, 24, _w - 20, _h - 24 - 26 - 10 - 10);
@@ -114,7 +117,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Create the launcher options dialog, where you can change ROM
   // and snapshot paths
-  myOptions = new LauncherOptionsDialog(osystem, parent, 20, 40, _w - 40, _h - 80);
+  myOptions = new LauncherOptionsDialog(osystem, parent, 20, 60, _w - 40, _h - 120);
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
@@ -208,7 +211,7 @@ void LauncherDialog::loadListFromDisk()
 
   // Create a entry for the GameList for each file
   string path = dir.path(), rom, md5, name, note;
-  for (int idx = 0; idx < (int)files.size(); idx++)
+  for (unsigned int idx = 0; idx < files.size(); idx++)
   {
     rom = path + files[idx].displayName();
 
@@ -300,7 +303,7 @@ string LauncherDialog::MD5FromFile(const string& path)
 
   uInt8* image = new uInt8[512 * 1024];
   in.read((char*)image, 512 * 1024);
-  int size = in.gcount();
+  int size = (int) in.gcount();
   in.close();
 
   string md5 = MD5(image, size);

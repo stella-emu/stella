@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.3 2005-05-13 18:28:05 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.4 2005-05-14 03:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,8 +61,13 @@ BrowserDialog::BrowserDialog(GuiObject* boss, int x, int y, int w, int h)
 
   // Buttons
   addButton(10, _h - 24, "Go up", kGoUpCmd, 0);
+#ifndef MAC_OSX
+  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Choose", kChooseCmd, 0);
+  addButton(_w - (kButtonWidth+10), _h - 24, "Cancel", kCloseCmd, 0);
+#else
   addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
   addButton(_w - (kButtonWidth+10), _h - 24, "Choose", kChooseCmd, 0);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,8 +75,7 @@ void BrowserDialog::setStartPath(const string& startpath)
 {
   // If no node has been set, or the last used one is now invalid,
   // go back to the root/default dir.
-  if (startpath != "")
-    _choice = FilesystemNode(startpath);
+  _choice = FilesystemNode(startpath);
 
   if (_choice.isValid())
     _node = _choice;

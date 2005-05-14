@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.8 2005-05-13 18:28:06 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.9 2005-05-14 03:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,8 +53,8 @@ PopUpDialog::PopUpDialog(PopUpWidget* boss, int clickX, int clickY)
   // Calculate real popup dimensions
   _x = _popUpBoss->getAbsX() + _popUpBoss->_labelWidth;
   _y = _popUpBoss->getAbsY() - _popUpBoss->_selectedItem * kLineHeight;
-  _h = _popUpBoss->_entries.size() * kLineHeight + 2;
   _w = _popUpBoss->_w - 10 - _popUpBoss->_labelWidth;
+  _h = 2;  // this will increase as more items are added
 	
   // Perform clipping / switch to scrolling mode if we don't fit on the screen
   int height = instance()->frameBuffer().baseHeight();
@@ -92,16 +92,11 @@ void PopUpDialog::drawDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpDialog::handleMouseDown(int x, int y, int button, int clickCount)
 {
+  sendSelection();
+
   _clickX = -1;
   _clickY = -1;
-  _openTime = (int)-1;
-
-  if(_popUpBoss->_cmd)
-    _popUpBoss->sendCommand(_popUpBoss->_cmd, _selection);
-
-  // We remove the dialog and delete the dialog when the user has selected an item
-  parent()->removeDialog();
-  delete this;   // FIXME - this is a memory leak
+  _openTime = (unsigned int)-1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,8 +134,7 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   {
     case '\n':      // enter/return
     case '\r':
-      setResult(_selection);
-      close();
+      sendSelection();
       break;
     case 256+17:    // up arrow
       moveUp();
@@ -185,6 +179,16 @@ void PopUpDialog::setSelection(int item)
 
     _popUpBoss->instance()->frameBuffer().refresh();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpDialog::sendSelection()
+{
+  if(_popUpBoss->_cmd)
+    _popUpBoss->sendCommand(_popUpBoss->_cmd, _selection);
+
+  // We remove the dialog when the user has selected an item
+  parent()->removeDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -276,16 +280,22 @@ PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
 
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = instance()->frameBuffer().font().getStringWidth(_label);
+
+  myPopUpDialog = new PopUpDialog(this, x + getAbsX(), y + getAbsY());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PopUpWidget::~PopUpWidget()
+{
+  delete myPopUpDialog;
+  myPopUpDialog = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if(isEnabled())
-  {
-    myPopUpDialog = new PopUpDialog(this, x + getAbsX(), y + getAbsY());
     parent()->addDialog(myPopUpDialog);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -295,6 +305,9 @@ void PopUpWidget::appendEntry(const string& entry, int tag)
   e.name = entry;
   e.tag = tag;
   _entries.push_back(e);
+
+  // Each time an entry is added, the popup dialog gets larger
+  myPopUpDialog->setHeight(myPopUpDialog->getHeight() + kLineHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,6 +315,9 @@ void PopUpWidget::clearEntries()
 {
   _entries.clear();
   _selectedItem = -1;
+
+  // Reset the height of the popup dialog to be empty
+  myPopUpDialog->setHeight(2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
