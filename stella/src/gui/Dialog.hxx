@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.12 2005-05-13 18:28:05 stephena Exp $
+// $Id: Dialog.hxx,v 1.13 2005-05-16 15:37:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class DialogContainer;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.12 2005-05-13 18:28:05 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.13 2005-05-16 15:37:30 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -51,6 +51,7 @@ class Dialog : public GuiObject
 
     virtual void open();
     virtual void close();
+    virtual void reset();
     virtual void drawDialog();
     virtual void loadConfig() {}
     virtual void saveConfig() {}
@@ -82,7 +83,7 @@ class Dialog : public GuiObject
     Widget* _focusedWidget;
     Widget* _dragWidget;
     bool    _visible;
-    int  _openCount;
+    int     _openCount;
 
   private:
     int _result;

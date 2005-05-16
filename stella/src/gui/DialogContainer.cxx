@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.4 2005-05-16 00:02:32 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.5 2005-05-16 15:37:30 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -72,13 +72,12 @@ void DialogContainer::removeDialog()
 void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu
-  Dialog* d;
   while(!myDialogStack.empty())
-  {
-    d = myDialogStack.pop();
-    d->close();
-  }
+    myDialogStack.pop();
   myDialogStack.push(myBaseDialog);
+
+  // Now make sure all dialog boxes are in a known (closed) state
+  myBaseDialog->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

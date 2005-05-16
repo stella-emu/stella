@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.14 2005-05-13 18:28:05 stephena Exp $
+// $Id: Dialog.cxx,v 1.15 2005-05-16 15:37:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -89,6 +89,12 @@ void Dialog::close()
   releaseFocus();
   parent()->removeDialog();
 
+  reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::reset()
+{
   _openCount = 0;
 }
 

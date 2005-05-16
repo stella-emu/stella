@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.6 2005-05-13 18:28:05 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.7 2005-05-16 15:37:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,6 +46,7 @@ class LauncherDialog : public Dialog
     void updateListing(bool fullReload = false);
 	
     void close();
+    void reset();
     void loadConfig();
 
   protected:
