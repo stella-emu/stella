@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.9 2005-05-13 18:28:06 stephena Exp $
+// $Id: Widget.hxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -65,7 +65,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.9 2005-05-13 18:28:06 stephena Exp $
+  @version $Id: Widget.hxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -95,11 +95,11 @@ class Widget : public GuiObject
 
     void setFlags(int flags)    { _flags |= flags;
                                   _boss->instance()->frameBuffer().refresh();
-                                  }
+                                }
     void clearFlags(int flags)  { _flags &= ~flags;
                                   _boss->instance()->frameBuffer().refresh();
-                                  }
-    int getFlags() const     { return _flags; }
+                                }
+    int getFlags() const        { return _flags; }
 
     void setEnabled(bool e)     { if (e) setFlags(WIDGET_ENABLED); else clearFlags(WIDGET_ENABLED); }
     bool isEnabled() const      { return _flags & WIDGET_ENABLED; }
@@ -140,6 +140,8 @@ class StaticTextWidget : public Widget
                      int x, int y, int w, int h,
                      const string& text, TextAlignment align);
     void setValue(int value);
+    void setColor(OverlayColor color)   { _color = color; }
+    void setAlign(TextAlignment align)  { _align = align; }
     void setLabel(const string& label)  { _label = label;
                                           _boss->instance()->frameBuffer().refresh();
                                         }
@@ -149,8 +151,9 @@ class StaticTextWidget : public Widget
     void drawWidget(bool hilite);
 
   protected:
-    string _label;
+    string        _label;
     TextAlignment _align;
+    OverlayColor  _color;
 };
 
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.36 2005-05-13 18:28:05 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.37 2005-05-16 00:02:31 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -52,15 +52,16 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
 {
   // Fill the GUI colors array
   // The specific video subsystem will know what to do with it
-  uInt8 colors[5][3] = {
+  uInt8 colors[kNumColors][3] = {
     {104, 104, 104},
     {0, 0, 0},
     {64, 64, 64},
     {32, 160, 32},
-    {0, 255, 0} // FIXME - add kTextColorEm
+    {0, 255, 0},
+    {200, 0, 0}
   };
 
-  for(uInt8 i = 0; i < 5; i++)
+  for(uInt8 i = 0; i < kNumColors; i++)
     for(uInt8 j = 0; j < 3; j++)
       myGUIColors[i][j] = colors[i][j];
 
@@ -80,7 +81,7 @@ FrameBuffer::~FrameBuffer(void)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
-                             bool aspect)
+                             bool useAspect)
 {
   bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO) > 0;
 
@@ -132,7 +133,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   setWindowTitle(title);
 
   // Indicate whether we want to use aspect ratio correction
-  theUseAspectRatioFlag = aspect;
+  theUseAspectRatioFlag = useAspect;
 
   // Get the maximum size of a window for the current desktop
   theMaxZoomLevel = maxWindowSizeForScreen();
@@ -176,10 +177,10 @@ void FrameBuffer::update()
         // Draw any pending messages
         if(myMessageTime > 0)
         {
-          Int32 w = myFont->getStringWidth(myMessageText) + 10;
-          Int32 h = myFont->getFontHeight() + 8;
-          Int32 x = (myBaseDim.w >> 1) - (w >> 1);
-          Int32 y = myBaseDim.h - h - 10/2;
+          int w = myFont->getStringWidth(myMessageText) + 10;
+          int h = myFont->getFontHeight() + 8;
+          int x = (myBaseDim.w >> 1) - (w >> 1);
+          int y = myBaseDim.h - h - 10/2;
 
           // Draw the bounded box and text
           blendRect(x+1, y+2, w-2, h-4, kBGColor);
@@ -347,9 +348,6 @@ void FrameBuffer::resize(Size size, Int8 zoom)
 
   if(!createScreen())
     return;
-
-  // Update the settings
-//  myOSystem->settings().setInt("zoom", theZoomLevel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.11 2005-04-24 20:36:27 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.12 2005-05-16 00:02:31 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -26,6 +26,7 @@
 class OSystem;
 
 #include "bspf.hxx"
+#include "GuiUtils.hxx"
 #include "FrameBuffer.hxx"
 
 
@@ -33,7 +34,7 @@ class OSystem;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.11 2005-04-24 20:36:27 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.12 2005-05-16 00:02:31 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -192,9 +193,6 @@ class FrameBufferGL : public FrameBuffer
       return value;
     }
 
-    inline void* getBasePtr(uInt32 x, uInt32 y) const
-      { return (void *)((uInt16*)myTexture->pixels + y * myTexture->w + x); }
-
   private:
     // The main texture buffer
     SDL_Surface* myTexture;
@@ -218,7 +216,7 @@ class FrameBufferGL : public FrameBuffer
     GLfloat myTexCoord[4];
 
     // GUI palette
-    Uint32 myGUIPalette[5];
+    Uint32 myGUIPalette[kNumColors];
 
     // The texture filtering to use
     GLint myFilterParam;

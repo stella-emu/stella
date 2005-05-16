@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.5 2005-05-13 18:28:05 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.6 2005-05-16 00:02:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -108,8 +108,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("Remapped Events", "");
       ADD_TEXT("Most other commands can be");
       ADD_TEXT("remapped.  Please consult the");
-      ADD_TEXT("'Event Remapping' section");
-      ADD_TEXT("for more information.");
+      ADD_TEXT("'Event Mapping' section for");
+      ADD_TEXT("more information.");
       break;
   }
 

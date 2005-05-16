@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.20 2005-05-05 00:10:43 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.21 2005-05-16 00:02:31 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -65,7 +65,7 @@ bool FrameBufferSoft::initSubsystem()
 
   // Precompute the GUI palette
   // We abuse the concept of 'enum' by referring directly to the integer values
-  for(uInt8 i = 0; i < 5; i++)
+  for(uInt8 i = 0; i < kNumColors; i++)
     myGUIPalette[i] = mapRGB(myGUIColors[i][0], myGUIColors[i][1], myGUIColors[i][2]);
 
   return true;

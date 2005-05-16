@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.55 2005-05-12 18:45:21 stephena Exp $
+// $Id: EventHandler.cxx,v 1.56 2005-05-16 00:02:31 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -624,7 +624,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
 void EventHandler::setActionMappings()
 {
   // Fill the ActionList with the current key and joystick mappings
-  for(Int32 i = 0; i < 60; ++i)
+  for(Int32 i = 0; i < 61; ++i)
   {
     Event::Type event = ourActionList[i].event;
     ourActionList[i].key = "None";
@@ -1283,73 +1283,74 @@ void EventHandler::setSDLMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ActionList EventHandler::ourActionList[60] = {
-  { Event::ConsoleSelect,           "Select",                                      "" },
-  { Event::ConsoleReset,            "Reset",                                       "" },
-  { Event::ConsoleColor,            "Color TV",                                    "" },
-  { Event::ConsoleBlackWhite,       "Black & White TV",                            "" },
-  { Event::ConsoleLeftDifficultyA,  "Left Difficulty A",                           "" },
-  { Event::ConsoleLeftDifficultyB,  "Left Difficulty B",                           "" },
-  { Event::ConsoleRightDifficultyA, "Right Difficulty A",                          "" },
-  { Event::ConsoleRightDifficultyB, "Right Difficulty B",                          "" },
-  { Event::SaveState,               "Save State",                                  "" },
-  { Event::ChangeState,             "Change State",                                "" },
-  { Event::LoadState,               "Load State",                                  "" },
-  { Event::TakeSnapshot,            "Snapshot",                                    "" },
-  { Event::Pause,                   "Pause",                                       "" },
-  { Event::MenuMode,                "Enter/exit menu mode",                        "" },
-  { Event::LauncherMode,            "Enter ROM launcher",                          "" },
-  { Event::Quit,                    "Quit",                                        "" },
+ActionList EventHandler::ourActionList[61] = {
+  { Event::ConsoleSelect,               "Select",                          "" },
+  { Event::ConsoleReset,                "Reset",                           "" },
+  { Event::ConsoleColor,                "Color TV",                        "" },
+  { Event::ConsoleBlackWhite,           "Black & White TV",                "" },
+  { Event::ConsoleLeftDifficultyA,      "P1 Difficulty A",                 "" },
+  { Event::ConsoleLeftDifficultyB,      "P1 Difficulty B",                 "" },
+  { Event::ConsoleRightDifficultyA,     "P2 Difficulty A",                 "" },
+  { Event::ConsoleRightDifficultyB,     "P2 Difficulty B",                 "" },
+  { Event::SaveState,                   "Save State",                      "" },
+  { Event::ChangeState,                 "Change State",                    "" },
+  { Event::LoadState,                   "Load State",                      "" },
+  { Event::TakeSnapshot,                "Snapshot",                        "" },
+  { Event::Pause,                       "Pause",                           "" },
+  { Event::MenuMode,                    "Toggle menu/options mode",        "" },
+  { Event::DebuggerMode,                "Toggle debugger mode",            "" },
+  { Event::LauncherMode,                "Enter ROM launcher",              "" },
+  { Event::Quit,                        "Quit",                            "" },
 
-  { Event::JoystickZeroUp,          "Left Joystick Up Direction",                  "" },
-  { Event::JoystickZeroDown,        "Left Joystick Down Direction",                "" },
-  { Event::JoystickZeroLeft,        "Left Joystick Left Direction",                "" },
-  { Event::JoystickZeroRight,       "Left Joystick Right Direction",               "" },
-  { Event::JoystickZeroFire,        "Left Joystick Fire Button",                   "" },
+  { Event::JoystickZeroUp,              "P1 Joystick Up",                  "" },
+  { Event::JoystickZeroDown,            "P1 Joystick Down",                "" },
+  { Event::JoystickZeroLeft,            "P1 Joystick Left",                "" },
+  { Event::JoystickZeroRight,           "P1 Joystick Right",               "" },
+  { Event::JoystickZeroFire,            "P1 Joystick Fire",                "" },
 
-  { Event::JoystickOneUp,           "Right Joystick Up Direction",                 "" },
-  { Event::JoystickOneDown,         "Right Joystick Down Direction",               "" },
-  { Event::JoystickOneLeft,         "Right Joystick Left Direction",               "" },
-  { Event::JoystickOneRight,        "Right Joystick Right Direction",              "" },
-  { Event::JoystickOneFire,         "Right Joystick Fire Button",                  "" },
+  { Event::JoystickOneUp,               "P2 Joystick Up",                  "" },
+  { Event::JoystickOneDown,             "P2 Joystick Down",                "" },
+  { Event::JoystickOneLeft,             "P2 Joystick Left",                "" },
+  { Event::JoystickOneRight,            "P2 Joystick Right",               "" },
+  { Event::JoystickOneFire,             "P2 Joystick Fire",                "" },
 
-  { Event::BoosterGripZeroTrigger,  "Left Booster-Grip Trigger",                   "" },
-  { Event::BoosterGripZeroBooster,  "Left Booster-Grip Booster",                   "" },
+  { Event::BoosterGripZeroTrigger,      "P1 Booster-Grip Trigger",         "" },
+  { Event::BoosterGripZeroBooster,      "P1 Booster-Grip Booster",         "" },
 
-  { Event::BoosterGripOneTrigger,   "Right Booster-Grip Trigger",                  "" },
-  { Event::BoosterGripOneBooster,   "Right Booster-Grip Booster",                  "" },
+  { Event::BoosterGripOneTrigger,       "P2 Booster-Grip Trigger",         "" },
+  { Event::BoosterGripOneBooster,       "P2 Booster-Grip Booster",         "" },
 
-  { Event::DrivingZeroCounterClockwise, "Left Driving Controller Left Direction",  "" },
-  { Event::DrivingZeroClockwise,        "Left Driving Controller Right Direction", "" },
-  { Event::DrivingZeroFire,             "Left Driving Controller Fire Button",     "" },
+  { Event::DrivingZeroCounterClockwise, "P1 Driving Controller Left",      "" },
+  { Event::DrivingZeroClockwise,        "P1 Driving Controller Right",     "" },
+  { Event::DrivingZeroFire,             "P1 Driving Controller Fire",      "" },
 
-  { Event::DrivingOneCounterClockwise, "Right Driving Controller Left Direction",  "" },
-  { Event::DrivingOneClockwise,        "Right Driving Controller Right Direction", "" },
-  { Event::DrivingOneFire,             "Right Driving Controller Fire Button",     "" },
+  { Event::DrivingOneCounterClockwise,  "P2 Driving Controller Left",      "" },
+  { Event::DrivingOneClockwise,         "P2 Driving Controller Right",     "" },
+  { Event::DrivingOneFire,              "P2 Driving Controller Fire",      "" },
 
-  { Event::KeyboardZero1,           "Left GamePad 1",                              "" },
-  { Event::KeyboardZero2,           "Left GamePad 2",                              "" },
-  { Event::KeyboardZero3,           "Left GamePad 3",                              "" },
-  { Event::KeyboardZero4,           "Left GamePad 4",                              "" },
-  { Event::KeyboardZero5,           "Left GamePad 5",                              "" },
-  { Event::KeyboardZero6,           "Left GamePad 6",                              "" },
-  { Event::KeyboardZero7,           "Left GamePad 7",                              "" },
-  { Event::KeyboardZero8,           "Left GamePad 8",                              "" },
-  { Event::KeyboardZero9,           "Left GamePad 9",                              "" },
-  { Event::KeyboardZeroStar,        "Left GamePad *",                              "" },
-  { Event::KeyboardZero0,           "Left GamePad 0",                              "" },
-  { Event::KeyboardZeroPound,       "Left GamePad #",                              "" },
+  { Event::KeyboardZero1,               "P1 GamePad 1",                    "" },
+  { Event::KeyboardZero2,               "P1 GamePad 2",                    "" },
+  { Event::KeyboardZero3,               "P1 GamePad 3",                    "" },
+  { Event::KeyboardZero4,               "P1 GamePad 4",                    "" },
+  { Event::KeyboardZero5,               "P1 GamePad 5",                    "" },
+  { Event::KeyboardZero6,               "P1 GamePad 6",                    "" },
+  { Event::KeyboardZero7,               "P1 GamePad 7",                    "" },
+  { Event::KeyboardZero8,               "P1 GamePad 8",                    "" },
+  { Event::KeyboardZero9,               "P1 GamePad 9",                    "" },
+  { Event::KeyboardZeroStar,            "P1 GamePad *",                    "" },
+  { Event::KeyboardZero0,               "P1 GamePad 0",                    "" },
+  { Event::KeyboardZeroPound,           "P1 GamePad #",                    "" },
 
-  { Event::KeyboardOne1,            "Right GamePad 1",                             "" },
-  { Event::KeyboardOne2,            "Right GamePad 2",                             "" },
-  { Event::KeyboardOne3,            "Right GamePad 3",                             "" },
-  { Event::KeyboardOne4,            "Right GamePad 4",                             "" },
-  { Event::KeyboardOne5,            "Right GamePad 5",                             "" },
-  { Event::KeyboardOne6,            "Right GamePad 6",                             "" },
-  { Event::KeyboardOne7,            "Right GamePad 7",                             "" },
-  { Event::KeyboardOne8,            "Right GamePad 8",                             "" },
-  { Event::KeyboardOne9,            "Right GamePad 9",                             "" },
-  { Event::KeyboardOneStar,         "Right GamePad *",                             "" },
-  { Event::KeyboardOne0,            "Right GamePad 0",                             "" },
-  { Event::KeyboardOnePound,        "Right GamePad #",                             "" }
+  { Event::KeyboardOne1,                "P2 GamePad 1",                    "" },
+  { Event::KeyboardOne2,                "P2 GamePad 2",                    "" },
+  { Event::KeyboardOne3,                "P2 GamePad 3",                    "" },
+  { Event::KeyboardOne4,                "P2 GamePad 4",                    "" },
+  { Event::KeyboardOne5,                "P2 GamePad 5",                    "" },
+  { Event::KeyboardOne6,                "P2 GamePad 6",                    "" },
+  { Event::KeyboardOne7,                "P2 GamePad 7",                    "" },
+  { Event::KeyboardOne8,                "P2 GamePad 8",                    "" },
+  { Event::KeyboardOne9,                "P2 GamePad 9",                    "" },
+  { Event::KeyboardOneStar,             "P2 GamePad *",                    "" },
+  { Event::KeyboardOne0,                "P2 GamePad 0",                    "" },
+  { Event::KeyboardOnePound,            "P2 GamePad #",                    "" }
 };

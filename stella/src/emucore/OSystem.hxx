@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.13 2005-05-12 18:45:21 stephena Exp $
+// $Id: OSystem.hxx,v 1.14 2005-05-16 00:02:32 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -38,7 +38,7 @@ class Launcher;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.13 2005-05-12 18:45:21 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.14 2005-05-16 00:02:32 stephena Exp $
 */
 class OSystem
 {
@@ -255,6 +255,13 @@ class OSystem
     */
     void createLauncher();
 
+    /**
+      The features which are conditionally compiled into Stella.
+
+      @return  The supported features
+    */
+    const string& features() { return myFeatures; }
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
@@ -345,6 +352,8 @@ class OSystem
 
     string myGameListCacheFile;
     string myRomFile;
+
+    string myFeatures;
 
   private:
     // Copy constructor isn't supported by this class so make it private

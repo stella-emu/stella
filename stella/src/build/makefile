@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.78 2005-05-13 18:28:04 stephena Exp $
+## $Id: makefile,v 1.79 2005-05-16 00:02:30 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -158,7 +158,7 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 GUI_OBJS = StellaFont.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
-           EventMappingDialog.o GameInfoDialog.o HelpDialog.o \
+           EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
@@ -423,6 +423,9 @@ GameInfoDialog.o: $(GUI)/GameInfoDialog.cxx $(GUI)/GameInfoDialog.hxx
 
 HelpDialog.o: $(GUI)/HelpDialog.cxx $(GUI)/HelpDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/HelpDialog.cxx
+
+AboutDialog.o: $(GUI)/AboutDialog.cxx $(GUI)/AboutDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/AboutDialog.cxx
 
 LauncherDialog.o: $(GUI)/LauncherDialog.cxx $(GUI)/LauncherDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/LauncherDialog.cxx

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.hxx,v 1.6 2005-05-13 18:28:05 stephena Exp $
+// $Id: EventMappingDialog.hxx,v 1.7 2005-05-16 00:02:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@ class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
 class ListWidget;
+class PopUpWidget;
 
 #include "OSystem.hxx"
 #include "bspf.hxx"
@@ -48,6 +49,8 @@ class EventMappingDialog : public Dialog
     ButtonWidget*     myDefaultsButton;
     ListWidget*       myActionsList;
     StaticTextWidget* myKeyMapping;
+    PopUpWidget*      myPaddleModePopup;
+    StaticTextWidget* myPaddleModeText;
 
   private:
     enum {
@@ -62,6 +65,7 @@ class EventMappingDialog : public Dialog
     void eraseRemapping();
     void stopRemapping();
     void loadConfig();
+    void saveConfig();
 
     void drawKeyMapping();
 

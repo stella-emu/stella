@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.14 2005-05-12 18:45:21 stephena Exp $
+// $Id: OSystem.cxx,v 1.15 2005-05-16 00:02:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -50,11 +50,29 @@ OSystem::OSystem()
     myConsole(NULL),
     myMenu(NULL),
     myLauncher(NULL),
-    myRomFile("")
+    myRomFile(""),
+    myFeatures("")
 {
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
   myLauncher = new Launcher(this);
+
+  // Determine which features were conditionally compiled into Stella
+#ifdef DISPLAY_OPENGL
+  myFeatures += "OpenGL ";
+#endif
+#ifdef SOUND_SUPPORT 
+  myFeatures += "Sound ";
+#endif
+#ifdef JOYSTICK_SUPPORT
+  myFeatures += "Joystick ";
+#endif
+#ifdef SNAPSHOT_SUPPORT
+  myFeatures += "Snapshot ";
+#endif
+#ifdef DEVELOPER_SUPPORT
+  myFeatures += "Debugger";
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

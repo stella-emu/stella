@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.9 2005-05-13 18:28:06 stephena Exp $
+// $Id: Widget.cxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -125,7 +125,8 @@ Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
 StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
                                    const string& text, TextAlignment align)
     : Widget(boss, x, y, w, h),
-      _align(align)
+      _align(align),
+      _color(kTextColor)
 {
   _flags = WIDGET_ENABLED;
   _type = kStaticTextWidget;
@@ -149,7 +150,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   fb.font().drawString(_label, _x, _y, _w,
-                       isEnabled() ? kTextColor : kColor, _align);
+                       isEnabled() ? _color : kColor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,7 +178,7 @@ void ButtonWidget::drawWidget(bool hilite)
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   fb.font().drawString(_label, _x, _y + (_h - kLineHeight)/2 + 1, _w,
                        !isEnabled() ? kColor :
-                       hilite ? kTextColorHi : kTextColor, _align);
+                       hilite ? kTextColorHi : _color, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -238,13 +239,13 @@ void CheckboxWidget::drawWidget(bool hilite)
   // If checked, draw cross inside the box
   if(_state)
     fb.drawBitmap(checked_img, _x + 3, _y + 3,
-                  isEnabled() ? kTextColor : kColor);
+                  isEnabled() ? _color : kColor);
   else
     fb.fillRect(_x + 2, _y + 2, 10, 10, kBGColor);
 
   // Finally draw the label
   fb.font().drawString(_label, _x + 20, _y + 3, _w,
-                       isEnabled() ? kTextColor : kColor);
+                       isEnabled() ? _color : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,7 +316,7 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if(_labelWidth > 0)
     fb.font().drawString(_label, _x, _y + 2, _labelWidth,
-                         isEnabled() ? kTextColor : kColor, kTextAlignRight);
+                         isEnabled() ? _color : kColor, kTextAlignRight);
 
   // Draw the box
   fb.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
@@ -323,7 +324,7 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the 'bar'
   fb.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
               !isEnabled() ? kColor :
-              hilite ? kTextColorHi : kTextColor);
+              hilite ? kTextColorHi : _color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

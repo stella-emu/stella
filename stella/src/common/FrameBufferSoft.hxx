@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.12 2005-04-04 02:19:20 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.13 2005-05-16 00:02:31 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -23,18 +23,18 @@
 #include <SDL_syswm.h>
 
 class OSystem;
+class RectList;
 
 #include "bspf.hxx"
+#include "GuiUtils.hxx"
 #include "FrameBuffer.hxx"
-
-class RectList;
 
 
 /**
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.12 2005-04-04 02:19:20 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.13 2005-05-16 00:02:31 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -185,7 +185,7 @@ class FrameBufferSoft : public FrameBuffer
     RectList* myRectList;
 
     // GUI palette
-    Uint32 myGUIPalette[5];
+    Uint32 myGUIPalette[kNumColors];
 };
 
 class RectList

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.9 2005-05-13 18:28:05 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "ListWidget.hxx"
+#include "PopUpWidget.hxx"
 #include "Dialog.hxx"
 #include "GuiUtils.hxx"
 #include "Event.hxx"
@@ -39,26 +40,36 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent
 {
   // Add Default and OK buttons
   myDefaultsButton = addButton(10, h - 24, "Defaults", kDefaultsCmd, 0);
-  myOKButton       = addButton(w - (kButtonWidth + 10), h - 24, "OK", kCloseCmd, 0);
+  myOKButton       = addButton(w - (kButtonWidth + 10), h - 24, "OK", kOKCmd, 0);
 
-  new StaticTextWidget(this, 10, 8, 200, 16, "Select an event to remap:", kTextAlignCenter);
-  myActionsList = new ListWidget(this, 10, 20, 200, 100);
+  new StaticTextWidget(this, 10, 8, 150, 16, "Select an event to remap:", kTextAlignCenter);
+  myActionsList = new ListWidget(this, 10, 20, 150, 100);
   myActionsList->setNumberingMode(kListNumberingOff);
 
   myKeyMapping  = new StaticTextWidget(this, 10, 125, w - 20, 16,
-                                       "Key(s) : ", kTextAlignLeft);
+                                       "Action: ", kTextAlignLeft);
   myKeyMapping->setFlags(WIDGET_CLEARBG);
 
   // Add remap and erase buttons
-  myMapButton       = addButton(220, 30, "Map", kStartMapCmd, 0);
-  myEraseButton     = addButton(220, 50, "Erase", kEraseCmd, 0);
-  myCancelMapButton = addButton(220, 70, "Cancel", kStopMapCmd, 0);
+  myMapButton       = addButton(170, 25, "Map", kStartMapCmd, 0);
+  myEraseButton     = addButton(170, 45, "Erase", kEraseCmd, 0);
+  myCancelMapButton = addButton(170, 65, "Cancel", kStopMapCmd, 0);
   myCancelMapButton->setEnabled(false);
+
+  // Add 'mouse to paddle' mapping
+  myPaddleModeText = new StaticTextWidget(this, 168, 93, 50, kLineHeight,
+                                          "Mouse is", kTextAlignCenter);
+  myPaddleModePopup = new PopUpWidget(this, 160, 105, 60, kLineHeight,
+                                     "paddle: ", 40, 0);
+  myPaddleModePopup->appendEntry("0", 0);
+  myPaddleModePopup->appendEntry("1", 1);
+  myPaddleModePopup->appendEntry("2", 2);
+  myPaddleModePopup->appendEntry("3", 3);
 
   // Get actions names
   StringList l;
 
-  for(int i = 0; i < 60; ++i)  // FIXME - create a size() method
+  for(int i = 0; i < 61; ++i)
     l.push_back(EventHandler::ourActionList[i].action);
 
   myActionsList->setList(l);
@@ -75,6 +86,18 @@ void EventMappingDialog::loadConfig()
   // Make sure remapping is turned off, just in case the user didn't properly
   // exit from the dialog last time
   stopRemapping();
+
+  // Paddle mode
+  int mode = instance()->settings().getInt("paddle");
+  myPaddleModePopup->setSelectedTag(mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingDialog::saveConfig()
+{
+  // Paddle mode
+  int mode = myPaddleModePopup->getSelectedTag();
+  instance()->eventHandler().setPaddleMode(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,12 +115,15 @@ void EventMappingDialog::startRemapping()
   myEraseButton->setEnabled(false);
   myDefaultsButton->setEnabled(false);
   myOKButton->setEnabled(false);
+  myPaddleModeText->setEnabled(false);
+  myPaddleModePopup->setEnabled(false);
   myCancelMapButton->setEnabled(true);
 
   // And show a message indicating which key is being remapped
-  string buf = "Select a new event for the '" +
+  string buf = "Select action for '" +
                EventHandler::ourActionList[ myActionSelected ].action +
-               "' action";	 	
+               "' event";	 	
+  myKeyMapping->setColor(kTextColorEm);
   myKeyMapping->setLabel(buf);
 }
 
@@ -125,6 +151,8 @@ void EventMappingDialog::stopRemapping()
   myEraseButton->setEnabled(false);
   myDefaultsButton->setEnabled(true);
   myOKButton->setEnabled(true);
+  myPaddleModeText->setEnabled(true);
+  myPaddleModePopup->setEnabled(true);
   myCancelMapButton->setEnabled(false);
 
   // Make sure the list widget is in a known state
@@ -141,7 +169,8 @@ void EventMappingDialog::drawKeyMapping()
 {
   if(myActionSelected >= 0)
   {
-    string buf = "Key(s) : " + EventHandler::ourActionList[ myActionSelected ].key;
+    string buf = "Action: " + EventHandler::ourActionList[ myActionSelected ].key;
+    myKeyMapping->setColor(kTextColor);
     myKeyMapping->setLabel(buf);
   }
 }
@@ -166,6 +195,11 @@ void EventMappingDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {
+    case kOKCmd:
+      saveConfig();
+      close();
+      break;
+
     case kListSelectionChangedCmd:
       if(myActionsList->getSelected() >= 0)
       {

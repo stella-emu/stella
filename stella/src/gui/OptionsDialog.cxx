@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.16 2005-05-13 18:28:06 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.17 2005-05-16 00:02:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@
 #include "EventMappingDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "HelpDialog.hxx"
+#include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
 
 #include "bspf.hxx"
@@ -37,14 +38,14 @@ enum {
   kVidCmd   = 'VIDO',
   kAudCmd   = 'AUDO',
   kEMapCmd  = 'EMAP',
-  kMiscCmd  = 'MISC',
   kInfoCmd  = 'INFO',
   kHelpCmd  = 'HELP',
+  kAboutCmd = 'ABOU'
 };
 
 enum {
   kRowHeight      = 22,
-  kBigButtonWidth = 100,
+  kBigButtonWidth = 90,
   kMainMenuWidth  = (kBigButtonWidth + 2 * 8),
   kMainMenuHeight = 6 * kRowHeight + 10,
 };
@@ -58,22 +59,27 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
             (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2,
             (osystem->frameBuffer().baseHeight() - kMainMenuHeight)/2,
             kMainMenuWidth, kMainMenuHeight),
-      myVideoDialog(NULL)
+      myVideoDialog(NULL),
+      myAudioDialog(NULL),
+      myEventMappingDialog(NULL),
+      myGameInfoDialog(NULL),
+      myHelpDialog(NULL),
+      myAboutDialog(NULL)
 {
   int yoffset = 7;
   const int xoffset = (_w - kBigButtonWidth) / 2;
 
-  addBigButton("Video Settings", kVidCmd, 'V');
+  addBigButton("Video Settings", kVidCmd, 0);
 #ifdef SOUND_SUPPORT
-  addBigButton("Audio Settings", kAudCmd, 'A');
+  addBigButton("Audio Settings", kAudCmd, 0);
 #else
-  ButtonWidget* b = addBigButton("Audio Settings", kAudCmd, 'A');
+  ButtonWidget* b = addBigButton("Audio Settings", kAudCmd, 0);
   b->setEnabled(false);
 #endif
-  addBigButton("Event Remapping", kEMapCmd, 'E');
-  addBigButton("Miscellaneous", kMiscCmd, 'M');
-  addBigButton("Game Information", kInfoCmd, 'I');
-  addBigButton("Help", kHelpCmd, 'H');
+  addBigButton("Event Mapping", kEMapCmd, 0);
+  addBigButton("Game Information", kInfoCmd, 0);
+  addBigButton("Help", kHelpCmd, 0);
+  addBigButton("About", kAboutCmd, 0);
 
   // Set some sane values for the dialog boxes
   int fbWidth  = osystem->frameBuffer().baseWidth();
@@ -89,13 +95,9 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myAudioDialog = new AudioDialog(myOSystem, parent, x, y, w, h);
 
-  w = 280; h = 170;
+  w = 230; h = 170;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myEventMappingDialog = new EventMappingDialog(myOSystem, parent, x, y, w, h);
-
-//  w = 250; h = 150;
-//  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-//  myMiscDialog         = new MiscDialog(myOSystem, parent, x, y, w, h);
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
@@ -104,6 +106,10 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myHelpDialog = new HelpDialog(myOSystem, parent, x, y, w, h);
+
+  w = 255; h = 150;
+  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+  myAboutDialog = new AboutDialog(myOSystem, parent, x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,9 +118,9 @@ OptionsDialog::~OptionsDialog()
   delete myVideoDialog;
   delete myAudioDialog;
   delete myEventMappingDialog;
-//  delete myMiscDialog;
   delete myGameInfoDialog;
   delete myHelpDialog;
+  delete myAboutDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,17 +150,16 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd, int data)
       parent()->addDialog(myEventMappingDialog);
       break;
 
-    case kMiscCmd:
-//      parent()->addDialog(myMiscDialog);
-cerr << "push MiscDialog to top of stack\n";
-      break;
-
     case kInfoCmd:
       parent()->addDialog(myGameInfoDialog);
       break;
 
     case kHelpCmd:
       parent()->addDialog(myHelpDialog);
+      break;
+
+    case kAboutCmd:
+      parent()->addDialog(myAboutDialog);
       break;
 
     default:
