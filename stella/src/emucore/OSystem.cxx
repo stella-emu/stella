@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.15 2005-05-16 00:02:32 stephena Exp $
+// $Id: OSystem.cxx,v 1.16 2005-05-17 18:42:23 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -256,20 +256,10 @@ bool OSystem::createConsole(const string& romfile)
     myRomFile = romfile;
 
   // Open the cartridge image and read it in
-  ifstream in(myRomFile.c_str(), ios_base::binary);
-  if(!in)
+  uInt8* image;
+  int size;
+  if(openROM(myRomFile, &image, &size))
   {
-    cerr << "ERROR: Couldn't open " << myRomFile << "..." << endl;
-//    myEventHandler->quit();
-    retval = false;
-  }
-  else
-  {
-    uInt8* image = new uInt8[512 * 1024];
-    in.read((char*)image, 512 * 1024);
-    uInt32 size = in.gcount();
-    in.close();
-
     delete myConsole;  myConsole = NULL;
 
     // Create an instance of the 2600 game console
@@ -287,6 +277,12 @@ bool OSystem::createConsole(const string& romfile)
     retval = true;
     myEventHandler->reset(EventHandler::S_EMULATE);
     myFrameBuffer->setCursorState();
+  }
+  else
+  {
+    cerr << "ERROR: Couldn't open " << myRomFile << "..." << endl;
+//    myEventHandler->quit();
+    retval = false;
   }
 
   return retval;
@@ -307,6 +303,21 @@ void OSystem::createLauncher()
   myFrameBuffer->refresh();
   myFrameBuffer->setCursorState();
   mySound->mute(true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::openROM(const string& rom, uInt8** image, int* size)
+{
+  ifstream in(rom.c_str(), ios_base::binary);
+  if(!in)
+    return false;
+
+  *image = new uInt8[512 * 1024];
+  in.read((char*)(*image), 512 * 1024);
+  *size = in.gcount();
+  in.close();
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

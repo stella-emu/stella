@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.28 2005-05-16 00:02:31 stephena Exp $
+// $Id: EventHandler.hxx,v 1.29 2005-05-17 18:42:22 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.28 2005-05-16 00:02:31 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.29 2005-05-17 18:42:22 stephena Exp $
 */
 class EventHandler
 {
@@ -152,6 +152,18 @@ class EventHandler
 
     // Holds static strings for the remap menu
     static ActionList ourActionList[61];
+
+    // Lookup table for paddle resistance events
+    static Event::Type Paddle_Resistance[4];
+
+    // Lookup table for paddle button events
+    static Event::Type Paddle_Button[4];
+
+#ifdef JOYSTICK_SUPPORT
+    // Static lookup tables for Stelladaptor axis support
+    static Event::Type SA_Axis[2][2][3];
+    static Event::Type SA_DrivingValue[2];
+#endif
 
   private:
     /**

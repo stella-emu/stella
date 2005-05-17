@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.43 2005-05-14 03:26:28 stephena Exp $
+// $Id: Settings.cxx,v 1.44 2005-05-17 18:42:23 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -66,6 +66,7 @@ Settings::Settings(OSystem* osystem)
   set("sssingle", "false");
 
   set("romdir", "");
+  set("lastrom", "");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.79 2005-05-16 00:02:30 stephena Exp $
+## $Id: makefile,v 1.80 2005-05-17 18:42:22 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -159,7 +159,8 @@ GUI_OBJS = StellaFont.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
-           LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o
+           LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
+           ProgressDialog.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -438,3 +439,6 @@ BrowserDialog.o: $(GUI)/BrowserDialog.cxx $(GUI)/BrowserDialog.hxx
 
 GameList.o: $(GUI)/GameList.cxx $(GUI)/GameList.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/GameList.cxx
+
+ProgressDialog.o: $(GUI)/ProgressDialog.cxx $(GUI)/ProgressDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/ProgressDialog.cxx

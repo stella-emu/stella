@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.32 2005-05-12 18:45:21 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.33 2005-05-17 18:42:22 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -41,7 +41,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.32 2005-05-12 18:45:21 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.33 2005-05-17 18:42:22 stephena Exp $
 */
 class FrameBuffer
 {
@@ -138,7 +138,7 @@ class FrameBuffer
 //      cerr << "refresh() " << myNumRedraws++ << endl;
       theRedrawEntireFrameIndicator = true;
       myMenuRedraws = 2;
-      if(now) drawMediaSource();
+      if(now) update();
     }
 
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.56 2005-05-16 00:02:31 stephena Exp $
+// $Id: EventHandler.cxx,v 1.57 2005-05-17 18:42:22 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -422,38 +422,26 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
   switch(myState)
   {
     case S_EMULATE:
-// FIXME - add code here to generate paddle events
-/*
-        uInt32 zoom = theDisplay->zoomLevel();
-        Int32 width = theDisplay->width() * zoom;
+    {
+      // Take window zooming into account
+      Int32 x = event.motion.x, y = event.motion.y;
+      myOSystem->frameBuffer().translateCoords(&x, &y);
+      int w = myOSystem->frameBuffer().baseWidth();
 
-        // Grabmouse introduces some lag into the mouse movement,
-        // so we need to fudge the numbers a bit
-        if(theGrabMouseIndicator && theHideCursorIndicator)
-          mouseX = (int)((float)mouseX + (float)event.motion.xrel
-                   * 1.5 * (float) zoom);
-        else
-          mouseX = mouseX + event.motion.xrel * zoom;
+      // Grabmouse introduces some lag into the mouse movement,
+      // so we need to fudge the numbers a bit
+      // FIXME - possibly do x *= 1.5 ??
 
-        // Check to make sure mouseX is within the game window
-        if(mouseX < 0)
-          mouseX = 0;
-        else if(mouseX > width)
-          mouseX = width;
-
-        Int32 resistance = (Int32)(1000000.0 * (width - mouseX) / width);
-
-        theOSystem->eventHandler().handleEvent(Paddle_Resistance[thePaddleMode], resistance);
-*/
-
+      int resistance = (int)(1000000.0 * (w - x) / w);
+      handleEvent(Paddle_Resistance[myPaddleMode], resistance);
       break;
+    }
 
     case S_MENU:
     {
       // Take window zooming into account
       Int32 x = event.motion.x, y = event.motion.y;
       myOSystem->frameBuffer().translateCoords(&x, &y);
-//cerr << "Motion:  x = " << x << ", y = " << y << endl;
       myOSystem->menu().handleMouseMotionEvent(x, y, 0);
       break;
     }
@@ -463,7 +451,6 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
       // Take window zooming into account
       Int32 x = event.motion.x, y = event.motion.y;
       myOSystem->frameBuffer().translateCoords(&x, &y);
-//cerr << "Motion:  x = " << x << ", y = " << y << endl;
       myOSystem->launcher().handleMouseMotionEvent(x, y, 0);
       break;
     }
@@ -486,11 +473,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
   switch(myState)
   {
     case S_EMULATE:
-// FIXME - add code here to generate paddle buttons
-/*
-        Int32 value = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
-        theOSystem->eventHandler().handleEvent(Paddle_Button[thePaddleMode], value);
-*/
+      handleEvent(Paddle_Button[myPaddleMode], state);
       break;
 
     case S_MENU:
@@ -1354,3 +1337,30 @@ ActionList EventHandler::ourActionList[61] = {
   { Event::KeyboardOne0,                "P2 GamePad 0",                    "" },
   { Event::KeyboardOnePound,            "P2 GamePad #",                    "" }
 };
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::Paddle_Resistance[4] = {
+  Event::PaddleZeroResistance, Event::PaddleOneResistance,
+  Event::PaddleTwoResistance,  Event::PaddleThreeResistance
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::Paddle_Button[4] = {
+  Event::PaddleZeroFire, Event::PaddleOneFire,
+  Event::PaddleTwoFire,  Event::PaddleThreeFire
+};
+
+#ifdef JOYSTICK_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::SA_Axis[2][2][3] = {
+  Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance,
+  Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance,
+  Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance,
+  Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::SA_DrivingValue[2] = {
+  Event::DrivingZeroValue, Event::DrivingOneValue
+};
+#endif

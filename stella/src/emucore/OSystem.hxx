@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.14 2005-05-16 00:02:32 stephena Exp $
+// $Id: OSystem.hxx,v 1.15 2005-05-17 18:42:23 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -38,7 +38,7 @@ class Launcher;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.14 2005-05-16 00:02:32 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.15 2005-05-17 18:42:23 stephena Exp $
 */
 class OSystem
 {
@@ -261,6 +261,17 @@ class OSystem
       @return  The supported features
     */
     const string& features() { return myFeatures; }
+
+    /**
+      Open the given ROM and return an array containing its contents.
+
+      @param rom    The absolute pathname of the ROM file
+      @param image  A pointer to store the ROM data
+                    Note, the calling method is responsible for deleting this
+      @param size   The amount of data read into the image array
+      @return  False on any errors, else true
+    */
+    bool openROM(const string& rom, uInt8** image, int* size);
 
   public:
     //////////////////////////////////////////////////////////////////////

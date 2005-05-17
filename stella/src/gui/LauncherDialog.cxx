@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.14 2005-05-16 15:37:30 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.15 2005-05-17 18:42:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,7 @@
 #include "DialogContainer.hxx"
 #include "GuiUtils.hxx"
 #include "BrowserDialog.hxx"
+#include "ProgressDialog.hxx"
 #include "LauncherOptionsDialog.hxx"
 #include "LauncherDialog.hxx"
 
@@ -50,8 +51,13 @@ enum {
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
+    myStartButton(NULL),
+    myOptionsButton(NULL),
+    myReloadButton(NULL),
+    myQuitButton(NULL),
     myList(NULL),
-    myGameList(NULL)
+    myGameList(NULL),
+    myProgressBar(NULL)
 {
   // Show game name
   new StaticTextWidget(this, 10, 8, 200, kLineHeight,
@@ -68,22 +74,22 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   int xpos = border;
 
 #ifndef MAC_OSX
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Play", kStartCmd, 'S');
+  myStartButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Play", kStartCmd, 'S');
     xpos += space + width;
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
+  myOptionsButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
     xpos += space + width;
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
+  myReloadButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
     xpos += space + width;
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
+  myQuitButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
     xpos += space + width;
 #else
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
+  myQuitButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
     xpos += space + width;
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
+  myOptionsButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
     xpos += space + width;
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
+  myReloadButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
     xpos += space + width;
-  new ButtonWidget(this, xpos, _h - 24, width, 16, "Start", kStartCmd, 'Q');
+  myStartButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Start", kStartCmd, 'Q');
     xpos += space + width;
 #endif
 
@@ -96,24 +102,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   new StaticTextWidget(this, 20, _h - 43, 30, 16, "Note:", kTextAlignLeft);
   myNote = new StaticTextWidget(this, 50, _h - 43, w - 70, 16,
                                        "", kTextAlignLeft);
-
-  // Restore last selection
-/*
-  string last = ConfMan.get(String("lastselectedgame"), ConfigManager::kApplicationDomain);
-  if (!last.isEmpty())
-  {
-    int itemToSelect = 0;
-    StringList::const_iterator iter;
-    for (iter = _domains.begin(); iter != _domains.end(); ++iter, ++itemToSelect)
-    {
-      if (last == *iter)
-      {
-        myList->setSelected(itemToSelect);
-        break;
-      }
-    }
-  }
-*/
 
   // Create the launcher options dialog, where you can change ROM
   // and snapshot paths
@@ -141,35 +129,25 @@ void LauncherDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::close()
-{
-  // Save romdir specified by the browser
-/*
-  FilesystemNode dir(myBrowser->getResult());
-  instance()->settings().setString("romdir", dir.path());
-*/
-/*
-  // Save last selection
-  const int sel = _list->getSelected();
-  if (sel >= 0)
-    ConfMan.set(String("lastselectedgame"), _domains[sel], ConfigManager::kApplicationDomain);	
-  else
-    ConfMan.removeKey(String("lastselectedgame"), ConfigManager::kApplicationDomain);
- 
-  ConfMan.flushToDisk();	
-  Dialog::close();
-*/
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::reset()
 {
   myOptions->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::enableButtons(bool enable)
+{
+  myStartButton->setEnabled(enable);
+  myOptionsButton->setEnabled(enable);
+  myReloadButton->setEnabled(enable);
+  myQuitButton->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateListing(bool fullReload)
 {
+  enableButtons(false);
+
   // Figure out if the ROM dir has changed since we last accessed it.
   // If so, we do a full reload from disk (takes quite some time).
   // Otherwise, we can use the cache file (which is much faster).
@@ -204,18 +182,54 @@ void LauncherDialog::updateListing(bool fullReload)
   ostringstream buf;
   buf << myGameList->size() << " files found";
   myRomCount->setLabel(buf.str());
+
+  enableButtons(true);
+
+  // Restore last selection
+  if(!myList->getList().isEmpty())
+  {
+    string lastrom = instance()->settings().getString("lastrom");
+    if(lastrom == "")
+      myList->setSelected(0);
+    else
+    {
+      unsigned int itemToSelect = 0;
+      StringList::const_iterator iter;
+      for (iter = myList->getList().begin(); iter != myList->getList().end();
+           ++iter, ++itemToSelect)
+      {
+        if (lastrom == *iter)
+        {
+          myList->setSelected(itemToSelect);
+          break;
+        }
+      }
+      if(itemToSelect > myList->getList().size())
+        myList->setSelected(0);
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadListFromDisk()
 {
-  Properties props;
-
   string romdir = instance()->settings().getString("romdir");
   FilesystemNode dir(romdir);
   FSList files = dir.listDir(FilesystemNode::kListAll);
 
+  // Create a progress dialog box to show the progress of processing
+  // the ROMs, since this is usually a time-consuming operation
+  string message = "Loading ROM's from disk ...";
+  int w = instance()->frameBuffer().font().getStringWidth(message) + 20,
+      h = kLineHeight * 4;
+  int x = (_w - w) / 2,
+      y = (_h - h) / 2;
+  ProgressDialog progress(instance(), parent(), x, y, w, h);
+  progress.setMessage(message);
+  progress.setRange(0, files.size() - 1, 10);
+
   // Create a entry for the GameList for each file
+  Properties props;
   string path = dir.path(), rom, md5, name, note;
   for (unsigned int idx = 0; idx < files.size(); idx++)
   {
@@ -234,7 +248,11 @@ void LauncherDialog::loadListFromDisk()
       name = files[idx].displayName();
 
     myGameList->appendGame(rom, name, note);
+
+    // Update the progress bar, indicating one more ROM has been processed
+    progress.setProgress(idx);
   }
+  progress.done();
 
   // Sort the list by rom name (since that's what we see in the listview)
   myGameList->sortByName();
@@ -303,19 +321,17 @@ void LauncherDialog::createListCache()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string LauncherDialog::MD5FromFile(const string& path)
 {
-  ifstream in(path.c_str(), ios_base::binary);
-  if(!in)
+  uInt8* image;
+  int size;
+
+  if(instance()->openROM(path, &image, &size))
+  {
+    string md5 = MD5(image, size);
+    delete[] image;
+    return md5;
+  }
+  else
     return "";
-
-  uInt8* image = new uInt8[512 * 1024];
-  in.read((char*)image, 512 * 1024);
-  int size = (int) in.gcount();
-  in.close();
-
-  string md5 = MD5(image, size);
-  delete[] image;
-
-  return md5;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -331,7 +347,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd, int data)
       item = myList->getSelected();
       if(item >= 0)
       {
+        string s = myList->getSelectedString();
         instance()->createConsole(myGameList->rom(item));
+        instance()->settings().setString("lastrom", s);
         close();
       }
       break;

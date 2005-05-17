@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.7 2005-05-16 15:37:30 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.8 2005-05-17 18:42:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,9 +24,11 @@
 
 class DialogContainer;
 class LauncherOptionsDialog;
+class ProgressDialog;
 class CommandSender;
 class StaticTextWidget;
 class ListWidget;
+class ButtonWidget;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -45,19 +47,25 @@ class LauncherDialog : public Dialog
   protected:
     void updateListing(bool fullReload = false);
 	
-    void close();
     void reset();
     void loadConfig();
 
   protected:
+    ButtonWidget* myStartButton;
+    ButtonWidget* myOptionsButton;
+    ButtonWidget* myReloadButton;
+    ButtonWidget* myQuitButton;
+
     ListWidget*       myList;
     StaticTextWidget* myNote;
     StaticTextWidget* myRomCount;
     GameList*         myGameList;
 
     LauncherOptionsDialog* myOptions;
+    ProgressDialog*        myProgressBar;
 
   private:
+    void enableButtons(bool enable);
     void loadListFromDisk();
     void loadListFromCache();
     void createListCache();
