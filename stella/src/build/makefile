@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.80 2005-05-17 18:42:22 stephena Exp $
+## $Id: makefile,v 1.81 2005-05-18 16:02:53 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -169,7 +169,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Event.o Joystick.o Keyboard.o M6532.o MD5.o MediaSrc.o Paddles.o \
             Props.o PropsSet.o Random.o SoundNull.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o EventHandler.o FrameBuffer.o \
-            OSystem.o FSNode.o \
+            OSystem.o FSNode.o unzip.o \
             $(M6502_OBJS) $(GUI_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
@@ -319,6 +319,9 @@ OSystem.o: $(CORE)/OSystem.cxx $(CORE)/OSystem.hxx
 
 FSNode.o: $(CORE)/FSNode.cxx $(CORE)/FSNode.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/FSNode.cxx
+
+unzip.o: $(CORE)/unzip.c $(CORE)/unzip.h
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/unzip.c
 
 SettingsUNIX.o: $(SRC)/unix/SettingsUNIX.cxx $(SRC)/unix/SettingsUNIX.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(SRC)/unix/SettingsUNIX.cxx

@@ -13,12 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.16 2005-05-17 18:42:23 stephena Exp $
+// $Id: OSystem.cxx,v 1.17 2005-05-18 16:02:53 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
+
+#include "unzip.h"
 
 #include "FrameBuffer.hxx"
 #include "FrameBufferSoft.hxx"
@@ -308,14 +310,50 @@ void OSystem::createLauncher()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::openROM(const string& rom, uInt8** image, int* size)
 {
-  ifstream in(rom.c_str(), ios_base::binary);
-  if(!in)
-    return false;
+  // Try to open the file as a zipped archive
+  // If that fails, we assume it's just a normal data file
+  unzFile tz;
+  if((tz = unzOpen(rom.c_str())) != NULL)
+  {
+    if(unzGoToFirstFile(tz) == UNZ_OK)
+    {
+      unz_file_info ufo; 
+      unzGetCurrentFileInfo(tz, &ufo, 0, 0, 0, 0, 0, 0);
 
-  *image = new uInt8[512 * 1024];
-  in.read((char*)(*image), 512 * 1024);
-  *size = in.gcount();
-  in.close();
+      if(ufo.uncompressed_size <= 0)
+      {
+        unzClose(tz);
+        return false;
+      }
+
+      *size = ufo.uncompressed_size;
+      *image = new uInt8[*size];
+
+      // We don't have to check for any return errors from these functions,
+      // since if there are, 'image' will not contain a valid ROM and the
+      // calling method can take of it
+      unzOpenCurrentFile(tz);
+      unzReadCurrentFile(tz, *image, *size);
+      unzCloseCurrentFile(tz);
+      unzClose(tz);
+    }
+    else
+    {
+      unzClose(tz);
+      return false;
+    }
+  }
+  else
+  {
+    ifstream in(rom.c_str(), ios_base::binary);
+    if(!in)
+      return false;
+
+    *image = new uInt8[512 * 1024];
+    in.read((char*)(*image), 512 * 1024);
+    *size = in.gcount();
+    in.close();
+  }
 
   return true;
 }
