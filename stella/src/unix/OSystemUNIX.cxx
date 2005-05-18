@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.7 2005-05-11 19:36:00 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.8 2005-05-18 22:35:37 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -33,31 +33,38 @@
   #include <sys/time.h>
 #endif
 
+/**
+  Each derived class is responsible for calling the following methods
+  in its constructor:
+
+  setBaseDir()
+  setStateDir()
+  setPropertiesFiles()
+  setConfigFiles()
+  setCacheFile()
+
+  See OSystem.hxx for a further explanation
+*/
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemUNIX::OSystemUNIX()
 {
   // First set variables that the OSystem needs
-  string basedir = getenv("HOME");
+  string basedir = string(getenv("HOME")) + "/.stella";
   setBaseDir(basedir);
 
-  string stelladir = basedir + "/.stella";
-  if(!fileExists(stelladir))
-    makeDir(stelladir);
-
-  string statedir = stelladir + "/state/";
-  if(!fileExists(statedir))
-    makeDir(statedir);
+  string statedir = basedir + "/state";
   setStateDir(statedir);
 
-  string userPropertiesFile   = stelladir + "/stella.pro";
+  string userPropertiesFile   = basedir + "/stella.pro";
   string systemPropertiesFile = "/etc/stella.pro";
   setPropertiesFiles(userPropertiesFile, systemPropertiesFile);
 
-  string userConfigFile   = stelladir + "/stellarc";
+  string userConfigFile   = basedir + "/stellarc";
   string systemConfigFile = "/etc/stellarc";
   setConfigFiles(userConfigFile, systemConfigFile);
 
-  string cacheFile = stelladir + "/stella.cache";
+  string cacheFile = basedir + "/stella.cache";
   setCacheFile(cacheFile);
 }
 

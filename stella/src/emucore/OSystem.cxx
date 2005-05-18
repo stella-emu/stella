@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.17 2005-05-18 16:02:53 stephena Exp $
+// $Id: OSystem.cxx,v 1.18 2005-05-18 22:35:36 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -90,6 +90,22 @@ OSystem::~OSystem()
   // since it created them
   delete myFrameBuffer;
   delete mySound;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setBaseDir(const string& basedir)
+{
+  myBaseDir = basedir;
+  if(!fileExists(myBaseDir))
+    makeDir(myBaseDir);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setStateDir(const string& statedir)
+{
+  myStateDir = statedir;
+  if(!fileExists(myStateDir))
+    makeDir(myStateDir);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

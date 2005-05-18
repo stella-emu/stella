@@ -13,33 +13,33 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.6 2005-05-18 22:35:37 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.1 2005-05-18 22:35:37 stephena Exp $
 //============================================================================
 
-#ifndef OSYSTEM_UNIX_HXX
-#define OSYSTEM_UNIX_HXX
+#ifndef OSYSTEM_WIN32_HXX
+#define OSYSTEM_WIN32_HXX
 
 #include "bspf.hxx"
 
 
 /**
-  This class defines UNIX-like OS's (Linux) system specific settings.
+  This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.6 2005-05-18 22:35:37 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.1 2005-05-18 22:35:37 stephena Exp $
 */
-class OSystemUNIX : public OSystem
+class OSystemWin32 : public OSystem
 {
   public:
     /**
-      Create a new UNIX-specific operating system object
+      Create a new Win32 operating system object
     */
-    OSystemUNIX();
+    OSystemWin32();
 
     /**
       Destructor
     */
-    virtual ~OSystemUNIX();
+    virtual ~OSystemWin32();
 
   public:
     /**
@@ -66,6 +66,7 @@ class OSystemUNIX : public OSystem
       @return String representing the full path of the state filename.
     */
     virtual string stateFilename(const string& md5, uInt32 state);
+
 
     /**
       This method should be called to test whether the given file exists.

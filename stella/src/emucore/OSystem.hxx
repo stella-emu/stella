@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.15 2005-05-17 18:42:23 stephena Exp $
+// $Id: OSystem.hxx,v 1.16 2005-05-18 22:35:37 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -38,7 +38,7 @@ class Launcher;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.15 2005-05-17 18:42:23 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.16 2005-05-18 22:35:37 stephena Exp $
 */
 class OSystem
 {
@@ -147,31 +147,6 @@ class OSystem
       @return  The video framerate currently in use
     */
     uInt32 frameRate() { return myDisplayFrameRate; }
-
-    /**
-      Set the base directory for all configuration files
-    */
-    void setBaseDir(const string& basedir) { myBaseDir = basedir; }
-
-    /**
-      Set the directory where state files are stored
-    */
-    void setStateDir(const string& statedir) { myStateDir = statedir; }
-
-    /**
-      Set the locations of game properties files
-    */
-    void setPropertiesFiles(const string& userprops, const string& systemprops);
-
-    /**
-      Set the locations of config files
-    */
-    void setConfigFiles(const string& userconfig, const string& systemconfig);
-
-    /**
-      Set the location of the gamelist cache file
-    */
-    void setCacheFile(const string& cachefile) { myGameListCacheFile = cachefile; }
 
     /**
       Return the default directory for storing data.
@@ -303,6 +278,8 @@ class OSystem
     */
     virtual string stateFilename(const string& md5, uInt32 state) = 0;
 
+/////////////////////////////////////////////////////
+// FIXME - move these to FSNode as static methods
     /**
       This method should be called to test whether the given file exists.
 
@@ -320,6 +297,33 @@ class OSystem
       @return       boolean representing whether or not the directory was created
     */
     virtual bool makeDir(const string& path) = 0;
+/////////////////////////////////////////////////////
+
+  protected:
+    /**
+      Set the base directory for all Stella files
+    */
+    void setBaseDir(const string& basedir);
+
+    /**
+      Set the directory where state files are stored
+    */
+    void setStateDir(const string& statedir);
+
+    /**
+      Set the locations of game properties files
+    */
+    void setPropertiesFiles(const string& userprops, const string& systemprops);
+
+    /**
+      Set the locations of config files
+    */
+    void setConfigFiles(const string& userconfig, const string& systemconfig);
+
+    /**
+      Set the location of the gamelist cache file
+    */
+    void setCacheFile(const string& cachefile) { myGameListCacheFile = cachefile; }
 
   protected:
     // Pointer to the EventHandler object
