@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
+// $Id: Widget.hxx,v 1.11 2005-05-18 22:54:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -65,7 +65,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
+  @version $Id: Widget.hxx,v 1.11 2005-05-18 22:54:01 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -176,8 +176,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void drawWidget(bool hilite);
 
   protected:
-    uint	_cmd;
-    uInt8	_hotkey;
+    int    _cmd;
+    uInt8  _hotkey;
 };
 
 

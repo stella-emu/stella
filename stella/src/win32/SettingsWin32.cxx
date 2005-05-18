@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.14 2005-05-18 22:35:37 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.15 2005-05-18 22:54:02 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -25,7 +25,8 @@
 #include "SettingsWin32.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsWin32::SettingsWin32()
+SettingsWin32::SettingsWin32(OSystem* osystem)
+    : Settings(osystem)
 {
   set("video_driver", "windib"); // This seems to be much faster than DirectX
   set("fragsize", "2048");       // Anything less than this usually causes sound skipping
