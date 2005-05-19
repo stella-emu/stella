@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.12 2005-05-16 00:02:31 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.13 2005-05-19 19:43:38 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class OSystem;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.12 2005-05-16 00:02:31 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.13 2005-05-19 19:43:38 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -102,7 +102,7 @@ class FrameBufferGL : public FrameBuffer
       @param b  The blue component of the color.
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
-      { return SDL_MapRGB(myScreen->format, r, g, b); }
+      { return SDL_MapRGB(myTexture->format, r, g, b); }
 
     /**
       This routine is called to draw a horizontal line.
