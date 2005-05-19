@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.81 2005-05-18 16:02:53 stephena Exp $
+## $Id: makefile,v 1.82 2005-05-19 18:42:36 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -140,14 +140,14 @@ win32:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32" \
-          OBJS="$(OBJECTS) SettingsWin32.o  OSystemWin32.o FSNodeWin32.o"
+          OBJS="$(OBJECTS) SettingsWin32.o OSystemWin32.o FSNodeWin32.o"
 
 win32-gl:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
           LDLIBS="$(LDLIBS) -lopengl32" \
           OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST" \
-          OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o FSNodeWin32.o"
+          OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o OSystemWin32.o FSNodeWin32.o"
 
 
 ###############################################################################

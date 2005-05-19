@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.2 2005-05-10 19:20:40 stephena Exp $
+// $Id: FSNode.hxx,v 1.3 2005-05-19 18:42:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,6 +21,8 @@
 
 #ifndef FS_NODE_HXX
 #define FS_NODE_HXX
+
+#include <algorithm>
 
 /*
  * The API described in this header is meant to allow for file system browsing in a

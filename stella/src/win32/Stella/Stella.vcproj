@@ -20,8 +20,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST"
+				AdditionalIncludeDirectories="..\..\gui;..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -73,8 +73,8 @@ opengl32.lib"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST"
+				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\gui;..\..\win32"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="2"
@@ -88,7 +88,7 @@ opengl32.lib"
 SDLmain.lib
 libpng.lib
 opengl32.lib"
-				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -126,7 +126,16 @@ opengl32.lib"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath="..\..\gui\AboutDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\AudioDialog.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Booster.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\BrowserDialog.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart.cxx">
@@ -204,6 +213,12 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\Device.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\Dialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\DialogContainer.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Driving.cxx">
 			</File>
 			<File
@@ -213,22 +228,49 @@ opengl32.lib"
 				RelativePath="..\..\emucore\EventHandler.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\EventMappingDialog.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\FrameBuffer.cxx">
 			</File>
 			<File
 				RelativePath="..\..\common\FrameBufferGL.cxx">
 			</File>
 			<File
-				RelativePath="..\..\common\FrameBufferSDL.cxx">
+				RelativePath="..\..\common\FrameBufferSoft.cxx">
 			</File>
 			<File
-				RelativePath="..\..\common\FrameBufferSoft.cxx">
+				RelativePath="..\..\emucore\FSNode.cxx">
+			</File>
+			<File
+				RelativePath="..\FSNodeWin32.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\GameInfoDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\GameList.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\HelpDialog.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Joystick.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Keyboard.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Launcher.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\LauncherDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\LauncherOptionsDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ListWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\M6502.cxx">
@@ -252,10 +294,28 @@ opengl32.lib"
 				RelativePath="..\..\emucore\MediaSrc.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\Menu.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\m6502\src\NullDev.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\OptionsDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\OSystem.cxx">
+			</File>
+			<File
+				RelativePath="..\OSystemWin32.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Paddles.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\PopUpWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ProgressDialog.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Props.cxx">
@@ -265,6 +325,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\Random.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ScrollBarWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Serializer.cxx">
@@ -279,10 +342,13 @@ opengl32.lib"
 				RelativePath="..\..\common\Snapshot.cxx">
 			</File>
 			<File
-				RelativePath="..\..\emucore\Sound.cxx">
+				RelativePath="..\..\common\SoundNull.cxx">
 			</File>
 			<File
 				RelativePath="..\..\common\SoundSDL.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\StellaFont.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Switches.cxx">
@@ -291,10 +357,22 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\System.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\TabWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\TIA.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\TIASound.c">
+			</File>
+			<File
+				RelativePath="..\..\emucore\unzip.c">
+			</File>
+			<File
+				RelativePath="..\..\gui\VideoDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Widget.cxx">
 			</File>
 		</Filter>
 		<Filter
@@ -302,7 +380,19 @@ opengl32.lib"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
+				RelativePath="..\..\gui\AboutDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Array.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\AudioDialog.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Booster.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\BrowserDialog.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\bspf\src\bspf.hxx">
@@ -368,6 +458,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\CartUA.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\Command.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Console.hxx">
 			</File>
 			<File
@@ -383,6 +476,12 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\Device.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\Dialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\DialogContainer.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Driving.hxx">
 			</File>
 			<File
@@ -392,22 +491,55 @@ opengl32.lib"
 				RelativePath="..\..\emucore\EventHandler.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\EventMappingDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\FontData.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\FrameBuffer.hxx">
 			</File>
 			<File
 				RelativePath="..\..\common\FrameBufferGL.hxx">
 			</File>
 			<File
-				RelativePath="..\..\common\FrameBufferSDL.hxx">
+				RelativePath="..\..\common\FrameBufferSoft.hxx">
 			</File>
 			<File
-				RelativePath="..\..\common\FrameBufferSoft.hxx">
+				RelativePath="..\..\emucore\FSNode.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\GameInfoDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\GameList.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\GuiObject.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\GuiUtils.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\HelpDialog.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Joystick.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Keyboard.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Launcher.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\LauncherDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\LauncherOptionsDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ListWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\M6502.hxx">
@@ -428,10 +560,28 @@ opengl32.lib"
 				RelativePath="..\..\emucore\MediaSrc.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\Menu.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\m6502\src\NullDev.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\OptionsDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\OSystem.hxx">
+			</File>
+			<File
+				RelativePath="..\OSystemWin32.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Paddles.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\PopUpWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ProgressDialog.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Props.hxx">
@@ -441,6 +591,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\Random.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ScrollBarWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Serializer.hxx">
@@ -458,10 +611,22 @@ opengl32.lib"
 				RelativePath="..\..\emucore\Sound.hxx">
 			</File>
 			<File
+				RelativePath="..\..\common\SoundNull.hxx">
+			</File>
+			<File
 				RelativePath="..\..\common\SoundSDL.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\Stack.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\StellaEvent.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\StellaFont.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\StringList.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Switches.hxx">
@@ -470,10 +635,25 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\System.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\TabWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\TIA.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\TIASound.h">
+			</File>
+			<File
+				RelativePath="..\..\emucore\unzip.h">
+			</File>
+			<File
+				RelativePath="..\..\common\Version.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\VideoDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Widget.hxx">
 			</File>
 		</Filter>
 		<Filter

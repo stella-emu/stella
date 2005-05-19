@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.57 2005-05-17 18:42:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.58 2005-05-19 18:42:37 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -858,12 +858,14 @@ void EventHandler::setDefaultKeymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultJoymap()
 {
+  uInt32 i;
+
   // Erase all mappings
-  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+  for(i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
     myJoyTable[i] = Event::NoType;
 
   // Left joystick
-  uInt32 i = StellaEvent::JSTICK_0 * StellaEvent::LastJCODE;
+  i = StellaEvent::JSTICK_0 * StellaEvent::LastJCODE;
   myJoyTable[i + StellaEvent::JAXIS_UP]    = Event::JoystickZeroUp;
   myJoyTable[i + StellaEvent::JAXIS_DOWN]  = Event::JoystickZeroDown;
   myJoyTable[i + StellaEvent::JAXIS_LEFT]  = Event::JoystickZeroLeft;

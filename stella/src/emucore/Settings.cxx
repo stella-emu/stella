@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.44 2005-05-17 18:42:23 stephena Exp $
+// $Id: Settings.cxx,v 1.45 2005-05-19 18:42:37 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -178,7 +178,7 @@ void Settings::validate()
     set("gl_filter", "nearest");
 
   f = getFloat("gl_aspect");
-  if(f < 1.1 or f > 2.0)
+  if(f < 1.1 || f > 2.0)
     set("gl_aspect", "2.0");
 #endif
 

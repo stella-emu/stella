@@ -13,13 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.1 2005-05-19 13:52:55 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.2 2005-05-19 18:42:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-//#include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -61,6 +60,18 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const char* lastPathComponent(const string& str)
+{
+  const char* start = str.c_str();
+  const char* cur = start + str.size() - 2;
+
+  while (cur > start && *cur != '\\')
+    --cur;
+
+  return cur + 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 char* WindowsFilesystemNode::toAscii(TCHAR* x)
 {
 #ifndef UNICODE
@@ -95,7 +106,7 @@ void WindowsFilesystemNode::addFile(FSList& list, ListMode mode,
   // Skip local directory (.) and parent (..)
   if (!strcmp(asciiName, ".") || !strcmp(asciiName, ".."))
     return;
-	
+
   isDirectory = (find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? true : false);
 
   if ((!isDirectory && mode == kListDirectoriesOnly) ||
@@ -115,9 +126,15 @@ void WindowsFilesystemNode::addFile(FSList& list, ListMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFilesystemNode *FilesystemNode::getRoot()
+AbstractFilesystemNode* FilesystemNode::getRoot()
 {
   return new WindowsFilesystemNode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AbstractFilesystemNode* FilesystemNode::getNodeForPath(const string& path)
+{
+  return new WindowsFilesystemNode(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,6 +146,16 @@ WindowsFilesystemNode::WindowsFilesystemNode()
   _isValid = false;
   _path = "";
   _isPseudoRoot = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+WindowsFilesystemNode::WindowsFilesystemNode(const string& path)
+{
+  _path = path;
+  _displayName = lastPathComponent(path);
+  _isValid = true;
+  _isDirectory = true;
+  _isPseudoRoot = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,18 +221,6 @@ FSList WindowsFilesystemNode::listDir(ListMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* lastPathComponent(const string& str)
-{
-  const char* start = str.c_str();
-  const char* cur = start + str.size() - 2;
-
-  while (cur > start && *cur != '\\')
-    --cur;
-
-  return cur + 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* WindowsFilesystemNode::parent() const
 {
   assert(_isValid || _isPseudoRoot);
@@ -219,7 +234,7 @@ AbstractFilesystemNode* WindowsFilesystemNode::parent() const
     const char *end = lastPathComponent(_path);
 
     p = new WindowsFilesystemNode();
-    p->_path = String(start, end - start);
+    p->_path = string(start, end - start);
     p->_isValid = true;
     p->_isDirectory = true;
     p->_displayName = lastPathComponent(p->_path);
