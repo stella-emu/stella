@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.15 2005-05-17 18:42:23 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.16 2005-05-21 16:12:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -322,16 +322,16 @@ void LauncherDialog::createListCache()
 string LauncherDialog::MD5FromFile(const string& path)
 {
   uInt8* image;
-  int size;
+  int size = -1;
+  string md5 = "";
 
   if(instance()->openROM(path, &image, &size))
-  {
-    string md5 = MD5(image, size);
+    md5 = MD5(image, size);
+
+  if(size != -1)
     delete[] image;
-    return md5;
-  }
-  else
-    return "";
+
+  return md5;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -348,9 +348,13 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd, int data)
       if(item >= 0)
       {
         string s = myList->getSelectedString();
-        instance()->createConsole(myGameList->rom(item));
-        instance()->settings().setString("lastrom", s);
-        close();
+
+        // Make sure the console creation actually succeeded
+        if(instance()->createConsole(myGameList->rom(item)))
+        {
+          instance()->settings().setString("lastrom", s);
+          close();
+        }
       }
       break;
 

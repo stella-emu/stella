@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.58 2005-05-19 18:42:37 stephena Exp $
+// $Id: EventHandler.cxx,v 1.59 2005-05-21 16:12:12 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1355,10 +1355,10 @@ Event::Type EventHandler::Paddle_Button[4] = {
 #ifdef JOYSTICK_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type EventHandler::SA_Axis[2][2][3] = {
-  Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance,
-  Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance,
-  Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance,
-  Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance
+  { {Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance},
+    {Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance }  },
+  { {Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance},
+    {Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance} }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

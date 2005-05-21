@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.4 2005-05-13 18:28:06 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.5 2005-05-21 16:12:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,6 +36,7 @@
  */
 
 #define UP_DOWN_BOX_HEIGHT	10
+#define WHEEL_LINES 2
 
 // Up arrow
 static unsigned int up_arrow[8] = {
@@ -136,9 +137,9 @@ void ScrollBarWidget::handleMouseWheel(int x, int y, int direction)
     return;
 
   if(direction < 0)
-    _currentPos--;
+    _currentPos -= WHEEL_LINES;
   else
-    _currentPos++;
+    _currentPos += WHEEL_LINES;
 
   // Make sure that _currentPos is still inside the bounds
   checkBounds(old_pos);

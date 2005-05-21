@@ -13,13 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.41 2005-05-06 22:50:15 stephena Exp $
+// $Id: TIA.cxx,v 1.42 2005-05-21 16:12:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+
+#include <inttypes.h>
 
 #include "Console.hxx"
 #include "Control.hxx"
@@ -1098,7 +1100,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         uInt32* mask = &myCurrentPFMask[hpos];
 
         // Update a uInt8 at a time until reaching a uInt32 boundary
-        for(; ((int)myFramePointer & 0x03) && (myFramePointer < ending);
+        for(; ((uintptr_t)myFramePointer & 0x03) && (myFramePointer < ending);
             ++myFramePointer, ++mask)
         {
           *myFramePointer = (myPF & *mask) ? myCOLUPF : myCOLUBK;
@@ -1119,7 +1121,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         uInt32* mask = &myCurrentPFMask[hpos];
 
         // Update a uInt8 at a time until reaching a uInt32 boundary
-        for(; ((int)myFramePointer & 0x03) && (myFramePointer < ending); 
+        for(; ((uintptr_t)myFramePointer & 0x03) && (myFramePointer < ending); 
             ++myFramePointer, ++mask, ++hpos)
         {
           *myFramePointer = (myPF & *mask) ? 
@@ -1146,7 +1148,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP0)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mP0 += 4; myFramePointer += 4;
@@ -1170,7 +1172,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP1)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mP1 += 4; myFramePointer += 4;
@@ -1195,7 +1197,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP0 &&
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0 &&
               !*(uInt32*)mP1)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
@@ -1225,7 +1227,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mM0)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM0)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mM0 += 4; myFramePointer += 4;
@@ -1249,7 +1251,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mM1)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM1)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mM1 += 4; myFramePointer += 4;
@@ -1273,7 +1275,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mBL)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mBL += 4; myFramePointer += 4;
@@ -1298,7 +1300,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mM0 && !*(uInt32*)mM1)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM0 && !*(uInt32*)mM1)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mM0 += 4; mM1 += 4; myFramePointer += 4;
@@ -1325,7 +1327,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mBL += 4; mM0 += 4; myFramePointer += 4;
@@ -1352,7 +1354,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mBL += 4; mM0 += 4; myFramePointer += 4;
@@ -1379,7 +1381,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mBL && 
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && 
               !*(uInt32*)mM1)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
@@ -1407,7 +1409,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mBL && 
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && 
               !*(uInt32*)mM1)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
@@ -1435,7 +1437,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mBL += 4; mP1 += 4; myFramePointer += 4;
@@ -1463,7 +1465,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
           {
             *(uInt32*)myFramePointer = myCOLUBK;
             mBL += 4; mP1 += 4; myFramePointer += 4;
@@ -1490,7 +1492,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP0)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
           {
             *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
             mPF += 4; mP0 += 4; myFramePointer += 4;
@@ -1518,7 +1520,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP0)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
           {
             *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
             mPF += 4; mP0 += 4; myFramePointer += 4;
@@ -1546,7 +1548,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP1)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
           {
             *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
             mPF += 4; mP1 += 4; myFramePointer += 4;
@@ -1574,7 +1576,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mP1)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
           {
             *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
             mPF += 4; mP1 += 4; myFramePointer += 4;
@@ -1603,7 +1605,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 
         while(myFramePointer < ending)
         {
-          if(!((int)myFramePointer & 0x03) && !*(uInt32*)mBL)
+          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL)
           {
             *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
             mPF += 4; mBL += 4; myFramePointer += 4;

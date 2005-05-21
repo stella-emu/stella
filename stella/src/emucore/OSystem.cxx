@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.18 2005-05-18 22:35:36 stephena Exp $
+// $Id: OSystem.cxx,v 1.19 2005-05-21 16:12:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -275,7 +275,7 @@ bool OSystem::createConsole(const string& romfile)
 
   // Open the cartridge image and read it in
   uInt8* image;
-  int size;
+  int size = -1;
   if(openROM(myRomFile, &image, &size))
   {
     delete myConsole;  myConsole = NULL;
@@ -283,9 +283,6 @@ bool OSystem::createConsole(const string& romfile)
     // Create an instance of the 2600 game console
     // The Console c'tor takes care of updating the eventhandler state
     myConsole = new Console(image, size, this);
-
-    // Free the image since we don't need it any longer
-    delete[] image;
 
     if(showmessage)
       myFrameBuffer->showMessage("New console created");
@@ -302,6 +299,10 @@ bool OSystem::createConsole(const string& romfile)
 //    myEventHandler->quit();
     retval = false;
   }
+
+  // Free the image since we don't need it any longer
+  if(size != -1)
+    delete[] image;
 
   return retval;
 }
