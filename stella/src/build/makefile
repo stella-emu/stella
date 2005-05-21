@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.83 2005-05-21 19:35:58 stephena Exp $
+## $Id: makefile,v 1.84 2005-05-21 19:55:17 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -45,11 +45,6 @@ OPTIMIZATIONS  =
 ### to build on SMP (or distcc-based) machines
 ### change to number of CPU's you have
  NUMBER_CPU = 1
-
-### to explictly provide inttypes.h
-### some platforms include it as part of another header, so including
-### it again would cause an error
- HAVE_INTTYPES = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -110,10 +105,7 @@ ifdef SOUND_SUPPORT
   OPTIONS += -DSOUND_SUPPORT
 endif
 
-ifdef SOUND_SUPPORT
-  OPTIONS += -DHAVE_INTTYPES
-endif
-    
+
 default:
 	@echo ""
 	@echo "To build Stella type: 'make <version>'"
@@ -132,7 +124,7 @@ default:
 linux:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella" \
-          OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY" \
+          OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES" \
           OBJS="$(OBJECTS) SettingsUNIX.o OSystemUNIX.o FSNodePOSIX.o"
 
 linux-gl:
@@ -140,20 +132,20 @@ linux-gl:
           EXE_NAME="stella" \
           LDFLAGS="$(LDFLAGS) -L/usr/X11R6/lib" \
           LDLIBS="$(LDLIBS) -lGL" \
-          OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY -DDISPLAY_OPENGL" \
+          OPTIONS="$(OPTIONS) -DBSPF_UNIX -DUNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES -DDISPLAY_OPENGL" \
           OBJS="$(OBJECTS) FrameBufferGL.o SettingsUNIX.o OSystemUNIX.o FSNodePOSIX.o"
 
 win32:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
-          OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32" \
+          OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DHAVE_INTTYPES" \
           OBJS="$(OBJECTS) SettingsWin32.o OSystemWin32.o FSNodeWin32.o"
 
 win32-gl:
 	$(MAKE) $(SMP) stella \
           EXE_NAME="stella.exe" \
           LDLIBS="$(LDLIBS) -lopengl32" \
-          OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST" \
+          OPTIONS="$(OPTIONS) -DBSPF_WIN32 -DWIN32 -DHAVE_INTTYPES -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST" \
           OBJS="$(OBJECTS) FrameBufferGL.o SettingsWin32.o OSystemWin32.o FSNodeWin32.o"
 
 
