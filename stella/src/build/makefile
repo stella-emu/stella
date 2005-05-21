@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.82 2005-05-19 18:42:36 stephena Exp $
+## $Id: makefile,v 1.83 2005-05-21 19:35:58 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -46,6 +46,10 @@ OPTIMIZATIONS  =
 ### change to number of CPU's you have
  NUMBER_CPU = 1
 
+### to explictly provide inttypes.h
+### some platforms include it as part of another header, so including
+### it again would cause an error
+ HAVE_INTTYPES = 1
 
 ##============================================================================
 ## All done, type make to get a list of frontends
@@ -106,7 +110,10 @@ ifdef SOUND_SUPPORT
   OPTIONS += -DSOUND_SUPPORT
 endif
 
-
+ifdef SOUND_SUPPORT
+  OPTIONS += -DHAVE_INTTYPES
+endif
+    
 default:
 	@echo ""
 	@echo "To build Stella type: 'make <version>'"

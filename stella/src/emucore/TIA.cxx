@@ -13,15 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.42 2005-05-21 16:12:13 stephena Exp $
+// $Id: TIA.cxx,v 1.43 2005-05-21 19:35:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-
-#include <inttypes.h>
 
 #include "Console.hxx"
 #include "Control.hxx"
@@ -249,7 +247,7 @@ void TIA::systemCyclesReset()
   uInt32 cycles = mySystem->cycles();
 
   // Adjust the sound cycle indicator
-  mySound->adjustCycleCounter(-cycles);
+  mySound->adjustCycleCounter(-1 * cycles);
 
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
@@ -503,7 +501,7 @@ void TIA::update()
   mySystem->resetCycles();
 
   // Setup clocks that'll be used for drawing this frame
-  myClockWhenFrameStarted = -clocks;
+  myClockWhenFrameStarted = -1 * clocks;
   myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
   myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
   myClockAtLastUpdate = myClockStartDisplay;

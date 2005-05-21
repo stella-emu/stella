@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.4 2004-05-28 22:07:57 stephena Exp $
+// $Id: bspf.hxx,v 1.5 2005-05-21 19:35:59 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.4 2004-05-28 22:07:57 stephena Exp $
+  @version $Id: bspf.hxx,v 1.5 2005-05-21 19:35:59 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -52,16 +52,8 @@ typedef unsigned int uInt32;
   using namespace std;
 #endif
 
-#ifdef BSPF_WIN32
-  // pragma to avoid all of the int <-> bool conversion warnings
-//  #pragma warning(disable: 4800)
-#endif
-
-// Some old compilers do not support the bool type
-#ifdef BSPF_BOOL
-  #define bool int
-  #define true 1
-  #define false 0
+#ifdef HAVE_INTTYPES
+  #include <inttypes.h>
 #endif
 
 // Defines to help with path handling
