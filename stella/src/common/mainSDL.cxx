@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.39 2005-05-12 18:45:20 stephena Exp $
+// $Id: mainSDL.cxx,v 1.40 2005-05-25 17:17:33 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
   // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
   string romfile = argv[argc - 1];
-  if(argc == 1 || !theOSystem->fileExists(romfile))
+  if(argc == 1 || !FilesystemNode::fileExists(romfile))
     theOSystem->createLauncher();
   else
     theOSystem->createConsole(romfile);

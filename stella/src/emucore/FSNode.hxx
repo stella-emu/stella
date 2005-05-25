@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.3 2005-05-19 18:42:37 stephena Exp $
+// $Id: FSNode.hxx,v 1.4 2005-05-25 17:17:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -125,12 +125,22 @@ class AbstractFilesystemNode
       return first < second;
     }
 
+    /**
+      Test whether given path exists as a file.
+     */
+    static bool fileExists(const string& path);
+
+    /**
+      Test whether given path exists as a directory.
+     */
+    static bool dirExists(const string& path);
+
+    /**
+      Create a directory from the given path.
+     */
+    static bool makeDir(const string& path);
+
     /* TODO:
-    bool exists();
-
-    bool isDirectory();
-    bool isFile();
-
     bool isReadable();
     bool isWriteable();
     */

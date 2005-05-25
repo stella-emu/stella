@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.5 2004-04-04 02:03:15 stephena Exp $
+// $Id: Serializer.hxx,v 1.6 2005-05-25 17:17:37 stephena Exp $
 //============================================================================
 
 #ifndef SERIALIZER_HXX
@@ -33,7 +33,7 @@
   Boolean values are written using a special pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.5 2004-04-04 02:03:15 stephena Exp $
+  @version $Id: Serializer.hxx,v 1.6 2005-05-25 17:17:37 stephena Exp $
 */
 class Serializer
 {
@@ -59,7 +59,7 @@ class Serializer
       @param fileName The filename to send the serialized data to.
       @return Result of opening the file.  True on success, false on failure
     */
-    bool open(string& fileName);
+    bool open(const string& fileName);
 
     /**
       Closes the current output stream.

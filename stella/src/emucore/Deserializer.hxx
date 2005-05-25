@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.4 2002-08-11 17:48:13 stephena Exp $
+// $Id: Deserializer.hxx,v 1.5 2005-05-25 17:17:35 stephena Exp $
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
@@ -32,7 +32,7 @@
   return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.4 2002-08-11 17:48:13 stephena Exp $
+  @version $Id: Deserializer.hxx,v 1.5 2005-05-25 17:17:35 stephena Exp $
 */
 class Deserializer
 {
@@ -58,7 +58,7 @@ class Deserializer
       @param fileName The filename to get the deserialized data from.
       @return Result of opening the file.  True on success, false on failure
     */
-    bool open(string& fileName);
+    bool open(const string& fileName);
 
     /**
       Closes the current input stream.

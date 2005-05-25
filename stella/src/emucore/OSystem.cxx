@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.19 2005-05-21 16:12:13 stephena Exp $
+// $Id: OSystem.cxx,v 1.20 2005-05-25 17:17:37 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -34,6 +34,7 @@
   #include "SoundSDL.hxx"
 #endif
 
+#include "FSNode.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
@@ -96,16 +97,16 @@ OSystem::~OSystem()
 void OSystem::setBaseDir(const string& basedir)
 {
   myBaseDir = basedir;
-  if(!fileExists(myBaseDir))
-    makeDir(myBaseDir);
+  if(!FilesystemNode::dirExists(myBaseDir))
+    FilesystemNode::makeDir(myBaseDir);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setStateDir(const string& statedir)
 {
   myStateDir = statedir;
-  if(!fileExists(myStateDir))
-    makeDir(myStateDir);
+  if(!FilesystemNode::dirExists(myStateDir))
+    FilesystemNode::makeDir(myStateDir);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,9 +116,9 @@ void OSystem::setPropertiesFiles(const string& userprops,
   // Set up the input and output properties files
   myPropertiesOutputFile = userprops;
 
-  if(fileExists(userprops))
+  if(FilesystemNode::fileExists(userprops))
     myPropertiesInputFile = userprops;
-  else if(fileExists(systemprops))
+  else if(FilesystemNode::fileExists(systemprops))
     myPropertiesInputFile = systemprops;
   else
     myPropertiesInputFile = "";
@@ -130,9 +131,9 @@ void OSystem::setConfigFiles(const string& userconfig,
   // Set up the names of the input and output config files
   myConfigOutputFile = userconfig;
 
-  if(fileExists(userconfig))
+  if(FilesystemNode::fileExists(userconfig))
     myConfigInputFile = userconfig;
-  else if(fileExists(systemconfig))
+  else if(FilesystemNode::fileExists(systemconfig))
     myConfigInputFile = systemconfig;
   else
     myConfigInputFile = "";

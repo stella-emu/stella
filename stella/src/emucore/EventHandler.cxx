@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.59 2005-05-21 16:12:12 stephena Exp $
+// $Id: EventHandler.cxx,v 1.60 2005-05-25 17:17:35 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -22,6 +22,7 @@
 
 #include "Event.hxx"
 #include "EventHandler.hxx"
+#include "FSNode.hxx"
 #include "Settings.hxx"
 #include "StellaEvent.hxx"
 #include "System.hxx"
@@ -43,7 +44,6 @@ EventHandler::EventHandler(OSystem* osystem)
       myState(S_NONE),
       myLSState(0),
       myPauseFlag(false),
-      myExitGameFlag(false),
       myQuitFlag(false),
       myGrabMouseFlag(false),
       myUseLauncherFlag(false),
@@ -107,7 +107,6 @@ void EventHandler::reset(State state)
   myState = state;
   myLSState = 0;
   myPauseFlag = false;
-  myExitGameFlag = false;
   myQuitFlag = false;
   myPaddleMode = 0;
 
@@ -136,7 +135,7 @@ void EventHandler::reset(State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::poll()   // FIXME - add modifiers for OSX
+void EventHandler::poll()
 {
   SDL_Event event;
 
@@ -155,8 +154,12 @@ void EventHandler::poll()   // FIXME - add modifiers for OSX
 
         // An attempt to speed up event processing
         // All SDL-specific event actions are accessed by either
-        // Control or Alt keys.  So we quickly check for those.
+        // Control/Cmd or Alt/Shift-Cmd keys.  So we quickly check for those.
+#ifndef MAC_OSX
         if(mod & KMOD_ALT && state)
+#else
+        if((mod & KMOD_META) && (mod & KMOD_SHIFT) && state)
+#endif
         {
           switch(int(key))
           {
@@ -181,7 +184,11 @@ void EventHandler::poll()   // FIXME - add modifiers for OSX
               break;
           }
         }
+#ifndef MAC_OSX
         else if(mod & KMOD_CTRL && state)
+#else
+        else if((mod & KMOD_META) && !(mod & KMOD_SHIFT) && state)
+#endif
         {
           switch(int(key))
           {
@@ -246,8 +253,12 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
     case S_EMULATE:
       // An attempt to speed up event processing
       // All SDL-specific event actions are accessed by either
-      // Control and/or Alt keys.  So we quickly check for those.
+      // Control/Cmd and/or Alt/Shift-Cmd keys.  So we quickly check for those.
+#ifndef MAC_OSX
       if(mod & KMOD_ALT && state)
+#else
+      if((mod & KMOD_META) && (mod & KMOD_SHIFT))
+#endif
       {
         switch(int(key))
         {
@@ -259,7 +270,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
             myOSystem->sound().adjustVolume(1);
             break;
 
-#ifdef DEVELOPER_SUPPORT
+  #ifdef DEVELOPER_SUPPORT
           case SDLK_END:       // Alt-End increases XStart
             myOSystem->console().changeXStart(1);
             break;
@@ -275,8 +286,8 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
           case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
             myOSystem->console().changeYStart(0);
             break;
-#endif
-#ifdef DEVELOPER_SUPPORT
+  #endif
+  #ifdef DEVELOPER_SUPPORT
           case SDLK_z:
             myOSystem->console().toggleP0Bit();
             break;
@@ -308,10 +319,14 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
           case SDLK_SLASH:
             myOSystem->console().enableBits(true);
             break;
-#endif
+  #endif
         }
       }
+#ifndef MAC_OSX
       else if(mod & KMOD_CTRL && state)
+#else
+      else if((mod & KMOD_META) && !(mod & KMOD_SHIFT))
+#endif
       {
         switch(int(key))
         {
@@ -343,7 +358,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
             myOSystem->createConsole();
             break;
 
-#ifdef DEVELOPER_SUPPORT
+  #ifdef DEVELOPER_SUPPORT
           case SDLK_END:       // Ctrl-End increases Width
             myOSystem->console().changeWidth(1);
             break;
@@ -359,7 +374,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
           case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
             myOSystem->console().changeHeight(0);
             break;
-#endif
+  #endif
           case SDLK_s:	 // Ctrl-s saves properties to a file
             // Attempt to merge with propertiesSet
             if(myOSystem->settings().getBool("mergeprops"))
@@ -663,7 +678,11 @@ void EventHandler::setActionMappings()
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
     if(event == Event::Quit)
-      prepend = "Ctrl Q";  // FIXME for OSX
+#ifndef MAC_OSX
+      prepend = "Ctrl Q";
+#else
+      prepend = "Cmd Q";
+#endif
     // else if ...
 
     if(key == "")
@@ -917,12 +936,14 @@ bool EventHandler::isValidList(string list, uInt32 length)
 void EventHandler::saveState()
 {
   // Do a state save using the System
-  string md5      = myOSystem->console().properties().get("Cartridge.MD5");
-  string filename = myOSystem->stateFilename(md5, myLSState);
-  int result      = myOSystem->console().system().saveState(filename, md5);
+  string md5 = myOSystem->console().properties().get("Cartridge.MD5");
+  ostringstream buf;
+  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR << md5 << ".st" << myLSState;
+
+  int result = myOSystem->console().system().saveState(buf.str(), md5);
 
   // Print appropriate message
-  ostringstream buf;
+  buf.str("");
   if(result == 1)
     buf << "State " << myLSState << " saved";
   else if(result == 2)
@@ -952,12 +973,14 @@ void EventHandler::changeState()
 void EventHandler::loadState()
 {
   // Do a state save using the System
-  string md5      = myOSystem->console().properties().get("Cartridge.MD5");
-  string filename = myOSystem->stateFilename(md5, myLSState);
-  int result      = myOSystem->console().system().loadState(filename, md5);
+  string md5 = myOSystem->console().properties().get("Cartridge.MD5");
+  ostringstream buf;
+  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR << md5 << ".st" << myLSState;
+
+  int result = myOSystem->console().system().loadState(buf.str(), md5);
 
   // Print appropriate message
-  ostringstream buf;
+  buf.str("");
   if(result == 1)
     buf << "State " << myLSState << " loaded";
   else if(result == 2)
@@ -990,14 +1013,14 @@ void EventHandler::takeSnapshot()
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
     filename = sspath + ".png";
-    if(myOSystem->fileExists(filename))
+    if(FilesystemNode::fileExists(filename))
     {
       ostringstream buf;
       for(uInt32 i = 1; ;++i)
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-        if(!myOSystem->fileExists(buf.str()))
+        if(!FilesystemNode::fileExists(buf.str()))
           break;
       }
       filename = buf.str();

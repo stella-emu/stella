@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.8 2005-05-18 22:35:37 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.9 2005-05-25 17:17:38 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -92,7 +92,7 @@ void OSystemUNIX::mainLoop()
     for(;;)
     {
       // Exit if the user wants to quit
-      if(myEventHandler->doExitGame() || myEventHandler->doQuit())
+      if(myEventHandler->doQuit())
         break;
 
       startTime = getTicks();
@@ -125,7 +125,7 @@ void OSystemUNIX::mainLoop()
     for(;;)
     {
       // Exit if the user wants to quit
-      if(myEventHandler->doExitGame() || myEventHandler->doQuit())
+      if(myEventHandler->doQuit())
         break;
 
       startTime = getTicks();
@@ -173,25 +173,4 @@ uInt32 OSystemUNIX::getTicks()
 #else
   return (uInt32) SDL_GetTicks() * 1000;
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemUNIX::stateFilename(const string& md5, uInt32 state)
-{
-  ostringstream buf;
-  buf << stateDir() << "/" << md5 << ".st" << state;
-
-  return buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystemUNIX::fileExists(const string& filename)
-{
-  return access(filename.c_str(), F_OK) == 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystemUNIX::makeDir(const string& path)
-{
-  return mkdir(path.c_str(), 0777) == 0;
 }

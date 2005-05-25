@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.10 2005-02-26 22:16:37 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.11 2005-05-25 17:17:38 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -445,6 +445,16 @@ bool handleInitialEvents(void)
   }
   return status;
 }
+
+
+	  if((mod & KMOD_META) && (mod & KMOD_SHIFT))
+
+
+      if((mod & KMOD_META) && !(mod & KMOD_SHIFT))
+
+
+
+
 
 /**
   This routine should be called regularly to handle events

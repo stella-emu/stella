@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.1 2005-05-18 22:35:37 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.2 2005-05-25 17:17:38 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -26,7 +26,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.1 2005-05-18 22:35:37 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.2 2005-05-25 17:17:38 stephena Exp $
 */
 class OSystemWin32 : public OSystem
 {
@@ -55,18 +55,6 @@ class OSystemWin32 : public OSystem
       @return Current time in microseconds.
     */
     virtual uInt32 getTicks();
-
-    /**
-      This method should be called to get the filename of a state file
-      given the state number.
-
-      @param md5   The md5sum to use as part of the filename.
-      @param state The state to use as part of the filename.
-
-      @return String representing the full path of the state filename.
-    */
-    virtual string stateFilename(const string& md5, uInt32 state);
-
 
     /**
       This method should be called to test whether the given file exists.

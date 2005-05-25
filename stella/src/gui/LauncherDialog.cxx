@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.16 2005-05-21 16:12:13 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.17 2005-05-25 17:17:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -166,7 +166,7 @@ void LauncherDialog::updateListing(bool fullReload)
   myGameList->clear();
 
   string cacheFile = instance()->cacheFile();
-  if(instance()->fileExists(cacheFile) && !fullReload)
+  if(FilesystemNode::fileExists(cacheFile) && !fullReload)
     loadListFromCache();
   else
     loadListFromDisk();

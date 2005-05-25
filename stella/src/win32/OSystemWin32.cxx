@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.1 2005-05-18 22:35:37 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.2 2005-05-25 17:17:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -85,7 +85,7 @@ void OSystemWin32::mainLoop()
   for(;;)
   {
 	// Exit if the user wants to quit
-	if(myEventHandler->doExitGame() || myEventHandler->doQuit())
+	if(myEventHandler->doQuit())
 	  break;
 
 	startTime = getTicks();
@@ -125,15 +125,6 @@ void OSystemWin32::mainLoop()
 uInt32 OSystemWin32::getTicks()
 {
   return (uInt32) SDL_GetTicks() * 1000;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWin32::stateFilename(const string& md5, uInt32 state)
-{
-  ostringstream buf;
-  buf << stateDir() << "\\" << md5 << ".st" << state;
-
-  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

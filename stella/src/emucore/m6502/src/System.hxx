@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.3 2002-05-13 19:10:25 stephena Exp $
+// $Id: System.hxx,v 1.4 2005-05-25 17:17:38 stephena Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -46,7 +46,7 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.3 2002-05-13 19:10:25 stephena Exp $
+  @version $Id: System.hxx,v 1.4 2005-05-25 17:17:38 stephena Exp $
 */
 class System
 {
@@ -115,7 +115,7 @@ class System
               2  file could not be opened for read/write
               3  invalid state file
     */
-    int saveState(string& fileName, string& md5sum);
+    int saveState(const string& fileName, const string& md5sum);
 
     /**
       Loads the current state of Stella from the given file.  Calls
@@ -127,7 +127,7 @@ class System
               2  file could not be opened for read/write
               3  invalid state file
     */
-    int loadState(string& fileName, string& md5sum);
+    int loadState(const string& fileName, const string& md5sum);
 
   public:
     /**

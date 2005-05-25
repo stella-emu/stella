@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.cxx,v 1.3 2004-04-04 02:03:15 stephena Exp $
+// $Id: Serializer.cxx,v 1.4 2005-05-25 17:17:37 stephena Exp $
 //============================================================================
 
 #include <iostream>
@@ -38,7 +38,7 @@ Serializer::~Serializer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::open(string& fileName)
+bool Serializer::open(const string& fileName)
 {
   close();
   myStream = new ofstream(fileName.c_str(), ios::out | ios::binary);

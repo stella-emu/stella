@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.29 2005-05-17 18:42:22 stephena Exp $
+// $Id: EventHandler.hxx,v 1.30 2005-05-25 17:17:37 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -57,7 +57,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.29 2005-05-17 18:42:22 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.30 2005-05-25 17:17:37 stephena Exp $
 */
 class EventHandler
 {
@@ -126,11 +126,6 @@ class EventHandler
       This method indicates whether a pause event has been received.
     */
     inline bool doPause() { return myPauseFlag; }
-
-    /**
-      This method indicates whether a exit game event has been received.
-    */
-    inline bool doExitGame() { return myExitGameFlag; }
 
     /**
       This method indicates whether a quit event has been received.
@@ -253,9 +248,6 @@ class EventHandler
 
     // Indicates the current pause status
     bool myPauseFlag;
-
-    // Indicates whether to quit the current game
-    bool myExitGameFlag;
 
     // Indicates whether to quit the emulator
     bool myQuitFlag;

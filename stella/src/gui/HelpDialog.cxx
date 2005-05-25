@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.6 2005-05-16 00:02:32 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.7 2005-05-25 17:17:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,8 +62,9 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
   dsc = new string[lines];
 
   uInt8 i = 0;
-  switch(page) // FIXME - change for OSX
+  switch(page)
   {
+#ifndef MAC_OSX
     case 1:
       title = "Common commands:";
       ADD_BIND("Ctrl Q",    "Quit emulation");
@@ -101,7 +102,45 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("Ctrl End",      "Increase Display.Width");
       ADD_BIND("Ctrl Home",     "Decrease Display.Width");
       break;
+#else
+    case 1:
+      title = "Common commands:";
+      ADD_BIND("Cmd Q",     "Quit emulation");
+      ADD_BIND("Escape",    "Exit current game");
+      ADD_BIND("Tab",       "Enter/exit configuration menu");
+      ADD_LINE;
+      ADD_BIND("Shift-Cmd =",     "Increase window size");
+      ADD_BIND("Shift-Cmd -",     "Decrease window size");
+      ADD_BIND("Shift-Cmd Enter", "Toggle fullscreen/windowed mode");
+      ADD_LINE;
+      ADD_BIND("Shift-Cmd ]",     "Increase volume by 2%");
+      ADD_BIND("Shift-Cmd [",     "Decrease volume by 2%");
+      break;
 
+    case 2:
+      title = "Special commands:";
+      ADD_BIND("Cmd g", "Grab mouse (keep in window)");
+      ADD_BIND("Cmd f", "Switch between NTSC and PAL");
+      ADD_BIND("Cmd s", "Save (or merge) game properties");
+      ADD_LINE;
+      ADD_BIND("Cmd 0", "Mouse emulates paddle 0");
+      ADD_BIND("Cmd 1", "Mouse emulates paddle 1");
+      ADD_BIND("Cmd 2", "Mouse emulates paddle 2");
+      ADD_BIND("Cmd 3", "Mouse emulates paddle 3");
+      break;
+
+    case 3:
+      title = "Developer commands:";
+      ADD_BIND("Shift-Cmd PageUp",    "Increase Display.YStart");
+      ADD_BIND("Shift-Cmd PageDown",  "Decrease Display.YStart");
+      ADD_BIND("Cmd PageUp",   "Increase Display.Height");
+      ADD_BIND("Cmd PageDown", "Decrease Display.Height");
+      ADD_BIND("Shift-Cmd End",       "Increase Display.XStart");
+      ADD_BIND("Shift-Cmd Home",      "Decrease Display.XStart");
+      ADD_BIND("Cmd End",      "Increase Display.Width");
+      ADD_BIND("Cmd Home",     "Decrease Display.Width");
+      break;
+#endif
     case 4:
       title = "All other commands:";
       ADD_LINE;

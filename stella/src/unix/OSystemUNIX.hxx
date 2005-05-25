@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.6 2005-05-18 22:35:37 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.7 2005-05-25 17:17:38 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.6 2005-05-18 22:35:37 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.7 2005-05-25 17:17:38 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {
@@ -55,35 +55,6 @@ class OSystemUNIX : public OSystem
       @return Current time in microseconds.
     */
     virtual uInt32 getTicks();
-
-    /**
-      This method should be called to get the filename of a state file
-      given the state number.
-
-      @param md5   The md5sum to use as part of the filename.
-      @param state The state to use as part of the filename.
-
-      @return String representing the full path of the state filename.
-    */
-    virtual string stateFilename(const string& md5, uInt32 state);
-
-    /**
-      This method should be called to test whether the given file exists.
-
-      @param filename The filename to test for existence.
-
-      @return boolean representing whether or not the file exists
-    */
-    virtual bool fileExists(const string& filename);
-
-    /**
-      This method should be called to create the specified directory.
-
-      @param path   The directory to create
-
-      @return       boolean representing whether or not the directory was created
-    */
-    virtual bool makeDir(const string& path);
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.4 2005-05-14 03:26:29 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.5 2005-05-25 17:17:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -203,4 +203,30 @@ AbstractFilesystemNode *POSIXFilesystemNode::parent() const
   p->_isDirectory = true;
 
   return p;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::fileExists(const string& path)
+{
+  struct stat st;
+  if(stat(path.c_str(), &st) != 0)
+    return false;
+
+  return S_ISREG(st.st_mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::dirExists(const string& path)
+{
+  struct stat st;
+  if(stat(path.c_str(), &st) != 0)
+    return false;
+
+  return S_ISDIR(st.st_mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::makeDir(const string& path)
+{
+  return mkdir(path.c_str(), 0777) == 0;
 }
