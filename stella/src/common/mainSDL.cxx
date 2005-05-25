@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.40 2005-05-25 17:17:33 stephena Exp $
+// $Id: mainSDL.cxx,v 1.41 2005-05-25 23:22:10 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -87,18 +87,6 @@ void SetupProperties(PropertiesSet& set)
 */
 void Cleanup()
 {
-/*  FIXME
-#ifdef JOYSTICK_SUPPORT
-  if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
-  {
-    for(uInt32 i = 0; i < StellaEvent::LastJSTICK; i++)
-    {
-      if(SDL_JoystickOpened(i))
-        SDL_JoystickClose(theJoysticks[i].stick);
-    }
-  }
-#endif
-*/
   if(theOSystem)
     delete theOSystem;
 
@@ -165,14 +153,7 @@ int main(int argc, char* argv[])
   theOSystem->createSound();
 
   // Setup the SDL joysticks (must be done after FrameBuffer is created)
-/*  FIXME - don't exit if joysticks can't be initialized
-  if(!theOSystem->eventHandler().setupJoystick()) // move this into eventhandler
-  {
-    cerr << "ERROR: Couldn't set up joysticks.\n";
-    Cleanup();
-    return 0;
-  }
-*/
+  theOSystem->eventHandler().setupJoysticks();
 
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if

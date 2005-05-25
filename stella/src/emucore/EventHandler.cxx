@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.60 2005-05-25 17:17:35 stephena Exp $
+// $Id: EventHandler.cxx,v 1.61 2005-05-25 23:22:11 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -24,15 +24,14 @@
 #include "EventHandler.hxx"
 #include "FSNode.hxx"
 #include "Settings.hxx"
-#include "StellaEvent.hxx"
 #include "System.hxx"
 #include "FrameBuffer.hxx"
 #include "Sound.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
-#include "bspf.hxx"
 #include "GuiUtils.hxx"
+#include "bspf.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
@@ -63,7 +62,7 @@ EventHandler::EventHandler(OSystem* osystem)
   }
 
   // Erase the JoyEvent array
-  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+  for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     myJoyTable[i] = Event::NoType;
 
   // Erase the Message array 
@@ -93,6 +92,17 @@ EventHandler::~EventHandler()
 {
   if(myEvent)
     delete myEvent;
+
+#ifdef JOYSTICK_SUPPORT
+  if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
+  {
+    for(uInt32 i = 0; i < kNumJoysticks; i++)
+    {
+      if(SDL_JoystickOpened(i))
+        SDL_JoystickClose(ourJoysticks[i].stick);
+    }
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,6 +142,83 @@ void EventHandler::reset(State state)
     default:
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setupJoysticks()
+{
+#ifdef JOYSTICK_SUPPORT
+  bool showinfo = myOSystem->settings().getBool("showinfo");
+
+  // Keep track of how many Stelladaptors we've found
+  uInt8 saCount = 0;
+
+  // First clear the joystick array
+  for(uInt32 i = 0; i < kNumJoysticks; i++)
+  {
+    ourJoysticks[i].stick = (SDL_Joystick*) NULL;
+    ourJoysticks[i].type  = JT_NONE;
+  }
+
+  // Initialize the joystick subsystem
+  if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
+  {
+    if(showinfo)
+      cout << "No joysticks present, use the keyboard." << endl;
+    return;
+  }
+
+  // Open up to 6 regular joysticks and 2 Stelladaptor devices
+  uInt32 limit = SDL_NumJoysticks() <= kNumJoysticks ?
+                 SDL_NumJoysticks() : kNumJoysticks;
+  for(uInt32 i = 0; i < limit; i++)
+  {
+    string name = SDL_JoystickName(i);
+    ourJoysticks[i].stick = SDL_JoystickOpen(i);
+
+    // Skip if we couldn't open it for any reason
+    if(ourJoysticks[i].stick == NULL)
+    {
+      ourJoysticks[i].type = JT_NONE;
+      continue;
+    }
+
+    // Figure out what type of joystick this is
+    if(name.find("Stelladaptor", 0) != string::npos)
+    {
+      saCount++;
+      if(saCount > 2)  // Ignore more than 2 Stelladaptors
+      {
+        ourJoysticks[i].type = JT_NONE;
+        continue;
+      }
+      else if(saCount == 1)
+      {
+        name = "Left Stelladaptor (Left joystick, Paddles 0 and 1, Left driving controller)";
+        ourJoysticks[i].type = JT_STELLADAPTOR_1;
+      }
+      else if(saCount == 2)
+      {
+        name = "Right Stelladaptor (Right joystick, Paddles 2 and 3, Right driving controller)";
+        ourJoysticks[i].type = JT_STELLADAPTOR_2;
+      }
+
+      if(showinfo)
+        cout << "Joystick " << i << ": " << name << endl;
+    }
+    else
+    {
+      ourJoysticks[i].type = JT_REGULAR;
+
+      if(showinfo)
+        cout << "Joystick " << i << ": " << SDL_JoystickName(i)
+             << " with " << SDL_JoystickNumButtons(ourJoysticks[i].stick)
+             << " buttons." << endl;
+    }
+    if(showinfo)
+      cout << endl;
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -240,9 +327,131 @@ void EventHandler::poll()
         break;  // SDL_VIDEOEXPOSE
     }
 
-    // FIXME - joystick stuff goes here
+#ifdef JOYSTICK_SUPPORT
+    // Read joystick events and modify event states
+    uInt8  stick;
+    uInt32 code;
+    uInt8  state;
+    Uint8 axis;
+    Uint8 button;
+    Int32 resistance;
+    Sint16 value;
+    JoyType type;
+
+    if(event.jbutton.which >= kNumJoysticks)
+      return;
+
+    stick = event.jbutton.which;
+    type  = ourJoysticks[stick].type;
+
+    // Figure put what type of joystick we're dealing with
+    // Stelladaptors behave differently, and can't be remapped
+    switch(type)
+    {
+      case JT_NONE:
+        break;
+
+      case JT_REGULAR:
+        switch(event.type)
+        {
+          case SDL_JOYBUTTONUP:
+          case SDL_JOYBUTTONDOWN:
+            if(event.jbutton.button >= kNumJoyButtons-4)
+              return;
+
+            code  = event.jbutton.button;
+            state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+
+            handleJoyEvent(stick, code, state);
+            break;
+
+          case SDL_JOYAXISMOTION:
+            axis = event.jaxis.axis;
+            value = event.jaxis.value;
+
+            if(axis == 0)  // x-axis
+            {
+              handleJoyEvent(stick, kJAxisLeft, (value < -16384) ? 1 : 0);
+              handleJoyEvent(stick, kJAxisRight, (value > 16384) ? 1 : 0);
+            }
+            else if(axis == 1)  // y-axis
+            {
+              handleJoyEvent(stick, kJAxisUp, (value < -16384) ? 1 : 0);
+              handleJoyEvent(stick, kJAxisDown, (value > 16384) ? 1 : 0);
+            }
+            break;
+        }
+        break;  // Regular joystick
+
+      case JT_STELLADAPTOR_1:
+      case JT_STELLADAPTOR_2:
+        switch(event.type)
+        {
+          case SDL_JOYBUTTONUP:
+          case SDL_JOYBUTTONDOWN:
+            button = event.jbutton.button;
+            state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+
+            // Send button events for the joysticks/paddles/driving controllers
+            if(button == 0)
+            {
+              if(type == JT_STELLADAPTOR_1)
+              {
+                handleEvent(Event::JoystickZeroFire, state);
+                handleEvent(Event::DrivingZeroFire, state);
+                handleEvent(Event::PaddleZeroFire, state);
+              }
+              else
+              {
+                handleEvent(Event::JoystickOneFire, state);
+                handleEvent(Event::DrivingOneFire, state);
+                handleEvent(Event::PaddleTwoFire, state);
+              }
+            }
+            else if(button == 1)
+            {
+              if(type == JT_STELLADAPTOR_1)
+                handleEvent(Event::PaddleOneFire, state);
+              else
+                handleEvent(Event::PaddleThreeFire, state);
+            }
+            break;
+
+          case SDL_JOYAXISMOTION:
+            axis = event.jaxis.axis;
+            value = event.jaxis.value;
+
+            // Send axis events for the joysticks
+            handleEvent(SA_Axis[type-2][axis][0], (value < -16384) ? 1 : 0);
+            handleEvent(SA_Axis[type-2][axis][1], (value > 16384) ? 1 : 0);
+
+            // Send axis events for the paddles
+            resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
+            handleEvent(SA_Axis[type-2][axis][2], resistance);
+
+            // Send events for the driving controllers
+            if(axis == 1)
+            {
+              if(value <= -16384-4096)
+                handleEvent(SA_DrivingValue[type-2],2);
+              else if(value > 16384+4096)
+                handleEvent(SA_DrivingValue[type-2],1);
+              else if(value >= 16384-4096)
+                handleEvent(SA_DrivingValue[type-2],0);
+              else
+                handleEvent(SA_DrivingValue[type-2],3);
+            }
+            break;
+        }
+        break;  // Stelladaptor joystick
+
+      default:
+        break;
+    }
+#endif
   }
 }
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
@@ -541,18 +750,33 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
   }
 }
 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::sendJoyEvent(StellaEvent::JoyStick stick,
-     StellaEvent::JoyCode code, Int32 state)
+void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
 {
-// FIXME
-/*
-  // Determine where the event should be sent
-  if(myMenuStatus)
-    myOSystem->frameBuffer().sendJoyEvent(stick, code, state);
-  else
-    handleEvent(myJoyTable[stick*StellaEvent::LastJCODE + code], state);
-*/
+  // Determine which mode we're in, then send the event to the appropriate place
+  switch(myState)
+  {
+    case S_EMULATE:
+      handleEvent(myJoyTable[stick*kNumJoyButtons + code], state);
+      break;
+
+    case S_MENU:
+      myOSystem->menu().handleJoyEvent(0, 0, stick, code, state); // FIXME - get x,y
+      break;
+
+    case S_LAUNCHER:
+      myOSystem->launcher().handleJoyEvent(0, 0, stick, code, state); // FIXME - get x,y
+      break;
+
+    case S_DEBUGGER:
+      // Not yet implemented
+      break;
+
+    case S_NONE:
+      return;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -637,35 +861,34 @@ void EventHandler::setActionMappings()
           key = key + ", " + ourSDLMapping[j];
       }
     }
-/*  FIXME
-    for(uInt32 j = 0; j < myJoyTableSize; ++j)
+    for(uInt32 j = 0; j < kNumJoysticks * kNumJoyButtons; ++j)
     {
       if(myJoyTable[j] == event)
       {
         ostringstream joyevent;
-        uInt32 stick  = j / StellaEvent::LastJCODE;
-        uInt32 button = j % StellaEvent::LastJCODE;
+        uInt32 stick  = j / kNumJoyButtons;
+        uInt32 button = j % kNumJoyButtons;
 
         switch(button)
         {
-          case StellaEvent::JAXIS_UP:
+          case kJAxisUp:
             joyevent << "J" << stick << " UP";
             break;
 
-          case StellaEvent::JAXIS_DOWN:
+          case kJAxisDown:
             joyevent << "J" << stick << " DOWN";
             break;
 
-          case StellaEvent::JAXIS_LEFT:
+          case kJAxisLeft:
             joyevent << "J" << stick << " LEFT";
             break;
 
-          case StellaEvent::JAXIS_RIGHT:
+          case kJAxisRight:
             joyevent << "J" << stick << " RIGHT";
             break;
 
           default:
-            joyevent << "J" << stick << " B" << (button-4);
+            joyevent << "J" << stick << " B" << button;
             break;
         }
         if(key == "")
@@ -674,7 +897,7 @@ void EventHandler::setActionMappings()
           key = key + ", " + joyevent.str();
       }
     }
-*/
+
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
     if(event == Event::Quit)
@@ -722,20 +945,18 @@ void EventHandler::setKeymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setJoymap()
 {
-// FIXME
-/*
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
   string list = myOSystem->settings().getString("joymap");
   replace(list.begin(), list.end(), ':', ' ');
 
-  if(isValidList(list, StellaEvent::LastJSTICK*StellaEvent::LastJCODE))
+  if(isValidList(list, kNumJoysticks*kNumJoyButtons))
   {
     istringstream buf(list);
     string key;
 
     // Fill the joymap table with events
-    for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+    for(Int32 i = 0; i < kNumJoysticks*kNumJoyButtons; ++i)
     {
       buf >> key;
       myJoyTable[i] = (Event::Type) atoi(key.c_str());
@@ -743,7 +964,6 @@ void EventHandler::setJoymap()
   }
   else
     setDefaultJoymap();
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -759,17 +979,14 @@ void EventHandler::addKeyMapping(Event::Type event, uInt16 key)
   saveMappings();
 }
 
-/*  FIXME
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addJoyMapping(Event::Type event,
-       StellaEvent::JoyStick stick, StellaEvent::JoyCode code)
+void EventHandler::addJoyMapping(Event::Type event, uInt8 stick, uInt32 code)
 {
-  myJoyTable[stick * StellaEvent::LastJCODE + code] = event;
+  myJoyTable[stick * kNumJoyButtons + code] = event;
 
   setActionMappings();
   saveMappings();
 }
-*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event)
@@ -780,8 +997,8 @@ void EventHandler::eraseMapping(Event::Type event)
       myKeyTable[i] = Event::NoType;
 
   // Erase the JoyEvent array
-  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
-    if(myJoyTable[i] == event && i != SDLK_TAB && i != SDLK_ESCAPE)
+  for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
+    if(myJoyTable[i] == event)
       myJoyTable[i] = Event::NoType;
 
   setActionMappings();
@@ -878,26 +1095,27 @@ void EventHandler::setDefaultKeymap()
 void EventHandler::setDefaultJoymap()
 {
   uInt32 i;
+  uInt32 c = kNumJoyButtons - 4;  // Upper 4 buttons are the directions
 
   // Erase all mappings
-  for(i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+  for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     myJoyTable[i] = Event::NoType;
 
   // Left joystick
-  i = StellaEvent::JSTICK_0 * StellaEvent::LastJCODE;
-  myJoyTable[i + StellaEvent::JAXIS_UP]    = Event::JoystickZeroUp;
-  myJoyTable[i + StellaEvent::JAXIS_DOWN]  = Event::JoystickZeroDown;
-  myJoyTable[i + StellaEvent::JAXIS_LEFT]  = Event::JoystickZeroLeft;
-  myJoyTable[i + StellaEvent::JAXIS_RIGHT] = Event::JoystickZeroRight;
-  myJoyTable[i + StellaEvent::JBUTTON_0]   = Event::JoystickZeroFire;
+  i = 0 * kNumJoyButtons;
+  myJoyTable[i + c + 0] = Event::JoystickZeroUp;
+  myJoyTable[i + c + 1] = Event::JoystickZeroDown;
+  myJoyTable[i + c + 2] = Event::JoystickZeroLeft;
+  myJoyTable[i + c + 3] = Event::JoystickZeroRight;
+  myJoyTable[i + 0]     = Event::JoystickZeroFire;
 
   // Right joystick
-  i = StellaEvent::JSTICK_1 * StellaEvent::LastJCODE;
-  myJoyTable[i + StellaEvent::JAXIS_UP]    = Event::JoystickOneUp;
-  myJoyTable[i + StellaEvent::JAXIS_DOWN]  = Event::JoystickOneDown;
-  myJoyTable[i + StellaEvent::JAXIS_LEFT]  = Event::JoystickOneLeft;
-  myJoyTable[i + StellaEvent::JAXIS_RIGHT] = Event::JoystickOneRight;
-  myJoyTable[i + StellaEvent::JBUTTON_0]   = Event::JoystickOneFire;
+  i = 1 * kNumJoyButtons;
+  myJoyTable[i + c + 0] = Event::JoystickOneUp;
+  myJoyTable[i + c + 1] = Event::JoystickOneDown;
+  myJoyTable[i + c + 2] = Event::JoystickOneLeft;
+  myJoyTable[i + c + 3] = Event::JoystickOneRight;
+  myJoyTable[i + 0]     = Event::JoystickOneFire;
 
   saveMappings();
 }
@@ -913,7 +1131,7 @@ void EventHandler::saveMappings()
 
   // Iterate through the joymap table and create a colon-separated list
   ostringstream joybuf;
-  for(Int32 i = 0; i < StellaEvent::LastJSTICK*StellaEvent::LastJCODE; ++i)
+  for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     joybuf << myJoyTable[i] << ":";
   myOSystem->settings().setString("joymap", joybuf.str());
 }
@@ -1364,20 +1582,19 @@ ActionList EventHandler::ourActionList[61] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::Paddle_Resistance[4] = {
+const Event::Type EventHandler::Paddle_Resistance[4] = {
   Event::PaddleZeroResistance, Event::PaddleOneResistance,
   Event::PaddleTwoResistance,  Event::PaddleThreeResistance
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::Paddle_Button[4] = {
+const Event::Type EventHandler::Paddle_Button[4] = {
   Event::PaddleZeroFire, Event::PaddleOneFire,
   Event::PaddleTwoFire,  Event::PaddleThreeFire
 };
 
-#ifdef JOYSTICK_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::SA_Axis[2][2][3] = {
+const Event::Type EventHandler::SA_Axis[2][2][3] = {
   { {Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance},
     {Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance }  },
   { {Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance},
@@ -1385,7 +1602,6 @@ Event::Type EventHandler::SA_Axis[2][2][3] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::SA_DrivingValue[2] = {
+const Event::Type EventHandler::SA_DrivingValue[2] = {
   Event::DrivingZeroValue, Event::DrivingOneValue
 };
-#endif

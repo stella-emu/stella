@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.37 2005-05-16 00:02:31 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.38 2005-05-25 23:22:11 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -22,7 +22,6 @@
 #include "Console.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
-#include "StellaEvent.hxx"
 #include "Settings.hxx"
 #include "MediaSrc.hxx"
 #include "FrameBuffer.hxx"

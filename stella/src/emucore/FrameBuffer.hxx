@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.33 2005-05-17 18:42:22 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.34 2005-05-25 23:22:11 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -26,7 +26,6 @@
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "StellaFont.hxx"
-#include "StellaEvent.hxx"
 #include "GuiUtils.hxx"
 
 class StellaFont;
@@ -41,7 +40,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.33 2005-05-17 18:42:22 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.34 2005-05-25 23:22:11 stephena Exp $
 */
 class FrameBuffer
 {

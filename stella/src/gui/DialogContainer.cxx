@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.5 2005-05-16 15:37:30 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.6 2005-05-25 23:22:11 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -162,4 +162,19 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
       activeDialog->handleMouseWheel(x - activeDialog->_x, y - activeDialog->_y, 1);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleJoyEvent(int x, int y, int stick, int button,
+                                     uInt8 state)
+{
+  if(myDialogStack.empty())
+    return;
+
+  // Send the event to the dialog box on the top of the stack
+  Dialog* activeDialog = myDialogStack.top();
+  if(state == 1)
+    activeDialog->handleJoyDown(x, y, stick, button);
+  else
+    activeDialog->handleJoyUp(x, y, stick, button);
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.30 2005-05-25 17:17:37 stephena Exp $
+// $Id: EventHandler.hxx,v 1.31 2005-05-25 23:22:11 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -23,7 +23,6 @@
 
 #include "bspf.hxx"
 #include "Event.hxx"
-#include "StellaEvent.hxx"
 
 class Console;
 class OSystem;
@@ -44,6 +43,24 @@ struct ActionList {
   string key;
 };
 
+// Joystick related items
+enum {
+  kNumJoysticks  = 8,
+  kNumJoyButtons = 24,
+  kJAxisUp       = kNumJoyButtons - 4,  // Upper 4 buttons are actually
+  kJAxisDown     = kNumJoyButtons - 3,  // directions
+  kJAxisLeft     = kNumJoyButtons - 2,
+  kJAxisRight    = kNumJoyButtons - 1
+};
+
+enum JoyType { JT_NONE, JT_REGULAR, JT_STELLADAPTOR_1, JT_STELLADAPTOR_2 };
+
+struct Stella_Joystick {
+  SDL_Joystick* stick;
+  JoyType       type;
+};
+
+
 /**
   This class takes care of event remapping and dispatching for the
   Stella core, as well as keeping track of the current 'mode'.
@@ -57,7 +74,7 @@ struct ActionList {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.30 2005-05-25 17:17:37 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.31 2005-05-25 23:22:11 stephena Exp $
 */
 class EventHandler
 {
@@ -83,6 +100,13 @@ class EventHandler
     Event* event();
 
     /**
+      Set up any joysticks on the system.  This must be called *after* the
+      framebuffer has been created, since SDL requires the video to be
+      intialized before joysticks can be probed.
+    */
+    void setupJoysticks();
+
+    /**
       Collects and dispatches any pending events.  This method should be
       called regularly (at X times per second, where X is the game framerate).
     */
@@ -91,10 +115,19 @@ class EventHandler
     /**
       Bind a key to an event/action
 
-      @event  The event we are remapping
-      @key    The key to bind to this event
+      @param event  The event we are remapping
+      @param key    The key to bind to this event
     */
     void addKeyMapping(Event::Type event, uInt16 key);
+
+    /**
+      Bind a joystick button/direction to an event/action
+
+      @param event  The event we are remapping
+      @param stick  The joystick number and button
+      @param code     to bind to this event
+    */
+    void addJoyMapping(Event::Type event, uInt8 stick, uInt32 code);
 
     /**
       Erase the specified mapping
@@ -118,7 +151,7 @@ class EventHandler
     /**
       Resets the state machine of the EventHandler to the defaults
 
-      @param The current state to set
+      @param state  The current state to set
     */
     void reset(State state);
 
@@ -149,16 +182,14 @@ class EventHandler
     static ActionList ourActionList[61];
 
     // Lookup table for paddle resistance events
-    static Event::Type Paddle_Resistance[4];
+    static const Event::Type Paddle_Resistance[4];
 
     // Lookup table for paddle button events
-    static Event::Type Paddle_Button[4];
+    static const Event::Type Paddle_Button[4];
 
-#ifdef JOYSTICK_SUPPORT
     // Static lookup tables for Stelladaptor axis support
-    static Event::Type SA_Axis[2][2][3];
-    static Event::Type SA_DrivingValue[2];
-#endif
+    static const Event::Type SA_Axis[2][2][3];
+    static const Event::Type SA_DrivingValue[2];
 
   private:
     /**
@@ -194,14 +225,13 @@ class EventHandler
     void handleMouseButtonEvent(SDL_Event& event, uInt8 state);
 
     /**
-      Send a joystick button event to the handler.
+      Send a joystick event to the handler (directions are encoded as buttons)
 
-      @param stick The joystick activated
-      @param code  The StellaEvent joystick code
-      @param state The StellaEvent state
+      @param stick  SDL joystick
+      @param code   Event code
+      @param state  state of code (pressed/released)
     */
-    void sendJoyEvent(StellaEvent::JoyStick stick, StellaEvent::JoyCode code,
-         Int32 state);
+    void handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state);
 
     /**
       The following methods take care of assigning action mappings.
@@ -229,13 +259,16 @@ class EventHandler
     Event::Type myKeyTable[SDLK_LAST];
 
     // Array of joystick events
-    Event::Type myJoyTable[StellaEvent::LastJSTICK*StellaEvent::LastJCODE];
+    Event::Type myJoyTable[kNumJoysticks * kNumJoyButtons];
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
 
     // Array of strings which correspond to the given SDL key
     string ourSDLMapping[SDLK_LAST];
+
+    // Array of joysticks available to Stella
+    Stella_Joystick ourJoysticks[kNumJoysticks];
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;

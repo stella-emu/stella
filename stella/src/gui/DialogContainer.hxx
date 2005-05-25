@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.3 2005-05-25 23:22:11 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.2 2005-05-13 18:28:05 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.3 2005-05-25 23:22:11 stephena Exp $
 */
 class DialogContainer
 {
@@ -81,7 +81,16 @@ class DialogContainer
     */
     void handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 state);
 
-// FIXME - add joystick handler
+    /**
+      Handle a joystick button event.
+
+      @param x       The x location
+      @param y       The y location
+      @param stick   The joystick number
+      @param button  The joystick button
+      @param state   The state (pressed or released)
+    */
+    void handleJoyEvent(int x, int y, int stick, int button, uInt8 state);
 
     /**
       Draw the stack of menus.

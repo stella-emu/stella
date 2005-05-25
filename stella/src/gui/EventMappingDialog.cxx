@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.11 2005-05-25 23:22:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -188,6 +188,21 @@ void EventMappingDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   }
   else
     myActionsList->handleKeyDown(ascii, keycode, modifiers);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingDialog::handleJoyDown(int x, int y, int stick, int button)
+{
+  // Remap joystick buttons in remap mode, otherwise pass to listwidget
+  if(myRemapStatus && myActionSelected >= 0)
+  {
+    Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
+    instance()->eventHandler().addJoyMapping(event, stick, button);
+
+    stopRemapping();
+  }
+  else
+    myActionsList->handleJoyDown(x, y, stick, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
