@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.61 2005-05-25 23:22:11 stephena Exp $
+// $Id: EventHandler.cxx,v 1.62 2005-05-26 15:43:43 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -222,7 +222,7 @@ void EventHandler::setupJoysticks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::poll()
+void EventHandler::poll(uInt32 time)
 {
   SDL_Event event;
 
@@ -450,6 +450,22 @@ void EventHandler::poll()
     }
 #endif
   }
+
+  // Update the current dialog container at regular intervals
+  // Used to implement continuous events
+  switch(myState)
+  {
+    case S_MENU:
+      myOSystem->menu().updateTime(time);
+      break;
+
+    case S_LAUNCHER:
+      myOSystem->launcher().updateTime(time);
+      break;
+
+    default:
+      break;
+  }
 }
 
 
@@ -622,11 +638,11 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
         myEvent->clear();
         return;
       }
-      myOSystem->menu().handleKeyEvent((uInt16) key, (Int32) mod, state);
+      myOSystem->menu().handleKeyEvent(key, mod, state);
       break;
 
     case S_LAUNCHER:
-      myOSystem->launcher().handleKeyEvent((uInt16) key, (Int32) mod, state);
+      myOSystem->launcher().handleKeyEvent(key, mod, state);
       break;
 
     case S_DEBUGGER:
@@ -762,11 +778,11 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
       break;
 
     case S_MENU:
-      myOSystem->menu().handleJoyEvent(0, 0, stick, code, state); // FIXME - get x,y
+      myOSystem->menu().handleJoyEvent(stick, code, state);
       break;
 
     case S_LAUNCHER:
-      myOSystem->launcher().handleJoyEvent(0, 0, stick, code, state); // FIXME - get x,y
+      myOSystem->launcher().handleJoyEvent(stick, code, state);
       break;
 
     case S_DEBUGGER:

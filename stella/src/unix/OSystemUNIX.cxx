@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.9 2005-05-25 17:17:38 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.10 2005-05-26 15:43:44 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -96,7 +96,7 @@ void OSystemUNIX::mainLoop()
         break;
 
       startTime = getTicks();
-      myEventHandler->poll();
+      myEventHandler->poll(startTime);
       myFrameBuffer->update();
 
       // Now, waste time if we need to so that we are at the desired frame rate
@@ -129,7 +129,7 @@ void OSystemUNIX::mainLoop()
         break;
 
       startTime = getTicks();
-      myEventHandler->poll();
+      myEventHandler->poll(startTime);
       myFrameBuffer->update();
 
       currentTime = getTicks();

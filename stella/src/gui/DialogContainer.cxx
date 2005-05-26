@@ -13,21 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.6 2005-05-25 23:22:11 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.7 2005-05-26 15:43:44 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "Stack.hxx"
+#include "EventHandler.hxx"
 #include "bspf.hxx"
 #include "DialogContainer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem* osystem)
     : myOSystem(osystem),
-      myBaseDialog(NULL)
+      myBaseDialog(NULL),
+      myTime(0)
 {
   myCurrentKeyDown.keycode = 0;
+  myCurrentMouseDown.button = -1;
   myLastClick.x = myLastClick.y = 0;
   myLastClick.time = 0;
   myLastClick.count = 0;
@@ -38,6 +41,36 @@ DialogContainer::~DialogContainer()
 {
   if(myBaseDialog)
     delete myBaseDialog;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::updateTime(uInt32 time)
+{
+  // We only need millisecond precision
+  myTime = time / 1000;
+
+  if(myDialogStack.empty())
+    return;
+
+  // Check for pending continuous events and send them to the active dialog box
+  Dialog* activeDialog = myDialogStack.top();
+
+  if(myCurrentKeyDown.keycode != 0 && myKeyRepeatTime < myTime)
+  {
+    activeDialog->handleKeyDown(myCurrentKeyDown.ascii, myCurrentKeyDown.keycode,
+                                myCurrentKeyDown.flags);
+    myKeyRepeatTime = myTime + kKeyRepeatSustainDelay;
+  }
+
+/*  FIXME - there are still some problems with this code
+  if(myCurrentMouseDown.button != -1 && myClickRepeatTime < myTime)
+  {
+    activeDialog->handleMouseDown(myCurrentMouseDown.x - activeDialog->_x,
+                                  myCurrentMouseDown.y - activeDialog->_y,
+                                  myCurrentMouseDown.button, 1);
+    myClickRepeatTime = myTime + kClickRepeatSustainDelay;
+  }
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,6 +111,13 @@ void DialogContainer::reStack()
 
   // Now make sure all dialog boxes are in a known (closed) state
   myBaseDialog->reset();
+
+  // Reset all continuous events
+  myCurrentKeyDown.keycode = 0;
+  myCurrentMouseDown.button = -1;
+  myLastClick.x = myLastClick.y = 0;
+  myLastClick.time = 0;
+  myLastClick.count = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,9 +129,22 @@ void DialogContainer::handleKeyEvent(int key, int mod, uInt8 state)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
   if(state == 1)
+  {
+    myCurrentKeyDown.ascii   = key;
+    myCurrentKeyDown.keycode = key;
+    myCurrentKeyDown.flags   = mod;
+    myKeyRepeatTime = myTime + kKeyRepeatInitialDelay;
+
     activeDialog->handleKeyDown(key, key, mod);
+  }
   else
+  {
     activeDialog->handleKeyUp(key, key, mod);
+
+    // Only stop firing events if it's the current key
+    if (key == myCurrentKeyDown.keycode)
+      myCurrentKeyDown.keycode = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,9 +169,6 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  // Get the current time for detecting double clicks
-  int time = myOSystem->getTicks() / 1000;  // we only need millisecond precision
-
   switch(b)
   {
     case EVENT_LBUTTONDOWN:
@@ -131,7 +181,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
         myLastClick.count = 0;
       }
 
-      if(myLastClick.count && (time < myLastClick.time + 500)  // DoubleClickDelay
+      if(myLastClick.count && (myTime < myLastClick.time + kDoubleClickDelay)
          && ABS(myLastClick.x - x) < 3
          && ABS(myLastClick.y - y) < 3)
       {
@@ -143,7 +193,14 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
         myLastClick.y = y;
         myLastClick.count = 1;
       }
-      myLastClick.time = time;
+      myLastClick.time = myTime;
+
+      // Now account for repeated mouse events (click and hold)
+      myCurrentMouseDown.x = x;
+      myCurrentMouseDown.y = y;
+      myCurrentMouseDown.button = 1;  // in the future, we may differentiate buttons
+      myClickRepeatTime = myTime + kClickRepeatInitialDelay;
+
       activeDialog->handleMouseDown(x - activeDialog->_x, y - activeDialog->_y,
                                     1, myLastClick.count);
       break;
@@ -152,6 +209,9 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
     case EVENT_RBUTTONUP:
       activeDialog->handleMouseUp(x - activeDialog->_x, y - activeDialog->_y,
                                   1, myLastClick.count);
+      // Since all buttons are treated equally, we don't need to check which button
+      //if (button == myCurrentClickDown.button)
+      myCurrentMouseDown.button = -1;
       break;
 
     case EVENT_WHEELUP:
@@ -165,8 +225,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyEvent(int x, int y, int stick, int button,
-                                     uInt8 state)
+void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
 {
   if(myDialogStack.empty())
     return;
@@ -174,7 +233,7 @@ void DialogContainer::handleJoyEvent(int x, int y, int stick, int button,
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
   if(state == 1)
-    activeDialog->handleJoyDown(x, y, stick, button);
+    activeDialog->handleJoyDown(stick, button);
   else
-    activeDialog->handleJoyUp(x, y, stick, button);
+    activeDialog->handleJoyUp(stick, button);
 }

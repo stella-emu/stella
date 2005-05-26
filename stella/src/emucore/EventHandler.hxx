@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.31 2005-05-25 23:22:11 stephena Exp $
+// $Id: EventHandler.hxx,v 1.32 2005-05-26 15:43:44 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.31 2005-05-25 23:22:11 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.32 2005-05-26 15:43:44 stephena Exp $
 */
 class EventHandler
 {
@@ -109,8 +109,10 @@ class EventHandler
     /**
       Collects and dispatches any pending events.  This method should be
       called regularly (at X times per second, where X is the game framerate).
+
+      @param time  The current time in milliseconds.
     */
-    void poll();
+    void poll(uInt32 time);
 
     /**
       Bind a key to an event/action

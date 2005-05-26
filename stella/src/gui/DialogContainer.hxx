@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.3 2005-05-25 23:22:11 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.4 2005-05-26 15:43:44 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.3 2005-05-25 23:22:11 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.4 2005-05-26 15:43:44 stephena Exp $
 */
 class DialogContainer
 {
@@ -53,6 +53,14 @@ class DialogContainer
     virtual ~DialogContainer();
 
   public:
+    /**
+      Update the dialog container with the current time.
+      This is useful if we want to trigger events at some specified time.
+
+      @param time  The current time in microseconds
+    */
+    void updateTime(uInt32 time);
+
     /**
       Handle a keyboard event.
 
@@ -84,13 +92,11 @@ class DialogContainer
     /**
       Handle a joystick button event.
 
-      @param x       The x location
-      @param y       The y location
       @param stick   The joystick number
       @param button  The joystick button
       @param state   The state (pressed or released)
     */
-    void handleJoyEvent(int x, int y, int stick, int button, uInt8 state);
+    void handleJoyEvent(int stick, int button, uInt8 state);
 
     /**
       Draw the stack of menus.
@@ -123,19 +129,38 @@ class DialogContainer
     Dialog*  myBaseDialog;
     DialogStack myDialogStack;
 
+    enum {
+      kDoubleClickDelay = 500,
+      kKeyRepeatInitialDelay = 400,
+      kKeyRepeatSustainDelay = 50,
+      kClickRepeatInitialDelay = kKeyRepeatInitialDelay,
+      kClickRepeatSustainDelay = kKeyRepeatSustainDelay
+    };
+
+    // Indicates the most current time (in milliseconds) as set by updateTime()
+    uInt32 myTime;
+
     // For continuous events (keyDown)
     struct {
       int ascii;
-      uInt8 flags;
       int keycode;
+      uInt8 flags;
     } myCurrentKeyDown;
-    int myKeyRepeatTime;
+    uInt32 myKeyRepeatTime;
+
+    // For continuous events (mouseDown)
+    struct {
+      int x;
+      int y;
+      int button;
+    } myCurrentMouseDown;
+    uInt32 myClickRepeatTime;
 	
     // Position and time of last mouse click (used to detect double clicks)
     struct {
-      int x, y;   // Position of mouse when the click occured
-      int time;  // Time
-      int count;  // How often was it already pressed?
+      int x, y;     // Position of mouse when the click occured
+      uInt32 time;  // Time
+      int count;    // How often was it already pressed?
     } myLastClick;
 };
 

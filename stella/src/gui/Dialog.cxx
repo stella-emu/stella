@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.16 2005-05-25 23:22:11 stephena Exp $
+// $Id: Dialog.cxx,v 1.17 2005-05-26 15:43:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -284,19 +284,19 @@ void Dialog::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleJoyDown(int x, int y, int stick, int button)
+void Dialog::handleJoyDown(int stick, int button)
 {
   // Focused widget receives joystick events
   if(_focusedWidget)
-    _focusedWidget->handleJoyDown(x, y, stick, button);
+    _focusedWidget->handleJoyDown(stick, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleJoyUp(int x, int y, int stick, int button)
+void Dialog::handleJoyUp(int stick, int button)
 {
   // Focused widget receives joystick events
   if(_focusedWidget)
-    _focusedWidget->handleJoyUp(x, y, stick, button);
+    _focusedWidget->handleJoyUp(stick, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
