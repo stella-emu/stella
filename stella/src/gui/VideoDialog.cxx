@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.13 2005-05-19 18:42:38 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.14 2005-05-26 18:56:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,23 +52,27 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Video driver (query OSystem for what's supported)
   myDriverPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
                                   "Driver: ", labelWidth);
-//  myDriverPopup->appendEntry("First one", 1);
-//  myDriverPopup->appendEntry("Another one", 2);
+  unsigned int itemNum = 1;
+  StringList::const_iterator iter;
+  if(instance()->driverList().size() > 0)
+  {
+    for (iter = instance()->driverList().begin(); iter != instance()->driverList().end();
+         ++iter, ++itemNum)
+    {
+      myDriverPopup->appendEntry(*iter, itemNum);
+    }
+  }
+  else
+    myDriverPopup->setEnabled(false);
   yoff += kVideoRowHeight + 4;
 
-// FIXME - get list of video drivers from OSystem
-//  const Common::LanguageDescription *l = Common::g_languages;
-//  for (; l->code; ++l) {
-//    _langPopUp->appendEntry(l->description, l->id);
-//  }
-
-// FIXME - get list of renderers from OSystem
-//         Also, make these options work without requiring a restart
   // Video renderer
   myRendererPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
                                     "Renderer: ", labelWidth, kRendererChanged);
   myRendererPopup->appendEntry("Software", 1);
+#ifdef DISPLAY_OPENGL
   myRendererPopup->appendEntry("OpenGL", 2);
+#endif
   yoff += kVideoRowHeight + 4;
 
   // Video filter
@@ -151,7 +155,18 @@ void VideoDialog::loadConfig()
   double f;
 
   // Driver setting
-  myDriverPopup->setSelectedTag(0); // FIXME
+  s = instance()->settings().getString("video_driver");
+  unsigned int itemNum = 1;
+  StringList::const_iterator iter;
+  for (iter = instance()->driverList().begin(); iter != instance()->driverList().end();
+       ++iter, ++itemNum)
+  {
+    if(*iter == s)
+    {
+      myDriverPopup->setSelectedTag(itemNum);
+      break;
+    }
+  }
 
   // Renderer setting
   s = instance()->settings().getString("video");
@@ -159,6 +174,8 @@ void VideoDialog::loadConfig()
     myRendererPopup->setSelectedTag(1);
   else if(s == "gl")
     myRendererPopup->setSelectedTag(2);
+  else
+    myRendererPopup->setSelectedTag(1);
 
   // Filter setting
   s = instance()->settings().getString("gl_filter");
@@ -224,11 +241,7 @@ void VideoDialog::saveConfig()
 
   // Driver setting
   s = myDriverPopup->getSelectedString();
-  if(s != instance()->settings().getString("video_driver"))
-  {
-    instance()->settings().setString("video_driver", s);
-    restart = true;
-  }
+  instance()->settings().setString("video_driver", s);
 
   // Renderer setting
   i = myRendererPopup->getSelectedTag();
@@ -305,10 +318,8 @@ void VideoDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::setDefaults()
 {
-  // FIXME - for now, this option isn't available
-  myDriverPopup->setSelectedTag(0);
-  myDriverPopup->setEnabled(false);
-
+  if(myDriverPopup->isEnabled())
+    myDriverPopup->setSelectedTag(1);
   myRendererPopup->setSelectedTag(1);
   myFilterPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(1);

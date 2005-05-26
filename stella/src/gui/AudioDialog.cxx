@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.6 2005-05-13 18:28:05 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.7 2005-05-26 18:56:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -170,7 +170,6 @@ void AudioDialog::setDefaults()
   myVolumeSlider->setValue(100);
   myVolumeLabel->setLabel("100");
 
-// FIXME - get defaults from OSystem or Settings
 #ifdef WIN32
   myFragsizePopup->setSelectedTag(4);
 #else

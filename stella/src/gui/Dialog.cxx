@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.17 2005-05-26 15:43:44 stephena Exp $
+// $Id: Dialog.cxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -204,25 +204,6 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   if(_focusedWidget)
     if (_focusedWidget->handleKeyDown(ascii, keycode, modifiers))
       return;
-
-  // Hotkey handling
-  if(ascii != 0)
-  {
-    Widget* w = _firstWidget;
-    ascii = toupper(ascii);
-    while(w)
-    {
-      if(0)//FIXME - don't let it access a protected variable w->_type == kButtonWidget && ascii == toupper(((ButtonWidget *)w)->_hotkey))
-      {
-        // The hotkey for widget w was pressed. We fake a mouse click into the
-        // button by invoking the appropriate methods.
-        w->handleMouseDown(0, 0, 1, 1);
-        w->handleMouseUp(0, 0, 1, 1);
-        return;
-      }
-      w = w->_next;
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

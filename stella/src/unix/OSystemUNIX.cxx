@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.10 2005-05-26 15:43:44 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.11 2005-05-26 18:56:58 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -43,6 +43,10 @@
   setConfigFiles()
   setCacheFile()
 
+  And for initializing the following variables:
+
+  myDriverList (a StringList)
+
   See OSystem.hxx for a further explanation
 */
 
@@ -66,6 +70,8 @@ OSystemUNIX::OSystemUNIX()
 
   string cacheFile = basedir + "/stella.cache";
   setCacheFile(cacheFile);
+
+  // No drivers are specified for Unix
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

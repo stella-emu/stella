@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.2 2005-05-25 17:17:38 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.3 2005-05-26 18:56:58 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -34,13 +34,17 @@
   setConfigFiles()
   setCacheFile()
 
+  And for initializing the following variables:
+
+  myDriverList (a StringList)
+
   See OSystem.hxx for a further explanation
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemWin32::OSystemWin32()
 {
-  // FIXME - there really should be code here to determine which version
+  // TODO - there really should be code here to determine which version
   // of Windows is being used.
   // If using a version which supports multiple users (NT and above),
   // the relevant directories should be created in per-user locations.
@@ -60,6 +64,9 @@ OSystemWin32::OSystemWin32()
 
   string cacheFile = basedir + "stella.cache";
   setCacheFile(cacheFile);
+
+  myDriverList.push_back("windib");
+  myDriverList.push_back("directx");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

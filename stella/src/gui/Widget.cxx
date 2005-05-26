@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.10 2005-05-16 00:02:32 stephena Exp $
+// $Id: Widget.cxx,v 1.11 2005-05-26 18:56:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -141,7 +141,7 @@ void StaticTextWidget::setValue(int value)
   _label = buf;
 
   // Refresh the screen when the text has changed
-  // FIXME - eventually, this should be a dirty rectangle
+  // TODO - eventually, this should be a dirty rectangle
   _boss->instance()->frameBuffer().refresh();
 }
 
@@ -224,7 +224,7 @@ void CheckboxWidget::setState(bool state)
   sendCommand(_cmd, _state);
 
   // Refresh the screen after the checkbox is drawn
-  // FIXME - eventually, this should be a dirty rectangle
+  // TODO - eventually, this should be a dirty rectangle
   _boss->instance()->frameBuffer().refresh();
 }
 
@@ -284,7 +284,7 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
       sendCommand(_cmd, _value);
     }
     // Refresh the screen while the slider is being redrawn
-    // FIXME - eventually, this should be a dirty rectangle
+    // TODO - eventually, this should be a dirty rectangle
     _boss->instance()->frameBuffer().refresh();
   }
 }

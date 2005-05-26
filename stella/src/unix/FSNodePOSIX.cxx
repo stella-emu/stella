@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.5 2005-05-25 17:17:38 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.6 2005-05-26 18:56:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
+
+#include <sstream>
 
 /*
  * Implementation of the Stella file system API based on POSIX (for Linux and OSX)
@@ -229,4 +231,17 @@ bool AbstractFilesystemNode::dirExists(const string& path)
 bool AbstractFilesystemNode::makeDir(const string& path)
 {
   return mkdir(path.c_str(), 0777) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string AbstractFilesystemNode::modTime(const string& path)
+{
+  struct stat st;
+  if(stat(path.c_str(), &st) != 0)
+    return "";
+
+  ostringstream buf;
+  buf << st.st_mtime;
+
+  return buf.str();
 }

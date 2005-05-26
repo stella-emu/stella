@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.17 2005-05-25 17:17:37 stephena Exp $
+// $Id: OSystem.hxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -29,6 +29,7 @@ class Launcher;
 #include "Sound.hxx"
 #include "Settings.hxx"
 #include "Console.hxx"
+#include "StringList.hxx"
 #include "bspf.hxx"
 
 
@@ -38,7 +39,7 @@ class Launcher;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.17 2005-05-25 17:17:37 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
 */
 class OSystem
 {
@@ -238,6 +239,13 @@ class OSystem
     const string& features() { return myFeatures; }
 
     /**
+      The features which are conditionally compiled into Stella.
+
+      @return  The supported features
+    */
+    const StringList& driverList() { return myDriverList; }
+
+    /**
       Open the given ROM and return an array containing its contents.
 
       @param rom    The absolute pathname of the ROM file
@@ -323,6 +331,9 @@ class OSystem
 
     // Time per frame for a video update, based on the current framerate
     uInt32 myTimePerFrame;
+
+    // Holds the types of SDL video driver supported by this OSystem
+    StringList myDriverList;
 
   private:
     string myBaseDir;

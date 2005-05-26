@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.17 2005-05-25 17:17:38 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -148,27 +148,27 @@ void LauncherDialog::updateListing(bool fullReload)
 {
   enableButtons(false);
 
-  // Figure out if the ROM dir has changed since we last accessed it.
-  // If so, we do a full reload from disk (takes quite some time).
-  // Otherwise, we can use the cache file (which is much faster).
-// FIXME - actually implement the following code, where we use
-//         a function to detect last modification time, and compare
-//         it to the current modification time
-/*
-  if(ROM_DIR_CHANGED)
-    loadListFromDisk();
-  else if(CACHE_FILE_EXISTS)
-    loadListFromCache();
-  else  // we have no other choice
-    loadListFromDisk();
-*/
   // Start with empty list
   myGameList->clear();
 
+  string romdir = instance()->settings().getString("romdir");
   string cacheFile = instance()->cacheFile();
-  if(FilesystemNode::fileExists(cacheFile) && !fullReload)
+
+  // Figure out if the ROM dir has changed since we last accessed it.
+  // If so, we do a full reload from disk (takes quite some time).
+  // Otherwise, we can use the cache file (which is much faster).
+  string currentModTime = FilesystemNode::modTime(romdir);
+  string oldModTime = instance()->settings().getString("modtime");
+/*
+cerr << "old:     \'" << oldModTime     << "\'\n"
+     << "current: \'" << currentModTime << "\'\n"
+     << endl;
+*/
+  if(currentModTime != oldModTime)  // romdir has changed
+    loadListFromDisk();
+  else if(FilesystemNode::fileExists(cacheFile) && !fullReload)
     loadListFromCache();
-  else
+  else  // we have no other choice
     loadListFromDisk();
 
   // Now fill the list widget with the contents of the GameList
@@ -260,6 +260,11 @@ void LauncherDialog::loadListFromDisk()
   // And create a cache file, so that the next time Stella starts,
   // we don't have to do this time-consuming operation again
   createListCache();
+
+  // Finally, update the modification time so we don't have to needlessly
+  // call this method again
+  string currentModTime = FilesystemNode::modTime(romdir);
+  instance()->settings().setString("modtime", currentModTime);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.20 2005-05-25 17:17:37 stephena Exp $
+// $Id: OSystem.cxx,v 1.21 2005-05-26 18:56:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -81,6 +81,8 @@ OSystem::OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
+  myDriverList.clear();
+
   delete myMenu;
   delete myLauncher;
 
@@ -152,7 +154,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
     if(mySettings->getBool("showinfo"))
     {
       buf = "Video driver: " + videodriver;
-      cout << buf << endl;
+      cout << buf << endl << endl;
     }
   }
 

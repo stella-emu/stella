@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.45 2005-05-19 18:42:37 stephena Exp $
+// $Id: Settings.cxx,v 1.46 2005-05-26 18:56:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -67,6 +67,7 @@ Settings::Settings(OSystem* osystem)
 
   set("romdir", "");
   set("lastrom", "");
+  set("modtime", "");  // romdir last modification time
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
