@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.3 2005-05-14 03:26:29 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.4 2005-05-27 17:05:44 markgrebe Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -88,7 +88,7 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
   addButton(_w - 2 *(kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOkCmd, 0);
+  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 
   // Create file browser dialog
