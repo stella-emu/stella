@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.38 2005-05-25 23:22:11 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.39 2005-05-27 18:00:48 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -29,6 +29,7 @@
 #include "GuiUtils.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
+#include "Debugger.hxx"
 #include "OSystem.hxx"
 
 #include "stella.xpm"   // The Stella icon
@@ -242,8 +243,31 @@ void FrameBuffer::update()
     }
 
     case EventHandler::S_DEBUGGER:
-      // Not yet implemented
-      break;
+      // Draw changes to the mediasource
+      if(!myPauseStatus)
+        myOSystem->console().mediaSource().update();
+
+      // We always draw the screen, even if the core is paused
+      drawMediaSource();
+
+      // Only update the screen if it's been invalidated or the menus have changed  
+      if(theRedrawEntireFrameIndicator || theMenuChangedIndicator)
+      {
+        // Overlay the ROM launcher
+        myOSystem->debugger().draw();
+
+        // Now the screen is up to date
+        theRedrawEntireFrameIndicator = false;
+
+        // This is a performance hack to only draw the menus when necessary
+        // Software mode is single-buffered, so we don't have to worry
+        // However, OpenGL mode is double-buffered, so we need to draw the
+        // menus at least twice (so they'll be in both buffers)
+        // Otherwise, we get horrible flickering
+        myMenuRedraws--;
+        theMenuChangedIndicator = (myMenuRedraws != 0);
+      }
+      break;  // S_DEBUGGER
 
     case EventHandler::S_NONE:
       return;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.23 2005-05-16 00:02:31 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.24 2005-05-27 18:00:47 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -513,9 +513,9 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
       // Figure out which dimension is closest to the 10% mark,
       // and calculate the scaling required to bring it to exactly 10%
       if(scaleX > scaleY)
-        myFSScaleFactor = float(myScreenDim.w * 0.9) / myImageDim.w;
+        myFSScaleFactor = float(myScreenDim.w) / myImageDim.w;
       else
-        myFSScaleFactor = float(myScreenDim.h * 0.9) / myImageDim.h;
+        myFSScaleFactor = float(myScreenDim.h) / myImageDim.h;
 
       myImageDim.w = (Uint16) (myFSScaleFactor * myImageDim.w);
       myImageDim.h = (Uint16) (myFSScaleFactor * myImageDim.h);
@@ -530,12 +530,10 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
       scaleX = float(myImageDim.w) / myScreenDim.w;
       scaleY = float(myImageDim.h) / myScreenDim.h;
 
-      // Figure out which dimension is closest to the 10% mark,
-      // and calculate the scaling required to bring it to exactly 10%
       if(scaleX > scaleY)
-        myFSScaleFactor = (myScreenDim.w * 0.9) / myImageDim.w;
+        myFSScaleFactor = float(myScreenDim.w) / myImageDim.w;
       else
-        myFSScaleFactor = (myScreenDim.h * 0.9) / myImageDim.h;
+        myFSScaleFactor = float(myScreenDim.h) / myImageDim.h;
 
       myImageDim.w = (Uint16) (myFSScaleFactor * myImageDim.w);
       myImageDim.h = (Uint16) (myFSScaleFactor * myImageDim.h);

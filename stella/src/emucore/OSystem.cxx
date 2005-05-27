@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.21 2005-05-26 18:56:58 stephena Exp $
+// $Id: OSystem.cxx,v 1.22 2005-05-27 18:00:48 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -40,6 +40,7 @@
 #include "EventHandler.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
+#include "Debugger.hxx"
 #include "bspf.hxx"
 #include "OSystem.hxx"
 
@@ -53,12 +54,14 @@ OSystem::OSystem()
     myConsole(NULL),
     myMenu(NULL),
     myLauncher(NULL),
+    myDebugger(NULL),
     myRomFile(""),
     myFeatures("")
 {
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
   myLauncher = new Launcher(this);
+  myDebugger = new Debugger(this);
 
   // Determine which features were conditionally compiled into Stella
 #ifdef DISPLAY_OPENGL
@@ -85,6 +88,7 @@ OSystem::~OSystem()
 
   delete myMenu;
   delete myLauncher;
+  delete myDebugger;
 
   // Remove any game console that is currently attached
   delete myConsole;
@@ -199,7 +203,8 @@ bool OSystem::createFrameBuffer(bool showmessage)
       break;  // S_LAUNCHER
 
     case EventHandler::S_DEBUGGER:
-      break;
+      myDebugger->initializeVideo();
+      break;  // S_DEBUGGER
 
     case EventHandler::S_NONE:
       break;
@@ -239,19 +244,17 @@ void OSystem::createSound()
   mySound = new SoundNull(this);
 #endif
 
-  // Re-initialize the framebuffer to current settings
+  // Re-initialize the sound object to current settings
   switch(myEventHandler->state())
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_MENU:
+    case EventHandler::S_DEBUGGER:
       myConsole->initializeAudio();
-      break;  // S_EMULATE, S_MENU
+      break;  // S_EMULATE, S_MENU, S_DEBUGGER
 
     case EventHandler::S_LAUNCHER:
       break;  // S_LAUNCHER
-
-    case EventHandler::S_DEBUGGER:
-      break;
 
     case EventHandler::S_NONE:
       break;

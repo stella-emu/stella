@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.5 2005-05-13 18:28:06 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.6 2005-05-27 18:00:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,7 +23,6 @@
 #define VIDEO_DIALOG_HXX
 
 class CommandSender;
-class Dialog;
 class DialogContainer;
 class PopUpWidget;
 class SliderWidget;
@@ -31,6 +30,7 @@ class StaticTextWidget;
 class CheckboxWidget;
 
 #include "OSystem.hxx"
+#include "Dialog.hxx"
 #include "bspf.hxx"
 
 class VideoDialog : public Dialog

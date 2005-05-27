@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.8 2005-05-16 15:37:30 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.9 2005-05-27 18:00:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,7 +24,6 @@
 
 class Properties;
 class CommandSender;
-class Dialog;
 class DialogContainer;
 class VideoDialog;
 class AudioDialog;
@@ -33,6 +32,7 @@ class HelpDialog;
 class AboutDialog;
 
 #include "OSystem.hxx"
+#include "Dialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "bspf.hxx"
 

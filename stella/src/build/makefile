@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.84 2005-05-21 19:55:17 stephena Exp $
+## $Id: makefile,v 1.85 2005-05-27 18:00:46 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -154,7 +154,7 @@ win32-gl:
 ###############################################################################
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
-GUI_OBJS = StellaFont.o Menu.o Launcher.o \
+GUI_OBJS = StellaFont.o Menu.o Launcher.o Debugger.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
@@ -387,6 +387,9 @@ Menu.o: $(GUI)/Menu.cxx $(GUI)/Menu.hxx
 
 Launcher.o: $(GUI)/Launcher.cxx $(GUI)/Launcher.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Launcher.cxx
+
+Debugger.o: $(GUI)/Debugger.cxx $(GUI)/Debugger.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Debugger.cxx
 
 Widget.o: $(GUI)/Widget.cxx $(GUI)/Widget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Widget.cxx

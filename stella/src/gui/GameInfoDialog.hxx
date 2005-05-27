@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.4 2005-05-13 18:28:05 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.5 2005-05-27 18:00:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,7 @@ class StaticTextWidget;
 #define LINES_PER_PAGE 10
 
 #include "OSystem.hxx"
+#include "Dialog.hxx"
 #include "Props.hxx"
 #include "bspf.hxx"
 

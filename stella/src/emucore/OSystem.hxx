@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
+// $Id: OSystem.hxx,v 1.19 2005-05-27 18:00:48 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -23,6 +23,7 @@ class PropertiesSet;
 
 class Menu;
 class Launcher;
+class Debugger;
 
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
@@ -39,7 +40,7 @@ class Launcher;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.19 2005-05-27 18:00:48 stephena Exp $
 */
 class OSystem
 {
@@ -131,6 +132,13 @@ class OSystem
       @return The launcher object
     */
     Launcher& launcher(void) const { return *myLauncher; }
+
+    /**
+      Get the ROM debugger of the system.
+
+      @return The debugger object
+    */
+    Debugger& debugger(void) const { return *myDebugger; }
 
     /**
       Set the framerate for the video system.  It's placed in this class since
@@ -325,6 +333,9 @@ class OSystem
 
     // Pointer to the Launcher object
     Launcher* myLauncher;
+
+    // Pointer to the Debugger object
+    Debugger* myDebugger;
 
     // Number of times per second to iterate through the main loop
     uInt32 myDisplayFrameRate;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.32 2005-05-26 15:43:44 stephena Exp $
+// $Id: EventHandler.hxx,v 1.33 2005-05-27 18:00:48 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.32 2005-05-26 15:43:44 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.33 2005-05-27 18:00:48 stephena Exp $
 */
 class EventHandler
 {
@@ -252,6 +252,11 @@ class EventHandler
     void changeState();
     void loadState();
     void takeSnapshot();
+
+    void enterMenuMode();
+    void leaveMenuMode();
+    void enterDebugMode();
+    void leaveDebugMode();
 
   private:
     // Global OSystem object

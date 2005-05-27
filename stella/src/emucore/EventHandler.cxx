@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.62 2005-05-26 15:43:43 stephena Exp $
+// $Id: EventHandler.cxx,v 1.63 2005-05-27 18:00:47 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -30,6 +30,7 @@
 #include "OSystem.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
+#include "Debugger.hxx"
 #include "GuiUtils.hxx"
 #include "bspf.hxx"
 
@@ -463,6 +464,10 @@ void EventHandler::poll(uInt32 time)
       myOSystem->launcher().updateTime(time);
       break;
 
+    case S_DEBUGGER:
+      myOSystem->debugger().updateTime(time);
+      break;
+
     default:
       break;
   }
@@ -615,12 +620,12 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       }
       else if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
       {
-        myState = S_MENU;
-        myOSystem->menu().reStack();
-        myOSystem->frameBuffer().refresh();
-        myOSystem->frameBuffer().setCursorState();
-        myOSystem->sound().mute(true);
-        myEvent->clear();
+        enterMenuMode();
+        return;
+      }
+      else if(myKeyTable[key] == Event::DebuggerMode && state == 1 && !myPauseFlag)
+      {
+        enterDebugMode();
         return;
       }
       else
@@ -629,13 +634,9 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       break;  // S_EMULATE
 
     case S_MENU:
-      if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
+      if(myKeyTable[key] == Event::MenuMode && state == 1)
       {
-        myState = S_EMULATE;
-        myOSystem->frameBuffer().refresh();
-        myOSystem->frameBuffer().setCursorState();
-        myOSystem->sound().mute(false);
-        myEvent->clear();
+        leaveMenuMode();
         return;
       }
       myOSystem->menu().handleKeyEvent(key, mod, state);
@@ -646,7 +647,12 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
       break;
 
     case S_DEBUGGER:
-      // Not yet implemented
+      if(myKeyTable[key] == Event::DebuggerMode && state == 1)
+      {
+        leaveDebugMode();
+        return;
+      }
+      myOSystem->debugger().handleKeyEvent(key, mod, state);
       break;
 
     case S_NONE:
@@ -1102,6 +1108,7 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_F12 ]       = Event::TakeSnapshot;
   myKeyTable[ SDLK_PAUSE ]     = Event::Pause;
   myKeyTable[ SDLK_TAB ]       = Event::MenuMode;
+  myKeyTable[ SDLK_BACKQUOTE ] = Event::DebuggerMode;
   myKeyTable[ SDLK_ESCAPE ]    = Event::LauncherMode;
 
   saveMappings();
@@ -1286,6 +1293,57 @@ void EventHandler::setPaddleMode(uInt32 num, bool showmessage)
   }
 
   myOSystem->settings().setInt("paddle", myPaddleMode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enterMenuMode()
+{
+  myState = S_MENU;
+  myOSystem->menu().reStack();
+  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().setCursorState();
+  myOSystem->sound().mute(true);
+  myEvent->clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::leaveMenuMode()
+{
+  myState = S_EMULATE;
+  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().setCursorState();
+  myOSystem->sound().mute(false);
+  myEvent->clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enterDebugMode()
+{
+cerr << "S_DEBUGGER entered\n";
+  myState = S_DEBUGGER;
+  myOSystem->createFrameBuffer();
+  myOSystem->debugger().reStack();
+  myOSystem->frameBuffer().refresh();  // FIXME - theRedrawEntireFrameIndicator not properly set
+  myOSystem->frameBuffer().setCursorState();
+  myEvent->clear();
+
+  if(!myPauseFlag)  // Pause when entering debugger mode
+    handleEvent(Event::Pause, 1);
+cerr << "S_DEBUGGER entered done\n";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::leaveDebugMode()
+{
+cerr << "S_DEBUGGER left\n";
+  myState = S_EMULATE;
+  myOSystem->createFrameBuffer();
+  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().setCursorState();
+  myEvent->clear();
+
+  if(myPauseFlag)  // Un-Pause when leaving debugger mode
+    handleEvent(Event::Pause, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
