@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.hxx,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $
+// $Id: SettingsMACOSX.hxx,v 1.2 2005-05-27 17:12:35 markgrebe Exp $
 //============================================================================
 
 #ifndef SETTINGS_MAC_OSX_HXX
@@ -28,7 +28,7 @@ class Console;
   This class defines Macintosh OSX system specific settings.
 
   @author  Mark Grebe
-  @version $Id: SettingsMACOSX.hxx,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $
+  @version $Id: SettingsMACOSX.hxx,v 1.2 2005-05-27 17:12:35 markgrebe Exp $
 */
 class SettingsMACOSX : public Settings
 {
@@ -36,7 +36,7 @@ class SettingsMACOSX : public Settings
     /**
       Create a new UNIX settings object
     */
-    SettingsMACOSX();
+    SettingsMACOSX(OSystem* osystem);
 
     /**
       Destructor
@@ -44,29 +44,6 @@ class SettingsMACOSX : public Settings
     virtual ~SettingsMACOSX();
 
   public:
-    /**
-      This method should be called to get the filename of a state file
-      given the state number.
-
-      @return String representing the full path of the state filename.
-    */
-    virtual string stateFilename(const string& md5, uInt32 state);
-
-    /**
-      This method should be called to test whether the given file exists.
-
-      @param filename The filename to test for existence.
-
-      @return boolean representing whether or not the file exists
-    */
-    virtual bool fileExists(const string& filename);
-
-    /**
-      Display the commandline settings for this UNIX version of Stella.
-
-      @param  message A short message about this version of Stella
-    */
-    virtual void usage(string& message);
 	
     /**
       This method should be called to load the current settings from the 

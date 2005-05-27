@@ -4,7 +4,8 @@
 
     Feel free to customize this file to suit your needs
 */
-/* $Id: SDLMain.m,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $ */
+/* $Id: SDLMain.m,v 1.2 2005-05-27 17:13:23 markgrebe Exp $ */
+// TBD - Fix ICON drop to dock after running.
 
 #import "SDL.h"
 #import "SDLMain.h"
@@ -117,10 +118,14 @@ char fileName[FILENAME_MAX];
     /* Hand off to main application code */
 	args[0] = appName;
 	if (fileToLoad)
+		{
 	    args[1] = startupFile;
+		status = stellaMain(2,args);
+		}
 	else
-		args[1] = NULL;
-    status = stellaMain(2,args);
+		{
+		status = stellaMain(1,args);
+		}
 
     /* We're done, thank you for playing */
     exit(status);

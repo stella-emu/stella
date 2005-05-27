@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.3 2005-02-18 01:05:23 markgrebe Exp $
+// $Id: SettingsMACOSX.cxx,v 1.4 2005-05-27 17:12:58 markgrebe Exp $
 //============================================================================
 
 #include <cassert>
@@ -27,7 +27,6 @@
 #include "bspf.hxx"
 #include "Console.hxx"
 #include "EventHandler.hxx"
-#include "StellaEvent.hxx"
 
 #include "Settings.hxx"
 #include "SettingsMACOSX.hxx"
@@ -39,54 +38,13 @@ void prefsSave(void);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsMACOSX::SettingsMACOSX()
+SettingsMACOSX::SettingsMACOSX(OSystem* osystem)
+    : Settings(osystem)
 {
-  char workingDir[FILENAME_MAX];
-  
-  // First set variables that the parent class needs
-  myBaseDir = "./";
-  string stelladir = myBaseDir;
-
-  myStateDir = stelladir + "state/";
-  if(access(myStateDir.c_str(), R_OK|W_OK|X_OK) != 0 )
-    mkdir(myStateDir.c_str(), 0777);
-
-  string userPropertiesFile   = stelladir + "stella.pro";
-//  mySystemPropertiesFile = stelladir + "stella.pro";
-  string userConfigFile       = "";
-//  mySystemConfigFile     = "";
-
-  // Set up the names of the input and output config files
-  myConfigOutputFile = userConfigFile;
-  if (fileExists(userConfigFile))
-     myConfigInputFile = userConfigFile;
-  else
-     myConfigInputFile = "";
-	 
-  myPropertiesOutputFile = userPropertiesFile;
-  if(fileExists(userPropertiesFile))
-     myPropertiesInputFile = userPropertiesFile;
-// Êelse if(fileExists(systemPropertiesFile)
-// Ê ÊmyPropertiesInputFile = systemPropertiesFile;
-  else
-     myPropertiesInputFile = "";	 
-
-  // Now create MacOSX specific settings
-#ifdef SNAPSHOT_SUPPORT
-  set("ssdir", "./");
-#endif
-  getwd(workingDir);
-  set("romdir", workingDir);
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsMACOSX::~SettingsMACOSX()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsMACOSX::usage(string& message)
 {
 }
 
@@ -118,16 +76,3 @@ void SettingsMACOSX::saveConfig()
    prefsSave();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string SettingsMACOSX::stateFilename(const string& md5, uInt32 state)
-{
-  ostringstream buf;
-  buf << myStateDir << md5 << ".st" << state;
-  return  buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SettingsMACOSX::fileExists(const string& filename)
-{
-  return (access(filename.c_str(), F_OK|W_OK) == 0);
-}
