@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.41 2005-05-25 23:22:10 stephena Exp $
+// $Id: mainSDL.cxx,v 1.42 2005-05-27 17:09:26 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -42,6 +42,12 @@
 #elif defined(WIN32)
   #include "SettingsWin32.hxx"
   #include "OSystemWin32.hxx"
+#elif defined(MAC_OSX)
+  #include "SettingsMACOSX.hxx"
+  #include "OSystemMACOSX.hxx"
+extern "C" {
+int stellaMain(int argc, char* argv[]);
+}
 #else
   #error Unsupported platform!
 #endif
@@ -96,7 +102,11 @@ void Cleanup()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#if defined(MAC_OSX)
+int stellaMain(int argc, char* argv[])
+#else
 int main(int argc, char* argv[])
+#endif
 {
   // Create the parent OSystem object and settings
 #if defined(UNIX)
@@ -105,6 +115,9 @@ int main(int argc, char* argv[])
 #elif defined(WIN32)
   theOSystem = new OSystemWin32();
   SettingsWin32 settings(theOSystem);
+#elif defined(MAC_OSX)
+  theOSystem = new OSystemMACOSX();
+  SettingsMACOSX settings(theOSystem);
 #else
   #error Unsupported platform!
 #endif
