@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.42 2005-05-27 17:09:26 markgrebe Exp $
+// $Id: mainSDL.cxx,v 1.43 2005-05-28 01:23:54 markgrebe Exp $
 //============================================================================
 
 #include <fstream>
@@ -56,7 +56,7 @@ static void SetupProperties(PropertiesSet& set);
 static void Cleanup();
 
 // Pointer to the main parent osystem object or the null pointer
-static OSystem* theOSystem = (OSystem*) NULL;
+OSystem* theOSystem = (OSystem*) NULL;
 
 
 /**
