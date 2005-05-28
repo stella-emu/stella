@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.65 2005-05-28 21:50:07 markgrebe Exp $
+// $Id: EventHandler.cxx,v 1.66 2005-05-28 22:10:43 markgrebe Exp $
 //============================================================================
 
 #include <algorithm>
@@ -501,7 +501,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 #ifndef MAC_OSX
       if(mod & KMOD_ALT && state)
 #else
-      if((mod & KMOD_META) && (mod & KMOD_SHIFT))
+      if((mod & KMOD_META) && (mod & KMOD_SHIFT) && state)
 #endif
       {
         switch(int(key))
@@ -569,7 +569,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 #ifndef MAC_OSX
       else if(mod & KMOD_CTRL && state)
 #else
-      else if((mod & KMOD_META) && !(mod & KMOD_SHIFT))
+      else if((mod & KMOD_META) && !(mod & KMOD_SHIFT) && state)
 #endif
       {
         switch(int(key))
