@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.63 2005-05-27 18:00:47 stephena Exp $
+// $Id: EventHandler.cxx,v 1.64 2005-05-28 17:25:41 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -664,14 +664,15 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 {
+  // Take window zooming into account
+  int x = event.motion.x, y = event.motion.y;
+  myOSystem->frameBuffer().translateCoords(&x, &y);
+
   // Determine which mode we're in, then send the event to the appropriate place
   switch(myState)
   {
     case S_EMULATE:
     {
-      // Take window zooming into account
-      Int32 x = event.motion.x, y = event.motion.y;
-      myOSystem->frameBuffer().translateCoords(&x, &y);
       int w = myOSystem->frameBuffer().baseWidth();
 
       // Grabmouse introduces some lag into the mouse movement,
@@ -684,26 +685,15 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
     }
 
     case S_MENU:
-    {
-      // Take window zooming into account
-      Int32 x = event.motion.x, y = event.motion.y;
-      myOSystem->frameBuffer().translateCoords(&x, &y);
       myOSystem->menu().handleMouseMotionEvent(x, y, 0);
       break;
-    }
 
     case S_LAUNCHER:
-    {
-      // Take window zooming into account
-      Int32 x = event.motion.x, y = event.motion.y;
-      myOSystem->frameBuffer().translateCoords(&x, &y);
       myOSystem->launcher().handleMouseMotionEvent(x, y, 0);
-      break;
-    }
       break;
 
     case S_DEBUGGER:
-      // Not yet implemented
+      myOSystem->debugger().handleMouseMotionEvent(x, y, 0);
       break;
 
     case S_NONE:
@@ -724,6 +714,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
 
     case S_MENU:
     case S_LAUNCHER:
+    case S_DEBUGGER:
     {
       // Take window zooming into account
       Int32 x = event.button.x, y = event.button.y;
@@ -757,17 +748,14 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
 
       if(myState == S_MENU)
         myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
-      else
+      else if(myState == S_LAUNCHER)
         myOSystem->launcher().handleMouseButtonEvent(button, x, y, state);
+      else
+        myOSystem->debugger().handleMouseButtonEvent(button, x, y, state);
       break;
     }
 
-    case S_DEBUGGER:
-      // Not yet implemented
-      break;
-
-    case S_NONE:
-      return;
+    default:
       break;
   }
 }
@@ -792,7 +780,7 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
       break;
 
     case S_DEBUGGER:
-      // Not yet implemented
+      myOSystem->debugger().handleJoyEvent(stick, code, state);
       break;
 
     case S_NONE:
@@ -996,18 +984,18 @@ void EventHandler::addKeyMapping(Event::Type event, uInt16 key)
     return;
 
   myKeyTable[key] = event;
+  saveKeyMapping();
 
   setActionMappings();
-  saveMappings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::addJoyMapping(Event::Type event, uInt8 stick, uInt32 code)
 {
   myJoyTable[stick * kNumJoyButtons + code] = event;
+  saveJoyMapping();
 
   setActionMappings();
-  saveMappings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1017,14 +1005,15 @@ void EventHandler::eraseMapping(Event::Type event)
   for(Int32 i = 0; i < SDLK_LAST; ++i)
     if(myKeyTable[i] == event && i != SDLK_TAB && i != SDLK_ESCAPE)
       myKeyTable[i] = Event::NoType;
+  saveKeyMapping();
 
   // Erase the JoyEvent array
   for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     if(myJoyTable[i] == event)
       myJoyTable[i] = Event::NoType;
+  saveJoyMapping();
 
   setActionMappings();
-  saveMappings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1034,7 +1023,6 @@ void EventHandler::setDefaultMapping()
   setDefaultJoymap();
 
   setActionMappings();
-  saveMappings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1111,14 +1099,13 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_BACKQUOTE ] = Event::DebuggerMode;
   myKeyTable[ SDLK_ESCAPE ]    = Event::LauncherMode;
 
-  saveMappings();
+  saveKeyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultJoymap()
 {
   uInt32 i;
-  uInt32 c = kNumJoyButtons - 4;  // Upper 4 buttons are the directions
 
   // Erase all mappings
   for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
@@ -1126,36 +1113,42 @@ void EventHandler::setDefaultJoymap()
 
   // Left joystick
   i = 0 * kNumJoyButtons;
-  myJoyTable[i + c + 0] = Event::JoystickZeroUp;
-  myJoyTable[i + c + 1] = Event::JoystickZeroDown;
-  myJoyTable[i + c + 2] = Event::JoystickZeroLeft;
-  myJoyTable[i + c + 3] = Event::JoystickZeroRight;
-  myJoyTable[i + 0]     = Event::JoystickZeroFire;
+  myJoyTable[i + kJAxisUp]    = Event::JoystickZeroUp;
+  myJoyTable[i + kJAxisDown]  = Event::JoystickZeroDown;
+  myJoyTable[i + kJAxisLeft]  = Event::JoystickZeroLeft;
+  myJoyTable[i + kJAxisRight] = Event::JoystickZeroRight;
+  myJoyTable[i + 0]           = Event::JoystickZeroFire;
 
   // Right joystick
   i = 1 * kNumJoyButtons;
-  myJoyTable[i + c + 0] = Event::JoystickOneUp;
-  myJoyTable[i + c + 1] = Event::JoystickOneDown;
-  myJoyTable[i + c + 2] = Event::JoystickOneLeft;
-  myJoyTable[i + c + 3] = Event::JoystickOneRight;
-  myJoyTable[i + 0]     = Event::JoystickOneFire;
+  myJoyTable[i + kJAxisUp]    = Event::JoystickOneUp;
+  myJoyTable[i + kJAxisDown]  = Event::JoystickOneDown;
+  myJoyTable[i + kJAxisLeft]  = Event::JoystickOneLeft;
+  myJoyTable[i + kJAxisRight] = Event::JoystickOneRight;
+  myJoyTable[i + 0] 		  = Event::JoystickOneFire;
 
-  saveMappings();
+  saveJoyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::saveMappings()
+void EventHandler::saveKeyMapping()
 {
   // Iterate through the keymap table and create a colon-separated list
   ostringstream keybuf;
   for(uInt32 i = 0; i < SDLK_LAST; ++i)
     keybuf << myKeyTable[i] << ":";
-  myOSystem->settings().setString("keymap", keybuf.str());
 
+  myOSystem->settings().setString("keymap", keybuf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveJoyMapping()
+{
   // Iterate through the joymap table and create a colon-separated list
   ostringstream joybuf;
   for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     joybuf << myJoyTable[i] << ":";
+
   myOSystem->settings().setString("joymap", joybuf.str());
 }
 
@@ -1323,7 +1316,7 @@ cerr << "S_DEBUGGER entered\n";
   myState = S_DEBUGGER;
   myOSystem->createFrameBuffer();
   myOSystem->debugger().reStack();
-  myOSystem->frameBuffer().refresh();  // FIXME - theRedrawEntireFrameIndicator not properly set
+  myOSystem->frameBuffer().refresh();
   myOSystem->frameBuffer().setCursorState();
   myEvent->clear();
 

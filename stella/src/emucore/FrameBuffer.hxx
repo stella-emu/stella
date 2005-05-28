@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.34 2005-05-25 23:22:11 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.35 2005-05-28 17:25:41 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -40,7 +40,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.34 2005-05-25 23:22:11 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.35 2005-05-28 17:25:41 stephena Exp $
 */
 class FrameBuffer
 {
@@ -126,8 +126,8 @@ class FrameBuffer
     void pause(bool status);
 
     /**
-      Indicates that a redraw should be done, since the window contents
-      are dirty.
+      Indicates that the window contents are dirty, and certain areas need
+      to be redrawn.
 
       @param now  Determine if the refresh should be done right away or in
                   the next frame
@@ -136,7 +136,8 @@ class FrameBuffer
     {
 //      cerr << "refresh() " << myNumRedraws++ << endl;
       theRedrawEntireFrameIndicator = true;
-      myMenuRedraws = 2;
+      theOverlayChangedIndicator = true;
+      myOverlayRedraws = 2;
       if(now) update();
     }
 
@@ -240,12 +241,6 @@ class FrameBuffer
     */
     void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                    OverlayColor color);
-
-    /**
-      Indicate that the specified area should be redrawn.
-      Currently we just redraw the entire screen.
-    */
-    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { refresh(); }
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -440,7 +435,7 @@ class FrameBuffer
     bool myPauseStatus;
 
     // Indicates if the menus should be redrawn
-    bool theMenuChangedIndicator;
+    bool theOverlayChangedIndicator;
 
     // Message timer
     Int32 myMessageTime;
@@ -449,7 +444,7 @@ class FrameBuffer
     string myMessageText;
 
     // Number of times menu have been drawn
-    uInt32 myMenuRedraws;
+    uInt32 myOverlayRedraws;
 
     // Indicates how many times the framebuffer has been redrawn
     // Used only for debugging purposes

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.39 2005-05-27 18:00:48 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.40 2005-05-28 17:25:41 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -44,10 +44,10 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       theUseAspectRatioFlag(true),
       myFrameRate(0),
       myPauseStatus(false),
-      theMenuChangedIndicator(false),
+      theOverlayChangedIndicator(false),
       myMessageTime(0),
       myMessageText(""),
-      myMenuRedraws(2),
+      myOverlayRedraws(2),
       myNumRedraws(0)
 {
   // Fill the GUI colors array
@@ -198,32 +198,31 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:
     {
-      // Only update the screen if it's been invalidated or the menus have changed  
-      if(theRedrawEntireFrameIndicator || theMenuChangedIndicator)
-      {
+      // Only update the screen if it's been invalidated
+      if(theRedrawEntireFrameIndicator)
         drawMediaSource();
 
+      // Only update the overlay if it's changed  
+      if(theOverlayChangedIndicator)
+      {
         // Then overlay any menu items
         myOSystem->menu().draw();
 
-        // Now the screen is up to date
-        theRedrawEntireFrameIndicator = false;
-
-        // This is a performance hack to only draw the menus when necessary
+        // This is a performance hack to only draw the overlay when necessary
         // Software mode is single-buffered, so we don't have to worry
         // However, OpenGL mode is double-buffered, so we need to draw the
         // menus at least twice (so they'll be in both buffers)
         // Otherwise, we get horrible flickering
-        myMenuRedraws--;
-        theMenuChangedIndicator = (myMenuRedraws != 0);
+        myOverlayRedraws--;
+        theOverlayChangedIndicator = (myOverlayRedraws != 0);
       }
       break;
     }
 
     case EventHandler::S_LAUNCHER:
     {
-      // Only update the screen if it's been invalidated or the menus have changed  
-      if(theRedrawEntireFrameIndicator || theMenuChangedIndicator)
+      // Only update the screen if it's been invalidated or the overlay have changed  
+      if(theRedrawEntireFrameIndicator || theOverlayChangedIndicator)
       {
         // Overlay the ROM launcher
         myOSystem->launcher().draw();
@@ -231,13 +230,13 @@ void FrameBuffer::update()
         // Now the screen is up to date
         theRedrawEntireFrameIndicator = false;
 
-        // This is a performance hack to only draw the menus when necessary
+        // This is a performance hack to only draw the overlay when necessary
         // Software mode is single-buffered, so we don't have to worry
         // However, OpenGL mode is double-buffered, so we need to draw the
         // menus at least twice (so they'll be in both buffers)
         // Otherwise, we get horrible flickering
-        myMenuRedraws--;
-        theMenuChangedIndicator = (myMenuRedraws != 0);
+        myOverlayRedraws--;
+        theOverlayChangedIndicator = (myOverlayRedraws != 0);
       }
       break;
     }
@@ -247,25 +246,23 @@ void FrameBuffer::update()
       if(!myPauseStatus)
         myOSystem->console().mediaSource().update();
 
-      // We always draw the screen, even if the core is paused
-      drawMediaSource();
+      // Only update the screen if it's been invalidated
+      if(theRedrawEntireFrameIndicator)
+        drawMediaSource();
 
-      // Only update the screen if it's been invalidated or the menus have changed  
-      if(theRedrawEntireFrameIndicator || theMenuChangedIndicator)
+      // Only update the overlay if it's changed  
+      if(theOverlayChangedIndicator)
       {
         // Overlay the ROM launcher
         myOSystem->debugger().draw();
-
-        // Now the screen is up to date
-        theRedrawEntireFrameIndicator = false;
 
         // This is a performance hack to only draw the menus when necessary
         // Software mode is single-buffered, so we don't have to worry
         // However, OpenGL mode is double-buffered, so we need to draw the
         // menus at least twice (so they'll be in both buffers)
         // Otherwise, we get horrible flickering
-        myMenuRedraws--;
-        theMenuChangedIndicator = (myMenuRedraws != 0);
+        myOverlayRedraws--;
+        theOverlayChangedIndicator = (myOverlayRedraws != 0);
       }
       break;  // S_DEBUGGER
 

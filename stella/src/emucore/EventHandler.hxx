@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.33 2005-05-27 18:00:48 stephena Exp $
+// $Id: EventHandler.hxx,v 1.34 2005-05-28 17:25:41 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.33 2005-05-27 18:00:48 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.34 2005-05-28 17:25:41 stephena Exp $
 */
 class EventHandler
 {
@@ -244,7 +244,8 @@ class EventHandler
     void setJoymap();
     void setDefaultKeymap();
     void setDefaultJoymap();
-    void saveMappings();
+    void saveKeyMapping();
+    void saveJoyMapping();
 
     bool isValidList(string list, uInt32 length);
 
