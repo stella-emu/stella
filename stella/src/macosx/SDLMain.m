@@ -4,8 +4,7 @@
 
     Feel free to customize this file to suit your needs
 */
-/* $Id: SDLMain.m,v 1.2 2005-05-27 17:13:23 markgrebe Exp $ */
-// TBD - Fix ICON drop to dock after running.
+/* $Id: SDLMain.m,v 1.3 2005-05-28 01:29:29 markgrebe Exp $ */
 
 #import "SDL.h"
 #import "SDLMain.h"
@@ -14,6 +13,7 @@
 #import <unistd.h>
 
 extern int stellaMain(int argc, char* argv[]);
+void macOpenConsole(char *romname);
 
 static int    gArgc;
 static char  **gArgv;
@@ -136,7 +136,6 @@ char fileName[FILENAME_MAX];
 *-----------------------------------------------------------------------------*/
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-	SDL_Event event;
 	char *cFilename;
 
     if (started) {
@@ -144,11 +143,7 @@ char fileName[FILENAME_MAX];
 		if (cFilename)
 		  {
 		  [filename getCString:cFilename];
-		  event.type = SDL_USEREVENT;
-		  event.user.code = 1;
-		  event.user.data1 = cFilename;
-		  event.user.data2 = 0;
-		  SDL_PushEvent(&event);
+		  macOpenConsole(cFilename);
 		  }
 	  }
     else {

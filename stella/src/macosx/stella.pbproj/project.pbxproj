@@ -294,6 +294,8 @@
 				2DDBEAAC084578BF00812C11,
 				2DDBEAAD084578BF00812C11,
 				2DDBEAAE084578BF00812C11,
+				2DDFFA280847EF4E00201CC8,
+				2DDFFA290847EF4E00201CC8,
 				2DDBEAAF084578BF00812C11,
 				2DDBEAB0084578BF00812C11,
 				2DDBEAB1084578BF00812C11,
@@ -560,6 +562,7 @@
 				2DDBEB7D08457B7D00812C11,
 				2DDBEB7F08457B7D00812C11,
 				2DDBEBE5084582C400812C11,
+				2DDFFA2B0847EF4E00201CC8,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -663,6 +666,7 @@
 				2DDBEB7C08457B7D00812C11,
 				2DDBEB7E08457B7D00812C11,
 				2DDBEBE6084582C400812C11,
+				2DDFFA2A0847EF4E00201CC8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1987,6 +1991,36 @@
 		};
 		2DDBEBE6084582C400812C11 = {
 			fileRef = 2DDBEBE4084582C400812C11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DDFFA280847EF4E00201CC8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Debugger.cxx;
+			path = ../gui/Debugger.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DDFFA290847EF4E00201CC8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = Debugger.hxx;
+			path = ../gui/Debugger.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DDFFA2A0847EF4E00201CC8 = {
+			fileRef = 2DDFFA280847EF4E00201CC8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DDFFA2B0847EF4E00201CC8 = {
+			fileRef = 2DDFFA290847EF4E00201CC8;
 			isa = PBXBuildFile;
 			settings = {
 			};
