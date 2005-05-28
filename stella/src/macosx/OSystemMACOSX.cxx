@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.1 2005-05-28 01:28:36 markgrebe Exp $
+// $Id: OSystemMACOSX.cxx,v 1.2 2005-05-28 21:06:41 markgrebe Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/param.h> /* for MAXPATHLEN */
 
 #include "bspf.hxx"
 #include "OSystem.hxx"
@@ -40,8 +41,7 @@ void macOpenConsole(char *romname);
 
 // Pointer to the main parent osystem object or the null pointer
 extern OSystem* theOSystem;
-
-static double Atari_time(void);
+extern char parentdir[MAXPATHLEN];
 
 // Allow the SDL main object to pass request to open cartridges from 
 //  the OS into the application.
@@ -74,7 +74,8 @@ OSystemMACOSX::OSystemMACOSX()
   setStateDir(statedir);
 
   string userPropertiesFile   = basedir + "/stella.pro";
-  string systemPropertiesFile = "/etc/stella.pro";
+  strcat(parentdir,"/../../../stella.pro");
+  string systemPropertiesFile = parentdir;
   setPropertiesFiles(userPropertiesFile, systemPropertiesFile);
 
   string userConfigFile   = basedir + "/stellarc";
@@ -172,12 +173,4 @@ uInt32 OSystemMACOSX::getTicks()
 #else
   return (uInt32) SDL_GetTicks() * 1000;
 #endif
-}
-
-static double Atari_time(void)
-{
-  struct timeval tp;
-
-  gettimeofday(&tp, NULL);
-  return tp.tv_sec + 1e-6 * tp.tv_usec;
 }

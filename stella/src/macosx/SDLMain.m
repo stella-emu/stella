@@ -4,7 +4,7 @@
 
     Feel free to customize this file to suit your needs
 */
-/* $Id: SDLMain.m,v 1.3 2005-05-28 01:29:29 markgrebe Exp $ */
+/* $Id: SDLMain.m,v 1.4 2005-05-28 21:06:41 markgrebe Exp $ */
 
 #import "SDL.h"
 #import "SDLMain.h"
@@ -17,10 +17,11 @@ void macOpenConsole(char *romname);
 
 static int    gArgc;
 static char  **gArgv;
-static BOOL   gFinderLaunch;
+BOOL   gFinderLaunch;
 static BOOL   started=NO;
 static char   startupFile[FILENAME_MAX];
 int fileToLoad = FALSE;
+char parentdir[MAXPATHLEN];
 
 /* A helper category for NSString */
 @interface NSString (ReplaceSubString)
@@ -49,30 +50,6 @@ static SDLMain *sharedInstance = nil;
 
 + (SDLMain *)sharedInstance {
     return sharedInstance;
-}
-
-/* Set the working directory to the .app's parent directory */
-- (void) setupWorkingDirectory:(BOOL)shouldChdir
-{
-    char parentdir[MAXPATHLEN];
-    char *c;
-    
-    strncpy ( parentdir, gArgv[0], sizeof(parentdir) );
-    c = (char*) parentdir;
-
-    while (*c != '\0')     /* go to end */
-        c++;
-    
-    while (*c != '/')      /* back up to parent */
-        c--;
-    
-    *c++ = '\0';             /* cut off last part (binary name) */
-  
-    if (shouldChdir)
-    {
-      assert ( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
-      assert ( chdir ("../../../") == 0 ); /* chdir to the .app's parent */
-    }
 }
 
 /* Fix menu to contain the real app name instead of "SDL App" */
@@ -109,9 +86,6 @@ char fileName[FILENAME_MAX];
     
 	started = YES;
     
-    /* Set the working directory to the .app's parent directory */
-    [self setupWorkingDirectory:gFinderLaunch];
-
     /* Set the main menu to contain the real app name instead of "SDL App" */
     [self fixMenu:[NSApp mainMenu] withAppName:[[NSProcessInfo processInfo] processName]];
 
@@ -202,6 +176,23 @@ char fileName[FILENAME_MAX];
 #  undef main
 #endif
 
+void setupParentDirectory(void)
+{
+    char *c;
+    
+    strncpy ( parentdir, gArgv[0], sizeof(parentdir) );
+    c = (char*) parentdir;
+
+    while (*c != '\0')     /* go to end */
+        c++;
+    
+    while (*c != '/')      /* back up to parent */
+        c--;
+    
+    *c++ = '\0';             /* cut off last part (binary name) */
+
+}
+
 /* Main entry point to executable - should *not* be SDL_main! */
 int main (int argc, char **argv)
 {
@@ -224,7 +215,9 @@ int main (int argc, char **argv)
     gArgv[i] = NULL;
 
     myPrefs = [Preferences sharedInstance];
-	
+
+    setupParentDirectory();
+
     [SDLApplication poseAsClass:[NSApplication class]];
     NSApplicationMain (argc, argv);
     return 0;
