@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.66 2005-05-28 22:10:43 markgrebe Exp $
+// $Id: EventHandler.cxx,v 1.67 2005-05-28 23:57:10 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -564,6 +564,9 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
             myOSystem->console().enableBits(true);
             break;
   #endif
+          case SDLK_s:	 // Alt-s merges properties into stella.pro
+            myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
+            break;
         }
       }
 #ifndef MAC_OSX
@@ -620,15 +623,9 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
             break;
   #endif
           case SDLK_s:	 // Ctrl-s saves properties to a file
-            // Attempt to merge with propertiesSet
-            if(myOSystem->settings().getBool("mergeprops"))
-              myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
-            else  // Save to file in base directory
-            {
-              string newPropertiesFile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-                myOSystem->console().properties().get("Cartridge.Name") + ".pro";
-              myOSystem->console().saveProperties(newPropertiesFile);
-            }
+            string newPropertiesFile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+              myOSystem->console().properties().get("Cartridge.Name") + ".pro";
+            myOSystem->console().saveProperties(newPropertiesFile);
             break;
         }
       }

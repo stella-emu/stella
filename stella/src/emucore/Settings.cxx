@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.46 2005-05-26 18:56:58 stephena Exp $
+// $Id: Settings.cxx,v 1.47 2005-05-28 23:57:10 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -59,7 +59,6 @@ Settings::Settings(OSystem* osystem)
   set("paddle", "0");
 
   set("showinfo", "false");
-  set("mergeprops", "false");
 
   set("ssdir", "");
   set("ssname", "romname");
@@ -245,6 +244,7 @@ void Settings::usage()
     << "  -palette      <original|     Use the specified color palette\n"
     << "                 standard|\n"
     << "                 z26>\n"
+    << "  -framerate    <number>       Display the given number of frames per second\n"
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
@@ -252,8 +252,6 @@ void Settings::usage()
   #endif
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
-    << "  -mergeprops   <1|0>          Merge changed properties into properties file,\n"
-    << "                               or save into a separate file\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #endif
