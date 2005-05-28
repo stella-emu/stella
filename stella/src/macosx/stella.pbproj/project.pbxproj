@@ -11,6 +11,7 @@
 				F5A47A9E01A0483001D3D55B,
 				2DDBEBE3084582C400812C11,
 				2DDBEBE4084582C400812C11,
+				2D47A45208491D4500ABFB6A,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -427,6 +428,8 @@
 			<array>
 				<string>bin</string>
 				<string>BIN</string>
+				<string>zip</string>
+				<string>ZIP</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Atari 2600 Cartridge File</string>
@@ -666,6 +669,7 @@
 				2DDBEB7E08457B7D00812C11,
 				2DDBEBE6084582C400812C11,
 				2DDFFA2A0847EF4E00201CC8,
+				2D47A45308491D4500ABFB6A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -784,6 +788,20 @@
 		};
 		2D4764C906683C6000F63D87 = {
 			fileRef = 2D4764C806683C5F00F63D87;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D47A45208491D4500ABFB6A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = Menus.m;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D47A45308491D4500ABFB6A = {
+			fileRef = 2D47A45208491D4500ABFB6A;
 			isa = PBXBuildFile;
 			settings = {
 			};

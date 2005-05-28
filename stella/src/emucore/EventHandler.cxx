@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.64 2005-05-28 17:25:41 stephena Exp $
+// $Id: EventHandler.cxx,v 1.65 2005-05-28 21:50:07 markgrebe Exp $
 //============================================================================
 
 #include <algorithm>
@@ -36,6 +36,12 @@
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
+#endif
+
+#ifdef MAC_OSX
+extern "C" {
+void handleMacOSXKeypress(int key);
+}
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -283,6 +289,14 @@ void EventHandler::poll(uInt32 time)
             case SDLK_q:
               handleEvent(Event::Quit, 1);
               break;
+
+#ifdef MAC_OSX
+            case SDLK_h:
+            case SDLK_m:
+            case SDLK_SLASH:
+              handleMacOSXKeypress(int(key));
+              break;
+#endif
 
             case SDLK_g:
               // don't change grabmouse in fullscreen mode
