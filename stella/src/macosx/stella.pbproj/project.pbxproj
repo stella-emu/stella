@@ -396,7 +396,6 @@
 			buildSettings = {
 				DEBUGGING_SYMBOLS = NO;
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" .";
-				GCC_VERSION = 3.3;
 				HEADER_SEARCH_PATHS = "./SDL.framework/Headers ../emucore ../emucore/m6502/src/bspf/src ../emucore/m6502/src ../ui/sound ../common ../gui .";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = .;
@@ -442,7 +441,7 @@
 	<key>CFBundleExecutable</key>
 	<string>StellaOSX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.4.2a</string>
+	<string>2.0 Alpha</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -458,7 +457,7 @@
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>1.4.2a</string>
+	<string>2.0 Alpha</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
