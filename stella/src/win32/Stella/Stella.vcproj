@@ -207,6 +207,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\D6502.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\Debugger.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Deserializer.cxx">
 			</File>
 			<File
@@ -468,6 +471,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\D6502.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Debugger.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Deserializer.hxx">

@@ -13,12 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.3 2005-05-26 18:56:58 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.4 2005-05-29 18:54:28 stephena Exp $
 //============================================================================
 
 #include <sstream>
 #include <fstream>
-#include <direct.h>
 
 #include "bspf.hxx"
 #include "OSystem.hxx"
@@ -96,7 +95,7 @@ void OSystemWin32::mainLoop()
 	  break;
 
 	startTime = getTicks();
-	myEventHandler->poll();
+	myEventHandler->poll(startTime);
 	myFrameBuffer->update();
 
 	currentTime = getTicks();
@@ -132,27 +131,4 @@ void OSystemWin32::mainLoop()
 uInt32 OSystemWin32::getTicks()
 {
   return (uInt32) SDL_GetTicks() * 1000;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystemWin32::fileExists(const string& filename)
-{
-  // FIXME - Since I don't have time to figure out the correct
-  // and fast 'Win32' way of doing this, I'll cheat a bit
-  ifstream in(filename.c_str());
-  if(in)
-  {
-    in.close();
-    return true;
-  }
-
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystemWin32::makeDir(const string& path)
-{
-  // FIXME
-  _mkdir(path.c_str());
-  return true;
 }

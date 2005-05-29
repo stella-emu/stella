@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.2 2005-05-19 18:42:38 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.3 2005-05-29 18:54:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <tchar.h>
+#include <direct.h>
 
 #include "FSNode.hxx"
 
@@ -242,4 +243,33 @@ AbstractFilesystemNode* WindowsFilesystemNode::parent() const
   }
 
   return p;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::fileExists(const string& path)
+{
+  // FIXME
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::dirExists(const string& path)
+{
+  // FIXME
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::makeDir(const string& path)
+{
+  _mkdir(path.c_str());
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string AbstractFilesystemNode::modTime(const string& path)
+{
+  // FIXME - use GetFileAttributesEx
+
+  return "";
 }

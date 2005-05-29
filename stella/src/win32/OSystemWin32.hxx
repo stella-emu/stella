@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.2 2005-05-25 17:17:38 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.3 2005-05-29 18:54:28 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -26,7 +26,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.2 2005-05-25 17:17:38 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.3 2005-05-29 18:54:28 stephena Exp $
 */
 class OSystemWin32 : public OSystem
 {
@@ -55,24 +55,6 @@ class OSystemWin32 : public OSystem
       @return Current time in microseconds.
     */
     virtual uInt32 getTicks();
-
-    /**
-      This method should be called to test whether the given file exists.
-
-      @param filename The filename to test for existence.
-
-      @return boolean representing whether or not the file exists
-    */
-    virtual bool fileExists(const string& filename);
-
-    /**
-      This method should be called to create the specified directory.
-
-      @param path   The directory to create
-
-      @return       boolean representing whether or not the directory was created
-    */
-    virtual bool makeDir(const string& path);
 };
 
 #endif
