@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.14 2005-05-26 18:56:58 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.15 2005-05-29 16:09:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -210,10 +210,6 @@ void VideoDialog::loadConfig()
   else if(s == "z26")
     myPalettePopup->setSelectedTag(3);
 
-  // Framerate
-  myFrameRateSlider->setValue(instance()->settings().getInt("framerate"));
-  myFrameRateLabel->setLabel(instance()->settings().getString("framerate"));
-
   // Zoom
   i = (instance()->settings().getInt("zoom") - 1) * 10;
   myZoomSlider->setValue(i);
@@ -289,7 +285,8 @@ void VideoDialog::saveConfig()
 
   // Framerate
   i = myFrameRateSlider->getValue();
-  instance()->setFramerate(i);
+  if(i > 0)
+    instance()->setFramerate(i);
 
   // Zoom
   i = (myZoomSlider->getValue() / 10) + 1;
@@ -323,8 +320,8 @@ void VideoDialog::setDefaults()
   myRendererPopup->setSelectedTag(1);
   myFilterPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(1);
-  myFrameRateSlider->setValue(60);
-  myFrameRateLabel->setLabel("60");
+  myFrameRateSlider->setValue(0);
+  myFrameRateLabel->setLabel("0");
 
   // For some unknown reason (ie, a bug), slider widgets can only
   // take certain ranges of numbers.  So we have to fudge things ...

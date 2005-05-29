@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.24 2005-05-27 18:00:47 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.25 2005-05-29 16:09:21 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -203,7 +203,7 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SwapBuffers();
   glClear(GL_COLOR_BUFFER_BIT);
 
-  theRedrawEntireFrameIndicator = true;
+  refresh();
   return true;
 }
 
@@ -470,8 +470,6 @@ bool FrameBufferGL::createTextures()
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_TEXTURE_2D);
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);

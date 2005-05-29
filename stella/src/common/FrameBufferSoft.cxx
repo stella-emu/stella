@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.21 2005-05-16 00:02:31 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.22 2005-05-29 16:09:21 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -88,7 +88,7 @@ bool FrameBufferSoft::createScreen()
     return false;
   }
 
-  theRedrawEntireFrameIndicator = true;
+  refresh();
   return true;
 }
 
