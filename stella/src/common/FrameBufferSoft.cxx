@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.22 2005-05-29 16:09:21 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.23 2005-05-30 16:25:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -69,6 +69,13 @@ bool FrameBufferSoft::initSubsystem()
     myGUIPalette[i] = mapRGB(myGUIColors[i][0], myGUIColors[i][1], myGUIColors[i][2]);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::setAspectRatio()
+{
+  // Aspect ratio correction not yet available in software mode
+  theAspectRatio = 1.0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

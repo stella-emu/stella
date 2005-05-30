@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.25 2005-05-29 16:09:21 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.26 2005-05-30 16:25:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -54,18 +54,6 @@ FrameBufferGL::~FrameBufferGL()
 bool FrameBufferGL::initSubsystem()
 {
   mySDLFlags |= SDL_OPENGL;
-
-  // Get the aspect ratio for the display
-  // Since the display is already doubled horizontally, we half the
-  // ratio that is provided
-  if(theUseAspectRatioFlag)
-  {
-    theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
-    if(theAspectRatio <= 0.0)
-      theAspectRatio = 1.0;
-  }
-  else
-    theAspectRatio = 1.0;
 
   // Set up the OpenGL attributes
   myDepth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
@@ -155,6 +143,14 @@ bool FrameBufferGL::initSubsystem()
     myGUIPalette[i] = mapRGB(myGUIColors[i][0], myGUIColors[i][1], myGUIColors[i][2]);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::setAspectRatio()
+{
+  theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
+  if(theAspectRatio <= 0.0)
+    theAspectRatio = 1.0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -508,8 +504,7 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
       scaleX = float(myImageDim.w) / myScreenDim.w;
       scaleY = float(myImageDim.h) / myScreenDim.h;
 
-      // Figure out which dimension is closest to the 10% mark,
-      // and calculate the scaling required to bring it to exactly 10%
+cerr << "scaleX = " << scaleX << ", scaleY = " << scaleY << endl;
       if(scaleX > scaleY)
         myFSScaleFactor = float(myScreenDim.w) / myImageDim.w;
       else

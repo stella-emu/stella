@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.13 2005-05-19 19:43:38 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.14 2005-05-30 16:25:46 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -34,7 +34,7 @@ class OSystem;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.13 2005-05-19 19:43:38 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.14 2005-05-30 16:25:46 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -57,6 +57,11 @@ class FrameBufferGL : public FrameBuffer
       Return false if any operation fails, otherwise return true.
     */
     virtual bool initSubsystem();
+
+    /**
+      This routine is called to set the aspect ratio of the screen.
+    */
+    virtual void setAspectRatio();
 
     /**
       This routine is called whenever the screen needs to be recreated.

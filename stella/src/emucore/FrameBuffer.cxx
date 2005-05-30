@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.40 2005-05-28 17:25:41 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.41 2005-05-30 16:25:46 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -41,7 +41,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       theZoomLevel(2),
       theMaxZoomLevel(2),
       theAspectRatio(1.0),
-      theUseAspectRatioFlag(true),
       myFrameRate(0),
       myPauseStatus(false),
       theOverlayChangedIndicator(false),
@@ -132,8 +131,10 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   // Set window title
   setWindowTitle(title);
 
-  // Indicate whether we want to use aspect ratio correction
-  theUseAspectRatioFlag = useAspect;
+  // Get the aspect ratio for the display if it's been enabled
+  theAspectRatio = 1.0;
+  if(useAspect)
+    setAspectRatio();
 
   // Get the maximum size of a window for the current desktop
   theMaxZoomLevel = maxWindowSizeForScreen();
@@ -420,7 +421,7 @@ uInt32 FrameBuffer::maxWindowSizeForScreen()
 {
   uInt32 sWidth     = myDesktopDim.w;
   uInt32 sHeight    = myDesktopDim.h;
-  uInt32 multiplier = sWidth / myBaseDim.w;
+  uInt32 multiplier = 10;
 
   // If screenwidth or height could not be found, use default zoom value
   if(sWidth == 0 || sHeight == 0)
@@ -430,7 +431,7 @@ uInt32 FrameBuffer::maxWindowSizeForScreen()
   while(!found && (multiplier > 0))
   {
     // Figure out the desired size of the window
-    uInt32 width  = myBaseDim.w * multiplier;
+    uInt32 width  = (uInt32) (myBaseDim.w * multiplier * theAspectRatio);
     uInt32 height = myBaseDim.h * multiplier;
 
     if((width < sWidth) && (height < sHeight))

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.35 2005-05-28 17:25:41 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.36 2005-05-30 16:25:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -40,7 +40,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.35 2005-05-28 17:25:41 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.36 2005-05-30 16:25:47 stephena Exp $
 */
 class FrameBuffer
 {
@@ -188,16 +188,6 @@ class FrameBuffer
     bool fullScreen();
 
     /**
-      Answers the current zoom level of the framebuffer image in the X axis.
-    */
-    inline const float zoomLevelX() { return theZoomLevel * theAspectRatio; }
-
-    /**
-      Answers the current zoom level of the framebuffer image in the X axis.
-    */
-    inline const float zoomLevelY() { return (float) theZoomLevel; }
-
-    /**
       Calculate the maximum window size that the current screen can hold.
       Only works in X11/Win32 for now, otherwise always return 4.
     */
@@ -251,6 +241,11 @@ class FrameBuffer
       This routine is called to initialize the subsystem-specific video mode.
     */
     virtual bool initSubsystem() = 0;
+
+    /**
+      This routine is called to set the aspect ratio of the screen.
+    */
+    virtual void setAspectRatio() = 0;
 
     /**
       This routine is called whenever the screen needs to be recreated.
@@ -414,9 +409,6 @@ class FrameBuffer
 
     // The aspect ratio of the window
     float theAspectRatio;
-
-    // Indicates whether to use aspect ratio correction
-    bool theUseAspectRatioFlag;
 
     // The font object to use
     StellaFont* myFont;
