@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.67 2005-05-28 23:57:10 stephena Exp $
+// $Id: EventHandler.cxx,v 1.68 2005-06-02 21:37:33 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -265,10 +265,11 @@ void EventHandler::poll(uInt32 time)
               myOSystem->frameBuffer().resize(PreviousSize);
               break;
 
-            case SDLK_RETURN:
+#ifndef MAC_OSX
+	    case SDLK_RETURN:
               myOSystem->frameBuffer().toggleFullscreen();
               break;
-
+#endif
             case SDLK_f:
               myOSystem->frameBuffer().toggleFilter();
               break;
@@ -296,8 +297,11 @@ void EventHandler::poll(uInt32 time)
             case SDLK_SLASH:
               handleMacOSXKeypress(int(key));
               break;
-#endif
 
+            case SDLK_RETURN:
+              myOSystem->frameBuffer().toggleFullscreen();
+              break;
+#endif
             case SDLK_g:
               // don't change grabmouse in fullscreen mode
               if(!myOSystem->frameBuffer().fullScreen())

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringList.hxx,v 1.1 2005-04-04 02:19:22 stephena Exp $
+// $Id: StringList.hxx,v 1.2 2005-06-02 21:37:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,7 +26,7 @@
 #include "bspf.hxx"
 
 
-class StringList : public Array<string>
+class StringList : public GUI::Array<string>
 {
   public:
     void push_back(const char *str)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Array.hxx,v 1.3 2005-05-13 01:03:27 stephena Exp $
+// $Id: Array.hxx,v 1.4 2005-06-02 21:37:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,8 @@
 #include <assert.h>
 
 #include "bspf.hxx"
+
+namespace GUI {
 
 template <class T>
 class Array
@@ -187,5 +189,7 @@ class Array
       }
     }
 };
+
+}  // Namespace GUI
 
 #endif

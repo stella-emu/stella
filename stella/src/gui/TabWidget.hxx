@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.2 2005-05-13 18:28:06 stephena Exp $
+// $Id: TabWidget.hxx,v 1.3 2005-06-02 21:37:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,7 +34,7 @@ class TabWidget : public Widget, public CommandSender
     string title;
     Widget* firstWidget;
   };
-  typedef Array<Tab> TabList;
+  typedef GUI::Array<Tab> TabList;
 
   public:
     TabWidget(GuiObject *boss, int x, int y, int w, int h);
@@ -65,9 +65,9 @@ class TabWidget : public Widget, public CommandSender
     virtual Widget *findWidget(int x, int y);
 
   protected:
-    int   _activeTab;
+    int     _activeTab;
     TabList _tabs;
-    int   _tabWidth;
+    int     _tabWidth;
 
   private:
     void box(int x, int y, int width, int height,
