@@ -13,19 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.1 2005-05-27 18:00:49 stephena Exp $
+// $Id: Debugger.cxx,v 1.2 2005-06-03 17:52:06 stephena Exp $
 //============================================================================
 
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
-#include "VideoDialog.hxx"
+#include "DebuggerDialog.hxx"
 #include "bspf.hxx"
 #include "Debugger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
-    : DialogContainer(osystem)
+    : DialogContainer(osystem),
+      myConsole(NULL)
 {
 }
 
@@ -37,11 +38,13 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-  // We only create one instance of this dialog, since each time we do so,
-  // the ROM listing is read from disk.  This can be very expensive.
-  if(myBaseDialog == NULL)
-    myBaseDialog = new VideoDialog(myOSystem, this,
-                                   0, 0, kDebuggerWidth, kDebuggerHeight);
+  int x = 0,
+      y = myConsole->mediaSource().height(),
+      w = kDebuggerWidth,
+      h = kDebuggerHeight - y;
+
+  delete myBaseDialog;
+  myBaseDialog = new DebuggerDialog(myOSystem, this, x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

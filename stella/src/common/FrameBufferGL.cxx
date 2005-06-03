@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.26 2005-05-30 16:25:46 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.27 2005-06-03 17:52:04 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -504,7 +504,6 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
       scaleX = float(myImageDim.w) / myScreenDim.w;
       scaleY = float(myImageDim.h) / myScreenDim.h;
 
-cerr << "scaleX = " << scaleX << ", scaleY = " << scaleY << endl;
       if(scaleX > scaleY)
         myFSScaleFactor = float(myScreenDim.w) / myImageDim.w;
       else

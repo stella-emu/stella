@@ -13,26 +13,27 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.1 2005-05-27 18:00:49 stephena Exp $
+// $Id: Debugger.hxx,v 1.2 2005-06-03 17:52:06 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
 #define DEBUGGER_HXX
 
 class OSystem;
+class Console;
 
 #include "DialogContainer.hxx"
 
 enum {
-  kDebuggerWidth = 510,
-  kDebuggerHeight = 382
+  kDebuggerWidth = 511,
+  kDebuggerHeight = 383
 };
 
 /**
   The base dialog for the ROM launcher in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.1 2005-05-27 18:00:49 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.2 2005-06-03 17:52:06 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -57,6 +58,11 @@ class Debugger : public DialogContainer
       Initialize the video subsystem wrt this class.
     */
     void initializeVideo();
+
+    void setConsole(Console* console) { myConsole = console; }
+
+  private:
+    Console* myConsole;
 };
 
 #endif

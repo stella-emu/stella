@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.54 2005-05-27 18:00:47 stephena Exp $
+// $Id: Console.cxx,v 1.55 2005-06-03 17:52:04 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -190,8 +190,8 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   myOSystem->menu().setGameProfile(myProperties);
 
   // Finally, initialize the debugging system, since it depends on the current ROM
+  myOSystem->debugger().setConsole(this);
   myOSystem->debugger().initialize();
-//  myOSystem->menu().setGameProfile(myProperties);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

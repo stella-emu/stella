@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.68 2005-06-02 21:37:33 stephena Exp $
+// $Id: EventHandler.cxx,v 1.69 2005-06-03 17:52:05 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1327,7 +1327,6 @@ void EventHandler::leaveMenuMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::enterDebugMode()
 {
-cerr << "S_DEBUGGER entered\n";
   myState = S_DEBUGGER;
   myOSystem->createFrameBuffer();
   myOSystem->debugger().reStack();
@@ -1337,13 +1336,11 @@ cerr << "S_DEBUGGER entered\n";
 
   if(!myPauseFlag)  // Pause when entering debugger mode
     handleEvent(Event::Pause, 1);
-cerr << "S_DEBUGGER entered done\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveDebugMode()
 {
-cerr << "S_DEBUGGER left\n";
   myState = S_EMULATE;
   myOSystem->createFrameBuffer();
   myOSystem->frameBuffer().refresh();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.2 2001-12-29 17:55:59 bwmott Exp $
+// $Id: M6502.cxx,v 1.3 2005-06-03 17:52:05 stephena Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -332,4 +332,3 @@ const char* M6502::ourInstructionMnemonicTable[256] = {
   "BEQ",  "SBC",  "n/a",  "isb",  "nop",  "SBC",  "INC",  "isb",    // 0xF?
   "SED",  "SBC",  "nop",  "isb",  "nop",  "SBC",  "INC",  "isb"
 };
-
