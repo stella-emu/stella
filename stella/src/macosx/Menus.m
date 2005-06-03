@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.8 2005-06-03 05:30:21 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.9 2005-06-03 06:00:22 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "SDL.h"
@@ -223,6 +223,16 @@ static Menus *sharedInstance = nil;
 - (IBAction)volumeMinus:(id)sender
 {
 	[self pushKeyEvent:SDLK_LEFTBRACKET:YES:YES];
+}
+
+- (IBAction)saveProps:(id)sender
+{
+	[self pushKeyEvent:SDLK_s:NO:YES];
+}
+
+- (IBAction)mergeProps:(id)sender
+{
+	[self pushKeyEvent:SDLK_s:YES:YES];
 }
 
 @end

@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.5 2005-06-03 05:04:56 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.6 2005-06-03 06:00:22 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
@@ -35,5 +35,7 @@
 - (IBAction)doPrefs:(id)sender;
 - (IBAction)volumePlus:(id)sender;
 - (IBAction)volumeMinus:(id)sender;
+- (IBAction)saveProps:(id)sender;
+- (IBAction)mergeProps:(id)sender;
 
 @end

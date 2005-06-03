@@ -16,11 +16,13 @@
                 grabMouse = id; 
                 heightMinus = id; 
                 heightPlus = id; 
+                mergeProps = id; 
                 ntscPalMode = id; 
                 openCart = id; 
                 paddleChange = id; 
                 pauseGame = id; 
                 restartGame = id; 
+                saveProps = id; 
                 smallerScreen = id; 
                 speedLimit = id; 
                 toggleGlFilter = id; 
@@ -36,7 +38,6 @@
             }; 
             CLASS = Menus; 
             LANGUAGE = ObjC; 
-            OUTLETS = {}; 
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = Preferences; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
