@@ -4,40 +4,21 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.4 2005-02-18 05:31:47 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.5 2005-06-03 05:04:56 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
 @interface Menus : NSObject {
-    IBOutlet id limitSpeedMenu;
-    IBOutlet id paddlesMenu;
-	IBOutlet id filterMenu;
-	IBOutlet id videoModeMatrix;
-	IBOutlet id volumeSlider;
-	IBOutlet id aspectRatioField;
-	IBOutlet id romDirField;
-	int openGlEnabled;
-	int gameMenusEnabled;
 }
 
 + (Menus *)sharedInstance;
-- (NSString *) browseDir;
-- (void)setSpeedLimitMenu:(int)limit;
-- (void)initVideoMenu:(int)openGl;
-- (void)setPaddleMenu:(int)number;
-- (void)prefsStart;
-- (void)enableGameMenus;
-- (void)pushKeyEvent:(int)key:(bool)shift;
-- (IBAction) paddleChange:(id) sender;
-- (IBAction) prefsOK:(id) sender;
-- (IBAction) romdirSelect:(id) sender;
-- (IBAction)prefsMenu:(id)sender;
+- (void)pushKeyEvent:(int)key:(bool)shift:(bool)cmd;
+- (IBAction)paddleChange:(id) sender;
 - (IBAction)biggerScreen:(id)sender;
 - (IBAction)smallerScreen:(id)sender;
 - (IBAction)fullScreen:(id)sender;
 - (IBAction)openCart:(id)sender;
 - (IBAction)restartGame:(id)sender;
-- (IBAction)speedLimit:(id)sender;
 - (IBAction)pauseGame:(id)sender;
 - (IBAction)ntscPalMode:(id)sender;
 - (IBAction)togglePallette:(id)sender;
@@ -51,5 +32,8 @@
 - (IBAction)widthMinus:(id)sender;
 - (IBAction)heightPlus:(id)sender;
 - (IBAction)heightMinus:(id)sender;
+- (IBAction)doPrefs:(id)sender;
+- (IBAction)volumePlus:(id)sender;
+- (IBAction)volumeMinus:(id)sender;
 
 @end

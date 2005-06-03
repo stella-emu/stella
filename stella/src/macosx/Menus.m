@@ -4,10 +4,11 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.6 2005-05-28 21:50:07 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.7 2005-06-03 05:05:05 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "SDL.h"
+#import "Menus.h"
 
 #define QZ_m			0x2E
 #define QZ_o			0x1F
@@ -68,3 +69,160 @@ void handleMacOSXKeypress(int key) {
 				break;
 	}
 }
+
+@implementation Menus
+
+static Menus *sharedInstance = nil;
+
++ (Menus *)sharedInstance {
+    return sharedInstance ? sharedInstance : [[self alloc] init];
+}
+
+- (id)init
+{
+	sharedInstance = self;
+	return(self);
+}
+
+-(void)pushKeyEvent:(int)key:(bool)shift:(bool)cmd
+{
+	SDL_Event theEvent;
+
+	theEvent.key.type = SDL_KEYDOWN;
+	theEvent.key.state = SDL_PRESSED;
+	theEvent.key.keysym.scancode = 0;
+	theEvent.key.keysym.sym = key;
+	theEvent.key.keysym.mod = 0;
+	if (cmd)
+		theEvent.key.keysym.mod = KMOD_LMETA;
+	if (shift)
+		theEvent.key.keysym.mod |= KMOD_LSHIFT;
+	theEvent.key.keysym.unicode = 0;
+	SDL_PushEvent(&theEvent);
+}
+
+- (IBAction) paddleChange:(id) sender
+{
+	switch([sender tag])
+		{
+		case 0:
+			[self pushKeyEvent:SDLK_0:NO:YES];
+			break;
+		case 1:
+			[self pushKeyEvent:SDLK_1:NO:YES];
+			break;
+		case 2:
+			[self pushKeyEvent:SDLK_2:NO:YES];
+			break;
+		case 3:
+			[self pushKeyEvent:SDLK_3:NO:YES];
+			break;
+		}
+}
+
+- (IBAction)biggerScreen:(id)sender
+{
+	[self pushKeyEvent:SDLK_EQUALS:YES:YES];
+}
+
+- (IBAction)smallerScreen:(id)sender
+{
+	[self pushKeyEvent:SDLK_MINUS:YES:YES];
+}
+
+- (IBAction)fullScreen:(id)sender
+{
+	[self pushKeyEvent:SDLK_RETURN:NO:YES];
+}
+
+- (IBAction)openCart:(id)sender
+{
+	[self pushKeyEvent:SDLK_ESCAPE:NO:NO];
+}
+
+- (IBAction)restartGame:(id)sender
+{
+	[self pushKeyEvent:SDLK_r:NO:YES];
+}
+
+- (IBAction)pauseGame:(id)sender
+{
+	[self pushKeyEvent:SDLK_PAUSE:NO:NO];
+}
+
+- (IBAction)ntscPalMode:(id)sender
+{
+	[self pushKeyEvent:SDLK_f:NO:YES];
+}
+
+- (IBAction)toggleGlFilter:(id)sender
+{
+	[self pushKeyEvent:SDLK_f:YES:YES];
+}
+
+- (IBAction)togglePallette:(id)sender
+{
+	[self pushKeyEvent:SDLK_p:NO:YES];
+}
+
+- (IBAction)grabMouse:(id)sender
+{
+	[self pushKeyEvent:SDLK_g:NO:YES];
+}
+
+- (IBAction)xStartPlus:(id)sender
+{
+	[self pushKeyEvent:SDLK_HOME:YES:YES];
+}
+
+- (IBAction)xStartMinus:(id)sender
+{
+	[self pushKeyEvent:SDLK_END:YES:YES];
+}
+
+- (IBAction)yStartPlus:(id)sender
+{
+	[self pushKeyEvent:SDLK_PAGEUP:YES:YES];
+}
+
+- (IBAction)yStartMinus:(id)sender
+{
+	[self pushKeyEvent:SDLK_PAGEDOWN:YES:YES];
+}
+
+- (IBAction)widthPlus:(id)sender
+{
+	[self pushKeyEvent:SDLK_END:NO:YES];
+}
+
+- (IBAction)widthMinus:(id)sender
+{
+	[self pushKeyEvent:SDLK_HOME:NO:YES];
+}
+
+- (IBAction)heightPlus:(id)sender
+{
+	[self pushKeyEvent:SDLK_PAGEUP:NO:YES];
+}
+
+- (IBAction)heightMinus:(id)sender
+{
+	[self pushKeyEvent:SDLK_PAGEDOWN:NO:YES];
+}
+
+- (IBAction)doPrefs:(id)sender
+{
+	[self pushKeyEvent:SDLK_TAB:NO:NO];
+}
+
+- (IBAction)volumePlus:(id)sender
+{
+	[self pushKeyEvent:SDLK_RIGHTBRACKET:YES:YES];
+}
+
+- (IBAction)volumeMinus:(id)sender
+{
+	[self pushKeyEvent:SDLK_LEFTBRACKET:YES:YES];
+}
+
+@end

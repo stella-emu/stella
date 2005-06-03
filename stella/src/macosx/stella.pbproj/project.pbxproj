@@ -11,6 +11,7 @@
 				F5A47A9E01A0483001D3D55B,
 				2DDBEBE3084582C400812C11,
 				2DDBEBE4084582C400812C11,
+				2D62C40E085011050063A4A3,
 				2D47A45208491D4500ABFB6A,
 			);
 			isa = PBXGroup;
@@ -428,6 +429,8 @@
 			<array>
 				<string>bin</string>
 				<string>BIN</string>
+				<string>rom</string>
+				<string>ROM</string>
 				<string>zip</string>
 				<string>ZIP</string>
 			</array>
@@ -565,6 +568,7 @@
 				2DDBEB7F08457B7D00812C11,
 				2DDBEBE5084582C400812C11,
 				2DDFFA2B0847EF4E00201CC8,
+				2D62C40F085011050063A4A3,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -802,6 +806,20 @@
 		};
 		2D47A45308491D4500ABFB6A = {
 			fileRef = 2D47A45208491D4500ABFB6A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D62C40E085011050063A4A3 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Menus.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D62C40F085011050063A4A3 = {
+			fileRef = 2D62C40E085011050063A4A3;
 			isa = PBXBuildFile;
 			settings = {
 			};

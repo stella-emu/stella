@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.2 2005-05-28 21:06:41 markgrebe Exp $
+// $Id: OSystemMACOSX.cxx,v 1.3 2005-06-03 05:05:05 markgrebe Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -149,12 +149,12 @@ void OSystemMACOSX::mainLoop()
       myFrameBuffer->update();
 
       currentTime = getTicks();
-      virtualTime += myTimePerFrame;
+      virtualTime = startTime + myTimePerFrame;
       if(currentTime < virtualTime)
       {
-        SDL_Delay((virtualTime - currentTime)/1000);
+      SDL_Delay((virtualTime - currentTime)/1000);
       }
-
+	  
       currentTime = getTicks() - startTime;
       frameTime += currentTime;
       ++numberOfFrames;
