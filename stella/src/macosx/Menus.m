@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.7 2005-06-03 05:05:05 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.8 2005-06-03 05:30:21 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "SDL.h"
@@ -172,12 +172,12 @@ static Menus *sharedInstance = nil;
 
 - (IBAction)xStartPlus:(id)sender
 {
-	[self pushKeyEvent:SDLK_HOME:YES:YES];
+	[self pushKeyEvent:SDLK_END:YES:YES];
 }
 
 - (IBAction)xStartMinus:(id)sender
 {
-	[self pushKeyEvent:SDLK_END:YES:YES];
+	[self pushKeyEvent:SDLK_HOME:YES:YES];
 }
 
 - (IBAction)yStartPlus:(id)sender
