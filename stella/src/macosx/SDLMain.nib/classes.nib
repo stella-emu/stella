@@ -11,24 +11,22 @@
         {
             ACTIONS = {
                 biggerScreen = id; 
+                doPrefs = id; 
                 fullScreen = id; 
                 grabMouse = id; 
                 heightMinus = id; 
                 heightPlus = id; 
-                leftJoyChange = id; 
                 ntscPalMode = id; 
                 openCart = id; 
                 paddleChange = id; 
                 pauseGame = id; 
-                prefsMenu = id; 
-                prefsOK = id; 
                 restartGame = id; 
-                rightJoyChange = id; 
-                romdirSelect = id; 
                 smallerScreen = id; 
                 speedLimit = id; 
                 toggleGlFilter = id; 
                 togglePallette = id; 
+                volumeMinus = id; 
+                volumePlus = id; 
                 widthMinus = id; 
                 widthPlus = id; 
                 xStartMinus = id; 
@@ -38,15 +36,7 @@
             }; 
             CLASS = Menus; 
             LANGUAGE = ObjC; 
-            OUTLETS = {
-                aspectRatioField = id; 
-                filterMenu = id; 
-                limitSpeedMenu = id; 
-                paddlesMenu = id; 
-                romDirField = id; 
-                videoModeMatrix = id; 
-                volumeSlider = id; 
-            }; 
+            OUTLETS = {}; 
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = Preferences; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
