@@ -1,7 +1,7 @@
 {
     IBClasses = (
         {
-            ACTIONS = {scrollClick = id; }; 
+            ACTIONS = {OK = id; }; 
             CLASS = AboutBox; 
             LANGUAGE = ObjC; 
             OUTLETS = {appNameField = id; creditsField = id; versionField = id; }; 

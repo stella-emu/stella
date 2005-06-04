@@ -7,6 +7,8 @@
 	objects = {
 		080E96DDFE201D6D7F000001 = {
 			children = (
+				2D1A6CD4085135F9007CDBA8,
+				2D1A6CD5085135F9007CDBA8,
 				F5A47A9D01A0482F01D3D55B,
 				F5A47A9E01A0483001D3D55B,
 				2DDBEBE3084582C400812C11,
@@ -298,6 +300,8 @@
 				2DDBEAAE084578BF00812C11,
 				2DDFFA280847EF4E00201CC8,
 				2DDFFA290847EF4E00201CC8,
+				2D1A6D6B08514245007CDBA8,
+				2D1A6D6C08514245007CDBA8,
 				2DDBEAAF084578BF00812C11,
 				2DDBEAB0084578BF00812C11,
 				2DDBEAB1084578BF00812C11,
@@ -351,6 +355,7 @@
 				2D7B4F6C063B513200579B93,
 				089C165CFE840E0CC02AAC07,
 				B2F367C504C7ADC700A80002,
+				2D1A6CD808513610007CDBA8,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -569,6 +574,8 @@
 				2DDBEBE5084582C400812C11,
 				2DDFFA2B0847EF4E00201CC8,
 				2D62C40F085011050063A4A3,
+				2D1A6CD6085135F9007CDBA8,
+				2D1A6D6E08514245007CDBA8,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -581,6 +588,7 @@
 				2D16A8E206324136005DF364,
 				2D7B4F6D063B513200579B93,
 				2D113E110672BF2100317017,
+				2D1A6CD908513610007CDBA8,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -674,6 +682,8 @@
 				2DDBEBE6084582C400812C11,
 				2DDFFA2A0847EF4E00201CC8,
 				2D47A45308491D4500ABFB6A,
+				2D1A6CD7085135F9007CDBA8,
+				2D1A6D6D08514245007CDBA8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -766,6 +776,77 @@
 		};
 		2D16A8E206324136005DF364 = {
 			fileRef = 2D16A8E106324136005DF364;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D1A6CD4085135F9007CDBA8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = AboutBox.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D1A6CD5085135F9007CDBA8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = AboutBox.m;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D1A6CD6085135F9007CDBA8 = {
+			fileRef = 2D1A6CD4085135F9007CDBA8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D1A6CD7085135F9007CDBA8 = {
+			fileRef = 2D1A6CD5085135F9007CDBA8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D1A6CD808513610007CDBA8 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			path = AboutBox.nib;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D1A6CD908513610007CDBA8 = {
+			fileRef = 2D1A6CD808513610007CDBA8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D1A6D6B08514245007CDBA8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = DebuggerDialog.cxx;
+			path = ../gui/DebuggerDialog.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D1A6D6C08514245007CDBA8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = DebuggerDialog.hxx;
+			path = ../gui/DebuggerDialog.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D1A6D6D08514245007CDBA8 = {
+			fileRef = 2D1A6D6B08514245007CDBA8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D1A6D6E08514245007CDBA8 = {
+			fileRef = 2D1A6D6C08514245007CDBA8;
 			isa = PBXBuildFile;
 			settings = {
 			};
