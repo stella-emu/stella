@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.69 2005-06-03 17:52:05 stephena Exp $
+// $Id: EventHandler.cxx,v 1.70 2005-06-05 23:46:19 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -255,6 +255,7 @@ void EventHandler::poll(uInt32 time)
         if((mod & KMOD_META) && (mod & KMOD_SHIFT) && state)
 #endif
         {
+          // These keys work in all states
           switch(int(key))
           {
             case SDLK_EQUALS:
@@ -265,11 +266,11 @@ void EventHandler::poll(uInt32 time)
               myOSystem->frameBuffer().resize(PreviousSize);
               break;
 
-#ifndef MAC_OSX
-	    case SDLK_RETURN:
+    #ifndef MAC_OSX
+            case SDLK_RETURN:
               myOSystem->frameBuffer().toggleFullscreen();
               break;
-#endif
+    #endif
             case SDLK_f:
               myOSystem->frameBuffer().toggleFilter();
               break;
@@ -278,6 +279,75 @@ void EventHandler::poll(uInt32 time)
               myOSystem->toggleFrameBuffer();
               break;
           }
+
+          // These only work when in emulation mode
+          if(myState == S_EMULATE)
+          {
+            switch(int(key))
+            {
+              case SDLK_LEFTBRACKET:
+                myOSystem->sound().adjustVolume(-1);
+                break;
+
+              case SDLK_RIGHTBRACKET:
+                myOSystem->sound().adjustVolume(1);
+                break;
+
+    #ifdef DEVELOPER_SUPPORT
+              case SDLK_END:       // Alt-End increases XStart
+                myOSystem->console().changeXStart(1);
+                break;
+
+              case SDLK_HOME:      // Alt-Home decreases XStart
+                myOSystem->console().changeXStart(0);
+                break;
+
+              case SDLK_PAGEUP:    // Alt-PageUp increases YStart
+                myOSystem->console().changeYStart(1);
+                break;
+
+              case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
+                myOSystem->console().changeYStart(0);
+                break;
+      #endif
+      #ifdef DEVELOPER_SUPPORT
+              case SDLK_z:
+                myOSystem->console().toggleP0Bit();
+                break;
+
+              case SDLK_x:
+                myOSystem->console().toggleP1Bit();
+                break;
+
+              case SDLK_c:
+                myOSystem->console().toggleM0Bit();
+                break;
+
+              case SDLK_v:
+                myOSystem->console().toggleM1Bit();
+                break;
+
+              case SDLK_b:
+                myOSystem->console().toggleBLBit();
+                break;
+
+              case SDLK_n:
+                myOSystem->console().togglePFBit();
+                break;
+
+              case SDLK_PERIOD:
+                myOSystem->console().enableBits(false);
+                break;
+
+              case SDLK_SLASH:
+                myOSystem->console().enableBits(true);
+                break;
+      #endif
+              case SDLK_s:	 // Alt-s merges properties into stella.pro
+                myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
+                break;
+            }
+          }
         }
 #ifndef MAC_OSX
         else if(mod & KMOD_CTRL && state)
@@ -285,13 +355,14 @@ void EventHandler::poll(uInt32 time)
         else if((mod & KMOD_META) && !(mod & KMOD_SHIFT) && state)
 #endif
         {
+          // These keys work in all states
           switch(int(key))
           {
             case SDLK_q:
               handleEvent(Event::Quit, 1);
               break;
 
-#ifdef MAC_OSX
+  #ifdef MAC_OSX
             case SDLK_h:
             case SDLK_m:
             case SDLK_SLASH:
@@ -301,7 +372,7 @@ void EventHandler::poll(uInt32 time)
             case SDLK_RETURN:
               myOSystem->frameBuffer().toggleFullscreen();
               break;
-#endif
+  #endif
             case SDLK_g:
               // don't change grabmouse in fullscreen mode
               if(!myOSystem->frameBuffer().fullScreen())
@@ -312,10 +383,69 @@ void EventHandler::poll(uInt32 time)
               }
               break;
           }
-        }
 
-        // Otherwise, let the event handler deal with it
-        handleKeyEvent(key, mod, state);
+          // These only work when in emulation mode
+          if(myState == S_EMULATE)
+          {
+            switch(int(key))
+            {
+              case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0
+                setPaddleMode(0, true);
+                break;
+
+              case SDLK_1:  // Ctrl-1 sets the mouse to paddle 1
+                setPaddleMode(1, true);
+                break;
+
+              case SDLK_2:  // Ctrl-2 sets the mouse to paddle 2
+                setPaddleMode(2, true);
+                break;
+
+              case SDLK_3:  // Ctrl-3 sets the mouse to paddle 3
+                setPaddleMode(3, true);
+                  break;
+
+              case SDLK_f:  // Ctrl-f toggles NTSC/PAL mode
+                myOSystem->console().toggleFormat();
+                break;
+
+              case SDLK_p:  // Ctrl-p toggles different palettes
+                myOSystem->console().togglePalette();
+                break;
+
+              case SDLK_r:  // Ctrl-r reloads the currently loaded ROM
+                myOSystem->createConsole();
+                break;
+
+  #ifdef DEVELOPER_SUPPORT
+              case SDLK_END:       // Ctrl-End increases Width
+                myOSystem->console().changeWidth(1);
+                break;
+
+              case SDLK_HOME:      // Ctrl-Home decreases Width
+                myOSystem->console().changeWidth(0);
+                break;
+
+              case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
+                myOSystem->console().changeHeight(1);
+                break;
+
+              case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
+                myOSystem->console().changeHeight(0);
+                break;
+  #endif
+              case SDLK_s:         // Ctrl-s saves properties to a file
+                string newPropertiesFile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+                  myOSystem->console().properties().get("Cartridge.Name") + ".pro";
+                myOSystem->console().saveProperties(newPropertiesFile);
+                break;
+            }
+          }
+        }
+        else
+          // Otherwise, let the event handler deal with it
+          handleKeyEvent(key, mod, state);
+
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
 
@@ -499,141 +629,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
   switch(myState)
   {
     case S_EMULATE:
-      // An attempt to speed up event processing
-      // All SDL-specific event actions are accessed by either
-      // Control/Cmd and/or Alt/Shift-Cmd keys.  So we quickly check for those.
-#ifndef MAC_OSX
-      if(mod & KMOD_ALT && state)
-#else
-      if((mod & KMOD_META) && (mod & KMOD_SHIFT) && state)
-#endif
-      {
-        switch(int(key))
-        {
-          case SDLK_LEFTBRACKET:
-            myOSystem->sound().adjustVolume(-1);
-            break;
-
-          case SDLK_RIGHTBRACKET:
-            myOSystem->sound().adjustVolume(1);
-            break;
-
-  #ifdef DEVELOPER_SUPPORT
-          case SDLK_END:       // Alt-End increases XStart
-            myOSystem->console().changeXStart(1);
-            break;
-
-          case SDLK_HOME:      // Alt-Home decreases XStart
-            myOSystem->console().changeXStart(0);
-            break;
-
-          case SDLK_PAGEUP:    // Alt-PageUp increases YStart
-            myOSystem->console().changeYStart(1);
-            break;
-
-          case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
-            myOSystem->console().changeYStart(0);
-            break;
-  #endif
-  #ifdef DEVELOPER_SUPPORT
-          case SDLK_z:
-            myOSystem->console().toggleP0Bit();
-            break;
-
-          case SDLK_x:
-            myOSystem->console().toggleP1Bit();
-            break;
-
-          case SDLK_c:
-            myOSystem->console().toggleM0Bit();
-            break;
-
-          case SDLK_v:
-            myOSystem->console().toggleM1Bit();
-            break;
-
-          case SDLK_b:
-            myOSystem->console().toggleBLBit();
-            break;
-
-          case SDLK_n:
-            myOSystem->console().togglePFBit();
-            break;
-
-          case SDLK_PERIOD:
-            myOSystem->console().enableBits(false);
-            break;
-
-          case SDLK_SLASH:
-            myOSystem->console().enableBits(true);
-            break;
-  #endif
-          case SDLK_s:	 // Alt-s merges properties into stella.pro
-            myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
-            break;
-        }
-      }
-#ifndef MAC_OSX
-      else if(mod & KMOD_CTRL && state)
-#else
-      else if((mod & KMOD_META) && !(mod & KMOD_SHIFT) && state)
-#endif
-      {
-        switch(int(key))
-        {
-          case SDLK_0:   // Ctrl-0 sets the mouse to paddle 0
-            setPaddleMode(0, true);
-            break;
-
-          case SDLK_1:	 // Ctrl-1 sets the mouse to paddle 1
-            setPaddleMode(1, true);
-            break;
-
-          case SDLK_2:	 // Ctrl-2 sets the mouse to paddle 2
-            setPaddleMode(2, true);
-            break;
-
-          case SDLK_3:	 // Ctrl-3 sets the mouse to paddle 3
-            setPaddleMode(3, true);
-            break;
-
-          case SDLK_f:	 // Ctrl-f toggles NTSC/PAL mode
-            myOSystem->console().toggleFormat();
-            break;
-
-          case SDLK_p:	 // Ctrl-p toggles different palettes
-            myOSystem->console().togglePalette();
-            break;
-
-          case SDLK_r:	 // Ctrl-r reloads the currently loaded ROM
-            myOSystem->createConsole();
-            break;
-
-  #ifdef DEVELOPER_SUPPORT
-          case SDLK_END:       // Ctrl-End increases Width
-            myOSystem->console().changeWidth(1);
-            break;
-
-          case SDLK_HOME:      // Ctrl-Home decreases Width
-            myOSystem->console().changeWidth(0);
-            break;
-
-          case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
-            myOSystem->console().changeHeight(1);
-            break;
-
-          case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-            myOSystem->console().changeHeight(0);
-            break;
-  #endif
-          case SDLK_s:	 // Ctrl-s saves properties to a file
-            string newPropertiesFile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-              myOSystem->console().properties().get("Cartridge.Name") + ".pro";
-            myOSystem->console().saveProperties(newPropertiesFile);
-            break;
-        }
-      }
-      else if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
+      if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
       {
         enterMenuMode();
         return;
