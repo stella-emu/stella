@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.3 2005-05-29 18:54:28 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.4 2005-06-05 22:20:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <sstream>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,9 +50,9 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
 
   protected:
     string _displayName;
-    bool _isDirectory;
-    bool _isValid;
-    bool _isPseudoRoot;
+    bool   _isDirectory;
+    bool   _isValid;
+    bool   _isPseudoRoot;
     string _path;
 
   private:
@@ -248,28 +250,38 @@ AbstractFilesystemNode* WindowsFilesystemNode::parent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AbstractFilesystemNode::fileExists(const string& path)
 {
-  // FIXME
-  return true;
+  WIN32_FILE_ATTRIBUTE_DATA attr;
+  BOOL b = GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &attr);
+
+  return ((b != 0) && !(attr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AbstractFilesystemNode::dirExists(const string& path)
 {
-  // FIXME
-  return true;
+  WIN32_FILE_ATTRIBUTE_DATA attr;
+  BOOL b = GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &attr);
+
+  return ((b != 0) && (attr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AbstractFilesystemNode::makeDir(const string& path)
 {
-  _mkdir(path.c_str());
-  return true;
+  return CreateDirectory(path.c_str(), NULL) != 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string AbstractFilesystemNode::modTime(const string& path)
 {
-  // FIXME - use GetFileAttributesEx
+  WIN32_FILE_ATTRIBUTE_DATA attr;
+  BOOL b = GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &attr);
 
-  return "";
+  if(b == 0)
+    return "";
+
+  ostringstream buf;
+  buf << attr.ftLastWriteTime.dwHighDateTime << attr.ftLastWriteTime.dwLowDateTime;
+
+  return buf.str();
 }

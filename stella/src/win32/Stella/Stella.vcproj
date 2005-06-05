@@ -210,6 +210,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\Debugger.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\DebuggerDialog.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Deserializer.cxx">
 			</File>
 			<File
@@ -474,6 +477,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\Debugger.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\DebuggerDialog.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Deserializer.hxx">
