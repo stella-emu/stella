@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.1 2005-06-07 01:14:39 stephena Exp $
+// $Id: PromptDialog.cxx,v 1.2 2005-06-07 19:01:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,6 +21,8 @@
 
 #include "ScrollBarWidget.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
+#include "Version.hxx"
 
 #include "PromptDialog.hxx"
 
@@ -56,12 +58,6 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
   _scrollLine = _linesPerPage - 1;
   _firstLineInBuffer = 0;
 
-  _caretVisible = true;//false;
-  _caretTime = 0;
-
-  _slideMode = kNoSlideMode;
-  _slideTime = 0;
-
   // Add scrollbar
   _scrollBar = new ScrollBarWidget(this, _w - kScrollBarWidth - 1, 0, kScrollBarWidth, _h);
   _scrollBar->setTarget(this);
@@ -80,13 +76,24 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
   _promptStartPos = _promptEndPos = -1;
 
   // Display greetings & prompt
-  print("HELLO!!");//gScummVMFullVersion);
-  print("\nDebugger is ready\n");
+  string version = string("Stella version ") + STELLA_VERSION + "\n";
+  print(version.c_str());
+  print("Debugger is ready\n");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptDialog::~PromptDialog()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptDialog::loadConfig()
+{
+  if (_promptStartPos == -1)
+  {
+    print(PROMPT);
+    _promptStartPos = _promptEndPos = _currentPos;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,6 +127,9 @@ void PromptDialog::drawDialog()
     y += kConsoleLineHeight;
   }
 
+  // Draw the caret
+  drawCaret();
+
   // Draw the scrollbar
   _scrollBar->draw();
 }
@@ -133,26 +143,18 @@ void PromptDialog::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-cerr << "PromptDialog::handleKeyDown\n";
   int i;
 	
-  if (_slideMode != kNoSlideMode)
-    return;
-
   switch (keycode)
   {
     case '\n': // enter/return
     case '\r':
     {
-      if (_caretVisible)
-        drawCaret(true);
-
       nextLine();
 
       assert(_promptEndPos >= _promptStartPos);
       int len = _promptEndPos - _promptStartPos;
       bool keepRunning = true;
-
 
       if (len > 0)
       {
@@ -172,6 +174,7 @@ cerr << "PromptDialog::handleKeyDown\n";
         if (_callbackProc)
           keepRunning = (*_callbackProc)(this, str, _callbackRefCon);
 
+cerr << "Command entered: \'" << str << "\'\n";
         // Get rid of the string buffer
         delete [] str;
       }
@@ -185,14 +188,9 @@ cerr << "PromptDialog::handleKeyDown\n";
     }
 
     case 8:  // backspace
-      if (_caretVisible)
-        drawCaret(true);
-
       if (_currentPos > _promptStartPos)
-      {
-        _currentPos--;
-        killChar();
-      }
+        killChar(-1);
+
       scrollToCurrent();
       draw();  // FIXME - not nice to redraw the full console just for one char!
       instance()->frameBuffer().refresh();
@@ -214,8 +212,6 @@ cerr << "PromptDialog::handleKeyDown\n";
         char *completion = 0;
         if ((*_completionCallbackProc)(this, str, completion, _callbackRefCon))
         {
-          if (_caretVisible)
-            drawCaret(true);
           insertIntoPrompt(completion);
           scrollToCurrent();
           draw();
@@ -228,7 +224,7 @@ cerr << "PromptDialog::handleKeyDown\n";
     }
 
     case 127:
-      killChar();
+      killChar(1);
       draw();
       instance()->frameBuffer().refresh();
       break;
@@ -258,7 +254,7 @@ cerr << "PromptDialog::handleKeyDown\n";
       break;
 
     case 256 + 22:  // home
-      if (1) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
+      if (0) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
       {
         _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
         updateScrollBuffer();
@@ -271,7 +267,7 @@ cerr << "PromptDialog::handleKeyDown\n";
       break;
 
     case 256 + 23:  // end
-      if (1) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
+      if (0) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
       {
         _scrollLine = _promptEndPos / _lineWidth;
         if (_scrollLine < _linesPerPage - 1)
@@ -308,16 +304,26 @@ cerr << "PromptDialog::handleKeyDown\n";
       break;
 
     default:
-/* FIXME
-		} else if (modifiers == OSystem::KBD_CTRL) {
-			specialKeys(keycode);
-*/
-      if (isprint((char)ascii))
+cerr << "ascii: " << ascii << endl;
+      if (instance()->eventHandler().kbdControl(modifiers))
       {
+        specialKeys(keycode);
+      }
+      else if (instance()->eventHandler().kbdAlt(modifiers))
+      {
+cerr << "Alt from prompt\n";
+      }
+      else if (ascii < 256)
+      {
+        // Do uppercase letters
+//        if(instance()->eventHandler().kbdShift(modifiers))
+//          ascii = ascii & ~0x20;
+
         for (i = _promptEndPos - 1; i >= _currentPos; i--)
           buffer(i + 1) = buffer(i);
         _promptEndPos++;
-        putchar((char)ascii);
+        putchar((int)*(SDL_GetKeyName((SDLKey)ascii)));
+//        putchar(ascii);
         scrollToCurrent();
       }
       break;
@@ -359,51 +365,90 @@ void PromptDialog::handleCommand(CommandSender* sender, int cmd, int data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptDialog::specialKeys(int keycode)
 {
-/* FIXME - add UNIX style line editing
-	switch (keycode) {
-	case 'a':
-		_currentPos = _promptStartPos;
-		draw();
-		break;
-	case 'd':
-		if (_currentPos < _promptEndPos) {
-			killChar();
-			draw();
-		}
-		break;
-	case 'e':
-		_currentPos = _promptEndPos;
-		draw();
-		break;
-	case 'k':
-		killLine();
-		draw();
-		break;
-	case 'w':
-		killLastWord();
-		draw();
-		break;
-	}
-*/
+  bool handled = false;
+
+  switch (keycode)
+  {
+    case 'a':
+      _currentPos = _promptStartPos;
+      handled = true;
+      break;
+
+    case 'd':
+      killChar(1);
+      handled = true;
+      break;
+
+    case 'e':
+      _currentPos = _promptEndPos;
+      handled = true;
+      break;
+
+    case 'k':
+      killLine(1);
+      handled = true;
+      break;
+
+    case 'u':
+      killLine(-1);
+      handled = true;
+      break;
+
+    case 'w':
+      killLastWord();
+      handled = true;
+      break;
+  }
+
+  if(handled)
+  {
+    draw();
+    instance()->frameBuffer().refresh();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::killChar()
+void PromptDialog::killChar(int direction)
 {
-  for (int i = _currentPos; i < _promptEndPos; i++)
-    buffer(i) = buffer(i + 1);
+  if(direction == -1)    // Delete previous character (backspace)
+  {
+    if(_currentPos <= _promptStartPos)
+      return;
 
-  buffer(_promptEndPos) = ' ';
-  _promptEndPos--;
+    _currentPos--;
+    for (int i = _currentPos; i < _promptEndPos; i++)
+      buffer(i) = buffer(i + 1);
+
+    buffer(_promptEndPos) = ' ';
+    _promptEndPos--;
+  }
+  else if(direction == 1)    // Delete next character (delete)
+  {
+    if(_currentPos >= _promptEndPos)
+      return;
+
+    // There are further characters to the right of cursor
+    if(_currentPos + 1 <= _promptEndPos)
+    {
+      for (int i = _currentPos; i < _promptEndPos; i++)
+        buffer(i) = buffer(i + 1);
+
+      buffer(_promptEndPos) = ' ';
+      _promptEndPos--;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::killLine()
+void PromptDialog::killLine(int direction)
 {
-  for (int i = _currentPos; i < _promptEndPos; i++)
-    buffer(i) = ' ';
+  if(direction == 1)  // erase from current position to end of line
+  {
+    for (int i = _currentPos; i < _promptEndPos; i++)
+      buffer(i) = ' ';
 
-  _promptEndPos = _currentPos;
+    _promptEndPos = _currentPos;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -464,13 +509,9 @@ void PromptDialog::historyScroll(int direction)
     return;
   _historyLine = line;
 
-  // Hide caret if visible
-  if (_caretVisible)
-    drawCaret(true);
-
   // Remove the current user text
   _currentPos = _promptStartPos;
-  killLine();
+  killLine(1);  // to end of line
 
   // ... and ensure the prompt is visible
   scrollToCurrent();
@@ -559,10 +600,8 @@ int PromptDialog::vprintf(const char *format, va_list argptr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptDialog::putchar(int c)
 {
-  if (_caretVisible)
-    drawCaret(true);
-
   putcharIntern(c);
+
   draw();  // FIXME - not nice to redraw the full console just for one char!
   instance()->frameBuffer().refresh();
 }
@@ -578,7 +617,7 @@ void PromptDialog::putcharIntern(int c)
     _currentPos++;
     if ((_scrollLine + 1) * _lineWidth == _currentPos)
     {
-	  _scrollLine++;
+      _scrollLine++;
       updateScrollBuffer();
     }
   }
@@ -587,9 +626,6 @@ void PromptDialog::putcharIntern(int c)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptDialog::print(const char *str)
 {
-  if (_caretVisible)
-    drawCaret(true);
-
   while (*str)
     putcharIntern(*str++);
 
@@ -598,38 +634,19 @@ void PromptDialog::print(const char *str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::drawCaret(bool erase)
+void PromptDialog::drawCaret()
 {
   FrameBuffer& fb = instance()->frameBuffer();
 
   int line = _currentPos / _lineWidth;
   int displayLine = line - _scrollLine + _linesPerPage - 1;
 
-  // Only draw caret if visible
-  if (!isVisible() || displayLine < 0 || displayLine >= _linesPerPage)
-  {
-    _caretVisible = false;
-    return;
-  }
-
   int x = _x + 1 + (_currentPos % _lineWidth) * kConsoleCharWidth;
   int y = _y + displayLine * kConsoleLineHeight;
 
   char c = buffer(_currentPos);
-  if (erase)
-  {
-    fb.fillRect(x, y, kConsoleCharWidth, kConsoleLineHeight, kBGColor);
-    fb.drawChar(c, x, y + 2, kTextColor);
-  }
-  else
-  {
-    fb.fillRect(x, y, kConsoleCharWidth, kConsoleLineHeight, kTextColor);
-    fb.drawChar(c, x, y + 2, kBGColor);
-  }
-  //FIXMEg_gui.addDirtyRect(x, y, kConsoleCharWidth, kConsoleLineHeight);
-  fb.refresh();
-
-  _caretVisible = !erase;
+  fb.fillRect(x, y, kConsoleCharWidth, kConsoleLineHeight, kTextColor);
+  fb.drawChar(c, x, y + 2, kBGColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

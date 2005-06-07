@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.hxx,v 1.1 2005-06-07 01:14:39 stephena Exp $
+// $Id: PromptDialog.hxx,v 1.2 2005-06-07 19:01:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,10 +43,6 @@ class PromptDialog : public Dialog
                  int x, int y, int w, int h);
     virtual ~PromptDialog();
 
-    void handleMouseWheel(int x, int y, int direction);
-    void handleKeyDown(int ascii, int keycode, int modifiers);
-    void handleCommand(CommandSender* sender, int cmd, int data);
-
   public:
     int printf(const char *format, ...);
     int vprintf(const char *format, va_list argptr);
@@ -69,7 +65,7 @@ class PromptDialog : public Dialog
     inline char &buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
     void drawDialog();
-    void drawCaret(bool erase);
+    void drawCaret();
     void putcharIntern(int c);
     void insertIntoPrompt(const char *str);
     void print(const char *str);
@@ -79,13 +75,19 @@ class PromptDialog : public Dialog
     // Line editing
     void specialKeys(int keycode);
     void nextLine();
-    void killChar();
-    void killLine();
+    void killChar(int direction);
+    void killLine(int direction);
     void killLastWord();
 
     // History
     void addToHistory(const char *str);
     void historyScroll(int direction);
+
+  private:
+    void handleMouseWheel(int x, int y, int direction);
+    void handleKeyDown(int ascii, int keycode, int modifiers);
+    void handleCommand(CommandSender* sender, int cmd, int data);
+    void loadConfig();
 
   protected:
     char _buffer[kBufferSize];
@@ -100,18 +102,6 @@ class PromptDialog : public Dialog
 	
     int  _promptStartPos;
     int  _promptEndPos;
-
-    bool _caretVisible;
-    int  _caretTime;
-	
-    enum SlideMode {
-      kNoSlideMode,
-      kUpSlideMode,
-      kDownSlideMode
-    };
-		
-    SlideMode _slideMode;
-    int _slideTime;
 
     ScrollBarWidget* _scrollBar;
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.70 2005-06-05 23:46:19 stephena Exp $
+// $Id: EventHandler.cxx,v 1.71 2005-06-07 19:01:53 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -246,14 +246,18 @@ void EventHandler::poll(uInt32 time)
         SDLMod mod  = event.key.keysym.mod;
         uInt8 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
 
+if(event.type == SDL_KEYDOWN)
+{
+  if(kbdShift(mod))
+    cerr << "shift key: " << (char)key << endl;
+  else
+    cerr << "key:       " << (char)key << endl;
+}
+
         // An attempt to speed up event processing
         // All SDL-specific event actions are accessed by either
         // Control/Cmd or Alt/Shift-Cmd keys.  So we quickly check for those.
-#ifndef MAC_OSX
-        if(mod & KMOD_ALT && state)
-#else
-        if((mod & KMOD_META) && (mod & KMOD_SHIFT) && state)
-#endif
+        if(kbdAlt(mod) && state)
         {
           // These keys work in all states
           switch(int(key))
@@ -349,11 +353,7 @@ void EventHandler::poll(uInt32 time)
             }
           }
         }
-#ifndef MAC_OSX
-        else if(mod & KMOD_CTRL && state)
-#else
-        else if((mod & KMOD_META) && !(mod & KMOD_SHIFT) && state)
-#endif
+        else if(kbdControl(mod) && state)
         {
           // These keys work in all states
           switch(int(key))
@@ -442,9 +442,9 @@ void EventHandler::poll(uInt32 time)
             }
           }
         }
-        else
-          // Otherwise, let the event handler deal with it
-          handleKeyEvent(key, mod, state);
+
+        // Otherwise, let the event handler deal with it
+        handleKeyEvent(key, mod, state);
 
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }

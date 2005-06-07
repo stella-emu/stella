@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.34 2005-05-28 17:25:41 stephena Exp $
+// $Id: EventHandler.hxx,v 1.35 2005-06-07 19:01:53 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.34 2005-05-28 17:25:41 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.35 2005-06-07 19:01:53 stephena Exp $
 */
 class EventHandler
 {
@@ -179,6 +179,29 @@ class EventHandler
       @param showmessage  Print a message to the framebuffer
     */
     void setPaddleMode(uInt32 num, bool showmessage = false);
+
+    inline bool kbdAlt(int mod)
+    {
+  #ifndef MAC_OSX
+      return (mod & KMOD_ALT) > 0;
+  #else
+      return ((mod & KMOD_META) && (mod & KMOD_SHIFT));
+  #endif
+    }
+
+    inline bool kbdControl(int mod)
+    {
+  #ifndef MAC_OSX
+      return (mod & KMOD_CTRL) > 0;
+  #else
+      return ((mod & KMOD_META) && !(mod & KMOD_SHIFT))
+  #endif
+    }
+
+    inline bool kbdShift(int mod)
+    {
+      return (mod & KMOD_SHIFT) > 0;
+    }
 
     // Holds static strings for the remap menu
     static ActionList ourActionList[61];
