@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.7 2005-05-26 15:43:44 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.8 2005-06-07 21:22:39 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -121,7 +121,7 @@ void DialogContainer::reStack()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleKeyEvent(int key, int mod, uInt8 state)
+void DialogContainer::handleKeyEvent(int unicode, int key, int mod, uInt8 state)
 {
   if(myDialogStack.empty())
     return;
@@ -130,16 +130,16 @@ void DialogContainer::handleKeyEvent(int key, int mod, uInt8 state)
   Dialog* activeDialog = myDialogStack.top();
   if(state == 1)
   {
-    myCurrentKeyDown.ascii   = key;
+    myCurrentKeyDown.ascii   = unicode;
     myCurrentKeyDown.keycode = key;
     myCurrentKeyDown.flags   = mod;
     myKeyRepeatTime = myTime + kKeyRepeatInitialDelay;
 
-    activeDialog->handleKeyDown(key, key, mod);
+    activeDialog->handleKeyDown(unicode, key, mod);
   }
   else
   {
-    activeDialog->handleKeyUp(key, key, mod);
+    activeDialog->handleKeyUp(unicode, key, mod);
 
     // Only stop firing events if it's the current key
     if (key == myCurrentKeyDown.keycode)

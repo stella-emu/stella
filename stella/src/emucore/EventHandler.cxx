@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.71 2005-06-07 19:01:53 stephena Exp $
+// $Id: EventHandler.cxx,v 1.72 2005-06-07 21:22:38 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -242,17 +242,10 @@ void EventHandler::poll(uInt32 time)
       case SDL_KEYUP:
       case SDL_KEYDOWN:
       {
+        int unicode = event.key.keysym.unicode;
         SDLKey key  = event.key.keysym.sym;
         SDLMod mod  = event.key.keysym.mod;
         uInt8 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
-
-if(event.type == SDL_KEYDOWN)
-{
-  if(kbdShift(mod))
-    cerr << "shift key: " << (char)key << endl;
-  else
-    cerr << "key:       " << (char)key << endl;
-}
 
         // An attempt to speed up event processing
         // All SDL-specific event actions are accessed by either
@@ -444,7 +437,7 @@ if(event.type == SDL_KEYDOWN)
         }
 
         // Otherwise, let the event handler deal with it
-        handleKeyEvent(key, mod, state);
+        handleKeyEvent(unicode, key, mod, state);
 
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
@@ -623,7 +616,7 @@ if(event.type == SDL_KEYDOWN)
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
+void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 state)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   switch(myState)
@@ -650,11 +643,11 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
         leaveMenuMode();
         return;
       }
-      myOSystem->menu().handleKeyEvent(key, mod, state);
+      myOSystem->menu().handleKeyEvent(unicode, key, mod, state);
       break;
 
     case S_LAUNCHER:
-      myOSystem->launcher().handleKeyEvent(key, mod, state);
+      myOSystem->launcher().handleKeyEvent(unicode, key, mod, state);
       break;
 
     case S_DEBUGGER:
@@ -663,7 +656,7 @@ void EventHandler::handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state)
         leaveDebugMode();
         return;
       }
-      myOSystem->debugger().handleKeyEvent(key, mod, state);
+      myOSystem->debugger().handleKeyEvent(unicode, key, mod, state);
       break;
 
     case S_NONE:

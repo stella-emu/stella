@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.35 2005-06-07 19:01:53 stephena Exp $
+// $Id: EventHandler.hxx,v 1.36 2005-06-07 21:22:39 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.35 2005-06-07 19:01:53 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.36 2005-06-07 21:22:39 stephena Exp $
 */
 class EventHandler
 {
@@ -233,7 +233,7 @@ class EventHandler
       @param mod   modifiers
       @param state state of key
     */
-    void handleKeyEvent(SDLKey key, SDLMod mod, uInt8 state);
+    void handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 state);
 
     /**
       Send a mouse motion event to the handler.

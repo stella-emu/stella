@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.2 2005-06-07 19:01:53 stephena Exp $
+// $Id: PromptDialog.cxx,v 1.3 2005-06-07 21:22:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -304,26 +304,21 @@ cerr << "Command entered: \'" << str << "\'\n";
       break;
 
     default:
-cerr << "ascii: " << ascii << endl;
       if (instance()->eventHandler().kbdControl(modifiers))
       {
         specialKeys(keycode);
       }
+/*
       else if (instance()->eventHandler().kbdAlt(modifiers))
       {
-cerr << "Alt from prompt\n";
       }
-      else if (ascii < 256)
+*/
+      else if (isprint(ascii))
       {
-        // Do uppercase letters
-//        if(instance()->eventHandler().kbdShift(modifiers))
-//          ascii = ascii & ~0x20;
-
         for (i = _promptEndPos - 1; i >= _currentPos; i--)
           buffer(i + 1) = buffer(i);
         _promptEndPos++;
-        putchar((int)*(SDL_GetKeyName((SDLKey)ascii)));
-//        putchar(ascii);
+        putchar(ascii);
         scrollToCurrent();
       }
       break;
@@ -442,7 +437,14 @@ void PromptDialog::killChar(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptDialog::killLine(int direction)
 {
-  if(direction == 1)  // erase from current position to end of line
+  if(direction == -1)  // erase from current position to beginning of line
+  {
+    int count = _currentPos - _promptStartPos;
+    if(count > 0)
+      for (int i = 0; i < count; i++)
+       killChar(-1);
+  }
+  else if(direction == 1)  // erase from current position to end of line
   {
     for (int i = _currentPos; i < _promptEndPos; i++)
       buffer(i) = ' ';

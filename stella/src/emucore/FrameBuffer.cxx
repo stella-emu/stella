@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.41 2005-05-30 16:25:46 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.42 2005-06-07 21:22:39 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -147,6 +147,10 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   // Initialize video subsystem
   initSubsystem();
+
+  // Enable unicode so we can see translated key events
+  // (lowercase vs. uppercase characters)
+  SDL_EnableUNICODE(1);
 
   // Erase any messages from a previous run
   myMessageTime = 0;

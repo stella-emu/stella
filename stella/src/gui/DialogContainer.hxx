@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.4 2005-05-26 15:43:44 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.5 2005-06-07 21:22:39 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.4 2005-05-26 15:43:44 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.5 2005-06-07 21:22:39 stephena Exp $
 */
 class DialogContainer
 {
@@ -64,11 +64,12 @@ class DialogContainer
     /**
       Handle a keyboard event.
 
-      @param key   keysym
-      @param mod   modifiers
-      @param state state of key
+      @param unicode  Unicode translation
+      @param key      Actual key symbol
+      @param mod      Modifiers
+      @param state    Pressed or released
     */
-    void handleKeyEvent(int key, int mod, uInt8 state);
+    void handleKeyEvent(int unicode, int key, int mod, uInt8 state);
 
     /**
       Handle a mouse motion event.
