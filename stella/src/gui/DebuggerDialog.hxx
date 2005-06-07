@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.2 2005-06-07 01:14:39 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.3 2005-06-07 01:27:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,6 +40,7 @@ class DebuggerDialog : public Dialog
                           int x, int y, int w, int h);
     ~DebuggerDialog();
 
+    virtual void loadConfig();
     virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
   protected:

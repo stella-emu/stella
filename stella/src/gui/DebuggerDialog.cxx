@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.2 2005-06-07 01:14:39 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.3 2005-06-07 01:27:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -80,6 +80,13 @@ DebuggerDialog::~DebuggerDialog()
   delete myTiaDialog;
   delete myCodeDialog;
 */
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::loadConfig()
+{
+  // Auto-select the command prompt
+  parent()->addDialog(myPromptDialog);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
