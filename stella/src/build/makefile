@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.86 2005-06-03 17:52:04 stephena Exp $
+## $Id: makefile,v 1.87 2005-06-07 01:14:38 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -159,7 +159,8 @@ GUI_OBJS = StellaFont.o Menu.o Launcher.o Debugger.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
-           ProgressDialog.o DebuggerDialog.o
+           ProgressDialog.o \
+           DebuggerDialog.o PromptDialog.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -450,3 +451,6 @@ ProgressDialog.o: $(GUI)/ProgressDialog.cxx $(GUI)/ProgressDialog.hxx
 
 DebuggerDialog.o: $(GUI)/DebuggerDialog.cxx $(GUI)/DebuggerDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/DebuggerDialog.cxx
+
+PromptDialog.o: $(GUI)/PromptDialog.cxx $(GUI)/PromptDialog.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/PromptDialog.cxx

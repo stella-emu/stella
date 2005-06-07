@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.8 2005-05-13 18:28:05 stephena Exp $
+// $Id: ListWidget.cxx,v 1.9 2005-06-07 01:14:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
     : Widget(boss, x, y, w - kScrollBarWidth, h),
       CommandSender(boss)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS | WIDGET_WANT_TICKLE;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kListWidget;
   _numberingMode = kListNumberingOne;
   _entriesPerPage = (_h - 2) / kLineHeight;
@@ -131,18 +131,6 @@ void ListWidget::scrollBarRecalc()
   _scrollBar->_entriesPerPage = _entriesPerPage;
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleTickle()
-{
-/*
-	uint32 time = g_system->getMillis();
-	if (_editMode && _caretTime < time) {
-		_caretTime = time + kCaretBlinkTime;
-		drawCaret(_caretVisible);
-	}
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

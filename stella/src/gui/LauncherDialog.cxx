@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.19 2005-06-07 01:14:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -66,7 +66,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myRomCount = new StaticTextWidget(this, _w - 100, 8, 90, kLineHeight,
                                     "", kTextAlignRight);
 
-  // Add three buttons at the bottom
+  // Add four buttons at the bottom
   const int border = 10;
   const int space = 8;
   const int buttons = 4;

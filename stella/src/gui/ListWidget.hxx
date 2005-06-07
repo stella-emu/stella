@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.3 2005-05-13 18:28:06 stephena Exp $
+// $Id: ListWidget.hxx,v 1.4 2005-06-07 01:14:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -60,7 +60,6 @@ class ListWidget : public Widget, public CommandSender
     void setNumberingMode(NumberingMode numberingMode)  { _numberingMode = numberingMode; }
     void scrollTo(int item);
 	
-    virtual void handleTickle();
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);

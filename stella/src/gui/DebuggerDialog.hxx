@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.1 2005-06-03 17:52:06 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.2 2005-06-07 01:14:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,10 +24,12 @@
 
 class OSystem;
 class DialogContainer;
-class BrowserDialog;
-class CheckboxWidget;
-class PopUpWidget;
-class StaticTextWidget;
+class PromptDialog;
+class CpuDialog;
+class RamDialog;
+class RomDialog;
+class TiaDialog;
+class CodeDialog;
 
 #include "Dialog.hxx"
 
@@ -38,25 +40,16 @@ class DebuggerDialog : public Dialog
                           int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    virtual void loadConfig();
-    virtual void saveConfig();
-
     virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
   protected:
-    BrowserDialog* myBrowser;
-
-    // Rom path controls
-    StaticTextWidget* myRomPath;
-
-    // Snapshot controls
-    StaticTextWidget* mySnapPath;
-    PopUpWidget*      mySnapTypePopup;
-    CheckboxWidget*   mySnapSingleCheckbox;
-
-  private:
-    void openRomBrowser();
-    void openSnapBrowser();
+    // The debugger dialogs
+    PromptDialog* myPromptDialog;
+    CpuDialog*    myCpuDialog;
+    RamDialog*    myRamDialog;
+    RomDialog*    myRomDialog;
+    TiaDialog*    myTiaDialog;
+    CodeDialog*   myCodeDialog;
 };
 
 #endif
