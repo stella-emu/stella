@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.42 2005-06-07 21:22:39 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.43 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -25,7 +25,7 @@
 #include "Settings.hxx"
 #include "MediaSrc.hxx"
 #include "FrameBuffer.hxx"
-#include "StellaFont.hxx"
+#include "Font.hxx"
 #include "GuiUtils.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
@@ -64,9 +64,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     for(uInt8 j = 0; j < 3; j++)
       myGUIColors[i][j] = colors[i][j];
 
-  // Create a font to draw text
-  myFont = new StellaFont(this);
-
   myBaseDim.x = myBaseDim.y = myBaseDim.w = myBaseDim.h = 0;
   myImageDim = myScreenDim = myDesktopDim = myBaseDim;
 }
@@ -74,8 +71,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer(void)
 {
-  if(myFont)
-    delete myFont;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -182,15 +177,15 @@ void FrameBuffer::update()
         // Draw any pending messages
         if(myMessageTime > 0)
         {
-          int w = myFont->getStringWidth(myMessageText) + 10;
-          int h = myFont->getFontHeight() + 8;
+          int w = myOSystem->font().getStringWidth(myMessageText) + 10;
+          int h = myOSystem->font().getFontHeight() + 8;
           int x = (myBaseDim.w >> 1) - (w >> 1);
           int y = myBaseDim.h - h - 10/2;
 
           // Draw the bounded box and text
           blendRect(x+1, y+2, w-2, h-4, kBGColor);
           box(x, y+1, w, h-2, kColor, kColor);
-          myFont->drawString(myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
+          drawString(myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
           myMessageTime--;
 
           // Erase this message on next update
@@ -538,4 +533,80 @@ void FrameBuffer::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   hLine(x,         y + h - 1, x + w - 1, color);
   vLine(x,         y,         y + h - 1, color);
   vLine(x + w - 1, y,         y + h - 1, color);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::drawString(const GUI::Font& font, const string& s,
+                             int x, int y, int w,
+                             OverlayColor color, TextAlignment align,
+                             int deltax, bool useEllipsis)
+{
+  const int leftX = x, rightX = x + w;
+  unsigned int i;
+  int width = font.getStringWidth(s);
+  string str;
+	
+  if(useEllipsis && width > w)
+  {
+    // String is too wide. So we shorten it "intelligently", by replacing
+    // parts of it by an ellipsis ("..."). There are three possibilities
+    // for this: replace the start, the end, or the middle of the string.
+    // What is best really depends on the context; but unless we want to
+    // make this configurable, replacing the middle probably is a good
+    // compromise.
+    const int ellipsisWidth = font.getStringWidth("...");
+		
+    // SLOW algorithm to remove enough of the middle. But it is good enough for now.
+    const int halfWidth = (w - ellipsisWidth) / 2;
+    int w2 = 0;
+		
+    for(i = 0; i < s.size(); ++i)
+    {
+      int charWidth = font.getCharWidth(s[i]);
+      if(w2 + charWidth > halfWidth)
+        break;
+
+      w2 += charWidth;
+      str += s[i];
+    }
+
+    // At this point we know that the first 'i' chars are together 'w2'
+    // pixels wide. We took the first i-1, and add "..." to them.
+    str += "...";
+		
+    // The original string is width wide. Of those we already skipped past
+    // w2 pixels, which means (width - w2) remain.
+    // The new str is (w2+ellipsisWidth) wide, so we can accomodate about
+    // (w - (w2+ellipsisWidth)) more pixels.
+    // Thus we skip ((width - w2) - (w - (w2+ellipsisWidth))) =
+    // (width + ellipsisWidth - w)
+    int skip = width + ellipsisWidth - w;
+    for(; i < s.size() && skip > 0; ++i)
+      skip -= font.getCharWidth(s[i]);
+
+    // Append the remaining chars, if any
+    for(; i < s.size(); ++i)
+      str += s[i];
+
+    width = font.getStringWidth(str);
+  }
+  else
+    str = s;
+
+  if(align == kTextAlignCenter)
+    x = x + (w - width - 1)/2;
+  else if(align == kTextAlignRight)
+    x = x + w - width;
+
+  x += deltax;
+  for(i = 0; i < str.size(); ++i)
+  {
+    w = font.getCharWidth(str[i]);
+    if(x+w > rightX)
+      break;
+    if(x >= leftX)
+      drawChar(font, str[i], x, y, color);
+
+    x += w;
+  }
 }

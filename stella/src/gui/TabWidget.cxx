@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.2 2005-05-13 18:28:06 stephena Exp $
+// $Id: TabWidget.cxx,v 1.3 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,8 +67,6 @@ int TabWidget::getChildY() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TabWidget::addTab(const string& title)
 {
-  FrameBuffer& fb = instance()->frameBuffer();
-
   // Add a new tab page
   Tab newTab;
   newTab.title = title;
@@ -79,7 +77,7 @@ int TabWidget::addTab(const string& title)
   int numTabs = _tabs.size();
 
   // Determine the new tab width
-  int newWidth = fb.font().getStringWidth(title) + 2 * kTabPadding;
+  int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
   if (_tabWidth < newWidth)
     _tabWidth = newWidth;
 
@@ -181,7 +179,9 @@ void TabWidget::drawWidget(bool hilite)
     OverlayColor color = (i == _activeTab) ? kColor : kShadowColor;
     int yOffset = (i == _activeTab) ? 0 : 2; 
     box(x, _y + yOffset, _tabWidth, kTabHeight - yOffset, color, color, (i == _activeTab));
-    fb.font().drawString(_tabs[i].title, x + kTabPadding, _y + yOffset / 2 + (kTabHeight - kLineHeight - 1), _tabWidth - 2 * kTabPadding, kTextColor, kTextAlignCenter);
+    fb.drawString(_font, _tabs[i].title, x + kTabPadding,
+                  _y + yOffset / 2 + (kTabHeight - kLineHeight - 1),
+                  _tabWidth - 2 * kTabPadding, kTextColor, kTextAlignCenter);
     x += _tabWidth + kTabSpacing;
   }
 

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.87 2005-06-07 01:14:38 stephena Exp $
+## $Id: makefile,v 1.88 2005-06-08 18:45:07 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -154,7 +154,7 @@ win32-gl:
 ###############################################################################
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
-GUI_OBJS = StellaFont.o Menu.o Launcher.o Debugger.o \
+GUI_OBJS = Font.o Menu.o Launcher.o Debugger.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
@@ -380,8 +380,8 @@ NullDev.o: $(CORE)/m6502/src/NullDev.cxx $(CORE)/m6502/src/NullDev.hxx
 System.o: $(CORE)/m6502/src/System.cxx $(CORE)/m6502/src/System.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/System.cxx
 
-StellaFont.o: $(GUI)/StellaFont.cxx $(GUI)/StellaFont.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/StellaFont.cxx
+Font.o: $(GUI)/Font.cxx $(GUI)/Font.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Font.cxx
 
 Menu.o: $(GUI)/Menu.cxx $(GUI)/Menu.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Menu.cxx

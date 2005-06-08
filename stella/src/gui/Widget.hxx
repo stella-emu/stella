@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.13 2005-05-26 15:43:44 stephena Exp $
+// $Id: Widget.hxx,v 1.14 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,7 +27,6 @@ class Dialog;
 #include <assert.h>
 
 #include "OSystem.hxx"
-#include "StellaFont.hxx"
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "bspf.hxx"
@@ -65,7 +64,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.13 2005-05-26 15:43:44 stephena Exp $
+  @version $Id: Widget.hxx,v 1.14 2005-06-08 18:45:09 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -107,6 +106,10 @@ class Widget : public GuiObject
     bool isEnabled() const      { return _flags & WIDGET_ENABLED; }
     bool isVisible() const      { return !(_flags & WIDGET_INVISIBLE); }
 
+    void setColor(OverlayColor color)   { _color = color; }
+    void setFont(const GUI::Font& font) { _font = font; }
+    const GUI::Font& font() { return _font; }
+
   protected:
     virtual void drawWidget(bool hilite) {}
 
@@ -122,12 +125,14 @@ class Widget : public GuiObject
          { assert(_boss); _boss->handleCommand(sender, cmd, data); }
 
   protected:
-    int        _type;
-    GuiObject* _boss;
-    Widget*    _next;
-    int        _id;
-    int        _flags;
-    bool       _hasFocus;
+    int           _type;
+    GuiObject*    _boss;
+    Widget*       _next;
+    int           _id;
+    int           _flags;
+    bool          _hasFocus;
+    OverlayColor  _color;
+    GUI::Font&    _font;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -142,7 +147,6 @@ class StaticTextWidget : public Widget
                      int x, int y, int w, int h,
                      const string& text, TextAlignment align);
     void setValue(int value);
-    void setColor(OverlayColor color)   { _color = color; }
     void setAlign(TextAlignment align)  { _align = align; }
     void setLabel(const string& label)  { _label = label;
                                           _boss->instance()->frameBuffer().refresh();
@@ -155,7 +159,6 @@ class StaticTextWidget : public Widget
   protected:
     string        _label;
     TextAlignment _align;
-    OverlayColor  _color;
 };
 
 

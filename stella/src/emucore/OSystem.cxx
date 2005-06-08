@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.22 2005-05-27 18:00:48 stephena Exp $
+// $Id: OSystem.cxx,v 1.23 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -41,6 +41,9 @@
 #include "Menu.hxx"
 #include "Launcher.hxx"
 #include "Debugger.hxx"
+#include "Font.hxx"
+#include "StellaFont.hxx"
+#include "ConsoleFont.hxx"
 #include "bspf.hxx"
 #include "OSystem.hxx"
 
@@ -56,12 +59,18 @@ OSystem::OSystem()
     myLauncher(NULL),
     myDebugger(NULL),
     myRomFile(""),
-    myFeatures("")
+    myFeatures(""),
+    myFont(NULL),
+    myConsoleFont(NULL)
 {
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
   myLauncher = new Launcher(this);
   myDebugger = new Debugger(this);
+
+  // Create fonts to draw text
+  myFont        = new GUI::Font(GUI::stellaDesc);
+  myConsoleFont = new GUI::Font(GUI::consoleDesc);
 
   // Determine which features were conditionally compiled into Stella
 #ifdef DISPLAY_OPENGL
@@ -89,6 +98,8 @@ OSystem::~OSystem()
   delete myMenu;
   delete myLauncher;
   delete myDebugger;
+  delete myFont;
+  delete myConsoleFont;
 
   // Remove any game console that is currently attached
   delete myConsole;

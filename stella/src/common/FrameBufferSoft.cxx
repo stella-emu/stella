@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.23 2005-05-30 16:25:46 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.24 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -26,7 +26,7 @@
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"
-#include "StellaFont.hxx"
+#include "Font.hxx"
 #include "GuiUtils.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -375,23 +375,26 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawChar(uInt8 chr, uInt32 xorig, uInt32 yorig,
-                               OverlayColor color)
+void FrameBufferSoft::drawChar(const GUI::Font& FONT, uInt8 chr,
+                               uInt32 xorig, uInt32 yorig, OverlayColor color)
 {
+  // FIXME - I do this to prevent 'const' warnings; it should be done better
+  GUI::Font& font = (GUI::Font&)FONT;
+
   // If this character is not included in the font, use the default char.
-  if(chr < myFont->desc().firstchar ||
-     chr >= myFont->desc().firstchar + myFont->desc().size)
+  if(chr < font.desc().firstchar ||
+     chr >= font.desc().firstchar + font.desc().size)
   {
     if (chr == ' ')
       return;
-    chr = myFont->desc().defaultchar;
+    chr = font.desc().defaultchar;
   }
 
-  const Int32 w = myFont->getCharWidth(chr);
-  const Int32 h = myFont->getFontHeight();
-  chr -= myFont->desc().firstchar;
-  const uInt16* tmp = myFont->desc().bits + (myFont->desc().offset ?
-                      myFont->desc().offset[chr] : (chr * h));
+  const Int32 w = font.getCharWidth(chr);
+  const Int32 h = font.getFontHeight();
+  chr -= font.desc().firstchar;
+  const uInt16* tmp = font.desc().bits + (font.desc().offset ?
+                      font.desc().offset[chr] : (chr * h));
 
   SDL_Rect rect;
   for(int y = 0; y < h; y++)

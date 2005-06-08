@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.11 2005-06-07 21:22:39 stephena Exp $
+// $Id: ListWidget.cxx,v 1.12 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -398,8 +398,8 @@ void ListWidget::drawWidget(bool hilite)
       else
         fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
     }
-    fb.font().drawString(buffer, _x + 2, _y + 2 + kLineHeight * i, _w - 4,
-                        (_selectedItem == pos && _hasFocus) ? kBGColor : kTextColor);
+    fb.drawString(_font, buffer, _x + 2, _y + 2 + kLineHeight * i, _w - 4,
+                  (_selectedItem == pos && _hasFocus) ? kBGColor : kTextColor);
   }
 }
 
@@ -407,16 +407,15 @@ void ListWidget::drawWidget(bool hilite)
 int ListWidget::getCaretPos() const
 {
   int caretpos = 0;
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   if (_numberingMode == kListNumberingZero || _numberingMode == kListNumberingOne)
   {
     char temp[10];
     sprintf(temp, "%2d. ", (_selectedItem + _numberingMode));
-    caretpos += fb.font().getStringWidth(temp);
+    caretpos += _font.getStringWidth(temp);
   }
 
-  caretpos += fb.font().getStringWidth(_list[_selectedItem]);
+  caretpos += _font.getStringWidth(_list[_selectedItem]);
 
   return caretpos;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.19 2005-06-07 01:14:39 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.20 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -220,7 +220,7 @@ void LauncherDialog::loadListFromDisk()
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
   string message = "Loading ROM's from disk ...";
-  int w = instance()->frameBuffer().font().getStringWidth(message) + 20,
+  int w = instance()->font().getStringWidth(message) + 20,
       h = kLineHeight * 4;
   int x = (_w - w) / 2,
       y = (_h - h) / 2;

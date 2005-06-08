@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.11 2005-05-26 18:56:58 stephena Exp $
+// $Id: Widget.cxx,v 1.12 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,7 +21,7 @@
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
-#include "StellaFont.hxx"
+#include "Font.hxx"
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "GuiObject.hxx"
@@ -36,7 +36,9 @@ Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
       _boss(boss),
       _id(0),
       _flags(0),
-      _hasFocus(false)
+      _hasFocus(false),
+      _color(kTextColor),
+      _font((GUI::Font&)boss->instance()->font())
 {
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;
@@ -125,8 +127,7 @@ Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
 StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
                                    const string& text, TextAlignment align)
     : Widget(boss, x, y, w, h),
-      _align(align),
-      _color(kTextColor)
+      _align(align)
 {
   _flags = WIDGET_ENABLED;
   _type = kStaticTextWidget;
@@ -149,8 +150,8 @@ void StaticTextWidget::setValue(int value)
 void StaticTextWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
-  fb.font().drawString(_label, _x, _y, _w,
-                       isEnabled() ? _color : kColor, _align);
+  fb.drawString(_font, _label, _x, _y, _w,
+                isEnabled() ? _color : kColor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -176,9 +177,8 @@ void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 void ButtonWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
-  fb.font().drawString(_label, _x, _y + (_h - kLineHeight)/2 + 1, _w,
-                       !isEnabled() ? kColor :
-                       hilite ? kTextColorHi : _color, _align);
+  fb.drawString(_font, _label, _x, _y + (_h - kLineHeight)/2 + 1, _w,
+                !isEnabled() ? kColor : hilite ? kTextColorHi : _color, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -244,8 +244,7 @@ void CheckboxWidget::drawWidget(bool hilite)
     fb.fillRect(_x + 2, _y + 2, 10, 10, kBGColor);
 
   // Finally draw the label
-  fb.font().drawString(_label, _x + 20, _y + 3, _w,
-                       isEnabled() ? _color : kColor);
+  fb.drawString(_font, _label, _x + 20, _y + 3, _w, isEnabled() ? _color : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,8 +314,8 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    fb.font().drawString(_label, _x, _y + 2, _labelWidth,
-                         isEnabled() ? _color : kColor, kTextAlignRight);
+    fb.drawString(_font, _label, _x, _y + 2, _labelWidth,
+                  isEnabled() ? _color : kColor, kTextAlignRight);
 
   // Draw the box
   fb.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);

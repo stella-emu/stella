@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.19 2005-05-27 18:00:48 stephena Exp $
+// $Id: OSystem.hxx,v 1.20 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -31,6 +31,10 @@ class Debugger;
 #include "Settings.hxx"
 #include "Console.hxx"
 #include "StringList.hxx"
+#include "Font.hxx"
+//#include "StellaFont.hxx"
+//#include "ConsoleFont.hxx"
+
 #include "bspf.hxx"
 
 
@@ -40,7 +44,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.19 2005-05-27 18:00:48 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.20 2005-06-08 18:45:08 stephena Exp $
 */
 class OSystem
 {
@@ -139,6 +143,20 @@ class OSystem
       @return The debugger object
     */
     Debugger& debugger(void) const { return *myDebugger; }
+
+    /**
+      Get the font object of the system
+
+      @return The font reference
+    */
+    inline const GUI::Font& font() const { return *myFont; }
+
+    /**
+      Get the console font object of the system
+
+      @return The console font reference
+    */
+    inline const GUI::Font& consoleFont() const { return *myConsoleFont; }
 
     /**
       Set the framerate for the video system.  It's placed in this class since
@@ -359,6 +377,12 @@ class OSystem
     string myRomFile;
 
     string myFeatures;
+
+    // The normal GUI font object to use
+    GUI::Font* myFont;
+
+    // The console font object to use
+    GUI::Font* myConsoleFont;
 
   private:
     // Copy constructor isn't supported by this class so make it private

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.9 2005-05-14 03:26:29 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.10 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -258,7 +258,8 @@ void PopUpDialog::drawMenuEntry(int entry, bool hilite)
     fb.hLine(x, y + 1 + kLineHeight / 2, x + w, kColor);
   }
   else
-    fb.font().drawString(name, x + 1, y + 2, w - 2, hilite ? kBGColor : kTextColor);
+    fb.drawString(_popUpBoss->font(), name, x + 1, y + 2, w - 2,
+                  hilite ? kBGColor : kTextColor);
 }
 
 //
@@ -279,7 +280,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
   _selectedItem = -1;
 
   if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = instance()->frameBuffer().font().getStringWidth(_label);
+    _labelWidth = _font.getStringWidth(_label);
 
   myPopUpDialog = new PopUpDialog(this, x + getAbsX(), y + getAbsY());
 }
@@ -355,8 +356,8 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if (_labelWidth > 0)
-    fb.font().drawString(_label, _x, _y + 3, _labelWidth,
-                         isEnabled() ? kTextColor : kColor, kTextAlignRight);
+    fb.drawString(_font, _label, _x, _y + 3, _labelWidth,
+                  isEnabled() ? kTextColor : kColor, kTextAlignRight);
 
   // Draw a thin frame around us.
   fb.hLine(x, _y, x + w - 1, kColor);
@@ -371,9 +372,9 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw the selected entry, if any
   if(_selectedItem >= 0)
   {
-    TextAlignment align = (fb.font().getStringWidth(_entries[_selectedItem].name) > w-6) ?
+    TextAlignment align = (_font.getStringWidth(_entries[_selectedItem].name) > w-6) ?
                            kTextAlignRight : kTextAlignLeft;
-    fb.font().drawString(_entries[_selectedItem].name, x+2, _y+3, w-6,
-                         !isEnabled() ? kColor : kTextColor, align);
+    fb.drawString(_font, _entries[_selectedItem].name, x+2, _y+3, w-6,
+                  !isEnabled() ? kColor : kTextColor, align);
   }
 }

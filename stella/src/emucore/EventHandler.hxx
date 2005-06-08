@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.36 2005-06-07 21:22:39 stephena Exp $
+// $Id: EventHandler.hxx,v 1.37 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.36 2005-06-07 21:22:39 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.37 2005-06-08 18:45:08 stephena Exp $
 */
 class EventHandler
 {
@@ -183,7 +183,7 @@ class EventHandler
     inline bool kbdAlt(int mod)
     {
   #ifndef MAC_OSX
-      return (mod & KMOD_ALT) > 0;
+      return (mod & KMOD_ALT);
   #else
       return ((mod & KMOD_META) && (mod & KMOD_SHIFT));
   #endif
@@ -200,7 +200,7 @@ class EventHandler
 
     inline bool kbdShift(int mod)
     {
-      return (mod & KMOD_SHIFT) > 0;
+      return (mod & KMOD_SHIFT);
     }
 
     // Holds static strings for the remap menu

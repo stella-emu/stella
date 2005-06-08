@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.14 2005-05-30 16:25:46 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.15 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -24,6 +24,7 @@
 #include <SDL_syswm.h>
 
 class OSystem;
+class GUI::Font;
 
 #include "bspf.hxx"
 #include "GuiUtils.hxx"
@@ -34,7 +35,7 @@ class OSystem;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.14 2005-05-30 16:25:46 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.15 2005-06-08 18:45:08 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -157,12 +158,14 @@ class FrameBufferGL : public FrameBuffer
     /**
       This routine is called to draw the specified character.
 
+      @param font   The font to use to draw the character
       @param c      The character to draw
       @param x      The x coordinate
       @param y      The y coordinate
       @param color  The color of the character
     */
-    virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color);
+    virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
+                          OverlayColor color);
 
     /**
       This routine is called to draw the bitmap image.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.14 2005-05-30 16:25:46 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.15 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -23,6 +23,7 @@
 #include <SDL_syswm.h>
 
 class OSystem;
+class GUI::Font;
 class RectList;
 
 #include "bspf.hxx"
@@ -34,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.14 2005-05-30 16:25:46 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.15 2005-06-08 18:45:08 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -157,12 +158,14 @@ class FrameBufferSoft : public FrameBuffer
     /**
       This routine is called to draw the specified character.
 
+      @param font   The font to use to draw the character
       @param c      The character to draw
       @param x      The x coordinate
       @param y      The y coordinate
       @param color  The color of the character
     */
-    virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color);
+    virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
+                          OverlayColor color);
 
     /**
       This routine is called to draw the bitmap image.

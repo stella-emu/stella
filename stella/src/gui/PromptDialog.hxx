@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.hxx,v 1.2 2005-06-07 19:01:53 stephena Exp $
+// $Id: PromptDialog.hxx,v 1.3 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -118,6 +118,8 @@ class PromptDialog : public Dialog
     int _historySize;
     int _historyIndex;
     int _historyLine;
+
+    int _kConsoleCharWidth, _kConsoleLineHeight;
 };
 
 #endif

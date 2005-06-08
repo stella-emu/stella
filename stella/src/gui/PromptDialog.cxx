@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.3 2005-06-07 21:22:39 stephena Exp $
+// $Id: PromptDialog.cxx,v 1.4 2005-06-08 18:45:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,12 +25,6 @@
 #include "Version.hxx"
 
 #include "PromptDialog.hxx"
-
-//#define kConsoleCharWidth   (g_consolefont.getMaxCharWidth())
-//#define kConsoleLineHeight  (g_consolefont.getFontHeight() + 2)
-#define kConsoleCharWidth   (8)
-#define kConsoleLineHeight  (10 + 2)
-
 
 #define PROMPT  "> "
 
@@ -47,9 +41,12 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
                            int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
+  _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
+  _kConsoleLineHeight = instance()->consoleFont().getFontHeight() + 2;
+
   // Calculate depending values
-  _lineWidth = (_w - kScrollBarWidth - 2) / kConsoleCharWidth;
-  _linesPerPage = (_h - 2) / kConsoleLineHeight;
+  _lineWidth = (_w - kScrollBarWidth - 2) / _kConsoleCharWidth;
+  _linesPerPage = (_h - 2) / _kConsoleLineHeight;
 
   memset(_buffer, ' ', kBufferSize);
   _linesInBuffer = kBufferSize / _lineWidth;
@@ -121,10 +118,10 @@ void PromptDialog::drawDialog()
 #else
       char c = buffer((start + line) * _lineWidth + column);
 #endif
-      fb.drawChar(c, x, y, kTextColor);
-      x += kConsoleCharWidth;
+      fb.drawChar(instance()->consoleFont(), c, x, y, kTextColor);
+      x += _kConsoleCharWidth;
     }
-    y += kConsoleLineHeight;
+    y += _kConsoleLineHeight;
   }
 
   // Draw the caret
@@ -174,7 +171,7 @@ void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
         if (_callbackProc)
           keepRunning = (*_callbackProc)(this, str, _callbackRefCon);
 
-cerr << "Command entered: \'" << str << "\'\n";
+cerr << "Command entered: \'" << str << "\'\n"; // FIXME - tie this into DebuggerParser
         // Get rid of the string buffer
         delete [] str;
       }
@@ -196,6 +193,7 @@ cerr << "Command entered: \'" << str << "\'\n";
       instance()->frameBuffer().refresh();
       break;
 
+#if 0 // FIXME - this may not be included in the 2.0 release
     case 9:  // tab
     {
       if (_completionCallbackProc)
@@ -222,15 +220,15 @@ cerr << "Command entered: \'" << str << "\'\n";
       }
       break;
     }
-
+#endif
     case 127:
-      killChar(1);
+      killChar(+1);
       draw();
       instance()->frameBuffer().refresh();
       break;
 
     case 256 + 24:  // pageup
-      if (1) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
+      if (instance()->eventHandler().kbdShift(modifiers))
       {
         _scrollLine -= _linesPerPage - 1;
         if (_scrollLine < _firstLineInBuffer + _linesPerPage - 1)
@@ -242,7 +240,7 @@ cerr << "Command entered: \'" << str << "\'\n";
       break;
 
     case 256 + 25:  // pagedown
-      if (1) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
+      if (instance()->eventHandler().kbdShift(modifiers))
       {
         _scrollLine += _linesPerPage - 1;
         if (_scrollLine > _promptEndPos / _lineWidth)
@@ -254,7 +252,7 @@ cerr << "Command entered: \'" << str << "\'\n";
       break;
 
     case 256 + 22:  // home
-      if (0) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
+      if (instance()->eventHandler().kbdShift(modifiers))
       {
         _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
         updateScrollBuffer();
@@ -267,7 +265,7 @@ cerr << "Command entered: \'" << str << "\'\n";
       break;
 
     case 256 + 23:  // end
-      if (0) // FIXME - shift   modifiers == OSystem::KBD_SHIFT)
+      if (instance()->eventHandler().kbdShift(modifiers))
       {
         _scrollLine = _promptEndPos / _lineWidth;
         if (_scrollLine < _linesPerPage - 1)
@@ -308,11 +306,9 @@ cerr << "Command entered: \'" << str << "\'\n";
       {
         specialKeys(keycode);
       }
-/*
       else if (instance()->eventHandler().kbdAlt(modifiers))
       {
       }
-*/
       else if (isprint(ascii))
       {
         for (i = _promptEndPos - 1; i >= _currentPos; i--)
@@ -370,7 +366,7 @@ void PromptDialog::specialKeys(int keycode)
       break;
 
     case 'd':
-      killChar(1);
+      killChar(+1);
       handled = true;
       break;
 
@@ -380,7 +376,7 @@ void PromptDialog::specialKeys(int keycode)
       break;
 
     case 'k':
-      killLine(1);
+      killLine(+1);
       handled = true;
       break;
 
@@ -643,12 +639,12 @@ void PromptDialog::drawCaret()
   int line = _currentPos / _lineWidth;
   int displayLine = line - _scrollLine + _linesPerPage - 1;
 
-  int x = _x + 1 + (_currentPos % _lineWidth) * kConsoleCharWidth;
-  int y = _y + displayLine * kConsoleLineHeight;
+  int x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth;
+  int y = _y + displayLine * _kConsoleLineHeight;
 
   char c = buffer(_currentPos);
-  fb.fillRect(x, y, kConsoleCharWidth, kConsoleLineHeight, kTextColor);
-  fb.drawChar(c, x, y + 2, kBGColor);
+  fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
+  fb.drawChar(instance()->consoleFont(), c, x, y + 2, kBGColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

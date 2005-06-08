@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.37 2005-05-31 17:57:50 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.38 2005-06-08 18:45:08 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -25,12 +25,18 @@
 #include "bspf.hxx"
 #include "Event.hxx"
 #include "MediaSrc.hxx"
-#include "StellaFont.hxx"
+#include "Font.hxx"
 #include "GuiUtils.hxx"
 
-class StellaFont;
 class Console;
 class OSystem;
+
+// Text alignment modes for drawString()
+enum TextAlignment {
+	kTextAlignLeft,
+	kTextAlignCenter,
+	kTextAlignRight
+};
 
 /**
   This class encapsulates the MediaSource and is the basis for the video
@@ -40,7 +46,7 @@ class OSystem;
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.37 2005-05-31 17:57:50 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.38 2005-06-08 18:45:08 stephena Exp $
 */
 class FrameBuffer
 {
@@ -54,13 +60,6 @@ class FrameBuffer
       Destructor
     */
     virtual ~FrameBuffer();
-
-    /**
-      Get the font object of the framebuffer
-
-      @return The font reference
-    */
-    StellaFont& font() const { return *myFont; }
 
     /**
       (Re)initializes the framebuffer display.  This must be called before any
@@ -156,7 +155,7 @@ class FrameBuffer
     void setFullscreen(bool enable);
 
     /**
-      This routine is called when the user wants to resize the window.
+      This method is called when the user wants to resize the window.
       Size = 'PreviousSize' means window should decrease in size
       Size = 'NextSize' means window should increase in size
       Size = 'GivenSize' means window should be resized to quantity given in 'zoom'
@@ -206,7 +205,7 @@ class FrameBuffer
     void setPalette(const uInt32* palette);
 
     /**
-      This routine should be called to draw a rectangular box with sides
+      This method should be called to draw a rectangular box with sides
       at the specified coordinates.
 
       @param x      The x coordinate
@@ -220,7 +219,7 @@ class FrameBuffer
              OverlayColor colorA, OverlayColor colorB);
 
     /**
-      This routine should be called to draw a framed rectangle.
+      This method should be called to draw a framed rectangle.
       I'm not exactly sure what it is, so I can't explain it :)
 
       @param x      The x coordinate
@@ -232,23 +231,42 @@ class FrameBuffer
     void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                    OverlayColor color);
 
+    /**
+      This method should be called to draw the specified string.
+
+      @param font   The font to draw the string with
+      @param str    The string to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the string area
+      @param h      The height of the string area
+      @param color  The color of the text
+      @param align  The alignment of the text in the string width area
+      @param deltax 
+      @param useEllipsis  Whether to use '...' when the string is too long
+    */
+    void drawString(const GUI::Font& font, const string& str, int x, int y, int w,
+                    OverlayColor color, TextAlignment align = kTextAlignLeft,
+                    int deltax = 0, bool useEllipsis = true);
+
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
     /**
-      This routine is called to initialize the subsystem-specific video mode.
+      This method is called to initialize the subsystem-specific video mode.
     */
     virtual bool initSubsystem() = 0;
 
     /**
-      This routine is called to set the aspect ratio of the screen.
+      This method is called to set the aspect ratio of the screen.
     */
     virtual void setAspectRatio() = 0;
 
     /**
-      This routine is called whenever the screen needs to be recreated.
+      This method is called whenever the screen needs to be recreated.
       It updates the global screen variable.
     */
     virtual bool createScreen() = 0;
@@ -259,23 +277,23 @@ class FrameBuffer
     virtual void toggleFilter() = 0;
 
     /**
-      This routine should be called anytime the MediaSource needs to be redrawn
+      This method should be called anytime the MediaSource needs to be redrawn
       to the screen.
     */
     virtual void drawMediaSource() = 0;
 
     /**
-      This routine is called before any drawing is done (per-frame).
+      This method is called before any drawing is done (per-frame).
     */
     virtual void preFrameUpdate() = 0;
 
     /**
-      This routine is called after any drawing is done (per-frame).
+      This method is called after any drawing is done (per-frame).
     */
     virtual void postFrameUpdate() = 0;
 
     /**
-      This routine is called to get the specified scanline data.
+      This method is called to get the specified scanline data.
 
       @param row  The row we are looking for
       @param data The actual pixel data (in bytes)
@@ -283,7 +301,7 @@ class FrameBuffer
     virtual void scanline(uInt32 row, uInt8* data) = 0;
 
     /**
-      This routine is called to map a given r,g,b triple to the screen palette.
+      This method is called to map a given r,g,b triple to the screen palette.
 
       @param r  The red component of the color.
       @param g  The green component of the color.
@@ -292,7 +310,7 @@ class FrameBuffer
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
 
     /**
-      This routine should be called to draw a horizontal line.
+      This method should be called to draw a horizontal line.
 
       @param x     The first x coordinate
       @param y     The y coordinate
@@ -302,7 +320,7 @@ class FrameBuffer
     virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color) = 0;
 
     /**
-      This routine should be called to draw a vertical line.
+      This method should be called to draw a vertical line.
 
       @param x     The x coordinate
       @param y     The first y coordinate
@@ -312,7 +330,7 @@ class FrameBuffer
     virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color) = 0;
 
     /**
-      This routine should be called to draw a blended rectangle.
+      This method should be called to draw a blended rectangle.
 
       @param x      The x coordinate
       @param y      The y coordinate
@@ -325,7 +343,7 @@ class FrameBuffer
                            OverlayColor color, uInt32 level = 3) = 0;
 
     /**
-      This routine should be called to draw a filled rectangle.
+      This method should be called to draw a filled rectangle.
 
       @param x      The x coordinate
       @param y      The y coordinate
@@ -337,17 +355,19 @@ class FrameBuffer
                           OverlayColor color) = 0;
 
     /**
-      This routine should be called to draw the specified character.
+      This method should be called to draw the specified character.
 
+      @param font   The font to use to draw the character
       @param c      The character to draw
       @param x      The x coordinate
       @param y      The y coordinate
       @param color  The color of the character
     */
-    virtual void drawChar(uInt8 c, uInt32 x, uInt32 y, OverlayColor color) = 0;
+    virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
+                          OverlayColor color) = 0;
 
     /**
-      This routine should be called to draw the bitmap image.
+      This method should be called to draw the bitmap image.
 
       @param bitmap The data to draw
       @param x      The x coordinate
@@ -359,7 +379,7 @@ class FrameBuffer
                             Int32 h = 8) = 0;
 
     /**
-      This routine should be called to translate the given coordinates
+      This method should be called to translate the given coordinates
       to their unzoomed/unscaled equivalents.
 
       @param x  X coordinate to translate
@@ -409,9 +429,6 @@ class FrameBuffer
 
     // The aspect ratio of the window
     float theAspectRatio;
-
-    // The font object to use
-    StellaFont* myFont;
 
   private:
     /**
