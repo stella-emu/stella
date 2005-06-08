@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.4 2005-06-08 18:45:09 stephena Exp $
+// $Id: PromptDialog.cxx,v 1.5 2005-06-08 21:16:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -98,11 +98,8 @@ void PromptDialog::drawDialog()
 {
   FrameBuffer& fb = instance()->frameBuffer();
 
-  // Blend over the background
-  fb.blendRect(_x, _y, _w, _h, kBGColor, 2);
-
-  // Draw a border
-  fb.hLine(_x, _y + _h - 1, _x + _w - 1, kColor);
+  // Fill the background
+  fb.fillRect(_x, _y, _w, _h, kBGColor);
 
   // Draw text
   int start = _scrollLine - _linesPerPage + 1;
@@ -230,6 +227,10 @@ cerr << "Command entered: \'" << str << "\'\n"; // FIXME - tie this into Debugge
     case 256 + 24:  // pageup
       if (instance()->eventHandler().kbdShift(modifiers))
       {
+        // Don't scroll up when at top of buffer
+        if(_scrollLine < _linesPerPage)
+          break;
+
         _scrollLine -= _linesPerPage - 1;
         if (_scrollLine < _firstLineInBuffer + _linesPerPage - 1)
           _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
@@ -242,6 +243,10 @@ cerr << "Command entered: \'" << str << "\'\n"; // FIXME - tie this into Debugge
     case 256 + 25:  // pagedown
       if (instance()->eventHandler().kbdShift(modifiers))
       {
+        // Don't scroll down when at bottom of buffer
+        if(_scrollLine >= _promptEndPos / _lineWidth)
+          break;
+
         _scrollLine += _linesPerPage - 1;
         if (_scrollLine > _promptEndPos / _lineWidth)
           _scrollLine = _promptEndPos / _lineWidth;
@@ -637,8 +642,12 @@ void PromptDialog::drawCaret()
   FrameBuffer& fb = instance()->frameBuffer();
 
   int line = _currentPos / _lineWidth;
-  int displayLine = line - _scrollLine + _linesPerPage - 1;
 
+  // Don't draw the cursor if it's not in the current view
+  if(_scrollLine < line)
+    return;
+
+  int displayLine = line - _scrollLine + _linesPerPage - 1;
   int x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth;
   int y = _y + displayLine * _kConsoleLineHeight;
 
