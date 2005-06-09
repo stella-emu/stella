@@ -13,26 +13,32 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.2 2005-06-03 17:52:06 stephena Exp $
+// $Id: Debugger.cxx,v 1.3 2005-06-09 15:08:23 stephena Exp $
 //============================================================================
+
+#include "bspf.hxx"
 
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "DebuggerDialog.hxx"
-#include "bspf.hxx"
+#include "DebuggerParser.hxx"
 #include "Debugger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
-    : DialogContainer(osystem),
-      myConsole(NULL)
+  : DialogContainer(osystem),
+    myConsole(NULL),
+    myParser(NULL)
 {
+  // Init parser
+  myParser = new DebuggerParser();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
+  delete myParser;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,4 +58,10 @@ void Debugger::initializeVideo()
 {
   string title = string("Stella version ") + STELLA_VERSION + ": Debugger mode";
   myOSystem->frameBuffer().initialize(title, kDebuggerWidth, kDebuggerHeight, false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Debugger::run(const string& command)
+{
+  return myParser->run(command);
 }

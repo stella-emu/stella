@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.hxx,v 1.4 2005-06-09 04:31:45 urchlay Exp $
+// $Id: PromptDialog.hxx,v 1.5 2005-06-09 15:08:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,10 +25,10 @@
 class CommandSender;
 class DialogContainer;
 class ScrollBarWidget;
+class DebuggerParser;
 
 #include <stdarg.h>
 #include "Dialog.hxx"
-#include "DebuggerParser.hxx"
 
 enum {
   kBufferSize	= 32768,
@@ -49,18 +49,6 @@ class PromptDialog : public Dialog
     int vprintf(const char *format, va_list argptr);
 #undef putchar
     void putchar(int c);
-	
-    typedef bool (*InputCallbackProc)(PromptDialog *console, const char *input, void *refCon);
-    typedef bool (*CompletionCallbackProc)(PromptDialog* console, const char *input, char*& completion, void *refCon);
-
-    void setInputCallback(InputCallbackProc proc, void *refCon) {
-      _callbackProc = proc;
-      _callbackRefCon = refCon;
-    }
-    void setCompletionCallback(CompletionCallbackProc proc, void *refCon) {
-      _completionCallbackProc = proc;
-      _completionCallbackRefCon = refCon;
-    }
 
   protected:
     inline char &buffer(int idx) { return _buffer[idx % kBufferSize]; }
@@ -106,16 +94,6 @@ class PromptDialog : public Dialog
     int  _promptEndPos;
 
     ScrollBarWidget* _scrollBar;
-    DebuggerParser* parser;
-
-    // The _callbackProc is called whenver a data line is entered
-    // 
-    InputCallbackProc _callbackProc;
-    void *_callbackRefCon;
-
-    // _completionCallbackProc is called when tab is pressed
-    CompletionCallbackProc _completionCallbackProc;
-    void *_completionCallbackRefCon;
 
     char _history[kHistorySize][kLineBufferSize];
     int _historySize;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.2 2005-06-03 17:52:06 stephena Exp $
+// $Id: Debugger.hxx,v 1.3 2005-06-09 15:08:23 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -21,6 +21,7 @@
 
 class OSystem;
 class Console;
+class DebuggerParser;
 
 #include "DialogContainer.hxx"
 
@@ -30,10 +31,11 @@ enum {
 };
 
 /**
-  The base dialog for the ROM launcher in Stella.
+  The base dialog for the ROM launcher in Stella.  Also acts as the parent
+  for all debugging operations in Stella (parser, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.2 2005-06-03 17:52:06 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.3 2005-06-09 15:08:23 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -59,10 +61,16 @@ class Debugger : public DialogContainer
     */
     void initializeVideo();
 
+    /**
+      Run the debugger command and return the result.
+    */
+    const string run(const string& command);
+
     void setConsole(Console* console) { myConsole = console; }
 
   private:
     Console* myConsole;
+    DebuggerParser* myParser;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.6 2005-06-09 04:31:45 urchlay Exp $
+// $Id: PromptDialog.cxx,v 1.7 2005-06-09 15:08:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #include "FrameBuffer.hxx"
 #include "EventHandler.hxx"
 #include "Version.hxx"
+#include "Debugger.hxx"
 
 #include "PromptDialog.hxx"
 
@@ -39,7 +40,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
                            int x, int y, int w, int h)
-    : Dialog(osystem, parent, x, y, w, h)
+  : Dialog(osystem, parent, x, y, w, h)
 {
   _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
   _kConsoleLineHeight = instance()->consoleFont().getFontHeight() + 2;
@@ -59,10 +60,6 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
   _scrollBar = new ScrollBarWidget(this, _w - kScrollBarWidth - 1, 0, kScrollBarWidth, _h);
   _scrollBar->setTarget(this);
 
-  // Init callback
-  _callbackProc = 0;
-  _callbackRefCon = 0;
-
   // Init History
   _historyIndex = 0;
   _historyLine = 0;
@@ -71,10 +68,6 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
     _history[i][0] = '\0';
 
   _promptStartPos = _promptEndPos = -1;
-
-  // Init parser (FIXME: should the parser be a class variable,
-                      // instead of an instance variable?
-  parser = new DebuggerParser();
 
   // Display greetings & prompt
   string version = string("Stella version ") + STELLA_VERSION + "\n";
@@ -152,7 +145,6 @@ void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 
       assert(_promptEndPos >= _promptStartPos);
       int len = _promptEndPos - _promptStartPos;
-      bool keepRunning = true;
 
       if (len > 0)
       {
@@ -168,11 +160,8 @@ void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
         // Add the input to the history
         addToHistory(str);
 
-        // Pass it to the input callback, if any
-        if (_callbackProc)
-          keepRunning = (*_callbackProc)(this, str, _callbackRefCon);
-
-        print( parser->run(str) + "\n" );
+        // Pass the command to the debugger, and print the result
+        print( instance()->debugger().run(str) + "\n" );
 
         // Get rid of the string buffer
         delete [] str;
