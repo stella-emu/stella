@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.4 2005-06-08 21:16:06 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.5 2005-06-09 19:04:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   const int space  = 5;
   const int width  = 40;
   int xpos = border;
-
+/*
   // Add a row of buttons for the various debugger operations
   new ButtonWidget(this, xpos, border, width, 16, "Prompt", kPromptCmd, 0);
     xpos += space + width;
@@ -61,11 +61,14 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
     xpos += space + width;
   new ButtonWidget(this, xpos, border, width, 16, "Code", kCodeCmd, 0);
     xpos += space + width;
-
+*/
   const int xoff = border; 
   const int yoff = border + 16 + 2;
-  // And create the debugger dialog boxes
-  myPromptDialog = new PromptDialog(osystem, parent, x + xoff, y + yoff,
+
+  // Create the debugger dialog boxes
+//  myPromptDialog = new PromptDialog(this, osystem, parent, x, y, w, h);
+
+  myPromptDialog = new PromptDialog(this, osystem, parent, x + xoff, y + yoff,
                                     w - xoff - 2, h - yoff - 3);
 }
 
@@ -80,6 +83,30 @@ DebuggerDialog::~DebuggerDialog()
   delete myTiaDialog;
   delete myCodeDialog;
 */
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::addButtons(GuiObject* boss)
+{
+  // This is a terrible hack, but it does seem to work ...
+  const int border = 5;
+  const int space  = 5;
+  const int width  = 40;
+  int xpos = border;
+
+  // Add a row of buttons for the various debugger operations
+  new ButtonWidget(boss, xpos, border, width, 16, "Prompt", kPromptCmd, 0);
+    xpos += space + width;
+  new ButtonWidget(boss, xpos, border, width, 16, "CPU", kCpuCmd, 0);
+    xpos += space + width;
+  new ButtonWidget(boss, xpos, border, width, 16, "RAM", kRamCmd, 0);
+    xpos += space + width;
+  new ButtonWidget(boss, xpos, border, width, 16, "ROM", kRomCmd, 0);
+    xpos += space + width;
+  new ButtonWidget(boss, xpos, border, width, 16, "TIA", kTiaCmd, 0);
+    xpos += space + width;
+  new ButtonWidget(boss, xpos, border, width, 16, "Code", kCodeCmd, 0);
+    xpos += space + width;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

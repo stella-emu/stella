@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.7 2005-06-09 15:08:23 stephena Exp $
+// $Id: PromptDialog.cxx,v 1.8 2005-06-09 19:04:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 #include "EventHandler.hxx"
 #include "Version.hxx"
 #include "Debugger.hxx"
+#include "DebuggerDialog.hxx"
 
 #include "PromptDialog.hxx"
 
@@ -38,10 +39,29 @@
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
+PromptDialog::PromptDialog(DebuggerDialog* dbg, OSystem* osystem,
+                           DialogContainer* parent,
                            int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+  : Dialog(osystem, parent, x, y, w, h),
+    myDebuggerDialog(dbg)
 {
+  // Add the buttons common to all DebuggerDialog children
+//  myDebuggerDialog->addButtons(this);
+/*
+  const int border = 5;
+  const int space  = 5;
+  const int width  = 40;
+  int xpos = border;
+
+  // Add a row of buttons for the various debugger operations
+  new ButtonWidget(this, xpos, border, width, 16, "Prompt", 0, 0);
+*/
+
+
+  new ButtonWidget(this, 10, 10, 50, 20, "Prompt", 0);
+
+
+
   _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
   _kConsoleLineHeight = instance()->consoleFont().getFontHeight() + 2;
 
@@ -91,7 +111,7 @@ void PromptDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::drawDialog()
+void PromptDialog::drawDialog1()
 {
   FrameBuffer& fb = instance()->frameBuffer();
 
