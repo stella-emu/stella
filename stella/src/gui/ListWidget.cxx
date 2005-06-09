@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.12 2005-06-08 18:45:09 stephena Exp $
+// $Id: ListWidget.cxx,v 1.13 2005-06-09 20:09:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -190,7 +190,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Ignore all mod keys
   if(instance()->eventHandler().kbdControl(modifiers) ||
-     instance()->eventHandler().kbdControl(modifiers))
+     instance()->eventHandler().kbdAlt(modifiers))
     return true;
 
   bool handled = true;

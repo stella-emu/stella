@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.hxx,v 1.6 2005-06-09 19:04:59 stephena Exp $
+// $Id: PromptDialog.hxx,v 1.7 2005-06-09 20:09:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,7 +25,6 @@
 class CommandSender;
 class DialogContainer;
 class ScrollBarWidget;
-class DebuggerDialog;
 
 #include <stdarg.h>
 #include "Dialog.hxx"
@@ -40,7 +39,7 @@ enum {
 class PromptDialog : public Dialog
 {
   public:
-    PromptDialog(DebuggerDialog* dbg, OSystem* osystem, DialogContainer* parent,
+    PromptDialog(OSystem* osystem, DialogContainer* parent,
                  int x, int y, int w, int h);
     virtual ~PromptDialog();
 
@@ -53,7 +52,7 @@ class PromptDialog : public Dialog
   protected:
     inline char &buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
-    void drawDialog1();
+    void drawDialog();
     void drawCaret();
     void putcharIntern(int c);
     void insertIntoPrompt(const char *str);
@@ -101,9 +100,6 @@ class PromptDialog : public Dialog
     int _historyLine;
 
     int _kConsoleCharWidth, _kConsoleLineHeight;
-
-  private:
-    DebuggerDialog* myDebuggerDialog;
 };
 
 #endif
