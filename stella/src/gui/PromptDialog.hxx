@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.hxx,v 1.3 2005-06-08 18:45:09 stephena Exp $
+// $Id: PromptDialog.hxx,v 1.4 2005-06-09 04:31:45 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@ class ScrollBarWidget;
 
 #include <stdarg.h>
 #include "Dialog.hxx"
+#include "DebuggerParser.hxx"
 
 enum {
   kBufferSize	= 32768,
@@ -69,6 +70,7 @@ class PromptDialog : public Dialog
     void putcharIntern(int c);
     void insertIntoPrompt(const char *str);
     void print(const char *str);
+    void print(string str);
     void updateScrollBuffer();
     void scrollToCurrent();
 
@@ -104,6 +106,7 @@ class PromptDialog : public Dialog
     int  _promptEndPos;
 
     ScrollBarWidget* _scrollBar;
+    DebuggerParser* parser;
 
     // The _callbackProc is called whenver a data line is entered
     // 

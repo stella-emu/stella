@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.5 2005-06-08 21:16:06 stephena Exp $
+// $Id: PromptDialog.cxx,v 1.6 2005-06-09 04:31:45 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -71,6 +71,10 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
     _history[i][0] = '\0';
 
   _promptStartPos = _promptEndPos = -1;
+
+  // Init parser (FIXME: should the parser be a class variable,
+                      // instead of an instance variable?
+  parser = new DebuggerParser();
 
   // Display greetings & prompt
   string version = string("Stella version ") + STELLA_VERSION + "\n";
@@ -168,7 +172,8 @@ void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
         if (_callbackProc)
           keepRunning = (*_callbackProc)(this, str, _callbackRefCon);
 
-cerr << "Command entered: \'" << str << "\'\n"; // FIXME - tie this into DebuggerParser
+        print( parser->run(str) + "\n" );
+
         // Get rid of the string buffer
         delete [] str;
       }
@@ -624,6 +629,12 @@ void PromptDialog::putcharIntern(int c)
       updateScrollBuffer();
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptDialog::print(string str) // laziness/convenience method
+{
+  print(str.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
