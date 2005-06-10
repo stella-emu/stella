@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.8 2005-06-07 21:22:39 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.9 2005-06-10 18:46:11 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -62,7 +62,6 @@ void DialogContainer::updateTime(uInt32 time)
     myKeyRepeatTime = myTime + kKeyRepeatSustainDelay;
   }
 
-/*  FIXME - there are still some problems with this code
   if(myCurrentMouseDown.button != -1 && myClickRepeatTime < myTime)
   {
     activeDialog->handleMouseDown(myCurrentMouseDown.x - activeDialog->_x,
@@ -70,7 +69,6 @@ void DialogContainer::updateTime(uInt32 time)
                                   myCurrentMouseDown.button, 1);
     myClickRepeatTime = myTime + kClickRepeatSustainDelay;
   }
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -158,6 +156,9 @@ void DialogContainer::handleMouseMotionEvent(int x, int y, int button)
   activeDialog->handleMouseMoved(x - activeDialog->_x,
                                  y - activeDialog->_y,
                                  button);
+
+  // Turn off continuous click events as soon as the mouse moves
+  myCurrentMouseDown.button = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
