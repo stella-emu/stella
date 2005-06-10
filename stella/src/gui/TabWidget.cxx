@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.3 2005-06-08 18:45:09 stephena Exp $
+// $Id: TabWidget.cxx,v 1.4 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,6 +35,9 @@ enum {
   kTabPadding = 3
 };
 
+// 
+Widget* GuiObject::_activeWidget;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TabWidget::TabWidget(GuiObject *boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
@@ -54,6 +57,7 @@ TabWidget::~TabWidget()
   {
     delete _tabs[i].firstWidget;
     _tabs[i].firstWidget = 0;
+    // _tabs[i].activeWidget is deleted elsewhere
   }
   _tabs.clear();
 }
@@ -71,6 +75,7 @@ int TabWidget::addTab(const string& title)
   Tab newTab;
   newTab.title = title;
   newTab.firstWidget = NULL;
+  newTab.activeWidget = NULL;
 
   _tabs.push_back(newTab);
 
@@ -102,11 +107,72 @@ void TabWidget::setActiveTab(int tabID)
       _tabs[_activeTab].firstWidget = _firstWidget;
 
     _activeTab = tabID;
-    _firstWidget = _tabs[tabID].firstWidget;
-    _boss->draw();
+    _firstWidget  = _tabs[tabID].firstWidget;
 
+    // If a widget has been activated elsewhere and it belongs to the
+    // current view, use it.  Otherwise use the default.
+    if(_activeWidget && isWidgetInChain(_firstWidget, _activeWidget))
+      _tabs[tabID].activeWidget = _activeWidget;
+    else
+      _activeWidget = _tabs[tabID].activeWidget;
+
+    // Make sure this widget receives focus, and that the other widgets
+    // in the tabview lose focus
+    if(_activeWidget)
+      _activeWidget->receivedFocus();
+
+    _boss->draw();
     _boss->instance()->frameBuffer().refresh();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::cycleTab(int direction)
+{
+  int tabID = _activeTab;
+
+  // Don't do anything if no tabs have been defined
+  if(tabID == -1)
+    return;
+
+  if(direction == -1)  // Go to the previous tab, wrap around at beginning
+  {
+    tabID--;
+    if(tabID == -1)
+      tabID = (int)_tabs.size() - 1;
+  }
+  else if(direction == 1)  // Go to the next tab, wrap around at end
+  {
+    tabID++;
+    if(tabID == (int)_tabs.size())
+      tabID = 0;
+  }
+
+  // Finally, select the active tab
+  setActiveTab(tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::cycleWidget(int direction)
+{
+  // Don't do anything if no tabs have been defined
+  if(_activeTab == -1)
+    return;
+
+  if(direction == -1)
+    Widget::setPrevInChain(_tabs[_activeTab].firstWidget,
+                           _tabs[_activeTab].activeWidget);
+  else if(direction == +1)
+    Widget::setNextInChain(_tabs[_activeTab].firstWidget,
+                           _tabs[_activeTab].activeWidget);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::setActiveWidget(int tabID, Widget* widID)
+{
+  assert(0 <= tabID && tabID < (int)_tabs.size());
+  _tabs[tabID].activeWidget = widID;
+  widID->receivedFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,10 +198,53 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TabWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  // TODO: maybe there should be a way to switch between tabs
-  // using the keyboard? E.g. Alt-Shift-Left/Right-Arrow or something
-  // like that.
-  return Widget::handleKeyDown(ascii, keycode, modifiers);
+  // Test for TAB character
+  // Ctrl-Tab selects next tab
+  // Shift-Ctrl-Tab selects previous tab
+  // Tab sets next widget in current tab
+  // Shift-Tab sets previous widget in current tab
+  if(keycode == 9)  // tab key
+  {
+    if(_boss->instance()->eventHandler().kbdControl(modifiers))
+    {
+      if(_boss->instance()->eventHandler().kbdShift(modifiers))
+        cycleTab(-1);
+      else
+        cycleTab(+1);
+    }
+    else if(_boss->instance()->eventHandler().kbdShift(modifiers))
+      cycleWidget(-1);
+    else
+      cycleWidget(+1);
+
+    return true;
+  }
+  else if (_activeWidget)
+    return _activeWidget->handleKeyDown(ascii, keycode, modifiers);
+  else
+    return Widget::handleKeyDown(ascii, keycode, modifiers);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::handleCommand(CommandSender* sender, int cmd, int data)
+{
+  switch(cmd)
+  {
+    case kActiveWidgetCmd:
+      if(_activeWidget && isWidgetInChain(_firstWidget, _activeWidget))
+      {
+        _tabs[_activeTab].activeWidget = _activeWidget;
+        Widget::setFocusForChain(_firstWidget, _activeWidget);
+
+        // Make sure the changes are shown onscreen
+        _boss->instance()->frameBuffer().refresh();
+      }
+      break;
+
+    default:
+      sendCommand(cmd, data);
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

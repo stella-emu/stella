@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.15 2005-05-26 15:43:44 stephena Exp $
+// $Id: Dialog.hxx,v 1.16 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class DialogContainer;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.15 2005-05-26 15:43:44 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.16 2005-06-10 17:46:06 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -61,7 +61,6 @@ class Dialog : public GuiObject
     virtual void draw();
     void releaseFocus();
 
-    virtual void handleTickle(); // Called periodically (in every guiloop() )
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleKeyUp(int ascii, int keycode, int modifiers);
     virtual void handleMouseDown(int x, int y, int button, int clickCount);

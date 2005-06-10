@@ -13,149 +13,110 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.6 2005-06-09 20:09:22 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.7 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "DialogContainer.hxx"
-#include "PromptDialog.hxx"
+#include "TabWidget.hxx"
+#include "ListWidget.hxx"
+#include "PromptWidget.hxx"
 #include "DebuggerDialog.hxx"
-
-enum {
-  kPromptCmd = 'PRMT',
-  kCpuCmd    = 'CPU ',
-  kRamCmd    = 'RAM ',
-  kRomCmd    = 'ROM ',
-  kTiaCmd    = 'TIA ',
-  kCodeCmd   = 'CODE'
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
-    myPromptDialog(NULL),
-    myCpuDialog(NULL),
-    myRamDialog(NULL),
-    myRomDialog(NULL),
-    myTiaDialog(NULL),
-    myCodeDialog(NULL)
+    myTab(NULL)
 {
-  const int border = 5;
-  const int space  = 5;
-  const int width  = 40;
-  int xpos = border;
+  const int vBorder = 4;
+  int yoffset;
 
-  // Add a row of buttons for the various debugger operations
-  new ButtonWidget(this, xpos, border, width, 16, "Prompt", kPromptCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(this, xpos, border, width, 16, "CPU", kCpuCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(this, xpos, border, width, 16, "RAM", kRamCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(this, xpos, border, width, 16, "ROM", kRomCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(this, xpos, border, width, 16, "TIA", kTiaCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(this, xpos, border, width, 16, "Code", kCodeCmd, 0);
-    xpos += space + width;
+  // The tab widget
+  myTab = new TabWidget(this, 0, vBorder, _w, _h - vBorder - 1);
 
-  const int xoff = border; 
-  const int yoff = border + 16 + 2;
+  // 1) The Prompt/console tab
+  myTab->addTab("Prompt");
+  yoffset = vBorder;
 
-  // Create the debugger dialog boxes
-  myPromptDialog = new PromptDialog(osystem, parent, x + xoff, y + yoff,
-                                    w - xoff - 2, h - yoff - 3);
+  PromptWidget* prompt = new PromptWidget(myTab, 2, 2,
+                                          _w - vBorder, _h - 25);
+  myTab->setActiveWidget(0, prompt);
+
+  // 2) The CPU tab
+  myTab->addTab("CPU");
+  yoffset = vBorder;
+
+/////////////////////  FIXME - just testing, will be removed
+  ListWidget* myList = new ListWidget(myTab, 10, 24, 100, _h - 24 - 26 - 10 - 10);
+  myList->setEditable(false);
+  myList->setNumberingMode(kListNumberingOff);
+
+  StringList l;
+  for (int i = 0; i < 10; ++i)
+    l.push_back("TESTING!!!");
+  myList->setList(l);
+
+  ListWidget* myList2 = new ListWidget(myTab, 150, 24, 100, _h - 24 - 26 - 10 - 10);
+  myList2->setEditable(false);
+  myList2->setNumberingMode(kListNumberingOff);
+
+  StringList l2;
+  for (int i = 0; i < 10; ++i)
+    l2.push_back("TESTING AGAIN!!!");
+  myList2->setList(l2);
+
+  ListWidget* myList3 = new ListWidget(myTab, 300, 24, 100, _h - 24 - 26 - 10 - 10);
+  myList3->setEditable(false);
+  myList3->setNumberingMode(kListNumberingOff);
+
+  StringList l3;
+  for (int i = 0; i < 10; ++i)
+    l3.push_back("CPU_TESTING!!!");
+  myList3->setList(l3);
+
+  myTab->setActiveWidget(1, myList);
+/////////////////////////////
+
+  // 3) The RAM tab
+  myTab->addTab("RAM");
+  yoffset = vBorder;
+
+
+  // 4) The ROM tab
+  myTab->addTab("ROM");
+  yoffset = vBorder;
+
+
+  // 5) The TIA tab
+  myTab->addTab("TIA");
+  yoffset = vBorder;
+
+
+  // 6) The RAM tab
+  myTab->addTab("Code");
+  yoffset = vBorder;
+
+
+
+
+  // Set active tab to prompt
+  myTab->setActiveTab(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::~DebuggerDialog()
 {
-  delete myPromptDialog;
-/*
-  delete myCpuDialog;
-  delete myRamDialog;
-  delete myRomDialog;
-  delete myTiaDialog;
-  delete myCodeDialog;
-*/
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::addButtons(GuiObject* boss)
-{
-  // This is a terrible hack, but it does seem to work ...
-  const int border = 5;
-  const int space  = 5;
-  const int width  = 40;
-  int xpos = border;
-
-  // Add a row of buttons for the various debugger operations
-  new ButtonWidget(boss, xpos, border, width, 16, "Prompt", kPromptCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(boss, xpos, border, width, 16, "CPU", kCpuCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(boss, xpos, border, width, 16, "RAM", kRamCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(boss, xpos, border, width, 16, "ROM", kRomCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(boss, xpos, border, width, 16, "TIA", kTiaCmd, 0);
-    xpos += space + width;
-  new ButtonWidget(boss, xpos, border, width, 16, "Code", kCodeCmd, 0);
-    xpos += space + width;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
-  // Auto-select the command prompt
-  parent()->addDialog(myPromptDialog);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  switch (cmd)
-  {
-    case kPromptCmd:
-      parent()->reStack();
-      parent()->addDialog(myPromptDialog);
-      break;
-
-    case kCpuCmd:
-      parent()->reStack();
-//      parent()->addDialog(myCpuDialog);
-      cerr << "kCpuCmd\n";
-      break;
-
-    case kRamCmd:
-      parent()->reStack();
-//      parent()->addDialog(myRamDialog);
-      cerr << "kRamCmd\n";
-      break;
-
-    case kRomCmd:
-      parent()->reStack();
-//      parent()->addDialog(myRomDialog);
-      cerr << "kRomCmd\n";
-      break;
-
-    case kTiaCmd:
-      parent()->reStack();
-//      parent()->addDialog(myTiaDialog);
-      cerr << "kTiaCmd\n";
-      break;
-
-    case kCodeCmd:
-      parent()->reStack();
-//      parent()->addDialog(myCodeDialog);
-      cerr << "kCodeCmd\n";
-      break;
-
-    default:
-      Dialog::handleCommand(sender, cmd, data);
-      break;
-  }
+  myTab->handleKeyDown(ascii, keycode, modifiers);
 }

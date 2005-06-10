@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.13 2005-06-09 20:09:23 stephena Exp $
+// $Id: ListWidget.cxx,v 1.14 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,8 @@ ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
     : Widget(boss, x, y, w - kScrollBarWidth, h),
       CommandSender(boss)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
+           WIDGET_TAB_NAVIGATE;
   _type = kListWidget;
   _numberingMode = kListNumberingOne;
   _entriesPerPage = (_h - 2) / kLineHeight;
@@ -138,6 +139,10 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if (isEnabled())
   {
+    // A click indicated this widget has been selected
+    // It should receive focus (because it has the WIDGET_TAB_NAVIGATE property)
+    receivedFocus();
+
     int oldSelectedItem = _selectedItem;
     _selectedItem = (y - 1) / kLineHeight + _currentPos;
     if (_selectedItem > (int)_list.size() - 1)

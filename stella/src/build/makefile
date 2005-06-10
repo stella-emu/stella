@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.89 2005-06-09 04:31:44 urchlay Exp $
+## $Id: makefile,v 1.90 2005-06-10 17:46:05 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -160,7 +160,7 @@ GUI_OBJS = Font.o Menu.o Launcher.o Debugger.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
            ProgressDialog.o \
-           DebuggerDialog.o PromptDialog.o
+           DebuggerDialog.o PromptWidget.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -453,8 +453,8 @@ ProgressDialog.o: $(GUI)/ProgressDialog.cxx $(GUI)/ProgressDialog.hxx
 DebuggerDialog.o: $(GUI)/DebuggerDialog.cxx $(GUI)/DebuggerDialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/DebuggerDialog.cxx
 
-PromptDialog.o: $(GUI)/PromptDialog.cxx $(GUI)/PromptDialog.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/PromptDialog.cxx
+PromptWidget.o: $(GUI)/PromptWidget.cxx $(GUI)/PromptWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/PromptWidget.cxx
 
 DebuggerParser.o: $(COMMON)/DebuggerParser.cxx $(COMMON)/DebuggerParser.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/DebuggerParser.cxx

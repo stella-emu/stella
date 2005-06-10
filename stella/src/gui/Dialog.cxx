@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.18 2005-05-26 18:56:58 stephena Exp $
+// $Id: Dialog.cxx,v 1.19 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -278,14 +278,6 @@ void Dialog::handleJoyUp(int stick, int button)
   // Focused widget receives joystick events
   if(_focusedWidget)
     _focusedWidget->handleJoyUp(stick, button);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleTickle()
-{
-  // Focused widget receives tickle notifications
-  if(_focusedWidget && _focusedWidget->getFlags() & WIDGET_WANT_TICKLE)
-    _focusedWidget->handleTickle();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

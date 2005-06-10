@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.12 2005-06-08 18:45:09 stephena Exp $
+// $Id: Widget.cxx,v 1.13 2005-06-10 17:46:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,8 @@
 #include "bspf.hxx"
 #include "GuiUtils.hxx"
 #include "Widget.hxx"
+
+//FIXMEstatic int COUNT = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
@@ -107,6 +109,33 @@ void Widget::draw()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::receivedFocus()
+{
+  if(_hasFocus)
+    return;
+
+  _hasFocus = true;
+  receivedFocusWidget();
+
+  // Only signal a new active widget if the widget has defined that capability
+  // We only care about widgets with WIDGET_TAB_NAVIGATE property
+  if(getFlags() & WIDGET_TAB_NAVIGATE)
+  {
+    _activeWidget = this;
+    _boss->handleCommand(NULL, kActiveWidgetCmd, 0);
+  }
+}
+/*  FIXME
+void Widget::lostFocus()
+{
+  _hasFocus = false;
+  lostFocusWidget(); 
+
+if(getFlags() & WIDGET_TAB_NAVIGATE)
+  cerr << "lost focus: " << this << endl;
+}
+*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
 {
   while(w)
@@ -121,6 +150,169 @@ Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
     w = w->findWidget(x - w->_x, y - w->_y);
 
   return w;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Widget::isWidgetInChain(Widget* w, Widget* find)
+{
+  bool found = false;
+
+  while(w)
+  {
+    // Stop as soon as we find the widget
+    if(w == find)
+    {
+      found = true;
+      break;
+    }
+    w = w->_next;
+  }
+
+  return found;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setFocusForChain(Widget* w, Widget* hasFocus)
+{
+  if(!hasFocus)
+    return;
+
+  while(w)
+  {
+    if(w != hasFocus)
+      w->lostFocus();
+
+    w = w->_next;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setPrevInChain(Widget* start, Widget* hasFocus)
+{
+  if(!start)
+    return;
+
+  // We search the array in circular fashion until the 'end' is reached
+  Widget* w = hasFocus;
+  Widget* active = NULL;
+
+  if(w)  // start from 'hasFocus'
+  {
+    w = w->_next;
+    while(w)
+    {
+      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
+      {
+        active = w;
+        break;
+      }
+      w = w->_next;
+    }
+
+    // If we haven't found an active widget by now, start searching from
+    // the beginning of the list
+    if(!active)
+    {
+      w = start;
+      while(w != hasFocus)
+      {
+        if(w->getFlags() & WIDGET_TAB_NAVIGATE)
+        {
+          active = w;
+          break;
+        }
+        w = w->_next;
+      }
+    }
+  }
+  else  // start from the beginning, since no widget currently has focus
+  {
+    w = start;
+    while(w)
+    {
+      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
+      {
+        active = w;
+        break;
+      }
+      w = w->_next;
+    }
+  }
+
+  // At this point, we *should* have an active widget
+  if(active)
+    active->receivedFocus();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setNextInChain(Widget* start, Widget* hasFocus)
+{
+  if(!start)
+    return;
+// FIXME - get this working
+cerr << "--------------------------------\nWidget list:\n";
+    Widget* w1 = start;
+    while(w1)
+    {
+      if(w1->getFlags() & WIDGET_TAB_NAVIGATE)
+      {
+        cerr << w1 << endl;
+      }
+      w1 = w1->_next;
+    }
+cerr << "\n--------------------------------\n";
+
+
+  // We search the array in circular fashion until the 'end' is reached
+  Widget* w = hasFocus;
+  Widget* active = NULL;
+
+  if(w)  // start from 'hasFocus'
+  {
+    w = w->_next;
+    while(w)
+    {
+      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
+      {
+        active = w;
+        break;
+      }
+      w = w->_next;
+    }
+
+    // If we haven't found an active widget by now, start searching from
+    // the beginning of the list
+    if(!active)
+    {
+      w = start;
+      while(w != hasFocus)
+      {
+        if(w->getFlags() & WIDGET_TAB_NAVIGATE)
+        {
+          active = w;
+          break;
+        }
+        w = w->_next;
+      }
+    }
+  }
+  else  // start from the beginning, since no widget currently has focus
+  {
+    w = start;
+    while(w)
+    {
+      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
+      {
+        active = w;
+        break;
+      }
+      w = w->_next;
+    }
+  }
+
+  // At this point, we *should* have an active widget
+  if(active)
+    active->receivedFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

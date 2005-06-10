@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.5 2005-05-21 16:12:13 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.6 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -190,27 +190,6 @@ void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
       _boss->instance()->frameBuffer().refresh();
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleTickle() {
-/*
-	// FIXME/TODO - this code is supposed to allow for "click-repeat" (like key repeat),
-	// i.e. if you click on one of the arrows and keep clicked, it will scroll
-	// continuously. However, just like key repeat, this requires two delays:
-	// First an "initial" delay that has to pass before repeating starts (otherwise
-	// it is near to impossible to achieve single clicks). Secondly, a repeat delay
-	// that determines how often per second a click is simulated.
-	int old_pos = _currentPos;
-
-	if (_draggingPart == kUpArrowPart)
-		_currentPos--;
-	else if (_draggingPart == kDownArrowPart)
-		_currentPos++;
-
-	// Make sure that _currentPos is still inside the bounds
-	checkBounds(old_pos);
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

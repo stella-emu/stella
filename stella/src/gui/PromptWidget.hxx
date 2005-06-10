@@ -13,21 +13,23 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.hxx,v 1.7 2005-06-09 20:09:23 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.1 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef PROMPT_DIALOG_HXX
-#define PROMPT_DIALOG_HXX
+#ifndef PROMPT_WIDGET_HXX
+#define PROMPT_WIDGET_HXX
 
-class CommandSender;
-class DialogContainer;
 class ScrollBarWidget;
 
 #include <stdarg.h>
-#include "Dialog.hxx"
+
+#include "GuiObject.hxx"
+#include "Widget.hxx"
+#include "Command.hxx"
+#include "bspf.hxx"
 
 enum {
   kBufferSize	= 32768,
@@ -36,12 +38,11 @@ enum {
   kHistorySize = 20
 };
 
-class PromptDialog : public Dialog
+class PromptWidget : public Widget, public CommandSender
 {
   public:
-    PromptDialog(OSystem* osystem, DialogContainer* parent,
-                 int x, int y, int w, int h);
-    virtual ~PromptDialog();
+    PromptWidget(GuiObject* boss, int x, int y, int w, int h);
+    virtual ~PromptWidget();
 
   public:
     int printf(const char *format, ...);
@@ -52,7 +53,7 @@ class PromptDialog : public Dialog
   protected:
     inline char &buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
-    void drawDialog();
+    void drawWidget(bool hilite);
     void drawCaret();
     void putcharIntern(int c);
     void insertIntoPrompt(const char *str);
@@ -72,11 +73,10 @@ class PromptDialog : public Dialog
     void addToHistory(const char *str);
     void historyScroll(int direction);
 
-  private:
+    void handleMouseDown(int x, int y, int button, int clickCount);
     void handleMouseWheel(int x, int y, int direction);
-    void handleKeyDown(int ascii, int keycode, int modifiers);
+    bool handleKeyDown(int ascii, int keycode, int modifiers);
     void handleCommand(CommandSender* sender, int cmd, int data);
-    void loadConfig();
 
   protected:
     char _buffer[kBufferSize];

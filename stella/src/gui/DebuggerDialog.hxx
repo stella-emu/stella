@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.4 2005-06-09 19:04:59 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.5 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,12 +24,7 @@
 
 class OSystem;
 class DialogContainer;
-class PromptDialog;
-class CpuDialog;
-class RamDialog;
-class RomDialog;
-class TiaDialog;
-class CodeDialog;
+class TabWidget;
 
 #include "Dialog.hxx"
 
@@ -41,18 +36,10 @@ class DebuggerDialog : public Dialog
     ~DebuggerDialog();
 
     virtual void loadConfig();
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
-
-    void addButtons(GuiObject* boss);
+    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
 
   protected:
-    // The debugger dialogs
-    PromptDialog* myPromptDialog;
-    CpuDialog*    myCpuDialog;
-    RamDialog*    myRamDialog;
-    RomDialog*    myRomDialog;
-    TiaDialog*    myTiaDialog;
-    CodeDialog*   myCodeDialog;
+    TabWidget*    myTab;
 };
 
 #endif

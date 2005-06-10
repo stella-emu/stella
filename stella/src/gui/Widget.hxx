@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.14 2005-06-08 18:45:09 stephena Exp $
+// $Id: Widget.hxx,v 1.15 2005-06-10 17:46:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@ class Dialog;
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
+#include "GuiUtils.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -38,7 +39,7 @@ enum {
   WIDGET_BORDER       = 1 << 3,
   WIDGET_INV_BORDER   = 1 << 4,
   WIDGET_CLEARBG      = 1 << 5,
-  WIDGET_WANT_TICKLE  = 1 << 7,
+  WIDGET_TAB_NAVIGATE = 1 << 7,
   WIDGET_TRACK_MOUSE  = 1 << 8,
   WIDGET_RETAIN_FOCUS = 1 << 9
 };
@@ -52,7 +53,8 @@ enum {
   kListWidget       = 'LIST',
   kScrollBarWidget  = 'SCRB',
   kPopUpWidget      = 'POPU',
-  kTabWidget        = 'TABW'
+  kTabWidget        = 'TABW',
+  kPromptWidget     = 'PROM'
 };
 
 enum {
@@ -64,7 +66,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.14 2005-06-08 18:45:09 stephena Exp $
+  @version $Id: Widget.hxx,v 1.15 2005-06-10 17:46:07 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -87,11 +89,11 @@ class Widget : public GuiObject
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers) { return false; }
     virtual void handleJoyDown(int stick, int button) {}
     virtual void handleJoyUp(int stick, int button) {}
-    virtual void handleTickle() {}
 
     void draw();
-    void receivedFocus() { _hasFocus = true; receivedFocusWidget(); }
+    void receivedFocus();
     void lostFocus() { _hasFocus = false; lostFocusWidget(); }
+
     virtual bool wantsFocus() { return false; };
 
     void setFlags(int flags)    { _flags |= flags;
@@ -136,6 +138,20 @@ class Widget : public GuiObject
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
+
+    /** Determine if 'find' is in the chain pointed to by 'start' */
+    static bool isWidgetInChain(Widget* start, Widget* find);
+
+    /** Widget 'hasFocus' has focus, make all other widgets in chain lose focus */
+    static void setFocusForChain(Widget* start, Widget* hasFocus);
+
+    /** Select previous widget in chain with WIDGET_TAB_NOTIFY property to have
+        focus, starting from 'hasFocus' */
+    static void setPrevInChain(Widget* start, Widget* hasFocus);
+
+    /** Select next widget in chain with WIDGET_TAB_NOTIFY property to have
+        focus, starting from 'hasFocus' */
+    static void setNextInChain(Widget* start, Widget* hasFocus);
 };
 
 

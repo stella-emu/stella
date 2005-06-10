@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptDialog.cxx,v 1.9 2005-06-09 20:09:23 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.1 2005-06-10 17:46:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,7 +26,7 @@
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
 
-#include "PromptDialog.hxx"
+#include "PromptWidget.hxx"
 
 #define PROMPT  "> "
 
@@ -39,10 +39,14 @@
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
-                           int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
+    : Widget(boss, x, y, w - kScrollBarWidth, h),
+      CommandSender(boss)
 {
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
+           WIDGET_TAB_NAVIGATE;
+  _type = kPromptWidget;
+
   _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
   _kConsoleLineHeight = instance()->consoleFont().getFontHeight() + 2;
 
@@ -58,7 +62,8 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
   _firstLineInBuffer = 0;
 
   // Add scrollbar
-  _scrollBar = new ScrollBarWidget(this, _w - kScrollBarWidth - 1, 0, kScrollBarWidth, _h);
+  _scrollBar = new ScrollBarWidget(boss, _x + _w, _y, kScrollBarWidth, _h);
+
   _scrollBar->setTarget(this);
 
   // Init History
@@ -74,27 +79,19 @@ PromptDialog::PromptDialog(OSystem* osystem, DialogContainer* parent,
   string version = string("Stella version ") + STELLA_VERSION + "\n";
   print(version.c_str());
   print("Debugger is ready\n");
+  print(PROMPT);
+  _promptStartPos = _promptEndPos = _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptDialog::~PromptDialog()
+PromptWidget::~PromptWidget()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::loadConfig()
+void PromptWidget::drawWidget(bool hilite)
 {
-  if (_promptStartPos == -1)
-  {
-    print(PROMPT);
-    _promptStartPos = _promptEndPos = _currentPos;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::drawDialog()
-{
-  FrameBuffer& fb = instance()->frameBuffer();
+  FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   // Fill the background
   fb.fillRect(_x, _y, _w, _h, kBGColor);
@@ -127,15 +124,24 @@ void PromptDialog::drawDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::handleMouseWheel(int x, int y, int direction)
+void PromptWidget::handleMouseDown(int x, int y, int button, int clickCount)
+{
+return;
+  _scrollBar->handleMouseDown(x, y, button, clickCount);
+cerr << "PromptWidget::handleMouseDown\n";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::handleMouseWheel(int x, int y, int direction)
 {
   _scrollBar->handleMouseWheel(x, y, direction);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
+bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   int i;
+  bool handled = true;
 	
   switch (keycode)
   {
@@ -185,34 +191,6 @@ void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       instance()->frameBuffer().refresh();
       break;
 
-#if 0 // FIXME - this may not be included in the 2.0 release
-    case 9:  // tab
-    {
-      if (_completionCallbackProc)
-      {
-        int len = _currentPos - _promptStartPos;
-        assert(len >= 0);
-        char *str = new char[len + 1];
-
-        // Copy the user input to str
-        for (i = 0; i < len; i++)
-          str[i] = buffer(_promptStartPos + i);
-        str[len] = '\0';
-
-        char *completion = 0;
-        if ((*_completionCallbackProc)(this, str, completion, _callbackRefCon))
-        {
-          insertIntoPrompt(completion);
-          scrollToCurrent();
-          draw();
-          instance()->frameBuffer().refresh();
-          delete[] completion;
-        }
-        delete[] str;
-      }
-      break;
-    }
-#endif
     case 127:
       killChar(+1);
       draw();
@@ -317,12 +295,16 @@ void PromptDialog::handleKeyDown(int ascii, int keycode, int modifiers)
         putchar(ascii);
         scrollToCurrent();
       }
+      else
+        handled = false;
       break;
   }
+
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::insertIntoPrompt(const char* str)
+void PromptWidget::insertIntoPrompt(const char* str)
 {
   unsigned int l = strlen(str);
 
@@ -337,7 +319,7 @@ void PromptDialog::insertIntoPrompt(const char* str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void PromptWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch (cmd)
   {
@@ -354,7 +336,7 @@ void PromptDialog::handleCommand(CommandSender* sender, int cmd, int data)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::specialKeys(int keycode)
+void PromptWidget::specialKeys(int keycode)
 {
   bool handled = false;
 
@@ -399,7 +381,7 @@ void PromptDialog::specialKeys(int keycode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::killChar(int direction)
+void PromptWidget::killChar(int direction)
 {
   if(direction == -1)    // Delete previous character (backspace)
   {
@@ -431,7 +413,7 @@ void PromptDialog::killChar(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::killLine(int direction)
+void PromptWidget::killLine(int direction)
 {
   if(direction == -1)  // erase from current position to beginning of line
   {
@@ -450,7 +432,7 @@ void PromptDialog::killLine(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::killLastWord()
+void PromptWidget::killLastWord()
 {
   int cnt = 0;
   bool space = true;
@@ -476,7 +458,7 @@ void PromptDialog::killLastWord()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::addToHistory(const char *str)
+void PromptWidget::addToHistory(const char *str)
 {
   strcpy(_history[_historyIndex], str);
   _historyIndex = (_historyIndex + 1) % kHistorySize;
@@ -487,7 +469,7 @@ void PromptDialog::addToHistory(const char *str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::historyScroll(int direction)
+void PromptWidget::historyScroll(int direction)
 {
   if (_historySize == 0)
     return;
@@ -534,7 +516,7 @@ void PromptDialog::historyScroll(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::nextLine()
+void PromptWidget::nextLine()
 {
   int line = _currentPos / _lineWidth;
   if (line == _scrollLine)
@@ -548,7 +530,7 @@ void PromptDialog::nextLine()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Call this (at least) when the current line changes or when a new line is added
-void PromptDialog::updateScrollBuffer()
+void PromptWidget::updateScrollBuffer()
 {
   int lastchar = MAX(_promptEndPos, _currentPos);
   int line = lastchar / _lineWidth;
@@ -571,7 +553,7 @@ void PromptDialog::updateScrollBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptDialog::printf(const char *format, ...)
+int PromptWidget::printf(const char *format, ...)
 {
   va_list argptr;
 
@@ -582,7 +564,7 @@ int PromptDialog::printf(const char *format, ...)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptDialog::vprintf(const char *format, va_list argptr)
+int PromptWidget::vprintf(const char *format, va_list argptr)
 {
   char buf[2048];
 
@@ -596,7 +578,7 @@ int PromptDialog::vprintf(const char *format, va_list argptr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::putchar(int c)
+void PromptWidget::putchar(int c)
 {
   putcharIntern(c);
 
@@ -605,7 +587,7 @@ void PromptDialog::putchar(int c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::putcharIntern(int c)
+void PromptWidget::putcharIntern(int c)
 {
   if (c == '\n')
     nextLine();
@@ -622,13 +604,13 @@ void PromptDialog::putcharIntern(int c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::print(string str) // laziness/convenience method
+void PromptWidget::print(string str) // laziness/convenience method
 {
   print(str.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::print(const char *str)
+void PromptWidget::print(const char *str)
 {
   while (*str)
     putcharIntern(*str++);
@@ -638,9 +620,9 @@ void PromptDialog::print(const char *str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::drawCaret()
+void PromptWidget::drawCaret()
 {
-  FrameBuffer& fb = instance()->frameBuffer();
+  FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   int line = _currentPos / _lineWidth;
 
@@ -654,11 +636,11 @@ void PromptDialog::drawCaret()
 
   char c = buffer(_currentPos);
   fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
-  fb.drawChar(instance()->consoleFont(), c, x, y + 2, kBGColor);
+  fb.drawChar(_boss->instance()->consoleFont(), c, x, y + 2, kBGColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptDialog::scrollToCurrent()
+void PromptWidget::scrollToCurrent()
 {
   int line = _promptEndPos / _lineWidth;
 
