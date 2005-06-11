@@ -1,3 +1,4 @@
+
 //============================================================================
 //
 //   SSSS    tt          lll  lll       
@@ -13,29 +14,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerCommand.hxx,v 1.3 2005-06-11 20:02:25 urchlay Exp $
+// $Id: DCmdTrace.hxx,v 1.1 2005-06-11 20:02:25 urchlay Exp $
 //============================================================================
 
-#ifndef DEBUGGER_COMMAND_HXX
-#define DEBUGGER_COMMAND_HXX
+#ifndef DCMDTRACE_HXX
+#define DCMDTRACE_HXX
 
 #include "bspf.hxx"
+#include "DebuggerParser.hxx"
+#include "DebuggerCommand.hxx"
 
-class DebuggerParser;
-
-class DebuggerCommand
+class DCmdTrace: public DebuggerCommand
 {
 	public:
-		DebuggerCommand();
-		DebuggerCommand(DebuggerParser* p);
+		DCmdTrace(DebuggerParser* p);
 
-		virtual string getName() = 0;
-		virtual int getArgCount() = 0;
-		virtual string execute(int c, int *a) = 0;
-
-	protected:
-		int *args;
-		DebuggerParser *parser;
+		string getName();
+		int getArgCount();
+		string execute(int c, int *args);
 };
 
 #endif

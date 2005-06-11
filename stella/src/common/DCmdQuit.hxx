@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DCmdQuit.hxx,v 1.2 2005-06-09 15:08:21 stephena Exp $
+// $Id: DCmdQuit.hxx,v 1.3 2005-06-11 20:02:25 urchlay Exp $
 //============================================================================
 
 #ifndef DCMDQUIT_HXX
@@ -30,7 +30,7 @@ class DCmdQuit: public DebuggerCommand
 
 		string getName();
 		int getArgCount();
-		string execute();
+		string execute(int c, int *args);
 };
 
 #endif

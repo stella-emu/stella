@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerCommand.cxx,v 1.2 2005-06-09 15:08:22 stephena Exp $
+// $Id: DebuggerCommand.cxx,v 1.3 2005-06-11 20:02:25 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -26,3 +26,4 @@ DebuggerCommand::DebuggerCommand() {
 DebuggerCommand::DebuggerCommand(DebuggerParser* p) {
 	parser = p;
 }
+

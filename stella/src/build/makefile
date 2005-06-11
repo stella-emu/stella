@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.90 2005-06-10 17:46:05 stephena Exp $
+## $Id: makefile,v 1.91 2005-06-11 20:02:24 urchlay Exp $
 ##============================================================================
 
 ##============================================================================
@@ -170,7 +170,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Props.o PropsSet.o Random.o SoundNull.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o EventHandler.o FrameBuffer.o \
             OSystem.o FSNode.o unzip.o \
-				DebuggerParser.o DebuggerCommand.o DCmdQuit.o \
+				DebuggerParser.o DebuggerCommand.o DCmdQuit.o DCmdTrace.o \
             $(M6502_OBJS) $(GUI_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
@@ -464,4 +464,7 @@ DebuggerCommand.o: $(COMMON)/DebuggerCommand.cxx $(COMMON)/DebuggerCommand.hxx
 
 DCmdQuit.o: $(COMMON)/DCmdQuit.cxx $(COMMON)/DCmdQuit.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/DCmdQuit.cxx
+
+DCmdTrace.o: $(COMMON)/DCmdTrace.cxx $(COMMON)/DCmdTrace.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/DCmdTrace.cxx
 

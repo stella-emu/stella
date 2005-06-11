@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DCmdQuit.cxx,v 1.2 2005-06-09 15:08:21 stephena Exp $
+// $Id: DCmdQuit.cxx,v 1.3 2005-06-11 20:02:25 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -34,7 +34,7 @@ int DCmdQuit::getArgCount() {
 	return 0;
 }
 
-string DCmdQuit::execute() {
+string DCmdQuit::execute(int c, int *args) {
 	parser->setDone();
 	return "If you quit the debugger, I'll summon Satan all over your hard drive!";
 }
