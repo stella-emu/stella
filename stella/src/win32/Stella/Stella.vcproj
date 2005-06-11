@@ -207,10 +207,19 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\D6502.cxx">
 			</File>
 			<File
+				RelativePath="..\..\common\DCmdQuit.cxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\Debugger.cxx">
 			</File>
 			<File
+				RelativePath="..\..\common\DebuggerCommand.cxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\DebuggerDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\common\DebuggerParser.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Deserializer.cxx">
@@ -235,6 +244,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\EventMappingDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Font.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\FrameBuffer.cxx">
@@ -324,6 +336,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\ProgressDialog.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\PromptWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Props.cxx">
 			</File>
 			<File
@@ -352,9 +367,6 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\common\SoundSDL.cxx">
-			</File>
-			<File
-				RelativePath="..\..\gui\StellaFont.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Switches.cxx">
@@ -470,16 +482,28 @@ opengl32.lib"
 				RelativePath="..\..\emucore\Console.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\ConsoleFont.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Control.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\D6502.hxx">
 			</File>
 			<File
+				RelativePath="..\..\common\DCmdQuit.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\Debugger.hxx">
 			</File>
 			<File
+				RelativePath="..\..\common\DebuggerCommand.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\DebuggerDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\common\DebuggerParser.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Deserializer.hxx">
@@ -504,6 +528,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\EventMappingDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\Font.hxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\FontData.hxx">
@@ -594,6 +621,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\ProgressDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\PromptWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Props.hxx">
