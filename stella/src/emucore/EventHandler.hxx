@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.37 2005-06-08 18:45:08 stephena Exp $
+// $Id: EventHandler.hxx,v 1.38 2005-06-11 01:52:49 markgrebe Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.37 2005-06-08 18:45:08 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.38 2005-06-11 01:52:49 markgrebe Exp $
 */
 class EventHandler
 {
@@ -194,7 +194,7 @@ class EventHandler
   #ifndef MAC_OSX
       return (mod & KMOD_CTRL) > 0;
   #else
-      return ((mod & KMOD_META) && !(mod & KMOD_SHIFT))
+      return ((mod & KMOD_META) && !(mod & KMOD_SHIFT));
   #endif
     }
 
