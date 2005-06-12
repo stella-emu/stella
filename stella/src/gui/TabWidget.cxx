@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.4 2005-06-10 17:46:06 stephena Exp $
+// $Id: TabWidget.cxx,v 1.5 2005-06-12 20:12:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,6 @@ enum {
   kTabPadding = 3
 };
 
-// 
 Widget* GuiObject::_activeWidget;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,33 +13,32 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.6 2005-06-12 20:12:10 stephena Exp $
+// $Id: CheatWidget.hxx,v 1.1 2005-06-12 20:12:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef DEBUGGER_DIALOG_HXX
-#define DEBUGGER_DIALOG_HXX
+#ifndef CHEAT_WIDGET_HXX
+#define CHEAT_WIDGET_HXX
 
-class OSystem;
-class DialogContainer;
-class TabWidget;
+class GuiObject;
 
-#include "Dialog.hxx"
+#include "Widget.hxx"
+#include "Command.hxx"
 
-class DebuggerDialog : public Dialog
+class CheatWidget : public Widget, public CommandSender
 {
   public:
-    DebuggerDialog(OSystem* osystem, DialogContainer* parent,
-                          int x, int y, int w, int h);
-    ~DebuggerDialog();
+    CheatWidget(GuiObject *boss, int x, int y, int w, int h);
+    virtual ~CheatWidget();
 
-    virtual void loadConfig();
-    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
+    Widget* activeWidget() { return myActiveWidget; }
 
-  protected:
-    TabWidget* myTab;
+    void handleCommand(CommandSender* sender, int cmd, int data);
+
+  private:
+    Widget*  myActiveWidget;
 };
 
 #endif

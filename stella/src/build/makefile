@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.92 2005-06-12 18:18:42 stephena Exp $
+## $Id: makefile,v 1.93 2005-06-12 20:12:10 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -161,7 +161,7 @@ GUI_OBJS = Font.o Menu.o Launcher.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
            ProgressDialog.o \
-           DebuggerDialog.o PromptWidget.o
+           DebuggerDialog.o PromptWidget.o CheatWidget.o
 
 DBG_OBJS = Debugger.o DebuggerParser.o
 
@@ -454,6 +454,9 @@ DebuggerDialog.o: $(GUI)/DebuggerDialog.cxx $(GUI)/DebuggerDialog.hxx
 
 PromptWidget.o: $(GUI)/PromptWidget.cxx $(GUI)/PromptWidget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/PromptWidget.cxx
+
+CheatWidget.o: $(GUI)/CheatWidget.cxx $(GUI)/CheatWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/CheatWidget.cxx
 
 Debugger.o: $(DBG)/Debugger.cxx $(DBG)/Debugger.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(DBG)/Debugger.cxx
