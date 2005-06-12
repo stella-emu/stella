@@ -13,29 +13,26 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerCommand.hxx,v 1.3 2005-06-11 20:02:25 urchlay Exp $
+// $Id: DCmdQuit.cxx,v 1.1 2005-06-12 18:18:00 stephena Exp $
 //============================================================================
 
-#ifndef DEBUGGER_COMMAND_HXX
-#define DEBUGGER_COMMAND_HXX
+#include "Debugger.hxx"
+#include "DCmdQuit.hxx"
 
-#include "bspf.hxx"
 
-class DebuggerParser;
+DCmdQuit::DCmdQuit(Debugger* d) {
+	debugger = d;
+}
 
-class DebuggerCommand
-{
-	public:
-		DebuggerCommand();
-		DebuggerCommand(DebuggerParser* p);
+string DCmdQuit::getName() {
+	return "Quit";
+}
 
-		virtual string getName() = 0;
-		virtual int getArgCount() = 0;
-		virtual string execute(int c, int *a) = 0;
+int DCmdQuit::getArgCount() {
+	return 0;
+}
 
-	protected:
-		int *args;
-		DebuggerParser *parser;
-};
-
-#endif
+string DCmdQuit::execute(int c, int *args) {
+//FIXME	parser->setDone();
+	return "If you quit the debugger, I'll summon Satan all over your hard drive!";
+}

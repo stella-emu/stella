@@ -13,17 +13,31 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerCommand.cxx,v 1.3 2005-06-11 20:02:25 urchlay Exp $
+// $Id: DCmdTrace.cxx,v 1.1 2005-06-12 18:18:00 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
-#include "DebuggerCommand.hxx"
-#include "DebuggerParser.hxx"
+#include "DCmdTrace.hxx"
+#include "Debugger.hxx"
+#include "Console.hxx"
+#include "System.hxx"
+#include "M6502.hxx"
 
-DebuggerCommand::DebuggerCommand() {
+
+DCmdTrace::DCmdTrace(Debugger* d) {
+	debugger = d;
 }
 
-DebuggerCommand::DebuggerCommand(DebuggerParser* p) {
-	parser = p;
+string DCmdTrace::getName() {
+	return "Trace";
 }
 
+int DCmdTrace::getArgCount() {
+	return 0;
+}
+
+string DCmdTrace::execute(int c, int *args) {
+//	parser->getOSystem()->console().system().m6502().execute(1);
+	debugger->trace();
+	return "OK";
+}

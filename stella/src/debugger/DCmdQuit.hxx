@@ -13,38 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.3 2005-06-11 20:02:25 urchlay Exp $
+// $Id: DCmdQuit.hxx,v 1.1 2005-06-12 18:18:00 stephena Exp $
 //============================================================================
 
-#ifndef DEBUGGER_PARSER_HXX
-#define DEBUGGER_PARSER_HXX
+#ifndef DCMDQUIT_HXX
+#define DCMDQUIT_HXX
 
-#include "bspf.hxx"
+class Debugger;
+
 #include "DebuggerCommand.hxx"
-#include "OSystem.hxx"
 
-class DebuggerParser
+class DCmdQuit: public DebuggerCommand
 {
 	public:
-		DebuggerParser(OSystem *os);
-		~DebuggerParser();
+		DCmdQuit(Debugger* d);
 
-		string currentAddress();
-		void setDone();
-		string run(const string& command);
-		void getArgs(const string& command);
-		OSystem *getOSystem();
-
-	private:
-		int DebuggerParser::conv_hex_digit(char d);
-		DebuggerCommand *changeCmd;
-		DebuggerCommand *traceCmd;
-		DebuggerCommand *stepCmd;
-		DebuggerCommand *quitCmd;
-		bool done;
-		OSystem *myOSystem;
-		int args[10]; // FIXME: should be dynamic
-		int argCount;
+		string getName();
+		int getArgCount();
+		string execute(int c, int *args);
 };
 
 #endif

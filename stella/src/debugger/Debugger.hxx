@@ -13,32 +13,45 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.3 2005-06-09 15:08:23 stephena Exp $
+// $Id: Debugger.hxx,v 1.1 2005-06-12 18:18:00 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
 #define DEBUGGER_HXX
 
 class OSystem;
-class Console;
 class DebuggerParser;
 
+class Console;
+class System;
+class D6502;
+
 #include "DialogContainer.hxx"
+#include "M6502.hxx"
+#include "bspf.hxx"
 
 enum {
   kDebuggerWidth = 511,
   kDebuggerHeight = 383
 };
 
+// Constants for RAM area
+enum {
+  kRamStart = 0x80,
+  kRamSize = 128
+};
+
 /**
-  The base dialog for the ROM launcher in Stella.  Also acts as the parent
-  for all debugging operations in Stella (parser, etc).
+  The base dialog for all debugging widgets in Stella.  Also acts as the parent
+  for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.3 2005-06-09 15:08:23 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.1 2005-06-12 18:18:00 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
+  friend class DebuggerParser;
+
   public:
     /**
       Create a new menu stack
@@ -62,15 +75,56 @@ class Debugger : public DialogContainer
     void initializeVideo();
 
     /**
+      Inform this object of a console change.
+    */
+    void setConsole(Console* console);
+
+    /** Convenience methods to convert to hexidecimal values */
+    static char *to_hex_8(int i)
+    {
+      static char out[3];
+      sprintf(out, "%02x", i);
+      return out;
+    }
+    static char *to_hex_16(int i)
+    {
+      static char out[5];
+      sprintf(out, "%04x", i);
+      return out;
+    }
+
+  public:
+    /**
       Run the debugger command and return the result.
     */
     const string run(const string& command);
 
-    void setConsole(Console* console) { myConsole = console; }
+    /**
+      Give the contents of the CPU registers and disassembly of
+      next instruction.
+    */
+    const string state();
 
-  private:
+    /**
+      Return a formatted string containing the contents of the specified
+      device.
+    */
+    const string dumpRAM(uInt16 start);
+    const string dumpTIA();
+
+    // Read and write 128-byte RAM area
+    uInt8 readRAM(uInt16 addr);
+    void writeRAM(uInt16 addr, uInt8 value);
+
+    void quit();
+    void trace();
+
+  protected:
     Console* myConsole;
+    System* mySystem;
+
     DebuggerParser* myParser;
+    D6502* myDebugger;
 };
 
 #endif

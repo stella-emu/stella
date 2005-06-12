@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.38 2005-06-11 01:52:49 markgrebe Exp $
+// $Id: EventHandler.hxx,v 1.39 2005-06-12 18:18:00 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.38 2005-06-11 01:52:49 markgrebe Exp $
+  @version $Id: EventHandler.hxx,v 1.39 2005-06-12 18:18:00 stephena Exp $
 */
 class EventHandler
 {
@@ -203,6 +203,11 @@ class EventHandler
       return (mod & KMOD_SHIFT);
     }
 
+    void enterMenuMode();
+    void leaveMenuMode();
+    void enterDebugMode();
+    void leaveDebugMode();
+
     // Holds static strings for the remap menu
     static ActionList ourActionList[61];
 
@@ -276,11 +281,6 @@ class EventHandler
     void changeState();
     void loadState();
     void takeSnapshot();
-
-    void enterMenuMode();
-    void leaveMenuMode();
-    void enterDebugMode();
-    void leaveDebugMode();
 
   private:
     // Global OSystem object
