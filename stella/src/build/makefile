@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.91 2005-06-11 20:02:24 urchlay Exp $
+## $Id: makefile,v 1.92 2005-06-12 18:18:42 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -65,9 +65,10 @@ SRC      = ..
 CORE     = $(SRC)/emucore
 COMMON   = $(SRC)/common
 GUI      = $(SRC)/gui
+DBG      = $(SRC)/debugger
 
 INCLUDES  = -I. -I$(CORE) -I$(CORE)/m6502/src \
-            -I$(CORE)/m6502/src/bspf/src -I$(COMMON) -I$(GUI) -I$(SRC)/unix -I$(SRC)/win32
+            -I$(CORE)/m6502/src/bspf/src -I$(COMMON) -I$(GUI) -I$(DBG) -I$(SRC)/unix -I$(SRC)/win32
 
 ## set some sane optimizations if none have been provided
 ifndef OPTIMIZATIONS
@@ -154,13 +155,15 @@ win32-gl:
 ###############################################################################
 M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
-GUI_OBJS = Font.o Menu.o Launcher.o Debugger.o \
+GUI_OBJS = Font.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
            ProgressDialog.o \
            DebuggerDialog.o PromptWidget.o
+
+DBG_OBJS = Debugger.o DebuggerParser.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -170,8 +173,7 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             Props.o PropsSet.o Random.o SoundNull.o Switches.o Settings.o TIA.o \
             Serializer.o Deserializer.o EventHandler.o FrameBuffer.o \
             OSystem.o FSNode.o unzip.o \
-				DebuggerParser.o DebuggerCommand.o DCmdQuit.o DCmdTrace.o \
-            $(M6502_OBJS) $(GUI_OBJS)
+            $(M6502_OBJS) $(GUI_OBJS) $(DBG_OBJS)
 
 stella: $(CORE_OBJS) $(OBJS)
 	$(LD) -o $(EXE_NAME) $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
@@ -390,9 +392,6 @@ Menu.o: $(GUI)/Menu.cxx $(GUI)/Menu.hxx
 Launcher.o: $(GUI)/Launcher.cxx $(GUI)/Launcher.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Launcher.cxx
 
-Debugger.o: $(GUI)/Debugger.cxx $(GUI)/Debugger.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Debugger.cxx
-
 Widget.o: $(GUI)/Widget.cxx $(GUI)/Widget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Widget.cxx
 
@@ -456,15 +455,8 @@ DebuggerDialog.o: $(GUI)/DebuggerDialog.cxx $(GUI)/DebuggerDialog.hxx
 PromptWidget.o: $(GUI)/PromptWidget.cxx $(GUI)/PromptWidget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/PromptWidget.cxx
 
-DebuggerParser.o: $(COMMON)/DebuggerParser.cxx $(COMMON)/DebuggerParser.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/DebuggerParser.cxx
+Debugger.o: $(DBG)/Debugger.cxx $(DBG)/Debugger.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(DBG)/Debugger.cxx
 
-DebuggerCommand.o: $(COMMON)/DebuggerCommand.cxx $(COMMON)/DebuggerCommand.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/DebuggerCommand.cxx
-
-DCmdQuit.o: $(COMMON)/DCmdQuit.cxx $(COMMON)/DCmdQuit.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/DCmdQuit.cxx
-
-DCmdTrace.o: $(COMMON)/DCmdTrace.cxx $(COMMON)/DCmdTrace.hxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(COMMON)/DCmdTrace.cxx
-
+DebuggerParser.o: $(DBG)/DebuggerParser.cxx $(DBG)/DebuggerParser.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(DBG)/DebuggerParser.cxx
