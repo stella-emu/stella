@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.1 2005-06-10 17:46:06 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -79,6 +79,7 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
   string version = string("Stella version ") + STELLA_VERSION + "\n";
   print(version.c_str());
   print("Debugger is ready\n");
+  print( instance()->debugger().state() + "\n"); // FIXME: this doesn't work yet
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
 }

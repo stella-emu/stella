@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.1 2005-06-12 18:18:00 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -37,15 +37,13 @@ class DebuggerParser
 
 	private:
 		int DebuggerParser::conv_hex_digit(char d);
+		bool DebuggerParser::subStringMatch(const string& needle, const string& haystack);
 
 		Debugger* debugger;
 
-		DebuggerCommand *changeCmd;
-		DebuggerCommand *traceCmd;
-		DebuggerCommand *stepCmd;
-		DebuggerCommand *quitCmd;
 		bool done;
 
+		string verb;
 		int args[10]; // FIXME: should be dynamic
 		int argCount;
 };

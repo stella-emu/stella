@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.1 2005-06-12 18:18:00 stephena Exp $
+// $Id: Debugger.cxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -108,11 +108,64 @@ const string Debugger::state()
   result += to_hex_8(myDebugger->sp());
   result += " P=";
   result += to_hex_8(myDebugger->ps());
+  result += "/";
+  formatFlags(myDebugger->ps(), buf);
+  result += buf;
   result += "\n  ";
   myDebugger->disassemble(myDebugger->pc(), buf);
   result += buf;
 
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::reset() {
+	int pc = myDebugger->dPeek(0xfffc);
+	myDebugger->pc(pc);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::formatFlags(int f, char *out) {
+	// NV-BDIZC
+
+	if(f & 128)
+		out[0] = 'N';
+	else
+		out[0] = 'n';
+
+	if(f & 64)
+		out[1] = 'V';
+	else
+		out[1] = 'v';
+
+	out[2] = '-';
+
+	if(f & 16)
+		out[3] = 'B';
+	else
+		out[3] = 'b';
+
+	if(f & 8)
+		out[4] = 'D';
+	else
+		out[4] = 'd';
+
+	if(f & 4)
+		out[5] = 'I';
+	else
+		out[5] = 'i';
+
+	if(f & 2)
+		out[6] = 'Z';
+	else
+		out[6] = 'z';
+
+	if(f & 1)
+		out[7] = 'C';
+	else
+		out[7] = 'c';
+
+	out[8] = '\0';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,6 +178,18 @@ uInt8 Debugger::readRAM(uInt16 addr)
 void Debugger::writeRAM(uInt16 addr, uInt8 value)
 {
   mySystem->poke(addr + kRamStart, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Debugger::setRAM(int argCount, int *args) {
+  int address = args[0];
+  for(int i=1; i<argCount; i++)
+    mySystem->poke(address++, args[i]);
+
+  string ret = "changed ";
+  ret += args[0];
+  ret += " locations";
+  return ret;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,7 +243,81 @@ void Debugger::quit()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::trace()
+void Debugger::step()
 {
   mySystem->m6502().execute(1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// trace is just like step, except it treats a subroutine call as one
+// instruction.
+
+// This implementation is not perfect: it just watches the program counter,
+// instead of tracking (possibly) nested JSR/RTS pairs. In particular, it
+// will fail for recursive subroutine calls. However, with 128 bytes of RAM
+// to share between stack and variables, I doubt any 2600 games will ever
+// use recursion...
+
+void Debugger::trace()
+{
+  // 32 is the 6502 JSR instruction:
+  if(mySystem->peek(myDebugger->pc()) == 32) {
+    int targetPC = myDebugger->pc() + 3; // return address
+    while(myDebugger->pc() != targetPC)
+      mySystem->m6502().execute(1);
+  } else {
+    step();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setA(int a) {
+  myDebugger->a(a);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setX(int x) {
+  myDebugger->x(x);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setY(int y) {
+  myDebugger->y(y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setS(int sp) {
+  myDebugger->sp(sp);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setPC(int pc) {
+  myDebugger->pc(pc);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // NV-BDIZC
+void Debugger::toggleC() {
+  myDebugger->ps( myDebugger->ps() ^ 0x01 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleZ() {
+  myDebugger->ps( myDebugger->ps() ^ 0x02 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleD() {
+  myDebugger->ps( myDebugger->ps() ^ 0x08 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleV() {
+  myDebugger->ps( myDebugger->ps() ^ 0x40 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleN() {
+  myDebugger->ps( myDebugger->ps() ^ 0x80 );
 }

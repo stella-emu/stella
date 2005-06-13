@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.1.1.1 2001-12-27 19:54:29 bwmott Exp $
+// $Id: D6502.cxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -37,6 +37,12 @@ static uInt16 dpeek(System* system, uInt16 address)
 {
   return (uInt16)system->peek(address) |
       (((uInt16)system->peek(address + 1)) << 8);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 D6502::dPeek(uInt16 address)
+{
+  return dpeek(mySystem, address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
