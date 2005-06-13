@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.3 2005-06-13 17:24:42 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -22,7 +22,6 @@
 class Debugger;
 
 #include "bspf.hxx"
-#include "DebuggerCommand.hxx"
 
 class DebuggerParser
 {
