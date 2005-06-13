@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
+// $Id: Debugger.cxx,v 1.3 2005-06-13 19:04:54 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -110,6 +110,9 @@ const string Debugger::state()
   result += to_hex_8(myDebugger->ps());
   result += "/";
   formatFlags(myDebugger->ps(), buf);
+  result += buf;
+  result += "  Cycle ";
+  sprintf(buf, "%d", mySystem->cycles());
   result += buf;
   result += "\n  ";
   myDebugger->disassemble(myDebugger->pc(), buf);
