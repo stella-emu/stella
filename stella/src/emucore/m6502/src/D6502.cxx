@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
+// $Id: D6502.cxx,v 1.3 2005-06-13 13:35:09 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -53,68 +53,81 @@ uInt16 D6502::disassemble(uInt16 address, char* buffer)
   switch(M6502::ourAddressingModeTable[opcode])
   {
     case M6502::Absolute:
-      sprintf(buffer, "%s $%04X", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1));
+      sprintf(buffer, "%s $%04X ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          dpeek(mySystem, address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
     case M6502::AbsoluteX:
-      sprintf(buffer, "%s $%04X,x", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1));
+      sprintf(buffer, "%s $%04X,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          dpeek(mySystem, address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
     case M6502::AbsoluteY:
-      sprintf(buffer, "%s $%04X,y", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1));
+      sprintf(buffer, "%s $%04X,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          dpeek(mySystem, address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
     case M6502::Immediate:
-      sprintf(buffer, "%s #$%02X", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1));
+      sprintf(buffer, "%s #$%02X ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          mySystem->peek(address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::Implied:
-      sprintf(buffer, "%s", M6502::ourInstructionMnemonicTable[opcode]);
+      sprintf(buffer, "%s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+				M6502::ourInstructionProcessorCycleTable[opcode]);
       return 1;
 
     case M6502::Indirect:
-      sprintf(buffer, "%s ($%04X)", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1));
+      sprintf(buffer, "%s ($%04X) ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          dpeek(mySystem, address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
     case M6502::IndirectX:
-      sprintf(buffer, "%s ($%02X,x)", 
+      sprintf(buffer, "%s ($%02X,x) ; %d", 
           M6502::ourInstructionMnemonicTable[opcode], 
-          mySystem->peek(address + 1));
+          mySystem->peek(address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::IndirectY:
-      sprintf(buffer, "%s ($%02X),y", 
+      sprintf(buffer, "%s ($%02X),y ; %d", 
           M6502::ourInstructionMnemonicTable[opcode], 
-          mySystem->peek(address + 1));
+          mySystem->peek(address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::Relative:
-      sprintf(buffer, "%s $%04X", M6502::ourInstructionMnemonicTable[opcode],
-          address + 2 + ((Int16)(Int8)mySystem->peek(address + 1))); 
+      sprintf(buffer, "%s $%04X ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          address + 2 + ((Int16)(Int8)mySystem->peek(address + 1)),
+			 M6502::ourInstructionProcessorCycleTable[opcode]); 
       return 2;
 
     case M6502::Zero:
-      sprintf(buffer, "%s $%02X", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1));
+      sprintf(buffer, "%s $%02X ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          mySystem->peek(address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::ZeroX:
-      sprintf(buffer, "%s $%02X,x", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1));
+      sprintf(buffer, "%s $%02X,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          mySystem->peek(address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::ZeroY:
-      sprintf(buffer, "%s $%02X,y", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1));
+      sprintf(buffer, "%s $%02X,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          mySystem->peek(address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     default:
-      sprintf(buffer, "dc  $%02X", opcode);
+      sprintf(buffer, "dc  $%02X ; %d", opcode,
+				M6502::ourInstructionProcessorCycleTable[opcode]);
       return 1;
   } 
 }
