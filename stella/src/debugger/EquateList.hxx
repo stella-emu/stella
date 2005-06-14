@@ -7,7 +7,7 @@ class EquateList {
 		EquateList();
 		char *getLabel(int addr);
 		char *EquateList::getFormatted(int addr, int places);
-		int getAddress(char *label);
+		int getAddress(const char *label);
 };
 
 #endif

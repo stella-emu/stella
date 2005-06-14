@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.4 2005-06-14 00:58:39 urchlay Exp $
+// $Id: Debugger.cxx,v 1.5 2005-06-14 03:11:03 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -192,13 +192,18 @@ void Debugger::writeRAM(uInt16 addr, uInt8 value)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::setRAM(int argCount, int *args) {
+  char buf[10];
+
   int address = args[0];
   for(int i=1; i<argCount; i++)
     mySystem->poke(address++, args[i]);
 
   string ret = "changed ";
-  ret += args[0];
-  ret += " locations";
+  sprintf(buf, "%d", argCount-1);
+  ret += buf;
+  ret += " location";
+  if(argCount > 2)
+    ret += "s";
   return ret;
 }
 

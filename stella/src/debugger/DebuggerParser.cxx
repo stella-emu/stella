@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.3 2005-06-14 03:11:03 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
+#include "EquateList.hxx"
 
 // Constants for argument processing
 enum {
@@ -32,10 +33,12 @@ enum {
 DebuggerParser::DebuggerParser(Debugger* d)
   	: debugger(d)
 {
+	equateList = new EquateList();
 	done = false;
 }
 
 DebuggerParser::~DebuggerParser() {
+	delete equateList;
 }
 
 string DebuggerParser::currentAddress() {
@@ -53,13 +56,35 @@ int DebuggerParser::conv_hex_digit(char d) {
 		return d - 'a' + 10;
 	else if(d >= 'A' && d <= 'F')
 		return d - 'A' + 10;
-	else return 0;
+	else return -1;
 }
 
-void DebuggerParser::getArgs(const string& command) {
+// Given a string argument that's either a label or a
+// hex value, either dereference the label or convert
+// the hex to an int. Returns -1 on error.
+int DebuggerParser::decipher_arg(string &arg) {
+	const char *a = arg.c_str();
+	int address = equateList->getAddress(a);
+	// cerr << "decipher_arg: equateList->getAddress(" << a << ") == " << address << endl;
+	if(address >= 0)
+		return address;
+
+	address = 0;
+	while(*a != '\0') {
+		int hex = conv_hex_digit(*a++);
+		if(hex < 0)
+			return -1;
+
+		address = (address << 4) + hex;
+	}
+
+	return address;
+}
+
+bool DebuggerParser::getArgs(const string& command) {
 	int state = kIN_COMMAND;
 	int deref = 0;
-	int curArg = 0;
+	string curArg = "";
 	argCount = 0;
 	verb = "";
 	const char *c = command.c_str();
@@ -85,8 +110,9 @@ void DebuggerParser::getArgs(const string& command) {
 				break;
 
 			case kIN_ARG_START:
-				curArg = 0;
+				curArg = "";
 				state = kIN_ARG_CONT;
+				// FIXME: actually use this.
 				if(*c == '*') {
 					deref = 1;
 					c++;
@@ -95,7 +121,7 @@ void DebuggerParser::getArgs(const string& command) {
 				} // FALL THROUGH!
 
 			case kIN_ARG_CONT:
-				if(isxdigit(*c)) {
+				/*if(isxdigit(*c)) {
 					int dig = conv_hex_digit(*c);
 					curArg = (curArg << 4) + dig;
 					*c++;
@@ -103,23 +129,37 @@ void DebuggerParser::getArgs(const string& command) {
 					args[argCount++] = curArg;
 					state = kIN_SPACE;
 				}
-				break;
+				break;*/
+				if(isalpha(*c) || isdigit(*c) || *c == '_') {
+					curArg += *c++;
+					// cerr << "curArg: " << curArg << endl;
+				} else {
+					args[argCount] = decipher_arg(curArg);
+					if(args[argCount] < 0)
+						return false;
+					argCount++;
+					curArg = "";
+					state = kIN_SPACE;
+				}
+
 		}
 
 		if(argCount == 10) {
 			cerr << "reached max 10 args" << endl;
-			return;
+			return true;
 		}
 	}
 
 	// pick up last arg, if any:
 	if(state == kIN_ARG_CONT || state == kIN_ARG_START)
-		args[argCount++] = curArg;
+		if( (args[argCount++] = decipher_arg(curArg)) < 0)
+			return false;
 
 	// for(int i=0; i<argCount; i++)
 		// cerr << "args[" << i << "] == " << args[i] << endl;
 
 	// cerr << endl;
+	return true;
 }
 
 bool DebuggerParser::subStringMatch(const string& needle, const string& haystack) {
@@ -135,7 +175,8 @@ bool DebuggerParser::subStringMatch(const string& needle, const string& haystack
 string DebuggerParser::run(const string& command) {
 	string result;
 
-	getArgs(command);
+	if(!getArgs(command))
+		return "invalid label or address";
 
 	// "verb" is the command, stripped of any arguments.
 	// In the if/else below, put shorter command names first.

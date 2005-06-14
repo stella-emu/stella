@@ -102,9 +102,9 @@ char *EquateList::getFormatted(int addr, int places) {
 	return buf;
 }
 
-int EquateList::getAddress(char *label) {
+int EquateList::getAddress(const char *label) {
 	for(int i=0; ourVcsEquates[i].label != NULL; i++)
-		if( strcmp(ourVcsEquates[i].label, label) == 0 )
+		if( strcasecmp(ourVcsEquates[i].label, label) == 0 )
 			return ourVcsEquates[i].address;
 
 	return -1;

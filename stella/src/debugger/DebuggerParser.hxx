@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.3 2005-06-13 17:24:42 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.4 2005-06-14 03:11:03 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -22,6 +22,7 @@
 class Debugger;
 
 #include "bspf.hxx"
+#include "EquateList.hxx"
 
 class DebuggerParser
 {
@@ -32,13 +33,15 @@ class DebuggerParser
 		string currentAddress();
 		void setDone();
 		string run(const string& command);
-		void getArgs(const string& command);
+		bool getArgs(const string& command);
 
 	private:
 		int DebuggerParser::conv_hex_digit(char d);
 		bool DebuggerParser::subStringMatch(const string& needle, const string& haystack);
+		int decipher_arg(string &arg);
 
 		Debugger* debugger;
+		EquateList *equateList;
 
 		bool done;
 
