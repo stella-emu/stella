@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.72 2005-06-07 21:22:38 stephena Exp $
+// $Id: EventHandler.cxx,v 1.73 2005-06-14 12:18:36 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1067,6 +1067,7 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_LEFT ]      = Event::JoystickZeroLeft;
   myKeyTable[ SDLK_RIGHT ]     = Event::JoystickZeroRight;
   myKeyTable[ SDLK_SPACE ]     = Event::JoystickZeroFire;
+  myKeyTable[ SDLK_LCTRL ]     = Event::JoystickZeroFire;
   myKeyTable[ SDLK_4 ]         = Event::BoosterGripZeroTrigger;
   myKeyTable[ SDLK_5 ]         = Event::BoosterGripZeroBooster;
 

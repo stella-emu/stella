@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.18 2005-05-16 15:37:30 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.19 2005-06-14 12:18:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,14 +40,15 @@ enum {
   kEMapCmd  = 'EMAP',
   kInfoCmd  = 'INFO',
   kHelpCmd  = 'HELP',
-  kAboutCmd = 'ABOU'
+  kAboutCmd = 'ABOU',
+  kExitCmd  = 'EXIM'
 };
 
 enum {
   kRowHeight      = 22,
   kBigButtonWidth = 90,
   kMainMenuWidth  = (kBigButtonWidth + 2 * 8),
-  kMainMenuHeight = 6 * kRowHeight + 10,
+  kMainMenuHeight = 7 * kRowHeight + 10,
 };
 
 #define addBigButton(label, cmd, hotkey) \
@@ -80,6 +81,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   addBigButton("Game Information", kInfoCmd, 0);
   addBigButton("Help", kHelpCmd, 0);
   addBigButton("About", kAboutCmd, 0);
+  addBigButton("Exit Menu", kExitCmd, 0);
 
   // Set some sane values for the dialog boxes
   int fbWidth  = osystem->frameBuffer().baseWidth();
@@ -171,6 +173,10 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd, int data)
 
     case kAboutCmd:
       parent()->addDialog(myAboutDialog);
+      break;
+
+    case kExitCmd:
+      instance()->eventHandler().leaveMenuMode();
       break;
 
     default:
