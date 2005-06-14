@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.13 2005-06-10 17:46:07 stephena Exp $
+// $Id: Widget.cxx,v 1.14 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,7 +40,7 @@ Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
       _flags(0),
       _hasFocus(false),
       _color(kTextColor),
-      _font((GUI::Font&)boss->instance()->font())
+      _font((GUI::Font*)&(boss->instance()->font()))
 {
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;

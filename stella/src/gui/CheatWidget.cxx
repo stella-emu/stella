@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.1 2005-06-12 20:12:10 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.2 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,14 +26,48 @@
 #include "Widget.hxx"
 
 #include "ListWidget.hxx"
+#include "EditTextWidget.hxx"
 
 #include "CheatWidget.hxx"
+
+enum {
+  kSearchCmd,
+  kCmpCmd,
+  kRestartCmd
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
+  int xpos = 10;
+  const int bwidth = 50, space = 20;
+
+  // Add the edit textbox, set to accept decimal values
+  myEditBox = new EditTextWidget(boss, 10, 10, 80, 16, "");
+  myEditBox->setFont(_boss->instance()->consoleFont());
+  myEditBox->setEditString("HELLO!");
+//  myEditBox->setTarget(this);
+
+//  myResult = new StaticTextWidget();
+
+  // Add the three search-related buttons
+  mySearchButton  = new ButtonWidget(boss, xpos, _h - space, bwidth, 16,
+                                     "Search", kSearchCmd, 0);
+  mySearchButton->setTarget(this);
+    xpos += 8 + bwidth;
+
+  myCompareButton = new ButtonWidget(boss, xpos, _h - space, bwidth, 16,
+                                     "Compare", kCmpCmd, 0);
+  myCompareButton->setTarget(this);
+    xpos += 8 + bwidth;
+
+  myRestartButton = new ButtonWidget(boss, xpos, _h - space, bwidth, 16,
+                                     "Restart", kRestartCmd, 0);
+  myRestartButton->setTarget(this);
+    xpos += 8 + bwidth;
+
   ListWidget* myList = new ListWidget(boss, 10, 24, 100, h - 50);
   myList->setTarget(this);
   myList->setEditable(false);

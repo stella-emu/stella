@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.14 2005-06-10 17:46:06 stephena Exp $
+// $Id: ListWidget.cxx,v 1.15 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -417,10 +417,10 @@ int ListWidget::getCaretPos() const
   {
     char temp[10];
     sprintf(temp, "%2d. ", (_selectedItem + _numberingMode));
-    caretpos += _font.getStringWidth(temp);
+    caretpos += _font->getStringWidth(temp);
   }
 
-  caretpos += _font.getStringWidth(_list[_selectedItem]);
+  caretpos += _font->getStringWidth(_list[_selectedItem]);
 
   return caretpos;
 }

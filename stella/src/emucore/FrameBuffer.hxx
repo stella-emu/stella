@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.38 2005-06-08 18:45:08 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.39 2005-06-14 01:11:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -46,7 +46,7 @@ enum TextAlignment {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.38 2005-06-08 18:45:08 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.39 2005-06-14 01:11:48 stephena Exp $
 */
 class FrameBuffer
 {
@@ -245,7 +245,7 @@ class FrameBuffer
       @param deltax 
       @param useEllipsis  Whether to use '...' when the string is too long
     */
-    void drawString(const GUI::Font& font, const string& str, int x, int y, int w,
+    void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
                     OverlayColor color, TextAlignment align = kTextAlignLeft,
                     int deltax = 0, bool useEllipsis = true);
 
@@ -363,7 +363,7 @@ class FrameBuffer
       @param y      The y coordinate
       @param color  The color of the character
     */
-    virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
+    virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
                           OverlayColor color) = 0;
 
     /**

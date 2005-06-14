@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.43 2005-06-08 18:45:08 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.44 2005-06-14 01:11:48 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -185,7 +185,7 @@ void FrameBuffer::update()
           // Draw the bounded box and text
           blendRect(x+1, y+2, w-2, h-4, kBGColor);
           box(x, y+1, w, h-2, kColor, kColor);
-          drawString(myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
+          drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
           myMessageTime--;
 
           // Erase this message on next update
@@ -536,14 +536,14 @@ void FrameBuffer::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::drawString(const GUI::Font& font, const string& s,
+void FrameBuffer::drawString(const GUI::Font* font, const string& s,
                              int x, int y, int w,
                              OverlayColor color, TextAlignment align,
                              int deltax, bool useEllipsis)
 {
   const int leftX = x, rightX = x + w;
   unsigned int i;
-  int width = font.getStringWidth(s);
+  int width = font->getStringWidth(s);
   string str;
 	
   if(useEllipsis && width > w)
@@ -554,7 +554,7 @@ void FrameBuffer::drawString(const GUI::Font& font, const string& s,
     // What is best really depends on the context; but unless we want to
     // make this configurable, replacing the middle probably is a good
     // compromise.
-    const int ellipsisWidth = font.getStringWidth("...");
+    const int ellipsisWidth = font->getStringWidth("...");
 		
     // SLOW algorithm to remove enough of the middle. But it is good enough for now.
     const int halfWidth = (w - ellipsisWidth) / 2;
@@ -562,7 +562,7 @@ void FrameBuffer::drawString(const GUI::Font& font, const string& s,
 		
     for(i = 0; i < s.size(); ++i)
     {
-      int charWidth = font.getCharWidth(s[i]);
+      int charWidth = font->getCharWidth(s[i]);
       if(w2 + charWidth > halfWidth)
         break;
 
@@ -582,13 +582,13 @@ void FrameBuffer::drawString(const GUI::Font& font, const string& s,
     // (width + ellipsisWidth - w)
     int skip = width + ellipsisWidth - w;
     for(; i < s.size() && skip > 0; ++i)
-      skip -= font.getCharWidth(s[i]);
+      skip -= font->getCharWidth(s[i]);
 
     // Append the remaining chars, if any
     for(; i < s.size(); ++i)
       str += s[i];
 
-    width = font.getStringWidth(str);
+    width = font->getStringWidth(str);
   }
   else
     str = s;
@@ -601,7 +601,7 @@ void FrameBuffer::drawString(const GUI::Font& font, const string& s,
   x += deltax;
   for(i = 0; i < str.size(); ++i)
   {
-    w = font.getCharWidth(str[i]);
+    w = font->getCharWidth(str[i]);
     if(x+w > rightX)
       break;
     if(x >= leftX)

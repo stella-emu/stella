@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.3 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,7 +111,7 @@ void PromptWidget::drawWidget(bool hilite)
 #else
       char c = buffer((start + line) * _lineWidth + column);
 #endif
-      fb.drawChar(instance()->consoleFont(), c, x, y, kTextColor);
+      fb.drawChar(&instance()->consoleFont(), c, x, y, kTextColor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -637,7 +637,7 @@ void PromptWidget::drawCaret()
 
   char c = buffer(_currentPos);
   fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
-  fb.drawChar(_boss->instance()->consoleFont(), c, x, y + 2, kBGColor);
+  fb.drawChar(&_boss->instance()->consoleFont(), c, x, y + 2, kBGColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

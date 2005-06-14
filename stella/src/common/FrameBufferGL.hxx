@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.15 2005-06-08 18:45:08 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.16 2005-06-14 01:11:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.15 2005-06-08 18:45:08 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.16 2005-06-14 01:11:48 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -164,7 +164,7 @@ class FrameBufferGL : public FrameBuffer
       @param y      The y coordinate
       @param color  The color of the character
     */
-    virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
+    virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
                           OverlayColor color);
 
     /**

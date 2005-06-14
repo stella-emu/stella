@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.28 2005-06-08 18:45:07 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.29 2005-06-14 01:11:47 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -352,26 +352,25 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawChar(const GUI::Font& FONT, uInt8 chr,
+void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
                              uInt32 xorig, uInt32 yorig, OverlayColor color)
 {
-  // FIXME - I do this to prevent 'const' warnings; it should be done better
-  GUI::Font& font = (GUI::Font&)FONT;
+  GUI::Font* font = (GUI::Font*) FONT;
 
   // If this character is not included in the font, use the default char.
-  if(chr < font.desc().firstchar ||
-     chr >= font.desc().firstchar + font.desc().size)
+  if(chr < font->desc().firstchar ||
+     chr >= font->desc().firstchar + font->desc().size)
   {
     if (chr == ' ')
       return;
-    chr = font.desc().defaultchar;
+    chr = font->desc().defaultchar;
   }
 
-  const Int32 w = font.getCharWidth(chr);
-  const Int32 h = font.getFontHeight();
-  chr -= font.desc().firstchar;
-  const uInt16* tmp = font.desc().bits + (font.desc().offset ?
-                      font.desc().offset[chr] : (chr * h));
+  const Int32 w = font->getCharWidth(chr);
+  const Int32 h = font->getFontHeight();
+  chr -= font->desc().firstchar;
+  const uInt16* tmp = font->desc().bits + (font->desc().offset ?
+                      font->desc().offset[chr] : (chr * h));
 
   SDL_Rect rect;
   for(int y = 0; y < h; y++)

@@ -13,42 +13,44 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.hxx,v 1.2 2005-06-14 01:11:48 stephena Exp $
+// $Id: EditTextWidget.hxx,v 1.1 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef CHEAT_WIDGET_HXX
-#define CHEAT_WIDGET_HXX
+#ifndef EDIT_TEXT_WIDGET_HXX
+#define EDIT_TEXT_WIDGET_HXX
 
-class GuiObject;
-class ButtonWidget;
-class StaticTextWidget;
-class EditTextWidget;
+#include "Rect.hxx"
+#include "EditableWidget.hxx"
 
-#include "Widget.hxx"
-#include "Command.hxx"
 
-class CheatWidget : public Widget, public CommandSender
+/* EditTextWidget */
+class EditTextWidget : public EditableWidget
 {
   public:
-    CheatWidget(GuiObject *boss, int x, int y, int w, int h);
-    virtual ~CheatWidget();
+    EditTextWidget(GuiObject* boss, int x, int y, int w, int h, const string& text);
 
-    Widget* activeWidget() { return myActiveWidget; }
+    void setEditString(const string& str);
 
-    void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleMouseDown(int x, int y, int button, int clickCount);
 
-  private:
-    Widget* myActiveWidget;
+    virtual bool wantsFocus() { return true; }
 
-    EditTextWidget* myEditBox;
-    StaticTextWidget* myResult;
+  protected:
+    void drawWidget(bool hilite);
+    void receivedFocusWidget();
+    void lostFocusWidget();
 
-    ButtonWidget* mySearchButton;
-    ButtonWidget* myCompareButton;
-    ButtonWidget* myRestartButton;
+    void startEditMode();
+    void endEditMode();
+    void abortEditMode();
+
+    GUI::Rect getEditRect() const;
+
+  protected:
+    string _backupString;
 };
 
 #endif

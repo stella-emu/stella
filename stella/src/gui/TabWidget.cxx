@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.5 2005-06-12 20:12:10 stephena Exp $
+// $Id: TabWidget.cxx,v 1.6 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -81,7 +81,7 @@ int TabWidget::addTab(const string& title)
   int numTabs = _tabs.size();
 
   // Determine the new tab width
-  int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
+  int newWidth = _font->getStringWidth(title) + 2 * kTabPadding;
   if (_tabWidth < newWidth)
     _tabWidth = newWidth;
 

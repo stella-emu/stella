@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.93 2005-06-12 20:12:10 stephena Exp $
+## $Id: makefile,v 1.94 2005-06-14 01:11:47 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -157,6 +157,7 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
 GUI_OBJS = Font.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
+           EditableWidget.o EditTextWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
@@ -406,6 +407,12 @@ ListWidget.o: $(GUI)/ListWidget.cxx $(GUI)/ListWidget.hxx
 
 TabWidget.o: $(GUI)/TabWidget.cxx $(GUI)/TabWidget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/TabWidget.cxx
+
+EditableWidget.o: $(GUI)/EditableWidget.cxx $(GUI)/EditableWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/EditableWidget.cxx
+
+EditTextWidget.o: $(GUI)/EditTextWidget.cxx $(GUI)/EditTextWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/EditTextWidget.cxx
 
 Dialog.o: $(GUI)/Dialog.cxx $(GUI)/Dialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Dialog.cxx

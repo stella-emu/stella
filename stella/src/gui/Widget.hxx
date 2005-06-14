@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.15 2005-06-10 17:46:07 stephena Exp $
+// $Id: Widget.hxx,v 1.16 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -66,7 +66,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.15 2005-06-10 17:46:07 stephena Exp $
+  @version $Id: Widget.hxx,v 1.16 2005-06-14 01:11:48 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -109,8 +109,8 @@ class Widget : public GuiObject
     bool isVisible() const      { return !(_flags & WIDGET_INVISIBLE); }
 
     void setColor(OverlayColor color)   { _color = color; }
-    void setFont(const GUI::Font& font) { _font = font; }
-    const GUI::Font& font() { return _font; }
+    void setFont(const GUI::Font& font) { _font = (GUI::Font*) &font; }
+    const GUI::Font* font() { return _font; }
 
   protected:
     virtual void drawWidget(bool hilite) {}
@@ -134,7 +134,7 @@ class Widget : public GuiObject
     int           _flags;
     bool          _hasFocus;
     OverlayColor  _color;
-    GUI::Font&    _font;
+    GUI::Font*    _font;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);

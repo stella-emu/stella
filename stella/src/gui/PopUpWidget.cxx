@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.10 2005-06-08 18:45:09 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.11 2005-06-14 01:11:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -280,7 +280,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
   _selectedItem = -1;
 
   if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font.getStringWidth(_label);
+    _labelWidth = _font->getStringWidth(_label);
 
   myPopUpDialog = new PopUpDialog(this, x + getAbsX(), y + getAbsY());
 }
@@ -372,7 +372,7 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw the selected entry, if any
   if(_selectedItem >= 0)
   {
-    TextAlignment align = (_font.getStringWidth(_entries[_selectedItem].name) > w-6) ?
+    TextAlignment align = (_font->getStringWidth(_entries[_selectedItem].name) > w-6) ?
                            kTextAlignRight : kTextAlignLeft;
     fb.drawString(_font, _entries[_selectedItem].name, x+2, _y+3, w-6,
                   !isEnabled() ? kColor : kTextColor, align);
