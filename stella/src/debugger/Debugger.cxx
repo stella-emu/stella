@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.3 2005-06-13 19:04:54 urchlay Exp $
+// $Id: Debugger.cxx,v 1.4 2005-06-14 00:58:39 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -94,7 +94,7 @@ const string Debugger::run(const string& command)
 const string Debugger::state()
 {
   string result;
-  char buf[255];
+  char buf[255], bbuf[255];
 
   result += "\nPC=";
   result += to_hex_16(myDebugger->pc());
@@ -115,7 +115,14 @@ const string Debugger::state()
   sprintf(buf, "%d", mySystem->cycles());
   result += buf;
   result += "\n  ";
-  myDebugger->disassemble(myDebugger->pc(), buf);
+  int count = myDebugger->disassemble(myDebugger->pc(), buf);
+  for(int i=0; i<count; i++) {
+    sprintf(bbuf, "%02x ", readRAM(myDebugger->pc() + i));
+    result += bbuf;
+  }
+  if(count < 3) result += "   ";
+  if(count < 2) result += "   ";
+  result += " ";
   result += buf;
 
   return result;
