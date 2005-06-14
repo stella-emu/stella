@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.1 2005-06-14 01:11:48 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.2 2005-06-14 18:55:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ class EditableWidget : public Widget
 
     virtual GUI::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;
-    void drawCaret(bool erase);
+    void drawCaret();
     bool setCaretPos(int newPos);
     bool adjustOffset();
 	

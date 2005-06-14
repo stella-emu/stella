@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.10 2005-06-10 17:46:06 stephena Exp $
+// $Id: GuiObject.hxx,v 1.11 2005-06-14 18:55:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,13 +27,12 @@ class DialogContainer;
 class Widget;
 
 #include "Command.hxx"
-#include "bspf.hxx"
 
 /**
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.10 2005-06-10 17:46:06 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.11 2005-06-14 18:55:36 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {

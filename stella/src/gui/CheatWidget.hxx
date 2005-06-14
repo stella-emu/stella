@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.hxx,v 1.2 2005-06-14 01:11:48 stephena Exp $
+// $Id: CheatWidget.hxx,v 1.3 2005-06-14 18:55:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,13 +25,27 @@
 class GuiObject;
 class ButtonWidget;
 class StaticTextWidget;
-class EditTextWidget;
+class EditNumWidget;
+class ListWidget;
 
+#include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 
+
 class CheatWidget : public Widget, public CommandSender
 {
+  private:
+    struct AddrValue {
+      uInt16 addr;
+      uInt8 value;
+    };
+
+    typedef GUI::Array<AddrValue> AddrValueList;
+
+    AddrValueList mySearchArray;
+    AddrValueList myCompareArray;
+
   public:
     CheatWidget(GuiObject *boss, int x, int y, int w, int h);
     virtual ~CheatWidget();
@@ -41,14 +55,23 @@ class CheatWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data);
 
   private:
+    void doSearch();
+    void doCompare();
+    void doRestart();
+
+    void fillResultsList();
+
+  private:
     Widget* myActiveWidget;
 
-    EditTextWidget* myEditBox;
+    EditNumWidget* myEditBox;
     StaticTextWidget* myResult;
 
     ButtonWidget* mySearchButton;
     ButtonWidget* myCompareButton;
     ButtonWidget* myRestartButton;
+
+    ListWidget* myResultsList;
 };
 
 #endif

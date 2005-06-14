@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.2 2005-06-14 18:55:36 stephena Exp $
+// $Id: EditNumWidget.cxx,v 1.1 2005-06-14 18:55:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,11 +22,11 @@
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "Dialog.hxx"
-#include "EditTextWidget.hxx"
+#include "EditNumWidget.hxx"
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EditTextWidget::EditTextWidget(GuiObject* boss, int x, int y, int w, int h,
+EditNumWidget::EditNumWidget(GuiObject* boss, int x, int y, int w, int h,
                                const string& text)
   : EditableWidget(boss, x, y - 1, w, h + 2)
 {
@@ -36,14 +36,26 @@ EditTextWidget::EditTextWidget(GuiObject* boss, int x, int y, int w, int h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::setEditString(const string& str)
+void EditNumWidget::setEditString(const string& str)
 {
   EditableWidget::setEditString(str);
   _backupString = str;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
+bool EditNumWidget::tryInsertChar(char c, int pos)
+{
+  // Only allow numbers (FIXME - maybe allow A .. F for hex?)
+  if(isprint(c) && ((c >= '0' && c <= '9') || c == '+' || c == '-'))
+  {
+    _editString.insert(pos, 1, c);
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditNumWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   x += _editScrollOffset;
 
@@ -65,7 +77,7 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::drawWidget(bool hilite)
+void EditNumWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
@@ -85,37 +97,37 @@ void EditTextWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect EditTextWidget::getEditRect() const
+GUI::Rect EditNumWidget::getEditRect() const
 {
   GUI::Rect r(2, 1, _w - 2, _h);
   return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::receivedFocusWidget()
+void EditNumWidget::receivedFocusWidget()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::lostFocusWidget()
+void EditNumWidget::lostFocusWidget()
 {
   // If we loose focus, 'commit' the user changes
   _backupString = _editString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::startEditMode()
+void EditNumWidget::startEditMode()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::endEditMode()
+void EditNumWidget::endEditMode()
 {
   releaseFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::abortEditMode()
+void EditNumWidget::abortEditMode()
 {
   setEditString(_backupString);
   releaseFocus();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.1 2005-06-14 01:11:48 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.2 2005-06-14 18:55:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,6 +51,9 @@ void EditableWidget::setEditString(const string& str)
   _editScrollOffset = (_font->getStringWidth(_editString) - (getEditRect().width()));
   if (_editScrollOffset < 0)
     _editScrollOffset = 0;
+
+  // Make sure the new string is seen onscreen
+  _boss->instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,31 +61,22 @@ bool EditableWidget::tryInsertChar(char c, int pos)
 {
   if (isprint(c))
   {
-    _editString.insert(pos, c, 1);
+    _editString.insert(pos, 1, c);
     return true;
   }
   return false;
 }
 
-/*
-void EditableWidget::handleTickle() {
-	uint32 time = getMillis();
-	if (_caretTime < time) {
-		_caretTime = time + kCaretBlinkTime;
-		drawCaret(_caretVisible);
-	}
-}
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
+  // Ignore all mod keys
+  if(instance()->eventHandler().kbdControl(modifiers) ||
+     instance()->eventHandler().kbdAlt(modifiers))
+    return true;
+
   bool handled = true;
   bool dirty = false;
-
-  // First remove caret
-  if (_caretVisible)
-    drawCaret(true);
 
   switch (keycode)
   {
@@ -102,13 +96,13 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       if (_caretPos > 0)
       {
         _caretPos--;
-        _editString.erase(_caretPos);
+        _editString.erase(_caretPos, 1);
         dirty = true;
       }
       break;
 
     case 127:   // delete
-      _editString.erase(_caretPos);
+      _editString.erase(_caretPos, 1);
       dirty = true;
       break;
 
@@ -141,7 +135,10 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   }
 
   if (dirty)
+  {
     draw();
+    _boss->instance()->frameBuffer().refresh();
+  }
 
   return handled;
 }
@@ -159,7 +156,7 @@ int EditableWidget::getCaretOffset() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::drawCaret(bool erase)
+void EditableWidget::drawCaret()
 {
   // Only draw if item is visible
   if (!isVisible() || !_boss->isVisible())
@@ -167,23 +164,25 @@ void EditableWidget::drawCaret(bool erase)
 
   GUI::Rect editRect = getEditRect();
 
-  OverlayColor color = (erase ^ _caretInverse) ? kBGColor : kTextColorHi;
+  OverlayColor color = kTextColorHi;
   int x = editRect.left;
-  int y = editRect.top + 1;
+  int y = editRect.top;
 
   x += getCaretOffset();
 
-  if (y < 0 || y + editRect.height() - 2 >= _h)
-    return;
-
   x += getAbsX();
-  y += getAbsY();
+  y += _y;
 
+/*
+cerr << "draw caret: " << endl
+     << "x = " << x << endl
+     << "y = " << y << endl
+     << "h = " << editRect.height() - 2 << endl
+     << "c = " << color << endl
+     << endl;
+*/
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   fb.vLine(x, y, y + editRect.height() - 2, color);
-  fb.refresh();//FIXMEfb.addDirtyRect(x, y, 2, editRect.height() - 2);
-
-  _caretVisible = !erase;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,7 +198,10 @@ bool EditableWidget::setCaretPos(int newPos)
 bool EditableWidget::adjustOffset()
 {
   // check if the caret is still within the textbox; if it isn't,
-  // adjust _editScrollOffset 
+  // adjust _editScrollOffset
+
+  // For some reason (differences in ScummVM event handling??),
+  // this method should always return true.
 
   int caretpos = getCaretOffset();
   const int editWidth = getEditRect().width();
@@ -208,13 +210,11 @@ bool EditableWidget::adjustOffset()
   {
     // scroll left
     _editScrollOffset += caretpos;
-    return true;
   }
   else if (caretpos >= editWidth)
   {
     // scroll right
     _editScrollOffset -= (editWidth - caretpos);
-    return true;
   }
   else if (_editScrollOffset > 0)
   {
@@ -228,5 +228,5 @@ bool EditableWidget::adjustOffset()
     }
   }
 
-  return false;
+  return true;
 }
