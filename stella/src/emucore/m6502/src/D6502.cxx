@@ -13,23 +13,26 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.3 2005-06-13 13:35:09 urchlay Exp $
+// $Id: D6502.cxx,v 1.4 2005-06-14 01:55:52 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
 #include "D6502.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
+#include "EquateList.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 D6502::D6502(System* system)
     : mySystem(system)
 {
+  equateList = new EquateList();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 D6502::~D6502()
 {
+  delete equateList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,20 +56,20 @@ uInt16 D6502::disassemble(uInt16 address, char* buffer)
   switch(M6502::ourAddressingModeTable[opcode])
   {
     case M6502::Absolute:
-      sprintf(buffer, "%s $%04X ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1),
+      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
     case M6502::AbsoluteX:
-      sprintf(buffer, "%s $%04X,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1),
+      sprintf(buffer, "%s %s,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
     case M6502::AbsoluteY:
-      sprintf(buffer, "%s $%04X,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1),
+      sprintf(buffer, "%s %s,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
@@ -114,14 +117,14 @@ uInt16 D6502::disassemble(uInt16 address, char* buffer)
       return 2;
 
     case M6502::ZeroX:
-      sprintf(buffer, "%s $%02X,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1),
+      sprintf(buffer, "%s %s,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 2),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::ZeroY:
-      sprintf(buffer, "%s $%02X,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1),
+      sprintf(buffer, "%s %s,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 2),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 

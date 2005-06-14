@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.hxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $
+// $Id: D6502.hxx,v 1.3 2005-06-14 01:55:52 urchlay Exp $
 //============================================================================
 
 #ifndef D6502_HXX
@@ -24,13 +24,14 @@ class M6502;
 class System;
 
 #include "bspf.hxx"
+#include "EquateList.hxx"
 
 /**
   This is a base class for 6502 debuggers.  This class provides the 
   basic functionality needed for interactive debuggers.
 
   @author  Bradford W. Mott
-  @version $Id: D6502.hxx,v 1.2 2005-06-13 02:47:44 urchlay Exp $ 
+  @version $Id: D6502.hxx,v 1.3 2005-06-14 01:55:52 urchlay Exp $ 
 */
 class D6502
 {
@@ -149,6 +150,7 @@ class D6502
   protected:
     // Pointer to the system I'm debugging
     System* mySystem;
+    EquateList *equateList;
 };
 #endif
 
