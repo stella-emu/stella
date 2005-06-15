@@ -82,7 +82,7 @@ static struct Equate hardCodedEquates[] = {
 };
 
 EquateList::EquateList() {
-	cerr << sizeof(hardCodedEquates)/sizeof(struct Equate) << endl;
+	// cerr << sizeof(hardCodedEquates)/sizeof(struct Equate) << endl;
 	ourVcsEquates = new Equate[ sizeof(hardCodedEquates)/sizeof(struct Equate) ];
 	for(int i=0; hardCodedEquates[i].label != NULL; i++)
 		ourVcsEquates[i] = hardCodedEquates[i];
@@ -99,11 +99,11 @@ int EquateList::calcSize() {
 
 // FIXME: use something smarter than a linear search in the future.
 char *EquateList::getLabel(int addr) {
-	cerr << "getLabel(" << addr << ")" << endl;
+	// cerr << "getLabel(" << addr << ")" << endl;
 	for(int i=0; ourVcsEquates[i].label != NULL; i++) {
-		cerr << "Checking ourVcsEquates[" << i << "] (" << ourVcsEquates[i].label << endl;
+		// cerr << "Checking ourVcsEquates[" << i << "] (" << ourVcsEquates[i].label << endl;
 		if(ourVcsEquates[i].address == addr) {
-			cerr << "Found label " << ourVcsEquates[i].label << endl;
+			// cerr << "Found label " << ourVcsEquates[i].label << endl;
 			return ourVcsEquates[i].label;
 		}
 	}
@@ -199,11 +199,11 @@ string EquateList::loadFile(string file) {
 	newEquates[lines].label = NULL;
 	newEquates[lines].address = 0;
 
-	calcSize();
 	delete ourVcsEquates;
 	ourVcsEquates = newEquates;
+	calcSize();
 
-	dumpAll();
+	// dumpAll();
 	return "loaded " + file + " OK";
 }
 

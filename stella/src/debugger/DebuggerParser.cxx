@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.5 2005-06-15 20:41:08 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.6 2005-06-15 23:45:04 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -33,12 +33,11 @@ enum {
 DebuggerParser::DebuggerParser(Debugger* d)
   	: debugger(d)
 {
-	equateList = new EquateList();
+	equateList = d->equates();
 	done = false;
 }
 
 DebuggerParser::~DebuggerParser() {
-	delete equateList;
 }
 
 string DebuggerParser::currentAddress() {
@@ -179,7 +178,7 @@ string DebuggerParser::run(const string& command) {
 	if(subStringMatch("loadsym ", command)) {
 		result = command;
 		result.erase(0, 8);
-		result = equateList->loadFile(result);
+		result = debugger->equateList->loadFile(result);
 		return result;
 	}
 

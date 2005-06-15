@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.6 2005-06-15 20:41:09 urchlay Exp $
+// $Id: D6502.cxx,v 1.7 2005-06-15 23:45:04 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -49,7 +49,7 @@ uInt16 D6502::dPeek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 D6502::disassemble(uInt16 address, char* buffer, EquateList *equateList)
 {
-  equateList->dumpAll();
+  // equateList->dumpAll();
   uInt8 opcode = mySystem->peek(address);
 
   switch(M6502::ourAddressingModeTable[opcode])
