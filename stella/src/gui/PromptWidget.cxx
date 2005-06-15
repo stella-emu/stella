@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.3 2005-06-14 01:11:48 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.4 2005-06-15 21:18:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -259,11 +259,34 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 273:  // cursor up
-      historyScroll(+1);
+      if (instance()->eventHandler().kbdShift(modifiers))
+      {
+        if(_scrollLine <= _firstLineInBuffer + _linesPerPage - 1)
+          break;
+
+        _scrollLine -= 1;
+        updateScrollBuffer();
+        draw();
+        instance()->frameBuffer().refresh();
+      }
+      else
+        historyScroll(+1);
       break;
 
     case 274:  // cursor down
-      historyScroll(-1);
+      if (instance()->eventHandler().kbdShift(modifiers))
+      {
+        // Don't scroll down when at bottom of buffer
+        if(_scrollLine >= _promptEndPos / _lineWidth)
+          break;
+
+        _scrollLine += 1;
+        updateScrollBuffer();
+        draw();
+        instance()->frameBuffer().refresh();
+      }
+      else
+        historyScroll(-1);
       break;
 
     case 275:  // cursor right

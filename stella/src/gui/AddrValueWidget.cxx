@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.1 2005-06-15 18:45:28 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.2 2005-06-15 21:18:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -103,7 +103,7 @@ void AddrValueWidget::setList(const AddrList& alist, const ValueList& vlist)
   {
     sprintf(temp, "%.4x:", _addrList[i]);
     _addrStringList.push_back(temp);
-    sprintf(temp, "%.3d", _valueList[i]);
+    sprintf(temp, "%3d", _valueList[i]);
     _valueStringList.push_back(temp);
   }
 
@@ -335,7 +335,7 @@ void AddrValueWidget::drawWidget(bool hilite)
   for (i = 0, pos = _currentPos; i < _entriesPerPage && pos < len; i++, pos++)
   {
     const OverlayColor textColor = (_selectedItem == pos && _editMode)
-                                    ? kTextColor : kTextColor;
+                                    ? kColor : kTextColor;
     const int y = _y + 2 + kLineHeight * i;
 
     // Draw the selected item inverted, on a highlighted background.
@@ -413,7 +413,6 @@ void AddrValueWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AddrValueWidget::startEditMode()
 {
-cerr << "AddrValueWidget::startEditMode()\n";
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
@@ -432,11 +431,17 @@ void AddrValueWidget::endEditMode()
   _editMode = false;
 
   // Update the both the string representation and the real data
-  _valueStringList[_selectedItem] = _editString;
+  int value = atoi(_editString.c_str());
+  if(_editString.length() == 0 || value < 0 || value > 255)
+  {
+    abortEditMode();
+    return;
+  }
 
-int value = atoi(_editString.c_str());
-cerr << "new value: " << value << endl;
-  _valueList[_selectedItem] = value;  // FIXME - do error checking
+  char temp[10];
+  sprintf(temp, "%3d", value);
+  _valueStringList[_selectedItem] = temp;
+  _valueList[_selectedItem] = value;
 
   sendCommand(kAVItemDataChangedCmd, _selectedItem);
 }
@@ -444,8 +449,18 @@ cerr << "new value: " << value << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AddrValueWidget::abortEditMode()
 {
-cerr << "AddrValueWidget::abortEditMode()\n";
   // undo any changes made
   assert(_selectedItem >= 0);
   _editMode = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AddrValueWidget::tryInsertChar(char c, int pos)
+{
+  if (c >= '0' && c <= '9')
+  {
+    _editString.insert(pos, 1, c);
+    return true;
+  }
+  return false;
 }

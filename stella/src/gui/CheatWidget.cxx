@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.5 2005-06-15 18:45:28 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.6 2005-06-15 21:18:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,7 +55,7 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
                        "Enter a value:", kTextAlignLeft);
 
   myEditBox = new EditNumWidget(boss, 90, ypos - 2, charWidth*10, charHeight, "");
-  myEditBox->setFont(_boss->instance()->consoleFont());
+  myEditBox->setFont(instance()->consoleFont());
 //  myEditBox->setTarget(this);
   myActiveWidget = myEditBox;
     ypos += border;
@@ -122,15 +122,9 @@ void CheatWidget::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     case kAVItemDataChangedCmd:
-      cerr << "data changed\n";
-      break;
-
-    case kAVItemDoubleClickedCmd:
-      cerr << "kListItemDoubleClickedCmd\n";
-      break;
-
-    case kAVItemActivatedCmd:
-      cerr << "kListItemActivatedCmd\n";
+      int addr  = myResultsList->getSelectedAddr() - kRamStart;
+      int value = myResultsList->getSelectedValue();
+      instance()->debugger().writeRAM(addr, value);
       break;
   }
 }
@@ -146,11 +140,11 @@ void CheatWidget::doSearch()
     // An empty field means return all memory locations
     comparisonSearch = false;
   }
-  else if(str[0] == '+' || str[0] == '-')
+  else if(str.find_first_of("+-", 0) != string::npos)
   {
     // Don't accept these characters here, only in compare
-    myEditBox->setEditString("");
-    return;  // FIXME - message about invalid format
+    myResult->setLabel("Invalid input +|-");
+    return;
   }
 
   int searchVal = atoi(str.c_str());
@@ -160,7 +154,7 @@ void CheatWidget::doSearch()
 
   // Now, search all memory locations for this value, and add it to the
   // search array
-  Debugger& dbg = _boss->instance()->debugger();
+  Debugger& dbg = instance()->debugger();
   AddrValue av;
   int searchCount = 0;
   for(int addr = 0; addr < kRamSize; ++addr)
@@ -216,6 +210,13 @@ void CheatWidget::doCompare()
   }
 
   // Do some pre-processing on the string
+  if(str.find_first_of("+-", 0) > 0)
+  {
+    // Only accept '+' or '-' at the start of the string
+    myResult->setLabel("Input must be [+|-]NUM");
+    return;
+  }
+
   if(str[0] == '+' || str[0] == '-')
   {
     bool negative = false;
@@ -235,7 +236,7 @@ void CheatWidget::doCompare()
   AddrValueList tempList;
 
   // Now, search all memory locations specified in mySearchArray for this value
-  Debugger& dbg = _boss->instance()->debugger();
+  Debugger& dbg = instance()->debugger();
   AddrValue av;
   int searchCount = 0;
 

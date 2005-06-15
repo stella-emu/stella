@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.hxx,v 1.1 2005-06-15 18:45:28 stephena Exp $
+// $Id: AddrValueWidget.hxx,v 1.2 2005-06-15 21:18:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,11 +59,11 @@ class AddrValueWidget : public EditableWidget, public CommandSender
     void setList(const StringList& list);
     void setList(const AddrList& alist, const ValueList& vlist);
 
-//    int getSelected() const                    { return _selectedItem; }
-//    void setSelected(int item);
-//    const string& getSelectedString() const    { return _list[_selectedItem]; }
-    bool isEditable() const	                   { return _editable; }
-    void setEditable(bool editable)            { _editable = editable; }
+    int getSelectedAddr() const   { return _addrList[_selectedItem]; }
+    int getSelectedValue() const  { return _valueList[_selectedItem]; }
+
+    bool isEditable() const	         { return _editable; }
+    void setEditable(bool editable)  { _editable = editable; }
     void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
     void scrollTo(int item);
 	
@@ -92,7 +92,9 @@ class AddrValueWidget : public EditableWidget, public CommandSender
     void lostFocusWidget();
     void scrollToCurrent();
 
-protected:
+    bool tryInsertChar(char c, int pos);
+
+  protected:
     AddrList         _addrList;
     ValueList        _valueList;
     StringList       _addrStringList;
