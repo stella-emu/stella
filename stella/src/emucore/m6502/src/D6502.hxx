@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.hxx,v 1.3 2005-06-14 01:55:52 urchlay Exp $
+// $Id: D6502.hxx,v 1.4 2005-06-15 04:30:35 urchlay Exp $
 //============================================================================
 
 #ifndef D6502_HXX
@@ -31,7 +31,7 @@ class System;
   basic functionality needed for interactive debuggers.
 
   @author  Bradford W. Mott
-  @version $Id: D6502.hxx,v 1.3 2005-06-14 01:55:52 urchlay Exp $ 
+  @version $Id: D6502.hxx,v 1.4 2005-06-15 04:30:35 urchlay Exp $ 
 */
 class D6502
 {
@@ -145,7 +145,9 @@ class D6502
     */
     void y(uInt8 value);
 
-    uInt16 D6502::dPeek(uInt16 address);
+    uInt16 dPeek(uInt16 address);
+
+	 void setEquateList(EquateList *el);
 
   protected:
     // Pointer to the system I'm debugging

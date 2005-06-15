@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.3 2005-06-14 03:11:03 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.4 2005-06-15 04:30:35 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -175,6 +175,15 @@ bool DebuggerParser::subStringMatch(const string& needle, const string& haystack
 string DebuggerParser::run(const string& command) {
 	string result;
 
+	// special case command, takes a filename instead of an address:
+	if(subStringMatch("loadsym ", command)) {
+		result = command;
+		result.erase(0, 8);
+		result = equateList->loadFile(result);
+		debugger->setEquateList(equateList);
+		return result;
+	}
+
 	if(!getArgs(command))
 		return "invalid label or address";
 
@@ -268,6 +277,7 @@ string DebuggerParser::run(const string& command) {
 			// "break xx  - Set/clear breakpoint at address xx\n"
 			"c         - Toggle Carry Flag\n"
 			"d         - Toggle Decimal Flag\n"
+			"loadsym f - Load DASM symbols from file f\n"
 			"n         - Toggle Negative Flag\n"
 			"pc xx     - Set Program Counter to xx\n"
 			"ram       - Show RIOT RAM contents\n"

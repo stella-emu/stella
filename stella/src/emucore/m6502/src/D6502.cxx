@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.4 2005-06-14 01:55:52 urchlay Exp $
+// $Id: D6502.cxx,v 1.5 2005-06-15 04:30:35 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -32,7 +32,7 @@ D6502::D6502(System* system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 D6502::~D6502()
 {
-  delete equateList;
+  // delete equateList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,3 +207,8 @@ void D6502::y(uInt8 value)
   mySystem->m6502().Y = value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void D6502::setEquateList(EquateList *el)
+{
+  equateList = el;
+}

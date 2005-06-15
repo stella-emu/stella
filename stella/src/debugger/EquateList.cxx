@@ -1,10 +1,14 @@
 
+#include <string>
+#include <iostream>
+#include <fstream>
+
 #include "bspf.hxx"
 #include "Equate.hxx"
 #include "EquateList.hxx"
 
 // built in labels
-static struct Equate ourVcsEquates[] = {
+static struct Equate hardCodedEquates[] = {
   { "VSYNC", 0x00 },
   { "VBLANK", 0x01 },
   { "WSYNC", 0x02 },
@@ -78,6 +82,19 @@ static struct Equate ourVcsEquates[] = {
 };
 
 EquateList::EquateList() {
+	cerr << sizeof(hardCodedEquates)/sizeof(struct Equate) << endl;
+	ourVcsEquates = new Equate[ sizeof(hardCodedEquates)/sizeof(struct Equate) ];
+	for(int i=0; hardCodedEquates[i].label != NULL; i++)
+		ourVcsEquates[i] = hardCodedEquates[i];
+	calcSize();
+}
+
+int EquateList::calcSize() {
+	currentSize = 0;
+	for(int i=0; ourVcsEquates[i].label != NULL; i++)
+		currentSize++;
+
+	return currentSize;
 }
 
 // FIXME: use something smarter than a linear search in the future.
@@ -108,4 +125,107 @@ int EquateList::getAddress(const char *label) {
 			return ourVcsEquates[i].address;
 
 	return -1;
+}
+
+string EquateList::loadFile(string file) {
+	int lines = 0;
+	string curLabel;
+	int curVal;
+	// string::size_type p;
+	char buffer[256]; // FIXME: static buffers suck
+
+	// cerr << "loading file " << file << endl;
+
+	ifstream in(file.c_str());
+	if(!in.is_open())
+		return "Unable to read symbols from " + file;
+
+	long start = in.tellg(); // save pointer to beginning of file
+
+	// iterate over file, count lines
+	while( !in.eof() ) {
+		in.getline(buffer, 255);
+		lines++;
+	}
+
+	// cerr << "total lines " << lines << endl;
+
+	// allocate enough storage for all the lines
+	// FIXME: decide whether to keep the hard-coded symbols or throw them out
+	// (currently allocating space for them, but throwing them away anyway)
+	Equate *newEquates = new Equate[lines + currentSize + 1];
+	lines = 0;
+
+	// start over, now that we've allocated enough entries.
+	in.clear();
+	in.seekg(start);
+
+	while( !in.eof() ) {
+		curVal = 0;
+		curLabel = "";
+
+		if(!in.getline(buffer, 255))
+			break;
+
+		if(buffer[0] != '-') {
+			curLabel = getLabel(buffer);
+			if((curVal = parse4hex(buffer+25)) < 0)
+				return "invalid symbol file";
+
+			struct Equate *e = new struct Equate;
+
+			// FIXME: this is cumbersome...
+			// I shouldn't have to use sprintf() here.
+			// also, is this a memory leak?  I miss malloc() and free()...
+			newEquates[lines] = *e;
+			newEquates[lines].label = new char[curLabel.length() + 1];
+			sprintf(newEquates[lines].label, "%s", curLabel.c_str());
+			newEquates[lines].address = curVal;
+
+			// cerr << "label: " << curLabel << ", address: " << curVal << endl;
+			// cerr << buffer;
+			lines++;
+		}
+	}
+	in.close();
+
+	struct Equate *e = new struct Equate;
+	newEquates[lines] = *e;
+	newEquates[lines].label = NULL;
+	newEquates[lines].address = 0;
+
+	calcSize();
+	delete ourVcsEquates;
+	ourVcsEquates = newEquates;
+
+	// dumpAll();
+	return "loaded " + file + " OK";
+}
+
+int EquateList::parse4hex(char *c) {
+	int ret = 0;
+	for(int i=0; i<4; i++) {
+		if(*c >= '0' && *c <= '9')
+			ret = (ret << 4) + (*c) - '0';
+		else if(*c >= 'a' && *c <= 'f')
+			ret = (ret << 4) + (*c) - 'a' + 10;
+		else
+			return -1;
+		c++;
+	}
+
+	return ret;
+}
+
+string EquateList::getLabel(char *c) {
+	string l = "";
+	while(*c != ' ')
+		l += *c++;
+
+	return l;
+}
+
+void EquateList::dumpAll() {
+	for(int i=0; ourVcsEquates[i].label != NULL; i++)
+		cerr << i << ": " << "label==" << ourVcsEquates[i].label << ", address==" << ourVcsEquates[i].address << endl;
 }

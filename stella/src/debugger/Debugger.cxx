@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.5 2005-06-14 03:11:03 urchlay Exp $
+// $Id: Debugger.cxx,v 1.6 2005-06-15 04:30:33 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -335,4 +335,9 @@ void Debugger::toggleV() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleN() {
   myDebugger->ps( myDebugger->ps() ^ 0x80 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setEquateList(EquateList *l) {
+  myDebugger->setEquateList(l);
 }
