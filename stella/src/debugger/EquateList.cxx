@@ -99,9 +99,14 @@ int EquateList::calcSize() {
 
 // FIXME: use something smarter than a linear search in the future.
 char *EquateList::getLabel(int addr) {
-	for(int i=0; ourVcsEquates[i].label != NULL; i++)
-		if(ourVcsEquates[i].address == addr)
+	cerr << "getLabel(" << addr << ")" << endl;
+	for(int i=0; ourVcsEquates[i].label != NULL; i++) {
+		cerr << "Checking ourVcsEquates[" << i << "] (" << ourVcsEquates[i].label << endl;
+		if(ourVcsEquates[i].address == addr) {
+			cerr << "Found label " << ourVcsEquates[i].label << endl;
 			return ourVcsEquates[i].label;
+		}
+	}
 
 	return NULL;
 }
@@ -198,7 +203,7 @@ string EquateList::loadFile(string file) {
 	delete ourVcsEquates;
 	ourVcsEquates = newEquates;
 
-	// dumpAll();
+	dumpAll();
 	return "loaded " + file + " OK";
 }
 

@@ -11,12 +11,12 @@ class EquateList {
 		char *EquateList::getFormatted(int addr, int places);
 		int getAddress(const char *label);
 		string loadFile(string file);
+		void dumpAll();
 
 	private:
 		int calcSize();
 		int parse4hex(char *c);
 		string EquateList::getLabel(char *c);
-		void dumpAll();
 
 		struct Equate *ourVcsEquates;
 		int currentSize;

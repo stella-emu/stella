@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.hxx,v 1.4 2005-06-15 04:30:35 urchlay Exp $
+// $Id: D6502.hxx,v 1.5 2005-06-15 20:41:09 urchlay Exp $
 //============================================================================
 
 #ifndef D6502_HXX
@@ -31,7 +31,7 @@ class System;
   basic functionality needed for interactive debuggers.
 
   @author  Bradford W. Mott
-  @version $Id: D6502.hxx,v 1.4 2005-06-15 04:30:35 urchlay Exp $ 
+  @version $Id: D6502.hxx,v 1.5 2005-06-15 20:41:09 urchlay Exp $ 
 */
 class D6502
 {
@@ -58,7 +58,7 @@ class D6502
       @param buffer The buffer where the ASCII disassemble should be stored
       @return The number of bytes disassembled
     */
-    uInt16 disassemble(uInt16 address, char* buffer);
+    uInt16 disassemble(uInt16 address, char* buffer, EquateList *equateList);
 
   public:
     /**
@@ -147,12 +147,9 @@ class D6502
 
     uInt16 dPeek(uInt16 address);
 
-	 void setEquateList(EquateList *el);
-
   protected:
     // Pointer to the system I'm debugging
     System* mySystem;
-    EquateList *equateList;
 };
 #endif
 

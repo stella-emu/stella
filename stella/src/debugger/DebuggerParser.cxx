@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.4 2005-06-15 04:30:35 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.5 2005-06-15 20:41:08 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -180,7 +180,6 @@ string DebuggerParser::run(const string& command) {
 		result = command;
 		result.erase(0, 8);
 		result = equateList->loadFile(result);
-		debugger->setEquateList(equateList);
 		return result;
 	}
 

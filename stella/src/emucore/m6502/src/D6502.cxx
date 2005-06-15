@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.5 2005-06-15 04:30:35 urchlay Exp $
+// $Id: D6502.cxx,v 1.6 2005-06-15 20:41:09 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -26,13 +26,11 @@
 D6502::D6502(System* system)
     : mySystem(system)
 {
-  equateList = new EquateList();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 D6502::~D6502()
 {
-  // delete equateList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -49,8 +47,9 @@ uInt16 D6502::dPeek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 D6502::disassemble(uInt16 address, char* buffer)
+uInt16 D6502::disassemble(uInt16 address, char* buffer, EquateList *equateList)
 {
+  equateList->dumpAll();
   uInt8 opcode = mySystem->peek(address);
 
   switch(M6502::ourAddressingModeTable[opcode])
@@ -105,14 +104,14 @@ uInt16 D6502::disassemble(uInt16 address, char* buffer)
       return 2;
 
     case M6502::Relative:
-      sprintf(buffer, "%s $%04X ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          address + 2 + ((Int16)(Int8)mySystem->peek(address + 1)),
+      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(address + 2 + ((Int16)(Int8)mySystem->peek(address + 1)), 4),
 			 M6502::ourInstructionProcessorCycleTable[opcode]); 
       return 2;
 
     case M6502::Zero:
-      sprintf(buffer, "%s $%02X ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1),
+      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
@@ -207,8 +206,3 @@ void D6502::y(uInt8 value)
   mySystem->m6502().Y = value;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void D6502::setEquateList(EquateList *el)
-{
-  equateList = el;
-}

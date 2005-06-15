@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.6 2005-06-15 04:30:33 urchlay Exp $
+// $Id: Debugger.cxx,v 1.7 2005-06-15 20:41:08 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -31,6 +31,7 @@
 #include "D6502.hxx"
 
 #include "Debugger.hxx"
+#include "EquateList.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
@@ -42,6 +43,7 @@ Debugger::Debugger(OSystem* osystem)
 {
   // Init parser
   myParser = new DebuggerParser(this);
+  equateList = new EquateList();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -49,6 +51,7 @@ Debugger::~Debugger()
 {
   delete myParser;
   delete myDebugger;
+  //	delete equateList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,7 +118,7 @@ const string Debugger::state()
   sprintf(buf, "%d", mySystem->cycles());
   result += buf;
   result += "\n  ";
-  int count = myDebugger->disassemble(myDebugger->pc(), buf);
+  int count = myDebugger->disassemble(myDebugger->pc(), buf, equateList);
   for(int i=0; i<count; i++) {
     sprintf(bbuf, "%02x ", readRAM(myDebugger->pc() + i));
     result += bbuf;
@@ -337,7 +340,3 @@ void Debugger::toggleN() {
   myDebugger->ps( myDebugger->ps() ^ 0x80 );
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setEquateList(EquateList *l) {
-  myDebugger->setEquateList(l);
-}
