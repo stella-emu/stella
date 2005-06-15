@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.16 2005-06-15 15:34:35 stephena Exp $
+// $Id: ListWidget.cxx,v 1.17 2005-06-15 15:48:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -203,7 +203,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool dirty = false;
   int oldSelectedItem = _selectedItem;
 
-  if (!_editMode && isalpha((char)ascii))
+  if (!_editMode && isalnum((char)ascii))
   {
     // Quick selection mode: Go to first list item starting with this key
     // (or a substring accumulated from the last couple key presses).
