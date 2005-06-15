@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.15 2005-06-14 01:11:48 stephena Exp $
+// $Id: ListWidget.cxx,v 1.16 2005-06-15 15:34:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,15 +30,17 @@
 #include "ListWidget.hxx"
 #include "bspf.hxx"
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
-    : Widget(boss, x, y, w - kScrollBarWidth, h),
-      CommandSender(boss)
+  : EditableWidget(boss, x, y, w, h),
+    CommandSender(boss)
 {
+  _w = w - kScrollBarWidth;
+	
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_TAB_NAVIGATE;
   _type = kListWidget;
+  _editMode = false;
   _numberingMode = kListNumberingOne;
   _entriesPerPage = (_h - 2) / kLineHeight;
   _currentPos = 0;
@@ -46,16 +48,15 @@ ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
   _scrollBar = new ScrollBarWidget(boss, _x + _w, _y, kScrollBarWidth, _h);
   _scrollBar->setTarget(this);
   _currentKeyDown = 0;
-
-  _caretVisible = false;
-  _caretTime = 0;
 	
   _quickSelectTime = 0;
 
+  // The item is selected, thus _bgcolor is used to draw the caret and
+  // _textcolorhi to erase it
+  _caretInverse = true;
+
   // FIXME: This flag should come from widget definition
   _editable = true;
-
-  _editMode = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,38 +69,26 @@ void ListWidget::setSelected(int item)
 {
   assert(item >= -1 && item < (int)_list.size());
 
-  if(isEnabled() && _selectedItem != item)
+  if (isEnabled() && _selectedItem != item)
   {
-    int oldSelectedItem = _selectedItem;
-    _selectedItem = item;
-
     if (_editMode)
-    {
-      // undo any changes made
-      _list[oldSelectedItem] = _backupString;
-      _editMode = false;
-      drawCaret(true);
-    }
+      abortEditMode();
 
+    _selectedItem = item;
     sendCommand(kListSelectionChangedCmd, _selectedItem);
 
     _currentPos = _selectedItem - _entriesPerPage / 2;
     scrollToCurrent();
     draw();
-
-    _boss->instance()->frameBuffer().refresh();
+    instance()->frameBuffer().refresh();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setList(const StringList& list)
 {
-  if (_editMode && _caretVisible)
-    drawCaret(true);
-
   int size = list.size();
   _list = list;
-
   if (_currentPos >= size)
     _currentPos = size - 1;
   if (_currentPos < 0)
@@ -137,31 +126,31 @@ void ListWidget::scrollBarRecalc()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  if (isEnabled())
+  if (!isEnabled())
+    return;
+
+  // A click indicates this widget has been selected
+  // It should receive focus (because it has the WIDGET_TAB_NAVIGATE property)
+  receivedFocus();
+
+  // First check whether the selection changed
+  int newSelectedItem;
+  newSelectedItem = findItem(x, y);
+  if (newSelectedItem > (int)_list.size() - 1)
+    newSelectedItem = -1;
+
+  if (_selectedItem != newSelectedItem)
   {
-    // A click indicated this widget has been selected
-    // It should receive focus (because it has the WIDGET_TAB_NAVIGATE property)
-    receivedFocus();
-
-    int oldSelectedItem = _selectedItem;
-    _selectedItem = (y - 1) / kLineHeight + _currentPos;
-    if (_selectedItem > (int)_list.size() - 1)
-      _selectedItem = -1;
-
-    if (oldSelectedItem != _selectedItem)
-    {
-      if (_editMode)
-      {
-        // undo any changes made
-        _list[oldSelectedItem] = _backupString;
-        _editMode = false;
-        drawCaret(true);
-      }
-      sendCommand(kListSelectionChangedCmd, _selectedItem);
-      _boss->instance()->frameBuffer().refresh();
-    }
-    draw();
+    if (_editMode)
+      abortEditMode();
+    _selectedItem = newSelectedItem;
+    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    instance()->frameBuffer().refresh();
   }
+	
+  // TODO: Determine where inside the string the user clicked and place the
+  // caret accordingly. See _editScrollOffset and EditTextWidget::handleMouseDown.
+  draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -169,14 +158,26 @@ void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
-  if (clickCount == 2 && (_selectedItem == (y - 1) / kLineHeight + _currentPos))
+  if (clickCount == 2 && (_selectedItem == findItem(x, y)))
+  {
     sendCommand(kListItemDoubleClickedCmd, _selectedItem);
+
+    // Start edit mode
+    if(_editable && !_editMode)
+      startEditMode();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleMouseWheel(int x, int y, int direction)
 {
   _scrollBar->handleMouseWheel(x, y, direction);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int ListWidget::findItem(int x, int y) const
+{
+  return (y - 1) / kLineHeight + _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,7 +203,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool dirty = false;
   int oldSelectedItem = _selectedItem;
 
-  if (!_editMode && isalnum((char)ascii))
+  if (!_editMode && isalpha((char)ascii))
   {
     // Quick selection mode: Go to first list item starting with this key
     // (or a substring accumulated from the last couple key presses).
@@ -214,8 +215,6 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       _quickSelectStr = (char)ascii;
     else
       _quickSelectStr += (char)ascii;
-
-    _quickSelectTime = time + 300;  // TODO: Turn this into a proper constant (kQuickSelectDelay ?)
 
     // FIXME: This is bad slow code (it scans the list linearly each time a
     // key is pressed); it could be much faster. Only of importance if we have
@@ -232,48 +231,19 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       }
       newSelectedItem++;
     }
-
     scrollToCurrent();
   }
   else if (_editMode)
   {
-    if (_caretVisible)
-      drawCaret(true);
-
-    switch (keycode)
-    {
-      case '\n':   // enter/return
-      case '\r':
-        // confirm edit and exit editmode
-        _editMode = false;
-        dirty = true;
-        sendCommand(kListItemActivatedCmd, _selectedItem);
-        break;
-      case 27:  // escape
-        // abort edit and exit editmode
-        _editMode = false;
-        dirty = true;
-        _list[_selectedItem] = _backupString;
-        break;
-      case 8:		// backspace
-        _list[_selectedItem].erase(_list[_selectedItem].length()-1);
-        dirty = true;
-        break;
-      default:
-        if (isprint(ascii))
-        {
-          _list[_selectedItem] += (char)ascii;
-          dirty = true;
-        }
-        else
-          handled = false;
-    }
+    // Class EditableWidget handles all text editing related key presses for us
+    handled = EditableWidget::handleKeyDown(ascii, keycode, modifiers);
   }
-  else  // not editmode
+  else
   {
+    // not editmode
     switch (keycode)
     {
-      case '\n':   // enter/return
+      case '\n':  // enter/return
       case '\r':
         if (_selectedItem >= 0)
         {
@@ -281,47 +251,47 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           if (_editable && (_currentKeyDown != '\n' && _currentKeyDown != '\r'))
           {
             dirty = true;
-            _editMode = true;
-            _backupString = _list[_selectedItem];
+            startEditMode();
           }
           else
             sendCommand(kListItemActivatedCmd, _selectedItem);
         }
         break;
 
-      case 256+17:   // up arrow
+      case 256+17:  // up arrow
         if (_selectedItem > 0)
           _selectedItem--;
         break;
 
-      case 256+18:   // down arrow
+      case 256+18:  // down arrow
         if (_selectedItem < (int)_list.size() - 1)
           _selectedItem++;
         break;
 
-      case 256+24:   // pageup
+      case 256+24:  // pageup
         _selectedItem -= _entriesPerPage - 1;
         if (_selectedItem < 0)
           _selectedItem = 0;
         break;
 
-      case 256+25:   // pagedown
+      case 256+25:	// pagedown
         _selectedItem += _entriesPerPage - 1;
-          if (_selectedItem >= (int)_list.size() )
-            _selectedItem = _list.size() - 1;
-          break;
+        if (_selectedItem >= (int)_list.size() )
+          _selectedItem = _list.size() - 1;
+        break;
 
-      case 256+22:   // home
+      case 256+22:  // home
         _selectedItem = 0;
         break;
 
-      case 256+23:   // end
+      case 256+23:  // end
         _selectedItem = _list.size() - 1;
         break;
 
       default:
         handled = false;
     }
+
     scrollToCurrent();
   }
 
@@ -334,9 +304,10 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     // also draw scrollbar
     _scrollBar->draw();
 
-    _boss->instance()->frameBuffer().refresh();
+    instance()->frameBuffer().refresh();
   }
 
+  _currentKeyDown = keycode;
   return handled;
 }
 
@@ -352,7 +323,6 @@ bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 void ListWidget::lostFocusWidget()
 {
   _editMode = false;
-  drawCaret(true);
   draw();
 }
 
@@ -377,6 +347,7 @@ void ListWidget::drawWidget(bool hilite)
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int i, pos, len = _list.size();
   string buffer;
+  int deltax;
 
   // Draw a thin frame around the list.
   fb.hLine(_x, _y, _x + _w - 1, kColor);
@@ -386,67 +357,69 @@ void ListWidget::drawWidget(bool hilite)
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _entriesPerPage && pos < len; i++, pos++)
   {
-    if (_numberingMode == kListNumberingZero || _numberingMode == kListNumberingOne)
-    {
-      char temp[10];
-      sprintf(temp, "%2d. ", (pos + _numberingMode));
-      buffer = temp;
-      buffer += _list[pos];
-    }
-    else
-      buffer = _list[pos];
+    const OverlayColor textColor = (_selectedItem == pos && _hasFocus)
+                                    ? kBGColor : kTextColor;
+    const int y = _y + 2 + kLineHeight * i;
 
+    // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
     {
-      if (_hasFocus)
+      if (_hasFocus && !_editMode)
         fb.fillRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
       else
         fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
     }
-    fb.drawString(_font, buffer, _x + 2, _y + 2 + kLineHeight * i, _w - 4,
-                  (_selectedItem == pos && _hasFocus) ? kBGColor : kTextColor);
+
+    // If in numbering mode, we first print a number prefix
+    if (_numberingMode != kListNumberingOff)
+    {
+      char temp[10];
+      sprintf(temp, "%2d. ", (pos + _numberingMode));
+      buffer = temp;
+      fb.drawString(_font, buffer, _x + 2, y, _w - 4, textColor);
+    }
+
+    GUI::Rect r(getEditRect());
+    if (_selectedItem == pos && _editMode)
+    {
+      buffer = _editString;
+      adjustOffset();
+      deltax = -_editScrollOffset;
+
+      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
+                    kTextAlignLeft, deltax, false);
+    }
+    else
+    {
+      buffer = _list[pos];
+      deltax = 0;
+      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
+    }
   }
+
+  // Only draw the caret while editing, and if it's in the current viewport
+  if(_editMode && (_selectedItem >= _scrollBar->_currentPos) &&
+    (_selectedItem < _scrollBar->_currentPos + _entriesPerPage))
+    drawCaret();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ListWidget::getCaretPos() const
+GUI::Rect ListWidget::getEditRect() const
 {
-  int caretpos = 0;
+  GUI::Rect r(2, 1, _w - 2 , kLineHeight);
+  const int offset = (_selectedItem - _currentPos) * kLineHeight;
+  r.top += offset;
+  r.bottom += offset;
 
-  if (_numberingMode == kListNumberingZero || _numberingMode == kListNumberingOne)
+  if (_numberingMode != kListNumberingOff)
   {
     char temp[10];
-    sprintf(temp, "%2d. ", (_selectedItem + _numberingMode));
-    caretpos += _font->getStringWidth(temp);
+    // FIXME: Assumes that all digits have the same width.
+    sprintf(temp, "%2d. ", (_list.size() - 1 + _numberingMode));
+    r.left += _font->getStringWidth(temp);
   }
-
-  caretpos += _font->getStringWidth(_list[_selectedItem]);
-
-  return caretpos;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::drawCaret(bool erase)
-{
-  // Only draw if item is visible
-  if (_selectedItem < _currentPos || _selectedItem >= _currentPos + _entriesPerPage)
-    return;
-  if (!isVisible() || !_boss->isVisible())
-    return;
-
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
-
-  // The item is selected, thus _bgcolor is used to draw the caret and _textcolorhi to erase it
-  OverlayColor color = erase ? kTextColorHi : kBGColor;
-  int x = getAbsX() + 3;
-  int y = getAbsY() + 1;
-
-  y += (_selectedItem - _currentPos) * kLineHeight;
-  x += getCaretPos();
-
-  fb.vLine(x, y, y+kLineHeight, color);
 	
-  _caretVisible = !erase;
+  return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -473,30 +446,35 @@ void ListWidget::scrollToCurrent()
   _scrollBar->recalc();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::startEditMode()
 {
 cerr << "ListWidget::startEditMode()\n";
-
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
-    _backupString = _list[_selectedItem];
+    setEditString(_list[_selectedItem]);
     draw();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::endEditMode()
+{
+  if (!_editMode)
+    return;
+
+  // send a message that editing finished with a return/enter key press
+  _editMode = false;
+  _list[_selectedItem] = _editString;
+  sendCommand(kListItemDataChangedCmd, _selectedItem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::abortEditMode()
 {
 cerr << "ListWidget::abortEditMode()\n";
-
-  if (_editMode)
-  {
-    _editMode = false;
-    _list[_selectedItem] = _backupString;
-    drawCaret(true);
-    draw();
-  }
+  // undo any changes made
+  assert(_selectedItem >= 0);
+  _editMode = false;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.4 2005-06-07 01:14:39 stephena Exp $
+// $Id: ListWidget.hxx,v 1.5 2005-06-15 15:34:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,10 +24,12 @@
 
 #include "GuiObject.hxx"
 #include "Widget.hxx"
-#include "ScrollBarWidget.hxx"
 #include "Command.hxx"
 #include "StringList.hxx"
-#include "bspf.hxx"
+#include "EditableWidget.hxx"
+#include "Rect.hxx"
+
+class ScrollBarWidget;
 
 enum NumberingMode {
   kListNumberingOff  = -1,
@@ -39,12 +41,12 @@ enum NumberingMode {
 enum {
   kListItemDoubleClickedCmd = 'LIdb',  // double click on item - 'data' will be item index
   kListItemActivatedCmd     = 'LIac',  // item activated by return/enter - 'data' will be item index
+  kListItemDataChangedCmd   = 'LIch',  // item data changed - 'data' will be item index
   kListSelectionChangedCmd  = 'Lsch'   // selection changed - 'data' will be item index
 };
 
-
 /* ListWidget */
-class ListWidget : public Widget, public CommandSender
+class ListWidget : public EditableWidget, public CommandSender
 {
   public:
     ListWidget(GuiObject* boss, int x, int y, int w, int h);
@@ -57,35 +59,35 @@ class ListWidget : public Widget, public CommandSender
     const string& getSelectedString() const    { return _list[_selectedItem]; }
     bool isEditable() const	                   { return _editable; }
     void setEditable(bool editable)            { _editable = editable; }
-    void setNumberingMode(NumberingMode numberingMode)  { _numberingMode = numberingMode; }
+    void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
     void scrollTo(int item);
 	
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
-    virtual void handleMouseEntered(int button) {};
-    virtual void handleMouseLeft(int button)    {};
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
-    virtual bool wantsFocus() { return true; };
-
-    void scrollBarRecalc();
+    virtual bool wantsFocus() { return true; }
 
     void startEditMode();
-    void abortEditMode();
+    void endEditMode();
 
   protected:
     void drawWidget(bool hilite);
-	
-    int getCaretPos() const;
-    void drawCaret(bool erase);
+
+    int findItem(int x, int y) const;
+    void scrollBarRecalc();
+
+    void abortEditMode();
+
+    GUI::Rect getEditRect() const;
 
     void lostFocusWidget();
     void scrollToCurrent();
 
-  protected:
+protected:
     StringList       _list;
     bool             _editable;
     bool             _editMode;
@@ -96,9 +98,6 @@ class ListWidget : public Widget, public CommandSender
     ScrollBarWidget* _scrollBar;
     int              _currentKeyDown;
     string           _backupString;
-
-    bool             _caretVisible;
-    int              _caretTime;
 
     string           _quickSelectStr;
     int              _quickSelectTime;

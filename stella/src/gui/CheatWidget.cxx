@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.3 2005-06-14 18:55:36 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.4 2005-06-15 15:34:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -121,6 +121,18 @@ void CheatWidget::handleCommand(CommandSender* sender, int cmd, int data)
 
     case kRestartCmd:
       doRestart();
+      break;
+
+    case kListItemDataChangedCmd:
+      cerr << "data changed\n";
+      break;
+
+    case kListItemDoubleClickedCmd:
+      cerr << "kListItemDoubleClickedCmd\n";
+      break;
+
+    case kListItemActivatedCmd:
+      cerr << "kListItemActivatedCmd\n";
       break;
   }
 }
