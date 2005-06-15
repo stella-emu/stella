@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.18 2005-06-15 18:45:28 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.1 2005-06-15 18:45:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,11 +27,10 @@
 #include "ScrollBarWidget.hxx"
 #include "Dialog.hxx"
 #include "FrameBuffer.hxx"
-#include "ListWidget.hxx"
-#include "bspf.hxx"
+#include "AddrValueWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
+AddrValueWidget::AddrValueWidget(GuiObject* boss, int x, int y, int w, int h)
   : EditableWidget(boss, x, y, w, h),
     CommandSender(boss)
 {
@@ -39,9 +38,9 @@ ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
 	
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_TAB_NAVIGATE;
-  _type = kListWidget;
+  _type = kListWidget;  // we're just a slightly modified listwidget
   _editMode = false;
-  _numberingMode = kListNumberingOne;
+  _numberingMode = kHexNumbering;
   _entriesPerPage = (_h - 2) / kLineHeight;
   _currentPos = 0;
   _selectedItem = -1;
@@ -60,12 +59,13 @@ ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ListWidget::~ListWidget()
+AddrValueWidget::~AddrValueWidget()
 {
 }
 
+/*
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::setSelected(int item)
+void AddrValueWidget::setSelected(int item)
 {
   assert(item >= -1 && item < (int)_list.size());
 
@@ -75,7 +75,7 @@ void ListWidget::setSelected(int item)
       abortEditMode();
 
     _selectedItem = item;
-    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    sendCommand(kAVSelectionChangedCmd, _selectedItem);
 
     _currentPos = _selectedItem - _entriesPerPage / 2;
     scrollToCurrent();
@@ -83,12 +83,30 @@ void ListWidget::setSelected(int item)
     instance()->frameBuffer().refresh();
   }
 }
-
+*/
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::setList(const StringList& list)
+void AddrValueWidget::setList(const AddrList& alist, const ValueList& vlist)
 {
-  int size = list.size();
-  _list = list;
+  _addrList.clear();
+  _valueList.clear();
+  _addrStringList.clear();
+  _valueStringList.clear();
+
+  _addrList = alist;
+  _valueList = vlist;
+
+  int size = _addrList.size();  // assume vlist is the same size
+
+  // An efficiency thing
+  char temp[10];
+  for(unsigned int i = 0; i < (unsigned int)size; ++i)
+  {
+    sprintf(temp, "%.4x:", _addrList[i]);
+    _addrStringList.push_back(temp);
+    sprintf(temp, "%.3d", _valueList[i]);
+    _valueStringList.push_back(temp);
+  }
+
   if (_currentPos >= size)
     _currentPos = size - 1;
   if (_currentPos < 0)
@@ -99,9 +117,9 @@ void ListWidget::setList(const StringList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::scrollTo(int item)
+void AddrValueWidget::scrollTo(int item)
 {
-  int size = _list.size();
+  int size = _valueList.size();
   if (item >= size)
     item = size - 1;
   if (item < 0)
@@ -115,16 +133,16 @@ void ListWidget::scrollTo(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::scrollBarRecalc()
+void AddrValueWidget::scrollBarRecalc()
 {
-  _scrollBar->_numEntries = _list.size();
+  _scrollBar->_numEntries = _valueList.size();
   _scrollBar->_entriesPerPage = _entriesPerPage;
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void AddrValueWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if (!isEnabled())
     return;
@@ -136,7 +154,7 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem > (int)_list.size() - 1)
+  if (newSelectedItem > (int)_valueList.size() - 1)
     newSelectedItem = -1;
 
   if (_selectedItem != newSelectedItem)
@@ -144,7 +162,7 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     if (_editMode)
       abortEditMode();
     _selectedItem = newSelectedItem;
-    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    sendCommand(kAVSelectionChangedCmd, _selectedItem);
     instance()->frameBuffer().refresh();
   }
 	
@@ -154,13 +172,13 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void AddrValueWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kListItemDoubleClickedCmd, _selectedItem);
+    sendCommand(kAVItemDoubleClickedCmd, _selectedItem);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -169,30 +187,19 @@ void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseWheel(int x, int y, int direction)
+void AddrValueWidget::handleMouseWheel(int x, int y, int direction)
 {
   _scrollBar->handleMouseWheel(x, y, direction);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ListWidget::findItem(int x, int y) const
+int AddrValueWidget::findItem(int x, int y) const
 {
   return (y - 1) / kLineHeight + _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static bool matchingCharsIgnoringCase(string s, string pattern)
-{
-  // Make the strings uppercase so we can compare them
-  transform(s.begin(), s.end(), s.begin(), (int(*)(int)) toupper);
-  transform(pattern.begin(), pattern.end(), pattern.begin(), (int(*)(int)) toupper);
-
-  // Make sure that if the pattern is found, it occurs at the start of 's'
-  return (s.find(pattern, 0) == string::size_type(0));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool AddrValueWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Ignore all mod keys
   if(instance()->eventHandler().kbdControl(modifiers) ||
@@ -203,37 +210,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool dirty = false;
   int oldSelectedItem = _selectedItem;
 
-  if (!_editMode && isalnum((char)ascii))
-  {
-    // Quick selection mode: Go to first list item starting with this key
-    // (or a substring accumulated from the last couple key presses).
-    // Only works in a useful fashion if the list entries are sorted.
-    // TODO: Maybe this should be off by default, and instead we add a
-    // method "enableQuickSelect()" or so ?
-    int time = instance()->getTicks() / 1000;
-    if (_quickSelectTime < time)
-      _quickSelectStr = (char)ascii;
-    else
-      _quickSelectStr += (char)ascii;
-
-    // FIXME: This is bad slow code (it scans the list linearly each time a
-    // key is pressed); it could be much faster. Only of importance if we have
-    // quite big lists to deal with -- so for now we can live with this lazy
-    // implementation :-)
-    int newSelectedItem = 0;
-    for (StringList::const_iterator i = _list.begin(); i != _list.end(); ++i)
-    {
-      const bool match = matchingCharsIgnoringCase(*i, _quickSelectStr);
-      if (match)
-      {
-        _selectedItem = newSelectedItem;
-        break;
-      }
-      newSelectedItem++;
-    }
-    scrollToCurrent();
-  }
-  else if (_editMode)
+  if (_editMode)
   {
     // Class EditableWidget handles all text editing related key presses for us
     handled = EditableWidget::handleKeyDown(ascii, keycode, modifiers);
@@ -254,7 +231,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
             startEditMode();
           }
           else
-            sendCommand(kListItemActivatedCmd, _selectedItem);
+            sendCommand(kAVItemActivatedCmd, _selectedItem);
         }
         break;
 
@@ -264,7 +241,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         break;
 
       case 256+18:  // down arrow
-        if (_selectedItem < (int)_list.size() - 1)
+        if (_selectedItem < (int)_valueList.size() - 1)
           _selectedItem++;
         break;
 
@@ -276,8 +253,8 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
       case 256+25:	// pagedown
         _selectedItem += _entriesPerPage - 1;
-        if (_selectedItem >= (int)_list.size() )
-          _selectedItem = _list.size() - 1;
+        if (_selectedItem >= (int)_valueList.size() )
+          _selectedItem = _valueList.size() - 1;
         break;
 
       case 256+22:  // home
@@ -285,7 +262,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         break;
 
       case 256+23:  // end
-        _selectedItem = _list.size() - 1;
+        _selectedItem = _valueList.size() - 1;
         break;
 
       default:
@@ -300,7 +277,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
   if (_selectedItem != oldSelectedItem)
   {
-    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    sendCommand(kAVSelectionChangedCmd, _selectedItem);
     // also draw scrollbar
     _scrollBar->draw();
 
@@ -312,7 +289,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
+bool AddrValueWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 {
   if (keycode == _currentKeyDown)
     _currentKeyDown = 0;
@@ -320,14 +297,14 @@ bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::lostFocusWidget()
+void AddrValueWidget::lostFocusWidget()
 {
   _editMode = false;
   draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void AddrValueWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch (cmd)
   {
@@ -342,10 +319,10 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::drawWidget(bool hilite)
+void AddrValueWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
-  int i, pos, len = _list.size();
+  int i, pos, len = _valueList.size();
   string buffer;
   int deltax;
 
@@ -358,7 +335,7 @@ void ListWidget::drawWidget(bool hilite)
   for (i = 0, pos = _currentPos; i < _entriesPerPage && pos < len; i++, pos++)
   {
     const OverlayColor textColor = (_selectedItem == pos && _editMode)
-                                    ? kColor : kTextColor;
+                                    ? kTextColor : kTextColor;
     const int y = _y + 2 + kLineHeight * i;
 
     // Draw the selected item inverted, on a highlighted background.
@@ -370,14 +347,8 @@ void ListWidget::drawWidget(bool hilite)
         fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
     }
 
-    // If in numbering mode, we first print a number prefix
-    if (_numberingMode != kListNumberingOff)
-    {
-      char temp[10];
-      sprintf(temp, "%2d. ", (pos + _numberingMode));
-      buffer = temp;
-      fb.drawString(_font, buffer, _x + 2, y, _w - 4, textColor);
-    }
+    // Print the address
+    fb.drawString(_font, _addrStringList[pos], _x + 2, y, _w - 4, textColor);
 
     GUI::Rect r(getEditRect());
     if (_selectedItem == pos && _editMode)
@@ -391,7 +362,7 @@ void ListWidget::drawWidget(bool hilite)
     }
     else
     {
-      buffer = _list[pos];
+      buffer = _valueStringList[pos];
       deltax = 0;
       fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
     }
@@ -404,26 +375,19 @@ void ListWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect ListWidget::getEditRect() const
+GUI::Rect AddrValueWidget::getEditRect() const
 {
   GUI::Rect r(2, 1, _w - 2 , kLineHeight);
   const int offset = (_selectedItem - _currentPos) * kLineHeight;
   r.top += offset;
   r.bottom += offset;
-
-  if (_numberingMode != kListNumberingOff)
-  {
-    char temp[10];
-    // FIXME: Assumes that all digits have the same width.
-    sprintf(temp, "%2d. ", (_list.size() - 1 + _numberingMode));
-    r.left += _font->getStringWidth(temp);
-  }
+  r.left += 9 * _font->getMaxCharWidth();  // address takes 9 characters
 	
   return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::scrollToCurrent()
+void AddrValueWidget::scrollToCurrent()
 {
   // Only do something if the current item is not in our view port
   if (_selectedItem < _currentPos)
@@ -437,43 +401,50 @@ void ListWidget::scrollToCurrent()
     _currentPos = _selectedItem - _entriesPerPage + 1;
   }
 
-  if (_currentPos < 0 || _entriesPerPage > (int)_list.size())
+  if (_currentPos < 0 || _entriesPerPage > (int)_valueList.size())
     _currentPos = 0;
-  else if (_currentPos + _entriesPerPage > (int)_list.size())
-    _currentPos = _list.size() - _entriesPerPage;
+  else if (_currentPos + _entriesPerPage > (int)_valueList.size())
+    _currentPos = _valueList.size() - _entriesPerPage;
 
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::startEditMode()
+void AddrValueWidget::startEditMode()
 {
-cerr << "ListWidget::startEditMode()\n";
+cerr << "AddrValueWidget::startEditMode()\n";
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
-    setEditString(_list[_selectedItem]);
+    setEditString(_valueStringList[_selectedItem]);
     draw();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::endEditMode()
+void AddrValueWidget::endEditMode()
 {
   if (!_editMode)
     return;
 
   // send a message that editing finished with a return/enter key press
   _editMode = false;
-  _list[_selectedItem] = _editString;
-  sendCommand(kListItemDataChangedCmd, _selectedItem);
+
+  // Update the both the string representation and the real data
+  _valueStringList[_selectedItem] = _editString;
+
+int value = atoi(_editString.c_str());
+cerr << "new value: " << value << endl;
+  _valueList[_selectedItem] = value;  // FIXME - do error checking
+
+  sendCommand(kAVItemDataChangedCmd, _selectedItem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::abortEditMode()
+void AddrValueWidget::abortEditMode()
 {
-cerr << "ListWidget::abortEditMode()\n";
+cerr << "AddrValueWidget::abortEditMode()\n";
   // undo any changes made
   assert(_selectedItem >= 0);
   _editMode = false;

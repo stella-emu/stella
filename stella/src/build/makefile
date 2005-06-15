@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.96 2005-06-14 18:55:35 stephena Exp $
+## $Id: makefile,v 1.97 2005-06-15 18:45:27 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -157,7 +157,7 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 
 GUI_OBJS = Font.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
-           EditableWidget.o EditTextWidget.o EditNumWidget.o \
+           EditableWidget.o EditTextWidget.o EditNumWidget.o AddrValueWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
@@ -416,6 +416,9 @@ EditTextWidget.o: $(GUI)/EditTextWidget.cxx $(GUI)/EditTextWidget.hxx
 
 EditNumWidget.o: $(GUI)/EditNumWidget.cxx $(GUI)/EditNumWidget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/EditNumWidget.cxx
+
+AddrValueWidget.o: $(GUI)/AddrValueWidget.cxx $(GUI)/AddrValueWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/AddrValueWidget.cxx
 
 Dialog.o: $(GUI)/Dialog.cxx $(GUI)/Dialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Dialog.cxx

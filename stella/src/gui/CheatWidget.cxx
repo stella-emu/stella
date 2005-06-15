@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.4 2005-06-15 15:34:35 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.5 2005-06-15 18:45:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,7 +28,7 @@
 #include "Debugger.hxx"
 #include "Widget.hxx"
 #include "EditNumWidget.hxx"
-#include "ListWidget.hxx"
+#include "AddrValueWidget.hxx"
 
 #include "CheatWidget.hxx"
 
@@ -83,15 +83,13 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   myRestartButton->setTarget(this);
 
   // Add the list showing the results of a search/compare
-  // FIXME - change this to a AddrValueWidget (or something like that)
   xpos = 200;  ypos = border/2;
-
   new StaticTextWidget(boss, xpos + 10, ypos, 70, kLineHeight,
                        "Address  Value", kTextAlignLeft);
   ypos += kLineHeight;
 
-  myResultsList = new ListWidget(boss, xpos, ypos, 100, 75);
-  myResultsList->setNumberingMode(kListNumberingOff);
+  myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75);
+  myResultsList->setNumberingMode(kHexNumbering);
   myResultsList->setFont(instance()->consoleFont());
   myResultsList->setTarget(this);
 
@@ -123,15 +121,15 @@ void CheatWidget::handleCommand(CommandSender* sender, int cmd, int data)
       doRestart();
       break;
 
-    case kListItemDataChangedCmd:
+    case kAVItemDataChangedCmd:
       cerr << "data changed\n";
       break;
 
-    case kListItemDoubleClickedCmd:
+    case kAVItemDoubleClickedCmd:
       cerr << "kListItemDoubleClickedCmd\n";
       break;
 
-    case kListItemActivatedCmd:
+    case kAVItemActivatedCmd:
       cerr << "kListItemActivatedCmd\n";
       break;
   }
@@ -300,17 +298,14 @@ void CheatWidget::doRestart()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatWidget::fillResultsList()
 {
-  StringList l;  
-  char buf[1024];
+  AddrList alist;
+  ValueList vlist;
 
-  // FIXME - add to an editable two-column widget instead
   for(unsigned int i = 0; i < mySearchArray.size(); i++)
   {
-    snprintf(buf, 1023, "%s :   %3d",
-             Debugger::to_hex_16(kRamStart + mySearchArray[i].addr),
-             mySearchArray[i].value);
-    l.push_back(buf);
+    alist.push_back(kRamStart + mySearchArray[i].addr);
+    vlist.push_back(mySearchArray[i].value);
   }
 
-  myResultsList->setList(l);
+  myResultsList->setList(alist, vlist);
 }

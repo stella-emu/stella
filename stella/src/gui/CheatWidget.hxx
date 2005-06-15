@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.hxx,v 1.3 2005-06-14 18:55:36 stephena Exp $
+// $Id: CheatWidget.hxx,v 1.4 2005-06-15 18:45:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,7 +26,7 @@ class GuiObject;
 class ButtonWidget;
 class StaticTextWidget;
 class EditNumWidget;
-class ListWidget;
+class AddrValueWidget;
 
 #include "Array.hxx"
 #include "Widget.hxx"
@@ -71,7 +71,7 @@ class CheatWidget : public Widget, public CommandSender
     ButtonWidget* myCompareButton;
     ButtonWidget* myRestartButton;
 
-    ListWidget* myResultsList;
+    AddrValueWidget* myResultsList;
 };
 
 #endif
