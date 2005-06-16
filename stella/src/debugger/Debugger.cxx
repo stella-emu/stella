@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.9 2005-06-16 00:55:57 stephena Exp $
+// $Id: Debugger.cxx,v 1.10 2005-06-16 02:16:25 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -44,6 +44,7 @@ Debugger::Debugger(OSystem* osystem)
   // Init parser
   myParser = new DebuggerParser(this);
   equateList = new EquateList();
+  breakPoints = new PackedBitArray(0xffff);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,7 +52,8 @@ Debugger::~Debugger()
 {
   delete myParser;
   delete myDebugger;
-  //	delete equateList;
+  delete equateList;
+  delete breakPoints;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,6 +279,8 @@ void Debugger::step()
 // to share between stack and variables, I doubt any 2600 games will ever
 // use recursion...
 
+// FIXME: TIA framebuffer should be updated during tracing!
+
 void Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
@@ -343,5 +347,15 @@ void Debugger::toggleN() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EquateList *Debugger::equates() {
   return equateList;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleBreakPoint(int bp) {
+  mySystem->m6502().setBreakPoints(breakPoints);
+  breakPoints->toggle(bp);
+}
+
+bool Debugger::breakPoint(int bp) {
+  return breakPoints->isSet(bp) != 0;
 }
 

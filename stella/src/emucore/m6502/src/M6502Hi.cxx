@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.3 2005-06-16 01:11:28 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.4 2005-06-16 02:16:26 urchlay Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -72,6 +72,12 @@ bool M6502High::execute(uInt32 number)
     {
       uInt16 operandAddress = 0;
       uInt8 operand = 0;
+
+      if(breakPoints != NULL)
+      {
+        if(breakPoints->isSet(PC))
+          cerr << "hit breakpoint at " << PC << endl;
+      }
 
 #ifdef DEBUG
       debugStream << "PC=" << hex << setw(4) << PC << " ";

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.98 2005-06-16 01:11:26 stephena Exp $
+## $Id: makefile,v 1.99 2005-06-16 02:16:25 urchlay Exp $
 ##============================================================================
 
 ##============================================================================
@@ -164,7 +164,7 @@ GUI_OBJS = Font.o Menu.o Launcher.o \
            ProgressDialog.o \
            DebuggerDialog.o PromptWidget.o CheatWidget.o
 
-DBG_OBJS = Debugger.o DebuggerParser.o EquateList.o
+DBG_OBJS = Debugger.o DebuggerParser.o EquateList.o PackedBitArray.o
 
 CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
             CartE0.o CartE7.o CartF4.o CartF4SC.o CartF6.o CartF6SC.o \
@@ -479,3 +479,6 @@ DebuggerParser.o: $(DBG)/DebuggerParser.cxx $(DBG)/DebuggerParser.hxx
 
 EquateList.o: $(DBG)/EquateList.cxx $(DBG)/EquateList.hxx $(DBG)/Equate.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(DBG)/EquateList.cxx
+
+PackedBitArray.o: $(DBG)/PackedBitArray.cxx $(DBG)/PackedBitArray.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(DBG)/PackedBitArray.cxx

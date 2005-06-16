@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.6 2005-06-16 00:20:11 stephena Exp $
+// $Id: EquateList.cxx,v 1.7 2005-06-16 02:16:26 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -100,8 +100,10 @@ static struct Equate hardCodedEquates[] = {
 
 EquateList::EquateList() {
 	// cerr << sizeof(hardCodedEquates)/sizeof(struct Equate) << endl;
-	ourVcsEquates = new Equate[ sizeof(hardCodedEquates)/sizeof(struct Equate) ];
-	for(int i=0; hardCodedEquates[i].label != NULL; i++)
+	int size = sizeof(hardCodedEquates)/sizeof(struct Equate) + 1;
+	ourVcsEquates = new Equate[ size ];
+	// for(int i=0; hardCodedEquates[i].label != NULL; i++)
+	for(int i=0; i<size; i++)
 		ourVcsEquates[i] = hardCodedEquates[i];
 	calcSize();
 }
@@ -141,10 +143,15 @@ char *EquateList::getFormatted(int addr, int places) {
 	return buf;
 }
 
-int EquateList::getAddress(const char *label) {
-	for(int i=0; ourVcsEquates[i].label != NULL; i++)
-		if( strcasecmp(ourVcsEquates[i].label, label) == 0 )
+int EquateList::getAddress(const char *lbl) {
+	// cerr << "getAddress(" << lbl << ")" << endl;
+	// cerr << ourVcsEquates[0].label << endl;
+	// cerr << "shit" << endl;
+	for(int i=0; ourVcsEquates[i].label != NULL; i++) {
+		// cerr << "Looking at " << ourVcsEquates[i].label << endl;
+		if( strcasecmp(ourVcsEquates[i].label, lbl) == 0 )
 			return ourVcsEquates[i].address;
+	}
 
 	return -1;
 }

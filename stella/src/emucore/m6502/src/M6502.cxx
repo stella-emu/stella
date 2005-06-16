@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.4 2005-06-16 01:11:28 stephena Exp $
+// $Id: M6502.cxx,v 1.5 2005-06-16 02:16:26 urchlay Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -25,6 +25,7 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
       mySystemCyclesPerProcessorCycle(systemCyclesPerProcessorCycle)
 {
   uInt16 t;
+  breakPoints = NULL;
 
   // Compute the BCD lookup table
   for(t = 0; t < 256; ++t)
@@ -332,3 +333,7 @@ const char* M6502::ourInstructionMnemonicTable[256] = {
   "BEQ",  "SBC",  "n/a",  "isb",  "nop",  "SBC",  "INC",  "isb",    // 0xF?
   "SED",  "SBC",  "nop",  "isb",  "nop",  "SBC",  "INC",  "isb"
 };
+
+void M6502::setBreakPoints(PackedBitArray *bp) {
+	breakPoints = bp;
+}

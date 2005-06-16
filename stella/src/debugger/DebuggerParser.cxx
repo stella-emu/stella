@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.6 2005-06-15 23:45:04 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.7 2005-06-16 02:16:25 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -33,7 +33,6 @@ enum {
 DebuggerParser::DebuggerParser(Debugger* d)
   	: debugger(d)
 {
-	equateList = d->equates();
 	done = false;
 }
 
@@ -63,7 +62,7 @@ int DebuggerParser::conv_hex_digit(char d) {
 // the hex to an int. Returns -1 on error.
 int DebuggerParser::decipher_arg(string &arg) {
 	const char *a = arg.c_str();
-	int address = equateList->getAddress(a);
+	int address = debugger->equateList->getAddress(a);
 	// cerr << "decipher_arg: equateList->getAddress(" << a << ") == " << address << endl;
 	if(address >= 0)
 		return address;
@@ -91,7 +90,7 @@ bool DebuggerParser::getArgs(const string& command) {
 	// cerr << "Parsing \"" << command << "\"" << endl;
 
 	while(*c != '\0') {
-		// cerr << "State " << state << ", *c " << *c << endl;
+		// cerr << "State " << state << ", *c '" << *c << "'" << endl;
 		switch(state) {
 			case kIN_COMMAND:
 				if(*c == ' ')
@@ -266,13 +265,23 @@ string DebuggerParser::run(const string& command) {
 		result = debugger->dumpTIA();
 	} else if(subStringMatch(verb, "reset")) {
 		debugger->reset();
+	} else if(subStringMatch(verb, "break")) {
+		if(argCount == 1) {
+			debugger->toggleBreakPoint(args[0]);
+			if(debugger->breakPoint(args[0]))
+				return "Set breakpoint";
+			else
+				return "Cleared breakpoint";
+		} else {
+			return "one argument required";
+		}
 	} else if(subStringMatch(verb, "help") || verb == "?") {
 		// please leave each option on its own line so they're
 		// easy to sort - bkw
 		return
 			"a xx      - Set Accumulator to xx\n"
 			// "break     - Show all breakpoints\n"
-			// "break xx  - Set/clear breakpoint at address xx\n"
+			"break xx  - Set/clear breakpoint at address xx\n"
 			"c         - Toggle Carry Flag\n"
 			"d         - Toggle Decimal Flag\n"
 			"loadsym f - Load DASM symbols from file f\n"

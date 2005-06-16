@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.3 2005-06-16 01:11:28 stephena Exp $
+// $Id: M6502.hxx,v 1.4 2005-06-16 02:16:26 urchlay Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -26,6 +26,7 @@ class Deserializer;
 
 #include "bspf.hxx"
 #include "System.hxx"
+#include "PackedBitArray.hxx"
 
 /**
   This is an abstract base class for classes that emulate the
@@ -33,7 +34,7 @@ class Deserializer;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.3 2005-06-16 01:11:28 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.4 2005-06-16 02:16:26 urchlay Exp $ 
 */
 class M6502
 {
@@ -166,6 +167,9 @@ class M6502
     */
     friend ostream& operator<<(ostream& out, const AddressingMode& mode);
 
+  public:
+    void setBreakPoints(PackedBitArray *bp);
+
   protected:
     /**
       Get the 8-bit value of the Processor Status register.
@@ -196,6 +200,8 @@ class M6502
     bool I;     // I flag for processor status register
     bool notZ;  // Z flag complement for processor status register
     bool C;     // C flag for processor status register
+
+    PackedBitArray *breakPoints;
 
     /** 
       Bit fields used to indicate that certain conditions need to be 

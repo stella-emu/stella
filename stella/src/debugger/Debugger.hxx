@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.6 2005-06-16 00:20:11 stephena Exp $
+// $Id: Debugger.hxx,v 1.7 2005-06-16 02:16:25 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -29,6 +29,7 @@ class D6502;
 #include "DialogContainer.hxx"
 #include "M6502.hxx"
 #include "EquateList.hxx"
+#include "PackedBitArray.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -47,7 +48,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.6 2005-06-16 00:20:11 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.7 2005-06-16 02:16:25 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -93,6 +94,9 @@ class Debugger : public DialogContainer
       sprintf(out, "%04x", i);
       return out;
     }
+
+    void toggleBreakPoint(int bp);
+    bool breakPoint(int bp);
 
   public:
     /**
@@ -144,7 +148,8 @@ class Debugger : public DialogContainer
 
     DebuggerParser* myParser;
     D6502* myDebugger;
-    EquateList *equateList;
+	 EquateList *equateList;
+    PackedBitArray *breakPoints;
 };
 
 #endif
