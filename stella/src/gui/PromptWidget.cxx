@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.6 2005-06-16 00:56:00 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.7 2005-06-16 16:18:57 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -174,6 +174,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         delete [] str;
       }
 
+		print( instance()->debugger().state() + "\n");
       print(PROMPT);
       _promptStartPos = _promptEndPos = _currentPos;
 

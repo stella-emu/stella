@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.7 2005-06-16 02:16:25 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.8 2005-06-16 16:18:57 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -303,7 +303,7 @@ string DebuggerParser::run(const string& command) {
 		return "unimplemented command (try \"help\")";
 	}
 
-	result += debugger->state();
+	//	result += debugger->state();
 
 	return result;
 }
