@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+// $Id: Switches.hxx,v 1.2 2005-06-16 01:11:28 stephena Exp $
 //============================================================================
 
 #ifndef SWITCHES_HXX
@@ -29,7 +29,7 @@ class Switches;
   This class represents the console switches of the game console.
 
   @author  Bradford W. Mott
-  @version $Id: Switches.hxx,v 1.1.1.1 2001-12-27 19:54:23 bwmott Exp $
+  @version $Id: Switches.hxx,v 1.2 2005-06-16 01:11:28 stephena Exp $
 */
 class Switches
 {

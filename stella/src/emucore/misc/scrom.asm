@@ -8,12 +8,12 @@
 ;;  SS  SS   tt   ee      ll   ll  aa  aa
 ;;   SSSS     ttt  eeeee llll llll  aaaaa
 ;;
-;; Copyright (c) 1995-2002 by Bradford W. Mott
+;; Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 ;;
 ;; See the file "license" for information on usage and redistribution of
 ;; this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ;;
-;; $Id: scrom.asm,v 1.2 2002-04-05 02:18:23 bwmott Exp $
+;; $Id: scrom.asm,v 1.3 2005-06-16 01:11:29 stephena Exp $
 ;;============================================================================
 ;; 
 ;; This file contains a "dummy" Supercharger BIOS for Stella.  It is based

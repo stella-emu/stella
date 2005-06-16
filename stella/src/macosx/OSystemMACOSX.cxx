@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.3 2005-06-03 05:05:05 markgrebe Exp $
+// $Id: OSystemMACOSX.cxx,v 1.4 2005-06-16 01:11:29 stephena Exp $
 //============================================================================
 
 #include <cstdlib>

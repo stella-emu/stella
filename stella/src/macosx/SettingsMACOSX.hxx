@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1999 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.hxx,v 1.2 2005-05-27 17:12:35 markgrebe Exp $
+// $Id: SettingsMACOSX.hxx,v 1.3 2005-06-16 01:11:29 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_MAC_OSX_HXX
@@ -28,7 +28,7 @@ class Console;
   This class defines Macintosh OSX system specific settings.
 
   @author  Mark Grebe
-  @version $Id: SettingsMACOSX.hxx,v 1.2 2005-05-27 17:12:35 markgrebe Exp $
+  @version $Id: SettingsMACOSX.hxx,v 1.3 2005-06-16 01:11:29 stephena Exp $
 */
 class SettingsMACOSX : public Settings
 {

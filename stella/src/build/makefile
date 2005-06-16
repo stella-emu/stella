@@ -8,12 +8,12 @@
 ##  SS  SS   tt   ee      ll   ll  aa  aa
 ##   SSSS     ttt  eeeee llll llll  aaaaa
 ##
-## Copyright (c) 1995-1999 by Bradford W. Mott
+## Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 ##
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.97 2005-06-15 18:45:27 stephena Exp $
+## $Id: makefile,v 1.98 2005-06-16 01:11:26 stephena Exp $
 ##============================================================================
 
 ##============================================================================

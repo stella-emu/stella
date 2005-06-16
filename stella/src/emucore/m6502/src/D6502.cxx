@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.7 2005-06-15 23:45:04 urchlay Exp $
+// $Id: D6502.cxx,v 1.8 2005-06-16 01:11:28 stephena Exp $
 //============================================================================
 
 #include <stdio.h>

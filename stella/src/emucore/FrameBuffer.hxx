@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.39 2005-06-14 01:11:48 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -46,7 +46,7 @@ enum TextAlignment {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.39 2005-06-14 01:11:48 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
 */
 class FrameBuffer
 {

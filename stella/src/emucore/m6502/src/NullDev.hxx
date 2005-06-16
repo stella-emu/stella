@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: NullDev.hxx,v 1.2 2002-05-13 19:10:25 stephena Exp $
+// $Id: NullDev.hxx,v 1.3 2005-06-16 01:11:29 stephena Exp $
 //============================================================================
 
 #ifndef NULLDEVICE_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   holes in the address space (i.e. no real device attached). 
  
   @author  Bradford W. Mott
-  @version $Id: NullDev.hxx,v 1.2 2002-05-13 19:10:25 stephena Exp $
+  @version $Id: NullDev.hxx,v 1.3 2005-06-16 01:11:29 stephena Exp $
 */
 class NullDevice : public Device
 {

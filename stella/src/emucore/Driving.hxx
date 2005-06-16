@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.hxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+// $Id: Driving.hxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
 //============================================================================
 
 #ifndef DRIVING_HXX
@@ -29,7 +29,7 @@ class System;
   The standard Atari 2600 Indy 500 driving controller.
 
   @author  Bradford W. Mott
-  @version $Id: Driving.hxx,v 1.1.1.1 2001-12-27 19:54:21 bwmott Exp $
+  @version $Id: Driving.hxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
 */
 class Driving : public Controller
 {

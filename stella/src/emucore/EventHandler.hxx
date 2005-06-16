@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-1998 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.39 2005-06-12 18:18:00 stephena Exp $
+// $Id: EventHandler.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.39 2005-06-12 18:18:00 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
 */
 class EventHandler
 {
