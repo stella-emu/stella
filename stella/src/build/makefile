@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.100 2005-06-16 12:28:53 stephena Exp $
+## $Id: makefile,v 1.101 2005-06-16 18:40:16 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -158,11 +158,12 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
 GUI_OBJS = Font.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
            EditableWidget.o EditTextWidget.o EditNumWidget.o AddrValueWidget.o \
+           ByteGridWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
            ProgressDialog.o \
-           DebuggerDialog.o PromptWidget.o CheatWidget.o
+           DebuggerDialog.o PromptWidget.o CheatWidget.o RamWidget.o
 
 DBG_OBJS = Debugger.o DebuggerParser.o EquateList.o PackedBitArray.o
 
@@ -420,6 +421,9 @@ EditNumWidget.o: $(GUI)/EditNumWidget.cxx $(GUI)/EditNumWidget.hxx
 AddrValueWidget.o: $(GUI)/AddrValueWidget.cxx $(GUI)/AddrValueWidget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/AddrValueWidget.cxx
 
+ByteGridWidget.o: $(GUI)/ByteGridWidget.cxx $(GUI)/ByteGridWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/ByteGridWidget.cxx
+
 Dialog.o: $(GUI)/Dialog.cxx $(GUI)/Dialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Dialog.cxx
 
@@ -470,6 +474,9 @@ PromptWidget.o: $(GUI)/PromptWidget.cxx $(GUI)/PromptWidget.hxx
 
 CheatWidget.o: $(GUI)/CheatWidget.cxx $(GUI)/CheatWidget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/CheatWidget.cxx
+
+RamWidget.o: $(GUI)/RamWidget.cxx $(GUI)/RamWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/RamWidget.cxx
 
 Debugger.o: $(DBG)/Debugger.cxx $(DBG)/Debugger.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(DBG)/Debugger.cxx

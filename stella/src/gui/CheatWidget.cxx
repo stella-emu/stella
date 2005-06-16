@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.7 2005-06-16 00:55:59 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.8 2005-06-16 18:40:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -210,7 +210,8 @@ void CheatWidget::doCompare()
   }
 
   // Do some pre-processing on the string
-  if(str.find_first_of("+-", 0) > 0)
+  string::size_type pos = str.find_first_of("+-", 0);
+  if(pos > 0 && pos != string::npos)
   {
     // Only accept '+' or '-' at the start of the string
     myResult->setLabel("Input must be [+|-]NUM");

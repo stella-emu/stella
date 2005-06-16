@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.3 2005-06-16 00:55:59 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.4 2005-06-16 18:40:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -173,16 +173,8 @@ void EditableWidget::drawCaret()
   x += getAbsX();
   y += _y;
 
-/*
-cerr << "draw caret: " << endl
-     << "x = " << x << endl
-     << "y = " << y << endl
-     << "h = " << editRect.height() - 2 << endl
-     << "c = " << color << endl
-     << endl;
-*/
   FrameBuffer& fb = _boss->instance()->frameBuffer();
-  fb.vLine(x, y, y + editRect.height() - 2, color);
+  fb.vLine(x, y+2, y + editRect.height() - 2, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
