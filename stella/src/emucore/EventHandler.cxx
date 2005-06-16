@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.74 2005-06-16 00:55:58 stephena Exp $
+// $Id: EventHandler.cxx,v 1.75 2005-06-16 16:36:49 urchlay Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1317,6 +1317,10 @@ void EventHandler::leaveMenuMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::enterDebugMode()
 {
+  // paranoia: this should never happen:
+  if(myState == S_DEBUGGER)
+    return;
+
   myState = S_DEBUGGER;
   myOSystem->createFrameBuffer();
   myOSystem->debugger().reStack();

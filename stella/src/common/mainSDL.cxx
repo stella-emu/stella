@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.44 2005-06-16 00:55:56 stephena Exp $
+// $Id: mainSDL.cxx,v 1.45 2005-06-16 16:36:48 urchlay Exp $
 //============================================================================
 
 #include <fstream>
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
   }
 
   // Request that the SDL window be centered, if possible
-  putenv("SDL_VIDEO_CENTERED=1");
+  //	putenv("SDL_VIDEO_CENTERED=1");
 
   // Create the framebuffer(s)
   if(!theOSystem->createFrameBuffer())
