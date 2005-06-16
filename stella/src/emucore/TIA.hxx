@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2004 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.20 2005-05-04 00:43:22 stephena Exp $
+// $Id: TIA.hxx,v 1.21 2005-06-16 00:55:58 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.20 2005-05-04 00:43:22 stephena Exp $
+  @version $Id: TIA.hxx,v 1.21 2005-06-16 00:55:58 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {

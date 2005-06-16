@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2004 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.hxx,v 1.1 2004-06-25 03:44:12 bwmott Exp $
+// $Id: CartUA.hxx,v 1.2 2005-06-16 00:55:57 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEUA_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartUA.hxx,v 1.1 2004-06-25 03:44:12 bwmott Exp $
+  @version $Id: CartUA.hxx,v 1.2 2005-06-16 00:55:57 stephena Exp $
 */
 class CartridgeUA : public Cartridge
 {

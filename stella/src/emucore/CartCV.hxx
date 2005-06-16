@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.hxx,v 1.3 2005-02-13 19:17:02 stephena Exp $
+// $Id: CartCV.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGECV_HXX
@@ -35,7 +35,7 @@ class Deserializer;
   $F800-$FFFF ROM
 
   @author  Eckhard Stolberg
-  @version $Id: CartCV.hxx,v 1.3 2005-02-13 19:17:02 stephena Exp $
+  @version $Id: CartCV.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
 */
 class CartridgeCV : public Cartridge
 {

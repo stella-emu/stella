@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.16 2005-06-14 01:11:48 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.17 2005-06-16 00:55:56 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.16 2005-06-14 01:11:48 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.17 2005-06-16 00:55:56 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {

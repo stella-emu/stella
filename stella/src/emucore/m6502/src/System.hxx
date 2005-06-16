@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2002 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.4 2005-05-25 17:17:38 stephena Exp $
+// $Id: System.hxx,v 1.5 2005-06-16 00:55:58 stephena Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -46,7 +46,7 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.4 2005-05-25 17:17:38 stephena Exp $
+  @version $Id: System.hxx,v 1.5 2005-06-16 00:55:58 stephena Exp $
 */
 class System
 {

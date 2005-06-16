@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundNull.hxx,v 1.1 2005-04-28 19:30:26 stephena Exp $
+// $Id: SoundNull.hxx,v 1.2 2005-06-16 00:55:56 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_NULL_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   is completely disabled.
 
   @author Stephen Anthony
-  @version $Id: SoundNull.hxx,v 1.1 2005-04-28 19:30:26 stephena Exp $
+  @version $Id: SoundNull.hxx,v 1.2 2005-06-16 00:55:56 stephena Exp $
 */
 class SoundNull : public Sound
 {
