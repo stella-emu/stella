@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.4 2005-06-16 02:16:26 urchlay Exp $
+// $Id: M6502.hxx,v 1.5 2005-06-16 12:28:54 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -23,6 +23,7 @@ class D6502;
 class M6502;
 class Serializer;
 class Deserializer;
+class Debugger;
 
 #include "bspf.hxx"
 #include "System.hxx"
@@ -34,7 +35,7 @@ class Deserializer;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.4 2005-06-16 02:16:26 urchlay Exp $ 
+  @version $Id: M6502.hxx,v 1.5 2005-06-16 12:28:54 stephena Exp $ 
 */
 class M6502
 {
@@ -78,6 +79,13 @@ class M6502
       @param system The system the processor should install itself in
     */
     virtual void install(System& system);
+
+    /**
+      Attach the specified debugger.
+
+      @param debugger The debugger to attach to the microprocessor.
+    */
+    void attach(Debugger& debugger);
 
   public:
     /**
@@ -224,6 +232,9 @@ class M6502
     /// Pointer to the system the processor is installed in or the null pointer
     System* mySystem;
 
+    /// Pointer to the debugger for this processor or the null pointer
+    Debugger* myDebugger;
+
     /// Indicates the number of system cycles per processor cycle 
     const uInt32 mySystemCyclesPerProcessorCycle;
 
@@ -247,4 +258,3 @@ class M6502
     static const char* ourInstructionMnemonicTable[256];
 };
 #endif
-

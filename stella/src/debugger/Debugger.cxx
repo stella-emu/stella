@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.10 2005-06-16 02:16:25 urchlay Exp $
+// $Id: Debugger.cxx,v 1.11 2005-06-16 12:28:53 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -254,6 +254,12 @@ const string Debugger::dumpTIA()
   result += "\n";
 
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::start()
+{
+  myOSystem->eventHandler().enterDebugMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

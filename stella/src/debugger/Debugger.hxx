@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.7 2005-06-16 02:16:25 urchlay Exp $
+// $Id: Debugger.hxx,v 1.8 2005-06-16 12:28:53 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -48,7 +48,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.7 2005-06-16 02:16:25 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.8 2005-06-16 12:28:53 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -124,6 +124,7 @@ class Debugger : public DialogContainer
     // set a bunch of RAM locations at once
     const string setRAM(int argCount, int *args);
 
+    void start();
     void quit();
     void trace();
     void step();
@@ -148,7 +149,7 @@ class Debugger : public DialogContainer
 
     DebuggerParser* myParser;
     D6502* myDebugger;
-	 EquateList *equateList;
+    EquateList *equateList;
     PackedBitArray *breakPoints;
 };
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.5 2005-06-16 02:16:26 urchlay Exp $
+// $Id: M6502.cxx,v 1.6 2005-06-16 12:28:54 stephena Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -22,6 +22,7 @@
 M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
     : myExecutionStatus(0),
       mySystem(0),
+      myDebugger(0),
       mySystemCyclesPerProcessorCycle(systemCyclesPerProcessorCycle)
 {
   uInt16 t;
@@ -52,6 +53,13 @@ void M6502::install(System& system)
 {
   // Remember which system I'm installed in
   mySystem = &system;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::attach(Debugger& debugger)
+{
+  // Remember the debugger for this microprocessor
+  myDebugger = &debugger;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

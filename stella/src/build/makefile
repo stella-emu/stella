@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.99 2005-06-16 02:16:25 urchlay Exp $
+## $Id: makefile,v 1.100 2005-06-16 12:28:53 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -373,10 +373,10 @@ M6502.o: $(CORE)/m6502/src/M6502.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/M6502.cxx
 
 M6502Low.o: $(CORE)/m6502/src/M6502Low.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/M6502Low.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/m6502/src/M6502Low.cxx
 
 M6502Hi.o: $(CORE)/m6502/src/M6502Hi.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/M6502Hi.cxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/m6502/src/M6502Hi.cxx
 
 NullDev.o: $(CORE)/m6502/src/NullDev.cxx $(CORE)/m6502/src/NullDev.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/NullDev.cxx

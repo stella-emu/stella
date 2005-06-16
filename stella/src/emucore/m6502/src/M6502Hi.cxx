@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.4 2005-06-16 02:16:26 urchlay Exp $
+// $Id: M6502Hi.cxx,v 1.5 2005-06-16 12:28:54 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "Debugger.hxx"
 
 #define debugStream cout
 
@@ -76,7 +77,7 @@ bool M6502High::execute(uInt32 number)
       if(breakPoints != NULL)
       {
         if(breakPoints->isSet(PC))
-          cerr << "hit breakpoint at " << PC << endl;
+          myDebugger->start();
       }
 
 #ifdef DEBUG

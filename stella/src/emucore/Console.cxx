@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.56 2005-06-16 00:55:57 stephena Exp $
+// $Id: Console.cxx,v 1.57 2005-06-16 12:28:53 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -144,6 +144,7 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   {
     m6502 = new M6502High(1);
   }
+  m6502->attach(myOSystem->debugger());
 
   M6532* m6532 = new M6532(*this);
   TIA* tia = new TIA(*this, myOSystem->settings());
