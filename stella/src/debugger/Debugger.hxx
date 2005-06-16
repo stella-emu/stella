@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.5 2005-06-15 23:45:04 urchlay Exp $
+// $Id: Debugger.hxx,v 1.6 2005-06-16 00:20:11 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -47,7 +47,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.5 2005-06-15 23:45:04 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.6 2005-06-16 00:20:11 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -144,7 +144,7 @@ class Debugger : public DialogContainer
 
     DebuggerParser* myParser;
     D6502* myDebugger;
-	 EquateList *equateList;
+    EquateList *equateList;
 };
 
 #endif

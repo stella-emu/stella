@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.2 2005-06-15 21:18:47 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.3 2005-06-16 00:20:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -63,27 +63,6 @@ AddrValueWidget::~AddrValueWidget()
 {
 }
 
-/*
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AddrValueWidget::setSelected(int item)
-{
-  assert(item >= -1 && item < (int)_list.size());
-
-  if (isEnabled() && _selectedItem != item)
-  {
-    if (_editMode)
-      abortEditMode();
-
-    _selectedItem = item;
-    sendCommand(kAVSelectionChangedCmd, _selectedItem);
-
-    _currentPos = _selectedItem - _entriesPerPage / 2;
-    scrollToCurrent();
-    draw();
-    instance()->frameBuffer().refresh();
-  }
-}
-*/
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AddrValueWidget::setList(const AddrList& alist, const ValueList& vlist)
 {
@@ -327,9 +306,10 @@ void AddrValueWidget::drawWidget(bool hilite)
   int deltax;
 
   // Draw a thin frame around the list.
-  fb.hLine(_x, _y, _x + _w - 1, kColor);
+  OverlayColor surroundColor = hilite ? kTextColorEm : kColor;
+  fb.hLine(_x, _y, _x + _w - 1, surroundColor);
   fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
-  fb.vLine(_x, _y, _y + _h - 1, kColor);
+  fb.vLine(_x, _y, _y + _h - 1, surroundColor); // kColor
 
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _entriesPerPage && pos < len; i++, pos++)
@@ -344,7 +324,7 @@ void AddrValueWidget::drawWidget(bool hilite)
       if (_hasFocus && !_editMode)
         fb.fillRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
       else
-        fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
+        fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 2, kLineHeight, kTextColorHi);
     }
 
     // Print the address
@@ -377,7 +357,7 @@ void AddrValueWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect AddrValueWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w - 2 , kLineHeight);
+  GUI::Rect r(2, 1, _w - 3 , kLineHeight);
   const int offset = (_selectedItem - _currentPos) * kLineHeight;
   r.top += offset;
   r.bottom += offset;
@@ -416,7 +396,7 @@ void AddrValueWidget::startEditMode()
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
-    setEditString(_valueStringList[_selectedItem]);
+    setEditString("");  // Erase current entry when starting editing
     draw();
   }
 }

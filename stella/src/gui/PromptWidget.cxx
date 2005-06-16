@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.4 2005-06-15 21:18:47 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.5 2005-06-16 00:20:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,8 +43,7 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
     : Widget(boss, x, y, w - kScrollBarWidth, h),
       CommandSender(boss)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_TAB_NAVIGATE;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kPromptWidget;
 
   _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
