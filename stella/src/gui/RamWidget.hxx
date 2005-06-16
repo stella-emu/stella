@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.1 2005-06-16 18:40:17 stephena Exp $
+// $Id: RamWidget.hxx,v 1.2 2005-06-16 22:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,6 +41,7 @@ class RamWidget : public Widget, public CommandSender
     Widget* activeWidget() { return myActiveWidget; }
 
     void handleCommand(CommandSender* sender, int cmd, int data);
+    void loadConfig();
 
   public:
     void fillGrid();

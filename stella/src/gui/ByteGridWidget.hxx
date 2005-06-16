@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.hxx,v 1.1 2005-06-16 18:40:17 stephena Exp $
+// $Id: ByteGridWidget.hxx,v 1.2 2005-06-16 22:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,8 +45,7 @@ enum {
 class ByteGridWidget : public EditableWidget, public CommandSender
 {
   public:
-    ByteGridWidget(GuiObject* boss, int x, int y, int w, int h,
-                   int cols, int rows);
+    ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows);
     virtual ~ByteGridWidget();
 
     void setList(const ByteAddrList& alist, const ByteValueList& vlist);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.1 2005-06-16 18:40:17 stephena Exp $
+// $Id: RamWidget.cxx,v 1.2 2005-06-16 22:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,12 +44,21 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
-  int gwidth  = 16 * 2 * instance()->consoleFont().getMaxCharWidth() + 20;
-  int gheight = 8 * instance()->consoleFont().getFontHeight() + 20;
+  int xpos   = 10;
+  int ypos   = 20;
+  int lwidth = 30;
 
-  // Create a 16x8 grid (16 x 8 = 128 RAM bytes)
-  myRamGrid = new ByteGridWidget(boss, 10, 10, gwidth, gheight, 16, 8);
-  myRamGrid->setFont(instance()->consoleFont());
+  // Create a 16x8 grid (16 x 8 = 128 RAM bytes) with labels
+  for(int col = 0; col < 8; ++col)
+  {
+    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + col*kLineHeight + 2,
+                          lwidth, kLineHeight,
+                          Debugger::to_hex_16(col*16 + kRamStart) + string(":"),
+                          kTextAlignLeft);
+    t->setFont(instance()->consoleFont());
+  }
+  
+  myRamGrid = new ByteGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8);
   myRamGrid->setTarget(this);
   myActiveWidget = myRamGrid;
 
@@ -145,6 +154,14 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
   }
 }
 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamWidget::loadConfig()
+{
+cerr << "RamWidget::loadConfig()\n";
+  fillGrid();
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::fillGrid()
 {
@@ -153,7 +170,7 @@ void RamWidget::fillGrid()
 
   for(unsigned int i = 0; i < kRamSize; i++)
   {
-    alist.push_back(i);
+    alist.push_back(kRamStart + i);
     vlist.push_back(instance()->debugger().readRAM(i));
   }
 

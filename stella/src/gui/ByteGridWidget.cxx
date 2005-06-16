@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.cxx,v 1.1 2005-06-16 18:40:17 stephena Exp $
+// $Id: ByteGridWidget.cxx,v 1.2 2005-06-16 22:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,13 +29,12 @@
 #include "ByteGridWidget.hxx"
 
 enum {
-  kColWidth = 2 * 6 + 4 // FIXME - get this info from _font
+  kColWidth  = 2 * 6 + 8
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int w, int h,
-                               int cols, int rows)
-  : EditableWidget(boss, x, y, w, h),
+ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows)
+  : EditableWidget(boss, x, y, kColWidth*cols + 1, kLineHeight*rows + 1),
     CommandSender(boss),
     _rows(rows),
     _cols(cols),
@@ -43,12 +42,14 @@ ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int w, int h,
     _currentCol(0),
     _selectedItem(0)
 {
+  // This widget always uses a monospace font
+  setFont(instance()->consoleFont());
+
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_TAB_NAVIGATE;
   _type = kByteGridWidget;
   _editMode = false;
 
-  _entriesPerPage = _rows;//(_h - 2) / kLineHeight;
   _currentPos = 0;
   _currentKeyDown = 0;
 	
@@ -85,6 +86,8 @@ void ByteGridWidget::setList(const ByteAddrList& alist, const ByteValueList& vli
   char temp[10];
   for(unsigned int i = 0; i < (unsigned int)size; ++i)
   {
+    sprintf(temp, "%.4x:", _addrList[i]);
+    _addrStringList.push_back(temp);
     sprintf(temp, "%.2x", _valueList[i]);
     _valueStringList.push_back(temp);
   }
@@ -309,19 +312,20 @@ void ByteGridWidget::drawWidget(bool hilite)
   int row, col, deltax;
   string buffer;
 
-  // Draw the internal grid
-//  int linewidth = 
+  // Draw the internal grid and labels
+  int linewidth = _cols * kColWidth;
   for (row = 0; row <= _rows; row++)
-    fb.hLine(_x, _y + (row * kLineHeight), _x + _w - 1, kColor);
+    fb.hLine(_x, _y + (row * kLineHeight), _x + linewidth, kColor);
+  int lineheight = _rows * kLineHeight;
   for (col = 0; col <= _cols; col++)
-    fb.vLine(_x + (col * kColWidth), _y, _y + _h - 1, kColor);
+    fb.vLine(_x + (col * kColWidth), _y, _y + lineheight, kColor);
 
   // Draw the list items
   for (row = 0; row < _rows; row++)
   {
     for (col = 0; col < _cols; col++)
     {
-      int x = _x + 2 + (col * kColWidth);
+      int x = _x + 4 + (col * kColWidth);
       int y = _y + 2 + (row * kLineHeight);
       int pos = row*_cols + col;
 
@@ -329,19 +333,17 @@ void ByteGridWidget::drawWidget(bool hilite)
       if (_currentRow == row && _currentCol == col)
       {
         if (_hasFocus && !_editMode)
-          fb.fillRect(x - 2, y - 2, kColWidth+1, kLineHeight+1, kTextColorHi);
+          fb.fillRect(x - 4, y - 2, kColWidth+1, kLineHeight+1, kTextColorHi);
         else
-          fb.frameRect(x - 2, y - 2, kColWidth+1, kLineHeight+1, kTextColorHi);
+          fb.frameRect(x - 4, y - 2, kColWidth+1, kLineHeight+1, kTextColorHi);
       }
 
-//      GUI::Rect r(getEditRect());
       if (_selectedItem == pos && _editMode)
       {
         buffer = _editString;
         adjustOffset();
         deltax = -_editScrollOffset;
 
-//        fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
         fb.drawString(_font, buffer, x, y, kColWidth, kTextColor,
                       kTextAlignLeft, deltax, false);
       }
@@ -354,38 +356,6 @@ void ByteGridWidget::drawWidget(bool hilite)
     }
   }
 
-/*
-  for (i = 0, pos = _currentPos; i < _entriesPerPage && pos < len; i++, pos++)
-  {
-    const int y = _y + 2 + kLineHeight * i;
-
-    GUI::Rect r(getEditRect());
-    // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos)
-    {
-      if (_hasFocus && !_editMode)
-        fb.fillRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
-      else
-        fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 2, kLineHeight, kTextColorHi);
-    }
-
-    if (_selectedItem == pos && _editMode)
-    {
-      buffer = _editString;
-      adjustOffset();
-      deltax = -_editScrollOffset;
-
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
-                    kTextAlignLeft, deltax, false);
-    }
-    else
-    {
-      buffer = _valueStringList[pos];
-      deltax = 0;
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
-    }
-  }
-*/
   // Only draw the caret while editing, and if it's in the current viewport
   if(_editMode)
     drawCaret();
@@ -396,11 +366,11 @@ GUI::Rect ByteGridWidget::getEditRect() const
 {
   GUI::Rect r(1, 0, kColWidth, kLineHeight);
   const int rowoffset = _currentRow * kLineHeight;
-  const int coloffset = _currentCol * kColWidth;
+  const int coloffset = _currentCol * kColWidth + 4;
   r.top += rowoffset;
   r.bottom += rowoffset;
   r.left += coloffset;
-  r.right += coloffset - 1;
+  r.right += coloffset - 5;
 
   return r;
 }
