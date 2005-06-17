@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.2 2005-06-16 00:56:00 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.3 2005-06-17 03:49:10 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,6 +49,9 @@ class PromptWidget : public Widget, public CommandSender
     int vprintf(const char *format, va_list argptr);
 #undef putchar
     void putchar(int c);
+    void print(const char *str);
+    void print(string str);
+    void printPrompt();
 
   protected:
     inline char &buffer(int idx) { return _buffer[idx % kBufferSize]; }
@@ -57,8 +60,6 @@ class PromptWidget : public Widget, public CommandSender
     void drawCaret();
     void putcharIntern(int c);
     void insertIntoPrompt(const char *str);
-    void print(const char *str);
-    void print(string str);
     void updateScrollBuffer();
     void scrollToCurrent();
 

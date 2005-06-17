@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.7 2005-06-16 16:18:57 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.8 2005-06-17 03:49:10 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -78,7 +78,7 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
   string version = string("Stella version ") + STELLA_VERSION + "\n";
   print(version.c_str());
   print("Debugger is ready\n");
-  print( instance()->debugger().state() + "\n"); // FIXME: this doesn't work yet
+  //print( instance()->debugger().state() + "\n"); // FIXME: this doesn't work yet
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
 }
@@ -137,6 +137,12 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
   _scrollBar->handleMouseWheel(x, y, direction);
 }
 
+void PromptWidget::printPrompt() {
+	print( instance()->debugger().state() + "\n");
+	print(PROMPT);
+	_promptStartPos = _promptEndPos = _currentPos;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
@@ -174,9 +180,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         delete [] str;
       }
 
-		print( instance()->debugger().state() + "\n");
-      print(PROMPT);
-      _promptStartPos = _promptEndPos = _currentPos;
+      printPrompt();
 
       draw();
       instance()->frameBuffer().refresh();

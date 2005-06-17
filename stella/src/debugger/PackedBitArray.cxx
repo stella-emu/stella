@@ -2,16 +2,6 @@
 #include "bspf.hxx"
 #include "PackedBitArray.hxx"
 
-/*
-
-		boolean set();
-		boolean clear();
-
-		void set(int bit);
-		void clear(int bit);
-		void toggle(int bit);
-*/
-
 PackedBitArray::PackedBitArray(int length) {
 	size = length;
 	words = length / wordSize + 1;
@@ -21,8 +11,6 @@ PackedBitArray::PackedBitArray(int length) {
 	// start out zeroed already?
 	for(int i=0; i<words; i++)
 		bits[i] = 0;
-
-	// cerr << "size==" << size << " words==" << words << endl;
 }
 
 PackedBitArray::~PackedBitArray() {
@@ -46,8 +34,6 @@ int PackedBitArray::isClear(unsigned int bit) {
 void PackedBitArray::toggle(unsigned int bit) {
 	unsigned int word = bit / wordSize;
 	bit %= wordSize;
-
-	// cerr << "word==" << word << ", bit==" << bit << endl;
 
 	bits[word] ^= (1 << bit);
 }

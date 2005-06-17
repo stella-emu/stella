@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.8 2005-06-16 16:18:57 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.9 2005-06-17 03:49:08 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -170,6 +170,24 @@ bool DebuggerParser::subStringMatch(const string& needle, const string& haystack
 	return false;
 }
 
+string DebuggerParser::listBreaks() {
+	char buf[255];
+	int count = 0;
+	string ret;
+
+	for(unsigned int i=0; i<0x10000; i++) {
+		if(debugger->breakPoints->isSet(i)) {
+			sprintf(buf, "%s ", debugger->equateList->getFormatted(i, 4));
+			ret += buf;
+			if(! (++count % 8) ) ret += "\n";
+		}
+	}
+	if(count)
+		return ret;
+	else
+		return "no breakpoints set";
+}
+
 string DebuggerParser::run(const string& command) {
 	string result;
 
@@ -194,7 +212,7 @@ string DebuggerParser::run(const string& command) {
 
 	// TODO: de-uglify this somehow. (it may not be worth doing?)
 
-	if(subStringMatch(verb, "quit")) {
+	if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
 		debugger->quit();
 		return "";
 	} else if(subStringMatch(verb, "a")) {
@@ -266,44 +284,57 @@ string DebuggerParser::run(const string& command) {
 	} else if(subStringMatch(verb, "reset")) {
 		debugger->reset();
 	} else if(subStringMatch(verb, "break")) {
-		if(argCount == 1) {
-			debugger->toggleBreakPoint(args[0]);
-			if(debugger->breakPoint(args[0]))
-				return "Set breakpoint";
-			else
-				return "Cleared breakpoint";
-		} else {
-			return "one argument required";
+		int bp = -1;
+
+		if(argCount > 1) {
+			return "zero or one arguments required";
+		} else if(argCount == 0) {
+			bp = -1;
+		} else if(argCount == 1) {
+			bp = args[0];
 		}
+
+		debugger->toggleBreakPoint(bp);
+
+		if(debugger->breakPoint(bp))
+			return "Set breakpoint";
+		else
+			return "Cleared breakpoint";
+	} else if(subStringMatch(verb, "listbreaks")) {
+		return listBreaks();
+	} else if(subStringMatch(verb, "clearbreaks")) {
+		//debugger->clearAllBreakPoints();
+		return "cleared all breakpoints";
 	} else if(subStringMatch(verb, "help") || verb == "?") {
 		// please leave each option on its own line so they're
 		// easy to sort - bkw
 		return
-			"a xx      - Set Accumulator to xx\n"
-			// "break     - Show all breakpoints\n"
-			"break xx  - Set/clear breakpoint at address xx\n"
-			"c         - Toggle Carry Flag\n"
-			"d         - Toggle Decimal Flag\n"
-			"loadsym f - Load DASM symbols from file f\n"
-			"n         - Toggle Negative Flag\n"
-			"pc xx     - Set Program Counter to xx\n"
-			"ram       - Show RIOT RAM contents\n"
-			"ram xx yy - Set RAM location xx to value yy (multiple values may be given)\n"
-			"reset     - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
-			"s xx      - Set Stack Pointer to xx\n"
-			"step      - Single-step\n"
-			"tia       - Show TIA register contents\n"
-			"trace     - Single-step treating subroutine calls as one instruction\n"
-			"v         - Toggle Overflow Flag\n"
-			"x xx      - Set X register to xx\n"
-			"y xx      - Set Y register to xx\n"
-			"z         - Toggle Zero Flag\n"
+			"a xx        - Set Accumulator to xx\n"
+			"break       - Set/clear breakpoint at current PC\n"
+			"break xx    - Set/clear breakpoint at address xx\n"
+			"c           - Toggle Carry Flag\n"
+			"clearbreaks - Clear all breakpoints\n"
+			"d           - Toggle Decimal Flag\n"
+			"listbreaks  - List all breakpoints\n"
+			"loadsym f   - Load DASM symbols from file f\n"
+			"n           - Toggle Negative Flag\n"
+			"pc xx       - Set Program Counter to xx\n"
+			"ram         - Show RIOT RAM contents\n"
+			"ram xx yy   - Set RAM location xx to value yy (multiple values may be given)\n"
+			"reset       - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
+			"run         - Exit debugger (back to emulator)\n"
+			"s xx        - Set Stack Pointer to xx\n"
+			"step        - Single-step\n"
+			"tia         - Show TIA register contents\n"
+			"trace       - Single-step treating subroutine calls as one instruction\n"
+			"v           - Toggle Overflow Flag\n"
+			"x xx        - Set X register to xx\n"
+			"y xx        - Set Y register to xx\n"
+			"z           - Toggle Zero Flag\n"
 			;
 	} else {
 		return "unimplemented command (try \"help\")";
 	}
-
-	//	result += debugger->state();
 
 	return result;
 }

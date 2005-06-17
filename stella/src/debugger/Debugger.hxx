@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.8 2005-06-16 12:28:53 stephena Exp $
+// $Id: Debugger.hxx,v 1.9 2005-06-17 03:49:08 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -30,6 +30,7 @@ class D6502;
 #include "M6502.hxx"
 #include "EquateList.hxx"
 #include "PackedBitArray.hxx"
+#include "PromptWidget.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -48,7 +49,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.8 2005-06-16 12:28:53 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.9 2005-06-17 03:49:08 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -124,7 +125,7 @@ class Debugger : public DialogContainer
     // set a bunch of RAM locations at once
     const string setRAM(int argCount, int *args);
 
-    void start();
+    bool start();
     void quit();
     void trace();
     void step();
@@ -142,6 +143,7 @@ class Debugger : public DialogContainer
 
     void formatFlags(int f, char *out);
     EquateList *equates();
+    PromptWidget *prompt();
 
   protected:
     Console* myConsole;
@@ -151,6 +153,7 @@ class Debugger : public DialogContainer
     D6502* myDebugger;
     EquateList *equateList;
     PackedBitArray *breakPoints;
+    PromptWidget *myPrompt;
 };
 
 #endif

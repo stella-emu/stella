@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.11 2005-06-16 22:18:02 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.12 2005-06-17 03:49:10 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,8 +40,8 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
 
   // 1) The Prompt/console tab
   myTab->addTab("Prompt");
-  PromptWidget* prompt = new PromptWidget(myTab, 2, 2, _w - vBorder, _h - 25);
-  myTab->setParentWidget(0, prompt, prompt);
+  myPrompt = new PromptWidget(myTab, 2, 2, _w - vBorder, _h - 25);
+  myTab->setParentWidget(0, myPrompt, myPrompt);
 
   // 2) The CPU tab
   myTab->addTab("CPU");
@@ -84,4 +84,9 @@ void DebuggerDialog::loadConfig()
 void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   myTab->handleKeyDown(ascii, keycode, modifiers);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PromptWidget *DebuggerDialog::prompt() {
+  return myPrompt;
 }

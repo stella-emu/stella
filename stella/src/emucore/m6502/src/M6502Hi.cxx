@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.5 2005-06-16 12:28:54 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.6 2005-06-17 03:49:09 urchlay Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -76,8 +76,11 @@ bool M6502High::execute(uInt32 number)
 
       if(breakPoints != NULL)
       {
-        if(breakPoints->isSet(PC))
-          myDebugger->start();
+        if(breakPoints->isSet(PC)) {
+          if(myDebugger->start()) {
+				 return true;
+          }
+        }
       }
 
 #ifdef DEBUG

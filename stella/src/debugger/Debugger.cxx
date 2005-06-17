@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.12 2005-06-16 16:26:27 stephena Exp $
+// $Id: Debugger.cxx,v 1.13 2005-06-17 03:49:08 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -44,7 +44,7 @@ Debugger::Debugger(OSystem* osystem)
   // Init parser
   myParser = new DebuggerParser(this);
   equateList = new EquateList();
-  breakPoints = new PackedBitArray(0xffff);
+  breakPoints = new PackedBitArray(0x10000);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,7 +65,9 @@ void Debugger::initialize()
       h = kDebuggerHeight - y;
 
   delete myBaseDialog;
-  myBaseDialog = new DebuggerDialog(myOSystem, this, x, y, w, h);
+  DebuggerDialog *dd = new DebuggerDialog(myOSystem, this, x, y, w, h);
+  myPrompt = dd->prompt();
+  myBaseDialog = dd;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,6 +103,7 @@ const string Debugger::state()
   string result;
   char buf[255], bbuf[255];
 
+  //cerr << "state(): pc is " << myDebugger->pc() << endl;
   result += "\nPC=";
   result += to_hex_16(myDebugger->pc());
   result += " A=";
@@ -120,6 +123,11 @@ const string Debugger::state()
   sprintf(buf, "%d", mySystem->cycles());
   result += buf;
   result += "\n  ";
+  char *label = equateList->getLabel(myDebugger->pc());
+  if(label != NULL) {
+    result += label;
+    result += ": ";
+  }
   int count = myDebugger->disassemble(myDebugger->pc(), buf, equateList);
   for(int i=0; i<count; i++) {
     sprintf(bbuf, "%02x ", readRAM(myDebugger->pc() + i));
@@ -257,17 +265,28 @@ const string Debugger::dumpTIA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::start()
+bool Debugger::start()
 {
-  if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER)
+  if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER) {
     myOSystem->eventHandler().enterDebugMode();
+    myPrompt->printPrompt();
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::quit()
 {
-  if(myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER)
+  if(myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER) {
+    // execute one instruction on quit, IF we're
+    // sitting at a breakpoint. This will get us past it.
+    // Somehow this feels like a hack to me, but I don't know why
+    if(breakPoints->isSet(myDebugger->pc()))
+      mySystem->m6502().execute(1);
     myOSystem->eventHandler().leaveDebugMode();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -360,10 +379,13 @@ EquateList *Debugger::equates() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleBreakPoint(int bp) {
   mySystem->m6502().setBreakPoints(breakPoints);
+  if(bp < 0) bp = myDebugger->pc();
   breakPoints->toggle(bp);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::breakPoint(int bp) {
+  if(bp < 0) bp = myDebugger->pc();
   return breakPoints->isSet(bp) != 0;
 }
 
