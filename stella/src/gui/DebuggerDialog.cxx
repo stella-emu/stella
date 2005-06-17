@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.13 2005-06-17 14:42:49 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.14 2005-06-17 17:34:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,9 @@
 
 enum {
   kDDStepCmd  = 'DDst',
-  kDDTraceCmd = 'DDtr'
+  kDDTraceCmd = 'DDtr',
+  kDDAdvCmd   = 'DDav',
+  kDDExitCmd  = 'DDex'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,6 +85,10 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   addButton(vWidth + 10, yoff, "Step", kDDStepCmd, 0);
   yoff += 22;
   addButton(vWidth + 10, yoff, "Trace", kDDTraceCmd, 0);
+  yoff += 22;
+  addButton(vWidth + 10, yoff, "Frame +1", kDDAdvCmd, 0);
+
+  addButton(vWidth + 10, _h - 22 - 10, "Exit", kDDExitCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,16 +111,27 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleCommand(CommandSender* sender, int cmd, int data)
 {
+  // We reload the tabs in the cases where the actions could possibly
+  // change their contents
   switch(cmd)
   {
     case kDDStepCmd:
       instance()->debugger().step();
-      myTab->loadConfig();  // make sure all the tabs are updated
+      myTab->loadConfig();
       break;
 
     case kDDTraceCmd:
       instance()->debugger().trace();
-      myTab->loadConfig();  // make sure all the tabs are updated
+      myTab->loadConfig();
+      break;
+
+    case kDDAdvCmd:
+      instance()->frameBuffer().advance();
+      myTab->loadConfig();
+      break;
+
+    case kDDExitCmd:
+      instance()->debugger().quit();
       break;
 
     default:

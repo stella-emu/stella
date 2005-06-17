@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.8 2005-06-16 18:40:17 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.9 2005-06-17 17:34:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -84,8 +84,8 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // Add the list showing the results of a search/compare
   xpos = 200;  ypos = border/2;
-  new StaticTextWidget(boss, xpos + 10, ypos, 70, kLineHeight,
-                       "Address  Value", kTextAlignLeft);
+  new StaticTextWidget(boss, xpos + 5, ypos, 75, kLineHeight,
+                       "Address    Value", kTextAlignLeft);
   ypos += kLineHeight;
 
   myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75);

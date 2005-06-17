@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.10 2005-06-17 14:42:49 stephena Exp $
+// $Id: Debugger.hxx,v 1.11 2005-06-17 17:34:01 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -49,7 +49,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.10 2005-06-17 14:42:49 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.11 2005-06-17 17:34:01 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -83,6 +83,12 @@ class Debugger : public DialogContainer
     void setConsole(Console* console);
 
     /** Convenience methods to convert to hexidecimal values */
+    static char *to_hex_4(int i)
+    {
+      static char out[2];
+      sprintf(out, "%1x", i);
+      return out;
+    }
     static char *to_hex_8(int i)
     {
       static char out[3];

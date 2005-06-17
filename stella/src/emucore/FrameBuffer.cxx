@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.45 2005-06-16 01:11:27 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.46 2005-06-17 17:34:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -38,6 +38,7 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
    :  myOSystem(osystem),
       theRedrawEntireFrameIndicator(true),
+      theFrameAdvanceIndicator(false),
       theZoomLevel(2),
       theMaxZoomLevel(2),
       theAspectRatio(1.0),
@@ -242,9 +243,14 @@ void FrameBuffer::update()
     }
 
     case EventHandler::S_DEBUGGER:
-      // Draw changes to the mediasource
-      if(!myPauseStatus)
+      // Get one frames' worth of data
+      if(theFrameAdvanceIndicator)
+      {
         myOSystem->console().mediaSource().update();
+        theRedrawEntireFrameIndicator = true;  // do the next section of code
+        theOverlayChangedIndicator = true;  // do this just to be sure
+        theFrameAdvanceIndicator = false;
+      }
 
       // Only update the screen if it's been invalidated
       if(theRedrawEntireFrameIndicator)

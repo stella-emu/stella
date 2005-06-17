@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.cxx,v 1.3 2005-06-17 14:42:49 stephena Exp $
+// $Id: ByteGridWidget.cxx,v 1.4 2005-06-17 17:34:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,10 +28,6 @@
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
 #include "ByteGridWidget.hxx"
-
-enum {
-  kColWidth  = 2 * 6 + 8
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows)

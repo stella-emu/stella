@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.41 2005-06-17 17:34:01 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -46,7 +46,7 @@ enum TextAlignment {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.41 2005-06-17 17:34:01 stephena Exp $
 */
 class FrameBuffer
 {
@@ -139,6 +139,11 @@ class FrameBuffer
       myOverlayRedraws = 2;
       if(now) { myMessageTime = 0; update(); }
     }
+
+    /**
+      Indicates that the emulation should advance one frame.
+    */
+    void advance() { theFrameAdvanceIndicator = true; }
 
     /**
       Toggles between fullscreen and window mode.
@@ -408,6 +413,9 @@ class FrameBuffer
 
     // Indicates if the entire frame should be redrawn
     bool theRedrawEntireFrameIndicator;
+
+    // Indicates if the emulation should advance by one frame
+    bool theFrameAdvanceIndicator;
 
     // The SDL video buffer
     SDL_Surface* myScreen;

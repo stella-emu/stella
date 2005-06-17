@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.3 2005-06-17 14:42:49 stephena Exp $
+// $Id: RamWidget.cxx,v 1.4 2005-06-17 17:34:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,14 +31,6 @@
 
 #include "RamWidget.hxx"
 
-/*
-enum {
-  kSearchCmd  = 'CSEA',
-  kCmpCmd     = 'CCMP',
-  kRestartCmd = 'CRST'
-};
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
@@ -49,11 +41,20 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   int lwidth = 30;
 
   // Create a 16x8 grid (16 x 8 = 128 RAM bytes) with labels
-  for(int col = 0; col < 8; ++col)
+  for(int row = 0; row < 8; ++row)
   {
-    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + col*kLineHeight + 2,
+    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
                           lwidth, kLineHeight,
-                          Debugger::to_hex_16(col*16 + kRamStart) + string(":"),
+                          Debugger::to_hex_16(row*16 + kRamStart) + string(":"),
+                          kTextAlignLeft);
+    t->setFont(instance()->consoleFont());
+  }
+  for(int col = 0; col < 16; ++col)
+  {
+    StaticTextWidget* t = new StaticTextWidget(boss, xpos + col*kColWidth + lwidth + 12,
+                          ypos - kLineHeight,
+                          lwidth, kLineHeight,
+                          Debugger::to_hex_4(col),
                           kTextAlignLeft);
     t->setFont(instance()->consoleFont());
   }
@@ -61,61 +62,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   myRamGrid = new ByteGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8);
   myRamGrid->setTarget(this);
   myActiveWidget = myRamGrid;
-
-#if 0
-  const int border = 20;
-  const int bwidth = 50;
-  const int charWidth  = instance()->consoleFont().getMaxCharWidth();
-  const int charHeight = instance()->consoleFont().getFontHeight() + 2;
-  int xpos = x + border;
-  int ypos = y + border;
-
-  // Add the numedit label and box
-  new StaticTextWidget(boss, xpos, ypos, 70, kLineHeight,
-                       "Enter a value:", kTextAlignLeft);
-
-  myEditBox = new EditNumWidget(boss, 90, ypos - 2, charWidth*10, charHeight, "");
-  myEditBox->setFont(instance()->consoleFont());
-//  myEditBox->setTarget(this);
-  myActiveWidget = myEditBox;
-    ypos += border;
-
-  // Add the result text string area
-  myResult = new StaticTextWidget(boss, border + 5, ypos, 175, kLineHeight,
-                       "", kTextAlignLeft);
-  myResult->setColor(kTextColorEm);
-
-  // Add the three search-related buttons
-  xpos = x + border;
-  ypos += border * 2;
-  mySearchButton  = new ButtonWidget(boss, xpos, ypos, bwidth, 16,
-                                     "Search", kSearchCmd, 0);
-  mySearchButton->setTarget(this);
-    xpos += 8 + bwidth;
-
-  myCompareButton = new ButtonWidget(boss, xpos, ypos, bwidth, 16,
-                                     "Compare", kCmpCmd, 0);
-  myCompareButton->setTarget(this);
-    xpos += 8 + bwidth;
-
-  myRestartButton = new ButtonWidget(boss, xpos, ypos, bwidth, 16,
-                                     "Restart", kRestartCmd, 0);
-  myRestartButton->setTarget(this);
-
-  // Add the list showing the results of a search/compare
-  xpos = 200;  ypos = border/2;
-  new StaticTextWidget(boss, xpos + 10, ypos, 70, kLineHeight,
-                       "Address  Value", kTextAlignLeft);
-  ypos += kLineHeight;
-
-  myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75);
-  myResultsList->setNumberingMode(kHexNumbering);
-  myResultsList->setFont(instance()->consoleFont());
-  myResultsList->setTarget(this);
-
-  // Start in a known state
-  doRestart();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
