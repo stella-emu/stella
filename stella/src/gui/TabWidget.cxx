@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.8 2005-06-16 22:18:02 stephena Exp $
+// $Id: TabWidget.cxx,v 1.9 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,8 +28,6 @@
 #include "TabWidget.hxx"
 
 enum {
-  kTabHeight = 16,
-
   kTabLeftOffset = 4,
   kTabSpacing = 2,
   kTabPadding = 3
@@ -254,6 +252,21 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::loadConfig()
+{
+  // (Re)load the contents of all tabs
+  // It's up to each tab to decide if it wants to do anything on a reload
+  for (int id = 0; id < (int)_tabs.size(); ++id)
+  {
+    if(_tabs[id].parentWidget)
+      _tabs[id].parentWidget->loadConfig();
+  }
+
+  // Make sure changes are seen onscreen
+  instance()->frameBuffer().refresh();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::box(int x, int y, int width, int height,
                     OverlayColor colorA, OverlayColor colorB, bool omitBottom)
 {
@@ -300,11 +313,13 @@ void TabWidget::drawWidget(bool hilite)
     x += _tabWidth + kTabSpacing;
   }
 
-  // Draw more horizontal lines
+  // Draw a frame around the widget area (belows the tabs)
   fb.hLine(left1, _y + kTabHeight - 1, right1, kColor);
   fb.hLine(left2, _y + kTabHeight - 1, right2, kColor);
   fb.hLine(_x+1, _y + _h - 2, _x + _w - 2, kShadowColor);
   fb.hLine(_x+1, _y + _h - 1, _x + _w - 2, kColor);
+  fb.vLine(_x + _w - 2, _y + kTabHeight - 1, _y + _h - 2, kColor);
+  fb.vLine(_x + _w - 1, _y + kTabHeight - 1, _y + _h - 2, kShadowColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

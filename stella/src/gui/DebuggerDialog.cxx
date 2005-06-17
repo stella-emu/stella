@@ -13,19 +13,27 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.12 2005-06-17 03:49:10 urchlay Exp $
+// $Id: DebuggerDialog.cxx,v 1.13 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "Widget.hxx"
+#include "Dialog.hxx"
 #include "TabWidget.hxx"
 #include "ListWidget.hxx"
 #include "PromptWidget.hxx"
 #include "CheatWidget.hxx"
 #include "RamWidget.hxx"
+#include "Debugger.hxx"
 
 #include "DebuggerDialog.hxx"
+
+enum {
+  kDDStepCmd  = 'DDst',
+  kDDTraceCmd = 'DDtr'
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
@@ -34,13 +42,14 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
     myTab(NULL)
 {
   const int vBorder = 4;
+  const int vWidth = _w - kButtonWidth - 20;
 
   // The tab widget
-  myTab = new TabWidget(this, 0, vBorder, _w, _h - vBorder - 1);
+  myTab = new TabWidget(this, 0, vBorder, vWidth, _h - vBorder - 1);
 
   // 1) The Prompt/console tab
   myTab->addTab("Prompt");
-  myPrompt = new PromptWidget(myTab, 2, 2, _w - vBorder, _h - 25);
+  myPrompt = new PromptWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
   myTab->setParentWidget(0, myPrompt, myPrompt);
 
   // 2) The CPU tab
@@ -49,7 +58,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
 
   // 3) The RAM tab
   myTab->addTab("RAM");
-  RamWidget* ram = new RamWidget(myTab, 2, 2, _w - vBorder, _h - 25);
+  RamWidget* ram = new RamWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
   myTab->setParentWidget(2, ram, ram->activeWidget());
 
   // 4) The ROM tab
@@ -63,11 +72,17 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   // 6) The Cheat tab
   myTab->addTab("Cheat");
   CheatWidget* cheat = new CheatWidget(myTab, 2, 2,
-                                       _w - vBorder, _h - 25);
+                                       vWidth - vBorder, _h - 25);
   myTab->setParentWidget(5, cheat, cheat->activeWidget());
 
   // Set active tab to prompt
   myTab->setActiveTab(0);
+
+  // Add some buttons that are always shown, no matter which tab we're in
+  int yoff = vBorder + kTabHeight + 5;
+  addButton(vWidth + 10, yoff, "Step", kDDStepCmd, 0);
+  yoff += 22;
+  addButton(vWidth + 10, yoff, "Trace", kDDTraceCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,6 +93,7 @@ DebuggerDialog::~DebuggerDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
+  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,6 +103,27 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptWidget *DebuggerDialog::prompt() {
+void DebuggerDialog::handleCommand(CommandSender* sender, int cmd, int data)
+{
+  switch(cmd)
+  {
+    case kDDStepCmd:
+      instance()->debugger().step();
+      myTab->loadConfig();  // make sure all the tabs are updated
+      break;
+
+    case kDDTraceCmd:
+      instance()->debugger().trace();
+      myTab->loadConfig();  // make sure all the tabs are updated
+      break;
+
+    default:
+      Dialog::handleCommand(sender, cmd, data);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PromptWidget *DebuggerDialog::prompt()
+{
   return myPrompt;
 }

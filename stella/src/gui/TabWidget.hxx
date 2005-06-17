@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.6 2005-06-16 22:18:02 stephena Exp $
+// $Id: TabWidget.hxx,v 1.7 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,10 @@
 #include "Command.hxx"
 #include "Array.hxx"
 #include "bspf.hxx"
+
+enum {
+  kTabHeight = 16
+};
 
 class TabWidget : public Widget, public CommandSender
 {
@@ -64,6 +68,8 @@ class TabWidget : public Widget, public CommandSender
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data);
+
+    virtual void loadConfig();
 
   protected:
     virtual void drawWidget(bool hilite);

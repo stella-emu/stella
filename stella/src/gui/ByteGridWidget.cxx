@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.cxx,v 1.2 2005-06-16 22:18:02 stephena Exp $
+// $Id: ByteGridWidget.cxx,v 1.3 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "Debugger.hxx"
 #include "FrameBuffer.hxx"
 #include "ByteGridWidget.hxx"
 
@@ -50,10 +51,7 @@ ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows
   _type = kByteGridWidget;
   _editMode = false;
 
-  _currentPos = 0;
   _currentKeyDown = 0;
-	
-  _quickSelectTime = 0;
 
   // The item is selected, thus _bgcolor is used to draw the caret and
   // _textcolorhi to erase it
@@ -80,7 +78,7 @@ void ByteGridWidget::setList(const ByteAddrList& alist, const ByteValueList& vli
   _valueList = vlist;
 
   int size = _addrList.size();  // assume vlist is the same size
-//FIXME  assert(size != _rows * _cols);
+  assert(size == _rows * _cols);
 
   // An efficiency thing
   char temp[10];
@@ -92,13 +90,6 @@ void ByteGridWidget::setList(const ByteAddrList& alist, const ByteValueList& vli
     _valueStringList.push_back(temp);
   }
 
-  if (_currentPos >= size)
-    _currentPos = size - 1;
-  if (_currentPos < 0)
-    _currentPos = 0;
-  _selectedItem = 0;
-  _currentRow = 0;
-  _currentCol = 0;
   _editMode = false;
 }
 
@@ -296,9 +287,9 @@ void ByteGridWidget::handleCommand(CommandSender* sender, int cmd, int data)
   switch (cmd)
   {
     case kSetPositionCmd:
-      if (_currentPos != (int)data)
+      if (_selectedItem != (int)data)
       {
-        _currentPos = data;
+        _selectedItem = data;
         draw();
       }
       break;
@@ -396,7 +387,7 @@ void ByteGridWidget::endEditMode()
   _editMode = false;
 
   // Update the both the string representation and the real data
-  int value = atoi(_editString.c_str());
+  int value = Debugger::hex_to_dec(_editString.c_str());
   if(_editString.length() == 0 || value < 0 || value > 255)
   {
     abortEditMode();
@@ -404,10 +395,10 @@ void ByteGridWidget::endEditMode()
   }
 
   // Append a leading 0 when necessary
-  if(value < 10)
+  if(value < 16)  // In hex, this is the largest single-digit value
     _editString = "0" + _editString;
 
-  _valueStringList[_selectedItem] = _editString; // FIXME - make sure only length of 2
+  _valueStringList[_selectedItem] = _editString;
   _valueList[_selectedItem] = value;
 
   sendCommand(kBGItemDataChangedCmd, _selectedItem);
@@ -424,7 +415,9 @@ void ByteGridWidget::abortEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ByteGridWidget::tryInsertChar(char c, int pos)
 {
-  if (c >= '0' && c <= '9')
+  // Not sure how efficient this is, or should we even care?
+  c = tolower(c);
+  if (c >= '0' && c <= '9' || c >= 'a' && c <= 'f')
   {
     _editString.insert(pos, 1, c);
     return true;

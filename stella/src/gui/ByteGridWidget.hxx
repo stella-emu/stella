@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.hxx,v 1.2 2005-06-16 22:18:02 stephena Exp $
+// $Id: ByteGridWidget.hxx,v 1.3 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,8 +50,8 @@ class ByteGridWidget : public EditableWidget, public CommandSender
 
     void setList(const ByteAddrList& alist, const ByteValueList& vlist);
 
-//    int getSelectedAddr() const   { return _addrList[_selectedItem]; }
-//    int getSelectedValue() const  { return _valueList[_selectedItem]; }
+    int getSelectedAddr() const   { return _addrList[_selectedItem]; }
+    int getSelectedValue() const  { return _valueList[_selectedItem]; }
 
     bool isEditable() const	         { return _editable; }
     void setEditable(bool editable)  { _editable = editable; }
@@ -93,14 +93,9 @@ class ByteGridWidget : public EditableWidget, public CommandSender
 
     bool    _editable;
     bool    _editMode;
-    int     _currentPos;
-    int     _entriesPerPage;
     int     _selectedItem;
     int     _currentKeyDown;
     string  _backupString;
-
-    string  _quickSelectStr;
-    int     _quickSelectTime;
 };
 
 #endif

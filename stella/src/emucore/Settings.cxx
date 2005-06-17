@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.48 2005-06-16 01:11:28 stephena Exp $
+// $Id: Settings.cxx,v 1.49 2005-06-17 14:42:49 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,6 +48,7 @@ Settings::Settings(OSystem* osystem)
   set("zoom", "2");
   set("fullscreen", "false");
   set("grabmouse", "false");
+  set("center", "true");
   set("palette", "standard");
 
   set("sound", "true");
@@ -241,6 +242,7 @@ void Settings::usage()
     << "  -zoom         <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
+    << "  -center       <1|0>          Centers game window (if possible)\n"
     << "  -palette      <original|     Use the specified color palette\n"
     << "                 standard|\n"
     << "                 z26>\n"

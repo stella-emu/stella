@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.8 2005-06-17 03:49:10 urchlay Exp $
+// $Id: DebuggerDialog.hxx,v 1.9 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,6 +39,7 @@ class DebuggerDialog : public Dialog
     PromptWidget *prompt();
     virtual void loadConfig();
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data);
 
   protected:
     TabWidget* myTab;

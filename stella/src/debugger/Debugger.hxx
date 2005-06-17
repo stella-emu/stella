@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.9 2005-06-17 03:49:08 urchlay Exp $
+// $Id: Debugger.hxx,v 1.10 2005-06-17 14:42:49 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -49,7 +49,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.9 2005-06-17 03:49:08 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.10 2005-06-17 14:42:49 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -94,6 +94,10 @@ class Debugger : public DialogContainer
       static char out[5];
       sprintf(out, "%04x", i);
       return out;
+    }
+    static int hex_to_dec(const char* h)
+    {
+      return (int) strtoimax(h, NULL, 16);
     }
 
     void toggleBreakPoint(int bp);

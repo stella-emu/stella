@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.2 2005-06-16 22:18:02 stephena Exp $
+// $Id: RamWidget.cxx,v 1.3 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,8 +61,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   myRamGrid = new ByteGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8);
   myRamGrid->setTarget(this);
   myActiveWidget = myRamGrid;
-
-  fillGrid();
 
 #if 0
   const int border = 20;
@@ -130,35 +128,17 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch(cmd)
   {
-/*
-    case kBGItemDoubleClickedCmd:
-      cerr << "double-clicked on " << data << endl;
-      break;
-
-    case kBGItemActivatedCmd:
-      cerr << "item activated on " << data << endl;
-      break;
-
-    case kBGSelectionChangedCmd:
-      cerr << "selection changed on " << data << endl;
-      break;
-*/
     case kBGItemDataChangedCmd:
-      cerr << "data changed on " << data << endl;
-/*
-      int addr  = myResultsList->getSelectedAddr() - kRamStart;
-      int value = myResultsList->getSelectedValue();
+      int addr  = myRamGrid->getSelectedAddr() - kRamStart;
+      int value = myRamGrid->getSelectedValue();
       instance()->debugger().writeRAM(addr, value);
-*/
       break;
   }
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::loadConfig()
 {
-cerr << "RamWidget::loadConfig()\n";
   fillGrid();
 }
 

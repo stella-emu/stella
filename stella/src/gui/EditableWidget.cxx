@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.4 2005-06-16 18:40:17 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.5 2005-06-17 14:42:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -127,7 +127,7 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     default:
       if (tryInsertChar((char)ascii, _caretPos))
       {
-	    _caretPos++;
+        _caretPos++;
         dirty = true;
       }
       else
