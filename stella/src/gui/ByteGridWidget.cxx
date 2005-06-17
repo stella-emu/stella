@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.cxx,v 1.5 2005-06-17 18:17:15 stephena Exp $
+// $Id: ByteGridWidget.cxx,v 1.6 2005-06-17 21:46:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -87,6 +87,18 @@ void ByteGridWidget::setList(const ByteAddrList& alist, const ByteValueList& vli
   }
 
   _editMode = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ByteGridWidget::setSelectedValue(int value)
+{
+  // Correctly format the data for viewing
+  _editString = Debugger::to_hex_8(value);
+
+  _valueStringList[_selectedItem] = _editString;
+  _valueList[_selectedItem] = value;
+
+  sendCommand(kBGItemDataChangedCmd, _selectedItem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -389,14 +401,7 @@ void ByteGridWidget::endEditMode()
     abortEditMode();
     return;
   }
-
-  // Correctly format the data for viewing
-  _editString = Debugger::to_hex_8(value);
-
-  _valueStringList[_selectedItem] = _editString;
-  _valueList[_selectedItem] = value;
-
-  sendCommand(kBGItemDataChangedCmd, _selectedItem);
+  setSelectedValue(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

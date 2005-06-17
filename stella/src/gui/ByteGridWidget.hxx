@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.hxx,v 1.4 2005-06-17 17:34:01 stephena Exp $
+// $Id: ByteGridWidget.hxx,v 1.5 2005-06-17 21:46:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,6 +53,7 @@ class ByteGridWidget : public EditableWidget, public CommandSender
     virtual ~ByteGridWidget();
 
     void setList(const ByteAddrList& alist, const ByteValueList& vlist);
+    void setSelectedValue(int value);
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
