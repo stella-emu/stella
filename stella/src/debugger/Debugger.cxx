@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.13 2005-06-17 03:49:08 urchlay Exp $
+// $Id: Debugger.cxx,v 1.14 2005-06-17 21:59:53 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -89,6 +89,22 @@ void Debugger::setConsole(Console* console)
   // Create a new 6502 debugger for this console
   delete myDebugger;
   myDebugger = new D6502(mySystem);
+
+  autoLoadSymbols(myOSystem->romFile());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::autoLoadSymbols(string fileName) {
+	string file = fileName;
+
+	string::size_type pos;
+	if( (pos = file.find_last_of('.')) != string::npos ) {
+		file.replace(pos, file.size(), ".sym");
+	} else {
+		file += ".sym";
+	}
+	string ret = equateList->loadFile(file);
+	//	cerr << "loading syms from file " << file << ": " << ret << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,7 +117,7 @@ const string Debugger::run(const string& command)
 const string Debugger::state()
 {
   string result;
-  char buf[255], bbuf[255];
+  char buf[255];
 
   //cerr << "state(): pc is " << myDebugger->pc() << endl;
   result += "\nPC=";
@@ -123,21 +139,8 @@ const string Debugger::state()
   sprintf(buf, "%d", mySystem->cycles());
   result += buf;
   result += "\n  ";
-  char *label = equateList->getLabel(myDebugger->pc());
-  if(label != NULL) {
-    result += label;
-    result += ": ";
-  }
-  int count = myDebugger->disassemble(myDebugger->pc(), buf, equateList);
-  for(int i=0; i<count; i++) {
-    sprintf(bbuf, "%02x ", readRAM(myDebugger->pc() + i));
-    result += bbuf;
-  }
-  if(count < 3) result += "   ";
-  if(count < 2) result += "   ";
-  result += " ";
-  result += buf;
 
+  result += disassemble(myDebugger->pc(), 1);
   return result;
 }
 
@@ -389,3 +392,36 @@ bool Debugger::breakPoint(int bp) {
   return breakPoints->isSet(bp) != 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getPC() {
+  return myDebugger->pc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Debugger::disassemble(int start, int lines) {
+  char buf[255], bbuf[255];
+  string result;
+
+  do {
+    char *label = equateList->getFormatted(start, 4);
+
+    result += label;
+    result += ": ";
+
+    int count = myDebugger->disassemble(start, buf, equateList);
+
+    for(int i=0; i<count; i++) {
+      sprintf(bbuf, "%02x ", readRAM(start++));
+      result += bbuf;
+    }
+
+    if(count < 3) result += "   ";
+    if(count < 2) result += "   ";
+
+    result += " ";
+    result += buf;
+	 result += "\n";
+  } while(--lines > 0);
+
+  return result;
+}

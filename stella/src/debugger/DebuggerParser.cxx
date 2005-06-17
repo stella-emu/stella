@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.9 2005-06-17 03:49:08 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.10 2005-06-17 21:59:53 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -188,6 +188,23 @@ string DebuggerParser::listBreaks() {
 		return "no breakpoints set";
 }
 
+string DebuggerParser::disasm() {
+	int start, lines = 20;
+
+	if(argCount == 0) {
+		start = debugger->getPC();
+	} else if(argCount == 1) {
+		start = args[0];
+	} else if(argCount == 2) {
+		start = args[0];
+		lines = args[1];
+	} else {
+		return "wrong number of arguments";
+	}
+
+	return debugger->disassemble(start, lines);
+}
+
 string DebuggerParser::run(const string& command) {
 	string result;
 
@@ -302,6 +319,8 @@ string DebuggerParser::run(const string& command) {
 			return "Cleared breakpoint";
 	} else if(subStringMatch(verb, "listbreaks")) {
 		return listBreaks();
+	} else if(subStringMatch(verb, "disasm")) {
+		return disasm();
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		//debugger->clearAllBreakPoints();
 		return "cleared all breakpoints";
@@ -309,12 +328,15 @@ string DebuggerParser::run(const string& command) {
 		// please leave each option on its own line so they're
 		// easy to sort - bkw
 		return
+			"Commands are case-insensitive and may be abbreviated.\n"
 			"a xx        - Set Accumulator to xx\n"
 			"break       - Set/clear breakpoint at current PC\n"
 			"break xx    - Set/clear breakpoint at address xx\n"
 			"c           - Toggle Carry Flag\n"
 			"clearbreaks - Clear all breakpoints\n"
 			"d           - Toggle Decimal Flag\n"
+			"disasm      - Disassemble (from current PC)\n"
+			"disasm xx   - Disassemble (from address xx)\n"
 			"listbreaks  - List all breakpoints\n"
 			"loadsym f   - Load DASM symbols from file f\n"
 			"n           - Toggle Negative Flag\n"
