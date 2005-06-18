@@ -53,7 +53,10 @@ How to use the debugger
 
 Pressing ` toggles the debugger on & off. When you exit the debugger,
 the emulation resumes at the current program counter, and continues
-until either a breakpoint is hit or the ` key is pressed again.
+until either a breakpoint is hit or the ` key is pressed again.  Pressing
+Ctrl-Tab cycles between tabs from left to right, and Shift-Ctrl-Tab cycles
+from right to left.  Pressing Tab cycles between widgets in the current
+tab.
 
 Tabs:
 
@@ -113,10 +116,46 @@ The tabs that are implemented so far:
 
 - Cheat tab
 
-  (TODO: Get Stephen to document this correctly)
-
   This tab lets you search memory for values such as lives or remaining
-  energy. That's about all I know about it right now :)
+  energy, but it's also very useful when debugging to determine which
+  memory location holds which quantity.
+
+  Currently, input must be in decimal format, and search results will be
+  shown in decimal (with hex addresses).
+
+  Enter a byte value into the search editbox (0-255) and click 'Search'.
+  All matching address/value pairs will be shown in the listbox to the
+  right.  The values in the listbox may be changed using the normal
+  editing operations, and the RAM will be immediately updated.  If
+  'Search' is clicked and the inputbox is empty, all RAM locations
+  are returned.
+
+  The 'Compare' button is used to compare the given value using all
+  addresses in the listbox.  This may be an absolute number (such as 2),
+  or a comparitive number (such as -1).  Using a '+' or '-' operator
+  means 'search addresses for values that have changed by that amount'.
+
+  The following is an example of inspecting all addresses that have
+  decreased by 1:
+
+    Click 'Search' with an empty inputbox.  All 128 address/values are
+    returned
+
+    Exit debugger mode and lose a life, let your energy decrease, or
+    do whatever it is you're trying to debug
+
+    Enter debugger mode again, and enter a '-1' in the inputbox
+
+    Click the 'Compare' button, which compares all addresses in the
+    listbox with RAM, and finds all values that have decreased by 1
+    (as compared to their value in the listbox).
+
+    Repeatedly following these steps may help to narrow number of
+    addresses under consideration, and eventually you'll find the
+    memory address you're looking for
+
+  The 'Restart' button restarts the whole procedure (ie, clear the
+  input and listboxes, and allows another search.
 
 Global Buttons:
 

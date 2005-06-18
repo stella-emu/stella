@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.14 2005-06-17 17:34:01 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.15 2005-06-18 13:45:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -126,7 +126,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     case kDDAdvCmd:
-      instance()->frameBuffer().advance();
+      instance()->debugger().nextFrame();
       myTab->loadConfig();
       break;
 
