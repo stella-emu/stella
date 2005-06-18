@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.13 2005-06-18 17:28:18 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.14 2005-06-18 19:00:44 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -61,9 +61,12 @@ int DebuggerParser::conv_hex_digit(char d) {
 // Given a string argument that's either a label,
 // hex value, or a register, either dereference the label or convert
 // the hex to an int. Returns -1 on error.
-int DebuggerParser::decipher_arg(string &arg, bool deref) {
+int DebuggerParser::decipher_arg(string &arg, bool deref, bool lobyte, bool hibyte, bool bin)
+{
 	const char *a = arg.c_str();
 	int address;
+
+	// cerr << "decipher_arg: arg==" << arg << ", deref==" << deref << ", lobyte==" << lobyte << ", hibyte==" << hibyte << ", bin==" << bin << endl;
 
 	// Special cases (registers):
 	if(arg == "a") address = debugger->getA();
@@ -75,18 +78,39 @@ int DebuggerParser::decipher_arg(string &arg, bool deref) {
 	else { // normal addresses: check for label first
 		address = debugger->equateList->getAddress(a);
 
-		// if not label, must be hex.
-		if(address < 0) {
-			address = 0;
-			while(*a != '\0') {
-				int hex = conv_hex_digit(*a++);
-				if(hex < 0)
-					return -1;
+		if(address < 0) { // if not label, must be a number
+			if(bin) { // treat as binary
+				address = 0;
+				while(*a != '\0') {
+					address <<= 1;
+					switch(*a++) {
+						case '1':
+							address++;
+							break;
 
-				address = (address << 4) + hex;
+						case '0':
+							break;
+
+						default:
+							return -1;
+					}
+				}
+			} else { // not binary, must be hex.
+				address = 0;
+				while(*a != '\0') {
+					int hex = conv_hex_digit(*a++);
+					if(hex < 0)
+						return -1;
+
+					address = (address << 4) + hex;
+				}
 			}
 		}
 	}
+
+	if(lobyte && hibyte) return -1;
+	else if(lobyte) address &= 0xff;
+	else if(hibyte) address = (address >> 8) & 0xff;
 
 	// dereference if we're supposed to:
 	if(deref) address = debugger->peek(address);
@@ -96,7 +120,7 @@ int DebuggerParser::decipher_arg(string &arg, bool deref) {
 
 bool DebuggerParser::getArgs(const string& command) {
 	int state = kIN_COMMAND;
-	bool deref = false;
+	bool deref = false, lobyte = false, hibyte = false, bin = false;
 	string curArg = "";
 	argCount = 0;
 	verb = "";
@@ -123,24 +147,42 @@ bool DebuggerParser::getArgs(const string& command) {
 				break;
 
 			case kIN_ARG_START:
+				deref = lobyte = hibyte = false;
 				curArg = "";
 				state = kIN_ARG_CONT;
-				// FIXME: actually use this.
+
 				if(*c == '*') {
 					deref = true;
 					c++;
-				} else {
-					deref = false;
-				} // FALL THROUGH!
+				}
+
+				if(*c == '<') {
+					lobyte = true;
+					c++;
+				}
+
+				if(*c == '>') {
+					hibyte = true;
+					c++;
+				}
+
+				if(*c == '%') {
+					bin = true;
+					c++;
+				}
+
+				// FALL THROUGH!
 
 			case kIN_ARG_CONT:
 				if(isalpha(*c) || isdigit(*c) || *c == '_') {
+					// cerr << (*c) << ", " << "curArg: " << curArg << endl;
 					curArg += *c++;
-					// cerr << "curArg: " << curArg << endl;
 				} else {
-					int a = decipher_arg(curArg, deref);
+					// cerr << "end-of-arg: " << (*c) << ", " << "curArg: " << curArg << endl;
+					int a = decipher_arg(curArg, deref, lobyte, hibyte, bin);
 					if(a < 0)
 						return false;
+
 					args[argCount++] = a;
 					curArg = "";
 					state = kIN_SPACE;
@@ -148,15 +190,15 @@ bool DebuggerParser::getArgs(const string& command) {
 
 		}
 
-		if(argCount == 10) {
-			cerr << "reached max 10 args" << endl;
+		if(argCount == kMAX_ARGS) {
+			cerr << "reached max " << kMAX_ARGS << " args" << endl;
 			return true;
 		}
 	}
 
 	// pick up last arg, if any:
 	if(state == kIN_ARG_CONT || state == kIN_ARG_START)
-		if( (args[argCount++] = decipher_arg(curArg, deref)) < 0)
+		if( (args[argCount++] = decipher_arg(curArg, deref, lobyte, hibyte, bin)) < 0)
 			return false;
 
 	// for(int i=0; i<argCount; i++)
