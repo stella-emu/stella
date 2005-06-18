@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.10 2005-06-17 21:59:53 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.11 2005-06-18 07:12:53 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -321,6 +321,9 @@ string DebuggerParser::run(const string& command) {
 		return listBreaks();
 	} else if(subStringMatch(verb, "disasm")) {
 		return disasm();
+	} else if(subStringMatch(verb, "frame")) {
+		debugger->nextFrame();
+		return "OK";
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		//debugger->clearAllBreakPoints();
 		return "cleared all breakpoints";
@@ -337,6 +340,7 @@ string DebuggerParser::run(const string& command) {
 			"d           - Toggle Decimal Flag\n"
 			"disasm      - Disassemble (from current PC)\n"
 			"disasm xx   - Disassemble (from address xx)\n"
+			"frame       - Advance to next TIA frame, then break\n"
 			"listbreaks  - List all breakpoints\n"
 			"loadsym f   - Load DASM symbols from file f\n"
 			"n           - Toggle Negative Flag\n"
