@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.5 2005-06-17 21:46:24 stephena Exp $
+// $Id: RamWidget.cxx,v 1.6 2005-06-18 06:59:43 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -97,7 +97,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
 //  b->setTarget(this);
 
   ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "~", kRNegateCmd, 0);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Neg", kRNegateCmd, 0);
   b->setTarget(this);
 
   ypos += 16 + space;

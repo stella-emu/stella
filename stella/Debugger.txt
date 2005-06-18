@@ -1,0 +1,130 @@
+
+20050618 bkw
+
+This alpha build of Stella contains an incomplete version of the debugger.
+
+What the debugger can do:
+- Display registers and memory
+- Display TIA state (but this feature is nowhere complete)
+- Change registers, including toggles for flags in P register
+- Single step/trace
+- Breakpoints
+- Frame advance (automatic breakpoint at beginning of next frame)
+- Disassembly
+- Support for DASM symbol files (created with DASM's -s option),
+  including automatically loading symbol files if they're named
+  romname.sym
+- Graphical editor for RIOT RAM. Acts a lot like a spreadsheet.
+- Cheat system (similar to MAME)
+- Reset the 6502
+
+Planned features for Stella 2.0 release:
+- Better TIA state display, with register names and GUI buttons for
+  various bits (e.g. click ENAM0 to turn it on)
+- GUI Disassembly window, scrollable, with checkboxes for breakpoints
+  (also perhaps 2 panes in this window so you can see 2 parts of the
+  code at once)
+- GUI CPU window, like the RAM window but for CPU registers
+- Scanline advance (like frame advance, break at beginning
+  of next scanline).
+- Support for bank switching.
+- Binary and decimal displays for currently-edited field in RAM and CPU
+  windows.
+- Save CLI session to a text file.
+- Start emulator in debugger (via command-line option)
+
+Future plans (post 2.0):
+- Advanced breakpoint support (e.g. Break when carry flag
+  changes, or break when player 0 collides with player 1,
+  etc). This will implemented as a scripting language for
+  the CLI.
+- Ability to patch ROM in-place, possibly including a mini-assembler
+- Support for extra RAM in Supercharger and other cart types.
+- Possibly support for recording and playing back input files, like
+  MAME. This isn't a debugger feature per se, but it'll make it easier
+  to reliably trigger a bug so you can debug it
+- Graphics ROM view, so you can see your sprite data (it might still
+  be upside-down though :)
+- Better support for binary and decimal input and display
+- Various new GUI enhancements (label support in the RAM GUI, for one)
+
+How to use the debugger
+-----------------------
+
+Pressing ` toggles the debugger on & off. When you exit the debugger,
+the emulation resumes at the current program counter, and continues
+until either a breakpoint is hit or the ` key is pressed again.
+
+Tabs:
+
+The top-level user interface uses tabs to select the current debugger
+mode. Not all the tabs are implemented yet: those that aren't will just
+show up as a blank tab.
+
+The tabs that are implemented so far:
+
+- Prompt tab
+
+  This is a command-line interface, similar to the DOS DEBUG command
+  or Supermon for the C=64. It shows you the current CPU state, including
+  the disassembly of the instruction pointed to by the Program Counter.
+  This instruction is the NEXT one that will execute, NOT the one that
+  just executed!
+
+  Editing keys work about like you'd expect them to: Home, End, Delete,
+  arrows, etc. To scroll with the keyboard, use Shift-PageUp and
+  Shift-PageDown or Shift-Up and Shift-Down arrow keys. You can also
+  scroll with the mouse. Copy and paste is not supported.
+
+  To see the available commands, enter "help" or "?". Most commands can
+  be abbreviated: instead of "clearbreaks", you can type "clear" or
+  even just "cl". However, "c" by itself is the Toggle Carry command.
+
+  For now, there are some functions that only exist in the prompt. We
+  intend to add GUI equivalents for all (or almost all?) of the prompt
+  commands by the time we release Stella 2.0. People who like command
+  prompts will be able to use the prompt, but people who hate them will
+  have a fully functional debugger without typing (or without typing
+  much, anyway).
+
+  (TODO: document all the commands here)
+
+- RAM tab
+
+  This is a spreadsheet-like GUI for inspecting and changing the contents
+  of the 2600's RAM. All 128 bytes of RAM are visible on the screen at
+  once. You can navigate with either the mouse or the keyboard arrow keys.
+  To change a RAM location, either double-click on it or press Enter while
+  it's highlighted. Enter the new value (hex only for now, sorry), then
+  press Enter to make the change. If you change your mind, press Escape
+  and the original value will be restored.
+
+  On the right there are also some buttons to do various things to the
+  currently-selected memory location. The buttons are:
+
+  0 - Set the current location to zero.
+  Inv - Invert the current location (toggle all its bits).
+  Neg - Negate the current location (twos' complement negative).
+  ++  - Increment the current location
+  --  - Decrement the current location
+  <<  - Shift the current location left. Any bits shifted off the left
+        are lost (they will NOT end up in the Carry flag).
+  >>  - Shift the current location right, like << above.
+
+- Cheat tab
+
+  (TODO: Get Stephen to document this correctly)
+
+  This tab lets you search memory for values such as lives or remaining
+  energy. That's about all I know about it right now :)
+
+Global Buttons:
+
+There are also buttons on the right that always show up no matter which
+tab you're looking at. These are always active. They are: Step, Trace,
+Frame+1, and Exit.
+
+When you use these buttons, the prompt doesn't change. This means the
+status lines with the registers and disassembly will be "stale". You
+can update them just by pressing Enter in the prompt.
+
