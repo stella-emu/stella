@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.15 2005-06-18 07:12:53 urchlay Exp $
+// $Id: Debugger.cxx,v 1.16 2005-06-18 15:45:05 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -429,4 +429,12 @@ string Debugger::disassemble(int start, int lines) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame() {
   myOSystem->frameBuffer().advance();
+  myBaseDialog->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::clearAllBreakPoints() {
+  delete breakPoints;
+  breakPoints = new PackedBitArray(0x10000);
+  mySystem->m6502().setBreakPoints(NULL);
 }

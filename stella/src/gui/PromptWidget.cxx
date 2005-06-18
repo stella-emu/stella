@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.9 2005-06-17 21:59:54 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.10 2005-06-18 15:45:05 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -174,7 +174,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         addToHistory(str);
 
         // Pass the command to the debugger, and print the result
-        print( instance()->debugger().run(str) + "\n" );
+        print( instance()->debugger().run(str) );
 
         // Get rid of the string buffer
         delete [] str;

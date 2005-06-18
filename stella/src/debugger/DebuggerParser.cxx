@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.11 2005-06-18 07:12:53 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.12 2005-06-18 15:45:05 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -229,10 +229,7 @@ string DebuggerParser::run(const string& command) {
 
 	// TODO: de-uglify this somehow. (it may not be worth doing?)
 
-	if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
-		debugger->quit();
-		return "";
-	} else if(subStringMatch(verb, "a")) {
+	if(subStringMatch(verb, "a")) {
       if(argCount == 1)
 			if(args[0] <= 0xff)
 				debugger->setA(args[0]);
@@ -322,11 +319,18 @@ string DebuggerParser::run(const string& command) {
 	} else if(subStringMatch(verb, "disasm")) {
 		return disasm();
 	} else if(subStringMatch(verb, "frame")) {
-		debugger->nextFrame();
+		int count = 0;
+		if(argCount != 0) count = args[0];
+		// FIXME: make multiple frames work!
+		for(int i=0; i<count; i++)
+			debugger->nextFrame();
 		return "OK";
 	} else if(subStringMatch(verb, "clearbreaks")) {
-		//debugger->clearAllBreakPoints();
+		debugger->clearAllBreakPoints();
 		return "cleared all breakpoints";
+	} else if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
+		debugger->quit();
+		return "";
 	} else if(subStringMatch(verb, "help") || verb == "?") {
 		// please leave each option on its own line so they're
 		// easy to sort - bkw
