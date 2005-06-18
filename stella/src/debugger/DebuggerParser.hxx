@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.6 2005-06-17 21:59:53 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.7 2005-06-18 17:28:18 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -38,12 +38,12 @@ class DebuggerParser
 	private:
 		int DebuggerParser::conv_hex_digit(char d);
 		bool DebuggerParser::subStringMatch(const string& needle, const string& haystack);
-		int decipher_arg(string &arg);
+		int decipher_arg(string &arg, bool deref);
 		string disasm();
 		string listBreaks();
+		string eval();
 
 		Debugger* debugger;
-		EquateList *equateList;
 
 		bool done;
 

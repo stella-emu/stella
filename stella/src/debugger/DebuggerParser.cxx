@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.12 2005-06-18 15:45:05 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.13 2005-06-18 17:28:18 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
+#include "D6502.hxx"
 #include "EquateList.hxx"
 
 // Constants for argument processing
@@ -57,31 +58,45 @@ int DebuggerParser::conv_hex_digit(char d) {
 	else return -1;
 }
 
-// Given a string argument that's either a label or a
-// hex value, either dereference the label or convert
+// Given a string argument that's either a label,
+// hex value, or a register, either dereference the label or convert
 // the hex to an int. Returns -1 on error.
-int DebuggerParser::decipher_arg(string &arg) {
+int DebuggerParser::decipher_arg(string &arg, bool deref) {
 	const char *a = arg.c_str();
-	int address = debugger->equateList->getAddress(a);
-	// cerr << "decipher_arg: equateList->getAddress(" << a << ") == " << address << endl;
-	if(address >= 0)
-		return address;
+	int address;
 
-	address = 0;
-	while(*a != '\0') {
-		int hex = conv_hex_digit(*a++);
-		if(hex < 0)
-			return -1;
+	// Special cases (registers):
+	if(arg == "a") address = debugger->getA();
+	else if(arg == "x") address = debugger->getX();
+	else if(arg == "y") address = debugger->getY();
+	else if(arg == "p") address = debugger->getP();
+	else if(arg == "s") address = debugger->getS();
+	else if(arg == "pc") address = debugger->getPC();
+	else { // normal addresses: check for label first
+		address = debugger->equateList->getAddress(a);
 
-		address = (address << 4) + hex;
+		// if not label, must be hex.
+		if(address < 0) {
+			address = 0;
+			while(*a != '\0') {
+				int hex = conv_hex_digit(*a++);
+				if(hex < 0)
+					return -1;
+
+				address = (address << 4) + hex;
+			}
+		}
 	}
+
+	// dereference if we're supposed to:
+	if(deref) address = debugger->peek(address);
 
 	return address;
 }
 
 bool DebuggerParser::getArgs(const string& command) {
 	int state = kIN_COMMAND;
-	int deref = 0;
+	bool deref = false;
 	string curArg = "";
 	argCount = 0;
 	verb = "";
@@ -112,30 +127,21 @@ bool DebuggerParser::getArgs(const string& command) {
 				state = kIN_ARG_CONT;
 				// FIXME: actually use this.
 				if(*c == '*') {
-					deref = 1;
+					deref = true;
 					c++;
 				} else {
-					deref = 0;
+					deref = false;
 				} // FALL THROUGH!
 
 			case kIN_ARG_CONT:
-				/*if(isxdigit(*c)) {
-					int dig = conv_hex_digit(*c);
-					curArg = (curArg << 4) + dig;
-					*c++;
-				} else {
-					args[argCount++] = curArg;
-					state = kIN_SPACE;
-				}
-				break;*/
 				if(isalpha(*c) || isdigit(*c) || *c == '_') {
 					curArg += *c++;
 					// cerr << "curArg: " << curArg << endl;
 				} else {
-					args[argCount] = decipher_arg(curArg);
-					if(args[argCount] < 0)
+					int a = decipher_arg(curArg, deref);
+					if(a < 0)
 						return false;
-					argCount++;
+					args[argCount++] = a;
 					curArg = "";
 					state = kIN_SPACE;
 				}
@@ -150,7 +156,7 @@ bool DebuggerParser::getArgs(const string& command) {
 
 	// pick up last arg, if any:
 	if(state == kIN_ARG_CONT || state == kIN_ARG_START)
-		if( (args[argCount++] = decipher_arg(curArg)) < 0)
+		if( (args[argCount++] = decipher_arg(curArg, deref)) < 0)
 			return false;
 
 	// for(int i=0; i<argCount; i++)
@@ -203,6 +209,31 @@ string DebuggerParser::disasm() {
 	}
 
 	return debugger->disassemble(start, lines);
+}
+
+string DebuggerParser::eval() {
+	char buf[10];
+	string ret;
+	for(int i=0; i<argCount; i++) {
+		char *label = debugger->equates()->getLabel(args[i]);
+		if(label != NULL) {
+			ret += label;
+			ret += ": ";
+		}
+		if(args[i] < 0x100) {
+			ret += Debugger::to_hex_8(args[i]);
+			ret += " ";
+			ret += Debugger::to_bin_8(args[i]);
+		} else {
+			ret += Debugger::to_hex_16(args[i]);
+			ret += " ";
+			ret += Debugger::to_bin_16(args[i]);
+		}
+		sprintf(buf, " %d", args[i]);
+		ret += buf;
+		if(i != argCount - 1) ret += "\n";
+	}
+	return ret;
 }
 
 string DebuggerParser::run(const string& command) {
@@ -319,15 +350,23 @@ string DebuggerParser::run(const string& command) {
 	} else if(subStringMatch(verb, "disasm")) {
 		return disasm();
 	} else if(subStringMatch(verb, "frame")) {
+		/*
+		// FIXME: make multiple frames work!
 		int count = 0;
 		if(argCount != 0) count = args[0];
-		// FIXME: make multiple frames work!
 		for(int i=0; i<count; i++)
 			debugger->nextFrame();
+		*/
+		debugger->nextFrame();
 		return "OK";
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		debugger->clearAllBreakPoints();
 		return "cleared all breakpoints";
+	} else if(subStringMatch(verb, "eval")) {
+		if(argCount < 1)
+			return "one or more arguments required";
+		else
+			return eval();
 	} else if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
 		debugger->quit();
 		return "";
@@ -336,6 +375,8 @@ string DebuggerParser::run(const string& command) {
 		// easy to sort - bkw
 		return
 			"Commands are case-insensitive and may be abbreviated.\n"
+			"Arguments are either labels or hex constants, and may be\n"
+			"prefixed with a * to dereference.\n"
 			"a xx        - Set Accumulator to xx\n"
 			"break       - Set/clear breakpoint at current PC\n"
 			"break xx    - Set/clear breakpoint at address xx\n"
@@ -344,19 +385,20 @@ string DebuggerParser::run(const string& command) {
 			"d           - Toggle Decimal Flag\n"
 			"disasm      - Disassemble (from current PC)\n"
 			"disasm xx   - Disassemble (from address xx)\n"
+			"eval xx     - Evaluate expression xx\n"
 			"frame       - Advance to next TIA frame, then break\n"
 			"listbreaks  - List all breakpoints\n"
 			"loadsym f   - Load DASM symbols from file f\n"
 			"n           - Toggle Negative Flag\n"
 			"pc xx       - Set Program Counter to xx\n"
 			"ram         - Show RIOT RAM contents\n"
-			"ram xx yy   - Set RAM location xx to value yy (multiple values may be given)\n"
+			"ram xx yy   - Set RAM location xx to value yy (multiple values allowed)\n"
 			"reset       - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
 			"run         - Exit debugger (back to emulator)\n"
 			"s xx        - Set Stack Pointer to xx\n"
 			"step        - Single-step\n"
 			"tia         - Show TIA register contents\n"
-			"trace       - Single-step treating subroutine calls as one instruction\n"
+			"trace       - Single-step treating subroutine calls as 1 instruction\n"
 			"v           - Toggle Overflow Flag\n"
 			"x xx        - Set X register to xx\n"
 			"y xx        - Set Y register to xx\n"

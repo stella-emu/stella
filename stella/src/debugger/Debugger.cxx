@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.16 2005-06-18 15:45:05 urchlay Exp $
+// $Id: Debugger.cxx,v 1.17 2005-06-18 17:28:18 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -398,6 +398,31 @@ int Debugger::getPC() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getA() {
+  return myDebugger->a();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getX() {
+  return myDebugger->x();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getY() {
+  return myDebugger->y();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getS() {
+  return myDebugger->sp();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getP() {
+  return myDebugger->ps();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Debugger::disassemble(int start, int lines) {
   char buf[255], bbuf[255];
   string result;
@@ -437,4 +462,9 @@ void Debugger::clearAllBreakPoints() {
   delete breakPoints;
   breakPoints = new PackedBitArray(0x10000);
   mySystem->m6502().setBreakPoints(NULL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::peek(int addr) {
+  return mySystem->peek(addr);
 }

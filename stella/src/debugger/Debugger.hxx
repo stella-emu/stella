@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.14 2005-06-18 15:45:05 urchlay Exp $
+// $Id: Debugger.hxx,v 1.15 2005-06-18 17:28:18 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -49,7 +49,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.14 2005-06-18 15:45:05 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.15 2005-06-18 17:28:18 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -105,6 +105,27 @@ class Debugger : public DialogContainer
     {
       return (int) strtoimax(h, NULL, 16);
     }
+    static char *to_bin(int dec, int places, char *buf) {
+      int bit = 1;
+      buf[places] = '\0';
+      while(--places >= 0) {
+        if(dec & bit)
+          buf[places] = '1';
+        else
+          buf[places] = '0';
+
+        bit <<= 1;
+      }
+      return buf;
+    }
+    static char *to_bin_8(int dec) {
+      static char buf[9];
+      return to_bin(dec, 8, buf);
+    }
+    static char *to_bin_16(int dec) {
+      static char buf[17];
+      return to_bin(dec, 16, buf);
+    }
 
     void toggleBreakPoint(int bp);
     bool breakPoint(int bp);
@@ -146,6 +167,12 @@ class Debugger : public DialogContainer
     void setS(int sp);
     void setPC(int pc);
     int getPC();
+    int getA();
+    int getX();
+    int getY();
+    int getP();
+    int getS();
+    int peek(int addr);
     void toggleC();
     void toggleZ();
     void toggleN();

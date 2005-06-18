@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.7 2005-06-16 02:16:26 urchlay Exp $
+// $Id: EquateList.cxx,v 1.8 2005-06-18 17:28:18 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -120,7 +120,7 @@ int EquateList::calcSize() {
 char *EquateList::getLabel(int addr) {
 	// cerr << "getLabel(" << addr << ")" << endl;
 	for(int i=0; ourVcsEquates[i].label != NULL; i++) {
-		// cerr << "Checking ourVcsEquates[" << i << "] (" << ourVcsEquates[i].label << endl;
+		// cerr << "Checking ourVcsEquates[" << i << "] (" << ourVcsEquates[i].label << ")" << endl;
 		if(ourVcsEquates[i].address == addr) {
 			// cerr << "Found label " << ourVcsEquates[i].label << endl;
 			return ourVcsEquates[i].label;
