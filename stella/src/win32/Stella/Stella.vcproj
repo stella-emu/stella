@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\gui;..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
+				AdditionalIncludeDirectories="..\..\debugger;..\..\gui;..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -73,7 +73,7 @@ opengl32.lib"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\gui;..\..\win32"
+				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\gui;..\..\debugger;..\..\win32"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -129,6 +129,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\AboutDialog.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\AddrValueWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\AudioDialog.cxx">
 			</File>
 			<File
@@ -136,6 +139,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\BrowserDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ByteGridWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart.cxx">
@@ -198,6 +204,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\CartUA.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\CheatWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Console.cxx">
 			</File>
 			<File
@@ -207,19 +216,13 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\D6502.cxx">
 			</File>
 			<File
-				RelativePath="..\..\common\DCmdQuit.cxx">
-			</File>
-			<File
-				RelativePath="..\..\gui\Debugger.cxx">
-			</File>
-			<File
-				RelativePath="..\..\common\DebuggerCommand.cxx">
+				RelativePath="..\..\debugger\Debugger.cxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\DebuggerDialog.cxx">
 			</File>
 			<File
-				RelativePath="..\..\common\DebuggerParser.cxx">
+				RelativePath="..\..\debugger\DebuggerParser.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Deserializer.cxx">
@@ -235,6 +238,15 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\Driving.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\EditableWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\EditNumWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\EquateList.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Event.cxx">
@@ -327,6 +339,9 @@ opengl32.lib"
 				RelativePath="..\OSystemWin32.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\PackedBitArray.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Paddles.cxx">
 			</File>
 			<File
@@ -343,6 +358,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\PropsSet.cxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\RamWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Random.cxx">
@@ -401,6 +419,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\AboutDialog.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\AddrValueWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\Array.hxx">
 			</File>
 			<File
@@ -414,6 +435,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\bspf\src\bspf.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\ByteGridWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart.hxx">
@@ -476,6 +500,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\CartUA.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\CheatWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\Command.hxx">
 			</File>
 			<File
@@ -491,19 +518,13 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\D6502.hxx">
 			</File>
 			<File
-				RelativePath="..\..\common\DCmdQuit.hxx">
-			</File>
-			<File
-				RelativePath="..\..\gui\Debugger.hxx">
-			</File>
-			<File
-				RelativePath="..\..\common\DebuggerCommand.hxx">
+				RelativePath="..\..\debugger\Debugger.hxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\DebuggerDialog.hxx">
 			</File>
 			<File
-				RelativePath="..\..\common\DebuggerParser.hxx">
+				RelativePath="..\..\debugger\DebuggerParser.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Deserializer.hxx">
@@ -519,6 +540,18 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\Driving.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\EditableWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\EditNumWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\Equate.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\EquateList.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Event.hxx">
@@ -614,6 +647,9 @@ opengl32.lib"
 				RelativePath="..\OSystemWin32.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\PackedBitArray.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Paddles.hxx">
 			</File>
 			<File
@@ -630,6 +666,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\PropsSet.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\RamWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Random.hxx">
