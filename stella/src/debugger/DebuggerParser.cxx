@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.15 2005-06-19 08:29:40 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.16 2005-06-19 08:37:29 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -171,11 +171,27 @@ bool DebuggerParser::parseArgument(
 		return false;
 	}
 
-	if(*value < 0x100)
-		sprintf(rendered, "%02x", *value);
-	else
-		sprintf(rendered, "%04x", *value);
+	switch(defaultBase) {
+		case kBASE_2:
+			if(*value < 0x100)
+				sprintf(rendered, Debugger::to_bin_8(*value));
+			else
+				sprintf(rendered, Debugger::to_bin_16(*value));
+			break;
 
+		case kBASE_10:
+			sprintf(rendered, "%d", *value);
+			break;
+
+		case kBASE_16:
+		default:
+			if(*value < 0x100)
+				sprintf(rendered, Debugger::to_hex_8(*value));
+			else
+				sprintf(rendered, Debugger::to_hex_16(*value));
+			break;
+
+	}
 	return true;
 }
 
