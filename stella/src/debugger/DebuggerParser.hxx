@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.8 2005-06-18 19:00:44 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.9 2005-06-19 08:29:40 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -26,21 +26,27 @@ class Debugger;
 
 #define kMAX_ARGS 100
 
+enum {
+	kBASE_16,
+	kBASE_10,
+	kBASE_2
+};
+
 class DebuggerParser
 {
 	public:
 		DebuggerParser(Debugger* debugger);
 		~DebuggerParser();
 
-		string currentAddress();
-		void setDone();
 		string run(const string& command);
-		bool getArgs(const string& command);
+		bool parseArgument(string& arg, int *value, char *rendered);
+		void setBase(int base);
 
 	private:
-		int DebuggerParser::conv_hex_digit(char d);
-		bool DebuggerParser::subStringMatch(const string& needle, const string& haystack);
-		int decipher_arg(string &arg, bool deref, bool lobyte, bool hibyte, bool bin);
+		bool getArgs(const string& command);
+		int conv_hex_digit(char d);
+		bool subStringMatch(const string& needle, const string& haystack);
+		int decipher_arg(string &arg);
 		string disasm();
 		string listBreaks();
 		string eval();
@@ -51,7 +57,9 @@ class DebuggerParser
 
 		string verb;
 		int args[kMAX_ARGS+1]; // FIXME: should be dynamic
+		string argStrings[kMAX_ARGS+1];
 		int argCount;
+		int defaultBase;
 };
 
 #endif

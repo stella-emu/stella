@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.17 2005-06-18 17:28:18 urchlay Exp $
+// $Id: Debugger.cxx,v 1.18 2005-06-19 08:29:39 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -467,4 +467,9 @@ void Debugger::clearAllBreakPoints() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::peek(int addr) {
   return mySystem->peek(addr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::dpeek(int addr) {
+  return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8);
 }

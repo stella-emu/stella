@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.14 2005-06-18 19:00:44 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.15 2005-06-19 08:29:40 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -26,8 +26,7 @@
 enum {
   kIN_COMMAND,
   kIN_SPACE,
-  kIN_ARG_START,
-  kIN_ARG_CONT
+  kIN_ARG
 };
 
 
@@ -35,17 +34,10 @@ DebuggerParser::DebuggerParser(Debugger* d)
   	: debugger(d)
 {
 	done = false;
+	defaultBase = kBASE_16;
 }
 
 DebuggerParser::~DebuggerParser() {
-}
-
-string DebuggerParser::currentAddress() {
-	return "currentAddress()";
-}
-
-void DebuggerParser::setDone() {
-	done = true;
 }
 
 int DebuggerParser::conv_hex_digit(char d) {
@@ -58,34 +50,75 @@ int DebuggerParser::conv_hex_digit(char d) {
 	else return -1;
 }
 
-// Given a string argument that's either a label,
-// hex value, or a register, either dereference the label or convert
-// the hex to an int. Returns -1 on error.
-int DebuggerParser::decipher_arg(string &arg, bool deref, bool lobyte, bool hibyte, bool bin)
-{
-	const char *a = arg.c_str();
-	int address;
+void DebuggerParser::setBase(int base) {
+	defaultBase = base;
+}
 
-	// cerr << "decipher_arg: arg==" << arg << ", deref==" << deref << ", lobyte==" << lobyte << ", hibyte==" << hibyte << ", bin==" << bin << endl;
+// Evaluate expression.
+int DebuggerParser::decipher_arg(string &arg) {
+	bool derefByte=false, derefWord=false, lobyte=false, hibyte=false, bin=false, dec=false;
+	int result;
+
+	if(defaultBase == kBASE_2) {
+		bin=true; dec=false;
+	} else if(defaultBase == kBASE_10) {
+		bin=false; dec=true;
+	} else {
+		bin=false; dec=false;
+	}
+
+	if(arg.substr(0, 1) == "*") {
+		derefByte = true;
+		arg.erase(0, 1);
+	} else if(arg.substr(0, 1) == "@") {
+		derefWord = true;
+		arg.erase(0, 1);
+	}
+
+	if(arg.substr(0, 1) == "<") {
+		lobyte = true;
+		arg.erase(0, 1);
+	} else if(arg.substr(0, 1) == ">") {
+		hibyte = true;
+		arg.erase(0, 1);
+	}
+
+	if(arg.substr(0, 1) == "%") {
+		bin = true;
+		arg.erase(0, 1);
+	} else if(arg.substr(0, 1) == "#") {
+		dec = true;
+		arg.erase(0, 1);
+	} else if(arg.substr(0, 1) == "$") {
+		dec = false;
+		bin = false;
+		arg.erase(0, 1);
+	}
+
+	// sanity check mutually exclusive options:
+	if(derefByte && derefWord) return -1;
+	if(lobyte && hibyte) return -1;
+	if(bin && dec) return -1;
 
 	// Special cases (registers):
-	if(arg == "a") address = debugger->getA();
-	else if(arg == "x") address = debugger->getX();
-	else if(arg == "y") address = debugger->getY();
-	else if(arg == "p") address = debugger->getP();
-	else if(arg == "s") address = debugger->getS();
-	else if(arg == "pc") address = debugger->getPC();
-	else { // normal addresses: check for label first
-		address = debugger->equateList->getAddress(a);
+	if(arg == "a") result = debugger->getA();
+	else if(arg == "x") result = debugger->getX();
+	else if(arg == "y") result = debugger->getY();
+	else if(arg == "p") result = debugger->getP();
+	else if(arg == "s") result = debugger->getS();
+	else if(arg == "pc" || arg == ".") result = debugger->getPC();
+	else { // Not a special, must be a regular arg: check for label first
+		const char *a = arg.c_str();
+		result = debugger->equateList->getAddress(a);
 
-		if(address < 0) { // if not label, must be a number
+		if(result < 0) { // if not label, must be a number
 			if(bin) { // treat as binary
-				address = 0;
+				result = 0;
 				while(*a != '\0') {
-					address <<= 1;
+					result <<= 1;
 					switch(*a++) {
 						case '1':
-							address++;
+							result++;
 							break;
 
 						case '0':
@@ -95,32 +128,59 @@ int DebuggerParser::decipher_arg(string &arg, bool deref, bool lobyte, bool hiby
 							return -1;
 					}
 				}
-			} else { // not binary, must be hex.
-				address = 0;
+			} else if(dec) {
+				result = 0;
+				while(*a != '\0') {
+					int digit = (*a++) - '0';
+					if(digit < 0 || digit > 9)
+						return -1;
+
+					result = (result * 10) + digit;
+				}
+			} else { // must be hex.
+				result = 0;
 				while(*a != '\0') {
 					int hex = conv_hex_digit(*a++);
 					if(hex < 0)
 						return -1;
 
-					address = (address << 4) + hex;
+					result = (result << 4) + hex;
 				}
 			}
 		}
 	}
 
-	if(lobyte && hibyte) return -1;
-	else if(lobyte) address &= 0xff;
-	else if(hibyte) address = (address >> 8) & 0xff;
+	if(lobyte) result &= 0xff;
+	else if(hibyte) result = (result >> 8) & 0xff;
 
 	// dereference if we're supposed to:
-	if(deref) address = debugger->peek(address);
+	if(derefByte) result = debugger->peek(result);
+	if(derefWord) result = debugger->dpeek(result);
 
-	return address;
+	return result;
+}
+
+// The GUI uses this:
+bool DebuggerParser::parseArgument(
+	string& arg, int *value, char *rendered)
+{
+	*value = decipher_arg(arg);
+
+	if(*value == -1) {
+		sprintf(rendered, "error");
+		return false;
+	}
+
+	if(*value < 0x100)
+		sprintf(rendered, "%02x", *value);
+	else
+		sprintf(rendered, "%04x", *value);
+
+	return true;
 }
 
 bool DebuggerParser::getArgs(const string& command) {
 	int state = kIN_COMMAND;
-	bool deref = false, lobyte = false, hibyte = false, bin = false;
 	string curArg = "";
 	argCount = 0;
 	verb = "";
@@ -128,7 +188,9 @@ bool DebuggerParser::getArgs(const string& command) {
 
 	// cerr << "Parsing \"" << command << "\"" << endl;
 
-	while(*c != '\0') {
+	// First, pick apart string into space-separated tokens.
+	// The first token is the command verb, the rest go in an array
+	do {
 		// cerr << "State " << state << ", *c '" << *c << "'" << endl;
 		switch(state) {
 			case kIN_COMMAND:
@@ -136,75 +198,43 @@ bool DebuggerParser::getArgs(const string& command) {
 					state = kIN_SPACE;
 				else
 					verb += *c;
-				c++;
 				break;
 
 			case kIN_SPACE:
-				if(*c == ' ')
-					c++;
-				else
-					state = kIN_ARG_START;
+				if(*c != ' ')
+					state = kIN_ARG;
+					curArg += *c;
 				break;
 
-			case kIN_ARG_START:
-				deref = lobyte = hibyte = false;
-				curArg = "";
-				state = kIN_ARG_CONT;
-
-				if(*c == '*') {
-					deref = true;
-					c++;
-				}
-
-				if(*c == '<') {
-					lobyte = true;
-					c++;
-				}
-
-				if(*c == '>') {
-					hibyte = true;
-					c++;
-				}
-
-				if(*c == '%') {
-					bin = true;
-					c++;
-				}
-
-				// FALL THROUGH!
-
-			case kIN_ARG_CONT:
-				if(isalpha(*c) || isdigit(*c) || *c == '_') {
-					// cerr << (*c) << ", " << "curArg: " << curArg << endl;
-					curArg += *c++;
-				} else {
-					// cerr << "end-of-arg: " << (*c) << ", " << "curArg: " << curArg << endl;
-					int a = decipher_arg(curArg, deref, lobyte, hibyte, bin);
-					if(a < 0)
-						return false;
-
-					args[argCount++] = a;
-					curArg = "";
+			case kIN_ARG:
+				if(*c == ' ' || *c == '\0') {
 					state = kIN_SPACE;
+					argStrings[argCount++] = curArg;
+					curArg = "";
+				} else {
+					curArg += *c;
 				}
-
-		}
+				break;
+		} // switch(state)
 
 		if(argCount == kMAX_ARGS) {
 			cerr << "reached max " << kMAX_ARGS << " args" << endl;
 			return true;
 		}
+	} while(*c++ != '\0');
+
+	for(int i=0; i<argCount; i++)
+		//cerr << "argStrings[" << i << "] == \"" << argStrings[i] << "\"" << endl;
+
+	// Now decipher each argument, in turn.
+	for(int i=0; i<argCount; i++) {
+		curArg = argStrings[i];
+		if( (args[i] = decipher_arg(curArg)) < 0) {
+			return false;
+		}
+		//cerr << "args[" << i << "] == " << args[i] << endl;
 	}
 
-	// pick up last arg, if any:
-	if(state == kIN_ARG_CONT || state == kIN_ARG_START)
-		if( (args[argCount++] = decipher_arg(curArg, deref, lobyte, hibyte, bin)) < 0)
-			return false;
-
-	// for(int i=0; i<argCount; i++)
-		// cerr << "args[" << i << "] == " << args[i] << endl;
-
-	// cerr << endl;
 	return true;
 }
 
@@ -254,7 +284,7 @@ string DebuggerParser::disasm() {
 }
 
 string DebuggerParser::eval() {
-	char buf[10];
+	char buf[50];
 	string ret;
 	for(int i=0; i<argCount; i++) {
 		char *label = debugger->equates()->getLabel(args[i]);
@@ -262,16 +292,17 @@ string DebuggerParser::eval() {
 			ret += label;
 			ret += ": ";
 		}
+		ret += "$";
 		if(args[i] < 0x100) {
 			ret += Debugger::to_hex_8(args[i]);
-			ret += " ";
+			ret += " %";
 			ret += Debugger::to_bin_8(args[i]);
 		} else {
 			ret += Debugger::to_hex_16(args[i]);
-			ret += " ";
+			ret += " %";
 			ret += Debugger::to_bin_16(args[i]);
 		}
-		sprintf(buf, " %d", args[i]);
+		sprintf(buf, " (dec %d)", args[i]);
 		ret += buf;
 		if(i != argCount - 1) ret += "\n";
 	}
@@ -281,16 +312,15 @@ string DebuggerParser::eval() {
 string DebuggerParser::run(const string& command) {
 	string result;
 
-	// special case command, takes a filename instead of an address:
-	if(subStringMatch("loadsym ", command)) {
-		result = command;
-		result.erase(0, 8);
-		result = debugger->equateList->loadFile(result);
-		return result;
+	if(!getArgs(command)) {
+		// commands that take filenames or other arbitrary strings go here.
+		if(subStringMatch(verb, "loadsym")) {
+			result = debugger->equateList->loadFile(argStrings[0]);
+			return result;
+		} else {
+			return "invalid label or address";
+		}
 	}
-
-	if(!getArgs(command))
-		return "invalid label or address";
 
 	// "verb" is the command, stripped of any arguments.
 	// In the if/else below, put shorter command names first.
@@ -404,11 +434,34 @@ string DebuggerParser::run(const string& command) {
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		debugger->clearAllBreakPoints();
 		return "cleared all breakpoints";
-	} else if(subStringMatch(verb, "eval")) {
+	} else if(subStringMatch(verb, "print")) {
 		if(argCount < 1)
 			return "one or more arguments required";
 		else
 			return eval();
+	} else if(subStringMatch(verb, "base")) {
+		switch(args[0]) {
+			case 2:
+				setBase(kBASE_2);
+				break;
+
+			case 10:
+				setBase(kBASE_10);
+				break;
+
+			case 16:
+				setBase(kBASE_16);
+				break;
+
+			default:
+				return "invalid base (must be #2, #10, or #16)";
+				break;
+		}
+		char buf[5];
+		sprintf(buf, "#%2d", args[0]);
+		result += "Set base ";
+		result += buf;
+		return result;
 	} else if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
 		debugger->quit();
 		return "";
@@ -420,6 +473,7 @@ string DebuggerParser::run(const string& command) {
 			"Arguments are either labels or hex constants, and may be\n"
 			"prefixed with a * to dereference.\n"
 			"a xx        - Set Accumulator to xx\n"
+			"base xx     - Set default input base (#2=binary, #10=decimal, #16=hex)\n"
 			"break       - Set/clear breakpoint at current PC\n"
 			"break xx    - Set/clear breakpoint at address xx\n"
 			"c           - Toggle Carry Flag\n"
@@ -427,21 +481,25 @@ string DebuggerParser::run(const string& command) {
 			"d           - Toggle Decimal Flag\n"
 			"disasm      - Disassemble (from current PC)\n"
 			"disasm xx   - Disassemble (from address xx)\n"
-			"eval xx     - Evaluate expression xx\n"
 			"frame       - Advance to next TIA frame, then break\n"
 			"listbreaks  - List all breakpoints\n"
 			"loadsym f   - Load DASM symbols from file f\n"
 			"n           - Toggle Negative Flag\n"
 			"pc xx       - Set Program Counter to xx\n"
+			"print xx    - Evaluate and print expression xx\n"
+			"poke xx yy  - Write data yy to address xx (may be ROM, TIA, etc)\n"
 			"ram         - Show RIOT RAM contents\n"
 			"ram xx yy   - Set RAM location xx to value yy (multiple values allowed)\n"
 			"reset       - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
 			"run         - Exit debugger (back to emulator)\n"
 			"s xx        - Set Stack Pointer to xx\n"
+			// "save f      - Save console session to file f\n"
 			"step        - Single-step\n"
 			"tia         - Show TIA register contents\n"
 			"trace       - Single-step treating subroutine calls as 1 instruction\n"
 			"v           - Toggle Overflow Flag\n"
+			// "watch       - Clear watch list\n"
+			// "watch xx    - Print contents of location xx before every prompt\n"
 			"x xx        - Set X register to xx\n"
 			"y xx        - Set Y register to xx\n"
 			"z           - Toggle Zero Flag\n"
