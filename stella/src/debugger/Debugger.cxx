@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.18 2005-06-19 08:29:39 urchlay Exp $
+// $Id: Debugger.cxx,v 1.19 2005-06-19 16:53:57 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -59,10 +59,14 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
+  int userHeight = myOSystem->settings().getInt("debugheight");
+  if(userHeight < kDebuggerHeight)
+    userHeight = kDebuggerHeight;
+
   int x = 0,
       y = myConsole->mediaSource().height(),
       w = kDebuggerWidth,
-      h = kDebuggerHeight - y;
+      h = userHeight - y;
 
   delete myBaseDialog;
   DebuggerDialog *dd = new DebuggerDialog(myOSystem, this, x, y, w, h);
@@ -73,8 +77,12 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initializeVideo()
 {
+  int userHeight = myOSystem->settings().getInt("debugheight");
+  if(userHeight < kDebuggerHeight)
+    userHeight = kDebuggerHeight;
+
   string title = string("Stella version ") + STELLA_VERSION + ": Debugger mode";
-  myOSystem->frameBuffer().initialize(title, kDebuggerWidth, kDebuggerHeight, false);
+  myOSystem->frameBuffer().initialize(title, kDebuggerWidth, userHeight, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -472,4 +480,22 @@ int Debugger::peek(int addr) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::dpeek(int addr) {
   return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::setHeight(int height) {
+  if(height == 0)
+    height = kDebuggerHeight;
+
+  if(height < kDebuggerHeight)
+    return false;
+
+  myOSystem->settings().setInt("debugheight", height);
+/*
+// FIXME: this segfaults
+  quit();
+  initialize();
+  initializeVideo();
+*/
+  return true;
 }

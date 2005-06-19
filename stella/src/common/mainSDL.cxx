@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.46 2005-06-17 14:42:48 stephena Exp $
+// $Id: mainSDL.cxx,v 1.47 2005-06-19 16:53:57 urchlay Exp $
 //============================================================================
 
 #include <fstream>
@@ -178,7 +178,11 @@ int main(int argc, char* argv[])
   if(argc == 1 || !FilesystemNode::fileExists(romfile))
     theOSystem->createLauncher();
   else
+  {
     theOSystem->createConsole(romfile);
+    if(theOSystem->settings().getBool("debug"))
+      handler.enterDebugMode();
+  }
 
   // Start the main loop, and don't exit until the user issues a QUIT command
   theOSystem->mainLoop();

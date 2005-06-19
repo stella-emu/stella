@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.49 2005-06-17 14:42:49 stephena Exp $
+// $Id: Settings.cxx,v 1.50 2005-06-19 16:53:57 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -50,6 +50,7 @@ Settings::Settings(OSystem* osystem)
   set("grabmouse", "false");
   set("center", "true");
   set("palette", "standard");
+  set("debugheight", "383");
 
   set("sound", "true");
   set("fragsize", "512");
@@ -145,6 +146,11 @@ bool Settings::loadCommandLine(int argc, char** argv)
     {
       set(key, "true", false);  // this confusing line means set 'listrominfo'
       return true;              // to true, but don't save to the settings file
+    }
+    else if(key == "debug") // this doesn't make Stella exit
+    {
+      set(key, "true", false); // don't save this to the config file either
+      return true;
     }
 
     if(++i >= argc)

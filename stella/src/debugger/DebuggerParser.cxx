@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.16 2005-06-19 08:37:29 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.17 2005-06-19 16:53:57 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -449,7 +449,18 @@ string DebuggerParser::run(const string& command) {
 		return "OK";
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		debugger->clearAllBreakPoints();
-		return "cleared all breakpoints";
+	} else if(subStringMatch(verb, "height")) {
+		if(argCount != 1)
+			return "one argument required";
+
+		return "This command is not yet supported. Start Stella with the -debugheight option instead.";
+/*
+		if(debugger->setHeight(args[0]))
+			//return "Stella will use the new height next time it starts.";
+			return "OK";
+		else
+			return "bad height (use 0 for default, min height #383)";
+*/
 	} else if(subStringMatch(verb, "print")) {
 		if(argCount < 1)
 			return "one or more arguments required";
@@ -498,6 +509,7 @@ string DebuggerParser::run(const string& command) {
 			"disasm      - Disassemble (from current PC)\n"
 			"disasm xx   - Disassemble (from address xx)\n"
 			"frame       - Advance to next TIA frame, then break\n"
+			"height xx   - Set height of debugger window in pixels\n"
 			"listbreaks  - List all breakpoints\n"
 			"loadsym f   - Load DASM symbols from file f\n"
 			"n           - Toggle Negative Flag\n"
