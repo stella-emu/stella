@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.9 2005-06-19 08:29:40 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.10 2005-06-20 02:36:39 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -29,7 +29,8 @@ class Debugger;
 enum {
 	kBASE_16,
 	kBASE_10,
-	kBASE_2
+	kBASE_2,
+	kBASE_DEFAULT
 };
 
 class DebuggerParser
@@ -39,7 +40,7 @@ class DebuggerParser
 		~DebuggerParser();
 
 		string run(const string& command);
-		bool parseArgument(string& arg, int *value, char *rendered);
+		bool parseArgument(string& arg, int *value, char *rendered, int outputBase);
 		void setBase(int base);
 
 	private:

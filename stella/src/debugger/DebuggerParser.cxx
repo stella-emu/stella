@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.17 2005-06-19 16:53:57 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.18 2005-06-20 02:36:39 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -162,7 +162,7 @@ int DebuggerParser::decipher_arg(string &arg) {
 
 // The GUI uses this:
 bool DebuggerParser::parseArgument(
-	string& arg, int *value, char *rendered)
+	string& arg, int *value, char *rendered, int outputBase=kBASE_DEFAULT)
 {
 	*value = decipher_arg(arg);
 
@@ -171,7 +171,10 @@ bool DebuggerParser::parseArgument(
 		return false;
 	}
 
-	switch(defaultBase) {
+	if(outputBase == kBASE_DEFAULT)
+		outputBase = defaultBase;
+
+	switch(outputBase) {
 		case kBASE_2:
 			if(*value < 0x100)
 				sprintf(rendered, Debugger::to_bin_8(*value));
