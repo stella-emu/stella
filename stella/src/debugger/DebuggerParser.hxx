@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.10 2005-06-20 02:36:39 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.11 2005-06-20 18:32:11 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -26,12 +26,12 @@ class Debugger;
 
 #define kMAX_ARGS 100
 
-enum {
+typedef enum {
 	kBASE_16,
 	kBASE_10,
 	kBASE_2,
 	kBASE_DEFAULT
-};
+} BaseFormat;
 
 class DebuggerParser
 {
@@ -40,8 +40,10 @@ class DebuggerParser
 		~DebuggerParser();
 
 		string run(const string& command);
-		bool parseArgument(string& arg, int *value, char *rendered, int outputBase);
-		void setBase(int base);
+		bool parseArgument(string& arg, int *value, string& rendered,
+                           BaseFormat outputBase = kBASE_DEFAULT);
+		string parseValue(int value, BaseFormat outputBase);
+		void setBase(BaseFormat base);
 
 	private:
 		bool getArgs(const string& command);
@@ -60,7 +62,7 @@ class DebuggerParser
 		int args[kMAX_ARGS+1]; // FIXME: should be dynamic
 		string argStrings[kMAX_ARGS+1];
 		int argCount;
-		int defaultBase;
+		BaseFormat defaultBase;
 };
 
 #endif

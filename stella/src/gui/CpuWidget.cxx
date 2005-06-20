@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.7 2005-06-20 18:32:12 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.1 2005-06-20 18:32:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,27 +22,25 @@
 #include <sstream>
 
 #include "OSystem.hxx"
-#include "FrameBuffer.hxx"
 #include "GuiUtils.hxx"
 #include "GuiObject.hxx"
 #include "Debugger.hxx"
 #include "Widget.hxx"
 #include "DataGridWidget.hxx"
 
-#include "RamWidget.hxx"
+#include "CpuWidget.hxx"
 
 enum {
-  kRZeroCmd   = 'RWze',
-  kRInvertCmd = 'RWiv',
-  kRNegateCmd = 'RWng',
-  kRIncCmd    = 'RWic',
-  kRDecCmd    = 'RWdc',
-  kRShiftLCmd = 'RWls',
-  kRShiftRCmd = 'RWrs'
+  kPCRegAddr,
+  kSPRegAddr,
+  kARegAddr,
+  kXRegAddr,
+  kYRegAddr,
+  kNumRegs
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
+CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
@@ -51,11 +49,8 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   int lwidth = 30;
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
 
-  // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
-  myRamGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8, 2, 0xff, kBASE_16);
-  myRamGrid->setTarget(this);
-  myActiveWidget = myRamGrid;
-
+/*
+  // Create a 16x8 grid (16 x 8 = 128 RAM bytes) with labels
   for(int row = 0; row < 8; ++row)
   {
     StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
@@ -66,15 +61,20 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   }
   for(int col = 0; col < 16; ++col)
   {
-    StaticTextWidget* t = new StaticTextWidget(boss,
-                          xpos + col*myRamGrid->colWidth() + lwidth + 12,
+    StaticTextWidget* t = new StaticTextWidget(boss, xpos + col*kColWidth + lwidth + 12,
                           ypos - kLineHeight,
                           lwidth, kLineHeight,
                           Debugger::to_hex_4(col),
                           kTextAlignLeft);
     t->setFont(instance()->consoleFont());
   }
-  
+*/  
+  myCpuGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 1, 5, 8,
+                                 0xffff);
+  myCpuGrid->setTarget(this);
+  myActiveWidget = myCpuGrid;
+
+/*
   // Add some buttons for common actions
   ButtonWidget* b;
   xpos = vWidth + 10;  ypos = 20;
@@ -108,18 +108,19 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   ypos += 16 + space;
   b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kRShiftRCmd, 0);
   b->setTarget(this);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::~RamWidget()
+CpuWidget::~CpuWidget()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
   // We simply change the values in the ByteGridWidget
-  // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
+  // It will then send the 'kBGItemDataChangedCmd' signal to change the actual
   // memory location
   int addr, value;
   unsigned char byte;
@@ -127,11 +128,15 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
+cerr << "info changed\n";
+/*
       addr  = myRamGrid->getSelectedAddr() - kRamStart;
       value = myRamGrid->getSelectedValue();
       instance()->debugger().writeRAM(addr, value);
+*/
       break;
 
+/*
     case kRZeroCmd:
       myRamGrid->setSelectedValue(0);
       break;
@@ -171,28 +176,29 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
       byte >>= 1;
       myRamGrid->setSelectedValue((int)byte);
       break;
+*/
   }
 
   instance()->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::loadConfig()
+void CpuWidget::loadConfig()
 {
   fillGrid();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::fillGrid()
+void CpuWidget::fillGrid()
 {
   AddrList alist;
   ValueList vlist;
 
-  for(unsigned int i = 0; i < kRamSize; i++)
+  for(unsigned int i = 0; i < kNumRegs; i++)
   {
-    alist.push_back(kRamStart + i);
-    vlist.push_back(instance()->debugger().readRAM(i));
+    alist.push_back(i*16);
+    vlist.push_back(i*16);//instance()->debugger().readRAM(i));
   }
 
-  myRamGrid->setList(alist, vlist);
+  myCpuGrid->setList(alist, vlist);
 }

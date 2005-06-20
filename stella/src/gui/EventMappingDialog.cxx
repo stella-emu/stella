@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.14 2005-06-16 00:55:59 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.15 2005-06-20 18:32:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,6 +45,8 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent
   new StaticTextWidget(this, 10, 8, 150, 16, "Select an event to remap:", kTextAlignCenter);
   myActionsList = new ListWidget(this, 10, 20, 150, 100);
   myActionsList->setNumberingMode(kListNumberingOff);
+  myActionsList->setEditable(false);
+  myActionsList->clearFlags(WIDGET_TAB_NAVIGATE);
 
   myKeyMapping  = new StaticTextWidget(this, 10, 125, w - 20, 16,
                                        "Action: ", kTextAlignLeft);

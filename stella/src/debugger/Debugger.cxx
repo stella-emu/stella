@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.19 2005-06-19 16:53:57 urchlay Exp $
+// $Id: Debugger.cxx,v 1.20 2005-06-20 18:32:11 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -59,14 +59,18 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
+  // Calculate the actual pixels required for the # of lines
+  // This is currently a bit of a hack, since it uses pixel
+  // values that it shouldn't know about (font and tab height, etc)
   int userHeight = myOSystem->settings().getInt("debugheight");
-  if(userHeight < kDebuggerHeight)
-    userHeight = kDebuggerHeight;
+  if(userHeight < kDebuggerLines)
+    userHeight = kDebuggerLines;
+  userHeight = (userHeight + 3) * kDebuggerLineHeight - 8;
 
   int x = 0,
       y = myConsole->mediaSource().height(),
       w = kDebuggerWidth,
-      h = userHeight - y;
+      h = userHeight;
 
   delete myBaseDialog;
   DebuggerDialog *dd = new DebuggerDialog(myOSystem, this, x, y, w, h);
@@ -77,9 +81,14 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initializeVideo()
 {
+  // Calculate the actual pixels required for entire screen
+  // This is currently a bit of a hack, since it uses pixel
+  // values that it shouldn't know about (font and tab height, etc)
   int userHeight = myOSystem->settings().getInt("debugheight");
-  if(userHeight < kDebuggerHeight)
-    userHeight = kDebuggerHeight;
+  if(userHeight < kDebuggerLines)
+    userHeight = kDebuggerLines;
+  userHeight = (userHeight + 3) * kDebuggerLineHeight - 8 +
+               myConsole->mediaSource().height();
 
   string title = string("Stella version ") + STELLA_VERSION + ": Debugger mode";
   myOSystem->frameBuffer().initialize(title, kDebuggerWidth, userHeight, false);
@@ -483,19 +492,20 @@ int Debugger::dpeek(int addr) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setHeight(int height) {
-  if(height == 0)
-    height = kDebuggerHeight;
+bool Debugger::setHeight(int height)
+{
+  myOSystem->settings().getInt("debugheight");
 
-  if(height < kDebuggerHeight)
+  if(height == 0)
+    height = kDebuggerLines;
+
+  if(height < kDebuggerLines)
     return false;
 
   myOSystem->settings().setInt("debugheight", height);
-/*
-// FIXME: this segfaults
-  quit();
-  initialize();
-  initializeVideo();
-*/
+
+  // Restart the debugger subsystem
+  myOSystem->resetDebugger();
+
   return true;
 }

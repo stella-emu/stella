@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.22 2005-06-16 00:55:59 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.23 2005-06-20 18:32:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -95,8 +95,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add list with game titles
   myList = new ListWidget(this, 10, 24, _w - 20, _h - 24 - 26 - 10 - 10);
-  myList->setEditable(false);
   myList->setNumberingMode(kListNumberingOff);
+  myList->setEditable(false);
   myList->clearFlags(WIDGET_TAB_NAVIGATE);
 
   // Add note textwidget to show any notes for the currently selected ROM

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.18 2005-06-20 02:36:39 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.19 2005-06-20 18:32:11 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -50,7 +50,7 @@ int DebuggerParser::conv_hex_digit(char d) {
 	else return -1;
 }
 
-void DebuggerParser::setBase(int base) {
+void DebuggerParser::setBase(BaseFormat base) {
 	defaultBase = base;
 }
 
@@ -162,40 +162,49 @@ int DebuggerParser::decipher_arg(string &arg) {
 
 // The GUI uses this:
 bool DebuggerParser::parseArgument(
-	string& arg, int *value, char *rendered, int outputBase=kBASE_DEFAULT)
+	string& arg, int *value, string& rendered, BaseFormat outputBase)
 {
-	*value = decipher_arg(arg);
+  *value = decipher_arg(arg);
 
-	if(*value == -1) {
-		sprintf(rendered, "error");
-		return false;
-	}
+  if(*value == -1 || *value > 0xffff) {
+    rendered = "error";
+    return false;
+  }
 
-	if(outputBase == kBASE_DEFAULT)
-		outputBase = defaultBase;
+  rendered = parseValue(*value, outputBase);
+  return true;
+}
 
-	switch(outputBase) {
-		case kBASE_2:
-			if(*value < 0x100)
-				sprintf(rendered, Debugger::to_bin_8(*value));
-			else
-				sprintf(rendered, Debugger::to_bin_16(*value));
-			break;
+string DebuggerParser::parseValue(int value, BaseFormat outputBase)
+{
+  char rendered[32];
 
-		case kBASE_10:
-			sprintf(rendered, "%d", *value);
-			break;
+  if(outputBase == kBASE_DEFAULT)
+    outputBase = defaultBase;
 
-		case kBASE_16:
-		default:
-			if(*value < 0x100)
-				sprintf(rendered, Debugger::to_hex_8(*value));
-			else
-				sprintf(rendered, Debugger::to_hex_16(*value));
-			break;
+  switch(outputBase)
+  {
+    case kBASE_2:
+      if(value < 0x100)
+        sprintf(rendered, Debugger::to_bin_8(value));
+      else
+        sprintf(rendered, Debugger::to_bin_16(value));
+      break;
 
-	}
-	return true;
+    case kBASE_10:
+      sprintf(rendered, "%d", value);
+      break;
+
+    case kBASE_16:
+      default:
+        if(value < 0x100)
+          sprintf(rendered, Debugger::to_hex_8(value));
+        else
+          sprintf(rendered, Debugger::to_hex_16(value));
+        break;
+  }
+
+  return string(rendered);
 }
 
 bool DebuggerParser::getArgs(const string& command) {

@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.3 2005-06-20 18:32:12 stephena Exp $
+// $Id: CpuWidget.hxx,v 1.1 2005-06-20 18:32:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef RAM_WIDGET_HXX
-#define RAM_WIDGET_HXX
+#ifndef CPU_WIDGET_HXX
+#define CPU_WIDGET_HXX
 
 class GuiObject;
 class ButtonWidget;
@@ -32,11 +32,11 @@ class DataGridWidget;
 #include "Command.hxx"
 
 
-class RamWidget : public Widget, public CommandSender
+class CpuWidget : public Widget, public CommandSender
 {
   public:
-    RamWidget(GuiObject* boss, int x, int y, int w, int h);
-    virtual ~RamWidget();
+    CpuWidget(GuiObject* boss, int x, int y, int w, int h);
+    virtual ~CpuWidget();
 
     Widget* activeWidget() { return myActiveWidget; }
 
@@ -49,7 +49,8 @@ class RamWidget : public Widget, public CommandSender
   private:
     Widget* myActiveWidget;
 
-    DataGridWidget* myRamGrid;
+    DataGridWidget* myCpuGrid;
+    // FIXME - add a ToggleBitWidget for processor status (ps) register
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.22 2005-06-17 21:59:53 urchlay Exp $
+// $Id: OSystem.hxx,v 1.23 2005-06-20 18:32:11 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.22 2005-06-17 21:59:53 urchlay Exp $
+  @version $Id: OSystem.hxx,v 1.23 2005-06-20 18:32:11 stephena Exp $
 */
 class OSystem
 {
@@ -256,6 +256,11 @@ class OSystem
       Creates a new ROM launcher, to select a new ROM to emulate.
     */
     void createLauncher();
+
+    /**
+      Restarts the debugger subsystem.
+    */
+    void resetDebugger();
 
     /**
       The features which are conditionally compiled into Stella.

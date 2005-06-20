@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.15 2005-06-18 13:45:34 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.16 2005-06-20 18:32:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,10 +22,10 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "TabWidget.hxx"
-#include "ListWidget.hxx"
 #include "PromptWidget.hxx"
-#include "CheatWidget.hxx"
+#include "CpuWidget.hxx"
 #include "RamWidget.hxx"
+#include "CheatWidget.hxx"
 #include "Debugger.hxx"
 
 #include "DebuggerDialog.hxx"
@@ -56,7 +56,8 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
 
   // 2) The CPU tab
   myTab->addTab("CPU");
-
+  CpuWidget* cpu = new CpuWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
+  myTab->setParentWidget(1, cpu, cpu->activeWidget());
 
   // 3) The RAM tab
   myTab->addTab("RAM");

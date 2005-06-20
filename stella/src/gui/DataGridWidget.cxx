@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.cxx,v 1.6 2005-06-17 21:46:23 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.1 2005-06-20 18:32:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,16 +27,20 @@
 #include "Dialog.hxx"
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
-#include "ByteGridWidget.hxx"
+#include "DataGridWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows)
-  : EditableWidget(boss, x, y, kColWidth*cols + 1, kLineHeight*rows + 1),
+DataGridWidget::DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows,
+                               int colchars, int range, BaseFormat base)
+  : EditableWidget(boss, x, y, cols*(colchars * 6 + 8) + 1, kLineHeight*rows + 1),
     CommandSender(boss),
     _rows(rows),
     _cols(cols),
     _currentRow(0),
     _currentCol(0),
+    _colWidth(colchars * 6 + 8),
+    _range(range),
+    _base(base),
     _selectedItem(0)
 {
   // This widget always uses a monospace font
@@ -44,7 +48,7 @@ ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows
 
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_TAB_NAVIGATE;
-  _type = kByteGridWidget;
+  _type = kDataGridWidget;
   _editMode = false;
 
   _currentKeyDown = 0;
@@ -58,12 +62,12 @@ ByteGridWidget::ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteGridWidget::~ByteGridWidget()
+DataGridWidget::~DataGridWidget()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::setList(const ByteAddrList& alist, const ByteValueList& vlist)
+void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist)
 {
   _addrList.clear();
   _valueList.clear();
@@ -77,12 +81,10 @@ void ByteGridWidget::setList(const ByteAddrList& alist, const ByteValueList& vli
   assert(size == _rows * _cols);
 
   // An efficiency thing
-  char temp[10];
+  string temp;
   for(unsigned int i = 0; i < (unsigned int)size; ++i)
   {
-    sprintf(temp, "%.4x:", _addrList[i]);
-    _addrStringList.push_back(temp);
-    sprintf(temp, "%.2x", _valueList[i]);
+    temp = instance()->debugger().parseValue(_valueList[i], _base);
     _valueStringList.push_back(temp);
   }
 
@@ -90,19 +92,19 @@ void ByteGridWidget::setList(const ByteAddrList& alist, const ByteValueList& vli
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::setSelectedValue(int value)
+void DataGridWidget::setSelectedValue(int value)
 {
   // Correctly format the data for viewing
-  _editString = Debugger::to_hex_8(value);
+  _editString = instance()->debugger().parseValue(value, _base);
 
   _valueStringList[_selectedItem] = _editString;
   _valueList[_selectedItem] = value;
 
-  sendCommand(kBGItemDataChangedCmd, _selectedItem);
+  sendCommand(kDGItemDataChangedCmd, _selectedItem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if (!isEnabled())
     return;
@@ -126,7 +128,7 @@ void ByteGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
 
-    sendCommand(kBGSelectionChangedCmd, _selectedItem);
+    sendCommand(kDGSelectionChangedCmd, _selectedItem);
     instance()->frameBuffer().refresh();
   }
 	
@@ -136,13 +138,13 @@ void ByteGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kBGItemDoubleClickedCmd, _selectedItem);
+    sendCommand(kDGItemDoubleClickedCmd, _selectedItem);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -151,19 +153,19 @@ void ByteGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ByteGridWidget::findItem(int x, int y)
+int DataGridWidget::findItem(int x, int y)
 {
   int row = (y - 1) / kLineHeight;
   if(row >= _rows) row = _rows - 1;
 
-  int col = x / kColWidth;
+  int col = x / _colWidth;
   if(col >= _cols) col = _cols - 1;
 
   return row * _cols + col;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ByteGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Ignore all mod keys
   if(instance()->eventHandler().kbdControl(modifiers) ||
@@ -266,7 +268,7 @@ bool ByteGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   {
     _selectedItem = _currentRow*_cols + _currentCol;
     draw();
-    sendCommand(kBGSelectionChangedCmd, _selectedItem);
+    sendCommand(kDGSelectionChangedCmd, _selectedItem);
     instance()->frameBuffer().refresh();
   }
 
@@ -275,7 +277,7 @@ bool ByteGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ByteGridWidget::handleKeyUp(int ascii, int keycode, int modifiers)
+bool DataGridWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 {
   if (keycode == _currentKeyDown)
     _currentKeyDown = 0;
@@ -283,14 +285,14 @@ bool ByteGridWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::lostFocusWidget()
+void DataGridWidget::lostFocusWidget()
 {
   _editMode = false;
   draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void DataGridWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
   switch (cmd)
   {
@@ -305,26 +307,26 @@ void ByteGridWidget::handleCommand(CommandSender* sender, int cmd, int data)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::drawWidget(bool hilite)
+void DataGridWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int row, col, deltax;
   string buffer;
 
   // Draw the internal grid and labels
-  int linewidth = _cols * kColWidth;
+  int linewidth = _cols * _colWidth;
   for (row = 0; row <= _rows; row++)
     fb.hLine(_x, _y + (row * kLineHeight), _x + linewidth, kColor);
   int lineheight = _rows * kLineHeight;
   for (col = 0; col <= _cols; col++)
-    fb.vLine(_x + (col * kColWidth), _y, _y + lineheight, kColor);
+    fb.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
 
   // Draw the list items
   for (row = 0; row < _rows; row++)
   {
     for (col = 0; col < _cols; col++)
     {
-      int x = _x + 4 + (col * kColWidth);
+      int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * kLineHeight);
       int pos = row*_cols + col;
 
@@ -332,9 +334,9 @@ void ByteGridWidget::drawWidget(bool hilite)
       if (_currentRow == row && _currentCol == col)
       {
         if (_hasFocus && !_editMode)
-          fb.fillRect(x - 4, y - 2, kColWidth+1, kLineHeight+1, kTextColorHi);
+          fb.fillRect(x - 4, y - 2, _colWidth+1, kLineHeight+1, kTextColorHi);
         else
-          fb.frameRect(x - 4, y - 2, kColWidth+1, kLineHeight+1, kTextColorHi);
+          fb.frameRect(x - 4, y - 2, _colWidth+1, kLineHeight+1, kTextColorHi);
       }
 
       if (_selectedItem == pos && _editMode)
@@ -343,14 +345,14 @@ void ByteGridWidget::drawWidget(bool hilite)
         adjustOffset();
         deltax = -_editScrollOffset;
 
-        fb.drawString(_font, buffer, x, y, kColWidth, kTextColor,
+        fb.drawString(_font, buffer, x, y, _colWidth, kTextColor,
                       kTextAlignLeft, deltax, false);
       }
       else
       {
         buffer = _valueStringList[pos];
         deltax = 0;
-        fb.drawString(_font, buffer, x, y, kColWidth, kTextColor);
+        fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
       }
     }
   }
@@ -361,11 +363,11 @@ void ByteGridWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect ByteGridWidget::getEditRect() const
+GUI::Rect DataGridWidget::getEditRect() const
 {
-  GUI::Rect r(1, 0, kColWidth, kLineHeight);
+  GUI::Rect r(1, 0, _colWidth, kLineHeight);
   const int rowoffset = _currentRow * kLineHeight;
-  const int coloffset = _currentCol * kColWidth + 4;
+  const int coloffset = _currentCol * _colWidth + 4;
   r.top += rowoffset;
   r.bottom += rowoffset;
   r.left += coloffset;
@@ -375,7 +377,7 @@ GUI::Rect ByteGridWidget::getEditRect() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::startEditMode()
+void DataGridWidget::startEditMode()
 {
   if (_editable && !_editMode && _selectedItem >= 0)
   {
@@ -386,7 +388,7 @@ void ByteGridWidget::startEditMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::endEditMode()
+void DataGridWidget::endEditMode()
 {
   if (!_editMode)
     return;
@@ -395,17 +397,26 @@ void ByteGridWidget::endEditMode()
   _editMode = false;
 
   // Update the both the string representation and the real data
-  int value = Debugger::hex_to_dec(_editString.c_str());
-  if(_editString.length() == 0 || value < 0 || value > 255)
+  int value;  string result;
+  bool converted = instance()->debugger().parseArgument(_editString, &value,
+                   result, _base);
+  if(!converted || value < 0 || value > _range)
   {
     abortEditMode();
     return;
   }
-  setSelectedValue(value);
+
+  // Correctly format the data for viewing
+  _editString = result;
+
+  _valueStringList[_selectedItem] = _editString;
+  _valueList[_selectedItem] = value;
+
+  sendCommand(kDGItemDataChangedCmd, _selectedItem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ByteGridWidget::abortEditMode()
+void DataGridWidget::abortEditMode()
 {
   // undo any changes made
   assert(_selectedItem >= 0);
@@ -413,14 +424,16 @@ void ByteGridWidget::abortEditMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ByteGridWidget::tryInsertChar(char c, int pos)
+bool DataGridWidget::tryInsertChar(char c, int pos)
 {
   // Not sure how efficient this is, or should we even care?
   c = tolower(c);
-  if (c >= '0' && c <= '9' || c >= 'a' && c <= 'f')
+  if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
+     c == '%' || c == '#' || c == '$')
   {
     _editString.insert(pos, 1, c);
     return true;
   }
-  return false;
+  else
+    return false;
 }

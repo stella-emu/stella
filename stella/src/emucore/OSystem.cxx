@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.25 2005-06-16 00:55:58 stephena Exp $
+// $Id: OSystem.cxx,v 1.26 2005-06-20 18:32:11 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -342,6 +342,16 @@ void OSystem::createLauncher()
   myFrameBuffer->refresh();
   myFrameBuffer->setCursorState();
   mySound->mute(true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::resetDebugger()
+{
+  // FIXME - this isn't working yet
+  myDebugger->quit();
+  myDebugger->setConsole(myConsole);
+  myDebugger->initialize();
+  myDebugger->start();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

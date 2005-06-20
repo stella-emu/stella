@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.50 2005-06-19 16:53:57 urchlay Exp $
+// $Id: Settings.cxx,v 1.51 2005-06-20 18:32:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -50,7 +50,7 @@ Settings::Settings(OSystem* osystem)
   set("grabmouse", "false");
   set("center", "true");
   set("palette", "standard");
-  set("debugheight", "383");
+  set("debugheight", "15");
 
   set("sound", "true");
   set("fragsize", "512");

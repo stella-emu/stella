@@ -13,46 +13,44 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteGridWidget.hxx,v 1.5 2005-06-17 21:46:24 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.1 2005-06-20 18:32:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef BYTE_GRID_WIDGET_HXX
-#define BYTE_GRID_WIDGET_HXX
+#ifndef DATA_GRID_WIDGET_HXX
+#define DATA_GRID_WIDGET_HXX
 
 #include "GuiObject.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
+#include "Debugger.hxx"
 #include "StringList.hxx"
 #include "EditableWidget.hxx"
 #include "Array.hxx"
 #include "Rect.hxx"
 
-typedef GUI::Array<int> ByteAddrList;
-typedef GUI::Array<int> ByteValueList;
-
-enum {
-  kColWidth  = 2 * 6 + 8
-};
+typedef GUI::Array<int> AddrList;
+typedef GUI::Array<int> ValueList;
 
 // Some special commands
 enum {
-  kBGItemDoubleClickedCmd = 'BGdb',
-  kBGItemActivatedCmd     = 'BGac',
-  kBGItemDataChangedCmd   = 'BGch',
-  kBGSelectionChangedCmd  = 'BGsc'
+  kDGItemDoubleClickedCmd = 'BGdb',
+  kDGItemActivatedCmd     = 'BGac',
+  kDGItemDataChangedCmd   = 'BGch',
+  kDGSelectionChangedCmd  = 'BGsc'
 };
 
-/* ByteGridWidget */
-class ByteGridWidget : public EditableWidget, public CommandSender
+/* DataGridWidget */
+class DataGridWidget : public EditableWidget, public CommandSender
 {
   public:
-    ByteGridWidget(GuiObject* boss, int x, int y, int cols, int rows);
-    virtual ~ByteGridWidget();
+    DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows,
+                   int colchars, int range, BaseFormat format = kBASE_DEFAULT);
+    virtual ~DataGridWidget();
 
-    void setList(const ByteAddrList& alist, const ByteValueList& vlist);
+    void setList(const AddrList& alist, const ValueList& vlist);
     void setSelectedValue(int value);
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
@@ -72,6 +70,8 @@ class ByteGridWidget : public EditableWidget, public CommandSender
     void startEditMode();
     void endEditMode();
 
+    int colWidth() { return _colWidth; }
+
   protected:
     void drawWidget(bool hilite);
 
@@ -90,11 +90,15 @@ class ByteGridWidget : public EditableWidget, public CommandSender
     int  _cols;
     int  _currentRow;
     int  _currentCol;
+    int  _colWidth;
+    int  _range;
 
-    ByteAddrList  _addrList;
-    ByteValueList _valueList;
-    StringList    _addrStringList;
-    StringList    _valueStringList;
+    BaseFormat _base;
+
+    AddrList    _addrList;
+    ValueList   _valueList;
+    StringList  _addrStringList;
+    StringList  _valueStringList;
 
     bool    _editable;
     bool    _editMode;

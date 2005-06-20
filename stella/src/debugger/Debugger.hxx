@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.17 2005-06-19 16:53:57 urchlay Exp $
+// $Id: Debugger.hxx,v 1.18 2005-06-20 18:32:11 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
 #define DEBUGGER_HXX
 
 class OSystem;
-class DebuggerParser;
 
 class Console;
 class System;
@@ -28,6 +27,7 @@ class D6502;
 
 #include "DialogContainer.hxx"
 #include "M6502.hxx"
+#include "DebuggerParser.hxx"
 #include "EquateList.hxx"
 #include "PackedBitArray.hxx"
 #include "PromptWidget.hxx"
@@ -35,7 +35,8 @@ class D6502;
 
 enum {
   kDebuggerWidth = 511,
-  kDebuggerHeight = 383
+  kDebuggerLineHeight = 12,   // based on the height of the console font
+  kDebuggerLines = 15,
 };
 
 // Constants for RAM area
@@ -49,7 +50,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.17 2005-06-19 16:53:57 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.18 2005-06-20 18:32:11 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -101,10 +102,6 @@ class Debugger : public DialogContainer
       sprintf(out, "%04x", i);
       return out;
     }
-    static int hex_to_dec(const char* h)
-    {
-      return (int) strtoimax(h, NULL, 16);
-    }
     static char *to_bin(int dec, int places, char *buf) {
       int bit = 1;
       buf[places] = '\0';
@@ -127,10 +124,21 @@ class Debugger : public DialogContainer
       return to_bin(dec, 16, buf);
     }
 
+    bool parseArgument(string& arg, int *value, string& rendered,
+                       BaseFormat outputBase)
+    {
+      return myParser->parseArgument(arg, value, rendered, outputBase);
+    }
+
+    string parseValue(int value, BaseFormat outputBase)
+    {
+      return myParser->parseValue(value, outputBase);
+    }
+
     void toggleBreakPoint(int bp);
     bool breakPoint(int bp);
-	 string disassemble(int start, int lines);
-	 bool setHeight(int height);
+    string disassemble(int start, int lines);
+    bool setHeight(int height);
 
   public:
     /**
@@ -181,8 +189,8 @@ class Debugger : public DialogContainer
     void toggleV();
     void toggleD();
     void reset();
-	 void autoLoadSymbols(string file);
-	 void nextFrame();
+    void autoLoadSymbols(string file);
+    void nextFrame();
     void clearAllBreakPoints();
 
     void formatFlags(int f, char *out);
