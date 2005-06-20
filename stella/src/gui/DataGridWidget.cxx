@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.1 2005-06-20 18:32:12 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.2 2005-06-20 21:01:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -84,7 +84,7 @@ void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist)
   string temp;
   for(unsigned int i = 0; i < (unsigned int)size; ++i)
   {
-    temp = instance()->debugger().parseValue(_valueList[i], _base);
+    temp = instance()->debugger().valueToString(_valueList[i], _base);
     _valueStringList.push_back(temp);
   }
 
@@ -95,7 +95,7 @@ void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist)
 void DataGridWidget::setSelectedValue(int value)
 {
   // Correctly format the data for viewing
-  _editString = instance()->debugger().parseValue(value, _base);
+  _editString = instance()->debugger().valueToString(value, _base);
 
   _valueStringList[_selectedItem] = _editString;
   _valueList[_selectedItem] = value;
@@ -397,22 +397,14 @@ void DataGridWidget::endEditMode()
   _editMode = false;
 
   // Update the both the string representation and the real data
-  int value;  string result;
-  bool converted = instance()->debugger().parseArgument(_editString, &value,
-                   result, _base);
-  if(!converted || value < 0 || value > _range)
+  int value = instance()->debugger().stringToValue(_editString);
+  if(value < 0 || value > _range)
   {
     abortEditMode();
     return;
   }
 
-  // Correctly format the data for viewing
-  _editString = result;
-
-  _valueStringList[_selectedItem] = _editString;
-  _valueList[_selectedItem] = value;
-
-  sendCommand(kDGItemDataChangedCmd, _selectedItem);
+  setSelectedValue(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

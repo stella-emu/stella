@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.hxx,v 1.3 2005-06-16 00:55:59 stephena Exp $
+// $Id: AddrValueWidget.hxx,v 1.4 2005-06-20 21:01:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 #include "GuiObject.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
+#include "Debugger.hxx"
 #include "StringList.hxx"
 #include "EditableWidget.hxx"
 #include "Array.hxx"
@@ -35,13 +36,6 @@ class ScrollBarWidget;
 typedef GUI::Array<int> AddrList;
 typedef GUI::Array<int> ValueList;
 
-enum NumberingMode {
-  kHexNumbering,
-  kDecimalNumbering,
-  kBinaryNumbering
-};
-
-// Some special commands
 enum {
   kAVItemDoubleClickedCmd = 'AVdb',
   kAVItemActivatedCmd     = 'AVac',
@@ -53,7 +47,8 @@ enum {
 class AddrValueWidget : public EditableWidget, public CommandSender
 {
   public:
-    AddrValueWidget(GuiObject* boss, int x, int y, int w, int h);
+    AddrValueWidget(GuiObject* boss, int x, int y, int w, int h,
+                    int range, BaseFormat base = kBASE_DEFAULT);
     virtual ~AddrValueWidget();
 
     void setList(const StringList& list);
@@ -64,7 +59,6 @@ class AddrValueWidget : public EditableWidget, public CommandSender
 
     bool isEditable() const	         { return _editable; }
     void setEditable(bool editable)  { _editable = editable; }
-    void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
     void scrollTo(int item);
 	
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
@@ -100,9 +94,11 @@ class AddrValueWidget : public EditableWidget, public CommandSender
     StringList       _addrStringList;
     StringList       _valueStringList;
 
+    int              _range;
+    BaseFormat       _base;
+
     bool             _editable;
     bool             _editMode;
-    NumberingMode    _numberingMode;
     int              _currentPos;
     int              _entriesPerPage;
     int              _selectedItem;

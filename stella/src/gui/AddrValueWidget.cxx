@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.4 2005-06-16 00:55:59 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.5 2005-06-20 21:01:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,9 +30,12 @@
 #include "AddrValueWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AddrValueWidget::AddrValueWidget(GuiObject* boss, int x, int y, int w, int h)
+AddrValueWidget::AddrValueWidget(GuiObject* boss, int x, int y, int w, int h,
+                                 int range, BaseFormat base)
   : EditableWidget(boss, x, y, w, h),
-    CommandSender(boss)
+    CommandSender(boss),
+    _range(range),
+    _base(base)
 {
   _w = w - kScrollBarWidth;
 	
@@ -40,7 +43,7 @@ AddrValueWidget::AddrValueWidget(GuiObject* boss, int x, int y, int w, int h)
            WIDGET_TAB_NAVIGATE;
   _type = kListWidget;  // we're just a slightly modified listwidget
   _editMode = false;
-  _numberingMode = kHexNumbering;
+
   _entriesPerPage = (_h - 2) / kLineHeight;
   _currentPos = 0;
   _selectedItem = -1;
@@ -78,12 +81,13 @@ void AddrValueWidget::setList(const AddrList& alist, const ValueList& vlist)
 
   // An efficiency thing
   char temp[10];
+  string str;
   for(unsigned int i = 0; i < (unsigned int)size; ++i)
   {
     sprintf(temp, "%.4x:", _addrList[i]);
     _addrStringList.push_back(temp);
-    sprintf(temp, "%3d", _valueList[i]);
-    _valueStringList.push_back(temp);
+    str = instance()->debugger().valueToString(_valueList[i], _base);
+    _valueStringList.push_back(str);
   }
 
   if (_currentPos >= size)
@@ -410,16 +414,17 @@ void AddrValueWidget::endEditMode()
   _editMode = false;
 
   // Update the both the string representation and the real data
-  int value = atoi(_editString.c_str());
-  if(_editString.length() == 0 || value < 0 || value > 255)
+  int value = instance()->debugger().stringToValue(_editString);
+  if(value < 0 || value > _range)
   {
     abortEditMode();
     return;
   }
 
-  char temp[10];
-  sprintf(temp, "%3d", value);
-  _valueStringList[_selectedItem] = temp;
+  // Correctly format the data for viewing
+  _editString = instance()->debugger().valueToString(value, _base);
+
+  _valueStringList[_selectedItem] = _editString;
   _valueList[_selectedItem] = value;
 
   sendCommand(kAVItemDataChangedCmd, _selectedItem);
@@ -436,10 +441,14 @@ void AddrValueWidget::abortEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AddrValueWidget::tryInsertChar(char c, int pos)
 {
-  if (c >= '0' && c <= '9')
+  // Not sure how efficient this is, or should we even care?
+  c = tolower(c);
+  if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
+     c == '%' || c == '#' || c == '$')
   {
     _editString.insert(pos, 1, c);
     return true;
   }
-  return false;
+  else
+    return false;
 }

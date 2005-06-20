@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.11 2005-06-20 18:32:11 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.12 2005-06-20 21:01:37 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -40,16 +40,15 @@ class DebuggerParser
 		~DebuggerParser();
 
 		string run(const string& command);
-		bool parseArgument(string& arg, int *value, string& rendered,
-                           BaseFormat outputBase = kBASE_DEFAULT);
-		string parseValue(int value, BaseFormat outputBase);
-		void setBase(BaseFormat base);
+		int decipher_arg(const string &str);
+
+		void setBase(BaseFormat base) { defaultBase = base; }
+		BaseFormat base()             { return defaultBase; }
 
 	private:
 		bool getArgs(const string& command);
 		int conv_hex_digit(char d);
 		bool subStringMatch(const string& needle, const string& haystack);
-		int decipher_arg(string &arg);
 		string disasm();
 		string listBreaks();
 		string eval();

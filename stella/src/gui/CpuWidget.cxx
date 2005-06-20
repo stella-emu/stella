@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.1 2005-06-20 18:32:12 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.2 2005-06-20 21:01:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,34 +45,30 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
     CommandSender(boss)
 {
   int xpos   = 10;
-  int ypos   = 20;
-  int lwidth = 30;
+  int ypos   = 10;
+  int lwidth = 20;
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
 
-/*
-  // Create a 16x8 grid (16 x 8 = 128 RAM bytes) with labels
-  for(int row = 0; row < 8; ++row)
+  // Create a 1x5 grid with labels for the CPU registers
+  myCpuGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 1, 5, 8, 0xffff);
+  myCpuGrid->setTarget(this);
+  myActiveWidget = myCpuGrid;
+
+  string labels[5] = { "PC", "SP", "A", "X", "Y" };
+  for(int row = 0; row < 5; ++row)
   {
     StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
                           lwidth, kLineHeight,
-                          Debugger::to_hex_16(row*16 + kRamStart) + string(":"),
+                          labels[row] + string(":"),
                           kTextAlignLeft);
     t->setFont(instance()->consoleFont());
   }
-  for(int col = 0; col < 16; ++col)
-  {
-    StaticTextWidget* t = new StaticTextWidget(boss, xpos + col*kColWidth + lwidth + 12,
-                          ypos - kLineHeight,
-                          lwidth, kLineHeight,
-                          Debugger::to_hex_4(col),
-                          kTextAlignLeft);
-    t->setFont(instance()->consoleFont());
-  }
-*/  
-  myCpuGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 1, 5, 8,
-                                 0xffff);
-  myCpuGrid->setTarget(this);
-  myActiveWidget = myCpuGrid;
+
+  // Create a read-only textbox containing the current PC label
+  ypos = 10;
+  myPCLabel = new StaticTextWidget(boss, xpos + lwidth + myCpuGrid->colWidth() + 10,
+                                   ypos, 100, kLineHeight, "FIXME!",
+                                   kTextAlignLeft);
 
 /*
   // Add some buttons for common actions
@@ -128,12 +124,31 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
-cerr << "info changed\n";
-/*
-      addr  = myRamGrid->getSelectedAddr() - kRamStart;
-      value = myRamGrid->getSelectedValue();
-      instance()->debugger().writeRAM(addr, value);
-*/
+      addr  = myCpuGrid->getSelectedAddr();
+      value = myCpuGrid->getSelectedValue();
+
+      switch(addr)
+      {
+        case kPCRegAddr:
+        instance()->debugger().setPC(value);
+        break;
+
+        case kSPRegAddr:
+        instance()->debugger().setS(value);
+        break;
+
+        case kARegAddr:
+        instance()->debugger().setA(value);
+        break;
+
+        case kXRegAddr:
+        instance()->debugger().setX(value);
+        break;
+
+        case kYRegAddr:
+        instance()->debugger().setY(value);
+        break;
+      }
       break;
 
 /*
@@ -194,11 +209,21 @@ void CpuWidget::fillGrid()
   AddrList alist;
   ValueList vlist;
 
-  for(unsigned int i = 0; i < kNumRegs; i++)
-  {
-    alist.push_back(i*16);
-    vlist.push_back(i*16);//instance()->debugger().readRAM(i));
-  }
+  // We push the enumerated items as addresses, and deal with the real
+  // address in the callback (handleCommand)
+  alist.push_back(kPCRegAddr);
+  alist.push_back(kSPRegAddr);
+  alist.push_back(kARegAddr);
+  alist.push_back(kXRegAddr);
+  alist.push_back(kYRegAddr);
+
+  // And now fill the values
+  Debugger& dbg = instance()->debugger();
+  vlist.push_back(dbg.getPC());
+  vlist.push_back(dbg.getS());
+  vlist.push_back(dbg.getA());
+  vlist.push_back(dbg.getX());
+  vlist.push_back(dbg.getY());
 
   myCpuGrid->setList(alist, vlist);
 }

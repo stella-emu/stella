@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.9 2005-06-17 17:34:01 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.10 2005-06-20 21:01:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -88,8 +88,7 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
                        "Address    Value", kTextAlignLeft);
   ypos += kLineHeight;
 
-  myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75);
-  myResultsList->setNumberingMode(kHexNumbering);
+  myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75, 0xff);
   myResultsList->setFont(instance()->consoleFont());
   myResultsList->setTarget(this);
 
@@ -147,7 +146,7 @@ void CheatWidget::doSearch()
     return;
   }
 
-  int searchVal = atoi(str.c_str());
+  int searchVal = instance()->debugger().stringToValue(str);
 
   // Clear the search array of previous items
   mySearchArray.clear();
@@ -225,14 +224,14 @@ void CheatWidget::doCompare()
       negative = true;
 
     str.erase(0, 1);  // remove the operator
-    searchVal = atoi(str.c_str());
+    searchVal = instance()->debugger().stringToValue(str);
     if(negative)
       searchVal = -searchVal;
 
     comparitiveSearch = true;
   }
   else
-    searchVal = atoi(str.c_str());
+    searchVal = instance()->debugger().stringToValue(str);
 
   AddrValueList tempList;
 

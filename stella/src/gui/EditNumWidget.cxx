@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditNumWidget.cxx,v 1.3 2005-06-17 17:34:01 stephena Exp $
+// $Id: EditNumWidget.cxx,v 1.4 2005-06-20 21:01:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,13 +45,16 @@ void EditNumWidget::setEditString(const string& str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditNumWidget::tryInsertChar(char c, int pos)
 {
-  // Only allow numbers (FIXME - maybe allow A .. F for hex?)
-  if(isprint(c) && ((c >= '0' && c <= '9') || c == '+' || c == '-'))
+  // Not sure how efficient this is, or should we even care?
+  c = tolower(c);
+  if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
+     c == '%' || c == '#' || c == '$' || c == '+' || c == '-')
   {
     _editString.insert(pos, 1, c);
     return true;
   }
-  return false;
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

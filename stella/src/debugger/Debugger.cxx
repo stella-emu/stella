@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.20 2005-06-20 18:32:11 stephena Exp $
+// $Id: Debugger.cxx,v 1.21 2005-06-20 21:01:37 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -128,6 +128,39 @@ void Debugger::autoLoadSymbols(string fileName) {
 const string Debugger::run(const string& command)
 {
   return myParser->run(command);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Debugger::valueToString(int value, BaseFormat outputBase)
+{
+  char rendered[32];
+
+  if(outputBase == kBASE_DEFAULT)
+    outputBase = myParser->base();
+
+  switch(outputBase)
+  {
+    case kBASE_2:
+      if(value < 0x100)
+        sprintf(rendered, Debugger::to_bin_8(value));
+      else
+        sprintf(rendered, Debugger::to_bin_16(value));
+      break;
+
+    case kBASE_10:
+      sprintf(rendered, "%d", value);
+      break;
+
+    case kBASE_16:
+      default:
+        if(value < 0x100)
+          sprintf(rendered, Debugger::to_hex_8(value));
+        else
+          sprintf(rendered, Debugger::to_hex_16(value));
+        break;
+  }
+
+  return string(rendered);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
