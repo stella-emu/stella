@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.30 2005-06-16 00:55:56 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.31 2005-06-21 23:01:23 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -32,9 +32,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
    :  FrameBuffer(osystem),
-      myTexture(0),
+      myTexture(NULL),
       myScreenmode(0),
       myScreenmodeCount(0),
+      myTextureID(0),
       myFilterParam(GL_NEAREST),
       myFilterParamName("GL_NEAREST"),
       myFSScaleFactor(1.0)

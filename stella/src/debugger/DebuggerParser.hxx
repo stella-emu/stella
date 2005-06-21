@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.14 2005-06-21 04:30:49 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.15 2005-06-21 23:01:25 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -23,9 +23,7 @@ class Debugger;
 
 #include "bspf.hxx"
 #include "EquateList.hxx"
-
-#define kMAX_ARGS 100
-#define kMAX_WATCHES 10
+#include "Array.hxx"
 
 typedef enum {
 	kBASE_16,
@@ -33,6 +31,9 @@ typedef enum {
 	kBASE_2,
 	kBASE_DEFAULT
 } BaseFormat;
+
+typedef GUI::Array<int> IntArray;
+typedef GUI::Array<string> StringArray;
 
 class DebuggerParser
 {
@@ -66,11 +67,13 @@ class DebuggerParser
 		bool done;
 
 		string verb;
-		int args[kMAX_ARGS+1]; // FIXME: should be dynamic
-		string argStrings[kMAX_ARGS+1];
+
+		IntArray args;
+		StringArray argStrings;
 		int argCount;
+
 		BaseFormat defaultBase;
-		string *watches[kMAX_WATCHES]; // FIXME: remove the limit sometime
+		StringArray watches;
 };
 
 #endif

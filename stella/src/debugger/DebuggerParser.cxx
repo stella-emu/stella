@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.23 2005-06-21 04:30:49 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.24 2005-06-21 23:01:24 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -35,11 +35,12 @@ DebuggerParser::DebuggerParser(Debugger* d)
 {
 	done = false;
 	defaultBase = kBASE_16;
-	for(int i=0; i<kMAX_WATCHES; i++)
-		watches[i] = new string;
 }
 
 DebuggerParser::~DebuggerParser() {
+	args.clear();
+	argStrings.clear();
+	watches.clear();
 }
 
 int DebuggerParser::conv_hex_digit(char d) {
@@ -162,9 +163,11 @@ int DebuggerParser::decipher_arg(const string &str) {
 bool DebuggerParser::getArgs(const string& command) {
 	int state = kIN_COMMAND;
 	string curArg = "";
-	argCount = 0;
 	verb = "";
 	const char *c = command.c_str();
+
+	argStrings.clear();
+	args.clear();
 
 	// cerr << "Parsing \"" << command << "\"" << endl;
 
@@ -189,29 +192,27 @@ bool DebuggerParser::getArgs(const string& command) {
 			case kIN_ARG:
 				if(*c == ' ' || *c == '\0') {
 					state = kIN_SPACE;
-					argStrings[argCount++] = curArg;
+					argStrings.push_back(curArg);
 					curArg = "";
 				} else {
 					curArg += *c;
 				}
 				break;
 		} // switch(state)
-
-		if(argCount == kMAX_ARGS) {
-			cerr << "reached max " << kMAX_ARGS << " args" << endl;
-			return true;
-		}
 	} while(*c++ != '\0');
+
+	argCount = argStrings.size();
 
 	//for(int i=0; i<argCount; i++)
 		//cerr << "argStrings[" << i << "] == \"" << argStrings[i] << "\"" << endl;
 
 	// Now decipher each argument, in turn.
 	for(int i=0; i<argCount; i++) {
-		curArg = argStrings[i];
-		if( (args[i] = decipher_arg(curArg)) < 0) {
+		int temp = decipher_arg(argStrings[i]);
+		if(temp < 0) {
 			return false;
 		}
+		args.push_back(temp);
 		//cerr << "args[" << i << "] == " << args[i] << endl;
 	}
 
@@ -309,13 +310,16 @@ string DebuggerParser::showWatches() {
 	string ret = "\n";
 	char buf[10];
 
-	for(int i=0; i<kMAX_WATCHES; i++) {
-		if(*(watches[i]->c_str()) != '\0') {
+	// Clear the args, since we're going to pass them to eval()
+	argStrings.clear();
+	args.clear();
+	for(unsigned int i=0; i<watches.size(); i++) {
+		if(watches[i] != "") {
 			//cerr << "here1 " << i << endl;
 			sprintf(buf, "%d", i+1);
 			argCount = 1;
-			argStrings[0] = *watches[i];
-			args[0] = decipher_arg(argStrings[0]);
+			argStrings.push_back(watches[i]);
+			args.push_back(decipher_arg(argStrings[0]));
 			if(args[0] < 0) {
 				ret += "BAD WATCH ";
 				ret += buf;
@@ -333,27 +337,20 @@ string DebuggerParser::showWatches() {
 }
 
 string DebuggerParser::addWatch(string watch) {
-	for(int i=0; i<kMAX_WATCHES; i++) {
-		if(*(watches[i]->c_str()) == '\0') {
-			string *w = new string(watch);
-			watches[i] = w;
-			return "Added watch";
-		}
-	}
-	return "Can't add watch: Too many watches";
+	watches.push_back(watch);
+	return "Added watch";
 }
 
 void DebuggerParser::delAllWatches() {
-	for(int i=0; i<kMAX_WATCHES; i++)
-		watches[i] = new string;
+	watches.clear();
 }
 
 string DebuggerParser::delWatch(int which) {
 	which--;
-	if(which < 0 || which >= kMAX_WATCHES)
+	if(which < 0 || which >= (int)watches.size())
 		return "no such watch";
 	else
-		watches[which] = new string;
+		watches.remove_at(which);
 
 	return "removed watch";
 }
@@ -386,7 +383,7 @@ string DebuggerParser::run(const string& command) {
 	// "verb" is the command, stripped of any arguments.
 	// In the if/else below, put shorter command names first.
 	// In case of conflicts (e.g. user enters "t", possible
-   // commands are "tia" and "trace"), try to guess which
+	// commands are "tia" and "trace"), try to guess which
 	// will be used more often, and put it first. The user
 	// can always disambiguate: "ti" is short for "tia", or
 	// "tr" for "trace".
@@ -462,7 +459,7 @@ string DebuggerParser::run(const string& command) {
 		else if(argCount == 1)
 			return "missing data (need 2 or more args)";
 		else
-			result = debugger->setRAM(argCount, args);
+			result = debugger->setRAM(args);
 	} else if(subStringMatch(verb, "tia")) {
 		result = debugger->dumpTIA();
 	} else if(subStringMatch(verb, "reset")) {
@@ -526,6 +523,9 @@ string DebuggerParser::run(const string& command) {
 		delAllWatches();
 		return "cleared all watches";
 	} else if(subStringMatch(verb, "watch")) {
+		if(argCount != 1)
+			return "one argument required";
+
 		addWatch(argStrings[0]);
 	} else if(subStringMatch(verb, "delwatch")) {
 		if(argCount == 1)

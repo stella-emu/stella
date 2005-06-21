@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.21 2005-06-21 04:30:49 urchlay Exp $
+// $Id: Debugger.hxx,v 1.22 2005-06-21 23:01:24 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.21 2005-06-21 04:30:49 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.22 2005-06-21 23:01:24 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -168,7 +168,7 @@ class Debugger : public DialogContainer
     void writeRAM(uInt16 addr, uInt8 value);
 
     // set a bunch of RAM locations at once
-    const string setRAM(int argCount, int *args);
+    const string setRAM(IntArray args);
 
     bool start();
     void quit();

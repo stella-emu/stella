@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.11 2005-06-21 18:46:33 stephena Exp $
+// $Id: EquateList.cxx,v 1.12 2005-06-21 23:01:25 stephena Exp $
 //============================================================================
 
 #include <string>
@@ -107,7 +107,6 @@ EquateList::EquateList() {
 }
 
 EquateList::~EquateList() {
-cerr << "EquateList::~EquateList()\n";
 	ourVcsEquates.clear();
 }
 
@@ -170,31 +169,13 @@ string EquateList::loadFile(string file) {
 	if(!in.is_open())
 		return "Unable to read symbols from " + file;
 
-	long start = in.tellg(); // save pointer to beginning of file
-
-// FIXME - we no longer need # of lines, so this can probably be removed
-	// iterate over file, count lines
-	while( !in.eof() ) {
-		in.getline(buffer, 255);
-		lines++;
-	}
-
-	// cerr << "total lines " << lines << endl;
-
-	// allocate enough storage for all the lines plus the
-	// hard-coded symbols
 	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
-	lines = hardSize;
 
 	// Make sure the hard-coded equates show up first
 	ourVcsEquates.clear();
 	for(int i=0; i<hardSize; i++) {
 		ourVcsEquates.push_back(hardCodedEquates[i]);
 	}
-
-	// start over, now that we've allocated enough entries.
-	in.clear();
-	in.seekg(start);
 
 	while( !in.eof() ) {
 		curVal = 0;
