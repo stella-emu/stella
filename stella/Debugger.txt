@@ -1,5 +1,5 @@
 
-20050618 bkw
+20050621 bkw
 
 This alpha build of Stella contains an incomplete version of the debugger.
 
@@ -9,14 +9,19 @@ What the debugger can do:
 - Change registers, including toggles for flags in P register
 - Single step/trace
 - Breakpoints
+- Watches
+- Traps
 - Frame advance (automatic breakpoint at beginning of next frame)
 - Disassembly
 - Support for DASM symbol files (created with DASM's -s option),
   including automatically loading symbol files if they're named
   romname.sym
 - Graphical editor for RIOT RAM. Acts a lot like a spreadsheet.
+- GUI CPU state  window
 - Cheat system (similar to MAME)
 - Reset the 6502
+- Input and output in hex, decimal, or binary
+- Start emulator in debugger (via command-line option "-debug")
 
 Planned features for Stella 2.0 release:
 - Better TIA state display, with register names and GUI buttons for
@@ -24,14 +29,10 @@ Planned features for Stella 2.0 release:
 - GUI Disassembly window, scrollable, with checkboxes for breakpoints
   (also perhaps 2 panes in this window so you can see 2 parts of the
   code at once)
-- GUI CPU window, like the RAM window but for CPU registers
 - Scanline advance (like frame advance, break at beginning
   of next scanline).
 - Support for bank switching.
-- Binary and decimal displays for currently-edited field in RAM and CPU
-  windows.
 - Save CLI session to a text file.
-- Start emulator in debugger (via command-line option)
 
 Future plans (post 2.0):
 - Advanced breakpoint support (e.g. Break when carry flag
@@ -51,12 +52,12 @@ Future plans (post 2.0):
 How to use the debugger
 -----------------------
 
-Pressing ` toggles the debugger on & off. When you exit the debugger,
-the emulation resumes at the current program counter, and continues
-until either a breakpoint is hit or the ` key is pressed again.  Pressing
-Ctrl-Tab cycles between tabs from left to right, and Shift-Ctrl-Tab cycles
-from right to left.  Pressing Tab cycles between widgets in the current
-tab.
+Pressing ` (aka backtick, backquote, grave accent) toggles the debugger on
+& off. When you exit the debugger, the emulation resumes at the current
+program counter, and continues until either a breakpoint/trap is hit,
+or the ` key is pressed again.  Pressing Ctrl-Tab cycles between tabs
+from left to right, and Shift-Ctrl-Tab cycles from right to left.
+Pressing Tab cycles between widgets in the current tab.
 
 Tabs:
 
@@ -90,7 +91,263 @@ The tabs that are implemented so far:
   have a fully functional debugger without typing (or without typing
   much, anyway).
 
-  (TODO: document all the commands here)
+  - Status
+
+    Before each prompt, you'll see a dump of the current processor
+    status, plus any watches you've set (see section on watches
+    below), plus a disassembly of the instruction at the current
+    Program Counter.  This is the next instruction that will execute;
+    it hasn't been executed yet.
+
+    PC=f000 A=01 X=02 Y=03 S=ff P=21/nv-bdizC  Cycle 12345
+      $f000  a2 ff    LDX #ff  ; 2
+    >
+
+    This is telling us a lot of information:
+
+    - PC=f000 A=01 X=02 Y=03 S=ff
+      The Program Counter, Accumulator, X, Y, and Stack Pointer registers.
+
+    - P=21/nv-bdizC
+      The Processor Status register. The "21" is the hex value of the
+      register, and the "nv-bdizC" shows us the individual flags. Flags
+      with capital letters are set, and lowercase means clear. In this
+      example, only the Carry bit is set.
+
+    - Cycle 12345
+      This counter gets reset at the beginning of each frame, when
+      VSYNC is strobed. In this example, we're 12345 (decimal) cycles
+      past the beginning of the frame.
+
+    - $f000  a2 ff    LDX #ff  ; 2
+      Disassembly of the instruction the PC points to. This is the next
+      instruction that will execute (when we exit the debugger, or via the
+      "step" or "trace" commands). The "a2 ff" is the raw machine code
+      for this instruction. The "; 2" is a cycle count: this instruction
+      will take 2 cycles to execute.
+
+      WARNING: the cycle count in the disassembly does NOT include extra
+      cycles caused by crossing page boundaries. Also, Branch instructions
+      are shown as 2 cycles, as though they're not going to be taken. A
+      branch that's taken adds a cycle, of course.
+
+   The ">" is where your commands will appear as you type them.
+
+
+  - Expressions
+
+    Almost every command takes a value: the "a" command takes a
+    byte to stuff into the accumulator, the "breakpoint" command
+    takes an address to set/clear a breakpoint at. These values
+    can be as a hex constant ($ff, $1234), or as complex as
+    "the low byte of the 16-bit value located at the address
+    pointed to by the binary number 1010010110100101" (which
+    would be "@<%1010010110100101"). You can also use registers
+    and labels in expressions.
+
+    Like some programming languages, the debugger uses prefixed characters
+    to change the meaning of an expression. The prefixes are:
+
+    - Dereference prefixes:
+
+    - "*"
+      Dereference a byte pointer. "*a" means "the byte at the address that
+      the A register points to". If A is 255 (hex $ff), the result will be
+      the value currently stored in memory location 255. This operator
+      will be very familiar to you if you're a C or C++ programmer.
+
+    - "@"
+      Dereference a word pointer. This is just like the "*" byte deref,
+      except it refers to a 16-bit value, occupying 2 locations, in
+      low-byte-first format (standard for the 6507).
+
+    Only one or the other of the "*" and "@" prefixes is allowed in a
+    given expression. If you're going to use a dereference, it needs
+    to come first.
+
+    - Hi/Lo Byte Prefixes
+
+    - "<"
+      Take the low byte of a 16-bit value. This has no effect on an 8-bit
+      value: "a" is equal to "<a". However, "<$1234" equals "$34".
+
+    - ">"
+      Take the high byte of a 16-bit value. For 8-bit values such as
+      the Accumulator, this will always result in zero. For 16-bit values,
+      "<$1234" = "$12".
+
+   Only one or the other of the "<" and ">" prefixes is allowed in
+   the same expression. If you're going to use one, it needs to come
+   after the dereference, if there is one. "*<myLabel" is legal,
+   but "<*myLabel" is not (yet). These operators behave just like
+   they do in DASM.
+
+   - Number Base Prefixes
+
+   - "#"
+     Treat the input as a decimal number.
+
+   - "$"
+     Treat the input as a hex number.
+
+   - "%"
+     Treat the input as a binary number.
+
+   These only have meaning when they come before a number, not a
+   label or a register. "%1010" means 10 decimal. So do "$0a" and
+   "#10". You can only use one of the "#" "$" "%" prefixes per
+   expression. When used, they must come immediately before the
+   number in the expression, after any dereference or hi/lo byte
+   operators.
+
+   If you don't specify any number base prefix, the number is
+   assumed to be in the default base. When you first start Stella,
+   the default base is 16 (hexadecimal). You can change it with the
+   "base" command.
+
+   Remember, you can use arbitrarily complex expressions with any
+   command that takes arguments (except the ones that take filenames,
+   like "loadsym").
+
+   (Future versions of the debugger may allow arithmetic and boolean
+    operators in expressions)
+
+
+  - Breakpoints, watches and traps, oh my!
+
+    - Breakpoints
+
+    A breakpoint is a "hotspot" in your program that causes the emulator
+    to stop emulating and jump into the debugger. You can set as many
+    breakpoints as you like. The command is "break xx" where xx is any
+    expression. If you've created a symbol file, you can use labels.
+
+    Example: you've got a label called "kernel". To break there,
+    the command is "break kernel". After you've set the breakpoint,
+    exit the debugger ("quit" or click the Exit button). The emulator
+    will run until it gets to the breakpoint, then it will enter the
+    debugger with the Program Counter pointing to the instruction
+    at the breakpoint.
+
+    Breakpoints happen *before* an instruction is executed: the
+    instruction at the breakpoint location will be the "next"
+    instruction.
+
+    To remove a breakpoint, you just run the same command you used to
+    set it. In the example, "break kernel" will remove the breakpoint.
+    The "break" command can be thought of as a *toggle*: it turns the
+    breakpoint on & off, like a light switch.
+
+    You could also use "clearbreaks" to remove all the breakpoints. Also,
+    there is a "listbreaks" command that will list them all.
+
+    - Watches
+
+    A watch is an expression that gets evaluated and printed before
+    every prompt. This is useful for e.g. tracking the contents of a
+    memory location while stepping through code that modifies it.
+
+    You can set up to 10 watches (in future the number will be unlimited).
+    Since the expression isn't evaluated until it's used, you can include
+    registers: "watch *y" will show you the contents of the location
+    pointed to by the Y register, even if the Y register changes.
+
+    The watches are numbered 1 to 10. The numbers are printed along with
+    the watches, so you can tell which is which. To delete a watch use
+    the "delwatch" command with the watch number (1 to 10). You can also
+    delete them all with the "clearwatches" command.
+
+    Note that there's no real point in watching a label or CPU register
+    without dereferencing it: Labels are constants, and CPU registers
+    are already visible in the prompt status.
+
+    - Traps
+
+    A trap is similar to a breakpoint, except that it catches
+    accesses to a memory address, rather than specific location in the
+    program. They're useful for finding code that modifies TIA registers
+    or memory.
+
+    An example: you are debugging a game, and you want to stop the
+    emulation and enter the debugger whenever RESP0 is strobed. You'd use
+    the command "trap RESP0" to set the trap, then exit the debugger. The
+    emulator will run until the next time RESP0 is accessed (either read
+    or write). Once the trap is hit, you can examine the TIA state to
+    see what the actual player 0 position is, in color clocks (or you
+    can in the future when we implement that feature in the TIA dump!)
+
+    Unlike breakpoints, traps stop the emulation *after* the instruction
+    that triggered the trap. The reason for this is simple: until the
+    instruction is executed, the emulator can't know it's going to hit
+    a trap. After the trap is hit, the instruction is done executing,
+    and whatever effects it may have had on e.g. the TIA state have
+    already happened...  so we don't have a way to run the emulated CPU
+    in reverse.
+
+    Traps come in two varieties: read access traps and write access traps.
+    It is possible to set both types of trap on the same address (that's
+    what the plain "trap" command does). To set a read or write only trap,
+    use "trapread" or "trapwrite". To remove a trap, you just attempt
+    to set it again: the commands actually toggle the trap on & off. You
+    can also get rid of all traps at once with the "cleartraps" command.
+
+
+  - Prompt commands:
+    "xx" and "yy" are placeholders for expressions (see section on
+    Expressions above).
+
+a xx         - Set Accumulator to xx
+base xx      - Set default input base (#2=binary, #10=decimal, #16=hex)
+break        - Set/clear breakpoint at current PC
+break xx     - Set/clear breakpoint at address xx
+c            - Toggle Carry Flag
+clearbreaks  - Clear all breakpoints
+cleartraps   - Clear all traps
+clearwatches - Clear all watches
+d            - Toggle Decimal Flag
+dump xx      - Dump 128 bytes of memory starting at xx (may be ROM, TIA, RAM)
+delwatch xx  - Delete watch xx
+disasm       - Disassemble (from current PC)
+disasm xx    - Disassemble (from address xx)
+frame        - Advance to next TIA frame, then break
+height xx    - Set height of debugger window in pixels
+listbreaks   - List all breakpoints
+*listtraps    - List all traps
+*listwatches  - List all watches
+loadsym f    - Load DASM symbols from file f
+n            - Toggle Negative Flag
+pc xx        - Set Program Counter to xx
+print xx     - Evaluate and print expression xx
+ram          - Show RIOT RAM contents
+ram xx yy    - Set RAM location xx to value yy (multiple values allowed)
+reset        - Jump to 6502 init vector (does not reset TIA/RIOT)
+run          - Exit debugger (back to emulator)
+s xx         - Set Stack Pointer to xx
+*save f      - Save console session to file f
+step         - Single-step
++tia          - Show TIA register contents
+trace        - Single-step treating subroutine calls as 1 instruction
+trap xx      - Trap any access to location xx (enter debugger on access)
+trapread xx  - Trap any read access from location xx
+trapwrite xx - Trap any write access to location xx
+v            - Toggle Overflow Flag
+watch xx    - Print contents of location xx before every prompt
+x xx         - Set X register to xx
+y xx         - Set Y register to xx
+z            - Toggle Zero Flag
+
+    This list may be outdated: see the output of the "help" command
+    for the current list. Commands marked with a * are unimplemented.
+    Commands marked with a + are partially implemented. Most commands can
+    be abbreviated just by typing a partial command: "st" for "step", or
+    "f" for "frame". Where there are conflicts, generally the shortest
+    name is chosen (so "tra" is "trap", not "trapread").
+
+
+- CPU tab
+
+(TODO: document this, when it's close enough to finished)
+
 
 - RAM tab
 
@@ -156,6 +413,10 @@ The tabs that are implemented so far:
 
   The 'Restart' button restarts the whole procedure (ie, clear the
   input and listboxes, and allows another search.
+
+- TIA tab (TODO)
+
+- ROM tab (TODO)
 
 Global Buttons:
 
