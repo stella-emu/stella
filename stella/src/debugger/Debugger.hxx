@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.19 2005-06-20 21:01:37 stephena Exp $
+// $Id: Debugger.hxx,v 1.20 2005-06-21 00:13:49 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -50,7 +50,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.19 2005-06-20 21:01:37 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.20 2005-06-21 00:13:49 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -127,6 +127,7 @@ class Debugger : public DialogContainer
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
     const string valueToString(int value, BaseFormat outputBase);
+    const string valueToString(int value);
 
     void toggleBreakPoint(int bp);
     bool breakPoint(int bp);
@@ -161,8 +162,8 @@ class Debugger : public DialogContainer
 
     bool start();
     void quit();
-    void trace();
-    void step();
+    int trace();
+    int step();
     void setA(int a);
     void setX(int x);
     void setY(int y);
@@ -189,6 +190,7 @@ class Debugger : public DialogContainer
     void formatFlags(int f, char *out);
     EquateList *equates();
     PromptWidget *prompt();
+    string showWatches();
 
   protected:
     Console* myConsole;

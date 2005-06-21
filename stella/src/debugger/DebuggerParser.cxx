@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.20 2005-06-20 21:01:37 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.21 2005-06-21 00:13:49 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -35,6 +35,8 @@ DebuggerParser::DebuggerParser(Debugger* d)
 {
 	done = false;
 	defaultBase = kBASE_16;
+	for(int i=0; i<kMAX_WATCHES; i++)
+		watches[i] = new string;
 }
 
 DebuggerParser::~DebuggerParser() {
@@ -201,7 +203,7 @@ bool DebuggerParser::getArgs(const string& command) {
 		}
 	} while(*c++ != '\0');
 
-	for(int i=0; i<argCount; i++)
+	//for(int i=0; i<argCount; i++)
 		//cerr << "argStrings[" << i << "] == \"" << argStrings[i] << "\"" << endl;
 
 	// Now decipher each argument, in turn.
@@ -261,6 +263,22 @@ string DebuggerParser::disasm() {
 	return debugger->disassemble(start, lines);
 }
 
+string DebuggerParser::dump() {
+	string ret;
+	for(int i=0; i<8; i++) {
+		int start = args[0] + i*16;
+		ret += debugger->valueToString(start);
+		ret += ": ";
+		for(int j=0; j<16; j++) {
+			ret += debugger->valueToString( debugger->peek(start+j) );
+			ret += " ";
+			if(j == 7) ret += "- ";
+		}
+		if(i != 7) ret += "\n";
+	}
+	return ret;
+}
+
 string DebuggerParser::eval() {
 	char buf[50];
 	string ret;
@@ -280,11 +298,64 @@ string DebuggerParser::eval() {
 			ret += " %";
 			ret += Debugger::to_bin_16(args[i]);
 		}
-		sprintf(buf, " (dec %d)", args[i]);
+		sprintf(buf, " #%d", args[i]);
 		ret += buf;
 		if(i != argCount - 1) ret += "\n";
 	}
 	return ret;
+}
+
+string DebuggerParser::showWatches() {
+	string ret = "\n";
+	char buf[10];
+
+	for(int i=0; i<kMAX_WATCHES; i++) {
+		if(*(watches[i]->c_str()) != '\0') {
+			//cerr << "here1 " << i << endl;
+			sprintf(buf, "%d", i+1);
+			argCount = 1;
+			argStrings[0] = *watches[i];
+			args[0] = decipher_arg(argStrings[0]);
+			if(args[0] < 0) {
+				ret += "BAD WATCH ";
+				ret += buf;
+				ret += ": " + argStrings[0] + "\n";
+			} else {
+				ret += "  watch #";
+				ret += buf;
+				ret += " (" + argStrings[0] + ") -> " + eval() + "\n";
+			}
+		}
+	}
+	// get rid of trailing \n
+	ret.erase(ret.length()-1, 1);
+	return ret;
+}
+
+string DebuggerParser::addWatch(string watch) {
+	for(int i=0; i<kMAX_WATCHES; i++) {
+		if(*(watches[i]->c_str()) == '\0') {
+			string *w = new string(watch);
+			watches[i] = w;
+			return "Added watch";
+		}
+	}
+	return "Can't add watch: Too many watches";
+}
+
+void DebuggerParser::delAllWatches() {
+	for(int i=0; i<kMAX_WATCHES; i++)
+		watches[i] = new string;
+}
+
+string DebuggerParser::delWatch(int which) {
+	which--;
+	if(which < 0 || which >= kMAX_WATCHES)
+		return "no such watch";
+	else
+		watches[which] = new string;
+
+	return "removed watch";
 }
 
 string DebuggerParser::run(const string& command) {
@@ -358,15 +429,21 @@ string DebuggerParser::run(const string& command) {
 		else
 			return "one argument required";
 	} else if(subStringMatch(verb, "step")) {
+		char buf[12];
 		if(argCount > 0)
 			return "step takes no arguments";
-		debugger->step();
-		result = "OK";
+		sprintf(buf, "#%d", debugger->step());
+		result = "executed ";
+		result += buf;
+		result += " cycles";
 	} else if(subStringMatch(verb, "trace")) {
+		char buf[12];
 		if(argCount > 0)
 			return "trace takes no arguments";
-		debugger->trace();
-		result = "OK";
+		sprintf(buf, "#%d", debugger->trace());
+		result = "executed ";
+		result += buf;
+		result += " cycles";
 	} else if(subStringMatch(verb, "ram")) {
 		if(argCount == 0)
 			result = debugger->dumpRAM(kRamStart);
@@ -408,9 +485,19 @@ string DebuggerParser::run(const string& command) {
 			debugger->nextFrame();
 		*/
 		debugger->nextFrame();
-		return "OK";
+		return "advanced frame";
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		debugger->clearAllBreakPoints();
+	} else if(subStringMatch(verb, "clearwatches")) {
+		delAllWatches();
+		return "cleared all watches";
+	} else if(subStringMatch(verb, "watch")) {
+		addWatch(argStrings[0]);
+	} else if(subStringMatch(verb, "delwatch")) {
+		if(argCount == 1)
+			return delWatch(args[0]);
+		else
+			return "one argument required";
 	} else if(subStringMatch(verb, "height")) {
 		if(argCount != 1)
 			return "one argument required";
@@ -423,6 +510,11 @@ string DebuggerParser::run(const string& command) {
 		else
 			return "bad height (use 0 for default, min height #383)";
 */
+	} else if(subStringMatch(verb, "dump")) {
+		if(argCount != 1)
+			return "one argument required";
+		else
+			return dump();
 	} else if(subStringMatch(verb, "print")) {
 		if(argCount < 1)
 			return "one or more arguments required";
@@ -458,41 +550,49 @@ string DebuggerParser::run(const string& command) {
 		// please leave each option on its own line so they're
 		// easy to sort - bkw
 		return
-			"Commands are case-insensitive and may be abbreviated.\n"
+			"Commands are case-insensitive and may be abbreviated (e.g. \"tr\" for \"trace\").\n"
 			"Arguments are either labels or hex constants, and may be\n"
-			"prefixed with a * to dereference.\n"
-			"a xx        - Set Accumulator to xx\n"
-			"base xx     - Set default input base (#2=binary, #10=decimal, #16=hex)\n"
-			"break       - Set/clear breakpoint at current PC\n"
-			"break xx    - Set/clear breakpoint at address xx\n"
-			"c           - Toggle Carry Flag\n"
-			"clearbreaks - Clear all breakpoints\n"
-			"d           - Toggle Decimal Flag\n"
-			"disasm      - Disassemble (from current PC)\n"
-			"disasm xx   - Disassemble (from address xx)\n"
-			"frame       - Advance to next TIA frame, then break\n"
-			"height xx   - Set height of debugger window in pixels\n"
-			"listbreaks  - List all breakpoints\n"
-			"loadsym f   - Load DASM symbols from file f\n"
-			"n           - Toggle Negative Flag\n"
-			"pc xx       - Set Program Counter to xx\n"
-			"print xx    - Evaluate and print expression xx\n"
-			"poke xx yy  - Write data yy to address xx (may be ROM, TIA, etc)\n"
-			"ram         - Show RIOT RAM contents\n"
-			"ram xx yy   - Set RAM location xx to value yy (multiple values allowed)\n"
-			"reset       - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
-			"run         - Exit debugger (back to emulator)\n"
-			"s xx        - Set Stack Pointer to xx\n"
-			// "save f      - Save console session to file f\n"
-			"step        - Single-step\n"
-			"tia         - Show TIA register contents\n"
-			"trace       - Single-step treating subroutine calls as 1 instruction\n"
-			"v           - Toggle Overflow Flag\n"
-			// "watch       - Clear watch list\n"
-			// "watch xx    - Print contents of location xx before every prompt\n"
-			"x xx        - Set X register to xx\n"
-			"y xx        - Set Y register to xx\n"
-			"z           - Toggle Zero Flag\n"
+			"prefixed with a * to dereference, < or > for low/high byte,\n"
+			"and/or $/#/% for hex/dec/binary.\n\n"
+			"a xx         - Set Accumulator to xx\n"
+			"base xx      - Set default input base (#2=binary, #10=decimal, #16=hex)\n"
+			"break        - Set/clear breakpoint at current PC\n"
+			"break xx     - Set/clear breakpoint at address xx\n"
+			"c            - Toggle Carry Flag\n"
+			"clearbreaks  - Clear all breakpoints\n"
+			"cleartraps   - Clear all traps\n"
+			"clearwatches - Clear all watches\n"
+			"d            - Toggle Decimal Flag\n"
+			"dump xx      - Dump 128 bytes of memory starting at xx (may be ROM, TIA, RAM)\n"
+			"delwatch xx  - Delete watch xx\n"
+			"disasm       - Disassemble (from current PC)\n"
+			"disasm xx    - Disassemble (from address xx)\n"
+			"frame        - Advance to next TIA frame, then break\n"
+			"height xx    - Set height of debugger window in pixels\n"
+			"listbreaks   - List all breakpoints\n"
+			"*listtraps    - List all traps\n"
+			"loadsym f    - Load DASM symbols from file f\n"
+			"n            - Toggle Negative Flag\n"
+			"pc xx        - Set Program Counter to xx\n"
+			"print xx     - Evaluate and print expression xx\n"
+			//"poke xx yy   - Write data yy to address xx (may be ROM, TIA, etc)\n"
+			"ram          - Show RIOT RAM contents\n"
+			"ram xx yy    - Set RAM location xx to value yy (multiple values allowed)\n"
+			"reset        - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
+			"run          - Exit debugger (back to emulator)\n"
+			"s xx         - Set Stack Pointer to xx\n"
+			"*save f      - Save console session to file f\n"
+			"step         - Single-step\n"
+			"tia          - Show TIA register contents\n"
+			"trace        - Single-step treating subroutine calls as 1 instruction\n"
+			"*trap xx      - Trap any access to location xx (enter debugger on access)\n"
+			"*trapread xx  - Trap any read access from location xx\n"
+			"*trapwrite xx - Trap any write access to location xx\n"
+			"v            - Toggle Overflow Flag\n"
+			"watch xx    - Print contents of location xx before every prompt\n"
+			"x xx         - Set X register to xx\n"
+			"y xx         - Set Y register to xx\n"
+			"z            - Toggle Zero Flag\n"
 			;
 	} else {
 		return "unimplemented command (try \"help\")";

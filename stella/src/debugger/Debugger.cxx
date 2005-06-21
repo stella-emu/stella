@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.21 2005-06-20 21:01:37 stephena Exp $
+// $Id: Debugger.cxx,v 1.22 2005-06-21 00:13:49 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -131,6 +131,11 @@ const string Debugger::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Debugger::valueToString(int value) {
+  return valueToString(value, kBASE_DEFAULT);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::valueToString(int value, BaseFormat outputBase)
 {
   char rendered[32];
@@ -171,17 +176,17 @@ const string Debugger::state()
 
   //cerr << "state(): pc is " << myDebugger->pc() << endl;
   result += "\nPC=";
-  result += to_hex_16(myDebugger->pc());
+  result += valueToString(myDebugger->pc());
   result += " A=";
-  result += to_hex_8(myDebugger->a());
+  result += valueToString(myDebugger->a());
   result += " X=";
-  result += to_hex_8(myDebugger->x());
+  result += valueToString(myDebugger->x());
   result += " Y=";
-  result += to_hex_8(myDebugger->y());
+  result += valueToString(myDebugger->y());
   result += " S=";
-  result += to_hex_8(myDebugger->sp());
+  result += valueToString(myDebugger->sp());
   result += " P=";
-  result += to_hex_8(myDebugger->ps());
+  result += valueToString(myDebugger->ps());
   result += "/";
   formatFlags(myDebugger->ps(), buf);
   result += buf;
@@ -343,9 +348,11 @@ void Debugger::quit()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::step()
+int Debugger::step()
 {
+  int cyc = mySystem->cycles();
   mySystem->m6502().execute(1);
+  return mySystem->cycles() - cyc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -361,15 +368,17 @@ void Debugger::step()
 
 // FIXME: TIA framebuffer should be updated during tracing!
 
-void Debugger::trace()
+int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
   if(mySystem->peek(myDebugger->pc()) == 32) {
+    int cyc = mySystem->cycles();
     int targetPC = myDebugger->pc() + 3; // return address
     while(myDebugger->pc() != targetPC)
       mySystem->m6502().execute(1);
+    return mySystem->cycles() - cyc;
   } else {
-    step();
+    return step();
   }
 }
 
@@ -541,4 +550,9 @@ bool Debugger::setHeight(int height)
   myOSystem->resetDebugger();
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Debugger::showWatches() {
+	return myParser->showWatches();
 }

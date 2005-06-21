@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.12 2005-06-20 21:01:37 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.13 2005-06-21 00:13:49 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -25,6 +25,7 @@ class Debugger;
 #include "EquateList.hxx"
 
 #define kMAX_ARGS 100
+#define kMAX_WATCHES 10
 
 typedef enum {
 	kBASE_16,
@@ -44,6 +45,11 @@ class DebuggerParser
 
 		void setBase(BaseFormat base) { defaultBase = base; }
 		BaseFormat base()             { return defaultBase; }
+		string showWatches();
+		string addWatch(string watch);
+		string delWatch(int which);
+		void delAllWatches();
+
 
 	private:
 		bool getArgs(const string& command);
@@ -52,6 +58,7 @@ class DebuggerParser
 		string disasm();
 		string listBreaks();
 		string eval();
+		string dump();
 
 		Debugger* debugger;
 
@@ -62,6 +69,7 @@ class DebuggerParser
 		string argStrings[kMAX_ARGS+1];
 		int argCount;
 		BaseFormat defaultBase;
+		string *watches[kMAX_WATCHES]; // FIXME: remove the limit sometime
 };
 
 #endif
