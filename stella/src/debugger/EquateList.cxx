@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.8 2005-06-18 17:28:18 urchlay Exp $
+// $Id: EquateList.cxx,v 1.9 2005-06-21 01:05:49 stephena Exp $
 //============================================================================
 
 #include <string>
@@ -149,7 +149,7 @@ int EquateList::getAddress(const char *lbl) {
 	// cerr << "shit" << endl;
 	for(int i=0; ourVcsEquates[i].label != NULL; i++) {
 		// cerr << "Looking at " << ourVcsEquates[i].label << endl;
-		if( strcasecmp(ourVcsEquates[i].label, lbl) == 0 )
+		if( STR_CASE_CMP(ourVcsEquates[i].label, lbl) == 0 )
 			return ourVcsEquates[i].address;
 	}
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.6 2005-05-25 17:17:38 stephena Exp $
+// $Id: bspf.hxx,v 1.7 2005-06-21 01:05:49 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.6 2005-05-25 17:17:38 stephena Exp $
+  @version $Id: bspf.hxx,v 1.7 2005-06-21 01:05:49 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -63,6 +63,15 @@ typedef unsigned int uInt32;
   #define BSPF_PATH_SEPARATOR  "\\"
 #elif defined BSPF_MAC_OSX
   #define BSPF_PATH_SEPARATOR  "/"
+#endif
+
+// I wish Windows had a complete POSIX layer
+#ifdef BSPF_WIN32
+  #define STR_CASE_CMP stricmp
+  #define STR_N_CASE_CMP strnicmp
+#else
+  #define STR_CASE_CMP strcasecmp
+  #define STR_N_CASE_CMP strncasecmp
 #endif
 
 #endif

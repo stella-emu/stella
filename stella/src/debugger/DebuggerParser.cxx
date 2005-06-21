@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.21 2005-06-21 00:13:49 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.22 2005-06-21 01:05:49 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -222,7 +222,7 @@ bool DebuggerParser::subStringMatch(const string& needle, const string& haystack
 	const char *hs = haystack.c_str();
 	const char *n = needle.c_str();
 
-	if(strncasecmp(n, hs, strlen(n)) == 0)
+	if(STR_N_CASE_CMP(n, hs, strlen(n)) == 0)
 		return true;
 
 	return false;
