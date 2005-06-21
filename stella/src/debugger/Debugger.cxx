@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.23 2005-06-21 04:30:49 urchlay Exp $
+// $Id: Debugger.cxx,v 1.24 2005-06-21 05:00:45 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -28,6 +28,7 @@
 
 #include "Console.hxx"
 #include "System.hxx"
+#include "M6502.hxx"
 #include "D6502.hxx"
 
 #include "Debugger.hxx"
@@ -475,13 +476,13 @@ bool Debugger::breakPoint(int bp) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleReadTrap(int t) {
-  mySystem->setTraps(readTraps, writeTraps, this);
+  mySystem->m6502().setTraps(readTraps, writeTraps);
   readTraps->toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleWriteTrap(int t) {
-  mySystem->setTraps(readTraps, writeTraps, this);
+  mySystem->m6502().setTraps(readTraps, writeTraps);
   writeTraps->toggle(t);
 }
 
@@ -579,7 +580,7 @@ void Debugger::clearAllTraps() {
   delete writeTraps;
   readTraps = new PackedBitArray(0x10000);
   writeTraps = new PackedBitArray(0x10000);
-  mySystem->setTraps(NULL, NULL, NULL);
+  mySystem->m6502().setTraps(NULL, NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

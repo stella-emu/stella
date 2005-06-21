@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.6 2005-06-21 04:30:49 urchlay Exp $
+// $Id: System.hxx,v 1.7 2005-06-21 05:00:46 urchlay Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -29,9 +29,6 @@ class Deserializer;
 #include "Device.hxx"
 #include "NullDev.hxx"
 #include "PackedBitArray.hxx"
-//#include "Debugger.hxx"
-
-class Debugger;
 
 /**
   This class represents a system consisting of a 6502 microprocessor
@@ -50,7 +47,7 @@ class Debugger;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.6 2005-06-21 04:30:49 urchlay Exp $
+  @version $Id: System.hxx,v 1.7 2005-06-21 05:00:46 urchlay Exp $
 */
 class System
 {
@@ -132,9 +129,6 @@ class System
               3  invalid state file
     */
     int loadState(const string& fileName, const string& md5sum);
-
-    // set trap bit arrays. Pass NULL, NULL to disable traps.
-    void System::setTraps(PackedBitArray *read, PackedBitArray *write, Debugger *debugger);
 
   public:
     /**
@@ -332,13 +326,6 @@ class System
 
     // The deserializer for the system.  Used to load state.
     Deserializer* deserializer;
-
-    // Trap arrays
-    PackedBitArray *readTraps;
-    PackedBitArray *writeTraps;
-
-    // Debugger (set via setTraps())
-    Debugger *myDebugger;
 
   private:
     // Copy constructor isn't supported by this class so make it private

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.5 2005-06-16 12:28:54 stephena Exp $
+// $Id: M6502.hxx,v 1.6 2005-06-21 05:00:45 urchlay Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -35,7 +35,7 @@ class Debugger;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.5 2005-06-16 12:28:54 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.6 2005-06-21 05:00:45 urchlay Exp $ 
 */
 class M6502
 {
@@ -177,6 +177,7 @@ class M6502
 
   public:
     void setBreakPoints(PackedBitArray *bp);
+	 void setTraps(PackedBitArray *read, PackedBitArray *write);
 
   protected:
     /**
@@ -210,6 +211,8 @@ class M6502
     bool C;     // C flag for processor status register
 
     PackedBitArray *breakPoints;
+    PackedBitArray *readTraps;
+    PackedBitArray *writeTraps;
 
     /** 
       Bit fields used to indicate that certain conditions need to be 
@@ -256,5 +259,8 @@ class M6502
 
     /// Table of instruction mnemonics
     static const char* ourInstructionMnemonicTable[256];
+
+    // did we just now hit a trap?
+    bool justHitTrap;
 };
 #endif

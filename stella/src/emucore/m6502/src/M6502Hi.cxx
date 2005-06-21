@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.6 2005-06-17 03:49:09 urchlay Exp $
+// $Id: M6502Hi.cxx,v 1.7 2005-06-21 05:00:46 urchlay Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -29,6 +29,7 @@ M6502High::M6502High(uInt32 systemCyclesPerProcessorCycle)
 {
   myNumberOfDistinctAccesses = 0;
   myLastAddress = 0;
+  justHitTrap = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -45,6 +46,12 @@ inline uInt8 M6502High::peek(uInt16 address)
     myLastAddress = address;
   }
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
+
+  if(readTraps != NULL) {
+    if(readTraps->isSet(address))
+      justHitTrap = true;
+  }
+
   return mySystem->peek(address);
 }
 
@@ -57,6 +64,12 @@ inline void M6502High::poke(uInt16 address, uInt8 value)
     myLastAddress = address;
   }
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
+
+  if(writeTraps != NULL) {
+    if(writeTraps->isSet(address))
+      justHitTrap = true;
+  }
+
   mySystem->poke(address, value);
 }
 
@@ -73,6 +86,13 @@ bool M6502High::execute(uInt32 number)
     {
       uInt16 operandAddress = 0;
       uInt8 operand = 0;
+
+      if(justHitTrap)
+      {
+        if(myDebugger->start()) {
+          return true;
+        }
+      }
 
       if(breakPoints != NULL)
       {
