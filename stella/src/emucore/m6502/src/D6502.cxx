@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.8 2005-06-16 01:11:28 stephena Exp $
+// $Id: D6502.cxx,v 1.9 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -117,13 +117,13 @@ uInt16 D6502::disassemble(uInt16 address, char* buffer, EquateList *equateList)
 
     case M6502::ZeroX:
       sprintf(buffer, "%s %s,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(dpeek(mySystem, address + 1), 2),
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::ZeroY:
       sprintf(buffer, "%s %s,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(dpeek(mySystem, address + 1), 2),
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.32 2005-06-09 15:08:22 stephena Exp $
+// $Id: Console.hxx,v 1.33 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -30,12 +30,13 @@ class System;
 #include "Control.hxx"
 #include "Props.hxx"
 #include "TIA.hxx"
+#include "TIADebug.hxx"
 
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.32 2005-06-09 15:08:22 stephena Exp $
+  @version $Id: Console.hxx,v 1.33 2005-06-21 04:30:49 urchlay Exp $
 */
 class Console
 {
@@ -151,6 +152,8 @@ class Console
     */
     void setPalette();
 
+    TIADebug *tiaDebugger() { return myTIAdebugger; }
+
 #ifdef DEVELOPER_SUPPORT
   public:
     /**
@@ -222,6 +225,9 @@ class Console
  
     // Pointer to the 6502 based system being emulated 
     System* mySystem;
+
+    // Pointer to TIADebug
+    TIADebug *myTIAdebugger;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.9 2005-06-21 01:05:49 stephena Exp $
+// $Id: EquateList.cxx,v 1.10 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -139,6 +139,7 @@ char *EquateList::getFormatted(int addr, int places) {
 		return res;
 
 	sprintf(fmt, "$%%0%dx", places);
+	//cerr << addr << ", " << fmt << ", " << places << endl;
 	sprintf(buf, fmt, addr);
 	return buf;
 }
@@ -179,11 +180,16 @@ string EquateList::loadFile(string file) {
 
 	// cerr << "total lines " << lines << endl;
 
-	// allocate enough storage for all the lines
-	// FIXME: decide whether to keep the hard-coded symbols or throw them out
-	// (currently allocating space for them, but throwing them away anyway)
-	Equate *newEquates = new Equate[lines + currentSize + 1];
-	lines = 0;
+	// allocate enough storage for all the lines plus the
+	// hard-coded symbols
+	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate) - 1;
+	Equate *newEquates = new Equate[lines + hardSize + 1];
+	lines = hardSize;
+
+	// Make sure the hard-coded equates show up first
+	for(int i=0; i<hardSize; i++) {
+		newEquates[i] = hardCodedEquates[i];
+	}
 
 	// start over, now that we've allocated enough entries.
 	in.clear();

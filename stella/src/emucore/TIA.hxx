@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.21 2005-06-16 00:55:58 stephena Exp $
+// $Id: TIA.hxx,v 1.22 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,11 +42,13 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.21 2005-06-16 00:55:58 stephena Exp $
+  @version $Id: TIA.hxx,v 1.22 2005-06-21 04:30:49 urchlay Exp $
 */
 class TIA : public Device , public MediaSource
 {
   public:
+    friend class TIADebug;
+
     /**
       Create a new TIA for the specified console
 

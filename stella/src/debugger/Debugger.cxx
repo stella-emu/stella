@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.22 2005-06-21 00:13:49 urchlay Exp $
+// $Id: Debugger.cxx,v 1.23 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -32,6 +32,7 @@
 
 #include "Debugger.hxx"
 #include "EquateList.hxx"
+#include "TIADebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
@@ -45,6 +46,8 @@ Debugger::Debugger(OSystem* osystem)
   myParser = new DebuggerParser(this);
   equateList = new EquateList();
   breakPoints = new PackedBitArray(0x10000);
+  readTraps = new PackedBitArray(0x10000);
+  writeTraps = new PackedBitArray(0x10000);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,6 +57,8 @@ Debugger::~Debugger()
   delete myDebugger;
   delete equateList;
   delete breakPoints;
+  delete readTraps;
+  delete writeTraps;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,6 +107,7 @@ void Debugger::setConsole(Console* console)
   // Keep pointers to these items for efficiency
   myConsole = console;
   mySystem = &(myConsole->system());
+  myTIAdebug = myConsole->tiaDebugger();
 
   // Create a new 6502 debugger for this console
   delete myDebugger;
@@ -303,6 +309,14 @@ const string Debugger::dumpRAM(uInt16 start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string booleanWithLabel(string label, bool value) {
+  if(value)
+    return label + ":On";
+  else
+    return label + ":Off";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::dumpTIA()
 {
   string result;
@@ -317,12 +331,20 @@ const string Debugger::dumpTIA()
 
     if(j == 0x07) result += "- ";
   }
+  result += "\nscanline ";
+
+  //result += valueToString( myConsole->mediaSource().scanlines() );
+  result += valueToString( myTIAdebug->scanlines() );
   result += "\n";
+
+  result += booleanWithLabel("VSYNC", myTIAdebug->vsync());
 
   return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Start the debugger if we aren't already in it.
+// Returns false if we were already in the debugger.
 bool Debugger::start()
 {
   if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER) {
@@ -452,6 +474,34 @@ bool Debugger::breakPoint(int bp) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleReadTrap(int t) {
+  mySystem->setTraps(readTraps, writeTraps, this);
+  readTraps->toggle(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleWriteTrap(int t) {
+  mySystem->setTraps(readTraps, writeTraps, this);
+  writeTraps->toggle(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleTrap(int t) {
+  toggleReadTrap(t);
+  toggleWriteTrap(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::readTrap(int t) {
+  return readTraps->isSet(t) != 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::writeTrap(int t) {
+  return writeTraps->isSet(t) != 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::getPC() {
   return myDebugger->pc();
 }
@@ -495,7 +545,7 @@ string Debugger::disassemble(int start, int lines) {
     int count = myDebugger->disassemble(start, buf, equateList);
 
     for(int i=0; i<count; i++) {
-      sprintf(bbuf, "%02x ", readRAM(start++));
+      sprintf(bbuf, "%02x ", peek(start++));
       result += bbuf;
     }
 
@@ -521,6 +571,15 @@ void Debugger::clearAllBreakPoints() {
   delete breakPoints;
   breakPoints = new PackedBitArray(0x10000);
   mySystem->m6502().setBreakPoints(NULL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::clearAllTraps() {
+  delete readTraps;
+  delete writeTraps;
+  readTraps = new PackedBitArray(0x10000);
+  writeTraps = new PackedBitArray(0x10000);
+  mySystem->setTraps(NULL, NULL, NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

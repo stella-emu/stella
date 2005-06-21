@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.13 2005-06-21 00:13:49 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.14 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -59,6 +59,7 @@ class DebuggerParser
 		string listBreaks();
 		string eval();
 		string dump();
+		string trapStatus(int addr);
 
 		Debugger* debugger;
 

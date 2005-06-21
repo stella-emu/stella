@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.8 2005-06-16 00:55:58 stephena Exp $
+// $Id: System.cxx,v 1.9 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -24,6 +24,7 @@
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "Debugger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(uInt16 n, uInt16 m)
@@ -55,6 +56,9 @@ System::System(uInt16 n, uInt16 m)
   // Set up (de)serializer in case we are asked to save/load state
   serializer = new Serializer();
   deserializer = new Deserializer();
+
+  // Start out with traps disabled (the normal case)
+  setTraps(NULL, NULL, NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -308,4 +312,69 @@ System& System::operator = (const System&)
   assert(false);
 
   return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::setTraps(PackedBitArray *read, PackedBitArray *write, Debugger *debugger) {
+  readTraps = read;
+  writeTraps = write;
+  myDebugger = debugger;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 System::peek(uInt16 addr)
+{
+  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+
+  uInt8 result;
+ 
+  // See if this page uses direct accessing or not 
+  if(access.directPeekBase != 0)
+  {
+    result = *(access.directPeekBase + (addr & myPageMask));
+  }
+  else
+  {
+    result = access.device->peek(addr);
+  }
+
+  myDataBusState = result;
+
+  // Check for read traps, but only if there's a Debugger
+  if(myDebugger != NULL && readTraps != NULL) {
+    cerr << "peek(" << addr << ")" << endl;
+    if(readTraps->isSet(addr)) {
+      cerr << "read trap at " << addr << endl;
+		myDebugger->start();
+      cerr << "tried to start debugger" << endl;
+    }
+  }
+
+  return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::poke(uInt16 addr, uInt8 value)
+{
+  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+  
+  // See if this page uses direct accessing or not 
+  if(access.directPokeBase != 0)
+  {
+    *(access.directPokeBase + (addr & myPageMask)) = value;
+  }
+  else
+  {
+    access.device->poke(addr, value);
+  }
+
+  myDataBusState = value;
+
+  // Check for write traps, but only if there's a Debugger
+  if(myDebugger != NULL && writeTraps != NULL) {
+    if(writeTraps->isSet(addr)) {
+		myDebugger->start();
+    }
+  }
+
 }

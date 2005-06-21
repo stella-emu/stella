@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.20 2005-06-21 00:13:49 urchlay Exp $
+// $Id: Debugger.hxx,v 1.21 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -31,6 +31,7 @@ class D6502;
 #include "EquateList.hxx"
 #include "PackedBitArray.hxx"
 #include "PromptWidget.hxx"
+#include "TIADebug.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -50,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.20 2005-06-21 00:13:49 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.21 2005-06-21 04:30:49 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -130,7 +131,16 @@ class Debugger : public DialogContainer
     const string valueToString(int value);
 
     void toggleBreakPoint(int bp);
+
     bool breakPoint(int bp);
+    void toggleReadTrap(int t);
+    void toggleWriteTrap(int t);
+    void toggleTrap(int t);
+    bool readTrap(int t);
+    bool writeTrap(int t);
+    void clearAllTraps();
+
+
     string disassemble(int start, int lines);
     bool setHeight(int height);
 
@@ -200,7 +210,10 @@ class Debugger : public DialogContainer
     D6502* myDebugger;
     EquateList *equateList;
     PackedBitArray *breakPoints;
+    PackedBitArray *readTraps;
+    PackedBitArray *writeTraps;
     PromptWidget *myPrompt;
+    TIADebug *myTIAdebug;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.22 2005-06-21 01:05:49 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.23 2005-06-21 04:30:49 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -358,6 +358,18 @@ string DebuggerParser::delWatch(int which) {
 	return "removed watch";
 }
 
+string DebuggerParser::trapStatus(int addr) {
+	string result;
+	result += debugger->valueToString(addr);
+	result += ": ";
+	if(debugger->readTrap(addr))
+		result += "read ";
+	if(debugger->writeTrap(addr))
+		result += "write ";
+
+	return result;
+}
+
 string DebuggerParser::run(const string& command) {
 	string result;
 
@@ -455,6 +467,28 @@ string DebuggerParser::run(const string& command) {
 		result = debugger->dumpTIA();
 	} else if(subStringMatch(verb, "reset")) {
 		debugger->reset();
+	} else if(subStringMatch(verb, "trap")) {
+		if(argCount != 1)
+			return "one argument required";
+
+		debugger->toggleReadTrap(args[0]);
+		debugger->toggleWriteTrap(args[0]);
+		return trapStatus(args[0]);
+	} else if(subStringMatch(verb, "trapwrite")) {
+		if(argCount != 1)
+			return "one argument required";
+
+		debugger->toggleWriteTrap(args[0]);
+		return trapStatus(args[0]);
+	} else if(subStringMatch(verb, "trapread")) {
+		if(argCount != 1)
+			return "one argument required";
+
+		debugger->toggleReadTrap(args[0]);
+		return trapStatus(args[0]);
+	} else if(subStringMatch(verb, "cleartraps")) {
+		debugger->clearAllTraps();
+		return "cleared all traps";
 	} else if(subStringMatch(verb, "break")) {
 		int bp = -1;
 
