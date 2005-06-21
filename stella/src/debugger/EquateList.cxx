@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.10 2005-06-21 04:30:49 urchlay Exp $
+// $Id: EquateList.cxx,v 1.11 2005-06-21 18:46:33 stephena Exp $
 //============================================================================
 
 #include <string>
@@ -25,7 +25,7 @@
 #include "EquateList.hxx"
 
 // built in labels
-static struct Equate hardCodedEquates[] = {
+static Equate hardCodedEquates[] = {
   { "VSYNC", 0x00 },
   { "VBLANK", 0x01 },
   { "WSYNC", 0x02 },
@@ -94,32 +94,32 @@ static struct Equate hardCodedEquates[] = {
   { "TIM1T", 0x0294 },
   { "TIM8T", 0x0295 },
   { "TIM64T", 0x0296 },
-  { "TIM1024T", 0x0297 },
-  { NULL, 0 }
+  { "TIM1024T", 0x0297 }
 };
 
 EquateList::EquateList() {
 	// cerr << sizeof(hardCodedEquates)/sizeof(struct Equate) << endl;
-	int size = sizeof(hardCodedEquates)/sizeof(struct Equate) + 1;
-	ourVcsEquates = new Equate[ size ];
-	// for(int i=0; hardCodedEquates[i].label != NULL; i++)
+	int size = sizeof(hardCodedEquates)/sizeof(struct Equate);
+
 	for(int i=0; i<size; i++)
-		ourVcsEquates[i] = hardCodedEquates[i];
+		ourVcsEquates.push_back(hardCodedEquates[i]);
 	calcSize();
 }
 
-int EquateList::calcSize() {
-	currentSize = 0;
-	for(int i=0; ourVcsEquates[i].label != NULL; i++)
-		currentSize++;
+EquateList::~EquateList() {
+cerr << "EquateList::~EquateList()\n";
+	ourVcsEquates.clear();
+}
 
+int EquateList::calcSize() {
+	currentSize = ourVcsEquates.size();
 	return currentSize;
 }
 
 // FIXME: use something smarter than a linear search in the future.
 char *EquateList::getLabel(int addr) {
 	// cerr << "getLabel(" << addr << ")" << endl;
-	for(int i=0; ourVcsEquates[i].label != NULL; i++) {
+	for(int i=0; i<currentSize; i++) {
 		// cerr << "Checking ourVcsEquates[" << i << "] (" << ourVcsEquates[i].label << ")" << endl;
 		if(ourVcsEquates[i].address == addr) {
 			// cerr << "Found label " << ourVcsEquates[i].label << endl;
@@ -148,7 +148,7 @@ int EquateList::getAddress(const char *lbl) {
 	// cerr << "getAddress(" << lbl << ")" << endl;
 	// cerr << ourVcsEquates[0].label << endl;
 	// cerr << "shit" << endl;
-	for(int i=0; ourVcsEquates[i].label != NULL; i++) {
+	for(int i=0; i<currentSize; i++) {
 		// cerr << "Looking at " << ourVcsEquates[i].label << endl;
 		if( STR_CASE_CMP(ourVcsEquates[i].label, lbl) == 0 )
 			return ourVcsEquates[i].address;
@@ -172,6 +172,7 @@ string EquateList::loadFile(string file) {
 
 	long start = in.tellg(); // save pointer to beginning of file
 
+// FIXME - we no longer need # of lines, so this can probably be removed
 	// iterate over file, count lines
 	while( !in.eof() ) {
 		in.getline(buffer, 255);
@@ -182,13 +183,13 @@ string EquateList::loadFile(string file) {
 
 	// allocate enough storage for all the lines plus the
 	// hard-coded symbols
-	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate) - 1;
-	Equate *newEquates = new Equate[lines + hardSize + 1];
+	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
 	lines = hardSize;
 
 	// Make sure the hard-coded equates show up first
+	ourVcsEquates.clear();
 	for(int i=0; i<hardSize; i++) {
-		newEquates[i] = hardCodedEquates[i];
+		ourVcsEquates.push_back(hardCodedEquates[i]);
 	}
 
 	// start over, now that we've allocated enough entries.
@@ -207,15 +208,12 @@ string EquateList::loadFile(string file) {
 			if((curVal = parse4hex(buffer+25)) < 0)
 				return "invalid symbol file";
 
-			struct Equate *e = new struct Equate;
-
-			// FIXME: this is cumbersome...
-			// I shouldn't have to use sprintf() here.
-			// also, is this a memory leak?  I miss malloc() and free()...
-			newEquates[lines] = *e;
-			newEquates[lines].label = new char[curLabel.length() + 1];
-			sprintf(newEquates[lines].label, "%s", curLabel.c_str());
-			newEquates[lines].address = curVal;
+			// FIXME - this is a memleak and *must* be fixed
+			//         ideally, the Equate class should hold a string, not a char*
+			Equate e;
+			e.label   = strdup(curLabel.c_str());
+			e.address = curVal;
+			ourVcsEquates.push_back(e);
 
 			// cerr << "label: " << curLabel << ", address: " << curVal << endl;
 			// cerr << buffer;
@@ -224,13 +222,6 @@ string EquateList::loadFile(string file) {
 	}
 	in.close();
 
-	struct Equate *e = new struct Equate;
-	newEquates[lines] = *e;
-	newEquates[lines].label = NULL;
-	newEquates[lines].address = 0;
-
-	delete ourVcsEquates;
-	ourVcsEquates = newEquates;
 	calcSize();
 
 	// dumpAll();
@@ -261,6 +252,6 @@ string EquateList::getLabel(char *c) {
 }
 
 void EquateList::dumpAll() {
-	for(int i=0; ourVcsEquates[i].label != NULL; i++)
+	for(int i=0; i<currentSize; i++)
 		cerr << i << ": " << "label==" << ourVcsEquates[i].label << ", address==" << ourVcsEquates[i].address << endl;
 }

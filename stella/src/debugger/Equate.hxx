@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Equate.hxx,v 1.2 2005-06-16 00:20:11 stephena Exp $
+// $Id: Equate.hxx,v 1.3 2005-06-21 18:46:33 stephena Exp $
 //============================================================================
 
 #ifndef EQUATE_HXX
 #define EQUATE_HXX
+
+#include "bspf.hxx"
 
 struct Equate {
 	char *label;

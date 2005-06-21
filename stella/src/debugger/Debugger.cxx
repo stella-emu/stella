@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.24 2005-06-21 05:00:45 urchlay Exp $
+// $Id: Debugger.cxx,v 1.25 2005-06-21 18:46:33 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -41,7 +41,12 @@ Debugger::Debugger(OSystem* osystem)
     myConsole(NULL),
     mySystem(NULL),
     myParser(NULL),
-    myDebugger(NULL)
+    myDebugger(NULL),
+    equateList(NULL),
+    breakPoints(NULL),
+    readTraps(NULL),
+    writeTraps(NULL),
+    myTIAdebug(NULL)
 {
   // Init parser
   myParser = new DebuggerParser(this);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.5 2005-06-16 00:55:59 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.6 2005-06-21 18:46:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,20 +25,15 @@
 #include "TabWidget.hxx"
 #include "FSNode.hxx"
 #include "bspf.hxx"
+#include "LauncherDialog.hxx"
 #include "LauncherOptionsDialog.hxx"
-
-enum {
-  kChooseRomDirCmd  = 'roms',  // rom select
-  kChooseSnapDirCmd = 'snps',  // snap select
-  kRomDirChosenCmd  = 'romc',  // rom chosen
-  kSnapDirChosenCmd = 'snpc'   // snap chosen
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherOptionsDialog::LauncherOptionsDialog(
-      OSystem* osystem, DialogContainer* parent,
+      OSystem* osystem, DialogContainer* parent, GuiObject* boss,
       int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
+    CommandSender(boss),
     myBrowser(NULL)
 {
   const int vBorder = 4;
@@ -177,6 +172,7 @@ void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd, int da
     case kOKCmd:
       saveConfig();
       close();
+      sendCommand(kRomDirChosenCmd, 0);  // Let the boss know romdir has changed
       break;
 
     case kChooseRomDirCmd:

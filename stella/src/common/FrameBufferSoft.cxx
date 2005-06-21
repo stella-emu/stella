@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.26 2005-06-16 00:55:56 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.27 2005-06-21 18:46:33 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -31,15 +31,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
-    : FrameBuffer(osystem)
+  : FrameBuffer(osystem),
+    myRectList(NULL)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::~FrameBufferSoft()
 {
-  if(myRectList)
-    delete myRectList;
+  delete myRectList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,6 +48,7 @@ bool FrameBufferSoft::initSubsystem()
   mySDLFlags |= SDL_SWSURFACE;
 
   // Set up the rectangle list to be used in the dirty update
+  delete myRectList;
   myRectList = new RectList();
   if(!myRectList)
   {

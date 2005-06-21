@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.23 2005-06-20 18:32:12 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.24 2005-06-21 18:46:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,13 +39,6 @@
 #include "LauncherDialog.hxx"
 
 #include "bspf.hxx"
-
-enum {
-  kStartCmd   = 'STRT',
-  kOptionsCmd = 'OPTI',
-  kReloadCmd  = 'RELO',
-  kQuitCmd    = 'QUIT'
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
@@ -106,7 +99,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Create the launcher options dialog, where you can change ROM
   // and snapshot paths
-  myOptions = new LauncherOptionsDialog(osystem, parent, 20, 60, _w - 40, _h - 120);
+  myOptions = new LauncherOptionsDialog(osystem, parent, this,
+                                        20, 60, _w - 40, _h - 120);
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
@@ -154,6 +148,16 @@ void LauncherDialog::updateListing(bool fullReload)
 
   string romdir = instance()->settings().getString("romdir");
   string cacheFile = instance()->cacheFile();
+
+  // If this is the first time using Stella, the romdir won't be set.
+  // In that case, display the options dialog, and don't let Stella proceed
+  // until the options are set.
+  if(romdir == "")
+  {
+    myOptionsButton->setEnabled(true);
+    parent()->addDialog(myOptions);
+    return;
+  }
 
   // Figure out if the ROM dir has changed since we last accessed it.
   // If so, we do a full reload from disk (takes quite some time).
@@ -381,6 +385,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd, int data)
     case kQuitCmd:
       close();
       instance()->eventHandler().quit();
+      break;
+
+    case kRomDirChosenCmd:
+      updateListing();
       break;
 
     default:

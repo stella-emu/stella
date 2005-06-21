@@ -14,7 +14,7 @@ PackedBitArray::PackedBitArray(int length) {
 }
 
 PackedBitArray::~PackedBitArray() {
-	delete bits;
+	delete[] bits;
 }
 
 int PackedBitArray::isSet(unsigned int bit) {

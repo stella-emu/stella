@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.103 2005-06-21 04:30:49 urchlay Exp $
+## $Id: makefile,v 1.104 2005-06-21 18:46:32 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -179,7 +179,6 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
 
 stella: $(CORE_OBJS) $(OBJS)
 	$(LD) -o $(EXE_NAME) $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
-	strip $(EXE_NAME)
 
 M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
 	m4 $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4 > $(CORE)/m6502/src/M6502Low.ins

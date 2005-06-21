@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.11 2005-06-16 00:55:56 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.12 2005-06-21 18:46:33 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_SDL_HXX
@@ -31,7 +31,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.11 2005-06-16 00:55:56 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.12 2005-06-21 18:46:33 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -226,17 +226,17 @@ class SoundSDL : public Sound
     };
 
   private:
-	// Indicates if the sound subsystem is to be initialized
-	bool myIsEnabled;
+    // Indicates if the sound subsystem is to be initialized
+    bool myIsEnabled;
 
-	// Indicates if the sound device was successfully initialized
-	bool myIsInitializedFlag;
+    // Indicates if the sound device was successfully initialized
+    bool myIsInitializedFlag;
 
-	// Indicates the cycle when a sound register was last set
-	Int32 myLastRegisterSetCycle;
+    // Indicates the cycle when a sound register was last set
+    Int32 myLastRegisterSetCycle;
 
-	// Indicates the base framerate depending on whether the ROM is NTSC or PAL
-	uInt32 myDisplayFrameRate;
+    // Indicates the base framerate depending on whether the ROM is NTSC or PAL
+    uInt32 myDisplayFrameRate;
 
     // Log base 2 of the selected fragment size
     double myFragmentSizeLogBase2;

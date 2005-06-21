@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.4 2005-06-16 00:55:59 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.5 2005-06-21 18:46:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define LAUNCHER_OPTIONS_DIALOG_HXX
 
 class OSystem;
+class GuiObject;
 class DialogContainer;
 class BrowserDialog;
 class CheckboxWidget;
@@ -30,11 +31,13 @@ class PopUpWidget;
 class StaticTextWidget;
 
 #include "Dialog.hxx"
+#include "Command.hxx"
 
-class LauncherOptionsDialog : public Dialog
+class LauncherOptionsDialog : public Dialog, public CommandSender
 {
   public:
     LauncherOptionsDialog(OSystem* osystem, DialogContainer* parent,
+                          GuiObject* boss,
                           int x, int y, int w, int h);
     ~LauncherOptionsDialog();
 

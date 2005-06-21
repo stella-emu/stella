@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.17 2005-06-16 00:55:56 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.18 2005-06-21 18:46:33 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -35,6 +35,7 @@
 SoundSDL::SoundSDL(OSystem* osystem)
     : Sound(osystem),
       myIsEnabled(osystem->settings().getBool("sound")),
+      myIsInitializedFlag(false),
       myFragmentSizeLogBase2(0),
       myIsMuted(false)
 {

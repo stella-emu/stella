@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.9 2005-06-16 00:55:59 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.10 2005-06-21 18:46:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,17 @@ class OSystem;
 #include "Dialog.hxx"
 #include "GameList.hxx"
 #include "bspf.hxx"
+
+enum {
+  kStartCmd   = 'STRT',
+  kOptionsCmd = 'OPTI',
+  kReloadCmd  = 'RELO',
+  kQuitCmd    = 'QUIT',
+  kChooseRomDirCmd  = 'roms',  // rom select
+  kChooseSnapDirCmd = 'snps',  // snap select
+  kRomDirChosenCmd  = 'romc',  // rom chosen
+  kSnapDirChosenCmd = 'snpc'   // snap chosen
+};
 
 class LauncherDialog : public Dialog
 {

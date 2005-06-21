@@ -13,19 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.5 2005-06-16 00:20:11 stephena Exp $
+// $Id: EquateList.hxx,v 1.6 2005-06-21 18:46:33 stephena Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
 #define EQUATELIST_HXX
 
-#include <string>
+#include "bspf.hxx"
+#include "Equate.hxx"
+#include "Array.hxx"
+
+typedef GUI::Array<Equate> Equates;
 
 class EquateList {
 	public:
 		EquateList();
+		~EquateList();
 		char *getLabel(int addr);
-		char *EquateList::getFormatted(int addr, int places);
+		char *getFormatted(int addr, int places);
 		int getAddress(const char *label);
 		string loadFile(string file);
 		void dumpAll();
@@ -33,9 +38,10 @@ class EquateList {
 	private:
 		int calcSize();
 		int parse4hex(char *c);
-		string EquateList::getLabel(char *c);
+		string getLabel(char *c);
 
-		struct Equate *ourVcsEquates;
+	private:
+		Equates ourVcsEquates;
 		int currentSize;
 };
 
