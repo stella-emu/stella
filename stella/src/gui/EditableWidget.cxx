@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.5 2005-06-17 14:42:49 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.6 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,7 +24,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h)
+  : Widget(boss, x, y, w, h),
+    _editable(true)
 {
   _caretVisible = false;
   _caretTime = 0;
@@ -70,6 +71,9 @@ bool EditableWidget::tryInsertChar(char c, int pos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
+  if(!_editable)
+    return true;
+
   // Ignore all mod keys
   if(instance()->eventHandler().kbdControl(modifiers) ||
      instance()->eventHandler().kbdAlt(modifiers))
@@ -159,7 +163,7 @@ int EditableWidget::getCaretOffset() const
 void EditableWidget::drawCaret()
 {
   // Only draw if item is visible
-  if (!isVisible() || !_boss->isVisible())
+  if (!_editable || !isVisible() || !_boss->isVisible())
     return;
 
   GUI::Rect editRect = getEditRect();

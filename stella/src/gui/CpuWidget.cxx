@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.2 2005-06-20 21:01:37 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.3 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@
 #include "Debugger.hxx"
 #include "Widget.hxx"
 #include "DataGridWidget.hxx"
+#include "EditTextWidget.hxx"
 
 #include "CpuWidget.hxx"
 
@@ -47,7 +48,8 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   int xpos   = 10;
   int ypos   = 10;
   int lwidth = 20;
-  const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
+//  const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
+  const GUI::Font& font = instance()->consoleFont();
 
   // Create a 1x5 grid with labels for the CPU registers
   myCpuGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 1, 5, 8, 0xffff);
@@ -61,14 +63,42 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
                           lwidth, kLineHeight,
                           labels[row] + string(":"),
                           kTextAlignLeft);
-    t->setFont(instance()->consoleFont());
+    t->setFont(font);
   }
 
   // Create a read-only textbox containing the current PC label
-  ypos = 10;
-  myPCLabel = new StaticTextWidget(boss, xpos + lwidth + myCpuGrid->colWidth() + 10,
-                                   ypos, 100, kLineHeight, "FIXME!",
-                                   kTextAlignLeft);
+  xpos += lwidth + myCpuGrid->colWidth() + 10;  ypos = 10;
+  myPCLabel = new EditTextWidget(boss, xpos, ypos, 100, kLineHeight, "");
+  myPCLabel->clearFlags(WIDGET_TAB_NAVIGATE);
+  myPCLabel->setFont(font);
+  myPCLabel->setEditable(false);
+
+  // And some status fields
+  xpos = 10;  ypos = 10 + 8*kLineHeight;
+  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Current Ins:", kTextAlignLeft);
+  xpos += 60;
+  myCurrentIns = new EditTextWidget(boss, xpos, ypos-2, 300, kLineHeight, "");
+  myCurrentIns->clearFlags(WIDGET_TAB_NAVIGATE);
+  myCurrentIns->setFont(font);
+  myCurrentIns->setEditable(false);
+
+  xpos = 10;  ypos += kLineHeight + 5;
+  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Cycle Count:", kTextAlignLeft);
+  xpos += 60;
+  myCycleCount = new EditTextWidget(boss, xpos, ypos-2, 50, kLineHeight, "");
+  myCycleCount->clearFlags(WIDGET_TAB_NAVIGATE);
+  myCycleCount->setFont(font);
+  myCycleCount->setEditable(false);
+
+  xpos = 10;  ypos += kLineHeight + 5;
+  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "BP/Trap:", kTextAlignLeft);
+  xpos += 60;
+  myStatus = new EditTextWidget(boss, xpos, ypos-2, 100, kLineHeight, "");
+  myStatus->clearFlags(WIDGET_TAB_NAVIGATE);
+  myStatus->setFont(font);
+  myStatus->setEditable(false);
+
+
 
 /*
   // Add some buttons for common actions
@@ -115,11 +145,8 @@ CpuWidget::~CpuWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
-  // We simply change the values in the ByteGridWidget
-  // It will then send the 'kBGItemDataChangedCmd' signal to change the actual
-  // memory location
   int addr, value;
-  unsigned char byte;
+//  unsigned char byte;
 
   switch(cmd)
   {
@@ -226,4 +253,27 @@ void CpuWidget::fillGrid()
   vlist.push_back(dbg.getY());
 
   myCpuGrid->setList(alist, vlist);
+
+  // Update the other status fields
+  int pc = dbg.getPC();
+  const char* buf;
+
+  buf = dbg.equates()->getLabel(pc);
+  if(buf)
+    myPCLabel->setEditString(buf);
+  else
+    myPCLabel->setEditString("");
+
+  myPCLabel->setEditString("");
+
+  myCurrentIns->setEditString(dbg.disassemble(pc, 1));
+
+  myCycleCount->setEditString(dbg.valueToString(dbg.cycles(), kBASE_10));
+
+  string status;
+  if(dbg.breakpoints()->isSet(pc))
+    status = "BP set";
+
+  // FIXME - add trap info
+  myStatus->setEditString(status);
 }

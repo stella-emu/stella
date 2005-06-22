@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.hxx,v 1.4 2005-06-20 21:01:37 stephena Exp $
+// $Id: AddrValueWidget.hxx,v 1.5 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,8 +57,6 @@ class AddrValueWidget : public EditableWidget, public CommandSender
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
 
-    bool isEditable() const	         { return _editable; }
-    void setEditable(bool editable)  { _editable = editable; }
     void scrollTo(int item);
 	
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
@@ -97,7 +95,6 @@ class AddrValueWidget : public EditableWidget, public CommandSender
     int              _range;
     BaseFormat       _base;
 
-    bool             _editable;
     bool             _editMode;
     int              _currentPos;
     int              _entriesPerPage;

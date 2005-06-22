@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.3 2005-06-20 18:32:12 stephena Exp $
+// $Id: RamWidget.hxx,v 1.4 2005-06-22 18:30:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 class GuiObject;
 class ButtonWidget;
 class StaticTextWidget;
+class EditTextWidget;
 class DataGridWidget;
 
 #include "Array.hxx"
@@ -50,6 +51,9 @@ class RamWidget : public Widget, public CommandSender
     Widget* myActiveWidget;
 
     DataGridWidget* myRamGrid;
+    EditTextWidget* myBinValue;
+    EditTextWidget* myDecValue;
+    EditTextWidget* myLabel;
 };
 
 #endif

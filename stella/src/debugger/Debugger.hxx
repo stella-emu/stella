@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.23 2005-06-22 13:00:58 urchlay Exp $
+// $Id: Debugger.hxx,v 1.24 2005-06-22 18:30:42 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.23 2005-06-22 13:00:58 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.24 2005-06-22 18:30:42 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -127,8 +127,7 @@ class Debugger : public DialogContainer
 
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
-    const string valueToString(int value, BaseFormat outputBase);
-    const string valueToString(int value);
+    const string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
 
     void toggleBreakPoint(int bp);
 
@@ -185,6 +184,7 @@ class Debugger : public DialogContainer
     int getY();
     int getP();
     int getS();
+    int cycles();
     int peek(int addr);
     int dpeek(int addr);
     void toggleC();
@@ -202,9 +202,9 @@ class Debugger : public DialogContainer
     PromptWidget *prompt();
     string showWatches();
 
-	 PackedBitArray *breakpoints() { return breakPoints; }
-	 PackedBitArray *readtraps() { return readTraps; }
-	 PackedBitArray *writetraps() { return writeTraps; }
+    PackedBitArray *breakpoints() { return breakPoints; }
+    PackedBitArray *readtraps() { return readTraps; }
+    PackedBitArray *writetraps() { return writeTraps; }
 
   protected:
     Console* myConsole;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.26 2005-06-21 23:01:24 stephena Exp $
+// $Id: Debugger.cxx,v 1.27 2005-06-22 18:30:42 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -140,11 +140,6 @@ void Debugger::autoLoadSymbols(string fileName) {
 const string Debugger::run(const string& command)
 {
   return myParser->run(command);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::valueToString(int value) {
-  return valueToString(value, kBASE_DEFAULT);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -536,6 +531,11 @@ int Debugger::getS() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::getP() {
   return myDebugger->ps();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::cycles() {
+  return mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

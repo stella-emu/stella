@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.6 2005-06-16 00:55:59 stephena Exp $
+// $Id: ListWidget.hxx,v 1.7 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,8 +57,6 @@ class ListWidget : public EditableWidget, public CommandSender
     int getSelected() const                    { return _selectedItem; }
     void setSelected(int item);
     const string& getSelectedString() const    { return _list[_selectedItem]; }
-    bool isEditable() const	                   { return _editable; }
-    void setEditable(bool editable)            { _editable = editable; }
     void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
     void scrollTo(int item);
 	
@@ -89,7 +87,6 @@ class ListWidget : public EditableWidget, public CommandSender
 
 protected:
     StringList       _list;
-    bool             _editable;
     bool             _editMode;
     NumberingMode    _numberingMode;
     int              _currentPos;

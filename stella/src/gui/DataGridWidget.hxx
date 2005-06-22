@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.1 2005-06-20 18:32:12 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.2 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,9 +56,6 @@ class DataGridWidget : public EditableWidget, public CommandSender
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
 
-    bool isEditable() const	         { return _editable; }
-    void setEditable(bool editable)  { _editable = editable; }
-	
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
@@ -100,7 +97,6 @@ class DataGridWidget : public EditableWidget, public CommandSender
     StringList  _addrStringList;
     StringList  _valueStringList;
 
-    bool    _editable;
     bool    _editMode;
     int     _selectedItem;
     int     _currentKeyDown;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.3 2005-06-16 00:55:59 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.4 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,6 +38,9 @@ class EditableWidget : public Widget
     virtual void setEditString(const string& str);
     virtual const string& getEditString() const { return _editString; }
 
+    bool isEditable() const	         { return _editable; }
+    void setEditable(bool editable)  { _editable = editable; }
+
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
 
   protected:
@@ -54,6 +57,7 @@ class EditableWidget : public Widget
     virtual bool tryInsertChar(char c, int pos);
 
   protected:
+    bool   _editable;
     string _editString;
 
     bool  _caretVisible;

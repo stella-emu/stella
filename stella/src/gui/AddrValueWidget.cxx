@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.5 2005-06-20 21:01:37 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.6 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,9 +56,6 @@ AddrValueWidget::AddrValueWidget(GuiObject* boss, int x, int y, int w, int h,
   // The item is selected, thus _bgcolor is used to draw the caret and
   // _textcolorhi to erase it
   _caretInverse = true;
-
-  // FIXME: This flag should come from widget definition
-  _editable = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

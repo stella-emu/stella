@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.2 2005-06-20 21:01:37 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.3 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,9 +56,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows
   // The item is selected, thus _bgcolor is used to draw the caret and
   // _textcolorhi to erase it
   _caretInverse = true;
-
-  // FIXME: This flag should come from widget definition
-  _editable = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,6 +86,9 @@ void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist)
   }
 
   _editMode = false;
+
+  // Send item selected signal for starting with cell 0
+  sendCommand(kDGSelectionChangedCmd, _selectedItem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

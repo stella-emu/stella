@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.20 2005-06-16 00:55:59 stephena Exp $
+// $Id: ListWidget.cxx,v 1.21 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,9 +54,6 @@ ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
   // The item is selected, thus _bgcolor is used to draw the caret and
   // _textcolorhi to erase it
   _caretInverse = true;
-
-  // FIXME: This flag should come from widget definition
-  _editable = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -450,7 +447,6 @@ void ListWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::startEditMode()
 {
-cerr << "ListWidget::startEditMode()\n";
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
@@ -474,7 +470,6 @@ void ListWidget::endEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::abortEditMode()
 {
-cerr << "ListWidget::abortEditMode()\n";
   // undo any changes made
   assert(_selectedItem >= 0);
   _editMode = false;

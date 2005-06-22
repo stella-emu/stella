@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.3 2005-06-16 00:55:59 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.4 2005-06-22 18:30:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,6 +33,8 @@ EditTextWidget::EditTextWidget(GuiObject* boss, int x, int y, int w, int h,
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_TAB_NAVIGATE;
   _type = kEditTextWidget;
+
+  setEditString(text);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -45,6 +47,9 @@ void EditTextWidget::setEditString(const string& str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
+  if(!_editable)
+    return;
+
   x += _editScrollOffset;
 
   int width = 0;
@@ -80,7 +85,7 @@ void EditTextWidget::drawWidget(bool hilite)
   fb.drawString(_font, _editString, _x + 2, _y + 2, getEditRect().width(),
                 kTextColor, kTextAlignLeft, -_editScrollOffset, false);
 
-  // Draw the caret
+  // Draw the caret 
   drawCaret();
 }
 
