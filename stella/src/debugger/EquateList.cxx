@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.12 2005-06-21 23:01:25 stephena Exp $
+// $Id: EquateList.cxx,v 1.13 2005-06-22 20:25:20 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -185,16 +185,11 @@ string EquateList::loadFile(string file) {
 			break;
 
 		if(buffer[0] != '-') {
-			curLabel = getLabel(buffer);
-			if((curVal = parse4hex(buffer+25)) < 0)
+			curLabel = extractLabel(buffer);
+			if((curVal = extractValue(buffer)) < 0)
 				return "invalid symbol file";
 
-			// FIXME - this is a memleak and *must* be fixed
-			//         ideally, the Equate class should hold a string, not a char*
-			Equate e;
-			e.label   = strdup(curLabel.c_str());
-			e.address = curVal;
-			ourVcsEquates.push_back(e);
+			addEquate(curLabel, curVal);
 
 			// cerr << "label: " << curLabel << ", address: " << curVal << endl;
 			// cerr << buffer;
@@ -207,6 +202,16 @@ string EquateList::loadFile(string file) {
 
 	// dumpAll();
 	return "loaded " + file + " OK";
+}
+
+void EquateList::addEquate(string label, int address) {
+	// FIXME - this is a memleak and *must* be fixed
+	//         ideally, the Equate class should hold a string, not a char*
+	Equate e;
+	e.label   = strdup(label.c_str());
+	e.address = address;
+	ourVcsEquates.push_back(e);
+	calcSize();
 }
 
 int EquateList::parse4hex(char *c) {
@@ -224,7 +229,23 @@ int EquateList::parse4hex(char *c) {
 	return ret;
 }
 
-string EquateList::getLabel(char *c) {
+int EquateList::extractValue(char *c) {
+	while(*c != ' ') {
+		if(*c == '\0')
+			return -1;
+		c++;
+	}
+
+	while(*c == ' ') {
+		if(*c == '\0')
+			return -1;
+		c++;
+	}
+
+	return parse4hex(c);
+}
+
+string EquateList::extractLabel(char *c) {
 	string l = "";
 	while(*c != ' ')
 		l += *c++;

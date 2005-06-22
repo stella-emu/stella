@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.27 2005-06-22 18:30:42 stephena Exp $
+// $Id: Debugger.cxx,v 1.28 2005-06-22 20:25:19 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -621,4 +621,9 @@ bool Debugger::setHeight(int height)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Debugger::showWatches() {
 	return myParser->showWatches();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::addLabel(string label, int address) {
+	equateList->addEquate(label, address);
 }

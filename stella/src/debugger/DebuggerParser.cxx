@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.25 2005-06-22 13:00:58 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.26 2005-06-22 20:25:19 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -375,6 +375,9 @@ string DebuggerParser::run(const string& command) {
 		if(subStringMatch(verb, "loadsym")) {
 			result = debugger->equateList->loadFile(argStrings[0]);
 			return result;
+		} else if(subStringMatch(verb, "label")) {
+			debugger->addLabel(argStrings[0], decipher_arg(argStrings[1]));
+			return "";
 		} else {
 			return "invalid label or address";
 		}
