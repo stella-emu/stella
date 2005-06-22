@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.24 2005-06-21 23:01:24 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.25 2005-06-22 13:00:58 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -619,9 +619,9 @@ string DebuggerParser::run(const string& command) {
 			"step         - Single-step\n"
 			"tia          - Show TIA register contents\n"
 			"trace        - Single-step treating subroutine calls as 1 instruction\n"
-			"*trap xx      - Trap any access to location xx (enter debugger on access)\n"
-			"*trapread xx  - Trap any read access from location xx\n"
-			"*trapwrite xx - Trap any write access to location xx\n"
+			"trap xx      - Trap any access to location xx (enter debugger on access)\n"
+			"trapread xx  - Trap any read access from location xx\n"
+			"trapwrite xx - Trap any write access to location xx\n"
 			"v            - Toggle Overflow Flag\n"
 			"watch xx    - Print contents of location xx before every prompt\n"
 			"x xx         - Set X register to xx\n"
