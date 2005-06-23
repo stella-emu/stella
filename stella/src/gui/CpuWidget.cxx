@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.4 2005-06-23 14:33:11 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.5 2005-06-23 18:11:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "Widget.hxx"
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
+#include "ToggleBitWidget.hxx"
 
 #include "CpuWidget.hxx"
 
@@ -73,6 +74,14 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   myPCLabel->setFont(font);
   myPCLabel->setEditable(false);
 
+  // Create a bitfield widget for changing the processor status
+  xpos = 10;  ypos = 2 + 6*kLineHeight;
+  StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight,
+                                             "PS:", kTextAlignLeft);
+  t->setFont(font);
+  myPSRegister = new ToggleBitWidget(boss, xpos+lwidth + 5, ypos-2, 8, 1);
+  myPSRegister->setTarget(this);
+
   // And some status fields
   xpos = 10;  ypos = 10 + 8*kLineHeight;
   new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Current Ins:", kTextAlignLeft);
@@ -97,6 +106,18 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   myStatus->clearFlags(WIDGET_TAB_NAVIGATE);
   myStatus->setFont(font);
   myStatus->setEditable(false);
+
+  // Set the strings to be used in the PSRegister
+  // We only do this once because it's the state that changes, not the strings
+  const char* offstr[] = { "n", "v", "-", "b", "d", "i", "z", "c" };
+  const char* onstr[]  = { "N", "V", "-", "B", "D", "I", "Z", "C" };
+  StringList off, on;
+  for(int i = 0; i < 8; ++i)
+  {
+    off.push_back(offstr[i]);
+    on.push_back(onstr[i]);
+  }
+  myPSRegister->setList(off, on);
 
 
 
@@ -161,7 +182,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
         break;
 
         case kSPRegAddr:
-        instance()->debugger().setS(value);
+        instance()->debugger().setSP(value);
         break;
 
         case kARegAddr:
@@ -178,6 +199,9 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
       }
       break;
 
+    case kTBItemDataChangedCmd:
+      cerr << "ps bit changed\n";
+      break;
 /*
     case kRZeroCmd:
       myRamGrid->setSelectedValue(0);
@@ -248,12 +272,24 @@ void CpuWidget::fillGrid()
   // And now fill the values
   Debugger& dbg = instance()->debugger();
   vlist.push_back(dbg.getPC());
-  vlist.push_back(dbg.getS());
+  vlist.push_back(dbg.getSP());
   vlist.push_back(dbg.getA());
   vlist.push_back(dbg.getX());
   vlist.push_back(dbg.getY());
 
   myCpuGrid->setList(alist, vlist);
+
+  // Update the PS register booleans
+  BoolList b;
+  int ps = dbg.getPS();
+  for(int i = 0; i < 8; ++i)
+  {
+    if(ps & (1<<(7-i)))
+      b.push_back(true);
+    else
+      b.push_back(false);
+  }
+  myPSRegister->setState(b);
 
   // Update the other status fields
   int pc = dbg.getPC();

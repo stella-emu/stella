@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.21 2005-06-23 14:33:12 stephena Exp $
+// $Id: Widget.hxx,v 1.22 2005-06-23 18:11:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,7 +55,8 @@ enum {
   kPopUpWidget      = 'POPU',
   kTabWidget        = 'TABW',
   kPromptWidget     = 'PROM',
-  kDataGridWidget   = 'BGRI'
+  kDataGridWidget   = 'BGRI',
+  kToggleBitWidget  = 'TGBT'
 };
 
 enum {
@@ -67,7 +68,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.21 2005-06-23 14:33:12 stephena Exp $
+  @version $Id: Widget.hxx,v 1.22 2005-06-23 18:11:59 stephena Exp $
 */
 class Widget : public GuiObject
 {

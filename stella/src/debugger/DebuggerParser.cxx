@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.31 2005-06-23 14:33:10 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.32 2005-06-23 18:11:58 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -104,8 +104,8 @@ int DebuggerParser::decipher_arg(const string &str) {
 	if(arg == "a") result = debugger->getA();
 	else if(arg == "x") result = debugger->getX();
 	else if(arg == "y") result = debugger->getY();
-	else if(arg == "p") result = debugger->getP();
-	else if(arg == "s") result = debugger->getS();
+	else if(arg == "p") result = debugger->getPS();
+	else if(arg == "s") result = debugger->getSP();
 	else if(arg == "pc" || arg == ".") result = debugger->getPC();
 	else { // Not a special, must be a regular arg: check for label first
 		const char *a = arg.c_str();
@@ -479,7 +479,7 @@ string DebuggerParser::run(const string& command) {
 	} else if(subStringMatch(verb, "s")) {
       if(argCount == 1)
 			if(args[0] <= 0xff)
-				debugger->setS(args[0]);
+				debugger->setSP(args[0]);
 			else
 				return "value out of range (must be 00 - ff)";
 		else

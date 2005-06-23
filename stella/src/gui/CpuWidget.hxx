@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.hxx,v 1.3 2005-06-22 18:30:43 stephena Exp $
+// $Id: CpuWidget.hxx,v 1.4 2005-06-23 18:11:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@ class GuiObject;
 class ButtonWidget;
 class EditTextWidget;
 class DataGridWidget;
+class ToggleBitWidget;
 
 #include "Array.hxx"
 #include "Widget.hxx"
@@ -49,8 +50,8 @@ class CpuWidget : public Widget, public CommandSender
   private:
     Widget* myActiveWidget;
 
-    DataGridWidget* myCpuGrid;
-    // FIXME - add a ToggleBitWidget for processor status (ps) register
+    DataGridWidget*  myCpuGrid;
+    ToggleBitWidget* myPSRegister;
 
     EditTextWidget* myPCLabel;
     EditTextWidget* myCurrentIns;

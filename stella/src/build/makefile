@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.105 2005-06-23 01:10:25 urchlay Exp $
+## $Id: makefile,v 1.106 2005-06-23 18:11:57 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -158,7 +158,7 @@ M6502_OBJS = D6502.o Device.o M6502.o M6502Hi.o NullDev.o System.o
 GUI_OBJS = Font.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
            EditableWidget.o EditTextWidget.o EditNumWidget.o AddrValueWidget.o \
-           DataGridWidget.o \
+           DataGridWidget.o ToggleBitWidget.o \
            Dialog.o DialogContainer.o OptionsDialog.o VideoDialog.o AudioDialog.o \
            EventMappingDialog.o GameInfoDialog.o HelpDialog.o AboutDialog.o \
            LauncherDialog.o LauncherOptionsDialog.o BrowserDialog.o GameList.o \
@@ -413,6 +413,9 @@ AddrValueWidget.o: $(GUI)/AddrValueWidget.cxx $(GUI)/AddrValueWidget.hxx
 
 DataGridWidget.o: $(GUI)/DataGridWidget.cxx $(GUI)/DataGridWidget.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/DataGridWidget.cxx
+
+ToggleBitWidget.o: $(GUI)/ToggleBitWidget.cxx $(GUI)/ToggleBitWidget.hxx
+	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/ToggleBitWidget.cxx
 
 Dialog.o: $(GUI)/Dialog.cxx $(GUI)/Dialog.hxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(GUI)/Dialog.cxx

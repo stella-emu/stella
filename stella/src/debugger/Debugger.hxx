@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.28 2005-06-23 14:33:10 stephena Exp $
+// $Id: Debugger.hxx,v 1.29 2005-06-23 18:11:58 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.28 2005-06-23 14:33:10 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.29 2005-06-23 18:11:58 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -178,14 +178,14 @@ class Debugger : public DialogContainer
     void setA(int a);
     void setX(int x);
     void setY(int y);
-    void setS(int sp);
+    void setSP(int sp);
     void setPC(int pc);
     int getPC();
     int getA();
     int getX();
     int getY();
-    int getP();
-    int getS();
+    int getPS();
+    int getSP();
     int cycles();
     int peek(int addr);
     int dpeek(int addr);

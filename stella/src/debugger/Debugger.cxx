@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.31 2005-06-23 14:33:10 stephena Exp $
+// $Id: Debugger.cxx,v 1.32 2005-06-23 18:11:58 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -422,7 +422,7 @@ void Debugger::setY(int y) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setS(int sp) {
+void Debugger::setSP(int sp) {
   myDebugger->sp(sp);
 }
 
@@ -524,12 +524,12 @@ int Debugger::getY() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getS() {
+int Debugger::getSP() {
   return myDebugger->sp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getP() {
+int Debugger::getPS() {
   return myDebugger->ps();
 }
 
