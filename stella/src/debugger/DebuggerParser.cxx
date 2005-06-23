@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.28 2005-06-23 02:10:11 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.29 2005-06-23 02:13:49 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -558,13 +558,10 @@ string DebuggerParser::run(const string& command) {
 		return disasm();
 	} else if(subStringMatch(verb, "frame")) {
 		// FIXME: make multiple frames work!
-		/*
 		int count = 1;
 		if(argCount != 0) count = args[0];
-		cerr << count << endl;
 		for(int i=0; i<count; i++)
-		*/
-		debugger->nextFrame();
+			debugger->nextFrame();
 		return "advanced frame";
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		debugger->clearAllBreakPoints();
@@ -661,6 +658,7 @@ string DebuggerParser::run(const string& command) {
 			"disasm xx    - Disassemble (from address xx)\n"
 			"dump xx      - Dump 128 bytes of memory starting at xx (may be ROM, TIA, RAM)\n"
 			"frame        - Advance to next TIA frame, then break\n"
+			"frame xx     - Advance TIA by xx frames, then break\n"
 			"height xx    - Set height of debugger window in pixels (NOT WORKING)\n"
 			"listbreaks   - List all breakpoints\n"
 			"listtraps    - List all traps\n"
