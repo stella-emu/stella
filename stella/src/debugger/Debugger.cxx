@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.29 2005-06-23 02:10:11 urchlay Exp $
+// $Id: Debugger.cxx,v 1.30 2005-06-23 02:56:45 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -627,4 +627,9 @@ string Debugger::showWatches() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::addLabel(string label, int address) {
 	equateList->addEquate(label, address);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::reloadROM() {
+  myOSystem->createConsole( myOSystem->romFile() );
 }

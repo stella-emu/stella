@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.29 2005-06-23 02:13:49 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.30 2005-06-23 02:56:45 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -328,12 +328,12 @@ string DebuggerParser::showWatches() {
 	string ret = "\n";
 	char buf[10];
 
-	// Clear the args, since we're going to pass them to eval()
-	argStrings.clear();
-	args.clear();
 	for(unsigned int i=0; i<watches.size(); i++) {
 		if(watches[i] != "") {
-			//cerr << "here1 " << i << endl;
+			// Clear the args, since we're going to pass them to eval()
+			argStrings.clear();
+			args.clear();
+
 			sprintf(buf, "%d", i+1);
 			argCount = 1;
 			argStrings.push_back(watches[i]);
@@ -511,6 +511,9 @@ string DebuggerParser::run(const string& command) {
 		result = debugger->dumpTIA();
 	} else if(subStringMatch(verb, "reset")) {
 		debugger->reset();
+	} else if(subStringMatch(verb, "reload")) {
+		debugger->reloadROM();
+		debugger->start();
 	} else if(subStringMatch(verb, "trap")) {
 		if(argCount != 1)
 			return "one argument required";
@@ -640,14 +643,16 @@ string DebuggerParser::run(const string& command) {
 		// easy to sort - bkw
 		return
 			"Commands are case-insensitive and may be abbreviated (e.g. \"tr\" for \"trace\").\n"
-			"Arguments are either labels or hex constants, and may be\n"
+			"Arguments are either labels or numeric constants, and may be\n"
 			"prefixed with a * to dereference, < or > for low/high byte,\n"
 			"and/or $/#/% for hex/dec/binary.\n\n"
 			"a xx         - Set Accumulator to xx\n"
+			"*bank xx      - Switch to ROM bank xx\n"
 			"base xx      - Set default input base (#2=binary, #10=decimal, #16=hex)\n"
 			"break        - Set/clear breakpoint at current PC\n"
 			"break xx     - Set/clear breakpoint at address xx\n"
 			"c            - Toggle Carry Flag\n"
+			"*cartinfo     - Show cartridge information\n"
 			"clearbreaks  - Clear all breakpoints\n"
 			"cleartraps   - Clear all traps\n"
 			"clearwatches - Clear all watches\n"
@@ -666,17 +671,18 @@ string DebuggerParser::run(const string& command) {
 			"loadsym f    - Load DASM symbols from file f\n"
 			"n            - Toggle Negative Flag\n"
 			"pc xx        - Set Program Counter to xx\n"
-			"print xx     - Evaluate and print expression xx\n"
+			"print xx     - Evaluate and print expression xx in hex/decimal/binary\n"
 			//"poke xx yy   - Write data yy to address xx (may be ROM, TIA, etc)\n"
 			"ram          - Show RIOT RAM contents\n"
 			"ram xx yy    - Set RAM location xx to value yy (multiple values allowed)\n"
+			"reload       - Reload ROM and symbol file (resets debugger)\n"
 			"reset        - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
 			"run          - Exit debugger (back to emulator)\n"
 			"s xx         - Set Stack Pointer to xx\n"
 			"saveses f    - Save console session to file f\n"
 			"savesym f    - Save symbols to file f\n"
 			"step         - Single-step\n"
-			"tia          - Show TIA register contents\n"
+			"tia          - Show TIA register contents (NOT FINISHED YET)\n"
 			"trace        - Single-step treating subroutine calls as 1 instruction\n"
 			"trap xx      - Trap any access to location xx (enter debugger on access)\n"
 			"trapread xx  - Trap any read access from location xx\n"
