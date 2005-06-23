@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.26 2005-06-22 20:25:19 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.27 2005-06-23 01:10:25 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -247,6 +247,24 @@ string DebuggerParser::listBreaks() {
 		return "no breakpoints set";
 }
 
+string DebuggerParser::listTraps() {
+	int count = 0;
+	string ret;
+
+	for(unsigned int i=0; i<0x10000; i++) {
+		if(debugger->readTrap(i) || debugger->writeTrap(i)) {
+			ret += trapStatus(i);
+			ret += "\n";
+			count++;
+		}
+	}
+
+	if(count)
+		return ret;
+	else
+		return "no traps set";
+}
+
 string DebuggerParser::disasm() {
 	int start, lines = 20;
 
@@ -359,10 +377,22 @@ string DebuggerParser::trapStatus(int addr) {
 	string result;
 	result += debugger->valueToString(addr);
 	result += ": ";
-	if(debugger->readTrap(addr))
-		result += "read ";
-	if(debugger->writeTrap(addr))
-		result += "write ";
+	bool r = debugger->readTrap(addr);
+	bool w = debugger->writeTrap(addr);
+	if(r && w)
+		result += "read|write";
+	else if(r)
+		result += "read";
+	else if(w)
+		result += "     write";
+	else result += "   none   ";
+
+	char *l = debugger->equateList->getLabel(addr);
+	if(l != NULL) {
+		result += "  (";
+		result += l;
+		result += ")";
+	}
 
 	return result;
 }
@@ -375,9 +405,23 @@ string DebuggerParser::run(const string& command) {
 		if(subStringMatch(verb, "loadsym")) {
 			result = debugger->equateList->loadFile(argStrings[0]);
 			return result;
-		} else if(subStringMatch(verb, "label")) {
-			debugger->addLabel(argStrings[0], decipher_arg(argStrings[1]));
-			return "";
+		} else if(subStringMatch(verb, "savesym")) {
+			if(debugger->equateList->saveFile(argStrings[0]))
+				return "saved symbols to file " + argStrings[0];
+			else
+				return "I/O error";
+		} else if(subStringMatch(verb, "define")) {
+         int arg = decipher_arg(argStrings[1]);
+			if(arg < 0)
+				return "invalid argument";
+
+			debugger->addLabel(argStrings[0], arg);
+			return "label " + argStrings[0] + " defined as " + debugger->valueToString(arg);
+		} else if(subStringMatch(verb, "saveses")) {
+			if(debugger->prompt()->saveBuffer(argStrings[0]))
+				return "saved session to file " + argStrings[0];
+			else
+				return "I/O error";
 		} else {
 			return "invalid label or address";
 		}
@@ -508,6 +552,8 @@ string DebuggerParser::run(const string& command) {
 			return "Cleared breakpoint";
 	} else if(subStringMatch(verb, "listbreaks")) {
 		return listBreaks();
+	} else if(subStringMatch(verb, "listtraps")) {
+		return listTraps();
 	} else if(subStringMatch(verb, "disasm")) {
 		return disasm();
 	} else if(subStringMatch(verb, "frame")) {
@@ -535,6 +581,13 @@ string DebuggerParser::run(const string& command) {
 			return delWatch(args[0]);
 		else
 			return "one argument required";
+	} else if(subStringMatch(verb, "define")) {
+		return argStrings[0] + " already defined";
+	} else if(subStringMatch(verb, "undef")) {
+		if(debugger->equateList->undefine(argStrings[0]))
+			return argStrings[0] + " now undefined";
+		else
+			return "no such label";
 	} else if(subStringMatch(verb, "height")) {
 		if(argCount != 1)
 			return "one argument required";
@@ -580,6 +633,8 @@ string DebuggerParser::run(const string& command) {
 		result += "Set base ";
 		result += buf;
 		return result;
+	} else if(subStringMatch(verb, "listsym")) {
+		return debugger->equateList->dumpAll();
 	} else if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
 		debugger->quit();
 		return "";
@@ -600,14 +655,16 @@ string DebuggerParser::run(const string& command) {
 			"cleartraps   - Clear all traps\n"
 			"clearwatches - Clear all watches\n"
 			"d            - Toggle Decimal Flag\n"
-			"dump xx      - Dump 128 bytes of memory starting at xx (may be ROM, TIA, RAM)\n"
+			"define ll xx - Define label ll with value xx\n"
 			"delwatch xx  - Delete watch xx\n"
 			"disasm       - Disassemble (from current PC)\n"
 			"disasm xx    - Disassemble (from address xx)\n"
+			"dump xx      - Dump 128 bytes of memory starting at xx (may be ROM, TIA, RAM)\n"
 			"frame        - Advance to next TIA frame, then break\n"
-			"height xx    - Set height of debugger window in pixels\n"
+			"height xx    - Set height of debugger window in pixels (NOT WORKING)\n"
 			"listbreaks   - List all breakpoints\n"
-			"*listtraps    - List all traps\n"
+			"listtraps    - List all traps\n"
+			"listsym      - List all currently defined symbols\n"
 			"loadsym f    - Load DASM symbols from file f\n"
 			"n            - Toggle Negative Flag\n"
 			"pc xx        - Set Program Counter to xx\n"
@@ -618,15 +675,17 @@ string DebuggerParser::run(const string& command) {
 			"reset        - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
 			"run          - Exit debugger (back to emulator)\n"
 			"s xx         - Set Stack Pointer to xx\n"
-			"*save f      - Save console session to file f\n"
+			"saveses f    - Save console session to file f\n"
+			"savesym f    - Save symbols to file f\n"
 			"step         - Single-step\n"
 			"tia          - Show TIA register contents\n"
 			"trace        - Single-step treating subroutine calls as 1 instruction\n"
 			"trap xx      - Trap any access to location xx (enter debugger on access)\n"
 			"trapread xx  - Trap any read access from location xx\n"
 			"trapwrite xx - Trap any write access to location xx\n"
+			"undef ll     - Undefine label ll (if defined)\n"
 			"v            - Toggle Overflow Flag\n"
-			"watch xx    - Print contents of location xx before every prompt\n"
+			"watch xx     - Print contents of location xx before every prompt\n"
 			"x xx         - Set X register to xx\n"
 			"y xx         - Set Y register to xx\n"
 			"z            - Toggle Zero Flag\n"

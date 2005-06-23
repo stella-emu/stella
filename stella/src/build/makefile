@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.104 2005-06-21 18:46:32 stephena Exp $
+## $Id: makefile,v 1.105 2005-06-23 01:10:25 urchlay Exp $
 ##============================================================================
 
 ##============================================================================
@@ -153,7 +153,7 @@ win32-gl:
 ###############################################################################
 ## List of "core" object files
 ###############################################################################
-M6502_OBJS = D6502.o Device.o M6502.o M6502Low.o M6502Hi.o NullDev.o System.o
+M6502_OBJS = D6502.o Device.o M6502.o M6502Hi.o NullDev.o System.o
 
 GUI_OBJS = Font.o Menu.o Launcher.o \
            Widget.o PopUpWidget.o ScrollBarWidget.o ListWidget.o TabWidget.o \
@@ -180,14 +180,8 @@ CORE_OBJS = Booster.o Cart.o Cart2K.o Cart3F.o Cart4K.o CartAR.o CartDPC.o \
 stella: $(CORE_OBJS) $(OBJS)
 	$(LD) -o $(EXE_NAME) $(CORE_OBJS) $(OBJS) $(LDFLAGS) $(LDLIBS)
 
-M6502Low.ins: $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4
-	m4 $(CORE)/m6502/src/M6502Low.m4 $(CORE)/m6502/src/M6502.m4 > $(CORE)/m6502/src/M6502Low.ins
-
 M6502Hi.ins: $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4
 	m4 $(CORE)/m6502/src/M6502Hi.m4 $(CORE)/m6502/src/M6502.m4 > $(CORE)/m6502/src/M6502Hi.ins
-
-#M6502Low.o: M6502Low.ins
-#M6502Hi.o: M6502Hi.ins
 
 clean:
 	rm -f *.o stella stella.exe core
@@ -371,9 +365,6 @@ Device.o: $(CORE)/m6502/src/Device.cxx
 
 M6502.o: $(CORE)/m6502/src/M6502.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(CORE)/m6502/src/M6502.cxx
-
-M6502Low.o: $(CORE)/m6502/src/M6502Low.cxx
-	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/m6502/src/M6502Low.cxx
 
 M6502Hi.o: $(CORE)/m6502/src/M6502Hi.cxx
 	$(CXX) -c $(FLAGS) $(OPTIONS) $(LDFLAGS) $(CORE)/m6502/src/M6502Hi.cxx

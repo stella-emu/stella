@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.13 2005-06-22 20:25:20 urchlay Exp $
+// $Id: EquateList.cxx,v 1.14 2005-06-23 01:10:25 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -23,6 +23,7 @@
 #include "bspf.hxx"
 #include "Equate.hxx"
 #include "EquateList.hxx"
+#include "Debugger.hxx"
 
 // built in labels
 static Equate hardCodedEquates[] = {
@@ -150,10 +151,49 @@ int EquateList::getAddress(const char *lbl) {
 	for(int i=0; i<currentSize; i++) {
 		// cerr << "Looking at " << ourVcsEquates[i].label << endl;
 		if( STR_CASE_CMP(ourVcsEquates[i].label, lbl) == 0 )
-			return ourVcsEquates[i].address;
+			if(ourVcsEquates[i].address >= 0)
+				return ourVcsEquates[i].address;
 	}
 
 	return -1;
+}
+
+bool EquateList::undefine(string& label) {
+	return undefine(label.c_str());
+}
+
+bool EquateList::undefine(const char *lbl) {
+	for(int i=0; i<currentSize; i++) {
+		if( STR_CASE_CMP(ourVcsEquates[i].label, lbl) == 0 ) {
+			ourVcsEquates[i].address = -1;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool EquateList::saveFile(string file) {
+	char buf[256];
+
+	ofstream out(file.c_str());
+	if(!out.is_open())
+		return false;
+
+	out << "--- Symbol List (sorted by symbol)" << endl;
+
+	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
+
+	for(int i=hardSize; i<currentSize; i++) {
+		int a = ourVcsEquates[i].address;
+		if(a >= 0) {
+			sprintf(buf, "%-24s %04x                  \n", ourVcsEquates[i].label, a);
+			out << buf;
+		}
+	}
+
+	out << "--- End of Symbol List." << endl;
+	return true;
 }
 
 string EquateList::loadFile(string file) {
@@ -215,6 +255,7 @@ void EquateList::addEquate(string label, int address) {
 }
 
 int EquateList::parse4hex(char *c) {
+	//cerr << c << endl;
 	int ret = 0;
 	for(int i=0; i<4; i++) {
 		if(*c >= '0' && *c <= '9')
@@ -253,7 +294,16 @@ string EquateList::extractLabel(char *c) {
 	return l;
 }
 
-void EquateList::dumpAll() {
-	for(int i=0; i<currentSize; i++)
-		cerr << i << ": " << "label==" << ourVcsEquates[i].label << ", address==" << ourVcsEquates[i].address << endl;
+string EquateList::dumpAll() {
+	string ret;
+
+	for(int i=0; i<currentSize; i++) {
+		if(ourVcsEquates[i].address != -1) {
+			ret += ourVcsEquates[i].label;
+			ret += ": ";
+			ret += Debugger::to_hex_16(ourVcsEquates[i].address);
+			if(i != currentSize - 1) ret += "\n";
+		}
+	}
+	return ret;
 }

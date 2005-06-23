@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.58 2005-06-21 04:30:49 urchlay Exp $
+// $Id: Console.cxx,v 1.59 2005-06-23 01:10:25 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -30,7 +30,6 @@
 #include "EventHandler.hxx"
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
-#include "M6502Low.hxx"
 #include "M6502Hi.hxx"
 #include "M6532.hxx"
 #include "MD5.hxx"
@@ -137,14 +136,7 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   mySystem = new System(13, 6);
 
   M6502* m6502;
-  if(myProperties.get("Emulation.CPU") == "Low")
-  {
-    m6502 = new M6502Low(1);
-  }
-  else
-  {
-    m6502 = new M6502High(1);
-  }
+  m6502 = new M6502High(1);
   m6502->attach(myOSystem->debugger());
 
   M6532* m6532 = new M6532(*this);

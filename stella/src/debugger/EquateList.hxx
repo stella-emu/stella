@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.7 2005-06-22 20:25:20 urchlay Exp $
+// $Id: EquateList.hxx,v 1.8 2005-06-23 01:10:25 urchlay Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
@@ -33,8 +33,11 @@ class EquateList {
 		char *getFormatted(int addr, int places);
 		int getAddress(const char *label);
 		void addEquate(string label, int address);
+		bool saveFile(string file);
 		string loadFile(string file);
-		void dumpAll();
+		bool undefine(string& label);
+		bool undefine(const char *lbl);
+		string dumpAll();
 
 	private:
 		int calcSize();

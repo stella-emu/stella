@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.3 2005-06-17 03:49:10 urchlay Exp $
+// $Id: PromptWidget.hxx,v 1.4 2005-06-23 01:10:26 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,6 +52,7 @@ class PromptWidget : public Widget, public CommandSender
     void print(const char *str);
     void print(string str);
     void printPrompt();
+    bool saveBuffer(string& filename);
 
   protected:
     inline char &buffer(int idx) { return _buffer[idx % kBufferSize]; }

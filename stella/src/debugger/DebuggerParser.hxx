@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.15 2005-06-21 23:01:25 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.16 2005-06-23 01:10:25 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -58,6 +58,7 @@ class DebuggerParser
 		bool subStringMatch(const string& needle, const string& haystack);
 		string disasm();
 		string listBreaks();
+		string listTraps();
 		string eval();
 		string dump();
 		string trapStatus(int addr);

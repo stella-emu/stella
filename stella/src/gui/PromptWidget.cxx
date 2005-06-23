@@ -13,11 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.11 2005-06-21 00:13:49 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.12 2005-06-23 01:10:26 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <iostream>
+#include <fstream>
 
 #include "ScrollBarWidget.hxx"
 #include "FrameBuffer.hxx"
@@ -682,4 +685,30 @@ void PromptWidget::scrollToCurrent()
     _scrollLine = line;
     updateScrollBuffer();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PromptWidget::saveBuffer(string& filename)
+{
+  ofstream out(filename.c_str());
+  if(!out.is_open())
+    return false;
+
+  for(int start=0; start<_promptStartPos; start+=_lineWidth) {
+    int end = start+_lineWidth-1;
+
+    // look for first non-space char from end of line
+    while(_buffer[end] == ' ' && end >= start)
+      end--;
+
+    // spit out the line minus its trailing spaces
+    for(int j=start; j<=end; j++)
+      out << _buffer[j];
+
+    // add a \n
+    out << endl;
+  }
+
+  out.close();
+  return true;
 }
