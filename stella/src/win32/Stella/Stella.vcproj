@@ -249,6 +249,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\EditNumWidget.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\EditTextWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\debugger\EquateList.cxx">
 			</File>
 			<File
@@ -402,6 +405,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\TIA.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\TIADebug.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\TIASound.c">
 			</File>
 			<File
@@ -552,6 +558,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\EditNumWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\gui\EditTextWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\debugger\Equate.hxx">
@@ -726,6 +735,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\TIA.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\TIADebug.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\TIASound.h">
