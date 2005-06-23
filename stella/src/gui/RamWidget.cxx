@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.8 2005-06-22 18:30:44 stephena Exp $
+// $Id: RamWidget.cxx,v 1.9 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -216,7 +216,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
       break;
   }
 
-  instance()->frameBuffer().refresh();
+  // TODO - dirty rect, or is it necessary here?
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

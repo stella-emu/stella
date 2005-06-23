@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.2 2005-06-16 00:55:59 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.3 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -226,7 +226,7 @@ void AboutDialog::displayInfo()
 
   delete[] dscStr;
 
-  instance()->frameBuffer().refresh();
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

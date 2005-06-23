@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.30 2005-06-23 02:56:45 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.31 2005-06-23 14:33:10 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -560,11 +560,9 @@ string DebuggerParser::run(const string& command) {
 	} else if(subStringMatch(verb, "disasm")) {
 		return disasm();
 	} else if(subStringMatch(verb, "frame")) {
-		// FIXME: make multiple frames work!
 		int count = 1;
 		if(argCount != 0) count = args[0];
-		for(int i=0; i<count; i++)
-			debugger->nextFrame();
+		debugger->nextFrame(count);
 		return "advanced frame";
 	} else if(subStringMatch(verb, "clearbreaks")) {
 		debugger->clearAllBreakPoints();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.4 2005-06-22 18:30:43 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.5 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -65,7 +65,8 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if (setCaretPos(i))
   {
     draw();
-    _boss->instance()->frameBuffer().refresh();
+    // TODO - dirty rectangle
+    _boss->instance()->frameBuffer().refreshOverlay();
   }
 }
 

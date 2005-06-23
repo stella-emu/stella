@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.9 2005-06-17 14:42:49 stephena Exp $
+// $Id: TabWidget.cxx,v 1.10 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -125,7 +125,9 @@ void TabWidget::setActiveTab(int tabID)
       _activeWidget->receivedFocus();
 
     _boss->draw();
-    _boss->instance()->frameBuffer().refresh();
+
+    // TODO - dirty rectangle
+    _boss->instance()->frameBuffer().refreshOverlay();
   }
 }
 
@@ -241,7 +243,8 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data)
         Widget::setFocusForChain(_firstWidget, _activeWidget);
 
         // Make sure the changes are shown onscreen
-        _boss->instance()->frameBuffer().refresh();
+        // TODO - dirty rectangle
+        _boss->instance()->frameBuffer().refreshOverlay();
       }
       break;
 
@@ -263,7 +266,8 @@ void TabWidget::loadConfig()
   }
 
   // Make sure changes are seen onscreen
-  instance()->frameBuffer().refresh();
+  // TODO - dirty rectangle
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

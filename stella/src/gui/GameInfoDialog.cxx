@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.6 2005-06-16 00:55:59 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.7 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -118,7 +118,7 @@ void GameInfoDialog::displayInfo()
   delete[] keyStr;
   delete[] dscStr;
 
-  instance()->frameBuffer().refresh();
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

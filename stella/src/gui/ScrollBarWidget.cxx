@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.7 2005-06-16 00:56:00 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.8 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -187,7 +187,8 @@ void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
       draw();
 
       // Refresh the FB, since the selected part has changed
-      _boss->instance()->frameBuffer().refresh();
+      // TODO - dirty rectangle
+      _boss->instance()->frameBuffer().refreshOverlay();
     }
   }
 }
@@ -228,7 +229,8 @@ void ScrollBarWidget::recalc()
     _sliderPos = UP_DOWN_BOX_HEIGHT;
   }
 
-  _boss->instance()->frameBuffer().refresh();
+  // TODO - dirty rectangle
+  _boss->instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

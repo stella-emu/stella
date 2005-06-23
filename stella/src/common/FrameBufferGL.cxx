@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.31 2005-06-21 23:01:23 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.32 2005-06-23 14:33:09 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -200,7 +200,8 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SwapBuffers();
   glClear(GL_COLOR_BUFFER_BIT);
 
-  refresh();
+  refreshTIA();
+  refreshOverlay();
   return true;
 }
 
@@ -227,7 +228,7 @@ void FrameBufferGL::drawMediaSource()
     {
       const uInt32 bufofs = bufofsY + x;
       uInt8 v = currentFrame[bufofs];
-      if(v == previousFrame[bufofs] && !theRedrawEntireFrameIndicator)
+      if(v == previousFrame[bufofs] && !theRedrawTIAIndicator)
         continue;
 
       // x << 1 is times 2 ( doubling width )
@@ -237,7 +238,7 @@ void FrameBufferGL::drawMediaSource()
   }
 
   // The frame doesn't need to be completely redrawn anymore
-  theRedrawEntireFrameIndicator = false;
+  theRedrawTIAIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -300,7 +301,7 @@ void FrameBufferGL::toggleFilter()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
 
   // The filtering has changed, so redraw the entire screen
-  theRedrawEntireFrameIndicator = true;
+  theRedrawTIAIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

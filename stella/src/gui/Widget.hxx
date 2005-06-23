@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.20 2005-06-20 18:32:12 stephena Exp $
+// $Id: Widget.hxx,v 1.21 2005-06-23 14:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,7 +67,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.20 2005-06-20 18:32:12 stephena Exp $
+  @version $Id: Widget.hxx,v 1.21 2005-06-23 14:33:12 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -98,10 +98,10 @@ class Widget : public GuiObject
     virtual bool wantsFocus() { return false; };
 
     void setFlags(int flags)    { _flags |= flags;
-                                  _boss->instance()->frameBuffer().refresh();
+                                  _boss->instance()->frameBuffer().refreshOverlay();
                                 }
     void clearFlags(int flags)  { _flags &= ~flags;
-                                  _boss->instance()->frameBuffer().refresh();
+                                  _boss->instance()->frameBuffer().refreshOverlay();
                                 }
     int getFlags() const        { return _flags; }
 
@@ -168,7 +168,7 @@ class StaticTextWidget : public Widget
     void setValue(int value);
     void setAlign(TextAlignment align)  { _align = align; }
     void setLabel(const string& label)  { _label = label;
-                                          _boss->instance()->frameBuffer().refresh();
+                                          _boss->instance()->frameBuffer().refreshOverlay();
                                         }
     const string& getLabel() const      { return _label; }
 

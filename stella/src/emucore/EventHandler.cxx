@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.75 2005-06-16 16:36:49 urchlay Exp $
+// $Id: EventHandler.cxx,v 1.76 2005-06-23 14:33:11 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -465,7 +465,8 @@ void EventHandler::poll(uInt32 time)
         break;  // SDL_QUIT
 
       case SDL_VIDEOEXPOSE:
-        myOSystem->frameBuffer().refresh();
+        myOSystem->frameBuffer().refreshTIA();
+        myOSystem->frameBuffer().refreshOverlay();
         break;  // SDL_VIDEOEXPOSE
     }
 
@@ -1269,7 +1270,7 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a Snapshot object and save the PNG
-  myOSystem->frameBuffer().refresh(true);
+  myOSystem->frameBuffer().refreshTIA(true);
   Snapshot snapshot(myOSystem->frameBuffer());
   string result = snapshot.savePNG(filename);
   myOSystem->frameBuffer().showMessage(result);
@@ -1298,7 +1299,7 @@ void EventHandler::enterMenuMode()
 {
   myState = S_MENU;
   myOSystem->menu().reStack();
-  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().refreshOverlay();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(true);
   myEvent->clear();
@@ -1308,7 +1309,7 @@ void EventHandler::enterMenuMode()
 void EventHandler::leaveMenuMode()
 {
   myState = S_EMULATE;
-  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().refreshTIA();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(false);
   myEvent->clear();
@@ -1324,7 +1325,7 @@ void EventHandler::enterDebugMode()
   myState = S_DEBUGGER;
   myOSystem->createFrameBuffer();
   myOSystem->debugger().reStack();
-  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().refreshOverlay();
   myOSystem->frameBuffer().setCursorState();
   myEvent->clear();
 
@@ -1337,7 +1338,7 @@ void EventHandler::leaveDebugMode()
 {
   myState = S_EMULATE;
   myOSystem->createFrameBuffer();
-  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().refreshTIA();
   myOSystem->frameBuffer().setCursorState();
   myEvent->clear();
 

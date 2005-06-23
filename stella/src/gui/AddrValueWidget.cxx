@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.6 2005-06-22 18:30:43 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.7 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -143,7 +143,9 @@ void AddrValueWidget::handleMouseDown(int x, int y, int button, int clickCount)
       abortEditMode();
     _selectedItem = newSelectedItem;
     sendCommand(kAVSelectionChangedCmd, _selectedItem);
-    instance()->frameBuffer().refresh();
+
+    // TODO - dirty rectangle
+    instance()->frameBuffer().refreshOverlay();
   }
 	
   // TODO: Determine where inside the string the user clicked and place the
@@ -261,7 +263,8 @@ bool AddrValueWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     // also draw scrollbar
     _scrollBar->draw();
 
-    instance()->frameBuffer().refresh();
+    // TODO - dirty rectangle
+    instance()->frameBuffer().refreshOverlay();
   }
 
   _currentKeyDown = keycode;

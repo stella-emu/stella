@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.3 2005-06-22 18:30:43 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.4 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -221,7 +221,8 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
 */
   }
 
-  instance()->frameBuffer().refresh();
+  // TODO - dirty rect, or is it necessary here?
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

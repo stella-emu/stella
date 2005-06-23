@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.12 2005-06-16 00:56:00 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.13 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -177,7 +177,8 @@ void PopUpDialog::setSelection(int item)
     if(item >= 0)
       drawMenuEntry(item, true);
 
-    _popUpBoss->instance()->frameBuffer().refresh();
+    // TODO - dirty rectangle
+    _popUpBoss->instance()->frameBuffer().refreshOverlay();
   }
 }
 

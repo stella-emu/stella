@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.27 2005-06-21 18:46:33 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.28 2005-06-23 14:33:10 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -96,7 +96,8 @@ bool FrameBufferSoft::createScreen()
     return false;
   }
 
-  refresh();
+  refreshTIA();
+  refreshOverlay();
   return true;
 }
 
@@ -143,7 +144,7 @@ void FrameBufferSoft::drawMediaSource()
     for(uInt16 x = 0; x < width; x += 4, ++current, ++previous)
     {
       // Has something changed in this set of four pixels?
-      if((*current != *previous) || theRedrawEntireFrameIndicator)
+      if((*current != *previous) || theRedrawTIAIndicator)
       {
         uInt8* c = (uInt8*)current;
         uInt8* p = (uInt8*)previous;
@@ -152,7 +153,7 @@ void FrameBufferSoft::drawMediaSource()
         for(uInt16 i = 0; i < 4; ++i, ++c, ++p)
         {
           // See if this pixel has changed
-          if((*c != *p) || theRedrawEntireFrameIndicator)
+          if((*c != *p) || theRedrawTIAIndicator)
           {
             // Can we extend a rectangle or do we have to create a new one?
             if((currentCount != 0) && 
@@ -252,7 +253,7 @@ void FrameBufferSoft::drawMediaSource()
   }
 
   // The frame doesn't need to be completely redrawn anymore
-  theRedrawEntireFrameIndicator = false;
+  theRedrawTIAIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

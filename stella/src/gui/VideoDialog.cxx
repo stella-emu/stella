@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.16 2005-06-16 00:56:00 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.17 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -336,7 +336,7 @@ void VideoDialog::setDefaults()
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleRendererChange(0);  // 0 indicates software mode
 
-  instance()->frameBuffer().refresh();
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

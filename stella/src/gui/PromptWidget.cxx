@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.12 2005-06-23 01:10:26 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.13 2005-06-23 14:33:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -152,6 +152,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   int i;
   bool handled = true;
+  bool dirty = false;
 	
   switch (keycode)
   {
@@ -186,8 +187,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
       printPrompt();
 
-      draw();
-      instance()->frameBuffer().refresh();
+      dirty = true;
       break;
     }
 
@@ -196,14 +196,12 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         killChar(-1);
 
       scrollToCurrent();
-      draw();  // FIXME - not nice to redraw the full console just for one char!
-      instance()->frameBuffer().refresh();
+      dirty = true;
       break;
 
     case 127:
       killChar(+1);
-      draw();
-      instance()->frameBuffer().refresh();
+      dirty = true;
       break;
 
     case 256 + 24:  // pageup
@@ -217,8 +215,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         if (_scrollLine < _firstLineInBuffer + _linesPerPage - 1)
           _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
         updateScrollBuffer();
-        draw();
-        instance()->frameBuffer().refresh();
+
+        dirty = true;
       }
       break;
 
@@ -233,8 +231,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         if (_scrollLine > _promptEndPos / _lineWidth)
           _scrollLine = _promptEndPos / _lineWidth;
         updateScrollBuffer();
-        draw();
-        instance()->frameBuffer().refresh();
+
+        dirty = true;
       }
       break;
 
@@ -247,8 +245,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       else
         _currentPos = _promptStartPos;
 
-      draw();
-      instance()->frameBuffer().refresh();
+      dirty = true;
       break;
 
     case 256 + 23:  // end
@@ -262,8 +259,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       else
         _currentPos = _promptEndPos;
 
-      draw();
-      instance()->frameBuffer().refresh();
+      dirty = true;
       break;
 
     case 273:  // cursor up
@@ -274,8 +270,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
         _scrollLine -= 1;
         updateScrollBuffer();
-        draw();
-        instance()->frameBuffer().refresh();
+
+        dirty = true;
       }
       else
         historyScroll(+1);
@@ -290,8 +286,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
         _scrollLine += 1;
         updateScrollBuffer();
-        draw();
-        instance()->frameBuffer().refresh();
+
+        dirty = true;
       }
       else
         historyScroll(-1);
@@ -300,15 +296,15 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     case 275:  // cursor right
       if (_currentPos < _promptEndPos)
         _currentPos++;
-      draw();
-      instance()->frameBuffer().refresh();
+
+      dirty = true;
       break;
 
     case 276:  // cursor left
       if (_currentPos > _promptStartPos)
         _currentPos--;
-      draw();
-      instance()->frameBuffer().refresh();
+
+      dirty = true;
       break;
 
     default:
@@ -330,6 +326,13 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       else
         handled = false;
       break;
+  }
+
+  if(dirty)
+  {
+    draw();
+    // TODO - dirty rectangle
+    instance()->frameBuffer().refreshOverlay();
   }
 
   return handled;
@@ -361,7 +364,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd, int data)
       {
         _scrollLine = newPos;
         draw();
-        instance()->frameBuffer().refresh();
+        instance()->frameBuffer().refreshOverlay();
       }
       break;
   }
@@ -408,7 +411,7 @@ void PromptWidget::specialKeys(int keycode)
   if(handled)
   {
     draw();
-    instance()->frameBuffer().refresh();
+    instance()->frameBuffer().refreshOverlay();
   }
 }
 
@@ -544,7 +547,8 @@ void PromptWidget::historyScroll(int direction)
   scrollToCurrent();
 
   draw();
-  instance()->frameBuffer().refresh();
+  // TODO - dirty rectangle
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -615,7 +619,8 @@ void PromptWidget::putchar(int c)
   putcharIntern(c);
 
   draw();  // FIXME - not nice to redraw the full console just for one char!
-  instance()->frameBuffer().refresh();
+  // TODO - dirty rectangle
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -648,7 +653,8 @@ void PromptWidget::print(const char *str)
     putcharIntern(*str++);
 
   draw();
-  instance()->frameBuffer().refresh();
+  // TODO - dirty rectangle
+  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

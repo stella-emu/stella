@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.41 2005-06-17 17:34:01 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.42 2005-06-23 14:33:11 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -28,8 +28,8 @@
 #include "Font.hxx"
 #include "GuiUtils.hxx"
 
-class Console;
 class OSystem;
+class Console;
 
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -46,7 +46,7 @@ enum TextAlignment {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.41 2005-06-17 17:34:01 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.42 2005-06-23 14:33:11 stephena Exp $
 */
 class FrameBuffer
 {
@@ -125,25 +125,24 @@ class FrameBuffer
     void pause(bool status);
 
     /**
-      Indicates that the window contents are dirty, and certain areas need
+      Indicates that the TIA area is dirty, and certain areas need
       to be redrawn.
 
       @param now  Determine if the refresh should be done right away or in
                   the next frame
     */
-    void refresh(bool now = false)
-    {
-//      cerr << "refresh() " << myNumRedraws++ << endl;
-      theRedrawEntireFrameIndicator = true;
-      theOverlayChangedIndicator = true;
-      myOverlayRedraws = 2;
-      if(now) { myMessageTime = 0; update(); }
-    }
+    void refreshTIA(bool now = false);
+
+    /**
+      Indicates that the overlay area is dirty, and certain areas need
+      to be redrawn.
+    */
+    void refreshOverlay(bool now = false);
 
     /**
       Indicates that the emulation should advance one frame.
     */
-    void advance() { theFrameAdvanceIndicator = true; }
+    void advance(int frames) { theFrameAdvanceIndicator = frames; }
 
     /**
       Toggles between fullscreen and window mode.
@@ -411,11 +410,8 @@ class FrameBuffer
     // Dimensions of the desktop area
     SDL_Rect myDesktopDim;
 
-    // Indicates if the entire frame should be redrawn
-    bool theRedrawEntireFrameIndicator;
-
-    // Indicates if the emulation should advance by one frame
-    bool theFrameAdvanceIndicator;
+    // Indicates if the TIA area should be redrawn
+    bool theRedrawTIAIndicator;
 
     // The SDL video buffer
     SDL_Surface* myScreen;
@@ -451,17 +447,20 @@ class FrameBuffer
     // Indicates the current pause status
     bool myPauseStatus;
 
-    // Indicates if the menus should be redrawn
-    bool theOverlayChangedIndicator;
+    // Indicates if the overlay area should be redrawn
+    bool theRedrawOverlayIndicator;
+
+    // Number of times menu have been drawn
+    int myOverlayRedraws;
+
+    // Indicates how many frames the emulation should advance
+    int theFrameAdvanceIndicator;
 
     // Message timer
     Int32 myMessageTime;
 
     // Message text
     string myMessageText;
-
-    // Number of times menu have been drawn
-    uInt32 myOverlayRedraws;
 
     // Indicates how many times the framebuffer has been redrawn
     // Used only for debugging purposes

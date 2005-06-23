@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.46 2005-06-17 17:34:01 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.47 2005-06-23 14:33:11 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -37,17 +37,17 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem* osystem)
    :  myOSystem(osystem),
-      theRedrawEntireFrameIndicator(true),
-      theFrameAdvanceIndicator(false),
+      theRedrawTIAIndicator(true),
       theZoomLevel(2),
       theMaxZoomLevel(2),
       theAspectRatio(1.0),
       myFrameRate(0),
       myPauseStatus(false),
-      theOverlayChangedIndicator(false),
+      theRedrawOverlayIndicator(false),
+      myOverlayRedraws(2),
+      theFrameAdvanceIndicator(0),
       myMessageTime(0),
       myMessageText(""),
-      myOverlayRedraws(2),
       myNumRedraws(0)
 {
   // Fill the GUI colors array
@@ -150,7 +150,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   // Erase any messages from a previous run
   myMessageTime = 0;
-  theRedrawEntireFrameIndicator = true;
+  theRedrawTIAIndicator = true; //FIX
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,7 +191,7 @@ void FrameBuffer::update()
 
           // Erase this message on next update
           if(myMessageTime == 0)
-            theRedrawEntireFrameIndicator = true;
+            theRedrawTIAIndicator = true; // FIX
         }
       }
       break;  // S_EMULATE
@@ -200,11 +200,11 @@ void FrameBuffer::update()
     case EventHandler::S_MENU:
     {
       // Only update the screen if it's been invalidated
-      if(theRedrawEntireFrameIndicator)
+      if(theRedrawTIAIndicator)
         drawMediaSource();
 
       // Only update the overlay if it's changed  
-      if(theOverlayChangedIndicator)
+      if(theRedrawOverlayIndicator)
       {
         // Then overlay any menu items
         myOSystem->menu().draw();
@@ -215,7 +215,7 @@ void FrameBuffer::update()
         // menus at least twice (so they'll be in both buffers)
         // Otherwise, we get horrible flickering
         myOverlayRedraws--;
-        theOverlayChangedIndicator = (myOverlayRedraws != 0);
+        theRedrawOverlayIndicator = (myOverlayRedraws != 0);
       }
       break;
     }
@@ -223,13 +223,10 @@ void FrameBuffer::update()
     case EventHandler::S_LAUNCHER:
     {
       // Only update the screen if it's been invalidated or the overlay have changed  
-      if(theRedrawEntireFrameIndicator || theOverlayChangedIndicator)
+      if(theRedrawOverlayIndicator)
       {
         // Overlay the ROM launcher
         myOSystem->launcher().draw();
-
-        // Now the screen is up to date
-        theRedrawEntireFrameIndicator = false;
 
         // This is a performance hack to only draw the overlay when necessary
         // Software mode is single-buffered, so we don't have to worry
@@ -237,27 +234,29 @@ void FrameBuffer::update()
         // menus at least twice (so they'll be in both buffers)
         // Otherwise, we get horrible flickering
         myOverlayRedraws--;
-        theOverlayChangedIndicator = (myOverlayRedraws != 0);
+        theRedrawOverlayIndicator = (myOverlayRedraws != 0);
       }
       break;
     }
 
     case EventHandler::S_DEBUGGER:
+    {
       // Get one frames' worth of data
-      if(theFrameAdvanceIndicator)
+      bool advance = false;
+      if(theFrameAdvanceIndicator > 0)
       {
         myOSystem->console().mediaSource().update();
-        theRedrawEntireFrameIndicator = true;  // do the next section of code
-        theOverlayChangedIndicator = true;  // do this just to be sure
-        theFrameAdvanceIndicator = false;
+        advance = true;
+        --theFrameAdvanceIndicator;
       }
 
-      // Only update the screen if it's been invalidated
-      if(theRedrawEntireFrameIndicator)
+      // Only update the screen if it's been invalidated or we're in
+      // frame advance mode
+      if(advance || theRedrawTIAIndicator)
         drawMediaSource();
 
       // Only update the overlay if it's changed  
-      if(theOverlayChangedIndicator)
+      if(theRedrawOverlayIndicator)
       {
         // Overlay the ROM launcher
         myOSystem->debugger().draw();
@@ -268,9 +267,10 @@ void FrameBuffer::update()
         // menus at least twice (so they'll be in both buffers)
         // Otherwise, we get horrible flickering
         myOverlayRedraws--;
-        theOverlayChangedIndicator = (myOverlayRedraws != 0);
+        theRedrawOverlayIndicator = (myOverlayRedraws != 0);
       }
       break;  // S_DEBUGGER
+    }
 
     case EventHandler::S_NONE:
       return;
@@ -282,11 +282,35 @@ void FrameBuffer::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::refreshTIA(bool now)
+{
+//  cerr << "refreshTIA() " << myNumRedraws++ << endl;
+  theRedrawTIAIndicator = true;
+  if(now)
+  {
+    myMessageTime = 0;
+    update();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::refreshOverlay(bool now)
+{
+//  cerr << "refreshOverlay()\n";
+  if(myOSystem->eventHandler().state() == EventHandler::S_MENU)
+    refreshTIA(now);
+
+  theRedrawOverlayIndicator = true;
+  myOverlayRedraws = 2;
+  if(now) update();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message)
 {
   myMessageText = message;
   myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
-  theRedrawEntireFrameIndicator = true;
+  theRedrawTIAIndicator = true; // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -309,7 +333,7 @@ void FrameBuffer::setPalette(const uInt32* palette)
     myPalette[i] = mapRGB(r, g, b);
   }
 
-  theRedrawEntireFrameIndicator = true;
+  theRedrawTIAIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

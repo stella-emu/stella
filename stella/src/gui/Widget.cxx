@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.18 2005-06-16 22:18:02 stephena Exp $
+// $Id: Widget.cxx,v 1.19 2005-06-23 14:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -339,8 +339,8 @@ void StaticTextWidget::setValue(int value)
   _label = buf;
 
   // Refresh the screen when the text has changed
-  // TODO - eventually, this should be a dirty rectangle
-  _boss->instance()->frameBuffer().refresh();
+  // TODO - create dirty rectangle
+  _boss->instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -421,8 +421,8 @@ void CheckboxWidget::setState(bool state)
   sendCommand(_cmd, _state);
 
   // Refresh the screen after the checkbox is drawn
-  // TODO - eventually, this should be a dirty rectangle
-  _boss->instance()->frameBuffer().refresh();
+  // TODO - create dirty rectangle
+  _boss->instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -480,8 +480,8 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
       sendCommand(_cmd, _value);
     }
     // Refresh the screen while the slider is being redrawn
-    // TODO - eventually, this should be a dirty rectangle
-    _boss->instance()->frameBuffer().refresh();
+    // TODO - create dirty rectangle
+    _boss->instance()->frameBuffer().refreshOverlay();
   }
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.10 2005-06-16 00:55:59 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.11 2005-06-23 14:33:11 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -86,7 +86,7 @@ void DialogContainer::draw()
 void DialogContainer::addDialog(Dialog* d)
 {
   myDialogStack.push(d);
-  myOSystem->frameBuffer().refresh();
+  myOSystem->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,7 +95,7 @@ void DialogContainer::removeDialog()
   if(!myDialogStack.empty())
   {
     myDialogStack.pop();
-    myOSystem->frameBuffer().refresh();
+    myOSystem->frameBuffer().refreshOverlay();
   }
 }
 

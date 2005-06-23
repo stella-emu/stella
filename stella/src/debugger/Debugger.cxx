@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.30 2005-06-23 02:56:45 urchlay Exp $
+// $Id: Debugger.cxx,v 1.31 2005-06-23 14:33:10 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -568,9 +568,8 @@ string Debugger::disassemble(int start, int lines) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::nextFrame() {
-  myOSystem->frameBuffer().advance();
-  myOSystem->frameBuffer().refresh(true); // Stephen, does this break anything? --Brian
+void Debugger::nextFrame(int frames) {
+  myOSystem->frameBuffer().advance(frames);
   myBaseDialog->loadConfig();
 }
 
