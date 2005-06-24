@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.32 2005-06-23 18:11:58 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.33 2005-06-24 12:10:31 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -85,9 +85,11 @@ int DebuggerParser::decipher_arg(const string &str) {
 
 	if(arg.substr(0, 1) == "%") {
 		bin = true;
+		dec = false;
 		arg.erase(0, 1);
 	} else if(arg.substr(0, 1) == "#") {
 		dec = true;
+		bin = false;
 		arg.erase(0, 1);
 	} else if(arg.substr(0, 1) == "$") {
 		dec = false;
