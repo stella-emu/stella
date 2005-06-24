@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.30 2005-06-24 13:51:57 urchlay Exp $
+// $Id: Debugger.hxx,v 1.31 2005-06-24 16:36:41 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.30 2005-06-24 13:51:57 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.31 2005-06-24 16:36:41 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -124,6 +124,14 @@ class Debugger : public DialogContainer
       static char buf[17];
       return to_bin(dec, 16, buf);
     }
+
+	 static unsigned char set_bit(unsigned char input, int bit, bool value) {
+		 if(value)
+			 return input | (1 << bit);
+		 else
+			 return input & (~(1 << bit));
+	 }
+
 
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
@@ -198,6 +206,13 @@ class Debugger : public DialogContainer
     void toggleI();
     void toggleZ();
     void toggleC();
+    void setN(bool value);
+    void setV(bool value);
+    void setB(bool value);
+    void setD(bool value);
+    void setI(bool value);
+    void setZ(bool value);
+    void setC(bool value);
     void reset();
     void autoLoadSymbols(string file);
     void nextFrame(int frames);

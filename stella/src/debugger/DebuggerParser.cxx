@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.33 2005-06-24 12:10:31 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.34 2005-06-24 16:36:41 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -448,15 +448,40 @@ string DebuggerParser::run(const string& command) {
 		else
 			return "one argument required";
 	} else if(subStringMatch(verb, "c")) {
-		debugger->toggleC();
+		if(argCount == 0)
+			debugger->toggleC();
+		else if(argCount == 1)
+			debugger->setC(args[0]);
+		else
+			return "0 or 1 arguments required";
 	} else if(subStringMatch(verb, "z")) {
-		debugger->toggleZ();
+		if(argCount == 0)
+			debugger->toggleZ();
+		else if(argCount == 1)
+			debugger->setZ(args[0]);
+		else
+			return "0 or 1 arguments required";
 	} else if(subStringMatch(verb, "n")) {
-		debugger->toggleN();
+		if(argCount == 0)
+			debugger->toggleN();
+		else if(argCount == 1)
+			debugger->setN(args[0]);
+		else
+			return "0 or 1 arguments required";
 	} else if(subStringMatch(verb, "v")) {
-		debugger->toggleV();
+		if(argCount == 0)
+			debugger->toggleV();
+		else if(argCount == 1)
+			debugger->setV(args[0]);
+		else
+			return "0 or 1 arguments required";
 	} else if(subStringMatch(verb, "d")) {
-		debugger->toggleD();
+		if(argCount == 0)
+			debugger->toggleD();
+		else if(argCount == 1)
+			debugger->setD(args[0]);
+		else
+			return "0 or 1 arguments required";
 	} else if(subStringMatch(verb, "pc")) {
       if(argCount == 1)
 			debugger->setPC(args[0]);
@@ -652,11 +677,13 @@ string DebuggerParser::run(const string& command) {
 			"break        - Set/clear breakpoint at current PC\n"
 			"break xx     - Set/clear breakpoint at address xx\n"
 			"c            - Toggle Carry Flag\n"
+			"c xx         - Set Carry Flag to value xx (0 or 1)\n"
 			"*cartinfo     - Show cartridge information\n"
 			"clearbreaks  - Clear all breakpoints\n"
 			"cleartraps   - Clear all traps\n"
 			"clearwatches - Clear all watches\n"
 			"d            - Toggle Decimal Flag\n"
+			"d xx         - Set Decimal Flag to value xx (0 or 1)\n"
 			"define ll xx - Define label ll with value xx\n"
 			"delwatch xx  - Delete watch xx\n"
 			"disasm       - Disassemble (from current PC)\n"
@@ -670,6 +697,7 @@ string DebuggerParser::run(const string& command) {
 			"listsym      - List all currently defined symbols\n"
 			"loadsym f    - Load DASM symbols from file f\n"
 			"n            - Toggle Negative Flag\n"
+			"n xx         - Set Negative Flag to value xx (0 or 1)\n"
 			"pc xx        - Set Program Counter to xx\n"
 			"print xx     - Evaluate and print expression xx in hex/decimal/binary\n"
 			//"poke xx yy   - Write data yy to address xx (may be ROM, TIA, etc)\n"
@@ -689,10 +717,12 @@ string DebuggerParser::run(const string& command) {
 			"trapwrite xx - Trap any write access to location xx\n"
 			"undef ll     - Undefine label ll (if defined)\n"
 			"v            - Toggle Overflow Flag\n"
+			"v xx         - Set Overflow Flag to value xx (0 or 1)\n"
 			"watch xx     - Print contents of location xx before every prompt\n"
 			"x xx         - Set X register to xx\n"
 			"y xx         - Set Y register to xx\n"
 			"z            - Toggle Zero Flag\n"
+			"z xx         - Set Zero Flag to value xx (0 or 1)\n"
 			;
 	} else {
 		return "unimplemented command (try \"help\")";

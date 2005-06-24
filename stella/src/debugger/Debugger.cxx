@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.33 2005-06-24 13:51:55 urchlay Exp $
+// $Id: Debugger.cxx,v 1.34 2005-06-24 16:36:41 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -465,6 +465,51 @@ void Debugger::toggleV() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleN() {
   myDebugger->ps( myDebugger->ps() ^ 0x80 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // NV-BDIZC
+void Debugger::setC(bool value) {
+	myDebugger->ps( set_bit(myDebugger->ps(), 0, value) );
+  //	myDebugger->ps( myDebugger->ps() ^ 0x01 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setZ(bool value) {
+	myDebugger->ps( set_bit(myDebugger->ps(), 1, value) );
+  //	myDebugger->ps( myDebugger->ps() ^ 0x02 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setI(bool value) {
+	myDebugger->ps( set_bit(myDebugger->ps(), 2, value) );
+  //	myDebugger->ps( myDebugger->ps() ^ 0x04 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setD(bool value) {
+	myDebugger->ps( set_bit(myDebugger->ps(), 3, value) );
+  //	myDebugger->ps( myDebugger->ps() ^ 0x08 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setB(bool value) {
+	myDebugger->ps( set_bit(myDebugger->ps(), 4, value) );
+  //	myDebugger->ps( myDebugger->ps() ^ 0x10 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setV(bool value) {
+	myDebugger->ps( set_bit(myDebugger->ps(), 6, value) );
+  //	myDebugger->ps( myDebugger->ps() ^ 0x40 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setN(bool value) {
+	myDebugger->ps( set_bit(myDebugger->ps(), 7, value) );
+  //	myDebugger->ps( myDebugger->ps() ^ 0x80 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
