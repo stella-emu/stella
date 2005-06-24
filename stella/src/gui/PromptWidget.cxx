@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.13 2005-06-23 14:33:11 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.14 2005-06-24 00:03:38 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,6 +30,7 @@
 #include "DebuggerDialog.hxx"
 
 #include "PromptWidget.hxx"
+#include "EquateList.hxx"
 
 #define PROMPT  "> "
 
@@ -189,6 +190,64 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
       dirty = true;
       break;
+    }
+
+    case 27:  // escape
+      {
+        if(_currentPos <= _promptStartPos)
+          break;
+
+        scrollToCurrent();
+        int len = _promptEndPos - _promptStartPos;
+        if(len <= 3)
+          break;
+
+        int lastSpace = -1;
+        char *str = new char[len + 1];
+        for (i = 0; i < len; i++) {
+          str[i] = buffer(_promptStartPos + i);
+          if(str[i] == ' ')
+            lastSpace = i;
+        }
+        str[len] = '\0';
+
+        if(lastSpace < 2) {
+          delete[] str;
+          break;
+        }
+
+        int oldPos = _currentPos;
+        nextLine();
+
+        int possibilities = instance()->debugger().equates()->countCompletions(str + lastSpace + 1);
+        if(possibilities < 1) {
+          delete[] str;
+          break;
+        }
+
+        const char *got = instance()->debugger().equates()->getCompletions();
+
+        if(possibilities == 1) {
+          // add to buffer as though user typed it (plus a space)
+          _currentPos = _promptStartPos + lastSpace + 1;
+          while(*got != '\0') {
+            _buffer[_currentPos++] = *got++;
+          }
+          _buffer[_currentPos++] = ' ';
+          _promptEndPos = _currentPos;
+        } else {
+          // add to buffer as-is, then add PROMPT plus whatever the user's typed
+          print(got);
+          print("\n");
+          print(PROMPT);
+          print(str);
+          int offset = _currentPos - oldPos;
+          _promptStartPos += offset;
+          _promptEndPos += offset;
+        }
+        draw();
+        delete[] str;
+        break;
     }
 
     case 8:  // backspace

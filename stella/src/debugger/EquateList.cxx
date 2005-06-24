@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.14 2005-06-23 01:10:25 urchlay Exp $
+// $Id: EquateList.cxx,v 1.15 2005-06-24 00:03:39 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -306,4 +306,26 @@ string EquateList::dumpAll() {
 		}
 	}
 	return ret;
+}
+
+int EquateList::countCompletions(const char *in) {
+	int count = 0;
+	completions = "";
+
+	cerr << "Attempting to complete \"" << in << "\"" << endl;
+	for(int i=0; i<currentSize; i++) {
+		if(ourVcsEquates[i].address != -1) {
+			const char *l = ourVcsEquates[i].label;
+			if(STR_N_CASE_CMP(l, in, strlen(in)) == 0) {
+				if(count++) completions += "  ";
+				completions += l;
+			}
+		}
+	}
+	cerr << "Found " << count << " label(s):" << endl << completions << endl;
+	return count;
+}
+
+const char *EquateList::getCompletions() {
+	return completions.c_str();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.8 2005-06-23 01:10:25 urchlay Exp $
+// $Id: EquateList.hxx,v 1.9 2005-06-24 00:03:39 urchlay Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
@@ -38,12 +38,15 @@ class EquateList {
 		bool undefine(string& label);
 		bool undefine(const char *lbl);
 		string dumpAll();
+		int countCompletions(const char *in);
+		const char *getCompletions();
 
 	private:
 		int calcSize();
 		int parse4hex(char *c);
 		string extractLabel(char *c);
 		int extractValue(char *c);
+      string completions;
 
 	private:
 		Equates ourVcsEquates;
