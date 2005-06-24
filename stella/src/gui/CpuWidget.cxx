@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.5 2005-06-23 18:11:59 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.6 2005-06-24 17:46:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,6 +41,16 @@ enum {
   kNumRegs
 };
 
+enum {
+  kPSRegN = 0,
+  kPSRegV = 1,
+  kPSRegB = 3,
+  kPSRegD = 4,
+  kPSRegI = 5,
+  kPSRegZ = 6,
+  kPSRegC = 7
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
@@ -49,7 +59,6 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   int xpos   = 10;
   int ypos   = 10;
   int lwidth = 20;
-//  const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
   const GUI::Font& font = instance()->consoleFont();
 
   // Create a 1x5 grid with labels for the CPU registers
@@ -118,44 +127,6 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
     on.push_back(onstr[i]);
   }
   myPSRegister->setList(off, on);
-
-
-
-/*
-  // Add some buttons for common actions
-  ButtonWidget* b;
-  xpos = vWidth + 10;  ypos = 20;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "0", kRZeroCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Inv", kRInvertCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "++", kRIncCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "<<", kRShiftLCmd, 0);
-  b->setTarget(this);
-
-  xpos = vWidth + 30 + 10;  ypos = 20;
-//  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "", kRCmd, 0);
-//  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Neg", kRNegateCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "--", kRDecCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kRShiftRCmd, 0);
-  b->setTarget(this);
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,7 +138,7 @@ CpuWidget::~CpuWidget()
 void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
 {
   int addr, value;
-//  unsigned char byte;
+  Debugger& dbg = instance()->debugger();
 
   switch(cmd)
   {
@@ -178,71 +149,62 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
       switch(addr)
       {
         case kPCRegAddr:
-        instance()->debugger().setPC(value);
+        dbg.setPC(value);
         break;
 
         case kSPRegAddr:
-        instance()->debugger().setSP(value);
+        dbg.setSP(value);
         break;
 
         case kARegAddr:
-        instance()->debugger().setA(value);
+        dbg.setA(value);
         break;
 
         case kXRegAddr:
-        instance()->debugger().setX(value);
+        dbg.setX(value);
         break;
 
         case kYRegAddr:
-        instance()->debugger().setY(value);
+        dbg.setY(value);
         break;
       }
       break;
 
     case kTBItemDataChangedCmd:
-      cerr << "ps bit changed\n";
-      break;
-/*
-    case kRZeroCmd:
-      myRamGrid->setSelectedValue(0);
-      break;
+    {
+      bool state = myPSRegister->getSelectedState();
 
-    case kRInvertCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte = ~byte;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
+      switch(data)
+      {
+        case kPSRegN:
+          dbg.setN(state);
+          break;
 
-    case kRNegateCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte = (~byte) + 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
+        case kPSRegV:
+          dbg.setV(state);
+          break;
 
-    case kRIncCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte += 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
+        case kPSRegB:
+          dbg.setB(state);
+          break;
 
-    case kRDecCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte -= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
+        case kPSRegD:
+          dbg.setD(state);
+          break;
 
-    case kRShiftLCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte <<= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
+        case kPSRegI:
+          dbg.setI(state);
+          break;
 
-    case kRShiftRCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte >>= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-*/
+        case kPSRegZ:
+          dbg.setZ(state);
+          break;
+
+        case kPSRegC:
+          dbg.setC(state);
+          break;
+      }
+    }
   }
 
   // TODO - dirty rect, or is it necessary here?
