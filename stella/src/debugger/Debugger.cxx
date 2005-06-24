@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.32 2005-06-23 18:11:58 stephena Exp $
+// $Id: Debugger.cxx,v 1.33 2005-06-24 13:51:55 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -443,8 +443,18 @@ void Debugger::toggleZ() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleI() {
+  myDebugger->ps( myDebugger->ps() ^ 0x04 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleD() {
   myDebugger->ps( myDebugger->ps() ^ 0x08 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleB() {
+  myDebugger->ps( myDebugger->ps() ^ 0x10 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
