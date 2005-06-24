@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.14 2005-06-24 00:03:38 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.15 2005-06-24 12:01:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -192,7 +192,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
     }
 
-    case 27:  // escape
+    case 27:  // escape  FIXME - possibly remove this one?
+    case 9:   // tab
       {
         if(_currentPos <= _promptStartPos)
           break;

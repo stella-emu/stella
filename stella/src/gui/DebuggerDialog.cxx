@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.17 2005-06-23 14:33:11 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.18 2005-06-24 12:01:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -106,7 +106,16 @@ void DebuggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  myTab->handleKeyDown(ascii, keycode, modifiers);
+  // Doing this means we disallow 'Alt xxx' events to any widget in the tabset
+  if(instance()->eventHandler().kbdAlt(modifiers))
+  {
+    if(ascii == 's')
+      doStep();
+    else if(ascii == 't')
+      doTrace();
+  }
+  else
+    myTab->handleKeyDown(ascii, keycode, modifiers);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,27 +126,51 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd, int data)
   switch(cmd)
   {
     case kDDStepCmd:
-      instance()->debugger().step();
-      myTab->loadConfig();
+      doStep();
       break;
 
     case kDDTraceCmd:
-      instance()->debugger().trace();
-      myTab->loadConfig();
+      doTrace();
       break;
 
     case kDDAdvCmd:
-      instance()->debugger().nextFrame(1);
-      myTab->loadConfig();
+      doAdvance();
       break;
 
     case kDDExitCmd:
-      instance()->debugger().quit();
+      doExit();
       break;
 
     default:
       Dialog::handleCommand(sender, cmd, data);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doStep()
+{
+  instance()->debugger().step();
+  myTab->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doTrace()
+{
+  instance()->debugger().trace();
+  myTab->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doAdvance()
+{
+  instance()->debugger().nextFrame(1);
+  myTab->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doExit()
+{
+  instance()->debugger().quit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
