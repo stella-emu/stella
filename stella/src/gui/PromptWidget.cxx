@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.15 2005-06-24 12:01:27 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.16 2005-06-25 01:13:00 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -217,14 +217,13 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           break;
         }
 
-        int oldPos = _currentPos;
-        nextLine();
-
         int possibilities = instance()->debugger().equates()->countCompletions(str + lastSpace + 1);
         if(possibilities < 1) {
           delete[] str;
           break;
         }
+
+        nextLine();
 
         const char *got = instance()->debugger().equates()->getCompletions();
 
@@ -232,19 +231,27 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           // add to buffer as though user typed it (plus a space)
           _currentPos = _promptStartPos + lastSpace + 1;
           while(*got != '\0') {
-            _buffer[_currentPos++] = *got++;
+            putcharIntern(*got++);
           }
-          _buffer[_currentPos++] = ' ';
+          putcharIntern(' ');
           _promptEndPos = _currentPos;
         } else {
-          // add to buffer as-is, then add PROMPT plus whatever the user's typed
+          // add to buffer as-is, then add PROMPT plus whatever we have so far
+          _currentPos = _promptStartPos + lastSpace + 1;
+
+          print("\n");
           print(got);
           print("\n");
           print(PROMPT);
-          print(str);
-          int offset = _currentPos - oldPos;
-          _promptStartPos += offset;
-          _promptEndPos += offset;
+
+          _promptStartPos = _currentPos;
+
+          for(i=0; i<lastSpace; i++)
+            putcharIntern(str[i]);
+
+          putcharIntern(' ');
+          print( instance()->debugger().equates()->getCompletionPrefix() );
+          _promptEndPos = _currentPos;
         }
         draw();
         delete[] str;

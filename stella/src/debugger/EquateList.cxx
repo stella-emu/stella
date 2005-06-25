@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.15 2005-06-24 00:03:39 urchlay Exp $
+// $Id: EquateList.cxx,v 1.16 2005-06-25 01:13:00 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -182,9 +182,11 @@ bool EquateList::saveFile(string file) {
 
 	out << "--- Symbol List (sorted by symbol)" << endl;
 
-	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
+	// we don't have these pre-loaded any more.
+	// int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
+	// for(int i=hardSize; i<currentSize; i++)
 
-	for(int i=hardSize; i<currentSize; i++) {
+	for(int i=0; i<currentSize; i++) {
 		int a = ourVcsEquates[i].address;
 		if(a >= 0) {
 			sprintf(buf, "%-24s %04x                  \n", ourVcsEquates[i].label, a);
@@ -209,13 +211,19 @@ string EquateList::loadFile(string file) {
 	if(!in.is_open())
 		return "Unable to read symbols from " + file;
 
-	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
 
 	// Make sure the hard-coded equates show up first
 	ourVcsEquates.clear();
+
+	/*
+	// Don't preload these: they cause more trouble than they're worth
+	// Besides which, any sane symfile will already have them all.
+
+	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
 	for(int i=0; i<hardSize; i++) {
 		ourVcsEquates.push_back(hardCodedEquates[i]);
 	}
+	*/
 
 	while( !in.eof() ) {
 		curVal = 0;
@@ -310,22 +318,40 @@ string EquateList::dumpAll() {
 
 int EquateList::countCompletions(const char *in) {
 	int count = 0;
-	completions = "";
+	completions = compPrefix = "";
 
-	cerr << "Attempting to complete \"" << in << "\"" << endl;
+	// cerr << "Attempting to complete \"" << in << "\"" << endl;
 	for(int i=0; i<currentSize; i++) {
 		if(ourVcsEquates[i].address != -1) {
 			const char *l = ourVcsEquates[i].label;
+
 			if(STR_N_CASE_CMP(l, in, strlen(in)) == 0) {
+				if(compPrefix == "")
+					compPrefix += l;
+				else {
+					int nonMatch = 0;
+					const char *c = compPrefix.c_str();
+					while(*c != '\0' && tolower(*c) == tolower(l[nonMatch])) {
+						c++;
+						nonMatch++;
+					}
+					compPrefix.erase(nonMatch, compPrefix.length());
+					// cerr << "compPrefix==" << compPrefix << endl;
+				}
+
 				if(count++) completions += "  ";
 				completions += l;
 			}
 		}
 	}
-	cerr << "Found " << count << " label(s):" << endl << completions << endl;
+	// cerr << "Found " << count << " label(s):" << endl << completions << endl;
 	return count;
 }
 
 const char *EquateList::getCompletions() {
 	return completions.c_str();
+}
+
+const char *EquateList::getCompletionPrefix() {
+	return compPrefix.c_str();
 }
