@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.34 2005-06-24 16:36:41 urchlay Exp $
+// $Id: Debugger.cxx,v 1.35 2005-06-25 17:26:32 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -101,7 +101,7 @@ void Debugger::initializeVideo()
   userHeight = (userHeight + 3) * kDebuggerLineHeight - 8 +
                myConsole->mediaSource().height();
 
-  string title = string("Stella version ") + STELLA_VERSION + ": Debugger mode";
+  string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
   myOSystem->frameBuffer().initialize(title, kDebuggerWidth, userHeight, false);
 }
 

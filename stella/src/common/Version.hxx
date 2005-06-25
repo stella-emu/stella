@@ -13,12 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Version.hxx,v 1.2 2005-06-16 00:55:56 stephena Exp $
+// $Id: Version.hxx,v 1.3 2005-06-25 17:26:28 stephena Exp $
 //============================================================================
 
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-#define STELLA_VERSION "2.0_alpha"
+#define STELLA_VERSION "2.0alpha2"
 
 #endif

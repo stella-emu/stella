@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.59 2005-06-23 01:10:25 urchlay Exp $
+// $Id: Console.cxx,v 1.60 2005-06-25 17:26:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -47,6 +47,7 @@
 #include "Menu.hxx"
 #include "Debugger.hxx"
 #include "TIADebug.hxx"
+#include "Version.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
@@ -328,7 +329,8 @@ void Console::saveProperties(string filename, bool merge)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeVideo()
 {
-  string title = "Stella: \"" + myProperties.get("Cartridge.Name") + "\"";
+  string title = string("Stella ") + STELLA_VERSION +
+                 ": \"" + myProperties.get("Cartridge.Name") + "\"";
   myOSystem->frameBuffer().initialize(title,
                                       myMediaSource->width() << 1,
                                       myMediaSource->height());
