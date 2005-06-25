@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.16 2005-06-23 01:10:25 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.17 2005-06-25 06:27:01 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
 #define DEBUGGER_PARSER_HXX
 
 class Debugger;
+struct Command;
 
 #include "bspf.hxx"
 #include "EquateList.hxx"
@@ -75,6 +76,41 @@ class DebuggerParser
 
 		BaseFormat defaultBase;
 		StringArray watches;
+		static Command commands[];
+
+		void executeA();
+		void executeBase();
 };
+
+// TODO: put in separate header file Command.hxx
+#define kMAX_ARG_TYPES 10
+
+// These next two deserve English explanations:
+
+// pointer to DebuggerParser instance method, no args, returns void.
+typedef void (DebuggerParser::*METHOD)();
+
+// call the pointed-to method on the this object. Whew.
+#define CALL_METHOD(method) ( (this->*method)() )
+
+typedef enum {
+	kARG_WORD,        // single 16-bit value
+	kARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
+	kARG_BYTE,        // single 8-bit value
+	kARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
+	kARG_BOOL,        // 0 or 1 only
+	kARG_LABEL,       // label (need not be defined, treated as string)
+	kARG_FILE,        // filename
+	kARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
+	kARG_END_ARGS     // sentinel, occurs at end of list
+} argType;
+
+struct Command {
+	string cmdString;
+	string description;
+	argType args[kMAX_ARG_TYPES];
+	METHOD executor;
+};
+
 
 #endif

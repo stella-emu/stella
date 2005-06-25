@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.34 2005-06-24 16:36:41 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.35 2005-06-25 06:27:01 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -22,6 +22,24 @@
 #include "D6502.hxx"
 #include "EquateList.hxx"
 
+// TODO: finish this, replace run() and getArgs() with versions
+// that use this table.
+Command DebuggerParser::commands[] = {
+	{
+		"a",
+		"Set Accumulator to value xx",
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeA
+	},
+
+	{
+		"base",
+		"Set default base (hex, dec, or bin)",
+		{ kARG_BASE_SPCL, kARG_END_ARGS },
+		&DebuggerParser::executeBase
+	}
+};
+
 // Constants for argument processing
 enum {
   kIN_COMMAND,
@@ -29,12 +47,12 @@ enum {
   kIN_ARG
 };
 
-
 DebuggerParser::DebuggerParser(Debugger* d)
   	: debugger(d)
 {
 	done = false;
 	defaultBase = kBASE_16;
+
 }
 
 DebuggerParser::~DebuggerParser() {
@@ -658,6 +676,9 @@ string DebuggerParser::run(const string& command) {
 		result += "Set base ";
 		result += buf;
 		return result;
+	} else if(subStringMatch(verb, "testcall")) {
+		METHOD m = commands[0].executor;
+		CALL_METHOD(m);
 	} else if(subStringMatch(verb, "listsym")) {
 		return debugger->equateList->dumpAll();
 	} else if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
@@ -729,4 +750,11 @@ string DebuggerParser::run(const string& command) {
 	}
 
 	return result;
+}
+
+void DebuggerParser::executeA() {
+	cerr << "called executeA()" << endl;
+}
+
+void DebuggerParser::executeBase() {
 }
