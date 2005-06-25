@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.17 2005-06-25 01:25:13 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.18 2005-06-25 06:54:20 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -203,22 +203,26 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         if(len < 2) // minimum length for a command + a space is 2
           break;
 
-        int lastSpace = -1;
+        int lastDelimPos = -1;
+        char delimiter = '\0';
+
         char *str = new char[len + 1];
         for (i = 0; i < len; i++) {
           str[i] = buffer(_promptStartPos + i);
-          if(str[i] == ' ')
-            lastSpace = i;
+          if(strchr("*@<> ", str[i]) != NULL ) {
+            lastDelimPos = i;
+            delimiter = str[i];
+          }
         }
         str[len] = '\0';
 
-        if(lastSpace < 0) {
+        if(lastDelimPos < 0) {
           delete[] str;
           break;
         }
 
         EquateList *equates = instance()->debugger().equates();
-        int possibilities = equates->countCompletions(str + lastSpace + 1);
+        int possibilities = equates->countCompletions(str + lastDelimPos + 1);
         if(possibilities < 1) {
           delete[] str;
           break;
@@ -228,7 +232,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
         if(possibilities == 1) {
           // add to buffer as though user typed it (plus a space)
-          _currentPos = _promptStartPos + lastSpace + 1;
+          _currentPos = _promptStartPos + lastDelimPos + 1;
           while(*got != '\0') {
             putcharIntern(*got++);
           }
@@ -237,7 +241,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         } else {
           nextLine();
           // add to buffer as-is, then add PROMPT plus whatever we have so far
-          _currentPos = _promptStartPos + lastSpace + 1;
+          _currentPos = _promptStartPos + lastDelimPos + 1;
 
           print("\n");
           print(got);
@@ -246,10 +250,10 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
           _promptStartPos = _currentPos;
 
-          for(i=0; i<lastSpace; i++)
+          for(i=0; i<lastDelimPos; i++)
             putcharIntern(str[i]);
 
-          putcharIntern(' ');
+          putcharIntern(delimiter);
           print( equates->getCompletionPrefix() );
           _promptEndPos = _currentPos;
         }

@@ -5,7 +5,7 @@ This alpha build of Stella contains an incomplete version of the debugger.
 
 What the debugger can do:
 - Display registers and memory
-- Display TIA state (but this feature is nowhere complete)
+- Display (some) TIA state (but this feature is nowhere complete)
 - Change registers, including toggles for flags in P register
 - Single step/trace
 - Breakpoints
@@ -16,12 +16,21 @@ What the debugger can do:
 - Support for DASM symbol files (created with DASM's -s option),
   including automatically loading symbol files if they're named
   romname.sym
+- Built-in VCS.H symbols, if no symbol file is loaded
+- Symbolic names in disassembly
+- Symbolic names accepted as input
+- Tab completion for symbol names (but not for commands yet).
 - Graphical editor for RIOT RAM. Acts a lot like a spreadsheet.
-- GUI CPU state  window
+  Input in hex, with displays for label/decimal/binary for
+  currently-selected location.
+- GUI CPU state window
 - Cheat system (similar to MAME)
 - Reset the 6502
 - Input and output in hex, decimal, or binary
 - Start emulator in debugger (via command-line option "-debug")
+- Save CLI session to a text file.
+- Supports hex, decimal, and binary input and output almost everywhere.
+  (disassembly is still hex)
 
 Planned features for Stella 2.0 release:
 - Better TIA state display, with register names and GUI buttons for
@@ -32,7 +41,6 @@ Planned features for Stella 2.0 release:
 - Scanline advance (like frame advance, break at beginning
   of next scanline).
 - Support for bank switching.
-- Save CLI session to a text file.
 
 Future plans (post 2.0):
 - Advanced breakpoint support (e.g. Break when carry flag
@@ -46,8 +54,7 @@ Future plans (post 2.0):
   to reliably trigger a bug so you can debug it
 - Graphics ROM view, so you can see your sprite data (it might still
   be upside-down though :)
-- Better support for binary and decimal input and display
-- Various new GUI enhancements (label support in the RAM GUI, for one)
+- Various new GUI enhancements
 
 How to use the debugger
 -----------------------
@@ -78,11 +85,13 @@ The tabs that are implemented so far:
   Editing keys work about like you'd expect them to: Home, End, Delete,
   arrows, etc. To scroll with the keyboard, use Shift-PageUp and
   Shift-PageDown or Shift-Up and Shift-Down arrow keys. You can also
-  scroll with the mouse. Copy and paste is not supported.
+  scroll with the mouse. Copy and paste is not (yet?) supported.
 
   To see the available commands, enter "help" or "?". Most commands can
   be abbreviated: instead of "clearbreaks", you can type "clear" or
   even just "cl". However, "c" by itself is the Toggle Carry command.
+
+  Bash-style tab completion is supported for labels (see below)
 
   For now, there are some functions that only exist in the prompt. We
   intend to add GUI equivalents for all (or almost all?) of the prompt
@@ -134,10 +143,27 @@ The tabs that are implemented so far:
    The ">" is where your commands will appear as you type them.
 
 
+  - Tab completion
+
+    While entering a label, you can type a partial label name and press
+    the Tab key to attempt to auto-complete the label. If you've ever
+    used "bash", this will be immediately familiar. If not, try it: load
+    up a ROM, go to the debugger, type "print w" (but don't press Enter),
+    then hit Tab. The "w" will change to "WSYNC" (since this is the only
+    built-in label starting with a "w"). If there are multiple possible
+    completions (try with "v" instead of "w"), you'll see a list of them,
+    and your partial label will be completed as far as possible.
+
+    Tab completion works on all labels: built-in, loaded from a symbol file,
+    or set during debugging with the "define" command.
+
+    (By the time Stella 2.0 is released, completion will work on commands
+    as well as labels)
+
   - Expressions
 
     Almost every command takes a value: the "a" command takes a
-    byte to stuff into the accumulator, the "breakpoint" command
+    byte to stuff into the accumulator, the "break" command
     takes an address to set/clear a breakpoint at. These values
     can be as a hex constant ($ff, $1234), or as complex as
     "the low byte of the 16-bit value located at the address
