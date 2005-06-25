@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.19 2005-06-23 14:33:12 stephena Exp $
+// $Id: Widget.cxx,v 1.20 2005-06-25 16:35:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -91,7 +91,7 @@ void Widget::draw()
   // Indicate if this is the currently active widget
   // by drawing a box around it.
   if((_activeWidget == this) && (_flags & WIDGET_TAB_NAVIGATE))
-    fb.frameRect(_x-1, _y-1, _w+2, _h+2, kTextColorEm); // FIXME - maybe chose a better color
+    fb.frameRect(_x-1, _y-1, _w+2, _h+2, kTextColorEm, kDashLine);
 
   // Restore x/y
   if (_flags & WIDGET_BORDER) {

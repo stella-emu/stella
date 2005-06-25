@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.47 2005-06-23 14:33:11 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.48 2005-06-25 16:35:36 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -557,12 +557,38 @@ void FrameBuffer::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                            OverlayColor color)
+                            OverlayColor color, FrameStyle style)
 {
-  hLine(x,         y,         x + w - 1, color);
-  hLine(x,         y + h - 1, x + w - 1, color);
-  vLine(x,         y,         y + h - 1, color);
-  vLine(x + w - 1, y,         y + h - 1, color);
+  switch(style)
+  {
+    case kSolidLine:
+      hLine(x,         y,         x + w - 1, color);
+      hLine(x,         y + h - 1, x + w - 1, color);
+      vLine(x,         y,         y + h - 1, color);
+      vLine(x + w - 1, y,         y + h - 1, color);
+      break;
+
+    case kDashLine:
+      unsigned int i, skip, lwidth = 1;
+
+      for(i = x, skip = 1; i < x+w-1; i=i+lwidth+1, ++skip)
+      {
+        if(skip % 2)
+        {
+          hLine(i, y,         i + lwidth, color);
+          hLine(i, y + h - 1, i + lwidth, color);
+        }
+      }
+      for(i = y, skip = 1; i < y+h-1; i=i+lwidth+1, ++skip)
+      {
+        if(skip % 2)
+        {
+          vLine(x,         i, i + lwidth, color);
+          vLine(x + w - 1, i, i + lwidth, color);
+        }
+      }
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.42 2005-06-23 14:33:11 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.43 2005-06-25 16:35:36 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -33,9 +33,15 @@ class Console;
 
 // Text alignment modes for drawString()
 enum TextAlignment {
-	kTextAlignLeft,
-	kTextAlignCenter,
-	kTextAlignRight
+  kTextAlignLeft,
+  kTextAlignCenter,
+  kTextAlignRight
+};
+
+// Line types for drawing rectangular frames
+enum FrameStyle {
+  kSolidLine,
+  kDashLine
 };
 
 /**
@@ -46,7 +52,7 @@ enum TextAlignment {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.42 2005-06-23 14:33:11 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.43 2005-06-25 16:35:36 stephena Exp $
 */
 class FrameBuffer
 {
@@ -233,7 +239,7 @@ class FrameBuffer
       @param color  The color of the surrounding frame
     */
     void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                   OverlayColor color);
+                   OverlayColor color, FrameStyle style = kSolidLine);
 
     /**
       This method should be called to draw the specified string.

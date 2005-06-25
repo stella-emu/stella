@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.11 2005-06-24 12:01:27 stephena Exp $
+// $Id: TabWidget.cxx,v 1.12 2005-06-25 16:35:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -204,12 +204,6 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TabWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  // Pass the tab key to the activeWidget if we know that widget
-  // navigation won't be needed
-  bool navigateWanted = false;
-  if(_activeWidget && (_activeWidget->getFlags() & WIDGET_TAB_NAVIGATE))
-    navigateWanted = true;
-
   // Test for TAB character
   // Ctrl-Tab selects next tab
   // Shift-Ctrl-Tab selects previous tab
@@ -223,20 +217,21 @@ bool TabWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         cycleTab(-1);
       else
         cycleTab(+1);
+
+      return true;  // this key-combo is never passed to the child widget
     }
-    else if(navigateWanted)
+    else if(_activeWidget && (_activeWidget->getFlags() & WIDGET_TAB_NAVIGATE))
     {
       if(_boss->instance()->eventHandler().kbdShift(modifiers))
         cycleWidget(-1);
       else
         cycleWidget(+1);
-    }
 
-    if(navigateWanted)
-      return true;
+      return true;  // swallow tab key if the current widget wants navigation
+    }
   }
 
-  if (_activeWidget && !navigateWanted)
+  if (_activeWidget)
     return _activeWidget->handleKeyDown(ascii, keycode, modifiers);
   else
     return Widget::handleKeyDown(ascii, keycode, modifiers);
