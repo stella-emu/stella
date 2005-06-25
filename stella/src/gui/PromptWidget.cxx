@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.16 2005-06-25 01:13:00 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.17 2005-06-25 01:25:13 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -200,7 +200,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
         scrollToCurrent();
         int len = _promptEndPos - _promptStartPos;
-        if(len <= 3)
+        if(len < 2) // minimum length for a command + a space is 2
           break;
 
         int lastSpace = -1;
@@ -212,20 +212,19 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         str[len] = '\0';
 
-        if(lastSpace < 2) {
+        if(lastSpace < 0) {
           delete[] str;
           break;
         }
 
-        int possibilities = instance()->debugger().equates()->countCompletions(str + lastSpace + 1);
+        EquateList *equates = instance()->debugger().equates();
+        int possibilities = equates->countCompletions(str + lastSpace + 1);
         if(possibilities < 1) {
           delete[] str;
           break;
         }
 
-        nextLine();
-
-        const char *got = instance()->debugger().equates()->getCompletions();
+        const char *got = equates->getCompletions();
 
         if(possibilities == 1) {
           // add to buffer as though user typed it (plus a space)
@@ -236,6 +235,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           putcharIntern(' ');
           _promptEndPos = _currentPos;
         } else {
+          nextLine();
           // add to buffer as-is, then add PROMPT plus whatever we have so far
           _currentPos = _promptStartPos + lastSpace + 1;
 
@@ -250,10 +250,11 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
             putcharIntern(str[i]);
 
           putcharIntern(' ');
-          print( instance()->debugger().equates()->getCompletionPrefix() );
+          print( equates->getCompletionPrefix() );
           _promptEndPos = _currentPos;
         }
         draw();
+        instance()->frameBuffer().refreshOverlay();
         delete[] str;
         break;
     }
