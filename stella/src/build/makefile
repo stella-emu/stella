@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.106 2005-06-23 18:11:57 stephena Exp $
+## $Id: makefile,v 1.107 2005-06-26 13:08:43 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -55,7 +55,7 @@ CXX	= g++
 LD	= g++
 
 LDFLAGS  = `sdl-config --cflags`
-LDLIBS   = `sdl-config --libs`
+LDLIBS   = `sdl-config --libs` -lz
 OBJECTS  =  mainSDL.o FrameBufferSoft.o
 OPTIONS  =
 EXE_NAME =
@@ -94,7 +94,7 @@ endif
 ifdef SNAPSHOT_SUPPORT
   OBJECTS += Snapshot.o
   OPTIONS += -DSNAPSHOT_SUPPORT
-  LDLIBS  += -lpng -lz
+  LDLIBS  += -lpng
 endif
 
 ifdef DEVELOPER_SUPPORT
