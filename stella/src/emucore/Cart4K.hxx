@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4K.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: Cart4K.hxx,v 1.5 2005-06-27 15:07:54 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE4K_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   not bankswitched.
 
   @author  Bradford W. Mott
-  @version $Id: Cart4K.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: Cart4K.hxx,v 1.5 2005-06-27 15:07:54 urchlay Exp $
 */
 class Cartridge4K : public Cartridge
 {
@@ -101,6 +101,8 @@ class Cartridge4K : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
   private:
     // The 4K ROM image for the cartridge

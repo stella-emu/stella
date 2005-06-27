@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.10 2005-06-27 04:45:52 urchlay Exp $
+// $Id: Cart.cxx,v 1.11 2005-06-27 15:07:46 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -286,7 +286,7 @@ int Cartridge::bankCount() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::patch(int address, int value) {
+bool Cartridge::patch(uInt16 address, uInt8 value) {
   return false;
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.38 2005-06-27 04:45:52 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.39 2005-06-27 15:07:43 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -225,6 +225,14 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeReset
+	},
+
+	{
+		"rom",
+		"Change ROM contents",
+		true,
+		{ kARG_WORD, kARG_MULTI_BYTE },
+		&DebuggerParser::executeRom
 	},
 
 	{
@@ -1101,6 +1109,21 @@ void DebuggerParser::executeReload() {
 void DebuggerParser::executeReset() {
 	debugger->reset();
 	commandResult = "reset CPU";
+}
+
+// "rom"
+void DebuggerParser::executeRom() {
+	int addr = args[0];
+	for(int i=1; i<argCount; i++) {
+		if( !(debugger->patchROM(addr++, args[i])) ) {
+			commandResult = "patching ROM unsupported for this cart type";
+			return;
+		}
+	}
+
+	commandResult = "changed ";
+	commandResult += debugger->valueToString( args.size() - 1 );
+	commandResult += " location(s)";
 }
 
 // "run"
