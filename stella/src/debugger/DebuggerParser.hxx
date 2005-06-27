@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.17 2005-06-25 06:27:01 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.18 2005-06-27 01:36:03 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -55,6 +55,7 @@ class DebuggerParser
 
 	private:
 		bool getArgs(const string& command);
+		bool validateArgs(int cmd);
 		int conv_hex_digit(char d);
 		bool subStringMatch(const string& needle, const string& haystack);
 		string disasm();
@@ -69,6 +70,7 @@ class DebuggerParser
 		bool done;
 
 		string verb;
+		string commandResult;
 
 		IntArray args;
 		StringArray argStrings;
@@ -80,6 +82,44 @@ class DebuggerParser
 
 		void executeA();
 		void executeBase();
+		void executeBreak();
+		void executeC();
+		void executeClearbreaks();
+		void executeCleartraps();
+		void executeClearwatches();
+		void executeD();
+		void executeDefine();
+		void executeDelwatch();
+		void executeDisasm();
+		void executeDump();
+		void executeFrame();
+		void executeHelp();
+		void executeListbreaks();
+		void executeListtraps();
+		void executeListwatches();
+		void executeLoadsym();
+		void executeN();
+		void executePc();
+		void executePrint();
+		void executeRam();
+		void executeReload();
+		void executeReset();
+		void executeRun();
+		void executeS();
+		void executeSaveses();
+		void executeSavesym();
+		void executeStep();
+		void executeTia();
+		void executeTrace();
+		void executeTrap();
+		void executeTrapread();
+		void executeTrapwrite();
+		void executeUndef();
+		void executeV();
+		void executeWatch();
+		void executeX();
+		void executeY();
+		void executeZ();
 };
 
 // TODO: put in separate header file Command.hxx
@@ -103,12 +143,13 @@ typedef enum {
 	kARG_FILE,        // filename
 	kARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
 	kARG_END_ARGS     // sentinel, occurs at end of list
-} argType;
+} parameters;
 
 struct Command {
 	string cmdString;
 	string description;
-	argType args[kMAX_ARG_TYPES];
+	bool parmsRequired;
+	parameters parms[kMAX_ARG_TYPES];
 	METHOD executor;
 };
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.35 2005-06-25 06:27:01 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.36 2005-06-27 01:36:00 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -28,6 +28,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"a",
 		"Set Accumulator to value xx",
+		true,
 		{ kARG_BYTE, kARG_END_ARGS },
 		&DebuggerParser::executeA
 	},
@@ -35,9 +36,325 @@ Command DebuggerParser::commands[] = {
 	{
 		"base",
 		"Set default base (hex, dec, or bin)",
+		true,
 		{ kARG_BASE_SPCL, kARG_END_ARGS },
 		&DebuggerParser::executeBase
+	},
+
+	{
+		"break",
+		"Set/clear breakpoint at address (default=pc)",
+		false,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeBreak
+	},
+
+	{
+		"c",
+		"Carry Flag: set (to 0 or 1), or toggle (no arg)",
+		false,
+		{ kARG_BOOL, kARG_END_ARGS },
+		&DebuggerParser::executeC
+	},
+
+	{
+		"clearbreaks",
+		"Clear all breakpoints",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeClearbreaks
+	},
+
+	{
+		"cleartraps",
+		"Clear all traps",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeCleartraps
+	},
+
+	{
+		"clearwatches",
+		"Clear all watches",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeClearwatches
+	},
+
+	{
+		"d",
+		"Decimal Flag: set (to 0 or 1), or toggle (no arg)",
+		false,
+		{ kARG_BOOL, kARG_END_ARGS },
+		&DebuggerParser::executeD
+	},
+
+	{
+		"define",
+		"Define label",
+		true,
+		{ kARG_LABEL, kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeDefine
+	},
+
+	{
+		"delwatch",
+		"Delete watch",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeDelwatch
+	},
+
+	{
+		"disasm",
+		"Disassemble from address (default=pc)",
+		false,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeDisasm
+	},
+
+	{
+		"dump",
+		"Dump 128 bytes of memory at address",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeDump
+	},
+
+	{
+		"frame",
+		"Advance emulation by xx frames (default=1)",
+		false,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeFrame
+	},
+
+	// TODO: height command
+
+	{
+		"help",
+		"This cruft",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeHelp
+	},
+
+	{
+		"listbreaks",
+		"List breakpoints",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeListbreaks
+	},
+
+	{
+		"listtraps",
+		"List traps",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeListtraps
+	},
+
+	{
+		"listwatches",
+		"List watches",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeListwatches
+	},
+
+	{
+		"loadsym",
+		"Load symbol file",
+		true,
+		{ kARG_FILE, kARG_END_ARGS },
+		&DebuggerParser::executeLoadsym
+	},
+
+	{
+		"n",
+		"Negative Flag: set (to 0 or 1), or toggle (no arg)",
+		false,
+		{ kARG_BOOL, kARG_END_ARGS },
+		&DebuggerParser::executeN
+	},
+
+	{
+		"pc",
+		"Set Program Counter to address",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executePc
+	},
+
+	{
+		"print",
+		"Evaluate and print expression in hex/dec/binary",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executePrint
+	},
+
+	{
+		"ram",
+		"Show RAM contents (no args), or set RAM address xx to value yy",
+		false,
+		{ kARG_WORD, kARG_MULTI_BYTE },
+		&DebuggerParser::executeRam
+	},
+
+	{
+		"reload",
+		"Reload ROM and symbol file",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeReload
+	},
+
+	{
+		"reset",
+		"Reset 6507 to init vector (does not reset TIA, RIOT)",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeReset
+	},
+
+	{
+		"run",
+		"Exit debugger, return to emulator",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeRun
+	},
+
+	{
+		"s",
+		"Set Stack Pointer to value xx",
+		true,
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeS
+	},
+
+	{
+		"saveses",
+		"Save console session to file",
+		true,
+		{ kARG_FILE, kARG_END_ARGS },
+		&DebuggerParser::executeSaveses
+	},
+
+	{
+		"savesym",
+		"Save symbols to file",
+		true,
+		{ kARG_FILE, kARG_END_ARGS },
+		&DebuggerParser::executeSavesym
+	},
+
+	{
+		"step",
+		"Single step CPU (optionally, with count)",
+		false,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeStep
+	},
+
+	{
+		"tia",
+		"Show TIA state (NOT FINISHED YET)",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeTia
+	},
+
+	{
+		"trace",
+		"Single step CPU (optionally, with count), subroutines count as one instruction",
+		false,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeTrace
+	},
+
+	{
+		"trap",
+		"Trap read and write accesses to address",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeTrap
+	},
+
+	{
+		"trapread",
+		"Trap read accesses to address",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeTrapread
+	},
+
+	{
+		"trapwrite",
+		"Trap write accesses to address",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeTrapwrite
+	},
+
+	{
+		"undef",
+		"Undefine label (if defined)",
+		true,
+		{ kARG_LABEL, kARG_END_ARGS },
+		&DebuggerParser::executeUndef
+	},
+
+	{
+		"v",
+		"Overflow Flag: set (to 0 or 1), or toggle (no arg)",
+		false,
+		{ kARG_BOOL, kARG_END_ARGS },
+		&DebuggerParser::executeV
+	},
+
+	{
+		"watch",
+		"Print contents of address before every prompt",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeWatch
+	},
+
+	{
+		"x",
+		"Set X Register to value xx",
+		true,
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeX
+	},
+
+	{
+		"y",
+		"Set Y Register to value xx",
+		true,
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeY
+	},
+
+	{
+		"z",
+		"Zero Flag: set (to 0 or 1), or toggle (no arg)",
+		false,
+		{ kARG_BOOL, kARG_END_ARGS },
+		&DebuggerParser::executeZ
+	},
+
+	{
+		"",
+		"",
+		false,
+		{ kARG_END_ARGS },
+		NULL
 	}
+
 };
 
 // Constants for argument processing
@@ -71,7 +388,11 @@ int DebuggerParser::conv_hex_digit(char d) {
 	else return -1;
 }
 
-// Evaluate expression.
+// Evaluate expression. Expressions always evaluate to a 16-bit value if
+// they're valid, or -1 if they're not.
+
+// decipher_arg may be called by the GUI as needed. It is also called
+// internally by DebuggerParser::run()
 int DebuggerParser::decipher_arg(const string &str) {
 	bool derefByte=false, derefWord=false, lobyte=false, hibyte=false, bin=false, dec=false;
 	int result;
@@ -229,10 +550,8 @@ bool DebuggerParser::getArgs(const string& command) {
 	// Now decipher each argument, in turn.
 	for(int i=0; i<argCount; i++) {
 		int temp = decipher_arg(argStrings[i]);
-		if(temp < 0) {
-			return false;
-		}
-		args.push_back(temp);
+		args.push_back(temp); // value maybe -1, if not expression argument
+		                      // (validate_args will decide whether that's OK, not us.)
 		//cerr << "args[" << i << "] == " << args[i] << endl;
 	}
 
@@ -405,7 +724,8 @@ string DebuggerParser::trapStatus(int addr) {
 		result += "read";
 	else if(w)
 		result += "     write";
-	else result += "   none   ";
+	else
+		result += "   none   ";
 
 	char *l = debugger->equateList->getLabel(addr);
 	if(l != NULL) {
@@ -417,344 +737,407 @@ string DebuggerParser::trapStatus(int addr) {
 	return result;
 }
 
-string DebuggerParser::run(const string& command) {
-	string result;
+bool DebuggerParser::validateArgs(int cmd) {
+	// cerr << "entering validateArgs(" << cmd << ")" << endl;
+	bool required = commands[cmd].parmsRequired;
+	parameters *p = commands[cmd].parms;
 
-	if(!getArgs(command)) {
-		// commands that take filenames or other arbitrary strings go here.
-		if(subStringMatch(verb, "loadsym")) {
-			result = debugger->equateList->loadFile(argStrings[0]);
-			return result;
-		} else if(subStringMatch(verb, "savesym")) {
-			if(debugger->equateList->saveFile(argStrings[0]))
-				return "saved symbols to file " + argStrings[0];
-			else
-				return "I/O error";
-		} else if(subStringMatch(verb, "define")) {
-         int arg = decipher_arg(argStrings[1]);
-			if(arg < 0)
-				return "invalid argument";
-
-			debugger->addLabel(argStrings[0], arg);
-			return "label " + argStrings[0] + " defined as " + debugger->valueToString(arg);
-		} else if(subStringMatch(verb, "saveses")) {
-			if(debugger->prompt()->saveBuffer(argStrings[0]))
-				return "saved session to file " + argStrings[0];
-			else
-				return "I/O error";
+	if(argCount == 0) {
+		if(required) {
+			commandResult = "missing required argument(s)";
+			return false; // needed args. didn't get 'em.
 		} else {
-			return "invalid label or address";
+			return true;  // no args needed, no args got
 		}
 	}
 
-	// "verb" is the command, stripped of any arguments.
-	// In the if/else below, put shorter command names first.
-	// In case of conflicts (e.g. user enters "t", possible
-	// commands are "tia" and "trace"), try to guess which
-	// will be used more often, and put it first. The user
-	// can always disambiguate: "ti" is short for "tia", or
-	// "tr" for "trace".
+	int curCount = 0;
 
-	// TODO: de-uglify this somehow. (it may not be worth doing?)
-
-	if(subStringMatch(verb, "a")) {
-      if(argCount == 1)
-			if(args[0] <= 0xff)
-				debugger->setA(args[0]);
-			else
-				return "value out of range (must be 00 - ff)";
-		else
-			return "one argument required";
-	} else if(subStringMatch(verb, "c")) {
-		if(argCount == 0)
-			debugger->toggleC();
-		else if(argCount == 1)
-			debugger->setC(args[0]);
-		else
-			return "0 or 1 arguments required";
-	} else if(subStringMatch(verb, "z")) {
-		if(argCount == 0)
-			debugger->toggleZ();
-		else if(argCount == 1)
-			debugger->setZ(args[0]);
-		else
-			return "0 or 1 arguments required";
-	} else if(subStringMatch(verb, "n")) {
-		if(argCount == 0)
-			debugger->toggleN();
-		else if(argCount == 1)
-			debugger->setN(args[0]);
-		else
-			return "0 or 1 arguments required";
-	} else if(subStringMatch(verb, "v")) {
-		if(argCount == 0)
-			debugger->toggleV();
-		else if(argCount == 1)
-			debugger->setV(args[0]);
-		else
-			return "0 or 1 arguments required";
-	} else if(subStringMatch(verb, "d")) {
-		if(argCount == 0)
-			debugger->toggleD();
-		else if(argCount == 1)
-			debugger->setD(args[0]);
-		else
-			return "0 or 1 arguments required";
-	} else if(subStringMatch(verb, "pc")) {
-      if(argCount == 1)
-			debugger->setPC(args[0]);
-		else
-			return "one argument required";
-	} else if(subStringMatch(verb, "x")) {
-      if(argCount == 1)
-			if(args[0] <= 0xff)
-				debugger->setX(args[0]);
-			else
-				return "value out of range (must be 00 - ff)";
-		else
-			return "one argument required";
-	} else if(subStringMatch(verb, "y")) {
-      if(argCount == 1)
-			if(args[0] <= 0xff)
-				debugger->setY(args[0]);
-			else
-				return "value out of range (must be 00 - ff)";
-		else
-			return "one argument required";
-	} else if(subStringMatch(verb, "s")) {
-      if(argCount == 1)
-			if(args[0] <= 0xff)
-				debugger->setSP(args[0]);
-			else
-				return "value out of range (must be 00 - ff)";
-		else
-			return "one argument required";
-	} else if(subStringMatch(verb, "step")) {
-		char buf[12];
-		if(argCount > 0)
-			return "step takes no arguments";
-		sprintf(buf, "#%d", debugger->step());
-		result = "executed ";
-		result += buf;
-		result += " cycles";
-	} else if(subStringMatch(verb, "trace")) {
-		char buf[12];
-		if(argCount > 0)
-			return "trace takes no arguments";
-		sprintf(buf, "#%d", debugger->trace());
-		result = "executed ";
-		result += buf;
-		result += " cycles";
-	} else if(subStringMatch(verb, "ram")) {
-		if(argCount == 0)
-			result = debugger->dumpRAM(kRamStart);
-		else if(argCount == 1)
-			return "missing data (need 2 or more args)";
-		else
-			result = debugger->setRAM(args);
-	} else if(subStringMatch(verb, "tia")) {
-		result = debugger->dumpTIA();
-	} else if(subStringMatch(verb, "reset")) {
-		debugger->reset();
-	} else if(subStringMatch(verb, "reload")) {
-		debugger->reloadROM();
-		debugger->start();
-	} else if(subStringMatch(verb, "trap")) {
-		if(argCount != 1)
-			return "one argument required";
-
-		debugger->toggleReadTrap(args[0]);
-		debugger->toggleWriteTrap(args[0]);
-		return trapStatus(args[0]);
-	} else if(subStringMatch(verb, "trapwrite")) {
-		if(argCount != 1)
-			return "one argument required";
-
-		debugger->toggleWriteTrap(args[0]);
-		return trapStatus(args[0]);
-	} else if(subStringMatch(verb, "trapread")) {
-		if(argCount != 1)
-			return "one argument required";
-
-		debugger->toggleReadTrap(args[0]);
-		return trapStatus(args[0]);
-	} else if(subStringMatch(verb, "cleartraps")) {
-		debugger->clearAllTraps();
-		return "cleared all traps";
-	} else if(subStringMatch(verb, "break")) {
-		int bp = -1;
-
-		if(argCount > 1) {
-			return "zero or one arguments required";
-		} else if(argCount == 0) {
-			bp = -1;
-		} else if(argCount == 1) {
-			bp = args[0];
+	do {
+		if(argCount == curCount) {
+			return true;
 		}
 
-		debugger->toggleBreakPoint(bp);
+		int curArgInt = args[curCount];
+		string curArgStr = argStrings[curCount];
 
-		if(debugger->breakPoint(bp))
-			return "Set breakpoint";
-		else
-			return "Cleared breakpoint";
-	} else if(subStringMatch(verb, "listbreaks")) {
-		return listBreaks();
-	} else if(subStringMatch(verb, "listtraps")) {
-		return listTraps();
-	} else if(subStringMatch(verb, "disasm")) {
-		return disasm();
-	} else if(subStringMatch(verb, "frame")) {
-		int count = 1;
-		if(argCount != 0) count = args[0];
-		debugger->nextFrame(count);
-		return "advanced frame";
-	} else if(subStringMatch(verb, "clearbreaks")) {
-		debugger->clearAllBreakPoints();
-	} else if(subStringMatch(verb, "clearwatches")) {
-		delAllWatches();
-		return "cleared all watches";
-	} else if(subStringMatch(verb, "watch")) {
-		if(argCount != 1)
-			return "one argument required";
-
-		addWatch(argStrings[0]);
-	} else if(subStringMatch(verb, "delwatch")) {
-		if(argCount == 1)
-			return delWatch(args[0]);
-		else
-			return "one argument required";
-	} else if(subStringMatch(verb, "define")) {
-		return argStrings[0] + " already defined";
-	} else if(subStringMatch(verb, "undef")) {
-		if(debugger->equateList->undefine(argStrings[0]))
-			return argStrings[0] + " now undefined";
-		else
-			return "no such label";
-	} else if(subStringMatch(verb, "height")) {
-		if(argCount != 1)
-			return "one argument required";
-
-		return "This command is not yet supported. Start Stella with the -debugheight option instead.";
-/*
-		if(debugger->setHeight(args[0]))
-			//return "Stella will use the new height next time it starts.";
-			return "OK";
-		else
-			return "bad height (use 0 for default, min height #383)";
-*/
-	} else if(subStringMatch(verb, "dump")) {
-		if(argCount != 1)
-			return "one argument required";
-		else
-			return dump();
-	} else if(subStringMatch(verb, "print")) {
-		if(argCount < 1)
-			return "one or more arguments required";
-		else
-			return eval();
-	} else if(subStringMatch(verb, "base")) {
-		switch(args[0]) {
-			case 2:
-				setBase(kBASE_2);
+		switch(*p) {
+			case kARG_WORD:
+				if(curArgInt < 0 || curArgInt > 0xffff) {
+					commandResult = "invalid word argument (must be 0-$ffff)";
+					return false;
+				}
 				break;
 
-			case 10:
-				setBase(kBASE_10);
+			case kARG_BYTE:
+				if(curArgInt < 0 || curArgInt > 0xff) {
+					commandResult = "invalid byte argument (must be 0-$ff)";
+					return false;
+				}
 				break;
 
-			case 16:
-				setBase(kBASE_16);
+			case kARG_BOOL:
+				if(curArgInt != 0 && curArgInt != 1) {
+					commandResult = "invalid boolean argument (must be 0 or 1)";
+					return false;
+				}
 				break;
+
+			case kARG_BASE_SPCL:
+				if(curArgInt != 2 && curArgInt != 10 && curArgInt != 16
+					&& curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
+				{
+					commandResult = "invalid base (must be #2, #10, #16, \"bin\", \"dec\", or \"hex\")";
+					return false;
+				}
+				break;
+
+			case kARG_LABEL:
+			case kARG_FILE:
+				break; // TODO: validate these (for now any string's allowed)
+
+			case kARG_MULTI_BYTE:
+			case kARG_MULTI_WORD:
+				break; // FIXME: implement!
 
 			default:
-				return "invalid base (must be #2, #10, or #16)";
+				commandResult = "too many arguments";
+				return false;
 				break;
 		}
-		char buf[5];
-		sprintf(buf, "#%2d", args[0]);
-		result += "Set base ";
-		result += buf;
-		return result;
-	} else if(subStringMatch(verb, "testcall")) {
-		METHOD m = commands[0].executor;
-		CALL_METHOD(m);
-	} else if(subStringMatch(verb, "listsym")) {
-		return debugger->equateList->dumpAll();
-	} else if(subStringMatch(verb, "quit") || subStringMatch(verb, "run")) {
-		debugger->quit();
-		return "";
-	} else if(subStringMatch(verb, "help") || verb == "?") {
-		// please leave each option on its own line so they're
-		// easy to sort - bkw
-		return
-			"Commands are case-insensitive and may be abbreviated (e.g. \"tr\" for \"trace\").\n"
-			"Arguments are either labels or numeric constants, and may be\n"
-			"prefixed with a * to dereference, < or > for low/high byte,\n"
-			"and/or $/#/% for hex/dec/binary.\n\n"
-			"a xx         - Set Accumulator to xx\n"
-			"*bank xx      - Switch to ROM bank xx\n"
-			"base xx      - Set default input base (#2=binary, #10=decimal, #16=hex)\n"
-			"break        - Set/clear breakpoint at current PC\n"
-			"break xx     - Set/clear breakpoint at address xx\n"
-			"c            - Toggle Carry Flag\n"
-			"c xx         - Set Carry Flag to value xx (0 or 1)\n"
-			"*cartinfo     - Show cartridge information\n"
-			"clearbreaks  - Clear all breakpoints\n"
-			"cleartraps   - Clear all traps\n"
-			"clearwatches - Clear all watches\n"
-			"d            - Toggle Decimal Flag\n"
-			"d xx         - Set Decimal Flag to value xx (0 or 1)\n"
-			"define ll xx - Define label ll with value xx\n"
-			"delwatch xx  - Delete watch xx\n"
-			"disasm       - Disassemble (from current PC)\n"
-			"disasm xx    - Disassemble (from address xx)\n"
-			"dump xx      - Dump 128 bytes of memory starting at xx (may be ROM, TIA, RAM)\n"
-			"frame        - Advance to next TIA frame, then break\n"
-			"frame xx     - Advance TIA by xx frames, then break\n"
-			"height xx    - Set height of debugger window in pixels (NOT WORKING)\n"
-			"listbreaks   - List all breakpoints\n"
-			"listtraps    - List all traps\n"
-			"listsym      - List all currently defined symbols\n"
-			"loadsym f    - Load DASM symbols from file f\n"
-			"n            - Toggle Negative Flag\n"
-			"n xx         - Set Negative Flag to value xx (0 or 1)\n"
-			"pc xx        - Set Program Counter to xx\n"
-			"print xx     - Evaluate and print expression xx in hex/decimal/binary\n"
-			//"poke xx yy   - Write data yy to address xx (may be ROM, TIA, etc)\n"
-			"ram          - Show RIOT RAM contents\n"
-			"ram xx yy    - Set RAM location xx to value yy (multiple values allowed)\n"
-			"reload       - Reload ROM and symbol file (resets debugger)\n"
-			"reset        - Jump to 6502 init vector (does not reset TIA/RIOT)\n"
-			"run          - Exit debugger (back to emulator)\n"
-			"s xx         - Set Stack Pointer to xx\n"
-			"saveses f    - Save console session to file f\n"
-			"savesym f    - Save symbols to file f\n"
-			"step         - Single-step\n"
-			"tia          - Show TIA register contents (NOT FINISHED YET)\n"
-			"trace        - Single-step treating subroutine calls as 1 instruction\n"
-			"trap xx      - Trap any access to location xx (enter debugger on access)\n"
-			"trapread xx  - Trap any read access from location xx\n"
-			"trapwrite xx - Trap any write access to location xx\n"
-			"undef ll     - Undefine label ll (if defined)\n"
-			"v            - Toggle Overflow Flag\n"
-			"v xx         - Set Overflow Flag to value xx (0 or 1)\n"
-			"watch xx     - Print contents of location xx before every prompt\n"
-			"x xx         - Set X register to xx\n"
-			"y xx         - Set Y register to xx\n"
-			"z            - Toggle Zero Flag\n"
-			"z xx         - Set Zero Flag to value xx (0 or 1)\n"
-			;
-	} else {
-		return "unimplemented command (try \"help\")";
+
+		curCount++;
+
+	} while(*p++ != kARG_END_ARGS);
+
+	if(curCount < argCount) {
+		commandResult = "too many arguments";
+		return false;
 	}
 
-	return result;
+	return true;
 }
 
+// main entry point: PromptWidget calls this method.
+string DebuggerParser::run(const string& command) {
+	int i=0;
+
+	getArgs(command);
+	commandResult = "";
+
+	do {
+		if( subStringMatch(verb, commands[i].cmdString.c_str()) ) {
+			if( validateArgs(i) )
+				CALL_METHOD(commands[i].executor);
+
+			return commandResult;
+		}
+
+	} while(commands[++i].cmdString != "");
+
+	commandResult = "No such command (try \"help\")";
+	return commandResult;
+}
+
+////// executor methods for commands[] array. All are void, no args.
+
+// "a"
 void DebuggerParser::executeA() {
-	cerr << "called executeA()" << endl;
+	debugger->setA(args[0]);
 }
 
+// "base"
 void DebuggerParser::executeBase() {
+	if(args[0] == 2 || argStrings[0] == "bin")
+		setBase(kBASE_2);
+	else if(args[0] == 10 || argStrings[0] == "dec")
+		setBase(kBASE_10);
+	else if(args[0] == 16 || argStrings[0] == "hex")
+		setBase(kBASE_16);
+
+	commandResult = "default base set to ";
+	switch(defaultBase) {
+		case kBASE_2:
+			commandResult += "#2/bin";
+			break;
+
+		case kBASE_10:
+			commandResult += "#10/dec";
+			break;
+
+		case kBASE_16:
+			commandResult += "#16/hex";
+			break;
+
+		default:
+			commandResult += "UNKNOWN";
+			break;
+	}
 }
+
+// "break"
+void DebuggerParser::executeBreak() {
+	int bp;
+	if(argCount == 0)
+		bp = debugger->getPC();
+	else
+		bp = args[0];
+
+	debugger->toggleBreakPoint(bp);
+
+	if(debugger->breakPoint(bp))
+		commandResult = "Set";
+	else
+		commandResult = "Cleared";
+
+	commandResult += " breakpoint at ";
+	commandResult += debugger->valueToString(bp);
+}
+
+// "c"
+void DebuggerParser::executeC() {
+	if(argCount == 0)
+		debugger->toggleC();
+	else if(argCount == 1)
+		debugger->setC(args[0]);
+}
+
+// "clearbreaks"
+void DebuggerParser::executeClearbreaks() {
+	debugger->clearAllBreakPoints();
+	commandResult = "all breakpoints cleared";
+}
+
+// "cleartraps"
+void DebuggerParser::executeCleartraps() {
+	debugger->clearAllTraps();
+	commandResult = "all traps cleared";
+}
+
+// "clearwatches"
+void DebuggerParser::executeClearwatches() {
+	delAllWatches();
+	commandResult = "all watches cleared";
+}
+
+// "d"
+void DebuggerParser::executeD() {
+	if(argCount == 0)
+		debugger->toggleD();
+	else if(argCount == 1)
+		debugger->setD(args[0]);
+}
+
+// "define"
+void DebuggerParser::executeDefine() {
+	// TODO: check if label already defined?
+	debugger->addLabel(argStrings[0], args[1]);
+	commandResult = "label " + argStrings[0] + " defined as " + debugger->valueToString(args[1]);
+}
+
+// "delwatch"
+void DebuggerParser::executeDelwatch() {
+	commandResult = delWatch(args[0]);
+}
+
+// "disasm"
+void DebuggerParser::executeDisasm() {
+	commandResult = disasm();
+}
+
+// "dump"
+void DebuggerParser::executeDump() {
+	commandResult = dump();
+}
+
+// "help"
+void DebuggerParser::executeHelp() {
+	static char buf[256];
+	int i = 0;
+	do {
+		sprintf(buf, "%13s - %s\n",
+			commands[i].cmdString.c_str(),
+			commands[i].description.c_str());
+
+		commandResult += buf;
+	} while(commands[++i].cmdString != "");
+}
+
+// "frame"
+void DebuggerParser::executeFrame() {
+	int count = 1;
+	if(argCount != 0) count = args[0];
+	debugger->nextFrame(count);
+	commandResult = "advanced ";
+	commandResult += debugger->valueToString(count);
+	commandResult += " frame";
+	if(count != 1) commandResult += "s";
+}
+
+// "listbreaks"
+void DebuggerParser::executeListbreaks() {
+	commandResult = listBreaks();
+}
+
+// "listtraps"
+void DebuggerParser::executeListtraps() {
+	commandResult = listTraps();
+}
+
+// "listwatches"
+void DebuggerParser::executeListwatches() {
+	// commandResult = listWatches();
+	commandResult = "command not yet implemented (sorry)";
+}
+
+// "loadsym"
+void DebuggerParser::executeLoadsym() {
+	commandResult = debugger->equateList->loadFile(argStrings[0]);
+}
+
+// "n"
+void DebuggerParser::executeN() {
+	if(argCount == 0)
+		debugger->toggleN();
+	else if(argCount == 1)
+		debugger->setN(args[0]);
+}
+
+// "pc"
+void DebuggerParser::executePc() {
+	debugger->setPC(args[0]);
+}
+
+// "print"
+void DebuggerParser::executePrint() {
+	commandResult = eval();
+}
+
+// "ram"
+void DebuggerParser::executeRam() {
+	if(argCount == 0)
+		commandResult = debugger->dumpRAM(kRamStart);
+	else
+		commandResult = debugger->setRAM(args);
+}
+
+// "reload"
+void DebuggerParser::executeReload() {
+	debugger->reloadROM();
+	debugger->start();
+	commandResult = "reloaded";
+}
+
+// "reset"
+void DebuggerParser::executeReset() {
+	debugger->reset();
+	commandResult = "reset CPU";
+}
+
+// "run"
+void DebuggerParser::executeRun() {
+	debugger->quit();
+	commandResult = "exiting debugger";
+}
+
+// "s"
+void DebuggerParser::executeS() {
+	debugger->setSP(args[0]);
+}
+
+// "saveses"
+void DebuggerParser::executeSaveses() {
+	if(debugger->prompt()->saveBuffer(argStrings[0]))
+		commandResult = "saved session to file " + argStrings[0];
+	else
+		commandResult = "I/O error";
+}
+
+// "savesym"
+void DebuggerParser::executeSavesym() {
+	if(debugger->equateList->saveFile(argStrings[0]))
+		commandResult = "saved symbols to file " + argStrings[0];
+	else
+		commandResult = "I/O error";
+}
+
+// "step"
+void DebuggerParser::executeStep() {
+	int cycles = debugger->step();
+	commandResult = "executed ";
+	commandResult += debugger->valueToString(cycles);
+	commandResult += " cycles";
+}
+
+// "tia"
+void DebuggerParser::executeTia() {
+	commandResult = debugger->dumpTIA();
+}
+
+// "trace"
+void DebuggerParser::executeTrace() {
+	int cycles = debugger->trace();
+	commandResult = "executed ";
+	commandResult += debugger->valueToString(cycles);
+	commandResult += " cycles";
+}
+
+// "trap"
+void DebuggerParser::executeTrap() {
+	debugger->toggleReadTrap(args[0]);
+	debugger->toggleWriteTrap(args[0]);
+	commandResult = trapStatus(args[0]);
+}
+
+// "trapread"
+void DebuggerParser::executeTrapread() {
+	debugger->toggleReadTrap(args[0]);
+	commandResult = trapStatus(args[0]);
+}
+
+// "trapwrite"
+void DebuggerParser::executeTrapwrite() {
+	debugger->toggleWriteTrap(args[0]);
+	commandResult = trapStatus(args[0]);
+}
+
+// "undef"
+void DebuggerParser::executeUndef() {
+	if(debugger->equateList->undefine(argStrings[0]))
+		commandResult = argStrings[0] + " now undefined";
+	else
+		commandResult = "no such label";
+}
+
+// "v"
+void DebuggerParser::executeV() {
+	if(argCount == 0)
+		debugger->toggleV();
+	else if(argCount == 1)
+		debugger->setV(args[0]);
+}
+
+// "watch"
+void DebuggerParser::executeWatch() {
+	addWatch(argStrings[0]);
+	commandResult = "added watch \"" + argStrings[0] + "\"";
+}
+
+// "x"
+void DebuggerParser::executeX() {
+	debugger->setX(args[0]);
+}
+
+// "y"
+void DebuggerParser::executeY() {
+	debugger->setY(args[0]);
+}
+
+// "z"
+void DebuggerParser::executeZ() {
+	if(argCount == 0)
+		debugger->toggleZ();
+	else if(argCount == 1)
+		debugger->setZ(args[0]);
+}
+
