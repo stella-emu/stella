@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.36 2005-06-27 01:36:00 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.37 2005-06-27 03:32:51 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 #include "D6502.hxx"
-#include "EquateList.hxx"
+#include "DebuggerParser.hxx"
 
 // TODO: finish this, replace run() and getArgs() with versions
 // that use this table.
@@ -837,6 +837,46 @@ string DebuggerParser::run(const string& command) {
 
 	commandResult = "No such command (try \"help\")";
 	return commandResult;
+}
+
+// completion-related stuff:
+int DebuggerParser::countCompletions(const char *in) {
+	int count = 0, i = 0;
+	completions = compPrefix = "";
+
+	// cerr << "Attempting to complete \"" << in << "\"" << endl;
+	do {
+		const char *l = commands[i].cmdString.c_str();
+
+		if(STR_N_CASE_CMP(l, in, strlen(in)) == 0) {
+			if(compPrefix == "")
+				compPrefix += l;
+			else {
+				int nonMatch = 0;
+				const char *c = compPrefix.c_str();
+				while(*c != '\0' && tolower(*c) == tolower(l[nonMatch])) {
+					c++;
+					nonMatch++;
+				}
+				compPrefix.erase(nonMatch, compPrefix.length());
+				// cerr << "compPrefix==" << compPrefix << endl;
+			}
+
+			if(count++) completions += "  ";
+			completions += l;
+		}
+	} while(commands[++i].cmdString != "");
+
+	// cerr << "Found " << count << " label(s):" << endl << completions << endl;
+	return count;
+}
+
+const char *DebuggerParser::getCompletions() {
+	return completions.c_str();
+}
+
+const char *DebuggerParser::getCompletionPrefix() {
+	return compPrefix.c_str();
 }
 
 ////// executor methods for commands[] array. All are void, no args.

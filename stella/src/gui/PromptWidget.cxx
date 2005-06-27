@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.19 2005-06-25 17:26:32 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.20 2005-06-27 03:32:51 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "Version.hxx"
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
+#include "DebuggerParser.hxx"
 
 #include "PromptWidget.hxx"
 #include "EquateList.hxx"
@@ -195,13 +196,14 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     case 27:  // escape  FIXME - possibly remove this one?
     case 9:   // tab
       {
+        // Tab completion: we complete either commands or labels, but not
+        // both at once.
+
         if(_currentPos <= _promptStartPos)
           break;
 
         scrollToCurrent();
         int len = _promptEndPos - _promptStartPos;
-        if(len < 2) // minimum length for a command + a space is 2
-          break;
 
         int lastDelimPos = -1;
         char delimiter = '\0';
@@ -216,25 +218,41 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         str[len] = '\0';
 
+        const char *completionList;
+        const char *prefix;
+        int possibilities;
+
         if(lastDelimPos < 0) {
-          delete[] str;
-          break;
-        }
+          // no delimiters, do command completion:
+          DebuggerParser *parser = instance()->debugger().parser();
+          possibilities = parser->countCompletions(str);
 
-        EquateList *equates = instance()->debugger().equates();
-        int possibilities = equates->countCompletions(str + lastDelimPos + 1);
-        if(possibilities < 1) {
-          delete[] str;
-          break;
-        }
+          if(possibilities < 1) {
+            delete[] str;
+            break;
+          }
 
-        const char *got = equates->getCompletions();
+          completionList = parser->getCompletions();
+          prefix = parser->getCompletionPrefix();
+		  } else {
+          // we got a delimiter, so this must be a label:
+          EquateList *equates = instance()->debugger().equates();
+          possibilities = equates->countCompletions(str + lastDelimPos + 1);
+
+          if(possibilities < 1) {
+            delete[] str;
+            break;
+          }
+
+			  completionList = equates->getCompletions();
+			  prefix = equates->getCompletionPrefix();
+		  }
 
         if(possibilities == 1) {
           // add to buffer as though user typed it (plus a space)
           _currentPos = _promptStartPos + lastDelimPos + 1;
-          while(*got != '\0') {
-            putcharIntern(*got++);
+          while(*completionList != '\0') {
+            putcharIntern(*completionList++);
           }
           putcharIntern(' ');
           _promptEndPos = _currentPos;
@@ -244,7 +262,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           _currentPos = _promptStartPos + lastDelimPos + 1;
 
           print("\n");
-          print(got);
+          print(completionList);
           print("\n");
           print(PROMPT);
 
@@ -253,8 +271,10 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           for(i=0; i<lastDelimPos; i++)
             putcharIntern(str[i]);
 
-          putcharIntern(delimiter);
-          print( equates->getCompletionPrefix() );
+          if(lastDelimPos > 0)
+            putcharIntern(delimiter);
+
+          print(prefix);
           _promptEndPos = _currentPos;
         }
         draw();
