@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartE7.hxx,v 1.5 2005-06-27 12:43:49 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEE7_HXX
@@ -53,7 +53,7 @@ class Deserializer;
     here by accessing 1FF8 to 1FFB.
 
   @author  Bradford W. Mott
-  @version $Id: CartE7.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: CartE7.hxx,v 1.5 2005-06-27 12:43:49 urchlay Exp $
 */
 class CartridgeE7 : public Cartridge
 {
@@ -123,7 +123,6 @@ class CartridgeE7 : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-  private:
     /**
       Map the specfied bank into the first segment
 
@@ -131,6 +130,10 @@ class CartridgeE7 : public Cartridge
     */
     void bank(uInt16 bank);
 
+    int bank();
+    int bankCount();
+
+  private:
     /**
       Install pages for the specified 256 byte bank of RAM
 

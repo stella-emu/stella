@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.7 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartAR.cxx,v 1.8 2005-06-27 12:43:48 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -218,6 +218,8 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
   //  p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
   //    wanting to access the ROM for multiloads.  Otherwise set to 1.
 
+  myCurrentBank = configuration & 0x1f; // remember for the bank() method
+
   // Handle ROM power configuration
   myPower = !(configuration & 0x01);
 
@@ -286,6 +288,21 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
       break;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeAR::bank(uInt16 b) {
+  bankConfiguration(b);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeAR::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeAR::bankCount() {
+  return 32;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

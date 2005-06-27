@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.hxx,v 1.5 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartAR.hxx,v 1.6 2005-06-27 12:43:49 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEAR_HXX
@@ -37,7 +37,7 @@ class Deserializer;
   and one bank of ROM.  All 6K of the RAM can be read and written.
 
   @author  Bradford W. Mott
-  @version $Id: CartAR.hxx,v 1.5 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: CartAR.hxx,v 1.6 2005-06-27 12:43:49 urchlay Exp $
 */
 class CartridgeAR : public Cartridge
 {
@@ -115,6 +115,16 @@ class CartridgeAR : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
+    /**
+      Install pages for the specified bank in the system
+
+      @param bank The bank that should be installed in the system
+    */
+    void bank(uInt16 bank);
+
+    int bank();
+    int bankCount();
+
   private:
     // Handle a change to the bank configuration
     void bankConfiguration(uInt8 configuration);
@@ -164,6 +174,8 @@ class CartridgeAR : public Cartridge
 
     // Indicates if a write is pending or not
     bool myWritePending;
+
+    uInt16 myCurrentBank;
 };
 #endif
 

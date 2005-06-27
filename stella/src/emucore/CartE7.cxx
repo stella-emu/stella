@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.6 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartE7.cxx,v 1.7 2005-06-27 12:43:49 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -182,6 +182,16 @@ void CartridgeE7::bank(uInt16 slice)
       mySystem->setPageAccess(k >> shift, access);
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeE7::bank() {
+  return myCurrentSlice[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeE7::bankCount() {
+  return 8;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

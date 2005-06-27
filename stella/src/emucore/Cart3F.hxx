@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: Cart3F.hxx,v 1.5 2005-06-27 12:43:48 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3F_HXX
@@ -37,7 +37,7 @@ class Deserializer;
   only used 8K this bankswitching scheme supports up to 512K.
    
   @author  Bradford W. Mott
-  @version $Id: Cart3F.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: Cart3F.hxx,v 1.5 2005-06-27 12:43:48 urchlay Exp $
 */
 class Cartridge3F : public Cartridge
 {
@@ -108,13 +108,15 @@ class Cartridge3F : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-  private:
     /** 
       Map the specified bank into the first segment
 
       @param bank The bank that should be mapped
     */
     void bank(uInt16 bank);
+
+    int bank();
+    int bankCount();
 
   private:
     // Indicates which bank is currently active for the first segment

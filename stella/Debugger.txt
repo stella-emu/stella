@@ -19,7 +19,7 @@ What the debugger can do:
 - Built-in VCS.H symbols, if no symbol file is loaded
 - Symbolic names in disassembly
 - Symbolic names accepted as input
-- Tab completion for symbol names (but not for commands yet).
+- Tab completion for commands and symbol names
 - Graphical editor for RIOT RAM. Acts a lot like a spreadsheet.
   Input in hex, with displays for label/decimal/binary for
   currently-selected location.
@@ -31,6 +31,7 @@ What the debugger can do:
 - Save CLI session to a text file.
 - Supports hex, decimal, and binary input and output almost everywhere.
   (disassembly is still hex)
+- (partial) Support for bank switching. Only F8 cart type works for now.
 
 Planned features for Stella 2.0 release:
 - Better TIA state display, with register names and GUI buttons for
@@ -40,7 +41,11 @@ Planned features for Stella 2.0 release:
   code at once)
 - Scanline advance (like frame advance, break at beginning
   of next scanline).
-- Support for bank switching.
+- TIA display should be updated during step/trace, so we can see our
+  scanlines being drawn as it happens. The emulation core wasn't
+  designed with this in mind, so it'll take a lot of work
+- Bankswitch support in the debugger for the remaining 20-odd cart
+  types. Each one has to be added individually.
 
 Future plans (post 2.0):
 - Advanced breakpoint support (e.g. Break when carry flag
@@ -91,7 +96,7 @@ The tabs that are implemented so far:
   be abbreviated: instead of "clearbreaks", you can type "clear" or
   even just "cl". However, "c" by itself is the Toggle Carry command.
 
-  Bash-style tab completion is supported for labels (see below)
+  Bash-style tab completion is supported for commands and labels (see below)
 
   For now, there are some functions that only exist in the prompt. We
   intend to add GUI equivalents for all (or almost all?) of the prompt
@@ -145,20 +150,17 @@ The tabs that are implemented so far:
 
   - Tab completion
 
-    While entering a label, you can type a partial label name and press
-    the Tab key to attempt to auto-complete the label. If you've ever
-    used "bash", this will be immediately familiar. If not, try it: load
-    up a ROM, go to the debugger, type "print w" (but don't press Enter),
+    While entering a command or label, you can type a partial name and
+    press the Tab key to attempt to auto-complete it. If you've ever used
+    "bash", this will be immediately familiar. If not, try it: load up
+    a ROM, go to the debugger, type "print w" (but don't press Enter),
     then hit Tab. The "w" will change to "WSYNC" (since this is the only
     built-in label starting with a "w"). If there are multiple possible
     completions (try with "v" instead of "w"), you'll see a list of them,
-    and your partial label will be completed as far as possible.
+    and your partial name will be completed as far as possible.
 
     Tab completion works on all labels: built-in, loaded from a symbol file,
     or set during debugging with the "define" command.
-
-    (By the time Stella 2.0 is released, completion will work on commands
-    as well as labels)
 
   - Expressions
 
@@ -454,3 +456,5 @@ When you use these buttons, the prompt doesn't change. This means the
 status lines with the registers and disassembly will be "stale". You
 can update them just by pressing Enter in the prompt.
 
+You can also use the Step and Trace buttons from anywhere in the GUI via
+the keyboard, with Alt-S and Alt-T. (TODO: Alt-F for Frame+1)

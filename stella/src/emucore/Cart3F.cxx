@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.5 2005-06-16 00:55:57 stephena Exp $
+// $Id: Cart3F.cxx,v 1.6 2005-06-27 12:43:48 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -148,6 +148,17 @@ void Cartridge3F::bank(uInt16 bank)
     mySystem->setPageAccess(address >> shift, access);
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge3F::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge3F::bankCount() {
+  return mySize/2048;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3F::save(Serializer& out)
