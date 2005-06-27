@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.cxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: Cart2K.cxx,v 1.5 2005-06-27 23:40:35 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -81,6 +81,13 @@ uInt8 Cartridge2K::peek(uInt16 address)
 void Cartridge2K::poke(uInt16, uInt8)
 {
   // This is ROM so poking has no effect :-)
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge2K::patch(uInt16 address, uInt8 value)
+{
+	myImage[address & 0x07FF] = value;
+	return true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

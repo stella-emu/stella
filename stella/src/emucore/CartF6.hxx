@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartF6.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF6_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   are four 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF6.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: CartF6.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
 */
 class CartridgeF6 : public Cartridge
 {
@@ -100,6 +100,8 @@ class CartridgeF6 : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
   private:
     /**

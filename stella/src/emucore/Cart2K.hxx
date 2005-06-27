@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: Cart2K.hxx,v 1.5 2005-06-27 23:40:35 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE2K_HXX
@@ -33,7 +33,7 @@ class Deserializer;
   2600's 4K cartridge addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: Cart2K.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: Cart2K.hxx,v 1.5 2005-06-27 23:40:35 urchlay Exp $
 */
 class Cartridge2K : public Cartridge
 {
@@ -102,6 +102,8 @@ class Cartridge2K : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
   private:
     // The 2k ROM image for the cartridge

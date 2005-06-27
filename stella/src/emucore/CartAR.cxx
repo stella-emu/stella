@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.8 2005-06-27 12:43:48 urchlay Exp $
+// $Id: CartAR.cxx,v 1.9 2005-06-27 23:40:35 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -196,6 +196,13 @@ void CartridgeAR::poke(uInt16 addr, uInt8)
     myWritePending = false;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeAR::patch(uInt16 address, uInt8 value)
+{
+	//	myImage[address & 0x0FFF] = value;
+	return false;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::bankConfiguration(uInt8 configuration)

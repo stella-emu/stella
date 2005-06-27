@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartCV.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGECV_HXX
@@ -35,7 +35,7 @@ class Deserializer;
   $F800-$FFFF ROM
 
   @author  Eckhard Stolberg
-  @version $Id: CartCV.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: CartCV.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
 */
 class CartridgeCV : public Cartridge
 {
@@ -104,6 +104,8 @@ class CartridgeCV : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
   private:
     // The 2k ROM image for the cartridge

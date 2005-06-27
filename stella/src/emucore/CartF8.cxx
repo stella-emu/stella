@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.5 2005-06-27 04:45:52 urchlay Exp $
+// $Id: CartF8.cxx,v 1.6 2005-06-27 23:40:36 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -122,6 +122,13 @@ void CartridgeF8::poke(uInt16 address, uInt8)
       break;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF8::patch(uInt16 address, uInt8 value)
+{
+	myImage[myCurrentBank * 4096 + address] = value;
+	return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::bank(uInt16 bank)

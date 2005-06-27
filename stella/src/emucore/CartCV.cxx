@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.6 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartCV.cxx,v 1.7 2005-06-27 23:40:35 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -130,6 +130,13 @@ void CartridgeCV::poke(uInt16, uInt8)
 {
   // This is ROM so poking has no effect :-)
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCV::patch(uInt16 address, uInt8 value)
+{
+	myImage[address & 0x07FF] = value;
+	return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::save(Serializer& out)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.6 2005-06-27 12:43:48 urchlay Exp $
+// $Id: Cart3F.cxx,v 1.7 2005-06-27 23:40:35 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -117,6 +117,21 @@ void Cartridge3F::poke(uInt16 address, uInt8 value)
     bank(value);
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3F::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  if(address < 0x0800)
+  {
+    myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
+  }
+  else
+  {
+    myImage[(address & 0x07FF) + mySize - 2048] = value;
+  }
+  return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3F::bank(uInt16 bank)
