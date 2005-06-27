@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.60 2005-06-25 17:26:32 stephena Exp $
+// $Id: Console.cxx,v 1.61 2005-06-27 04:45:52 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -153,6 +153,7 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   // Remember what my media source is
   myMediaSource = tia;
   myTIAdebugger = new TIADebug(tia);
+  myCart = cartridge;
 
   // Reset, the system to its power-on state
   mySystem->reset();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.35 2005-06-25 17:26:32 stephena Exp $
+// $Id: Debugger.cxx,v 1.36 2005-06-27 04:45:35 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -686,4 +686,28 @@ void Debugger::addLabel(string label, int address) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::reloadROM() {
   myOSystem->createConsole( myOSystem->romFile() );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::setBank(int bank) {
+  if(myConsole->cartridge().bankCount() > 1) {
+    myConsole->cartridge().bank(bank);
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getBank() {
+  return myConsole->cartridge().bank();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::bankCount() {
+  return myConsole->cartridge().bankCount();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char *Debugger::getCartType() {
+  return myConsole->cartridge().name();
 }

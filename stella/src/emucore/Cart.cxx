@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.9 2005-06-16 00:55:57 stephena Exp $
+// $Id: Cart.cxx,v 1.10 2005-06-27 04:45:52 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -265,4 +265,29 @@ Cartridge& Cartridge::operator = (const Cartridge&)
   assert(false);
   return *this;
 }
+
+// default implementations of bankswitching-related methods.
+// These are suitable to be inherited by a cart type that
+// doesn't support bankswitching at all.
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge::bank() {
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::bank(uInt16 b) {
+  // do nothing.
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge::bankCount() {
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::patch(int address, int value) {
+  return false;
+}
+
 

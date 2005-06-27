@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.37 2005-06-27 03:32:51 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.38 2005-06-27 04:45:52 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -31,6 +31,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_BYTE, kARG_END_ARGS },
 		&DebuggerParser::executeA
+	},
+
+	{
+		"bank",
+		"Show # of banks (with no args), Switch to bank (with 1 arg)",
+		false,
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeBank
 	},
 
 	{
@@ -884,6 +892,27 @@ const char *DebuggerParser::getCompletionPrefix() {
 // "a"
 void DebuggerParser::executeA() {
 	debugger->setA(args[0]);
+}
+
+// "bank"
+void DebuggerParser::executeBank() {
+	if(argCount == 0) {
+		int banks = debugger->bankCount();
+		commandResult += debugger->getCartType();
+		commandResult += ": ";
+		if(banks < 2)
+			commandResult += "bankswitching not supported by this cartridge";
+		else {
+			commandResult += debugger->valueToString(debugger->getBank());
+			commandResult += "/";
+			commandResult += debugger->valueToString(banks);
+		}
+	} else {
+		if(debugger->setBank(args[0]))
+			commandResult += "switched bank OK";
+		else
+			commandResult += "invalid bank number for cartridge";
+	}
 }
 
 // "base"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.33 2005-06-21 04:30:49 urchlay Exp $
+// $Id: Console.hxx,v 1.34 2005-06-27 04:45:52 urchlay Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -31,12 +31,13 @@ class System;
 #include "Props.hxx"
 #include "TIA.hxx"
 #include "TIADebug.hxx"
+#include "Cart.hxx"
 
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.33 2005-06-21 04:30:49 urchlay Exp $
+  @version $Id: Console.hxx,v 1.34 2005-06-27 04:45:52 urchlay Exp $
 */
 class Console
 {
@@ -101,6 +102,8 @@ class Console
       @return The 6502 based system
     */
     System& system() const { return *mySystem; }
+
+    Cartridge& cartridge() const { return *myCart; }
 
   public:
     /**
@@ -228,6 +231,9 @@ class Console
 
     // Pointer to TIADebug
     TIADebug *myTIAdebugger;
+
+    // Pointer to the Cartridge (the debugger needs it)
+    Cartridge *myCart;
 };
 
 #endif
