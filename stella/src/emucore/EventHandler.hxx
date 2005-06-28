@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.41 2005-06-28 03:34:41 urchlay Exp $
+// $Id: EventHandler.hxx,v 1.42 2005-06-28 04:40:21 urchlay Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.41 2005-06-28 03:34:41 urchlay Exp $
+  @version $Id: EventHandler.hxx,v 1.42 2005-06-28 04:40:21 urchlay Exp $
 */
 class EventHandler
 {
@@ -231,7 +231,6 @@ class EventHandler
     static const Event::Type SA_Axis[2][2][3];
     static const Event::Type SA_DrivingValue[2];
 
-  private:
     /**
       Send an event directly to the event handler.
       These events cannot be remapped.
@@ -241,6 +240,7 @@ class EventHandler
     */
     void handleEvent(Event::Type type, Int32 value);
 
+  private:
     /**
       Send a keyboard event to the handler.
 

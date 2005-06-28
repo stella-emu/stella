@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.47 2005-06-19 16:53:57 urchlay Exp $
+// $Id: mainSDL.cxx,v 1.48 2005-06-28 04:40:21 urchlay Exp $
 //============================================================================
 
 #include <fstream>
@@ -180,6 +180,16 @@ int main(int argc, char* argv[])
   else
   {
     theOSystem->createConsole(romfile);
+
+    if(theOSystem->settings().getBool("holdreset"))
+      theOSystem->eventHandler().handleEvent(Event::ConsoleReset, 1);
+
+    if(theOSystem->settings().getBool("holdselect"))
+      theOSystem->eventHandler().handleEvent(Event::ConsoleSelect, 1);
+
+    if(theOSystem->settings().getBool("holdbutton0"))
+      theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire, 1);
+
     if(theOSystem->settings().getBool("debug"))
       handler.enterDebugMode();
   }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.51 2005-06-20 18:32:12 stephena Exp $
+// $Id: Settings.cxx,v 1.52 2005-06-28 04:40:21 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -152,6 +152,21 @@ bool Settings::loadCommandLine(int argc, char** argv)
       set(key, "true", false); // don't save this to the config file either
       return true;
     }
+    else if(key == "holdreset") // this doesn't make Stella exit
+    {
+      set(key, "true", false); // don't save this to the config file either
+      return true;
+    }
+    else if(key == "holdselect") // this doesn't make Stella exit
+    {
+      set(key, "true", false); // don't save this to the config file either
+      return true;
+    }
+    else if(key == "holdbutton0") // this doesn't make Stella exit
+    {
+      set(key, "true", false); // don't save this to the config file either
+      return true;
+    }
 
     if(++i >= argc)
     {
@@ -253,6 +268,11 @@ void Settings::usage()
     << "                 standard|\n"
     << "                 z26>\n"
     << "  -framerate    <number>       Display the given number of frames per second\n"
+    << "  -debug        <1|0>          Start in the debugger\n"
+    << "  -debugheight  <number>       Set height of debugger in lines of text (NOT pixels)\n"
+    << "  -holdreset                   Start the emulator with the Game Reset switch held down\n"
+    << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
+    << "  -holdbutton0                 Start the emulator with the left joystick button held down\n"
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
