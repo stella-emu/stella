@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.6 2005-06-27 23:40:36 urchlay Exp $
+// $Id: CartF8.cxx,v 1.7 2005-06-28 01:31:32 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -126,7 +126,9 @@ void CartridgeF8::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF8::patch(uInt16 address, uInt8 value)
 {
+	address &= 0xfff;
 	myImage[myCurrentBank * 4096 + address] = value;
+	bank(myCurrentBank);
 	return true;
 } 
 
