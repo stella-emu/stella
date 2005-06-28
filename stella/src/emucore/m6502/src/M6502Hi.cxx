@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.7 2005-06-21 05:00:46 urchlay Exp $
+// $Id: M6502Hi.cxx,v 1.8 2005-06-28 12:20:06 urchlay Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -89,6 +89,7 @@ bool M6502High::execute(uInt32 number)
 
       if(justHitTrap)
       {
+        justHitTrap = false;
         if(myDebugger->start()) {
           return true;
         }
