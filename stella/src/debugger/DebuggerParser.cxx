@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.39 2005-06-27 15:07:43 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.40 2005-06-28 01:53:41 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -904,8 +904,8 @@ void DebuggerParser::executeA() {
 
 // "bank"
 void DebuggerParser::executeBank() {
+	int banks = debugger->bankCount();
 	if(argCount == 0) {
-		int banks = debugger->bankCount();
 		commandResult += debugger->getCartType();
 		commandResult += ": ";
 		if(banks < 2)
@@ -916,10 +916,15 @@ void DebuggerParser::executeBank() {
 			commandResult += debugger->valueToString(banks);
 		}
 	} else {
-		if(debugger->setBank(args[0]))
+		if(args[0] >= banks) {
+			commandResult += "invalid bank number (must be 0 to ";
+			commandResult += debugger->valueToString(banks - 1);
+			commandResult += ")";
+		} else if(debugger->setBank(args[0])) {
 			commandResult += "switched bank OK";
-		else
-			commandResult += "invalid bank number for cartridge";
+		} else {
+			commandResult += "unknown error switching banks";
+		}
 	}
 }
 
