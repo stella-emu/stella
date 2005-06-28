@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+// $Id: CartMC.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEMC_HXX
@@ -135,7 +135,7 @@ class Deserializer;
 
 
   @author  Bradford W. Mott
-  @version $Id: CartMC.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: CartMC.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeMC : public Cartridge
 {
@@ -207,6 +207,8 @@ class CartridgeMC : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
   private:
     // Indicates which block is currently active for the four segments

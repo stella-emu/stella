@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.7 2005-06-27 12:43:49 urchlay Exp $
+// $Id: CartE7.cxx,v 1.8 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -136,6 +136,13 @@ void CartridgeE7::poke(uInt16 address, uInt8)
   // function should never be called for RAM because of the
   // way page accessing has been setup
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE7::patch(uInt16 address, uInt8 value)
+{
+	myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
+	return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bank(uInt16 slice)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6.cxx,v 1.6 2005-06-27 23:40:36 urchlay Exp $
+// $Id: CartF6.cxx,v 1.7 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -172,6 +172,16 @@ void CartridgeF6::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF6::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF6::bankCount() {
+  return 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

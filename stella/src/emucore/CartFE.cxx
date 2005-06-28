@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFE.cxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+// $Id: CartFE.cxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -81,6 +81,13 @@ uInt8 CartridgeFE::peek(uInt16 address)
 void CartridgeFE::poke(uInt16, uInt8)
 {
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFE::patch(uInt16 address, uInt8 value)
+{
+	myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)] = value;
+	return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::save(Serializer& out)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartE0.hxx,v 1.5 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEE0_HXX
@@ -36,7 +36,7 @@ class Deserializer;
   always points to the last 1K of the ROM image.
   
   @author  Bradford W. Mott
-  @version $Id: CartE0.hxx,v 1.4 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: CartE0.hxx,v 1.5 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeE0 : public Cartridge
 {
@@ -105,6 +105,8 @@ class CartridgeE0 : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
   private:
     /**

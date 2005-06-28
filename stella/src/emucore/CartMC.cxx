@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.5 2005-06-16 01:11:27 stephena Exp $
+// $Id: CartMC.cxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -218,6 +218,13 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
     }
   }  
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMC::patch(uInt16 address, uInt8 value)
+{
+	// TODO: implement
+	return false;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::save(Serializer& out)

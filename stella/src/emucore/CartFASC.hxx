@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+// $Id: CartFASC.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEFASC_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   three 4K banks and 256 bytes of RAM.
 
   @author  Bradford W. Mott
-  @version $Id: CartFASC.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: CartFASC.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeFASC : public Cartridge
 {
@@ -101,13 +101,17 @@ class CartridgeFASC : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-  private:
+	 bool patch(uInt16 address, uInt8 value);
+
     /**
       Install pages for the specified bank in the system
 
       @param bank The bank that should be installed in the system
     */
     void bank(uInt16 bank);
+
+    int bank();
+    int bankCount();
 
   private:
     // Indicates which bank is currently active

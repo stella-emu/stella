@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8SC.cxx,v 1.4 2005-06-16 01:11:26 stephena Exp $
+// $Id: CartF8SC.cxx,v 1.5 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -155,6 +155,24 @@ void CartridgeF8SC::poke(uInt16 address, uInt8)
   // should never be called for RAM because of the way page accessing
   // has been setup
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF8SC::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF8SC::bankCount() {
+  return 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF8SC::patch(uInt16 address, uInt8 value)
+{
+	address = address & 0x0FFF;
+	myImage[myCurrentBank * 4096 + address] = value;
+	return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8SC::bank(uInt16 bank)

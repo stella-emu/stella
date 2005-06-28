@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.5 2005-06-27 15:07:54 urchlay Exp $
+// $Id: Cart.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -31,7 +31,7 @@ class System;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.5 2005-06-27 15:07:54 urchlay Exp $
+  @version $Id: Cart.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 */
 class Cartridge : public Device
 {
@@ -59,8 +59,8 @@ class Cartridge : public Device
     */
     virtual ~Cartridge();
 
-    virtual int bank(); // get current bank (-1 if no bankswitching supported)
     virtual void bank(uInt16 b); // set bank
+    virtual int bank(); // get current bank (-1 if no bankswitching supported)
     virtual int bankCount(); // count # of banks
     virtual bool patch(uInt16 address, uInt8 value);
 

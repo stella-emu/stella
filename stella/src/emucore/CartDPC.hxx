@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.hxx,v 1.5 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartDPC.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEDCP_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   see David P. Crane's United States Patent Number 4,644,495.
 
   @author  Bradford W. Mott
-  @version $Id: CartDPC.hxx,v 1.5 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: CartDPC.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeDPC : public Cartridge
 {
@@ -109,13 +109,17 @@ class CartridgeDPC : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-  private:
     /**
       Install pages for the specified bank in the system
 
       @param bank The bank that should be installed in the system
     */
     void bank(uInt16 bank);
+    int bank(); // get current bank (-1 if no bankswitching supported)
+    int bankCount(); // count # of banks
+	 bool patch(uInt16 address, uInt8 value);
+
+  private:
 
     /** 
       Clocks the random number generator to move it to its next state

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4.hxx,v 1.3 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartF4.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF4_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   are eight 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF4.hxx,v 1.3 2005-06-16 00:55:57 stephena Exp $
+  @version $Id: CartF4.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeF4 : public Cartridge
 {
@@ -101,13 +101,18 @@ class CartridgeF4 : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-  private:
+	 bool patch(uInt16 address, uInt8 value);
+
     /**
       Install pages for the specified bank in the system
 
       @param bank The bank that should be installed in the system
     */
     void bank(uInt16 bank);
+
+    int bank();
+
+    int bankCount();
 
   private:
     // Indicates which bank is currently active

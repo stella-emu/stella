@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.4 2005-06-16 01:11:27 stephena Exp $
+// $Id: CartFASC.cxx,v 1.5 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -167,6 +167,14 @@ void CartridgeFASC::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFASC::patch(uInt16 address, uInt8 value)
+{
+	address = address & 0x0FFF;
+	myImage[myCurrentBank * 4096 + address] = value;
+	return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFASC::bank(uInt16 bank)
 {
   // Remember what bank we're in
@@ -187,6 +195,16 @@ void CartridgeFASC::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeFASC::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeFASC::bankCount() {
+  return 3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.10 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartDPC.cxx,v 1.11 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -423,6 +423,14 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeDPC::patch(uInt16 address, uInt8 value)
+{
+	address = address & 0x0FFF;
+	myProgramImage[myCurrentBank * 4096 + address] = value;
+	return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPC::bank(uInt16 bank)
 { 
   // Remember what bank we're in
@@ -444,6 +452,17 @@ void CartridgeDPC::bank(uInt16 bank)
     mySystem->setPageAccess(address >> shift, access);
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeDPC::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeDPC::bankCount() {
+  return 2; // TODO: support the display ROM somehow
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::save(Serializer& out)

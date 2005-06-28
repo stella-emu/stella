@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4.cxx,v 1.3 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartF4.cxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -103,6 +103,14 @@ void CartridgeF4::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF4::patch(uInt16 address, uInt8 value)
+{
+	address = address & 0x0FFF;
+	myImage[myCurrentBank * 4096 + address] = value;
+	return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4::bank(uInt16 bank)
 { 
   // Remember what bank we're in
@@ -123,6 +131,16 @@ void CartridgeF4::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF4::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF4::bankCount() {
+  return 8;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

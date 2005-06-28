@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.5 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartE0.cxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -131,6 +131,13 @@ void CartridgeE0::poke(uInt16 address, uInt8)
     segmentTwo(address & 0x0007);
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE0::patch(uInt16 address, uInt8 value)
+{
+	myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)] = value;
+	return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentZero(uInt16 slice)

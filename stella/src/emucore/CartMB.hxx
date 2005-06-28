@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMB.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+// $Id: CartMB.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEMB_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   Accessing $1FF0 switches to next bank.
 
   @author  Eckhard Stolberg
-  @version $Id: CartMB.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: CartMB.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeMB : public Cartridge
 {
@@ -101,6 +101,14 @@ class CartridgeMB : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
+
+    void bank(uInt16 b);
+
+    int bank();
+
+    int bankCount();
 
   private:
     /**

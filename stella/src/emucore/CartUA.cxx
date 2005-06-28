@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.3 2005-06-16 00:55:57 stephena Exp $
+// $Id: CartUA.cxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -138,6 +138,15 @@ void CartridgeUA::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeUA::patch(uInt16 address, uInt8 value)
+{
+	address &= 0x0fff;
+	myImage[myCurrentBank * 4096] = value;
+	bank(myCurrentBank); // TODO: see if this is really necessary
+	return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeUA::bank(uInt16 bank)
 { 
   // Remember what bank we're in
@@ -157,6 +166,16 @@ void CartridgeUA::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeUA::bank() {
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeUA::bankCount() {
+  return 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

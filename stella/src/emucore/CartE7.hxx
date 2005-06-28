@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.hxx,v 1.5 2005-06-27 12:43:49 urchlay Exp $
+// $Id: CartE7.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEE7_HXX
@@ -53,7 +53,7 @@ class Deserializer;
     here by accessing 1FF8 to 1FFB.
 
   @author  Bradford W. Mott
-  @version $Id: CartE7.hxx,v 1.5 2005-06-27 12:43:49 urchlay Exp $
+  @version $Id: CartE7.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeE7 : public Cartridge
 {
@@ -122,6 +122,8 @@ class CartridgeE7 : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
     /**
       Map the specfied bank into the first segment

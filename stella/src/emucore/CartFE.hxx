@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFE.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+// $Id: CartFE.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEFE_HXX
@@ -43,7 +43,7 @@ class Deserializer;
     monitoring the bus.
 
   @author  Bradford W. Mott
-  @version $Id: CartFE.hxx,v 1.3 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: CartFE.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
 */
 class CartridgeFE : public Cartridge
 {
@@ -112,6 +112,8 @@ class CartridgeFE : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+	 bool patch(uInt16 address, uInt8 value);
 
   private:
     // The 8K ROM image of the cartridge
