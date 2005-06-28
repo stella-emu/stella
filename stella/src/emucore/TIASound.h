@@ -36,6 +36,8 @@
 #ifndef _TIASOUND_H
 #define _TIASOUND_H
 
+#ifdef SOUND_SUPPORT
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,5 +61,7 @@ void Tia_volume (unsigned int percent);
 #ifdef __cplusplus
 }
 #endif
+
+#endif  // SOUND_SUPPORT
 
 #endif

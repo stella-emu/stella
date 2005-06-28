@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.52 2005-06-28 04:40:21 urchlay Exp $
+// $Id: Settings.cxx,v 1.53 2005-06-28 23:18:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -188,7 +188,6 @@ void Settings::validate()
 {
   string s;
   int i;
-  float f;
 
   s = getString("video");
   if(s != "soft" && s != "gl")
@@ -199,7 +198,7 @@ void Settings::validate()
   if(s != "linear" && s != "nearest")
     set("gl_filter", "nearest");
 
-  f = getFloat("gl_aspect");
+  float f = getFloat("gl_aspect");
   if(f < 1.1 || f > 2.0)
     set("gl_aspect", "2.0");
 #endif

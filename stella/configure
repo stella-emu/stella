@@ -14,9 +14,9 @@
 CXXFLAGS="$CXXFLAGS $CPPFLAGS"
 
 # default lib behaviour yes/no/auto
+_opengl=auto
 _zlib=auto
 _png=auto
-_opengl=auto
 
 # default option behaviour yes/no
 _build_gl=yes
@@ -36,8 +36,12 @@ _rm="rm -f"
 _rm_rec="$_rm -r"
 _zip="zip -q"
 _cp=cp
+_win32path=""
 _sdlconfig=sdl-config
 _sdlpath="$PATH"
+_nasmpath="$PATH"
+NASMFLAGS=""
+NASM=""
 _prefix=/usr/local
 _have_x86=""
 
@@ -46,7 +50,7 @@ _srcdir=`dirname $0`
 # TODO: We should really use mktemp(1) to determine a random tmp file name.
 # However, that tool might not be available everywhere.
 TMPO=${_srcdir}/stella-conf
-TMPC=${TMPO}.cpp
+TMPC=${TMPO}.cxx
 TMPLOG=${_srcdir}/config.log
 
 # For cross compiling
@@ -135,6 +139,79 @@ echo_n()
 }
 
 #
+# Determine a data type with the given length
+#
+find_type_with_size ()
+{
+cat <<EOF >tmp_find_type_with_size.cpp
+#include <stdio.h>
+int main(int argc, char **argv)
+{
+	int size = argv[1][0] - '0';
+	if (size == sizeof(int))
+		printf("int\n");
+	else if (size == sizeof(short))
+		printf("short\n");
+	else if (size == sizeof(char))
+		printf("char\n");
+	else if (size == sizeof(long))
+		printf("long\n");
+	else {
+		printf("unknown\n");
+		return 1;
+	}
+
+	return 0;
+}
+EOF
+if eval "$CXX -o tmp_find_type_with_size tmp_find_type_with_size.cpp"; then
+	datatype=`./tmp_find_type_with_size $1`
+	if test "$datatype" = "unknown"; then
+		echo "couldn't find data type with $1 bytes"
+		exit 1
+	fi
+fi
+rm -f tmp_find_type_with_size$EXEEXT tmp_find_type_with_size.cpp
+echo $datatype
+}
+
+CheckNASM()
+{
+	echocheck "nasm"
+	if test "$_nasm" = no ; then
+		echo "disabled"
+		return;
+	fi
+
+	IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
+		
+	for path_dir in $_nasmpath; do
+		if test -x "$path_dir/nasm" ; then
+			NASM="$path_dir/nasm"
+			echo $NASM
+			break
+		fi
+	done
+		
+	IFS="$ac_save_ifs"
+
+	if test x$NASM = x -o x$NASM = x'"$NASM"'; then
+		echo "not found"
+		_nasm=no
+	else
+		case $_host_os in
+			mingw* | cygwin*)
+				NASMFLAGS="-f win32"
+			;;
+			*)
+				NASMFLAGS="-f elf"
+			;;
+		esac
+		_nasm=yes
+	fi
+}
+
+#
 # Greet user
 #
 
@@ -171,6 +248,18 @@ Optional Features:
   --disable-snapshot     disable snapshot support
   --disable-joystick     disable joystick support
 
+Optional Libraries:
+  --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
+  --disable-zlib           disable zlib (compression) support [autodetect]
+
+  --with-png-prefix=DIR    Prefix where png is installed (optional)
+  --disable-png            disable png support [autodetect]
+
+  --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
+
+  --with-nasm-prefix=DIR   Prefix where nasm executable is installed (optional)
+  --disable-nasm           disable assembly language optimizations [autodetect]
+
 Some influential environment variables:
   LDFLAGS	linker flags, e.g. -L<lib dir> if you have libraries in a
   		nonstandard directory <lib dir>
@@ -184,15 +273,40 @@ EOF
   fi
 done # for parm in ...
 
-DEBFLAGS="-g"
-
 for ac_option in $@; do
     case "$ac_option" in
-      --disable-gl)             _build_gl=no ;;
-      --disable-sound)          _build_sound=no ;;
+      --disable-gl)             _build_gl=no        ;;
+      --disable-sound)          _build_sound=no     ;;
       --disable-developer)      _build_developer=no ;;
-      --disable-snapshot)       _build_snapshot=no ;;
-      --disable-joystick)       _build_joystick=no ;;
+      --disable-snapshot)       _build_snapshot=no  ;;
+      --disable-joystick)       _build_joystick=no  ;;
+      --enable-zlib)            _zlib=yes       ;;
+      --disable-zlib)           _zlib=no        ;;
+      --enable-png)             _png=yes        ;;
+      --disable-png)            _png=no         ;;
+      --enable-nasm)            _nasm=yes       ;;
+      --disable-nasm)           _nasm=no        ;;
+      --with-zlib-prefix=*)
+        _prefix=`echo $ac_option | cut -d '=' -f 2`
+        ZLIB_CFLAGS="-I$_prefix/include"
+        ZLIB_LIBS="-L$_prefix/lib"
+        ;;
+      --with-png-prefix=*)
+        _prefix=`echo $ac_option | cut -d '=' -f 2`
+        PNG_CFLAGS="-I$_prefix/include"
+        PNG_LIBS="-L$_prefix/lib"
+        ;;
+      --with-sdl-prefix=*)
+        arg=`echo $ac_option | cut -d '=' -f 2`
+        _sdlpath="$arg:$arg/bin"
+        ;;
+      --with-nasm-prefix=*)
+        arg=`echo $ac_option | cut -d '=' -f 2`
+        _nasmpath="$arg:$arg/bin"
+        ;;
+      --host=*)
+        _host=`echo $ac_option | cut -d '=' -f 2`
+        ;;
       --prefix=*)
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ;;
@@ -213,6 +327,18 @@ done;
 CXXFLAGS="$CXXFLAGS $DEBFLAGS"
 
 case $_host in
+linupy)
+	_host_os=linux
+	_host_cpu=arm
+	;;
+arm-riscos-aof)
+	_host_os=riscos
+	_host_cpu=arm
+	;;
+ppc-amigaos)
+	_host_os=amigaos
+	_host_cpu=ppc
+	;;
 *)
 	guessed_host=`$_srcdir/config.guess`
 	_host_cpu=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
@@ -311,13 +437,33 @@ fi
 #
 
 if test "$_cxx_major" -ge "3" ; then
-	CXXFLAGS="$CXXFLAGS -W"
+	CXXFLAGS="$CXXFLAGS"
 	_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
 fi;
 
 if test -n "$_host"; then
 	# Cross-compiling mode - add your target here if needed
 	case "$_host" in
+		linupy|arm-riscos-aof)
+			echo "Cross-compiling to $_host, forcing endianness, alignment and type sizes"
+			DEFINES="$DEFINES -DUNIX"
+			_def_endianness='#define SCUMM_LITTLE_ENDIAN'
+			_def_align='#define SCUMM_NEED_ALIGNMENT'
+			_def_linupy="#define DLINUPY"
+			type_1_byte='char'
+			type_2_byte='short'
+			type_4_byte='int'
+			;;
+		ppc-amigaos)
+			echo "Cross-compiling to $_host, forcing endianness, alignment and type sizes"
+			_def_endianness='#define SCUMM_BIG_ENDIAN'
+			_def_align='#define	SCUMM_NEED_ALIGNMENT'
+			type_1_byte='char'
+			type_2_byte='short'
+			type_4_byte='long'
+			CXXFLAGS="$CFLAGS -newlib -mstrict-align -mcpu=750 -mtune=7400"
+			LDFLAGS="$LDFLAGS -newlib"
+			;;
 		*)
 			echo "Cross-compiling to unknown target, please add your target to configure."
 			exit 1
@@ -336,8 +482,26 @@ else
 			DEFINES="$DEFINES -DUNIX"
 			_host_os=unix
 			;;
+		irix*)
+			DEFINES="$DEFINES -DUNIX"
+			_ranlib=:
+			_host_os=unix
+			;;
+		darwin*)
+			DEFINES="$DEFINES -DUNIX -DMACOSX"
+			LIBS="$LIBS -framework QuickTime -framework AudioUnit -framework Carbon"
+			# TODO: Add proper check for Altivec support in the compiler...
+			DEFINES="$DEFINES -DHAS_ALTIVEC"
+			CXXFLAGS="$CXXFLAGS -faltivec"
+			_host_os=unix
+			;;
 		mingw*)
 			DEFINES="$DEFINES -DWIN32"
+			_host_os=win32
+			;;
+		cygwin*)
+			DEFINES="$DEFINES -mno-cygwin -DWIN32"
+			LIBS="$LIBS -mno-cygwin -lmingw32 -lwinmm"
 			_host_os=win32
 			;;
 		# given this is a shell script assume some type of unix
@@ -357,9 +521,9 @@ if test "$_zlib" = auto ; then
 	cat > $TMPC << EOF
 #include <string.h>
 #include <zlib.h>
-int main(void) { return 0; }
+int main(void) { return strcmp(ZLIB_VERSION, zlibVersion()); }
 EOF
-	cc_check $LDFLAGS $CXXFLAGS && _zlib=yes
+	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS -lz && _zlib=yes
 fi
 echo "$_zlib"
 
@@ -394,11 +558,25 @@ fi
 echo "$_opengl"
 
 #
+# Check for nasm
+#
+#if test "$_have_x86" = yes ; then
+#    CheckNASM
+#fi
+#
+#if test "$_nasm" = yes ; then
+#	_def_nasm='#define USE_NASM'
+#	_make_def_HAVE_NASM='HAVE_NASM = 1'
+#else
+#	_def_nasm='#undef USE_NASM'
+#	_make_def_HAVE_NASM='# HAVE_NASM = 1'
+#fi
+
+#
 # figure out installation directories
 #
 test -z "$_bindir" && _bindir="$_prefix/bin"
 test -z "$_mandir" && _mandir="$_prefix/man"
-
 
 echo
 echo_n "Summary:"
@@ -456,15 +634,12 @@ else
 	echo
 fi
 
+
 #
 # Now, add the appropriate defines/libraries/headers
 #
 echo
 find_sdlconfig
-
-LDFLAGS="$LDFLAGS `$_sdlconfig --cflags`"
-LIBS="$LIBS `$_sdlconfig --libs` -lz"
-OBJECTS="src/common/mainSDL.o src/common/FrameBufferSoft.o"
 
 SRC="src"
 CORE="$SRC/emucore"
@@ -474,6 +649,9 @@ DBG="$SRC/debugger"
 
 INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
 
+INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
+LIBS="$LIBS `$_sdlconfig --libs` -lz"
+
 case $_host_os in
 		unix*)
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
@@ -482,8 +660,8 @@ case $_host_os in
 
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then
+				DEFINES="$DEFINES -DDISPLAY_OPENGL"
 				LIBS="$LIBS -L/usr/X11R6/lib -lGL"
-				OBJECTS="$OBJECTS FrameBufferGL.o"
 			fi
 			;;
 		mingw*)
@@ -493,8 +671,8 @@ case $_host_os in
 
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then
+				DEFINES="$DEFINES -DDISPLAY_OPENGL"
 				LIBS="$LIBS -lopengl32"
-				OBJECTS="$OBJECTS FrameBufferGL.o"
 			fi
 			;;
 		*)
@@ -504,7 +682,6 @@ case $_host_os in
 esac
 
 if test "$_build_sound" = yes ; then
-	OBJECTS="$OBJECTS $CORE/TIASound.o $COMMON/SoundSDL.o"
 	DEFINES="$DEFINES -DSOUND_SUPPORT"
 fi
 
@@ -515,7 +692,6 @@ if test "$_build_developer" = yes ; then
 fi
 
 if test "$_build_snapshot" = yes ; then
-	OBJECTS="$OBJECTS $COMMON/Snapshot.o"
 	DEFINES="$DEFINES -DSNAPSHOT_SUPPORT"
 	LIBS="$LIBS -lpng"
 fi
@@ -523,6 +699,8 @@ fi
 if test "$_build_joystick" = yes ; then
 	DEFINES="$DEFINES -DJOYSTICK_SUPPORT"
 fi
+
+
 
 echo "Creating config.mak"
 cat > config.mak << EOF
@@ -546,13 +724,21 @@ WIN32PATH=$_win32path
 MODULES += $MODULES
 MODULE_DIRS += $MODULE_DIRS
 EXEEXT := $EXEEXT
+NASM := $NASM
+NASMFLAGS := $NASMFLAGS
 
 PREFIX := $_prefix
 BINDIR := $_bindir
 MANDIR := $_mandir
 
+$_make_def_HAVE_GCC3
+#$_make_def_HAVE_NASM
+
 INCLUDES += $INCLUDES
-OBJECTS += $OBJECTS
+OBJS += $OBJS
 DEFINES += $DEFINES
 LDFLAGS += $LDFLAGS
 EOF
+
+# This should be taken care of elsewhere, but I'm not sure where
+rm -f stella-conf*

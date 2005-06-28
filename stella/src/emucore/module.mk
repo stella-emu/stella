@@ -43,16 +43,12 @@ MODULE_OBJS := \
 	src/emucore/Serializer.o \
 	src/emucore/Settings.o \
 	src/emucore/Switches.o \
-	src/emucore/TIA.o
+	src/emucore/TIA.o \
+	src/emucore/TIASound.o \
+	src/emucore/unzip.o
 
 MODULE_DIRS += \
-	backends \
-	backends/fs \
-	backends/fs/posix \
-	backends/fs/morphos \
-	backends/fs/windows \
-	backends/fs/amigaos4 \
-	backends/midi
+	src/emucore
 
 # Include common rules 
 include $(srcdir)/common.rules

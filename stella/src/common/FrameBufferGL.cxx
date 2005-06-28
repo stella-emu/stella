@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.32 2005-06-23 14:33:09 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.33 2005-06-28 23:18:15 stephena Exp $
 //============================================================================
+
+#ifdef DISPLAY_OPENGL
 
 #include <SDL.h>
 #include <SDL_syswm.h>
@@ -572,3 +574,5 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
   cerr << endl;
 */
 }
+
+#endif  // DISPLAY_OPENGL

@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.4 2005-06-16 00:55:56 stephena Exp $
+// $Id: Snapshot.hxx,v 1.5 2005-06-28 23:18:15 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
 #define SNAPSHOT_HXX
+
+#ifdef SNAPSHOT_SUPPORT
 
 class FrameBuffer;
 
@@ -61,5 +63,7 @@ class Snapshot
     // The Framebuffer for the system
     FrameBuffer& myFrameBuffer;
 };
+
+#endif  // SNAPSHOT_SUPPORT
 
 #endif

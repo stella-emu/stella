@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.12 2005-06-21 18:46:33 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.13 2005-06-28 23:18:15 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_SDL_HXX
 #define SOUND_SDL_HXX
+
+#ifdef SOUND_SUPPORT
 
 class OSystem;
 
@@ -31,7 +33,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.12 2005-06-21 18:46:33 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.13 2005-06-28 23:18:15 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -260,5 +262,7 @@ class SoundSDL : public Sound
     // Closes the audio device
     void closeAudio();
 };
+
+#endif  // SOUND_SUPPORT
 
 #endif

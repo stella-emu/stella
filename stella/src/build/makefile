@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: makefile,v 1.107 2005-06-26 13:08:43 stephena Exp $
+## $Id: makefile,v 1.108 2005-06-28 23:18:15 stephena Exp $
 ##============================================================================
 
 ##============================================================================
@@ -44,7 +44,7 @@ OPTIMIZATIONS  =
 
 ### to build on SMP (or distcc-based) machines
 ### change to number of CPU's you have
- NUMBER_CPU = 1
+ NUMBER_CPU = 4
 
 ##============================================================================
 ## All done, type make to get a list of frontends

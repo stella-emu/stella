@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.17 2005-06-16 00:55:56 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.18 2005-06-28 23:18:15 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
 #define FRAMEBUFFER_GL_HXX
+
+#ifdef DISPLAY_OPENGL
 
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -35,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.17 2005-06-16 00:55:56 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.18 2005-06-28 23:18:15 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -237,4 +239,7 @@ class FrameBufferGL : public FrameBuffer
     float myFSScaleFactor;
 };
 
+#endif  // DISPLAY_OPENGL
+
 #endif
+

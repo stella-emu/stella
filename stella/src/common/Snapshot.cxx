@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.6 2005-06-16 00:55:56 stephena Exp $
+// $Id: Snapshot.cxx,v 1.7 2005-06-28 23:18:15 stephena Exp $
 //============================================================================
+
+#ifdef SNAPSHOT_SUPPORT
 
 #include <png.h>
 #include <iostream>
@@ -122,3 +124,5 @@ string Snapshot::savePNG(string filename)
 
   return "Snapshot saved";
 }
+
+#endif  // SNAPSHOT_SUPPORT

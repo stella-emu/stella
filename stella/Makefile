@@ -1,4 +1,4 @@
-# $Header: /home/stephena/STELLA_CVS-to-SVN/stella/Makefile,v 1.1 2005-06-28 18:56:48 stephena Exp $
+# $Header: /home/stephena/STELLA_CVS-to-SVN/stella/Makefile,v 1.2 2005-06-28 23:17:58 stephena Exp $
 
 #######################################################################
 # Default compilation parameters. Normally don't edit these           #
@@ -22,7 +22,7 @@ include config.mak
 # CXXFLAGS+= -Werror
 
 CXXFLAGS:= $(CXXFLAGS)
-CXXFLAGS+= -Wall -Wno-multichar -Wno-unused
+CXXFLAGS+= -Wall -Wuninitialized -Wno-multichar -Wunused
 # Even more warnings...
 #CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion
 #CXXFLAGS+= -Wshadow -Wimplicit -Wundef -Wnon-virtual-dtor
@@ -34,7 +34,105 @@ CXXFLAGS+= -Wall -Wno-multichar -Wno-unused
 
 EXECUTABLE  := stella$(EXEEXT)
 
-include $(srcdir)/Makefile.common
+all: $(EXECUTABLE)
+
+
+######################################################################
+# Various minor settings
+######################################################################
+
+# Files that are to be included in the archive built by "make dist"
+DISTFILES := \
+	Makefile Makefile.common \
+	AUTHORS NEWS README COPYING scummvm.6 Info.plist \
+	scumm.dsp  scummvm.dsp scummvm.dsw scummvm.icns scummvm.ico \
+	scummvm.proj scummvm.rc scummvm.spec scummvm.xpm simon.dsp sky.dsp \
+	scummvm.vcproj scumm.vcproj simon.vcproj sky.vcproj scummvm.sln
+
+# The dist file name
+ZIPFILE := scummvm-`date '+%Y-%m-%d'`.zip
+
+# The name for the directory used for dependency tracking
+DEPDIR := .deps
+
+
+######################################################################
+# Module settings
+######################################################################
+
+MODULES := $(MODULES)
+
+# After the game specific modules follow the shared modules
+MODULES += \
+	src/emucore \
+	src/emucore/m6502 \
+	src/gui \
+	src/common
+
+######################################################################
+# The build rules follow - normally you should have no need to
+# touch whatever comes after here.
+######################################################################
+
+# Concat DEFINES and INCLUDES to form the CPPFLAGS
+CPPFLAGS:= $(DEFINES) $(INCLUDES)
+
+# Include the build instructions for all modules
+-include $(addprefix $(srcdir)/, $(addsuffix /module.mk,$(MODULES)))
+
+# Depdir information
+DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULE_DIRS))
+DEPFILES = 
+
+# The build rule for the Stella executable
+$(EXECUTABLE):  $(OBJS)
+	$(CXX) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) -o $@
+
+distclean: clean
+	$(RM_REC) $(DEPDIRS)
+	$(RM) build.rules config.h config.mak config.log
+
+clean:
+	$(RM) $(OBJS) $(EXECUTABLE)
+
+.PHONY: all clean dist distclean plugins
+
+# Old (dumb) compile & dependcy rules
+#INCS	= scumm/scumm.h common/scummsys.h common/stdafx.h
+#.cpp.o:
+#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+#$(OBJS): $(INCS)
+
+.SUFFIXES: .cxx
+ifndef HAVE_GCC3
+# If you use GCC, disable the above and enable this for intelligent
+# dependency tracking. 
+.cxx.o:
+	$(MKDIR) $(*D)/$(DEPDIR)
+	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
+	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
+	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
+else
+# If you even have GCC 3.x, you can use this build rule, which is safer; the above
+# rule can get you into a bad state if you Ctrl-C at the wrong moment.
+# Also, with this GCC inserts additional dummy rules for the involved headers,
+# which ensures a smooth compilation even if said headers become obsolete.
+.cxx.o:
+	$(MKDIR) $(*D)/$(DEPDIR)
+	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+endif
+
+ifdef HAVE_NASM
+.SUFFIXES: .asm
+
+.asm.o:
+	$(NASM) -O1 $(NASMFLAGS) -g -o $*.o $(<)
+endif
+
+# Include the dependency tracking files. We add /dev/null at the end
+# of the list to avoid a warning/error if no .d file exist
+-include $(wildcard $(addsuffix /*.d,$(DEPDIRS))) /dev/null
 
 # check if configure has been run or has been changed since last run
 config.mak: $(srcdir)/configure
@@ -69,6 +167,7 @@ deb:
 	ln -sf dists/debian;
 	debian/prepare
 	fakeroot debian/rules binary
+
 
 # Special target to create a application wrapper for Mac OS X
 bundle_name = ScummVM.app

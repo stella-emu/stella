@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.18 2005-06-21 18:46:33 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.19 2005-06-28 23:18:15 stephena Exp $
 //============================================================================
+
+#ifdef SOUND_SUPPORT
 
 #include <sstream>
 #include <cassert>
@@ -538,3 +540,5 @@ void SoundSDL::RegWriteQueue::grow()
   delete[] myBuffer;
   myBuffer = buffer;
 }
+
+#endif  // SOUND_SUPPORT
