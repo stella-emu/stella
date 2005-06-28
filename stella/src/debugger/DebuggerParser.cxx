@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.40 2005-06-28 01:53:41 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.41 2005-06-28 03:34:40 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -137,6 +137,14 @@ Command DebuggerParser::commands[] = {
 		&DebuggerParser::executeFrame
 	},
 
+	{
+		"fry",
+		"\"Fry\" console (randomly corrupt memory)",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeFry
+	},
+
 	// TODO: height command
 
 	{
@@ -169,6 +177,14 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeListwatches
+	},
+
+	{
+		"loadstate",
+		"Load emulator state (0-9)",
+		true,
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeLoadstate
 	},
 
 	{
@@ -257,6 +273,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeSaveses
+	},
+
+	{
+		"savestate",
+		"Save emulator state (valid args 0-9)",
+		true,
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeSavestate
 	},
 
 	{
@@ -1056,6 +1080,11 @@ void DebuggerParser::executeFrame() {
 	if(count != 1) commandResult += "s";
 }
 
+// "fry"
+void DebuggerParser::executeFry() {
+	debugger->fry();
+}
+
 // "listbreaks"
 void DebuggerParser::executeListbreaks() {
 	commandResult = listBreaks();
@@ -1070,6 +1099,16 @@ void DebuggerParser::executeListtraps() {
 void DebuggerParser::executeListwatches() {
 	// commandResult = listWatches();
 	commandResult = "command not yet implemented (sorry)";
+}
+
+// "loadstate"
+void DebuggerParser::executeLoadstate() {
+	if(args[0] >= 0 && args[0] <= 9) {
+		debugger->loadState(args[0]);
+		commandResult = "state loaded";
+	} else {
+		commandResult = "invalid slot (must be 0-9)";
+	}
 }
 
 // "loadsym"
@@ -1148,6 +1187,16 @@ void DebuggerParser::executeSaveses() {
 		commandResult = "saved session to file " + argStrings[0];
 	else
 		commandResult = "I/O error";
+}
+
+// "savestate"
+void DebuggerParser::executeSavestate() {
+	if(args[0] >= 0 && args[0] <= 9) {
+		debugger->saveState(args[0]);
+		commandResult = "state saved";
+	} else {
+		commandResult = "invalid slot (must be 0-9)";
+	}
 }
 
 // "savesym"

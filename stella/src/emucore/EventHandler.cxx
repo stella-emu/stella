@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.76 2005-06-23 14:33:11 stephena Exp $
+// $Id: EventHandler.cxx,v 1.77 2005-06-28 03:34:41 urchlay Exp $
 //============================================================================
 
 #include <algorithm>
@@ -842,6 +842,10 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
         return;
       }
     }
+    else if(myState == S_EMULATE && event == Event::Fry)
+    {
+      myOSystem->debugger().fry();
+    }
     else if(event == Event::Quit)
     {
       myQuitFlag = true;
@@ -1104,6 +1108,7 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_TAB ]       = Event::MenuMode;
   myKeyTable[ SDLK_BACKQUOTE ] = Event::DebuggerMode;
   myKeyTable[ SDLK_ESCAPE ]    = Event::LauncherMode;
+  myKeyTable[ SDLK_BACKSPACE ] = Event::Fry;
 
   saveKeyMapping();
 }
@@ -1195,6 +1200,13 @@ void EventHandler::saveState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveState(int state)
+{
+  myLSState = state;
+  saveState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeState()
 {
   if(myLSState == 9)
@@ -1229,6 +1241,13 @@ void EventHandler::loadState()
     buf << "Invalid state " << myLSState << " file";
 
   myOSystem->frameBuffer().showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::loadState(int state)
+{
+  myLSState = state;
+  loadState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

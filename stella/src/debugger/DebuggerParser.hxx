@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.21 2005-06-27 15:07:45 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.22 2005-06-28 03:34:40 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -100,11 +100,13 @@ class DebuggerParser
 		void executeDisasm();
 		void executeDump();
 		void executeFrame();
+		void executeFry();
 		void executeHelp();
 		void executeListbreaks();
 		void executeListtraps();
 		void executeListwatches();
 		void executeLoadsym();
+		void executeLoadstate();
 		void executeN();
 		void executePc();
 		void executePrint();
@@ -115,6 +117,7 @@ class DebuggerParser
 		void executeRun();
 		void executeS();
 		void executeSaveses();
+		void executeSavestate();
 		void executeSavesym();
 		void executeStep();
 		void executeTia();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
+// $Id: EventHandler.hxx,v 1.41 2005-06-28 03:34:41 urchlay Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.40 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.41 2005-06-28 03:34:41 urchlay Exp $
 */
 class EventHandler
 {
@@ -171,6 +171,16 @@ class EventHandler
       This method indicates that the system should terminate.
     */
     inline void quit() { handleEvent(Event::Quit, 1); }
+
+    /**
+      Save state to explicit state number (debugger uses this)
+    */
+	 void saveState(int state);
+
+    /**
+      Load state from explicit state number (debugger uses this)
+    */
+	 void loadState(int state);
 
     /**
       Sets the mouse to act as paddle 'num'
