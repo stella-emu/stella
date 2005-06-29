@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.34 2005-06-27 04:45:52 urchlay Exp $
+// $Id: Console.hxx,v 1.35 2005-06-29 00:31:49 urchlay Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.34 2005-06-27 04:45:52 urchlay Exp $
+  @version $Id: Console.hxx,v 1.35 2005-06-29 00:31:49 urchlay Exp $
 */
 class Console
 {
@@ -154,6 +154,11 @@ class Console
       Sets the palette to that specified in the mediasource
     */
     void setPalette();
+
+    /**
+      "Fry" the Atari (mangle memory/TIA contents)
+    */
+    void fry();
 
     TIADebug *tiaDebugger() { return myTIAdebugger; }
 

@@ -31,7 +31,10 @@ What the debugger can do:
 - Save CLI session to a text file.
 - Supports hex, decimal, and binary input and output almost everywhere.
   (disassembly is still hex)
-- (partial) Support for bank switching. Only F8 cart type works for now.
+- Support for bank switching. You can see how many banks a cart has,
+  and switch banks. There's still more to be done here though.
+- Patching ROM in-place. Currently there's no way to save the patched
+  ROM though.
 
 Planned features for Stella 2.0 release:
 - Better TIA state display, with register names and GUI buttons for
@@ -44,15 +47,16 @@ Planned features for Stella 2.0 release:
 - TIA display should be updated during step/trace, so we can see our
   scanlines being drawn as it happens. The emulation core wasn't
   designed with this in mind, so it'll take a lot of work
-- Bankswitch support in the debugger for the remaining 20-odd cart
-  types. Each one has to be added individually.
+- Bankswitch support in the debugger for the few remaining cart types
+  that aren't supported.
+- Patch ROM support for a few cart types doesn't work.
 
 Future plans (post 2.0):
 - Advanced breakpoint support (e.g. Break when carry flag
   changes, or break when player 0 collides with player 1,
   etc). This will implemented as a scripting language for
   the CLI.
-- Ability to patch ROM in-place, possibly including a mini-assembler
+- Possibly a mini-assembler
 - Support for extra RAM in Supercharger and other cart types.
 - Possibly support for recording and playing back input files, like
   MAME. This isn't a debugger feature per se, but it'll make it easier

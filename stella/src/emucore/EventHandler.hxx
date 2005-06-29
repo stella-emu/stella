@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.42 2005-06-28 04:40:21 urchlay Exp $
+// $Id: EventHandler.hxx,v 1.43 2005-06-29 00:31:49 urchlay Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.42 2005-06-28 04:40:21 urchlay Exp $
+  @version $Id: EventHandler.hxx,v 1.43 2005-06-29 00:31:49 urchlay Exp $
 */
 class EventHandler
 {
@@ -240,6 +240,8 @@ class EventHandler
     */
     void handleEvent(Event::Type type, Int32 value);
 
+    bool frying() { return myFryingFlag; }
+
   private:
     /**
       Send a keyboard event to the handler.
@@ -331,6 +333,9 @@ class EventHandler
 
     // Indicates whether to use launcher mode when exiting a game
     bool myUseLauncherFlag;
+
+    // Indicates whether or not we're in frying mode
+    bool myFryingFlag;
 
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;

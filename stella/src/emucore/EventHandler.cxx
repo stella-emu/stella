@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.77 2005-06-28 03:34:41 urchlay Exp $
+// $Id: EventHandler.cxx,v 1.78 2005-06-29 00:31:49 urchlay Exp $
 //============================================================================
 
 #include <algorithm>
@@ -92,6 +92,8 @@ EventHandler::EventHandler(OSystem* osystem)
   setActionMappings();
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
+
+  myFryingFlag = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -633,6 +635,10 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
         enterDebugMode();
         return;
       }
+      else if(myKeyTable[key] == Event::Fry)
+      {
+        myFryingFlag = bool(state);
+      }
       else
         handleEvent(myKeyTable[key], state);
 
@@ -841,10 +847,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
         myOSystem->createLauncher();
         return;
       }
-    }
-    else if(myState == S_EMULATE && event == Event::Fry)
-    {
-      myOSystem->debugger().fry();
     }
     else if(event == Event::Quit)
     {

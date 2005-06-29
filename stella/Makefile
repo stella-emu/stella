@@ -1,4 +1,4 @@
-# $Header: /home/stephena/STELLA_CVS-to-SVN/stella/Makefile,v 1.2 2005-06-28 23:17:58 stephena Exp $
+# $Header: /home/stephena/STELLA_CVS-to-SVN/stella/Makefile,v 1.3 2005-06-29 00:31:48 urchlay Exp $
 
 #######################################################################
 # Default compilation parameters. Normally don't edit these           #
@@ -22,7 +22,7 @@ include config.mak
 # CXXFLAGS+= -Werror
 
 CXXFLAGS:= $(CXXFLAGS)
-CXXFLAGS+= -Wall -Wuninitialized -Wno-multichar -Wunused
+CXXFLAGS+= -O2 -Wall -Wuninitialized -Wno-multichar -Wunused
 # Even more warnings...
 #CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion
 #CXXFLAGS+= -Wshadow -Wimplicit -Wundef -Wnon-virtual-dtor

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.61 2005-06-27 04:45:52 urchlay Exp $
+// $Id: Console.cxx,v 1.62 2005-06-29 00:31:49 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -348,6 +348,13 @@ void Console::initializeAudio()
 void Console::setPalette()
 {
   myOSystem->frameBuffer().setPalette(myMediaSource->palette());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::fry()
+{
+  for (int ZPmem=0; ZPmem<255; ZPmem += rand() % 4)
+  mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
 }
 
 #ifdef DEVELOPER_SUPPORT

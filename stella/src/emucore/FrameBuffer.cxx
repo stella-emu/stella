@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.48 2005-06-25 16:35:36 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.49 2005-06-29 00:31:49 urchlay Exp $
 //============================================================================
 
 #include <sstream>
@@ -168,7 +168,11 @@ void FrameBuffer::update()
     {
       // Draw changes to the mediasource
       if(!myPauseStatus)
+      {
         myOSystem->console().mediaSource().update();
+        if(myOSystem->eventHandler().frying())
+          myOSystem->console().fry();
+      }
 
       // We always draw the screen, even if the core is paused
       drawMediaSource();

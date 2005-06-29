@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.41 2005-06-28 03:34:40 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.42 2005-06-29 00:31:48 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -135,14 +135,6 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeFrame
-	},
-
-	{
-		"fry",
-		"\"Fry\" console (randomly corrupt memory)",
-		false,
-		{ kARG_END_ARGS },
-		&DebuggerParser::executeFry
 	},
 
 	// TODO: height command
@@ -1078,11 +1070,6 @@ void DebuggerParser::executeFrame() {
 	commandResult += debugger->valueToString(count);
 	commandResult += " frame";
 	if(count != 1) commandResult += "s";
-}
-
-// "fry"
-void DebuggerParser::executeFry() {
-	debugger->fry();
 }
 
 // "listbreaks"

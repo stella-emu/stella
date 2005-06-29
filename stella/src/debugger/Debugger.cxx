@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.38 2005-06-28 03:34:40 urchlay Exp $
+// $Id: Debugger.cxx,v 1.39 2005-06-29 00:31:48 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -729,8 +729,3 @@ bool Debugger::patchROM(int addr, int value) {
   return myConsole->cartridge().patch(addr, value);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::fry() {
-  for (int ZPmem=0; ZPmem<255; ZPmem += rand() % 4)
-  mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
-}
