@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.62 2005-06-29 00:31:49 urchlay Exp $
+// $Id: Console.cxx,v 1.63 2005-06-29 13:11:03 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -46,7 +46,6 @@
 #include "OSystem.hxx"
 #include "Menu.hxx"
 #include "Debugger.hxx"
-#include "TIADebug.hxx"
 #include "Version.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
@@ -152,7 +151,6 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
 
   // Remember what my media source is
   myMediaSource = tia;
-  myTIAdebugger = new TIADebug(tia);
   myCart = cartridge;
 
   // Reset, the system to its power-on state
@@ -206,7 +204,6 @@ Console::~Console()
   delete mySwitches;
   delete myControllers[0];
   delete myControllers[1];
-  delete myTIAdebugger;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

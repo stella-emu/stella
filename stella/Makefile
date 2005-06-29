@@ -1,4 +1,23 @@
-# $Header: /home/stephena/STELLA_CVS-to-SVN/stella/Makefile,v 1.3 2005-06-29 00:31:48 urchlay Exp $
+##============================================================================
+##
+##   SSSS    tt          lll  lll
+##  SS  SS   tt           ll   ll
+##  SS     tttttt  eeee   ll   ll   aaaa
+##   SSSS    tt   ee  ee  ll   ll      aa
+##      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+##  SS  SS   tt   ee      ll   ll  aa  aa
+##   SSSS     ttt  eeeee llll llll  aaaaa
+##
+## Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+##
+## See the file "license" for information on usage and redistribution of
+## this file, and for a DISCLAIMER OF ALL WARRANTIES.
+##
+## $Id: Makefile,v 1.4 2005-06-29 13:11:03 stephena Exp $
+##
+##   Based on code from ScummVM - Scumm Interpreter
+##   Copyright (C) 2002-2004 The ScummVM project
+##============================================================================
 
 #######################################################################
 # Default compilation parameters. Normally don't edit these           #
@@ -21,8 +40,12 @@ include config.mak
 # Uncomment this for stricter compile time code verification
 # CXXFLAGS+= -Werror
 
-CXXFLAGS:= $(CXXFLAGS)
-CXXFLAGS+= -O2 -Wall -Wuninitialized -Wno-multichar -Wunused
+ifdef CXXFLAGS
+  CXXFLAGS:= $(CXXFLAGS)
+else
+  CXXFLAGS:= -O2
+endif
+CXXFLAGS+= -Wall -Wno-multichar -Wunused
 # Even more warnings...
 #CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion
 #CXXFLAGS+= -Wshadow -Wimplicit -Wundef -Wnon-virtual-dtor
@@ -97,17 +120,18 @@ clean:
 
 .PHONY: all clean dist distclean plugins
 
-# Old (dumb) compile & dependcy rules
-#INCS	= scumm/scumm.h common/scummsys.h common/stdafx.h
-#.cpp.o:
-#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
-#$(OBJS): $(INCS)
-
 .SUFFIXES: .cxx
 ifndef HAVE_GCC3
 # If you use GCC, disable the above and enable this for intelligent
 # dependency tracking. 
 .cxx.o:
+	$(MKDIR) $(*D)/$(DEPDIR)
+	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
+	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
+	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
+
+.c.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
 	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
@@ -119,6 +143,10 @@ else
 # Also, with this GCC inserts additional dummy rules for the involved headers,
 # which ensures a smooth compilation even if said headers become obsolete.
 .cxx.o:
+	$(MKDIR) $(*D)/$(DEPDIR)
+	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+
+.c.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
 	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 endif

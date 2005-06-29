@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.41 2005-06-29 04:23:41 urchlay Exp $
+// $Id: Debugger.cxx,v 1.42 2005-06-29 13:11:03 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -61,6 +61,7 @@ Debugger::~Debugger()
 {
   delete myParser;
   delete myDebugger;
+  delete myTIAdebug;
   delete equateList;
   delete breakPoints;
   delete readTraps;
@@ -113,7 +114,13 @@ void Debugger::setConsole(Console* console)
   // Keep pointers to these items for efficiency
   myConsole = console;
   mySystem = &(myConsole->system());
-  myTIAdebug = myConsole->tiaDebugger();
+
+  // Create a new TIA debugger for this console
+  // This code is somewhat ugly, since we derive a TIA from the MediaSource
+  // for no particular reason.  Maybe it's better to make the TIA be the
+  // base class and entirely eliminate MediaSource class??
+  delete myTIAdebug;
+  myTIAdebug = new TIADebug((TIA*)&myConsole->mediaSource());
 
   // Create a new 6502 debugger for this console
   delete myDebugger;

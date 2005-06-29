@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.35 2005-06-29 00:31:49 urchlay Exp $
+// $Id: Console.hxx,v 1.36 2005-06-29 13:11:03 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -30,14 +30,13 @@ class System;
 #include "Control.hxx"
 #include "Props.hxx"
 #include "TIA.hxx"
-#include "TIADebug.hxx"
 #include "Cart.hxx"
 
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.35 2005-06-29 00:31:49 urchlay Exp $
+  @version $Id: Console.hxx,v 1.36 2005-06-29 13:11:03 stephena Exp $
 */
 class Console
 {
@@ -103,6 +102,11 @@ class Console
     */
     System& system() const { return *mySystem; }
 
+    /**
+      Get the cartridge used by the console which contains the ROM code
+
+      @return The cartridge for this console
+    */
     Cartridge& cartridge() const { return *myCart; }
 
   public:
@@ -159,8 +163,6 @@ class Console
       "Fry" the Atari (mangle memory/TIA contents)
     */
     void fry();
-
-    TIADebug *tiaDebugger() { return myTIAdebugger; }
 
 #ifdef DEVELOPER_SUPPORT
   public:
@@ -233,9 +235,6 @@ class Console
  
     // Pointer to the 6502 based system being emulated 
     System* mySystem;
-
-    // Pointer to TIADebug
-    TIADebug *myTIAdebugger;
 
     // Pointer to the Cartridge (the debugger needs it)
     Cartridge *myCart;
