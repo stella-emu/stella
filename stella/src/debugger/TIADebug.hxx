@@ -13,6 +13,7 @@ class TIADebug {
 		int frameCount();
 		bool vsync();
 		void updateTIA();
+		string spriteState();
 
 	private:
 		TIA *myTIA;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.40 2005-06-29 03:43:37 urchlay Exp $
+// $Id: Debugger.cxx,v 1.41 2005-06-29 04:23:41 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -346,6 +346,9 @@ const string Debugger::dumpTIA()
   result += "\n";
 
   result += booleanWithLabel("VSYNC", myTIAdebug->vsync());
+  result += "\n";
+
+  result += myTIAdebug->spriteState();
 
   return result;
 }
