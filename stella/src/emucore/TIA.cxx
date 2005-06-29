@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.44 2005-06-16 00:55:58 stephena Exp $
+// $Id: TIA.cxx,v 1.45 2005-06-29 03:43:37 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -102,6 +102,9 @@ TIA::TIA(const Console& console, Settings& settings)
   computePlayerPositionResetWhenTable();
   computePlayerReflectTable();
   computePlayfieldMaskTable();
+
+  // Init stats counters
+  myFrameCounter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -538,6 +541,9 @@ void TIA::update()
   // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myScanlineCountForLastFrame = totalClocks / 228;
+
+  // Stats counters
+  myFrameCounter++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.22 2005-06-21 04:30:49 urchlay Exp $
+// $Id: TIA.hxx,v 1.23 2005-06-29 03:43:37 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.22 2005-06-21 04:30:49 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.23 2005-06-29 03:43:37 urchlay Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -256,6 +256,9 @@ class TIA : public Device , public MediaSource
     bool myColorLossEnabled;
 
   private:
+    // Number of frames displayed by this TIA
+    int myFrameCounter;
+
     // Pointer to the current frame buffer
     uInt8* myCurrentFrameBuffer;
 

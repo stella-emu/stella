@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: D6502.cxx,v 1.9 2005-06-21 04:30:49 urchlay Exp $
+// $Id: D6502.cxx,v 1.10 2005-06-29 03:43:38 urchlay Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -84,22 +84,22 @@ uInt16 D6502::disassemble(uInt16 address, char* buffer, EquateList *equateList)
       return 1;
 
     case M6502::Indirect:
-      sprintf(buffer, "%s ($%04X) ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          dpeek(mySystem, address + 1),
+      sprintf(buffer, "%s (%s) ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 3;
 
     case M6502::IndirectX:
-      sprintf(buffer, "%s ($%02X,x) ; %d", 
+      sprintf(buffer, "%s (%s,x) ; %d", 
           M6502::ourInstructionMnemonicTable[opcode], 
-          mySystem->peek(address + 1),
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 
     case M6502::IndirectY:
-      sprintf(buffer, "%s ($%02X),y ; %d", 
+      sprintf(buffer, "%s (%s),y ; %d", 
           M6502::ourInstructionMnemonicTable[opcode], 
-          mySystem->peek(address + 1),
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
 			 M6502::ourInstructionProcessorCycleTable[opcode]);
       return 2;
 

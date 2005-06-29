@@ -10,7 +10,9 @@ class TIADebug {
 		~TIADebug();
 
 		int scanlines();
+		int frameCount();
 		bool vsync();
+		void updateTIA();
 
 	private:
 		TIA *myTIA;

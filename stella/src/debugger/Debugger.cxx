@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.39 2005-06-29 00:31:48 urchlay Exp $
+// $Id: Debugger.cxx,v 1.40 2005-06-29 03:43:37 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -197,8 +197,14 @@ const string Debugger::state()
   result += "/";
   formatFlags(myDebugger->ps(), buf);
   result += buf;
-  result += "  Cycle ";
+  result += "\n  Cyc:";
   sprintf(buf, "%d", mySystem->cycles());
+  result += buf;
+  result += " Scan:";
+  sprintf(buf, "%d", myTIAdebug->scanlines());
+  result += buf;
+  result += " Frame:";
+  sprintf(buf, "%d", myTIAdebug->frameCount());
   result += buf;
   result += "\n  ";
 
@@ -388,6 +394,8 @@ int Debugger::step()
 {
   int cyc = mySystem->cycles();
   mySystem->m6502().execute(1);
+  myTIAdebug->updateTIA();
+  myOSystem->frameBuffer().refreshTIA(true);
   return mySystem->cycles() - cyc;
 }
 
@@ -412,6 +420,8 @@ int Debugger::trace()
     int targetPC = myDebugger->pc() + 3; // return address
     while(myDebugger->pc() != targetPC)
       mySystem->m6502().execute(1);
+    myTIAdebug->updateTIA();
+    myOSystem->frameBuffer().refreshTIA(true);
     return mySystem->cycles() - cyc;
   } else {
     return step();
