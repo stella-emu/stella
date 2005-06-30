@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.4 2005-06-22 18:30:43 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.5 2005-06-30 00:08:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,6 +42,9 @@ class EditableWidget : public Widget
     void setEditable(bool editable)  { _editable = editable; }
 
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
+
+    // We only want to focus this widget when we can edit its contents
+    virtual bool wantsFocus() { return _editable; }
 
   protected:
     virtual void startEditMode() = 0;

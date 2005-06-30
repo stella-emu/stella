@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.78 2005-06-29 00:31:49 urchlay Exp $
+// $Id: EventHandler.cxx,v 1.79 2005-06-30 00:07:59 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -270,10 +270,6 @@ void EventHandler::poll(uInt32 time)
               myOSystem->frameBuffer().toggleFullscreen();
               break;
     #endif
-            case SDLK_f:
-              myOSystem->frameBuffer().toggleFilter();
-              break;
-
             case SDLK_g:
               myOSystem->toggleFrameBuffer();
               break;

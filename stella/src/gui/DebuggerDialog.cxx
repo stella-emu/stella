@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.18 2005-06-24 12:01:26 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.19 2005-06-30 00:08:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -113,6 +113,8 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       doStep();
     else if(ascii == 't')
       doTrace();
+    else if(ascii == 'f')
+      doAdvance();
   }
   else
     myTab->handleKeyDown(ascii, keycode, modifiers);

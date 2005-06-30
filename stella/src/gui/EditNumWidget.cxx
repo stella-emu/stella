@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditNumWidget.cxx,v 1.5 2005-06-23 14:33:11 stephena Exp $
+// $Id: EditNumWidget.cxx,v 1.6 2005-06-30 00:08:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -105,11 +105,6 @@ GUI::Rect EditNumWidget::getEditRect() const
 {
   GUI::Rect r(2, 0, _w - 2, _h - 1);
   return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditNumWidget::receivedFocusWidget()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

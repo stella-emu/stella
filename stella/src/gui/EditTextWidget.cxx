@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.5 2005-06-23 14:33:11 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.6 2005-06-30 00:08:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -95,11 +95,6 @@ GUI::Rect EditTextWidget::getEditRect() const
 {
   GUI::Rect r(2, 1, _w - 2, _h);
   return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::receivedFocusWidget()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

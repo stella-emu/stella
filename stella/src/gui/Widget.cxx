@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.20 2005-06-25 16:35:36 stephena Exp $
+// $Id: Widget.cxx,v 1.21 2005-06-30 00:08:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -130,16 +130,7 @@ void Widget::receivedFocus()
     _boss->handleCommand(NULL, kActiveWidgetCmd, 0);
   }
 }
-/*  FIXME
-void Widget::lostFocus()
-{
-  _hasFocus = false;
-  lostFocusWidget(); 
 
-if(getFlags() & WIDGET_TAB_NAVIGATE)
-  cerr << "lost focus: " << this << endl;
-}
-*/
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditNumWidget.hxx,v 1.2 2005-06-16 00:55:59 stephena Exp $
+// $Id: EditNumWidget.hxx,v 1.3 2005-06-30 00:08:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,11 +36,8 @@ class EditNumWidget : public EditableWidget
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
 
-    virtual bool wantsFocus() { return true; }
-
   protected:
     void drawWidget(bool hilite);
-    void receivedFocusWidget();
     void lostFocusWidget();
 
     void startEditMode();
