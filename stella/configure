@@ -688,7 +688,7 @@ fi
 
 if test "$_build_developer" = yes ; then
 	DEFINES="$DEFINES -DDEVELOPER_SUPPORT"
-	MODULES="$MODULES $DBG"
+	MODULES="$MODULES $DBG $YACC"
 	INCLUDES="$INCLUDES -I$DBG -I$YACC"
 fi
 

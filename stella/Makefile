@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.5 2005-07-01 04:22:26 urchlay Exp $
+## $Id: Makefile,v 1.6 2005-07-01 13:59:40 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -90,8 +90,7 @@ MODULES += \
 	src/emucore \
 	src/emucore/m6502 \
 	src/gui \
-	src/common \
-	src/yacc
+	src/common
 
 ######################################################################
 # The build rules follow - normally you should have no need to
