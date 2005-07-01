@@ -646,6 +646,7 @@ CORE="$SRC/emucore"
 COMMON="$SRC/common"
 GUI="$SRC/gui"
 DBG="$SRC/debugger"
+YACC="$SRC/yacc"
 
 INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
 
@@ -688,7 +689,7 @@ fi
 if test "$_build_developer" = yes ; then
 	DEFINES="$DEFINES -DDEVELOPER_SUPPORT"
 	MODULES="$MODULES $DBG"
-	INCLUDES="$INCLUDES -I$DBG"
+	INCLUDES="$INCLUDES -I$DBG -I$YACC"
 fi
 
 if test "$_build_snapshot" = yes ; then

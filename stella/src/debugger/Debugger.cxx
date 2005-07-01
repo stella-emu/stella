@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.42 2005-06-29 13:11:03 stephena Exp $
+// $Id: Debugger.cxx,v 1.43 2005-07-01 04:22:27 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -212,6 +212,9 @@ const string Debugger::state()
   result += buf;
   result += " Frame:";
   sprintf(buf, "%d", myTIAdebug->frameCount());
+  result += buf;
+  result += " 6502Ins:";
+  sprintf(buf, "%d", mySystem->m6502().totalInstructionCount());
   result += buf;
   result += "\n  ";
 

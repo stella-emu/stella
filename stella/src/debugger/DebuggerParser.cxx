@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.42 2005-06-29 00:31:48 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.43 2005-07-01 04:22:27 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -21,9 +21,8 @@
 #include "DebuggerParser.hxx"
 #include "D6502.hxx"
 #include "DebuggerParser.hxx"
+#include "YaccParser.hxx"
 
-// TODO: finish this, replace run() and getArgs() with versions
-// that use this table.
 Command DebuggerParser::commands[] = {
 	{
 		"a",
@@ -853,6 +852,16 @@ bool DebuggerParser::validateArgs(int cmd) {
 // main entry point: PromptWidget calls this method.
 string DebuggerParser::run(const string& command) {
 	int i=0;
+
+	// special case: parser testing
+	if(strncmp(command.c_str(), "expr ", 5) == 0) {
+		commandResult = "parser test: status==";
+		int status = YaccParser::parse(command.c_str() + 5);
+		commandResult += debugger->valueToString(status);
+		commandResult += ", result==";
+		commandResult += debugger->valueToString(YaccParser::getResult());
+		return commandResult;
+	}
 
 	getArgs(command);
 	commandResult = "";

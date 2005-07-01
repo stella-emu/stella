@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.7 2005-06-21 05:00:45 urchlay Exp $
+// $Id: M6502.cxx,v 1.8 2005-07-01 04:22:37 urchlay Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -43,6 +43,8 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
     myInstructionSystemCycleTable[t] = ourInstructionProcessorCycleTable[t] *
         mySystemCyclesPerProcessorCycle;
   }
+
+  myTotalInstructionCount = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

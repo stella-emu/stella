@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.8 2005-06-28 12:20:06 urchlay Exp $
+// $Id: M6502Hi.cxx,v 1.9 2005-07-01 04:22:37 urchlay Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -89,8 +89,8 @@ bool M6502High::execute(uInt32 number)
 
       if(justHitTrap)
       {
-        justHitTrap = false;
         if(myDebugger->start()) {
+          justHitTrap = false;
           return true;
         }
       }
@@ -126,6 +126,8 @@ bool M6502High::execute(uInt32 number)
           // Oops, illegal instruction executed so set fatal error flag
           myExecutionStatus |= FatalErrorBit;
       }
+
+      myTotalInstructionCount++;
 
 #ifdef DEBUG
       debugStream << hex << setw(4) << operandAddress << " ";
