@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.5 2005-07-02 14:58:45 urchlay Exp $
+// $Id: PromptWidget.hxx,v 1.6 2005-07-02 15:36:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -101,7 +101,7 @@ class PromptWidget : public Widget, public CommandSender
     int _historyIndex;
     int _historyLine;
 
-    int _kConsoleCharWidth, _kConsoleLineHeight;
+    int _kConsoleCharWidth, _kConsoleCharHeight, _kConsoleLineHeight;
 
     OverlayColor defaultTextColor;
     OverlayColor defaultBGColor;

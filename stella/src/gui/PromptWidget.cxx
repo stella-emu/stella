@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.22 2005-07-02 15:31:30 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.23 2005-07-02 15:36:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,7 +52,8 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
   _type = kPromptWidget;
 
   _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
-  _kConsoleLineHeight = instance()->consoleFont().getFontHeight() + 2;
+  _kConsoleCharHeight = instance()->consoleFont().getFontHeight();
+  _kConsoleLineHeight = _kConsoleCharHeight + 2;
 
   // Calculate depending values
   _lineWidth = (_w - kScrollBarWidth - 2) / _kConsoleCharWidth;
@@ -118,16 +119,12 @@ void PromptWidget::drawWidget(bool hilite)
   {
     int x = _x + 1;
     for (int column = 0; column < _lineWidth; column++) {
-#if 0
-      int l = (start + line) % _linesInBuffer;
-      char c = buffer(l * _lineWidth + column);
-#else
       int c = buffer((start + line) * _lineWidth + column);
-#endif
+
       if(c & (1 << 17)) { // inverse video flag
         fgcolor = bgColor;
         bgcolor = (OverlayColor)((c & 0x1ffff) >> 8);
-        fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, bgcolor);
+        fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
       } else {
         fgcolor = (OverlayColor)(c >> 8);
         bgcolor = bgColor;
