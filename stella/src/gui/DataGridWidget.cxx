@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.4 2005-06-23 14:33:11 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.5 2005-07-02 18:34:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,15 +64,18 @@ DataGridWidget::~DataGridWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist)
+void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist,
+                             const BoolArray& changed)
 {
   _addrList.clear();
   _valueList.clear();
   _addrStringList.clear();
   _valueStringList.clear();
+  _changedList.clear();
 
   _addrList = alist;
   _valueList = vlist;
+  _changedList = changed;
 
   int size = _addrList.size();  // assume vlist is the same size
   assert(size == _rows * _cols);
@@ -99,6 +102,7 @@ void DataGridWidget::setSelectedValue(int value)
 
   _valueStringList[_selectedItem] = _editString;
   _valueList[_selectedItem] = value;
+  _changedList[_selectedItem] = true;
 
   sendCommand(kDGItemDataChangedCmd, _selectedItem);
 }
@@ -343,6 +347,7 @@ void DataGridWidget::drawWidget(bool hilite)
           fb.frameRect(x - 4, y - 2, _colWidth+1, kLineHeight+1, kTextColorHi);
       }
 
+//cerr << "pos " << pos << ": " << _changedList[pos] << endl;
       if (_selectedItem == pos && _editMode)
       {
         buffer = _editString;

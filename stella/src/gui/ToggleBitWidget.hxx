@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.hxx,v 1.1 2005-06-24 11:05:00 stephena Exp $
+// $Id: ToggleBitWidget.hxx,v 1.2 2005-07-02 18:34:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,8 +28,6 @@
 #include "Debugger.hxx"
 #include "StringList.hxx"
 #include "Array.hxx"
-
-typedef GUI::Array<bool> BoolList;
 
 // Some special commands
 enum {
@@ -46,7 +44,7 @@ class ToggleBitWidget : public Widget, public CommandSender
     virtual ~ToggleBitWidget();
 
     void setList(const StringList& off, const StringList& on);
-    void setState(const BoolList& state);
+    void setState(const BoolArray& state);
 
     bool getSelectedState() const  { return _stateList[_selectedItem]; }
 
@@ -73,7 +71,7 @@ class ToggleBitWidget : public Widget, public CommandSender
 
     StringList  _offList;
     StringList  _onList;
-    BoolList    _stateList;
+    BoolArray   _stateList;
 };
 
 #endif

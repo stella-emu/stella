@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.2 2005-06-22 18:30:43 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.3 2005-07-02 18:34:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,8 @@ class DataGridWidget : public EditableWidget, public CommandSender
                    int colchars, int range, BaseFormat format = kBASE_DEFAULT);
     virtual ~DataGridWidget();
 
-    void setList(const AddrList& alist, const ValueList& vlist);
+    void setList(const AddrList& alist, const ValueList& vlist,
+                 const BoolArray& changedlist);
     void setSelectedValue(int value);
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
@@ -96,6 +97,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
     ValueList   _valueList;
     StringList  _addrStringList;
     StringList  _valueStringList;
+    BoolArray   _changedList;
 
     bool    _editMode;
     int     _selectedItem;

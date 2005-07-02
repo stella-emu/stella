@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.1 2005-06-24 11:04:59 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.2 2005-07-02 18:34:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,7 @@ void ToggleBitWidget::setList(const StringList& off, const StringList& on)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleBitWidget::setState(const BoolList& state)
+void ToggleBitWidget::setState(const BoolArray& state)
 {
   _stateList.clear();
   _stateList = state;

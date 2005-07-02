@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.25 2005-07-02 15:31:30 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.26 2005-07-02 18:34:53 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -32,9 +32,6 @@ typedef enum {
 	kBASE_2,
 	kBASE_DEFAULT
 } BaseFormat;
-
-typedef GUI::Array<int> IntArray;
-typedef GUI::Array<string> StringArray;
 
 class DebuggerParser
 {
@@ -85,11 +82,11 @@ class DebuggerParser
 		string commandResult;
 
 		IntArray args;
-		StringArray argStrings;
+		StringList argStrings;
 		int argCount;
 
 		BaseFormat defaultBase;
-		StringArray watches;
+		StringList watches;
 		static Command commands[];
 
       string completions;

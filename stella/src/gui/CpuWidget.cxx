@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.6 2005-06-24 17:46:11 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.7 2005-07-02 18:34:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -222,6 +222,7 @@ void CpuWidget::fillGrid()
 {
   AddrList alist;
   ValueList vlist;
+  BoolArray changed;
 
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
@@ -239,10 +240,13 @@ void CpuWidget::fillGrid()
   vlist.push_back(dbg.getX());
   vlist.push_back(dbg.getY());
 
-  myCpuGrid->setList(alist, vlist);
+  // FIXME - show how registers have changed
+  for(int i = 0; i < 6; ++i)
+    changed.push_back(false);
+  myCpuGrid->setList(alist, vlist, changed);
 
   // Update the PS register booleans
-  BoolList b;
+  BoolArray b;
   int ps = dbg.getPS();
   for(int i = 0; i < 8; ++i)
   {
