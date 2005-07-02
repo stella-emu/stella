@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.21 2005-07-02 14:58:45 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.22 2005-07-02 15:31:30 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -833,9 +833,10 @@ bool PromptWidget::saveBuffer(string& filename)
     while(_buffer[end] == ' ' && end >= start)
       end--;
 
-    // spit out the line minus its trailing spaces
+    // spit out the line minus its trailing spaces.
+    // Strip off any color/inverse bits
     for(int j=start; j<=end; j++)
-      out << _buffer[j];
+      out << (_buffer[j] & 0xff);
 
     // add a \n
     out << endl;

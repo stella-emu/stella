@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.43 2005-07-01 04:22:27 urchlay Exp $
+// $Id: Debugger.cxx,v 1.44 2005-07-02 15:31:30 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -54,6 +54,8 @@ Debugger::Debugger(OSystem* osystem)
   breakPoints = new PackedBitArray(0x10000);
   readTraps = new PackedBitArray(0x10000);
   writeTraps = new PackedBitArray(0x10000);
+
+  oldA = oldX = oldY = oldS = oldP = oldPC = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,6 +185,18 @@ const string Debugger::valueToString(int value, BaseFormat outputBase)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Debugger::invIfChanged(int reg, int oldReg) {
+	string ret;
+
+	bool changed = !(reg == oldReg);
+	if(changed) ret += "\177";
+	ret += valueToString(reg);
+	if(changed) ret += "\177";
+
+	return ret;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::state()
 {
   string result;
@@ -190,17 +204,17 @@ const string Debugger::state()
 
   //cerr << "state(): pc is " << myDebugger->pc() << endl;
   result += "\nPC=";
-  result += valueToString(myDebugger->pc());
+  result += invIfChanged(myDebugger->pc(), oldPC);
   result += " A=";
-  result += valueToString(myDebugger->a());
+  result += invIfChanged(myDebugger->a(), oldA);
   result += " X=";
-  result += valueToString(myDebugger->x());
+  result += invIfChanged(myDebugger->x(), oldX);
   result += " Y=";
-  result += valueToString(myDebugger->y());
+  result += invIfChanged(myDebugger->y(), oldY);
   result += " S=";
-  result += valueToString(myDebugger->sp());
+  result += invIfChanged(myDebugger->sp(), oldS);
   result += " P=";
-  result += valueToString(myDebugger->ps());
+  result += invIfChanged(myDebugger->ps(), oldP);
   result += "/";
   formatFlags(myDebugger->ps(), buf);
   result += buf;
@@ -750,5 +764,15 @@ const char *Debugger::getCartType() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::patchROM(int addr, int value) {
   return myConsole->cartridge().patch(addr, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::saveRegs() {
+	oldA = getA();
+	oldX = getX();
+	oldY = getY();
+	oldS = getSP();
+	oldP = getPS();
+	oldPC = getPC();
 }
 

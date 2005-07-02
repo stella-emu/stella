@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.36 2005-06-29 00:31:48 urchlay Exp $
+// $Id: Debugger.hxx,v 1.37 2005-07-02 15:31:30 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.36 2005-06-29 00:31:48 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.37 2005-07-02 15:31:30 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -83,6 +83,9 @@ class Debugger : public DialogContainer
       Inform this object of a console change.
     */
     void setConsole(Console* console);
+
+    /* save registers to oldA, oldX, etc. */
+    void saveRegs();
 
     /** Convenience methods to convert to hexidecimal values */
     static char *to_hex_4(int i)
@@ -239,6 +242,8 @@ class Debugger : public DialogContainer
 	 void loadState(int state);
 
   protected:
+    const string invIfChanged(int reg, int oldReg);
+
     Console* myConsole;
     System* mySystem;
 
@@ -250,6 +255,14 @@ class Debugger : public DialogContainer
     PackedBitArray *writeTraps;
     PromptWidget *myPrompt;
     TIADebug *myTIAdebug;
+
+    int oldA;
+    int oldX;
+    int oldY;
+    int oldS;
+    int oldP;
+    int oldPC;
+
 };
 
 #endif

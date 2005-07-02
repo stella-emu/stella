@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.44 2005-07-02 14:58:45 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.45 2005-07-02 15:31:30 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -408,7 +408,6 @@ DebuggerParser::DebuggerParser(Debugger* d)
 {
 	done = false;
 	defaultBase = kBASE_16;
-
 }
 
 DebuggerParser::~DebuggerParser() {
@@ -1038,8 +1037,8 @@ void DebuggerParser::executeClearwatches() {
 // "colortest"
 void DebuggerParser::executeColortest() {
 	commandResult = "test color: ";
-	//commandResult += char(args[0] | 0x80);
-	commandResult += inverse("LA LA LA");
+	commandResult += char((args[0]>>1) | 0x80);
+	commandResult += inverse("        ");
 }
 
 // "d"
@@ -1183,6 +1182,7 @@ void DebuggerParser::executeRom() {
 
 // "run"
 void DebuggerParser::executeRun() {
+   debugger->saveRegs();
 	debugger->quit();
 	commandResult = "exiting debugger";
 }
@@ -1220,6 +1220,7 @@ void DebuggerParser::executeSavesym() {
 
 // "step"
 void DebuggerParser::executeStep() {
+   debugger->saveRegs();
 	int cycles = debugger->step();
 	commandResult = "executed ";
 	commandResult += debugger->valueToString(cycles);
@@ -1233,6 +1234,7 @@ void DebuggerParser::executeTia() {
 
 // "trace"
 void DebuggerParser::executeTrace() {
+   debugger->saveRegs();
 	int cycles = debugger->trace();
 	commandResult = "executed ";
 	commandResult += debugger->valueToString(cycles);
