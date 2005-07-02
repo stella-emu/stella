@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.36 2005-06-29 13:11:03 stephena Exp $
+// $Id: Console.hxx,v 1.37 2005-07-02 17:15:42 urchlay Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -31,12 +31,13 @@ class System;
 #include "Props.hxx"
 #include "TIA.hxx"
 #include "Cart.hxx"
+#include "M6532.hxx"
 
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.36 2005-06-29 13:11:03 stephena Exp $
+  @version $Id: Console.hxx,v 1.37 2005-07-02 17:15:42 urchlay Exp $
 */
 class Console
 {
@@ -108,6 +109,13 @@ class Console
       @return The cartridge for this console
     */
     Cartridge& cartridge() const { return *myCart; }
+
+    /**
+      Get the 6532 used by the console
+
+      @return The 6532 for this console
+    */
+    M6532& riot() const { return *myRiot; }
 
   public:
     /**
@@ -238,6 +246,10 @@ class Console
 
     // Pointer to the Cartridge (the debugger needs it)
     Cartridge *myCart;
+
+    // Pointer to the 6532 (aka RIOT) (the debugger needs it)
+    // A RIOT of my own! (...with apologies to The Clash...)
+    M6532 *myRiot;
 };
 
 #endif

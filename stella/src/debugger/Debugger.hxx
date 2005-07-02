@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.37 2005-07-02 15:31:30 urchlay Exp $
+// $Id: Debugger.hxx,v 1.38 2005-07-02 17:15:41 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.37 2005-07-02 15:31:30 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.38 2005-07-02 17:15:41 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -240,6 +240,7 @@ class Debugger : public DialogContainer
 	 bool patchROM(int addr, int value);
 	 void saveState(int state);
 	 void loadState(int state);
+    uInt8 oldRAM(uInt8 address);
 
   protected:
     const string invIfChanged(int reg, int oldReg);
@@ -256,6 +257,7 @@ class Debugger : public DialogContainer
     PromptWidget *myPrompt;
     TIADebug *myTIAdebug;
 
+    uInt8 myOldRAM[128];
     int oldA;
     int oldX;
     int oldY;

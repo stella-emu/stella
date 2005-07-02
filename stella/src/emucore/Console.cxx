@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.63 2005-06-29 13:11:03 stephena Exp $
+// $Id: Console.cxx,v 1.64 2005-07-02 17:15:41 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -152,6 +152,7 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   // Remember what my media source is
   myMediaSource = tia;
   myCart = cartridge;
+  myRiot = m6532;
 
   // Reset, the system to its power-on state
   mySystem->reset();

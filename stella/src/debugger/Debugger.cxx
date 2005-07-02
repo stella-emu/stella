@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.44 2005-07-02 15:31:30 urchlay Exp $
+// $Id: Debugger.cxx,v 1.45 2005-07-02 17:15:41 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -129,6 +129,9 @@ void Debugger::setConsole(Console* console)
   myDebugger = new D6502(mySystem);
 
   autoLoadSymbols(myOSystem->romFile());
+
+  for(int i=0; i<0x80; i++)
+    myOldRAM[i] = readRAM(i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -286,19 +289,35 @@ void Debugger::formatFlags(int f, char *out) {
 	out[8] = '\0';
 }
 
+/* Danger: readRAM() and writeRAM() take an *offset* into RAM, *not* an
+   actual address. This means you don't get to use these to read/write
+   outside of the RIOT RAM. It also means that e.g. to read location 0x80,
+   you pass 0 (because 0x80 is the 0th byte of RAM).
+
+   However, setRAM() actually uses addresses, not offsets. This means that
+   setRAM() can poke anywhere in the address space. However, it still can't
+   change ROM: you use patchROM() for that. setRAM() *can* trigger a bank
+   switch, if you poke to the "hot spot" for the cartridge.
+*/
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Debugger::readRAM(uInt16 addr)
+uInt8 Debugger::readRAM(uInt16 offset)
 {
-  return mySystem->peek(addr + kRamStart);
+  offset &= 0x7f; // there are only 128 bytes
+  return mySystem->peek(offset + kRamStart);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::writeRAM(uInt16 addr, uInt8 value)
+void Debugger::writeRAM(uInt16 offset, uInt8 value)
 {
-  mySystem->poke(addr + kRamStart, value);
+  offset &= 0x7f; // there are only 128 bytes
+  mySystem->poke(offset + kRamStart, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* Element 0 of args is the address. The remaining elements are the data
+   to poke, starting at the given address.
+*/
 const string Debugger::setRAM(IntArray args) {
   char buf[10];
 
@@ -311,9 +330,16 @@ const string Debugger::setRAM(IntArray args) {
   sprintf(buf, "%d", count-1);
   ret += buf;
   ret += " location";
-  if(count > 2)
+  if(count != 0)
     ret += "s";
   return ret;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Debugger::oldRAM(uInt8 offset)
+{
+  offset &= 0x7f;
+  return myOldRAM[offset];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -329,8 +355,14 @@ const string Debugger::dumpRAM(uInt16 start)
 
     for (uInt8 j = 0; j < 0x010; j++)
     {
-      sprintf(buf, "%.2x ", mySystem->peek(start+i+j));
+      int byte = mySystem->peek(start+i+j);
+      bool changed = (byte != myOldRAM[i+j]);
+
+      if(changed) result += "\177";
+      sprintf(buf, "%.2x", mySystem->peek(start+i+j));
       result += buf;
+      if(changed) result += "\177";
+      result += " ";
 
       if(j == 0x07) result += "- ";
     }
@@ -673,6 +705,7 @@ string Debugger::disassemble(int start, int lines) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames) {
+  saveRegs();
   myOSystem->frameBuffer().advance(frames);
   myBaseDialog->loadConfig();
 }
@@ -768,6 +801,9 @@ bool Debugger::patchROM(int addr, int value) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveRegs() {
+	for(int i=0; i<0x80; i++) {
+		myOldRAM[i] = readRAM(i);
+	}
 	oldA = getA();
 	oldX = getX();
 	oldY = getY();
