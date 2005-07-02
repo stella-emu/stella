@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.4 2005-06-23 01:10:26 urchlay Exp $
+// $Id: PromptWidget.hxx,v 1.5 2005-07-02 14:58:45 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,7 +55,7 @@ class PromptWidget : public Widget, public CommandSender
     bool saveBuffer(string& filename);
 
   protected:
-    inline char &buffer(int idx) { return _buffer[idx % kBufferSize]; }
+    inline int &buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
     void drawWidget(bool hilite);
     void drawCaret();
@@ -81,7 +81,7 @@ class PromptWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data);
 
   protected:
-    char _buffer[kBufferSize];
+    int _buffer[kBufferSize];
     int  _linesInBuffer;
 
     int  _lineWidth;
@@ -102,6 +102,12 @@ class PromptWidget : public Widget, public CommandSender
     int _historyLine;
 
     int _kConsoleCharWidth, _kConsoleLineHeight;
+
+    OverlayColor defaultTextColor;
+    OverlayColor defaultBGColor;
+    OverlayColor textColor;
+    OverlayColor bgColor;
+    bool _inverse;
 };
 
 #endif

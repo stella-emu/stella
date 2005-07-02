@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.20 2005-06-27 03:32:51 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.21 2005-07-02 14:58:45 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,7 +58,7 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
   _lineWidth = (_w - kScrollBarWidth - 2) / _kConsoleCharWidth;
   _linesPerPage = (_h - 2) / _kConsoleLineHeight;
 
-  memset(_buffer, ' ', kBufferSize);
+  memset(_buffer, 0, kBufferSize * sizeof(int));
   _linesInBuffer = kBufferSize / _lineWidth;
 
   _currentPos = 0;
@@ -69,6 +69,13 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
   _scrollBar = new ScrollBarWidget(boss, _x + _w, _y, kScrollBarWidth, _h);
 
   _scrollBar->setTarget(this);
+
+  // Init colors
+  defaultTextColor = kTextColor;
+  defaultBGColor = kBGColor;
+  textColor = defaultTextColor;
+  bgColor = defaultBGColor;
+  _inverse = false;
 
   // Init History
   _historyIndex = 0;
@@ -96,6 +103,8 @@ PromptWidget::~PromptWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::drawWidget(bool hilite)
 {
+  OverlayColor fgcolor, bgcolor;
+
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   // Fill the background
@@ -113,9 +122,17 @@ void PromptWidget::drawWidget(bool hilite)
       int l = (start + line) % _linesInBuffer;
       char c = buffer(l * _lineWidth + column);
 #else
-      char c = buffer((start + line) * _lineWidth + column);
+      int c = buffer((start + line) * _lineWidth + column);
 #endif
-      fb.drawChar(&instance()->consoleFont(), c, x, y, kTextColor);
+      if(c & (1 << 17)) { // inverse video flag
+        fgcolor = bgColor;
+        bgcolor = (OverlayColor)((c & 0x1ffff) >> 8);
+        fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, bgcolor);
+      } else {
+        fgcolor = (OverlayColor)(c >> 8);
+        bgcolor = bgColor;
+      }
+      fb.drawChar(&instance()->consoleFont(), c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -174,7 +191,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
         // Copy the user input to str
         for (i = 0; i < len; i++)
-          str[i] = buffer(_promptStartPos + i);
+          str[i] = buffer(_promptStartPos + i) & 0x7f;
         str[len] = '\0';
 
         // Add the input to the history
@@ -210,7 +227,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
         char *str = new char[len + 1];
         for (i = 0; i < len; i++) {
-          str[i] = buffer(_promptStartPos + i);
+          str[i] = buffer(_promptStartPos + i) & 0x7f;
           if(strchr("*@<> ", str[i]) != NULL ) {
             lastDelimPos = i;
             delimiter = str[i];
@@ -646,6 +663,11 @@ void PromptWidget::historyScroll(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::nextLine()
 {
+  // reset colors every line, so I don't have to remember to do it myself
+  textColor = defaultTextColor;
+  bgColor = defaultBGColor;
+  _inverse = false;
+
   int line = _currentPos / _lineWidth;
   if (line == _scrollLine)
     _scrollLine++;
@@ -720,9 +742,21 @@ void PromptWidget::putcharIntern(int c)
 {
   if (c == '\n')
     nextLine();
+  else if(c & 0x80) { // set foreground color to TIA color
+                      // don't print or advance cursor
+                      // there are only 128 TIA colors, but
+                      // OverlayColor contains 256 of them
+    textColor = (OverlayColor) ((c & 0x7f) << 1);
+  }
+  else if(c < ' ') { // More colors (the regular GUI ones)
+    textColor = (OverlayColor) (c);
+  }
+  else if(c == 0x7f) { // toggle inverse video (DEL char)
+    _inverse = !_inverse;
+  }
   else
   {
-    buffer(_currentPos) = (char)c;
+    buffer(_currentPos) = c | (textColor << 8) | (_inverse << 17);
     _currentPos++;
     if ((_scrollLine + 1) * _lineWidth == _currentPos)
     {

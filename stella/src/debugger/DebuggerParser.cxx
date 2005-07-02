@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.43 2005-07-01 04:22:27 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.44 2005-07-02 14:58:45 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -86,6 +86,14 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeClearwatches
+	},
+
+	{
+		"colortest",
+		"Color Test",
+		true,
+		{ kARG_BYTE, kARG_END_ARGS },
+		&DebuggerParser::executeColortest
 	},
 
 	{
@@ -775,7 +783,7 @@ bool DebuggerParser::validateArgs(int cmd) {
 
 	if(argCount == 0) {
 		if(required) {
-			commandResult = "missing required argument(s)";
+			commandResult = red("missing required argument(s)");
 			return false; // needed args. didn't get 'em.
 		} else {
 			return true;  // no args needed, no args got
@@ -795,21 +803,21 @@ bool DebuggerParser::validateArgs(int cmd) {
 		switch(*p) {
 			case kARG_WORD:
 				if(curArgInt < 0 || curArgInt > 0xffff) {
-					commandResult = "invalid word argument (must be 0-$ffff)";
+					commandResult = red("invalid word argument (must be 0-$ffff)");
 					return false;
 				}
 				break;
 
 			case kARG_BYTE:
 				if(curArgInt < 0 || curArgInt > 0xff) {
-					commandResult = "invalid byte argument (must be 0-$ff)";
+					commandResult = red("invalid byte argument (must be 0-$ff)");
 					return false;
 				}
 				break;
 
 			case kARG_BOOL:
 				if(curArgInt != 0 && curArgInt != 1) {
-					commandResult = "invalid boolean argument (must be 0 or 1)";
+					commandResult = red("invalid boolean argument (must be 0 or 1)");
 					return false;
 				}
 				break;
@@ -818,7 +826,7 @@ bool DebuggerParser::validateArgs(int cmd) {
 				if(curArgInt != 2 && curArgInt != 10 && curArgInt != 16
 					&& curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
 				{
-					commandResult = "invalid base (must be #2, #10, #16, \"bin\", \"dec\", or \"hex\")";
+					commandResult = red("invalid base (must be #2, #10, #16, \"bin\", \"dec\", or \"hex\")");
 					return false;
 				}
 				break;
@@ -832,7 +840,7 @@ bool DebuggerParser::validateArgs(int cmd) {
 				break; // FIXME: implement!
 
 			default:
-				commandResult = "too many arguments";
+				commandResult = red("too many arguments");
 				return false;
 				break;
 		}
@@ -842,7 +850,7 @@ bool DebuggerParser::validateArgs(int cmd) {
 	} while(*p++ != kARG_END_ARGS);
 
 	if(curCount < argCount) {
-		commandResult = "too many arguments";
+		commandResult = red("too many arguments");
 		return false;
 	}
 
@@ -934,7 +942,7 @@ void DebuggerParser::executeBank() {
 		commandResult += debugger->getCartType();
 		commandResult += ": ";
 		if(banks < 2)
-			commandResult += "bankswitching not supported by this cartridge";
+			commandResult += red("bankswitching not supported by this cartridge");
 		else {
 			commandResult += debugger->valueToString(debugger->getBank());
 			commandResult += "/";
@@ -942,13 +950,13 @@ void DebuggerParser::executeBank() {
 		}
 	} else {
 		if(args[0] >= banks) {
-			commandResult += "invalid bank number (must be 0 to ";
+			commandResult += red("invalid bank number (must be 0 to ");
 			commandResult += debugger->valueToString(banks - 1);
 			commandResult += ")";
 		} else if(debugger->setBank(args[0])) {
 			commandResult += "switched bank OK";
 		} else {
-			commandResult += "unknown error switching banks";
+			commandResult += red("unknown error switching banks");
 		}
 	}
 }
@@ -977,7 +985,7 @@ void DebuggerParser::executeBase() {
 			break;
 
 		default:
-			commandResult += "UNKNOWN";
+			commandResult += red("UNKNOWN");
 			break;
 	}
 }
@@ -1025,6 +1033,13 @@ void DebuggerParser::executeCleartraps() {
 void DebuggerParser::executeClearwatches() {
 	delAllWatches();
 	commandResult = "all watches cleared";
+}
+
+// "colortest"
+void DebuggerParser::executeColortest() {
+	commandResult = "test color: ";
+	//commandResult += char(args[0] | 0x80);
+	commandResult += inverse("LA LA LA");
 }
 
 // "d"
@@ -1094,7 +1109,7 @@ void DebuggerParser::executeListtraps() {
 // "listwatches"
 void DebuggerParser::executeListwatches() {
 	// commandResult = listWatches();
-	commandResult = "command not yet implemented (sorry)";
+	commandResult = red("command not yet implemented (sorry)");
 }
 
 // "loadstate"
@@ -1103,7 +1118,7 @@ void DebuggerParser::executeLoadstate() {
 		debugger->loadState(args[0]);
 		commandResult = "state loaded";
 	} else {
-		commandResult = "invalid slot (must be 0-9)";
+		commandResult = red("invalid slot (must be 0-9)");
 	}
 }
 
@@ -1156,7 +1171,7 @@ void DebuggerParser::executeRom() {
 	int addr = args[0];
 	for(int i=1; i<argCount; i++) {
 		if( !(debugger->patchROM(addr++, args[i])) ) {
-			commandResult = "patching ROM unsupported for this cart type";
+			commandResult = red("patching ROM unsupported for this cart type");
 			return;
 		}
 	}
@@ -1182,7 +1197,7 @@ void DebuggerParser::executeSaveses() {
 	if(debugger->prompt()->saveBuffer(argStrings[0]))
 		commandResult = "saved session to file " + argStrings[0];
 	else
-		commandResult = "I/O error";
+		commandResult = red("I/O error");
 }
 
 // "savestate"
@@ -1191,7 +1206,7 @@ void DebuggerParser::executeSavestate() {
 		debugger->saveState(args[0]);
 		commandResult = "state saved";
 	} else {
-		commandResult = "invalid slot (must be 0-9)";
+		commandResult = red("invalid slot (must be 0-9)");
 	}
 }
 
@@ -1200,7 +1215,7 @@ void DebuggerParser::executeSavesym() {
 	if(debugger->equateList->saveFile(argStrings[0]))
 		commandResult = "saved symbols to file " + argStrings[0];
 	else
-		commandResult = "I/O error";
+		commandResult = red("I/O error");
 }
 
 // "step"
@@ -1248,7 +1263,7 @@ void DebuggerParser::executeUndef() {
 	if(debugger->equateList->undefine(argStrings[0]))
 		commandResult = argStrings[0] + " now undefined";
 	else
-		commandResult = "no such label";
+		commandResult = red("no such label");
 }
 
 // "v"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.23 2005-06-29 00:31:48 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.24 2005-07-02 14:58:45 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -55,6 +55,15 @@ class DebuggerParser
 		const char *getCompletions();
 		const char *getCompletionPrefix();
 
+		static inline string red(string msg) {
+			// This is TIA color 0x34. The octal value is 0x80+(0x34>>1).
+			return "\232" + msg;
+		}
+
+		static inline string inverse(string msg) {
+         // ASCII DEL char, decimal 127
+			return "\177" + msg;
+		}
 
 	private:
 		bool getArgs(const string& command);
@@ -94,6 +103,7 @@ class DebuggerParser
 		void executeClearbreaks();
 		void executeCleartraps();
 		void executeClearwatches();
+		void executeColortest();
 		void executeD();
 		void executeDefine();
 		void executeDelwatch();
