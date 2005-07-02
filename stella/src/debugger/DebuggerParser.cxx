@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.45 2005-07-02 15:31:30 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.46 2005-07-02 18:03:09 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1147,7 +1147,7 @@ void DebuggerParser::executePrint() {
 // "ram"
 void DebuggerParser::executeRam() {
 	if(argCount == 0)
-		commandResult = debugger->dumpRAM(kRamStart);
+		commandResult = debugger->dumpRAM();
 	else
 		commandResult = debugger->setRAM(args);
 }

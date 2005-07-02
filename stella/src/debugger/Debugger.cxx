@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.45 2005-07-02 17:15:41 urchlay Exp $
+// $Id: Debugger.cxx,v 1.46 2005-07-02 18:03:09 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -172,7 +172,10 @@ const string Debugger::valueToString(int value, BaseFormat outputBase)
       break;
 
     case kBASE_10:
-      sprintf(rendered, "%d", value);
+      if(value < 0x100)
+        sprintf(rendered, "%3d", value);
+      else
+        sprintf(rendered, "%5d", value);
       break;
 
     case kBASE_16:
@@ -343,28 +346,49 @@ uInt8 Debugger::oldRAM(uInt8 offset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::dumpRAM(uInt16 start)
+bool Debugger::ramChanged(uInt8 offset)
+{
+  offset &= 0x7f;
+  return (myOldRAM[offset] != readRAM(offset));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* Warning: this method really is for dumping *RAM*, not ROM or I/O! */
+const string Debugger::dumpRAM(uInt8 start, uInt8 len)
 {
   string result;
   char buf[128];
+  int bytesPerLine;
 
-  for (uInt8 i = 0x00; i < kRamStart; i += 0x10)
+  switch(myParser->base())
   {
-    sprintf(buf, "%.4x: ", start+i);
+    case kBASE_16:
+    case kBASE_10:
+      bytesPerLine = 0x10;
+      break;
+
+    case kBASE_2:
+      bytesPerLine = 0x04;
+      break;
+
+    case kBASE_DEFAULT:
+    default:
+      return DebuggerParser::red("invalid base, this is a BUG");
+  }
+
+  for (uInt8 i = 0x00; i < len; i += bytesPerLine)
+  {
+    sprintf(buf, "%.2x: ", start+i);
     result += buf;
 
-    for (uInt8 j = 0; j < 0x010; j++)
+    for (uInt8 j = 0; j < bytesPerLine; j++)
     {
       int byte = mySystem->peek(start+i+j);
-      bool changed = (byte != myOldRAM[i+j]);
 
-      if(changed) result += "\177";
-      sprintf(buf, "%.2x", mySystem->peek(start+i+j));
-      result += buf;
-      if(changed) result += "\177";
+      result += invIfChanged(byte, myOldRAM[i+j]);
       result += " ";
 
-      if(j == 0x07) result += "- ";
+      if(j == 0x07) result += " ";
     }
     result += "\n";
   }

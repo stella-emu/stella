@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.38 2005-07-02 17:15:41 urchlay Exp $
+// $Id: Debugger.hxx,v 1.39 2005-07-02 18:03:09 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.38 2005-07-02 17:15:41 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.39 2005-07-02 18:03:09 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -172,7 +172,7 @@ class Debugger : public DialogContainer
       Return a formatted string containing the contents of the specified
       device.
     */
-    const string dumpRAM(uInt16 start);
+    const string dumpRAM(uInt8 start = kRamStart, uInt8 len = 0x80);
     const string dumpTIA();
 
     // Read and write 128-byte RAM area
@@ -240,7 +240,8 @@ class Debugger : public DialogContainer
 	 bool patchROM(int addr, int value);
 	 void saveState(int state);
 	 void loadState(int state);
-    uInt8 oldRAM(uInt8 address);
+    uInt8 oldRAM(uInt8 offset);
+	 bool ramChanged(uInt8 offset);
 
   protected:
     const string invIfChanged(int reg, int oldReg);
