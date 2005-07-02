@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.33 2005-06-28 23:18:15 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.34 2005-07-02 01:28:42 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -142,8 +142,8 @@ bool FrameBufferGL::initSubsystem()
 
   // Precompute the GUI palette
   // We abuse the concept of 'enum' by referring directly to the integer values
-  for(uInt8 i = 0; i < kNumColors; i++)
-    myGUIPalette[i] = mapRGB(myGUIColors[i][0], myGUIColors[i][1], myGUIColors[i][2]);
+  for(uInt8 i = 0; i < kNumColors-256; i++)
+    myPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
 
   return true;
 }
@@ -316,7 +316,7 @@ void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
   tmp.y = y;
   tmp.w = x2 - x + 1;
   tmp.h = 1;
-  SDL_FillRect(myTexture, &tmp, myGUIPalette[color]);
+  SDL_FillRect(myTexture, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -329,7 +329,7 @@ void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
   tmp.y = y;
   tmp.w = 1;
   tmp.h = y2 - y + 1;
-  SDL_FillRect(myTexture, &tmp, myGUIPalette[color]);
+  SDL_FillRect(myTexture, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -352,7 +352,7 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   tmp.y = y;
   tmp.w = w;
   tmp.h = h;
-  SDL_FillRect(myTexture, &tmp, myGUIPalette[color]);
+  SDL_FillRect(myTexture, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -389,7 +389,7 @@ void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
         rect.x = x + xorig;
         rect.y = y + yorig;
         rect.w = rect.h = 1;
-        SDL_FillRect(myTexture, &rect, myGUIPalette[color]);
+        SDL_FillRect(myTexture, &rect, myPalette[color]);
       }
     }
   }
@@ -411,7 +411,7 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
         rect.x = x + xorig;
         rect.y = y + yorig;
         rect.w = rect.h = 1;
-        SDL_FillRect(myTexture, &rect, myGUIPalette[color]);
+        SDL_FillRect(myTexture, &rect, myPalette[color]);
       }
     }
   }

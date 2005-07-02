@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.49 2005-06-29 00:31:49 urchlay Exp $
+// $Id: FrameBuffer.cxx,v 1.50 2005-07-02 01:28:43 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -50,21 +50,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myMessageText(""),
       myNumRedraws(0)
 {
-  // Fill the GUI colors array
-  // The specific video subsystem will know what to do with it
-  uInt8 colors[kNumColors][3] = {
-    {104, 104, 104},
-    {0, 0, 0},
-    {64, 64, 64},
-    {32, 160, 32},
-    {0, 255, 0},
-    {200, 0, 0}
-  };
-
-  for(uInt8 i = 0; i < kNumColors; i++)
-    for(uInt8 j = 0; j < 3; j++)
-      myGUIColors[i][j] = colors[i][j];
-
   myBaseDim.x = myBaseDim.y = myBaseDim.w = myBaseDim.h = 0;
   myImageDim = myScreenDim = myDesktopDim = myBaseDim;
 }
@@ -670,3 +655,13 @@ void FrameBuffer::drawString(const GUI::Font* font, const string& s,
     x += w;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
+  {104, 104, 104},
+  {0, 0, 0},
+  {64, 64, 64},
+  {32, 160, 32},
+  {0, 255, 0},
+  {200, 0, 0}
+};

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.43 2005-06-25 16:35:36 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.44 2005-07-02 01:28:43 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.43 2005-06-25 16:35:36 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.44 2005-07-02 01:28:43 stephena Exp $
 */
 class FrameBuffer
 {
@@ -426,10 +426,7 @@ class FrameBuffer
     uInt32 mySDLFlags;
 
     // SDL palette
-    Uint32 myPalette[256];
-
-    // Holds the palette for GUI elements
-    uInt8 myGUIColors[5][3];
+    Uint32 myPalette[kNumColors];
 
     // Indicates the current zoom level of the SDL screen
     uInt32 theZoomLevel;
@@ -439,6 +436,9 @@ class FrameBuffer
 
     // The aspect ratio of the window
     float theAspectRatio;
+
+    // Table of RGB values for GUI elements
+    static const uInt8 ourGUIColors[kNumColors-256][3];
 
   private:
     /**

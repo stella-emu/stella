@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.17 2005-06-16 00:55:56 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.18 2005-07-02 01:28:42 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.17 2005-06-16 00:55:56 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.18 2005-07-02 01:28:42 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -191,9 +191,6 @@ class FrameBufferSoft : public FrameBuffer
   private:
     // Used in the dirty update of the SDL surface
     RectList* myRectList;
-
-    // GUI palette
-    Uint32 myGUIPalette[kNumColors];
 };
 
 class RectList

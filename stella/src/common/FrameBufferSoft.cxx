@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.28 2005-06-23 14:33:10 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.29 2005-07-02 01:28:42 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -66,8 +66,8 @@ bool FrameBufferSoft::initSubsystem()
 
   // Precompute the GUI palette
   // We abuse the concept of 'enum' by referring directly to the integer values
-  for(uInt8 i = 0; i < kNumColors; i++)
-    myGUIPalette[i] = mapRGB(myGUIColors[i][0], myGUIColors[i][1], myGUIColors[i][2]);
+  for(uInt8 i = 0; i < kNumColors-256; i++)
+    myPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
 
   return true;
 }
@@ -336,7 +336,7 @@ void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
   tmp.y = y * theZoomLevel;
   tmp.w = (x2 - x + 1) * theZoomLevel;
   tmp.h = theZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
+  SDL_FillRect(myScreen, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -349,7 +349,7 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
   tmp.y = y * theZoomLevel;
   tmp.w = theZoomLevel;
   tmp.h = (y2 - y + 1) * theZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
+  SDL_FillRect(myScreen, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -373,7 +373,7 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   tmp.w = w * theZoomLevel;
   tmp.h = h * theZoomLevel;
   myRectList->add(&tmp);
-  SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
+  SDL_FillRect(myScreen, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -410,7 +410,7 @@ void FrameBufferSoft::drawChar(const GUI::Font* FONT, uInt8 chr,
         rect.x = (x + xorig) * theZoomLevel;
         rect.y = (y + yorig) * theZoomLevel;
         rect.w = rect.h = theZoomLevel;
-        SDL_FillRect(myScreen, &rect, myGUIPalette[color]);
+        SDL_FillRect(myScreen, &rect, myPalette[color]);
       }
     }
   }
@@ -432,7 +432,7 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
         rect.x = (x + xorig) * theZoomLevel;
         rect.y = (y + yorig) * theZoomLevel;
         rect.w = rect.h = theZoomLevel;
-        SDL_FillRect(myScreen, &rect, myGUIPalette[color]);
+        SDL_FillRect(myScreen, &rect, myPalette[color]);
       }
     }
   }

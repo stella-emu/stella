@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.18 2005-06-28 23:18:15 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.19 2005-07-02 01:28:42 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.18 2005-06-28 23:18:15 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.19 2005-07-02 01:28:42 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -224,9 +224,6 @@ class FrameBufferGL : public FrameBuffer
 
     // OpenGL texture coordinates for the main surface
     GLfloat myTexCoord[4];
-
-    // GUI palette
-    Uint32 myGUIPalette[kNumColors];
 
     // The texture filtering to use
     GLint myFilterParam;
