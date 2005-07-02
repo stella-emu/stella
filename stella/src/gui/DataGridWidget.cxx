@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.5 2005-07-02 18:34:54 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.6 2005-07-02 21:15:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,25 +64,34 @@ DataGridWidget::~DataGridWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist,
-                             const BoolArray& changed)
+void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist)
 {
+  int size = vlist.size();  // assume the alist is the same size
+  assert(size == _rows * _cols);
+
   _addrList.clear();
-  _valueList.clear();
   _addrStringList.clear();
   _valueStringList.clear();
   _changedList.clear();
 
-  _addrList = alist;
+  // Check for any value changes since last time this method was called
+  if(_valueList.size() == 0)
+  {
+    for(int i = 0; i < size; ++i)
+      _changedList.push_back(false);
+  }
+  else
+  {
+    for(int i = 0; i < size; ++i)
+      _changedList.push_back(_valueList[i] != vlist[i]);
+  }
+  _valueList.clear();
+  _addrList  = alist;
   _valueList = vlist;
-  _changedList = changed;
-
-  int size = _addrList.size();  // assume vlist is the same size
-  assert(size == _rows * _cols);
 
   // An efficiency thing
   string temp;
-  for(unsigned int i = 0; i < (unsigned int)size; ++i)
+  for(int i = 0; i < size; ++i)
   {
     temp = instance()->debugger().valueToString(_valueList[i], _base);
     _valueStringList.push_back(temp);
@@ -101,8 +110,8 @@ void DataGridWidget::setSelectedValue(int value)
   _editString = instance()->debugger().valueToString(value, _base);
 
   _valueStringList[_selectedItem] = _editString;
+  _changedList[_selectedItem] = (_valueList[_selectedItem] != value);
   _valueList[_selectedItem] = value;
-  _changedList[_selectedItem] = true;
 
   sendCommand(kDGItemDataChangedCmd, _selectedItem);
 }
@@ -347,7 +356,6 @@ void DataGridWidget::drawWidget(bool hilite)
           fb.frameRect(x - 4, y - 2, _colWidth+1, kLineHeight+1, kTextColorHi);
       }
 
-//cerr << "pos " << pos << ": " << _changedList[pos] << endl;
       if (_selectedItem == pos && _editMode)
       {
         buffer = _editString;
@@ -359,6 +367,9 @@ void DataGridWidget::drawWidget(bool hilite)
       }
       else
       {
+        if(_changedList[pos])
+          fb.fillRect(x - 3, y - 1, _colWidth-1, kLineHeight-1, kTextColorEm);
+
         buffer = _valueStringList[pos];
         deltax = 0;
         fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);

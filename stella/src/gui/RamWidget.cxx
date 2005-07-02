@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.10 2005-07-02 18:34:54 stephena Exp $
+// $Id: RamWidget.cxx,v 1.11 2005-07-02 21:15:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -231,15 +231,12 @@ void RamWidget::fillGrid()
 {
   AddrList alist;
   ValueList vlist;
-  BoolArray changed;
 
-  Debugger& dbg = instance()->debugger();
   for(unsigned int i = 0; i < kRamSize; i++)
   {
     alist.push_back(kRamStart + i);
-    vlist.push_back(dbg.readRAM(i));
-    changed.push_back(dbg.ramChanged(i));
+    vlist.push_back(instance()->debugger().readRAM(i));
   }
 
-  myRamGrid->setList(alist, vlist, changed);
+  myRamGrid->setList(alist, vlist);
 }
