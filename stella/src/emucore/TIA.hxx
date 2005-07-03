@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.23 2005-06-29 03:43:37 urchlay Exp $
+// $Id: TIA.hxx,v 1.24 2005-07-03 06:49:40 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.23 2005-06-29 03:43:37 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.24 2005-07-03 06:49:40 urchlay Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -419,6 +419,14 @@ class TIA : public Device , public MediaSource
 
     // Pointer to the currently active mask array for the playfield
     uInt32* myCurrentPFMask;
+
+    // Audio values. Only used by TIADebug.
+    uInt8 myAUDV0;
+    uInt8 myAUDV1;
+    uInt8 myAUDC0;
+    uInt8 myAUDC1;
+    uInt8 myAUDF0;
+    uInt8 myAUDF1;
 
   private:
     // Indicates when the dump for paddles was last set

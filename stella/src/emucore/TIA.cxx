@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.45 2005-06-29 03:43:37 urchlay Exp $
+// $Id: TIA.cxx,v 1.46 2005-07-03 06:49:39 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -105,6 +105,8 @@ TIA::TIA(const Console& console, Settings& settings)
 
   // Init stats counters
   myFrameCounter = 0;
+
+  myAUDV0 = myAUDV1 = myAUDF0 = myAUDF1 = myAUDC0 = myAUDC1 = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2370,36 +2372,42 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x15:    // Audio control 0
     {
+      myAUDC0 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x16:    // Audio control 1
     {
+      myAUDC1 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x17:    // Audio frequency 0
     {
+      myAUDF0 = value & 0x1f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x18:    // Audio frequency 1
     {
+      myAUDF1 = value & 0x1f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x19:    // Audio volume 0
     {
+      myAUDV0 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
     case 0x1A:    // Audio volume 1
     {
+      myAUDV1 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.5 2005-07-03 01:36:39 urchlay Exp $
+// $Id: TIADebug.cxx,v 1.6 2005-07-03 06:49:38 urchlay Exp $
 //============================================================================
 
 #include "TIADebug.hxx"
@@ -23,14 +23,14 @@
 TIADebug::TIADebug(TIA *tia) {
 	myTIA = tia;
 
-	nusizStrings[0] = "size=8, copies=1";
-	nusizStrings[1] = "size=8, copies=2, spacing=8";
-	nusizStrings[2] = "size=8, copies=2, spacing=18";
-	nusizStrings[3] = "size=8, copies=3, spacing=8";
-	nusizStrings[4] = "size=8, copies=2, spacing=38";
-	nusizStrings[5] = "size=10, copies=1";
-	nusizStrings[6] = "size=8, copies=3, spacing=18";
-	nusizStrings[7] = "size=20, copies=1";
+	nusizStrings[0] = "size=8 copy=1";
+	nusizStrings[1] = "size=8 copy=2, spacing=8";
+	nusizStrings[2] = "size=8 copy=2, spacing=18";
+	nusizStrings[3] = "size=8 copy=3, spacing=8";
+	nusizStrings[4] = "size=8 copy=2, spacing=38";
+	nusizStrings[5] = "size=10, copy=1";
+	nusizStrings[6] = "size=8 copy=3, spacing=18";
+	nusizStrings[7] = "size=20, copy=1";
 }
 
 TIADebug::~TIADebug() {
@@ -72,11 +72,21 @@ string TIADebug::colorSwatch(uInt8 c) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string audFreq(uInt8 div) {
+	string ret;
+	char buf[20];
+
+	double hz = 30000.0;
+	if(div) hz /= div;
+	sprintf(buf, "%5.1f", hz);
+	ret += buf;
+	ret += "Hz";
+	return ret;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string booleanWithLabel(string label, bool value) {
-  if(value)
-    return label + ":On";
-  else
-    return label + ":Off";
+	return (value ? "+" : "-") + label;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,8 +94,8 @@ string TIADebug::state() {
 	string ret;
 
 	// TODO: prettier printing (table?)
-	// TODO: joysticks, pots, switches
-	// TODO: audio
+	// TODO: joysticks, switches (need a RIOTDebug class, not here)
+	// TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
 	// TIA::myCOLUxx are stored 4 copies to each int, we need only 1
 	uInt8 COLUP0 = myTIA->myCOLUP0 & 0xff;
@@ -115,12 +125,25 @@ string TIADebug::state() {
 	ret += "scanline ";
 
 	ret += myDebugger->valueToString(myTIA->scanlines());
-	ret += "  ";
+	ret += " ";
 
 	ret += booleanWithLabel("VSYNC", vsync());
-	ret += "  ";
+	ret += " ";
 
 	ret += booleanWithLabel("VBLANK", vblank());
+	ret += "\n";
+
+	ret += booleanWithLabel("INPT0", myTIA->peek(0x08) & 0x80);
+	ret += " ";
+	ret += booleanWithLabel("INPT1", myTIA->peek(0x09) & 0x80);
+	ret += " ";
+	ret += booleanWithLabel("INPT2", myTIA->peek(0x0a) & 0x80);
+	ret += " ";
+	ret += booleanWithLabel("INPT3", myTIA->peek(0x0b) & 0x80);
+	ret += " ";
+	ret += booleanWithLabel("INPT4", myTIA->peek(0x0c) & 0x80);
+	ret += " ";
+	ret += booleanWithLabel("INPT5", myTIA->peek(0x0d) & 0x80);
 	ret += "\n";
 
 	ret += "COLUP0: ";
@@ -145,94 +168,94 @@ string TIADebug::state() {
 
 	ret += "\n";
 
-	ret += "P0: data=";
+	ret += "P0: GR=";
    // TODO:    ret += myDebugger->invIfChanged(myTIA->myGRP0, oldGRP0);
 	ret += Debugger::to_bin_8(myTIA->myGRP0);
 	ret += "/";
-	ret += Debugger::to_hex_8(myTIA->myGRP0);
-	ret += ", ";
+	ret += myDebugger->valueToString(myTIA->myGRP0);
+	ret += " pos=";
+	ret += myDebugger->valueToString(myTIA->myPOSP0);
+	ret += " HM=";
+	ret += myDebugger->valueToString(myTIA->myHMP0);
+	ret += " ";
 	ret += p0Size;
-	ret += ", ";
-	if(!myTIA->myREFP0) ret += "not ";
-	ret += "reflected, pos=";
-	ret += Debugger::to_hex_8(myTIA->myPOSP0);
-	ret += ", ";
-	if(!myTIA->myVDELP0) ret += "not ";
-	ret += "delayed, HMP0=";
-	ret += Debugger::to_hex_8(myTIA->myHMP0);
+	ret += " ";
+	ret += booleanWithLabel("reflect", (myTIA->myREFP0));
+	ret += " ";
+	ret += booleanWithLabel("delay", (myTIA->myVDELP0));
 	ret += "\n";
 
-	ret += "P1: data=";
+	ret += "P1: GR=";
+   // TODO:    ret += myDebugger->invIfChanged(myTIA->myGRP1, oldGRP1);
 	ret += Debugger::to_bin_8(myTIA->myGRP1);
 	ret += "/";
-	ret += Debugger::to_hex_8(myTIA->myGRP1);
-	ret += ", ";
+	ret += myDebugger->valueToString(myTIA->myGRP1);
+	ret += " pos=";
+	ret += myDebugger->valueToString(myTIA->myPOSP1);
+	ret += " HM=";
+	ret += myDebugger->valueToString(myTIA->myHMP1);
+	ret += " ";
 	ret += p1Size;
-	ret += ", ";
-	if(!myTIA->myREFP1) ret += "not ";
-	ret += "reflected, pos=";
-	ret += Debugger::to_hex_8(myTIA->myPOSP1);
-	ret += ", ";
-	if(!myTIA->myVDELP1) ret += "not ";
-	ret += "delayed, HMP1=";
-	ret += Debugger::to_hex_8(myTIA->myHMP1);
+	ret += " ";
+	ret += booleanWithLabel("reflect", (myTIA->myREFP1));
+	ret += " ";
+	ret += booleanWithLabel("delay", (myTIA->myVDELP1));
 	ret += "\n";
 
 	ret += "M0: ";
 	ret += (myTIA->myENAM0 ? " enabled" : "disabled");
-	ret += ", pos=";
-	ret += Debugger::to_hex_8(myTIA->myPOSM0);
-	ret += ", size=";
-	ret += Debugger::to_hex_8(m0Size);
-	ret += ", ";
-	if(!myTIA->myRESMP0) ret += "not ";
-	ret += "reset, HMM0=";
-	ret += Debugger::to_hex_8(myTIA->myHMM0);
+	ret += " pos=";
+	ret += myDebugger->valueToString(myTIA->myPOSM0);
+	ret += " HM=";
+	ret += myDebugger->valueToString(myTIA->myHMM0);
+	ret += " size=";
+	ret += myDebugger->valueToString(m0Size);
+	ret += " ";
+	ret += booleanWithLabel("reset", (myTIA->myRESMP0));
 	ret += "\n";
 
 	ret += "M1: ";
 	ret += (myTIA->myENAM1 ? " enabled" : "disabled");
-	ret += ", pos=";
-	ret += Debugger::to_hex_8(myTIA->myPOSM1);
-	ret += ", size=";
-	ret += Debugger::to_hex_8(m1Size);
-	ret += ", ";
-	if(!myTIA->myRESMP1) ret += "not ";
-	ret += "reset, HMM1=";
-	ret += Debugger::to_hex_8(myTIA->myHMM1);
+	ret += " pos=";
+	ret += myDebugger->valueToString(myTIA->myPOSM1);
+	ret += " HM=";
+	ret += myDebugger->valueToString(myTIA->myHMM1);
+	ret += " size=";
+	ret += myDebugger->valueToString(m1Size);
+	ret += " ";
+	ret += booleanWithLabel("reset", (myTIA->myRESMP1));
 	ret += "\n";
 
 	ret += "BL: ";
 	ret += (myTIA->myENABL ? " enabled" : "disabled");
-	ret += ", pos=";
-	ret += Debugger::to_hex_8(myTIA->myPOSBL);
-	ret += ", size=";
-	ret += Debugger::to_hex_8(ballSize);
-	ret += ", ";
-	if(!myTIA->myVDELBL) ret += "not ";
-	ret += "delayed, HMBL=";
-	ret += Debugger::to_hex_8(myTIA->myHMBL);
+	ret += " pos=";
+	ret += myDebugger->valueToString(myTIA->myPOSBL);
+	ret += " HM=";
+	ret += myDebugger->valueToString(myTIA->myHMBL);
+	ret += " size=";
+	ret += myDebugger->valueToString(ballSize);
+	ret += " ";
+	ret += booleanWithLabel("delay", (myTIA->myVDELBL));
 	ret += "\n";
 
 	ret += "PF0: ";
 	ret += Debugger::to_bin_8(PF0);
 	ret += "/";
-	ret += Debugger::to_hex_8(PF0);
-	ret += ", PF1: ";
+	ret += myDebugger->valueToString(PF0);
+	ret += " PF1: ";
 	ret += Debugger::to_bin_8(PF1);
 	ret += "/";
-	ret += Debugger::to_hex_8(PF1);
-	ret += ", PF2: ";
+	ret += myDebugger->valueToString(PF1);
+	ret += " PF2: ";
 	ret += Debugger::to_bin_8(PF2);
 	ret += "/";
-	ret += Debugger::to_hex_8(PF2);
-	ret += "\n  (pf ";
-	if(! (myTIA->myCTRLPF & 0x01) ) ret += "not ";
-	ret += "reflected, ";
-	if(! (myTIA->myCTRLPF & 0x02) ) ret += "not ";
-	ret += "score, ";
-	if(! (myTIA->myCTRLPF & 0x04) ) ret += "not ";
-	ret += "priority)";
+	ret += myDebugger->valueToString(PF2);
+	ret += "\n     ";
+	ret += booleanWithLabel("reflect",  myTIA->myCTRLPF & 0x01);
+	ret += " ";
+	ret += booleanWithLabel("score",    myTIA->myCTRLPF & 0x02);
+	ret += " ";
+	ret += booleanWithLabel("priority", myTIA->myCTRLPF & 0x04);
 	ret += "\n";
 
 	ret += "Collisions: ";
@@ -243,7 +266,7 @@ string TIADebug::state() {
 	if(coll && 0x0010) ret += "P0-PF ";
 	if(coll && 0x0020) ret += "P0-BL ";
 	if(coll && 0x0040) ret += "P1-PF ";
-	ret += "\n  ";
+	ret += "\n            ";
 	if(coll && 0x0080) ret += "P1-BL ";
 	if(coll && 0x0100) ret += "M0-PF ";
 	if(coll && 0x0200) ret += "M0-BL ";
@@ -252,6 +275,35 @@ string TIADebug::state() {
 	if(coll && 0x1000) ret += "BL-PF ";
 	if(coll && 0x2000) ret += "P0-P1 ";
 	if(coll && 0x4000) ret += "M0-M1 ";
+	ret += "\n";
+
+	ret += "AUDF0: ";
+	ret += myDebugger->valueToString(myTIA->myAUDF0);
+	ret += "/";
+	ret += audFreq(myTIA->myAUDF0);
+	ret += " ";
+
+	ret += "AUDC0: ";
+	ret += myDebugger->valueToString(myTIA->myAUDC0);
+	ret += " ";
+
+	ret += "AUDV0: ";
+	ret += myDebugger->valueToString(myTIA->myAUDV0);
+	ret += "\n";
+
+	ret += "AUDF1: ";
+	ret += myDebugger->valueToString(myTIA->myAUDF1);
+	ret += "/";
+	ret += audFreq(myTIA->myAUDF1);
+	ret += " ";
+
+	ret += "AUDC0: ";
+	ret += myDebugger->valueToString(myTIA->myAUDC1);
+	ret += " ";
+
+	ret += "AUDV0: ";
+	ret += myDebugger->valueToString(myTIA->myAUDV1);
+	//ret += "\n";
 
 	// note: last "ret +=" line should not contain \n, caller will add.
 	return ret;
