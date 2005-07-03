@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.49 2005-07-03 01:36:39 urchlay Exp $
+// $Id: Debugger.cxx,v 1.50 2005-07-03 08:15:31 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -241,6 +241,88 @@ const string Debugger::state()
 
   result += disassemble(myDebugger->pc(), 1);
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* The timers, joysticks, and switches can be read via peeks, so
+   I didn't write a separate RIOTDebug class. */
+const string Debugger::riotState() {
+	string ret;
+
+	// TODO: inverse video for changed regs. Core needs to track this.
+	// TODO: keyboard controllers?
+
+	for(int i=0x280; i<0x284; i++) {
+		ret += valueToString(i);
+		ret += "/";
+		ret += equates()->getFormatted(i, 2);
+		ret += "=";
+		ret += valueToString(mySystem->peek(i));
+		ret += " ";
+	}
+	ret += "\n";
+
+	// These are squirrely: some symbol files will define these as
+	// 0x284-0x287. Doesn't actually matter, these registers repeat
+   // every 16 bytes.
+	ret += valueToString(0x294);
+	ret += "/TIM1T=";
+	ret += valueToString(mySystem->peek(0x294));
+	ret += " ";
+
+	ret += valueToString(0x295);
+	ret += "/TIM8T=";
+	ret += valueToString(mySystem->peek(0x295));
+	ret += " ";
+
+	ret += valueToString(0x296);
+	ret += "/TIM64T=";
+	ret += valueToString(mySystem->peek(0x296));
+	ret += " ";
+
+	ret += valueToString(0x297);
+	ret += "/TIM1024T=";
+	ret += valueToString(mySystem->peek(0x297));
+	ret += "\n";
+
+	ret += "Left/P0diff: ";
+	ret += (mySystem->peek(0x282) & 0x40) ? "hard/A" : "easy/B";
+	ret += "   ";
+
+	ret += "Right/P1diff: ";
+	ret += (mySystem->peek(0x282) & 0x80) ? "hard/A" : "easy/B";
+	ret += "\n";
+
+	ret += "TVType: ";
+	ret += (mySystem->peek(0x282) & 0x8) ? "Color" : "B&W";
+	ret += "   Switches: ";
+	ret += (mySystem->peek(0x282) & 0x2) ? "-" : "+";
+	ret += "select  ";
+	ret += (mySystem->peek(0x282) & 0x1) ? "-" : "+";
+	ret += "reset";
+	ret += "\n";
+
+	// Yes, the fire buttons are in the TIA, but we might as well
+	// show them here for convenience.
+	ret += "Left/P0 stick:  ";
+	ret += (mySystem->peek(0x280) & 0x80) ? "" : "right ";
+	ret += (mySystem->peek(0x280) & 0x40) ? "" : "left ";
+	ret += (mySystem->peek(0x280) & 0x20) ? "" : "down ";
+	ret += (mySystem->peek(0x280) & 0x10) ? "" : "up ";
+	ret += ((mySystem->peek(0x280) & 0xf0) == 0xf0) ? "(no directions) " : "";
+	ret += (mySystem->peek(0x03c) & 0x80) ? "" : "(button) ";
+	ret += "\n";
+	ret += "Right/P1 stick: ";
+	ret += (mySystem->peek(0x280) & 0x08) ? "" : "right ";
+	ret += (mySystem->peek(0x280) & 0x04) ? "" : "left ";
+	ret += (mySystem->peek(0x280) & 0x02) ? "" : "down ";
+	ret += (mySystem->peek(0x280) & 0x01) ? "" : "up ";
+	ret += ((mySystem->peek(0x280) & 0x0f) == 0x0f) ? "(no directions) " : "";
+	ret += (mySystem->peek(0x03d) & 0x80) ? "" : "(button) ";
+
+	//ret += "\n"; // caller will add
+
+	return ret;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

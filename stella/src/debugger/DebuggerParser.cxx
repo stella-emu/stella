@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.46 2005-07-02 18:03:09 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.47 2005-07-03 08:15:31 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -240,6 +240,14 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeReset
+	},
+
+	{
+		"riot",
+		"Show RIOT timer/input status",
+		false,
+		{ kARG_END_ARGS },
+		&DebuggerParser::executeRiot
 	},
 
 	{
@@ -1163,6 +1171,11 @@ void DebuggerParser::executeReload() {
 void DebuggerParser::executeReset() {
 	debugger->reset();
 	commandResult = "reset CPU";
+}
+
+// "riot"
+void DebuggerParser::executeRiot() {
+	commandResult = debugger->riotState();
 }
 
 // "rom"

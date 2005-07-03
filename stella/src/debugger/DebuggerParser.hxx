@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.26 2005-07-02 18:34:53 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.27 2005-07-03 08:15:31 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -119,6 +119,7 @@ class DebuggerParser
 		void executeRam();
 		void executeReload();
 		void executeReset();
+		void executeRiot();
 		void executeRom();
 		void executeRun();
 		void executeS();

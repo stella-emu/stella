@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.6 2005-07-03 06:49:38 urchlay Exp $
+// $Id: TIADebug.cxx,v 1.7 2005-07-03 08:15:31 urchlay Exp $
 //============================================================================
 
 #include "TIADebug.hxx"
@@ -93,8 +93,7 @@ const string booleanWithLabel(string label, bool value) {
 string TIADebug::state() {
 	string ret;
 
-	// TODO: prettier printing (table?)
-	// TODO: joysticks, switches (need a RIOTDebug class, not here)
+	// TODO: inverse video for changed regs. Core needs to track this.
 	// TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
 	// TIA::myCOLUxx are stored 4 copies to each int, we need only 1
@@ -144,6 +143,8 @@ string TIADebug::state() {
 	ret += booleanWithLabel("INPT4", myTIA->peek(0x0c) & 0x80);
 	ret += " ";
 	ret += booleanWithLabel("INPT5", myTIA->peek(0x0d) & 0x80);
+	ret += " ";
+	ret += booleanWithLabel("dump_gnd_0123", myTIA->myDumpEnabled);
 	ret += "\n";
 
 	ret += "COLUP0: ";

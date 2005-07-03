@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.39 2005-07-02 18:03:09 urchlay Exp $
+// $Id: Debugger.hxx,v 1.40 2005-07-03 08:15:31 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.39 2005-07-02 18:03:09 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.40 2005-07-03 08:15:31 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -167,6 +167,11 @@ class Debugger : public DialogContainer
       next instruction.
     */
     const string state();
+
+    /**
+      Get contents of RIOT switch & timer registers
+    */
+    const string riotState();
 
     /**
       Return a formatted string containing the contents of the specified
