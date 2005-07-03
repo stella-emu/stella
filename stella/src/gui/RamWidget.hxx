@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.4 2005-06-22 18:30:44 stephena Exp $
+// $Id: RamWidget.hxx,v 1.5 2005-07-03 21:14:42 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,11 +26,23 @@ class GuiObject;
 class ButtonWidget;
 class StaticTextWidget;
 class EditTextWidget;
-class DataGridWidget;
 
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
+#include "DataGridWidget.hxx"
+
+enum {
+  kRZeroCmd   = 'RWze',
+  kRInvertCmd = 'RWiv',
+  kRNegateCmd = 'RWng',
+  kRIncCmd    = 'RWic',
+  kRDecCmd    = 'RWdc',
+  kRShiftLCmd = 'RWls',
+  kRShiftRCmd = 'RWrs',
+  kUndoCmd    = 'RWud',
+  kRevertCmd  = 'RWrv'
+};
 
 
 class RamWidget : public Widget, public CommandSender
@@ -45,15 +57,22 @@ class RamWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    void fillGrid();
+    void fillGrid(bool updateOld);
 
   private:
+    int myUndoAddress;
+    int myUndoValue;
+
     Widget* myActiveWidget;
 
     DataGridWidget* myRamGrid;
     EditTextWidget* myBinValue;
     EditTextWidget* myDecValue;
     EditTextWidget* myLabel;
+    ButtonWidget *myRevertButton;
+    ButtonWidget *myUndoButton;
+
+    ValueList *_oldValueList;
 };
 
 #endif

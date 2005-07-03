@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.7 2005-07-03 00:53:59 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.8 2005-07-03 21:14:42 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
 #include "DataGridWidget.hxx"
+#include "RamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows,
@@ -76,9 +77,9 @@ void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist,
   _valueStringList.clear();
   _changedList.clear();
 
-  _addrList    = alist;
-  _valueList   = vlist;
-  _changedList = changed;
+  _addrList     = alist;
+  _valueList    = vlist;
+  _changedList  = changed;
 
   // An efficiency thing
   string temp;
@@ -268,6 +269,61 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       default:
         handled = false;
     }
+
+    // handle ASCII codes if no keycodes matched.
+    // These really should only send commands if _selectedItem
+    // is a RamWidget, but other widgets may implement these
+    // commands someday (the CPU tab in particular should).
+    if(!handled) switch(ascii) {
+      case 'n': // negate
+        sendCommand(kRNegateCmd, _selectedItem);
+        dirty = true;
+        handled = true;
+        break;
+
+      case 'i': // invert
+      case '!':
+        sendCommand(kRInvertCmd, _selectedItem);
+        dirty = true;
+        handled = true;
+        break;
+
+      case '-': // decrement
+        sendCommand(kRDecCmd, _selectedItem);
+        dirty = true;
+        handled = true;
+        break;
+
+      case '+': // increment
+      case '=':
+        sendCommand(kRIncCmd, _selectedItem);
+        dirty = true;
+        handled = true;
+        break;
+
+      case '<': // shift left
+      case ',':
+        sendCommand(kRShiftLCmd, _selectedItem);
+        dirty = true;
+        handled = true;
+        break;
+
+      case '>': // shift right
+      case '.':
+        sendCommand(kRShiftRCmd, _selectedItem);
+        dirty = true;
+        handled = true;
+        break;
+
+      case 'z': // zero
+        sendCommand(kRZeroCmd, _selectedItem);
+        dirty = true;
+        handled = true;
+        break;
+
+      default:
+        handled = false;
+    }
   }
 
   if (dirty)
@@ -440,3 +496,4 @@ bool DataGridWidget::tryInsertChar(char c, int pos)
   else
     return false;
 }
+

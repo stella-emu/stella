@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.12 2005-07-03 00:53:59 stephena Exp $
+// $Id: RamWidget.cxx,v 1.13 2005-07-03 21:14:42 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,16 +32,6 @@
 
 #include "RamWidget.hxx"
 
-enum {
-  kRZeroCmd   = 'RWze',
-  kRInvertCmd = 'RWiv',
-  kRNegateCmd = 'RWng',
-  kRIncCmd    = 'RWic',
-  kRDecCmd    = 'RWdc',
-  kRShiftLCmd = 'RWls',
-  kRShiftRCmd = 'RWrs'
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
@@ -52,6 +42,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   int lwidth = 30;
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
   const GUI::Font& font = instance()->consoleFont();
+  _oldValueList = new ValueList;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
   myRamGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8, 2, 0xff, kBASE_16);
@@ -120,6 +111,16 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "<<", kRShiftLCmd, 0);
   b->setTarget(this);
 
+  ypos += 16 + space;
+  // keep a pointer to this one, it gets disabled/enabled
+  myUndoButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Undo", kUndoCmd, 0);
+  b->setTarget(this);
+
+  ypos += 16 + space;
+  // keep a pointer to this one, it gets disabled/enabled
+  myRevertButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Revert", kRevertCmd, 0);
+  b->setTarget(this);
+
   xpos = vWidth + 30 + 10;  ypos = 20;
 //  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "", kRCmd, 0);
 //  b->setTarget(this);
@@ -140,6 +141,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::~RamWidget()
 {
+  delete _oldValueList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,15 +154,22 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
   unsigned char byte;
   const char* buf;
 
+  Debugger& dbg = instance()->debugger();
+
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
+      myUndoAddress = addr;
+      myUndoValue = dbg.readRAM(addr - kRamStart);
+
       instance()->debugger().writeRAM(addr - kRamStart, value);
       myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
+      myRevertButton->setFlags(WIDGET_ENABLED);
+      myUndoButton->setFlags(WIDGET_ENABLED);
       break;
 
     case kDGSelectionChangedCmd:
@@ -214,6 +223,19 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
       byte >>= 1;
       myRamGrid->setSelectedValue((int)byte);
       break;
+
+    case kRevertCmd:
+      for(unsigned int i = 0; i < kRamSize; i++)
+        dbg.writeRAM(i, (*_oldValueList)[i]);
+      fillGrid(true);
+      break;
+
+    case kUndoCmd:
+      dbg.writeRAM(myUndoAddress - kRamStart, myUndoValue);
+      myUndoButton->clearFlags(WIDGET_ENABLED);
+      fillGrid(false);
+      break;
+
   }
 
   // TODO - dirty rect, or is it necessary here?
@@ -223,23 +245,31 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::loadConfig()
 {
-  fillGrid();
+  fillGrid(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::fillGrid()
+void RamWidget::fillGrid(bool updateOld)
 {
   AddrList alist;
   ValueList vlist;
   BoolArray changed;
+
+  if(updateOld) _oldValueList->clear();
 
   Debugger& dbg = instance()->debugger();
   for(unsigned int i = 0; i < kRamSize; i++)
   {
     alist.push_back(kRamStart + i);
     vlist.push_back(dbg.readRAM(i));
+    if(updateOld) _oldValueList->push_back(dbg.readRAM(i));
     changed.push_back(dbg.ramChanged(i));
   }
 
   myRamGrid->setList(alist, vlist, changed);
+  if(updateOld)
+  {
+    myRevertButton->clearFlags(WIDGET_ENABLED);
+    myUndoButton->clearFlags(WIDGET_ENABLED);
+  }
 }
