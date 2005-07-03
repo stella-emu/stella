@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\debugger;..\..\gui;..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
+				AdditionalIncludeDirectories="..\..\yacc;..\..\debugger;..\..\gui;..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\win32"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -73,7 +73,7 @@ opengl32.lib"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\gui;..\..\debugger;..\..\win32"
+				AdditionalIncludeDirectories="..\..\yacc;..\..\emucore\m6502\src\bspf\src;..\..\emucore\m6502\src;..\..\emucore;..\..\common;..\..\gui;..\..\debugger;..\..\win32"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -315,9 +315,6 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\M6502Hi.cxx">
 			</File>
 			<File
-				RelativePath="..\..\emucore\m6502\src\M6502Low.cxx">
-			</File>
-			<File
 				RelativePath="..\..\emucore\M6532.cxx">
 			</File>
 			<File
@@ -411,6 +408,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\TIASound.c">
 			</File>
 			<File
+				RelativePath="..\..\gui\ToggleBitWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\unzip.c">
 			</File>
 			<File
@@ -418,6 +418,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\Widget.cxx">
+			</File>
+			<File
+				RelativePath="..\..\yacc\YaccParser.cxx">
 			</File>
 		</Filter>
 		<Filter
@@ -635,9 +638,6 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\M6502Hi.hxx">
 			</File>
 			<File
-				RelativePath="..\..\emucore\m6502\src\M6502Low.hxx">
-			</File>
-			<File
 				RelativePath="..\..\emucore\M6532.hxx">
 			</File>
 			<File
@@ -743,6 +743,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\TIASound.h">
 			</File>
 			<File
+				RelativePath="..\..\gui\ToggleBitWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\unzip.h">
 			</File>
 			<File
@@ -753,6 +756,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\Widget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\yacc\YaccParser.hxx">
 			</File>
 		</Filter>
 		<Filter

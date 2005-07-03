@@ -654,7 +654,7 @@ INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 LIBS="$LIBS `$_sdlconfig --libs` -lz"
 
 case $_host_os in
-		unix*)
+		unix)
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/unix"
 			INCLUDES="$INCLUDES -I$SRC/unix"
@@ -665,20 +665,20 @@ case $_host_os in
 				LIBS="$LIBS -L/usr/X11R6/lib -lGL"
 			fi
 			;;
-		mingw*)
+		win32)
 			DEFINES="$DEFINES -DBSPF_WIN32 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/win32"
 			INCLUDES="$INCLUDES -I$SRC/win32"
 
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then
-				DEFINES="$DEFINES -DDISPLAY_OPENGL"
+				DEFINES="$DEFINES -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST"
 				LIBS="$LIBS -lopengl32"
 			fi
 			;;
 		*)
 			echo "WARNING: host system not currenty supported"
-			stop
+			exit
 			;;
 esac
 

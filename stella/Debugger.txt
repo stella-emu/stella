@@ -478,5 +478,5 @@ When you use these buttons, the prompt doesn't change. This means the
 status lines with the registers and disassembly will be "stale". You
 can update them just by pressing Enter in the prompt.
 
-You can also use the Step and Trace buttons from anywhere in the GUI via
-the keyboard, with Alt-S and Alt-T. (TODO: Alt-F for Frame+1)
+You can also use the Step, Trace and Frame+1 buttons from anywhere in
+the GUI via the keyboard, with Alt-S, Alt-T and Alt-F.

@@ -34,7 +34,14 @@
 
 #ifdef SOUND_SUPPORT
 
-#include "bspf.hxx"
+// For some braindead reason, Visual C++ won't let bspf.hxx be included
+// here, so I have to redefine the following types (I hate Windows ...)
+typedef signed char Int8;
+typedef unsigned char uInt8;
+typedef signed short Int16;
+typedef unsigned short uInt16;
+typedef signed int Int32;
+typedef unsigned int uInt32;
 
 #ifdef __cplusplus
 extern "C" {
