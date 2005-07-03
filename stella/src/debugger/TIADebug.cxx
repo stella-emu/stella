@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.7 2005-07-03 08:15:31 urchlay Exp $
+// $Id: TIADebug.cxx,v 1.8 2005-07-03 08:56:48 urchlay Exp $
 //============================================================================
 
 #include "TIADebug.hxx"
@@ -24,13 +24,13 @@ TIADebug::TIADebug(TIA *tia) {
 	myTIA = tia;
 
 	nusizStrings[0] = "size=8 copy=1";
-	nusizStrings[1] = "size=8 copy=2, spacing=8";
-	nusizStrings[2] = "size=8 copy=2, spacing=18";
-	nusizStrings[3] = "size=8 copy=3, spacing=8";
-	nusizStrings[4] = "size=8 copy=2, spacing=38";
-	nusizStrings[5] = "size=10, copy=1";
-	nusizStrings[6] = "size=8 copy=3, spacing=18";
-	nusizStrings[7] = "size=20, copy=1";
+	nusizStrings[1] = "size=8 copy=2 spac=8";
+	nusizStrings[2] = "size=8 copy=2 spac=$18";
+	nusizStrings[3] = "size=8 copy=3 spac=8";
+	nusizStrings[4] = "size=8 copy=2 spac=$38";
+	nusizStrings[5] = "size=$10 copy=1";
+	nusizStrings[6] = "size=8 copy=3 spac=$18";
+	nusizStrings[7] = "size=$20 copy=1";
 }
 
 TIADebug::~TIADebug() {
@@ -86,7 +86,20 @@ const string audFreq(uInt8 div) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string booleanWithLabel(string label, bool value) {
-	return (value ? "+" : "-") + label;
+	char buf[64];
+	string ret;
+
+	if(value) {
+		char *p = buf;
+		const char *q = label.c_str();
+		while((*p++ = toupper(*q++)))
+			;
+		ret += "+";
+		ret += buf;
+		return ret;
+	} else {
+		return "-" + label;
+	}
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,23 +139,23 @@ string TIADebug::state() {
 	ret += myDebugger->valueToString(myTIA->scanlines());
 	ret += " ";
 
-	ret += booleanWithLabel("VSYNC", vsync());
+	ret += booleanWithLabel("vsync", vsync());
 	ret += " ";
 
-	ret += booleanWithLabel("VBLANK", vblank());
+	ret += booleanWithLabel("vblank", vblank());
 	ret += "\n";
 
-	ret += booleanWithLabel("INPT0", myTIA->peek(0x08) & 0x80);
+	ret += booleanWithLabel("inpt0", myTIA->peek(0x08) & 0x80);
 	ret += " ";
-	ret += booleanWithLabel("INPT1", myTIA->peek(0x09) & 0x80);
+	ret += booleanWithLabel("inpt1", myTIA->peek(0x09) & 0x80);
 	ret += " ";
-	ret += booleanWithLabel("INPT2", myTIA->peek(0x0a) & 0x80);
+	ret += booleanWithLabel("inpt2", myTIA->peek(0x0a) & 0x80);
 	ret += " ";
-	ret += booleanWithLabel("INPT3", myTIA->peek(0x0b) & 0x80);
+	ret += booleanWithLabel("inpt3", myTIA->peek(0x0b) & 0x80);
 	ret += " ";
-	ret += booleanWithLabel("INPT4", myTIA->peek(0x0c) & 0x80);
+	ret += booleanWithLabel("inpt4", myTIA->peek(0x0c) & 0x80);
 	ret += " ";
-	ret += booleanWithLabel("INPT5", myTIA->peek(0x0d) & 0x80);
+	ret += booleanWithLabel("inpt5", myTIA->peek(0x0d) & 0x80);
 	ret += " ";
 	ret += booleanWithLabel("dump_gnd_0123", myTIA->myDumpEnabled);
 	ret += "\n";
@@ -204,7 +217,7 @@ string TIADebug::state() {
 	ret += "\n";
 
 	ret += "M0: ";
-	ret += (myTIA->myENAM0 ? " enabled" : "disabled");
+	ret += (myTIA->myENAM0 ? " ENABLED" : "disabled");
 	ret += " pos=";
 	ret += myDebugger->valueToString(myTIA->myPOSM0);
 	ret += " HM=";
@@ -216,7 +229,7 @@ string TIADebug::state() {
 	ret += "\n";
 
 	ret += "M1: ";
-	ret += (myTIA->myENAM1 ? " enabled" : "disabled");
+	ret += (myTIA->myENAM1 ? " ENABLED" : "disabled");
 	ret += " pos=";
 	ret += myDebugger->valueToString(myTIA->myPOSM1);
 	ret += " HM=";
@@ -228,7 +241,7 @@ string TIADebug::state() {
 	ret += "\n";
 
 	ret += "BL: ";
-	ret += (myTIA->myENABL ? " enabled" : "disabled");
+	ret += (myTIA->myENABL ? " ENABLED" : "disabled");
 	ret += " pos=";
 	ret += myDebugger->valueToString(myTIA->myPOSBL);
 	ret += " HM=";
@@ -260,22 +273,22 @@ string TIADebug::state() {
 	ret += "\n";
 
 	ret += "Collisions: ";
-	if(coll && 0x0001) ret += "M0-P1 ";
-	if(coll && 0x0002) ret += "M0-P0 ";
-	if(coll && 0x0004) ret += "M1-P0 ";
-	if(coll && 0x0008) ret += "M1-P1 ";
-	if(coll && 0x0010) ret += "P0-PF ";
-	if(coll && 0x0020) ret += "P0-BL ";
-	if(coll && 0x0040) ret += "P1-PF ";
+	ret += booleanWithLabel("m0_p1 ", bool(coll & 0x0001));
+	ret += booleanWithLabel("m0_p0 ", bool(coll & 0x0002));
+	ret += booleanWithLabel("m1_p0 ", bool(coll & 0x0004));
+	ret += booleanWithLabel("m1_p1 ", bool(coll & 0x0008));
+	ret += booleanWithLabel("p0_pf ", bool(coll & 0x0010));
+	ret += booleanWithLabel("p0_bl ", bool(coll & 0x0020));
+	ret += booleanWithLabel("p1_pf ", bool(coll & 0x0040));
 	ret += "\n            ";
-	if(coll && 0x0080) ret += "P1-BL ";
-	if(coll && 0x0100) ret += "M0-PF ";
-	if(coll && 0x0200) ret += "M0-BL ";
-	if(coll && 0x0400) ret += "M1-PF ";
-	if(coll && 0x0800) ret += "M1-BL ";
-	if(coll && 0x1000) ret += "BL-PF ";
-	if(coll && 0x2000) ret += "P0-P1 ";
-	if(coll && 0x4000) ret += "M0-M1 ";
+	ret += booleanWithLabel("p1_bl ", bool(coll & 0x0080));
+	ret += booleanWithLabel("m0_pf ", bool(coll & 0x0100));
+	ret += booleanWithLabel("m0_bl ", bool(coll & 0x0200));
+	ret += booleanWithLabel("m1_pf ", bool(coll & 0x0400));
+	ret += booleanWithLabel("m1_bl ", bool(coll & 0x0800));
+	ret += booleanWithLabel("bl_pf ", bool(coll & 0x1000));
+	ret += booleanWithLabel("p0_p1 ", bool(coll & 0x2000));
+	ret += booleanWithLabel("m0_m1 ", bool(coll & 0x4000));
 	ret += "\n";
 
 	ret += "AUDF0: ";
