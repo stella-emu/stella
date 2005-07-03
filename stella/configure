@@ -316,11 +316,11 @@ for ac_option in $@; do
       --mandir=*)
         _mandir=`echo $ac_option | cut -d '=' -f 2`
         ;;
-      *)
-        echo "error: unrecognised option: $ac_option
-Try \`$0 --help' for more information." >&2
-        exit 1
-        ;;
+#      *)
+#        echo "error: unrecognised option: $ac_option
+#Try \`$0 --help' for more information." >&2
+#        exit 1
+#        ;;
     esac;
 done;
 
