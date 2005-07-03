@@ -35,6 +35,8 @@ What the debugger can do:
   and switch banks. There's still more to be done here though.
 - Patching ROM in-place. Currently there's no way to save the patched
   ROM though.
+- Registers/memory that get changed by the CPU during debugging are
+  highlighted when they're displayed
 
 Planned features for Stella 2.0 release:
 - Better TIA state display, with register names and GUI buttons for
@@ -445,6 +447,8 @@ z            - Toggle Zero Flag
 
   The 'Restart' button restarts the whole procedure (ie, clear the
   input and listboxes, and allows another search.
+
+  (TODO: need a way to name and save/load the cheats)
 
 - TIA tab (TODO)
 

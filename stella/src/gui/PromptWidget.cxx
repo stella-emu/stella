@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.23 2005-07-02 15:36:44 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.24 2005-07-03 01:36:40 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -746,7 +746,7 @@ void PromptWidget::putcharIntern(int c)
     textColor = (OverlayColor) ((c & 0x7f) << 1);
   }
   else if(c < ' ') { // More colors (the regular GUI ones)
-    textColor = (OverlayColor) (c);
+    textColor = (OverlayColor) (c + 0x100);
   }
   else if(c == 0x7f) { // toggle inverse video (DEL char)
     _inverse = !_inverse;
@@ -826,14 +826,14 @@ bool PromptWidget::saveBuffer(string& filename)
   for(int start=0; start<_promptStartPos; start+=_lineWidth) {
     int end = start+_lineWidth-1;
 
-    // look for first non-space char from end of line
-    while(_buffer[end] == ' ' && end >= start)
+    // look for first non-space, printing char from end of line
+    while( char(_buffer[end] & 0xff) <= ' ' && end >= start)
       end--;
 
-    // spit out the line minus its trailing spaces.
+    // spit out the line minus its trailing junk.
     // Strip off any color/inverse bits
     for(int j=start; j<=end; j++)
-      out << (_buffer[j] & 0xff);
+      out << char(_buffer[j] & 0xff);
 
     // add a \n
     out << endl;

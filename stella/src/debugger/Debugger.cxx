@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.48 2005-07-03 00:53:58 stephena Exp $
+// $Id: Debugger.cxx,v 1.49 2005-07-03 01:36:39 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -123,6 +123,7 @@ void Debugger::setConsole(Console* console)
   // base class and entirely eliminate MediaSource class??
   delete myTIAdebug;
   myTIAdebug = new TIADebug((TIA*)&myConsole->mediaSource());
+  myTIAdebug->setDebugger(this);
 
   // Create a new 6502 debugger for this console
   delete myDebugger;
@@ -397,14 +398,6 @@ const string Debugger::dumpRAM(uInt8 start, uInt8 len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string booleanWithLabel(string label, bool value) {
-  if(value)
-    return label + ":On";
-  else
-    return label + ":Off";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::dumpTIA()
 {
   string result;
@@ -419,16 +412,9 @@ const string Debugger::dumpTIA()
 
     if(j == 0x07) result += "- ";
   }
-  result += "\nscanline ";
 
-  //result += valueToString( myConsole->mediaSource().scanlines() );
-  result += valueToString( myTIAdebug->scanlines() );
   result += "\n";
-
-  result += booleanWithLabel("VSYNC", myTIAdebug->vsync());
-  result += "\n";
-
-  result += myTIAdebug->spriteState();
+  result += myTIAdebug->state();
 
   return result;
 }

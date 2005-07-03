@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.64 2005-07-02 17:15:41 urchlay Exp $
+// $Id: Console.cxx,v 1.65 2005-07-03 01:36:40 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -349,9 +349,28 @@ void Console::setPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* Original frying research and code by Fred Quimby.
+   I've tried the following variations on this code:
+   - Both OR and Exclusive OR instead of AND. This generally crashes the game
+     without ever giving us realistic "fried" effects.
+   - Loop only over the RIOT RAM. This still gave us frying-like effects, but
+     it seemed harder to duplicate most effects. I have no idea why, but
+     munging the TIA regs seems to have some effect (I'd think it wouldn't).
+
+   Fred says he also tried mangling the PC and registers, but usually it'd just
+   crash the game (e.g. black screen, no way out of it).
+
+   It's definitely easier to get some effects (e.g. 255 lives in Battlezone)
+   with this code than it is on a real console. My guess is that most "good"
+   frying effects come from a RIOT location getting cleared to 0. Fred's
+   code is more likely to accomplish this than frying a real console is...
+
+   Until someone comes up with a more accurate way to emulate frying, I'm
+   leaving this as Fred posted it.   -- B.
+*/
 void Console::fry()
 {
-  for (int ZPmem=0; ZPmem<255; ZPmem += rand() % 4)
+  for (int ZPmem=0; ZPmem<0x100; ZPmem += rand() % 4)
   mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
 }
 
