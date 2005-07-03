@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.8 2005-07-02 21:15:22 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.9 2005-07-03 00:53:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -240,7 +240,9 @@ void CpuWidget::fillGrid()
   vlist.push_back(dbg.getX());
   vlist.push_back(dbg.getY());
 
-  myCpuGrid->setList(alist, vlist);
+  for(int i = 0; i < 6; ++i)  // FIXME - track changes in registers
+    changed.push_back(false);
+  myCpuGrid->setList(alist, vlist, changed);
 
   // Update the PS register booleans
   BoolArray b;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.44 2005-07-02 01:28:43 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.45 2005-07-03 00:53:59 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.44 2005-07-02 01:28:43 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.45 2005-07-03 00:53:59 stephena Exp $
 */
 class FrameBuffer
 {
@@ -148,7 +148,7 @@ class FrameBuffer
     /**
       Indicates that the emulation should advance one frame.
     */
-    void advance(int frames) { theFrameAdvanceIndicator = frames; }
+    void advance(int frames);
 
     /**
       Toggles between fullscreen and window mode.

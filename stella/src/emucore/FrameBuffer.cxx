@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.50 2005-07-02 01:28:43 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.51 2005-07-03 00:53:59 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -292,6 +292,17 @@ void FrameBuffer::refreshOverlay(bool now)
   theRedrawOverlayIndicator = true;
   myOverlayRedraws = 2;
   if(now) update();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::advance(int frames)
+{
+  if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER)
+    return;
+
+  theFrameAdvanceIndicator = frames;
+  while(theFrameAdvanceIndicator)
+    update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

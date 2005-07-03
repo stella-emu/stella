@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.47 2005-07-02 21:15:22 stephena Exp $
+// $Id: Debugger.cxx,v 1.48 2005-07-03 00:53:58 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -475,6 +475,8 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
+  saveRegs();
+
   int cyc = mySystem->cycles();
   mySystem->m6502().execute(1);
   myTIAdebug->updateTIA();
@@ -499,6 +501,8 @@ int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
   if(mySystem->peek(myDebugger->pc()) == 32) {
+    saveRegs();
+
     int cyc = mySystem->cycles();
     int targetPC = myDebugger->pc() + 3; // return address
     while(myDebugger->pc() != targetPC)
@@ -834,4 +838,3 @@ void Debugger::saveRegs() {
 	oldP = getPS();
 	oldPC = getPC();
 }
-

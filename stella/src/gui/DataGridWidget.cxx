@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.6 2005-07-02 21:15:22 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.7 2005-07-03 00:53:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,30 +64,21 @@ DataGridWidget::~DataGridWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist)
+void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist,
+                             const BoolArray& changed)
 {
   int size = vlist.size();  // assume the alist is the same size
   assert(size == _rows * _cols);
 
   _addrList.clear();
   _addrStringList.clear();
+  _valueList.clear();
   _valueStringList.clear();
   _changedList.clear();
 
-  // Check for any value changes since last time this method was called
-  if(_valueList.size() == 0)
-  {
-    for(int i = 0; i < size; ++i)
-      _changedList.push_back(false);
-  }
-  else
-  {
-    for(int i = 0; i < size; ++i)
-      _changedList.push_back(_valueList[i] != vlist[i]);
-  }
-  _valueList.clear();
-  _addrList  = alist;
-  _valueList = vlist;
+  _addrList    = alist;
+  _valueList   = vlist;
+  _changedList = changed;
 
   // An efficiency thing
   string temp;
