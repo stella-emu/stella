@@ -5,13 +5,19 @@ This alpha build of Stella contains an incomplete version of the debugger.
 
 What the debugger can do:
 - Display registers and memory
-- Display (some) TIA state (but this feature is nowhere complete)
-- Change registers, including toggles for flags in P register
+- Dump state of TIA and RIOT, with things like joystick directions and
+  NUSIZx decoded into English (more-or-less).
+- Change registers/memory, including toggles for flags in P register
 - Single step/trace
-- Breakpoints
-- Watches
-- Traps
+- Breakpoints - break running program and enter debugger when the
+  Program Counter hits a predefined address. You can set as many
+  breakpoints as you want.
+- Watches - View contents of a location/register before every
+  debugger prompt.
+- Traps - Like breakpoints, but break on read/write/any access to
+  *any* memory location.
 - Frame advance (automatic breakpoint at beginning of next frame)
+  You can advance multiple frames with one command.
 - Disassembly
 - Support for DASM symbol files (created with DASM's -s option),
   including automatically loading symbol files if they're named
@@ -24,7 +30,7 @@ What the debugger can do:
   Input in hex, with displays for label/decimal/binary for
   currently-selected location.
 - GUI CPU state window
-- Cheat system (similar to MAME)
+- Cheat system (similar to MAME) (still needs a way to save/load cheats)
 - Reset the 6502
 - Input and output in hex, decimal, or binary
 - Start emulator in debugger (via command-line option "-debug")
@@ -39,7 +45,7 @@ What the debugger can do:
   highlighted when they're displayed
 
 Planned features for Stella 2.0 release:
-- Better TIA state display, with register names and GUI buttons for
+- Graphical TIA tab, with register names and GUI buttons for
   various bits (e.g. click ENAM0 to turn it on)
 - GUI Disassembly window, scrollable, with checkboxes for breakpoints
   (also perhaps 2 panes in this window so you can see 2 parts of the
@@ -327,48 +333,56 @@ The tabs that are implemented so far:
 
 
   - Prompt commands:
-    "xx" and "yy" are placeholders for expressions (see section on
-    Expressions above).
 
-a xx         - Set Accumulator to xx
-base xx      - Set default input base (#2=binary, #10=decimal, #16=hex)
-break        - Set/clear breakpoint at current PC
-break xx     - Set/clear breakpoint at address xx
-c            - Toggle Carry Flag
-clearbreaks  - Clear all breakpoints
-cleartraps   - Clear all traps
-clearwatches - Clear all watches
-d            - Toggle Decimal Flag
-dump xx      - Dump 128 bytes of memory starting at xx (may be ROM, TIA, RAM)
-delwatch xx  - Delete watch xx
-disasm       - Disassemble (from current PC)
-disasm xx    - Disassemble (from address xx)
-frame        - Advance to next TIA frame, then break
-height xx    - Set height of debugger window in pixels
-listbreaks   - List all breakpoints
-*listtraps    - List all traps
-*listwatches  - List all watches
-loadsym f    - Load DASM symbols from file f
-n            - Toggle Negative Flag
-pc xx        - Set Program Counter to xx
-print xx     - Evaluate and print expression xx
-ram          - Show RIOT RAM contents
-ram xx yy    - Set RAM location xx to value yy (multiple values allowed)
-reset        - Jump to 6502 init vector (does not reset TIA/RIOT)
-run          - Exit debugger (back to emulator)
-s xx         - Set Stack Pointer to xx
-*save f      - Save console session to file f
-step         - Single-step
-+tia          - Show TIA register contents
-trace        - Single-step treating subroutine calls as 1 instruction
-trap xx      - Trap any access to location xx (enter debugger on access)
-trapread xx  - Trap any read access from location xx
-trapwrite xx - Trap any write access to location xx
-v            - Toggle Overflow Flag
-watch xx    - Print contents of location xx before every prompt
-x xx         - Set X register to xx
-y xx         - Set Y register to xx
-z            - Toggle Zero Flag
+            a - Set Accumulator to value xx
+         bank - Show # of banks (with no args), Switch to bank (with
+                1 arg)
+         base - Set default base (hex, dec, or bin)
+        break - Set/clear breakpoint at address (default=pc)
+            c - Carry Flag: set (to 0 or 1), or toggle (no arg)
+  clearbreaks - Clear all breakpoints
+   cleartraps - Clear all traps
+ clearwatches - Clear all watches
+    colortest - Color Test
+            d - Decimal Flag: set (to 0 or 1), or toggle (no arg)
+       define - Define label
+     delwatch - Delete watch
+       disasm - Disassemble from address (default=pc)
+         dump - Dump 128 bytes of memory at address
+        frame - Advance emulation by xx frames (default=1)
+         help - This cruft
+   listbreaks - List breakpoints
+    listtraps - List traps
+  listwatches - List watches
+    loadstate - Load emulator state (0-9)
+      loadsym - Load symbol file
+            n - Negative Flag: set (to 0 or 1), or toggle (no arg)
+           pc - Set Program Counter to address
+        print - Evaluate and print expression in hex/dec/binary
+          ram - Show RAM contents (no args), or set RAM address xx to
+                value yy
+       reload - Reload ROM and symbol file
+        reset - Reset 6507 to init vector (does not reset TIA, RIOT)
+         riot - Show RIOT timer/input status
+          rom - Change ROM contents
+          run - Exit debugger, return to emulator
+            s - Set Stack Pointer to value xx
+      saveses - Save console session to file
+    savestate - Save emulator state (valid args 0-9)
+      savesym - Save symbols to file
+         step - Single step CPU (optionally, with count)
+          tia - Show TIA state
+        trace - Single step CPU (optionally, with count), subroutines
+                count as one instruction
+         trap - Trap read and write accesses to address
+     trapread - Trap read accesses to address
+    trapwrite - Trap write accesses to address
+        undef - Undefine label (if defined)
+            v - Overflow Flag: set (to 0 or 1), or toggle (no arg)
+        watch - Print contents of address before every prompt
+            x - Set X Register to value xx
+            y - Set Y Register to value xx
+            z - Zero Flag: set (to 0 or 1), or toggle (no arg)
 
     This list may be outdated: see the output of the "help" command
     for the current list. Commands marked with a * are unimplemented.
