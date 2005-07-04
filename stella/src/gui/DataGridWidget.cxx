@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.8 2005-07-03 21:14:42 urchlay Exp $
+// $Id: DataGridWidget.cxx,v 1.9 2005-07-04 15:59:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -414,12 +414,16 @@ void DataGridWidget::drawWidget(bool hilite)
       }
       else
       {
-        if(_changedList[pos])
-          fb.fillRect(x - 3, y - 1, _colWidth-1, kLineHeight-1, kTextColorEm);
-
         buffer = _valueStringList[pos];
         deltax = 0;
-        fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
+
+        if(_changedList[pos])
+        {
+          fb.fillRect(x - 3, y - 1, _colWidth-1, kLineHeight-1, kTextColorEm);
+          fb.drawString(_font, buffer, x, y, _colWidth, kTextColorHi);
+        }
+        else
+          fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
       }
     }
   }

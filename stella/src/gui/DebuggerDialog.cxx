@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.19 2005-06-30 00:08:01 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.20 2005-07-04 15:59:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,24 +59,28 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   CpuWidget* cpu = new CpuWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
   myTab->setParentWidget(1, cpu, cpu->activeWidget());
 
-  // 3) The RAM tab
+  // 3) The RAM tab (part of RIOT)
   myTab->addTab("RAM");
   RamWidget* ram = new RamWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
   myTab->setParentWidget(2, ram, ram->activeWidget());
 
-  // 4) The ROM tab
-  myTab->addTab("ROM");
+  // 4) The input/output tab (part of RIOT)
+  myTab->addTab("I/O");
 
 
   // 5) The TIA tab
   myTab->addTab("TIA");
 
 
-  // 6) The Cheat tab
+  // 6) The ROM tab
+  myTab->addTab("ROM");
+
+
+  // 7) The Cheat tab
   myTab->addTab("Cheat");
   CheatWidget* cheat = new CheatWidget(myTab, 2, 2,
                                        vWidth - vBorder, _h - 25);
-  myTab->setParentWidget(5, cheat, cheat->activeWidget());
+  myTab->setParentWidget(6, cheat, cheat->activeWidget());
 
   // Set active tab to prompt
   myTab->setActiveTab(0);
