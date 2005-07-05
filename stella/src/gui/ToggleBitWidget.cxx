@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.2 2005-07-02 18:34:54 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.3 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,7 +111,7 @@ void ToggleBitWidget::handleMouseUp(int x, int y, int button, int clickCount)
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
-    sendCommand(kTBItemDataChangedCmd, _selectedItem);
+    sendCommand(kTBItemDataChangedCmd, _selectedItem, _id);
   }
 }
 
@@ -224,7 +224,7 @@ bool ToggleBitWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     if(toggle)
     {
       _stateList[_selectedItem] = !_stateList[_selectedItem];
-      sendCommand(kTBItemDataChangedCmd, _selectedItem);
+      sendCommand(kTBItemDataChangedCmd, _selectedItem, _id);
     }
 
     draw();
@@ -236,7 +236,8 @@ bool ToggleBitWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleBitWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void ToggleBitWidget::handleCommand(CommandSender* sender, int cmd,
+                                    int data, int id)
 {
   switch (cmd)
   {

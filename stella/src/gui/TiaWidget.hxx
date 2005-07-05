@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.1 2005-07-04 15:59:38 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.2 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ class TiaWidget : public Widget, public CommandSender
 
     Widget* activeWidget() { return myActiveWidget; }
 
-    void handleCommand(CommandSender* sender, int cmd, int data);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
 
   private:

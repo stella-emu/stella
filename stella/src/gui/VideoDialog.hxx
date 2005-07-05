@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.7 2005-06-16 00:56:00 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.8 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -60,7 +60,7 @@ class VideoDialog : public Dialog
     void setDefaults();
 
     void handleRendererChange(int item);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 };
 
 #endif

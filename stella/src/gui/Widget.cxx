@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.21 2005-06-30 00:08:02 stephena Exp $
+// $Id: Widget.cxx,v 1.22 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -127,7 +127,7 @@ void Widget::receivedFocus()
   if(getFlags() & WIDGET_TAB_NAVIGATE)
   {
     _activeWidget = this;
-    _boss->handleCommand(NULL, kActiveWidgetCmd, 0);
+    _boss->handleCommand(NULL, kActiveWidgetCmd, 0, 0);
   }
 }
 
@@ -358,7 +358,7 @@ ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
 void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
-    sendCommand(_cmd, 0);
+    sendCommand(_cmd, 0, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,7 +409,7 @@ void CheckboxWidget::setState(bool state)
     _flags ^= WIDGET_INV_BORDER;
     draw();
   }
-  sendCommand(_cmd, _state);
+  sendCommand(_cmd, _state, _id);
 
   // Refresh the screen after the checkbox is drawn
   // TODO - create dirty rectangle
@@ -468,7 +468,7 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
     {
       _value = newValue; 
       draw();
-      sendCommand(_cmd, _value);
+      sendCommand(_cmd, _value, _id);
     }
     // Refresh the screen while the slider is being redrawn
     // TODO - create dirty rectangle
@@ -490,7 +490,7 @@ void SliderWidget::handleMouseDown(int x, int y, int button, int clickCount)
 void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && _isDragging)
-    sendCommand(_cmd, _value);
+    sendCommand(_cmd, _value, _id);
 
   _isDragging = false;
 }

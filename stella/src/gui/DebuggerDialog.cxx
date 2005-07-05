@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.20 2005-07-04 15:59:38 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.21 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -125,7 +125,8 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
+                                   int data, int id)
 {
   // We reload the tabs in the cases where the actions could possibly
   // change their contents
@@ -148,7 +149,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
   }
 }
 

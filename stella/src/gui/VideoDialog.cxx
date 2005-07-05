@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.17 2005-06-23 14:33:11 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.18 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -352,7 +352,8 @@ void VideoDialog::handleRendererChange(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void VideoDialog::handleCommand(CommandSender* sender, int cmd,
+                                int data, int id)
 {
   switch(cmd)
   {
@@ -391,7 +392,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
 }

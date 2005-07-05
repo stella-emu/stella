@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.22 2005-06-23 18:11:59 stephena Exp $
+// $Id: Widget.hxx,v 1.23 2005-07-05 15:25:45 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.22 2005-06-23 18:11:59 stephena Exp $
+  @version $Id: Widget.hxx,v 1.23 2005-07-05 15:25:45 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -110,6 +110,9 @@ class Widget : public GuiObject
     bool isEnabled() const      { return _flags & WIDGET_ENABLED; }
     bool isVisible() const      { return !(_flags & WIDGET_INVISIBLE); }
 
+    void setID(int id)  { _id = id;   }
+    int  getID()        { return _id; }
+
     void setColor(OverlayColor color)   { _color = color; }
     void setFont(const GUI::Font& font) { _font = (GUI::Font*) &font; }
     const GUI::Font* font() { return _font; }
@@ -127,8 +130,8 @@ class Widget : public GuiObject
     void releaseFocus() { assert(_boss); _boss->releaseFocus(); }
 
     // By default, delegate unhandled commands to the boss
-    void handleCommand(CommandSender* sender, int cmd, int data)
-         { assert(_boss); _boss->handleCommand(sender, cmd, data); }
+    void handleCommand(CommandSender* sender, int cmd, int data, int id)
+         { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
   protected:
     int           _type;

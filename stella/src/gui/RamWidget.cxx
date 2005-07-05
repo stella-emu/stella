@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.13 2005-07-03 21:14:42 urchlay Exp $
+// $Id: RamWidget.cxx,v 1.14 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -145,7 +145,7 @@ RamWidget::~RamWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   // We simply change the values in the ByteGridWidget
   // It will then send the 'kDGItemDataChangedCmd' signal to change the actual

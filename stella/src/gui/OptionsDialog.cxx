@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.20 2005-06-16 00:56:00 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.21 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -147,7 +147,8 @@ void OptionsDialog::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
+                                  int data, int id)
 {
   switch(cmd)
   {
@@ -180,6 +181,6 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.8 2005-06-23 14:33:11 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.9 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -205,7 +205,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
   {
     recalc();  // This takes care of the required refresh
     draw();
-    sendCommand(kSetPositionCmd, _currentPos);
+    sendCommand(kSetPositionCmd, _currentPos, _id);
   }
 }
 

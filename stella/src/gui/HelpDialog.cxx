@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.9 2005-06-23 14:33:11 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.10 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -177,7 +177,8 @@ void HelpDialog::displayInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HelpDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void HelpDialog::handleCommand(CommandSender* sender, int cmd,
+                               int data, int id)
 {
   switch(cmd)
   {
@@ -202,6 +203,6 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.5 2005-07-03 00:53:59 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,7 +61,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     virtual bool wantsFocus() { return true; }
 

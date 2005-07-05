@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.hxx,v 1.5 2005-06-16 00:55:59 stephena Exp $
+// $Id: CheatWidget.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,7 +52,7 @@ class CheatWidget : public Widget, public CommandSender
 
     Widget* activeWidget() { return myActiveWidget; }
 
-    void handleCommand(CommandSender* sender, int cmd, int data);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     void doSearch();

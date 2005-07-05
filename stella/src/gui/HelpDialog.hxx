@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.hxx,v 1.5 2005-06-16 00:55:59 stephena Exp $
+// $Id: HelpDialog.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,7 +56,7 @@ class HelpDialog : public Dialog
     uInt8 myNumPages;
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
     virtual void updateStrings(uInt8 page, uInt8 lines,
                                string& title, string*& key, string* &dsc);
     void displayInfo();

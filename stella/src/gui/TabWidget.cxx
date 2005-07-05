@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.12 2005-06-25 16:35:36 stephena Exp $
+// $Id: TabWidget.cxx,v 1.13 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -238,7 +238,7 @@ bool TabWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
@@ -255,7 +255,7 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      sendCommand(cmd, data);
+      sendCommand(cmd, data, _id);
       break;
   }
 }

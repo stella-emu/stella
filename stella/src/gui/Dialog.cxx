@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.20 2005-06-16 00:55:59 stephena Exp $
+// $Id: Dialog.cxx,v 1.21 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -281,7 +281,7 @@ void Dialog::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleCommand(CommandSender* sender, int cmd, int data)
+void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {

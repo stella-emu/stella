@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.7 2005-06-23 14:33:11 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.8 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -142,7 +142,7 @@ void AddrValueWidget::handleMouseDown(int x, int y, int button, int clickCount)
     if (_editMode)
       abortEditMode();
     _selectedItem = newSelectedItem;
-    sendCommand(kAVSelectionChangedCmd, _selectedItem);
+    sendCommand(kAVSelectionChangedCmd, _selectedItem, _id);
 
     // TODO - dirty rectangle
     instance()->frameBuffer().refreshOverlay();
@@ -160,7 +160,7 @@ void AddrValueWidget::handleMouseUp(int x, int y, int button, int clickCount)
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kAVItemDoubleClickedCmd, _selectedItem);
+    sendCommand(kAVItemDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -213,7 +213,7 @@ bool AddrValueWidget::handleKeyDown(int ascii, int keycode, int modifiers)
             startEditMode();
           }
           else
-            sendCommand(kAVItemActivatedCmd, _selectedItem);
+            sendCommand(kAVItemActivatedCmd, _selectedItem, _id);
         }
         break;
 
@@ -259,7 +259,7 @@ bool AddrValueWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
   if (_selectedItem != oldSelectedItem)
   {
-    sendCommand(kAVSelectionChangedCmd, _selectedItem);
+    sendCommand(kAVSelectionChangedCmd, _selectedItem, _id);
     // also draw scrollbar
     _scrollBar->draw();
 
@@ -287,7 +287,8 @@ void AddrValueWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AddrValueWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void AddrValueWidget::handleCommand(CommandSender* sender, int cmd,
+                                    int data, int id)
 {
   switch (cmd)
   {
@@ -427,7 +428,7 @@ void AddrValueWidget::endEditMode()
   _valueStringList[_selectedItem] = _editString;
   _valueList[_selectedItem] = value;
 
-  sendCommand(kAVItemDataChangedCmd, _selectedItem);
+  sendCommand(kAVItemDataChangedCmd, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

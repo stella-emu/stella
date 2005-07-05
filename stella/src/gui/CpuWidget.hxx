@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.hxx,v 1.4 2005-06-23 18:11:59 stephena Exp $
+// $Id: CpuWidget.hxx,v 1.5 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ class CpuWidget : public Widget, public CommandSender
 
     Widget* activeWidget() { return myActiveWidget; }
 
-    void handleCommand(CommandSender* sender, int cmd, int data);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
 
   private:

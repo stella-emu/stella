@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.hxx,v 1.5 2005-06-22 18:30:43 stephena Exp $
+// $Id: AddrValueWidget.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,7 +64,7 @@ class AddrValueWidget : public EditableWidget, public CommandSender
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     virtual bool wantsFocus() { return true; }
 

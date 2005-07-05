@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.24 2005-06-21 18:46:33 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.25 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -345,7 +345,8 @@ string LauncherDialog::MD5FromFile(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
+                                   int data, int id)
 {
   int item;
 
@@ -392,6 +393,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
   }
 }

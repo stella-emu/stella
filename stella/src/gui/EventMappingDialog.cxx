@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.15 2005-06-20 18:32:12 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.16 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -208,7 +208,8 @@ void EventMappingDialog::handleJoyDown(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void EventMappingDialog::handleCommand(CommandSender* sender, int cmd,
+                                       int data, int id)
 {
   switch(cmd)
   {
@@ -246,6 +247,6 @@ void EventMappingDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
   }
 }

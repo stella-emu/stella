@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.10 2005-06-21 18:46:33 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.11 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,7 +53,7 @@ class LauncherDialog : public Dialog
                    int x, int y, int w, int h);
     ~LauncherDialog();
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   protected:
     void updateListing(bool fullReload = false);

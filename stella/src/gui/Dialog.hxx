@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.17 2005-06-16 00:55:59 stephena Exp $
+// $Id: Dialog.hxx,v 1.18 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class DialogContainer;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.17 2005-06-16 00:55:59 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.18 2005-07-05 15:25:44 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -69,7 +69,7 @@ class Dialog : public GuiObject
     virtual void handleMouseMoved(int x, int y, int button);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyUp(int stick, int button);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
     virtual void handleScreenChanged() {}
 	
     Widget* findWidget(int x, int y); // Find the widget at pos x,y if any

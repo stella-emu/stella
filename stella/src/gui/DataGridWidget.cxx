@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.10 2005-07-05 00:07:57 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.11 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -92,7 +92,7 @@ void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist,
   _editMode = false;
 
   // Send item selected signal for starting with cell 0
-  sendCommand(kDGSelectionChangedCmd, _selectedItem);
+  sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,7 +105,7 @@ void DataGridWidget::setSelectedValue(int value)
   _changedList[_selectedItem] = (_valueList[_selectedItem] != value);
   _valueList[_selectedItem] = value;
 
-  sendCommand(kDGItemDataChangedCmd, _selectedItem);
+  sendCommand(kDGItemDataChangedCmd, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,7 +133,7 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
 
-    sendCommand(kDGSelectionChangedCmd, _selectedItem);
+    sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
 
     // TODO - dirty rectangle
     instance()->frameBuffer().refreshOverlay();
@@ -151,7 +151,7 @@ void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kDGItemDoubleClickedCmd, _selectedItem);
+    sendCommand(kDGItemDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -300,47 +300,47 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     // commands someday (the CPU tab in particular should).
     if(!handled) switch(ascii) {
       case 'n': // negate
-        sendCommand(kRNegateCmd, _selectedItem);
+        sendCommand(kRNegateCmd, _selectedItem, _id);
         dirty = true;
         handled = true;
         break;
 
       case 'i': // invert
       case '!':
-        sendCommand(kRInvertCmd, _selectedItem);
+        sendCommand(kRInvertCmd, _selectedItem, _id);
         dirty = true;
         handled = true;
         break;
 
       case '-': // decrement
-        sendCommand(kRDecCmd, _selectedItem);
+        sendCommand(kRDecCmd, _selectedItem, _id);
         dirty = true;
         handled = true;
         break;
 
       case '+': // increment
       case '=':
-        sendCommand(kRIncCmd, _selectedItem);
+        sendCommand(kRIncCmd, _selectedItem, _id);
         dirty = true;
         handled = true;
         break;
 
       case '<': // shift left
       case ',':
-        sendCommand(kRShiftLCmd, _selectedItem);
+        sendCommand(kRShiftLCmd, _selectedItem, _id);
         dirty = true;
         handled = true;
         break;
 
       case '>': // shift right
       case '.':
-        sendCommand(kRShiftRCmd, _selectedItem);
+        sendCommand(kRShiftRCmd, _selectedItem, _id);
         dirty = true;
         handled = true;
         break;
 
       case 'z': // zero
-        sendCommand(kRZeroCmd, _selectedItem);
+        sendCommand(kRZeroCmd, _selectedItem, _id);
         dirty = true;
         handled = true;
         break;
@@ -354,7 +354,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   {
     _selectedItem = _currentRow*_cols + _currentCol;
     draw();
-    sendCommand(kDGSelectionChangedCmd, _selectedItem);
+    sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
 
     // TODO - dirty rectangle
     instance()->frameBuffer().refreshOverlay();
@@ -380,7 +380,8 @@ void DataGridWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
+                                   int data, int id)
 {
   switch (cmd)
   {

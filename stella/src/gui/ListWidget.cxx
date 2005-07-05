@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.22 2005-06-23 14:33:11 stephena Exp $
+// $Id: ListWidget.cxx,v 1.23 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,7 +72,7 @@ void ListWidget::setSelected(int item)
       abortEditMode();
 
     _selectedItem = item;
-    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
 
     _currentPos = _selectedItem - _entriesPerPage / 2;
     scrollToCurrent();
@@ -143,7 +143,7 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     if (_editMode)
       abortEditMode();
     _selectedItem = newSelectedItem;
-    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
 
     // TODO - dirty rectangle
     instance()->frameBuffer().refreshOverlay();
@@ -161,7 +161,7 @@ void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kListItemDoubleClickedCmd, _selectedItem);
+    sendCommand(kListItemDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -256,7 +256,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
             startEditMode();
           }
           else
-            sendCommand(kListItemActivatedCmd, _selectedItem);
+            sendCommand(kListItemActivatedCmd, _selectedItem, _id);
         }
         break;
 
@@ -302,7 +302,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
   if (_selectedItem != oldSelectedItem)
   {
-    sendCommand(kListSelectionChangedCmd, _selectedItem);
+    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
     // also draw scrollbar
     _scrollBar->draw();
 
@@ -330,7 +330,7 @@ void ListWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch (cmd)
   {
@@ -469,7 +469,7 @@ void ListWidget::endEditMode()
   // send a message that editing finished with a return/enter key press
   _editMode = false;
   _list[_selectedItem] = _editString;
-  sendCommand(kListItemDataChangedCmd, _selectedItem);
+  sendCommand(kListItemDataChangedCmd, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

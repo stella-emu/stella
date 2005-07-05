@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.hxx,v 1.2 2005-06-16 00:55:59 stephena Exp $
+// $Id: AboutDialog.hxx,v 1.3 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,7 +51,7 @@ class AboutDialog : public Dialog
     int myNumPages;
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
     virtual void updateStrings(int page, int lines, string& title, string* &dsc);
     void displayInfo();
 

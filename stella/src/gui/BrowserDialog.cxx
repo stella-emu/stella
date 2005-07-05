@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.6 2005-06-20 18:32:12 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.7 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -88,7 +88,8 @@ void BrowserDialog::setStartPath(const string& startpath)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
+                                  int data, int id)
 {
   switch (cmd)
   {
@@ -103,8 +104,9 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd, int data)
         _choice = _node;
 
       // Send a signal to the calling class that a selection has been made
+      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
       if(_cmd)
-        sendCommand(_cmd, 0);
+        sendCommand(_cmd, 0, 0);
 
       close();
       break;
@@ -122,7 +124,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd, int data)
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
 }

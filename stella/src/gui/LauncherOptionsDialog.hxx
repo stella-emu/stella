@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.5 2005-06-21 18:46:34 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,7 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
     virtual void loadConfig();
     virtual void saveConfig();
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   protected:
     BrowserDialog* myBrowser;

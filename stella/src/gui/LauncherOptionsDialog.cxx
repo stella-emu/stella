@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.6 2005-06-21 18:46:33 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.7 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -165,14 +165,15 @@ void LauncherOptionsDialog::openSnapBrowser()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd, int data)
+void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd,
+                                          int data, int id)
 {
   switch (cmd)
   {
     case kOKCmd:
       saveConfig();
       close();
-      sendCommand(kRomDirChosenCmd, 0);  // Let the boss know romdir has changed
+      sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
       break;
 
     case kChooseRomDirCmd:
@@ -198,7 +199,7 @@ void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd, int da
     }
 
     default:
-      Dialog::handleCommand(sender, cmd, data);
+      Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.9 2005-07-03 00:53:59 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.10 2005-07-05 15:25:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -135,7 +135,7 @@ CpuWidget::~CpuWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data)
+void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   int addr, value;
   Debugger& dbg = instance()->debugger();
