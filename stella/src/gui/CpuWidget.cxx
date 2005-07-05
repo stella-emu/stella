@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.10 2005-07-05 15:25:44 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.11 2005-07-05 18:00:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,7 +62,7 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   const GUI::Font& font = instance()->consoleFont();
 
   // Create a 1x5 grid with labels for the CPU registers
-  myCpuGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 1, 5, 8, 0xffff);
+  myCpuGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 1, 5, 8, 16);
   myCpuGrid->setTarget(this);
   myActiveWidget = myCpuGrid;
 

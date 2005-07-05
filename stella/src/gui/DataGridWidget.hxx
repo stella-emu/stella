@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.7 2005-07-05 18:00:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,10 +36,18 @@ typedef GUI::Array<int> ValueList;
 
 // Some special commands
 enum {
-  kDGItemDoubleClickedCmd = 'BGdb',
-  kDGItemActivatedCmd     = 'BGac',
-  kDGItemDataChangedCmd   = 'BGch',
-  kDGSelectionChangedCmd  = 'BGsc'
+  kDGItemDoubleClickedCmd = 'DGdb',
+  kDGItemActivatedCmd     = 'DGac',
+  kDGItemDataChangedCmd   = 'DGch',
+  kDGSelectionChangedCmd  = 'DGsc',
+
+  kDGZeroCmd   = 'DGze',
+  kDGInvertCmd = 'DGiv',
+  kDGNegateCmd = 'DGng',
+  kDGIncCmd    = 'DGic',
+  kDGDecCmd    = 'DGdc',
+  kDGShiftLCmd = 'DGls',
+  kDGShiftRCmd = 'DGrs'
 };
 
 /* DataGridWidget */
@@ -47,7 +55,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
 {
   public:
     DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows,
-                   int colchars, int range, BaseFormat format = kBASE_DEFAULT);
+                   int colchars, int bits, BaseFormat format = kBASE_DEFAULT);
     virtual ~DataGridWidget();
 
     void setList(const AddrList& alist, const ValueList& vlist,
@@ -70,6 +78,15 @@ class DataGridWidget : public EditableWidget, public CommandSender
 
     int colWidth() { return _colWidth; }
 
+    //* Common operations on the currently selected cell */
+    void negateCell();
+    void invertCell();
+    void decrementCell();
+    void incrementCell();
+    void lshiftCell();
+    void rshiftCell();
+    void zeroCell();
+
   protected:
     void drawWidget(bool hilite);
 
@@ -89,7 +106,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
     int  _currentRow;
     int  _currentCol;
     int  _colWidth;
-    int  _range;
+    int  _bits;
 
     BaseFormat _base;
 

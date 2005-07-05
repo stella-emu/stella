@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.14 2005-07-05 15:25:44 stephena Exp $
+// $Id: RamWidget.cxx,v 1.15 2005-07-05 18:00:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   _oldValueList = new ValueList;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
-  myRamGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8, 2, 0xff, kBASE_16);
+  myRamGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8, 2, 8, kBASE_16);
   myRamGrid->setTarget(this);
   myRamGrid->clearFlags(WIDGET_TAB_NAVIGATE);
   myActiveWidget = myRamGrid;
@@ -96,20 +96,20 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   // Add some buttons for common actions
   ButtonWidget* b;
   xpos = vWidth + 10;  ypos = 20;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "0", kRZeroCmd, 0);
-  b->setTarget(this);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "0", kDGZeroCmd, 0);
+  b->setTarget(myRamGrid);
 
   ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Inv", kRInvertCmd, 0);
-  b->setTarget(this);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Inv", kDGInvertCmd, 0);
+  b->setTarget(myRamGrid);
 
   ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "++", kRIncCmd, 0);
-  b->setTarget(this);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "++", kDGIncCmd, 0);
+  b->setTarget(myRamGrid);
 
   ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "<<", kRShiftLCmd, 0);
-  b->setTarget(this);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "<<", kDGShiftLCmd, 0);
+  b->setTarget(myRamGrid);
 
   ypos += 16 + space;
   // keep a pointer to this one, it gets disabled/enabled
@@ -126,16 +126,16 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
 //  b->setTarget(this);
 
   ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Neg", kRNegateCmd, 0);
-  b->setTarget(this);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Neg", kDGNegateCmd, 0);
+  b->setTarget(myRamGrid);
 
   ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "--", kRDecCmd, 0);
-  b->setTarget(this);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "--", kDGDecCmd, 0);
+  b->setTarget(myRamGrid);
 
   ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kRShiftRCmd, 0);
-  b->setTarget(this);
+  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kDGShiftRCmd, 0);
+  b->setTarget(myRamGrid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,7 +151,6 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
   // memory location
   int addr, value;
-  unsigned char byte;
   const char* buf;
 
   Debugger& dbg = instance()->debugger();
@@ -184,46 +183,6 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
       break;
 
-    case kRZeroCmd:
-      myRamGrid->setSelectedValue(0);
-      break;
-
-    case kRInvertCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte = ~byte;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRNegateCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte = (~byte) + 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRIncCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte += 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRDecCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte -= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRShiftLCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte <<= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRShiftRCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte >>= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
     case kRevertCmd:
       for(unsigned int i = 0; i < kRamSize; i++)
         dbg.writeRAM(i, (*_oldValueList)[i]);
@@ -232,7 +191,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kUndoCmd:
       dbg.writeRAM(myUndoAddress - kRamStart, myUndoValue);
-      myUndoButton->clearFlags(WIDGET_ENABLED);
+      myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
 
@@ -269,7 +228,7 @@ void RamWidget::fillGrid(bool updateOld)
   myRamGrid->setList(alist, vlist, changed);
   if(updateOld)
   {
-    myRevertButton->clearFlags(WIDGET_ENABLED);
-    myUndoButton->clearFlags(WIDGET_ENABLED);
+    myRevertButton->setEnabled(false);
+    myUndoButton->setEnabled(false);
   }
 }

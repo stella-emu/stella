@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.11 2005-07-05 15:25:44 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.12 2005-07-05 18:00:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows,
-                               int colchars, int range, BaseFormat base)
+                               int colchars, int bits, BaseFormat base)
   : EditableWidget(boss, x, y, cols*(colchars * 6 + 8) + 1, kLineHeight*rows + 1),
     CommandSender(boss),
     _rows(rows),
@@ -40,7 +40,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows
     _currentRow(0),
     _currentCol(0),
     _colWidth(colchars * 6 + 8),
-    _range(range),
+    _bits(bits),
     _base(base),
     _selectedItem(0)
 {
@@ -290,59 +290,43 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      default:
-        handled = false;
-    }
-
-    // handle ASCII codes if no keycodes matched.
-    // These really should only send commands if _selectedItem
-    // is a RamWidget, but other widgets may implement these
-    // commands someday (the CPU tab in particular should).
-    if(!handled) switch(ascii) {
       case 'n': // negate
-        sendCommand(kRNegateCmd, _selectedItem, _id);
+        negateCell();
         dirty = true;
-        handled = true;
         break;
 
       case 'i': // invert
       case '!':
-        sendCommand(kRInvertCmd, _selectedItem, _id);
+        invertCell();
         dirty = true;
-        handled = true;
         break;
 
       case '-': // decrement
-        sendCommand(kRDecCmd, _selectedItem, _id);
+        decrementCell();
         dirty = true;
-        handled = true;
         break;
 
       case '+': // increment
       case '=':
-        sendCommand(kRIncCmd, _selectedItem, _id);
+        incrementCell();
         dirty = true;
-        handled = true;
         break;
 
       case '<': // shift left
       case ',':
-        sendCommand(kRShiftLCmd, _selectedItem, _id);
+        lshiftCell();
         dirty = true;
-        handled = true;
         break;
 
       case '>': // shift right
       case '.':
-        sendCommand(kRShiftRCmd, _selectedItem, _id);
+        rshiftCell();
         dirty = true;
-        handled = true;
         break;
 
       case 'z': // zero
-        sendCommand(kRZeroCmd, _selectedItem, _id);
+        zeroCell();
         dirty = true;
-        handled = true;
         break;
 
       default:
@@ -352,12 +336,14 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
   if (dirty)
   {
+    int oldItem = _selectedItem;
     _selectedItem = _currentRow*_cols + _currentCol;
     draw();
-    sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
-
     // TODO - dirty rectangle
     instance()->frameBuffer().refreshOverlay();
+
+    if(_selectedItem != oldItem)
+      sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
   }
 
   _currentKeyDown = keycode;
@@ -391,6 +377,34 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
         _selectedItem = data;
         draw();
       }
+      break;
+
+    case kDGZeroCmd:
+      zeroCell();
+      break;
+
+    case kDGInvertCmd:
+      invertCell();
+      break;
+
+    case kDGNegateCmd:
+      negateCell();
+      break;
+
+    case kDGIncCmd:
+      incrementCell();
+      break;
+
+    case kDGDecCmd:
+      decrementCell();
+      break;
+
+    case kDGShiftLCmd:
+      lshiftCell();
+      break;
+
+    case kDGShiftRCmd:
+      rshiftCell();
       break;
   }
 }
@@ -494,7 +508,7 @@ void DataGridWidget::endEditMode()
 
   // Update the both the string representation and the real data
   int value = instance()->debugger().stringToValue(_editString);
-  if(value < 0 || value > _range)
+  if(value < 0 || value > (1 << _bits))
   {
     abortEditMode();
     return;
@@ -526,3 +540,68 @@ bool DataGridWidget::tryInsertChar(char c, int pos)
     return false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::negateCell()
+{
+  int mask  = (1 << _bits) - 1;
+  int value = getSelectedValue();
+
+  value = ((~value) + 1) & mask;
+  setSelectedValue(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::invertCell()
+{
+  int mask  = (1 << _bits) - 1;
+  int value = getSelectedValue();
+
+  value = ~value & mask;
+  setSelectedValue(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::decrementCell()
+{
+  int mask  = (1 << _bits) - 1;
+  int value = getSelectedValue();
+
+  value = (value - 1) & mask;
+  setSelectedValue(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::incrementCell()
+{
+  int mask  = (1 << _bits) - 1;
+  int value = getSelectedValue();
+
+  value = (value + 1) & mask;
+  setSelectedValue(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::lshiftCell()
+{
+  int mask  = (1 << _bits) - 1;
+  int value = getSelectedValue();
+
+  value = (value << 1) & mask;
+  setSelectedValue(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::rshiftCell()
+{
+  int mask  = (1 << _bits) - 1;
+  int value = getSelectedValue();
+
+  value = (value >> 1) & mask;
+  setSelectedValue(value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::zeroCell()
+{
+  setSelectedValue(0);
+}

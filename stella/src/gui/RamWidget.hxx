@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
+// $Id: RamWidget.hxx,v 1.7 2005-07-05 18:00:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,13 +33,6 @@ class EditTextWidget;
 #include "DataGridWidget.hxx"
 
 enum {
-  kRZeroCmd   = 'RWze',
-  kRInvertCmd = 'RWiv',
-  kRNegateCmd = 'RWng',
-  kRIncCmd    = 'RWic',
-  kRDecCmd    = 'RWdc',
-  kRShiftLCmd = 'RWls',
-  kRShiftRCmd = 'RWrs',
   kUndoCmd    = 'RWud',
   kRevertCmd  = 'RWrv'
 };
