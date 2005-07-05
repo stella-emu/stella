@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.5 2005-06-16 00:56:00 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.6 2005-07-05 00:07:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.9 2005-07-04 15:59:38 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.10 2005-07-05 00:07:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -208,12 +208,24 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           _currentRow--;
           dirty = true;
         }
+        else if(_currentCol > 0)
+        {
+          _currentRow = _rows - 1;
+          _currentCol--;
+          dirty = true;
+        }
         break;
 
       case 256+18:  // down arrow
         if (_currentRow < (int) _rows - 1)
         {
           _currentRow++;
+          dirty = true;
+        }
+        else if(_currentCol < (int) _cols - 1)
+        {
+          _currentRow = 0;
+          _currentCol++;
           dirty = true;
         }
         break;
@@ -224,12 +236,24 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           _currentCol--;
           dirty = true;
         }
+        else if(_currentRow > 0)
+        {
+          _currentCol = _cols - 1;
+          _currentRow--;
+          dirty = true;
+        }
         break;
 
       case 256+19:  // right arrow
         if (_currentCol < (int) _cols - 1)
         {
           _currentCol++;
+          dirty = true;
+        }
+        else if(_currentRow < (int) _rows - 1)
+        {
+          _currentCol = 0;
+          _currentRow++;
           dirty = true;
         }
         break;
