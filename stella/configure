@@ -317,9 +317,7 @@ for ac_option in $@; do
         _mandir=`echo $ac_option | cut -d '=' -f 2`
         ;;
       *)
-        echo "warning: unrecognised option: $ac_option
-Try \`$0 --help' for more information." >&2
-        sleep 2
+        echo "warning: unrecognised option: $ac_option"
         ;;
     esac;
 done;

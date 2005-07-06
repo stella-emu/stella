@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.22 2005-07-05 15:25:44 stephena Exp $
+// $Id: Widget.cxx,v 1.23 2005-07-06 15:09:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
     : GuiObject(boss->instance(), boss->parent(), x, y, w, h),
       _type(0),
       _boss(boss),
-      _id(0),
+      _id(-1),
       _flags(0),
       _hasFocus(false),
       _color(kTextColor),

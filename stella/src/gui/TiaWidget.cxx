@@ -13,13 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.2 2005-07-05 15:25:44 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.3 2005-07-06 15:09:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
-
-#include <sstream>
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -30,38 +28,44 @@
 #include "EditTextWidget.hxx"
 #include "DataGridWidget.hxx"
 
-#include "RamWidget.hxx"
+#include "TiaWidget.hxx"
+
+// ID's for the various widgets
+// We need ID's, since there are more than one of several types of widgets
+enum {
+  kRamID,
+  kCOLUP0ID,
+  kCOLUP1ID,
+  kCOLUBKID,
+  kCOLUPFID
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
+TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
   int xpos   = 10;
   int ypos   = 20;
-  int lwidth = 30;
+  int lwidth = 25;
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
   const GUI::Font& font = instance()->consoleFont();
-  _oldValueList = new ValueList;
 
-  // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
-  myRamGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8, 2, 0xff, kBASE_16);
+  // Create a 16x1 grid holding byte values with labels
+  myRamGrid = new DataGridWidget(boss, xpos+lwidth, ypos, 16, 1, 2, 8, kBASE_16);
   myRamGrid->setTarget(this);
-  myRamGrid->clearFlags(WIDGET_TAB_NAVIGATE);
+  myRamGrid->setID(kRamID);
   myActiveWidget = myRamGrid;
 
-  for(int row = 0; row < 8; ++row)
-  {
-    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
-                          lwidth, kLineHeight,
-                          Debugger::to_hex_16(row*16 + kRamStart) + string(":"),
-                          kTextAlignLeft);
-    t->setFont(font);
-  }
+  StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + 2,
+                        lwidth, kLineHeight,
+                        Debugger::to_hex_8(0) + string(":"),
+                        kTextAlignLeft);
+  t->setFont(font);
   for(int col = 0; col < 16; ++col)
   {
     StaticTextWidget* t = new StaticTextWidget(boss,
-                          xpos + col*myRamGrid->colWidth() + lwidth + 12,
+                          xpos + col*myRamGrid->colWidth() + lwidth + 7,
                           ypos - kLineHeight,
                           lwidth, kLineHeight,
                           Debugger::to_hex_4(col),
@@ -69,7 +73,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
     t->setFont(font);
   }
   
-  xpos = 20;  ypos = 11 * kLineHeight;
+  xpos = 20;  ypos = 4 * kLineHeight;
   new StaticTextWidget(boss, xpos, ypos, 30, kLineHeight, "Label: ", kTextAlignLeft);
   xpos += 30;
   myLabel = new EditTextWidget(boss, xpos, ypos-2, 100, kLineHeight, "");
@@ -93,65 +97,32 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 
+/*
   // Add some buttons for common actions
   ButtonWidget* b;
   xpos = vWidth + 10;  ypos = 20;
   b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "0", kRZeroCmd, 0);
   b->setTarget(this);
 
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Inv", kRInvertCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "++", kRIncCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "<<", kRShiftLCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  // keep a pointer to this one, it gets disabled/enabled
-  myUndoButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Undo", kUndoCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  // keep a pointer to this one, it gets disabled/enabled
-  myRevertButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Revert", kRevertCmd, 0);
-  b->setTarget(this);
 
   xpos = vWidth + 30 + 10;  ypos = 20;
 //  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "", kRCmd, 0);
 //  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Neg", kRNegateCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "--", kRDecCmd, 0);
-  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kRShiftRCmd, 0);
-  b->setTarget(this);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::~RamWidget()
+TiaWidget::~TiaWidget()
 {
-  delete _oldValueList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   // We simply change the values in the ByteGridWidget
   // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
   // memory location
   int addr, value;
-  unsigned char byte;
   const char* buf;
 
   Debugger& dbg = instance()->debugger();
@@ -159,20 +130,23 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
-      addr  = myRamGrid->getSelectedAddr();
-      value = myRamGrid->getSelectedValue();
+      switch(id)
+      {
+        case kRamID:
+          changeRam();
+          break;
 
-      myUndoAddress = addr;
-      myUndoValue = dbg.readRAM(addr - kRamStart);
-
-      instance()->debugger().writeRAM(addr - kRamStart, value);
-      myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
-      myRevertButton->setFlags(WIDGET_ENABLED);
-      myUndoButton->setFlags(WIDGET_ENABLED);
+        default:
+          cerr << "TiaWidget DG changed\n";
+          break;
+      }
+      // FIXME -  maybe issue a full reload, since changing one item can affect
+      //          others in this tab??
       break;
 
     case kDGSelectionChangedCmd:
+      // FIXME - for now, only the RAM has multiple cells, so it's the only one
+      // that can receive this signal
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
@@ -183,59 +157,6 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
       break;
-
-    case kRZeroCmd:
-      myRamGrid->setSelectedValue(0);
-      break;
-
-    case kRInvertCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte = ~byte;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRNegateCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte = (~byte) + 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRIncCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte += 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRDecCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte -= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRShiftLCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte <<= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRShiftRCmd:
-      byte = (unsigned char) myRamGrid->getSelectedValue();
-      byte >>= 1;
-      myRamGrid->setSelectedValue((int)byte);
-      break;
-
-    case kRevertCmd:
-      for(unsigned int i = 0; i < kRamSize; i++)
-        dbg.writeRAM(i, (*_oldValueList)[i]);
-      fillGrid(true);
-      break;
-
-    case kUndoCmd:
-      dbg.writeRAM(myUndoAddress - kRamStart, myUndoValue);
-      myUndoButton->clearFlags(WIDGET_ENABLED);
-      fillGrid(false);
-      break;
-
   }
 
   // TODO - dirty rect, or is it necessary here?
@@ -243,33 +164,36 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::loadConfig()
+void TiaWidget::loadConfig()
 {
-  fillGrid(true);
+  fillGrid();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::fillGrid(bool updateOld)
+void TiaWidget::fillGrid()
 {
   AddrList alist;
   ValueList vlist;
   BoolArray changed;
 
-  if(updateOld) _oldValueList->clear();
-
+// FIXME - have this actually talk to TIADebug
   Debugger& dbg = instance()->debugger();
-  for(unsigned int i = 0; i < kRamSize; i++)
+  for(unsigned int i = 0; i < 16; i++)
   {
-    alist.push_back(kRamStart + i);
-    vlist.push_back(dbg.readRAM(i));
-    if(updateOld) _oldValueList->push_back(dbg.readRAM(i));
-    changed.push_back(dbg.ramChanged(i));
+    alist.push_back(i);
+    vlist.push_back(i);
+    changed.push_back(false);
   }
-
   myRamGrid->setList(alist, vlist, changed);
-  if(updateOld)
-  {
-    myRevertButton->clearFlags(WIDGET_ENABLED);
-    myUndoButton->clearFlags(WIDGET_ENABLED);
-  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWidget::changeRam()
+{
+  int addr  = myRamGrid->getSelectedAddr();
+  int value = myRamGrid->getSelectedValue();
+
+//FIXME  instance()->debugger().writeRAM(addr - kRamStart, value);
+  myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
+  myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
 }

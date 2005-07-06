@@ -31,6 +31,7 @@ MODULE_OBJS := \
 	src/gui/RamWidget.o \
 	src/gui/ScrollBarWidget.o \
 	src/gui/TabWidget.o \
+	src/gui/TiaWidget.o \
 	src/gui/ToggleBitWidget.o \
 	src/gui/VideoDialog.o \
 	src/gui/Widget.o \

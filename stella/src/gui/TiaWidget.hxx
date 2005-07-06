@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.2 2005-07-05 15:25:44 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.3 2005-07-06 15:09:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,6 +45,8 @@ class TiaWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
+    void fillGrid();
+    void changeRam();
 
   private:
     Widget* myActiveWidget;

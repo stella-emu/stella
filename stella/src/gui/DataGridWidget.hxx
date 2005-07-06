@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.7 2005-07-05 18:00:05 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.8 2005-07-06 15:09:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -78,15 +78,6 @@ class DataGridWidget : public EditableWidget, public CommandSender
 
     int colWidth() { return _colWidth; }
 
-    //* Common operations on the currently selected cell */
-    void negateCell();
-    void invertCell();
-    void decrementCell();
-    void incrementCell();
-    void lshiftCell();
-    void rshiftCell();
-    void zeroCell();
-
   protected:
     void drawWidget(bool hilite);
 
@@ -120,6 +111,16 @@ class DataGridWidget : public EditableWidget, public CommandSender
     int     _selectedItem;
     int     _currentKeyDown;
     string  _backupString;
+
+  private:
+    //* Common operations on the currently selected cell */
+    void negateCell();
+    void invertCell();
+    void decrementCell();
+    void incrementCell();
+    void lshiftCell();
+    void rshiftCell();
+    void zeroCell();
 };
 
 #endif
