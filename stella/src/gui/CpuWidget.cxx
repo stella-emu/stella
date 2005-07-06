@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.11 2005-07-05 18:00:05 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.12 2005-07-06 19:09:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -127,6 +127,8 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
     on.push_back(onstr[i]);
   }
   myPSRegister->setList(off, on);
+
+  loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

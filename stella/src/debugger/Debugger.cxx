@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.50 2005-07-03 08:15:31 urchlay Exp $
+// $Id: Debugger.cxx,v 1.51 2005-07-06 19:09:24 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -404,7 +404,7 @@ void Debugger::writeRAM(uInt16 offset, uInt8 value)
 /* Element 0 of args is the address. The remaining elements are the data
    to poke, starting at the given address.
 */
-const string Debugger::setRAM(IntArray args) {
+const string Debugger::setRAM(IntArray& args) {
   char buf[10];
 
   int count = args.size();

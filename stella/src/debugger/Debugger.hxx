@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.40 2005-07-03 08:15:31 urchlay Exp $
+// $Id: Debugger.hxx,v 1.41 2005-07-06 19:09:25 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -35,7 +35,7 @@ class D6502;
 #include "bspf.hxx"
 
 enum {
-  kDebuggerWidth = 511,
+  kDebuggerWidth = 639,
   kDebuggerLineHeight = 12,   // based on the height of the console font
   kDebuggerLines = 15,
 };
@@ -51,7 +51,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.40 2005-07-03 08:15:31 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.41 2005-07-06 19:09:25 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -185,7 +185,7 @@ class Debugger : public DialogContainer
     void writeRAM(uInt16 addr, uInt8 value);
 
     // set a bunch of RAM locations at once
-    const string setRAM(IntArray args);
+    const string setRAM(IntArray& args);
 
     bool start();
     void quit();

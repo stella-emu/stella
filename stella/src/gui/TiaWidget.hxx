@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.3 2005-07-06 15:09:16 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.4 2005-07-06 19:09:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,6 +47,7 @@ class TiaWidget : public Widget, public CommandSender
   private:
     void fillGrid();
     void changeRam();
+    void changeColorRegs();
 
   private:
     Widget* myActiveWidget;
@@ -55,6 +56,18 @@ class TiaWidget : public Widget, public CommandSender
     EditTextWidget* myBinValue;
     EditTextWidget* myDecValue;
     EditTextWidget* myLabel;
+
+    EditTextWidget* myScanlines;
+    CheckboxWidget* myVSync;
+    CheckboxWidget* myVBlank;
+
+    DataGridWidget* myColorRegs;
+/* FIXME - add widget for this, with ability to show color wheel or something
+    PaletteWidget*  myCOLUP0Color;
+    PaletteWidget*  myCOLUP1Color;
+    PaletteWidget*  myCOLUPFColor;
+    PaletteWidget*  myCOLUBKColor;
+*/
 };
 
 #endif

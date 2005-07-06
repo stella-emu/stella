@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.12 2005-07-02 01:28:43 stephena Exp $
+// $Id: GuiUtils.hxx,v 1.13 2005-07-06 19:09:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,7 @@
   Probably not very neat, but at least it works ...
 
   @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.12 2005-07-02 01:28:43 stephena Exp $
+  @version $Id: GuiUtils.hxx,v 1.13 2005-07-06 19:09:26 stephena Exp $
 */
 
 #define kLineHeight 12
@@ -55,6 +55,7 @@ enum {
   kDefaultsCmd     = 'DEFA',
   kSetPositionCmd  = 'SETP',
   kActiveWidgetCmd = 'ACTW',
+  kCheckActionCmd  = 'CBAC',
   kRendererChanged,
   kAspectRatioChanged,
   kFrameRateChanged,

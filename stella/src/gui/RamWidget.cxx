@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.15 2005-07-05 18:00:05 stephena Exp $
+// $Id: RamWidget.cxx,v 1.16 2005-07-06 19:09:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -136,6 +136,8 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   ypos += 16 + space;
   b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kDGShiftRCmd, 0);
   b->setTarget(myRamGrid);
+
+  loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

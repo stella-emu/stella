@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.3 2005-07-06 15:09:16 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.4 2005-07-06 19:09:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,10 +34,17 @@
 // We need ID's, since there are more than one of several types of widgets
 enum {
   kRamID,
-  kCOLUP0ID,
-  kCOLUP1ID,
-  kCOLUBKID,
-  kCOLUPFID
+  kColorRegsID,
+  kVSyncID,
+  kVBlankID
+};
+
+// Color registers
+enum {
+  kCOLUP0Addr,
+  kCOLUP1Addr,
+  kCOLUBKAddr,
+  kCOLUPFAddr
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,6 +104,43 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 
+  // Scanline count and VSync/VBlank toggles
+  xpos = 10;  ypos += 2 * kLineHeight;
+  new StaticTextWidget(boss, xpos, ypos, 40, kLineHeight, "Scanline: ", kTextAlignLeft);
+  xpos += 40;
+  myScanlines = new EditTextWidget(boss, xpos, ypos-2, 40, kLineHeight, "");
+  myScanlines->clearFlags(WIDGET_TAB_NAVIGATE);
+  myScanlines->setFont(font);
+  myScanlines->setEditable(false);
+  xpos += 55;  ypos -= 3;
+  myVSync = new CheckboxWidget(boss, xpos, ypos, 25, kLineHeight, "VSync",
+                               kCheckActionCmd);
+  myVSync->setTarget(this);
+  myVSync->setID(kVSyncID);
+  myVSync->setFlags(WIDGET_TAB_NAVIGATE);
+  xpos += 60;
+  myVBlank = new CheckboxWidget(boss, xpos, ypos, 30, kLineHeight, "VBlank",
+                               kCheckActionCmd);
+  myVBlank->setTarget(this);
+  myVBlank->setID(kVBlankID);
+  myVBlank->setFlags(WIDGET_TAB_NAVIGATE);
+
+  // Color registers
+  const char* regNames[] = { "COLUP0", "COLUP1", "COLUPF", "COLUBK" };
+  xpos = 10;  ypos += 2* kLineHeight;
+  for(int row = 0; row < 4; ++row)
+  {
+    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
+                          40, kLineHeight,
+                          regNames[row] + string(":"),
+                          kTextAlignLeft);
+  }
+  xpos += 40;
+  myColorRegs = new DataGridWidget(boss, xpos, ypos-1, 1, 4, 2, 8, kBASE_16);
+  myColorRegs->setTarget(this);
+  myColorRegs->setID(kColorRegsID);
+
+
 /*
   // Add some buttons for common actions
   ButtonWidget* b;
@@ -109,6 +153,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 //  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "", kRCmd, 0);
 //  b->setTarget(this);
 */
+  loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,6 +181,10 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           changeRam();
           break;
 
+        case kColorRegsID:
+          changeColorRegs();
+          break;
+
         default:
           cerr << "TiaWidget DG changed\n";
           break;
@@ -145,17 +194,33 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kDGSelectionChangedCmd:
-      // FIXME - for now, only the RAM has multiple cells, so it's the only one
-      // that can receive this signal
-      addr  = myRamGrid->getSelectedAddr();
-      value = myRamGrid->getSelectedValue();
+      switch(id)
+      {
+        case kRamID:
+          addr  = myRamGrid->getSelectedAddr();
+          value = myRamGrid->getSelectedValue();
 
-      buf = instance()->debugger().equates()->getLabel(addr);
-      if(buf) myLabel->setEditString(buf);
-      else    myLabel->setEditString("");
+          buf = instance()->debugger().equates()->getLabel(addr);
+          if(buf) myLabel->setEditString(buf);
+          else    myLabel->setEditString("");
 
-      myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
+          myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
+          myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
+          break;
+      }
+      break;
+
+    case kCheckActionCmd:
+      switch(id)
+      {
+        case kVSyncID:
+          cerr << "vsync toggled\n";
+          break;
+
+        case kVBlankID:
+          cerr << "vblank toggled\n";
+          break;
+      }
       break;
   }
 
@@ -172,12 +237,14 @@ void TiaWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::fillGrid()
 {
+// FIXME - have these widget get correct values from TIADebug
+  Debugger& dbg = instance()->debugger();
   AddrList alist;
   ValueList vlist;
   BoolArray changed;
 
-// FIXME - have this actually talk to TIADebug
-  Debugger& dbg = instance()->debugger();
+  // TIA RAM
+  alist.clear();  vlist.clear();  changed.clear();
   for(unsigned int i = 0; i < 16; i++)
   {
     alist.push_back(i);
@@ -185,15 +252,39 @@ void TiaWidget::fillGrid()
     changed.push_back(false);
   }
   myRamGrid->setList(alist, vlist, changed);
+
+  // Scanline and VSync/VBlank
+// FIXME
+
+  // Color registers
+  alist.clear();  vlist.clear();  changed.clear();
+  for(unsigned int i = 0; i < 4; i++)
+  {
+    alist.push_back(i);
+    vlist.push_back(i);
+    changed.push_back(false);
+  }
+  myColorRegs->setList(alist, vlist, changed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::changeRam()
 {
+cerr << "TiaWidget::changeRam()\n";
   int addr  = myRamGrid->getSelectedAddr();
   int value = myRamGrid->getSelectedValue();
 
 //FIXME  instance()->debugger().writeRAM(addr - kRamStart, value);
   myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
   myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWidget::changeColorRegs()
+{
+cerr << "TiaWidget::changeColorRegs()\n";
+  int addr  = myColorRegs->getSelectedAddr();
+  int value = myColorRegs->getSelectedValue();
+
+//FIXME  instance()->debugger().writeRAM(addr - kRamStart, value);
 }
