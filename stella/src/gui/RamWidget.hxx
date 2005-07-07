@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.7 2005-07-05 18:00:05 stephena Exp $
+// $Id: RamWidget.hxx,v 1.8 2005-07-07 15:19:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -65,7 +65,7 @@ class RamWidget : public Widget, public CommandSender
     ButtonWidget *myRevertButton;
     ButtonWidget *myUndoButton;
 
-    ValueList *_oldValueList;
+    IntArray _oldValueList;
 };
 
 #endif

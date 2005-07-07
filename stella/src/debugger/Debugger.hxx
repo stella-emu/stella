@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.42 2005-07-07 02:30:48 urchlay Exp $
+// $Id: Debugger.hxx,v 1.43 2005-07-07 15:18:56 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -24,6 +24,8 @@ class OSystem;
 class Console;
 class System;
 class D6502;
+class RamDebug;
+class TIADebug;
 
 #include "DialogContainer.hxx"
 #include "M6502.hxx"
@@ -31,7 +33,6 @@ class D6502;
 #include "EquateList.hxx"
 #include "PackedBitArray.hxx"
 #include "PromptWidget.hxx"
-#include "TIADebug.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -51,11 +52,13 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.42 2005-07-07 02:30:48 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.43 2005-07-07 15:18:56 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
   friend class DebuggerParser;
+  friend class RamDebug;
+  friend class TIADebug;
 
   public:
     /**
@@ -84,10 +87,13 @@ class Debugger : public DialogContainer
     */
     void setConsole(Console* console);
 
-    /* save registers to oldA, oldX, etc. */
-    void saveRegs();
+    /* Save state of each debugger subsystem */
+    void saveState();
 
-    /* return the TIADebugger, since the GUI needs it */
+    /* The debugger subsystem responsible for all RAM state */
+    RamDebug& ramDebug() { return *myRamDebug; }
+
+    /* The debugger subsystem responsible for all TIA state */
     TIADebug& tiaDebug() { return *myTIAdebug; }
 
     /** Convenience methods to convert to hexidecimal values */
@@ -264,6 +270,7 @@ class Debugger : public DialogContainer
     PackedBitArray *readTraps;
     PackedBitArray *writeTraps;
     PromptWidget *myPrompt;
+    RamDebug *myRamDebug;
     TIADebug *myTIAdebug;
 
     uInt8 myOldRAM[128];
@@ -273,7 +280,6 @@ class Debugger : public DialogContainer
     int oldS;
     int oldP;
     int oldPC;
-
 };
 
 #endif

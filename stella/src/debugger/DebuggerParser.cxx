@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.47 2005-07-03 08:15:31 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.48 2005-07-07 15:18:57 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1195,7 +1195,7 @@ void DebuggerParser::executeRom() {
 
 // "run"
 void DebuggerParser::executeRun() {
-   debugger->saveRegs();
+	debugger->saveState();
 	debugger->quit();
 	commandResult = "exiting debugger";
 }
@@ -1233,7 +1233,6 @@ void DebuggerParser::executeSavesym() {
 
 // "step"
 void DebuggerParser::executeStep() {
-   debugger->saveRegs();
 	int cycles = debugger->step();
 	commandResult = "executed ";
 	commandResult += debugger->valueToString(cycles);
@@ -1247,7 +1246,6 @@ void DebuggerParser::executeTia() {
 
 // "trace"
 void DebuggerParser::executeTrace() {
-   debugger->saveRegs();
 	int cycles = debugger->trace();
 	commandResult = "executed ";
 	commandResult += debugger->valueToString(cycles);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.8 2005-07-06 15:09:15 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.9 2005-07-07 15:19:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,9 +30,6 @@
 #include "EditableWidget.hxx"
 #include "Array.hxx"
 #include "Rect.hxx"
-
-typedef GUI::Array<int> AddrList;
-typedef GUI::Array<int> ValueList;
 
 // Some special commands
 enum {
@@ -58,7 +55,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
                    int colchars, int bits, BaseFormat format = kBASE_DEFAULT);
     virtual ~DataGridWidget();
 
-    void setList(const AddrList& alist, const ValueList& vlist,
+    void setList(const IntArray& alist, const IntArray& vlist,
                  const BoolArray& changed);
     void setSelectedValue(int value);
 
@@ -101,8 +98,8 @@ class DataGridWidget : public EditableWidget, public CommandSender
 
     BaseFormat _base;
 
-    AddrList    _addrList;
-    ValueList   _valueList;
+    IntArray    _addrList;
+    IntArray    _valueList;
     StringList  _addrStringList;
     StringList  _valueStringList;
     BoolArray   _changedList;

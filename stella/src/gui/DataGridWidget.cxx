@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.12 2005-07-05 18:00:05 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.13 2005-07-07 15:19:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -65,9 +65,15 @@ DataGridWidget::~DataGridWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setList(const AddrList& alist, const ValueList& vlist,
+void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
                              const BoolArray& changed)
 {
+/*
+cerr << "alist.size() = "     << alist.size()
+     << ", vlist.size() = "   << vlist.size()
+     << ", changed.size() = " << changed.size()
+     << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+*/
   int size = vlist.size();  // assume the alist is the same size
   assert(size == _rows * _cols);
 

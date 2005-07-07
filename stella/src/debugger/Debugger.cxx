@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.52 2005-07-07 02:30:48 urchlay Exp $
+// $Id: Debugger.cxx,v 1.53 2005-07-07 15:18:55 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -33,6 +33,7 @@
 
 #include "Debugger.hxx"
 #include "EquateList.hxx"
+#include "RamDebug.hxx"
 #include "TIADebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,6 +47,7 @@ Debugger::Debugger(OSystem* osystem)
     breakPoints(NULL),
     readTraps(NULL),
     writeTraps(NULL),
+    myRamDebug(NULL),
     myTIAdebug(NULL)
 {
   // Init parser
@@ -63,6 +65,7 @@ Debugger::~Debugger()
 {
   delete myParser;
   delete myDebugger;
+  delete myRamDebug;
   delete myTIAdebug;
   delete equateList;
   delete breakPoints;
@@ -123,6 +126,10 @@ void Debugger::setConsole(Console* console)
   myConsole = console;
   mySystem = &(myConsole->system());
 
+  // Create debugger subsystems
+  delete myRamDebug;
+  myRamDebug = new RamDebug(this);
+
   // Create a new TIA debugger for this console
   // This code is somewhat ugly, since we derive a TIA from the MediaSource
   // for no particular reason.  Maybe it's better to make the TIA be the
@@ -137,6 +144,7 @@ void Debugger::setConsole(Console* console)
 
   autoLoadSymbols(myOSystem->romFile());
 
+// FIXME - use the new RamDebug state stuff, and this is eliminated entirely
   for(int i=0; i<0x80; i++)
     myOldRAM[i] = readRAM(i);
 }
@@ -549,7 +557,7 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
-  saveRegs();
+  saveState();
 
   int cyc = mySystem->cycles();
   mySystem->m6502().execute(1);
@@ -575,7 +583,7 @@ int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
   if(mySystem->peek(myDebugger->pc()) == 32) {
-    saveRegs();
+    saveState();
 
     int cyc = mySystem->cycles();
     int targetPC = myDebugger->pc() + 3; // return address
@@ -807,7 +815,7 @@ string Debugger::disassemble(int start, int lines) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames) {
-  saveRegs();
+  saveState();
   myOSystem->frameBuffer().advance(frames);
 }
 
@@ -901,10 +909,16 @@ bool Debugger::patchROM(int addr, int value) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveRegs() {
+void Debugger::saveState() {
+// FIXME - this will be removed when we get state saving working
+//         At that point, saving state will be accomplished by calling
+//         saveState() on each subsystem
 	for(int i=0; i<0x80; i++) {
 		myOldRAM[i] = readRAM(i);
 	}
+///////////////////
+	myRamDebug->saveOldState();
+
 	oldA = getA();
 	oldX = getX();
 	oldY = getY();

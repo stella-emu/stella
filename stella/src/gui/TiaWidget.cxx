@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.4 2005-07-06 19:09:26 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.5 2005-07-07 15:19:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -239,8 +239,8 @@ void TiaWidget::fillGrid()
 {
 // FIXME - have these widget get correct values from TIADebug
   Debugger& dbg = instance()->debugger();
-  AddrList alist;
-  ValueList vlist;
+  IntArray alist;
+  IntArray vlist;
   BoolArray changed;
 
   // TIA RAM

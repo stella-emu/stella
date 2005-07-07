@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.12 2005-07-06 19:09:26 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.13 2005-07-07 15:19:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -222,8 +222,8 @@ void CpuWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::fillGrid()
 {
-  AddrList alist;
-  ValueList vlist;
+  IntArray alist;
+  IntArray vlist;
   BoolArray changed;
 
   // We push the enumerated items as addresses, and deal with the real

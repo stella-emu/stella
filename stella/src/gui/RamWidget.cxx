@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.16 2005-07-06 19:09:26 stephena Exp $
+// $Id: RamWidget.cxx,v 1.17 2005-07-07 15:19:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,10 +25,10 @@
 #include "FrameBuffer.hxx"
 #include "GuiUtils.hxx"
 #include "GuiObject.hxx"
-#include "Debugger.hxx"
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "DataGridWidget.hxx"
+#include "RamDebug.hxx"
 
 #include "RamWidget.hxx"
 
@@ -42,7 +42,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   int lwidth = 30;
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
   const GUI::Font& font = instance()->consoleFont();
-  _oldValueList = new ValueList;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
   myRamGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8, 2, 8, kBASE_16);
@@ -143,7 +142,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::~RamWidget()
 {
-  delete _oldValueList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,8 +153,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   int addr, value;
   const char* buf;
 
-  Debugger& dbg = instance()->debugger();
-
+  RamDebug& dbg = instance()->debugger().ramDebug();
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
@@ -164,13 +161,13 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       value = myRamGrid->getSelectedValue();
 
       myUndoAddress = addr;
-      myUndoValue = dbg.readRAM(addr - kRamStart);
+      myUndoValue = dbg.read(addr);
 
-      instance()->debugger().writeRAM(addr - kRamStart, value);
+      dbg.write(addr, value);
       myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
-      myRevertButton->setFlags(WIDGET_ENABLED);
-      myUndoButton->setFlags(WIDGET_ENABLED);
+      myRevertButton->setEnabled(true);
+      myUndoButton->setEnabled(true);
       break;
 
     case kDGSelectionChangedCmd:
@@ -187,12 +184,12 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kRevertCmd:
       for(unsigned int i = 0; i < kRamSize; i++)
-        dbg.writeRAM(i, (*_oldValueList)[i]);
+        dbg.write(i, _oldValueList[i]);
       fillGrid(true);
       break;
 
     case kUndoCmd:
-      dbg.writeRAM(myUndoAddress - kRamStart, myUndoValue);
+      dbg.write(myUndoAddress, myUndoValue);
       myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
@@ -212,19 +209,24 @@ void RamWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::fillGrid(bool updateOld)
 {
-  AddrList alist;
-  ValueList vlist;
+  IntArray alist;
+  IntArray vlist;
   BoolArray changed;
 
-  if(updateOld) _oldValueList->clear();
+  if(updateOld) _oldValueList.clear();
 
-  Debugger& dbg = instance()->debugger();
-  for(unsigned int i = 0; i < kRamSize; i++)
+  RamDebug& dbg = instance()->debugger().ramDebug();
+
+  RamState state    = (RamState&) dbg.getState();
+  RamState oldstate = (RamState&) dbg.getOldState();
+
+  vlist = state.ram;
+  if(updateOld) _oldValueList = state.ram;
+
+  for(unsigned int i = 0; i < 16*8; i++)
   {
-    alist.push_back(kRamStart + i);
-    vlist.push_back(dbg.readRAM(i));
-    if(updateOld) _oldValueList->push_back(dbg.readRAM(i));
-    changed.push_back(dbg.ramChanged(i));
+    alist.push_back(i);
+    changed.push_back(state.ram[i] != oldstate.ram[i]);
   }
 
   myRamGrid->setList(alist, vlist, changed);
