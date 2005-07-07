@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.51 2005-07-06 19:09:24 stephena Exp $
+// $Id: Debugger.cxx,v 1.52 2005-07-07 02:30:48 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -90,6 +90,12 @@ void Debugger::initialize()
   DebuggerDialog *dd = new DebuggerDialog(myOSystem, this, x, y, w, h);
   myPrompt = dd->prompt();
   myBaseDialog = dd;
+
+  // set up any breakpoint that was on the command line
+  // (and remove the key from the settings, so they won't get set again)
+  string initBreak = myOSystem->settings().getString("break");
+  if(initBreak != "") run("break " + initBreak);
+  myOSystem->settings().setString("break", "", false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

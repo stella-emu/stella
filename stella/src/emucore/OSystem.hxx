@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.23 2005-06-20 18:32:11 stephena Exp $
+// $Id: OSystem.hxx,v 1.24 2005-07-07 02:30:48 urchlay Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.23 2005-06-20 18:32:11 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.24 2005-07-07 02:30:48 urchlay Exp $
 */
 class OSystem
 {
@@ -143,6 +143,14 @@ class OSystem
       @return The debugger object
     */
     Debugger& debugger(void) const { return *myDebugger; }
+
+    /**
+      Get the TIA debugger of the system.
+
+      @return The debugger object
+      I can't make this compile, weird header dependencies
+    */
+    //TIADebug& tiaDebug(void) const { return *myDebugger->tiaDebug(); }
 
     /**
       Get the font object of the system
