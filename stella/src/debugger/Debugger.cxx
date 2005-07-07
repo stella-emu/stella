@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.53 2005-07-07 15:18:55 stephena Exp $
+// $Id: Debugger.cxx,v 1.54 2005-07-07 18:56:41 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -128,7 +128,7 @@ void Debugger::setConsole(Console* console)
 
   // Create debugger subsystems
   delete myRamDebug;
-  myRamDebug = new RamDebug(this);
+  myRamDebug = new RamDebug(myConsole);
 
   // Create a new TIA debugger for this console
   // This code is somewhat ugly, since we derive a TIA from the MediaSource

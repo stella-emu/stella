@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.7 2005-07-01 04:22:37 urchlay Exp $
+// $Id: M6502.hxx,v 1.8 2005-07-07 18:56:41 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -24,6 +24,7 @@ class M6502;
 class Serializer;
 class Deserializer;
 class Debugger;
+class CpuDebug;
 
 #include "bspf.hxx"
 #include "System.hxx"
@@ -35,7 +36,7 @@ class Debugger;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.7 2005-07-01 04:22:37 urchlay Exp $ 
+  @version $Id: M6502.hxx,v 1.8 2005-07-07 18:56:41 stephena Exp $ 
 */
 class M6502
 {
@@ -43,7 +44,8 @@ class M6502
     /**
       The 6502 debugger class is a friend who needs special access
     */
-    friend class D6502;
+    friend class D6502; // FIXME - remove
+    friend class CpuDebug;
 
   public:
     /**

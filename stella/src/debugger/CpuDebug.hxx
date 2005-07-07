@@ -13,41 +13,46 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerSystem.hxx,v 1.2 2005-07-07 18:56:41 stephena Exp $
+// $Id: CpuDebug.hxx,v 1.1 2005-07-07 18:56:41 stephena Exp $
 //============================================================================
 
-#ifndef DEBUGGER_SYSTEM_HXX
-#define DEBUGGER_SYSTEM_HXX
+#ifndef CPU_DEBUG_HXX
+#define CPU_DEBUG_HXX
 
+class System;
+
+#include "Array.hxx"
 #include "Console.hxx"
+#include "DebuggerSystem.hxx"
 
-/**
-  The DebuggerState class is used as a base class for state in all
-  DebuggerSystem objects.  We make it a class so we can take advantage
-  of the copy constructor.
- */
-class DebuggerState
+class CpuState : public DebuggerState
 {
   public:
-    DebuggerState()  { }
-    ~DebuggerState() { }
+    int PC, SP, PS, A, X, Y;
+    BoolArray PSbits;
 };
 
-/**
-  The base class for all debugger objects.  Its real purpose is to
-  clean up the Debugger API, partitioning it into separate
-  subsystems.
- */
-class DebuggerSystem
+class CpuDebug : public DebuggerSystem
 {
   public:
-    DebuggerSystem(Console* console) { }
-    virtual ~DebuggerSystem() { }
+    CpuDebug(Console* console);
 
-    virtual DebuggerState& getState() = 0;
-    virtual DebuggerState& getOldState() = 0;
+    DebuggerState& getState();
+    DebuggerState& getOldState() { return myOldState; }
 
-    virtual void saveOldState() = 0;
+    void saveOldState();
+
+    void setA(int a);
+    void setX(int x);
+    void setY(int y);
+    void setSP(int sp);
+    void setPC(int pc);
+
+  private:
+    CpuState myState;
+    CpuState myOldState;
+
+    System* mySystem;
 };
 
 #endif

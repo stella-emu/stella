@@ -13,15 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamDebug.cxx,v 1.1 2005-07-07 15:18:58 stephena Exp $
+// $Id: RamDebug.cxx,v 1.2 2005-07-07 18:56:41 stephena Exp $
 //============================================================================
 
 #include "Array.hxx"
+#include "System.hxx"
 #include "RamDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamDebug::RamDebug(Debugger* dbg)
-  : DebuggerSystem(dbg)
+RamDebug::RamDebug(Console* console)
+  : DebuggerSystem(console),
+    mySystem(&(console->system()))
 {
   saveOldState();
 }
@@ -31,7 +33,7 @@ DebuggerState& RamDebug::getState()
 {
   myState.ram.clear();
   for(int i=0; i<0x80; i++)
-    myState.ram.push_back(myDebugger->readRAM(i));
+    myState.ram.push_back(read(i));
 
   return myState;
 }
@@ -41,19 +43,19 @@ void RamDebug::saveOldState()
 {
   myOldState.ram.clear();
   for(int i=0; i<0x80; i++)
-    myOldState.ram.push_back(myDebugger->readRAM(i));
+    myOldState.ram.push_back(read(i));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int RamDebug::read(int offset)
 {
   offset &= 0x7f; // there are only 128 bytes
-  return myDebugger->mySystem->peek(offset + 0x80);
+  return mySystem->peek(offset + 0x80);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamDebug::write(int offset, int value)
 {
   offset &= 0x7f; // there are only 128 bytes
-  myDebugger->mySystem->poke(offset + 0x80, value);
+  mySystem->poke(offset + 0x80, value);
 }

@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamDebug.hxx,v 1.1 2005-07-07 15:18:58 stephena Exp $
+// $Id: RamDebug.hxx,v 1.2 2005-07-07 18:56:41 stephena Exp $
 //============================================================================
 
 #ifndef RAM_DEBUG_HXX
 #define RAM_DEBUG_HXX
+
+class System;
 
 #include "Array.hxx"
 #include "DebuggerSystem.hxx"
@@ -31,7 +33,7 @@ class RamState : public DebuggerState
 class RamDebug : public DebuggerSystem
 {
   public:
-    RamDebug(Debugger* dbg);
+    RamDebug(Console* console);
 
     DebuggerState& getState();
     DebuggerState& getOldState() { return myOldState; }
@@ -44,6 +46,8 @@ class RamDebug : public DebuggerSystem
   private:
     RamState myState;
     RamState myOldState;
+
+    System* mySystem;
 };
 
 #endif
