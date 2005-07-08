@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.2 2005-07-08 12:14:18 urchlay Exp $
+// $Id: Cart3E.cxx,v 1.3 2005-07-08 12:16:01 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
 #include "Cart3E.hxx"
+#include "Random.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
@@ -40,7 +41,7 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
   Random random;
   for(uInt32 i = 0; i < 32768; ++i)
   {
-    myRAM[i] = random.next();
+    myRam[i] = random.next();
   }
 }
 
@@ -241,7 +242,7 @@ bool Cartridge3E::save(Serializer& out)
     // Output RAM
     out.putLong(32768);
     for(uInt32 addr = 0; addr < 32768; ++addr)
-      out.putLong(myRAM[addr]);
+      out.putLong(myRam[addr]);
   }
   catch(char *msg)
   {
@@ -272,7 +273,7 @@ bool Cartridge3E::load(Deserializer& in)
     // Input RAM
     uInt32 limit = (uInt32) in.getLong();
     for(uInt32 addr = 0; addr < limit; ++addr)
-      myRAM[addr] = (uInt8) in.getLong();
+      myRam[addr] = (uInt8) in.getLong();
   }
   catch(char *msg)
   {
