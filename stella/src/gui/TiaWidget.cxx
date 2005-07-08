@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.6 2005-07-08 17:22:41 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.7 2005-07-08 21:25:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -232,7 +232,6 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::loadConfig()
 {
-cerr << "TiaWidget::loadConfig()\n";
   fillGrid();
 }
 
