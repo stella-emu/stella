@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.12 2005-06-28 01:15:17 urchlay Exp $
+// $Id: Cart.cxx,v 1.13 2005-07-08 11:50:32 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include <string.h>
 #include "Cart.hxx"
 #include "Cart2K.hxx"
+#include "Cart3E.hxx"
 #include "Cart3F.hxx"
 #include "Cart4K.hxx"
 #include "CartAR.hxx"
@@ -59,6 +60,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   // We should know the cart's type by now so let's create it
   if(type == "2K")
     cartridge = new Cartridge2K(image);
+  else if(type == "3E")
+    cartridge = new Cartridge3E(image, size);
   else if(type == "3F")
     cartridge = new Cartridge3F(image, size);
   else if(type == "4K")
