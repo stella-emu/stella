@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.45 2005-07-08 14:36:17 stephena Exp $
+// $Id: Debugger.hxx,v 1.46 2005-07-08 17:22:40 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -53,7 +53,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.45 2005-07-08 14:36:17 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.46 2005-07-08 17:22:40 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -104,7 +104,7 @@ class Debugger : public DialogContainer
     /**
       The debugger subsystem responsible for all TIA state
     */
-    TIADebug& tiaDebug() { return *myTIAdebug; }
+    TIADebug& tiaDebug() { return *myTiaDebug; }
 
     /** Convenience methods to convert to hexidecimal values */
     static char *to_hex_4(int i)
@@ -236,7 +236,7 @@ class Debugger : public DialogContainer
     DebuggerParser* myParser;
     CpuDebug* myCpuDebug;
     RamDebug* myRamDebug;
-    TIADebug* myTIAdebug;
+    TIADebug* myTiaDebug;
 
     EquateList *equateList;
     PackedBitArray *breakPoints;

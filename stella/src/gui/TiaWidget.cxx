@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.5 2005-07-07 15:19:04 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.6 2005-07-08 17:22:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,7 +23,7 @@
 #include "FrameBuffer.hxx"
 #include "GuiUtils.hxx"
 #include "GuiObject.hxx"
-#include "Debugger.hxx"
+#include "TIADebug.hxx"
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "DataGridWidget.hxx"
@@ -191,6 +191,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       // FIXME -  maybe issue a full reload, since changing one item can affect
       //          others in this tab??
+      loadConfig();
       break;
 
     case kDGSelectionChangedCmd:
@@ -231,6 +232,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::loadConfig()
 {
+cerr << "TiaWidget::loadConfig()\n";
   fillGrid();
 }
 
@@ -238,18 +240,21 @@ void TiaWidget::loadConfig()
 void TiaWidget::fillGrid()
 {
 // FIXME - have these widget get correct values from TIADebug
-  Debugger& dbg = instance()->debugger();
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
+
+  TIADebug& tia = instance()->debugger().tiaDebug();
+  TiaState state    = (TiaState&) tia.getState();
+  TiaState oldstate = (TiaState&) tia.getOldState();
 
   // TIA RAM
   alist.clear();  vlist.clear();  changed.clear();
   for(unsigned int i = 0; i < 16; i++)
   {
     alist.push_back(i);
-    vlist.push_back(i);
-    changed.push_back(false);
+    vlist.push_back(state.ram[i]);
+    changed.push_back(state.ram[i] != oldstate.ram[i]);
   }
   myRamGrid->setList(alist, vlist, changed);
 
@@ -270,11 +275,14 @@ void TiaWidget::fillGrid()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::changeRam()
 {
-cerr << "TiaWidget::changeRam()\n";
   int addr  = myRamGrid->getSelectedAddr();
   int value = myRamGrid->getSelectedValue();
 
-//FIXME  instance()->debugger().writeRAM(addr - kRamStart, value);
+  IntArray ram;
+  ram.push_back(addr);
+  ram.push_back(value);
+
+  instance()->debugger().setRAM(ram);
   myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
   myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
 }

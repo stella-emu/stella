@@ -13,37 +13,54 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.5 2005-07-03 01:36:39 urchlay Exp $
+// $Id: TIADebug.hxx,v 1.6 2005-07-08 17:22:40 stephena Exp $
 //============================================================================
 
-#ifndef TIADEBUG_HXX
-#define TIADEBUG_HXX
+#ifndef TIA_DEBUG_HXX
+#define TIA_DEBUG_HXX
 
-#include "TIA.hxx"
-#include "Debugger.hxx"
+class TIA;
+class Debugger;
 
-class TIADebug {
-	public:
-		TIADebug(TIA *tia);
-		~TIADebug();
+#include "Array.hxx"
+#include "DebuggerSystem.hxx"
 
-		void setDebugger(Debugger *d);
-
-		int scanlines();
-		int frameCount();
-		bool vsync();
-		bool vblank();
-		void updateTIA();
-		string state();
-
-	private:
-		TIA *myTIA;
-		Debugger *myDebugger;
-
-		string colorSwatch(uInt8 c);
-
-		string nusizStrings[8];
+class TiaState : public DebuggerState
+{
+  public:
+    IntArray ram;
 };
 
+class TIADebug : public DebuggerSystem
+{
+  public:
+    TIADebug(Debugger* dbg, Console* console);
+
+    DebuggerState& getState();
+    DebuggerState& getOldState() { return myOldState; }
+
+    void saveOldState();
+
+    // FIXME - add whole slew of setXXX() methods
+
+    int scanlines();
+    int frameCount();
+    bool vsync();
+    bool vblank();
+    void updateTIA();
+    string state();
+
+  private:
+    string colorSwatch(uInt8 c);
+
+  private:
+    TiaState myState;
+    TiaState myOldState;
+
+    System* mySystem;
+    TIA* myTIA;
+
+    string nusizStrings[8];
+};
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.56 2005-07-08 14:36:17 stephena Exp $
+// $Id: Debugger.cxx,v 1.57 2005-07-08 17:22:40 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -45,7 +45,7 @@ Debugger::Debugger(OSystem* osystem)
     myParser(NULL),
     myCpuDebug(NULL),
     myRamDebug(NULL),
-    myTIAdebug(NULL),
+    myTiaDebug(NULL),
     equateList(NULL),
     breakPoints(NULL),
     readTraps(NULL),
@@ -66,7 +66,7 @@ Debugger::~Debugger()
 
   delete myCpuDebug;
   delete myRamDebug;
-  delete myTIAdebug;
+  delete myTiaDebug;
 
   delete equateList;
   delete breakPoints;
@@ -134,13 +134,8 @@ void Debugger::setConsole(Console* console)
   delete myRamDebug;
   myRamDebug = new RamDebug(this, myConsole);
 
-  // Create a new TIA debugger for this console
-  // This code is somewhat ugly, since we derive a TIA from the MediaSource
-  // for no particular reason.  Maybe it's better to make the TIA be the
-  // base class and entirely eliminate MediaSource class??
-  delete myTIAdebug;
-  myTIAdebug = new TIADebug((TIA*)&myConsole->mediaSource());
-  myTIAdebug->setDebugger(this);
+  delete myTiaDebug;
+  myTiaDebug = new TIADebug(this, myConsole);
 
   autoLoadSymbols(myOSystem->romFile());
 
@@ -243,10 +238,10 @@ const string Debugger::cpuState()
   sprintf(buf, "%d", mySystem->cycles());
   result += buf;
   result += " Scan:";
-  sprintf(buf, "%d", myTIAdebug->scanlines());
+  sprintf(buf, "%d", myTiaDebug->scanlines());
   result += buf;
   result += " Frame:";
-  sprintf(buf, "%d", myTIAdebug->frameCount());
+  sprintf(buf, "%d", myTiaDebug->frameCount());
   result += buf;
   result += " 6502Ins:";
   sprintf(buf, "%d", mySystem->m6502().totalInstructionCount());
@@ -472,7 +467,7 @@ const string Debugger::dumpTIA()
   }
 
   result += "\n";
-  result += myTIAdebug->state();
+  result += myTiaDebug->state();
 
   return result;
 }
@@ -523,8 +518,12 @@ int Debugger::step()
 
   int cyc = mySystem->cycles();
   mySystem->m6502().execute(1);
-  myTIAdebug->updateTIA();
+
+  // FIXME - this doesn't work yet, pending a partial rewrite of TIA class
+  myTiaDebug->updateTIA();
   myOSystem->frameBuffer().refreshTIA(true);
+  ///////////////////////////////////////////////////////
+
   return mySystem->cycles() - cyc;
 }
 
@@ -551,8 +550,12 @@ int Debugger::trace()
     int targetPC = myCpuDebug->pc() + 3; // return address
     while(myCpuDebug->pc() != targetPC)
       mySystem->m6502().execute(1);
-    myTIAdebug->updateTIA();
+
+    // FIXME - this doesn't work yet, pending a partial rewrite of TIA class
+    myTiaDebug->updateTIA();
     myOSystem->frameBuffer().refreshTIA(true);
+    ///////////////////////////////////////////////////////
+
     return mySystem->cycles() - cyc;
   } else {
     return step();
@@ -741,4 +744,5 @@ void Debugger::saveOldState()
 {
   myCpuDebug->saveOldState();
   myRamDebug->saveOldState();
+  myTiaDebug->saveOldState();
 }

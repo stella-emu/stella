@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.22 2005-07-06 15:09:16 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.23 2005-07-08 17:22:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,7 +72,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   // 5) The TIA tab
   myTab->addTab("TIA");
   TiaWidget* tia = new TiaWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
-  myTab->setParentWidget(3, tia, tia->activeWidget());
+  myTab->setParentWidget(4, tia, tia->activeWidget());
 
 
   // 6) The ROM tab

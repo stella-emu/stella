@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.cxx,v 1.2 2005-07-08 14:36:17 stephena Exp $
+// $Id: CpuDebug.cxx,v 1.3 2005-07-08 17:22:40 stephena Exp $
 //============================================================================
 
 #include "Array.hxx"
@@ -27,7 +27,6 @@ CpuDebug::CpuDebug(Debugger* dbg, Console* console)
   : DebuggerSystem(dbg, console),
     mySystem(&(console->system()))
 {
-  saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
