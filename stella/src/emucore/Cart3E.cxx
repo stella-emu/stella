@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.1 2005-07-08 04:00:09 urchlay Exp $
+// $Id: Cart3E.cxx,v 1.2 2005-07-08 12:14:18 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -34,6 +34,13 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
   for(uInt32 addr = 0; addr < mySize; ++addr)
   {
     myImage[addr] = image[addr];
+  }
+
+  // Initialize RAM with random values
+  Random random;
+  for(uInt32 i = 0; i < 32768; ++i)
+  {
+    myRAM[i] = random.next();
   }
 }
 
@@ -123,6 +130,9 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
   {
     bank(value + 256);
   }
+
+  // TODO: Ask Kroko whether addresses 0-0x3d do anything (on 3F, they
+  // cause a bankswitch)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,7 +141,10 @@ bool Cartridge3E::patch(uInt16 address, uInt8 value)
   address = address & 0x0FFF;
   if(address < 0x0800)
   {
-    myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
+    if(myCurrentBank < 256)
+      myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
+    else
+      myRam[(address & 0x03FF) + (myCurrentBank - 256) * 1024] = value;
   }
   else
   {
@@ -224,6 +237,11 @@ bool Cartridge3E::save(Serializer& out)
   {
     out.putString(cart);
     out.putLong(myCurrentBank);
+
+    // Output RAM
+    out.putLong(32768);
+    for(uInt32 addr = 0; addr < 32768; ++addr)
+      out.putLong(myRAM[addr]);
   }
   catch(char *msg)
   {
@@ -250,6 +268,11 @@ bool Cartridge3E::load(Deserializer& in)
       return false;
 
     myCurrentBank = (uInt16) in.getLong();
+
+    // Input RAM
+    uInt32 limit = (uInt32) in.getLong();
+    for(uInt32 addr = 0; addr < limit; ++addr)
+      myRAM[addr] = (uInt8) in.getLong();
   }
   catch(char *msg)
   {
