@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.43 2005-07-07 15:18:56 stephena Exp $
+// $Id: Debugger.hxx,v 1.44 2005-07-08 12:36:06 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -52,7 +52,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.43 2005-07-07 15:18:56 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.44 2005-07-08 12:36:06 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -186,7 +186,7 @@ class Debugger : public DialogContainer
       Return a formatted string containing the contents of the specified
       device.
     */
-    const string dumpRAM(uInt8 start = kRamStart, uInt8 len = 0x80);
+    const string dumpRAM();
     const string dumpTIA();
 
     // Read and write 128-byte RAM area
@@ -249,13 +249,11 @@ class Debugger : public DialogContainer
 
     bool setBank(int bank);
     int bankCount();
-	 int getBank();
-	 const char *getCartType();
-	 bool patchROM(int addr, int value);
-	 void saveState(int state);
-	 void loadState(int state);
-    uInt8 oldRAM(uInt8 offset);
-	 bool ramChanged(uInt8 offset);
+    int getBank();
+    const char *getCartType();
+    bool patchROM(int addr, int value);
+    void saveState(int state);
+    void loadState(int state);
 
   protected:
     const string invIfChanged(int reg, int oldReg);
@@ -265,15 +263,15 @@ class Debugger : public DialogContainer
 
     DebuggerParser* myParser;
     D6502* myDebugger;
+    RamDebug *myRamDebug;
+    TIADebug *myTIAdebug;
+
     EquateList *equateList;
     PackedBitArray *breakPoints;
     PackedBitArray *readTraps;
     PackedBitArray *writeTraps;
     PromptWidget *myPrompt;
-    RamDebug *myRamDebug;
-    TIADebug *myTIAdebug;
 
-    uInt8 myOldRAM[128];
     int oldA;
     int oldX;
     int oldY;

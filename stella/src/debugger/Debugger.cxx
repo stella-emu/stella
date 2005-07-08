@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.54 2005-07-07 18:56:41 stephena Exp $
+// $Id: Debugger.cxx,v 1.55 2005-07-08 12:35:53 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -43,12 +43,12 @@ Debugger::Debugger(OSystem* osystem)
     mySystem(NULL),
     myParser(NULL),
     myDebugger(NULL),
+    myRamDebug(NULL),
+    myTIAdebug(NULL),
     equateList(NULL),
     breakPoints(NULL),
     readTraps(NULL),
-    writeTraps(NULL),
-    myRamDebug(NULL),
-    myTIAdebug(NULL)
+    writeTraps(NULL)
 {
   // Init parser
   myParser = new DebuggerParser(this);
@@ -144,9 +144,7 @@ void Debugger::setConsole(Console* console)
 
   autoLoadSymbols(myOSystem->romFile());
 
-// FIXME - use the new RamDebug state stuff, and this is eliminated entirely
-  for(int i=0; i<0x80; i++)
-    myOldRAM[i] = readRAM(i);
+  saveState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -436,26 +434,13 @@ const string Debugger::setRAM(IntArray& args) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Debugger::oldRAM(uInt8 offset)
-{
-  offset &= 0x7f;
-  return myOldRAM[offset];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::ramChanged(uInt8 offset)
-{
-  offset &= 0x7f;
-  return (myOldRAM[offset] != readRAM(offset));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* Warning: this method really is for dumping *RAM*, not ROM or I/O! */
-const string Debugger::dumpRAM(uInt8 start, uInt8 len)
+const string Debugger::dumpRAM()
 {
   string result;
   char buf[128];
   int bytesPerLine;
+  int start = kRamStart, len = kRamSize;
 
   switch(myParser->base())
   {
@@ -473,6 +458,8 @@ const string Debugger::dumpRAM(uInt8 start, uInt8 len)
       return DebuggerParser::red("invalid base, this is a BUG");
   }
 
+  RamState state    = (RamState&) myRamDebug->getState();
+  RamState oldstate = (RamState&) myRamDebug->getOldState();
   for (uInt8 i = 0x00; i < len; i += bytesPerLine)
   {
     sprintf(buf, "%.2x: ", start+i);
@@ -480,9 +467,7 @@ const string Debugger::dumpRAM(uInt8 start, uInt8 len)
 
     for (uInt8 j = 0; j < bytesPerLine; j++)
     {
-      int byte = mySystem->peek(start+i+j);
-
-      result += invIfChanged(byte, myOldRAM[i+j]);
+      result += invIfChanged(state.ram[i+j], oldstate.ram[i+j]);
       result += " ";
 
       if(j == 0x07) result += " ";
@@ -909,15 +894,9 @@ bool Debugger::patchROM(int addr, int value) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveState() {
-// FIXME - this will be removed when we get state saving working
-//         At that point, saving state will be accomplished by calling
-//         saveState() on each subsystem
-	for(int i=0; i<0x80; i++) {
-		myOldRAM[i] = readRAM(i);
-	}
-///////////////////
-	myRamDebug->saveOldState();
+void Debugger::saveState()
+{
+  myRamDebug->saveOldState();
 
 	oldA = getA();
 	oldX = getX();
