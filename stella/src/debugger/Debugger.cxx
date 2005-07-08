@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.55 2005-07-08 12:35:53 stephena Exp $
+// $Id: Debugger.cxx,v 1.56 2005-07-08 14:36:17 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -29,12 +29,13 @@
 #include "Console.hxx"
 #include "System.hxx"
 #include "M6502.hxx"
-#include "D6502.hxx"
 
-#include "Debugger.hxx"
 #include "EquateList.hxx"
+#include "CpuDebug.hxx"
 #include "RamDebug.hxx"
 #include "TIADebug.hxx"
+
+#include "Debugger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
@@ -42,7 +43,7 @@ Debugger::Debugger(OSystem* osystem)
     myConsole(NULL),
     mySystem(NULL),
     myParser(NULL),
-    myDebugger(NULL),
+    myCpuDebug(NULL),
     myRamDebug(NULL),
     myTIAdebug(NULL),
     equateList(NULL),
@@ -56,17 +57,17 @@ Debugger::Debugger(OSystem* osystem)
   breakPoints = new PackedBitArray(0x10000);
   readTraps = new PackedBitArray(0x10000);
   writeTraps = new PackedBitArray(0x10000);
-
-  oldA = oldX = oldY = oldS = oldP = oldPC = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
   delete myParser;
-  delete myDebugger;
+
+  delete myCpuDebug;
   delete myRamDebug;
   delete myTIAdebug;
+
   delete equateList;
   delete breakPoints;
   delete readTraps;
@@ -127,8 +128,11 @@ void Debugger::setConsole(Console* console)
   mySystem = &(myConsole->system());
 
   // Create debugger subsystems
+  delete myCpuDebug;
+  myCpuDebug = new CpuDebug(this, myConsole);
+
   delete myRamDebug;
-  myRamDebug = new RamDebug(myConsole);
+  myRamDebug = new RamDebug(this, myConsole);
 
   // Create a new TIA debugger for this console
   // This code is somewhat ugly, since we derive a TIA from the MediaSource
@@ -138,13 +142,9 @@ void Debugger::setConsole(Console* console)
   myTIAdebug = new TIADebug((TIA*)&myConsole->mediaSource());
   myTIAdebug->setDebugger(this);
 
-  // Create a new 6502 debugger for this console
-  delete myDebugger;
-  myDebugger = new D6502(mySystem);
-
   autoLoadSymbols(myOSystem->romFile());
 
-  saveState();
+  saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,26 +216,28 @@ const string Debugger::invIfChanged(int reg, int oldReg) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::state()
+const string Debugger::cpuState()
 {
   string result;
   char buf[255];
 
-  //cerr << "state(): pc is " << myDebugger->pc() << endl;
+  CpuState state    = (CpuState&) myCpuDebug->getState();
+  CpuState oldstate = (CpuState&) myCpuDebug->getOldState();
+
   result += "\nPC=";
-  result += invIfChanged(myDebugger->pc(), oldPC);
+  result += invIfChanged(state.PC, oldstate.PC);
   result += " A=";
-  result += invIfChanged(myDebugger->a(), oldA);
+  result += invIfChanged(state.A, oldstate.A);
   result += " X=";
-  result += invIfChanged(myDebugger->x(), oldX);
+  result += invIfChanged(state.X, oldstate.X);
   result += " Y=";
-  result += invIfChanged(myDebugger->y(), oldY);
+  result += invIfChanged(state.Y, oldstate.Y);
   result += " S=";
-  result += invIfChanged(myDebugger->sp(), oldS);
+  result += invIfChanged(state.SP, oldstate.SP);
   result += " P=";
-  result += invIfChanged(myDebugger->ps(), oldP);
+  result += invIfChanged(state.PS, oldstate.PS);
   result += "/";
-  formatFlags(myDebugger->ps(), buf);
+  formatFlags(state.PSbits, buf);
   result += buf;
   result += "\n  Cyc:";
   sprintf(buf, "%d", mySystem->cycles());
@@ -251,7 +253,7 @@ const string Debugger::state()
   result += buf;
   result += "\n  ";
 
-  result += disassemble(myDebugger->pc(), 1);
+  result += disassemble(state.PC, 1);
   return result;
 }
 
@@ -339,77 +341,52 @@ const string Debugger::riotState() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::reset() {
-	int pc = myDebugger->dPeek(0xfffc);
-	myDebugger->pc(pc);
+	int pc = myCpuDebug->dPeek(0xfffc);
+	myCpuDebug->setPC(pc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::formatFlags(int f, char *out) {
+void Debugger::formatFlags(BoolArray& b, char *out) {
 	// NV-BDIZC
 
-	if(f & 128)
+	if(b[7])
 		out[0] = 'N';
 	else
 		out[0] = 'n';
 
-	if(f & 64)
+	if(b[6])
 		out[1] = 'V';
 	else
 		out[1] = 'v';
 
 	out[2] = '-';
 
-	if(f & 16)
+	if(b[4])
 		out[3] = 'B';
 	else
 		out[3] = 'b';
 
-	if(f & 8)
+	if(b[3])
 		out[4] = 'D';
 	else
 		out[4] = 'd';
 
-	if(f & 4)
+	if(b[2])
 		out[5] = 'I';
 	else
 		out[5] = 'i';
 
-	if(f & 2)
+	if(b[1])
 		out[6] = 'Z';
 	else
 		out[6] = 'z';
 
-	if(f & 1)
+	if(b[0])
 		out[7] = 'C';
 	else
 		out[7] = 'c';
 
 	out[8] = '\0';
-}
-
-/* Danger: readRAM() and writeRAM() take an *offset* into RAM, *not* an
-   actual address. This means you don't get to use these to read/write
-   outside of the RIOT RAM. It also means that e.g. to read location 0x80,
-   you pass 0 (because 0x80 is the 0th byte of RAM).
-
-   However, setRAM() actually uses addresses, not offsets. This means that
-   setRAM() can poke anywhere in the address space. However, it still can't
-   change ROM: you use patchROM() for that. setRAM() *can* trigger a bank
-   switch, if you poke to the "hot spot" for the cartridge.
-*/
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Debugger::readRAM(uInt16 offset)
-{
-  offset &= 0x7f; // there are only 128 bytes
-  return mySystem->peek(offset + kRamStart);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::writeRAM(uInt16 offset, uInt8 value)
-{
-  offset &= 0x7f; // there are only 128 bytes
-  mySystem->poke(offset + kRamStart, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -521,7 +498,7 @@ void Debugger::quit()
     // execute one instruction on quit, IF we're
     // sitting at a breakpoint. This will get us past it.
     // Somehow this feels like a hack to me, but I don't know why
-    if(breakPoints->isSet(myDebugger->pc()))
+    if(breakPoints->isSet(myCpuDebug->pc()))
       mySystem->m6502().execute(1);
     myOSystem->eventHandler().leaveDebugMode();
   }
@@ -542,7 +519,7 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
-  saveState();
+  saveOldState();
 
   int cyc = mySystem->cycles();
   mySystem->m6502().execute(1);
@@ -567,12 +544,12 @@ int Debugger::step()
 int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
-  if(mySystem->peek(myDebugger->pc()) == 32) {
-    saveState();
+  if(mySystem->peek(myCpuDebug->pc()) == 32) {
+    saveOldState();
 
     int cyc = mySystem->cycles();
-    int targetPC = myDebugger->pc() + 3; // return address
-    while(myDebugger->pc() != targetPC)
+    int targetPC = myCpuDebug->pc() + 3; // return address
+    while(myCpuDebug->pc() != targetPC)
       mySystem->m6502().execute(1);
     myTIAdebug->updateTIA();
     myOSystem->frameBuffer().refreshTIA(true);
@@ -583,112 +560,6 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setA(int a) {
-  myDebugger->a(a);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setX(int x) {
-  myDebugger->x(x);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setY(int y) {
-  myDebugger->y(y);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setSP(int sp) {
-  myDebugger->sp(sp);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setPC(int pc) {
-  myDebugger->pc(pc);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // NV-BDIZC
-void Debugger::toggleC() {
-  myDebugger->ps( myDebugger->ps() ^ 0x01 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleZ() {
-  myDebugger->ps( myDebugger->ps() ^ 0x02 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleI() {
-  myDebugger->ps( myDebugger->ps() ^ 0x04 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleD() {
-  myDebugger->ps( myDebugger->ps() ^ 0x08 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleB() {
-  myDebugger->ps( myDebugger->ps() ^ 0x10 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleV() {
-  myDebugger->ps( myDebugger->ps() ^ 0x40 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleN() {
-  myDebugger->ps( myDebugger->ps() ^ 0x80 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // NV-BDIZC
-void Debugger::setC(bool value) {
-	myDebugger->ps( set_bit(myDebugger->ps(), 0, value) );
-  //	myDebugger->ps( myDebugger->ps() ^ 0x01 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setZ(bool value) {
-	myDebugger->ps( set_bit(myDebugger->ps(), 1, value) );
-  //	myDebugger->ps( myDebugger->ps() ^ 0x02 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setI(bool value) {
-	myDebugger->ps( set_bit(myDebugger->ps(), 2, value) );
-  //	myDebugger->ps( myDebugger->ps() ^ 0x04 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setD(bool value) {
-	myDebugger->ps( set_bit(myDebugger->ps(), 3, value) );
-  //	myDebugger->ps( myDebugger->ps() ^ 0x08 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setB(bool value) {
-	myDebugger->ps( set_bit(myDebugger->ps(), 4, value) );
-  //	myDebugger->ps( myDebugger->ps() ^ 0x10 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setV(bool value) {
-	myDebugger->ps( set_bit(myDebugger->ps(), 6, value) );
-  //	myDebugger->ps( myDebugger->ps() ^ 0x40 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setN(bool value) {
-	myDebugger->ps( set_bit(myDebugger->ps(), 7, value) );
-  //	myDebugger->ps( myDebugger->ps() ^ 0x80 );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EquateList *Debugger::equates() {
   return equateList;
 }
@@ -696,13 +567,13 @@ EquateList *Debugger::equates() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleBreakPoint(int bp) {
   mySystem->m6502().setBreakPoints(breakPoints);
-  if(bp < 0) bp = myDebugger->pc();
+  if(bp < 0) bp = myCpuDebug->pc();
   breakPoints->toggle(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::breakPoint(int bp) {
-  if(bp < 0) bp = myDebugger->pc();
+  if(bp < 0) bp = myCpuDebug->pc();
   return breakPoints->isSet(bp) != 0;
 }
 
@@ -735,36 +606,6 @@ bool Debugger::writeTrap(int t) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getPC() {
-  return myDebugger->pc();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getA() {
-  return myDebugger->a();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getX() {
-  return myDebugger->x();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getY() {
-  return myDebugger->y();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getSP() {
-  return myDebugger->sp();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getPS() {
-  return myDebugger->ps();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::cycles() {
   return mySystem->cycles();
 }
@@ -780,7 +621,7 @@ string Debugger::disassemble(int start, int lines) {
     result += label;
     result += ": ";
 
-    int count = myDebugger->disassemble(start, buf, equateList);
+    int count = myCpuDebug->disassemble(start, buf, equateList);
 
     for(int i=0; i<count; i++) {
       sprintf(bbuf, "%02x ", peek(start++));
@@ -800,7 +641,7 @@ string Debugger::disassemble(int start, int lines) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames) {
-  saveState();
+  saveOldState();
   myOSystem->frameBuffer().advance(frames);
 }
 
@@ -833,6 +674,8 @@ int Debugger::dpeek(int addr) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::setHeight(int height)
 {
+  // FIXME - this doesn't seem to work ...
+
   myOSystem->settings().getInt("debugheight");
 
   if(height == 0)
@@ -894,14 +737,8 @@ bool Debugger::patchROM(int addr, int value) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveState()
+void Debugger::saveOldState()
 {
+  myCpuDebug->saveOldState();
   myRamDebug->saveOldState();
-
-	oldA = getA();
-	oldX = getX();
-	oldY = getY();
-	oldS = getSP();
-	oldP = getPS();
-	oldPC = getPC();
 }

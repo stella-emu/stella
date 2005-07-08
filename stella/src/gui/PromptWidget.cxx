@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.25 2005-07-05 15:25:44 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.26 2005-07-08 14:36:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -158,7 +158,7 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
 
 void PromptWidget::printPrompt() {
 	print( instance()->debugger().showWatches() );
-	print( instance()->debugger().state() );
+	print( instance()->debugger().cpuState() );
 	print(PROMPT);
 	_promptStartPos = _promptEndPos = _currentPos;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamDebug.hxx,v 1.2 2005-07-07 18:56:41 stephena Exp $
+// $Id: RamDebug.hxx,v 1.3 2005-07-08 14:36:17 stephena Exp $
 //============================================================================
 
 #ifndef RAM_DEBUG_HXX
@@ -33,7 +33,7 @@ class RamState : public DebuggerState
 class RamDebug : public DebuggerSystem
 {
   public:
-    RamDebug(Console* console);
+    RamDebug(Debugger* dbg, Console* console);
 
     DebuggerState& getState();
     DebuggerState& getOldState() { return myOldState; }

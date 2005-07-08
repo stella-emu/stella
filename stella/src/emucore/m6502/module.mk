@@ -1,7 +1,6 @@
 MODULE := src/emucore/m6502
 
 MODULE_OBJS := \
-	src/emucore/m6502/src/D6502.o \
 	src/emucore/m6502/src/Device.o \
 	src/emucore/m6502/src/M6502.o \
 	src/emucore/m6502/src/M6502Hi.o \

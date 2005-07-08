@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamDebug.cxx,v 1.2 2005-07-07 18:56:41 stephena Exp $
+// $Id: RamDebug.cxx,v 1.3 2005-07-08 14:36:17 stephena Exp $
 //============================================================================
 
 #include "Array.hxx"
@@ -21,8 +21,8 @@
 #include "RamDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamDebug::RamDebug(Console* console)
-  : DebuggerSystem(console),
+RamDebug::RamDebug(Debugger* dbg, Console* console)
+  : DebuggerSystem(dbg, console),
     mySystem(&(console->system()))
 {
   saveOldState();

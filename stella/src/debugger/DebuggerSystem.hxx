@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerSystem.hxx,v 1.2 2005-07-07 18:56:41 stephena Exp $
+// $Id: DebuggerSystem.hxx,v 1.3 2005-07-08 14:36:17 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_SYSTEM_HXX
 #define DEBUGGER_SYSTEM_HXX
 
+#include "Debugger.hxx"
 #include "Console.hxx"
 
 /**
@@ -41,13 +42,16 @@ class DebuggerState
 class DebuggerSystem
 {
   public:
-    DebuggerSystem(Console* console) { }
+    DebuggerSystem(Debugger* dbg, Console* console) { myDebugger = dbg; }
     virtual ~DebuggerSystem() { }
 
     virtual DebuggerState& getState() = 0;
     virtual DebuggerState& getOldState() = 0;
 
     virtual void saveOldState() = 0;
+
+  protected:
+    Debugger* myDebugger;
 };
 
 #endif

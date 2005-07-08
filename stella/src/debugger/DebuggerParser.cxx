@@ -13,15 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.48 2005-07-07 15:18:57 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.49 2005-07-08 14:36:17 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
-#include "DebuggerParser.hxx"
-#include "D6502.hxx"
+#include "CpuDebug.hxx"
 #include "DebuggerParser.hxx"
 #include "YaccParser.hxx"
+
+#include "DebuggerParser.hxx"
 
 Command DebuggerParser::commands[] = {
 	{
@@ -488,12 +489,13 @@ int DebuggerParser::decipher_arg(const string &str) {
 	if(bin && dec) return -1;
 
 	// Special cases (registers):
-	if(arg == "a") result = debugger->getA();
-	else if(arg == "x") result = debugger->getX();
-	else if(arg == "y") result = debugger->getY();
-	else if(arg == "p") result = debugger->getPS();
-	else if(arg == "s") result = debugger->getSP();
-	else if(arg == "pc" || arg == ".") result = debugger->getPC();
+	CpuState& state = (CpuState&) debugger->cpuDebug().getState();
+	if(arg == "a") result = state.A;
+	else if(arg == "x") result = state.X;
+	else if(arg == "y") result = state.Y;
+	else if(arg == "p") result = state.PS;
+	else if(arg == "s") result = state.SP;
+	else if(arg == "pc" || arg == ".") result = state.PC;
 	else { // Not a special, must be a regular arg: check for label first
 		const char *a = arg.c_str();
 		result = debugger->equateList->getAddress(a);
@@ -654,7 +656,7 @@ string DebuggerParser::disasm() {
 	int start, lines = 20;
 
 	if(argCount == 0) {
-		start = debugger->getPC();
+		start = debugger->cpuDebug().pc();
 	} else if(argCount == 1) {
 		start = args[0];
 	} else if(argCount == 2) {
@@ -939,7 +941,7 @@ const char *DebuggerParser::getCompletionPrefix() {
 
 // "a"
 void DebuggerParser::executeA() {
-	debugger->setA(args[0]);
+	debugger->cpuDebug().setA(args[0]);
 }
 
 // "bank"
@@ -1001,7 +1003,7 @@ void DebuggerParser::executeBase() {
 void DebuggerParser::executeBreak() {
 	int bp;
 	if(argCount == 0)
-		bp = debugger->getPC();
+		bp = debugger->cpuDebug().pc();
 	else
 		bp = args[0];
 
@@ -1019,9 +1021,9 @@ void DebuggerParser::executeBreak() {
 // "c"
 void DebuggerParser::executeC() {
 	if(argCount == 0)
-		debugger->toggleC();
+		debugger->cpuDebug().toggleC();
 	else if(argCount == 1)
-		debugger->setC(args[0]);
+		debugger->cpuDebug().setC(args[0]);
 }
 
 // "clearbreaks"
@@ -1052,9 +1054,9 @@ void DebuggerParser::executeColortest() {
 // "d"
 void DebuggerParser::executeD() {
 	if(argCount == 0)
-		debugger->toggleD();
+		debugger->cpuDebug().toggleD();
 	else if(argCount == 1)
-		debugger->setD(args[0]);
+		debugger->cpuDebug().setD(args[0]);
 }
 
 // "define"
@@ -1137,14 +1139,14 @@ void DebuggerParser::executeLoadsym() {
 // "n"
 void DebuggerParser::executeN() {
 	if(argCount == 0)
-		debugger->toggleN();
+		debugger->cpuDebug().toggleN();
 	else if(argCount == 1)
-		debugger->setN(args[0]);
+		debugger->cpuDebug().setN(args[0]);
 }
 
 // "pc"
 void DebuggerParser::executePc() {
-	debugger->setPC(args[0]);
+	debugger->cpuDebug().setPC(args[0]);
 }
 
 // "print"
@@ -1195,14 +1197,14 @@ void DebuggerParser::executeRom() {
 
 // "run"
 void DebuggerParser::executeRun() {
-	debugger->saveState();
+	debugger->saveOldState();  // FIXME - why is this here?
 	debugger->quit();
 	commandResult = "exiting debugger";
 }
 
 // "s"
 void DebuggerParser::executeS() {
-	debugger->setSP(args[0]);
+	debugger->cpuDebug().setSP(args[0]);
 }
 
 // "saveses"
@@ -1282,9 +1284,9 @@ void DebuggerParser::executeUndef() {
 // "v"
 void DebuggerParser::executeV() {
 	if(argCount == 0)
-		debugger->toggleV();
+		debugger->cpuDebug().toggleV();
 	else if(argCount == 1)
-		debugger->setV(args[0]);
+		debugger->cpuDebug().setV(args[0]);
 }
 
 // "watch"
@@ -1295,19 +1297,19 @@ void DebuggerParser::executeWatch() {
 
 // "x"
 void DebuggerParser::executeX() {
-	debugger->setX(args[0]);
+	debugger->cpuDebug().setX(args[0]);
 }
 
 // "y"
 void DebuggerParser::executeY() {
-	debugger->setY(args[0]);
+	debugger->cpuDebug().setY(args[0]);
 }
 
 // "z"
 void DebuggerParser::executeZ() {
 	if(argCount == 0)
-		debugger->toggleZ();
+		debugger->cpuDebug().toggleZ();
 	else if(argCount == 1)
-		debugger->setZ(args[0]);
+		debugger->cpuDebug().setZ(args[0]);
 }
 

@@ -13,16 +13,18 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.cxx,v 1.1 2005-07-07 18:56:40 stephena Exp $
+// $Id: CpuDebug.cxx,v 1.2 2005-07-08 14:36:17 stephena Exp $
 //============================================================================
 
 #include "Array.hxx"
+#include "EquateList.hxx"
 #include "M6502.hxx"
+
 #include "CpuDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CpuDebug::CpuDebug(Console* console)
-  : DebuggerSystem(console),
+CpuDebug::CpuDebug(Debugger* dbg, Console* console)
+  : DebuggerSystem(dbg, console),
     mySystem(&(console->system()))
 {
   saveOldState();
@@ -71,6 +73,100 @@ void CpuDebug::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::disassemble(int address, char* buffer, EquateList* equateList)
+{
+  // equateList->dumpAll();
+  int opcode = mySystem->peek(address);
+
+  switch(M6502::ourAddressingModeTable[opcode])
+  {
+    case M6502::Absolute:
+      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 3;
+
+    case M6502::AbsoluteX:
+      sprintf(buffer, "%s %s,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 3;
+
+    case M6502::AbsoluteY:
+      sprintf(buffer, "%s %s,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 3;
+
+    case M6502::Immediate:
+      sprintf(buffer, "%s #$%02X ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          mySystem->peek(address + 1),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 2;
+
+    case M6502::Implied:
+      sprintf(buffer, "%s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+				M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 1;
+
+    case M6502::Indirect:
+      sprintf(buffer, "%s (%s) ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 3;
+
+    case M6502::IndirectX:
+      sprintf(buffer, "%s (%s,x) ; %d", 
+          M6502::ourInstructionMnemonicTable[opcode], 
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 2;
+
+    case M6502::IndirectY:
+      sprintf(buffer, "%s (%s),y ; %d", 
+          M6502::ourInstructionMnemonicTable[opcode], 
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 2;
+
+    case M6502::Relative:
+      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(address + 2 + ((Int16)(Int8)mySystem->peek(address + 1)), 4),
+			 M6502::ourInstructionProcessorCycleTable[opcode]); 
+      return 2;
+
+    case M6502::Zero:
+      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 2;
+
+    case M6502::ZeroX:
+      sprintf(buffer, "%s %s,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 2;
+
+    case M6502::ZeroY:
+      sprintf(buffer, "%s %s,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
+          equateList->getFormatted(mySystem->peek(address + 1), 2),
+			 M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 2;
+
+    default:
+      sprintf(buffer, "dc  $%02X ; %d", opcode,
+				M6502::ourInstructionProcessorCycleTable[opcode]);
+      return 1;
+  } 
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::dPeek(int address)
+{
+  return dpeek(mySystem, address);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPC(int pc)
 {
   mySystem->m6502().PC = pc;
@@ -80,6 +176,12 @@ void CpuDebug::setPC(int pc)
 void CpuDebug::setSP(int sp)
 {
   mySystem->m6502().SP = sp;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setPS(int ps)
+{
+  mySystem->m6502().PS(ps);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,4 +200,88 @@ void CpuDebug::setX(int x)
 void CpuDebug::setY(int y)
 {
   mySystem->m6502().Y = y;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setN(bool on)
+{
+  setPS( set_bit(mySystem->m6502().PS(), 7, on) );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setV(bool on)
+{
+  setPS( set_bit(mySystem->m6502().PS(), 6, on) );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setB(bool on)
+{
+  setPS( set_bit(mySystem->m6502().PS(), 4, on) );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setD(bool on)
+{
+  setPS( set_bit(mySystem->m6502().PS(), 3, on) );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setI(bool on)
+{
+  setPS( set_bit(mySystem->m6502().PS(), 2, on) );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setZ(bool on)
+{
+  setPS( set_bit(mySystem->m6502().PS(), 1, on) );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setC(bool on)
+{
+  setPS( set_bit(mySystem->m6502().PS(), 0, on) );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::toggleN()
+{
+  setPS( mySystem->m6502().PS() ^ 0x80 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::toggleV()
+{
+  setPS( mySystem->m6502().PS() ^ 0x40 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::toggleB()
+{
+  setPS( mySystem->m6502().PS() ^ 0x10 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::toggleD()
+{
+  setPS( mySystem->m6502().PS() ^ 0x08 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::toggleI()
+{
+  setPS( mySystem->m6502().PS() ^ 0x04 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::toggleZ()
+{
+  setPS( mySystem->m6502().PS() ^ 0x02 );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::toggleC()
+{
+  setPS( mySystem->m6502().PS() ^ 0x01 );
 }

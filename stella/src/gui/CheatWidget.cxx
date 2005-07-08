@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.11 2005-07-05 15:25:44 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.12 2005-07-08 14:36:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,7 +25,7 @@
 #include "FrameBuffer.hxx"
 #include "GuiUtils.hxx"
 #include "GuiObject.hxx"
-#include "Debugger.hxx"
+#include "RamDebug.hxx"
 #include "Widget.hxx"
 #include "EditNumWidget.hxx"
 #include "AddrValueWidget.hxx"
@@ -123,7 +123,7 @@ void CheatWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
     case kAVItemDataChangedCmd:
       int addr  = myResultsList->getSelectedAddr() - kRamStart;
       int value = myResultsList->getSelectedValue();
-      instance()->debugger().writeRAM(addr, value);
+      instance()->debugger().ramDebug().write(addr, value);
       break;
   }
 }
@@ -153,7 +153,7 @@ void CheatWidget::doSearch()
 
   // Now, search all memory locations for this value, and add it to the
   // search array
-  Debugger& dbg = instance()->debugger();
+  RamDebug& dbg = instance()->debugger().ramDebug();
   AddrValue av;
   int searchCount = 0;
   for(int addr = 0; addr < kRamSize; ++addr)
@@ -163,7 +163,7 @@ void CheatWidget::doSearch()
       av.addr  = addr;
       av.value = searchVal;
 
-      if(dbg.readRAM(av.addr) == av.value)
+      if(dbg.read(av.addr) == av.value)
       {
         mySearchArray.push_back(av);
         ++searchCount;
@@ -172,7 +172,7 @@ void CheatWidget::doSearch()
     else  // match all memory locations
     {
       av.addr  = addr;
-      av.value = dbg.readRAM(av.addr);
+      av.value = dbg.read(av.addr);
       mySearchArray.push_back(av);
       ++searchCount;
     }
@@ -236,7 +236,7 @@ void CheatWidget::doCompare()
   AddrValueList tempList;
 
   // Now, search all memory locations specified in mySearchArray for this value
-  Debugger& dbg = instance()->debugger();
+  RamDebug& dbg = instance()->debugger().ramDebug();
   AddrValue av;
   int searchCount = 0;
 
@@ -255,7 +255,7 @@ void CheatWidget::doCompare()
     else
       av.value = searchVal;
 
-    if(dbg.readRAM(av.addr) == av.value)
+    if(dbg.read(av.addr) == av.value)
     {
       tempList.push_back(av);
       ++searchCount;

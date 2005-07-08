@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.44 2005-07-08 12:36:06 stephena Exp $
+// $Id: Debugger.hxx,v 1.45 2005-07-08 14:36:17 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -23,10 +23,11 @@ class OSystem;
 
 class Console;
 class System;
-class D6502;
+class CpuDebug;
 class RamDebug;
 class TIADebug;
 
+#include "Array.hxx"
 #include "DialogContainer.hxx"
 #include "M6502.hxx"
 #include "DebuggerParser.hxx"
@@ -52,17 +53,15 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.44 2005-07-08 12:36:06 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.45 2005-07-08 14:36:17 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
   friend class DebuggerParser;
-  friend class RamDebug;
-  friend class TIADebug;
 
   public:
     /**
-      Create a new menu stack
+      Create a new debugger parent object
     */
     Debugger(OSystem* osystem);
 
@@ -87,13 +86,24 @@ class Debugger : public DialogContainer
     */
     void setConsole(Console* console);
 
-    /* Save state of each debugger subsystem */
-    void saveState();
+    /**
+      Save state of each debugger subsystem
+    */
+    void saveOldState();
 
-    /* The debugger subsystem responsible for all RAM state */
+    /**
+      The debugger subsystem responsible for all CPU state
+    */
+    CpuDebug& cpuDebug() { return *myCpuDebug; }
+
+    /**
+      The debugger subsystem responsible for all RAM state
+    */
     RamDebug& ramDebug() { return *myRamDebug; }
 
-    /* The debugger subsystem responsible for all TIA state */
+    /**
+      The debugger subsystem responsible for all TIA state
+    */
     TIADebug& tiaDebug() { return *myTIAdebug; }
 
     /** Convenience methods to convert to hexidecimal values */
@@ -137,14 +147,6 @@ class Debugger : public DialogContainer
       return to_bin(dec, 16, buf);
     }
 
-	 static unsigned char set_bit(unsigned char input, int bit, bool value) {
-		 if(value)
-			 return input | (1 << bit);
-		 else
-			 return input & (~(1 << bit));
-	 }
-
-
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
     const string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
@@ -158,7 +160,6 @@ class Debugger : public DialogContainer
     bool readTrap(int t);
     bool writeTrap(int t);
     void clearAllTraps();
-
 
     string disassemble(int start, int lines);
     bool setHeight(int height);
@@ -175,7 +176,7 @@ class Debugger : public DialogContainer
       Give the contents of the CPU registers and disassembly of
       next instruction.
     */
-    const string state();
+    const string cpuState();
 
     /**
       Get contents of RIOT switch & timer registers
@@ -189,10 +190,6 @@ class Debugger : public DialogContainer
     const string dumpRAM();
     const string dumpTIA();
 
-    // Read and write 128-byte RAM area
-    uInt8 readRAM(uInt16 addr);
-    void writeRAM(uInt16 addr, uInt8 value);
-
     // set a bunch of RAM locations at once
     const string setRAM(IntArray& args);
 
@@ -200,42 +197,17 @@ class Debugger : public DialogContainer
     void quit();
     int trace();
     int step();
-    void setA(int a);
-    void setX(int x);
-    void setY(int y);
-    void setSP(int sp);
-    void setPC(int pc);
-    int getPC();
-    int getA();
-    int getX();
-    int getY();
-    int getPS();
-    int getSP();
+
     int cycles();
     int peek(int addr);
     int dpeek(int addr);
 
-	 // CPU flags: NV-BDIZC
-    void toggleN();
-    void toggleV();
-    void toggleB();
-    void toggleD();
-    void toggleI();
-    void toggleZ();
-    void toggleC();
-    void setN(bool value);
-    void setV(bool value);
-    void setB(bool value);
-    void setD(bool value);
-    void setI(bool value);
-    void setZ(bool value);
-    void setC(bool value);
     void reset();
     void autoLoadSymbols(string file);
     void nextFrame(int frames);
     void clearAllBreakPoints();
 
-    void formatFlags(int f, char *out);
+    void formatFlags(BoolArray& b, char *out);
     EquateList *equates();
     PromptWidget *prompt() { return myPrompt; }
     string showWatches();
@@ -262,22 +234,15 @@ class Debugger : public DialogContainer
     System* mySystem;
 
     DebuggerParser* myParser;
-    D6502* myDebugger;
-    RamDebug *myRamDebug;
-    TIADebug *myTIAdebug;
+    CpuDebug* myCpuDebug;
+    RamDebug* myRamDebug;
+    TIADebug* myTIAdebug;
 
     EquateList *equateList;
     PackedBitArray *breakPoints;
     PackedBitArray *readTraps;
     PackedBitArray *writeTraps;
     PromptWidget *myPrompt;
-
-    int oldA;
-    int oldX;
-    int oldY;
-    int oldS;
-    int oldP;
-    int oldPC;
 };
 
 #endif

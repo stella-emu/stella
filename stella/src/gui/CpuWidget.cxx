@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.13 2005-07-07 15:19:01 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.14 2005-07-08 14:36:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 #include "GuiUtils.hxx"
 #include "GuiObject.hxx"
 #include "Debugger.hxx"
+#include "CpuDebug.hxx"
 #include "Widget.hxx"
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
@@ -140,7 +141,7 @@ CpuWidget::~CpuWidget()
 void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   int addr, value;
-  Debugger& dbg = instance()->debugger();
+  CpuDebug& dbg = instance()->debugger().cpuDebug();
 
   switch(cmd)
   {
@@ -226,6 +227,10 @@ void CpuWidget::fillGrid()
   IntArray vlist;
   BoolArray changed;
 
+  CpuDebug& cpu = instance()->debugger().cpuDebug();
+  CpuState state    = (CpuState&) cpu.getState();
+  CpuState oldstate = (CpuState&) cpu.getOldState();
+
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
   alist.push_back(kPCRegAddr);
@@ -235,33 +240,30 @@ void CpuWidget::fillGrid()
   alist.push_back(kYRegAddr);
 
   // And now fill the values
-  Debugger& dbg = instance()->debugger();
-  vlist.push_back(dbg.getPC());
-  vlist.push_back(dbg.getSP());
-  vlist.push_back(dbg.getA());
-  vlist.push_back(dbg.getX());
-  vlist.push_back(dbg.getY());
+  vlist.push_back(state.PC);
+  vlist.push_back(state.SP);
+  vlist.push_back(state.A);
+  vlist.push_back(state.X);
+  vlist.push_back(state.Y);
 
-  for(int i = 0; i < 6; ++i)  // FIXME - track changes in registers
-    changed.push_back(false);
+  // Figure out which items have changed
+  changed.push_back(state.PC != oldstate.PC);
+  changed.push_back(state.SP != oldstate.SP);
+  changed.push_back(state.A  != oldstate.A);
+  changed.push_back(state.X  != oldstate.X);
+  changed.push_back(state.Y  != oldstate.Y);
+
+  // Finally, update the register list
   myCpuGrid->setList(alist, vlist, changed);
 
   // Update the PS register booleans
-  BoolArray b;
-  int ps = dbg.getPS();
-  for(int i = 0; i < 8; ++i)
-  {
-    if(ps & (1<<(7-i)))
-      b.push_back(true);
-    else
-      b.push_back(false);
-  }
-  myPSRegister->setState(b);
+  myPSRegister->setState(state.PSbits);
 
   // Update the other status fields
-  int pc = dbg.getPC();
+  int pc = state.PC;
   const char* buf;
 
+  Debugger& dbg = instance()->debugger();
   buf = dbg.equates()->getLabel(pc);
   if(buf)
     myPCLabel->setEditString(buf);
