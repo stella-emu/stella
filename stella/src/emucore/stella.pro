@@ -1,3 +1,8 @@
+"Cartridge.MD5" "fc9c1652fe3a2cade6188f4d3692481f"
+"Cartridge.Name" "Andrew Davies early notBoulderDash demo (NTSC)"
+"Cartridge.Type" "3E"
+""
+
 "Cartridge.MD5" "0685bd0bcb975ceef7041749a5454a48"
 "Cartridge.Name" "11 Sprite Demo (Piero Cavina) (PD)"
 "Cartridge.Manufacturer" "Piero Cavina"
