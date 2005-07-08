@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	src/emucore/Booster.o \
 	src/emucore/Cart2K.o \
 	src/emucore/Cart3F.o \
+	src/emucore/Cart3E.o \
 	src/emucore/Cart4K.o \
 	src/emucore/CartAR.o \
 	src/emucore/CartCV.o \
