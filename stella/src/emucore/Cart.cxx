@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.13 2005-07-08 11:50:32 stephena Exp $
+// $Id: Cart.cxx,v 1.14 2005-07-09 15:19:24 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -238,22 +238,40 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     }
   }
 
+  /* The above logic was written long before 3E support existed. It will
+     detect a 3E cart as 3F. Let's remedy that situation: */
+
+  if(type == "3F" && isProbably3E(image, size))
+    type = "3E";
+
   return type;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
+int Cartridge::searchForBytes(const uInt8* image, uInt32 size, uInt8 byte1, uInt8 byte2)
 {
   uInt32 count = 0;
   for(uInt32 i = 0; i < size - 1; ++i)
   {
-    if((image[i] == 0x85) && (image[i + 1] == 0x3F))
+    if((image[i] == byte1) && (image[i + 1] == byte2))
     {
       ++count;
     }
   }
 
-  return (count > 2);
+  return count;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
+{
+  return (searchForBytes(image, size, 0x85, 0x3F) > 2);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
+{
+  return (searchForBytes(image, size, 0x85, 0x3E) > 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

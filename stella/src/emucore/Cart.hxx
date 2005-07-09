@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
+// $Id: Cart.hxx,v 1.7 2005-07-09 15:19:24 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -31,7 +31,7 @@ class System;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
+  @version $Id: Cart.hxx,v 1.7 2005-07-09 15:19:24 urchlay Exp $
 */
 class Cartridge : public Device
 {
@@ -75,9 +75,19 @@ class Cartridge : public Device
     static string autodetectType(const uInt8* image, uInt32 size);
 
     /**
-      Returns true iff the image is probably a 3F bankswitching cartridge
+      Returns true if the image is probably a 3F bankswitching cartridge
     */
     static bool isProbably3F(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a 3E bankswitching cartridge
+    */
+    static bool isProbably3E(const uInt8* image, uInt32 size);
+
+    /**
+      Utility method used by isProbably3F and isProbably3E
+    */
+    static int searchForBytes(const uInt8* image, uInt32 size, uInt8 byte1, uInt8 byte2);
 
   private:
     // Copy constructor isn't supported by cartridges so make it private
