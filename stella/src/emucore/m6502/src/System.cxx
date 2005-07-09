@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.11 2005-07-09 00:59:13 urchlay Exp $
+// $Id: System.cxx,v 1.12 2005-07-09 12:52:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -21,7 +21,7 @@
 
 #include "Device.hxx"
 #include "M6502.hxx"
-#include "TIA.hxx" // FIXME: this is a hack
+#include "TIA.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
@@ -34,6 +34,7 @@ System::System(uInt16 n, uInt16 m)
       myNumberOfPages(1 << (n - m)),
       myNumberOfDevices(0),
       myM6502(0),
+      myTIA(0),
       myCycles(0),
       myDataBusState(0)
 {
@@ -119,6 +120,13 @@ void System::attach(M6502* m6502)
 
   // Ask the processor to install itself
   myM6502->install(*this);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::attach(TIA* tia)
+{
+  myTIA = tia;
+  attach((Device*) tia);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -349,24 +357,4 @@ void System::poke(uInt16 addr, uInt8 value)
   }
 
   myDataBusState = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// FIXME: dirty hack! This only exists for Cart3E and Cart3F to use, and
-// then only until I come up a cleaner way to implement it. Call this method
-// at your own peril!
-
-// Note that in some compilers (VC++?) you need to enable RTTI to make the
-// dynamic_cast work. In g++, RTTI seems to be on by default. Do not
-// compile Stella with -fno-rtti!
-
-// Sorry about the mess.   -- B.
-void System::tiaPoke(uInt16 addr, uInt8 value)
-{
-  TIA *t;
-  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-  {
-    if( (t = dynamic_cast<TIA*>(myDevices[i])) )
-      t->poke(addr, value);
-  }
 }

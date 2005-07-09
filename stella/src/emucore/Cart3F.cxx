@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.8 2005-07-09 00:59:12 urchlay Exp $
+// $Id: Cart3F.cxx,v 1.9 2005-07-09 12:52:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "Cart3F.hxx"
 #include "System.hxx"
+#include "TIA.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
 #include <iostream>
@@ -118,9 +119,7 @@ void Cartridge3F::poke(uInt16 address, uInt8 value)
     bank(value);
   }
 
-  // pass pokes through to the TIA. This uses a DIRTY HACK which will
-  // (probably) go away in the future. See System.cxx for details.
-  mySystem->tiaPoke(address, value);
+  mySystem->tia().poke(address, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

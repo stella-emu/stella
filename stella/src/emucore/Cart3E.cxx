@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.4 2005-07-09 00:59:12 urchlay Exp $
+// $Id: Cart3E.cxx,v 1.5 2005-07-09 12:52:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "Cart3E.hxx"
 #include "Random.hxx"
 #include "System.hxx"
+#include "TIA.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
 #include <iostream>
@@ -133,12 +134,11 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
     bank(value + 256);
   }
 
-  // Dirty hack alert!
   // Pass the poke through to the TIA. In a real Atari, both the cart and the
   // TIA see the address lines, and both react accordingly. In Stella, each
   // 64-byte chunk of address space is "owned" by only one device. If we
   // don't chain the poke to the TIA, then the TIA can't see it...
-  mySystem->tiaPoke(address, value);
+  mySystem->tia().poke(address, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
