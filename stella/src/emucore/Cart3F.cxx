@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.7 2005-06-27 23:40:35 urchlay Exp $
+// $Id: Cart3F.cxx,v 1.8 2005-07-09 00:59:12 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -67,8 +67,9 @@ void Cartridge3F::install(System& system)
   assert((0x1800 & mask) == 0);
 
   // Set the page accessing methods for the hot spots (for 100% emulation
-  // I would need to chain any accesses below 0x40 to the TIA but for
-  // now I'll just forget about them)
+  // we need to chain any accesses below 0x40 to the TIA. Our poke() method
+  // does this via mySystem->tiaPoke(...), at least until we come up with a
+  // cleaner way to do it.)
   System::PageAccess access;
   for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
   {
@@ -116,6 +117,10 @@ void Cartridge3F::poke(uInt16 address, uInt8 value)
   {
     bank(value);
   }
+
+  // pass pokes through to the TIA. This uses a DIRTY HACK which will
+  // (probably) go away in the future. See System.cxx for details.
+  mySystem->tiaPoke(address, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

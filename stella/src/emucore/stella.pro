@@ -3,6 +3,20 @@
 "Cartridge.Type" "3E"
 ""
 
+"Cartridge.MD5" "9b150a42fc788960fbb4cbe250259ee2"
+"Cartridge.Name" "3E Bankswitch Test (TIA @ $40)"
+"Cartridge.Manufacturer" "Kroko"
+"Cartridge.Type" "3E"
+"Display.Format" "PAL"
+""
+
+"Cartridge.MD5" "792b1d93eb1d8045260c840b0688ec8f"
+"Cartridge.Name" "3E Bankswitch Test (TIA @ $00)"
+"Cartridge.Manufacturer" "Kroko"
+"Cartridge.Type" "3E"
+"Display.Format" "PAL"
+""
+
 "Cartridge.MD5" "0685bd0bcb975ceef7041749a5454a48"
 "Cartridge.Name" "11 Sprite Demo (Piero Cavina) (PD)"
 "Cartridge.Manufacturer" "Piero Cavina"

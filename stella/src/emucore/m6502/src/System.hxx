@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.7 2005-06-21 05:00:46 urchlay Exp $
+// $Id: System.hxx,v 1.8 2005-07-09 00:59:13 urchlay Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -47,7 +47,7 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.7 2005-06-21 05:00:46 urchlay Exp $
+  @version $Id: System.hxx,v 1.8 2005-07-09 00:59:13 urchlay Exp $
 */
 class System
 {
@@ -241,6 +241,18 @@ class System
       @param value The value to be stored at the address
     */
     void poke(uInt16 address, uInt8 value);
+
+    /**
+      Force a poke to the TIA, bypassing the normal device selection.
+      This is used by the 3E and 3F bankswitch schemes, which attach
+      themselves to the address space at $00-$3F and need a way to
+      pass a poke there through to the TIA.
+
+      I don't know what the correct way to do this is, but I'm pretty
+      certain this ain't it. As soon as I do know, this method goes away.
+                                                            -- B.
+    */
+    void System::tiaPoke(uInt16 addr, uInt8 value);
 
   public:
     /**

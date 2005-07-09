@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.3 2005-07-08 12:16:01 urchlay Exp $
+// $Id: Cart3E.cxx,v 1.4 2005-07-09 00:59:12 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -122,7 +122,8 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
 {
   address = address & 0x0FFF;
 
-  // Switch banks if necessary
+  // Switch banks if necessary. Armin (Kroko) says there are no mirrored
+  // hotspots.
   if(address == 0x003F)
   {
     bank(value);
@@ -132,8 +133,12 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
     bank(value + 256);
   }
 
-  // TODO: Ask Kroko whether addresses 0-0x3d do anything (on 3F, they
-  // cause a bankswitch)
+  // Dirty hack alert!
+  // Pass the poke through to the TIA. In a real Atari, both the cart and the
+  // TIA see the address lines, and both react accordingly. In Stella, each
+  // 64-byte chunk of address space is "owned" by only one device. If we
+  // don't chain the poke to the TIA, then the TIA can't see it...
+  mySystem->tiaPoke(address, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
