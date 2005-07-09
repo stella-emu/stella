@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.9 2005-07-08 17:22:40 stephena Exp $
+// $Id: TIADebug.cxx,v 1.10 2005-07-09 23:44:07 urchlay Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -42,7 +42,7 @@ DebuggerState& TIADebug::getState()
 {
   myState.ram.clear();
   for(int i = 0; i < 0x010; ++i)
-    myState.ram.push_back(mySystem->peek(i));
+    myState.ram.push_back(myTIA->peek(i));
 
   return myState;
 }
@@ -52,7 +52,7 @@ void TIADebug::saveOldState()
 {
   myOldState.ram.clear();
   for(int i = 0; i < 0x010; ++i)
-    myOldState.ram.push_back(mySystem->peek(i));
+    myOldState.ram.push_back(myTIA->peek(i));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

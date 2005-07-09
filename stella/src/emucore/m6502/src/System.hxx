@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.9 2005-07-09 12:52:46 stephena Exp $
+// $Id: System.hxx,v 1.10 2005-07-09 23:44:08 urchlay Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -48,7 +48,7 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.9 2005-07-09 12:52:46 stephena Exp $
+  @version $Id: System.hxx,v 1.10 2005-07-09 23:44:08 urchlay Exp $
 */
 class System
 {
@@ -261,6 +261,18 @@ class System
     */
     void poke(uInt16 address, uInt8 value);
 
+    /**
+      Lock/unlock the data bus. When the bus is locked, peek() and
+      poke() don't update the bus state. The bus should be unlocked
+      while the CPU is running (normal emulation, or when the debugger
+      is stepping/advancing). It should be locked while the debugger
+      is active but not running the CPU. This is so the debugger can
+      use System.peek() to examine memory/registers without changing
+      the state of the system.
+    */
+    void lockDataBus();
+    void unlockDataBus();
+
   public:
     /**
       Structure used to specify access methods for a page
@@ -342,6 +354,11 @@ class System
 
     // The current state of the Data Bus
     uInt8 myDataBusState;
+
+    // Whether or not peek() updates the data bus state. This
+    // is true during normal emulation, and false when the
+    // debugger is active.
+    bool myDataBusLocked;
 
     // The serializer for the system.  Used to save state.
     Serializer* serializer;

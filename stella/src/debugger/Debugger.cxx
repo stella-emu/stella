@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.57 2005-07-08 17:22:40 stephena Exp $
+// $Id: Debugger.cxx,v 1.58 2005-07-09 23:44:07 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -215,6 +215,9 @@ const string Debugger::cpuState()
 {
   string result;
   char buf[255];
+
+  // Lock the bus before every prompt, so we don't disturb anything:
+  mySystem->lockDataBus();
 
   CpuState state    = (CpuState&) myCpuDebug->getState();
   CpuState oldstate = (CpuState&) myCpuDebug->getOldState();
@@ -489,12 +492,17 @@ bool Debugger::start()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::quit()
 {
+
   if(myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER) {
+    mySystem->unlockDataBus();
+
     // execute one instruction on quit, IF we're
     // sitting at a breakpoint. This will get us past it.
     // Somehow this feels like a hack to me, but I don't know why
+    // FIXME: do this for traps, too
     if(breakPoints->isSet(myCpuDebug->pc()))
       mySystem->m6502().execute(1);
+
     myOSystem->eventHandler().leaveDebugMode();
   }
 }
@@ -517,7 +525,9 @@ int Debugger::step()
   saveOldState();
 
   int cyc = mySystem->cycles();
+  mySystem->unlockDataBus();
   mySystem->m6502().execute(1);
+  mySystem->lockDataBus();
 
   // FIXME - this doesn't work yet, pending a partial rewrite of TIA class
   myTiaDebug->updateTIA();
@@ -542,14 +552,20 @@ int Debugger::step()
 
 int Debugger::trace()
 {
+
   // 32 is the 6502 JSR instruction:
   if(mySystem->peek(myCpuDebug->pc()) == 32) {
     saveOldState();
 
     int cyc = mySystem->cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
+
+    mySystem->unlockDataBus();
+
     while(myCpuDebug->pc() != targetPC)
       mySystem->m6502().execute(1);
+
+    mySystem->lockDataBus();
 
     // FIXME - this doesn't work yet, pending a partial rewrite of TIA class
     myTiaDebug->updateTIA();
@@ -645,7 +661,9 @@ string Debugger::disassemble(int start, int lines) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames) {
   saveOldState();
+  mySystem->unlockDataBus();
   myOSystem->frameBuffer().advance(frames);
+  mySystem->lockDataBus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

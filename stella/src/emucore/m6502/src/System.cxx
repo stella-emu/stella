@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.12 2005-07-09 12:52:46 stephena Exp $
+// $Id: System.cxx,v 1.13 2005-07-09 23:44:08 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -57,6 +57,9 @@ System::System(uInt16 n, uInt16 m)
   // Set up (de)serializer in case we are asked to save/load state
   serializer = new Serializer();
   deserializer = new Deserializer();
+
+  // Bus starts out unlocked (in other words, peek() changes myDataBusState)
+  myDataBusLocked = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -336,7 +339,8 @@ uInt8 System::peek(uInt16 addr)
     result = access.device->peek(addr);
   }
 
-  myDataBusState = result;
+  if(!myDataBusLocked)
+    myDataBusState = result;
 
   return result;
 }
@@ -356,5 +360,17 @@ void System::poke(uInt16 addr, uInt8 value)
     access.device->poke(addr, value);
   }
 
-  myDataBusState = value;
+  if(!myDataBusLocked)
+    myDataBusState = value;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::lockDataBus() {
+  myDataBusLocked = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::unlockDataBus() {
+  myDataBusLocked = false;
+}
+
