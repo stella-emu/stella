@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.58 2005-07-09 23:44:07 urchlay Exp $
+// $Id: Debugger.cxx,v 1.59 2005-07-10 02:15:55 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -143,6 +143,18 @@ void Debugger::setConsole(Console* console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::start()
+{
+  return myOSystem->eventHandler().enterDebugMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::quit()
+{
+  myOSystem->eventHandler().leaveDebugMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::autoLoadSymbols(string fileName) {
 	string file = fileName;
 
@@ -215,9 +227,6 @@ const string Debugger::cpuState()
 {
   string result;
   char buf[255];
-
-  // Lock the bus before every prompt, so we don't disturb anything:
-  mySystem->lockDataBus();
 
   CpuState state    = (CpuState&) myCpuDebug->getState();
   CpuState oldstate = (CpuState&) myCpuDebug->getOldState();
@@ -476,38 +485,6 @@ const string Debugger::dumpTIA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Start the debugger if we aren't already in it.
-// Returns false if we were already in the debugger.
-bool Debugger::start()
-{
-  if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER) {
-    myOSystem->eventHandler().enterDebugMode();
-    myPrompt->printPrompt();
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::quit()
-{
-
-  if(myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER) {
-    mySystem->unlockDataBus();
-
-    // execute one instruction on quit, IF we're
-    // sitting at a breakpoint. This will get us past it.
-    // Somehow this feels like a hack to me, but I don't know why
-    // FIXME: do this for traps, too
-    if(breakPoints->isSet(myCpuDebug->pc()))
-      mySystem->m6502().execute(1);
-
-    myOSystem->eventHandler().leaveDebugMode();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveState(int state)
 {
   myOSystem->eventHandler().saveState(state);
@@ -763,4 +740,29 @@ void Debugger::saveOldState()
   myCpuDebug->saveOldState();
   myRamDebug->saveOldState();
   myTiaDebug->saveOldState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setStartState()
+{
+  // Lock the bus each time the debugger is entered, so we don't disturb anything
+  mySystem->lockDataBus();
+
+// FIXME - do we want this to print each time?
+//         I think it was needed before because of some bugs I've fixed
+//  myPrompt->printPrompt();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setQuitState()
+{
+  // Bus must be unlocked for normal operation when leaving debugger mode
+  mySystem->unlockDataBus();
+
+  // execute one instruction on quit, IF we're
+  // sitting at a breakpoint. This will get us past it.
+  // Somehow this feels like a hack to me, but I don't know why
+  // FIXME: do this for traps, too
+  if(breakPoints->isSet(myCpuDebug->pc()))
+    mySystem->m6502().execute(1);
 }

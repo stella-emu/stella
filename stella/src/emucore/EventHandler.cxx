@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.79 2005-06-30 00:07:59 stephena Exp $
+// $Id: EventHandler.cxx,v 1.80 2005-07-10 02:15:58 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1333,11 +1333,10 @@ void EventHandler::leaveMenuMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::enterDebugMode()
+bool EventHandler::enterDebugMode()
 {
-  // paranoia: this should never happen:
   if(myState == S_DEBUGGER)
-    return;
+    return false;
 
   myState = S_DEBUGGER;
   myOSystem->createFrameBuffer();
@@ -1348,11 +1347,23 @@ void EventHandler::enterDebugMode()
 
   if(!myPauseFlag)  // Pause when entering debugger mode
     handleEvent(Event::Pause, 1);
+
+  // Make sure debugger starts in a consistent state
+  myOSystem->debugger().setStartState();
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveDebugMode()
 {
+  // paranoia: this should never happen:
+  if(myState != S_DEBUGGER)
+    return;
+
+  // Make sure debugger quits in a consistent state
+  myOSystem->debugger().setQuitState();
+
   myState = S_EMULATE;
   myOSystem->createFrameBuffer();
   myOSystem->frameBuffer().refreshTIA();

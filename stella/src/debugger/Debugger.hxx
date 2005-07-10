@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.46 2005-07-08 17:22:40 stephena Exp $
+// $Id: Debugger.hxx,v 1.47 2005-07-10 02:15:57 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
 #define DEBUGGER_HXX
 
 class OSystem;
-
 class Console;
 class System;
 class CpuDebug;
@@ -53,11 +52,12 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.46 2005-07-08 17:22:40 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.47 2005-07-10 02:15:57 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
   friend class DebuggerParser;
+  friend class EventHandler;
 
   public:
     /**
@@ -87,24 +87,83 @@ class Debugger : public DialogContainer
     void setConsole(Console* console);
 
     /**
-      Save state of each debugger subsystem
+      Wrapper method for EventHandler::enterDebugMode() for those classes
+      that don't have access to EventHandler.
     */
-    void saveOldState();
+    bool start();
+
+    /**
+      Wrapper method for EventHandler::leaveDebugMode() for those classes
+      that don't have access to EventHandler.
+    */
+    void quit();
 
     /**
       The debugger subsystem responsible for all CPU state
     */
-    CpuDebug& cpuDebug() { return *myCpuDebug; }
+    CpuDebug& cpuDebug() const { return *myCpuDebug; }
 
     /**
       The debugger subsystem responsible for all RAM state
     */
-    RamDebug& ramDebug() { return *myRamDebug; }
+    RamDebug& ramDebug() const { return *myRamDebug; }
 
     /**
       The debugger subsystem responsible for all TIA state
     */
-    TIADebug& tiaDebug() { return *myTiaDebug; }
+    TIADebug& tiaDebug() const { return *myTiaDebug; }
+
+    /**
+      List of English-like aliases for 6502 opcodes and operands.
+    */
+    EquateList *equates();
+
+    DebuggerParser *parser() { return myParser; }
+
+    PackedBitArray *breakpoints() { return breakPoints; }
+    PackedBitArray *readtraps() { return readTraps; }
+    PackedBitArray *writetraps() { return writeTraps; }
+
+    /**
+      Run the debugger command and return the result.
+    */
+    const string run(const string& command);
+
+    /**
+      Give the contents of the CPU registers and disassembly of
+      next instruction.
+    */
+    const string cpuState();
+
+    /**
+      Get contents of RIOT switch & timer registers
+    */
+    const string riotState();
+
+    /**
+      The current cycle count of the System.
+    */
+    int cycles();
+
+    /**
+      Disassemble from the starting address the specified number of lines
+      and place result in a string.
+    */
+    string disassemble(int start, int lines);
+
+    int step();
+    int trace();
+    void nextFrame(int frames);
+
+    string showWatches();
+
+    /**
+      Convert between string->integer and integer->string, taking into
+      account the current base format.
+    */
+    int stringToValue(const string& stringval)
+        { return myParser->decipher_arg(stringval); }
+    const string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
 
     /** Convenience methods to convert to hexidecimal values */
     static char *to_hex_4(int i)
@@ -147,9 +206,21 @@ class Debugger : public DialogContainer
       return to_bin(dec, 16, buf);
     }
 
-    int stringToValue(const string& stringval)
-        { return myParser->decipher_arg(stringval); }
-    const string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
+  private:
+    /**
+      Save state of each debugger subsystem
+    */
+    void saveOldState();
+
+    /**
+      Set initial state before entering the debugger.
+    */
+    void setStartState();
+
+    /**
+      Set final state before leaving the debugger.
+    */
+    void setQuitState();
 
     void toggleBreakPoint(int bp);
 
@@ -161,27 +232,9 @@ class Debugger : public DialogContainer
     bool writeTrap(int t);
     void clearAllTraps();
 
-    string disassemble(int start, int lines);
     bool setHeight(int height);
 
     void reloadROM();
-
-  public:
-    /**
-      Run the debugger command and return the result.
-    */
-    const string run(const string& command);
-
-    /**
-      Give the contents of the CPU registers and disassembly of
-      next instruction.
-    */
-    const string cpuState();
-
-    /**
-      Get contents of RIOT switch & timer registers
-    */
-    const string riotState();
 
     /**
       Return a formatted string containing the contents of the specified
@@ -193,31 +246,16 @@ class Debugger : public DialogContainer
     // set a bunch of RAM locations at once
     const string setRAM(IntArray& args);
 
-    bool start();
-    void quit();
-    int trace();
-    int step();
-
-    int cycles();
     int peek(int addr);
     int dpeek(int addr);
 
     void reset();
     void autoLoadSymbols(string file);
-    void nextFrame(int frames);
     void clearAllBreakPoints();
 
     void formatFlags(BoolArray& b, char *out);
-    EquateList *equates();
     PromptWidget *prompt() { return myPrompt; }
-    string showWatches();
-	 void addLabel(string label, int address);
-
-    PackedBitArray *breakpoints() { return breakPoints; }
-    PackedBitArray *readtraps() { return readTraps; }
-    PackedBitArray *writetraps() { return writeTraps; }
-
-    DebuggerParser *parser() { return myParser; }
+    void addLabel(string label, int address);
 
     bool setBank(int bank);
     int bankCount();
@@ -227,9 +265,9 @@ class Debugger : public DialogContainer
     void saveState(int state);
     void loadState(int state);
 
-  protected:
     const string invIfChanged(int reg, int oldReg);
 
+  protected:
     Console* myConsole;
     System* mySystem;
 

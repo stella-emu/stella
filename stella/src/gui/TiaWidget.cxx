@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.7 2005-07-08 21:25:33 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.8 2005-07-10 02:16:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -281,7 +281,7 @@ void TiaWidget::changeRam()
   ram.push_back(addr);
   ram.push_back(value);
 
-  instance()->debugger().setRAM(ram);
+//  instance()->debugger().setRAM(ram);
   myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
   myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
 }
