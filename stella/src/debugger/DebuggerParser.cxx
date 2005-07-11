@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.49 2005-07-08 14:36:17 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.50 2005-07-11 18:56:26 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -265,6 +265,14 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeRun
+	},
+
+	{
+		"runto",
+		"Run until first occurrence of string in disassembly",
+		false,
+		{ kARG_LABEL, kARG_END_ARGS },
+		&DebuggerParser::executeRunTo
 	},
 
 	{
@@ -1200,6 +1208,24 @@ void DebuggerParser::executeRun() {
 	debugger->saveOldState();  // FIXME - why is this here?
 	debugger->quit();
 	commandResult = "exiting debugger";
+}
+
+// "runto"
+void DebuggerParser::executeRunTo() {
+	bool done = false;
+	int cycles = 0, count = 0;
+
+	do {
+		cycles += debugger->step();
+		if(++count % 100 == 0)
+			debugger->prompt()->putchar('.');
+		string next = debugger->disassemble(debugger->cpuDebug().pc(), 1);
+		done = (next.find(argStrings[0]) != string::npos);
+	} while(!done);
+
+	commandResult = "executed ";
+	commandResult += debugger->valueToString(cycles);
+	commandResult += " cycles";
 }
 
 // "s"
