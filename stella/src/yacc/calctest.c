@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 
 #ifndef BM
 	YaccParser::parse(argv[1]);
-	printf("= %d\n", YaccParser::getResult());
+	printf("\n= %d\n", YaccParser::getResult());
 #else
 	char buf[10];
 

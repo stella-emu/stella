@@ -10,11 +10,11 @@
 # define	LOG_AND	259
 # define	SHR	260
 # define	SHL	261
-# define	UMINUS	262
-# define	GTE	263
-# define	LTE	264
-# define	NE	265
-# define	EQ	266
+# define	GTE	262
+# define	LTE	263
+# define	NE	264
+# define	EQ	265
+# define	UMINUS	266
 
 
 extern YYSTYPE yylval;

@@ -8,11 +8,11 @@
 # define	LOG_AND	259
 # define	SHR	260
 # define	SHL	261
-# define	UMINUS	262
-# define	GTE	263
-# define	LTE	264
-# define	NE	265
-# define	EQ	266
+# define	GTE	262
+# define	LTE	263
+# define	NE	264
+# define	EQ	265
+# define	UMINUS	266
 
 #line 1 "stella.y"
 
@@ -54,7 +54,7 @@ static const char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     8,    13,     2,
       24,    25,     6,     5,     2,     4,     2,     7,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      17,     2,    18,     2,     2,     2,     2,     2,     2,     2,
+      16,     2,    17,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,    12,     2,     2,     2,     2,     2,
@@ -74,7 +74,7 @@ static const char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     3,     9,    10,
-      14,    15,    16,    19,    20,    21,    22
+      14,    15,    18,    19,    20,    21,    22
 };
 
 #if YYDEBUG
@@ -89,12 +89,12 @@ static const short yyrhs[] =
       27,     0,    27,     5,    27,     0,    27,     4,    27,     0,
       27,     6,    27,     0,    27,     7,    27,     0,    27,     8,
       27,     0,    27,    13,    27,     0,    27,    11,    27,     0,
-      27,    12,    27,     0,    27,    18,    27,     0,    27,    17,
-      27,     0,    27,    19,    27,     0,    27,    20,    27,     0,
-      27,    21,    27,     0,    27,    22,    27,     0,    27,    14,
+      27,    12,    27,     0,    27,    17,    27,     0,    27,    16,
+      27,     0,    27,    18,    27,     0,    27,    19,    27,     0,
+      27,    20,    27,     0,    27,    21,    27,     0,    27,    14,
       27,     0,    27,    15,    27,     0,    27,     9,    27,     0,
       27,    10,    27,     0,     4,    27,     0,    23,    27,     0,
-      17,    27,     0,    18,    27,     0,    24,    27,    25,     0,
+      16,    27,     0,    17,    27,     0,    24,    27,    25,     0,
        3,     0
 };
 
@@ -104,9 +104,9 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    27,    30,    31,    32,    33,    39,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63
+       0,    28,    31,    32,    33,    34,    41,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,    66
 };
 #endif
 
@@ -117,8 +117,8 @@ static const short yyrline[] =
 static const char *const yytname[] =
 {
   "$", "error", "$undefined.", "NUMBER", "'-'", "'+'", "'*'", "'/'", "'%'", 
-  "LOG_OR", "LOG_AND", "'|'", "'^'", "'&'", "SHR", "SHL", "UMINUS", "'<'", 
-  "'>'", "GTE", "LTE", "NE", "EQ", "'~'", "'('", "')'", "statement", 
+  "LOG_OR", "LOG_AND", "'|'", "'^'", "'&'", "SHR", "SHL", "'<'", "'>'", 
+  "GTE", "LTE", "NE", "EQ", "UMINUS", "'~'", "'('", "')'", "statement", 
   "expression", 0
 };
 #endif
@@ -159,12 +159,12 @@ static const short yydefgoto[] =
 
 static const short yypact[] =
 {
-      45,-32768,    45,    45,    45,    45,    45,    66,   -12,   -12,
-     -12,   -12,    25,    45,    45,    45,    45,    45,    45,    45,
-      45,    45,    45,    45,    45,    45,    45,    45,    45,    45,
-      45,-32768,    83,    83,    97,    97,    97,   110,   122,    38,
-      38,   131,   137,   137,   -12,   -12,   -12,   -12,   -12,   -12,
-      41,    54,-32768
+      44,-32768,    44,    44,    44,    44,    44,    65,-32768,   -11,
+     -11,-32768,    25,    44,    44,    44,    44,    44,    44,    44,
+      44,    44,    44,    44,    44,    44,    44,    44,    44,    44,
+      44,-32768,    81,    81,    94,    94,    94,   106,   117,    38,
+      38,   125,   131,   131,   -11,   -11,   -11,   -11,   -11,   -11,
+      49,    62,-32768
 };
 
 static const short yypgoto[] =
@@ -173,7 +173,7 @@ static const short yypgoto[] =
 };
 
 
-#define	YYLAST		159
+#define	YYLAST		152
 
 
 static const short yytable[] =
@@ -182,38 +182,38 @@ static const short yytable[] =
   -32768,    32,    33,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    13,
       14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    51,    25,    26,    27,    28,    29,    30,     1,     2,
-      31,    22,    23,    24,    52,    25,    26,    27,    28,    29,
-      30,     0,     3,     4,     0,     0,     0,     0,     5,     6,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,     0,    25,    26,    27,    28,    29,    30,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,     0,
-      25,    26,    27,    28,    29,    30,    18,    19,    20,    21,
-      22,    23,    24,     0,    25,    26,    27,    28,    29,    30,
-      19,    20,    21,    22,    23,    24,     0,    25,    26,    27,
-      28,    29,    30,    20,    21,    22,    23,    24,     0,    25,
-      26,    27,    28,    29,    30,    23,    24,     0,    25,    26,
-      27,    28,    29,    30,    25,    26,    27,    28,    29,    30
+      24,    25,    26,    27,    28,    29,    30,     1,     2,    51,
+      31,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+       3,     4,    52,     0,     0,     0,     0,     5,     6,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      28,    29,    30,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    23,
+      24,    25,    26,    27,    28,    29,    30,    25,    26,    27,
+      28,    29,    30
 };
 
 static const short yycheck[] =
 {
-       2,     3,     4,     5,     6,    17,    18,    19,    20,    21,
-      22,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+       2,     3,     4,     5,     6,    16,    17,    18,    19,    20,
+      21,    13,    14,    15,    16,    17,    18,    19,    20,    21,
       22,    23,    24,    25,    26,    27,    28,    29,    30,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,     0,    17,    18,    19,    20,    21,    22,     3,     4,
-      25,    13,    14,    15,     0,    17,    18,    19,    20,    21,
-      22,    -1,    17,    18,    -1,    -1,    -1,    -1,    23,    24,
-       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    -1,    17,    18,    19,    20,    21,    22,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    -1,
-      17,    18,    19,    20,    21,    22,     9,    10,    11,    12,
-      13,    14,    15,    -1,    17,    18,    19,    20,    21,    22,
-      10,    11,    12,    13,    14,    15,    -1,    17,    18,    19,
-      20,    21,    22,    11,    12,    13,    14,    15,    -1,    17,
-      18,    19,    20,    21,    22,    14,    15,    -1,    17,    18,
-      19,    20,    21,    22,    17,    18,    19,    20,    21,    22
+      15,    16,    17,    18,    19,    20,    21,     3,     4,     0,
+      25,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      16,    17,     0,    -1,    -1,    -1,    -1,    23,    24,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,     6,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,     9,    10,    11,    12,    13,    14,    15,
+      16,    17,    18,    19,    20,    21,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    11,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    14,
+      15,    16,    17,    18,    19,    20,    21,    16,    17,    18,
+      19,    20,    21
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 #line 3 "/usr/share/bison/bison.simple"
@@ -923,108 +923,114 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 27 "stella.y"
+#line 28 "stella.y"
 { result = yyvsp[0]; }
     break;
 case 2:
-#line 30 "stella.y"
-{ yyval = yyvsp[-2] + yyvsp[0]; }
+#line 31 "stella.y"
+{ fprintf(stderr, " +"); yyval = yyvsp[-2] + yyvsp[0]; }
     break;
 case 3:
-#line 31 "stella.y"
-{ yyval = yyvsp[-2] - yyvsp[0]; }
+#line 32 "stella.y"
+{ fprintf(stderr, " -"); yyval = yyvsp[-2] - yyvsp[0]; }
     break;
 case 4:
-#line 32 "stella.y"
-{ yyval = yyvsp[-2] * yyvsp[0]; }
+#line 33 "stella.y"
+{ fprintf(stderr, " *"); yyval = yyvsp[-2] * yyvsp[0]; }
     break;
 case 5:
-#line 34 "stella.y"
-{	if(yyvsp[0] == 0)
+#line 35 "stella.y"
+{	fprintf(stderr, " /");
+					if(yyvsp[0] == 0)
 						yyerror("divide by zero");
 					else
 						yyval = yyvsp[-2] / yyvsp[0];
 				}
     break;
 case 6:
-#line 40 "stella.y"
-{	if(yyvsp[0] == 0)
+#line 42 "stella.y"
+{	fprintf(stderr, " %");
+					if(yyvsp[0] == 0)
 						yyerror("divide by zero");
 					else
 						yyval = yyvsp[-2] % yyvsp[0];
 				}
     break;
 case 7:
-#line 45 "stella.y"
-{ yyval = yyvsp[-2] & yyvsp[0]; }
+#line 48 "stella.y"
+{ fprintf(stderr, " &"); yyval = yyvsp[-2] & yyvsp[0]; }
     break;
 case 8:
-#line 46 "stella.y"
-{ yyval = yyvsp[-2] | yyvsp[0]; }
+#line 49 "stella.y"
+{ fprintf(stderr, " |"); yyval = yyvsp[-2] | yyvsp[0]; }
     break;
 case 9:
-#line 47 "stella.y"
-{ yyval = yyvsp[-2] ^ yyvsp[0]; }
+#line 50 "stella.y"
+{ fprintf(stderr, " ^"); yyval = yyvsp[-2] ^ yyvsp[0]; }
     break;
 case 10:
-#line 48 "stella.y"
-{ yyval = yyvsp[-2] > yyvsp[0]; }
+#line 51 "stella.y"
+{ fprintf(stderr, " <"); yyval = yyvsp[-2] > yyvsp[0]; }
     break;
 case 11:
-#line 49 "stella.y"
-{ yyval = yyvsp[-2] < yyvsp[0]; }
+#line 52 "stella.y"
+{ fprintf(stderr, " >"); yyval = yyvsp[-2] < yyvsp[0]; }
     break;
 case 12:
-#line 50 "stella.y"
-{ yyval = yyvsp[-2] >= yyvsp[0]; }
+#line 53 "stella.y"
+{ fprintf(stderr, " >="); yyval = yyvsp[-2] >= yyvsp[0]; }
     break;
 case 13:
-#line 51 "stella.y"
-{ yyval = yyvsp[-2] <= yyvsp[0]; }
+#line 54 "stella.y"
+{ fprintf(stderr, " <="); yyval = yyvsp[-2] <= yyvsp[0]; }
     break;
 case 14:
-#line 52 "stella.y"
-{ yyval = yyvsp[-2] != yyvsp[0]; }
+#line 55 "stella.y"
+{ fprintf(stderr, " !="); yyval = yyvsp[-2] != yyvsp[0]; }
     break;
 case 15:
-#line 53 "stella.y"
-{ yyval = yyvsp[-2] == yyvsp[0]; }
+#line 56 "stella.y"
+{ fprintf(stderr, " =="); yyval = yyvsp[-2] == yyvsp[0]; }
     break;
 case 16:
-#line 54 "stella.y"
-{ yyval = yyvsp[-2] >> yyvsp[0]; }
+#line 57 "stella.y"
+{ fprintf(stderr, " >>"); yyval = yyvsp[-2] >> yyvsp[0]; }
     break;
 case 17:
-#line 55 "stella.y"
-{ yyval = yyvsp[-2] << yyvsp[0]; }
+#line 58 "stella.y"
+{ fprintf(stderr, " >>"); yyval = yyvsp[-2] << yyvsp[0]; }
     break;
 case 18:
-#line 56 "stella.y"
-{ yyval = yyvsp[-2] || yyvsp[0]; }
+#line 59 "stella.y"
+{ fprintf(stderr, " ||"); yyval = yyvsp[-2] || yyvsp[0]; }
     break;
 case 19:
-#line 57 "stella.y"
-{ yyval = yyvsp[-2] && yyvsp[0]; }
+#line 60 "stella.y"
+{ fprintf(stderr, " &&"); yyval = yyvsp[-2] && yyvsp[0]; }
     break;
 case 20:
-#line 58 "stella.y"
-{ yyval = -yyvsp[0]; }
+#line 61 "stella.y"
+{ fprintf(stderr, " U-"); yyval = -yyvsp[0]; }
     break;
 case 21:
-#line 59 "stella.y"
-{ yyval = (~yyvsp[0]) & 0xffff; }
+#line 62 "stella.y"
+{ fprintf(stderr, " ~"); yyval = (~yyvsp[0]) & 0xffff; }
     break;
 case 22:
-#line 60 "stella.y"
-{ yyval = yyvsp[0] & 0xff; }
+#line 63 "stella.y"
+{ fprintf(stderr, " <"); yyval = yyvsp[0] & 0xff; }
     break;
 case 23:
-#line 61 "stella.y"
-{ yyval = (yyvsp[0] >> 8) & 0xff; }
+#line 64 "stella.y"
+{ fprintf(stderr, " >"); yyval = (yyvsp[0] >> 8) & 0xff; }
     break;
 case 24:
-#line 62 "stella.y"
-{ yyval = yyvsp[-1]; }
+#line 65 "stella.y"
+{ fprintf(stderr, " ()"); yyval = yyvsp[-1]; }
+    break;
+case 25:
+#line 66 "stella.y"
+{ fprintf(stderr, " %d", yyvsp[0]); }
     break;
 }
 
@@ -1259,5 +1265,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 65 "stella.y"
+#line 68 "stella.y"
 
