@@ -4,6 +4,8 @@ MODULE_OBJS := \
 	src/debugger/Debugger.o \
 	src/debugger/DebuggerParser.o \
 	src/debugger/EquateList.o \
+	src/debugger/Expression.o \
+	src/debugger/ConstExpression.o \
 	src/debugger/PackedBitArray.o \
 	src/debugger/CpuDebug.o \
 	src/debugger/RamDebug.o \
