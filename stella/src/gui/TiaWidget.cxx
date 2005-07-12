@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.8 2005-07-10 02:16:01 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.9 2005-07-12 02:27:07 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -201,8 +201,8 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           addr  = myRamGrid->getSelectedAddr();
           value = myRamGrid->getSelectedValue();
 
-          buf = instance()->debugger().equates()->getLabel(addr);
-          if(buf) myLabel->setEditString(buf);
+          buf = instance()->debugger().equates()->getLabel(addr).c_str();
+          if(*buf) myLabel->setEditString(buf);
           else    myLabel->setEditString("");
 
           myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));

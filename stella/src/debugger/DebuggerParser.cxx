@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.50 2005-07-11 18:56:26 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.51 2005-07-12 02:27:06 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -451,7 +451,7 @@ int DebuggerParser::conv_hex_digit(char d) {
 int DebuggerParser::decipher_arg(const string &str) {
 	bool derefByte=false, derefWord=false, lobyte=false, hibyte=false, bin=false, dec=false;
 	int result;
-    string arg = str;
+	string arg = str;
 
 	if(defaultBase == kBASE_2) {
 		bin=true; dec=false;
@@ -506,7 +506,7 @@ int DebuggerParser::decipher_arg(const string &str) {
 	else if(arg == "pc" || arg == ".") result = state.PC;
 	else { // Not a special, must be a regular arg: check for label first
 		const char *a = arg.c_str();
-		result = debugger->equateList->getAddress(a);
+		result = debugger->equateList->getAddress(arg);
 
 		if(result < 0) { // if not label, must be a number
 			if(bin) { // treat as binary
@@ -697,8 +697,8 @@ string DebuggerParser::eval() {
 	char buf[50];
 	string ret;
 	for(int i=0; i<argCount; i++) {
-		char *label = debugger->equates()->getLabel(args[i]);
-		if(label != NULL) {
+		string label = debugger->equates()->getLabel(args[i]);
+		if(label != "") {
 			ret += label;
 			ret += ": ";
 		}
@@ -783,8 +783,8 @@ string DebuggerParser::trapStatus(int addr) {
 	else
 		result += "   none   ";
 
-	char *l = debugger->equateList->getLabel(addr);
-	if(l != NULL) {
+	string l = debugger->equateList->getLabel(addr);
+	if(l != "") {
 		result += "  (";
 		result += l;
 		result += ")";

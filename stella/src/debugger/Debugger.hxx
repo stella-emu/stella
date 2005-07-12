@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.47 2005-07-10 02:15:57 stephena Exp $
+// $Id: Debugger.hxx,v 1.48 2005-07-12 02:27:05 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -52,7 +52,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.47 2005-07-10 02:15:57 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.48 2005-07-12 02:27:05 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -149,7 +149,7 @@ class Debugger : public DialogContainer
       Disassemble from the starting address the specified number of lines
       and place result in a string.
     */
-    string disassemble(int start, int lines);
+    const string& disassemble(int start, int lines);
 
     int step();
     int trace();

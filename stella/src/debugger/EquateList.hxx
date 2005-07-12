@@ -13,15 +13,22 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.10 2005-06-25 01:13:00 urchlay Exp $
+// $Id: EquateList.hxx,v 1.11 2005-07-12 02:27:06 urchlay Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
 #define EQUATELIST_HXX
 
+#include <map>
+
 #include "bspf.hxx"
 #include "Equate.hxx"
 #include "Array.hxx"
+
+using namespace std;
+
+typedef map<int, string> addrToLabel;
+typedef map<string, int> labelToAddr;
 
 typedef GUI::Array<Equate> Equates;
 
@@ -29,15 +36,15 @@ class EquateList {
 	public:
 		EquateList();
 		~EquateList();
-		char *getLabel(int addr);
-		char *getFormatted(int addr, int places);
-		int getAddress(const char *label);
+		const string& getLabel(int addr);
+		const char *getFormatted(int addr, int places);
+		int getAddress(const string& label);
 		void addEquate(string label, int address);
 		bool saveFile(string file);
 		string loadFile(string file);
 		bool undefine(string& label);
 		bool undefine(const char *lbl);
-		string dumpAll();
+		//string dumpAll();
 		int countCompletions(const char *in);
 		const char *getCompletions();
 		const char *getCompletionPrefix();
@@ -51,8 +58,10 @@ class EquateList {
       string compPrefix;
 
 	private:
-		Equates ourVcsEquates;
+		//Equates ourVcsEquates;
 		int currentSize;
+		labelToAddr myFwdMap;
+		addrToLabel myRevMap;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.14 2005-07-08 14:36:18 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.15 2005-07-12 02:27:07 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -264,8 +264,8 @@ void CpuWidget::fillGrid()
   const char* buf;
 
   Debugger& dbg = instance()->debugger();
-  buf = dbg.equates()->getLabel(pc);
-  if(buf)
+  buf = dbg.equates()->getLabel(pc).c_str();
+  if(*buf)
     myPCLabel->setEditString(buf);
   else
     myPCLabel->setEditString("");

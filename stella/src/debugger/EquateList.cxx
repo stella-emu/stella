@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.16 2005-06-25 01:13:00 urchlay Exp $
+// $Id: EquateList.cxx,v 1.17 2005-07-12 02:27:06 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -99,44 +99,44 @@ static Equate hardCodedEquates[] = {
 };
 
 EquateList::EquateList() {
-	// cerr << sizeof(hardCodedEquates)/sizeof(struct Equate) << endl;
 	int size = sizeof(hardCodedEquates)/sizeof(struct Equate);
 
-	for(int i=0; i<size; i++)
-		ourVcsEquates.push_back(hardCodedEquates[i]);
+	for(int i=0; i<size; i++) {
+		string l = hardCodedEquates[i].label;	
+		int a = hardCodedEquates[i].address;
+
+		myFwdMap.insert(make_pair(l, a));
+		myRevMap.insert(make_pair(a, l));
+	}
 	calcSize();
 }
 
 EquateList::~EquateList() {
-	ourVcsEquates.clear();
+	myFwdMap.clear();
+	myRevMap.clear();
 }
 
 int EquateList::calcSize() {
-	currentSize = ourVcsEquates.size();
+	currentSize = myFwdMap.size();
 	return currentSize;
 }
 
-// FIXME: use something smarter than a linear search in the future.
-char *EquateList::getLabel(int addr) {
-	// cerr << "getLabel(" << addr << ")" << endl;
-	for(int i=0; i<currentSize; i++) {
-		// cerr << "Checking ourVcsEquates[" << i << "] (" << ourVcsEquates[i].label << ")" << endl;
-		if(ourVcsEquates[i].address == addr) {
-			// cerr << "Found label " << ourVcsEquates[i].label << endl;
-			return ourVcsEquates[i].label;
-		}
-	}
-
-	return NULL;
+const string& EquateList::getLabel(int addr) {
+	static string nothing = "";
+	addrToLabel::const_iterator iter = myRevMap.find(addr);
+	if(iter == myRevMap.end())
+		return nothing;
+	else
+		return iter->second;
 }
 
 // returns either the label, or a formatted hex string
 // if no label found.
-char *EquateList::getFormatted(int addr, int places) {
+const char *EquateList::getFormatted(int addr, int places) {
 	static char fmt[10], buf[255];
-	char *res = getLabel(addr);
-	if(res != NULL)
-		return res;
+	string res = getLabel(addr);
+	if(res != "")
+		return res.c_str();
 
 	sprintf(fmt, "$%%0%dx", places);
 	//cerr << addr << ", " << fmt << ", " << places << endl;
@@ -144,33 +144,25 @@ char *EquateList::getFormatted(int addr, int places) {
 	return buf;
 }
 
-int EquateList::getAddress(const char *lbl) {
-	// cerr << "getAddress(" << lbl << ")" << endl;
-	// cerr << ourVcsEquates[0].label << endl;
-	// cerr << "shit" << endl;
-	for(int i=0; i<currentSize; i++) {
-		// cerr << "Looking at " << ourVcsEquates[i].label << endl;
-		if( STR_CASE_CMP(ourVcsEquates[i].label, lbl) == 0 )
-			if(ourVcsEquates[i].address >= 0)
-				return ourVcsEquates[i].address;
-	}
-
-	return -1;
+int EquateList::getAddress(const string& label) {
+	labelToAddr::const_iterator iter = myFwdMap.find(label);
+	if(iter == myFwdMap.end())
+		return -1;
+	else
+		return iter->second;
 }
 
 bool EquateList::undefine(string& label) {
-	return undefine(label.c_str());
-}
-
-bool EquateList::undefine(const char *lbl) {
-	for(int i=0; i<currentSize; i++) {
-		if( STR_CASE_CMP(ourVcsEquates[i].label, lbl) == 0 ) {
-			ourVcsEquates[i].address = -1;
-			return true;
-		}
-	}
-
 	return false;
+
+	labelToAddr::iterator iter = myFwdMap.find(label);
+	if(iter == myFwdMap.end()) {
+		return false;
+	} else {
+		myRevMap.erase( myRevMap.find(iter->second) ); // FIXME: error check?
+		myFwdMap.erase(iter);
+		return true;
+	}
 }
 
 bool EquateList::saveFile(string file) {
@@ -182,16 +174,10 @@ bool EquateList::saveFile(string file) {
 
 	out << "--- Symbol List (sorted by symbol)" << endl;
 
-	// we don't have these pre-loaded any more.
-	// int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
-	// for(int i=hardSize; i<currentSize; i++)
-
-	for(int i=0; i<currentSize; i++) {
-		int a = ourVcsEquates[i].address;
-		if(a >= 0) {
-			sprintf(buf, "%-24s %04x                  \n", ourVcsEquates[i].label, a);
-			out << buf;
-		}
+	labelToAddr::iterator iter;
+	for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++) {
+		sprintf(buf, "%-24s %04x                  \n", iter->first.c_str(), iter->second);
+		out << buf;
 	}
 
 	out << "--- End of Symbol List." << endl;
@@ -202,28 +188,14 @@ string EquateList::loadFile(string file) {
 	int lines = 0;
 	string curLabel;
 	int curVal;
-	// string::size_type p;
 	char buffer[256]; // FIXME: static buffers suck
-
-	// cerr << "loading file " << file << endl;
 
 	ifstream in(file.c_str());
 	if(!in.is_open())
 		return "Unable to read symbols from " + file;
 
-
-	// Make sure the hard-coded equates show up first
-	ourVcsEquates.clear();
-
-	/*
-	// Don't preload these: they cause more trouble than they're worth
-	// Besides which, any sane symfile will already have them all.
-
-	int hardSize = sizeof(hardCodedEquates)/sizeof(struct Equate);
-	for(int i=0; i<hardSize; i++) {
-		ourVcsEquates.push_back(hardCodedEquates[i]);
-	}
-	*/
+	myFwdMap.clear();
+	myRevMap.clear();
 
 	while( !in.eof() ) {
 		curVal = 0;
@@ -239,8 +211,6 @@ string EquateList::loadFile(string file) {
 
 			addEquate(curLabel, curVal);
 
-			// cerr << "label: " << curLabel << ", address: " << curVal << endl;
-			// cerr << buffer;
 			lines++;
 		}
 	}
@@ -248,22 +218,15 @@ string EquateList::loadFile(string file) {
 
 	calcSize();
 
-	// dumpAll();
 	return "loaded " + file + " OK";
 }
 
 void EquateList::addEquate(string label, int address) {
-	// FIXME - this is a memleak and *must* be fixed
-	//         ideally, the Equate class should hold a string, not a char*
-	Equate e;
-	e.label   = strdup(label.c_str());
-	e.address = address;
-	ourVcsEquates.push_back(e);
-	calcSize();
+	myFwdMap.insert(make_pair(label, address));
+	myRevMap.insert(make_pair(address, label));
 }
 
 int EquateList::parse4hex(char *c) {
-	//cerr << c << endl;
 	int ret = 0;
 	for(int i=0; i<4; i++) {
 		if(*c >= '0' && *c <= '9')
@@ -302,49 +265,31 @@ string EquateList::extractLabel(char *c) {
 	return l;
 }
 
-string EquateList::dumpAll() {
-	string ret;
-
-	for(int i=0; i<currentSize; i++) {
-		if(ourVcsEquates[i].address != -1) {
-			ret += ourVcsEquates[i].label;
-			ret += ": ";
-			ret += Debugger::to_hex_16(ourVcsEquates[i].address);
-			if(i != currentSize - 1) ret += "\n";
-		}
-	}
-	return ret;
-}
-
 int EquateList::countCompletions(const char *in) {
 	int count = 0;
 	completions = compPrefix = "";
 
-	// cerr << "Attempting to complete \"" << in << "\"" << endl;
-	for(int i=0; i<currentSize; i++) {
-		if(ourVcsEquates[i].address != -1) {
-			const char *l = ourVcsEquates[i].label;
+	labelToAddr::iterator iter;
+	for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++) {
+		const char *l = iter->first.c_str();
 
-			if(STR_N_CASE_CMP(l, in, strlen(in)) == 0) {
-				if(compPrefix == "")
-					compPrefix += l;
-				else {
-					int nonMatch = 0;
-					const char *c = compPrefix.c_str();
-					while(*c != '\0' && tolower(*c) == tolower(l[nonMatch])) {
-						c++;
-						nonMatch++;
-					}
-					compPrefix.erase(nonMatch, compPrefix.length());
-					// cerr << "compPrefix==" << compPrefix << endl;
+		if(STR_N_CASE_CMP(l, in, strlen(in)) == 0) {
+			if(compPrefix == "")
+				compPrefix += l;
+			else {
+				int nonMatch = 0;
+				const char *c = compPrefix.c_str();
+				while(*c != '\0' && tolower(*c) == tolower(l[nonMatch])) {
+					c++;
+					nonMatch++;
 				}
-
-				if(count++) completions += "  ";
-				completions += l;
+				compPrefix.erase(nonMatch, compPrefix.length());
 			}
+
+			if(count++) completions += "  ";
+			completions += l;
 		}
 	}
-	// cerr << "Found " << count << " label(s):" << endl << completions << endl;
 	return count;
 }
 
