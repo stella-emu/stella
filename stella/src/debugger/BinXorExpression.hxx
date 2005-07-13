@@ -13,23 +13,23 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PlusExpression.hxx,v 1.2 2005-07-13 04:26:19 urchlay Exp $
+// $Id: BinXorExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
 //============================================================================
 
-#ifndef PLUS_EXPRESSION_HXX
-#define PLUS_EXPRESSION_HXX
+#ifndef BINXOR_EXPRESSION_HXX
+#define BINXOR_EXPRESSION_HXX
 
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: PlusExpression.hxx,v 1.2 2005-07-13 04:26:19 urchlay Exp $
+  @version $Id: BinXorExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
 */
-class PlusExpression : public Expression
+class BinXorExpression : public Expression
 {
   public:
-    PlusExpression(Expression *left, Expression *right);
-    int evaluate() { return myLHS->evaluate() + myRHS->evaluate(); }
+    BinXorExpression(Expression *left, Expression *right);
+    int evaluate() { return myLHS->evaluate() ^ myRHS->evaluate(); }
 };
 
 #endif

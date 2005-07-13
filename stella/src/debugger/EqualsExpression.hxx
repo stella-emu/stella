@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EqualsExpression.hxx,v 1.1 2005-07-13 02:54:13 urchlay Exp $
+// $Id: EqualsExpression.hxx,v 1.2 2005-07-13 04:26:19 urchlay Exp $
 //============================================================================
 
 #ifndef EQUALS_EXPRESSION_HXX
@@ -22,11 +22,8 @@
 #include "Expression.hxx"
 
 /**
-  This class provides an implementation of an constant expression;
-  that is, one that consists solely of a constant integer value.
-
   @author  B. Watson
-  @version $Id: EqualsExpression.hxx,v 1.1 2005-07-13 02:54:13 urchlay Exp $
+  @version $Id: EqualsExpression.hxx,v 1.2 2005-07-13 04:26:19 urchlay Exp $
 */
 class EqualsExpression : public Expression
 {
