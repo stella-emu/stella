@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.2 2005-07-03 14:18:54 stephena Exp $
+// $Id: YaccParser.cxx,v 1.3 2005-07-13 02:54:13 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,21 +21,27 @@
 
 //#include "YaccParser.hxx"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+
+#include "Expression.hxx"
+#include "PlusExpression.hxx"
+#include "MinusExpression.hxx"
+#include "EqualsExpression.hxx"
+#include "ConstExpression.hxx"
 
 namespace YaccParser {
 #include <stdio.h>
 #include <ctype.h>
 
-int result;
-//#include "y.tab.h"
+#include "y.tab.h"
+yystype result;
 #include "y.tab.c"
 
 
-int getResult() {
-	return result;
+Expression *getResult() {
+	return result.exp;
 }
 
 
@@ -72,12 +78,12 @@ int parse(const char *in) {
 
 int yylex() {
 	char o, p;
-	yylval = 0;
+	yylval.val = 0;
 	while(*c != '\0') {
 		//fprintf(stderr, "looking at %c, state %d\n", *c, state);
 		switch(state) {
 			case ST_SPACE:
-				yylval = 0;
+				yylval.val = 0;
 				if(isspace(*c)) {
 					c++;
 				} else if(isdigit(*c)) {
@@ -92,8 +98,8 @@ int yylex() {
 
 			case ST_NUMBER:
 				while(isdigit(*c)) {
-					yylval *= 10;
-					yylval += (*c++ - '0');
+					yylval.val *= 10;
+					yylval.val += (*c++ - '0');
 					//fprintf(stderr, "yylval==%d, *c==%c\n", yylval, *c);
 				}
 				state = ST_DEFAULT;
@@ -152,7 +158,7 @@ int yylex() {
 
 			case ST_DEFAULT:
 			default:
-				yylval = 0;
+				yylval.val = 0;
 				if(isspace(*c)) {
 					state = ST_SPACE;
 				} else if(isdigit(*c)) {
@@ -160,8 +166,8 @@ int yylex() {
 				} else if(is_operator(*c)) {
 					state = ST_OPERATOR;
 				} else {
-					yylval = *c++;
-					return yylval;
+					yylval.val = *c++;
+					return yylval.val;
 				}
 				break;
 		}
@@ -184,6 +190,6 @@ int main(int argc, char **argv) {
 #endif
 }
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif

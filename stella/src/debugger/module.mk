@@ -6,6 +6,9 @@ MODULE_OBJS := \
 	src/debugger/EquateList.o \
 	src/debugger/Expression.o \
 	src/debugger/ConstExpression.o \
+	src/debugger/EqualsExpression.o \
+	src/debugger/PlusExpression.o \
+	src/debugger/MinusExpression.o \
 	src/debugger/PackedBitArray.o \
 	src/debugger/CpuDebug.o \
 	src/debugger/RamDebug.o \

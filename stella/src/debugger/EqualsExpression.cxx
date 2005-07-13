@@ -13,28 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.hxx,v 1.3 2005-07-13 02:54:13 urchlay Exp $
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: EqualsExpression.cxx,v 1.1 2005-07-13 02:54:13 urchlay Exp $
 //============================================================================
 
-#ifndef PARSER_HXX
-#define PARSER_HXX
-
 #include "Expression.hxx"
+#include "EqualsExpression.hxx"
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EqualsExpression::EqualsExpression(Expression *left, Expression *right)
+  : Expression(left, right)
+{
+}
 
-namespace YaccParser {
-	int parse(const char *);
-	Expression *getResult();
-};
-
-//#ifdef __cplusplus
-//}
-//#endif
-
-#endif

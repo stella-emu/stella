@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.51 2005-07-12 02:27:06 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.52 2005-07-13 02:54:13 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -876,6 +876,7 @@ bool DebuggerParser::validateArgs(int cmd) {
 
 // main entry point: PromptWidget calls this method.
 string DebuggerParser::run(const string& command) {
+	static Expression *lastExpression;
 	int i=0;
 
 	// special case: parser testing
@@ -884,7 +885,13 @@ string DebuggerParser::run(const string& command) {
 		int status = YaccParser::parse(command.c_str() + 5);
 		commandResult += debugger->valueToString(status);
 		commandResult += ", result==";
-		commandResult += debugger->valueToString(YaccParser::getResult());
+		lastExpression = YaccParser::getResult();
+		commandResult += debugger->valueToString(lastExpression->evaluate());
+		return commandResult;
+	}
+
+	if(command == "expr") {
+		commandResult = "result==" + debugger->valueToString(lastExpression->evaluate());
 		return commandResult;
 	}
 

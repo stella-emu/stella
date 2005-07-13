@@ -13,28 +13,27 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.hxx,v 1.3 2005-07-13 02:54:13 urchlay Exp $
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: PlusExpression.hxx,v 1.1 2005-07-13 02:54:13 urchlay Exp $
 //============================================================================
 
-#ifndef PARSER_HXX
-#define PARSER_HXX
+#ifndef PLUS_EXPRESSION_HXX
+#define PLUS_EXPRESSION_HXX
 
 #include "Expression.hxx"
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
+/**
+  This class provides an implementation of an constant expression;
+  that is, one that consists solely of a constant integer value.
 
-namespace YaccParser {
-	int parse(const char *);
-	Expression *getResult();
+  @author  B. Watson
+  @version $Id: PlusExpression.hxx,v 1.1 2005-07-13 02:54:13 urchlay Exp $
+*/
+class PlusExpression : public Expression
+{
+  public:
+    PlusExpression(Expression *left, Expression *right);
+    int evaluate() { return myLHS->evaluate() + myRHS->evaluate(); }
 };
 
-//#ifdef __cplusplus
-//}
-//#endif
-
 #endif
+

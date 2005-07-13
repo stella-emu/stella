@@ -11,13 +11,16 @@ int main(int argc, char **argv) {
 
 #ifndef BM
 	YaccParser::parse(argv[1]);
-	printf("\n= %d\n", YaccParser::getResult());
+	printf("\n= %d\n", YaccParser::getResult()->evaluate());
 #else
-	char buf[10];
+	char buf[30];
 
-	for(int i=0; i<1000000; i++) {
-		sprintf(buf, "(1<2)&(3+4)");
-		YaccParser::parse(buf);
+	sprintf(buf, "1+2+3+4+5+6+7");
+	YaccParser::parse(buf);
+	Expression *e = YaccParser::getResult();
+
+	for(int i=0; i<100000000; i++) {
+		printf("%d\n", e->evaluate());
 	}
 #endif
 

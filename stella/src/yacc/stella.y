@@ -13,7 +13,12 @@ void yyerror(char *e) {
 
 %}
 
-%token NUMBER
+%union {
+	int val;
+	Expression *exp;
+}
+
+%token <val> NUMBER
 %left '-' '+'
 %left '*' '/' '%'
 %left LOG_OR
@@ -24,45 +29,51 @@ void yyerror(char *e) {
 %nonassoc '<' '>' GTE LTE NE EQ
 %nonassoc UMINUS
 
+%type <exp> expression
+
 %%
-statement:	expression { result = $1; }
+statement:	expression { fprintf(stderr, "\ndone\n"); result.exp = $1; }
 	;
 
-expression:	expression '+' expression { fprintf(stderr, " +"); $$ = $1 + $3; }
-	|	expression '-' expression { fprintf(stderr, " -"); $$ = $1 - $3; }
-	|	expression '*' expression { fprintf(stderr, " *"); $$ = $1 * $3; }
+expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpression($1, $3); }
+	|	expression '-' expression { fprintf(stderr, " -"); $$ = new MinusExpression($1, $3); }
+	|	expression '*' expression { fprintf(stderr, " *");  }
 	|	expression '/' expression
 				{	fprintf(stderr, " /");
+/*
 					if($3 == 0)
 						yyerror("divide by zero");
 					else
 						$$ = $1 / $3;
+*/
 				}
 	|	expression '%' expression
 				{	fprintf(stderr, " %");
+/*
 					if($3 == 0)
 						yyerror("divide by zero");
 					else
 						$$ = $1 % $3;
+*/
 				}
-	|	expression '&' expression { fprintf(stderr, " &"); $$ = $1 & $3; }
-	|	expression '|' expression { fprintf(stderr, " |"); $$ = $1 | $3; }
-	|	expression '^' expression { fprintf(stderr, " ^"); $$ = $1 ^ $3; }
-	|	expression '>' expression { fprintf(stderr, " <"); $$ = $1 > $3; }
-	|	expression '<' expression { fprintf(stderr, " >"); $$ = $1 < $3; }
-	|	expression GTE expression { fprintf(stderr, " >="); $$ = $1 >= $3; }
-	|	expression LTE expression { fprintf(stderr, " <="); $$ = $1 <= $3; }
-	|	expression NE  expression { fprintf(stderr, " !="); $$ = $1 != $3; }
-	|	expression EQ  expression { fprintf(stderr, " =="); $$ = $1 == $3; }
-	|	expression SHR expression { fprintf(stderr, " >>"); $$ = $1 >> $3; }
-	|	expression SHL expression { fprintf(stderr, " >>"); $$ = $1 << $3; }
-	|	expression LOG_OR expression { fprintf(stderr, " ||"); $$ = $1 || $3; }
-	|	expression LOG_AND expression { fprintf(stderr, " &&"); $$ = $1 && $3; }
-	|	'-' expression %prec UMINUS	{ fprintf(stderr, " U-"); $$ = -$2; }
-	|	'~' expression %prec UMINUS	{ fprintf(stderr, " ~"); $$ = (~$2) & 0xffff; }
-	|	'<' expression { fprintf(stderr, " <"); $$ = $2 & 0xff; }
-	|	'>' expression { fprintf(stderr, " >"); $$ = ($2 >> 8) & 0xff; }
-	|	'(' expression ')'	{ fprintf(stderr, " ()"); $$ = $2; }
-	|	NUMBER { fprintf(stderr, " %d", $1); }
+	|	expression '&' expression { fprintf(stderr, " &"); }
+	|	expression '|' expression { fprintf(stderr, " |"); }
+	|	expression '^' expression { fprintf(stderr, " ^"); }
+	|	expression '>' expression { fprintf(stderr, " <"); }
+	|	expression '<' expression { fprintf(stderr, " >"); }
+	|	expression GTE expression { fprintf(stderr, " >="); }
+	|	expression LTE expression { fprintf(stderr, " <="); }
+	|	expression NE  expression { fprintf(stderr, " !="); }
+	|	expression EQ  expression { fprintf(stderr, " =="); $$ = new EqualsExpression($1, $3); }
+	|	expression SHR expression { fprintf(stderr, " >>"); }
+	|	expression SHL expression { fprintf(stderr, " >>"); }
+	|	expression LOG_OR expression { fprintf(stderr, " ||"); }
+	|	expression LOG_AND expression { fprintf(stderr, " &&"); }
+	|	'-' expression %prec UMINUS	{ fprintf(stderr, " U-"); }
+	|	'~' expression %prec UMINUS	{ fprintf(stderr, " ~"); }
+	|	'<' expression { fprintf(stderr, " <"); }
+	|	'>' expression { fprintf(stderr, " >"); }
+	|	'(' expression ')'	{ fprintf(stderr, " ()"); }
+	|	NUMBER { fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); }
 	;
 %%
