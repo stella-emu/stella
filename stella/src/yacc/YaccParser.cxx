@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.3 2005-07-13 02:54:13 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.4 2005-07-13 04:49:19 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,10 +26,30 @@
 //#endif
 
 #include "Expression.hxx"
-#include "PlusExpression.hxx"
-#include "MinusExpression.hxx"
-#include "EqualsExpression.hxx"
+
+#include "BinAndExpression.hxx"
+#include "BinNotExpression.hxx"
+#include "BinOrExpression.hxx"
+#include "BinXorExpression.hxx"
 #include "ConstExpression.hxx"
+#include "DivExpression.hxx"
+#include "EqualsExpression.hxx"
+#include "Expression.hxx"
+#include "GreaterEqualsExpression.hxx"
+#include "GreaterExpression.hxx"
+#include "LessEqualsExpression.hxx"
+#include "LessExpression.hxx"
+#include "LogAndExpression.hxx"
+#include "LogOrExpression.hxx"
+#include "LogNotExpression.hxx"
+#include "MinusExpression.hxx"
+#include "ModExpression.hxx"
+#include "MultExpression.hxx"
+#include "NotEqualsExpression.hxx"
+#include "PlusExpression.hxx"
+#include "ShiftLeftExpression.hxx"
+#include "ShiftRightExpression.hxx"
+#include "UnaryMinusExpression.hxx"
 
 namespace YaccParser {
 #include <stdio.h>

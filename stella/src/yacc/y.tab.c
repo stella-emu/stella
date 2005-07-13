@@ -6,13 +6,14 @@
 # define	NUMBER	257
 # define	LOG_OR	258
 # define	LOG_AND	259
-# define	SHR	260
-# define	SHL	261
-# define	GTE	262
-# define	LTE	263
-# define	NE	264
-# define	EQ	265
-# define	UMINUS	266
+# define	LOG_NOT	260
+# define	SHR	261
+# define	SHL	262
+# define	GTE	263
+# define	LTE	264
+# define	NE	265
+# define	EQ	266
+# define	UMINUS	267
 
 #line 1 "stella.y"
 
@@ -44,12 +45,12 @@ typedef union {
 
 
 
-#define	YYFINAL		52
+#define	YYFINAL		54
 #define	YYFLAG		-32768
-#define	YYNTBASE	26
+#define	YYNTBASE	28
 
 /* YYTRANSLATE(YYLEX) -- Bison token number corresponding to YYLEX. */
-#define YYTRANSLATE(x) ((unsigned)(x) <= 266 ? yytranslate[x] : 28)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 267 ? yytranslate[x] : 30)
 
 /* YYTRANSLATE[YYLEX] -- Bison token number corresponding to YYLEX. */
 static const char yytranslate[] =
@@ -57,16 +58,16 @@ static const char yytranslate[] =
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     8,    13,     2,
-      24,    25,     6,     5,     2,     4,     2,     7,     2,     2,
+       2,     2,     2,    25,     2,     2,     2,     8,    14,     2,
+      26,    27,     6,     5,     2,     4,     2,     7,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      16,     2,    17,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    12,     2,     2,     2,     2,     2,
+      17,     2,    18,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    11,     2,    23,     2,     2,     2,
+       2,     2,     2,     2,    13,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,    12,     2,    24,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -80,7 +81,7 @@ static const char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     3,     9,    10,
-      14,    15,    18,    19,    20,    21,    22
+      11,    15,    16,    19,    20,    21,    22,    23
 };
 
 #if YYDEBUG
@@ -88,20 +89,20 @@ static const short yyprhs[] =
 {
        0,     0,     2,     6,    10,    14,    18,    22,    26,    30,
       34,    38,    42,    46,    50,    54,    58,    62,    66,    70,
-      74,    77,    80,    83,    86,    90
+      74,    77,    80,    83,    86,    89,    93
 };
 static const short yyrhs[] =
 {
-      27,     0,    27,     5,    27,     0,    27,     4,    27,     0,
-      27,     6,    27,     0,    27,     7,    27,     0,    27,     8,
-      27,     0,    27,    13,    27,     0,    27,    11,    27,     0,
-      27,    12,    27,     0,    27,    17,    27,     0,    27,    16,
-      27,     0,    27,    18,    27,     0,    27,    19,    27,     0,
-      27,    20,    27,     0,    27,    21,    27,     0,    27,    14,
-      27,     0,    27,    15,    27,     0,    27,     9,    27,     0,
-      27,    10,    27,     0,     4,    27,     0,    23,    27,     0,
-      16,    27,     0,    17,    27,     0,    24,    27,    25,     0,
-       3,     0
+      29,     0,    29,     5,    29,     0,    29,     4,    29,     0,
+      29,     6,    29,     0,    29,     7,    29,     0,    29,     8,
+      29,     0,    29,    14,    29,     0,    29,    12,    29,     0,
+      29,    13,    29,     0,    29,    18,    29,     0,    29,    17,
+      29,     0,    29,    19,    29,     0,    29,    20,    29,     0,
+      29,    21,    29,     0,    29,    22,    29,     0,    29,    15,
+      29,     0,    29,    16,    29,     0,    29,     9,    29,     0,
+      29,    10,    29,     0,     4,    29,     0,    24,    29,     0,
+      25,    29,     0,    17,    29,     0,    18,    29,     0,    26,
+      29,    27,     0,     3,     0
 };
 
 #endif
@@ -110,9 +111,9 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    35,    38,    39,    40,    41,    50,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77
+       0,    36,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63
 };
 #endif
 
@@ -123,18 +124,18 @@ static const short yyrline[] =
 static const char *const yytname[] =
 {
   "$", "error", "$undefined.", "NUMBER", "'-'", "'+'", "'*'", "'/'", "'%'", 
-  "LOG_OR", "LOG_AND", "'|'", "'^'", "'&'", "SHR", "SHL", "'<'", "'>'", 
-  "GTE", "LTE", "NE", "EQ", "UMINUS", "'~'", "'('", "')'", "statement", 
-  "expression", 0
+  "LOG_OR", "LOG_AND", "LOG_NOT", "'|'", "'^'", "'&'", "SHR", "SHL", 
+  "'<'", "'>'", "GTE", "LTE", "NE", "EQ", "UMINUS", "'~'", "'!'", "'('", 
+  "')'", "statement", "expression", 0
 };
 #endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives. */
 static const short yyr1[] =
 {
-       0,    26,    27,    27,    27,    27,    27,    27,    27,    27,
-      27,    27,    27,    27,    27,    27,    27,    27,    27,    27,
-      27,    27,    27,    27,    27,    27
+       0,    28,    29,    29,    29,    29,    29,    29,    29,    29,
+      29,    29,    29,    29,    29,    29,    29,    29,    29,    29,
+      29,    29,    29,    29,    29,    29,    29
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN. */
@@ -142,7 +143,7 @@ static const short yyr2[] =
 {
        0,     1,     3,     3,     3,     3,     3,     3,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       2,     2,     2,     2,     3,     1
+       2,     2,     2,     2,     2,     3,     1
 };
 
 /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -150,27 +151,27 @@ static const short yyr2[] =
    error. */
 static const short yydefact[] =
 {
-       0,    25,     0,     0,     0,     0,     0,     1,    20,    22,
-      23,    21,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    26,     0,     0,     0,     0,     0,     0,     1,    20,
+      23,    24,    21,    22,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    24,     3,     2,     4,     5,     6,    18,    19,     8,
-       9,     7,    16,    17,    11,    10,    12,    13,    14,    15,
-       0,     0,     0
+       0,     0,     0,    25,     3,     2,     4,     5,     6,    18,
+      19,     8,     9,     7,    16,    17,    11,    10,    12,    13,
+      14,    15,     0,     0,     0
 };
 
 static const short yydefgoto[] =
 {
-      50,     7
+      52,     8
 };
 
 static const short yypact[] =
 {
-      44,-32768,    44,    44,    44,    44,    44,    65,-32768,   -11,
-     -11,-32768,    25,    44,    44,    44,    44,    44,    44,    44,
-      44,    44,    44,    44,    44,    44,    44,    44,    44,    44,
-      44,-32768,    81,    81,    94,    94,    94,   106,   117,    38,
-      38,   125,   131,   131,   -11,   -11,   -11,   -11,   -11,   -11,
-      49,    62,-32768
+      47,-32768,    47,    47,    47,    47,    47,    47,    70,-32768,
+     -11,   -11,-32768,-32768,    27,    47,    47,    47,    47,    47,
+      47,    47,    47,    47,    47,    47,    47,    47,    47,    47,
+      47,    47,    47,-32768,    87,    87,   101,   101,   101,   114,
+     125,    41,    41,   133,   139,   139,   -11,   -11,   -11,   -11,
+     -11,   -11,    12,    38,-32768
 };
 
 static const short yypgoto[] =
@@ -179,47 +180,49 @@ static const short yypgoto[] =
 };
 
 
-#define	YYLAST		152
+#define	YYLAST		161
 
 
 static const short yytable[] =
 {
-       8,     9,    10,    11,    12,-32768,-32768,-32768,-32768,-32768,
-  -32768,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    48,    49,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,    30,     1,     2,    51,
-      31,    22,    23,    24,    25,    26,    27,    28,    29,    30,
-       3,     4,    52,     0,     0,     0,     0,     5,     6,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,    30,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    30,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    30,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,    23,
-      24,    25,    26,    27,    28,    29,    30,    25,    26,    27,
-      28,    29,    30
+       9,    10,    11,    12,    13,    14,-32768,-32768,-32768,-32768,
+  -32768,-32768,    53,    34,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    15,    16,    17,    18,    19,    20,    21,    54,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+       1,     2,     0,     0,    33,    24,    25,    26,    27,    28,
+      29,    30,    31,    32,     3,     4,     0,     0,     0,     0,
+       0,     5,     6,     7,    15,    16,    17,    18,    19,    20,
+      21,     0,    22,    23,    24,    25,    26,    27,    28,    29,
+      30,    31,    32,    17,    18,    19,    20,    21,     0,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      20,    21,     0,    22,    23,    24,    25,    26,    27,    28,
+      29,    30,    31,    32,    21,     0,    22,    23,    24,    25,
+      26,    27,    28,    29,    30,    31,    32,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    25,    26,
+      27,    28,    29,    30,    31,    32,    27,    28,    29,    30,
+      31,    32
 };
 
 static const short yycheck[] =
 {
-       2,     3,     4,     5,     6,    16,    17,    18,    19,    20,
-      21,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,     3,     4,     0,
-      25,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      16,    17,     0,    -1,    -1,    -1,    -1,    23,    24,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    10,    11,    12,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    14,
-      15,    16,    17,    18,    19,    20,    21,    16,    17,    18,
-      19,    20,    21
+       2,     3,     4,     5,     6,     7,    17,    18,    19,    20,
+      21,    22,     0,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,     4,     5,     6,     7,     8,     9,    10,     0,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+       3,     4,    -1,    -1,    27,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    17,    18,    -1,    -1,    -1,    -1,
+      -1,    24,    25,    26,     4,     5,     6,     7,     8,     9,
+      10,    -1,    12,    13,    14,    15,    16,    17,    18,    19,
+      20,    21,    22,     6,     7,     8,     9,    10,    -1,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+       9,    10,    -1,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    10,    -1,    12,    13,    14,    15,
+      16,    17,    18,    19,    20,    21,    22,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    15,    16,
+      17,    18,    19,    20,    21,    22,    17,    18,    19,    20,
+      21,    22
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 #line 3 "/usr/share/bison/bison.simple"
@@ -929,117 +932,107 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 35 "stella.y"
+#line 36 "stella.y"
 { fprintf(stderr, "\ndone\n"); result.exp = yyvsp[0].exp; }
     break;
 case 2:
-#line 38 "stella.y"
+#line 39 "stella.y"
 { fprintf(stderr, " +"); yyval.exp = new PlusExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 3:
-#line 39 "stella.y"
+#line 40 "stella.y"
 { fprintf(stderr, " -"); yyval.exp = new MinusExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 4:
-#line 40 "stella.y"
-{ fprintf(stderr, " *");  }
+#line 41 "stella.y"
+{ fprintf(stderr, " *"); yyval.exp = new MultExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 5:
 #line 42 "stella.y"
-{	fprintf(stderr, " /");
-/*
-					if($3 == 0)
-						yyerror("divide by zero");
-					else
-						$$ = $1 / $3;
-*/
-				}
+{ fprintf(stderr, " /"); yyval.exp = new DivExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 6:
-#line 51 "stella.y"
-{	fprintf(stderr, " %");
-/*
-					if($3 == 0)
-						yyerror("divide by zero");
-					else
-						$$ = $1 % $3;
-*/
-				}
+#line 43 "stella.y"
+{ fprintf(stderr, " %%"); yyval.exp = new ModExpression(yyvsp[-2].exp, yyvsp[0].exp);  }
     break;
 case 7:
-#line 59 "stella.y"
-{ fprintf(stderr, " &"); }
+#line 44 "stella.y"
+{ fprintf(stderr, " &"); yyval.exp = new BinAndExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 8:
-#line 60 "stella.y"
-{ fprintf(stderr, " |"); }
+#line 45 "stella.y"
+{ fprintf(stderr, " |"); yyval.exp = new BinOrExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 9:
-#line 61 "stella.y"
-{ fprintf(stderr, " ^"); }
+#line 46 "stella.y"
+{ fprintf(stderr, " ^"); yyval.exp = new BinXorExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 10:
-#line 62 "stella.y"
-{ fprintf(stderr, " <"); }
+#line 47 "stella.y"
+{ fprintf(stderr, " <"); yyval.exp = new LessExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 11:
-#line 63 "stella.y"
-{ fprintf(stderr, " >"); }
+#line 48 "stella.y"
+{ fprintf(stderr, " >"); yyval.exp = new GreaterExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 12:
-#line 64 "stella.y"
-{ fprintf(stderr, " >="); }
+#line 49 "stella.y"
+{ fprintf(stderr, " >="); yyval.exp = new GreaterEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 13:
-#line 65 "stella.y"
-{ fprintf(stderr, " <="); }
+#line 50 "stella.y"
+{ fprintf(stderr, " <="); yyval.exp = new LessEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 14:
-#line 66 "stella.y"
-{ fprintf(stderr, " !="); }
+#line 51 "stella.y"
+{ fprintf(stderr, " !="); yyval.exp = new NotEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 15:
-#line 67 "stella.y"
+#line 52 "stella.y"
 { fprintf(stderr, " =="); yyval.exp = new EqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 16:
-#line 68 "stella.y"
-{ fprintf(stderr, " >>"); }
+#line 53 "stella.y"
+{ fprintf(stderr, " >>"); yyval.exp = new ShiftRightExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 17:
-#line 69 "stella.y"
-{ fprintf(stderr, " >>"); }
+#line 54 "stella.y"
+{ fprintf(stderr, " <<"); yyval.exp = new ShiftLeftExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 18:
-#line 70 "stella.y"
-{ fprintf(stderr, " ||"); }
+#line 55 "stella.y"
+{ fprintf(stderr, " ||"); yyval.exp = new LogOrExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 19:
-#line 71 "stella.y"
-{ fprintf(stderr, " &&"); }
+#line 56 "stella.y"
+{ fprintf(stderr, " &&"); yyval.exp = new LogAndExpression(yyvsp[-2].exp, yyvsp[0].exp); }
     break;
 case 20:
-#line 72 "stella.y"
-{ fprintf(stderr, " U-"); }
+#line 57 "stella.y"
+{ fprintf(stderr, " U-"); yyval.exp = new UnaryMinusExpression(yyvsp[0].exp); }
     break;
 case 21:
-#line 73 "stella.y"
-{ fprintf(stderr, " ~"); }
+#line 58 "stella.y"
+{ fprintf(stderr, " ~"); yyval.exp = new BinNotExpression(yyvsp[0].exp); }
     break;
 case 22:
-#line 74 "stella.y"
-{ fprintf(stderr, " <"); }
+#line 59 "stella.y"
+{ fprintf(stderr, " !"); yyval.exp = new LogNotExpression(yyvsp[0].exp); }
     break;
 case 23:
-#line 75 "stella.y"
-{ fprintf(stderr, " >"); }
+#line 60 "stella.y"
+{ fprintf(stderr, " <"); /* $$ = new LoByteExpression($2); */ }
     break;
 case 24:
-#line 76 "stella.y"
-{ fprintf(stderr, " ()"); }
+#line 61 "stella.y"
+{ fprintf(stderr, " >"); /* $$ = new HiByteExpression($2); */ }
     break;
 case 25:
-#line 77 "stella.y"
+#line 62 "stella.y"
+{ fprintf(stderr, " ()"); yyval.exp = yyvsp[-1].exp; }
+    break;
+case 26:
+#line 63 "stella.y"
 { fprintf(stderr, " %d", yyvsp[0].val); yyval.exp = new ConstExpression(yyvsp[0].val); }
     break;
 }
@@ -1275,5 +1268,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 79 "stella.y"
+#line 65 "stella.y"
 

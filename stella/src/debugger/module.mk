@@ -6,17 +6,27 @@ MODULE_OBJS := \
 	src/debugger/EquateList.o \
 	src/debugger/Expression.o \
 	src/debugger/ConstExpression.o \
+	src/debugger/NotEqualsExpression.o \
 	src/debugger/EqualsExpression.o \
 	src/debugger/PlusExpression.o \
+	src/debugger/UnaryMinusExpression.o \
 	src/debugger/MinusExpression.o \
 	src/debugger/MultExpression.o \
 	src/debugger/DivExpression.o \
 	src/debugger/ModExpression.o \
 	src/debugger/LogAndExpression.o \
 	src/debugger/LogOrExpression.o \
+	src/debugger/LogNotExpression.o \
+	src/debugger/BinNotExpression.o \
 	src/debugger/BinAndExpression.o \
 	src/debugger/BinOrExpression.o \
 	src/debugger/BinXorExpression.o \
+	src/debugger/GreaterExpression.o \
+	src/debugger/GreaterEqualsExpression.o \
+	src/debugger/LessExpression.o \
+	src/debugger/LessEqualsExpression.o \
+	src/debugger/ShiftRightExpression.o \
+	src/debugger/ShiftLeftExpression.o \
 	src/debugger/PackedBitArray.o \
 	src/debugger/CpuDebug.o \
 	src/debugger/RamDebug.o \

@@ -23,6 +23,7 @@ void yyerror(char *e) {
 %left '*' '/' '%'
 %left LOG_OR
 %left LOG_AND
+%left LOG_NOT
 %left '|' '^'
 %left '&'
 %left SHR SHL
@@ -37,43 +38,28 @@ statement:	expression { fprintf(stderr, "\ndone\n"); result.exp = $1; }
 
 expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpression($1, $3); }
 	|	expression '-' expression { fprintf(stderr, " -"); $$ = new MinusExpression($1, $3); }
-	|	expression '*' expression { fprintf(stderr, " *");  }
-	|	expression '/' expression
-				{	fprintf(stderr, " /");
-/*
-					if($3 == 0)
-						yyerror("divide by zero");
-					else
-						$$ = $1 / $3;
-*/
-				}
-	|	expression '%' expression
-				{	fprintf(stderr, " %");
-/*
-					if($3 == 0)
-						yyerror("divide by zero");
-					else
-						$$ = $1 % $3;
-*/
-				}
-	|	expression '&' expression { fprintf(stderr, " &"); }
-	|	expression '|' expression { fprintf(stderr, " |"); }
-	|	expression '^' expression { fprintf(stderr, " ^"); }
-	|	expression '>' expression { fprintf(stderr, " <"); }
-	|	expression '<' expression { fprintf(stderr, " >"); }
-	|	expression GTE expression { fprintf(stderr, " >="); }
-	|	expression LTE expression { fprintf(stderr, " <="); }
-	|	expression NE  expression { fprintf(stderr, " !="); }
+	|	expression '*' expression { fprintf(stderr, " *"); $$ = new MultExpression($1, $3); }
+	|	expression '/' expression { fprintf(stderr, " /"); $$ = new DivExpression($1, $3); }
+	|	expression '%' expression { fprintf(stderr, " %%"); $$ = new ModExpression($1, $3);  }
+	|	expression '&' expression { fprintf(stderr, " &"); $$ = new BinAndExpression($1, $3); }
+	|	expression '|' expression { fprintf(stderr, " |"); $$ = new BinOrExpression($1, $3); }
+	|	expression '^' expression { fprintf(stderr, " ^"); $$ = new BinXorExpression($1, $3); }
+	|	expression '>' expression { fprintf(stderr, " <"); $$ = new LessExpression($1, $3); }
+	|	expression '<' expression { fprintf(stderr, " >"); $$ = new GreaterExpression($1, $3); }
+	|	expression GTE expression { fprintf(stderr, " >="); $$ = new GreaterEqualsExpression($1, $3); }
+	|	expression LTE expression { fprintf(stderr, " <="); $$ = new LessEqualsExpression($1, $3); }
+	|	expression NE  expression { fprintf(stderr, " !="); $$ = new NotEqualsExpression($1, $3); }
 	|	expression EQ  expression { fprintf(stderr, " =="); $$ = new EqualsExpression($1, $3); }
-	|	expression SHR expression { fprintf(stderr, " >>"); }
-	|	expression SHL expression { fprintf(stderr, " >>"); }
-	|	expression LOG_OR expression { fprintf(stderr, " ||"); }
-	|	expression LOG_AND expression { fprintf(stderr, " &&"); }
-	|	'-' expression %prec UMINUS	{ fprintf(stderr, " U-"); }
-	|	'~' expression %prec UMINUS	{ fprintf(stderr, " ~"); }
-	|	'<' expression { fprintf(stderr, " <"); }
-	|	'>' expression { fprintf(stderr, " >"); }
-	|	'(' expression ')'	{ fprintf(stderr, " ()"); }
+	|	expression SHR expression { fprintf(stderr, " >>"); $$ = new ShiftRightExpression($1, $3); }
+	|	expression SHL expression { fprintf(stderr, " <<"); $$ = new ShiftLeftExpression($1, $3); }
+	|	expression LOG_OR expression { fprintf(stderr, " ||"); $$ = new LogOrExpression($1, $3); }
+	|	expression LOG_AND expression { fprintf(stderr, " &&"); $$ = new LogAndExpression($1, $3); }
+	|	'-' expression %prec UMINUS	{ fprintf(stderr, " U-"); $$ = new UnaryMinusExpression($2); }
+	|	'~' expression %prec UMINUS	{ fprintf(stderr, " ~"); $$ = new BinNotExpression($2); }
+	|	'!' expression %prec UMINUS	{ fprintf(stderr, " !"); $$ = new LogNotExpression($2); }
+	|	'<' expression { fprintf(stderr, " <"); /* $$ = new LoByteExpression($2); */ }
+	|	'>' expression { fprintf(stderr, " >"); /* $$ = new HiByteExpression($2); */ }
+	|	'(' expression ')'	{ fprintf(stderr, " ()"); $$ = $2; }
 	|	NUMBER { fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); }
 	;
 %%

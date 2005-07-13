@@ -12,13 +12,14 @@ typedef union {
 # define	NUMBER	257
 # define	LOG_OR	258
 # define	LOG_AND	259
-# define	SHR	260
-# define	SHL	261
-# define	GTE	262
-# define	LTE	263
-# define	NE	264
-# define	EQ	265
-# define	UMINUS	266
+# define	LOG_NOT	260
+# define	SHR	261
+# define	SHL	262
+# define	GTE	263
+# define	LTE	264
+# define	NE	265
+# define	EQ	266
+# define	UMINUS	267
 
 
 extern YYSTYPE yylval;
