@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.10 2005-07-09 23:44:07 urchlay Exp $
+// $Id: TIADebug.cxx,v 1.11 2005-07-14 18:28:35 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -44,6 +44,12 @@ DebuggerState& TIADebug::getState()
   for(int i = 0; i < 0x010; ++i)
     myState.ram.push_back(myTIA->peek(i));
 
+  myState.coluRegs.clear();
+  myState.coluRegs.push_back(coluP0());
+  myState.coluRegs.push_back(coluP1());
+  myState.coluRegs.push_back(coluPF());
+  myState.coluRegs.push_back(coluBK());
+
   return myState;
 }
 
@@ -53,6 +59,56 @@ void TIADebug::saveOldState()
   myOldState.ram.clear();
   for(int i = 0; i < 0x010; ++i)
     myOldState.ram.push_back(myTIA->peek(i));
+
+  myOldState.coluRegs.clear();
+  myOldState.coluRegs.push_back(coluP0());
+  myOldState.coluRegs.push_back(coluP1());
+  myOldState.coluRegs.push_back(coluPF());
+  myOldState.coluRegs.push_back(coluBK());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::coluP0(int newVal)
+{
+  // TIA::myCOLUxx are stored 4 copies to each int,
+  // we need only 1 when fetching, but store all 4
+  if(newVal > -1)
+    myTIA->myCOLUP0 = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+
+  return myTIA->myCOLUP0 & 0xff;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::coluP1(int newVal)
+{
+  // TIA::myCOLUxx are stored 4 copies to each int,
+  // we need only 1 when fetching, but store all 4
+  if(newVal > -1)
+    myTIA->myCOLUP1 = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+
+  return myTIA->myCOLUP1 & 0xff;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::coluPF(int newVal)
+{
+  // TIA::myCOLUxx are stored 4 copies to each int,
+  // we need only 1 when fetching, but store all 4
+  if(newVal > -1)
+    myTIA->myCOLUPF = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+
+  return myTIA->myCOLUPF & 0xff;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::coluBK(int newVal)
+{
+  // TIA::myCOLUxx are stored 4 copies to each int,
+  // we need only 1 when fetching, but store all 4
+  if(newVal > -1)
+    myTIA->myCOLUBK = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+
+  return myTIA->myCOLUBK & 0xff;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -141,11 +197,10 @@ string TIADebug::state()
   // TODO: inverse video for changed regs. Core needs to track this.
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
-  // TIA::myCOLUxx are stored 4 copies to each int, we need only 1
-  uInt8 COLUP0 = myTIA->myCOLUP0 & 0xff;
-  uInt8 COLUP1 = myTIA->myCOLUP1 & 0xff;
-  uInt8 COLUPF = myTIA->myCOLUPF & 0xff;
-  uInt8 COLUBK = myTIA->myCOLUBK & 0xff;
+  uInt8 COLUP0 = coluP0();
+  uInt8 COLUP1 = coluP1();
+  uInt8 COLUPF = coluPF();
+  uInt8 COLUBK = coluBK();
 
   // TIA::myPF holds all 3 PFx regs, we shall extract
   int PF = myTIA->myPF;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.9 2005-07-12 02:27:07 urchlay Exp $
+// $Id: TiaWidget.cxx,v 1.10 2005-07-14 18:28:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,18 +33,18 @@
 // ID's for the various widgets
 // We need ID's, since there are more than one of several types of widgets
 enum {
-  kRamID,
-  kColorRegsID,
-  kVSyncID,
-  kVBlankID
+  kRamID       = 'TWra',
+  kColorRegsID = 'TWcr',
+  kVSyncID     = 'TWvs',
+  kVBlankID    = 'TWvb'
 };
 
 // Color registers
 enum {
   kCOLUP0Addr,
   kCOLUP1Addr,
-  kCOLUBKAddr,
-  kCOLUPFAddr
+  kCOLUPFAddr,
+  kCOLUBKAddr
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,6 +60,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // Create a 16x1 grid holding byte values with labels
   myRamGrid = new DataGridWidget(boss, xpos+lwidth, ypos, 16, 1, 2, 8, kBASE_16);
+  myRamGrid->setEditable(false);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamID);
   myActiveWidget = myRamGrid;
@@ -130,10 +131,10 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   xpos = 10;  ypos += 2* kLineHeight;
   for(int row = 0; row < 4; ++row)
   {
-    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
-                          40, kLineHeight,
-                          regNames[row] + string(":"),
-                          kTextAlignLeft);
+    new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
+                         40, kLineHeight,
+                         regNames[row] + string(":"),
+                         kTextAlignLeft);
   }
   xpos += 40;
   myColorRegs = new DataGridWidget(boss, xpos, ypos-1, 1, 4, 2, 8, kBASE_16);
@@ -168,7 +169,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
   // memory location
   int addr, value;
-  const char* buf;
+  string buf;
 
   Debugger& dbg = instance()->debugger();
 
@@ -177,10 +178,6 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kDGItemDataChangedCmd:
       switch(id)
       {
-        case kRamID:
-          changeRam();
-          break;
-
         case kColorRegsID:
           changeColorRegs();
           break;
@@ -201,12 +198,10 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           addr  = myRamGrid->getSelectedAddr();
           value = myRamGrid->getSelectedValue();
 
-          buf = instance()->debugger().equates()->getLabel(addr).c_str();
-          if(*buf) myLabel->setEditString(buf);
-          else    myLabel->setEditString("");
+          myLabel->setEditString(dbg.equates()->getLabel(addr));
 
-          myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
-          myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
+          myDecValue->setEditString(dbg.valueToString(value, kBASE_10));
+          myBinValue->setEditString(dbg.valueToString(value, kBASE_2));
           break;
       }
       break;
@@ -243,7 +238,8 @@ void TiaWidget::fillGrid()
   IntArray vlist;
   BoolArray changed;
 
-  TIADebug& tia = instance()->debugger().tiaDebug();
+  Debugger& dbg = instance()->debugger();
+  TIADebug& tia = dbg.tiaDebug();
   TiaState state    = (TiaState&) tia.getState();
   TiaState oldstate = (TiaState&) tia.getOldState();
 
@@ -258,40 +254,43 @@ void TiaWidget::fillGrid()
   myRamGrid->setList(alist, vlist, changed);
 
   // Scanline and VSync/VBlank
-// FIXME
+  myScanlines->setEditString(dbg.valueToString(tia.scanlines(), kBASE_10));
+  myVSync->setState(tia.vsync());
+  myVBlank->setState(tia.vblank());
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();
   for(unsigned int i = 0; i < 4; i++)
   {
     alist.push_back(i);
-    vlist.push_back(i);
-    changed.push_back(false);
+    vlist.push_back(state.coluRegs[i]);
+    changed.push_back(state.coluRegs[i] != oldstate.coluRegs[i]);
   }
   myColorRegs->setList(alist, vlist, changed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaWidget::changeRam()
-{
-  int addr  = myRamGrid->getSelectedAddr();
-  int value = myRamGrid->getSelectedValue();
-
-  IntArray ram;
-  ram.push_back(addr);
-  ram.push_back(value);
-
-//  instance()->debugger().setRAM(ram);
-  myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
-  myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::changeColorRegs()
 {
-cerr << "TiaWidget::changeColorRegs()\n";
   int addr  = myColorRegs->getSelectedAddr();
   int value = myColorRegs->getSelectedValue();
 
-//FIXME  instance()->debugger().writeRAM(addr - kRamStart, value);
+  switch(addr)
+  {
+    case kCOLUP0Addr:
+      instance()->debugger().tiaDebug().coluP0(value);
+      break;
+
+    case kCOLUP1Addr:
+      instance()->debugger().tiaDebug().coluP1(value);
+      break;
+
+    case kCOLUPFAddr:
+      instance()->debugger().tiaDebug().coluPF(value);
+      break;
+
+    case kCOLUBKAddr:
+      instance()->debugger().tiaDebug().coluBK(value);
+      break;
+  }
 }

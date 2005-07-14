@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.13 2005-07-07 15:19:04 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.14 2005-07-14 18:28:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -297,42 +297,63 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         break;
 
       case 'n': // negate
-        negateCell();
-        dirty = true;
+        if(_editable)
+        {
+          negateCell();
+          dirty = true;
+        }
         break;
 
       case 'i': // invert
       case '!':
-        invertCell();
-        dirty = true;
+        if(_editable)
+        {
+          invertCell();
+          dirty = true;
+        }
         break;
 
       case '-': // decrement
-        decrementCell();
-        dirty = true;
+        if(_editable)
+        {
+          decrementCell();
+          dirty = true;
+        }
         break;
 
       case '+': // increment
       case '=':
-        incrementCell();
-        dirty = true;
+        if(_editable)
+        {
+          incrementCell();
+          dirty = true;
+        }
         break;
 
       case '<': // shift left
       case ',':
-        lshiftCell();
-        dirty = true;
+        if(_editable)
+        {
+          lshiftCell();
+          dirty = true;
+        }
         break;
 
       case '>': // shift right
       case '.':
-        rshiftCell();
-        dirty = true;
+        if(_editable)
+        {
+          rshiftCell();
+          dirty = true;
+        }
         break;
 
       case 'z': // zero
-        zeroCell();
-        dirty = true;
+        if(_editable)
+        {
+          zeroCell();
+          dirty = true;
+        }
         break;
 
       default:

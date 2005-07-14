@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.6 2005-07-08 17:22:40 stephena Exp $
+// $Id: TIADebug.hxx,v 1.7 2005-07-14 18:28:35 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -29,6 +29,7 @@ class TiaState : public DebuggerState
 {
   public:
     IntArray ram;
+    IntArray coluRegs;
 };
 
 class TIADebug : public DebuggerSystem
@@ -42,6 +43,10 @@ class TIADebug : public DebuggerSystem
     void saveOldState();
 
     // FIXME - add whole slew of setXXX() methods
+    uInt8 coluP0(int newVal = -1);
+    uInt8 coluP1(int newVal = -1);
+    uInt8 coluPF(int newVal = -1);
+    uInt8 coluBK(int newVal = -1);
 
     int scanlines();
     int frameCount();

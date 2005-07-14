@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Array.hxx,v 1.6 2005-07-02 18:34:54 stephena Exp $
+// $Id: Array.hxx,v 1.7 2005-07-14 18:28:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -192,7 +192,8 @@ class Array
 
 }  // Namespace GUI
 
-typedef GUI::Array<int>  IntArray;
-typedef GUI::Array<bool> BoolArray;
+typedef GUI::Array<int>   IntArray;
+typedef GUI::Array<bool>  BoolArray;
+typedef GUI::Array<uInt8> ByteArray;
 
 #endif

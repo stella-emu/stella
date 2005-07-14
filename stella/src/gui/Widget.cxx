@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.23 2005-07-06 15:09:16 stephena Exp $
+// $Id: Widget.cxx,v 1.24 2005-07-14 18:28:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -246,17 +246,17 @@ void Widget::setNextInChain(Widget* start, Widget* hasFocus)
   if(!start)
     return;
 // FIXME - get this working
-cerr << "--------------------------------\nWidget list:\n";
+//cerr << "--------------------------------\nWidget list:\n";
     Widget* w1 = start;
     while(w1)
     {
       if(w1->getFlags() & WIDGET_TAB_NAVIGATE)
       {
-        cerr << w1 << endl;
+//        cerr << w1 << endl;
       }
       w1 = w1->_next;
     }
-cerr << "\n--------------------------------\n";
+//cerr << "\n--------------------------------\n";
 
 
   // We search the array in circular fashion until the 'end' is reached
@@ -397,7 +397,12 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, int x, int y, int w, int h,
 void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  {
     toggleState();
+
+    // We only send a command when the widget has been changed interactively
+    sendCommand(_cmd, _state, _id);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,7 +414,6 @@ void CheckboxWidget::setState(bool state)
     _flags ^= WIDGET_INV_BORDER;
     draw();
   }
-  sendCommand(_cmd, _state, _id);
 
   // Refresh the screen after the checkbox is drawn
   // TODO - create dirty rectangle
