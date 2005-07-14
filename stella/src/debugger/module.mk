@@ -6,6 +6,7 @@ MODULE_OBJS := \
 	src/debugger/EquateList.o \
 	src/debugger/Expression.o \
 	src/debugger/ConstExpression.o \
+	src/debugger/EquateExpression.o \
 	src/debugger/NotEqualsExpression.o \
 	src/debugger/EqualsExpression.o \
 	src/debugger/PlusExpression.o \

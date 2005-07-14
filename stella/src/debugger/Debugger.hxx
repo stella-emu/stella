@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.49 2005-07-14 00:54:28 stephena Exp $
+// $Id: Debugger.hxx,v 1.50 2005-07-14 11:28:37 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -52,7 +52,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.49 2005-07-14 00:54:28 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.50 2005-07-14 11:28:37 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -206,6 +206,16 @@ class Debugger : public DialogContainer
       return to_bin(dec, 16, buf);
     }
 
+    /**
+      This is used when we want the debugger from a class that can't
+      receive the debugger object in any other way.
+
+      It's basically a hack to prevent the need to pass debugger objects
+      everywhere, but I feel it's better to place it here then in
+      YaccParser (which technically isn't related to it at all).
+    */
+    static Debugger& debugger() { return *myStaticDebugger; }
+
   private:
     /**
       Save state of each debugger subsystem
@@ -281,6 +291,8 @@ class Debugger : public DialogContainer
     PackedBitArray *readTraps;
     PackedBitArray *writeTraps;
     PromptWidget *myPrompt;
+
+    static Debugger* myStaticDebugger;
 };
 
 #endif

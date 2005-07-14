@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.29 2005-07-14 00:54:28 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.30 2005-07-14 11:28:37 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
 #define DEBUGGER_PARSER_HXX
 
+class Console;
 class Debugger;
 struct Command;
 

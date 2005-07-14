@@ -13,31 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.hxx,v 1.4 2005-07-14 11:28:38 stephena Exp $
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: EquateExpression.cxx,v 1.1 2005-07-14 11:28:37 stephena Exp $
 //============================================================================
 
-#ifndef PARSER_HXX
-#define PARSER_HXX
-
-class Debugger;
-class System;
-
 #include "Expression.hxx"
+#include "EquateExpression.hxx"
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-
-namespace YaccParser {
-	int parse(const char *);
-	Expression *getResult();
-};
-
-//#ifdef __cplusplus
-//}
-//#endif
-
-#endif
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EquateExpression::EquateExpression(const string& label)
+  : Expression(0, 0),
+    myLabel(label)
+{
+}

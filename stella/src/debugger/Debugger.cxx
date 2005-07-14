@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.61 2005-07-14 00:54:27 stephena Exp $
+// $Id: Debugger.cxx,v 1.62 2005-07-14 11:28:37 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -37,6 +37,8 @@
 
 #include "Debugger.hxx"
 
+Debugger* Debugger::myStaticDebugger;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
   : DialogContainer(osystem),
@@ -57,6 +59,12 @@ Debugger::Debugger(OSystem* osystem)
   breakPoints = new PackedBitArray(0x10000);
   readTraps = new PackedBitArray(0x10000);
   writeTraps = new PackedBitArray(0x10000);
+
+  // Allow access to this object from any class
+  // Technically this violates pure OO programming, but since I know
+  // there will only be ever one instance of debugger in Stella,
+  // I don't care :)
+  myStaticDebugger = this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,6 +160,10 @@ void Debugger::setConsole(Console* console)
 
   delete myTiaDebug;
   myTiaDebug = new TIADebug(this, myConsole);
+
+  // Let the parser know about the new subsystems (so YaccParser can use them)
+// FIXME
+//  myParser->updateDebugger(this, myConsole);
 
   autoLoadSymbols(myOSystem->romFile());
 
