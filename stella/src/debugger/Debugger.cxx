@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.60 2005-07-12 02:27:04 urchlay Exp $
+// $Id: Debugger.cxx,v 1.61 2005-07-14 00:54:27 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -77,18 +77,28 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
+cerr << "Debugger::initialize()\n";
   // Calculate the actual pixels required for the # of lines
   // This is currently a bit of a hack, since it uses pixel
   // values that it shouldn't know about (font and tab height, etc)
   int userHeight = myOSystem->settings().getInt("debugheight");
   if(userHeight < kDebuggerLines)
+  {
     userHeight = kDebuggerLines;
+    myOSystem->settings().setInt("debugheight", userHeight);
+  }
   userHeight = (userHeight + 3) * kDebuggerLineHeight - 8;
 
   int x = 0,
       y = myConsole->mediaSource().height(),
       w = kDebuggerWidth,
       h = userHeight;
+
+cerr << "x = " << x << endl
+     << "y = " << y << endl
+     << "w = " << w << endl
+     << "h = " << h << endl
+     << endl;
 
   delete myBaseDialog;
   DebuggerDialog *dd = new DebuggerDialog(myOSystem, this, x, y, w, h);
@@ -105,6 +115,8 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initializeVideo()
 {
+cerr << "Debugger::initializeVideo()\n";
+
   // Calculate the actual pixels required for entire screen
   // This is currently a bit of a hack, since it uses pixel
   // values that it shouldn't know about (font and tab height, etc)
@@ -113,6 +125,10 @@ void Debugger::initializeVideo()
     userHeight = kDebuggerLines;
   userHeight = (userHeight + 3) * kDebuggerLineHeight - 8 +
                myConsole->mediaSource().height();
+
+cerr << "w = " << kDebuggerWidth << endl
+     << "h = " << userHeight << endl
+     << endl;
 
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
   myOSystem->frameBuffer().initialize(title, kDebuggerWidth, userHeight, false);
@@ -671,24 +687,28 @@ int Debugger::dpeek(int addr) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setHeight(int height)
+int Debugger::setHeight(int height)
 {
   // FIXME - this doesn't seem to work ...
 
-  myOSystem->settings().getInt("debugheight");
-
-  if(height == 0)
-    height = kDebuggerLines;
+cerr << "debugheight: " <<
+  myOSystem->settings().getInt("debugheight")
+<< endl;
 
   if(height < kDebuggerLines)
-    return false;
+    height = kDebuggerLines;
 
   myOSystem->settings().setInt("debugheight", height);
 
-  // Restart the debugger subsystem
-  myOSystem->resetDebugger();
+cerr << "height: " << height << endl;
 
-  return true;
+  quit();
+
+  // FIXME - implement ScummVM resize code
+
+  start();
+
+  return height;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

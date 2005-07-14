@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.52 2005-07-13 02:54:13 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.53 2005-07-14 00:54:28 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -145,7 +145,13 @@ Command DebuggerParser::commands[] = {
 		&DebuggerParser::executeFrame
 	},
 
-	// TODO: height command
+	{
+		"height",
+		"Change height of debugger window",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeHeight
+	},
 
 	{
 		"help",
@@ -1094,6 +1100,12 @@ void DebuggerParser::executeDisasm() {
 // "dump"
 void DebuggerParser::executeDump() {
 	commandResult = dump();
+}
+
+// "height"
+void DebuggerParser::executeHeight() {
+	int height = debugger->setHeight(args[0]);
+	commandResult = "height set to " + debugger->valueToString(height, kBASE_10);
 }
 
 // "help"

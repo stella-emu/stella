@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.48 2005-07-12 02:27:05 urchlay Exp $
+// $Id: Debugger.hxx,v 1.49 2005-07-14 00:54:28 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -38,7 +38,7 @@ class TIADebug;
 enum {
   kDebuggerWidth = 639,
   kDebuggerLineHeight = 12,   // based on the height of the console font
-  kDebuggerLines = 15,
+  kDebuggerLines = 20,
 };
 
 // Constants for RAM area
@@ -52,7 +52,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.48 2005-07-12 02:27:05 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.49 2005-07-14 00:54:28 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -232,7 +232,7 @@ class Debugger : public DialogContainer
     bool writeTrap(int t);
     void clearAllTraps();
 
-    bool setHeight(int height);
+    int setHeight(int height);
 
     void reloadROM();
 
