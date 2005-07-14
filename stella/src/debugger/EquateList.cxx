@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.17 2005-07-12 02:27:06 urchlay Exp $
+// $Id: EquateList.cxx,v 1.18 2005-07-14 15:28:51 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -153,8 +153,6 @@ int EquateList::getAddress(const string& label) {
 }
 
 bool EquateList::undefine(string& label) {
-	return false;
-
 	labelToAddr::iterator iter = myFwdMap.find(label);
 	if(iter == myFwdMap.end()) {
 		return false;
@@ -222,6 +220,7 @@ string EquateList::loadFile(string file) {
 }
 
 void EquateList::addEquate(string label, int address) {
+	undefine(label);
 	myFwdMap.insert(make_pair(label, address));
 	myRevMap.insert(make_pair(address, label));
 }
