@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.5 2005-07-14 18:28:36 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.6 2005-07-14 23:47:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,13 +24,13 @@
 
 class GuiObject;
 class ButtonWidget;
+class DataGridWidget;
 class StaticTextWidget;
 class EditTextWidget;
+class ColorWidget;
 
-#include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "DataGridWidget.hxx"
 
 
 class TiaWidget : public Widget, public CommandSender
@@ -61,12 +61,11 @@ class TiaWidget : public Widget, public CommandSender
     CheckboxWidget* myVBlank;
 
     DataGridWidget* myColorRegs;
-/* FIXME - add widget for this, with ability to show color wheel or something
-    PaletteWidget*  myCOLUP0Color;
-    PaletteWidget*  myCOLUP1Color;
-    PaletteWidget*  myCOLUPFColor;
-    PaletteWidget*  myCOLUBKColor;
-*/
+
+    ColorWidget* myCOLUP0Color;
+    ColorWidget* myCOLUP1Color;
+    ColorWidget* myCOLUPFColor;
+    ColorWidget* myCOLUBKColor;
 };
 
 #endif

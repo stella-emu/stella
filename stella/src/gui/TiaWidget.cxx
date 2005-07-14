@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.10 2005-07-14 18:28:36 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.11 2005-07-14 23:47:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,7 +27,7 @@
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "DataGridWidget.hxx"
-
+#include "ColorWidget.hxx"
 #include "TiaWidget.hxx"
 
 // ID's for the various widgets
@@ -55,7 +55,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   int xpos   = 10;
   int ypos   = 20;
   int lwidth = 25;
-  const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
+//  const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
   const GUI::Font& font = instance()->consoleFont();
 
   // Create a 16x1 grid holding byte values with labels
@@ -137,10 +137,25 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
                          kTextAlignLeft);
   }
   xpos += 40;
-  myColorRegs = new DataGridWidget(boss, xpos, ypos-1, 1, 4, 2, 8, kBASE_16);
+  myColorRegs = new DataGridWidget(boss, xpos, ypos, 1, 4, 2, 8, kBASE_16);
   myColorRegs->setTarget(this);
   myColorRegs->setID(kColorRegsID);
 
+  xpos += myColorRegs->colWidth() + 5;
+  myCOLUP0Color = new ColorWidget(boss, xpos, ypos+2, 20, kLineHeight - 4);
+  myCOLUP0Color->setTarget(this);
+
+  ypos += kLineHeight;
+  myCOLUP1Color = new ColorWidget(boss, xpos, ypos+2, 20, kLineHeight - 4);
+  myCOLUP1Color->setTarget(this);
+
+  ypos += kLineHeight;
+  myCOLUPFColor = new ColorWidget(boss, xpos, ypos+2, 20, kLineHeight - 4);
+  myCOLUPFColor->setTarget(this);
+
+  ypos += kLineHeight;
+  myCOLUBKColor = new ColorWidget(boss, xpos, ypos+2, 20, kLineHeight - 4);
+  myCOLUBKColor->setTarget(this);
 
 /*
   // Add some buttons for common actions
@@ -188,7 +203,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       // FIXME -  maybe issue a full reload, since changing one item can affect
       //          others in this tab??
-      loadConfig();
+      // loadConfig();
       break;
 
     case kDGSelectionChangedCmd:
@@ -233,7 +248,6 @@ void TiaWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::fillGrid()
 {
-// FIXME - have these widget get correct values from TIADebug
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
@@ -267,6 +281,11 @@ void TiaWidget::fillGrid()
     changed.push_back(state.coluRegs[i] != oldstate.coluRegs[i]);
   }
   myColorRegs->setList(alist, vlist, changed);
+
+  myCOLUP0Color->setColor(state.coluRegs[0]);
+  myCOLUP1Color->setColor(state.coluRegs[1]);
+  myCOLUPFColor->setColor(state.coluRegs[2]);
+  myCOLUBKColor->setColor(state.coluRegs[3]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -279,18 +298,22 @@ void TiaWidget::changeColorRegs()
   {
     case kCOLUP0Addr:
       instance()->debugger().tiaDebug().coluP0(value);
+      myCOLUP0Color->setColor(value);
       break;
 
     case kCOLUP1Addr:
       instance()->debugger().tiaDebug().coluP1(value);
+      myCOLUP1Color->setColor(value);
       break;
 
     case kCOLUPFAddr:
       instance()->debugger().tiaDebug().coluPF(value);
+      myCOLUPFColor->setColor(value);
       break;
 
     case kCOLUBKAddr:
       instance()->debugger().tiaDebug().coluBK(value);
+      myCOLUBKColor->setColor(value);
       break;
   }
 }
