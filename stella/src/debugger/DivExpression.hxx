@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DivExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
+// $Id: DivExpression.hxx,v 1.2 2005-07-14 12:28:53 stephena Exp $
 //============================================================================
 
 #ifndef DIV_EXPRESSION_HXX
@@ -23,14 +23,15 @@
 
 /**
   @author  B. Watson
-  @version $Id: DivExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
+  @version $Id: DivExpression.hxx,v 1.2 2005-07-14 12:28:53 stephena Exp $
 */
 class DivExpression : public Expression
 {
   public:
     DivExpression(Expression *left, Expression *right);
-    int evaluate() { return myLHS->evaluate() / myRHS->evaluate(); } // FIXME: div by zero?
+    int evaluate() { int denom = myRHS->evaluate();
+                     return denom == 0 ? 0 : myLHS->evaluate() / denom;
+                   }
 };
 
 #endif
-
