@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.50 2005-07-14 11:28:37 stephena Exp $
+// $Id: Debugger.hxx,v 1.51 2005-07-14 15:13:14 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -52,7 +52,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.50 2005-07-14 11:28:37 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.51 2005-07-14 15:13:14 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -231,6 +231,17 @@ class Debugger : public DialogContainer
       Set final state before leaving the debugger.
     */
     void setQuitState();
+
+    /**
+      Get the dimensions of the debugger dialog (takes mediasource into account)
+    */
+    void getDialogBounds(int* x, int* y, int* w, int* h);
+
+    /**
+      Resize the debugger dialog based on the current dimensions from
+      getDialogBounds.
+    */
+    void resizeDialog();
 
     void toggleBreakPoint(int bp);
 

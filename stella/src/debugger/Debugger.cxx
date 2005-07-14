@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.62 2005-07-14 11:28:37 stephena Exp $
+// $Id: Debugger.cxx,v 1.63 2005-07-14 15:13:14 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -85,28 +85,8 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-cerr << "Debugger::initialize()\n";
-  // Calculate the actual pixels required for the # of lines
-  // This is currently a bit of a hack, since it uses pixel
-  // values that it shouldn't know about (font and tab height, etc)
-  int userHeight = myOSystem->settings().getInt("debugheight");
-  if(userHeight < kDebuggerLines)
-  {
-    userHeight = kDebuggerLines;
-    myOSystem->settings().setInt("debugheight", userHeight);
-  }
-  userHeight = (userHeight + 3) * kDebuggerLineHeight - 8;
-
-  int x = 0,
-      y = myConsole->mediaSource().height(),
-      w = kDebuggerWidth,
-      h = userHeight;
-
-cerr << "x = " << x << endl
-     << "y = " << y << endl
-     << "w = " << w << endl
-     << "h = " << h << endl
-     << endl;
+  int x, y, w, h;
+  getDialogBounds(&x, &y, &w, &h);
 
   delete myBaseDialog;
   DebuggerDialog *dd = new DebuggerDialog(myOSystem, this, x, y, w, h);
@@ -123,23 +103,11 @@ cerr << "x = " << x << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initializeVideo()
 {
-cerr << "Debugger::initializeVideo()\n";
-
-  // Calculate the actual pixels required for entire screen
-  // This is currently a bit of a hack, since it uses pixel
-  // values that it shouldn't know about (font and tab height, etc)
-  int userHeight = myOSystem->settings().getInt("debugheight");
-  if(userHeight < kDebuggerLines)
-    userHeight = kDebuggerLines;
-  userHeight = (userHeight + 3) * kDebuggerLineHeight - 8 +
-               myConsole->mediaSource().height();
-
-cerr << "w = " << kDebuggerWidth << endl
-     << "h = " << userHeight << endl
-     << endl;
+  int x, y, w, h;
+  getDialogBounds(&x, &y, &w, &h);
 
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  myOSystem->frameBuffer().initialize(title, kDebuggerWidth, userHeight, false);
+  myOSystem->frameBuffer().initialize(title, w, y+h, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -701,23 +669,14 @@ int Debugger::dpeek(int addr) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::setHeight(int height)
 {
-  // FIXME - this doesn't seem to work ...
-
-cerr << "debugheight: " <<
-  myOSystem->settings().getInt("debugheight")
-<< endl;
-
   if(height < kDebuggerLines)
     height = kDebuggerLines;
 
   myOSystem->settings().setInt("debugheight", height);
 
-cerr << "height: " << height << endl;
-
+  // Inform the debugger dialog about the new size
   quit();
-
-  // FIXME - implement ScummVM resize code
-
+  resizeDialog();
   start();
 
   return height;
@@ -798,4 +757,27 @@ void Debugger::setQuitState()
   // FIXME: do this for traps, too
   if(breakPoints->isSet(myCpuDebug->pc()))
     mySystem->m6502().execute(1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::getDialogBounds(int* x, int* y, int* w, int* h)
+{
+  int userHeight = myOSystem->settings().getInt("debugheight");
+  if(userHeight < kDebuggerLines)
+  {
+    userHeight = kDebuggerLines;
+    myOSystem->settings().setInt("debugheight", userHeight);
+  }
+  userHeight = (userHeight + 3) * kDebuggerLineHeight - 8;
+
+  *x = 0;
+  *y = myConsole->mediaSource().height();
+  *w = kDebuggerWidth;
+  *h = userHeight;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::resizeDialog()
+{
+cerr << "Debugger::resizeDialog()\n";
 }
