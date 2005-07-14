@@ -13,11 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.54 2005-07-14 11:28:37 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.55 2005-07-14 11:51:03 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
-#include "Console.hxx"
 #include "Debugger.hxx"
 #include "CpuDebug.hxx"
 #include "DebuggerParser.hxx"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.hxx,v 1.4 2005-07-14 11:28:38 stephena Exp $
+// $Id: YaccParser.hxx,v 1.5 2005-07-14 11:51:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,9 +21,6 @@
 
 #ifndef PARSER_HXX
 #define PARSER_HXX
-
-class Debugger;
-class System;
 
 #include "Expression.hxx"
 
