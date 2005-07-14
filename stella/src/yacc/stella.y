@@ -44,8 +44,8 @@ expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpr
 	|	expression '&' expression { fprintf(stderr, " &"); $$ = new BinAndExpression($1, $3); }
 	|	expression '|' expression { fprintf(stderr, " |"); $$ = new BinOrExpression($1, $3); }
 	|	expression '^' expression { fprintf(stderr, " ^"); $$ = new BinXorExpression($1, $3); }
-	|	expression '>' expression { fprintf(stderr, " <"); $$ = new LessExpression($1, $3); }
-	|	expression '<' expression { fprintf(stderr, " >"); $$ = new GreaterExpression($1, $3); }
+	|	expression '<' expression { fprintf(stderr, " <"); $$ = new LessExpression($1, $3); }
+	|	expression '>' expression { fprintf(stderr, " >"); $$ = new GreaterExpression($1, $3); }
 	|	expression GTE expression { fprintf(stderr, " >="); $$ = new GreaterEqualsExpression($1, $3); }
 	|	expression LTE expression { fprintf(stderr, " <="); $$ = new LessEqualsExpression($1, $3); }
 	|	expression NE  expression { fprintf(stderr, " !="); $$ = new NotEqualsExpression($1, $3); }
