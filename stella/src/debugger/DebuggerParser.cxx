@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.55 2005-07-14 11:51:03 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.56 2005-07-14 15:13:58 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -887,6 +887,7 @@ string DebuggerParser::run(const string& command) {
 
 	// special case: parser testing
 	if(strncmp(command.c_str(), "expr ", 5) == 0) {
+		delete lastExpression;
 		commandResult = "parser test: status==";
 		int status = YaccParser::parse(command.c_str() + 5);
 		commandResult += debugger->valueToString(status);
@@ -897,7 +898,8 @@ string DebuggerParser::run(const string& command) {
 	}
 
 	if(command == "expr") {
-		commandResult = "result==" + debugger->valueToString(lastExpression->evaluate());
+		if(lastExpression)
+			commandResult = "result==" + debugger->valueToString(lastExpression->evaluate());
 		return commandResult;
 	}
 

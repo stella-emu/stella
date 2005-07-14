@@ -20,7 +20,8 @@ int main(int argc, char **argv) {
 	Expression *e = YaccParser::getResult();
 
 	for(int i=0; i<100000000; i++) {
-		printf("%d\n", e->evaluate());
+		// printf("%d\n", e->evaluate());
+		e->evaluate();
 	}
 #endif
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.4 2005-07-13 04:49:19 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.5 2005-07-14 15:13:58 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,7 @@
 #include "ConstExpression.hxx"
 #include "DivExpression.hxx"
 #include "EqualsExpression.hxx"
+#include "EquateExpression.hxx"
 #include "Expression.hxx"
 #include "GreaterEqualsExpression.hxx"
 #include "GreaterExpression.hxx"
@@ -69,7 +70,7 @@ const char *input, *c;
 
 enum {
 	ST_DEFAULT,
-	ST_NUMBER,
+	ST_IDENTIFIER,
 	ST_OPERATOR,
 	ST_SPACE
 };
@@ -90,6 +91,11 @@ int parse(const char *in) {
 
 /* hand-rolled lexer. Hopefully faster than flex... */
 
+#define is_identifier(x) ( (x>='0' && x<='9') || \
+		                     (x>='a' && x<='z') || \
+		                     (x>='A' && x<='Z') || \
+		                     (x=='.' && x<='_') )
+
 #define is_operator(x) ( (x=='+' || x=='-' || x=='*' || \
                           x=='/' || x=='<' || x=='>' || \
                           x=='|' || x=='&' || x=='^' || \
@@ -97,6 +103,7 @@ int parse(const char *in) {
                           x==')' || x=='=' ) )
 
 int yylex() {
+	static char idbuf[255];
 	char o, p;
 	yylval.val = 0;
 	while(*c != '\0') {
@@ -106,8 +113,8 @@ int yylex() {
 				yylval.val = 0;
 				if(isspace(*c)) {
 					c++;
-				} else if(isdigit(*c)) {
-					state = ST_NUMBER;
+				} else if(is_identifier(*c)) {
+					state = ST_IDENTIFIER;
 				} else if(is_operator(*c)) {
 					state = ST_OPERATOR;
 				} else {
@@ -116,28 +123,24 @@ int yylex() {
 
 				break;
 
-			case ST_NUMBER:
-				while(isdigit(*c)) {
-					yylval.val *= 10;
-					yylval.val += (*c++ - '0');
-					//fprintf(stderr, "yylval==%d, *c==%c\n", yylval, *c);
-				}
-				state = ST_DEFAULT;
-				return NUMBER;
-/*
-				if(isdigit(*c)) {
-					yylval *= 10;
-					yylval += (*c - '0');
-					c++;
-					//fprintf(stderr, "*c==0? %d\n", *c==0);
-					if(*c == '\0') return NUMBER;
-					break;
-				} else {
+			case ST_IDENTIFIER:
+				{
+					char *bufp = idbuf;
+					while(is_identifier(*c)) {
+						*bufp++ = *c++;
+						//fprintf(stderr, "yylval==%d, *c==%c\n", yylval, *c);
+					}
+					*bufp = '\0';
 					state = ST_DEFAULT;
-					return NUMBER;
-				}
-*/
 
+					if(Debugger::debugger().equates()->getAddress(idbuf) > -1) {
+						yylval.equate = idbuf;
+						return EQUATE;
+					} else {
+						yylval.val = atoi(idbuf);
+						return NUMBER;
+					}
+				}
 
 			case ST_OPERATOR:
 				o = *c++;
@@ -145,8 +148,8 @@ int yylex() {
 				if(isspace(*c)) {
 					state = ST_SPACE;
 					return o;
-				} else if(isdigit(*c)) {
-					state = ST_NUMBER;
+				} else if(is_identifier(*c)) {
+					state = ST_IDENTIFIER;
 					return o;
 				} else {
 					state = ST_DEFAULT;
@@ -181,8 +184,8 @@ int yylex() {
 				yylval.val = 0;
 				if(isspace(*c)) {
 					state = ST_SPACE;
-				} else if(isdigit(*c)) {
-					state = ST_NUMBER;
+				} else if(is_identifier(*c)) {
+					state = ST_IDENTIFIER;
 				} else if(is_operator(*c)) {
 					state = ST_OPERATOR;
 				} else {

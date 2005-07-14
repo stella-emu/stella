@@ -15,10 +15,18 @@ void yyerror(char *e) {
 
 %union {
 	int val;
+	char *equate;
 	Expression *exp;
 }
 
+/* Terminals */
 %token <val> NUMBER
+%token <equate> EQUATE
+
+/* Non-terminals */
+%type <exp> expression
+
+/* Operator associativity and precedence */
 %left '-' '+'
 %left '*' '/' '%'
 %left LOG_OR
@@ -30,7 +38,6 @@ void yyerror(char *e) {
 %nonassoc '<' '>' GTE LTE NE EQ
 %nonassoc UMINUS
 
-%type <exp> expression
 
 %%
 statement:	expression { fprintf(stderr, "\ndone\n"); result.exp = $1; }
@@ -61,5 +68,6 @@ expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpr
 	|	'>' expression { fprintf(stderr, " >"); /* $$ = new HiByteExpression($2); */ }
 	|	'(' expression ')'	{ fprintf(stderr, " ()"); $$ = $2; }
 	|	NUMBER { fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); }
+	|	EQUATE { fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); }
 	;
 %%
