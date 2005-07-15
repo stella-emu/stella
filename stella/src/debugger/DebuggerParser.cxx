@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.57 2005-07-15 01:20:11 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.58 2005-07-15 03:27:04 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -423,6 +423,7 @@ Command DebuggerParser::commands[] = {
 enum {
   kIN_COMMAND,
   kIN_SPACE,
+  kIN_BRACE,
   kIN_ARG
 };
 
@@ -587,9 +588,23 @@ bool DebuggerParser::getArgs(const string& command) {
 				break;
 
 			case kIN_SPACE:
-				if(*c != ' ')
+				if(*c == '{')
+					state = kIN_BRACE;
+				else if(*c != ' ') {
 					state = kIN_ARG;
 					curArg += *c;
+				}
+				break;
+
+			case kIN_BRACE:
+				if(*c == '}' || *c == '\0') {
+					state = kIN_SPACE;
+					argStrings.push_back(curArg);
+					//	cerr << "{" << curArg << "}" << endl;
+					curArg = "";
+				} else {
+					curArg += *c;
+				}
 				break;
 
 			case kIN_ARG:
