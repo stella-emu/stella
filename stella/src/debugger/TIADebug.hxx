@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.8 2005-07-15 15:27:29 stephena Exp $
+// $Id: TIADebug.hxx,v 1.9 2005-07-15 18:19:29 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -42,7 +42,7 @@ class TIADebug : public DebuggerSystem
 
     void saveOldState();
 
-    void advanceScanline(int lines);
+    void clearTIA();
 
     // FIXME - add whole slew of setXXX() methods
     uInt8 coluP0(int newVal = -1);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.12 2005-07-15 15:27:29 stephena Exp $
+// $Id: TIADebug.cxx,v 1.13 2005-07-15 18:19:29 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -68,9 +68,9 @@ void TIADebug::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIADebug::advanceScanline(int lines)
+void TIADebug::clearTIA()
 {
-  myTIA->advanceFrameScanline(lines);
+  myTIA->clearBuffers();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

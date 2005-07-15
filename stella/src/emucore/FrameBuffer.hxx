@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.46 2005-07-15 15:27:29 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.47 2005-07-15 18:19:29 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.46 2005-07-15 15:27:29 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.47 2005-07-15 18:19:29 stephena Exp $
 */
 class FrameBuffer
 {
@@ -144,6 +144,11 @@ class FrameBuffer
       to be redrawn.
     */
     void refreshOverlay(bool now = false);
+
+    /**
+      Indicates that the emulation should advance given number of scanlines.
+    */
+    void advanceScanline(int lines);
 
     /**
       Indicates that the emulation should advance given number of frames.
@@ -458,6 +463,9 @@ class FrameBuffer
 
     // Number of times menu have been drawn
     int myOverlayRedraws;
+
+    // Indicates how many scanlines the emulation should advance
+    int theScanlineAdvanceIndicator;
 
     // Indicates how many frames the emulation should advance
     int theFrameAdvanceIndicator;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.65 2005-07-15 15:27:29 stephena Exp $
+// $Id: Debugger.cxx,v 1.66 2005-07-15 18:19:28 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -636,8 +636,12 @@ const string& Debugger::disassemble(int start, int lines) {
 void Debugger::nextScanline(int lines) {
   saveOldState();
   mySystem->unlockDataBus();
-  myTiaDebug->advanceScanline(lines);
-  myOSystem->frameBuffer().refreshTIA();
+// FIXME - add code to 'darken' the current TIA framebuffer, so we can
+//         differentiate between old content and newly drawn scanlines
+//  myTiaDebug->clearTIA();
+
+  myOSystem->frameBuffer().advanceScanline(lines);
+
   mySystem->lockDataBus();
 }
 

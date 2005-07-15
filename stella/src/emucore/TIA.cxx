@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.47 2005-07-15 15:27:29 stephena Exp $
+// $Id: TIA.cxx,v 1.48 2005-07-15 18:19:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -129,10 +129,7 @@ void TIA::reset()
   mySound->reset();
 
   // Clear frame buffers
-  for(uInt32 i = 0; i < 160 * 300; ++i)
-  {
-    myCurrentFrameBuffer[i] = myPreviousFrameBuffer[i] = 0;
-  }
+  clearBuffers();
 
   // Reset pixel pointer and drawing flag
   myFramePointer = myCurrentFrameBuffer;
@@ -543,6 +540,70 @@ void TIA::update()
   // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myScanlineCountForLastFrame = totalClocks / 228;
+
+  // Stats counters
+  myFrameCounter++;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::updateScanline()
+{
+  // FIXME - extend this method to draw partial scanlines
+  //         ie, when step/trace is called from the debugger
+
+  uInt8* tmp = myCurrentFrameBuffer;
+  myCurrentFrameBuffer = myPreviousFrameBuffer;
+  myPreviousFrameBuffer = tmp;
+
+  // Remember the number of clocks which have passed on the current scanline
+  // so that we can adjust the frame's starting clock by this amount.  This
+  // is necessary since some games position objects during VSYNC and the
+  // TIA's internal counters are not reset by VSYNC.
+  uInt32 clocks = ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228;
+
+  // Ask the system to reset the cycle count so it doesn't overflow
+  mySystem->resetCycles();
+
+  // Setup clocks that'll be used for drawing this frame
+  myClockWhenFrameStarted = -1 * clocks;
+  myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
+  myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
+  myClockAtLastUpdate = myClockStartDisplay;
+  myClocksToEndOfScanLine = 228;
+
+  // Reset frame buffer pointer
+  myFramePointer = myCurrentFrameBuffer;
+
+  // If color loss is enabled then update the color registers based on
+  // the number of scanlines in the last frame that was generated
+  if(myColorLossEnabled)
+  {
+    if(myScanlineCountForLastFrame & 0x01)
+    {
+      myCOLUP0 |= 0x01010101;
+      myCOLUP1 |= 0x01010101;
+      myCOLUPF |= 0x01010101;
+      myCOLUBK |= 0x01010101;
+    }
+    else
+    {
+      myCOLUP0 &= 0xfefefefe;
+      myCOLUP1 &= 0xfefefefe;
+      myCOLUPF &= 0xfefefefe;
+      myCOLUBK &= 0xfefefefe;
+    }
+  }   
+
+  // Execute instructions until scanline is finished
+  mySystem->m6502().execute(76);
+
+  // TODO: have code here that handles errors....
+
+  // Compute the number of scanlines in the frame
+  uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+  myScanlineCountForLastFrame = totalClocks / 228;
+
+cerr << "myScanlineCountForLastFrame = " << myScanlineCountForLastFrame << endl;
 
   // Stats counters
   myFrameCounter++;
@@ -1809,142 +1870,12 @@ inline void TIA::waitHorizontalSync()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::advanceFrameScanline(int lines)
+void TIA::clearBuffers()
 {
-  // Ignore # of lines for now
-cerr << "TIA::advanceFrameScanline\n";
-
-  Int32 clock = mySystem->cycles() * 3;
-
-  // See if we're in the nondisplayable portion of the screen or if
-  // we've already updated this portion of the screen
-  if((clock < myClockStartDisplay) || 
-      (myClockAtLastUpdate >= myClockStopDisplay) ||  
-      (myClockAtLastUpdate >= clock))
+  for(uInt32 i = 0; i < 160 * 300; ++i)
   {
-    return;
+    myCurrentFrameBuffer[i] = myPreviousFrameBuffer[i] = 0;
   }
-
-  // Truncate the number of cycles to update to the stop display point
-  if(clock > myClockStopDisplay)
-  {
-    clock = myClockStopDisplay;
-  }
-
-  // Update frame one scanline at a time
-//  do
-  {
-    // Compute the number of clocks we're going to update
-    Int32 clocksToUpdate = 0;
-
-    // Remember how many clocks we are from the left side of the screen
-    Int32 clocksFromStartOfScanLine = 228 - myClocksToEndOfScanLine;
-
-    // See if we're updating more than the current scanline
-    if(clock > (myClockAtLastUpdate + myClocksToEndOfScanLine))
-    {
-      // Yes, we have more than one scanline to update so finish current one
-      clocksToUpdate = myClocksToEndOfScanLine;
-      myClocksToEndOfScanLine = 228;
-      myClockAtLastUpdate += clocksToUpdate;
-    }
-    else
-    {
-      // No, so do as much of the current scanline as possible
-      clocksToUpdate = clock - myClockAtLastUpdate;
-      myClocksToEndOfScanLine -= clocksToUpdate;
-      myClockAtLastUpdate = clock;
-    }
-
-    Int32 startOfScanLine = HBLANK + myFrameXStart;
-
-    // Skip over as many horizontal blank clocks as we can
-    if(clocksFromStartOfScanLine < startOfScanLine)
-    {
-      uInt32 tmp;
-
-      if((startOfScanLine - clocksFromStartOfScanLine) < clocksToUpdate)
-        tmp = startOfScanLine - clocksFromStartOfScanLine;
-      else
-        tmp = clocksToUpdate;
-
-      clocksFromStartOfScanLine += tmp;
-      clocksToUpdate -= tmp;
-    }
-
-    // Remember frame pointer in case HMOVE blanks need to be handled
-    uInt8* oldFramePointer = myFramePointer;
-
-    // Update as much of the scanline as we can
-    if(clocksToUpdate != 0)
-    {
-      updateFrameScanline(clocksToUpdate, clocksFromStartOfScanLine - HBLANK);
-    }
-
-    // Handle HMOVE blanks if they are enabled
-    if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
-        (clocksFromStartOfScanLine < (HBLANK + 8)))
-    {
-      Int32 blanks = (HBLANK + 8) - clocksFromStartOfScanLine;
-      memset(oldFramePointer, 0, blanks);
-
-      if((clocksToUpdate + clocksFromStartOfScanLine) >= (HBLANK + 8))
-      {
-        myHMOVEBlankEnabled = false;
-      }
-    }
-
-    // See if we're at the end of a scanline
-    if(myClocksToEndOfScanLine == 228)
-    {
-      myFramePointer -= (160 - myFrameWidth - myFrameXStart);
-
-      // Yes, so set PF mask based on current CTRLPF reflection state 
-      myCurrentPFMask = ourPlayfieldTable[myCTRLPF & 0x01];
-
-      // TODO: These should be reset right after the first copy of the player
-      // has passed.  However, for now we'll just reset at the end of the 
-      // scanline since the other way would be to slow (01/21/99).
-      myCurrentP0Mask = &ourPlayerMaskTable[myPOSP0 & 0x03]
-          [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-      myCurrentP1Mask = &ourPlayerMaskTable[myPOSP1 & 0x03]
-          [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
-
-      // Handle the "Cosmic Ark" TIA bug if it's enabled
-      if(myM0CosmicArkMotionEnabled)
-      {
-        // Movement table associated with the bug
-        static uInt32 m[4] = {18, 33, 0, 17};
-
-        myM0CosmicArkCounter = (myM0CosmicArkCounter + 1) & 3;
-        myPOSM0 -= m[myM0CosmicArkCounter];
-
-        if(myPOSM0 >= 160)
-          myPOSM0 -= 160;
-        else if(myPOSM0 < 0)
-          myPOSM0 += 160;
-
-        if(myM0CosmicArkCounter == 1)
-        {
-          // Stretch this missle so it's at least 2 pixels wide
-          myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
-              [160 - (myPOSM0 & 0xFC)];
-        }
-        else if(myM0CosmicArkCounter == 2)
-        {
-          // Missle is disabled on this line 
-          myCurrentM0Mask = &ourDisabledMaskTable[0];
-        }
-        else
-        {
-          myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-        }
-      } 
-    }
-  } 
-//  while(myClockAtLastUpdate < clock);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

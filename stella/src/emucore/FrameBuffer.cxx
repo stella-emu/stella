@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.51 2005-07-03 00:53:59 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.52 2005-07-15 18:19:29 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -45,6 +45,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myPauseStatus(false),
       theRedrawOverlayIndicator(false),
       myOverlayRedraws(2),
+      theScanlineAdvanceIndicator(0),
       theFrameAdvanceIndicator(0),
       myMessageTime(0),
       myMessageText(""),
@@ -238,6 +239,12 @@ void FrameBuffer::update()
         advance = true;
         --theFrameAdvanceIndicator;
       }
+      else if(theScanlineAdvanceIndicator > 0)
+      {
+        myOSystem->console().mediaSource().updateScanline();
+        advance = true;
+        --theScanlineAdvanceIndicator;
+      }
 
       // Only update the screen if it's been invalidated or we're in
       // frame advance mode
@@ -292,6 +299,17 @@ void FrameBuffer::refreshOverlay(bool now)
   theRedrawOverlayIndicator = true;
   myOverlayRedraws = 2;
   if(now) update();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::advanceScanline(int lines)
+{
+  if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER)
+    return;
+
+  theScanlineAdvanceIndicator = lines;
+  while(theScanlineAdvanceIndicator)
+    update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

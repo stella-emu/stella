@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.11 2005-06-29 13:11:03 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.12 2005-07-15 18:19:29 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -30,7 +30,7 @@ class Sound;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.11 2005-06-29 13:11:03 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.12 2005-07-15 18:19:29 stephena Exp $
 */
 class MediaSource
 {
@@ -53,6 +53,13 @@ class MediaSource
       samples.
     */
     virtual void update() = 0;
+
+    /**
+      This method should be called whenever a new scanline is to be drawn.
+      Invoking this method will update the graphics buffer and generate
+      the corresponding audio samples.
+    */
+    virtual void updateScanline() = 0;
 
     /**
       Answers the current frame buffer
