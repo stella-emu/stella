@@ -9,6 +9,7 @@ char *yytext;
 void yyerror(char *e) {
 	//fprintf(stderr, "%s at token \"%s\"\n", e, yytext);
 	fprintf(stderr, "%s\n", e);
+	errMsg = e;
 }
 
 %}

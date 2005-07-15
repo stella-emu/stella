@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.58 2005-07-15 03:27:04 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.59 2005-07-15 03:47:26 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -911,8 +911,13 @@ string DebuggerParser::run(const string& command) {
 			lastExpression = YaccParser::getResult();
 			commandResult += debugger->valueToString(lastExpression->evaluate());
 		} else {
-			delete lastExpression;
-			commandResult += "ERROR";
+			//	delete lastExpression; // NO! lastExpression isn't valid (not 0 either)
+			                          // It's the result of casting the last token
+			                          // to Expression* (because of yacc's union).
+			                          // As such, we can't and don't need to delete it
+			                          // (However, it means yacc leaks memory on error)
+			commandResult += "ERROR - ";
+			commandResult += YaccParser::errorMessage();
 		}
 		return commandResult;
 	}

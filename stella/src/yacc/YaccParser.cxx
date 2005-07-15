@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.10 2005-07-15 02:59:00 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.11 2005-07-15 03:47:26 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,8 +64,12 @@ namespace YaccParser {
 
 #include "y.tab.h"
 yystype result;
+string errMsg;
 #include "y.tab.c"
 
+const string& errorMessage() {
+	return errMsg;
+}
 
 Expression *getResult() {
 	return result.exp;
@@ -91,6 +95,7 @@ void setInput(const char *in) {
 }
 
 int parse(const char *in) {
+	errMsg = "(no error)";
 	setInput(in);
 	return yyparse();
 }
