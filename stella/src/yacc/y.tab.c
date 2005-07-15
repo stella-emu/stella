@@ -1033,11 +1033,11 @@ case 24:
     break;
 case 25:
 #line 70 "stella.y"
-{ fprintf(stderr, " U<"); /* $$ = new LoByteExpression($2); */ }
+{ fprintf(stderr, " U<");  yyval.exp = new LoByteExpression(yyvsp[0].exp);  }
     break;
 case 26:
 #line 71 "stella.y"
-{ fprintf(stderr, " U>"); /* $$ = new HiByteExpression($2); */ }
+{ fprintf(stderr, " U>");  yyval.exp = new HiByteExpression(yyvsp[0].exp);  }
     break;
 case 27:
 #line 72 "stella.y"

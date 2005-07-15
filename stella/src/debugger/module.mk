@@ -9,6 +9,8 @@ MODULE_OBJS := \
 	src/debugger/WordDerefExpression.o \
 	src/debugger/ConstExpression.o \
 	src/debugger/EquateExpression.o \
+	src/debugger/LoByteExpression.o \
+	src/debugger/HiByteExpression.o \
 	src/debugger/NotEqualsExpression.o \
 	src/debugger/EqualsExpression.o \
 	src/debugger/PlusExpression.o \

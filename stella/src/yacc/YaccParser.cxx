@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.6 2005-07-15 01:20:11 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.7 2005-07-15 01:40:34 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,6 +40,8 @@
 #include "Expression.hxx"
 #include "GreaterEqualsExpression.hxx"
 #include "GreaterExpression.hxx"
+#include "HiByteExpression.hxx"
+#include "LoByteExpression.hxx"
 #include "LessEqualsExpression.hxx"
 #include "LessExpression.hxx"
 #include "LogAndExpression.hxx"
