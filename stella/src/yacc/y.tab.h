@@ -5,7 +5,7 @@
 typedef union {
 	int val;
 	char *equate;
-	CPUDEBUG_BYTE_METHOD byteMethod;
+	CPUDEBUG_INT_METHOD intMethod;
 	Expression *exp;
 } yystype;
 # define YYSTYPE yystype
@@ -13,7 +13,7 @@ typedef union {
 #endif
 # define	NUMBER	257
 # define	EQUATE	258
-# define	BYTE_METHOD	259
+# define	INT_METHOD	259
 # define	LOG_OR	260
 # define	LOG_AND	261
 # define	LOG_NOT	262

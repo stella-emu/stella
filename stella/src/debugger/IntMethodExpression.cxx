@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteMethodExpression.cxx,v 1.1 2005-07-15 02:19:07 urchlay Exp $
+// $Id: IntMethodExpression.cxx,v 1.1 2005-07-15 02:30:47 urchlay Exp $
 //============================================================================
 
 #include "Expression.hxx"
-#include "ByteMethodExpression.hxx"
+#include "IntMethodExpression.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteMethodExpression::ByteMethodExpression(CPUDEBUG_BYTE_METHOD method)
+IntMethodExpression::IntMethodExpression(CPUDEBUG_INT_METHOD method)
   : Expression(0, 0)
 {
 	myMethod = method;

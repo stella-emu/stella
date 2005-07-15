@@ -5,7 +5,7 @@
 
 # define	NUMBER	257
 # define	EQUATE	258
-# define	BYTE_METHOD	259
+# define	INT_METHOD	259
 # define	LOG_OR	260
 # define	LOG_AND	261
 # define	LOG_NOT	262
@@ -38,7 +38,7 @@ void yyerror(char *e) {
 typedef union {
 	int val;
 	char *equate;
-	CPUDEBUG_BYTE_METHOD byteMethod;
+	CPUDEBUG_INT_METHOD intMethod;
 	Expression *exp;
 } yystype;
 # define YYSTYPE yystype
@@ -132,7 +132,7 @@ static const short yyrline[] =
 /* YYTNAME[TOKEN_NUM] -- String name of the token TOKEN_NUM. */
 static const char *const yytname[] =
 {
-  "$", "error", "$undefined.", "NUMBER", "EQUATE", "BYTE_METHOD", "'-'", 
+  "$", "error", "$undefined.", "NUMBER", "EQUATE", "INT_METHOD", "'-'", 
   "'+'", "'*'", "'/'", "'%'", "LOG_OR", "LOG_AND", "LOG_NOT", "'|'", 
   "'^'", "'&'", "SHR", "SHL", "'<'", "'>'", "GTE", "LTE", "NE", "EQ", 
   "DEREF", "UMINUS", "'~'", "'!'", "'@'", "'('", "')'", "statement", 
@@ -1063,7 +1063,7 @@ case 29:
     break;
 case 30:
 #line 77 "stella.y"
-{ fprintf(stderr, " (byteMeth)"); yyval.exp = new ByteMethodExpression(yyvsp[0].byteMethod); }
+{ fprintf(stderr, " (intMethod)"); yyval.exp = new IntMethodExpression(yyvsp[0].intMethod); }
     break;
 }
 

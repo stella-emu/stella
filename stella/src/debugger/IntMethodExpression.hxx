@@ -13,11 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteMethodExpression.hxx,v 1.1 2005-07-15 02:19:07 urchlay Exp $
+// $Id: IntMethodExpression.hxx,v 1.1 2005-07-15 02:30:47 urchlay Exp $
 //============================================================================
 
-#ifndef BYTEMETHOD_EXPRESSION_HXX
-#define BYTEMETHOD_EXPRESSION_HXX
+#ifndef INTMETHOD_EXPRESSION_HXX
+#define INTMETHOD_EXPRESSION_HXX
 
 #include "Debugger.hxx"
 #include "CpuDebug.hxx"
@@ -25,16 +25,16 @@
 
 /**
   @author  B. Watson
-  @version $Id: ByteMethodExpression.hxx,v 1.1 2005-07-15 02:19:07 urchlay Exp $
+  @version $Id: IntMethodExpression.hxx,v 1.1 2005-07-15 02:30:47 urchlay Exp $
 */
-class ByteMethodExpression : public Expression
+class IntMethodExpression : public Expression
 {
   public:
-    ByteMethodExpression(CPUDEBUG_BYTE_METHOD method);
+    IntMethodExpression(CPUDEBUG_INT_METHOD method);
     int evaluate() { return CALL_CPUDEBUG_METHOD(myMethod); }
 
   private:
-    CPUDEBUG_BYTE_METHOD myMethod;
+    CPUDEBUG_INT_METHOD myMethod;
 };
 
 #endif
