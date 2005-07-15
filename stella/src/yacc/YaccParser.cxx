@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.9 2005-07-15 02:30:47 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.10 2005-07-15 02:59:00 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -174,9 +174,44 @@ int const_to_int(char *c) {
 	}
 }
 
+// special methods that get e.g. CPU registers
+// TODO: store in a map or something
 CPUDEBUG_INT_METHOD getSpecial(char *c) {
 	if(strcmp(c, "a") == 0)
 		return &CpuDebug::a;
+
+	if(strcmp(c, "x") == 0)
+		return &CpuDebug::x;
+
+	if(strcmp(c, "y") == 0)
+		return &CpuDebug::y;
+
+	if(strcmp(c, "pc") == 0)
+		return &CpuDebug::pc;
+
+	if(strcmp(c, "sp") == 0)
+		return &CpuDebug::sp;
+
+	if(strcmp(c, "c") == 0)
+		return &CpuDebug::c;
+
+	if(strcmp(c, "z") == 0)
+		return &CpuDebug::z;
+
+	if(strcmp(c, "n") == 0)
+		return &CpuDebug::n;
+
+	if(strcmp(c, "v") == 0)
+		return &CpuDebug::v;
+
+	if(strcmp(c, "d") == 0)
+		return &CpuDebug::d;
+
+	if(strcmp(c, "i") == 0)
+		return &CpuDebug::i;
+
+	if(strcmp(c, "b") == 0)
+		return &CpuDebug::b;
 
 	return 0;
 }

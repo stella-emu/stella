@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.63 2005-07-14 15:13:14 stephena Exp $
+// $Id: Debugger.cxx,v 1.64 2005-07-15 02:59:00 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -352,39 +352,39 @@ void Debugger::reset() {
 void Debugger::formatFlags(BoolArray& b, char *out) {
 	// NV-BDIZC
 
-	if(b[7])
+	if(myCpuDebug->n())
 		out[0] = 'N';
 	else
 		out[0] = 'n';
 
-	if(b[6])
+	if(myCpuDebug->v())
 		out[1] = 'V';
 	else
 		out[1] = 'v';
 
 	out[2] = '-';
 
-	if(b[4])
+	if(myCpuDebug->b())
 		out[3] = 'B';
 	else
 		out[3] = 'b';
 
-	if(b[3])
+	if(myCpuDebug->d())
 		out[4] = 'D';
 	else
 		out[4] = 'd';
 
-	if(b[2])
+	if(myCpuDebug->i())
 		out[5] = 'I';
 	else
 		out[5] = 'i';
 
-	if(b[1])
+	if(myCpuDebug->z())
 		out[6] = 'Z';
 	else
 		out[6] = 'z';
 
-	if(b[0])
+	if(myCpuDebug->c())
 		out[7] = 'C';
 	else
 		out[7] = 'c';

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.hxx,v 1.4 2005-07-15 02:30:47 urchlay Exp $
+// $Id: CpuDebug.hxx,v 1.5 2005-07-15 02:59:00 urchlay Exp $
 //============================================================================
 
 #ifndef CPU_DEBUG_HXX
@@ -52,9 +52,19 @@ class CpuDebug : public DebuggerSystem
     int dPeek(int address);
 
     int pc() { return mySystem->m6502().PC; }
+    int sp() { return mySystem->m6502().SP; }
     int a() { return mySystem->m6502().A; }
     int x() { return mySystem->m6502().X; }
     int y() { return mySystem->m6502().Y; }
+
+	 // these return int, not boolean!
+    int n() { return mySystem->m6502().N; }
+    int v() { return mySystem->m6502().V; }
+    int b() { return mySystem->m6502().B; }
+	 int d() { return mySystem->m6502().D; }
+    int i() { return mySystem->m6502().I; }
+    int z() { return !mySystem->m6502().notZ; }
+    int c() { return mySystem->m6502().C; }
 
     void setPC(int pc);
     void setSP(int sp);
