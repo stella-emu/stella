@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.52 2005-07-15 01:20:11 urchlay Exp $
+// $Id: Debugger.hxx,v 1.53 2005-07-15 02:19:07 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -47,12 +47,23 @@ enum {
   kRamSize = 128
 };
 
+/*
+	// These will probably turn out to be unneeded, left for reference for now
+// pointer types for Debugger instance methods
+typedef uInt8 (Debugger::*DEBUGGER_BYTE_METHOD)();
+typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
+
+// call the pointed-to method on the (static) debugger object.
+#define CALL_DEBUGGER_METHOD(method) ( ( Debugger::debugger().*method)() )
+*/
+
+
 /**
   The base dialog for all debugging widgets in Stella.  Also acts as the parent
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.52 2005-07-15 01:20:11 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.53 2005-07-15 02:19:07 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {

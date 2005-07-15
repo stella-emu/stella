@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.hxx,v 1.2 2005-07-08 14:36:17 stephena Exp $
+// $Id: CpuDebug.hxx,v 1.3 2005-07-15 02:19:07 urchlay Exp $
 //============================================================================
 
 #ifndef CPU_DEBUG_HXX
@@ -24,6 +24,13 @@ class EquateList;
 #include "Array.hxx"
 #include "System.hxx"
 #include "DebuggerSystem.hxx"
+
+// pointer types for CpuDebug instance methods
+typedef uInt8 (CpuDebug::*CPUDEBUG_BYTE_METHOD)();
+typedef uInt16 (CpuDebug::*CPUDEBUG_WORD_METHOD)();
+
+// call the pointed-to method on the (global) CPU debugger object.
+#define CALL_CPUDEBUG_METHOD(method) ( ( Debugger::debugger().cpuDebug().*method)() )
 
 class CpuState : public DebuggerState
 {
@@ -46,6 +53,7 @@ class CpuDebug : public DebuggerSystem
     int dPeek(int address);
 
     int pc() { return mySystem->m6502().PC; }
+    uInt8 a() { return mySystem->m6502().A; }
 
     void setPC(int pc);
     void setSP(int sp);

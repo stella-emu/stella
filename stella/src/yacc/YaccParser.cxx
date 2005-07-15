@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.7 2005-07-15 01:40:34 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.8 2005-07-15 02:19:07 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,11 +26,13 @@
 //#endif
 
 #include "Expression.hxx"
+#include "CpuDebug.hxx"
 
 #include "BinAndExpression.hxx"
 #include "BinNotExpression.hxx"
 #include "BinOrExpression.hxx"
 #include "BinXorExpression.hxx"
+#include "ByteMethodExpression.hxx"
 #include "ByteDerefExpression.hxx"
 #include "WordDerefExpression.hxx"
 #include "ConstExpression.hxx"
@@ -172,6 +174,13 @@ int const_to_int(char *c) {
 	}
 }
 
+CPUDEBUG_BYTE_METHOD getByteSpecial(char *c) {
+	if(strcmp(c, "a") == 0)
+		return &CpuDebug::a;
+
+	return 0;
+}
+
 int yylex() {
 	static char idbuf[255];
 	char o, p;
@@ -195,6 +204,8 @@ int yylex() {
 
 			case ST_IDENTIFIER:
 				{
+					CPUDEBUG_BYTE_METHOD meth;
+
 					char *bufp = idbuf;
 					*bufp++ = *c++; // might be a base prefix
 					while(is_identifier(*c)) { // may NOT be base prefixes
@@ -207,6 +218,9 @@ int yylex() {
 					if(Debugger::debugger().equates()->getAddress(idbuf) > -1) {
 						yylval.equate = idbuf;
 						return EQUATE;
+					} else if( (meth = getByteSpecial(idbuf)) ) {
+						yylval.byteMethod = meth;
+						return BYTE_METHOD;
 					} else {
 						yylval.val = const_to_int(idbuf);
 						return NUMBER;

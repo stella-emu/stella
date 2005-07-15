@@ -16,12 +16,14 @@ void yyerror(char *e) {
 %union {
 	int val;
 	char *equate;
+	CPUDEBUG_BYTE_METHOD byteMethod;
 	Expression *exp;
 }
 
 /* Terminals */
 %token <val> NUMBER
 %token <equate> EQUATE
+%token <byteMethod> BYTE_METHOD
 
 /* Non-terminals */
 %type <exp> expression
@@ -72,5 +74,6 @@ expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpr
 	|	'(' expression ')'	{ fprintf(stderr, " ()"); $$ = $2; }
 	|	NUMBER { fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); }
 	|	EQUATE { fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); }
+	|	BYTE_METHOD { fprintf(stderr, " (byteMeth)"); $$ = new ByteMethodExpression($1); }
 	;
 %%
