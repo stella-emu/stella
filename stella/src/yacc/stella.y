@@ -36,6 +36,7 @@ void yyerror(char *e) {
 %left '&'
 %left SHR SHL
 %nonassoc '<' '>' GTE LTE NE EQ
+%nonassoc DEREF
 %nonassoc UMINUS
 
 
@@ -64,8 +65,10 @@ expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpr
 	|	'-' expression %prec UMINUS	{ fprintf(stderr, " U-"); $$ = new UnaryMinusExpression($2); }
 	|	'~' expression %prec UMINUS	{ fprintf(stderr, " ~"); $$ = new BinNotExpression($2); }
 	|	'!' expression %prec UMINUS	{ fprintf(stderr, " !"); $$ = new LogNotExpression($2); }
-	|	'<' expression { fprintf(stderr, " <"); /* $$ = new LoByteExpression($2); */ }
-	|	'>' expression { fprintf(stderr, " >"); /* $$ = new HiByteExpression($2); */ }
+	|	'*' expression %prec DEREF { fprintf(stderr, " U*"); $$ = new ByteDerefExpression($2); }
+	|	'@' expression %prec DEREF { fprintf(stderr, " U@"); $$ = new WordDerefExpression($2); }
+	|	'<' expression { fprintf(stderr, " U<"); /* $$ = new LoByteExpression($2); */ }
+	|	'>' expression { fprintf(stderr, " U>"); /* $$ = new HiByteExpression($2); */ }
 	|	'(' expression ')'	{ fprintf(stderr, " ()"); $$ = $2; }
 	|	NUMBER { fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); }
 	|	EQUATE { fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.5 2005-07-14 15:13:58 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.6 2005-07-15 01:20:11 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,8 @@
 #include "BinNotExpression.hxx"
 #include "BinOrExpression.hxx"
 #include "BinXorExpression.hxx"
+#include "ByteDerefExpression.hxx"
+#include "WordDerefExpression.hxx"
 #include "ConstExpression.hxx"
 #include "DivExpression.hxx"
 #include "EqualsExpression.hxx"
@@ -91,16 +93,82 @@ int parse(const char *in) {
 
 /* hand-rolled lexer. Hopefully faster than flex... */
 
-#define is_identifier(x) ( (x>='0' && x<='9') || \
-		                     (x>='a' && x<='z') || \
-		                     (x>='A' && x<='Z') || \
-		                     (x=='.' && x<='_') )
+inline bool is_base_prefix(char x) { return ( (x=='\\' || x=='$' || x=='#') ); }
 
-#define is_operator(x) ( (x=='+' || x=='-' || x=='*' || \
-                          x=='/' || x=='<' || x=='>' || \
-                          x=='|' || x=='&' || x=='^' || \
-                          x=='!' || x=='~' || x=='(' || \
-                          x==')' || x=='=' ) )
+inline bool is_identifier(char x) {
+	return ( (x>='0' && x<='9') || 
+		      (x>='a' && x<='z') ||
+		      (x>='A' && x<='Z') ||
+		       x=='.' || x=='_'  );
+}
+
+
+inline bool is_operator(char x) {
+	return ( (x=='+' || x=='-' || x=='*' ||
+             x=='/' || x=='<' || x=='>' ||
+             x=='|' || x=='&' || x=='^' ||
+             x=='!' || x=='~' || x=='(' ||
+             x==')' || x=='=' || x=='%' ) );
+}
+
+// FIXME: error checking!
+int const_to_int(char *c) {
+	// what base is the input in?
+	BaseFormat base = Debugger::debugger().parser()->base();
+
+	switch(*c) {
+		case '\\':
+			base = kBASE_2;
+			c++;
+			break;
+
+		case '#':
+			base = kBASE_10;
+			c++;
+			break;
+
+		case '$':
+			base = kBASE_16;
+			c++;
+			break;
+
+		default: // not a base_prefix, use default base
+			break;
+	}
+
+	int ret = 0;
+	switch(base) {
+		case kBASE_2:
+			while(*c) {
+				ret *= 2;
+				ret += (*c - '0'); // FIXME: error check!
+				c++;
+			}
+			return ret;
+
+		case kBASE_10:
+			while(*c) {
+				ret *= 10;
+				ret += (*c - '0'); // FIXME: error check!
+				c++;
+			}
+			return ret;
+
+		case kBASE_16:
+			while(*c) { // FIXME: error check!
+				int dig = (*c - '0');
+				if(dig > 9) dig = tolower(*c) - 'a';
+				ret *= 16;
+				ret += dig;
+				c++;
+			}
+			return ret;
+
+		default:
+			fprintf(stderr, "INVALID BASE in lexer!");
+			return 0;
+	}
+}
 
 int yylex() {
 	static char idbuf[255];
@@ -113,7 +181,7 @@ int yylex() {
 				yylval.val = 0;
 				if(isspace(*c)) {
 					c++;
-				} else if(is_identifier(*c)) {
+				} else if(is_identifier(*c) || is_base_prefix(*c)) {
 					state = ST_IDENTIFIER;
 				} else if(is_operator(*c)) {
 					state = ST_OPERATOR;
@@ -126,7 +194,8 @@ int yylex() {
 			case ST_IDENTIFIER:
 				{
 					char *bufp = idbuf;
-					while(is_identifier(*c)) {
+					*bufp++ = *c++; // might be a base prefix
+					while(is_identifier(*c)) { // may NOT be base prefixes
 						*bufp++ = *c++;
 						//fprintf(stderr, "yylval==%d, *c==%c\n", yylval, *c);
 					}
@@ -137,7 +206,7 @@ int yylex() {
 						yylval.equate = idbuf;
 						return EQUATE;
 					} else {
-						yylval.val = atoi(idbuf);
+						yylval.val = const_to_int(idbuf);
 						return NUMBER;
 					}
 				}
@@ -148,7 +217,7 @@ int yylex() {
 				if(isspace(*c)) {
 					state = ST_SPACE;
 					return o;
-				} else if(is_identifier(*c)) {
+				} else if(is_identifier(*c) || is_base_prefix(*c)) {
 					state = ST_IDENTIFIER;
 					return o;
 				} else {
@@ -184,7 +253,7 @@ int yylex() {
 				yylval.val = 0;
 				if(isspace(*c)) {
 					state = ST_SPACE;
-				} else if(is_identifier(*c)) {
+				} else if(is_identifier(*c) || is_base_prefix(*c)) {
 					state = ST_IDENTIFIER;
 				} else if(is_operator(*c)) {
 					state = ST_OPERATOR;
@@ -199,6 +268,7 @@ int yylex() {
 	//fprintf(stderr, "end of input\n");
 	return 0; // hit NUL, end of input.
 }
+
 
 #if 0
 int main(int argc, char **argv) {

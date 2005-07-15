@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.51 2005-07-14 15:13:14 stephena Exp $
+// $Id: Debugger.hxx,v 1.52 2005-07-15 01:20:11 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -52,7 +52,7 @@ enum {
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.51 2005-07-14 15:13:14 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.52 2005-07-15 01:20:11 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -216,6 +216,10 @@ class Debugger : public DialogContainer
     */
     static Debugger& debugger() { return *myStaticDebugger; }
 
+	 /* these are now exposed so Expressions can use them. */
+    int peek(int addr);
+    int dpeek(int addr);
+
   private:
     /**
       Save state of each debugger subsystem
@@ -266,9 +270,6 @@ class Debugger : public DialogContainer
 
     // set a bunch of RAM locations at once
     const string setRAM(IntArray& args);
-
-    int peek(int addr);
-    int dpeek(int addr);
 
     void reset();
     void autoLoadSymbols(string file);

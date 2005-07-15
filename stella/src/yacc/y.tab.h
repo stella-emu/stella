@@ -21,7 +21,8 @@ typedef union {
 # define	LTE	265
 # define	NE	266
 # define	EQ	267
-# define	UMINUS	268
+# define	DEREF	268
+# define	UMINUS	269
 
 
 extern YYSTYPE yylval;

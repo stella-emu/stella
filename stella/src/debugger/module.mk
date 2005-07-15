@@ -5,6 +5,8 @@ MODULE_OBJS := \
 	src/debugger/DebuggerParser.o \
 	src/debugger/EquateList.o \
 	src/debugger/Expression.o \
+	src/debugger/ByteDerefExpression.o \
+	src/debugger/WordDerefExpression.o \
 	src/debugger/ConstExpression.o \
 	src/debugger/EquateExpression.o \
 	src/debugger/NotEqualsExpression.o \
