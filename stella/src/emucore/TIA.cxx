@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.46 2005-07-03 06:49:39 urchlay Exp $
+// $Id: TIA.cxx,v 1.47 2005-07-15 15:27:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -1806,6 +1806,145 @@ inline void TIA::waitHorizontalSync()
   {
     mySystem->incrementCycles(cyclesToEndOfLine);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::advanceFrameScanline(int lines)
+{
+  // Ignore # of lines for now
+cerr << "TIA::advanceFrameScanline\n";
+
+  Int32 clock = mySystem->cycles() * 3;
+
+  // See if we're in the nondisplayable portion of the screen or if
+  // we've already updated this portion of the screen
+  if((clock < myClockStartDisplay) || 
+      (myClockAtLastUpdate >= myClockStopDisplay) ||  
+      (myClockAtLastUpdate >= clock))
+  {
+    return;
+  }
+
+  // Truncate the number of cycles to update to the stop display point
+  if(clock > myClockStopDisplay)
+  {
+    clock = myClockStopDisplay;
+  }
+
+  // Update frame one scanline at a time
+//  do
+  {
+    // Compute the number of clocks we're going to update
+    Int32 clocksToUpdate = 0;
+
+    // Remember how many clocks we are from the left side of the screen
+    Int32 clocksFromStartOfScanLine = 228 - myClocksToEndOfScanLine;
+
+    // See if we're updating more than the current scanline
+    if(clock > (myClockAtLastUpdate + myClocksToEndOfScanLine))
+    {
+      // Yes, we have more than one scanline to update so finish current one
+      clocksToUpdate = myClocksToEndOfScanLine;
+      myClocksToEndOfScanLine = 228;
+      myClockAtLastUpdate += clocksToUpdate;
+    }
+    else
+    {
+      // No, so do as much of the current scanline as possible
+      clocksToUpdate = clock - myClockAtLastUpdate;
+      myClocksToEndOfScanLine -= clocksToUpdate;
+      myClockAtLastUpdate = clock;
+    }
+
+    Int32 startOfScanLine = HBLANK + myFrameXStart;
+
+    // Skip over as many horizontal blank clocks as we can
+    if(clocksFromStartOfScanLine < startOfScanLine)
+    {
+      uInt32 tmp;
+
+      if((startOfScanLine - clocksFromStartOfScanLine) < clocksToUpdate)
+        tmp = startOfScanLine - clocksFromStartOfScanLine;
+      else
+        tmp = clocksToUpdate;
+
+      clocksFromStartOfScanLine += tmp;
+      clocksToUpdate -= tmp;
+    }
+
+    // Remember frame pointer in case HMOVE blanks need to be handled
+    uInt8* oldFramePointer = myFramePointer;
+
+    // Update as much of the scanline as we can
+    if(clocksToUpdate != 0)
+    {
+      updateFrameScanline(clocksToUpdate, clocksFromStartOfScanLine - HBLANK);
+    }
+
+    // Handle HMOVE blanks if they are enabled
+    if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
+        (clocksFromStartOfScanLine < (HBLANK + 8)))
+    {
+      Int32 blanks = (HBLANK + 8) - clocksFromStartOfScanLine;
+      memset(oldFramePointer, 0, blanks);
+
+      if((clocksToUpdate + clocksFromStartOfScanLine) >= (HBLANK + 8))
+      {
+        myHMOVEBlankEnabled = false;
+      }
+    }
+
+    // See if we're at the end of a scanline
+    if(myClocksToEndOfScanLine == 228)
+    {
+      myFramePointer -= (160 - myFrameWidth - myFrameXStart);
+
+      // Yes, so set PF mask based on current CTRLPF reflection state 
+      myCurrentPFMask = ourPlayfieldTable[myCTRLPF & 0x01];
+
+      // TODO: These should be reset right after the first copy of the player
+      // has passed.  However, for now we'll just reset at the end of the 
+      // scanline since the other way would be to slow (01/21/99).
+      myCurrentP0Mask = &ourPlayerMaskTable[myPOSP0 & 0x03]
+          [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
+      myCurrentP1Mask = &ourPlayerMaskTable[myPOSP1 & 0x03]
+          [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
+
+      // Handle the "Cosmic Ark" TIA bug if it's enabled
+      if(myM0CosmicArkMotionEnabled)
+      {
+        // Movement table associated with the bug
+        static uInt32 m[4] = {18, 33, 0, 17};
+
+        myM0CosmicArkCounter = (myM0CosmicArkCounter + 1) & 3;
+        myPOSM0 -= m[myM0CosmicArkCounter];
+
+        if(myPOSM0 >= 160)
+          myPOSM0 -= 160;
+        else if(myPOSM0 < 0)
+          myPOSM0 += 160;
+
+        if(myM0CosmicArkCounter == 1)
+        {
+          // Stretch this missle so it's at least 2 pixels wide
+          myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
+              [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
+              [160 - (myPOSM0 & 0xFC)];
+        }
+        else if(myM0CosmicArkCounter == 2)
+        {
+          // Missle is disabled on this line 
+          myCurrentM0Mask = &ourDisabledMaskTable[0];
+        }
+        else
+        {
+          myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
+              [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+        }
+      } 
+    }
+  } 
+//  while(myClockAtLastUpdate < clock);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

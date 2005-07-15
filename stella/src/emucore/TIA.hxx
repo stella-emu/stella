@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.24 2005-07-03 06:49:40 urchlay Exp $
+// $Id: TIA.hxx,v 1.25 2005-07-15 15:27:29 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.24 2005-07-03 06:49:40 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.25 2005-07-15 15:27:29 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -238,6 +238,9 @@ class TIA : public Device , public MediaSource
 
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
+
+    // Draw the specified number of scanlines (for debugger use only)
+    void advanceFrameScanline(int lines);
 
   private:
     // Console the TIA is associated with

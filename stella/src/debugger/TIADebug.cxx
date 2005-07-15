@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.11 2005-07-14 18:28:35 stephena Exp $
+// $Id: TIADebug.cxx,v 1.12 2005-07-15 15:27:29 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -65,6 +65,12 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluP1());
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::advanceScanline(int lines)
+{
+  myTIA->advanceFrameScanline(lines);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

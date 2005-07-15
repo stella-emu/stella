@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.23 2005-07-08 17:22:41 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.24 2005-07-15 15:27:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,6 +35,7 @@ enum {
   kDDStepCmd  = 'DDst',
   kDDTraceCmd = 'DDtr',
   kDDAdvCmd   = 'DDav',
+  kDDSAdvCmd  = 'DDsv',
   kDDExitCmd  = 'DDex'
 };
 
@@ -94,6 +95,8 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   yoff += 22;
   addButton(vWidth + 10, yoff, "Trace", kDDTraceCmd, 0);
   yoff += 22;
+  addButton(vWidth + 10, yoff, "Scanline +1", kDDSAdvCmd, 0);
+  yoff += 22;
   addButton(vWidth + 10, yoff, "Frame +1", kDDAdvCmd, 0);
 
   addButton(vWidth + 10, _h - 22 - 10, "Exit", kDDExitCmd, 0);
@@ -122,6 +125,8 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       doTrace();
     else if(ascii == 'f')
       doAdvance();
+    else if(ascii == 'l')
+      doScanlineAdvance();
   }
   else
     myTab->handleKeyDown(ascii, keycode, modifiers);
@@ -145,6 +150,10 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDDAdvCmd:
       doAdvance();
+      break;
+
+    case kDDSAdvCmd:
+      doScanlineAdvance();
       break;
 
     case kDDExitCmd:
@@ -174,6 +183,13 @@ void DebuggerDialog::doTrace()
 void DebuggerDialog::doAdvance()
 {
   instance()->debugger().nextFrame(1);
+  myTab->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doScanlineAdvance()
+{
+  instance()->debugger().nextScanline(1);
   myTab->loadConfig();
 }
 
