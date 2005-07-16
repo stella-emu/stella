@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.28 2005-07-16 18:25:54 urchlay Exp $
+// $Id: TIA.hxx,v 1.29 2005-07-16 22:35:23 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.28 2005-07-16 18:25:54 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.29 2005-07-16 22:35:23 urchlay Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -245,8 +245,17 @@ class TIA : public Device , public MediaSource
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
 
+    // Clear current framebuffer from current scanline+1 to bottom
+    void clearToBottom();
+
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
+
+    // set up bookkeeping for the next frame
+    void startFrame();
+
+    // update bookkeeping at end of frame
+    void endFrame();
 
   private:
     // Console the TIA is associated with
