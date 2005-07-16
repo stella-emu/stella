@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.27 2005-07-16 16:09:37 urchlay Exp $
+// $Id: TIA.hxx,v 1.28 2005-07-16 18:25:54 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.27 2005-07-16 16:09:37 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.28 2005-07-16 18:25:54 urchlay Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -128,11 +128,6 @@ class TIA : public Device , public MediaSource
       the desired frame rate to update the media source.
     */
     virtual void update();
-
-    /* The backend update method. Currently pointless to make this public, as
-       we don't support partial scanline updates, but give it time :)
-    */
-    void update(int cpuCycles);
 
     /**
       This method should be called to update the media source with

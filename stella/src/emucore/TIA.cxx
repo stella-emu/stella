@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.49 2005-07-16 16:09:37 urchlay Exp $
+// $Id: TIA.cxx,v 1.50 2005-07-16 18:25:53 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -490,7 +490,7 @@ bool TIA::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::update(int cpuCycles)
+void TIA::update()
 {
   if(!myPartialFrameFlag) {
     // This stuff should only happen at the beginning of a new frame.
@@ -544,8 +544,7 @@ void TIA::update(int cpuCycles)
   myPartialFrameFlag = true;
 
   // Execute instructions until frame is finished, or a breakpoint/trap hits
-  mySystem->m6502().execute(cpuCycles);
-  cerr << "myPartialFrameFlag==" << myPartialFrameFlag << endl;
+  mySystem->m6502().execute(25000);
 
   // TODO: have code here that handles errors....
 
@@ -563,18 +562,22 @@ void TIA::update(int cpuCycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::update()
-{
-  update(25000);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
 {
   // FIXME - extend this method to draw partial scanlines
   //         ie, when step/trace is called from the debugger
 
-  update(76);
+  int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+  int endClock = ((totalClocks + 228) / 228) * 228;
+
+  int clock;
+  do {
+	  mySystem->m6502().execute(1);
+	  clock = mySystem->cycles() * 3;
+  } while(clock < endClock);
+
+  totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+  myCurrentScanline = totalClocks / 228;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
