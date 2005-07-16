@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.48 2005-07-15 18:19:29 stephena Exp $
+// $Id: TIA.cxx,v 1.49 2005-07-16 16:09:37 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -148,6 +148,7 @@ void TIA::reset()
   myClocksToEndOfScanLine = 228;
   myVSYNCFinishClock = 0x7FFFFFFF;
   myScanlineCountForLastFrame = 0;
+  myCurrentScanline = 0;
 
   // Currently no objects are enabled
   myEnabledObjects = 0;
@@ -307,6 +308,7 @@ bool TIA::save(Serializer& out)
     out.putLong(myClockAtLastUpdate);
     out.putLong(myClocksToEndOfScanLine);
     out.putLong(myScanlineCountForLastFrame);
+    out.putLong(myCurrentScanline);
     out.putLong(myVSYNCFinishClock);
 
     out.putLong(myEnabledObjects);
@@ -403,6 +405,7 @@ bool TIA::load(Deserializer& in)
     myClockAtLastUpdate = (Int32) in.getLong();
     myClocksToEndOfScanLine = (Int32) in.getLong();
     myScanlineCountForLastFrame = (Int32) in.getLong();
+    myCurrentScanline = (Int32) in.getLong();
     myVSYNCFinishClock = (Int32) in.getLong();
 
     myEnabledObjects = (uInt8) in.getLong();
@@ -487,62 +490,82 @@ bool TIA::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::update()
+void TIA::update(int cpuCycles)
 {
-  uInt8* tmp = myCurrentFrameBuffer;
-  myCurrentFrameBuffer = myPreviousFrameBuffer;
-  myPreviousFrameBuffer = tmp;
-
-  // Remember the number of clocks which have passed on the current scanline
-  // so that we can adjust the frame's starting clock by this amount.  This
-  // is necessary since some games position objects during VSYNC and the
-  // TIA's internal counters are not reset by VSYNC.
-  uInt32 clocks = ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228;
-
-  // Ask the system to reset the cycle count so it doesn't overflow
-  mySystem->resetCycles();
-
-  // Setup clocks that'll be used for drawing this frame
-  myClockWhenFrameStarted = -1 * clocks;
-  myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
-  myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
-  myClockAtLastUpdate = myClockStartDisplay;
-  myClocksToEndOfScanLine = 228;
-
-  // Reset frame buffer pointer
-  myFramePointer = myCurrentFrameBuffer;
-
-  // If color loss is enabled then update the color registers based on
-  // the number of scanlines in the last frame that was generated
-  if(myColorLossEnabled)
-  {
-    if(myScanlineCountForLastFrame & 0x01)
+  if(!myPartialFrameFlag) {
+    // This stuff should only happen at the beginning of a new frame.
+    uInt8* tmp = myCurrentFrameBuffer;
+    myCurrentFrameBuffer = myPreviousFrameBuffer;
+    myPreviousFrameBuffer = tmp;
+  
+    // Remember the number of clocks which have passed on the current scanline
+    // so that we can adjust the frame's starting clock by this amount.  This
+    // is necessary since some games position objects during VSYNC and the
+    // TIA's internal counters are not reset by VSYNC.
+    uInt32 clocks = ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228;
+  
+    // Ask the system to reset the cycle count so it doesn't overflow
+    mySystem->resetCycles();
+  
+    // Setup clocks that'll be used for drawing this frame
+    myClockWhenFrameStarted = -1 * clocks;
+    myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
+    myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
+    myClockAtLastUpdate = myClockStartDisplay;
+    myClocksToEndOfScanLine = 228;
+  
+    // Reset frame buffer pointer
+    myFramePointer = myCurrentFrameBuffer;
+  
+    // If color loss is enabled then update the color registers based on
+    // the number of scanlines in the last frame that was generated
+    if(myColorLossEnabled)
     {
-      myCOLUP0 |= 0x01010101;
-      myCOLUP1 |= 0x01010101;
-      myCOLUPF |= 0x01010101;
-      myCOLUBK |= 0x01010101;
-    }
-    else
-    {
-      myCOLUP0 &= 0xfefefefe;
-      myCOLUP1 &= 0xfefefefe;
-      myCOLUPF &= 0xfefefefe;
-      myCOLUBK &= 0xfefefefe;
-    }
-  }   
+      if(myScanlineCountForLastFrame & 0x01)
+      {
+        myCOLUP0 |= 0x01010101;
+        myCOLUP1 |= 0x01010101;
+        myCOLUPF |= 0x01010101;
+        myCOLUBK |= 0x01010101;
+      }
+      else
+      {
+        myCOLUP0 &= 0xfefefefe;
+        myCOLUP1 &= 0xfefefefe;
+        myCOLUPF &= 0xfefefefe;
+        myCOLUBK &= 0xfefefefe;
+      }
+    }   
+  }
 
-  // Execute instructions until frame is finished
-  mySystem->m6502().execute(25000);
+  // Partial frame flag starts out true here. When then 6502 strobes VSYNC,
+  // TIA::poke() will set this flag to false, so we'll know whether the
+  // frame got finished or interrupted by the debugger hitting a break/trap.
+  myPartialFrameFlag = true;
+
+  // Execute instructions until frame is finished, or a breakpoint/trap hits
+  mySystem->m6502().execute(cpuCycles);
+  cerr << "myPartialFrameFlag==" << myPartialFrameFlag << endl;
 
   // TODO: have code here that handles errors....
 
-  // Compute the number of scanlines in the frame
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  myScanlineCountForLastFrame = totalClocks / 228;
+  myCurrentScanline = totalClocks / 228;
 
-  // Stats counters
-  myFrameCounter++;
+  // This stuff should only happen at the end of a frame
+  if(!myPartialFrameFlag) {
+    // Compute the number of scanlines in the frame
+    myScanlineCountForLastFrame = myCurrentScanline;
+  
+    // Stats counters
+    myFrameCounter++;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::update()
+{
+  update(25000);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -551,62 +574,7 @@ void TIA::updateScanline()
   // FIXME - extend this method to draw partial scanlines
   //         ie, when step/trace is called from the debugger
 
-  uInt8* tmp = myCurrentFrameBuffer;
-  myCurrentFrameBuffer = myPreviousFrameBuffer;
-  myPreviousFrameBuffer = tmp;
-
-  // Remember the number of clocks which have passed on the current scanline
-  // so that we can adjust the frame's starting clock by this amount.  This
-  // is necessary since some games position objects during VSYNC and the
-  // TIA's internal counters are not reset by VSYNC.
-  uInt32 clocks = ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228;
-
-  // Ask the system to reset the cycle count so it doesn't overflow
-  mySystem->resetCycles();
-
-  // Setup clocks that'll be used for drawing this frame
-  myClockWhenFrameStarted = -1 * clocks;
-  myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
-  myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
-  myClockAtLastUpdate = myClockStartDisplay;
-  myClocksToEndOfScanLine = 228;
-
-  // Reset frame buffer pointer
-  myFramePointer = myCurrentFrameBuffer;
-
-  // If color loss is enabled then update the color registers based on
-  // the number of scanlines in the last frame that was generated
-  if(myColorLossEnabled)
-  {
-    if(myScanlineCountForLastFrame & 0x01)
-    {
-      myCOLUP0 |= 0x01010101;
-      myCOLUP1 |= 0x01010101;
-      myCOLUPF |= 0x01010101;
-      myCOLUBK |= 0x01010101;
-    }
-    else
-    {
-      myCOLUP0 &= 0xfefefefe;
-      myCOLUP1 &= 0xfefefefe;
-      myCOLUPF &= 0xfefefefe;
-      myCOLUBK &= 0xfefefefe;
-    }
-  }   
-
-  // Execute instructions until scanline is finished
-  mySystem->m6502().execute(76);
-
-  // TODO: have code here that handles errors....
-
-  // Compute the number of scanlines in the frame
-  uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  myScanlineCountForLastFrame = totalClocks / 228;
-
-cerr << "myScanlineCountForLastFrame = " << myScanlineCountForLastFrame << endl;
-
-  // Stats counters
-  myFrameCounter++;
+  update(76);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -641,7 +609,7 @@ uInt32 TIA::height() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TIA::scanlines() const
 {
-  return (uInt32)myScanlineCountForLastFrame;
+  return (uInt32)myCurrentScanline;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2062,6 +2030,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
   if(((clock - myClockWhenFrameStarted) / 228) > myMaximumNumberOfScanlines)
   {
     mySystem->m6502().stop();
+	 myPartialFrameFlag = false;
   }
 
   switch(addr)
@@ -2084,6 +2053,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
         // Since we're finished with the frame tell the processor to halt
         mySystem->m6502().stop();
+	     myPartialFrameFlag = false;
       }
       break;
     }

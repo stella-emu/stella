@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.26 2005-07-08 14:36:18 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.27 2005-07-16 16:09:38 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -611,6 +611,11 @@ void PromptWidget::addToHistory(const char *str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int PromptWidget::compareHistory(const char *histLine) {
+	return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::historyScroll(int direction)
 {
   if (_historySize == 0)
@@ -629,6 +634,18 @@ void PromptWidget::historyScroll(int direction)
   int line = _historyLine + direction;
   if ((direction < 0 && line < 0) || (direction > 0 && line > _historySize))
     return;
+
+  // If they press arrow-up with anything in the buffer, search backwards
+  // in the history.
+  /*
+  if(direction < 0 && _currentPos > _promptStartPos) {
+    for(;line > 0; line--) {
+      if(compareHistory(_history[line]) == 0)
+        break;
+    }
+  }
+  */
+
   _historyLine = line;
 
   // Remove the current user text

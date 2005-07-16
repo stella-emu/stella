@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.7 2005-07-05 15:25:44 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.8 2005-07-16 16:09:38 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -108,6 +108,8 @@ class PromptWidget : public Widget, public CommandSender
     OverlayColor textColor;
     OverlayColor bgColor;
     bool _inverse;
+
+    int compareHistory(const char *histLine);
 };
 
 #endif
