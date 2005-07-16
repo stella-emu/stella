@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.51 2005-07-16 22:35:10 urchlay Exp $
+// $Id: TIA.cxx,v 1.52 2005-07-16 23:04:15 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -574,14 +574,15 @@ void TIA::endFrame() {
 void TIA::updateScanline()
 {
   // Start a new frame if the old one was finished
-  if(!myPartialFrameFlag)
+  if(!myPartialFrameFlag) {
     startFrame();
+    // don't leave the old frame contents as a giant turd
+    clearToBottom();
+  }
 
   // true either way:
   myPartialFrameFlag = true;
 
-  // don't leave the old frame contents as a giant turd
-  clearToBottom();
 
   int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   int endClock = ((totalClocks + 228) / 228) * 228;
@@ -1865,9 +1866,18 @@ inline void TIA::waitHorizontalSync()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearToBottom()
 {
+	/*
   for(int s = scanlines() + 1; s < 300; s++)
     for(int i = 0; i < 160; i++)
       myCurrentFrameBuffer[s * 160 + i] = 0;
+		*/
+  for(int s = scanlines() + 1; s < 300; s++)
+	  for(int i = 0; i < 160; i++) {
+		  uInt8 tmp = myCurrentFrameBuffer[s * 160 + i] & 0x0f;
+		  tmp >>= 1;
+		  myCurrentFrameBuffer[s * 160 + i] = tmp;
+	  }
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
