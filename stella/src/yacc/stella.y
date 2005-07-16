@@ -23,6 +23,7 @@ void yyerror(char *e) {
 
 /* Terminals */
 %token <val> NUMBER
+%token <val> ERR
 %token <equate> EQUATE
 %token <intMethod> INT_METHOD
 
@@ -76,5 +77,6 @@ expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpr
 	|	NUMBER { fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); }
 	|	EQUATE { fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); }
 	|	INT_METHOD { fprintf(stderr, " (intMethod)"); $$ = new IntMethodExpression($1); }
+	|  ERR { fprintf(stderr, " ERR"); yyerror("Invalid label or constant"); return 1; }
 	;
 %%

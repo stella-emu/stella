@@ -12,19 +12,20 @@ typedef union {
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
 # define	NUMBER	257
-# define	EQUATE	258
-# define	INT_METHOD	259
-# define	LOG_OR	260
-# define	LOG_AND	261
-# define	LOG_NOT	262
-# define	SHR	263
-# define	SHL	264
-# define	GTE	265
-# define	LTE	266
-# define	NE	267
-# define	EQ	268
-# define	DEREF	269
-# define	UMINUS	270
+# define	ERR	258
+# define	EQUATE	259
+# define	INT_METHOD	260
+# define	LOG_OR	261
+# define	LOG_AND	262
+# define	LOG_NOT	263
+# define	SHR	264
+# define	SHL	265
+# define	GTE	266
+# define	LTE	267
+# define	NE	268
+# define	EQ	269
+# define	DEREF	270
+# define	UMINUS	271
 
 
 extern YYSTYPE yylval;

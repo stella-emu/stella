@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.11 2005-07-15 03:47:26 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.12 2005-07-16 23:46:36 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -120,7 +120,10 @@ inline bool is_operator(char x) {
              x==')' || x=='=' || x=='%' ) );
 }
 
-// FIXME: error checking!
+// const_to_int converts a string into a number, in either the
+// current base, or (if there's a base override) the selected base.
+// Returns -1 on error, since negative numbers are the parser's
+// responsibility, not the lexer's
 int const_to_int(char *c) {
 	// what base is the input in?
 	BaseFormat base = Debugger::debugger().parser()->base();
@@ -149,24 +152,30 @@ int const_to_int(char *c) {
 	switch(base) {
 		case kBASE_2:
 			while(*c) {
+				if(*c != '0' && *c != '1')
+					return -1;
 				ret *= 2;
-				ret += (*c - '0'); // FIXME: error check!
+				ret += (*c - '0');
 				c++;
 			}
 			return ret;
 
 		case kBASE_10:
 			while(*c) {
+				if(!isdigit(*c))
+					return -1;
 				ret *= 10;
-				ret += (*c - '0'); // FIXME: error check!
+				ret += (*c - '0');
 				c++;
 			}
 			return ret;
 
 		case kBASE_16:
 			while(*c) { // FIXME: error check!
+				if(!isxdigit(*c))
+					return -1;
 				int dig = (*c - '0');
-				if(dig > 9) dig = tolower(*c) - 'a';
+				if(dig > 9) dig = tolower(*c) - 'a' + 10;
 				ret *= 16;
 				ret += dig;
 				c++;
@@ -255,6 +264,15 @@ int yylex() {
 					*bufp = '\0';
 					state = ST_DEFAULT;
 
+					// Note: specials (like "a" for accumulator) have priority over
+					// numbers. So "a" always means accumulator, not hex 0xa. User
+					// is welcome to use a base prefix ("$a"), or a capital "A",
+					// to mean 0xa.
+
+					// Also, labels have priority over specials, so Bad Things will
+					// happen if the user defines a label that matches one of
+					// the specials. Who would do that, though?
+
 					if(Debugger::debugger().equates()->getAddress(idbuf) > -1) {
 						yylval.equate = idbuf;
 						return EQUATE;
@@ -263,7 +281,10 @@ int yylex() {
 						return INT_METHOD;
 					} else {
 						yylval.val = const_to_int(idbuf);
-						return NUMBER;
+						if(yylval.val >= 0)
+							return NUMBER;
+						else
+							return ERR;
 					}
 				}
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.59 2005-07-15 03:47:26 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.60 2005-07-16 23:46:36 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -621,15 +621,24 @@ bool DebuggerParser::getArgs(const string& command) {
 
 	argCount = argStrings.size();
 
-	//for(int i=0; i<argCount; i++)
-		//cerr << "argStrings[" << i << "] == \"" << argStrings[i] << "\"" << endl;
-
+	/*
 	// Now decipher each argument, in turn.
 	for(int i=0; i<argCount; i++) {
 		int temp = decipher_arg(argStrings[i]);
 		args.push_back(temp); // value maybe -1, if not expression argument
 		                      // (validate_args will decide whether that's OK, not us.)
-		//cerr << "args[" << i << "] == " << args[i] << endl;
+	}
+	*/
+
+	for(int i=0; i<argCount; i++) {
+		int err = YaccParser::parse(argStrings[i].c_str());
+		if(err) {
+			args.push_back(-1);
+		} else {
+			Expression *e = YaccParser::getResult();
+			args.push_back( e->evaluate() );
+			delete e;
+		}
 	}
 
 	return true;
