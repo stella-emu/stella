@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.66 2005-07-15 18:19:28 stephena Exp $
+// $Id: Debugger.cxx,v 1.67 2005-07-16 21:29:44 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -641,6 +641,7 @@ void Debugger::nextScanline(int lines) {
 //  myTiaDebug->clearTIA();
 
   myOSystem->frameBuffer().advanceScanline(lines);
+  myOSystem->frameBuffer().refreshTIA();
 
   mySystem->lockDataBus();
 }
@@ -650,6 +651,7 @@ void Debugger::nextFrame(int frames) {
   saveOldState();
   mySystem->unlockDataBus();
   myOSystem->frameBuffer().advance(frames);
+  myOSystem->frameBuffer().refreshTIA();
   mySystem->lockDataBus();
 }
 

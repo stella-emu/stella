@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.24 2005-07-15 15:27:29 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.25 2005-07-16 21:29:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -95,7 +95,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   yoff += 22;
   addButton(vWidth + 10, yoff, "Trace", kDDTraceCmd, 0);
   yoff += 22;
-  addButton(vWidth + 10, yoff, "Scanline +1", kDDSAdvCmd, 0);
+  addButton(vWidth + 10, yoff, "Scan +1", kDDSAdvCmd, 0);
   yoff += 22;
   addButton(vWidth + 10, yoff, "Frame +1", kDDAdvCmd, 0);
 
