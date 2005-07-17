@@ -1,5 +1,5 @@
 
-20050621 bkw
+20050717 bkw
 
 This alpha build of Stella contains an incomplete version of the debugger.
 
@@ -12,6 +12,12 @@ What the debugger can do:
 - Breakpoints - break running program and enter debugger when the
   Program Counter hits a predefined address. You can set as many
   breakpoints as you want.
+- Conditional breakpoints - Break running program when some arbitrary
+  condition is true (e.g. "breakif {a == $7f && c}" will break when the
+  Accumulator value is $7f and the Carry flag is true, no matter where
+  in the program this happens). Unlike the cond breaks in PCAE, Stella's
+  are *fast*: the emulation will run at full speed unless you use lots
+  of breakif's at the same time.
 - Watches - View contents of a location/register before every
   debugger prompt.
 - Traps - Like breakpoints, but break on read/write/any access to
@@ -43,27 +49,36 @@ What the debugger can do:
   ROM though.
 - Registers/memory that get changed by the CPU during debugging are
   highlighted when they're displayed
+- Scanline advance (like frame advance, break at beginning
+  of next scanline).
+- TIA display is updated during step/trace, so we can see our
+  scanlines being drawn as it happens. This isn't 100% perfect: unlike
+  a real TIA, the one in Stella only updates when it's written to.
 
 Planned features for Stella 2.0 release:
 - Graphical TIA tab, with register names and GUI buttons for
-  various bits (e.g. click ENAM0 to turn it on)
+  various bits (e.g. click ENAM0 to turn it on). This has been started
+  on already.
 - GUI Disassembly window, scrollable, with checkboxes for breakpoints
   (also perhaps 2 panes in this window so you can see 2 parts of the
   code at once)
-- Scanline advance (like frame advance, break at beginning
-  of next scanline).
-- TIA display should be updated during step/trace, so we can see our
-  scanlines being drawn as it happens. The emulation core wasn't
-  designed with this in mind, so it'll take a lot of work
 - Bankswitch support in the debugger for the few remaining cart types
   that aren't supported.
 - Patch ROM support for a few cart types doesn't work.
+- Some way to control joystick/etc. input from within the debugger.
+- Script (batch) file support, including auto-running a script file
+  named after the ROM image.
+- Saving the current debugger state to a script file (including
+  breakpoints, traps, etc).
+- Source-level debugging: if a DASM .lst file is available, we'll show
+  the listing in the ROM tab instead of a disassembly.
+- Save patched ROM.
+- More "special variables" for the expression parser. Currently, you can
+  use all the CPU registers and flags in expressions (e.g. "print a+1" does
+  what you expect). Need to add TIA, RIOT registers too (so you can say
+  "breakif _scanline==30" or such).
 
 Future plans (post 2.0):
-- Advanced breakpoint support (e.g. Break when carry flag
-  changes, or break when player 0 collides with player 1,
-  etc). This will implemented as a scripting language for
-  the CLI.
 - Possibly a mini-assembler
 - Support for extra RAM in Supercharger and other cart types.
 - Possibly support for recording and playing back input files, like
