@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.60 2005-07-16 23:46:36 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.61 2005-07-17 00:03:59 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -311,6 +311,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeSavesym
+	},
+
+	{
+		"scanline",
+		"Advance emulation by xx scanlines (default=1)",
+		false,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeScanline
 	},
 
 	{
@@ -1314,6 +1322,17 @@ void DebuggerParser::executeSavesym() {
 		commandResult = "saved symbols to file " + argStrings[0];
 	else
 		commandResult = red("I/O error");
+}
+
+// "scanline"
+void DebuggerParser::executeScanline() {
+	int count = 1;
+	if(argCount != 0) count = args[0];
+	debugger->nextScanline(count);
+	commandResult = "advanced ";
+	commandResult += debugger->valueToString(count);
+	commandResult += " scanline";
+	if(count != 1) commandResult += "s";
 }
 
 // "step"

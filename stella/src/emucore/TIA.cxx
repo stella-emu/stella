@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.52 2005-07-16 23:04:15 urchlay Exp $
+// $Id: TIA.cxx,v 1.53 2005-07-17 00:04:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -514,7 +514,7 @@ void TIA::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::startFrame() {
+inline void TIA::startFrame() {
   // This stuff should only happen at the beginning of a new frame.
   uInt8* tmp = myCurrentFrameBuffer;
   myCurrentFrameBuffer = myPreviousFrameBuffer;
@@ -561,7 +561,7 @@ void TIA::startFrame() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::endFrame() {
+inline void TIA::endFrame() {
   // This stuff should only happen at the end of a frame
   // Compute the number of scanlines in the frame
   myScanlineCountForLastFrame = myCurrentScanline;

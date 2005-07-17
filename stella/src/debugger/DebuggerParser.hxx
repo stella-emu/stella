@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.31 2005-07-14 11:51:03 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.32 2005-07-17 00:04:00 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -127,6 +127,7 @@ class DebuggerParser
 		void executeSaveses();
 		void executeSavestate();
 		void executeSavesym();
+		void executeScanline();
 		void executeStep();
 		void executeTia();
 		void executeTrace();
