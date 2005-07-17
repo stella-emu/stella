@@ -135,16 +135,34 @@ opengl32.lib"
 				RelativePath="..\..\gui\AudioDialog.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\BinAndExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\BinNotExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\BinOrExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\BinXorExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Booster.cxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\BrowserDialog.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\ByteDerefExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Cart.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart2K.cxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\Cart3E.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart3F.cxx">
@@ -204,16 +222,22 @@ opengl32.lib"
 				RelativePath="..\..\gui\CheatWidget.cxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\ColorWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Console.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ConstExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Control.cxx">
 			</File>
 			<File
-				RelativePath="..\..\gui\CpuWidget.cxx">
+				RelativePath="..\..\debugger\CpuDebug.cxx">
 			</File>
 			<File
-				RelativePath="..\..\emucore\m6502\src\D6502.cxx">
+				RelativePath="..\..\gui\CpuWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\DataGridWidget.cxx">
@@ -240,6 +264,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\DialogContainer.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\DivExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Driving.cxx">
 			</File>
 			<File
@@ -252,6 +279,12 @@ opengl32.lib"
 				RelativePath="..\..\gui\EditTextWidget.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\EqualsExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\EquateExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\debugger\EquateList.cxx">
 			</File>
 			<File
@@ -262,6 +295,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\EventMappingDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\Expression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\Font.cxx">
@@ -288,7 +324,19 @@ opengl32.lib"
 				RelativePath="..\..\gui\GameList.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\GreaterEqualsExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\GreaterExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\HelpDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\HiByteExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\IntMethodExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Joystick.cxx">
@@ -306,7 +354,25 @@ opengl32.lib"
 				RelativePath="..\..\gui\LauncherOptionsDialog.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\LessEqualsExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LessExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\ListWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LoByteExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LogAndExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LogNotExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LogOrExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\M6502.cxx">
@@ -330,6 +396,18 @@ opengl32.lib"
 				RelativePath="..\..\gui\Menu.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\MinusExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ModExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\MultExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\NotEqualsExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\m6502\src\NullDev.cxx">
 			</File>
 			<File
@@ -348,6 +426,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\Paddles.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\PlusExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\PopUpWidget.cxx">
 			</File>
 			<File
@@ -361,6 +442,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\PropsSet.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\RamDebug.cxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\RamWidget.cxx">
@@ -379,6 +463,12 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\win32\SettingsWin32.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ShiftLeftExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ShiftRightExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\common\Snapshot.cxx">
@@ -408,7 +498,13 @@ opengl32.lib"
 				RelativePath="..\..\emucore\TIASound.c">
 			</File>
 			<File
+				RelativePath="..\..\gui\TiaWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\ToggleBitWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\UnaryMinusExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\unzip.c">
@@ -418,6 +514,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\Widget.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\WordDerefExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\yacc\YaccParser.cxx">
@@ -440,6 +539,18 @@ opengl32.lib"
 				RelativePath="..\..\gui\AudioDialog.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\BinAndExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\BinNotExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\BinOrExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\BinXorExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Booster.hxx">
 			</File>
 			<File
@@ -449,10 +560,16 @@ opengl32.lib"
 				RelativePath="..\..\emucore\m6502\src\bspf\src\bspf.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\ByteDerefExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Cart.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart2K.hxx">
+			</File>
+			<File
+				RelativePath="..\..\emucore\Cart3E.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart3F.hxx">
@@ -512,6 +629,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\CheatWidget.hxx">
 			</File>
 			<File
+				RelativePath="..\..\gui\ColorWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\Command.hxx">
 			</File>
 			<File
@@ -521,13 +641,16 @@ opengl32.lib"
 				RelativePath="..\..\gui\ConsoleFont.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\ConstExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Control.hxx">
 			</File>
 			<File
-				RelativePath="..\..\gui\CpuWidget.hxx">
+				RelativePath="..\..\debugger\CpuDebug.hxx">
 			</File>
 			<File
-				RelativePath="..\..\emucore\m6502\src\D6502.hxx">
+				RelativePath="..\..\gui\CpuWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\DataGridWidget.hxx">
@@ -554,6 +677,9 @@ opengl32.lib"
 				RelativePath="..\..\gui\DialogContainer.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\DivExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Driving.hxx">
 			</File>
 			<File
@@ -566,7 +692,13 @@ opengl32.lib"
 				RelativePath="..\..\gui\EditTextWidget.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\EqualsExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\debugger\Equate.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\EquateExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\debugger\EquateList.hxx">
@@ -579,6 +711,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\EventMappingDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\Expression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\Font.hxx">
@@ -605,6 +740,12 @@ opengl32.lib"
 				RelativePath="..\..\gui\GameList.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\GreaterEqualsExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\GreaterExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\GuiObject.hxx">
 			</File>
 			<File
@@ -612,6 +753,12 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\HelpDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\HiByteExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\IntMethodExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Joystick.hxx">
@@ -629,7 +776,25 @@ opengl32.lib"
 				RelativePath="..\..\gui\LauncherOptionsDialog.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\LessEqualsExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LessExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\ListWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LoByteExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LogAndExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LogNotExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\LogOrExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\m6502\src\M6502.hxx">
@@ -650,6 +815,18 @@ opengl32.lib"
 				RelativePath="..\..\gui\Menu.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\MinusExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ModExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\MultExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\NotEqualsExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\m6502\src\NullDev.hxx">
 			</File>
 			<File
@@ -668,6 +845,9 @@ opengl32.lib"
 				RelativePath="..\..\emucore\Paddles.hxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\PlusExpression.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\PopUpWidget.hxx">
 			</File>
 			<File
@@ -681,6 +861,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\emucore\PropsSet.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\RamDebug.hxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\RamWidget.hxx">
@@ -699,6 +882,12 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\win32\SettingsWin32.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ShiftLeftExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ShiftRightExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\common\Snapshot.hxx">
@@ -743,7 +932,13 @@ opengl32.lib"
 				RelativePath="..\..\emucore\TIASound.h">
 			</File>
 			<File
+				RelativePath="..\..\gui\TiaWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\..\gui\ToggleBitWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\UnaryMinusExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\unzip.h">
@@ -756,6 +951,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\gui\Widget.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\WordDerefExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\yacc\YaccParser.hxx">
