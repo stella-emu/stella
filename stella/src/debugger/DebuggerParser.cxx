@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.61 2005-07-17 00:03:59 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.62 2005-07-17 02:26:49 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -21,6 +21,7 @@
 #include "CpuDebug.hxx"
 #include "DebuggerParser.hxx"
 #include "YaccParser.hxx"
+#include "M6502.hxx"
 
 #include "DebuggerParser.hxx"
 
@@ -51,10 +52,18 @@ Command DebuggerParser::commands[] = {
 
 	{
 		"break",
-		"Set/clear breakpoint at address (default=pc)",
+		"Set/clear breakpoint at address (default: current pc)",
 		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeBreak
+	},
+
+	{
+		"breakif",
+		"Set/clear breakpoint on condition",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeBreakif
 	},
 
 	{
@@ -1085,6 +1094,18 @@ void DebuggerParser::executeBreak() {
 	commandResult += debugger->valueToString(bp);
 }
 
+// "breakif"
+void DebuggerParser::executeBreakif() {
+	int res = YaccParser::parse(argStrings[0].c_str());
+	if(res == 0) {
+		// I hate this().method().chaining().crap()
+		debugger->cpuDebug().m6502().addCondBreak(
+				YaccParser::getResult(), argStrings[0] );
+	} else {
+		commandResult = red("invalid expression");
+	}
+}
+
 // "c"
 void DebuggerParser::executeC() {
 	if(argCount == 0)
@@ -1096,6 +1117,7 @@ void DebuggerParser::executeC() {
 // "clearbreaks"
 void DebuggerParser::executeClearbreaks() {
 	debugger->clearAllBreakPoints();
+	debugger->cpuDebug().m6502().clearCondBreaks();
 	commandResult = "all breakpoints cleared";
 }
 

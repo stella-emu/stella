@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.hxx,v 1.5 2005-07-15 02:59:00 urchlay Exp $
+// $Id: CpuDebug.hxx,v 1.6 2005-07-17 02:26:49 urchlay Exp $
 //============================================================================
 
 #ifndef CPU_DEBUG_HXX
@@ -47,6 +47,9 @@ class CpuDebug : public DebuggerSystem
     DebuggerState& getOldState() { return myOldState; }
 
     void saveOldState();
+
+	 // I know, we ain't supposed to do this...
+    M6502 &m6502() { return mySystem->m6502(); }
 
     int disassemble(int address, char* buffer, EquateList* equateList);
     int dPeek(int address);

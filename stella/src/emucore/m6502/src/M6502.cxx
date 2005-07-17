@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.8 2005-07-01 04:22:37 urchlay Exp $
+// $Id: M6502.cxx,v 1.9 2005-07-17 02:26:50 urchlay Exp $
 //============================================================================
 
 #include "M6502.hxx"
+#include "Expression.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
@@ -50,6 +51,8 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::~M6502()
 {
+  myBreakConds.clear();
+  myBreakCondNames.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,6 +100,42 @@ void M6502::nmi()
 void M6502::stop()
 {
   myExecutionStatus |= StopExecutionBit;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::addCondBreak(Expression *e, string name)
+{
+  myBreakConds.push_back(e);
+  myBreakCondNames.push_back(name);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::delCondBreak(int brk)
+{
+  myBreakConds.remove_at(brk);
+  myBreakCondNames.remove_at(brk);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::clearCondBreaks()
+{
+  myBreakConds.clear();
+  myBreakCondNames.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int M6502::evalCondBreaks()
+{
+  for(int i=0; i<myBreakConds.size(); i++) {
+    Expression *e = myBreakConds[i];
+    if(e->evaluate()) {
+      string name = myBreakCondNames[i]; // TODO: use this
+		cerr << "breakpoint due to condition: " << name << endl;
+      return i;
+    }
+  }
+
+  return -1; // no break hit
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

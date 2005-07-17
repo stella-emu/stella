@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.8 2005-07-07 18:56:41 stephena Exp $
+// $Id: M6502.hxx,v 1.9 2005-07-17 02:26:50 urchlay Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -25,10 +25,15 @@ class Serializer;
 class Deserializer;
 class Debugger;
 class CpuDebug;
+class Expression;
 
 #include "bspf.hxx"
 #include "System.hxx"
 #include "PackedBitArray.hxx"
+#include "Array.hxx"
+#include "StringList.hxx"
+
+typedef GUI::Array<Expression*> ExpressionList;
 
 /**
   This is an abstract base class for classes that emulate the
@@ -36,7 +41,7 @@ class CpuDebug;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.8 2005-07-07 18:56:41 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.9 2005-07-17 02:26:50 urchlay Exp $ 
 */
 class M6502
 {
@@ -182,6 +187,11 @@ class M6502
 	 void setTraps(PackedBitArray *read, PackedBitArray *write);
     int totalInstructionCount() { return myTotalInstructionCount; }
 
+    void addCondBreak(Expression *e, string name);
+    void delCondBreak(int brk);
+    void clearCondBreaks();
+    int evalCondBreaks();
+
   protected:
     /**
       Get the 8-bit value of the Processor Status register.
@@ -267,5 +277,8 @@ class M6502
     bool justHitTrap;
 
     int myTotalInstructionCount;
+
+    StringList myBreakCondNames;
+    ExpressionList myBreakConds;
 };
 #endif
