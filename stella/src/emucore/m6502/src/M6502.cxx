@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.9 2005-07-17 02:26:50 urchlay Exp $
+// $Id: M6502.cxx,v 1.10 2005-07-17 15:50:37 urchlay Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -110,10 +110,12 @@ void M6502::addCondBreak(Expression *e, string name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::delCondBreak(int brk)
+void M6502::delCondBreak(unsigned int brk)
 {
-  myBreakConds.remove_at(brk);
-  myBreakCondNames.remove_at(brk);
+  if(brk < myBreakConds.size()) {
+    myBreakConds.remove_at(brk);
+    myBreakCondNames.remove_at(brk);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,9 +126,15 @@ void M6502::clearCondBreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const StringList M6502::getCondBreakNames()
+{
+  return myBreakCondNames;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int M6502::evalCondBreaks()
 {
-  for(int i=0; i<myBreakConds.size(); i++) {
+  for(unsigned int i=0; i<myBreakConds.size(); i++) {
     Expression *e = myBreakConds[i];
     if(e->evaluate()) {
       string name = myBreakCondNames[i]; // TODO: use this

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.9 2005-07-17 02:26:50 urchlay Exp $
+// $Id: M6502.hxx,v 1.10 2005-07-17 15:50:37 urchlay Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef GUI::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.9 2005-07-17 02:26:50 urchlay Exp $ 
+  @version $Id: M6502.hxx,v 1.10 2005-07-17 15:50:37 urchlay Exp $ 
 */
 class M6502
 {
@@ -188,8 +188,9 @@ class M6502
     int totalInstructionCount() { return myTotalInstructionCount; }
 
     void addCondBreak(Expression *e, string name);
-    void delCondBreak(int brk);
+    void delCondBreak(unsigned int brk);
     void clearCondBreaks();
+	 const StringList getCondBreakNames();
     int evalCondBreaks();
 
   protected:

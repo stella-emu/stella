@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.62 2005-07-17 02:26:49 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.63 2005-07-17 15:50:34 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -60,7 +60,7 @@ Command DebuggerParser::commands[] = {
 
 	{
 		"breakif",
-		"Set/clear breakpoint on condition",
+		"Set breakpoint on condition",
 		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeBreakif
@@ -120,6 +120,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_LABEL, kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeDefine
+	},
+
+	{
+		"delbreakif",
+		"Delete conditional break created with breakif",
+		true,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeDelbreakif
 	},
 
 	{
@@ -674,7 +682,7 @@ bool DebuggerParser::subStringMatch(const string& needle, const string& haystack
 string DebuggerParser::listBreaks() {
 	char buf[255];
 	int count = 0;
-	string ret;
+	string ret = "";
 
 	for(unsigned int i=0; i<0x10000; i++) {
 		if(debugger->breakPoints->isSet(i)) {
@@ -683,10 +691,30 @@ string DebuggerParser::listBreaks() {
 			if(! (++count % 8) ) ret += "\n";
 		}
 	}
+	/*
 	if(count)
 		return ret;
 	else
 		return "no breakpoints set";
+		*/
+	if(count)
+		ret = "breaks:\n" + ret;
+
+	StringList conds = debugger->cpuDebug().m6502().getCondBreakNames();
+	if(conds.size() > 0) {
+		ret += "\nbreakifs:\n";
+		for(unsigned int i=0; i<conds.size(); i++) {
+			ret += debugger->valueToString(i);
+			ret += ": ";
+			ret += conds[i];
+			if(i != (conds.size() - 1)) ret += "\n";
+		}
+	}
+
+	if(ret == "")
+		return "no breakpoints set";
+	else
+		return ret;
 }
 
 string DebuggerParser::listTraps() {
@@ -1153,6 +1181,11 @@ void DebuggerParser::executeDefine() {
 	// TODO: check if label already defined?
 	debugger->addLabel(argStrings[0], args[1]);
 	commandResult = "label " + argStrings[0] + " defined as " + debugger->valueToString(args[1]);
+}
+
+// "delbreakif"
+void DebuggerParser::executeDelbreakif() {
+	debugger->cpuDebug().m6502().delCondBreak(args[0]);
 }
 
 // "delwatch"
