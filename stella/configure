@@ -24,6 +24,7 @@ _build_sound=yes
 _build_developer=yes
 _build_snapshot=yes
 _build_joystick=yes
+_build_static=no
 
 # more defaults
 _ranlib=ranlib
@@ -247,6 +248,7 @@ Optional Features:
   --disable-developer    disable all developer options (including debugger)
   --disable-snapshot     disable snapshot support
   --disable-joystick     disable joystick support
+  --enable-static        build static binary (if possible)
 
 Optional Libraries:
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
@@ -286,6 +288,8 @@ for ac_option in $@; do
       --disable-png)            _png=no         ;;
       --enable-nasm)            _nasm=yes       ;;
       --disable-nasm)           _nasm=no        ;;
+      --enable-static)          _build_static=yes       ;;
+      --disable-static)         _build_static=no        ;;
       --with-zlib-prefix=*)
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ZLIB_CFLAGS="-I$_prefix/include"
@@ -632,6 +636,14 @@ else
 	echo
 fi
 
+if test "$_build_static" = yes ; then
+	echo_n "   Static binary enabled"
+	echo
+else
+	echo_n "   Static binary disabled"
+	echo
+fi
+
 
 #
 # Now, add the appropriate defines/libraries/headers
@@ -649,7 +661,14 @@ YACC="$SRC/yacc"
 INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
-LIBS="$LIBS `$_sdlconfig --libs` -lz"
+if test "$_build_static" = yes ; then
+	_sdl_conf_libs="--static-libs"
+	LDFLAGS="-static $LDFLAGS"
+else
+	_sdl_conf_libs="--libs"
+fi
+
+LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs` -lz"
 
 case $_host_os in
 		unix)
@@ -692,7 +711,7 @@ fi
 
 if test "$_build_snapshot" = yes ; then
 	DEFINES="$DEFINES -DSNAPSHOT_SUPPORT"
-	LIBS="$LIBS -lpng"
+	LIBS="$LIBS -lpng -lz" # FIXME: -lz included twice
 fi
 
 if test "$_build_joystick" = yes ; then
