@@ -13,21 +13,34 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Expression.cxx,v 1.1 2005-07-12 17:02:35 stephena Exp $
+// $Id: Expression.cxx,v 1.2 2005-07-18 02:03:41 urchlay Exp $
 //============================================================================
 
 #include "Expression.hxx"
+
+#ifdef EXPR_REF_COUNT
+#include "bspf.hxx"
+    int refCount = 0;
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Expression::Expression(Expression* lhs, Expression* rhs)
   : myLHS(lhs),
     myRHS(rhs)
 {
+#ifdef EXPR_REF_COUNT
+  refCount++;
+  cerr << "new Expression::Expression()" << endl;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Expression::~Expression()
 {
+#ifdef EXPR_REF_COUNT
+  refCount--;
+  cerr << "~Expression::Expression()" << endl;
+#endif
   delete myLHS;
   delete myRHS;
 }

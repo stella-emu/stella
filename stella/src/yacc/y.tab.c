@@ -23,6 +23,8 @@
 
 #include <stdio.h>
 
+Expression* lastExp = 0;
+
 #define YYERROR_VERBOSE 1
 
 int yylex();
@@ -32,10 +34,12 @@ void yyerror(char *e) {
 	//fprintf(stderr, "%s at token \"%s\"\n", e, yytext);
 	fprintf(stderr, "%s\n", e);
 	errMsg = e;
+	if(lastExp)
+		delete lastExp;
 }
 
 
-#line 17 "stella.y"
+#line 21 "stella.y"
 #ifndef YYSTYPE
 typedef union {
 	int val;
@@ -121,10 +125,10 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    48,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80
+       0,    52,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84
 };
 #endif
 
@@ -948,128 +952,128 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 48 "stella.y"
+#line 52 "stella.y"
 { fprintf(stderr, "\ndone\n"); result.exp = yyvsp[0].exp; }
     break;
 case 2:
-#line 51 "stella.y"
-{ fprintf(stderr, " +"); yyval.exp = new PlusExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 55 "stella.y"
+{ fprintf(stderr, " +"); yyval.exp = new PlusExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 3:
-#line 52 "stella.y"
-{ fprintf(stderr, " -"); yyval.exp = new MinusExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 56 "stella.y"
+{ fprintf(stderr, " -"); yyval.exp = new MinusExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 4:
-#line 53 "stella.y"
-{ fprintf(stderr, " *"); yyval.exp = new MultExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 57 "stella.y"
+{ fprintf(stderr, " *"); yyval.exp = new MultExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 5:
-#line 54 "stella.y"
-{ fprintf(stderr, " /"); yyval.exp = new DivExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 58 "stella.y"
+{ fprintf(stderr, " /"); yyval.exp = new DivExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 6:
-#line 55 "stella.y"
-{ fprintf(stderr, " %%"); yyval.exp = new ModExpression(yyvsp[-2].exp, yyvsp[0].exp);  }
+#line 59 "stella.y"
+{ fprintf(stderr, " %%"); yyval.exp = new ModExpression(yyvsp[-2].exp, yyvsp[0].exp);  lastExp = yyval.exp; }
     break;
 case 7:
-#line 56 "stella.y"
-{ fprintf(stderr, " &"); yyval.exp = new BinAndExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 60 "stella.y"
+{ fprintf(stderr, " &"); yyval.exp = new BinAndExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 8:
-#line 57 "stella.y"
-{ fprintf(stderr, " |"); yyval.exp = new BinOrExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 61 "stella.y"
+{ fprintf(stderr, " |"); yyval.exp = new BinOrExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 9:
-#line 58 "stella.y"
-{ fprintf(stderr, " ^"); yyval.exp = new BinXorExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 62 "stella.y"
+{ fprintf(stderr, " ^"); yyval.exp = new BinXorExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 10:
-#line 59 "stella.y"
-{ fprintf(stderr, " <"); yyval.exp = new LessExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 63 "stella.y"
+{ fprintf(stderr, " <"); yyval.exp = new LessExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 11:
-#line 60 "stella.y"
-{ fprintf(stderr, " >"); yyval.exp = new GreaterExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 64 "stella.y"
+{ fprintf(stderr, " >"); yyval.exp = new GreaterExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 12:
-#line 61 "stella.y"
-{ fprintf(stderr, " >="); yyval.exp = new GreaterEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 65 "stella.y"
+{ fprintf(stderr, " >="); yyval.exp = new GreaterEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 13:
-#line 62 "stella.y"
-{ fprintf(stderr, " <="); yyval.exp = new LessEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 66 "stella.y"
+{ fprintf(stderr, " <="); yyval.exp = new LessEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 14:
-#line 63 "stella.y"
-{ fprintf(stderr, " !="); yyval.exp = new NotEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 67 "stella.y"
+{ fprintf(stderr, " !="); yyval.exp = new NotEqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 15:
-#line 64 "stella.y"
-{ fprintf(stderr, " =="); yyval.exp = new EqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 68 "stella.y"
+{ fprintf(stderr, " =="); yyval.exp = new EqualsExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 16:
-#line 65 "stella.y"
-{ fprintf(stderr, " >>"); yyval.exp = new ShiftRightExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 69 "stella.y"
+{ fprintf(stderr, " >>"); yyval.exp = new ShiftRightExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 17:
-#line 66 "stella.y"
-{ fprintf(stderr, " <<"); yyval.exp = new ShiftLeftExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 70 "stella.y"
+{ fprintf(stderr, " <<"); yyval.exp = new ShiftLeftExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 18:
-#line 67 "stella.y"
-{ fprintf(stderr, " ||"); yyval.exp = new LogOrExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 71 "stella.y"
+{ fprintf(stderr, " ||"); yyval.exp = new LogOrExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 19:
-#line 68 "stella.y"
-{ fprintf(stderr, " &&"); yyval.exp = new LogAndExpression(yyvsp[-2].exp, yyvsp[0].exp); }
+#line 72 "stella.y"
+{ fprintf(stderr, " &&"); yyval.exp = new LogAndExpression(yyvsp[-2].exp, yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 20:
-#line 69 "stella.y"
-{ fprintf(stderr, " U-"); yyval.exp = new UnaryMinusExpression(yyvsp[0].exp); }
+#line 73 "stella.y"
+{ fprintf(stderr, " U-"); yyval.exp = new UnaryMinusExpression(yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 21:
-#line 70 "stella.y"
-{ fprintf(stderr, " ~"); yyval.exp = new BinNotExpression(yyvsp[0].exp); }
+#line 74 "stella.y"
+{ fprintf(stderr, " ~"); yyval.exp = new BinNotExpression(yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 22:
-#line 71 "stella.y"
-{ fprintf(stderr, " !"); yyval.exp = new LogNotExpression(yyvsp[0].exp); }
+#line 75 "stella.y"
+{ fprintf(stderr, " !"); yyval.exp = new LogNotExpression(yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 23:
-#line 72 "stella.y"
-{ fprintf(stderr, " U*"); yyval.exp = new ByteDerefExpression(yyvsp[0].exp); }
+#line 76 "stella.y"
+{ fprintf(stderr, " U*"); yyval.exp = new ByteDerefExpression(yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 24:
-#line 73 "stella.y"
-{ fprintf(stderr, " U@"); yyval.exp = new WordDerefExpression(yyvsp[0].exp); }
+#line 77 "stella.y"
+{ fprintf(stderr, " U@"); yyval.exp = new WordDerefExpression(yyvsp[0].exp); lastExp = yyval.exp; }
     break;
 case 25:
-#line 74 "stella.y"
-{ fprintf(stderr, " U<");  yyval.exp = new LoByteExpression(yyvsp[0].exp);  }
+#line 78 "stella.y"
+{ fprintf(stderr, " U<");  yyval.exp = new LoByteExpression(yyvsp[0].exp);  lastExp = yyval.exp; }
     break;
 case 26:
-#line 75 "stella.y"
-{ fprintf(stderr, " U>");  yyval.exp = new HiByteExpression(yyvsp[0].exp);  }
+#line 79 "stella.y"
+{ fprintf(stderr, " U>");  yyval.exp = new HiByteExpression(yyvsp[0].exp);  lastExp = yyval.exp; }
     break;
 case 27:
-#line 76 "stella.y"
-{ fprintf(stderr, " ()"); yyval.exp = yyvsp[-1].exp; }
+#line 80 "stella.y"
+{ fprintf(stderr, " ()"); yyval.exp = yyvsp[-1].exp; lastExp = yyval.exp; }
     break;
 case 28:
-#line 77 "stella.y"
-{ fprintf(stderr, " %d", yyvsp[0].val); yyval.exp = new ConstExpression(yyvsp[0].val); }
+#line 81 "stella.y"
+{ fprintf(stderr, " %d", yyvsp[0].val); yyval.exp = new ConstExpression(yyvsp[0].val); lastExp = yyval.exp; }
     break;
 case 29:
-#line 78 "stella.y"
-{ fprintf(stderr, " %s", yyvsp[0].equate); yyval.exp = new EquateExpression(yyvsp[0].equate); }
+#line 82 "stella.y"
+{ fprintf(stderr, " %s", yyvsp[0].equate); yyval.exp = new EquateExpression(yyvsp[0].equate); lastExp = yyval.exp; }
     break;
 case 30:
-#line 79 "stella.y"
-{ fprintf(stderr, " (intMethod)"); yyval.exp = new IntMethodExpression(yyvsp[0].intMethod); }
+#line 83 "stella.y"
+{ fprintf(stderr, " (intMethod)"); yyval.exp = new IntMethodExpression(yyvsp[0].intMethod); lastExp = yyval.exp; }
     break;
 case 31:
-#line 80 "stella.y"
-{ fprintf(stderr, " ERR"); yyerror("Invalid label or expression"); return 1; }
+#line 84 "stella.y"
+{ fprintf(stderr, " ERR"); yyerror("Invalid label or constant"); return 1; }
     break;
 }
 
@@ -1304,5 +1308,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 82 "stella.y"
+#line 86 "stella.y"
 

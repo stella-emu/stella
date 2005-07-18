@@ -13,15 +13,18 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.63 2005-07-17 15:50:34 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.64 2005-07-18 02:03:40 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
+#include <iostream>
+#include <fstream>
 #include "Debugger.hxx"
 #include "CpuDebug.hxx"
 #include "DebuggerParser.hxx"
 #include "YaccParser.hxx"
 #include "M6502.hxx"
+#include "Expression.hxx"
 
 #include "DebuggerParser.hxx"
 
@@ -152,6 +155,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeDump
+	},
+
+	{
+		"exec",
+		"Execute script file",
+		true,
+		{ kARG_FILE, kARG_END_ARGS },
+		&DebuggerParser::executeExec
 	},
 
 	{
@@ -929,7 +940,7 @@ bool DebuggerParser::validateArgs(int cmd) {
 
 			case kARG_MULTI_BYTE:
 			case kARG_MULTI_WORD:
-				break; // FIXME: implement!
+				break; // FIXME: validate these (for now, any number's allowed)
 
 			default:
 				commandResult = red("too many arguments");
@@ -951,8 +962,10 @@ bool DebuggerParser::validateArgs(int cmd) {
 
 // main entry point: PromptWidget calls this method.
 string DebuggerParser::run(const string& command) {
+
+	/*
+		// this was our parser test code. Left for reference.
 	static Expression *lastExpression;
-	int i=0;
 
 	// special case: parser testing
 	if(strncmp(command.c_str(), "expr ", 5) == 0) {
@@ -983,10 +996,16 @@ string DebuggerParser::run(const string& command) {
 			commandResult = "no valid expr";
 		return commandResult;
 	}
+	*/
 
 	getArgs(command);
+#ifdef EXPR_REF_COUNT
+	extern int refCount;
+	cerr << "Expression count: " << refCount << endl;
+#endif
 	commandResult = "";
 
+	int i=0;
 	do {
 		if( subStringMatch(verb, commands[i].cmdString.c_str()) ) {
 			if( validateArgs(i) )
@@ -1039,6 +1058,42 @@ const char *DebuggerParser::getCompletions() {
 
 const char *DebuggerParser::getCompletionPrefix() {
 	return compPrefix.c_str();
+}
+
+string DebuggerParser::exec(const string& cmd, bool verbose) {
+	string file = cmd;
+	string ret;
+	int count = 0;
+	char buffer[256]; // FIXME: static buffers suck
+
+	string::size_type pos;
+	if( (pos = file.find_last_of('.')) == string::npos ) {
+		file += ".stella";
+	}
+
+	ifstream in(file.c_str());
+	if(!in.is_open())
+		return red("file \"" + file + "\" not found.");
+
+	while( !in.eof() ) {
+		if(!in.getline(buffer, 255))
+			break;
+
+		count++;
+		if(verbose) {
+			ret += "exec> ";
+			ret += buffer;
+			ret += "\n";
+			ret += run(buffer);
+			ret += "\n";
+		}
+	}
+	ret += "Executed ";
+	ret += debugger->valueToString(count);
+	ret += " commands from \"";
+	ret += file;
+	ret += "\"\n";
+	return ret;
 }
 
 ////// executor methods for commands[] array. All are void, no args.
@@ -1201,6 +1256,11 @@ void DebuggerParser::executeDisasm() {
 // "dump"
 void DebuggerParser::executeDump() {
 	commandResult = dump();
+}
+
+// "exec"
+void DebuggerParser::executeExec() {
+	commandResult = exec(argStrings[0]);
 }
 
 // "height"

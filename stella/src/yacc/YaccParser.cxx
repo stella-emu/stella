@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.12 2005-07-16 23:46:36 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.13 2005-07-18 02:03:41 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,8 @@
 //#ifdef __cplusplus
 //extern "C" {
 //#endif
+
+#include <vector>
 
 #include "Expression.hxx"
 #include "CpuDebug.hxx"

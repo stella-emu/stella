@@ -13,11 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Expression.hxx,v 1.1 2005-07-12 17:02:35 stephena Exp $
+// $Id: Expression.hxx,v 1.2 2005-07-18 02:03:41 urchlay Exp $
 //============================================================================
 
 #ifndef EXPRESSION_HXX
 #define EXPRESSION_HXX
+
+// define this to count Expression instances. Only useful for debugging
+// Stella itself.
+//#define EXPR_REF_COUNT
 
 /**
   This class provides an implementation of an expression node, which
@@ -26,7 +30,7 @@
   can represent complex expression statements.
 
   @author  Stephen Anthony
-  @version $Id: Expression.hxx,v 1.1 2005-07-12 17:02:35 stephena Exp $
+  @version $Id: Expression.hxx,v 1.2 2005-07-18 02:03:41 urchlay Exp $
 */
 class Expression
 {

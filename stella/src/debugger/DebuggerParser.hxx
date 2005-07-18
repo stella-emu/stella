@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.34 2005-07-17 15:50:36 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.35 2005-07-18 02:03:40 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -50,6 +50,7 @@ class DebuggerParser
 		int countCompletions(const char *in);
 		const char *getCompletions();
 		const char *getCompletionPrefix();
+		string exec(const string& cmd, bool verbose=true);
 
 		static inline string red(string msg ="") {
 			// This is TIA color 0x34. The octal value is 0x80+(0x34>>1).
@@ -107,6 +108,7 @@ class DebuggerParser
 		void executeDelwatch();
 		void executeDisasm();
 		void executeDump();
+		void executeExec();
 		void executeFrame();
 		void executeHeight();
 		void executeHelp();

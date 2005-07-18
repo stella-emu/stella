@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.67 2005-07-16 21:29:44 stephena Exp $
+// $Id: Debugger.cxx,v 1.68 2005-07-18 02:03:40 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -98,6 +98,7 @@ void Debugger::initialize()
   string initBreak = myOSystem->settings().getString("break");
   if(initBreak != "") run("break " + initBreak);
   myOSystem->settings().setString("break", "", false);
+  autoExec();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,10 +130,6 @@ void Debugger::setConsole(Console* console)
   delete myTiaDebug;
   myTiaDebug = new TIADebug(this, myConsole);
 
-  // Let the parser know about the new subsystems (so YaccParser can use them)
-// FIXME
-//  myParser->updateDebugger(this, myConsole);
-
   autoLoadSymbols(myOSystem->romFile());
 
   saveOldState();
@@ -162,6 +159,20 @@ void Debugger::autoLoadSymbols(string fileName) {
 	}
 	string ret = equateList->loadFile(file);
 	//	cerr << "loading syms from file " << file << ": " << ret << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::autoExec() {
+	string file = myOSystem->romFile();
+
+	string::size_type pos;
+	if( (pos = file.find_last_of('.')) != string::npos ) {
+		file.replace(pos, file.size(), ".stella");
+	} else {
+		file += ".stella";
+	}
+	myPrompt->print("\nautoExec():\n" + myParser->exec(file));
+	myPrompt->printPrompt();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
