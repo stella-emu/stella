@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.11 2005-07-18 02:03:41 urchlay Exp $
+// $Id: M6502.cxx,v 1.12 2005-07-18 23:00:18 urchlay Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -103,10 +103,11 @@ void M6502::stop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::addCondBreak(Expression *e, string name)
+unsigned int M6502::addCondBreak(Expression *e, string name)
 {
   myBreakConds.push_back(e);
   myBreakCondNames.push_back(name);
+  return myBreakConds.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

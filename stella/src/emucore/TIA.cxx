@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.53 2005-07-17 00:04:00 stephena Exp $
+// $Id: TIA.cxx,v 1.54 2005-07-18 23:00:17 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -591,6 +591,7 @@ void TIA::updateScanline()
   do {
 	  mySystem->m6502().execute(1);
 	  clock = mySystem->cycles() * 3;
+	  updateFrame(clock);
   } while(clock < endClock);
 
   totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;

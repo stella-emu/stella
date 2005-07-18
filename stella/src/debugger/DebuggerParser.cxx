@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.64 2005-07-18 02:03:40 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.65 2005-07-18 23:00:16 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1182,8 +1182,10 @@ void DebuggerParser::executeBreakif() {
 	int res = YaccParser::parse(argStrings[0].c_str());
 	if(res == 0) {
 		// I hate this().method().chaining().crap()
-		debugger->cpuDebug().m6502().addCondBreak(
+		unsigned int ret = debugger->cpuDebug().m6502().addCondBreak(
 				YaccParser::getResult(), argStrings[0] );
+		commandResult = "Added breakif ";
+		commandResult += debugger->valueToString(ret);
 	} else {
 		commandResult = red("invalid expression");
 	}
