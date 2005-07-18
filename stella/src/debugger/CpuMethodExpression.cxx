@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: IntMethodExpression.cxx,v 1.1 2005-07-15 02:30:47 urchlay Exp $
+// $Id: CpuMethodExpression.cxx,v 1.1 2005-07-18 23:50:26 urchlay Exp $
 //============================================================================
 
 #include "Expression.hxx"
-#include "IntMethodExpression.hxx"
+#include "CpuMethodExpression.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-IntMethodExpression::IntMethodExpression(CPUDEBUG_INT_METHOD method)
+CpuMethodExpression::CpuMethodExpression(CPUDEBUG_INT_METHOD method)
   : Expression(0, 0)
 {
 	myMethod = method;

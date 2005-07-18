@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.14 2005-07-18 02:13:57 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.15 2005-07-18 23:50:27 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@
 #include "BinNotExpression.hxx"
 #include "BinOrExpression.hxx"
 #include "BinXorExpression.hxx"
-#include "IntMethodExpression.hxx"
+#include "CpuMethodExpression.hxx"
 #include "ByteDerefExpression.hxx"
 #include "WordDerefExpression.hxx"
 #include "ConstExpression.hxx"
@@ -190,7 +190,7 @@ int const_to_int(char *c) {
 
 // special methods that get e.g. CPU registers
 // TODO: store in a map or something
-CPUDEBUG_INT_METHOD getSpecial(char *c) {
+CPUDEBUG_INT_METHOD getCpuSpecial(char *c) {
 	if(strcmp(c, "a") == 0)
 		return &CpuDebug::a;
 
@@ -253,7 +253,7 @@ int yylex() {
 
 			case ST_IDENTIFIER:
 				{
-					CPUDEBUG_INT_METHOD meth;
+					CPUDEBUG_INT_METHOD cpuMeth;
 
 					char *bufp = idbuf;
 					*bufp++ = *c++; // might be a base prefix
@@ -276,9 +276,9 @@ int yylex() {
 					if(Debugger::debugger().equates()->getAddress(idbuf) > -1) {
 						yylval.equate = idbuf;
 						return EQUATE;
-					} else if( (meth = getSpecial(idbuf)) ) {
-						yylval.intMethod = meth;
-						return INT_METHOD;
+					} else if( (cpuMeth = getCpuSpecial(idbuf)) ) {
+						yylval.cpuMethod = cpuMeth;
+						return CPU_METHOD;
 					} else {
 						yylval.val = const_to_int(idbuf);
 						if(yylval.val >= 0)

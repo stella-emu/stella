@@ -13,24 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: IntMethodExpression.hxx,v 1.1 2005-07-15 02:30:47 urchlay Exp $
+// $Id: CpuMethodExpression.hxx,v 1.1 2005-07-18 23:50:27 urchlay Exp $
 //============================================================================
 
-#ifndef INTMETHOD_EXPRESSION_HXX
-#define INTMETHOD_EXPRESSION_HXX
+#ifndef CPUMETHOD_EXPRESSION_HXX
+#define CPUMETHOD_EXPRESSION_HXX
 
-#include "Debugger.hxx"
+//#include "Debugger.hxx"
 #include "CpuDebug.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: IntMethodExpression.hxx,v 1.1 2005-07-15 02:30:47 urchlay Exp $
+  @version $Id: CpuMethodExpression.hxx,v 1.1 2005-07-18 23:50:27 urchlay Exp $
 */
-class IntMethodExpression : public Expression
+class CpuMethodExpression : public Expression
 {
   public:
-    IntMethodExpression(CPUDEBUG_INT_METHOD method);
+    CpuMethodExpression(CPUDEBUG_INT_METHOD method);
     int evaluate() { return CALL_CPUDEBUG_METHOD(myMethod); }
 
   private:

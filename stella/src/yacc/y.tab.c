@@ -6,7 +6,7 @@
 # define	NUMBER	257
 # define	ERR	258
 # define	EQUATE	259
-# define	INT_METHOD	260
+# define	CPU_METHOD	260
 # define	LOG_OR	261
 # define	LOG_AND	262
 # define	LOG_NOT	263
@@ -44,7 +44,7 @@ void yyerror(char *e) {
 typedef union {
 	int val;
 	char *equate;
-	CPUDEBUG_INT_METHOD intMethod;
+	CPUDEBUG_INT_METHOD cpuMethod;
 	Expression *exp;
 } yystype;
 # define YYSTYPE yystype
@@ -138,7 +138,7 @@ static const short yyrline[] =
 /* YYTNAME[TOKEN_NUM] -- String name of the token TOKEN_NUM. */
 static const char *const yytname[] =
 {
-  "$", "error", "$undefined.", "NUMBER", "ERR", "EQUATE", "INT_METHOD", 
+  "$", "error", "$undefined.", "NUMBER", "ERR", "EQUATE", "CPU_METHOD", 
   "'-'", "'+'", "'*'", "'/'", "'%'", "LOG_OR", "LOG_AND", "LOG_NOT", 
   "'|'", "'^'", "'&'", "SHR", "SHL", "'<'", "'>'", "GTE", "LTE", "NE", 
   "EQ", "DEREF", "UMINUS", "'~'", "'!'", "'@'", "'('", "')'", "statement", 
@@ -1069,7 +1069,7 @@ case 29:
     break;
 case 30:
 #line 83 "stella.y"
-{ fprintf(stderr, " (intMethod)"); yyval.exp = new IntMethodExpression(yyvsp[0].intMethod); lastExp = yyval.exp; }
+{ fprintf(stderr, " (CpuMethod)"); yyval.exp = new CpuMethodExpression(yyvsp[0].cpuMethod); lastExp = yyval.exp; }
     break;
 case 31:
 #line 84 "stella.y"
