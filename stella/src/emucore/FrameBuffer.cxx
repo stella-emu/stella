@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.52 2005-07-15 18:19:29 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.53 2005-07-19 17:59:58 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -130,6 +130,10 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   // Initialize video subsystem
   initSubsystem();
 
+  // Set emulation palette if a console exists
+  if(&myOSystem->console())
+    setPalette(myOSystem->console().mediaSource().palette());
+
   // Enable unicode so we can see translated key events
   // (lowercase vs. uppercase characters)
   SDL_EnableUNICODE(1);
@@ -231,26 +235,6 @@ void FrameBuffer::update()
 
     case EventHandler::S_DEBUGGER:
     {
-      // Get one frames' worth of data
-      bool advance = false;
-      if(theFrameAdvanceIndicator > 0)
-      {
-        myOSystem->console().mediaSource().update();
-        advance = true;
-        --theFrameAdvanceIndicator;
-      }
-      else if(theScanlineAdvanceIndicator > 0)
-      {
-        myOSystem->console().mediaSource().updateScanline();
-        advance = true;
-        --theScanlineAdvanceIndicator;
-      }
-
-      // Only update the screen if it's been invalidated or we're in
-      // frame advance mode
-      if(advance || theRedrawTIAIndicator)
-        drawMediaSource();
-
       // Only update the overlay if it's changed  
       if(theRedrawOverlayIndicator)
       {
@@ -299,28 +283,6 @@ void FrameBuffer::refreshOverlay(bool now)
   theRedrawOverlayIndicator = true;
   myOverlayRedraws = 2;
   if(now) update();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::advanceScanline(int lines)
-{
-  if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER)
-    return;
-
-  theScanlineAdvanceIndicator = lines;
-  while(theScanlineAdvanceIndicator)
-    update();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::advance(int frames)
-{
-  if(myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER)
-    return;
-
-  theFrameAdvanceIndicator = frames;
-  while(theFrameAdvanceIndicator)
-    update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

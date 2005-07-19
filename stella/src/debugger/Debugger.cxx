@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.69 2005-07-19 02:24:12 urchlay Exp $
+// $Id: Debugger.cxx,v 1.70 2005-07-19 17:59:57 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -35,6 +35,7 @@
 #include "RamDebug.hxx"
 #include "TIADebug.hxx"
 
+#include "TiaOutputWidget.hxx"
 #include "Debugger.hxx"
 
 Debugger* Debugger::myStaticDebugger;
@@ -48,6 +49,7 @@ Debugger::Debugger(OSystem* osystem)
     myCpuDebug(NULL),
     myRamDebug(NULL),
     myTiaDebug(NULL),
+    myTiaOutput(NULL),
     equateList(NULL),
     breakPoints(NULL),
     readTraps(NULL),
@@ -85,13 +87,15 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-  int x, y, w, h;
-  getDialogBounds(&x, &y, &w, &h);
+  GUI::Rect r = getDialogBounds();
 
   delete myBaseDialog;
-  DebuggerDialog *dd = new DebuggerDialog(myOSystem, this, x, y, w, h);
+  DebuggerDialog *dd = new DebuggerDialog(myOSystem, this,
+                           r.left, r.top, r.width(), r.height());
   myPrompt = dd->prompt();
   myBaseDialog = dd;
+
+  myTiaOutput = dd->tiaOutput();
 
   // set up any breakpoint that was on the command line
   // (and remove the key from the settings, so they won't get set again)
@@ -104,11 +108,10 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initializeVideo()
 {
-  int x, y, w, h;
-  getDialogBounds(&x, &y, &w, &h);
+  GUI::Rect r = getDialogBounds();
 
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  myOSystem->frameBuffer().initialize(title, w, y+h, false);
+  myOSystem->frameBuffer().initialize(title, r.width(), r.height(), false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -513,11 +516,6 @@ int Debugger::step()
   mySystem->m6502().execute(1);
   mySystem->lockDataBus();
 
-  // FIXME - this doesn't work yet, pending a partial rewrite of TIA class
-  myTiaDebug->updateTIA();
-  myOSystem->frameBuffer().refreshTIA(true);
-  ///////////////////////////////////////////////////////
-
   return mySystem->cycles() - cyc;
 }
 
@@ -531,8 +529,6 @@ int Debugger::step()
 // will fail for recursive subroutine calls. However, with 128 bytes of RAM
 // to share between stack and variables, I doubt any 2600 games will ever
 // use recursion...
-
-// FIXME: TIA framebuffer should be updated during tracing!
 
 int Debugger::trace()
 {
@@ -550,11 +546,6 @@ int Debugger::trace()
       mySystem->m6502().execute(1);
 
     mySystem->lockDataBus();
-
-    // FIXME - this doesn't work yet, pending a partial rewrite of TIA class
-    myTiaDebug->updateTIA();
-    myOSystem->frameBuffer().refreshTIA(true);
-    ///////////////////////////////////////////////////////
 
     return mySystem->cycles() - cyc;
   } else {
@@ -647,13 +638,7 @@ const string& Debugger::disassemble(int start, int lines) {
 void Debugger::nextScanline(int lines) {
   saveOldState();
   mySystem->unlockDataBus();
-// FIXME - add code to 'darken' the current TIA framebuffer, so we can
-//         differentiate between old content and newly drawn scanlines
-//  myTiaDebug->clearTIA();
-
-  myOSystem->frameBuffer().advanceScanline(lines);
-  myOSystem->frameBuffer().refreshTIA();
-
+  myTiaOutput->advanceScanline(lines);
   mySystem->lockDataBus();
 }
 
@@ -661,8 +646,7 @@ void Debugger::nextScanline(int lines) {
 void Debugger::nextFrame(int frames) {
   saveOldState();
   mySystem->unlockDataBus();
-  myOSystem->frameBuffer().advance(frames);
-  myOSystem->frameBuffer().refreshTIA();
+  myTiaOutput->advance(frames);
   mySystem->lockDataBus();
 }
 
@@ -785,7 +769,7 @@ void Debugger::setQuitState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::getDialogBounds(int* x, int* y, int* w, int* h)
+GUI::Rect Debugger::getDialogBounds() const
 {
   int userHeight = myOSystem->settings().getInt("debugheight");
   if(userHeight < kDebuggerLines)
@@ -795,10 +779,43 @@ void Debugger::getDialogBounds(int* x, int* y, int* w, int* h)
   }
   userHeight = (userHeight + 3) * kDebuggerLineHeight - 8;
 
-  *x = 0;
-  *y = myConsole->mediaSource().height();
-  *w = kDebuggerWidth;
-  *h = userHeight;
+  GUI::Rect r(0, 0, kDebuggerWidth, userHeight + myConsole->mediaSource().height());
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect Debugger::getTiaBounds() const
+{
+  GUI::Rect r(0, 0,
+              myConsole->mediaSource().width() << 1,  // width is doubled
+              myConsole->mediaSource().height());
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect Debugger::getStatusBounds() const
+{
+  // The status area is the full area to the right of the TIA image
+  GUI::Rect dialog = getDialogBounds();
+  GUI::Rect tia    = getTiaBounds();
+
+  GUI::Rect r(tia.width() + 1, 0,
+              dialog.width(),
+              tia.height());
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect Debugger::getTabBounds() const
+{
+  // The tab area is the full area below the TIA image
+  GUI::Rect dialog = getDialogBounds();
+  GUI::Rect tia    = getTiaBounds();
+
+  GUI::Rect r(0, tia.height() + 1,
+              dialog.width(),
+              dialog.height());
+  return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

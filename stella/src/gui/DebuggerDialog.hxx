@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.12 2005-07-15 15:27:29 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.13 2005-07-19 17:59:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,9 +22,11 @@
 #ifndef DEBUGGER_DIALOG_HXX
 #define DEBUGGER_DIALOG_HXX
 
+class Debugger;
 class OSystem;
 class DialogContainer;
 class TabWidget;
+class TiaOutputWidget;
 
 #include "Dialog.hxx"
 #include "PromptWidget.hxx"
@@ -36,16 +38,23 @@ class DebuggerDialog : public Dialog
                           int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    PromptWidget *prompt();
+    PromptWidget* prompt() { return myPrompt; }
+    TiaOutputWidget* tiaOutput() { return myTiaOutput; }
+
     virtual void loadConfig();
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   protected:
     TabWidget* myTab;
+    TiaOutputWidget* myTiaOutput;
     PromptWidget *myPrompt;
 
   private:
+    void addTiaArea();
+    void addTabArea();
+    void addStatusArea();
+
     void doStep();
     void doTrace();
     void doScanlineAdvance();

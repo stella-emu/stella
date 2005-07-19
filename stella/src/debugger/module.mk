@@ -38,7 +38,8 @@ MODULE_OBJS := \
 	src/debugger/PackedBitArray.o \
 	src/debugger/CpuDebug.o \
 	src/debugger/RamDebug.o \
-	src/debugger/TIADebug.o
+	src/debugger/TIADebug.o \
+	src/debugger/TiaOutputWidget.o
 
 MODULE_DIRS += \
 	src/debugger

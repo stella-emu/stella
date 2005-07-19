@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.56 2005-07-19 01:31:36 urchlay Exp $
+// $Id: Debugger.hxx,v 1.57 2005-07-19 17:59:58 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -25,6 +25,7 @@ class System;
 class CpuDebug;
 class RamDebug;
 class TIADebug;
+class TiaOutputWidget;
 
 #include "Array.hxx"
 #include "DialogContainer.hxx"
@@ -33,6 +34,7 @@ class TIADebug;
 #include "EquateList.hxx"
 #include "PackedBitArray.hxx"
 #include "PromptWidget.hxx"
+#include "Rect.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -63,10 +65,11 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.56 2005-07-19 01:31:36 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.57 2005-07-19 17:59:58 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
+  friend class DebuggerDialog;
   friend class DebuggerParser;
   friend class EventHandler;
 
@@ -251,9 +254,13 @@ class Debugger : public DialogContainer
     void setQuitState();
 
     /**
-      Get the dimensions of the debugger dialog (takes mediasource into account)
+      Get the dimensions of the various debugger dialog areas
+      (takes mediasource into account)
     */
-    void getDialogBounds(int* x, int* y, int* w, int* h);
+    GUI::Rect getDialogBounds() const;
+    GUI::Rect getStatusBounds() const;
+    GUI::Rect getTiaBounds() const;
+    GUI::Rect getTabBounds() const;
 
     /**
       Resize the debugger dialog based on the current dimensions from
@@ -310,6 +317,8 @@ class Debugger : public DialogContainer
     CpuDebug* myCpuDebug;
     RamDebug* myRamDebug;
     TIADebug* myTiaDebug;
+
+    TiaOutputWidget* myTiaOutput;
 
     EquateList *equateList;
     PackedBitArray *breakPoints;

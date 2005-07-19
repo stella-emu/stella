@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.25 2005-07-16 21:29:46 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.26 2005-07-19 17:59:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,11 +22,13 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "TabWidget.hxx"
+#include "TiaOutputWidget.hxx"
 #include "PromptWidget.hxx"
 #include "CpuWidget.hxx"
 #include "RamWidget.hxx"
 #include "TiaWidget.hxx"
 #include "CheatWidget.hxx"
+#include "Rect.hxx"
 #include "Debugger.hxx"
 
 #include "DebuggerDialog.hxx"
@@ -45,61 +47,9 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   : Dialog(osystem, parent, x, y, w, h),
     myTab(NULL)
 {
-  const int vBorder = 4;
-  const int vWidth = _w - kButtonWidth - 20;
-
-  // The tab widget
-  myTab = new TabWidget(this, 0, vBorder, vWidth, _h - vBorder - 1);
-
-  // 1) The Prompt/console tab
-  myTab->addTab("Prompt");
-  myPrompt = new PromptWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
-  myTab->setParentWidget(0, myPrompt, myPrompt);
-
-  // 2) The CPU tab
-  myTab->addTab("CPU");
-  CpuWidget* cpu = new CpuWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
-  myTab->setParentWidget(1, cpu, cpu->activeWidget());
-
-  // 3) The RAM tab (part of RIOT)
-  myTab->addTab("RAM");
-  RamWidget* ram = new RamWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
-  myTab->setParentWidget(2, ram, ram->activeWidget());
-
-  // 4) The input/output tab (part of RIOT)
-  myTab->addTab("I/O");
-
-
-  // 5) The TIA tab
-  myTab->addTab("TIA");
-  TiaWidget* tia = new TiaWidget(myTab, 2, 2, vWidth - vBorder, _h - 25);
-  myTab->setParentWidget(4, tia, tia->activeWidget());
-
-
-  // 6) The ROM tab
-  myTab->addTab("ROM");
-
-
-  // 7) The Cheat tab
-  myTab->addTab("Cheat");
-  CheatWidget* cheat = new CheatWidget(myTab, 2, 2,
-                                       vWidth - vBorder, _h - 25);
-  myTab->setParentWidget(6, cheat, cheat->activeWidget());
-
-  // Set active tab to prompt
-  myTab->setActiveTab(0);
-
-  // Add some buttons that are always shown, no matter which tab we're in
-  int yoff = vBorder + kTabHeight + 5;
-  addButton(vWidth + 10, yoff, "Step", kDDStepCmd, 0);
-  yoff += 22;
-  addButton(vWidth + 10, yoff, "Trace", kDDTraceCmd, 0);
-  yoff += 22;
-  addButton(vWidth + 10, yoff, "Scan +1", kDDSAdvCmd, 0);
-  yoff += 22;
-  addButton(vWidth + 10, yoff, "Frame +1", kDDAdvCmd, 0);
-
-  addButton(vWidth + 10, _h - 22 - 10, "Exit", kDDExitCmd, 0);
+  addTiaArea();
+  addTabArea();
+  addStatusArea();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,6 +116,90 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::addTiaArea()
+{
+  GUI::Rect r = instance()->debugger().getTiaBounds();
+
+  myTiaOutput = new TiaOutputWidget(this, r.left, r.top, r.width(), r.height());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::addTabArea()
+{
+  const int vBorder = 4;
+  const int vWidth = _w - kButtonWidth - 20;
+
+  GUI::Rect r = instance()->debugger().getTabBounds();
+
+  // The tab widget
+  myTab = new TabWidget(this, r.left, r.top + vBorder, vWidth,
+                        r.height() - vBorder);
+
+  // 1) The Prompt/console tab
+  myTab->addTab("Prompt");
+  myPrompt = new PromptWidget(myTab, 2, 2, vWidth - vBorder,
+                              r.height() - 25);
+  myTab->setParentWidget(0, myPrompt, myPrompt);
+
+  // 2) The CPU tab
+  myTab->addTab("CPU");
+  CpuWidget* cpu = new CpuWidget(myTab, 2, 2, vWidth - vBorder,
+                                 r.height() - 25);
+  myTab->setParentWidget(1, cpu, cpu->activeWidget());
+
+  // 3) The RAM tab (part of RIOT)
+  myTab->addTab("RAM");
+  RamWidget* ram = new RamWidget(myTab, 2, 2, vWidth - vBorder,
+                                 r.height() - 25);
+  myTab->setParentWidget(2, ram, ram->activeWidget());
+
+  // 4) The input/output tab (part of RIOT)
+  myTab->addTab("I/O");
+
+
+  // 5) The TIA tab
+  myTab->addTab("TIA");
+  TiaWidget* tia = new TiaWidget(myTab, 2, 2, vWidth - vBorder,
+                                 r.height() - 25);
+  myTab->setParentWidget(4, tia, tia->activeWidget());
+
+
+  // 6) The ROM tab
+  myTab->addTab("ROM");
+
+
+  // 7) The Cheat tab
+  myTab->addTab("Cheat");
+  CheatWidget* cheat = new CheatWidget(myTab, 2, 2,
+                                       vWidth - vBorder, r.height() - 25);
+  myTab->setParentWidget(6, cheat, cheat->activeWidget());
+
+  // Set active tab to prompt
+  myTab->setActiveTab(0);
+
+  // Add some buttons that are always shown, no matter which tab we're in
+  int yoff = r.top + vBorder + kTabHeight + 5;
+  addButton(vWidth + 10, yoff, "Step", kDDStepCmd, 0);
+  yoff += 22;
+  addButton(vWidth + 10, yoff, "Trace", kDDTraceCmd, 0);
+  yoff += 22;
+  addButton(vWidth + 10, yoff, "Scan +1", kDDSAdvCmd, 0);
+  yoff += 22;
+  addButton(vWidth + 10, yoff, "Frame +1", kDDAdvCmd, 0);
+
+  addButton(vWidth + 10, r.bottom - 22 - 10, "Exit", kDDExitCmd, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::addStatusArea()
+{
+  GUI::Rect r = instance()->debugger().getStatusBounds();
+
+  new StaticTextWidget(this, r.left, r.top, 100, kLineHeight,
+                       "Just a test", kTextAlignLeft);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doStep()
 {
   instance()->debugger().step();
@@ -197,10 +231,4 @@ void DebuggerDialog::doScanlineAdvance()
 void DebuggerDialog::doExit()
 {
   instance()->debugger().quit();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptWidget *DebuggerDialog::prompt()
-{
-  return myPrompt;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.11 2005-07-19 00:05:21 urchlay Exp $
+// $Id: TIADebug.hxx,v 1.12 2005-07-19 17:59:58 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -50,8 +50,6 @@ class TIADebug : public DebuggerSystem
 
     void saveOldState();
 
-    void clearTIA();
-
     // FIXME - add whole slew of setXXX() methods
     uInt8 coluP0(int newVal = -1);
     uInt8 coluP1(int newVal = -1);
@@ -62,7 +60,6 @@ class TIADebug : public DebuggerSystem
     int frameCount();
     bool vsync();
     bool vblank();
-    void updateTIA();
     string state();
 
   private:
