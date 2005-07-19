@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.cxx,v 1.4 2005-07-15 02:59:00 urchlay Exp $
+// $Id: CpuDebug.cxx,v 1.5 2005-07-19 01:31:36 urchlay Exp $
 //============================================================================
 
 #include "Array.hxx"
@@ -159,6 +159,14 @@ int CpuDebug::disassemble(int address, char* buffer, EquateList* equateList)
 				M6502::ourInstructionProcessorCycleTable[opcode]);
       return 1;
   } 
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// This doesn't really belong here (banks are Cart properties), but it
+// makes like much easier for the expression parser.
+int CpuDebug::getBank()
+{
+  return Debugger::debugger().getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

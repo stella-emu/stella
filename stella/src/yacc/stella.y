@@ -48,6 +48,7 @@ void yyerror(char *e) {
 %nonassoc '<' '>' GTE LTE NE EQ
 %nonassoc DEREF
 %nonassoc UMINUS
+%nonassoc '['
 
 
 %%
@@ -80,6 +81,7 @@ expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpr
 	|	'<' expression { fprintf(stderr, " U<");  $$ = new LoByteExpression($2);  lastExp = $$; }
 	|	'>' expression { fprintf(stderr, " U>");  $$ = new HiByteExpression($2);  lastExp = $$; }
 	|	'(' expression ')'	{ fprintf(stderr, " ()"); $$ = $2; lastExp = $$; }
+	|	expression '[' expression ']' { fprintf(stderr, " []"); $$ = new ByteDerefOffsetExpression($1, $3); lastExp = $$; }
 	|	NUMBER { fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); lastExp = $$; }
 	|	EQUATE { fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); lastExp = $$; }
 	|	CPU_METHOD { fprintf(stderr, " (CpuMethod)"); $$ = new CpuMethodExpression($1); lastExp = $$; }

@@ -8,6 +8,7 @@ MODULE_OBJS := \
 	src/debugger/CpuMethodExpression.o \
 	src/debugger/TiaMethodExpression.o \
 	src/debugger/ByteDerefExpression.o \
+	src/debugger/ByteDerefOffsetExpression.o \
 	src/debugger/WordDerefExpression.o \
 	src/debugger/ConstExpression.o \
 	src/debugger/EquateExpression.o \

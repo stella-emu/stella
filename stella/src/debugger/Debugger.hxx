@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.55 2005-07-18 02:03:40 urchlay Exp $
+// $Id: Debugger.hxx,v 1.56 2005-07-19 01:31:36 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -63,7 +63,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.55 2005-07-18 02:03:40 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.56 2005-07-19 01:31:36 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -231,6 +231,8 @@ class Debugger : public DialogContainer
 	 /* these are now exposed so Expressions can use them. */
     int peek(int addr);
     int dpeek(int addr);
+    int getBank();
+    int bankCount();
 
   private:
     /**
@@ -293,8 +295,6 @@ class Debugger : public DialogContainer
     void addLabel(string label, int address);
 
     bool setBank(int bank);
-    int bankCount();
-    int getBank();
     const char *getCartType();
     bool patchROM(int addr, int value);
     void saveState(int state);

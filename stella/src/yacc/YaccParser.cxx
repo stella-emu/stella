@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.16 2005-07-19 00:05:21 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.17 2005-07-19 01:31:37 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,6 +36,7 @@
 #include "CpuMethodExpression.hxx"
 #include "TiaMethodExpression.hxx"
 #include "ByteDerefExpression.hxx"
+#include "ByteDerefOffsetExpression.hxx"
 #include "WordDerefExpression.hxx"
 #include "ConstExpression.hxx"
 #include "DivExpression.hxx"
@@ -119,7 +120,8 @@ inline bool is_operator(char x) {
              x=='/' || x=='<' || x=='>' ||
              x=='|' || x=='&' || x=='^' ||
              x=='!' || x=='~' || x=='(' ||
-             x==')' || x=='=' || x=='%' ) );
+             x==')' || x=='=' || x=='%' ||
+				 x=='[' || x==']' ) );
 }
 
 // const_to_int converts a string into a number, in either the
@@ -228,6 +230,9 @@ CPUDEBUG_INT_METHOD getCpuSpecial(char *c) {
 
 	if(strcmp(c, "b") == 0)
 		return &CpuDebug::b;
+
+	if(strcmp(c, "_bank") == 0)
+		return &CpuDebug::getBank;
 
 	return 0;
 }

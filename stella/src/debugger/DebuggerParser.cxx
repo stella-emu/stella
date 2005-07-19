@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.65 2005-07-18 23:00:16 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.66 2005-07-19 01:31:36 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -41,7 +41,7 @@ Command DebuggerParser::commands[] = {
 		"bank",
 		"Show # of banks (with no args), Switch to bank (with 1 arg)",
 		false,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeBank
 	},
 
