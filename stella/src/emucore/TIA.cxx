@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.54 2005-07-18 23:00:17 urchlay Exp $
+// $Id: TIA.cxx,v 1.55 2005-07-19 02:24:13 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,6 +48,8 @@ TIA::TIA(const Console& console, Settings& settings)
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];
   myPreviousFrameBuffer = new uInt8[160 * 300];
+
+  myFrameGreyed = false;
 
   for(uInt32 i = 0; i < 6; ++i)
     myBitEnabled[i] = true;
@@ -576,13 +578,15 @@ void TIA::updateScanline()
   // Start a new frame if the old one was finished
   if(!myPartialFrameFlag) {
     startFrame();
-    // don't leave the old frame contents as a giant turd
-    clearToBottom();
+	 myFrameGreyed = false;
   }
+
+  // grey out old frame contents
+  if(!myFrameGreyed) greyOutFrame();
+  myFrameGreyed = true;
 
   // true either way:
   myPartialFrameFlag = true;
-
 
   int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   int endClock = ((totalClocks + 228) / 228) * 228;
@@ -1865,14 +1869,14 @@ inline void TIA::waitHorizontalSync()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::clearToBottom()
+void TIA::greyOutFrame()
 {
 	/*
   for(int s = scanlines() + 1; s < 300; s++)
     for(int i = 0; i < 160; i++)
       myCurrentFrameBuffer[s * 160 + i] = 0;
 		*/
-  for(int s = scanlines() + 1; s < 300; s++)
+  for(int s = scanlines(); s < 300; s++)
 	  for(int i = 0; i < 160; i++) {
 		  uInt8 tmp = myCurrentFrameBuffer[s * 160 + i] & 0x0f;
 		  tmp >>= 1;

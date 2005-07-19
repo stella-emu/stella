@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.29 2005-07-16 22:35:23 urchlay Exp $
+// $Id: TIA.hxx,v 1.30 2005-07-19 02:24:13 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.29 2005-07-16 22:35:23 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.30 2005-07-19 02:24:13 urchlay Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -245,8 +245,8 @@ class TIA : public Device , public MediaSource
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
 
-    // Clear current framebuffer from current scanline+1 to bottom
-    void clearToBottom();
+    // Grey out current framebuffer from current scanline to bottom
+    void greyOutFrame();
 
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
@@ -478,6 +478,9 @@ class TIA : public Device , public MediaSource
 
     // Answers whether specified bits (from TIABit) are enabled or disabled
     bool myBitEnabled[6];
+
+	 // Has current frame been "greyed out" (has updateScanline() been run?)
+	 bool myFrameGreyed;
 
   private:
     // Ball mask table (entries are true or false)

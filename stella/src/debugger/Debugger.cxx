@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.68 2005-07-18 02:03:40 urchlay Exp $
+// $Id: Debugger.cxx,v 1.69 2005-07-19 02:24:12 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -777,11 +777,10 @@ void Debugger::setQuitState()
   // Bus must be unlocked for normal operation when leaving debugger mode
   mySystem->unlockDataBus();
 
-  // execute one instruction on quit, IF we're
-  // sitting at a breakpoint. This will get us past it.
+  // execute one instruction on quit. If we're
+  // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
-  // FIXME: do this for traps, too
-  if(breakPoints->isSet(myCpuDebug->pc()))
+  //	if(breakPoints->isSet(myCpuDebug->pc()))
     mySystem->m6502().execute(1);
 }
 
