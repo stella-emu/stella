@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.hxx,v 1.1 2005-07-19 17:59:58 stephena Exp $
+// $Id: TiaOutputWidget.hxx,v 1.2 2005-07-19 18:21:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,24 +34,26 @@ class TiaOutputWidget : public Widget, public CommandSender
     TiaOutputWidget(GuiObject *boss, int x, int y, int w, int h);
     virtual ~TiaOutputWidget();
 
+
 // Eventually, these methods will enable access to the onscreen TIA image
 // For example, clicking an area may cause an action
 // (fill to this scanline, etc).
 /*
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 */
-    virtual bool wantsFocus() { return false; }
 
     void advanceScanline(int lines);
     void advance(int frames);
 
   protected:
     void drawWidget(bool hilite);
+    bool wantsFocus() { return false; }
+
+    void handleMouseDown(int x, int y, int button, int clickCount);
 
   private:
     bool _dirty;

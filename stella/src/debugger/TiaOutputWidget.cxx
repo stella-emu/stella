@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.1 2005-07-19 17:59:58 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.2 2005-07-19 18:21:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,6 +59,12 @@ void TiaOutputWidget::advance(int frames)
     --frames;
   }
   _dirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
+{
+cerr << "TiaOutputWidget button press: x = " << x << ", y = " << y << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

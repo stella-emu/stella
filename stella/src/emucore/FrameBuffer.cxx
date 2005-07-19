@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.53 2005-07-19 17:59:58 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.54 2005-07-19 18:21:27 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -45,8 +45,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       myPauseStatus(false),
       theRedrawOverlayIndicator(false),
       myOverlayRedraws(2),
-      theScanlineAdvanceIndicator(0),
-      theFrameAdvanceIndicator(0),
       myMessageTime(0),
       myMessageText(""),
       myNumRedraws(0)
