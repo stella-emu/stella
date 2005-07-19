@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.15 2005-07-18 23:50:27 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.16 2005-07-19 00:05:21 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,12 +27,14 @@
 
 #include "Expression.hxx"
 #include "CpuDebug.hxx"
+#include "TIADebug.hxx"
 
 #include "BinAndExpression.hxx"
 #include "BinNotExpression.hxx"
 #include "BinOrExpression.hxx"
 #include "BinXorExpression.hxx"
 #include "CpuMethodExpression.hxx"
+#include "TiaMethodExpression.hxx"
 #include "ByteDerefExpression.hxx"
 #include "WordDerefExpression.hxx"
 #include "ConstExpression.hxx"
@@ -230,6 +232,14 @@ CPUDEBUG_INT_METHOD getCpuSpecial(char *c) {
 	return 0;
 }
 
+// special methods that get TIA internal state
+TIADEBUG_INT_METHOD getTiaSpecial(char *c) {
+	if(strcmp(c, "_scan") == 0)
+		return &TIADebug::scanlines;
+
+	return 0;
+}
+
 int yylex() {
 	static char idbuf[255];
 	char o, p;
@@ -254,6 +264,7 @@ int yylex() {
 			case ST_IDENTIFIER:
 				{
 					CPUDEBUG_INT_METHOD cpuMeth;
+					TIADEBUG_INT_METHOD tiaMeth;
 
 					char *bufp = idbuf;
 					*bufp++ = *c++; // might be a base prefix
@@ -279,6 +290,9 @@ int yylex() {
 					} else if( (cpuMeth = getCpuSpecial(idbuf)) ) {
 						yylval.cpuMethod = cpuMeth;
 						return CPU_METHOD;
+					} else if( (tiaMeth = getTiaSpecial(idbuf)) ) {
+						yylval.tiaMethod = tiaMeth;
+						return TIA_METHOD;
 					} else {
 						yylval.val = const_to_int(idbuf);
 						if(yylval.val >= 0)

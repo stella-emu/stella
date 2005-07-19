@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.10 2005-07-18 16:10:52 urchlay Exp $
+// $Id: TIADebug.hxx,v 1.11 2005-07-19 00:05:21 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -21,18 +21,17 @@
 
 class TIA;
 class Debugger;
+class TiaDebug;
 
 #include "Array.hxx"
 #include "DebuggerSystem.hxx"
 
-/*
 // pointer types for TIADebug instance methods
-// (used by IntMethodExpression)
-typedef int (TiaDebug::*TIADEBUG_INT_METHOD)();
+// (used by TiaMethodExpression)
+typedef int (TIADebug::*TIADEBUG_INT_METHOD)();
 
-// call the pointed-to method on the (global) CPU debugger object.
+// call the pointed-to method on the (global) debugger object.
 #define CALL_TIADEBUG_METHOD(method) ( ( Debugger::debugger().tiaDebug().*method)() )
-*/
 
 class TiaState : public DebuggerState
 {

@@ -6,6 +6,7 @@ typedef union {
 	int val;
 	char *equate;
 	CPUDEBUG_INT_METHOD cpuMethod;
+	TIADEBUG_INT_METHOD tiaMethod;
 	Expression *exp;
 } yystype;
 # define YYSTYPE yystype
@@ -15,17 +16,18 @@ typedef union {
 # define	ERR	258
 # define	EQUATE	259
 # define	CPU_METHOD	260
-# define	LOG_OR	261
-# define	LOG_AND	262
-# define	LOG_NOT	263
-# define	SHR	264
-# define	SHL	265
-# define	GTE	266
-# define	LTE	267
-# define	NE	268
-# define	EQ	269
-# define	DEREF	270
-# define	UMINUS	271
+# define	TIA_METHOD	261
+# define	LOG_OR	262
+# define	LOG_AND	263
+# define	LOG_NOT	264
+# define	SHR	265
+# define	SHL	266
+# define	GTE	267
+# define	LTE	268
+# define	NE	269
+# define	EQ	270
+# define	DEREF	271
+# define	UMINUS	272
 
 
 extern YYSTYPE yylval;

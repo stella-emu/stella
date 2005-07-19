@@ -6,6 +6,7 @@ MODULE_OBJS := \
 	src/debugger/EquateList.o \
 	src/debugger/Expression.o \
 	src/debugger/CpuMethodExpression.o \
+	src/debugger/TiaMethodExpression.o \
 	src/debugger/ByteDerefExpression.o \
 	src/debugger/WordDerefExpression.o \
 	src/debugger/ConstExpression.o \
