@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.56 2005-07-20 17:33:03 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.57 2005-07-20 18:44:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -184,7 +184,8 @@ void FrameBuffer::update()
           {
             myMessageTime = -1;
             theRedrawTIAIndicator = true;
-          }
+            drawMediaSource();  // show the changes right now, not next frame
+	  }
         }
       }
       break;  // S_EMULATE
@@ -260,6 +261,13 @@ void FrameBuffer::refreshOverlay(bool now)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message)
 {
+  // Erase old messages on the screen
+  if(myMessageTime != -1)
+  {
+    theRedrawTIAIndicator = true;
+    drawMediaSource();
+  }
+
   myMessageText = message;
   myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
 }

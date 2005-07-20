@@ -156,6 +156,9 @@ opengl32.lib"
 				RelativePath="..\..\debugger\ByteDerefExpression.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\ByteDerefOffsetExpression.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\Cart.cxx">
 			</File>
 			<File
@@ -235,6 +238,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\debugger\CpuDebug.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\CpuMethodExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\CpuWidget.cxx">
@@ -334,9 +340,6 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\debugger\HiByteExpression.cxx">
-			</File>
-			<File
-				RelativePath="..\..\debugger\IntMethodExpression.cxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Joystick.cxx">
@@ -495,6 +498,12 @@ opengl32.lib"
 				RelativePath="..\..\debugger\TIADebug.cxx">
 			</File>
 			<File
+				RelativePath="..\..\debugger\TiaMethodExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\TiaOutputWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\..\emucore\TIASound.c">
 			</File>
 			<File
@@ -561,6 +570,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\debugger\ByteDerefExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\ByteDerefOffsetExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Cart.hxx">
@@ -648,6 +660,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\debugger\CpuDebug.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\CpuMethodExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\gui\CpuWidget.hxx">
@@ -756,9 +771,6 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\debugger\HiByteExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\..\debugger\IntMethodExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\Joystick.hxx">
@@ -927,6 +939,12 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\..\debugger\TIADebug.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\TiaMethodExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\..\debugger\TiaOutputWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\..\emucore\TIASound.h">
