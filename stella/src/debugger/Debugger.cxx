@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.71 2005-07-20 04:28:13 urchlay Exp $
+// $Id: Debugger.cxx,v 1.72 2005-07-20 17:49:25 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -198,7 +198,7 @@ string Debugger::loadListFile(string f) {
 				buffer[8] == ' '     &&
 				isxdigit(buffer[9])  &&
 				isxdigit(buffer[12]) &&
-				isblank(buffer[13]))
+				IS_BLANK(buffer[13]))
 		{
 			count++;
 			char addr[5];
