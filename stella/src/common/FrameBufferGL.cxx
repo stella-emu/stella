@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.34 2005-07-02 01:28:42 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.35 2005-07-20 15:52:57 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -230,17 +230,19 @@ void FrameBufferGL::drawMediaSource()
     {
       const uInt32 bufofs = bufofsY + x;
       uInt8 v = currentFrame[bufofs];
-      if(v == previousFrame[bufofs] && !theRedrawTIAIndicator)
-        continue;
+      if(v != previousFrame[bufofs] || theRedrawTIAIndicator)
+      {
+        // If we ever get to this point, we know the current and previous
+        // buffers differ.  In that case, make sure the changes are
+        // are drawn in postFrameUpdate()
+        theRedrawTIAIndicator = true;
 
-      // x << 1 is times 2 ( doubling width )
-      const uInt32 pos = screenofsY + (x << 1);
-      buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
+        // x << 1 is times 2 ( doubling width )
+        const uInt32 pos = screenofsY + (x << 1);
+        buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
+      }
     }
   }
-
-  // The frame doesn't need to be completely redrawn anymore
-  theRedrawTIAIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -251,22 +253,37 @@ void FrameBufferGL::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
-  // Texturemap complete texture to surface so we have free scaling 
-  // and antialiasing 
-  glBindTexture(GL_TEXTURE_2D, myTextureID);
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
-                  GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
+  // Do the following twice, since OpenGL mode is double-buffered,
+  // and we need the contents placed in both buffers
+  if(theRedrawTIAIndicator || theRedrawOverlayIndicator)
+  {
+    // Texturemap complete texture to surface so we have free scaling 
+    // and antialiasing 
+    uInt32 w = myBaseDim.w, h = myBaseDim.h;
 
-  uInt32 w = myBaseDim.w, h = myBaseDim.h;
-  glBegin(GL_QUADS);
-    glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
-    glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(w, 0);
-    glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
-    glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
-  glEnd();
+    glBindTexture(GL_TEXTURE_2D, myTextureID);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
+                    GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
+    glBegin(GL_QUADS);
+      glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
+      glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(w, 0);
+      glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
+      glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
+    glEnd();
 
-  // Now show all changes made to the textures
-  SDL_GL_SwapBuffers();
+    // Now show all changes made to the textures
+    SDL_GL_SwapBuffers();
+
+    glBegin(GL_QUADS);
+      glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
+      glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(w, 0);
+      glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
+      glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
+    glEnd();
+
+    // The frame doesn't need to be completely redrawn anymore
+    theRedrawTIAIndicator = theRedrawOverlayIndicator = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

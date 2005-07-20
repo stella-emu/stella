@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.54 2005-07-19 18:21:27 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.55 2005-07-20 15:52:57 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -38,14 +38,13 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
    :  myOSystem(osystem),
       theRedrawTIAIndicator(true),
+      theRedrawOverlayIndicator(false),
       theZoomLevel(2),
       theMaxZoomLevel(2),
       theAspectRatio(1.0),
       myFrameRate(0),
       myPauseStatus(false),
-      theRedrawOverlayIndicator(false),
-      myOverlayRedraws(2),
-      myMessageTime(0),
+      myMessageTime(-1),
       myMessageText(""),
       myNumRedraws(0)
 {
@@ -138,7 +137,6 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   // Erase any messages from a previous run
   myMessageTime = 0;
-  theRedrawTIAIndicator = true; //FIX
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,7 +181,10 @@ void FrameBuffer::update()
 
           // Erase this message on next update
           if(myMessageTime == 0)
-            theRedrawTIAIndicator = true; // FIX
+          {
+            myMessageTime = -1;
+            theRedrawTIAIndicator = true;
+          }
         }
       }
       break;  // S_EMULATE
@@ -197,55 +198,32 @@ void FrameBuffer::update()
 
       // Only update the overlay if it's changed  
       if(theRedrawOverlayIndicator)
-      {
-        // Then overlay any menu items
         myOSystem->menu().draw();
 
-        // This is a performance hack to only draw the overlay when necessary
-        // Software mode is single-buffered, so we don't have to worry
-        // However, OpenGL mode is double-buffered, so we need to draw the
-        // menus at least twice (so they'll be in both buffers)
-        // Otherwise, we get horrible flickering
-        myOverlayRedraws--;
-        theRedrawOverlayIndicator = (myOverlayRedraws != 0);
-      }
-      break;
+      break;  // S_MENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
       // Only update the screen if it's been invalidated or the overlay have changed  
       if(theRedrawOverlayIndicator)
-      {
-        // Overlay the ROM launcher
         myOSystem->launcher().draw();
 
-        // This is a performance hack to only draw the overlay when necessary
-        // Software mode is single-buffered, so we don't have to worry
-        // However, OpenGL mode is double-buffered, so we need to draw the
-        // menus at least twice (so they'll be in both buffers)
-        // Otherwise, we get horrible flickering
-        myOverlayRedraws--;
-        theRedrawOverlayIndicator = (myOverlayRedraws != 0);
-      }
-      break;
+      break;  // S_LAUNCHER
     }
 
     case EventHandler::S_DEBUGGER:
     {
       // Only update the overlay if it's changed  
+      // This is a performance hack to only draw the menus when necessary
       if(theRedrawOverlayIndicator)
       {
-        // Overlay the ROM launcher
         myOSystem->debugger().draw();
 
-        // This is a performance hack to only draw the menus when necessary
-        // Software mode is single-buffered, so we don't have to worry
-        // However, OpenGL mode is double-buffered, so we need to draw the
-        // menus at least twice (so they'll be in both buffers)
-        // Otherwise, we get horrible flickering
-        myOverlayRedraws--;
-        theRedrawOverlayIndicator = (myOverlayRedraws != 0);
+        // This needs to be here, otherwise software mode uses a lot
+        // of CPU when drawing the debugger.  I'm sure it's a bug,
+        // but at least it's a documented one :)
+        theRedrawOverlayIndicator = false;
       }
       break;  // S_DEBUGGER
     }
@@ -279,7 +257,6 @@ void FrameBuffer::refreshOverlay(bool now)
     refreshTIA(now);
 
   theRedrawOverlayIndicator = true;
-  myOverlayRedraws = 2;
   if(now) update();
 }
 
@@ -288,7 +265,6 @@ void FrameBuffer::showMessage(const string& message)
 {
   myMessageText = message;
   myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
-  theRedrawTIAIndicator = true; // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

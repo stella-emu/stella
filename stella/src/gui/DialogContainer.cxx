@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.11 2005-06-23 14:33:11 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.12 2005-07-20 15:52:58 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -86,6 +86,7 @@ void DialogContainer::draw()
 void DialogContainer::addDialog(Dialog* d)
 {
   myDialogStack.push(d);
+  myOSystem->frameBuffer().refreshTIA();
   myOSystem->frameBuffer().refreshOverlay();
 }
 
@@ -95,6 +96,7 @@ void DialogContainer::removeDialog()
   if(!myDialogStack.empty())
   {
     myDialogStack.pop();
+    myOSystem->frameBuffer().refreshTIA();
     myOSystem->frameBuffer().refreshOverlay();
   }
 }
@@ -105,7 +107,7 @@ void DialogContainer::reStack()
   // Pop all items from the stack, and then add the base menu
   while(!myDialogStack.empty())
     myDialogStack.pop();
-  myDialogStack.push(myBaseDialog);
+  addDialog(myBaseDialog);
 
   // Now make sure all dialog boxes are in a known (closed) state
   myBaseDialog->reset();

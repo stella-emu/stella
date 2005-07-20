@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.49 2005-07-19 18:21:28 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.50 2005-07-20 15:52:58 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.49 2005-07-19 18:21:28 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.50 2005-07-20 15:52:58 stephena Exp $
 */
 class FrameBuffer
 {
@@ -414,6 +414,9 @@ class FrameBuffer
     // Indicates if the TIA area should be redrawn
     bool theRedrawTIAIndicator;
 
+    // Indicates if the overlay area should be redrawn
+    bool theRedrawOverlayIndicator;
+
     // The SDL video buffer
     SDL_Surface* myScreen;
 
@@ -447,12 +450,6 @@ class FrameBuffer
 
     // Indicates the current pause status
     bool myPauseStatus;
-
-    // Indicates if the overlay area should be redrawn
-    bool theRedrawOverlayIndicator;
-
-    // Number of times menu have been drawn
-    int myOverlayRedraws;
 
     // Message timer
     Int32 myMessageTime;

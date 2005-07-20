@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.27 2005-07-16 16:09:38 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.28 2005-07-20 15:52:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -207,7 +207,6 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
     }
 
-    case 27:  // escape  FIXME - possibly remove this one?
     case 9:   // tab
       {
         // Tab completion: we complete either commands or labels, but not
