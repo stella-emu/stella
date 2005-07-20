@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.66 2005-07-19 01:31:36 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.67 2005-07-20 04:28:13 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -190,6 +190,14 @@ Command DebuggerParser::commands[] = {
 	},
 
 	{
+		"list",
+		"List source (if loaded with loadlst)",
+		false,
+		{ kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeList
+	},
+
+	{
 		"listbreaks",
 		"List breakpoints",
 		false,
@@ -219,6 +227,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_BYTE, kARG_END_ARGS },
 		&DebuggerParser::executeLoadstate
+	},
+
+	{
+		"loadlst",
+		"Load DASM listing file",
+		true,
+		{ kARG_FILE, kARG_END_ARGS },
+		&DebuggerParser::executeLoadlist
 	},
 
 	{
@@ -1295,6 +1311,12 @@ void DebuggerParser::executeFrame() {
 	if(count != 1) commandResult += "s";
 }
 
+// "list"
+void DebuggerParser::executeList() {
+	for(int i=args[0] - 2; i<args[0] + 3; i++)
+		commandResult += debugger->getSourceLines(i);
+}
+
 // "listbreaks"
 void DebuggerParser::executeListbreaks() {
 	commandResult = listBreaks();
@@ -1319,6 +1341,11 @@ void DebuggerParser::executeLoadstate() {
 	} else {
 		commandResult = red("invalid slot (must be 0-9)");
 	}
+}
+
+// "loadlist"
+void DebuggerParser::executeLoadlist() {
+	commandResult = debugger->loadListFile(argStrings[0]);
 }
 
 // "loadsym"
