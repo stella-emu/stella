@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.55 2005-07-20 15:52:57 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.56 2005-07-20 17:33:03 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -217,14 +217,8 @@ void FrameBuffer::update()
       // Only update the overlay if it's changed  
       // This is a performance hack to only draw the menus when necessary
       if(theRedrawOverlayIndicator)
-      {
         myOSystem->debugger().draw();
 
-        // This needs to be here, otherwise software mode uses a lot
-        // of CPU when drawing the debugger.  I'm sure it's a bug,
-        // but at least it's a documented one :)
-        theRedrawOverlayIndicator = false;
-      }
       break;  // S_DEBUGGER
     }
 
@@ -235,6 +229,9 @@ void FrameBuffer::update()
 
   // Do any post-frame stuff
   postFrameUpdate();
+
+  // The frame doesn't need to be completely redrawn anymore
+  theRedrawTIAIndicator = theRedrawOverlayIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

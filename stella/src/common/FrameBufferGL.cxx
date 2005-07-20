@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.35 2005-07-20 15:52:57 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.36 2005-07-20 17:33:02 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -280,9 +280,6 @@ void FrameBufferGL::postFrameUpdate()
       glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
       glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
     glEnd();
-
-    // The frame doesn't need to be completely redrawn anymore
-    theRedrawTIAIndicator = theRedrawOverlayIndicator = false;
   }
 }
 

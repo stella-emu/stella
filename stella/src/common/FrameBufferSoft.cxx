@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.29 2005-07-02 01:28:42 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.30 2005-07-20 17:33:03 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -251,9 +251,6 @@ void FrameBufferSoft::drawMediaSource()
     myRectList->add(&temp);
     SDL_FillRect(myScreen, &temp, myPalette[active.color]);
   }
-
-  // The frame doesn't need to be completely redrawn anymore
-  theRedrawTIAIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
