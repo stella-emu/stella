@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.24 2005-07-14 23:47:17 stephena Exp $
+// $Id: Widget.hxx,v 1.25 2005-07-21 19:30:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,7 +69,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.24 2005-07-14 23:47:17 stephena Exp $
+  @version $Id: Widget.hxx,v 1.25 2005-07-21 19:30:17 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -221,6 +221,8 @@ class CheckboxWidget : public ButtonWidget
     virtual void handleMouseEntered(int button)	{}
     virtual void handleMouseLeft(int button)	{}
 
+    void setEditable(bool editable) { _editable = editable; }
+
     void setState(bool state);
     void toggleState()     { setState(!_state); }
     bool getState() const  { return _state; }
@@ -230,6 +232,7 @@ class CheckboxWidget : public ButtonWidget
 
   protected:
     bool _state;
+    bool _editable;
 };
 
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.74 2005-07-21 04:10:15 urchlay Exp $
+// $Id: Debugger.cxx,v 1.75 2005-07-21 19:30:14 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -38,6 +38,7 @@
 #include "RamDebug.hxx"
 #include "TIADebug.hxx"
 
+#include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"
 #include "Expression.hxx"
 
@@ -54,6 +55,7 @@ Debugger::Debugger(OSystem* osystem)
     myCpuDebug(NULL),
     myRamDebug(NULL),
     myTiaDebug(NULL),
+    myTiaInfo(NULL),
     myTiaOutput(NULL),
     equateList(NULL),
     breakPoints(NULL),
@@ -97,9 +99,10 @@ void Debugger::initialize()
   delete myBaseDialog;
   DebuggerDialog *dd = new DebuggerDialog(myOSystem, this,
                            r.left, r.top, r.width(), r.height());
-  myPrompt = dd->prompt();
   myBaseDialog = dd;
 
+  myPrompt    = dd->prompt();
+  myTiaInfo   = dd->tiaInfo();
   myTiaOutput = dd->tiaOutput();
 
   // set up any breakpoint that was on the command line
@@ -601,6 +604,8 @@ int Debugger::step()
   mySystem->m6502().execute(1);
   mySystem->lockDataBus();
 
+  myBaseDialog->loadConfig();
+
   return mySystem->cycles() - cyc;
 }
 
@@ -631,6 +636,7 @@ int Debugger::trace()
       mySystem->m6502().execute(1);
 
     mySystem->lockDataBus();
+    myBaseDialog->loadConfig();
 
     return mySystem->cycles() - cyc;
   } else {
@@ -725,6 +731,7 @@ void Debugger::nextScanline(int lines) {
   mySystem->unlockDataBus();
   myTiaOutput->advanceScanline(lines);
   mySystem->lockDataBus();
+  myBaseDialog->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -733,6 +740,7 @@ void Debugger::nextFrame(int frames) {
   mySystem->unlockDataBus();
   myTiaOutput->advance(frames);
   mySystem->lockDataBus();
+  myBaseDialog->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

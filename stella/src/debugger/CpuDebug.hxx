@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.hxx,v 1.7 2005-07-19 01:31:36 urchlay Exp $
+// $Id: CpuDebug.hxx,v 1.8 2005-07-21 19:29:59 stephena Exp $
 //============================================================================
 
 #ifndef CPU_DEBUG_HXX
@@ -53,7 +53,7 @@ class CpuDebug : public DebuggerSystem
 
     int disassemble(int address, char* buffer, EquateList* equateList);
     int dPeek(int address);
-	 int getBank();
+    int getBank();
 
     int pc() { return mySystem->m6502().PC; }
     int sp() { return mySystem->m6502().SP; }
@@ -65,7 +65,7 @@ class CpuDebug : public DebuggerSystem
     int n() { return mySystem->m6502().N; }
     int v() { return mySystem->m6502().V; }
     int b() { return mySystem->m6502().B; }
-	 int d() { return mySystem->m6502().D; }
+    int d() { return mySystem->m6502().D; }
     int i() { return mySystem->m6502().I; }
     int z() { return !mySystem->m6502().notZ; }
     int c() { return mySystem->m6502().C; }

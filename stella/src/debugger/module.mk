@@ -40,6 +40,7 @@ MODULE_OBJS := \
 	src/debugger/CpuDebug.o \
 	src/debugger/RamDebug.o \
 	src/debugger/TIADebug.o \
+	src/debugger/TiaInfoWidget.o \
 	src/debugger/TiaOutputWidget.o
 
 MODULE_DIRS += \

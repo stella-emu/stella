@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.13 2005-07-19 17:59:59 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.14 2005-07-21 19:30:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@ class Debugger;
 class OSystem;
 class DialogContainer;
 class TabWidget;
+class TiaInfoWidget;
 class TiaOutputWidget;
 
 #include "Dialog.hxx"
@@ -38,7 +39,8 @@ class DebuggerDialog : public Dialog
                           int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    PromptWidget* prompt() { return myPrompt; }
+    PromptWidget* prompt()       { return myPrompt;    }
+    TiaInfoWidget* tiaInfo()     { return myTiaInfo;   }
     TiaOutputWidget* tiaOutput() { return myTiaOutput; }
 
     virtual void loadConfig();
@@ -47,8 +49,10 @@ class DebuggerDialog : public Dialog
 
   protected:
     TabWidget* myTab;
+
+    PromptWidget*    myPrompt;
+    TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;
-    PromptWidget *myPrompt;
 
   private:
     void addTiaArea();

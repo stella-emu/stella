@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.11 2005-07-14 23:47:17 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.12 2005-07-21 19:30:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -104,27 +104,6 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   myBinValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
-
-  // Scanline count and VSync/VBlank toggles
-  xpos = 10;  ypos += 2 * kLineHeight;
-  new StaticTextWidget(boss, xpos, ypos, 40, kLineHeight, "Scanline: ", kTextAlignLeft);
-  xpos += 40;
-  myScanlines = new EditTextWidget(boss, xpos, ypos-2, 40, kLineHeight, "");
-  myScanlines->clearFlags(WIDGET_TAB_NAVIGATE);
-  myScanlines->setFont(font);
-  myScanlines->setEditable(false);
-  xpos += 55;  ypos -= 3;
-  myVSync = new CheckboxWidget(boss, xpos, ypos, 25, kLineHeight, "VSync",
-                               kCheckActionCmd);
-  myVSync->setTarget(this);
-  myVSync->setID(kVSyncID);
-  myVSync->setFlags(WIDGET_TAB_NAVIGATE);
-  xpos += 60;
-  myVBlank = new CheckboxWidget(boss, xpos, ypos, 30, kLineHeight, "VBlank",
-                               kCheckActionCmd);
-  myVBlank->setTarget(this);
-  myVBlank->setID(kVBlankID);
-  myVBlank->setFlags(WIDGET_TAB_NAVIGATE);
 
   // Color registers
   const char* regNames[] = { "COLUP0", "COLUP1", "COLUPF", "COLUBK" };
@@ -266,11 +245,6 @@ void TiaWidget::fillGrid()
     changed.push_back(state.ram[i] != oldstate.ram[i]);
   }
   myRamGrid->setList(alist, vlist, changed);
-
-  // Scanline and VSync/VBlank
-  myScanlines->setEditString(dbg.valueToString(tia.scanlines(), kBASE_10));
-  myVSync->setState(tia.vsync());
-  myVBlank->setState(tia.vblank());
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();

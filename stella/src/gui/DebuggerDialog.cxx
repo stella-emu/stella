@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.26 2005-07-19 17:59:59 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.27 2005-07-21 19:30:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #include "Dialog.hxx"
 #include "TabWidget.hxx"
 #include "TiaOutputWidget.hxx"
+#include "TiaInfoWidget.hxx"
 #include "PromptWidget.hxx"
 #include "CpuWidget.hxx"
 #include "RamWidget.hxx"
@@ -61,6 +62,7 @@ DebuggerDialog::~DebuggerDialog()
 void DebuggerDialog::loadConfig()
 {
   myTab->loadConfig();
+  myTiaInfo->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,37 +196,31 @@ void DebuggerDialog::addTabArea()
 void DebuggerDialog::addStatusArea()
 {
   GUI::Rect r = instance()->debugger().getStatusBounds();
-
-  new StaticTextWidget(this, r.left, r.top, 100, kLineHeight,
-                       "Just a test", kTextAlignLeft);
+  myTiaInfo = new TiaInfoWidget(this, r.left, r.top, r.width(), r.height());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doStep()
 {
   instance()->debugger().step();
-  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doTrace()
 {
   instance()->debugger().trace();
-  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doAdvance()
 {
   instance()->debugger().nextFrame(1);
-  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doScanlineAdvance()
 {
   instance()->debugger().nextScanline(1);
-  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

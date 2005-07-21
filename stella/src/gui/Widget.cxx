@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.24 2005-07-14 18:28:36 stephena Exp $
+// $Id: Widget.cxx,v 1.25 2005-07-21 19:30:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -387,7 +387,8 @@ static unsigned int checked_img[8] =
 CheckboxWidget::CheckboxWidget(GuiObject *boss, int x, int y, int w, int h,
                                const string& label, int cmd, uInt8 hotkey)
     : ButtonWidget(boss, x, y, w, h, label, cmd, hotkey),
-      _state(false)
+      _state(false),
+      _editable(true)
 {
   _flags = WIDGET_ENABLED;
   _type = kCheckboxWidget;
@@ -396,7 +397,7 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, int x, int y, int w, int h,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
-  if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)
   {
     toggleState();
 

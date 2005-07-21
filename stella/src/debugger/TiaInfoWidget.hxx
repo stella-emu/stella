@@ -13,55 +13,45 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.7 2005-07-21 19:30:17 stephena Exp $
+// $Id: TiaInfoWidget.hxx,v 1.1 2005-07-21 19:30:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef TIA_WIDGET_HXX
-#define TIA_WIDGET_HXX
+#ifndef TIA_INFO_WIDGET_HXX
+#define TIA_INFO_WIDGET_HXX
 
 class GuiObject;
-class ButtonWidget;
-class DataGridWidget;
-class StaticTextWidget;
 class EditTextWidget;
-class ColorWidget;
 
 #include "Widget.hxx"
 #include "Command.hxx"
 
 
-class TiaWidget : public Widget, public CommandSender
+class TiaInfoWidget : public Widget, public CommandSender
 {
   public:
-    TiaWidget(GuiObject* boss, int x, int y, int w, int h);
-    virtual ~TiaWidget();
+    TiaInfoWidget(GuiObject *boss, int x, int y, int w, int h);
+    virtual ~TiaInfoWidget();
 
-    Widget* activeWidget() { return myActiveWidget; }
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
 
-  private:
-    void fillGrid();
-    void changeColorRegs();
+  protected:
+    void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    Widget* myActiveWidget;
+    EditTextWidget* myFrameCount;
+    EditTextWidget* myFrameCycles;
 
-    DataGridWidget* myRamGrid;
-    EditTextWidget* myBinValue;
-    EditTextWidget* myDecValue;
-    EditTextWidget* myLabel;
+    EditTextWidget* myScanlineCount;
+    EditTextWidget* myScanlineCycles;
+    EditTextWidget* myPixelPosition;
+    EditTextWidget* myColorClocks;
 
-    DataGridWidget* myColorRegs;
-
-    ColorWidget* myCOLUP0Color;
-    ColorWidget* myCOLUP1Color;
-    ColorWidget* myCOLUPFColor;
-    ColorWidget* myCOLUBKColor;
+    CheckboxWidget* myVSync;
+    CheckboxWidget* myVBlank;
 };
 
 #endif
