@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.58 2005-07-20 04:28:13 urchlay Exp $
+// $Id: Debugger.hxx,v 1.59 2005-07-21 03:26:58 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -26,6 +26,7 @@ class CpuDebug;
 class RamDebug;
 class TIADebug;
 class TiaOutputWidget;
+class Expression;
 
 #include <map>
 
@@ -41,6 +42,8 @@ class TiaOutputWidget;
 
 typedef multimap<string,string> ListFile;
 typedef ListFile::const_iterator ListIter;
+
+typedef map<string,Expression*> FunctionMap;
 
 enum {
   kDebuggerWidth = 639,
@@ -70,7 +73,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.58 2005-07-20 04:28:13 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.59 2005-07-21 03:26:58 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -116,6 +119,10 @@ class Debugger : public DialogContainer
       that don't have access to EventHandler.
     */
     void quit();
+
+	 void addFunction(string name, Expression *exp);
+	 void delFunction(string name);
+	 Expression *getFunction(string name);
 
     /**
       The debugger subsystem responsible for all CPU state
@@ -337,6 +344,8 @@ class Debugger : public DialogContainer
     ListFile sourceLines;
 
     static Debugger* myStaticDebugger;
+
+	 FunctionMap functions;
 };
 
 #endif

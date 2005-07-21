@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.72 2005-07-20 17:49:25 stephena Exp $
+// $Id: Debugger.cxx,v 1.73 2005-07-21 03:26:58 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -21,6 +21,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <map>
 
 #include "Version.hxx"
 #include "OSystem.hxx"
@@ -38,6 +39,8 @@
 #include "TIADebug.hxx"
 
 #include "TiaOutputWidget.hxx"
+#include "Expression.hxx"
+
 #include "Debugger.hxx"
 
 Debugger* Debugger::myStaticDebugger;
@@ -900,4 +903,28 @@ GUI::Rect Debugger::getTabBounds() const
 void Debugger::resizeDialog()
 {
 cerr << "Debugger::resizeDialog()\n";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::addFunction(string name, Expression *exp) {
+	functions.insert(make_pair(name, exp));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::delFunction(string name) {
+	FunctionMap::iterator iter = functions.find(name);
+	if(iter == functions.end())
+		return;
+
+	functions.erase(name);
+	delete iter->second;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Expression *Debugger::getFunction(string name) {
+	FunctionMap::iterator iter = functions.find(name);
+	if(iter == functions.end())
+		return 0;
+	else
+		return iter->second;
 }

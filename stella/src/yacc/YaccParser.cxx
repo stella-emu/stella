@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.17 2005-07-19 01:31:37 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.18 2005-07-21 03:26:59 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,25 +33,24 @@
 #include "BinNotExpression.hxx"
 #include "BinOrExpression.hxx"
 #include "BinXorExpression.hxx"
-#include "CpuMethodExpression.hxx"
-#include "TiaMethodExpression.hxx"
 #include "ByteDerefExpression.hxx"
 #include "ByteDerefOffsetExpression.hxx"
-#include "WordDerefExpression.hxx"
 #include "ConstExpression.hxx"
+#include "CpuMethodExpression.hxx"
 #include "DivExpression.hxx"
 #include "EqualsExpression.hxx"
 #include "EquateExpression.hxx"
 #include "Expression.hxx"
+#include "FunctionExpression.hxx"
 #include "GreaterEqualsExpression.hxx"
 #include "GreaterExpression.hxx"
 #include "HiByteExpression.hxx"
-#include "LoByteExpression.hxx"
 #include "LessEqualsExpression.hxx"
 #include "LessExpression.hxx"
+#include "LoByteExpression.hxx"
 #include "LogAndExpression.hxx"
-#include "LogOrExpression.hxx"
 #include "LogNotExpression.hxx"
+#include "LogOrExpression.hxx"
 #include "MinusExpression.hxx"
 #include "ModExpression.hxx"
 #include "MultExpression.hxx"
@@ -59,7 +58,9 @@
 #include "PlusExpression.hxx"
 #include "ShiftLeftExpression.hxx"
 #include "ShiftRightExpression.hxx"
+#include "TiaMethodExpression.hxx"
 #include "UnaryMinusExpression.hxx"
+#include "WordDerefExpression.hxx"
 
 namespace YaccParser {
 #include <stdio.h>
@@ -298,6 +299,9 @@ int yylex() {
 					} else if( (tiaMeth = getTiaSpecial(idbuf)) ) {
 						yylval.tiaMethod = tiaMeth;
 						return TIA_METHOD;
+					} else if( Debugger::debugger().getFunction(idbuf) != 0) {
+						yylval.function = idbuf;
+						return FUNCTION;
 					} else {
 						yylval.val = const_to_int(idbuf);
 						if(yylval.val >= 0)

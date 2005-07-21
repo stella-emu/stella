@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.36 2005-07-20 04:28:13 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.37 2005-07-21 03:26:58 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -110,6 +110,7 @@ class DebuggerParser
 		void executeDump();
 		void executeExec();
 		void executeFrame();
+		void executeFunction();
 		void executeHeight();
 		void executeHelp();
 		void executeList();

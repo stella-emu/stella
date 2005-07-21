@@ -8,6 +8,7 @@ typedef union {
 	CPUDEBUG_INT_METHOD cpuMethod;
 	TIADEBUG_INT_METHOD tiaMethod;
 	Expression *exp;
+	char *function;
 } yystype;
 # define YYSTYPE yystype
 # define YYSTYPE_IS_TRIVIAL 1
@@ -17,17 +18,18 @@ typedef union {
 # define	EQUATE	259
 # define	CPU_METHOD	260
 # define	TIA_METHOD	261
-# define	LOG_OR	262
-# define	LOG_AND	263
-# define	LOG_NOT	264
-# define	SHR	265
-# define	SHL	266
-# define	GTE	267
-# define	LTE	268
-# define	NE	269
-# define	EQ	270
-# define	DEREF	271
-# define	UMINUS	272
+# define	FUNCTION	262
+# define	LOG_OR	263
+# define	LOG_AND	264
+# define	LOG_NOT	265
+# define	SHR	266
+# define	SHL	267
+# define	GTE	268
+# define	LTE	269
+# define	NE	270
+# define	EQ	271
+# define	DEREF	272
+# define	UMINUS	273
 
 
 extern YYSTYPE yylval;

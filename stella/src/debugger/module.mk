@@ -5,6 +5,7 @@ MODULE_OBJS := \
 	src/debugger/DebuggerParser.o \
 	src/debugger/EquateList.o \
 	src/debugger/Expression.o \
+	src/debugger/FunctionExpression.o \
 	src/debugger/CpuMethodExpression.o \
 	src/debugger/TiaMethodExpression.o \
 	src/debugger/ByteDerefExpression.o \

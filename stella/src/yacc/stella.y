@@ -24,6 +24,7 @@ void yyerror(char *e) {
 	CPUDEBUG_INT_METHOD cpuMethod;
 	TIADEBUG_INT_METHOD tiaMethod;
 	Expression *exp;
+	char *function;
 }
 
 /* Terminals */
@@ -32,6 +33,7 @@ void yyerror(char *e) {
 %token <equate> EQUATE
 %token <cpuMethod> CPU_METHOD
 %token <tiaMethod> TIA_METHOD
+%token <function> FUNCTION
 
 /* Non-terminals */
 %type <exp> expression
@@ -86,6 +88,7 @@ expression:	expression '+' expression { fprintf(stderr, " +"); $$ = new PlusExpr
 	|	EQUATE { fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); lastExp = $$; }
 	|	CPU_METHOD { fprintf(stderr, " (CpuMethod)"); $$ = new CpuMethodExpression($1); lastExp = $$; }
 	|	TIA_METHOD { fprintf(stderr, " (TiaMethod)"); $$ = new TiaMethodExpression($1); lastExp = $$; }
+	|	FUNCTION { fprintf(stderr, " (function)"); $$ = new FunctionExpression($1); lastExp = $$; }
 	|  ERR { fprintf(stderr, " ERR"); yyerror("Invalid label or constant"); return 1; }
 	;
 %%

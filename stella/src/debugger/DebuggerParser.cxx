@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.67 2005-07-20 04:28:13 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.68 2005-07-21 03:26:58 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -171,6 +171,14 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeFrame
+	},
+
+	{
+		"function",
+		"Define expression as a function for later use",
+		false,
+		{ kARG_LABEL, kARG_WORD, kARG_END_ARGS },
+		&DebuggerParser::executeFunction
 	},
 
 	{
@@ -1309,6 +1317,22 @@ void DebuggerParser::executeFrame() {
 	commandResult += debugger->valueToString(count);
 	commandResult += " frame";
 	if(count != 1) commandResult += "s";
+}
+
+// "function"
+void DebuggerParser::executeFunction() {
+	if(args[0] >= 0) {
+		commandResult = red("name already in use");
+		return;
+	}
+
+	int res = YaccParser::parse(argStrings[1].c_str());
+	if(res == 0) {
+		debugger->addFunction(argStrings[0], YaccParser::getResult());
+		commandResult = "Added function " + argStrings[0];
+	} else {
+		commandResult = red("invalid expression");
+	}
 }
 
 // "list"
