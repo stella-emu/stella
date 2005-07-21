@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.80 2005-07-10 02:15:58 stephena Exp $
+// $Id: EventHandler.cxx,v 1.81 2005-07-21 12:56:26 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1341,7 +1341,6 @@ bool EventHandler::enterDebugMode()
   myState = S_DEBUGGER;
   myOSystem->createFrameBuffer();
   myOSystem->debugger().reStack();
-  myOSystem->frameBuffer().refreshOverlay();
   myOSystem->frameBuffer().setCursorState();
   myEvent->clear();
 
@@ -1350,6 +1349,10 @@ bool EventHandler::enterDebugMode()
 
   // Make sure debugger starts in a consistent state
   myOSystem->debugger().setStartState();
+
+  // Make sure screen is always refreshed when entering debug mode
+  // (sometimes entering on a breakpoint doesn't draw contents)
+  myOSystem->frameBuffer().refreshOverlay(true);
 
   return true;
 }
