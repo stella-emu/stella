@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.14 2005-07-19 17:59:58 stephena Exp $
+// $Id: TIADebug.cxx,v 1.15 2005-07-21 04:10:15 urchlay Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -121,6 +121,12 @@ int TIADebug::frameCount()
 int TIADebug::scanlines()
 {
   return myTIA->scanlines();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::clocksThisLine()
+{
+  return myTIA->clocksThisLine();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

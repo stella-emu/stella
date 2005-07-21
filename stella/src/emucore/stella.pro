@@ -821,7 +821,7 @@
 ""
 
 "Cartridge.MD5" "08d60a58a691c7f690162850302dc0e1"
-"Cartridge.Name" "Poker Solitaire (V0.27) (PAL) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.27) (PAL) (2001) (B. Watson)"
 "Display.Format" "PAL"
 "Display.YStart" "45"
 ""
@@ -1709,7 +1709,7 @@
 ""
 
 "Cartridge.MD5" "12d7e0d6b187889f8d150bf7034d1db2"
-"Cartridge.Name" "Poker Solitaire (V0.0e) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.0e) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "133a4234512e8c4e9e8c5651469d4a09"
@@ -6967,7 +6967,7 @@
 ""
 
 "Cartridge.MD5" "54785fa29e28aae6038929ba29d33d38"
-"Cartridge.Name" "Poker Solitaire (V0.19) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.19) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "545048ccb045f9efc6cf2b125cd0dfa8"
@@ -8403,7 +8403,7 @@
 ""
 
 "Cartridge.MD5" "675ae9c23fa1aae376cea86cad96f9a5"
-"Cartridge.Name" "Poker Solitaire (V0.25) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.25) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "67631ea5cfe44066a1e76ddcb6bcb512"
@@ -9005,7 +9005,7 @@
 ""
 
 "Cartridge.MD5" "6e7ed74082f39ad4166c823765a59909"
-"Cartridge.Name" "Poker Solitaire (V0.14) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.14) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "6e5d5ba193d2540aec2e847aafb2a5fb"
@@ -9824,7 +9824,7 @@
 ""
 
 "Cartridge.MD5" "78297db7f416af3052dd793b53ff014e"
-"Cartridge.Name" "Poker Solitaire (V0.17) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.17) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "77d0a577636e1c9212aeccde9d0baa4b"
@@ -11424,7 +11424,7 @@
 ""
 
 "Cartridge.MD5" "8c136e97c0a4af66da4a249561ed17db"
-"Cartridge.Name" "Poker Solitaire (V0.27) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.27) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "8c2fa33048f055f38358d51eefe417db"
@@ -16301,7 +16301,7 @@
 ""
 
 "Cartridge.MD5" "cccfe9e9a11b1dad04beba46eefb7351"
-"Cartridge.Name" "Poker Solitaire (V0.25) (PAL) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.25) (PAL) (2001) (B. Watson)"
 "Display.Format" "PAL"
 "Display.YStart" "45"
 ""
@@ -17175,7 +17175,7 @@
 ""
 
 "Cartridge.MD5" "d74a81fcd89c5cf0bd4c88eb207ebd62"
-"Cartridge.Name" "Poker Solitaire (V0.00a) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.00a) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "d787ec6785b0ccfbd844c7866db9667d"
@@ -18636,7 +18636,7 @@
 ""
 
 "Cartridge.MD5" "e879b7093ac4cfad74c88d636ca97d00"
-"Cartridge.Name" "Poker Solitaire (V0.0f) (2001) (B. Watson)"
+"Cartridge.Name" "Poker Squares (V0.0f) (2001) (B. Watson)"
 ""
 
 "Cartridge.MD5" "e8a3473bf786cf796d1336d2d03a0008"

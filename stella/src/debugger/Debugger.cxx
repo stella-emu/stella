@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.73 2005-07-21 03:26:58 urchlay Exp $
+// $Id: Debugger.cxx,v 1.74 2005-07-21 04:10:15 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -337,14 +337,18 @@ const string Debugger::cpuState()
   result += "/";
   formatFlags(state.PSbits, buf);
   result += buf;
-  result += "\n  Cyc:";
+  result += "\n  FrameCyc:";
   sprintf(buf, "%d", mySystem->cycles());
-  result += buf;
-  result += " Scan:";
-  sprintf(buf, "%d", myTiaDebug->scanlines());
   result += buf;
   result += " Frame:";
   sprintf(buf, "%d", myTiaDebug->frameCount());
+  result += buf;
+  result += " ScanLine:";
+  sprintf(buf, "%d", myTiaDebug->scanlines());
+  result += buf;
+  result += " Clk/Pix/Cyc:";
+  int clk = myTiaDebug->clocksThisLine();
+  sprintf(buf, "%d/%d/%d", clk, clk-68, clk/3);
   result += buf;
   result += " 6502Ins:";
   sprintf(buf, "%d", mySystem->m6502().totalInstructionCount());

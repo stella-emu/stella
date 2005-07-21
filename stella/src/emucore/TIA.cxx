@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.55 2005-07-19 02:24:13 urchlay Exp $
+// $Id: TIA.cxx,v 1.56 2005-07-21 04:10:15 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -641,6 +641,14 @@ uInt32 TIA::scanlines() const
   // calculate the current scanline
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   return totalClocks/228;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIA::clocksThisLine() const
+{
+  // calculate the current scanline
+  uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+  return totalClocks%228;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

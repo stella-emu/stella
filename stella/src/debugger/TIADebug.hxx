@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.12 2005-07-19 17:59:58 stephena Exp $
+// $Id: TIADebug.hxx,v 1.13 2005-07-21 04:10:15 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -58,6 +58,7 @@ class TIADebug : public DebuggerSystem
 
     int scanlines();
     int frameCount();
+    int clocksThisLine();
     bool vsync();
     bool vblank();
     string state();
