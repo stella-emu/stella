@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.15 2005-07-21 04:10:15 urchlay Exp $
+// $Id: TIADebug.cxx,v 1.16 2005-07-23 15:55:21 urchlay Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -67,13 +67,208 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluBK());
 }
 
+/* the set methods now use mySystem->poke(). This will save us the
+	trouble of masking the values here, since TIA::poke() will do it
+	for us.
+
+	This means that the GUI should *never* just display the value the
+	user entered: it should always read the return value of the set
+	method and display that.
+
+	An Example:
+
+	User enters "ff" in the AUDV0 field. GUI calls value = tiaDebug->audV0(0xff).
+	The AUDV0 register is only 4 bits wide, so "value" is 0x0f. That's what
+	should be displayed.
+
+	In a perfect world, the GUI would only allow one hex digit to be entered...
+	but we allow decimal or binary input in the GUI (with # or \ prefix). The
+	only way to make that work would be to validate the data entry after every
+	keystroke... which would be a pain for both us and the user. Using poke()
+	here is a compromise that allows the TIA to do the range-checking for us,
+	so the GUI and/or TIADebug don't have to duplicate logic from TIA::poke().
+*/
+
+//	 bool vdelP0(int newVal = -1);
+//	 bool vdelP1(int newVal = -1);
+//	 bool vdelBL(int newVal = -1);
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::vdelP0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(VDELP0, ((bool)newVal));
+
+  return myTIA->myVDELP0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::vdelP1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(VDELP1, ((bool)newVal));
+
+  return myTIA->myVDELP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::vdelBL(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(VDELBL, ((bool)newVal));
+
+  return myTIA->myVDELBL;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::enaM0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(ENAM0, ((bool)newVal) << 1);
+
+  return myTIA->myENAM0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::enaM1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(ENAM1, ((bool)newVal) << 1);
+
+  return myTIA->myENAM1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::enaBL(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(ENABL, ((bool)newVal) << 1);
+
+  return myTIA->myENABL;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::resMP0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(RESMP0, ((bool)newVal) << 1);
+
+  return myTIA->myRESMP0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::resMP1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(RESMP1, ((bool)newVal) << 1);
+
+  return myTIA->myRESMP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::refP0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(REFP0, ((bool)newVal) << 3);
+
+  return myTIA->myREFP0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::refP1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(REFP1, ((bool)newVal) << 3);
+
+  return myTIA->myREFP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::audC0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(AUDC0, newVal);
+
+  return myTIA->myAUDC0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::audC1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(AUDC1, newVal);
+
+  return myTIA->myAUDC1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::audV0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(AUDV0, newVal);
+
+  return myTIA->myAUDV0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::audV1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(AUDV1, newVal);
+
+  return myTIA->myAUDV1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::audF0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(AUDF0, newVal);
+
+  return myTIA->myAUDF0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::audF1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(AUDF1, newVal);
+
+  return myTIA->myAUDF1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::pf0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(PF0, newVal << 4);
+
+  return myTIA->myPF & 0x0f;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::pf1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(PF1, newVal);
+
+  return (myTIA->myPF & 0xff0) >> 4;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::pf2(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(PF2, newVal);
+
+  return (myTIA->myPF & 0xff000) >> 12;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluP0(int newVal)
 {
-  // TIA::myCOLUxx are stored 4 copies to each int,
-  // we need only 1 when fetching, but store all 4
   if(newVal > -1)
-    myTIA->myCOLUP0 = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+	  mySystem->poke(COLUP0, newVal);
 
   return myTIA->myCOLUP0 & 0xff;
 }
@@ -81,10 +276,8 @@ uInt8 TIADebug::coluP0(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluP1(int newVal)
 {
-  // TIA::myCOLUxx are stored 4 copies to each int,
-  // we need only 1 when fetching, but store all 4
   if(newVal > -1)
-    myTIA->myCOLUP1 = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+	  mySystem->poke(COLUP0, newVal);
 
   return myTIA->myCOLUP1 & 0xff;
 }
@@ -92,10 +285,8 @@ uInt8 TIADebug::coluP1(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluPF(int newVal)
 {
-  // TIA::myCOLUxx are stored 4 copies to each int,
-  // we need only 1 when fetching, but store all 4
   if(newVal > -1)
-    myTIA->myCOLUPF = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+	  mySystem->poke(COLUPF, newVal);
 
   return myTIA->myCOLUPF & 0xff;
 }
@@ -103,12 +294,100 @@ uInt8 TIADebug::coluPF(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluBK(int newVal)
 {
-  // TIA::myCOLUxx are stored 4 copies to each int,
-  // we need only 1 when fetching, but store all 4
   if(newVal > -1)
-    myTIA->myCOLUBK = (((((newVal << 8) | newVal) << 8) | newVal) << 8) | newVal;
+	  mySystem->poke(COLUBK, newVal);
 
   return myTIA->myCOLUBK & 0xff;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::nusiz0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(NUSIZ0, newVal);
+
+  return myTIA->myGRP0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::nusiz1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(NUSIZ1, newVal);
+
+  return myTIA->myGRP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::grP0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(GRP0, newVal);
+
+  return myTIA->myGRP0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::grP1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(GRP1, newVal);
+
+  return myTIA->myGRP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::ctrlPF(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(CTRLPF, newVal);
+
+  return myTIA->myCTRLPF;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::hmP0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(HMP0, newVal << 4);
+
+  return myTIA->myHMP0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::hmP1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(HMP1, newVal << 4);
+
+  return myTIA->myHMP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::hmM0(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(HMM0, newVal << 4);
+
+  return myTIA->myHMM0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::hmM1(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(HMM1, newVal << 4);
+
+  return myTIA->myHMM1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::hmBL(int newVal)
+{
+  if(newVal > -1)
+	  mySystem->poke(HMBL, newVal << 4);
+
+  return myTIA->myHMBL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
