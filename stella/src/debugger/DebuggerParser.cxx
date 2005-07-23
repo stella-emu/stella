@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.68 2005-07-21 03:26:58 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.69 2005-07-23 19:07:15 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -238,7 +238,7 @@ Command DebuggerParser::commands[] = {
 	},
 
 	{
-		"loadlst",
+		"loadlist",
 		"Load DASM listing file",
 		true,
 		{ kARG_FILE, kARG_END_ARGS },
@@ -270,6 +270,14 @@ Command DebuggerParser::commands[] = {
 	},
 
 	{
+		"poke",
+		"Set address to value. Can give multiple values (for address+1, etc)",
+		true,
+		{ kARG_WORD, kARG_MULTI_BYTE },
+		&DebuggerParser::executeRam
+	},
+
+	{
 		"print",
 		"Evaluate and print expression in hex/dec/binary",
 		true,
@@ -279,7 +287,7 @@ Command DebuggerParser::commands[] = {
 
 	{
 		"ram",
-		"Show RAM contents (no args), or set RAM address xx to value yy",
+		"Show RAM contents (no args), or set address xx to value yy",
 		false,
 		{ kARG_WORD, kARG_MULTI_BYTE },
 		&DebuggerParser::executeRam
@@ -339,6 +347,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_BYTE, kARG_END_ARGS },
 		&DebuggerParser::executeS
+	},
+
+	{
+		"save",
+		"Save breaks, watches, traps as a .stella script file",
+		true,
+		{ kARG_FILE, kARG_END_ARGS },
+		&DebuggerParser::executeSave
 	},
 
 	{
@@ -1090,8 +1106,7 @@ string DebuggerParser::exec(const string& cmd, bool verbose) {
 	int count = 0;
 	char buffer[256]; // FIXME: static buffers suck
 
-	string::size_type pos;
-	if( (pos = file.find_last_of('.')) == string::npos ) {
+	if( file.find_last_of('.') == string::npos ) {
 		file += ".stella";
 	}
 
@@ -1118,6 +1133,45 @@ string DebuggerParser::exec(const string& cmd, bool verbose) {
 	ret += file;
 	ret += "\"\n";
 	return ret;
+}
+
+bool DebuggerParser::saveScriptFile(string file) {
+	if( file.find_last_of('.') == string::npos ) {
+		file += ".stella";
+	}
+
+	ofstream out(file.c_str());
+
+	FunctionMap funcs = debugger->getFunctionMap();
+	for(FunctionMap::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
+		out << "function " << i->first << " " << i->second << endl;
+
+	for(unsigned int i=0; i<watches.size(); i++)
+		out << "watch " << watches[i] << endl;
+
+	for(unsigned int i=0; i<0x10000; i++)
+		if(debugger->breakPoint(i))
+			out << "break #" << i << endl;
+
+	for(unsigned int i=0; i<0x10000; i++) {
+		bool r = debugger->readTrap(i);
+		bool w = debugger->writeTrap(i);
+
+		if(r && w)
+			out << "trap #" << i << endl;
+		else if(r)
+			out << "trapread #" << i << endl;
+		else if(w)
+			out << "trapwrite #" << i << endl;
+	}
+
+	StringList conds = debugger->cpuDebug().m6502().getCondBreakNames();
+	for(unsigned int i=0; i<conds.size(); i++)
+		out << "breakif " << conds[i] << endl;
+
+	bool ok = out.good();
+	out.close();
+	return ok;
 }
 
 ////// executor methods for commands[] array. All are void, no args.
@@ -1464,6 +1518,15 @@ void DebuggerParser::executeRunTo() {
 // "s"
 void DebuggerParser::executeS() {
 	debugger->cpuDebug().setSP(args[0]);
+}
+
+// "save"
+void DebuggerParser::executeSave() {
+	cerr << "got here" << endl;
+	if(saveScriptFile(argStrings[0]))
+		commandResult = "saved script to file " + argStrings[0];
+	else
+		commandResult = red("I/O error");
 }
 
 // "saveses"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.75 2005-07-21 19:30:14 stephena Exp $
+// $Id: Debugger.cxx,v 1.76 2005-07-23 19:07:15 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -939,4 +939,9 @@ Expression *Debugger::getFunction(string name) {
 		return 0;
 	else
 		return iter->second;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FunctionMap Debugger::getFunctionMap() {
+	return functions;
 }

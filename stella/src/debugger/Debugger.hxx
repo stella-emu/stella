@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.60 2005-07-21 19:30:15 stephena Exp $
+// $Id: Debugger.hxx,v 1.61 2005-07-23 19:07:15 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -74,7 +74,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.60 2005-07-21 19:30:15 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.61 2005-07-23 19:07:15 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -124,6 +124,7 @@ class Debugger : public DialogContainer
 	 void addFunction(string name, Expression *exp);
 	 void delFunction(string name);
 	 Expression *getFunction(string name);
+	 const FunctionMap getFunctionMap();
 
     /**
       The debugger subsystem responsible for all CPU state

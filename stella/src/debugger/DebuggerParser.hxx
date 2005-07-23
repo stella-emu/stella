@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.37 2005-07-21 03:26:58 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.38 2005-07-23 19:07:15 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -92,6 +92,8 @@ class DebuggerParser
       string completions;
       string compPrefix;
 
+		bool saveScriptFile(string file);
+
 		void executeA();
 		void executeBank();
 		void executeBase();
@@ -131,6 +133,7 @@ class DebuggerParser
 		void executeRun();
 		void executeRunTo();
 		void executeS();
+		void executeSave();
 		void executeSaveses();
 		void executeSavestate();
 		void executeSavesym();
