@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.18 2005-07-21 03:26:59 urchlay Exp $
+// $Id: YaccParser.cxx,v 1.19 2005-07-23 21:16:57 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -77,6 +77,7 @@ const string& errorMessage() {
 
 Expression *getResult() {
 	return result.exp;
+	lastExp = 0;
 }
 
 
@@ -99,6 +100,7 @@ void setInput(const char *in) {
 }
 
 int parse(const char *in) {
+	lastExp = 0;
 	errMsg = "(no error)";
 	setInput(in);
 	return yyparse();

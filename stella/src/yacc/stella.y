@@ -12,8 +12,12 @@ void yyerror(char *e) {
 	//fprintf(stderr, "%s at token \"%s\"\n", e, yytext);
 	fprintf(stderr, "%s\n", e);
 	errMsg = e;
-	if(lastExp)
+
+	// be extra paranoid about deletion
+	if(lastExp && dynamic_cast<Expression*>(lastExp))
 		delete lastExp;
+
+	lastExp = 0;
 }
 
 %}

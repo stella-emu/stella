@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.69 2005-07-23 19:07:15 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.70 2005-07-23 21:16:57 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1167,7 +1167,7 @@ bool DebuggerParser::saveScriptFile(string file) {
 
 	StringList conds = debugger->cpuDebug().m6502().getCondBreakNames();
 	for(unsigned int i=0; i<conds.size(); i++)
-		out << "breakif " << conds[i] << endl;
+		out << "breakif {" << conds[i] << "}" << endl;
 
 	bool ok = out.good();
 	out.close();
