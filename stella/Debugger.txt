@@ -17,7 +17,7 @@ What the debugger can do:
   Accumulator value is $7f and the Carry flag is true, no matter where
   in the program this happens). Unlike the cond breaks in PCAE, Stella's
   are *fast*: the emulation will run at full speed unless you use lots
-  of breakif's at the same time.
+  of breakif's at the same time, or have a slow CPU
 - Watches - View contents of a location/register before every
   debugger prompt.
 - Traps - Like breakpoints, but break on read/write/any access to
@@ -71,12 +71,14 @@ Planned features for Stella 2.0 release:
 - Saving the current debugger state to a script file (including
   breakpoints, traps, etc).
 - Source-level debugging: if a DASM .lst file is available, we'll show
-  the listing in the ROM tab instead of a disassembly.
+  the listing in the ROM tab instead of a disassembly. This is already
+  availabe in a very crude form ("loadlist" and "list" commands).
 - Save patched ROM.
 - More "special variables" for the expression parser. Currently, you can
   use all the CPU registers and flags in expressions (e.g. "print a+1" does
-  what you expect). Need to add TIA, RIOT registers too (so you can say
-  "breakif _scanline==30" or such).
+  what you expect), and the pseudo-variables "_scan" and "_bank" (which
+  evaluate the the current scanline and bank number). Need to add more TIA,
+  RIOT registers too.
 
 Future plans (post 2.0):
 - Possibly a mini-assembler
@@ -97,6 +99,18 @@ program counter, and continues until either a breakpoint/trap is hit,
 or the ` key is pressed again.  Pressing Ctrl-Tab cycles between tabs
 from left to right, and Shift-Ctrl-Tab cycles from right to left.
 Pressing Tab cycles between widgets in the current tab.
+
+You can also enter the debugger by giving a breakpoint on the command line:
+
+  ; will enter the debugger the first time the instruction at "kernel" runs
+  stella -break kernel mygame.bin
+
+  ; $fffc is the 6502/6507 init vector. This command will break and enter the
+  ; debugger before the first 6507 instruction runs, so you can debug the
+  ; startup code:
+  stella -break "*($fffc)" mygame.bin
+
+
 
 Tabs:
 
@@ -187,7 +201,9 @@ The tabs that are implemented so far:
     and your partial name will be completed as far as possible.
 
     Tab completion works on all labels: built-in, loaded from a symbol file,
-    or set during debugging with the "define" command.
+    or set during debugging with the "define" command. However, it does not
+	 yet work on functions defined with the "function" command, nor does it
+	 work on filenames.
 
   - Expressions
 
@@ -197,8 +213,40 @@ The tabs that are implemented so far:
     can be as a hex constant ($ff, $1234), or as complex as
     "the low byte of the 16-bit value located at the address
     pointed to by the binary number 1010010110100101" (which
-    would be "@<%1010010110100101"). You can also use registers
+    would be "@<\1010010110100101"). You can also use registers
     and labels in expressions.
+
+    You can use arithmetic and boolean operators in expressions. The
+    syntax is very C-like. The operators supported are:
+
+      + - * /  (add, subtract, multiply, divide: 2+2 is 4)
+      %        (modulus/remainder: 3%2 is 1)
+      & | ^ ~  (bitwise AND, OR, XOR, NOT: 2&3 is 2)
+      && || !  (logical AND, OR, NOT: 2&&3 is 1, 2||0 is 0)
+      ( )      (parentheses for grouping: (2+2)*3 is 12)
+      * @      (byte and word pointer dereference: *$80 is the byte stored
+                at location $80)
+      [ ]      (array-style byte pointer dereference: $80[1] is the byte
+                stored at location ($80+1) or $81)
+      < >      (prefix versions: low and high byte. <$abcd is $cd)
+      == < > <= >= !=
+               (comparison: equality, less-than, greater-than, less-or-equals,
+                greater-or-equals, not-equals)
+      << >>    (bit shifts, left and right: 1<<1 is 2, 2>>1 is 1)
+  
+    Division by zero is not an error: it results in zero instead.
+
+    None of the operators change the values of their operands. There
+    are no variable-assignment or increment/decrement operators. This
+    may change in the future, which is why we used "==" for equality
+    instead of just "=".
+
+    The bitwise and logical boolean operators are different in that the
+    bitwise operators operate on all the bits of the operand (just like
+    AND, ORA, EOR in 6502 asm), while the logical operators treat their
+    operands as 0 for false, non-zero for true, and return either 0 or 1.
+    So $1234&$5678 results in $1230, whereas $1234&&$5678 results in 1.
+    This is just like C or C++...
 
     Like some programming languages, the debugger uses prefixed characters
     to change the meaning of an expression. The prefixes are:
@@ -209,16 +257,24 @@ The tabs that are implemented so far:
       Dereference a byte pointer. "*a" means "the byte at the address that
       the A register points to". If A is 255 (hex $ff), the result will be
       the value currently stored in memory location 255. This operator
-      will be very familiar to you if you're a C or C++ programmer.
+      will be very familiar to you if you're a C or C++ programmer. It's
+      equivalent to the PEEK() function in most 8-bit BASICs. Also, the
+      debugger supports array-like byte dereferences: *address can be
+      written as address[0]. *(address+1) can be written as address[1],
+      etc.
 
     - "@"
-      Dereference a word pointer. This is just like the "*" byte deref,
+      Dereference a pointer to a word. This is just like the "*" byte deref,
       except it refers to a 16-bit value, occupying 2 locations, in
       low-byte-first format (standard for the 6507).
 
-    Only one or the other of the "*" and "@" prefixes is allowed in a
-    given expression. If you're going to use a dereference, it needs
-    to come first.
+    The following are equivalent:
+
+    @address
+    *address+$100**(address+1)
+    address[0]+#256*address[1]
+
+    (TODO: add (indirect),y and (indirect,x) syntax)
 
     - Hi/Lo Byte Prefixes
 
@@ -231,12 +287,6 @@ The tabs that are implemented so far:
       the Accumulator, this will always result in zero. For 16-bit values,
       "<$1234" = "$12".
 
-   Only one or the other of the "<" and ">" prefixes is allowed in
-   the same expression. If you're going to use one, it needs to come
-   after the dereference, if there is one. "*<myLabel" is legal,
-   but "<*myLabel" is not (yet). These operators behave just like
-   they do in DASM.
-
    - Number Base Prefixes
 
    - "#"
@@ -245,15 +295,13 @@ The tabs that are implemented so far:
    - "$"
      Treat the input as a hex number.
 
-   - "%"
+   - "\"
      Treat the input as a binary number.
 
    These only have meaning when they come before a number, not a
-   label or a register. "%1010" means 10 decimal. So do "$0a" and
-   "#10". You can only use one of the "#" "$" "%" prefixes per
-   expression. When used, they must come immediately before the
-   number in the expression, after any dereference or hi/lo byte
-   operators.
+   label or a register. "\1010" means 10 decimal. So do "$0a" and
+   "#10". "a" by itself is always the Accumulator, no matter what
+   the default base is set to.
 
    If you don't specify any number base prefix, the number is
    assumed to be in the default base. When you first start Stella,
@@ -263,9 +311,6 @@ The tabs that are implemented so far:
    Remember, you can use arbitrarily complex expressions with any
    command that takes arguments (except the ones that take filenames,
    like "loadsym").
-
-   (Future versions of the debugger may allow arithmetic and boolean
-    operators in expressions)
 
 
   - Breakpoints, watches and traps, oh my!
@@ -296,6 +341,72 @@ The tabs that are implemented so far:
     You could also use "clearbreaks" to remove all the breakpoints. Also,
     there is a "listbreaks" command that will list them all.
 
+    - Conditional Breaks
+
+    A conditional breakpoint causes the emulator to enter the debugger when
+    some arbitrary condition becomes true. "True" means "not zero" here:
+    "2+2" is considered true because it's not zero. "2-2" is false, because
+    it evaluates to zero. This is exactly how things work in C and lots
+    of other languages, but it might take some getting used to if you've
+    never used such a language.
+
+    Suppose you want to enter the debugger when the Game Reset switch is
+    pressed. Looking at the Stella Programmers' Guide, we see that this
+    switch is read at bit 0 of SWCHB. This bit will be 0 if the switch is
+    pressed, or 1 otherwise.
+
+    To have an expression read the contents of an address, we use the
+    dereference operator "*". Since we're looking at SWCHB, we need
+    "*SWCHB".
+
+    We're only wanting to look at bit 0, so let's mask off all the other
+    bits: "*SWCHB&1". The expression now evaluates to bit 0 of SWCHB. We're
+    almost there: this will be 1 (true) if the switch is NOT pressed. We
+    want to break if it IS pressed...
+
+    So we invert the sense of the test with a logical NOT operator (which
+    is the "!" operator): !(*SWCHB&1). The parentheses are necessary as
+    we want to apply the ! to the result of the &, not just the first term
+    (the "*SWCHB").
+
+    "breakif !(*SWCHB&1)" will do the job for us. However, it's an ugly mess
+    of letters, numbers, and punctuation. We can do a little better:
+
+    "breakif { !(*SWCHB & 1 ) }" is a lot more readable, isn't it? If
+    you're going to use readable expressions with spaces in them,
+    enclose the entire expression in curly braces {}.
+
+    There is one annoyance about this complex expression: once we
+    remove the conditional break with "delbreakif" or "clearbreaks",
+    we'd have to retype it (or search backwards with the up-arrow key)
+    if we wanted to use it again.
+
+    We can avoid this by defining the expression as a function, then using
+    "breakif function_name":
+
+    function gameReset { !(*SWCHB & 1 ) }
+    breakif gameReset
+
+    Now we have a meaningful name for the condition, so we can use it again.
+    Not only that: we can use the function as part of a bigger expression.
+    Suppose we've also defined a gameSelect function that evaluates to true
+    if the Game Select switch is pressed. We want to break when the user
+    presses both Select and Reset:
+
+    breakif { gameReset && gameSelect }
+
+    If you've defined a lot of complex functions, you probably will
+    want to re-use them in future runs of the debugger. You can save
+    all your functions, breakpoints, conditional breaks, and watches
+    with the "save" command. If you name your saved file the same
+    as the ROM filename, it'll be auto-loaded next time you load the
+    same ROM in Stella. The save file is just a plain text file called
+    "filename.stella", so you can edit it and add new functions, etc.
+
+    Conditional breaks appear in "listbreaks", numbered starting from
+    zero.  You can remove a cond. break with "delbreakif number", where
+    the number comes from "listbreaks".
+
     - Watches
 
     A watch is an expression that gets evaluated and printed before
@@ -307,10 +418,10 @@ The tabs that are implemented so far:
     registers: "watch *y" will show you the contents of the location
     pointed to by the Y register, even if the Y register changes.
 
-    The watches are numbered 1 to 10. The numbers are printed along with
-    the watches, so you can tell which is which. To delete a watch use
-    the "delwatch" command with the watch number (1 to 10). You can also
-    delete them all with the "clearwatches" command.
+    The watches are numbered. The numbers are printed along with the
+    watches, so you can tell which is which. To delete a watch use the
+    "delwatch" command with the watch number (1 to whatever). You can
+    also delete them all with the "clearwatches" command.
 
     Note that there's no real point in watching a label or CPU register
     without dereferencing it: Labels are constants, and CPU registers
@@ -346,6 +457,7 @@ The tabs that are implemented so far:
     to set it again: the commands actually toggle the trap on & off. You
     can also get rid of all traps at once with the "cleartraps" command.
 
+    Use "listtraps" to see all enabled traps.
 
   - Prompt commands:
 
