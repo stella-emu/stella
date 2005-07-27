@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.81 2005-07-21 12:56:26 stephena Exp $
+// $Id: EventHandler.cxx,v 1.82 2005-07-27 20:19:26 urchlay Exp $
 //============================================================================
 
 #include <algorithm>
@@ -654,7 +654,7 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
       break;
 
     case S_DEBUGGER:
-      if(myKeyTable[key] == Event::DebuggerMode && state == 1)
+      if(myKeyTable[key] == Event::DebuggerMode && mod == 0 && state == 1)
       {
         leaveDebugMode();
         return;
