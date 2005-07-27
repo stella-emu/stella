@@ -13,23 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EqualsExpression.hxx,v 1.2 2005-07-13 04:26:19 urchlay Exp $
+// $Id: EqualsExpression.hxx,v 1.3 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #ifndef EQUALS_EXPRESSION_HXX
 #define EQUALS_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: EqualsExpression.hxx,v 1.2 2005-07-13 04:26:19 urchlay Exp $
+  @version $Id: EqualsExpression.hxx,v 1.3 2005-07-27 01:36:50 urchlay Exp $
 */
 class EqualsExpression : public Expression
 {
   public:
     EqualsExpression(Expression *left, Expression *right);
-    int evaluate() { return myLHS->evaluate() == myRHS->evaluate(); }
+    uInt16 evaluate() { return myLHS->evaluate() == myRHS->evaluate(); }
 };
 
 #endif

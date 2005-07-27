@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaMethodExpression.hxx,v 1.1 2005-07-19 00:05:21 urchlay Exp $
+// $Id: TiaMethodExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 //============================================================================
 
 #ifndef TIAMETHOD_EXPRESSION_HXX
@@ -21,17 +21,18 @@
 
 //#include "Debugger.hxx"
 #include "TIADebug.hxx"
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: TiaMethodExpression.hxx,v 1.1 2005-07-19 00:05:21 urchlay Exp $
+  @version $Id: TiaMethodExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 */
 class TiaMethodExpression : public Expression
 {
   public:
     TiaMethodExpression(TIADEBUG_INT_METHOD method);
-    int evaluate() { return CALL_TIADEBUG_METHOD(myMethod); }
+    uInt16 evaluate() { return CALL_TIADEBUG_METHOD(myMethod); }
 
   private:
     TIADEBUG_INT_METHOD myMethod;

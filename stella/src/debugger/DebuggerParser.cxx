@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.70 2005-07-23 21:16:57 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.71 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -33,7 +33,7 @@ Command DebuggerParser::commands[] = {
 		"a",
 		"Set Accumulator to value xx",
 		true,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeA
 	},
 
@@ -105,7 +105,7 @@ Command DebuggerParser::commands[] = {
 		"colortest",
 		"Color Test",
 		true,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeColortest
 	},
 
@@ -233,7 +233,7 @@ Command DebuggerParser::commands[] = {
 		"loadstate",
 		"Load emulator state (0-9)",
 		true,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeLoadstate
 	},
 
@@ -345,7 +345,7 @@ Command DebuggerParser::commands[] = {
 		"s",
 		"Set Stack Pointer to value xx",
 		true,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeS
 	},
 
@@ -369,7 +369,7 @@ Command DebuggerParser::commands[] = {
 		"savestate",
 		"Save emulator state (valid args 0-9)",
 		true,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeSavestate
 	},
 
@@ -465,7 +465,7 @@ Command DebuggerParser::commands[] = {
 		"x",
 		"Set X Register to value xx",
 		true,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeX
 	},
 
@@ -473,7 +473,7 @@ Command DebuggerParser::commands[] = {
 		"y",
 		"Set Y Register to value xx",
 		true,
-		{ kARG_BYTE, kARG_END_ARGS },
+		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeY
 	},
 
@@ -1178,7 +1178,7 @@ bool DebuggerParser::saveScriptFile(string file) {
 
 // "a"
 void DebuggerParser::executeA() {
-	debugger->cpuDebug().setA(args[0]);
+	debugger->cpuDebug().setA((uInt8)args[0]);
 }
 
 // "bank"
@@ -1517,7 +1517,7 @@ void DebuggerParser::executeRunTo() {
 
 // "s"
 void DebuggerParser::executeS() {
-	debugger->cpuDebug().setSP(args[0]);
+	debugger->cpuDebug().setSP((uInt8)args[0]);
 }
 
 // "save"
@@ -1630,12 +1630,12 @@ void DebuggerParser::executeWatch() {
 
 // "x"
 void DebuggerParser::executeX() {
-	debugger->cpuDebug().setX(args[0]);
+	debugger->cpuDebug().setX((uInt8)args[0]);
 }
 
 // "y"
 void DebuggerParser::executeY() {
-	debugger->cpuDebug().setY(args[0]);
+	debugger->cpuDebug().setY((uInt8)args[0]);
 }
 
 // "z"

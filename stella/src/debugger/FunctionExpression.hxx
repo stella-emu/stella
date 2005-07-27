@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FunctionExpression.hxx,v 1.1 2005-07-21 03:26:58 urchlay Exp $
+// $Id: FunctionExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #ifndef FUNCTION_EXPRESSION_HXX
 #define FUNCTION_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 #include "Debugger.hxx"
 
@@ -26,13 +27,13 @@
 
 /**
   @author  Stephen Anthony
-  @version $Id: FunctionExpression.hxx,v 1.1 2005-07-21 03:26:58 urchlay Exp $
+  @version $Id: FunctionExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 */
 class FunctionExpression : public Expression
 {
   public:
     FunctionExpression(const string& label);
-    int evaluate() {
+    uInt16 evaluate() {
 		 Expression *exp = Debugger::debugger().getFunction(myLabel);
 		 if(exp)
 			 return exp->evaluate();

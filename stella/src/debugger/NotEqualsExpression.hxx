@@ -13,23 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: NotEqualsExpression.hxx,v 1.1 2005-07-13 04:49:18 urchlay Exp $
+// $Id: NotEqualsExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 //============================================================================
 
 #ifndef NOTEQUALS_EXPRESSION_HXX
 #define NOTEQUALS_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: NotEqualsExpression.hxx,v 1.1 2005-07-13 04:49:18 urchlay Exp $
+  @version $Id: NotEqualsExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 */
 class NotEqualsExpression : public Expression
 {
   public:
     NotEqualsExpression(Expression *left, Expression *right);
-    int evaluate() { return myLHS->evaluate() != myRHS->evaluate(); }
+    uInt16 evaluate() { return myLHS->evaluate() != myRHS->evaluate(); }
 };
 
 #endif

@@ -13,24 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: WordDerefExpression.hxx,v 1.1 2005-07-15 01:20:11 urchlay Exp $
+// $Id: WordDerefExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 //============================================================================
 
 #ifndef WORDDEREF_EXPRESSION_HXX
 #define WORDDEREF_EXPRESSION_HXX
 
 #include "Debugger.hxx"
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: WordDerefExpression.hxx,v 1.1 2005-07-15 01:20:11 urchlay Exp $
+  @version $Id: WordDerefExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 */
 class WordDerefExpression : public Expression
 {
   public:
     WordDerefExpression(Expression *left);
-    int evaluate() { return Debugger::debugger().dpeek(myLHS->evaluate()); }
+    uInt16 evaluate() { return Debugger::debugger().dpeek(myLHS->evaluate()); }
 };
 
 #endif

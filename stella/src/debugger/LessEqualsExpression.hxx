@@ -13,23 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LessEqualsExpression.hxx,v 1.1 2005-07-13 04:49:18 urchlay Exp $
+// $Id: LessEqualsExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 //============================================================================
 
 #ifndef LESSEQUALS_EXPRESSION_HXX
 #define LESSEQUALS_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: LessEqualsExpression.hxx,v 1.1 2005-07-13 04:49:18 urchlay Exp $
+  @version $Id: LessEqualsExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 */
 class LessEqualsExpression : public Expression
 {
   public:
     LessEqualsExpression(Expression *left, Expression *right);
-    int evaluate() { return myLHS->evaluate() <= myRHS->evaluate(); }
+    uInt16 evaluate() { return myLHS->evaluate() <= myRHS->evaluate(); }
 };
 
 #endif

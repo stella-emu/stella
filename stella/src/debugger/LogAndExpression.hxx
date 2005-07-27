@@ -13,23 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LogAndExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
+// $Id: LogAndExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 //============================================================================
 
 #ifndef LOGAND_EXPRESSION_HXX
 #define LOGAND_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: LogAndExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
+  @version $Id: LogAndExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 */
 class LogAndExpression : public Expression
 {
   public:
     LogAndExpression(Expression *left, Expression *right);
-    int evaluate() { return myLHS->evaluate() && myRHS->evaluate(); }
+    uInt16 evaluate() { return myLHS->evaluate() && myRHS->evaluate(); }
 };
 
 #endif

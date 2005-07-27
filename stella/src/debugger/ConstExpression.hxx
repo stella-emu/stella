@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ConstExpression.hxx,v 1.1 2005-07-12 17:02:35 stephena Exp $
+// $Id: ConstExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #ifndef CONST_EXPRESSION_HXX
 #define CONST_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
@@ -26,13 +27,13 @@
   that is, one that consists solely of a constant integer value.
 
   @author  Stephen Anthony
-  @version $Id: ConstExpression.hxx,v 1.1 2005-07-12 17:02:35 stephena Exp $
+  @version $Id: ConstExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 */
 class ConstExpression : public Expression
 {
   public:
     ConstExpression(const int value);
-    int evaluate() { return myValue; }
+    uInt16 evaluate() { return myValue; }
 
   private:
     int myValue;

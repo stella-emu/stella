@@ -13,24 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteDerefExpression.hxx,v 1.1 2005-07-15 01:20:11 urchlay Exp $
+// $Id: ByteDerefExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #ifndef BYTEDEREF_EXPRESSION_HXX
 #define BYTEDEREF_EXPRESSION_HXX
 
 #include "Debugger.hxx"
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: ByteDerefExpression.hxx,v 1.1 2005-07-15 01:20:11 urchlay Exp $
+  @version $Id: ByteDerefExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 */
 class ByteDerefExpression : public Expression
 {
   public:
     ByteDerefExpression(Expression *left);
-    int evaluate() { return Debugger::debugger().peek(myLHS->evaluate()); }
+    uInt16 evaluate() { return Debugger::debugger().peek(myLHS->evaluate()); }
 };
 
 #endif

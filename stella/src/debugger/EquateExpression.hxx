@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateExpression.hxx,v 1.1 2005-07-14 11:28:38 stephena Exp $
+// $Id: EquateExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #ifndef EQUATE_EXPRESSION_HXX
 #define EQUATE_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 #include "Debugger.hxx"
 
@@ -26,13 +27,13 @@
 
 /**
   @author  Stephen Anthony
-  @version $Id: EquateExpression.hxx,v 1.1 2005-07-14 11:28:38 stephena Exp $
+  @version $Id: EquateExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 */
 class EquateExpression : public Expression
 {
   public:
     EquateExpression(const string& label);
-    int evaluate() { return Debugger::debugger().equates()->getAddress(myLabel); }
+    uInt16 evaluate() { return Debugger::debugger().equates()->getAddress(myLabel); }
 
   private:
     string myLabel;

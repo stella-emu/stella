@@ -13,23 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LoByteExpression.hxx,v 1.1 2005-07-15 01:40:34 urchlay Exp $
+// $Id: LoByteExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 //============================================================================
 
 #ifndef LOBYTE_EXPRESSION_HXX
 #define LOBYTE_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: LoByteExpression.hxx,v 1.1 2005-07-15 01:40:34 urchlay Exp $
+  @version $Id: LoByteExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
 */
 class LoByteExpression : public Expression
 {
   public:
     LoByteExpression(Expression *left);
-    int evaluate() { return 0xff & myLHS->evaluate(); }
+    uInt16 evaluate() { return 0xff & myLHS->evaluate(); }
 };
 
 #endif

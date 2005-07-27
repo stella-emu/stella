@@ -13,23 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BinXorExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
+// $Id: BinXorExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #ifndef BINXOR_EXPRESSION_HXX
 #define BINXOR_EXPRESSION_HXX
 
+#include "bspf.hxx"
 #include "Expression.hxx"
 
 /**
   @author  B. Watson
-  @version $Id: BinXorExpression.hxx,v 1.1 2005-07-13 04:26:19 urchlay Exp $
+  @version $Id: BinXorExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
 */
 class BinXorExpression : public Expression
 {
   public:
     BinXorExpression(Expression *left, Expression *right);
-    int evaluate() { return myLHS->evaluate() ^ myRHS->evaluate(); }
+    uInt16 evaluate() { return myLHS->evaluate() ^ myRHS->evaluate(); }
 };
 
 #endif

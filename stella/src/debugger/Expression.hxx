@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Expression.hxx,v 1.2 2005-07-18 02:03:41 urchlay Exp $
+// $Id: Expression.hxx,v 1.3 2005-07-27 01:36:50 urchlay Exp $
 //============================================================================
 
 #ifndef EXPRESSION_HXX
 #define EXPRESSION_HXX
+
+#include "bspf.hxx"
 
 // define this to count Expression instances. Only useful for debugging
 // Stella itself.
@@ -30,7 +32,7 @@
   can represent complex expression statements.
 
   @author  Stephen Anthony
-  @version $Id: Expression.hxx,v 1.2 2005-07-18 02:03:41 urchlay Exp $
+  @version $Id: Expression.hxx,v 1.3 2005-07-27 01:36:50 urchlay Exp $
 */
 class Expression
 {
@@ -38,7 +40,7 @@ class Expression
     Expression(Expression* lhs, Expression* rhs);
     virtual ~Expression();
 
-    virtual int evaluate() = 0;
+    virtual uInt16 evaluate() = 0;
 
   protected:
     Expression* myLHS;
