@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.71 2005-07-27 01:36:50 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.72 2005-07-29 16:37:17 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1360,6 +1360,9 @@ void DebuggerParser::executeHelp() {
 
 		commandResult += buf;
 	} while(commands[++i].cmdString != "");
+
+	commandResult += "\nBuilt-in functions:\n";
+	commandResult += debugger->builtinHelp();
 }
 
 // "frame"

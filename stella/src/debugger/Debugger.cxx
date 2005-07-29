@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.76 2005-07-23 19:07:15 urchlay Exp $
+// $Id: Debugger.cxx,v 1.77 2005-07-29 16:37:17 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -42,9 +42,44 @@
 #include "TiaOutputWidget.hxx"
 #include "Expression.hxx"
 
+#include "YaccParser.hxx"
+
 #include "Debugger.hxx"
 
 Debugger* Debugger::myStaticDebugger;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const string builtin_functions[][3] = {
+	// { "name", "definition", "help text" }
+
+	// left joystick:
+	{ "_joy0left", "!(*SWCHA & $40)", "Left joystick moved left" },
+	{ "_joy0right", "!(*SWCHA & $80)", "Left joystick moved right" },
+	{ "_joy0up", "!(*SWCHA & $10)", "Left joystick moved up" },
+	{ "_joy0down", "!(*SWCHA & $20)", "Left joystick moved down" },
+	{ "_joy0button", "!(*INPT4 & $80)", "Left joystick button pressed" },
+
+	// right joystick:
+	{ "_joy1left", "!(*SWCHA & $04)", "Right joystick moved left" },
+	{ "_joy1right", "!(*SWCHA & $08)", "Right joystick moved right" },
+	{ "_joy1up", "!(*SWCHA & $01)", "Right joystick moved up" },
+	{ "_joy1down", "!(*SWCHA & $02)", "Right joystick moved down" },
+	{ "_joy1button", "!(*INPT5 & $80)", "Right joystick button pressed" },
+
+	// console switches:
+	{ "_select", "!(*SWCHB & $01)", "Game Select pressed" },
+	{ "_reset", "!(*SWCHB & $02)", "Game Reset pressed" },
+	{ "_color", "*SWCHB & $08", "Color/BW set to Color" },
+	{ "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
+	{ "_diff0a", "!(*SWCHB & $40)", "Right difficulty set to A (easy)" },
+	{ "_diff0b", "*SWCHB & $40", "Right difficulty set to B (hard)" },
+	{ "_diff1a", "!(*SWCHB & $80)", "Right difficulty set to A (easy)" },
+	{ "_diff1b", "*SWCHB & $80", "Right difficulty set to B (hard)" },
+
+	// empty string marks end of list, do not remove
+	{ "", "", "" }
+};
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
@@ -74,6 +109,15 @@ Debugger::Debugger(OSystem* osystem)
   // there will only be ever one instance of debugger in Stella,
   // I don't care :)
   myStaticDebugger = this;
+
+  // init builtins
+  for(int i=0; builtin_functions[i][0] != ""; i++) {
+    string f = builtin_functions[i][1];
+    int res = YaccParser::parse(f.c_str());
+    if(res != 0) cerr << "ERROR in builtin function!" << endl;
+    Expression *exp = YaccParser::getResult();
+    addFunction(builtin_functions[i][0], exp);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -945,3 +989,20 @@ Expression *Debugger::getFunction(string name) {
 const FunctionMap Debugger::getFunctionMap() {
 	return functions;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Debugger::builtinHelp() {
+  string result;
+
+  for(int i=0; builtin_functions[i][0] != ""; i++) {
+    result += builtin_functions[i][0];
+    result += " {";
+    result += builtin_functions[i][1];
+    result += "}\n";
+    result += "     ";
+    result += builtin_functions[i][2];
+    result += "\n";
+  }
+  return result;
+}
+
