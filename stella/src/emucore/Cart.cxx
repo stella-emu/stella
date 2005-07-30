@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.14 2005-07-09 15:19:24 urchlay Exp $
+// $Id: Cart.cxx,v 1.15 2005-07-30 16:25:48 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -311,4 +311,25 @@ bool Cartridge::patch(uInt16 address, uInt8 value) {
   return false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::save(ofstream& out) {
+  int size = -1;
+
+  uInt8* image = getImage(size);
+  if(image == 0 || size <= 0) {
+    cerr << "save not supported" << endl;
+    return false;
+  }
+
+  for(int i=0; i<size; i++)
+    out << image[i];
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* Cartridge::getImage(int& size) {
+  size = 0;
+  return 0;
+}
 

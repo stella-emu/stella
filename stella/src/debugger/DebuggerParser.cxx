@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.72 2005-07-29 16:37:17 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.73 2005-07-30 16:25:48 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -355,6 +355,14 @@ Command DebuggerParser::commands[] = {
 		true,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeSave
+	},
+
+	{
+		"saverom",
+		"Save (possibly patched) ROM to file",
+		true,
+		{ kARG_FILE, kARG_END_ARGS },
+		&DebuggerParser::executeSaverom
 	},
 
 	{
@@ -1525,11 +1533,18 @@ void DebuggerParser::executeS() {
 
 // "save"
 void DebuggerParser::executeSave() {
-	cerr << "got here" << endl;
 	if(saveScriptFile(argStrings[0]))
 		commandResult = "saved script to file " + argStrings[0];
 	else
 		commandResult = red("I/O error");
+}
+
+// "saverom"
+void DebuggerParser::executeSaverom() {
+  if(debugger->saveROM(argStrings[0]))
+    commandResult = "saved ROM";
+  else
+    commandResult = red("failed to save ROM");
 }
 
 // "saveses"

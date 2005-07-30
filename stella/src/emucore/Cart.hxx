@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.7 2005-07-09 15:19:24 urchlay Exp $
+// $Id: Cart.hxx,v 1.8 2005-07-30 16:25:48 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -23,6 +23,7 @@ class Cartridge;
 class Properties;
 class System;
 
+#include <fstream>
 #include "bspf.hxx"
 #include "Device.hxx"
 
@@ -31,7 +32,7 @@ class System;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.7 2005-07-09 15:19:24 urchlay Exp $
+  @version $Id: Cart.hxx,v 1.8 2005-07-30 16:25:48 urchlay Exp $
 */
 class Cartridge : public Device
 {
@@ -62,7 +63,9 @@ class Cartridge : public Device
     virtual void bank(uInt16 b); // set bank
     virtual int bank(); // get current bank (-1 if no bankswitching supported)
     virtual int bankCount(); // count # of banks
-    virtual bool patch(uInt16 address, uInt8 value);
+    virtual bool patch(uInt16 address, uInt8 value); // yes, this writes to ROM
+    bool save(ofstream& out); // need a way to save patched ROMs
+    virtual uInt8* getImage(int& size); // save() uses this
 
   private:
     /**

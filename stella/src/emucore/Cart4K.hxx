@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4K.hxx,v 1.5 2005-06-27 15:07:54 urchlay Exp $
+// $Id: Cart4K.hxx,v 1.6 2005-07-30 16:25:48 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE4K_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   not bankswitched.
 
   @author  Bradford W. Mott
-  @version $Id: Cart4K.hxx,v 1.5 2005-06-27 15:07:54 urchlay Exp $
+  @version $Id: Cart4K.hxx,v 1.6 2005-07-30 16:25:48 urchlay Exp $
 */
 class Cartridge4K : public Cartridge
 {
@@ -85,6 +85,8 @@ class Cartridge4K : public Cartridge
       @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
+
+    virtual uInt8* getImage(int& size);
 
   public:
     /**

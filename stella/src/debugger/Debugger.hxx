@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.62 2005-07-29 16:37:17 urchlay Exp $
+// $Id: Debugger.hxx,v 1.63 2005-07-30 16:25:48 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -74,7 +74,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.62 2005-07-29 16:37:17 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.63 2005-07-30 16:25:48 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -254,6 +254,8 @@ class Debugger : public DialogContainer
 
 	 string loadListFile(string f = "");
 	 const string getSourceLines(int addr);
+
+    bool saveROM(string filename);
 
   private:
     /**

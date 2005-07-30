@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4K.cxx,v 1.6 2005-06-27 15:07:54 urchlay Exp $
+// $Id: Cart4K.cxx,v 1.7 2005-07-30 16:25:48 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -135,4 +135,10 @@ bool Cartridge4K::load(Deserializer& in)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* Cartridge4K::getImage(int& size) {
+  size = 4096;
+  return &myImage[0];
 }

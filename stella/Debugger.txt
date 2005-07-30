@@ -54,6 +54,12 @@ What the debugger can do:
 - TIA display is updated during step/trace, so we can see our
   scanlines being drawn as it happens. This isn't 100% perfect: unlike
   a real TIA, the one in Stella only updates when it's written to.
+- Script (batch) file support, including auto-running a script file
+  named after the ROM image.
+- Saving the current debugger state to a script file (including
+  breakpoints, traps, etc).
+- Built-in functions for use with "breakif", to support common conditions
+  (such as breaking when the user presses Game Select...)
 
 Planned features for Stella 2.0 release:
 - Graphical TIA tab, with register names and GUI buttons for
@@ -66,10 +72,6 @@ Planned features for Stella 2.0 release:
   that aren't supported.
 - Patch ROM support for a few cart types doesn't work.
 - Some way to control joystick/etc. input from within the debugger.
-- Script (batch) file support, including auto-running a script file
-  named after the ROM image.
-- Saving the current debugger state to a script file (including
-  breakpoints, traps, etc).
 - Source-level debugging: if a DASM .lst file is available, we'll show
   the listing in the ROM tab instead of a disassembly. This is already
   availabe in a very crude form ("loadlist" and "list" commands).
@@ -78,7 +80,7 @@ Planned features for Stella 2.0 release:
   use all the CPU registers and flags in expressions (e.g. "print a+1" does
   what you expect), and the pseudo-variables "_scan" and "_bank" (which
   evaluate the the current scanline and bank number). Need to add more TIA,
-  RIOT registers too.
+  RIOT registers too. Also, more functions for the builtin function lib.
 
 Future plans (post 2.0):
 - Possibly a mini-assembler
