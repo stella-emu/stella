@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.11 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartDPC.cxx,v 1.12 2005-07-30 19:14:35 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -27,6 +27,11 @@
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 {
   uInt32 addr;
+
+  // Make a copy of the entire image as-is, for use by getImage()
+  // (this wastes 12K of RAM, should be controlled by a #ifdef)
+  for(addr = 0; addr < size; ++addr)
+    myImageCopy[addr] = image[addr];
 
   // Copy the program ROM image into my buffer
   for(addr = 0; addr < 8192; ++addr)
@@ -585,5 +590,18 @@ bool CartridgeDPC::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeDPC::getImage(int& size) {
+  size = 8192 + 2048 + 255;
+
+  for(int i=0; i<8192; i++)
+    myImageCopy[i] = myProgramImage[i];
+
+  for(int i=0; i<2048; i++)
+    myImageCopy[i + 8192] = myDisplayImage[i];
+
+  return &myImageCopy[0];
 }
 

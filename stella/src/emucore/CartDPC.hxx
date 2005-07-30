@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartDPC.hxx,v 1.7 2005-07-30 19:14:35 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEDCP_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   see David P. Crane's United States Patent Number 4,644,495.
 
   @author  Bradford W. Mott
-  @version $Id: CartDPC.hxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
+  @version $Id: CartDPC.hxx,v 1.7 2005-07-30 19:14:35 urchlay Exp $
 */
 class CartridgeDPC : public Cartridge
 {
@@ -93,6 +93,8 @@ class CartridgeDPC : public Cartridge
     */
     virtual bool load(Deserializer& in);
 
+    virtual uInt8* getImage(int& size);
+
   public:
     /**
       Get the byte at the specified address.
@@ -141,6 +143,9 @@ class CartridgeDPC : public Cartridge
 
     // The 2K display ROM image of the cartridge
     uInt8 myDisplayImage[2048];
+
+    // Copy of the raw image, for use by getImage()
+    uInt8 myImageCopy[8192 + 2048 + 255];
 
     // The top registers for the data fetchers
     uInt8 myTops[8];
