@@ -60,6 +60,8 @@ What the debugger can do:
   breakpoints, traps, etc).
 - Built-in functions for use with "breakif", to support common conditions
   (such as breaking when the user presses Game Select...)
+- Save patched ROM ("saverom filename.bin"). This currently works for every
+  cart type except DPC (Pitfall II).
 
 Planned features for Stella 2.0 release:
 - Graphical TIA tab, with register names and GUI buttons for
@@ -70,12 +72,11 @@ Planned features for Stella 2.0 release:
   code at once)
 - Bankswitch support in the debugger for the few remaining cart types
   that aren't supported.
-- Patch ROM support for a few cart types doesn't work.
+- Patch ROM support for a few cart types doesn't work. Must fix.
 - Some way to control joystick/etc. input from within the debugger.
 - Source-level debugging: if a DASM .lst file is available, we'll show
   the listing in the ROM tab instead of a disassembly. This is already
   availabe in a very crude form ("loadlist" and "list" commands).
-- Save patched ROM.
 - More "special variables" for the expression parser. Currently, you can
   use all the CPU registers and flags in expressions (e.g. "print a+1" does
   what you expect), and the pseudo-variables "_scan" and "_bank" (which
@@ -609,3 +610,145 @@ can update them just by pressing Enter in the prompt.
 
 You can also use the Step, Trace and Frame+1 buttons from anywhere in
 the GUI via the keyboard, with Alt-S, Alt-T and Alt-F.
+
+
+Tutorial: How to hack a ROM
+---------------------------
+
+Here is a step-by-step guide that shows you how to use the debugger to
+actually do something useful. No experience with debuggers is necessary,
+but it helps to know at least a little about 6502 programming.
+
+Step 1: get the Atari Battlezone ROM image. Make sure you've got the
+regular NTSC version. Load it up in Stella and press TAB to get to
+the main menu. From there, click on "Game Information". For "Name", it
+should say "Battlezone (1983) (Atari) [!]" and for MD5Sum it should say
+"41f252a66c6301f1e8ab3612c19bc5d4". The rest of this tutorial assumes
+you're using this version of the ROM; it may or may not work with the
+PAL version, or with any of the various "hacked" versions floating around
+on the 'net.
+
+Step 2: Start the game. You begin the game with 5 lives (count the tank
+symbols at the bottom of the screen).
+
+Step 3: Enter the debugger by pressing the ` (backquote) key. Don't get
+killed before you do this, though.  You should still have all 5 lives.
+
+Step 4: Go to the Cheat tab (click on Cheat). The Cheat tab will allow you
+to search RAM for values such as the number of remaining lives.
+
+Step 5: In the Cheat tab, enter "5" in the "Enter a value" box and click
+on Search. This searches RAM for your value and displays the results in
+the Address/Value list to the right. You should see two results: "00a5:
+05" and "00ba: 05". These are the only two addresses that currently have
+the value 5, so they're the most likely candidates for "number of lives"
+counter. (However, some games might actually store one less than the real
+number of lives, or one more, so you might have to experiment a bit.
+Since this is a "rigged demo", I already know Battlezone stores the
+actual number of lives. Most games do, actually).
+
+Step 6: Exit the debugger by pressing ` (backquote) again. The game will
+pick up where you left off.
+
+Step 7: Get killed! Ram an enemy tank, or let him shoot you. Wait for
+the explosion to finish. You will now have 4 lives.
+
+Step 8: Enter the debugger again. The Cheat tab will still be showing.
+In the "Enter a value" box, delete the 5 you entered earlier, and replace
+it with a 4. Click "Compare". Now the Address/Value list should only
+show one result: "00ba: 04". What we did was search within our previous
+results (the ones that were 5 before) for the new value 4. Address $00ba
+used to have the value 5, but now it has 4. This means that Battlezone
+(almost certainly) stores the current number of lives at address $00ba.
+
+Step 9: Test your theory. Go to the RAM tab and change address $ba to
+some high number like $ff (you could use the Prompt instead: enter "ram
+$ba $ff"). Exit the debugger again. You should now see lots of lives
+at the bottom of the screen (of course, there isn't room to display $ff
+(255) of them!)... play the game, get killed a few times, notice that
+you have lots of lives.
+
+Step 10: Now it's time to decide what sort of "ROM hack" we want to
+accomplish. We've found the "lives" counter for the game, so we can
+either have the game start with lots of lives, or change the game
+code so we can't get killed (AKA immortality), or change the code
+so we always have the same number of lives (so we never run out, AKA
+infinite lives). Let's go for infinite lives: it's a little harder than
+just starting with lots of lives, but not as difficult as immortality
+(for that, we have to disable the collision checking code, which means
+we have to find and understand it first!)
+
+Step 11: Set a Write Trap on the lives counter address: "trapwrite $ba"
+in the Prompt. Exit the debugger and play until you get killed. When
+you die, the trap will cause the emulator to enter the debugger with the
+Program Counter pointing to the instruction *after* the one that wrote
+to location $ba.
+
+Step 12: Once in the debugger, press Enter to refresh your prompt. The PC
+should be at address $f238, instruction "LDA $e1". You want to disassemble
+the ROM starting a few addresses before this to find the instruction
+that actually caused the write trap, so enter the command "disasm pc-5"
+(you may need to press Shift-PageUp afterwards to see the beginning of
+the disassembly). Take a look at the first few instructions. Do you see
+the one that affects the lives counter? That's right, it's the "DEC $ba"
+at location $f236.
+
+Step 13: Let's stop the DEC $ba from happening. We can't just delete the
+instruction (it would mess up the addressing of everything afterwards,
+if it were even possible), but we can replace it with some other
+instruction(s).
+
+Since we just want to get rid of the instruction, we can replace it with
+NOP (no operation). From looking at the disassembly, you can see that
+"DEC $ba" is a 2-byte long instruction, so we will need two one-byte
+NOP instructions to replace it. From reading the prompt help (the "help"
+command), you can see that the "rom" command is what we use to patch ROM.
+
+Unfortunately, Stella doesn't contain an assembler, so we can't just
+type NOP to put a NOP instruction in the code. We'll have to use the
+hex opcode instead.
+
+Now crack open your 6502 reference manual and look up the NOP
+instruction's opcode... OK, OK, I'll just tell you what it is: it's $EA
+(234 decimal). We need two of them, starting at address $f236, so our
+prompt command looks like:
+
+  rom $f236 $ea $ea
+
+The debugger should respond with "changed 02 locations". If you run
+"disasm pc-5" again, you should see the two NOPs at $f236 and $f237.
+
+Step 14: Test your patch. First, set location $ba to some number of
+lives that can be displayed on the screen ("poke $ba 3" will do). Now
+exit the debugger and play the game. You should see 3 lives on the screen.
+
+Step 15: The crucial test: get killed again! After the explosion, you
+will *still* see 3 lives: Success! We've hacked Battlezone to give us
+infinite lives.
+
+Step 16: Save your work. In the prompt: "saverom bzhack.bin". You now
+have your very own infinite-lives version of Battlezone. The file will
+be saved in the current directory (NOT your ROM directory), so you might
+want to move it to your ROM directory if it isn't the current directory.
+
+Step 17: Test the new ROM: exit Stella, and re-run it. Open your ROM
+(or give its name on the command line) and play the game. You can play
+forever! It worked.
+
+Now, try the same techniques on some other ROM image (try Pac-Man). Some
+games store (lives+1) or (lives-1) instead of the actual number,
+so try searching for those if you can't seem to make it work. Also,
+some cartridge types include their own RAM. The debugger doesn't (yet)
+know how to access on-cartridge RAM, so you'll have to use the "bank" and
+"ram" commands to manually search the address space for the value you're
+looking for (future versions of the debugger will be smarter about this).
+
+If you successfully patch a ROM in the debugger, but the saved version
+won't work, or looks funny, you might need to add an entry to the
+stella.pro file, to tell Stella what bankswitch and/or TV type to use.
+That's outside the scope of this tutorial :)
+
+Of course, the debugger is useful for a lot more than cheating and
+hacking ROMs. Remember, with great power comes great responsibility,
+so you have no excuse to avoid writing that game you've been thinking
+about for so long now :)
