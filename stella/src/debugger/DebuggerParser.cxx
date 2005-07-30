@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.73 2005-07-30 16:25:48 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.74 2005-07-30 22:08:24 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -75,6 +75,15 @@ Command DebuggerParser::commands[] = {
 		false,
 		{ kARG_BOOL, kARG_END_ARGS },
 		&DebuggerParser::executeC
+	},
+
+	{
+		"cheetah",
+		"Use Cheetah cheat code (see http://members.cox.net/rcolbert/)",
+		false,
+		// lame: accept 0-4 args instead of inventing a kARG_MULTI_LABEL type
+		{ kARG_LABEL, kARG_LABEL, kARG_LABEL, kARG_LABEL, kARG_END_ARGS },
+		&DebuggerParser::executeCheetah
 	},
 
 	{
@@ -1283,6 +1292,55 @@ void DebuggerParser::executeC() {
 		debugger->cpuDebug().toggleC();
 	else if(argCount == 1)
 		debugger->cpuDebug().setC(args[0]);
+}
+
+// "cheetah"
+// (see http://members.cox.net/rcolbert/chtdox.htm)
+void DebuggerParser::executeCheetah() {
+	if(argCount == 0) {
+		commandResult = red("Missing cheat code");
+		return;
+	}
+
+	for(int arg = 0; arg < argCount; arg++) {
+		string& cheat = argStrings[arg];
+
+		if(cheat.size() != 6) {
+			commandResult += red(cheat + ": Invalid Cheetah code (must be 6 hex digits)");
+			return;
+		}
+
+		for(int i=0; i<6; i++) {
+			if(conv_hex_digit(cheat[i]) < 0) {
+				commandResult += red(cheat + ": Invalid hex digit in Cheetah code");
+				return;
+			}
+		}
+
+		int addr = 0;
+		for(int i=0; i<3; i++) {
+			addr = addr * 16 + conv_hex_digit(cheat[i]);
+		}
+		addr += 0xf000;
+
+		int value = 0;
+		for(int i=3; i<5; i++) {
+			value = value * 16 + conv_hex_digit(cheat[i]);
+		}
+
+		int count = conv_hex_digit(cheat[5]) + 1;
+
+		for(int i=0; i<count; i++)
+			debugger->patchROM(addr + i, value);
+
+		commandResult += cheat;
+		commandResult += ": ";
+		commandResult += debugger->valueToString(count);
+		commandResult += " address";
+		if(count != 1) commandResult += "es";
+		commandResult += " modified.";
+		if(arg != argCount - 1) commandResult += "\n";
+	}
 }
 
 // "clearbreaks"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.78 2005-07-30 16:25:45 urchlay Exp $
+// $Id: Debugger.cxx,v 1.79 2005-07-30 22:08:24 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -154,6 +154,13 @@ void Debugger::initialize()
   string initBreak = myOSystem->settings().getString("break");
   if(initBreak != "") run("break " + initBreak);
   myOSystem->settings().setString("break", "", false);
+
+  // set up any cheeetah code that was on the command line
+  // (and remove the key from the settings, so they won't get set again)
+  string cheetah = myOSystem->settings().getString("cheetah");
+  if(cheetah != "") run("cheetah " + cheetah);
+  myOSystem->settings().setString("cheetah", "", false);
+
   autoExec();
 }
 
