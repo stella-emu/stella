@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.9 2005-07-09 12:52:46 stephena Exp $
+// $Id: Cart3F.cxx,v 1.10 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -230,4 +230,10 @@ bool Cartridge3F::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* Cartridge3F::getImage(int& size) {
+  size = mySize;
+  return &myImage[0];
 }

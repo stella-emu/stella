@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
+// $Id: CartCV.hxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGECV_HXX
@@ -35,7 +35,7 @@ class Deserializer;
   $F800-$FFFF ROM
 
   @author  Eckhard Stolberg
-  @version $Id: CartCV.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
+  @version $Id: CartCV.hxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
 */
 class CartridgeCV : public Cartridge
 {
@@ -88,6 +88,8 @@ class CartridgeCV : public Cartridge
       @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
+
+    virtual uInt8* getImage(int& size);
 
   public:
     /**

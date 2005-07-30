@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFE.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartFE.hxx,v 1.5 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEFE_HXX
@@ -43,7 +43,7 @@ class Deserializer;
     monitoring the bus.
 
   @author  Bradford W. Mott
-  @version $Id: CartFE.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
+  @version $Id: CartFE.hxx,v 1.5 2005-07-30 16:58:22 urchlay Exp $
 */
 class CartridgeFE : public Cartridge
 {
@@ -96,6 +96,8 @@ class CartridgeFE : public Cartridge
       @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
+
+    virtual uInt8* getImage(int& size);
 
   public:
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.7 2005-06-28 01:31:32 urchlay Exp $
+// $Id: CartE0.cxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -253,4 +253,11 @@ bool CartridgeE0::load(Deserializer& in)
   }
 
   return true;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeE0::getImage(int& size) {
+  size = 8192;
+  return &myImage[0];
 }

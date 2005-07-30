@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4SC.cxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartF4SC.cxx,v 1.7 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -234,4 +234,10 @@ bool CartridgeF4SC::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeF4SC::getImage(int& size) {
+  size = 32768;
+  return &myImage[0];
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.7 2005-06-28 01:31:32 urchlay Exp $
+// $Id: CartF8.cxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -217,4 +217,10 @@ bool CartridgeF8::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeF8::getImage(int& size) {
+  size = 8192;
+  return &myImage[0];
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.hxx,v 1.7 2005-06-27 23:40:35 urchlay Exp $
+// $Id: CartAR.hxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEAR_HXX
@@ -37,7 +37,7 @@ class Deserializer;
   and one bank of ROM.  All 6K of the RAM can be read and written.
 
   @author  Bradford W. Mott
-  @version $Id: CartAR.hxx,v 1.7 2005-06-27 23:40:35 urchlay Exp $
+  @version $Id: CartAR.hxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
 */
 class CartridgeAR : public Cartridge
 {
@@ -126,6 +126,8 @@ class CartridgeAR : public Cartridge
 
     int bank();
     int bankCount();
+
+    virtual uInt8* getImage(int& size);
 
   private:
     // Handle a change to the bank configuration

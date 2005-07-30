@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.9 2005-06-27 23:40:35 urchlay Exp $
+// $Id: CartAR.cxx,v 1.10 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -579,4 +579,10 @@ bool CartridgeAR::load(Deserializer& in)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeAR::getImage(int& size) {
+  size = myNumberOfLoadImages * 8448;
+  return &myLoadImages[0];
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.9 2005-06-28 01:31:32 urchlay Exp $
+// $Id: CartE7.cxx,v 1.10 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -309,4 +309,10 @@ bool CartridgeE7::load(Deserializer& in)
   bank(myCurrentSlice[0]);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeE7::getImage(int& size) {
+  size = 16384;
+  return &myImage[0];
 }

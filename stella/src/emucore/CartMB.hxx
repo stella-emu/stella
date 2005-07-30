@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMB.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartMB.hxx,v 1.5 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEMB_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   Accessing $1FF0 switches to next bank.
 
   @author  Eckhard Stolberg
-  @version $Id: CartMB.hxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
+  @version $Id: CartMB.hxx,v 1.5 2005-07-30 16:58:22 urchlay Exp $
 */
 class CartridgeMB : public Cartridge
 {
@@ -85,6 +85,8 @@ class CartridgeMB : public Cartridge
       @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
+
+    virtual uInt8* getImage(int& size);
 
   public:
     /**

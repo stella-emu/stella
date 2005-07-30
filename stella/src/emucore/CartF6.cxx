@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6.cxx,v 1.7 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartF6.cxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -236,4 +236,10 @@ bool CartridgeF6::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeF6::getImage(int& size) {
+  size = 16384;
+  return &myImage[0];
 }

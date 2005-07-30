@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.hxx,v 1.6 2005-06-27 23:40:35 urchlay Exp $
+// $Id: Cart3F.hxx,v 1.7 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3F_HXX
@@ -37,7 +37,7 @@ class Deserializer;
   only used 8K this bankswitching scheme supports up to 512K.
    
   @author  Bradford W. Mott
-  @version $Id: Cart3F.hxx,v 1.6 2005-06-27 23:40:35 urchlay Exp $
+  @version $Id: Cart3F.hxx,v 1.7 2005-07-30 16:58:22 urchlay Exp $
 */
 class Cartridge3F : public Cartridge
 {
@@ -119,6 +119,8 @@ class Cartridge3F : public Cartridge
 
     int bank();
     int bankCount();
+
+    virtual uInt8* getImage(int& size);
 
   private:
     // Indicates which bank is currently active for the first segment

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.5 2005-07-09 12:52:46 stephena Exp $
+// $Id: Cart3E.cxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -295,4 +295,10 @@ bool Cartridge3E::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* Cartridge3E::getImage(int& size) {
+  size = mySize;
+  return &myImage[0];
 }

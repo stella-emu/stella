@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
+// $Id: CartF8.hxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF8_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF8.hxx,v 1.5 2005-06-27 23:40:36 urchlay Exp $
+  @version $Id: CartF8.hxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
 */
 class CartridgeF8 : public Cartridge
 {
@@ -84,6 +84,8 @@ class CartridgeF8 : public Cartridge
       @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
+
+    virtual uInt8* getImage(int& size);
 
   public:
     /**

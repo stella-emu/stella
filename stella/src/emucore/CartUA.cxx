@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.4 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartUA.cxx,v 1.5 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -232,3 +232,9 @@ bool CartridgeUA::load(Deserializer& in)
   return true;
 }
 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeUA::getImage(int& size) {
+  size = 8192;
+  return &myImage[0];
+}

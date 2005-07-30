@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.hxx,v 1.3 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartUA.hxx,v 1.4 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGEUA_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartUA.hxx,v 1.3 2005-06-28 01:15:17 urchlay Exp $
+  @version $Id: CartUA.hxx,v 1.4 2005-07-30 16:58:22 urchlay Exp $
 */
 class CartridgeUA : public Cartridge
 {
@@ -85,6 +85,8 @@ class CartridgeUA : public Cartridge
       @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
+
+    virtual uInt8* getImage(int& size);
 
   public:
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMB.cxx,v 1.5 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartMB.cxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -198,4 +198,10 @@ bool CartridgeMB::load(Deserializer& in)
   incbank();
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeMB::getImage(int& size) {
+  size = 65536;
+  return &myImage[0];
 }

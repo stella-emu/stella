@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.hxx,v 1.1 2005-07-08 04:00:09 urchlay Exp $
+// $Id: Cart3E.hxx,v 1.2 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3E_HXX
@@ -59,7 +59,7 @@ class Deserializer;
   any problems. (Famous last words...)
 
   @author  B. Watson
-  @version $Id: Cart3E.hxx,v 1.1 2005-07-08 04:00:09 urchlay Exp $
+  @version $Id: Cart3E.hxx,v 1.2 2005-07-30 16:58:22 urchlay Exp $
 */
 
 class Cartridge3E : public Cartridge
@@ -114,6 +114,8 @@ class Cartridge3E : public Cartridge
       @return The result of the load.  True on success, false on failure.
     */
     virtual bool load(Deserializer& in);
+
+    virtual uInt8* getImage(int& size);
 
   public:
     /**

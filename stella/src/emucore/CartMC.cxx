@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.6 2005-06-28 01:15:17 urchlay Exp $
+// $Id: CartMC.cxx,v 1.7 2005-07-30 16:58:22 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -295,4 +295,10 @@ bool CartridgeMC::load(Deserializer& in)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeMC::getImage(int& size) {
+  size = 128 * 1024; // FIXME: keep track of original size
+  return &myImage[0];
 }
