@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.7 2005-06-23 14:33:11 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.8 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,8 +54,7 @@ void EditableWidget::setEditString(const string& str)
     _editScrollOffset = 0;
 
   // Make sure the new string is seen onscreen
-  // TODO - dirty rectangle
-  _boss->instance()->frameBuffer().refreshOverlay();
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -141,9 +140,7 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
   if (dirty)
   {
-    draw();
-    // TODO - dirty rectangle
-    _boss->instance()->frameBuffer().refreshOverlay();
+    setDirty(); draw();
   }
 
   return handled;

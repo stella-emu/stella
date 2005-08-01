@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.8 2005-07-16 16:09:38 urchlay Exp $
+// $Id: PromptWidget.hxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,8 +49,7 @@ class PromptWidget : public Widget, public CommandSender
     int vprintf(const char *format, va_list argptr);
 #undef putchar
     void putchar(int c);
-    void print(const char *str);
-    void print(string str);
+    void print(const string& str);
     void printPrompt();
     bool saveBuffer(string& filename);
 
@@ -79,6 +78,7 @@ class PromptWidget : public Widget, public CommandSender
     void handleMouseWheel(int x, int y, int direction);
     bool handleKeyDown(int ascii, int keycode, int modifiers);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig();
 
   protected:
     int _buffer[kBufferSize];
@@ -108,6 +108,7 @@ class PromptWidget : public Widget, public CommandSender
     OverlayColor textColor;
     OverlayColor bgColor;
     bool _inverse;
+    bool _makeDirty;
 
     int compareHistory(const char *histLine);
 };

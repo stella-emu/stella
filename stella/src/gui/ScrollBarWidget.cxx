@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.9 2005-07-05 15:25:44 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.10 2005-08-01 22:33:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -184,11 +184,7 @@ void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
 
     if (old_part != _part)
     {
-      draw();
-
-      // Refresh the FB, since the selected part has changed
-      // TODO - dirty rectangle
-      _boss->instance()->frameBuffer().refreshOverlay();
+      setDirty(); draw();
     }
   }
 }
@@ -204,9 +200,24 @@ void ScrollBarWidget::checkBounds(int old_pos)
   if (old_pos != _currentPos)
   {
     recalc();  // This takes care of the required refresh
-    draw();
+    setDirty(); draw();
     sendCommand(kSetPositionCmd, _currentPos, _id);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ScrollBarWidget::handleMouseEntered(int button)
+{
+  setFlags(WIDGET_HILITED);
+  setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ScrollBarWidget::handleMouseLeft(int button)
+{
+  _part = kNoPart;
+  clearFlags(WIDGET_HILITED);
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,13 +240,13 @@ void ScrollBarWidget::recalc()
     _sliderPos = UP_DOWN_BOX_HEIGHT;
   }
 
-  // TODO - dirty rectangle
-  _boss->instance()->frameBuffer().refreshOverlay();
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::drawWidget(bool hilite)
 {
+cerr << "ScrollBarWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int bottomY = _y + _h;
   bool isSinglePage = (_numEntries <= _entriesPerPage);

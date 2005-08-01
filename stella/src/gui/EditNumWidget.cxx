@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditNumWidget.cxx,v 1.6 2005-06-30 00:08:01 stephena Exp $
+// $Id: EditNumWidget.cxx,v 1.7 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,7 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditNumWidget::EditNumWidget(GuiObject* boss, int x, int y, int w, int h,
-                               const string& text)
+                             const string& text)
   : EditableWidget(boss, x, y - 1, w, h + 2)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
@@ -72,17 +72,14 @@ void EditNumWidget::handleMouseDown(int x, int y, int button, int clickCount)
       break;
   }
 
-  if (setCaretPos(i))
-  {
-    draw();
-    // TODO - dirty rectangle
-    _boss->instance()->frameBuffer().refreshOverlay();
-  }
+  setCaretPos(i);
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditNumWidget::drawWidget(bool hilite)
 {
+cerr << "EditNumWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   // Draw a thin frame around us.

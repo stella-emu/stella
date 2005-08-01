@@ -13,31 +13,36 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.hxx,v 1.5 2005-07-05 15:25:44 stephena Exp $
+// $Id: RamWidget.hxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef CPU_WIDGET_HXX
-#define CPU_WIDGET_HXX
+#ifndef RAM_WIDGET_HXX
+#define RAM_WIDGET_HXX
 
 class GuiObject;
 class ButtonWidget;
+class StaticTextWidget;
 class EditTextWidget;
-class DataGridWidget;
-class ToggleBitWidget;
 
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
+#include "DataGridWidget.hxx"
+
+enum {
+  kUndoCmd    = 'RWud',
+  kRevertCmd  = 'RWrv'
+};
 
 
-class CpuWidget : public Widget, public CommandSender
+class RamWidget : public Widget, public CommandSender
 {
   public:
-    CpuWidget(GuiObject* boss, int x, int y, int w, int h);
-    virtual ~CpuWidget();
+    RamWidget(GuiObject* boss, int x, int y, int w, int h);
+    virtual ~RamWidget();
 
     Widget* activeWidget() { return myActiveWidget; }
 
@@ -45,18 +50,22 @@ class CpuWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    void fillGrid();
+    void fillGrid(bool updateOld);
 
   private:
+    int myUndoAddress;
+    int myUndoValue;
+
     Widget* myActiveWidget;
 
-    DataGridWidget*  myCpuGrid;
-    ToggleBitWidget* myPSRegister;
+    DataGridWidget* myRamGrid;
+    EditTextWidget* myBinValue;
+    EditTextWidget* myDecValue;
+    EditTextWidget* myLabel;
+    ButtonWidget *myRevertButton;
+    ButtonWidget *myUndoButton;
 
-    EditTextWidget* myPCLabel;
-    EditTextWidget* myCurrentIns;
-    EditTextWidget* myCycleCount;
-    EditTextWidget* myStatus;
+    IntArray _oldValueList;
 };
 
 #endif

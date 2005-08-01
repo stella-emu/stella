@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.30 2005-07-20 17:33:03 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.31 2005-08-01 22:33:11 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -32,7 +32,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
-    myRectList(NULL)
+    myRectList(NULL),
+    myOverlayRectList(NULL)
 {
 }
 
@@ -40,6 +41,7 @@ FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
 FrameBufferSoft::~FrameBufferSoft()
 {
   delete myRectList;
+  delete myOverlayRectList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +52,10 @@ bool FrameBufferSoft::initSubsystem()
   // Set up the rectangle list to be used in the dirty update
   delete myRectList;
   myRectList = new RectList();
-  if(!myRectList)
+  delete myOverlayRectList;
+  myOverlayRectList = new RectList();
+
+  if(!myRectList || !myOverlayRectList)
   {
     cerr << "ERROR: Unable to get memory for SDL rects" << endl;
     return false;
@@ -258,6 +263,12 @@ void FrameBufferSoft::preFrameUpdate()
 {
   // Start a new rectlist on each display update
   myRectList->start();
+
+  // Add all previous overlay rects, then erase
+  SDL_Rect* dirtyOverlayRects = myOverlayRectList->rects();
+  for(unsigned int i = 0; i < myOverlayRectList->numRects(); ++i)
+    myRectList->add(&dirtyOverlayRects[i]);
+  myOverlayRectList->start();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -369,7 +380,6 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   tmp.y = y * theZoomLevel;
   tmp.w = w * theZoomLevel;
   tmp.h = h * theZoomLevel;
-  myRectList->add(&tmp);
   SDL_FillRect(myScreen, &tmp, myPalette[color]);
 }
 
@@ -378,21 +388,20 @@ void FrameBufferSoft::drawChar(const GUI::Font* FONT, uInt8 chr,
                                uInt32 xorig, uInt32 yorig, OverlayColor color)
 {
   GUI::Font* font = (GUI::Font*)FONT;
+  const FontDesc& desc = font->desc();
 
   // If this character is not included in the font, use the default char.
-  if(chr < font->desc().firstchar ||
-     chr >= font->desc().firstchar + font->desc().size)
+  if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)
   {
     if (chr == ' ')
       return;
-    chr = font->desc().defaultchar;
+    chr = desc.defaultchar;
   }
 
   const Int32 w = font->getCharWidth(chr);
   const Int32 h = font->getFontHeight();
-  chr -= font->desc().firstchar;
-  const uInt16* tmp = font->desc().bits + (font->desc().offset ?
-                      font->desc().offset[chr] : (chr * h));
+  chr -= desc.firstchar;
+  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
   SDL_Rect rect;
   for(int y = 0; y < h; y++)
@@ -442,6 +451,38 @@ void FrameBufferSoft::translateCoords(Int32* x, Int32* y)
   // they're not yet supported in software mode.
   *x /= theZoomLevel;
   *y /= theZoomLevel;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+{
+  x *= theZoomLevel;
+  y *= theZoomLevel;
+  w *= theZoomLevel;
+  h *= theZoomLevel;
+
+  // Check if rect is in screen area
+  // This is probably a bug, since the GUI code shouldn't be setting
+  // a dirty rect larger than the screen
+  int x1 = x, y1 = y, x2 = x + w, y2 = y + h;
+  int sx1 = myScreenDim.x, sy1 = myScreenDim.y,
+      sx2 = myScreenDim.x + myScreenDim.w, sy2 = myScreenDim.y + myScreenDim.h;
+  if(x1 < sx1 || y1 < sy1 || x2 > sx2 || y2 > sy2)
+    return;
+
+  // Add a dirty rect to the overlay rectangle list
+  // They will actually be added to the main rectlist in preFrameUpdate()
+  // TODO - intelligent merging of rectangles, to avoid overlap
+  SDL_Rect temp;
+  temp.x = x;
+  temp.y = y;
+  temp.w = w;
+  temp.h = h;
+
+  myOverlayRectList->add(&temp);
+
+//  cerr << "addDirtyRect():  "
+//       << "x=" << temp.x << ", y=" << temp.y << ", w=" << temp.w << ", h=" << temp.h << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

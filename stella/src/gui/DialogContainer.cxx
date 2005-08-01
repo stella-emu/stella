@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.12 2005-07-20 15:52:58 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.13 2005-08-01 22:33:15 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -72,13 +72,20 @@ void DialogContainer::updateTime(uInt32 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::draw()
+void DialogContainer::draw(bool fullrefresh)
 {
-  // Draw all the dialogs on the stack
-  for(int i = 0; i < myDialogStack.size(); i++)
+  // Draw all the dialogs on the stack when we want a full refresh
+  if(fullrefresh)
   {
-    myDialogStack[i]->open();
-    myDialogStack[i]->drawDialog();
+    for(int i = 0; i < myDialogStack.size(); i++)
+    {
+      myDialogStack[i]->open();
+      myDialogStack[i]->drawDialog();
+    }
+  }
+  else if(!myDialogStack.empty())
+  {
+    myDialogStack.top()->drawDialog();
   }
 }
 

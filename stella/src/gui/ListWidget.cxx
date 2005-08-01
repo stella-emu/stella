@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.23 2005-07-05 15:25:44 stephena Exp $
+// $Id: ListWidget.cxx,v 1.24 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -76,10 +76,7 @@ void ListWidget::setSelected(int item)
 
     _currentPos = _selectedItem - _entriesPerPage / 2;
     scrollToCurrent();
-    draw();
-
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
+    setDirty(); draw();
   }
 }
 
@@ -144,14 +141,11 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
       abortEditMode();
     _selectedItem = newSelectedItem;
     sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
-
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
   }
 	
   // TODO: Determine where inside the string the user clicked and place the
   // caret accordingly. See _editScrollOffset and EditTextWidget::handleMouseDown.
-  draw();
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -173,6 +167,7 @@ void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
 void ListWidget::handleMouseWheel(int x, int y, int direction)
 {
   _scrollBar->handleMouseWheel(x, y, direction);
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -297,17 +292,13 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     scrollToCurrent();
   }
 
-  if (dirty || _selectedItem != oldSelectedItem)
-    draw();
-
   if (_selectedItem != oldSelectedItem)
   {
     sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
     // also draw scrollbar
     _scrollBar->draw();
 
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
+    setDirty(); draw();
   }
 
   _currentKeyDown = keycode;
@@ -326,7 +317,6 @@ bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 void ListWidget::lostFocusWidget()
 {
   _editMode = false;
-  draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -338,7 +328,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if (_currentPos != (int)data)
       {
         _currentPos = data;
-        draw();
+        setDirty(); draw();
       }
       break;
   }
@@ -347,6 +337,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::drawWidget(bool hilite)
 {
+cerr << "ListWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int i, pos, len = _list.size();
   string buffer;
@@ -456,7 +447,6 @@ void ListWidget::startEditMode()
   {
     _editMode = true;
     setEditString(_list[_selectedItem]);
-    draw();
   }
 }
 

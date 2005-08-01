@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.7 2005-07-05 15:25:44 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.8 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,42 +40,42 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   int yoffset;
 
   // The tab widget
-  TabWidget* tab = new TabWidget(this, 0, vBorder, _w, _h - 24 - 2 * vBorder);
+  myTab = new TabWidget(this, 0, vBorder, _w, _h - 24 - 2 * vBorder);
 
   // 1) The ROM locations tab
-  tab->addTab("ROM Settings");
+  myTab->addTab("ROM Settings");
   yoffset = vBorder;
 
   // ROM path
-  new ButtonWidget(tab, 15, yoffset, kButtonWidth + 14, 16, "Path", kChooseRomDirCmd, 0);
-  myRomPath = new StaticTextWidget(tab, 5 + kButtonWidth + 30,
+  new ButtonWidget(myTab, 15, yoffset, kButtonWidth + 14, 16, "Path", kChooseRomDirCmd, 0);
+  myRomPath = new StaticTextWidget(myTab, 5 + kButtonWidth + 30,
                                    yoffset + 3, _w - (5 + kButtonWidth + 20) - 10,
                                    kLineHeight, "", kTextAlignLeft);
 
   // 2) The snapshot settings tab
-  tab->addTab(" Snapshot Settings ");
+  myTab->addTab(" Snapshot Settings ");
   yoffset = vBorder;
 
   // Snapshot path
-  new ButtonWidget(tab, 15, yoffset, kButtonWidth + 14, 16, "Path", kChooseSnapDirCmd, 0);
-  mySnapPath = new StaticTextWidget(tab, 5 + kButtonWidth + 30,
+  new ButtonWidget(myTab, 15, yoffset, kButtonWidth + 14, 16, "Path", kChooseSnapDirCmd, 0);
+  mySnapPath = new StaticTextWidget(myTab, 5 + kButtonWidth + 30,
                                     yoffset + 3, _w - (5 + kButtonWidth + 20) - 10,
                                     kLineHeight, "", kTextAlignLeft);
   yoffset += 22;
 
   // Snapshot save name
-  mySnapTypePopup = new PopUpWidget(tab, 10, yoffset, 140, kLineHeight,
+  mySnapTypePopup = new PopUpWidget(myTab, 10, yoffset, 140, kLineHeight,
                                     "Save snapshot as: ", 87, 0);
   mySnapTypePopup->appendEntry("romname", 1);
   mySnapTypePopup->appendEntry("md5sum", 2);
   yoffset += 18;
 
   // Snapshot single or multiple saves
-  mySnapSingleCheckbox = new CheckboxWidget(tab, 30, yoffset, 80, kLineHeight,
+  mySnapSingleCheckbox = new CheckboxWidget(myTab, 30, yoffset, 80, kLineHeight,
                                             "Multiple snapshots");
 
   // Activate the first tab
-  tab->setActiveTab(0);
+  myTab->setActiveTab(0);
 
   // Add OK & Cancel buttons
 #ifndef MAC_OSX
@@ -90,6 +90,8 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   int baseW = instance()->frameBuffer().baseWidth();
   int baseH = instance()->frameBuffer().baseHeight();
   myBrowser = new BrowserDialog(this, 60, 20, baseW - 120, baseH - 40);
+
+  loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,6 +122,8 @@ void LauncherOptionsDialog::loadConfig()
 
   b = instance()->settings().getBool("sssingle");
   mySnapSingleCheckbox->setState(!b);
+
+  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

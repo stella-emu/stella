@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.hxx,v 1.4 2005-06-16 00:56:00 stephena Exp $
+// $Id: ScrollBarWidget.hxx,v 1.5 2005-08-01 22:33:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,8 +47,8 @@ class ScrollBarWidget : public Widget, public CommandSender
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual void handleMouseMoved(int x, int y, int button);
-    virtual void handleMouseEntered(int button) { setFlags(WIDGET_HILITED); }
-    virtual void handleMouseLeft(int button)    { clearFlags(WIDGET_HILITED); _part = kNoPart; draw(); }
+    virtual void handleMouseEntered(int button);
+    virtual void handleMouseLeft(int button);
 
     // FIXME - this should be private, but then we also have to add accessors
     // for _numEntries, _entriesPerPage and _currentPos. This again leads to the question:

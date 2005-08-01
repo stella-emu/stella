@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.15 2005-07-12 02:27:07 urchlay Exp $
+// $Id: CpuWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -128,8 +128,6 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
     on.push_back(onstr[i]);
   }
   myPSRegister->setList(off, on);
-
-  loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,14 +207,12 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
     }
   }
-
-  // TODO - dirty rect, or is it necessary here?
-  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::loadConfig()
 {
+cerr << "CpuWidget::loadConfig()\n";
   fillGrid();
 }
 

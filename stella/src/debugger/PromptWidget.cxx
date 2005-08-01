@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.28 2005-07-20 15:52:58 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,8 +45,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
-    : Widget(boss, x, y, w - kScrollBarWidth, h),
-      CommandSender(boss)
+  : Widget(boss, x, y, w - kScrollBarWidth, h),
+    CommandSender(boss),
+    _makeDirty(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kPromptWidget;
@@ -104,12 +105,10 @@ PromptWidget::~PromptWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::drawWidget(bool hilite)
 {
+cerr << "PromptWidget::drawWidget\n";
   OverlayColor fgcolor, bgcolor;
 
   FrameBuffer& fb = _boss->instance()->frameBuffer();
-
-  // Fill the background
-  fb.fillRect(_x, _y, _w, _h, kBGColor);
 
   // Draw text
   int start = _scrollLine - _linesPerPage + 1;
@@ -156,11 +155,12 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
   _scrollBar->handleMouseWheel(x, y, direction);
 }
 
-void PromptWidget::printPrompt() {
-	print( instance()->debugger().showWatches() );
-	print( instance()->debugger().cpuState() );
-	print(PROMPT);
-	_promptStartPos = _promptEndPos = _currentPos;
+void PromptWidget::printPrompt()
+{
+  print( instance()->debugger().showWatches() );
+  print( instance()->debugger().cpuState() );
+  print(PROMPT);
+  _promptStartPos = _promptEndPos = _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,7 +202,6 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       }
 
       printPrompt();
-
       dirty = true;
       break;
     }
@@ -290,9 +289,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           print(prefix);
           _promptEndPos = _currentPos;
         }
-        draw();
-        instance()->frameBuffer().refreshOverlay();
         delete[] str;
+        dirty = true;
         break;
     }
 
@@ -433,11 +431,24 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
   }
 
+  // Take care of changes made above
   if(dirty)
   {
-    draw();
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
+    setDirty(); draw();
+  }
+
+  // There are times when we want the prompt and scrollbar to be marked
+  // as dirty *after* they've been drawn above.  One such occurrence is
+  // when we issue a command that indirectly redraws the entire parent
+  // dialog (such as 'scanline' or 'frame').
+  // In those cases, the retunr code of the command must be shown, but the
+  // entire dialog contents are redrawn at a later time.  So the prompt and
+  // scrollbar won't be redrawn unless they're dirty again.
+  if(_makeDirty)
+  {
+    setDirty();
+    _scrollBar->setDirty();
+    _makeDirty = false;
   }
 
   return handled;
@@ -469,11 +480,17 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
       if (newPos != _scrollLine)
       {
         _scrollLine = newPos;
-        draw();
-        instance()->frameBuffer().refreshOverlay();
+        setDirty(); draw();
       }
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::loadConfig()
+{
+  // See logic at the end of handleKeyDown for an explanation of this
+  _makeDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -516,8 +533,7 @@ void PromptWidget::specialKeys(int keycode)
 
   if(handled)
   {
-    draw();
-    instance()->frameBuffer().refreshOverlay();
+    setDirty(); draw();
   }
 }
 
@@ -669,9 +685,7 @@ void PromptWidget::historyScroll(int direction)
   // Ensure once more the caret is visible (in case of very long history entries)
   scrollToCurrent();
 
-  draw();
-  // TODO - dirty rectangle
-  instance()->frameBuffer().refreshOverlay();
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -746,9 +760,7 @@ void PromptWidget::putchar(int c)
 {
   putcharIntern(c);
 
-  draw();  // FIXME - not nice to redraw the full console just for one char!
-  // TODO - dirty rectangle
-  instance()->frameBuffer().refreshOverlay();
+  setDirty(); draw();  // FIXME - not nice to redraw the full console just for one char!
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -781,20 +793,11 @@ void PromptWidget::putcharIntern(int c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::print(string str) // laziness/convenience method
+void PromptWidget::print(const string& str)
 {
-  print(str.c_str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::print(const char *str)
-{
-  while (*str)
-    putcharIntern(*str++);
-
-  draw();
-  // TODO - dirty rectangle
-  instance()->frameBuffer().refreshOverlay();
+  const char* c = str.c_str();
+  while(*c)
+    putcharIntern(*c++);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.36 2005-07-20 17:33:02 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.37 2005-08-01 22:33:11 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -33,14 +33,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
-   :  FrameBuffer(osystem),
-      myTexture(NULL),
-      myScreenmode(0),
-      myScreenmodeCount(0),
-      myTextureID(0),
-      myFilterParam(GL_NEAREST),
-      myFilterParamName("GL_NEAREST"),
-      myFSScaleFactor(1.0)
+  : FrameBuffer(osystem),
+    myTexture(NULL),
+    myScreenmode(0),
+    myScreenmodeCount(0),
+    myTextureID(0),
+    myFilterParam(GL_NEAREST),
+    myFilterParamName("GL_NEAREST"),
+    myFSScaleFactor(1.0)
 {
 }
 
@@ -255,7 +255,7 @@ void FrameBufferGL::postFrameUpdate()
 {
   // Do the following twice, since OpenGL mode is double-buffered,
   // and we need the contents placed in both buffers
-  if(theRedrawTIAIndicator || theRedrawOverlayIndicator)
+// FIXME  if(theRedrawTIAIndicator || theRedrawOverlayIndicator)
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 
@@ -437,6 +437,12 @@ void FrameBufferGL::translateCoords(Int32* x, Int32* y)
   // Wow, what a mess :)
   *x = (Int32) (((*x - myImageDim.x) / (theZoomLevel * myFSScaleFactor * theAspectRatio)));
   *y = (Int32) (((*y - myImageDim.y) / (theZoomLevel * myFSScaleFactor)));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+{
+  // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

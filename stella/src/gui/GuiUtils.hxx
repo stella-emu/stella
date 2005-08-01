@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.13 2005-07-06 19:09:26 stephena Exp $
+// $Id: GuiUtils.hxx,v 1.14 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,11 +29,17 @@
   Probably not very neat, but at least it works ...
 
   @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.13 2005-07-06 19:09:26 stephena Exp $
+  @version $Id: GuiUtils.hxx,v 1.14 2005-08-01 22:33:15 stephena Exp $
 */
 
-#define kLineHeight 12
-#define kScrollBarWidth 9
+#define kFontHeight   10
+#define kLineHeight   12
+
+#define kCFontWidth   6
+#define kCFontHeight  10
+#define kCLineHeight  12
+
+#define kScrollBarWidth  9
 
 // Colors indices to use for the various GUI elements
 enum OverlayColor {
@@ -56,6 +62,7 @@ enum {
   kSetPositionCmd  = 'SETP',
   kActiveWidgetCmd = 'ACTW',
   kCheckActionCmd  = 'CBAC',
+  kRefreshAllCmd   = 'REFA',
   kRendererChanged,
   kAspectRatioChanged,
   kFrameRateChanged,
@@ -71,7 +78,7 @@ enum Size {
   NextSize
 };
 
-static const string EmptyString("");
+static const string& EmptyString("");
 
 template<typename T> inline void SWAP(T &a, T &b) { T tmp = a; a = b; b = tmp; }
 template<typename T> inline T ABS (T x) { return (x>=0) ? x : -x; }

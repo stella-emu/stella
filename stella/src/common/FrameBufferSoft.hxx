@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.18 2005-07-02 01:28:42 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.19 2005-08-01 22:33:11 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.18 2005-07-02 01:28:42 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.19 2005-08-01 22:33:11 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -54,18 +54,18 @@ class FrameBufferSoft : public FrameBuffer
     // The following methods are derived from FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
     /**
-      This routine is called to initialize software video mode.
+      This method is called to initialize software video mode.
       Return false if any operation fails, otherwise return true.
     */
     virtual bool initSubsystem();
 
     /**
-      This routine is called to set the aspect ratio of the screen.
+      This method is called to set the aspect ratio of the screen.
     */
     virtual void setAspectRatio();
 
     /**
-      This routine is called whenever the screen needs to be recreated.
+      This method is called whenever the screen needs to be recreated.
       It updates the global screen variable.
     */
     virtual bool createScreen();
@@ -77,23 +77,23 @@ class FrameBufferSoft : public FrameBuffer
     virtual void toggleFilter();
 
     /**
-      This routine should be called anytime the MediaSource needs to be redrawn
+      This method should be called anytime the MediaSource needs to be redrawn
       to the screen.
     */
     virtual void drawMediaSource();
 
     /**
-      This routine is called before any drawing is done (per-frame).
+      This method is called before any drawing is done (per-frame).
     */
     virtual void preFrameUpdate();
 
     /**
-      This routine is called after any drawing is done (per-frame).
+      This method is called after any drawing is done (per-frame).
     */
     virtual void postFrameUpdate();
 
     /**
-      This routine is called to get the specified scanline data.
+      This method is called to get the specified scanline data.
 
       @param row  The row we are looking for
       @param data The actual pixel data (in bytes)
@@ -101,7 +101,7 @@ class FrameBufferSoft : public FrameBuffer
     virtual void scanline(uInt32 row, uInt8* data);
 
     /**
-      This routine is called to map a given r,g,b triple to the screen palette.
+      This method is called to map a given r,g,b triple to the screen palette.
 
       @param r  The red component of the color.
       @param g  The green component of the color.
@@ -111,7 +111,7 @@ class FrameBufferSoft : public FrameBuffer
       { return SDL_MapRGB(myScreen->format, r, g, b); }
 
     /**
-      This routine is called to draw a horizontal line.
+      This method is called to draw a horizontal line.
 
       @param x     The first x coordinate
       @param y     The y coordinate
@@ -121,7 +121,7 @@ class FrameBufferSoft : public FrameBuffer
     virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color);
 
     /**
-      This routine is called to draw a vertical line.
+      This method is called to draw a vertical line.
 
       @param x     The x coordinate
       @param y     The first y coordinate
@@ -131,7 +131,7 @@ class FrameBufferSoft : public FrameBuffer
     virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
 
     /**
-      This routine is called to draw a blended rectangle.
+      This method is called to draw a blended rectangle.
 
       @param x      The x coordinate
       @param y      The y coordinate
@@ -144,7 +144,7 @@ class FrameBufferSoft : public FrameBuffer
                            OverlayColor color, uInt32 level = 3);
 
     /**
-      This routine is called to draw a filled rectangle.
+      This method is called to draw a filled rectangle.
 
       @param x      The x coordinate
       @param y      The y coordinate
@@ -156,7 +156,7 @@ class FrameBufferSoft : public FrameBuffer
                           OverlayColor color);
 
     /**
-      This routine is called to draw the specified character.
+      This method is called to draw the specified character.
 
       @param font   The font to use to draw the character
       @param c      The character to draw
@@ -168,7 +168,7 @@ class FrameBufferSoft : public FrameBuffer
                           OverlayColor color);
 
     /**
-      This routine is called to draw the bitmap image.
+      This method is called to draw the bitmap image.
 
       @param bitmap The data to draw
       @param x      The x coordinate
@@ -180,7 +180,7 @@ class FrameBufferSoft : public FrameBuffer
                             Int32 h = 8);
 
     /**
-      This routine translates the given coordinates to their
+      This method translates the given coordinates to their
       unzoomed/unscaled equivalents.
 
       @param x  X coordinate to translate
@@ -188,9 +188,23 @@ class FrameBufferSoft : public FrameBuffer
     */
     inline virtual void translateCoords(Int32* x, Int32* y);
 
+    /**
+      This method adds a dirty rectangle
+      (ie, an area of the screen that has changed)
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+    */
+    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+
   private:
     // Used in the dirty update of the SDL surface
     RectList* myRectList;
+
+    // Used in the dirty update of the overlay surface
+    RectList* myOverlayRectList;
 };
 
 class RectList

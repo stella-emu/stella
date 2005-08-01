@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Font.hxx,v 1.2 2005-06-16 00:55:59 stephena Exp $
+// $Id: Font.hxx,v 1.3 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ typedef struct
   int           firstchar;   /* first character in bitmap */
   int           size;        /* font size in glyphs */
   const uInt16* bits;        /* 16-bit right-padded bitmap data */
-  const int*    offset;      /* offsets into bitmap data */
+  const uInt16* offset;      /* offsets into bitmap data */
   const uInt8*  width;       /* character widths or NULL if fixed */
   int           defaultchar; /* default char (not glyph index) */
   long          bits_size;   /* # words of bitmap_t bits */

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.cxx,v 1.3 2005-06-23 14:33:11 stephena Exp $
+// $Id: ProgressDialog.cxx,v 1.4 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,6 @@ ProgressDialog::ProgressDialog(OSystem* osystem, DialogContainer* parent,
                             // across the entire screen for a split-second
 
   parent->addDialog(this);
-  instance()->frameBuffer().refreshOverlay(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,7 +58,6 @@ ProgressDialog::~ProgressDialog()
 void ProgressDialog::done()
 {
   parent()->removeDialog();
-  instance()->frameBuffer().refreshOverlay(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

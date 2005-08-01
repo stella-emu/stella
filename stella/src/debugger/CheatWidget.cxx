@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.12 2005-07-08 14:36:18 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,7 +58,7 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   myEditBox->setFont(instance()->consoleFont());
 //  myEditBox->setTarget(this);
   myActiveWidget = myEditBox;
-    ypos += border;
+  ypos += border;
 
   // Add the result text string area
   myResult = new StaticTextWidget(boss, border + 5, ypos, 175, kLineHeight,
@@ -91,9 +91,6 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75, 0xff);
   myResultsList->setFont(instance()->consoleFont());
   myResultsList->setTarget(this);
-
-  // Start in a known state
-  doRestart();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.7 2005-07-05 15:25:44 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.8 2005-08-01 22:33:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -149,5 +149,5 @@ void BrowserDialog::updateListing()
   _fileList->scrollTo(0);
 
   // Finally, redraw
-  draw();
+  setDirty(); draw();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.57 2005-07-20 18:44:38 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.58 2005-08-01 22:33:12 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -44,7 +44,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
       theAspectRatio(1.0),
       myFrameRate(0),
       myPauseStatus(false),
-      myMessageTime(-1),
+      myMessageTime(0),
       myMessageText(""),
       myNumRedraws(0)
 {
@@ -163,30 +163,29 @@ void FrameBuffer::update()
       // We always draw the screen, even if the core is paused
       drawMediaSource();
 
-      if(!myPauseStatus)
+      // Draw any pending messages
+      if(myMessageTime > 0 && !myPauseStatus)
       {
-        // Draw any pending messages
-        if(myMessageTime > 0)
+        int w = myOSystem->font().getStringWidth(myMessageText) + 10;
+        int h = myOSystem->font().getFontHeight() + 8;
+        int x = (myBaseDim.w >> 1) - (w >> 1);
+        int y = myBaseDim.h - h - 10/2;
+
+        // Draw the bounded box and text
+        fillRect(x+1, y+2, w-2, h-4, kBGColor);
+        box(x, y+1, w, h-2, kColor, kColor);
+        drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
+        myMessageTime--;
+
+        // Either erase the entire message (when time is reached),
+        // or show again this frame
+        if(myMessageTime == 0)
         {
-          int w = myOSystem->font().getStringWidth(myMessageText) + 10;
-          int h = myOSystem->font().getFontHeight() + 8;
-          int x = (myBaseDim.w >> 1) - (w >> 1);
-          int y = myBaseDim.h - h - 10/2;
-
-          // Draw the bounded box and text
-          blendRect(x+1, y+2, w-2, h-4, kBGColor);
-          box(x, y+1, w, h-2, kColor, kColor);
-          drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
-          myMessageTime--;
-
-          // Erase this message on next update
-          if(myMessageTime == 0)
-          {
-            myMessageTime = -1;
-            theRedrawTIAIndicator = true;
-            drawMediaSource();  // show the changes right now, not next frame
-	  }
+          theRedrawTIAIndicator = true;
+          drawMediaSource();
         }
+        else
+          addDirtyRect(x, y, w, h);
       }
       break;  // S_EMULATE
     }
@@ -198,17 +197,15 @@ void FrameBuffer::update()
         drawMediaSource();
 
       // Only update the overlay if it's changed  
-      if(theRedrawOverlayIndicator)
-        myOSystem->menu().draw();
+      myOSystem->menu().draw(theRedrawOverlayIndicator);
 
       break;  // S_MENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
-      // Only update the screen if it's been invalidated or the overlay have changed  
-      if(theRedrawOverlayIndicator)
-        myOSystem->launcher().draw();
+      // Only update the overlay if it's changed  
+      myOSystem->launcher().draw(theRedrawOverlayIndicator);
 
       break;  // S_LAUNCHER
     }
@@ -216,9 +213,7 @@ void FrameBuffer::update()
     case EventHandler::S_DEBUGGER:
     {
       // Only update the overlay if it's changed  
-      // This is a performance hack to only draw the menus when necessary
-      if(theRedrawOverlayIndicator)
-        myOSystem->debugger().draw();
+      myOSystem->debugger().draw(theRedrawOverlayIndicator);
 
       break;  // S_DEBUGGER
     }
@@ -238,7 +233,7 @@ void FrameBuffer::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refreshTIA(bool now)
 {
-//  cerr << "refreshTIA() " << myNumRedraws++ << endl;
+  cerr << "refreshTIA() " << myNumRedraws++ << endl;
   theRedrawTIAIndicator = true;
   if(now)
   {
@@ -250,7 +245,7 @@ void FrameBuffer::refreshTIA(bool now)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refreshOverlay(bool now)
 {
-//  cerr << "refreshOverlay()\n";
+  cerr << "refreshOverlay()\n";
   if(myOSystem->eventHandler().state() == EventHandler::S_MENU)
     refreshTIA(now);
 
@@ -262,7 +257,7 @@ void FrameBuffer::refreshOverlay(bool now)
 void FrameBuffer::showMessage(const string& message)
 {
   // Erase old messages on the screen
-  if(myMessageTime != -1)
+  if(myMessageTime > 0)
   {
     theRedrawTIAIndicator = true;
     drawMediaSource();

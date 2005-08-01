@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.25 2005-07-21 19:30:17 stephena Exp $
+// $Id: Widget.hxx,v 1.26 2005-08-01 22:33:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,7 +69,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.25 2005-07-21 19:30:17 stephena Exp $
+  @version $Id: Widget.hxx,v 1.26 2005-08-01 22:33:16 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -89,7 +89,7 @@ class Widget : public GuiObject
     virtual void handleMouseMoved(int x, int y, int button) {}
     virtual void handleMouseWheel(int x, int y, int direction) {}
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers) { return false; }
-    virtual bool handleKeyUp(int ascii, int keycode, int modifiers) { return false; }
+    virtual bool handleKeyUp(int ascii, int keycode, int modifiers)   { return false; }
     virtual void handleJoyDown(int stick, int button) {}
     virtual void handleJoyUp(int stick, int button) {}
 
@@ -99,15 +99,13 @@ class Widget : public GuiObject
 
     virtual bool wantsFocus() { return false; };
 
-    void setFlags(int flags)    { _flags |= flags;
-                                  _boss->instance()->frameBuffer().refreshOverlay();
-                                }
-    void clearFlags(int flags)  { _flags &= ~flags;
-                                  _boss->instance()->frameBuffer().refreshOverlay();
-                                }
+    /** Set/clear WIDGET_ENABLED flag and immediately redraw */
+    void setEnabled(bool e);
+
+    void setFlags(int flags)    { _flags |= flags; }
+    void clearFlags(int flags)  { _flags &= ~flags; }
     int getFlags() const        { return _flags; }
 
-    void setEnabled(bool e)     { if (e) setFlags(WIDGET_ENABLED); else clearFlags(WIDGET_ENABLED); }
     bool isEnabled() const      { return _flags & WIDGET_ENABLED; }
     bool isVisible() const      { return !(_flags & WIDGET_INVISIBLE); }
 
@@ -160,6 +158,9 @@ class Widget : public GuiObject
     /** Select next widget in chain with WIDGET_TAB_NOTIFY property to have
         focus, starting from 'hasFocus' */
     static void setNextInChain(Widget* start, Widget* hasFocus);
+
+    /** Sets all widgets in this chain to be dirty (must be redrawn) */
+    static void setDirtyInChain(Widget* start);
 };
 
 
@@ -171,10 +172,8 @@ class StaticTextWidget : public Widget
                      int x, int y, int w, int h,
                      const string& text, TextAlignment align);
     void setValue(int value);
+    void setLabel(const string& label);
     void setAlign(TextAlignment align)  { _align = align; }
-    void setLabel(const string& label)  { _label = label;
-                                          _boss->instance()->frameBuffer().refreshOverlay();
-                                        }
     const string& getLabel() const      { return _label; }
 
   protected:
@@ -198,8 +197,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     int getCmd() const    { return _cmd; }
 
     void handleMouseUp(int x, int y, int button, int clickCount);
-    void handleMouseEntered(int button) { setFlags(WIDGET_HILITED); draw(); }
-    void handleMouseLeft(int button)    { clearFlags(WIDGET_HILITED); draw(); }
+    void handleMouseEntered(int button);
+    void handleMouseLeft(int button);
 
   protected:
     void drawWidget(bool hilite);
@@ -243,7 +242,7 @@ class SliderWidget : public ButtonWidget
     SliderWidget(GuiObject *boss, int x, int y, int w, int h, const string& label = "",
                  int labelWidth = 0, int cmd = 0, uInt8 hotkey = 0);
 
-    void  setValue(int value) { _value = value; }
+    void setValue(int value);
     int getValue() const      { return _value; }
 
     void  setMinValue(int value) { _valueMin = value; }

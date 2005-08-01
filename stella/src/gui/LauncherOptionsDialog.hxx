@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.7 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@ class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
 class StaticTextWidget;
+class TabWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -48,6 +49,7 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
 
   protected:
     BrowserDialog* myBrowser;
+    TabWidget* myTab;
 
     // Rom path controls
     StaticTextWidget* myRomPath;

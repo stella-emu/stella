@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.19 2005-07-12 02:27:07 urchlay Exp $
+// $Id: RamWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,57 +37,64 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
-  int xpos   = 10;
-  int ypos   = 20;
-  int lwidth = 30;
+  int xpos = 10, ypos = 20, lwidth = 4 * kCFontWidth;
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
   const GUI::Font& font = instance()->consoleFont();
+  StaticTextWidget* t;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
-  myRamGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 16, 8, 2, 8, kBASE_16);
+  myRamGrid = new DataGridWidget(boss, xpos + lwidth, ypos, 16, 8, 2, 8, kBASE_16);
   myRamGrid->setTarget(this);
   myRamGrid->clearFlags(WIDGET_TAB_NAVIGATE);
   myActiveWidget = myRamGrid;
 
   for(int row = 0; row < 8; ++row)
   {
-    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
-                          lwidth, kLineHeight,
-                          Debugger::to_hex_16(row*16 + kRamStart) + string(":"),
-                          kTextAlignLeft);
+    t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
+                             lwidth, kCFontHeight,
+                             Debugger::to_hex_8(row*16 + kRamStart) + string(":"),
+                             kTextAlignLeft);
     t->setFont(font);
   }
   for(int col = 0; col < 16; ++col)
   {
-    StaticTextWidget* t = new StaticTextWidget(boss,
-                          xpos + col*myRamGrid->colWidth() + lwidth + 12,
-                          ypos - kLineHeight,
-                          lwidth, kLineHeight,
-                          Debugger::to_hex_4(col),
-                          kTextAlignLeft);
+    t = new StaticTextWidget(boss, xpos + col*myRamGrid->colWidth() + lwidth + 7,
+                             ypos - kLineHeight,
+                             kCFontWidth, kCFontHeight,
+                             Debugger::to_hex_4(col),
+                             kTextAlignLeft);
     t->setFont(font);
   }
   
   xpos = 20;  ypos = 11 * kLineHeight;
-  new StaticTextWidget(boss, xpos, ypos, 30, kLineHeight, "Label: ", kTextAlignLeft);
-  xpos += 30;
-  myLabel = new EditTextWidget(boss, xpos, ypos-2, 100, kLineHeight, "");
+  t = new StaticTextWidget(boss, xpos, ypos,
+                           6*kCFontWidth, kCFontHeight,
+                           "Label:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 6*kCFontWidth + 5;
+  myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*kCFontWidth, kLineHeight, "");
   myLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myLabel->setFont(font);
   myLabel->setEditable(false);
 
-  xpos += 120;
-  new StaticTextWidget(boss, xpos, ypos, 35, kLineHeight, "Decimal: ", kTextAlignLeft);
-  xpos += 35;
-  myDecValue = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
+  xpos += 15*kCFontWidth + 20;
+  t = new StaticTextWidget(boss, xpos, ypos,
+                           4*kCFontWidth, kCFontHeight,
+                           "Dec:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 4*kCFontWidth + 5;
+  myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*kCFontWidth, kLineHeight, "");
   myDecValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myDecValue->setFont(font);
   myDecValue->setEditable(false);
 
-  xpos += 48;
-  new StaticTextWidget(boss, xpos, ypos, 35, kLineHeight, "Binary: ", kTextAlignLeft);
-  xpos += 35;
-  myBinValue = new EditTextWidget(boss, xpos, ypos-2, 60, kLineHeight, "");
+  xpos += 4*kCFontWidth + 20;
+  t = new StaticTextWidget(boss, xpos, ypos,
+                           4*kCFontWidth, kCFontHeight,
+                           "Bin:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 4*kCFontWidth + 5;
+  myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*kCFontWidth, kLineHeight, "");
   myBinValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
@@ -135,8 +142,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   ypos += 16 + space;
   b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kDGShiftRCmd, 0);
   b->setTarget(myRamGrid);
-
-  loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,16 +198,13 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
-
   }
-
-  // TODO - dirty rect, or is it necessary here?
-  instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::loadConfig()
 {
+cerr << "RamWidget::loadConfig()\n";
   fillGrid(true);
 }
 

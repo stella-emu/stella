@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.16 2005-07-05 15:25:44 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.17 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,13 +42,13 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent
   myDefaultsButton = addButton(10, h - 24, "Defaults", kDefaultsCmd, 0);
   myOKButton       = addButton(w - (kButtonWidth + 10), h - 24, "OK", kOKCmd, 0);
 
-  new StaticTextWidget(this, 10, 8, 150, 16, "Select an event to remap:", kTextAlignCenter);
+  new StaticTextWidget(this, 10, 8, 150, kFontHeight, "Select an event to remap:", kTextAlignCenter);
   myActionsList = new ListWidget(this, 10, 20, 150, 100);
   myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
   myActionsList->clearFlags(WIDGET_TAB_NAVIGATE);
 
-  myKeyMapping  = new StaticTextWidget(this, 10, 125, w - 20, 16,
+  myKeyMapping  = new StaticTextWidget(this, 10, 125, w - 20, kFontHeight,
                                        "Action: ", kTextAlignLeft);
   myKeyMapping->setFlags(WIDGET_CLEARBG);
 
@@ -59,7 +59,7 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent
   myCancelMapButton->setEnabled(false);
 
   // Add 'mouse to paddle' mapping
-  myPaddleModeText = new StaticTextWidget(this, 168, 93, 50, kLineHeight,
+  myPaddleModeText = new StaticTextWidget(this, 168, 93, 50, kFontHeight,
                                           "Mouse is", kTextAlignCenter);
   myPaddleModePopup = new PopUpWidget(this, 160, 105, 60, kLineHeight,
                                      "paddle: ", 40, 0);

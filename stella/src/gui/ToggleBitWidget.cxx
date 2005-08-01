@@ -13,15 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.3 2005-07-05 15:25:44 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.4 2005-08-01 22:33:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
-/*
-#include <cctype>
-#include <algorithm>
-*/
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
@@ -95,12 +91,9 @@ void ToggleBitWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _selectedItem = newSelectedItem;
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
-
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
   }
 	
-  draw();
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,6 +105,7 @@ void ToggleBitWidget::handleMouseUp(int x, int y, int button, int clickCount)
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     sendCommand(kTBItemDataChangedCmd, _selectedItem, _id);
+    setDirty(); draw();
   }
 }
 
@@ -227,9 +221,7 @@ bool ToggleBitWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       sendCommand(kTBItemDataChangedCmd, _selectedItem, _id);
     }
 
-    draw();
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
+    setDirty(); draw();
   }
 
   return handled;
@@ -245,7 +237,7 @@ void ToggleBitWidget::handleCommand(CommandSender* sender, int cmd,
       if (_selectedItem != (int)data)
       {
         _selectedItem = data;
-        draw();
+        setDirty(); draw();
       }
       break;
   }
@@ -254,6 +246,7 @@ void ToggleBitWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleBitWidget::drawWidget(bool hilite)
 {
+cerr << "ToggleBitWidget::drawWidget\n";
   FrameBuffer& fb = instance()->frameBuffer();
   int row, col;
   string buffer;

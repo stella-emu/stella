@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.12 2005-06-16 00:55:59 stephena Exp $
+// $Id: GuiObject.hxx,v 1.13 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@ class Widget;
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.12 2005-06-16 00:55:59 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.13 2005-08-01 22:33:15 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
@@ -47,6 +47,7 @@ class GuiObject : public CommandReceiver
           _y(y),
           _w(w),
           _h(h),
+          _dirty(true),
           _firstWidget(0) { }
 
     virtual ~GuiObject() { }
@@ -64,6 +65,8 @@ class GuiObject : public CommandReceiver
     virtual void setWidth(int w)    { _w = w; }
     virtual void setHeight(int h)   { _h = h; }
 
+    virtual void setDirty()         { _dirty = true; }
+
     virtual bool isVisible() const = 0;
     virtual void draw() = 0;
 
@@ -75,6 +78,8 @@ class GuiObject : public CommandReceiver
 
     int _x, _y;
     int _w, _h;
+
+    bool _dirty;
 
     Widget* _firstWidget;
     static Widget* _activeWidget;

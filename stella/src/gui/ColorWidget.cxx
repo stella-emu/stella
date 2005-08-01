@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.cxx,v 1.1 2005-07-14 23:47:17 stephena Exp $
+// $Id: ColorWidget.cxx,v 1.2 2005-08-01 22:33:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,6 +41,13 @@ ColorWidget::ColorWidget(GuiObject* boss, int x, int y, int w, int h, int cmd)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ColorWidget::~ColorWidget()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ColorWidget::setColor(int color)
+{
+  _color = color;
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

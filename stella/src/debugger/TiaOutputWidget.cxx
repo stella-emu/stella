@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.2 2005-07-19 18:21:27 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.3 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,8 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaOutputWidget::TiaOutputWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
-    CommandSender(boss),
-    _dirty(true)
+    CommandSender(boss)
 {
 }
 
@@ -47,7 +46,6 @@ void TiaOutputWidget::advanceScanline(int lines)
     instance()->console().mediaSource().updateScanline();
     --lines;
   }
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,7 +56,6 @@ void TiaOutputWidget::advance(int frames)
     instance()->console().mediaSource().update();
     --frames;
   }
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,10 +67,7 @@ cerr << "TiaOutputWidget button press: x = " << x << ", y = " << y << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
-//  if(_dirty)  // FIXME - only redraw this when necessary??
-  {
-    instance()->frameBuffer().refreshTIA();
-    instance()->frameBuffer().drawMediaSource();
-    _dirty = false;
-  }
+cerr << "TiaOutputWidget::drawWidget\n";
+  instance()->frameBuffer().refreshTIA();
+  instance()->frameBuffer().drawMediaSource();
 }

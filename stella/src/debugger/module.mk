@@ -41,7 +41,12 @@ MODULE_OBJS := \
 	src/debugger/RamDebug.o \
 	src/debugger/TIADebug.o \
 	src/debugger/TiaInfoWidget.o \
-	src/debugger/TiaOutputWidget.o
+	src/debugger/TiaOutputWidget.o \
+	src/debugger/CheatWidget.o \
+	src/debugger/CpuWidget.o \
+	src/debugger/PromptWidget.o \
+	src/debugger/RamWidget.o \
+	src/debugger/TiaWidget.o
 
 MODULE_DIRS += \
 	src/debugger

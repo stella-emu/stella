@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.10 2005-07-05 15:25:44 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.11 2005-08-01 22:33:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -181,7 +181,7 @@ void AudioDialog::setDefaults()
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleSoundEnableChange(true);
 
-  instance()->frameBuffer().refreshOverlay();
+  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

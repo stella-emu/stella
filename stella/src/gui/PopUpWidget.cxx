@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.14 2005-07-05 15:25:44 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.15 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,18 +75,45 @@ PopUpDialog::PopUpDialog(PopUpWidget* boss, int clickX, int clickY)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpDialog::drawDialog()
 {
-  FrameBuffer& fb = _popUpBoss->instance()->frameBuffer();
+  // Normally we add widgets and let Dialog::draw() take care of this
+  // logic.  But for some reason, this Dialog was written differently
+  // by the ScummVM guys, so I'm not going to mess with it.
+  if(_dirty)
+  {
+    cerr << "PopUpDialog::drawDialog()\n";
+    FrameBuffer& fb = _popUpBoss->instance()->frameBuffer();
 
-  // Draw the menu border
-  fb.hLine(_x, _y, _x+_w - 1, kColor);
-  fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
-  fb.vLine(_x, _y, _y+_h - 1, kColor);
-  fb.vLine(_x + _w - 1, _y, _y + _h - 1, kShadowColor);
+    // Draw the menu border
+    fb.hLine(_x, _y, _x+_w - 1, kColor);
+    fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
+    fb.vLine(_x, _y, _y+_h - 1, kColor);
+    fb.vLine(_x + _w - 1, _y, _y + _h - 1, kShadowColor);
 
-  // Draw the entries
-  int count = _popUpBoss->_entries.size();
-  for(int i = 0; i < count; i++)
-    drawMenuEntry(i, i == _selection);
+    // Draw the entries
+    int count = _popUpBoss->_entries.size();
+    for(int i = 0; i < count; i++)
+    {
+      bool hilite = i == _selection;
+      int x = _x + 1;
+      int y = _y + 1 + i * kLineHeight;
+      int w = _w - 2;
+      string& name = _popUpBoss->_entries[i].name;
+
+      fb.fillRect(x, y, w, kLineHeight, hilite ? kTextColorHi : kBGColor);
+
+      if(name.size() == 0)
+      {
+        // Draw a separator
+        fb.hLine(x - 1, y + kLineHeight / 2, x + w, kShadowColor);
+        fb.hLine(x, y + 1 + kLineHeight / 2, x + w, kColor);
+      }
+      else
+        fb.drawString(_popUpBoss->font(), name, x + 1, y + 2, w - 2,
+                      hilite ? kBGColor : kTextColor);
+    }
+    _dirty = false;
+    fb.addDirtyRect(_x, _y, _w, _h);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,20 +192,11 @@ void PopUpDialog::setSelection(int item)
 {
   if(item != _selection)
   {
-    // Undraw old selection
-    if(_selection >= 0)
-      drawMenuEntry(_selection, false);
-
     // Change selection
     _selection = item;
     _popUpBoss->_selectedItem = item;
 
-    // Draw new selection
-    if(item >= 0)
-      drawMenuEntry(item, true);
-
-    // TODO - dirty rectangle
-    _popUpBoss->instance()->frameBuffer().refreshOverlay();
+    setDirty(); _popUpBoss->setDirty(); _popUpBoss->draw();
   }
 }
 
@@ -238,29 +256,6 @@ void PopUpDialog::moveDown()
     if(item <= lastItem)
       setSelection(item);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpDialog::drawMenuEntry(int entry, bool hilite)
-{
-  // Draw one entry of the popup menu, including selection
-  assert(entry >= 0);
-  int x = _x + 1;
-  int y = _y + 1 + kLineHeight * entry;
-  int w = _w - 2;
-  string& name = _popUpBoss->_entries[entry].name;
-
-  FrameBuffer& fb = _popUpBoss->instance()->frameBuffer();
-  fb.fillRect(x, y, w, kLineHeight, hilite ? kTextColorHi : kBGColor);
-  if(name.size() == 0)
-  {
-    // Draw a separator
-    fb.hLine(x - 1, y + kLineHeight / 2, x + w, kShadowColor);
-    fb.hLine(x, y + 1 + kLineHeight / 2, x + w, kColor);
-  }
-  else
-    fb.drawString(_popUpBoss->font(), name, x + 1, y + 2, w - 2,
-                  hilite ? kBGColor : kTextColor);
 }
 
 //

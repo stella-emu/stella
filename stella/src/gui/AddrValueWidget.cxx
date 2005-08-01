@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.8 2005-07-05 15:25:44 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.9 2005-08-01 22:33:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -94,6 +94,9 @@ void AddrValueWidget::setList(const AddrList& alist, const ValueList& vlist)
   _selectedItem = -1;
   _editMode = false;
   scrollBarRecalc();
+
+  // The list should now be redrawn
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,14 +146,9 @@ void AddrValueWidget::handleMouseDown(int x, int y, int button, int clickCount)
       abortEditMode();
     _selectedItem = newSelectedItem;
     sendCommand(kAVSelectionChangedCmd, _selectedItem, _id);
-
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
   }
 	
-  // TODO: Determine where inside the string the user clicked and place the
-  // caret accordingly. See _editScrollOffset and EditTextWidget::handleMouseDown.
-  draw();
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,6 +194,8 @@ bool AddrValueWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   {
     // Class EditableWidget handles all text editing related key presses for us
     handled = EditableWidget::handleKeyDown(ascii, keycode, modifiers);
+    if(handled)
+      setDirty(); draw();
   }
   else
   {
@@ -255,16 +255,12 @@ bool AddrValueWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   }
 
   if (dirty || _selectedItem != oldSelectedItem)
-    draw();
-
-  if (_selectedItem != oldSelectedItem)
   {
     sendCommand(kAVSelectionChangedCmd, _selectedItem, _id);
     // also draw scrollbar
     _scrollBar->draw();
 
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
+    setDirty(); draw();
   }
 
   _currentKeyDown = keycode;
@@ -283,7 +279,6 @@ bool AddrValueWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 void AddrValueWidget::lostFocusWidget()
 {
   _editMode = false;
-  draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -296,7 +291,7 @@ void AddrValueWidget::handleCommand(CommandSender* sender, int cmd,
       if (_currentPos != (int)data)
       {
         _currentPos = data;
-        draw();
+        setDirty(); draw();
       }
       break;
   }
@@ -305,6 +300,7 @@ void AddrValueWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AddrValueWidget::drawWidget(bool hilite)
 {
+cerr << "AddrValueWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int i, pos, len = _valueList.size();
   string buffer;
@@ -401,7 +397,6 @@ void AddrValueWidget::startEditMode()
   {
     _editMode = true;
     setEditString("");  // Erase current entry when starting editing
-    draw();
   }
 }
 

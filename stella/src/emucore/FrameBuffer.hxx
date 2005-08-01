@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.50 2005-07-20 15:52:58 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.51 2005-08-01 22:33:13 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.50 2005-07-20 15:52:58 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.51 2005-08-01 22:33:13 stephena Exp $
 */
 class FrameBuffer
 {
@@ -391,6 +391,17 @@ class FrameBuffer
       @param y  Y coordinate to translate
     */
     virtual void translateCoords(Int32* x, Int32* y) = 0;
+
+    /**
+      This method should be called to add a dirty rectangle
+      (ie, an area of the screen that has changed)
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+    */
+    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
 
   protected:
     // The parent system for the framebuffer

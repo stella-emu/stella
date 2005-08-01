@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.25 2005-07-21 19:30:17 stephena Exp $
+// $Id: Widget.cxx,v 1.26 2005-08-01 22:33:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,7 @@
 #include "GuiUtils.hxx"
 #include "Widget.hxx"
 
-//FIXMEstatic int COUNT = 0;
+//static int COUNT = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
@@ -57,12 +57,17 @@ Widget::~Widget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::draw()
 {
+  if(!_dirty)
+    return;
+
+  _dirty = false;
+  
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   if(!isVisible() || !_boss->isVisible())
     return;
 
-  int oldX = _x, oldY = _y;
+  int oldX = _x, oldY = _y, oldW = _w, oldH = _h;
 
   // Account for our relative position in the dialog
   _x = getAbsX();
@@ -111,6 +116,9 @@ void Widget::draw()
     w->draw();
     w = w->_next;
   }
+
+  // Tell the framebuffer this area is dirty
+  fb.addDirtyRect(getAbsX(), getAbsY(), oldW, oldH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,6 +137,17 @@ void Widget::receivedFocus()
     _activeWidget = this;
     _boss->handleCommand(NULL, kActiveWidgetCmd, 0, 0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setEnabled(bool e)
+{
+  if(e)
+    setFlags(WIDGET_ENABLED);
+  else
+    clearFlags(WIDGET_ENABLED);
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -312,12 +331,22 @@ void Widget::setNextInChain(Widget* start, Widget* hasFocus)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setDirtyInChain(Widget* start)
+{
+  while(start)
+  {
+    start->setDirty();
+    start = start->_next;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
                                    const string& text, TextAlignment align)
     : Widget(boss, x, y, w, h),
       _align(align)
 {
-  _flags = WIDGET_ENABLED;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kStaticTextWidget;
   setLabel(text);
 }
@@ -329,9 +358,14 @@ void StaticTextWidget::setValue(int value)
   sprintf(buf, "%d", value);
   _label = buf;
 
-  // Refresh the screen when the text has changed
-  // TODO - create dirty rectangle
-  _boss->instance()->frameBuffer().refreshOverlay();
+  setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaticTextWidget::setLabel(const string& label)
+{
+  _label = label;
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -352,6 +386,20 @@ ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _type = kButtonWidget;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::handleMouseEntered(int button)
+{
+  setFlags(WIDGET_HILITED);
+  setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::handleMouseLeft(int button)
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -413,12 +461,8 @@ void CheckboxWidget::setState(bool state)
   {
     _state = state;
     _flags ^= WIDGET_INV_BORDER;
-    draw();
+    setDirty(); draw();
   }
-
-  // Refresh the screen after the checkbox is drawn
-  // TODO - create dirty rectangle
-  _boss->instance()->frameBuffer().refreshOverlay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -456,6 +500,13 @@ SliderWidget::SliderWidget(GuiObject *boss, int x, int y, int w, int h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setValue(int value)
+{
+  _value = value;
+  setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::handleMouseMoved(int x, int y, int button)
 {
   // TODO: when the mouse is dragged outside the widget, the slider should
@@ -472,12 +523,9 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
     if(newValue != _value)
     {
       _value = newValue; 
-      draw();
+      setDirty(); draw();
       sendCommand(_cmd, _value, _id);
     }
-    // Refresh the screen while the slider is being redrawn
-    // TODO - create dirty rectangle
-    _boss->instance()->frameBuffer().refreshOverlay();
   }
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.10 2005-07-05 15:25:44 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.11 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,11 +41,13 @@ HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
   addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
   myPrevButton->clearFlags(WIDGET_ENABLED);
 
-  myTitle = new StaticTextWidget(this, 0, 5, w, 16, "", kTextAlignCenter);
+  myTitle = new StaticTextWidget(this, 0, 5, w, kFontHeight, "", kTextAlignCenter);
   for(uInt8 i = 0; i < LINES_PER_PAGE; i++)
   {
-    myKey[i]  = new StaticTextWidget(this, 10, 18 + (10 * i), 80, 16, "", kTextAlignLeft);
-    myDesc[i] = new StaticTextWidget(this, 90, 18 + (10 * i), 160, 16, "", kTextAlignLeft);
+    myKey[i]  = new StaticTextWidget(this, 10, 18 + (10 * i), 80, kFontHeight,
+                                     "", kTextAlignLeft);
+    myDesc[i] = new StaticTextWidget(this, 90, 18 + (10 * i), 160, kFontHeight,
+                                     "", kTextAlignLeft);
   }
 }
 
@@ -173,7 +175,7 @@ void HelpDialog::displayInfo()
   delete[] keyStr;
   delete[] dscStr;
 
-  instance()->frameBuffer().refreshOverlay();
+  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

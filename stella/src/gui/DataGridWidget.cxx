@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.14 2005-07-14 18:28:36 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.15 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -95,6 +95,13 @@ cerr << "alist.size() = "     << alist.size()
     _valueStringList.push_back(temp);
   }
 
+/*
+cerr << "_addrList.size() = "     << _addrList.size()
+     << ", _valueList.size() = "   << _valueList.size()
+     << ", _changedList.size() = " << _changedList.size()
+     << ", _valueStringList.size() = " << _valueStringList.size()
+     << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+*/
   _editMode = false;
 
   // Send item selected signal for starting with cell 0
@@ -140,14 +147,11 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _currentCol = _selectedItem - (_currentRow * _cols);
 
     sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
-
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
   }
 	
-  // TODO: Determine where inside the string the user clicked and place the
-  // caret accordingly. See _editScrollOffset and EditTextWidget::handleMouseDown.
-  draw();
+  // FIXME - this is only here for focus
+  //         it needs to be fixed
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -192,6 +196,8 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   {
     // Class EditableWidget handles all text editing related key presses for us
     handled = EditableWidget::handleKeyDown(ascii, keycode, modifiers);
+    if(handled)
+      setDirty(); draw();
   }
   else
   {
@@ -365,12 +371,11 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   {
     int oldItem = _selectedItem;
     _selectedItem = _currentRow*_cols + _currentCol;
-    draw();
-    // TODO - dirty rectangle
-    instance()->frameBuffer().refreshOverlay();
 
     if(_selectedItem != oldItem)
       sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
+
+    setDirty(); draw();
   }
 
   _currentKeyDown = keycode;
@@ -389,7 +394,6 @@ bool DataGridWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 void DataGridWidget::lostFocusWidget()
 {
   _editMode = false;
-  draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -400,10 +404,7 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
   {
     case kSetPositionCmd:
       if (_selectedItem != (int)data)
-      {
         _selectedItem = data;
-        draw();
-      }
       break;
 
     case kDGZeroCmd:
@@ -439,6 +440,7 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::drawWidget(bool hilite)
 {
+cerr << "DataGridWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int row, col, deltax;
   string buffer;
@@ -520,7 +522,6 @@ void DataGridWidget::startEditMode()
   {
     _editMode = true;
     setEditString("");  // Erase current entry when starting editing
-    draw();
   }
 }
 

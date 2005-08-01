@@ -13,55 +13,65 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.7 2005-07-21 19:30:17 stephena Exp $
+// $Id: CheatWidget.hxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef TIA_WIDGET_HXX
-#define TIA_WIDGET_HXX
+#ifndef CHEAT_WIDGET_HXX
+#define CHEAT_WIDGET_HXX
 
 class GuiObject;
 class ButtonWidget;
-class DataGridWidget;
 class StaticTextWidget;
-class EditTextWidget;
-class ColorWidget;
+class EditNumWidget;
+class AddrValueWidget;
 
+#include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 
 
-class TiaWidget : public Widget, public CommandSender
+class CheatWidget : public Widget, public CommandSender
 {
+  private:
+    struct AddrValue {
+      uInt16 addr;
+      uInt8 value;
+    };
+
+    typedef GUI::Array<AddrValue> AddrValueList;
+
+    AddrValueList mySearchArray;
+    AddrValueList myCompareArray;
+
   public:
-    TiaWidget(GuiObject* boss, int x, int y, int w, int h);
-    virtual ~TiaWidget();
+    CheatWidget(GuiObject *boss, int x, int y, int w, int h);
+    virtual ~CheatWidget();
 
     Widget* activeWidget() { return myActiveWidget; }
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void loadConfig();
 
   private:
-    void fillGrid();
-    void changeColorRegs();
+    void doSearch();
+    void doCompare();
+    void doRestart();
+
+    void fillResultsList();
 
   private:
     Widget* myActiveWidget;
 
-    DataGridWidget* myRamGrid;
-    EditTextWidget* myBinValue;
-    EditTextWidget* myDecValue;
-    EditTextWidget* myLabel;
+    EditNumWidget* myEditBox;
+    StaticTextWidget* myResult;
 
-    DataGridWidget* myColorRegs;
+    ButtonWidget* mySearchButton;
+    ButtonWidget* myCompareButton;
+    ButtonWidget* myRestartButton;
 
-    ColorWidget* myCOLUP0Color;
-    ColorWidget* myCOLUP1Color;
-    ColorWidget* myCOLUPFColor;
-    ColorWidget* myCOLUBKColor;
+    AddrValueWidget* myResultsList;
 };
 
 #endif

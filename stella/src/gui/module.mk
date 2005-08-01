@@ -5,9 +5,7 @@ MODULE_OBJS := \
 	src/gui/AddrValueWidget.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
-	src/gui/CheatWidget.o \
 	src/gui/ColorWidget.o \
-	src/gui/CpuWidget.o \
 	src/gui/DataGridWidget.o \
 	src/gui/DebuggerDialog.o \
 	src/gui/DialogContainer.o \
@@ -28,11 +26,8 @@ MODULE_OBJS := \
 	src/gui/OptionsDialog.o \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \
-	src/gui/PromptWidget.o \
-	src/gui/RamWidget.o \
 	src/gui/ScrollBarWidget.o \
 	src/gui/TabWidget.o \
-	src/gui/TiaWidget.o \
 	src/gui/ToggleBitWidget.o \
 	src/gui/VideoDialog.o \
 	src/gui/Widget.o \

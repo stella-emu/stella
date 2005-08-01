@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.21 2005-07-05 15:25:44 stephena Exp $
+// $Id: Dialog.cxx,v 1.22 2005-08-01 22:33:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,11 +57,11 @@ Dialog::~Dialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::open()
 {
+cerr << " ==> Dialog::open()\n";
   _result = 0;
   _visible = true;
+  _dirty = true;
 
-  // Keep count of how many times this dialog was opened
-  // Load the config only on the first open (ie, since close was last called)
   if(_openCount++ == 0)
     loadConfig();
 
@@ -76,6 +76,10 @@ void Dialog::open()
     w->receivedFocus();
     _focusedWidget = w;
   }
+
+  // Make all child widget dirty
+  w = _firstWidget;
+  Widget::setDirtyInChain(w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,10 +123,20 @@ void Dialog::drawDialog()
   if(!isVisible())
     return;
 
-  FrameBuffer& fb = instance()->frameBuffer();
+  if(_dirty)
+  {
+    cerr << "Dialog::drawDialog()\n";
+    FrameBuffer& fb = instance()->frameBuffer();
 
-  fb.blendRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
-  fb.box(_x, _y, _w, _h, kColor, kShadowColor);
+    fb.blendRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
+    fb.box(_x, _y, _w, _h, kColor, kShadowColor);
+
+    // Make all child widget dirty
+    Widget* w = _firstWidget;
+    Widget::setDirtyInChain(w);
+
+    _dirty = false;
+  }
 
   // Draw all children
   Widget* w = _firstWidget;

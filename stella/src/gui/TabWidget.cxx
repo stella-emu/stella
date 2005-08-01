@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.13 2005-07-05 15:25:44 stephena Exp $
+// $Id: TabWidget.cxx,v 1.14 2005-08-01 22:33:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -99,6 +99,12 @@ int TabWidget::addTab(const string& title)
 void TabWidget::setActiveTab(int tabID)
 {
   assert(0 <= tabID && tabID < (int)_tabs.size());
+
+  // Make sure all child widgets are shown
+  _boss->setDirty(); _boss->draw();
+  Widget::setDirtyInChain(_tabs[tabID].firstWidget);
+  Widget::setDirtyInChain(_tabs[tabID].parentWidget);
+
   if (_activeTab != tabID)
   {
     // Exchange the widget lists, and switch to the new tab
@@ -107,10 +113,6 @@ void TabWidget::setActiveTab(int tabID)
 
     _activeTab = tabID;
     _firstWidget  = _tabs[tabID].firstWidget;
-
-    // Reload the settings for the parent widget in this tab
-    if(_tabs[tabID].parentWidget)
-      _tabs[tabID].parentWidget->loadConfig();
 
     // If a widget has been activated elsewhere and it belongs to the
     // current view, use it.  Otherwise use the default.
@@ -123,11 +125,6 @@ void TabWidget::setActiveTab(int tabID)
     // in the tabview lose focus
     if(_activeWidget)
       _activeWidget->receivedFocus();
-
-    _boss->draw();
-
-    // TODO - dirty rectangle
-    _boss->instance()->frameBuffer().refreshOverlay();
   }
 }
 
@@ -170,6 +167,9 @@ void TabWidget::cycleWidget(int direction)
   else if(direction == +1)
     Widget::setNextInChain(_tabs[_activeTab].firstWidget,
                            _tabs[_activeTab].activeWidget);
+
+  _boss->setDirty();
+  Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,10 +247,6 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       {
         _tabs[_activeTab].activeWidget = _activeWidget;
         Widget::setFocusForChain(_firstWidget, _activeWidget);
-
-        // Make sure the changes are shown onscreen
-        // TODO - dirty rectangle
-        _boss->instance()->frameBuffer().refreshOverlay();
       }
       break;
 
@@ -263,6 +259,8 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::loadConfig()
 {
+cerr << "TabWidget::loadConfig()\n";
+
   // (Re)load the contents of all tabs
   // It's up to each tab to decide if it wants to do anything on a reload
   for (int id = 0; id < (int)_tabs.size(); ++id)
@@ -272,8 +270,7 @@ void TabWidget::loadConfig()
   }
 
   // Make sure changes are seen onscreen
-  // TODO - dirty rectangle
-  instance()->frameBuffer().refreshOverlay();
+  setActiveTab(_activeTab);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -299,6 +296,12 @@ void TabWidget::box(int x, int y, int width, int height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::drawWidget(bool hilite)
 {
+cerr << "TabWidget::drawWidget\n";
+  // The tab widget is strange in that it acts as both a widget (obviously)
+  // and a dialog (it contains other widgets).  Because of the latter,
+  // it must assume responsibility for refreshing all its children.
+  Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
+
   FrameBuffer& fb = instance()->frameBuffer();
 
   const int left1  = _x + 1;

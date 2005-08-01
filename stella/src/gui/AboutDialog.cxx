@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.4 2005-07-05 15:25:44 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.5 2005-08-01 22:33:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,13 +43,13 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
   addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
   myPrevButton->clearFlags(WIDGET_ENABLED);
 
-  myTitle = new StaticTextWidget(this, 0, 5, w, 16, "", kTextAlignCenter);
+  myTitle = new StaticTextWidget(this, 0, 5, w, kFontHeight, "", kTextAlignCenter);
   myTitle->setColor(kTextColorHi);
 
   for(int i = 0; i < LINES_PER_PAGE; i++)
   {
     myDesc[i] = new StaticTextWidget(this, 10, 18 + (10 * i), w - 20,
-                                     kLineHeight, "", kTextAlignLeft);
+                                     kFontHeight, "", kTextAlignLeft);
   }
 }
 
@@ -226,7 +226,8 @@ void AboutDialog::displayInfo()
 
   delete[] dscStr;
 
-  instance()->frameBuffer().refreshOverlay();
+  // Redraw entire dialog
+  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
