@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.2 2005-08-02 15:59:43 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.3 2005-08-02 18:28:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,37 +57,38 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
-  int xpos = 10, ypos = 20, lwidth = 4 * kCFontWidth;
-  StaticTextWidget* t;
   const GUI::Font& font = instance()->consoleFont();
+  int xpos = 10, ypos = 20, lwidth = 4 * font.getMaxCharWidth();
+  int fontHeight = font.getFontHeight(), lineHeight = font.getLineHeight();
+  StaticTextWidget* t;
 
   // Create a 1x5 grid with labels for the CPU registers
-  myCpuGrid = new DataGridWidget(boss, xpos + lwidth, ypos, 1, 5, 8, 16);
+  myCpuGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 5, 8, 16);
   myCpuGrid->setTarget(this);
   myActiveWidget = myCpuGrid;
 
   string labels[5] = { "PC:", "SP:", "A:", "X:", "Y:" };
   for(int row = 0; row < 5; ++row)
   {
-    t = new StaticTextWidget(boss, xpos, ypos + row*kCLineHeight + 2,
-                             lwidth, kCFontHeight,
+    t = new StaticTextWidget(boss, xpos, ypos + row*lineHeight + 2,
+                             lwidth, fontHeight,
                              labels[row], kTextAlignLeft);
     t->setFont(font);
   }
 
   // Create a read-only textbox containing the current PC label
   xpos += lwidth + myCpuGrid->colWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, xpos, ypos, 100, kCLineHeight, "");
+  myPCLabel = new EditTextWidget(boss, xpos, ypos, 100, lineHeight, "");
   myPCLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myPCLabel->setFont(font);
   myPCLabel->setEditable(false);
 
   // Create a bitfield widget for changing the processor status
-  xpos = 10;  ypos += 5*kCLineHeight + 5;
-  t = new StaticTextWidget(boss, xpos, ypos, lwidth-2, kCFontHeight,
+  xpos = 10;  ypos += 5*lineHeight + 5;
+  t = new StaticTextWidget(boss, xpos, ypos, lwidth-2, fontHeight,
                            "PS:", kTextAlignLeft);
   t->setFont(font);
-  myPSRegister = new ToggleBitWidget(boss, xpos+lwidth, ypos-2, 8, 1);
+  myPSRegister = new ToggleBitWidget(boss, font, xpos+lwidth, ypos-2, 8, 1);
   myPSRegister->setTarget(this);
 
 // FIXME --------------------------
@@ -95,7 +96,7 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
 // so I won't bother fixing it here.
 
   // And some status fields
-  xpos = 10;  ypos += 2*kCLineHeight;
+  xpos = 10;  ypos += 2*lineHeight;
   new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Current Ins:", kTextAlignLeft);
   xpos += 60;
   myCurrentIns = new EditTextWidget(boss, xpos, ypos-2, 300, kLineHeight, "");
@@ -256,7 +257,11 @@ void CpuWidget::fillGrid()
   myCpuGrid->setList(alist, vlist, changed);
 
   // Update the PS register booleans
-  myPSRegister->setState(state.PSbits);
+  changed.clear();
+  for(unsigned int i = 0; i < state.PSbits.size(); ++i)
+    changed.push_back(state.PSbits[i] != oldstate.PSbits[i]);
+
+  myPSRegister->setState(state.PSbits, changed);
 
   // Update the other status fields
   int pc = state.PC;

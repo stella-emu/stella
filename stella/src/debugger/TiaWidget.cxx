@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.2 2005-08-02 15:59:43 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.3 2005-08-02 18:28:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,96 +52,99 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
-  int xpos = 10, ypos = 25, lwidth = 4 * kCFontWidth;
-//  const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
-  StaticTextWidget* t;
   const GUI::Font& font = instance()->consoleFont();
+  int xpos = 10, ypos = 25, lwidth = 4 * font.getMaxCharWidth();
+  int fontHeight = font.getFontHeight(), lineHeight = font.getLineHeight();
+  int fontWidth = font.getMaxCharWidth();
+  StaticTextWidget* t;
 
   // Create a 16x1 grid holding byte values with labels
-  myRamGrid = new DataGridWidget(boss, xpos + lwidth, ypos, 16, 1, 2, 8, kBASE_16);
+  myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
+                                 16, 1, 2, 8, kBASE_16);
   myRamGrid->setEditable(false);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamID);
   myActiveWidget = myRamGrid;
 
   t = new StaticTextWidget(boss, xpos, ypos + 2,
-                           lwidth, kCFontHeight,
+                           lwidth, fontHeight,
                            Debugger::to_hex_8(0) + string(":"),
                            kTextAlignLeft);
   t->setFont(font);
   for(int col = 0; col < 16; ++col)
   {
     t = new StaticTextWidget(boss, xpos + col*myRamGrid->colWidth() + lwidth + 7,
-                             ypos - kCLineHeight,
-                             kCFontWidth, kCFontHeight,
+                             ypos - lineHeight,
+                             fontWidth, fontHeight,
                              Debugger::to_hex_4(col),
                              kTextAlignLeft);
     t->setFont(font);
   }
   
-  xpos = 20;  ypos += 2 * kCLineHeight;
+  xpos = 20;  ypos += 2 * lineHeight;
   t = new StaticTextWidget(boss, xpos, ypos,
-                           6*kCFontWidth, kCFontHeight,
+                           6*fontWidth, fontHeight,
                            "Label:", kTextAlignLeft);
   t->setFont(font);
-  xpos += 6*kCFontWidth + 5;
-  myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*kCFontWidth, kCLineHeight, "");
+  xpos += 6*fontWidth + 5;
+  myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*fontWidth, lineHeight, "");
   myLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myLabel->setFont(font);
   myLabel->setEditable(false);
 
-  xpos += 15*kCFontWidth + 20;
+  xpos += 15*fontWidth + 20;
   t = new StaticTextWidget(boss, xpos, ypos,
-                           4*kCFontWidth, kCFontHeight,
+                           4*fontWidth, fontHeight,
                            "Dec:", kTextAlignLeft);
   t->setFont(font);
-  xpos += 4*kCFontWidth + 5;
-  myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*kCFontWidth, kCLineHeight, "");
+  xpos += 4*fontWidth + 5;
+  myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*fontWidth, lineHeight, "");
   myDecValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myDecValue->setFont(font);
   myDecValue->setEditable(false);
 
-  xpos += 4*kCFontWidth + 20;
+  xpos += 4*fontWidth + 20;
   t = new StaticTextWidget(boss, xpos, ypos,
-                           4*kCFontWidth, kCFontHeight,
+                           4*fontWidth, fontHeight,
                            "Bin:", kTextAlignLeft);
   t->setFont(font);
-  xpos += 4*kCFontWidth + 5;
-  myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*kCFontWidth, kCLineHeight, "");
+  xpos += 4*fontWidth + 5;
+  myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*fontWidth, lineHeight, "");
   myBinValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 
   // Color registers
   const char* regNames[] = { "COLUP0:", "COLUP1:", "COLUPF:", "COLUBK:" };
-  xpos = 10;  ypos += 2* kCLineHeight;
+  xpos = 10;  ypos += 2*lineHeight;
   for(int row = 0; row < 4; ++row)
   {
-    t = new StaticTextWidget(boss, xpos, ypos + row*kCLineHeight + 2,
-                             7*kCFontWidth, kCFontHeight,
+    t = new StaticTextWidget(boss, xpos, ypos + row*lineHeight + 2,
+                             7*fontWidth, fontHeight,
                              regNames[row],
                              kTextAlignLeft);
     t->setFont(font);
   }
-  xpos += 7*kCFontWidth + 5;
-  myColorRegs = new DataGridWidget(boss, xpos, ypos, 1, 4, 2, 8, kBASE_16);
+  xpos += 7*fontWidth + 5;
+  myColorRegs = new DataGridWidget(boss, font, xpos, ypos,
+                                   1, 4, 2, 8, kBASE_16);
   myColorRegs->setTarget(this);
   myColorRegs->setID(kColorRegsID);
 
   xpos += myColorRegs->colWidth() + 5;
-  myCOLUP0Color = new ColorWidget(boss, xpos, ypos+2, 20, kCLineHeight - 4);
+  myCOLUP0Color = new ColorWidget(boss, xpos, ypos+2, 20, lineHeight - 4);
   myCOLUP0Color->setTarget(this);
 
-  ypos += kCLineHeight;
-  myCOLUP1Color = new ColorWidget(boss, xpos, ypos+2, 20, kCLineHeight - 4);
+  ypos += lineHeight;
+  myCOLUP1Color = new ColorWidget(boss, xpos, ypos+2, 20, lineHeight - 4);
   myCOLUP1Color->setTarget(this);
 
-  ypos += kCLineHeight;
-  myCOLUPFColor = new ColorWidget(boss, xpos, ypos+2, 20, kCLineHeight - 4);
+  ypos += lineHeight;
+  myCOLUPFColor = new ColorWidget(boss, xpos, ypos+2, 20, lineHeight - 4);
   myCOLUPFColor->setTarget(this);
 
-  ypos += kCLineHeight;
-  myCOLUBKColor = new ColorWidget(boss, xpos, ypos+2, 20, kCLineHeight - 4);
+  ypos += lineHeight;
+  myCOLUBKColor = new ColorWidget(boss, xpos, ypos+2, 20, lineHeight - 4);
   myCOLUBKColor->setTarget(this);
 
 /*

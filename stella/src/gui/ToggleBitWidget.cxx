@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.5 2005-08-02 15:59:45 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.6 2005-08-02 18:28:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,19 +27,20 @@
 #include "ToggleBitWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ToggleBitWidget::ToggleBitWidget(GuiObject* boss, int x, int y,
-                                 int cols, int rows, int colchars)
-  : Widget(boss, x, y, cols*(colchars * kCFontWidth + 8) + 1, kCLineHeight*rows + 1),
+ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
+                                 int x, int y, int cols, int rows, int colchars)
+  : Widget(boss, x, y, cols*(colchars * font.getMaxCharWidth() + 8) + 1,
+           font.getLineHeight()*rows + 1),
     CommandSender(boss),
     _rows(rows),
     _cols(cols),
     _currentRow(0),
     _currentCol(0),
-    _colWidth(colchars * kCFontWidth + 8),
+    _rowHeight(font.getLineHeight()),
+    _colWidth(colchars * font.getMaxCharWidth() + 8),
     _selectedItem(0)
 {
-  // This widget always uses a monospace font
-  setFont(instance()->consoleFont());
+  setFont(font);
 
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_TAB_NAVIGATE;
@@ -64,10 +65,12 @@ void ToggleBitWidget::setList(const StringList& off, const StringList& on)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleBitWidget::setState(const BoolArray& state)
+void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
 {
   _stateList.clear();
   _stateList = state;
+  _changedList.clear();
+  _changedList = changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,7 +115,7 @@ void ToggleBitWidget::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ToggleBitWidget::findItem(int x, int y)
 {
-  int row = (y - 1) / kCLineHeight;
+  int row = (y - 1) / _rowHeight;
   if(row >= _rows) row = _rows - 1;
 
   int col = x / _colWidth;
@@ -254,8 +257,8 @@ cerr << "ToggleBitWidget::drawWidget\n";
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
   for (row = 0; row <= _rows; row++)
-    fb.hLine(_x, _y + (row * kCLineHeight), _x + linewidth, kColor);
-  int lineheight = _rows * kCLineHeight;
+    fb.hLine(_x, _y + (row * _rowHeight), _x + linewidth, kColor);
+  int lineheight = _rows * _rowHeight;
   for (col = 0; col <= _cols; col++)
     fb.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
 
@@ -265,23 +268,31 @@ cerr << "ToggleBitWidget::drawWidget\n";
     for (col = 0; col < _cols; col++)
     {
       int x = _x + 4 + (col * _colWidth);
-      int y = _y + 2 + (row * kCLineHeight);
+      int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col)
       {
         if (_hasFocus)
-          fb.fillRect(x - 4, y - 2, _colWidth+1, kCLineHeight+1, kTextColorHi);
+          fb.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
         else
-          fb.frameRect(x - 4, y - 2, _colWidth+1, kCLineHeight+1, kTextColorHi);
+          fb.frameRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
       }
 
       if(_stateList[pos])
         buffer = _onList[pos];
       else
         buffer = _offList[pos];
-      fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
+
+      // Highlight changes
+      if(_changedList[pos])
+      {
+        fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kTextColorEm);
+        fb.drawString(_font, buffer, x, y, _colWidth, kTextColorHi);
+      }
+      else
+        fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
     }
   }
 }

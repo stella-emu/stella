@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Font.hxx,v 1.3 2005-08-01 22:33:15 stephena Exp $
+// $Id: Font.hxx,v 1.4 2005-08-02 18:28:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,6 +52,7 @@ class Font
     const FontDesc& desc() { return myFontDesc; }
 
     int getFontHeight() const { return myFontDesc.height; }
+    int getLineHeight() const { return myFontDesc.height + 2; }
     int getMaxCharWidth() const { return myFontDesc.maxwidth; }
 
     int getCharWidth(uInt8 chr) const;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.9 2005-07-07 15:19:04 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.10 2005-08-02 18:28:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,7 +51,8 @@ enum {
 class DataGridWidget : public EditableWidget, public CommandSender
 {
   public:
-    DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows,
+    DataGridWidget(GuiObject* boss, const GUI::Font& font,
+                   int x, int y, int cols, int rows,
                    int colchars, int bits, BaseFormat format = kBASE_DEFAULT);
     virtual ~DataGridWidget();
 
@@ -93,6 +94,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
     int  _cols;
     int  _currentRow;
     int  _currentCol;
+    int  _rowHeight;
     int  _colWidth;
     int  _bits;
 

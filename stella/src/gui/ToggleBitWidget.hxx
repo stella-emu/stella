@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.hxx,v 1.3 2005-07-05 15:25:44 stephena Exp $
+// $Id: ToggleBitWidget.hxx,v 1.4 2005-08-02 18:28:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,12 +39,12 @@ enum {
 class ToggleBitWidget : public Widget, public CommandSender
 {
   public:
-    ToggleBitWidget(GuiObject* boss, int x, int y, int cols, int rows,
-                    int colchars = 1);
+    ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
+                    int x, int y, int cols, int rows, int colchars = 1);
     virtual ~ToggleBitWidget();
 
     void setList(const StringList& off, const StringList& on);
-    void setState(const BoolArray& state);
+    void setState(const BoolArray& state, const BoolArray& changed);
 
     bool getSelectedState() const  { return _stateList[_selectedItem]; }
 
@@ -66,12 +66,14 @@ class ToggleBitWidget : public Widget, public CommandSender
     int  _cols;
     int  _currentRow;
     int  _currentCol;
+    int  _rowHeight;
     int  _colWidth;
     int  _selectedItem;
 
     StringList  _offList;
     StringList  _onList;
     BoolArray   _stateList;
+    BoolArray   _changedList;
 };
 
 #endif
