@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.15 2005-08-01 22:33:15 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.16 2005-08-02 15:59:45 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,13 +33,13 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, int x, int y, int cols, int rows,
                                int colchars, int bits, BaseFormat base)
-  : EditableWidget(boss, x, y, cols*(colchars * 6 + 8) + 1, kLineHeight*rows + 1),
+  : EditableWidget(boss, x, y, cols*(colchars * kCFontWidth + 8) + 1, kCLineHeight*rows + 1),
     CommandSender(boss),
     _rows(rows),
     _cols(cols),
     _currentRow(0),
     _currentCol(0),
-    _colWidth(colchars * 6 + 8),
+    _colWidth(colchars * kCFontWidth + 8),
     _bits(bits),
     _base(base),
     _selectedItem(0)
@@ -172,7 +172,7 @@ void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DataGridWidget::findItem(int x, int y)
 {
-  int row = (y - 1) / kLineHeight;
+  int row = (y - 1) / kCLineHeight;
   if(row >= _rows) row = _rows - 1;
 
   int col = x / _colWidth;
@@ -448,8 +448,8 @@ cerr << "DataGridWidget::drawWidget\n";
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
   for (row = 0; row <= _rows; row++)
-    fb.hLine(_x, _y + (row * kLineHeight), _x + linewidth, kColor);
-  int lineheight = _rows * kLineHeight;
+    fb.hLine(_x, _y + (row * kCLineHeight), _x + linewidth, kColor);
+  int lineheight = _rows * kCLineHeight;
   for (col = 0; col <= _cols; col++)
     fb.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
 
@@ -459,16 +459,16 @@ cerr << "DataGridWidget::drawWidget\n";
     for (col = 0; col < _cols; col++)
     {
       int x = _x + 4 + (col * _colWidth);
-      int y = _y + 2 + (row * kLineHeight);
+      int y = _y + 2 + (row * kCLineHeight);
       int pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col)
       {
         if (_hasFocus && !_editMode)
-          fb.fillRect(x - 4, y - 2, _colWidth+1, kLineHeight+1, kTextColorHi);
+          fb.fillRect(x - 4, y - 2, _colWidth+1, kCLineHeight+1, kTextColorHi);
         else
-          fb.frameRect(x - 4, y - 2, _colWidth+1, kLineHeight+1, kTextColorHi);
+          fb.frameRect(x - 4, y - 2, _colWidth+1, kCLineHeight+1, kTextColorHi);
       }
 
       if (_selectedItem == pos && _editMode)
@@ -487,7 +487,7 @@ cerr << "DataGridWidget::drawWidget\n";
 
         if(_changedList[pos])
         {
-          fb.fillRect(x - 3, y - 1, _colWidth-1, kLineHeight-1, kTextColorEm);
+          fb.fillRect(x - 3, y - 1, _colWidth-1, kCLineHeight-1, kTextColorEm);
           fb.drawString(_font, buffer, x, y, _colWidth, kTextColorHi);
         }
         else
@@ -504,8 +504,8 @@ cerr << "DataGridWidget::drawWidget\n";
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect DataGridWidget::getEditRect() const
 {
-  GUI::Rect r(1, 0, _colWidth, kLineHeight);
-  const int rowoffset = _currentRow * kLineHeight;
+  GUI::Rect r(1, 0, _colWidth, kCLineHeight);
+  const int rowoffset = _currentRow * kCLineHeight;
   const int coloffset = _currentCol * _colWidth + 4;
   r.top += rowoffset;
   r.bottom += rowoffset;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.37 2005-08-01 22:33:11 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.38 2005-08-02 15:59:43 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -40,7 +40,8 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
     myTextureID(0),
     myFilterParam(GL_NEAREST),
     myFilterParamName("GL_NEAREST"),
-    myFSScaleFactor(1.0)
+    myFSScaleFactor(1.0),
+    myDirtyFlag(true)
 {
 }
 
@@ -255,7 +256,7 @@ void FrameBufferGL::postFrameUpdate()
 {
   // Do the following twice, since OpenGL mode is double-buffered,
   // and we need the contents placed in both buffers
-// FIXME  if(theRedrawTIAIndicator || theRedrawOverlayIndicator)
+  if(theRedrawTIAIndicator || theRedrawOverlayIndicator || myDirtyFlag)
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 
@@ -280,6 +281,8 @@ void FrameBufferGL::postFrameUpdate()
       glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
       glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
     glEnd();
+
+    myDirtyFlag = false;
   }
 }
 
@@ -443,6 +446,7 @@ void FrameBufferGL::translateCoords(Int32* x, Int32* y)
 void FrameBufferGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   // FIXME
+  myDirtyFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

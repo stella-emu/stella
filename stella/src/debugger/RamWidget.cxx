@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: RamWidget.cxx,v 1.2 2005-08-02 15:59:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,7 +37,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
-  int xpos = 10, ypos = 20, lwidth = 4 * kCFontWidth;
+  int xpos = 10, ypos = 25, lwidth = 4 * kCFontWidth;
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
   const GUI::Font& font = instance()->consoleFont();
   StaticTextWidget* t;
@@ -50,7 +50,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
 
   for(int row = 0; row < 8; ++row)
   {
-    t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
+    t = new StaticTextWidget(boss, xpos, ypos + row*kCLineHeight + 2,
                              lwidth, kCFontHeight,
                              Debugger::to_hex_8(row*16 + kRamStart) + string(":"),
                              kTextAlignLeft);
@@ -59,20 +59,20 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   for(int col = 0; col < 16; ++col)
   {
     t = new StaticTextWidget(boss, xpos + col*myRamGrid->colWidth() + lwidth + 7,
-                             ypos - kLineHeight,
+                             ypos - kCLineHeight,
                              kCFontWidth, kCFontHeight,
                              Debugger::to_hex_4(col),
                              kTextAlignLeft);
     t->setFont(font);
   }
   
-  xpos = 20;  ypos = 11 * kLineHeight;
+  xpos = 20;  ypos += 9 * kCLineHeight;
   t = new StaticTextWidget(boss, xpos, ypos,
                            6*kCFontWidth, kCFontHeight,
                            "Label:", kTextAlignLeft);
   t->setFont(font);
   xpos += 6*kCFontWidth + 5;
-  myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*kCFontWidth, kLineHeight, "");
+  myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*kCFontWidth, kCLineHeight, "");
   myLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myLabel->setFont(font);
   myLabel->setEditable(false);
@@ -83,7 +83,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
                            "Dec:", kTextAlignLeft);
   t->setFont(font);
   xpos += 4*kCFontWidth + 5;
-  myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*kCFontWidth, kLineHeight, "");
+  myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*kCFontWidth, kCLineHeight, "");
   myDecValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myDecValue->setFont(font);
   myDecValue->setEditable(false);
@@ -94,7 +94,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
                            "Bin:", kTextAlignLeft);
   t->setFont(font);
   xpos += 4*kCFontWidth + 5;
-  myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*kCFontWidth, kLineHeight, "");
+  myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*kCFontWidth, kCLineHeight, "");
   myBinValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myBinValue->setFont(font);
   myBinValue->setEditable(false);

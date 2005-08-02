@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.20 2005-08-01 22:33:11 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.21 2005-08-02 15:59:43 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.20 2005-08-01 22:33:11 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.21 2005-08-02 15:59:43 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -245,6 +245,9 @@ class FrameBufferGL : public FrameBuffer
     // The scaling to use in fullscreen mode
     // This is separate from both zoomlevel and aspect ratio
     float myFSScaleFactor;
+
+    // FIXME - will probably be removed
+    bool myDirtyFlag;
 };
 
 #endif  // DISPLAY_OPENGL

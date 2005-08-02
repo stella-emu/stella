@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.2 2005-08-02 15:59:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,43 +57,45 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
-  int xpos   = 10;
-  int ypos   = 10;
-  int lwidth = 20;
+  int xpos = 10, ypos = 20, lwidth = 4 * kCFontWidth;
+  StaticTextWidget* t;
   const GUI::Font& font = instance()->consoleFont();
 
   // Create a 1x5 grid with labels for the CPU registers
-  myCpuGrid = new DataGridWidget(boss, xpos+lwidth + 5, ypos, 1, 5, 8, 16);
+  myCpuGrid = new DataGridWidget(boss, xpos + lwidth, ypos, 1, 5, 8, 16);
   myCpuGrid->setTarget(this);
   myActiveWidget = myCpuGrid;
 
-  string labels[5] = { "PC", "SP", "A", "X", "Y" };
+  string labels[5] = { "PC:", "SP:", "A:", "X:", "Y:" };
   for(int row = 0; row < 5; ++row)
   {
-    StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos + row*kLineHeight + 2,
-                          lwidth, kLineHeight,
-                          labels[row] + string(":"),
-                          kTextAlignLeft);
+    t = new StaticTextWidget(boss, xpos, ypos + row*kCLineHeight + 2,
+                             lwidth, kCFontHeight,
+                             labels[row], kTextAlignLeft);
     t->setFont(font);
   }
 
   // Create a read-only textbox containing the current PC label
-  xpos += lwidth + myCpuGrid->colWidth() + 10;  ypos = 10;
-  myPCLabel = new EditTextWidget(boss, xpos, ypos, 100, kLineHeight, "");
+  xpos += lwidth + myCpuGrid->colWidth() + 10;
+  myPCLabel = new EditTextWidget(boss, xpos, ypos, 100, kCLineHeight, "");
   myPCLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myPCLabel->setFont(font);
   myPCLabel->setEditable(false);
 
   // Create a bitfield widget for changing the processor status
-  xpos = 10;  ypos = 2 + 6*kLineHeight;
-  StaticTextWidget* t = new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight,
-                                             "PS:", kTextAlignLeft);
+  xpos = 10;  ypos += 5*kCLineHeight + 5;
+  t = new StaticTextWidget(boss, xpos, ypos, lwidth-2, kCFontHeight,
+                           "PS:", kTextAlignLeft);
   t->setFont(font);
-  myPSRegister = new ToggleBitWidget(boss, xpos+lwidth + 5, ypos-2, 8, 1);
+  myPSRegister = new ToggleBitWidget(boss, xpos+lwidth, ypos-2, 8, 1);
   myPSRegister->setTarget(this);
 
+// FIXME --------------------------
+// The following will be moved to another part of the debugger dialog,
+// so I won't bother fixing it here.
+
   // And some status fields
-  xpos = 10;  ypos = 10 + 8*kLineHeight;
+  xpos = 10;  ypos += 2*kCLineHeight;
   new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Current Ins:", kTextAlignLeft);
   xpos += 60;
   myCurrentIns = new EditTextWidget(boss, xpos, ypos-2, 300, kLineHeight, "");
@@ -116,6 +118,7 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
   myStatus->clearFlags(WIDGET_TAB_NAVIGATE);
   myStatus->setFont(font);
   myStatus->setEditable(false);
+// FIXME --------------------------
 
   // Set the strings to be used in the PSRegister
   // We only do this once because it's the state that changes, not the strings

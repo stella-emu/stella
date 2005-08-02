@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.14 2005-08-01 22:33:16 stephena Exp $
+// $Id: TabWidget.cxx,v 1.15 2005-08-02 15:59:45 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -104,6 +104,9 @@ void TabWidget::setActiveTab(int tabID)
   _boss->setDirty(); _boss->draw();
   Widget::setDirtyInChain(_tabs[tabID].firstWidget);
   Widget::setDirtyInChain(_tabs[tabID].parentWidget);
+
+  if(_tabs[tabID].parentWidget)
+    _tabs[tabID].parentWidget->loadConfig();
 
   if (_activeTab != tabID)
   {
@@ -261,15 +264,9 @@ void TabWidget::loadConfig()
 {
 cerr << "TabWidget::loadConfig()\n";
 
-  // (Re)load the contents of all tabs
-  // It's up to each tab to decide if it wants to do anything on a reload
-  for (int id = 0; id < (int)_tabs.size(); ++id)
-  {
-    if(_tabs[id].parentWidget)
-      _tabs[id].parentWidget->loadConfig();
-  }
-
   // Make sure changes are seen onscreen
+  // For efficiency reasons, only update the tab which is visible
+  // Others will be updated when they're selected
   setActiveTab(_activeTab);
 }
 
