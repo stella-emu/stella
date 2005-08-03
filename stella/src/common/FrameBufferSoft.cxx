@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.31 2005-08-01 22:33:11 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.32 2005-08-03 13:26:01 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -358,15 +358,6 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
   tmp.w = theZoomLevel;
   tmp.h = (y2 - y + 1) * theZoomLevel;
   SDL_FillRect(myScreen, &tmp, myPalette[color]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                                OverlayColor color, uInt32 level)
-{
-// FIXME - make this do alpha-blending
-//         for now, just do a normal fill
-  fillRect(x, y, w, h, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

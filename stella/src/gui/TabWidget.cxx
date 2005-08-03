@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.15 2005-08-02 15:59:45 stephena Exp $
+// $Id: TabWidget.cxx,v 1.16 2005-08-03 13:26:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,7 +40,7 @@ TabWidget::TabWidget(GuiObject *boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
     CommandSender(boss)
 {
-  _flags = WIDGET_ENABLED;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kTabWidget;
   _activeTab = -1;
 
@@ -100,11 +100,6 @@ void TabWidget::setActiveTab(int tabID)
 {
   assert(0 <= tabID && tabID < (int)_tabs.size());
 
-  // Make sure all child widgets are shown
-  _boss->setDirty(); _boss->draw();
-  Widget::setDirtyInChain(_tabs[tabID].firstWidget);
-  Widget::setDirtyInChain(_tabs[tabID].parentWidget);
-
   if(_tabs[tabID].parentWidget)
     _tabs[tabID].parentWidget->loadConfig();
 
@@ -129,6 +124,8 @@ void TabWidget::setActiveTab(int tabID)
     if(_activeWidget)
       _activeWidget->receivedFocus();
   }
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,7 +168,6 @@ void TabWidget::cycleWidget(int direction)
     Widget::setNextInChain(_tabs[_activeTab].firstWidget,
                            _tabs[_activeTab].activeWidget);
 
-  _boss->setDirty();
   Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
 }
 
@@ -200,7 +196,7 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
   }
 
   // If a tab was clicked, switch to that pane
-  if (tabID >= 0)
+  if (tabID >= 0 && tabID != _activeTab)
     setActiveTab(tabID);
 }
 
@@ -250,6 +246,7 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       {
         _tabs[_activeTab].activeWidget = _activeWidget;
         Widget::setFocusForChain(_firstWidget, _activeWidget);
+        setActiveTab(_activeTab);
       }
       break;
 

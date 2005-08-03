@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.3 2005-08-01 22:33:12 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.4 2005-08-03 13:26:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,6 +46,7 @@ void TiaOutputWidget::advanceScanline(int lines)
     instance()->console().mediaSource().updateScanline();
     --lines;
   }
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,12 +57,19 @@ void TiaOutputWidget::advance(int frames)
     instance()->console().mediaSource().update();
     --frames;
   }
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-cerr << "TiaOutputWidget button press: x = " << x << ", y = " << y << endl;
+  int xstart = atoi(instance()->console().properties().get("Display.XStart").c_str());
+  int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
+
+cerr << "TiaOutputWidget button press:" << endl
+     << "x = " << x << ", y = " << y << endl
+     << "xstart = " << xstart << ", ystart = " << ystart << endl
+     << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

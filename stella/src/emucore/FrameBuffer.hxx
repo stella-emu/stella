@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.51 2005-08-01 22:33:13 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.52 2005-08-03 13:26:02 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.51 2005-08-01 22:33:13 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.52 2005-08-03 13:26:02 stephena Exp $
 */
 class FrameBuffer
 {
@@ -333,19 +333,6 @@ class FrameBuffer
       @param color The color of the line
     */
     virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color) = 0;
-
-    /**
-      This method should be called to draw a blended rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the box
-      @param h      The height of the box
-      @param color  FIXME
-      @param level  FIXME
-    */
-    virtual void blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           OverlayColor color, uInt32 level = 3) = 0;
 
     /**
       This method should be called to draw a filled rectangle.

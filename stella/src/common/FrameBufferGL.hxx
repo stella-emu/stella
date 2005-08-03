@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.21 2005-08-02 15:59:43 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.22 2005-08-03 13:26:01 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.21 2005-08-02 15:59:43 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.22 2005-08-03 13:26:01 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -131,19 +131,6 @@ class FrameBufferGL : public FrameBuffer
       @param color The color of the line
     */
     virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
-
-    /**
-      This method is called to draw a blended rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the box
-      @param h      The height of the box
-      @param color  FIXME
-      @param level  FIXME
-    */
-    virtual void blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           OverlayColor color, uInt32 level = 3);
 
     /**
       This method is called to draw a filled rectangle.

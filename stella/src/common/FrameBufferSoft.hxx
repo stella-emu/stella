@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.19 2005-08-01 22:33:11 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.20 2005-08-03 13:26:01 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.19 2005-08-01 22:33:11 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.20 2005-08-03 13:26:01 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -129,19 +129,6 @@ class FrameBufferSoft : public FrameBuffer
       @param color The color of the line
     */
     virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
-
-    /**
-      This method is called to draw a blended rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the box
-      @param h      The height of the box
-      @param color  FIXME
-      @param level  FIXME
-    */
-    virtual void blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           OverlayColor color, uInt32 level = 3);
 
     /**
       This method is called to draw a filled rectangle.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.38 2005-08-02 15:59:43 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.39 2005-08-03 13:26:01 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -347,15 +347,6 @@ void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
   tmp.w = 1;
   tmp.h = y2 - y + 1;
   SDL_FillRect(myTexture, &tmp, myPalette[color]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::blendRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                              OverlayColor color, uInt32 level)
-{
-// FIXME - make this do alpha-blending
-//         for now, just do a normal fill
-  fillRect(x, y, w, h, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
