@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.1 2005-08-04 16:31:24 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.2 2005-08-04 22:59:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,9 +46,8 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font)
   // Calculate real dimensions
   _w = fontWidth * 30;
   _h = lineHeight * 6;
-// FIXME
-  _x = 100;//(boss->getAbsX() - _w) / 2;
-  _y = 400;//(boss->getAbsY() - _h) / 2;
+  _x = (boss->getWidth() - _w) / 2;
+  _y = (boss->getHeight() - _h) / 2;
 
   xpos = 10; ypos = lineHeight;
   int lwidth = font.getStringWidth("Enter Data:");
@@ -63,6 +62,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font)
                              _w - xpos - 10, lineHeight, "");
   _input->setFont(font);
   _input->clearFlags(WIDGET_TAB_NAVIGATE);
+  _input->receivedFocus();
 
   xpos = 10; ypos = 2*lineHeight;
   _title = new StaticTextWidget(this, xpos, ypos, _w - 2*xpos, fontHeight,

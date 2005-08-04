@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.13 2005-08-01 22:33:15 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.14 2005-08-04 22:59:54 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -93,8 +93,8 @@ void DialogContainer::draw(bool fullrefresh)
 void DialogContainer::addDialog(Dialog* d)
 {
   myDialogStack.push(d);
-  myOSystem->frameBuffer().refreshTIA();
-  myOSystem->frameBuffer().refreshOverlay();
+  d->open();
+  d->setDirty();  // Next update() will take care of drawing
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -103,6 +103,9 @@ void DialogContainer::removeDialog()
   if(!myDialogStack.empty())
   {
     myDialogStack.pop();
+
+    // We need to redraw all underlying dialogs, since we don't know
+    // which ones were obscured
     myOSystem->frameBuffer().refreshTIA();
     myOSystem->frameBuffer().refreshOverlay();
   }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.25 2005-07-05 15:25:44 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.26 2005-08-04 22:59:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,11 +52,16 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myGameList(NULL),
     myProgressBar(NULL)
 {
+  const GUI::Font& font = instance()->font();
+  const int fontWidth  = font.getMaxCharWidth(),
+            fontHeight = font.getFontHeight(),
+            lineHeight = font.getLineHeight();
+
   // Show game name
-  new StaticTextWidget(this, 10, 8, 200, kLineHeight,
+  new StaticTextWidget(this, 10, 8, 200, fontHeight,
                        "Select a game from the list ...", kTextAlignLeft);
 
-  myRomCount = new StaticTextWidget(this, _w - 100, 8, 90, kLineHeight,
+  myRomCount = new StaticTextWidget(this, _w - 100, 8, 90, fontHeight,
                                     "", kTextAlignRight);
 
   // Add four buttons at the bottom
@@ -93,9 +98,9 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myList->clearFlags(WIDGET_TAB_NAVIGATE);
 
   // Add note textwidget to show any notes for the currently selected ROM
-  new StaticTextWidget(this, 20, _h - 43, 30, 16, "Note:", kTextAlignLeft);
-  myNote = new StaticTextWidget(this, 50, _h - 43, w - 70, 16,
-                                       "", kTextAlignLeft);
+  new StaticTextWidget(this, 20, _h - 43, 30, fontHeight, "Note:", kTextAlignLeft);
+  myNote = new StaticTextWidget(this, 50, _h - 43, w - 70, fontHeight,
+                                "", kTextAlignLeft);
 
   // Create the launcher options dialog, where you can change ROM
   // and snapshot paths
@@ -224,13 +229,8 @@ void LauncherDialog::loadListFromDisk()
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
-  string message = "Loading ROM's from disk ...";
-  int w = instance()->font().getStringWidth(message) + 20,
-      h = kLineHeight * 4;
-  int x = (_w - w) / 2,
-      y = (_h - h) / 2;
-  ProgressDialog progress(instance(), parent(), x, y, w, h);
-  progress.setMessage(message);
+  ProgressDialog progress(this, instance()->font(),
+                          "Loading ROM's from disk ...");
   progress.setRange(0, files.size() - 1, 10);
 
   // Create a entry for the GameList for each file

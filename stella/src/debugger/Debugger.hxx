@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.64 2005-08-01 22:33:12 stephena Exp $
+// $Id: Debugger.hxx,v 1.65 2005-08-04 22:59:38 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -46,16 +46,16 @@ typedef ListFile::const_iterator ListIter;
 
 typedef map<string,Expression*> FunctionMap;
 
-#if 0
+#if 1
 enum {
   kDebuggerWidth = 1023,
-  kDebuggerLineHeight = 12,   // based on the height of the console font
+  kDebuggerLineHeight = 15,   // based on the height of the console font
   kDebuggerLines = 35,
 };
 #else
 enum {
   kDebuggerWidth = 639,
-  kDebuggerLineHeight = 12,   // based on the height of the console font
+  kDebuggerLineHeight = 15,   // based on the height of the console font
   kDebuggerLines = 20,
 };
 #endif
@@ -82,7 +82,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.64 2005-08-01 22:33:12 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.65 2005-08-04 22:59:38 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -286,8 +286,9 @@ class Debugger : public DialogContainer
       (takes mediasource into account)
     */
     GUI::Rect getDialogBounds() const;
-    GUI::Rect getStatusBounds() const;
     GUI::Rect getTiaBounds() const;
+    GUI::Rect getRomBounds() const;
+    GUI::Rect getStatusBounds() const;
     GUI::Rect getTabBounds() const;
 
     /**
@@ -359,7 +360,7 @@ class Debugger : public DialogContainer
 
     static Debugger* myStaticDebugger;
 
-	 FunctionMap functions;
+    FunctionMap functions;
 };
 
 #endif

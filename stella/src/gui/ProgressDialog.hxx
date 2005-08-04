@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.hxx,v 1.1 2005-05-17 18:42:23 stephena Exp $
+// $Id: ProgressDialog.hxx,v 1.2 2005-08-04 22:59:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,19 +22,18 @@
 #ifndef PROGRESS_DIALOG_HXX
 #define PROGRESS_DIALOG_HXX
 
-class DialogContainer;
 class StaticTextWidget;
 class SliderWidget;
 
-#include "OSystem.hxx"
+#include "GuiObject.hxx"
 #include "bspf.hxx"
 
 class ProgressDialog : public Dialog
 {
   public:
-    ProgressDialog(OSystem* osystem, DialogContainer* parent,
-                   int x, int y, int w, int h);
-    ~ProgressDialog();
+    ProgressDialog(GuiObject* boss, const GUI::Font& font,
+                   const string& message);
+    virtual ~ProgressDialog();
 
     void setMessage(const string& message);
     void setRange(int begin, int end, int step);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.23 2005-08-03 13:26:02 stephena Exp $
+// $Id: Dialog.cxx,v 1.24 2005-08-04 22:59:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -134,6 +134,9 @@ void Dialog::drawDialog()
     // Make all child widget dirty
     Widget* w = _firstWidget;
     Widget::setDirtyInChain(w);
+
+    // Tell the framebuffer this area is dirty
+    fb.addDirtyRect(_x, _y, _w, _h);
 
     _dirty = false;
   }

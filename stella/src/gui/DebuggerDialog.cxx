@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.29 2005-08-03 13:26:02 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.30 2005-08-04 22:59:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,6 +51,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   addTiaArea();
   addTabArea();
   addStatusArea();
+  addRomArea();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,7 +62,6 @@ DebuggerDialog::~DebuggerDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
-cerr << "DebuggerDialog::loadConfig()\n";
   myTab->loadConfig();
   myTiaInfo->loadConfig();
   myTiaOutput->loadConfig();
@@ -130,31 +130,29 @@ void DebuggerDialog::addTiaArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTabArea()
 {
-  const int vBorder = 4;
-  const int vWidth = _w - kButtonWidth - 20;
-
   GUI::Rect r = instance()->debugger().getTabBounds();
 
+  const int vBorder = 4;
+  const int widWidth  = r.width() - vBorder;
+  const int widHeight = r.height() - 25; // FIXME - magic number/font height
+
   // The tab widget
-  myTab = new TabWidget(this, r.left, r.top + vBorder, vWidth,
-                        r.height() - vBorder);
+  myTab = new TabWidget(this, r.left, r.top + vBorder,
+                              r.width(), r.height() - vBorder);
 
   // 1) The Prompt/console tab
   myTab->addTab("Prompt");
-  myPrompt = new PromptWidget(myTab, 2, 2, vWidth - vBorder,
-                              r.height() - 25);
+  myPrompt = new PromptWidget(myTab, 2, 2, widWidth, widHeight);
   myTab->setParentWidget(0, myPrompt, myPrompt);
 
   // 2) The CPU tab
   myTab->addTab("CPU");
-  CpuWidget* cpu = new CpuWidget(myTab, 2, 2, vWidth - vBorder,
-                                 r.height() - 25);
+  CpuWidget* cpu = new CpuWidget(myTab, 2, 2, widWidth, widHeight);
   myTab->setParentWidget(1, cpu, cpu->activeWidget());
 
   // 3) The RAM tab (part of RIOT)
   myTab->addTab("RAM");
-  RamWidget* ram = new RamWidget(myTab, 2, 2, vWidth - vBorder,
-                                 r.height() - 25);
+  RamWidget* ram = new RamWidget(myTab, 2, 2, widWidth, widHeight);
   myTab->setParentWidget(2, ram, ram->activeWidget());
 
   // 4) The input/output tab (part of RIOT)
@@ -163,8 +161,7 @@ void DebuggerDialog::addTabArea()
 
   // 5) The TIA tab
   myTab->addTab("TIA");
-  TiaWidget* tia = new TiaWidget(myTab, 2, 2, vWidth - vBorder,
-                                 r.height() - 25);
+  TiaWidget* tia = new TiaWidget(myTab, 2, 2, widWidth, widHeight);
   myTab->setParentWidget(4, tia, tia->activeWidget());
 
 
@@ -174,24 +171,11 @@ void DebuggerDialog::addTabArea()
 
   // 7) The Cheat tab
   myTab->addTab("Cheat");
-  CheatWidget* cheat = new CheatWidget(myTab, 2, 2,
-                                       vWidth - vBorder, r.height() - 25);
+  CheatWidget* cheat = new CheatWidget(myTab, 2, 2, widWidth, widHeight);
   myTab->setParentWidget(6, cheat, cheat->activeWidget());
 
   // Set active tab to prompt
   myTab->setActiveTab(0);
-
-  // Add some buttons that are always shown, no matter which tab we're in
-  int yoff = r.top + vBorder + kTabHeight + 5;
-  addButton(vWidth + 10, yoff, "Step", kDDStepCmd, 0);
-  yoff += 22;
-  addButton(vWidth + 10, yoff, "Trace", kDDTraceCmd, 0);
-  yoff += 22;
-  addButton(vWidth + 10, yoff, "Scan +1", kDDSAdvCmd, 0);
-  yoff += 22;
-  addButton(vWidth + 10, yoff, "Frame +1", kDDAdvCmd, 0);
-
-  addButton(vWidth + 10, r.bottom - 22 - 10, "Exit", kDDExitCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,6 +183,26 @@ void DebuggerDialog::addStatusArea()
 {
   GUI::Rect r = instance()->debugger().getStatusBounds();
   myTiaInfo = new TiaInfoWidget(this, r.left, r.top, r.width(), r.height());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::addRomArea()
+{
+  GUI::Rect r = instance()->debugger().getRomBounds();
+
+  // Add some buttons that are always shown, no matter which tab we're in
+  // FIXME - these positions will definitely change
+  int xoff = r.right - 100;
+  int yoff = r.bottom - 150;
+  addButton(xoff, yoff, "Step", kDDStepCmd, 0);
+  yoff += 22;
+  addButton(xoff, yoff, "Trace", kDDTraceCmd, 0);
+  yoff += 22;
+  addButton(xoff, yoff, "Scan +1", kDDSAdvCmd, 0);
+  yoff += 22;
+  addButton(xoff, yoff, "Frame +1", kDDAdvCmd, 0);
+
+  addButton(xoff, r.bottom - 22 - 10, "Exit", kDDExitCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

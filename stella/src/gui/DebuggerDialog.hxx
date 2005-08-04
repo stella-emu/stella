@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.14 2005-07-21 19:30:16 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.15 2005-08-04 22:59:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,6 +58,7 @@ class DebuggerDialog : public Dialog
     void addTiaArea();
     void addTabArea();
     void addStatusArea();
+    void addRomArea();
 
     void doStep();
     void doTrace();

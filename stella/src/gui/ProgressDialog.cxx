@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.cxx,v 1.4 2005-08-01 22:33:15 stephena Exp $
+// $Id: ProgressDialog.cxx,v 1.5 2005-08-04 22:59:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,24 +29,41 @@
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ProgressDialog::ProgressDialog(OSystem* osystem, DialogContainer* parent,
-                               int x, int y, int w, int h)
-    : Dialog(osystem, parent, x, y, w, h),
+ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
+                               const string& message)
+    : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
       myMessage(NULL),
       mySlider(NULL),
       myStart(0),
       myFinish(0),
       myStep(0)
 {
-  myMessage = new StaticTextWidget(this, 0, 10, w, kLineHeight, "", kTextAlignCenter);
+  const int fontWidth  = font.getMaxCharWidth(),
+            fontHeight = font.getFontHeight(),
+            lineHeight = font.getLineHeight();
+  int xpos, ypos, lwidth;
+
+  // Calculate real dimensions
+  lwidth = font.getStringWidth(message);
+  _w = lwidth + 2 * fontWidth;
+  _h = lineHeight * 5;
+  _x = (boss->getWidth() - _w) / 2;
+  _y = (boss->getHeight() - _h) / 2;
+
+  xpos = fontWidth; ypos = lineHeight;
+  myMessage = new StaticTextWidget(this, xpos, ypos, lwidth, fontHeight,
+                                   message, kTextAlignCenter);
   myMessage->setColor(kTextColorEm);
-  mySlider = new SliderWidget(this, 10, 15 + kLineHeight, w - 20, kLineHeight, "", 0, 0);
+
+  xpos = fontWidth; ypos += 2 * lineHeight;
+  mySlider = new SliderWidget(this, xpos, ypos, lwidth, lineHeight, "", 0, 0);
   mySlider->setMinValue(100);
   mySlider->setMaxValue(200);
   mySlider->setValue(100);  // Prevents the slider from initially drawing
                             // across the entire screen for a split-second
 
-  parent->addDialog(this);
+  parent()->addDialog(this);
+  instance()->frameBuffer().update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,6 +102,6 @@ void ProgressDialog::setProgress(int progress)
   {
     myCurrentStep += myStep;
     mySlider->setValue(p);
-    instance()->frameBuffer().refreshOverlay(true);
+    instance()->frameBuffer().update();
   }
 }

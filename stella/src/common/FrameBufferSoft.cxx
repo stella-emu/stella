@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.32 2005-08-03 13:26:01 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.33 2005-08-04 22:59:38 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -276,6 +276,7 @@ void FrameBufferSoft::postFrameUpdate()
 {
   // Now update all the rectangles at once
   SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
+//  SDL_UpdateRect(myScreen, 0, 0, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
