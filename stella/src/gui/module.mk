@@ -18,6 +18,7 @@ MODULE_OBJS := \
 	src/gui/GameInfoDialog.o \
 	src/gui/GameList.o \
 	src/gui/HelpDialog.o \
+	src/gui/InputTextDialog.o \
 	src/gui/Launcher.o \
 	src/gui/LauncherDialog.o \
 	src/gui/LauncherOptionsDialog.o \

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.8 2005-08-01 22:33:15 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.9 2005-08-04 16:31:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -173,7 +173,7 @@ void EditableWidget::drawCaret()
 
   x += getCaretOffset();
 
-  x += getAbsX();
+  x += _x;
   y += _y;
 
   FrameBuffer& fb = _boss->instance()->frameBuffer();

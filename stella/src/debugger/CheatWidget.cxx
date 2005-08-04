@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.2 2005-08-04 16:31:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,19 +29,23 @@
 #include "Widget.hxx"
 #include "EditNumWidget.hxx"
 #include "AddrValueWidget.hxx"
+#include "InputTextDialog.hxx"
 
 #include "CheatWidget.hxx"
 
 enum {
-  kSearchCmd  = 'CSEA',
-  kCmpCmd     = 'CCMP',
-  kRestartCmd = 'CRST'
+  kSearchCmd   = 'CSEA',
+  kCmpCmd      = 'CCMP',
+  kRestartCmd  = 'CRST',
+  kSValEntered = 'CSVE',
+  kCValEntered = 'CCVE'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
-    CommandSender(boss)
+    CommandSender(boss),
+    myInputBox(NULL)
 {
   const int border = 20;
   const int bwidth = 50;
@@ -91,6 +95,9 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75, 0xff);
   myResultsList->setFont(instance()->consoleFont());
   myResultsList->setTarget(this);
+
+  myInputBox = new InputTextDialog(boss, instance()->consoleFont());
+  myInputBox->setTarget(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +105,8 @@ CheatWidget::~CheatWidget()
 {
   mySearchArray.clear();
   myCompareArray.clear();
+
+  delete myInputBox;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,16 +115,42 @@ void CheatWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
   switch(cmd)
   {
     case kSearchCmd:
-      doSearch();
+      myInputBox->setEditString("");
+      myInputBox->setTitle("");
+      myInputBox->setEmitSignal(kSValEntered);
+      parent()->addDialog(myInputBox);
       break;
 
     case kCmpCmd:
-      doCompare();
+      myInputBox->setEditString("");
+      myInputBox->setTitle("");
+      myInputBox->setEmitSignal(kCValEntered);
+      parent()->addDialog(myInputBox);
       break;
 
     case kRestartCmd:
       doRestart();
       break;
+
+    case kSValEntered:
+    {
+      const string& result = doSearch(myInputBox->getResult());
+      if(result != "")
+        myInputBox->setTitle(result);
+      else
+        parent()->removeDialog();
+      break;
+    }
+
+    case kCValEntered:
+    {
+      const string& result = doCompare(myInputBox->getResult());
+      if(result != "")
+        myInputBox->setTitle(result);
+      else
+        parent()->removeDialog();
+      break;
+    }
 
     case kAVItemDataChangedCmd:
       int addr  = myResultsList->getSelectedAddr() - kRamStart;
@@ -126,11 +161,10 @@ void CheatWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatWidget::doSearch()
+const string CheatWidget::doSearch(const string& str)
 {
   bool comparisonSearch = true;
 
-  string str = myEditBox->getEditString();
   if(str.length() == 0)
   {
     // An empty field means return all memory locations
@@ -139,8 +173,7 @@ void CheatWidget::doSearch()
   else if(str.find_first_of("+-", 0) != string::npos)
   {
     // Don't accept these characters here, only in compare
-    myResult->setLabel("Invalid input +|-");
-    return;
+    return "Invalid input +|-";
   }
 
   int searchVal = instance()->debugger().stringToValue(str);
@@ -190,28 +223,25 @@ void CheatWidget::doSearch()
 
   // Finally, show the search results in the list
   fillResultsList();
+
+  return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatWidget::doCompare()
+const string CheatWidget::doCompare(const string& str)
 {
   bool comparitiveSearch = false;
   int searchVal = 0;
 
-  string str = myEditBox->getEditString();
   if(str.length() == 0)
-  {
-    myResult->setLabel("Enter an absolute or comparitive value");
-    return;
-  }
+    return "Enter an absolute or comparitive value";
 
   // Do some pre-processing on the string
   string::size_type pos = str.find_first_of("+-", 0);
   if(pos > 0 && pos != string::npos)
   {
     // Only accept '+' or '-' at the start of the string
-    myResult->setLabel("Input must be [+|-]NUM");
-    return;
+    return "Input must be [+|-]NUM";
   }
 
   if(str[0] == '+' || str[0] == '-')
@@ -220,8 +250,9 @@ void CheatWidget::doCompare()
     if(str[0] == '-')
       negative = true;
 
-    str.erase(0, 1);  // remove the operator
-    searchVal = instance()->debugger().stringToValue(str);
+    string tmp = str;
+    tmp.erase(0, 1);  // remove the operator
+    searchVal = instance()->debugger().stringToValue(tmp);
     if(negative)
       searchVal = -searchVal;
 
@@ -276,6 +307,8 @@ void CheatWidget::doCompare()
 
   // Finally, show the search results in the list
   fillResultsList();
+
+  return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

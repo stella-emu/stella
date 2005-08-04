@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.hxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: CheatWidget.hxx,v 1.2 2005-08-04 16:31:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@ class ButtonWidget;
 class StaticTextWidget;
 class EditNumWidget;
 class AddrValueWidget;
+class InputTextDialog;
 
 #include "Array.hxx"
 #include "Widget.hxx"
@@ -55,8 +56,8 @@ class CheatWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    void doSearch();
-    void doCompare();
+    const string doSearch(const string& str);
+    const string doCompare(const string& str);
     void doRestart();
 
     void fillResultsList();
@@ -72,6 +73,8 @@ class CheatWidget : public Widget, public CommandSender
     ButtonWidget* myRestartButton;
 
     AddrValueWidget* myResultsList;
+
+    InputTextDialog* myInputBox;
 };
 
 #endif
