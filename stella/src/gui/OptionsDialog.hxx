@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.11 2005-07-05 15:25:44 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.12 2005-08-05 02:28:22 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,7 @@ class AboutDialog;
 #include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "GameInfoDialog.hxx"
+#include "CheatCodeDialog.hxx"
 #include "bspf.hxx"
 
 class OptionsDialog : public Dialog
@@ -52,6 +53,7 @@ class OptionsDialog : public Dialog
     AudioDialog*        myAudioDialog;
     EventMappingDialog* myEventMappingDialog;
     GameInfoDialog*     myGameInfoDialog;
+    CheatCodeDialog*    myCheatCodeDialog;
     HelpDialog*         myHelpDialog;
     AboutDialog*        myAboutDialog;
 

@@ -1,6 +1,8 @@
 MODULE := src/debugger
 
 MODULE_OBJS := \
+	src/debugger/Cheat.o \
+	src/debugger/CheetahCheat.o \
 	src/debugger/Debugger.o \
 	src/debugger/DebuggerParser.o \
 	src/debugger/EquateList.o \

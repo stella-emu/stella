@@ -60,8 +60,7 @@ What the debugger can do:
   breakpoints, traps, etc).
 - Built-in functions for use with "breakif", to support common conditions
   (such as breaking when the user presses Game Select...)
-- Save patched ROM ("saverom filename.bin"). This currently works for every
-  cart type except DPC (Pitfall II).
+- Save patched ROM ("saverom filename.bin").
 
 Planned features for Stella 2.0 release:
 - Graphical TIA tab, with register names and GUI buttons for

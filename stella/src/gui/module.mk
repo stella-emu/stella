@@ -6,6 +6,7 @@ MODULE_OBJS := \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
 	src/gui/ColorWidget.o \
+	src/gui/CheatCodeDialog.o \
 	src/gui/DataGridWidget.o \
 	src/gui/DebuggerDialog.o \
 	src/gui/DialogContainer.o \

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.74 2005-07-30 22:08:24 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.75 2005-08-05 02:28:21 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -25,6 +25,8 @@
 #include "YaccParser.hxx"
 #include "M6502.hxx"
 #include "Expression.hxx"
+#include "CheetahCheat.hxx"
+#include "Cheat.hxx"
 
 #include "DebuggerParser.hxx"
 
@@ -1304,42 +1306,13 @@ void DebuggerParser::executeCheetah() {
 
 	for(int arg = 0; arg < argCount; arg++) {
 		string& cheat = argStrings[arg];
-
-		if(cheat.size() != 6) {
-			commandResult += red(cheat + ": Invalid Cheetah code (must be 6 hex digits)");
-			return;
+		Cheat *c = Cheat::parse(cheat);
+		if(c) {
+			c->enable();
+			commandResult = "Cheetah code " + cheat + " enabled\n";
+		} else {
+			commandResult = red("Invalid cheetah code " + cheat + "\n");
 		}
-
-		for(int i=0; i<6; i++) {
-			if(conv_hex_digit(cheat[i]) < 0) {
-				commandResult += red(cheat + ": Invalid hex digit in Cheetah code");
-				return;
-			}
-		}
-
-		int addr = 0;
-		for(int i=0; i<3; i++) {
-			addr = addr * 16 + conv_hex_digit(cheat[i]);
-		}
-		addr += 0xf000;
-
-		int value = 0;
-		for(int i=3; i<5; i++) {
-			value = value * 16 + conv_hex_digit(cheat[i]);
-		}
-
-		int count = conv_hex_digit(cheat[5]) + 1;
-
-		for(int i=0; i<count; i++)
-			debugger->patchROM(addr + i, value);
-
-		commandResult += cheat;
-		commandResult += ": ";
-		commandResult += debugger->valueToString(count);
-		commandResult += " address";
-		if(count != 1) commandResult += "es";
-		commandResult += " modified.";
-		if(arg != argCount - 1) commandResult += "\n";
 	}
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.65 2005-08-04 22:59:38 stephena Exp $
+// $Id: Debugger.hxx,v 1.66 2005-08-05 02:28:21 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -82,7 +82,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.65 2005-08-04 22:59:38 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.66 2005-08-05 02:28:21 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -265,6 +265,9 @@ class Debugger : public DialogContainer
 
     bool saveROM(string filename);
 
+    bool setBank(int bank);
+    bool patchROM(int addr, int value);
+
   private:
     /**
       Save state of each debugger subsystem
@@ -330,9 +333,7 @@ class Debugger : public DialogContainer
     PromptWidget *prompt() { return myPrompt; }
     void addLabel(string label, int address);
 
-    bool setBank(int bank);
     const char *getCartType();
-    bool patchROM(int addr, int value);
     void saveState(int state);
     void loadState(int state);
 

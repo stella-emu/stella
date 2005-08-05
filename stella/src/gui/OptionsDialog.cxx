@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.21 2005-07-05 15:25:44 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.22 2005-08-05 02:28:22 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,14 +41,15 @@ enum {
   kInfoCmd  = 'INFO',
   kHelpCmd  = 'HELP',
   kAboutCmd = 'ABOU',
-  kExitCmd  = 'EXIM'
+  kExitCmd  = 'EXIM',
+  kCheatCmd = 'CHET'
 };
 
 enum {
   kRowHeight      = 22,
   kBigButtonWidth = 90,
   kMainMenuWidth  = (kBigButtonWidth + 2 * 8),
-  kMainMenuHeight = 7 * kRowHeight + 10,
+  kMainMenuHeight = 8 * kRowHeight + 10,
 };
 
 #define addBigButton(label, cmd, hotkey) \
@@ -64,6 +65,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
       myAudioDialog(NULL),
       myEventMappingDialog(NULL),
       myGameInfoDialog(NULL),
+      myCheatCodeDialog(NULL),
       myHelpDialog(NULL),
       myAboutDialog(NULL)
 {
@@ -79,6 +81,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
 #endif
   addBigButton("Event Mapping", kEMapCmd, 0);
   addBigButton("Game Information", kInfoCmd, 0);
+  addBigButton("Cheat Code", kCheatCmd, 0);
   addBigButton("Help", kHelpCmd, 0);
   addBigButton("About", kAboutCmd, 0);
   addBigButton("Exit Menu", kExitCmd, 0);
@@ -107,6 +110,10 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
+  myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, x, y, w, h);
+
+  w = 255; h = 150;
+  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myHelpDialog = new HelpDialog(myOSystem, parent, x, y, w, h);
 
   w = 255; h = 150;
@@ -121,6 +128,7 @@ OptionsDialog::~OptionsDialog()
   delete myAudioDialog;
   delete myEventMappingDialog;
   delete myGameInfoDialog;
+  delete myCheatCodeDialog;
   delete myHelpDialog;
   delete myAboutDialog;
 }
@@ -166,6 +174,10 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kInfoCmd:
       parent()->addDialog(myGameInfoDialog);
+      break;
+
+    case kCheatCmd:
+      parent()->addDialog(myCheatCodeDialog);
       break;
 
     case kHelpCmd:
