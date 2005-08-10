@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.19 2005-08-01 22:33:16 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.20 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -137,8 +137,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
   addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
-
-  setDefaults();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

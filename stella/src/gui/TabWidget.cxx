@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.16 2005-08-03 13:26:02 stephena Exp $
+// $Id: TabWidget.cxx,v 1.17 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 #include "bspf.hxx"
 #include "GuiObject.hxx"
 #include "Widget.hxx"
+#include "Dialog.hxx"
 #include "TabWidget.hxx"
 
 enum {
@@ -33,18 +34,16 @@ enum {
   kTabPadding = 3
 };
 
-Widget* GuiObject::_activeWidget;
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TabWidget::TabWidget(GuiObject *boss, int x, int y, int w, int h)
+TabWidget::TabWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
-    CommandSender(boss)
+    CommandSender(boss),
+    _tabWidth(40),
+    _activeTab(-1),
+    _firstTime(true)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kTabWidget;
-  _activeTab = -1;
-
-  _tabWidth = 40;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,7 +54,6 @@ TabWidget::~TabWidget()
     delete _tabs[i].firstWidget;
     _tabs[i].firstWidget = 0;
     // _tabs[i].parentWidget is deleted elsewhere
-    // _tabs[i].activeWidget is deleted elsewhere
   }
   _tabs.clear();
 }
@@ -74,7 +72,6 @@ int TabWidget::addTab(const string& title)
   newTab.title = title;
   newTab.firstWidget = NULL;
   newTab.parentWidget = NULL;
-  newTab.activeWidget = NULL;
 
   _tabs.push_back(newTab);
 
@@ -96,34 +93,32 @@ int TabWidget::addTab(const string& title)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::setActiveTab(int tabID)
+void TabWidget::setActiveTab(int tabID, bool show)
 {
   assert(0 <= tabID && tabID < (int)_tabs.size());
 
-  if(_tabs[tabID].parentWidget)
-    _tabs[tabID].parentWidget->loadConfig();
-
-  if (_activeTab != tabID)
+  if (_activeTab != -1)
   {
     // Exchange the widget lists, and switch to the new tab
-    if (_activeTab != -1)
-      _tabs[_activeTab].firstWidget = _firstWidget;
-
-    _activeTab = tabID;
-    _firstWidget  = _tabs[tabID].firstWidget;
-
-    // If a widget has been activated elsewhere and it belongs to the
-    // current view, use it.  Otherwise use the default.
-    if(_activeWidget && isWidgetInChain(_firstWidget, _activeWidget))
-      _tabs[tabID].activeWidget = _activeWidget;
-    else
-      _activeWidget = _tabs[tabID].activeWidget;
-
-    // Make sure this widget receives focus, and that the other widgets
-    // in the tabview lose focus
-    if(_activeWidget)
-      _activeWidget->receivedFocus();
+    _tabs[_activeTab].firstWidget = _firstWidget;
   }
+
+  _activeTab = tabID;
+  _firstWidget  = _tabs[tabID].firstWidget;
+
+  // Let parent know about the tab change
+  if(show)
+    sendCommand(kTabChangedCmd, _activeTab, -1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::updateActiveTab()
+{
+  if(_activeTab < 0)
+    return;
+
+  if(_tabs[_activeTab].parentWidget)
+    _tabs[_activeTab].parentWidget->loadConfig();
 
   setDirty(); draw();
 }
@@ -151,33 +146,15 @@ void TabWidget::cycleTab(int direction)
   }
 
   // Finally, select the active tab
-  setActiveTab(tabID);
+  setActiveTab(tabID, true);
+  updateActiveTab();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::cycleWidget(int direction)
-{
-  // Don't do anything if no tabs have been defined
-  if(_activeTab == -1)
-    return;
-
-  if(direction == -1)
-    Widget::setPrevInChain(_tabs[_activeTab].firstWidget,
-                           _tabs[_activeTab].activeWidget);
-  else if(direction == +1)
-    Widget::setNextInChain(_tabs[_activeTab].firstWidget,
-                           _tabs[_activeTab].activeWidget);
-
-  Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::setParentWidget(int tabID, Widget* parent, Widget* active)
+void TabWidget::setParentWidget(int tabID, Widget* parent)
 {
   assert(0 <= tabID && tabID < (int)_tabs.size());
   _tabs[tabID].parentWidget = parent;
-  _tabs[tabID].activeWidget = active;
-  _tabs[tabID].activeWidget->receivedFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,43 +174,10 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
 
   // If a tab was clicked, switch to that pane
   if (tabID >= 0 && tabID != _activeTab)
-    setActiveTab(tabID);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TabWidget::handleKeyDown(int ascii, int keycode, int modifiers)
-{
-  // Test for TAB character
-  // Ctrl-Tab selects next tab
-  // Shift-Ctrl-Tab selects previous tab
-  // Tab sets next widget in current tab
-  // Shift-Tab sets previous widget in current tab
-  if(keycode == 9)  // tab key
   {
-    if(_boss->instance()->eventHandler().kbdControl(modifiers))
-    {
-      if(_boss->instance()->eventHandler().kbdShift(modifiers))
-        cycleTab(-1);
-      else
-        cycleTab(+1);
-
-      return true;  // this key-combo is never passed to the child widget
-    }
-    else if(_activeWidget && (_activeWidget->getFlags() & WIDGET_TAB_NAVIGATE))
-    {
-      if(_boss->instance()->eventHandler().kbdShift(modifiers))
-        cycleWidget(-1);
-      else
-        cycleWidget(+1);
-
-      return true;  // swallow tab key if the current widget wants navigation
-    }
+    setActiveTab(tabID, true);
+    updateActiveTab();
   }
-
-  if (_activeWidget)
-    return _activeWidget->handleKeyDown(ascii, keycode, modifiers);
-  else
-    return Widget::handleKeyDown(ascii, keycode, modifiers);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,15 +185,6 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kActiveWidgetCmd:
-      if(_activeWidget && isWidgetInChain(_firstWidget, _activeWidget))
-      {
-        _tabs[_activeTab].activeWidget = _activeWidget;
-        Widget::setFocusForChain(_firstWidget, _activeWidget);
-        setActiveTab(_activeTab);
-      }
-      break;
-
     default:
       sendCommand(cmd, data, _id);
       break;
@@ -259,12 +194,14 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::loadConfig()
 {
-cerr << "TabWidget::loadConfig()\n";
+//cerr << "TabWidget::loadConfig()\n";
+  if(_firstTime)
+  {
+    setActiveTab(_activeTab, true);
+    _firstTime = false;
+  }
 
-  // Make sure changes are seen onscreen
-  // For efficiency reasons, only update the tab which is visible
-  // Others will be updated when they're selected
-  setActiveTab(_activeTab);
+  updateActiveTab();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,7 +227,7 @@ void TabWidget::box(int x, int y, int width, int height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::drawWidget(bool hilite)
 {
-cerr << "TabWidget::drawWidget\n";
+//cerr << "TabWidget::drawWidget: " << _tabs[_activeTab].firstWidget << endl;
   // The tab widget is strange in that it acts as both a widget (obviously)
   // and a dialog (it contains other widgets).  Because of the latter,
   // it must assume responsibility for refreshing all its children.
@@ -327,6 +264,9 @@ cerr << "TabWidget::drawWidget\n";
   fb.hLine(_x+1, _y + _h - 1, _x + _w - 2, kColor);
   fb.vLine(_x + _w - 2, _y + kTabHeight - 1, _y + _h - 2, kColor);
   fb.vLine(_x + _w - 1, _y + kTabHeight - 1, _y + _h - 2, kShadowColor);
+
+  // Redraw focused areas
+  _boss->redrawFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

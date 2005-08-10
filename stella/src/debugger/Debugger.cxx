@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.80 2005-08-04 22:59:38 stephena Exp $
+// $Id: Debugger.cxx,v 1.81 2005-08-10 12:23:42 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -160,8 +160,6 @@ void Debugger::initialize()
   string cheetah = myOSystem->settings().getString("cheetah");
   if(cheetah != "") run("cheetah " + cheetah);
   myOSystem->settings().setString("cheetah", "", false);
-
-  autoExec();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

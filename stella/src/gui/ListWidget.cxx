@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.24 2005-08-01 22:33:15 stephena Exp $
+// $Id: ListWidget.cxx,v 1.25 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,8 +37,7 @@ ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
 {
   _w = w - kScrollBarWidth;
 	
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_TAB_NAVIGATE;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kListWidget;
   _editMode = false;
   _numberingMode = kListNumberingOne;
@@ -125,10 +124,6 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if (!isEnabled())
     return;
 
-  // A click indicates this widget has been selected
-  // It should receive focus (because it has the WIDGET_TAB_NAVIGATE property)
-  receivedFocus();
-
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
@@ -141,11 +136,11 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
       abortEditMode();
     _selectedItem = newSelectedItem;
     sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    setDirty(); draw();
   }
 	
   // TODO: Determine where inside the string the user clicked and place the
   // caret accordingly. See _editScrollOffset and EditTextWidget::handleMouseDown.
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

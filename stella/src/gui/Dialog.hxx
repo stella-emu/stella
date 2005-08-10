@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.18 2005-07-05 15:25:44 stephena Exp $
+// $Id: Dialog.hxx,v 1.19 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 
 class OSystem;
 class DialogContainer;
+class TabWidget;
 
 #include "Command.hxx"
 #include "Widget.hxx"
@@ -35,11 +36,17 @@ class DialogContainer;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.18 2005-07-05 15:25:44 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.19 2005-08-10 12:23:42 stephena Exp $
 */
 class Dialog : public GuiObject
 {
   friend class DialogContainer;
+
+  struct Focus {
+    Widget* focusedWidget;
+    WidgetArray focusList;
+  };
+  typedef GUI::Array<Focus> FocusList;
 
   public:
     Dialog(OSystem* instance, DialogContainer* parent,
@@ -56,6 +63,11 @@ class Dialog : public GuiObject
     virtual void loadConfig() {}
     virtual void saveConfig() {}
     virtual void setDefaults() {}
+
+    void addFocusWidget(Widget* w);
+    void addToFocusList(WidgetArray& list, int id = -1);
+    void redrawFocus();
+    void addTabWidget(TabWidget* w) { _ourTab = w; }
 
   protected:
     virtual void draw();
@@ -79,6 +91,9 @@ class Dialog : public GuiObject
     void setResult(int result) { _result = result; }
     int getResult() const { return _result; }
 
+  private:
+    void buildFocusWidgetList(int id);
+
   protected:
     Widget* _mouseWidget;
     Widget* _focusedWidget;
@@ -87,7 +102,11 @@ class Dialog : public GuiObject
     int     _openCount;
 
   private:
+    FocusList  _ourFocusList;
+    TabWidget* _ourTab;
+
     int _result;
+    int _focusID;
 };
 
 #endif

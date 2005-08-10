@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.30 2005-08-04 22:59:38 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.31 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,9 +62,11 @@ DebuggerDialog::~DebuggerDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
+cerr << " ==> DebuggerDialog::loadConfig()\n";
   myTab->loadConfig();
   myTiaInfo->loadConfig();
   myTiaOutput->loadConfig();
+  myCpu->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,7 +85,7 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       doScanlineAdvance();
   }
   else
-    myTab->handleKeyDown(ascii, keycode, modifiers);
+    Dialog::handleKeyDown(ascii, keycode, modifiers);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,46 +137,40 @@ void DebuggerDialog::addTabArea()
   const int vBorder = 4;
   const int widWidth  = r.width() - vBorder;
   const int widHeight = r.height() - 25; // FIXME - magic number/font height
+  int tabID;
 
   // The tab widget
   myTab = new TabWidget(this, r.left, r.top + vBorder,
-                              r.width(), r.height() - vBorder);
+                        r.width(), r.height() - vBorder);
+  addTabWidget(myTab);
 
-  // 1) The Prompt/console tab
-  myTab->addTab("Prompt");
+  // The Prompt/console tab
+  tabID = myTab->addTab("Prompt");
   myPrompt = new PromptWidget(myTab, 2, 2, widWidth, widHeight);
-  myTab->setParentWidget(0, myPrompt, myPrompt);
+  myTab->setParentWidget(tabID, myPrompt);
+  addToFocusList(myPrompt->getFocusList(), tabID);
 
-  // 2) The CPU tab
-  myTab->addTab("CPU");
-  CpuWidget* cpu = new CpuWidget(myTab, 2, 2, widWidth, widHeight);
-  myTab->setParentWidget(1, cpu, cpu->activeWidget());
-
-  // 3) The RAM tab (part of RIOT)
-  myTab->addTab("RAM");
+  // The RAM tab (part of RIOT)
+  tabID = myTab->addTab("RAM");
   RamWidget* ram = new RamWidget(myTab, 2, 2, widWidth, widHeight);
-  myTab->setParentWidget(2, ram, ram->activeWidget());
+  myTab->setParentWidget(tabID, ram);
+  addToFocusList(ram->getFocusList(), tabID);
 
-  // 4) The input/output tab (part of RIOT)
-  myTab->addTab("I/O");
+  // The input/output tab (part of RIOT)
+  tabID = myTab->addTab("I/O");
 
-
-  // 5) The TIA tab
-  myTab->addTab("TIA");
+  // The TIA tab
+  tabID = myTab->addTab("TIA");
   TiaWidget* tia = new TiaWidget(myTab, 2, 2, widWidth, widHeight);
-  myTab->setParentWidget(4, tia, tia->activeWidget());
+  myTab->setParentWidget(tabID, tia);
+  addToFocusList(tia->getFocusList(), tabID);
 
-
-  // 6) The ROM tab
-  myTab->addTab("ROM");
-
-
-  // 7) The Cheat tab
-  myTab->addTab("Cheat");
+  // The Cheat tab
+  tabID = myTab->addTab("Cheat");
   CheatWidget* cheat = new CheatWidget(myTab, 2, 2, widWidth, widHeight);
-  myTab->setParentWidget(6, cheat, cheat->activeWidget());
+  myTab->setParentWidget(tabID, cheat);
+  addToFocusList(cheat->getFocusList(), tabID);
 
-  // Set active tab to prompt
   myTab->setActiveTab(0);
 }
 
@@ -189,20 +185,24 @@ void DebuggerDialog::addStatusArea()
 void DebuggerDialog::addRomArea()
 {
   GUI::Rect r = instance()->debugger().getRomBounds();
+  int xpos, ypos;
+
+  xpos = r.left + 10; ypos = 10;
+  myCpu = new CpuWidget(this, instance()->consoleFont(), xpos, ypos);
+  addToFocusList(myCpu->getFocusList());
 
   // Add some buttons that are always shown, no matter which tab we're in
   // FIXME - these positions will definitely change
-  int xoff = r.right - 100;
-  int yoff = r.bottom - 150;
-  addButton(xoff, yoff, "Step", kDDStepCmd, 0);
-  yoff += 22;
-  addButton(xoff, yoff, "Trace", kDDTraceCmd, 0);
-  yoff += 22;
-  addButton(xoff, yoff, "Scan +1", kDDSAdvCmd, 0);
-  yoff += 22;
-  addButton(xoff, yoff, "Frame +1", kDDAdvCmd, 0);
+  xpos = r.right - 100; ypos = r.bottom - 150;
+  addButton(xpos, ypos, "Step", kDDStepCmd, 0);
+  ypos += 22;
+  addButton(xpos, ypos, "Trace", kDDTraceCmd, 0);
+  ypos += 22;
+  addButton(xpos, ypos, "Scan +1", kDDSAdvCmd, 0);
+  ypos += 22;
+  addButton(xpos, ypos, "Frame +1", kDDAdvCmd, 0);
 
-  addButton(xoff, r.bottom - 22 - 10, "Exit", kDDExitCmd, 0);
+  addButton(xpos, r.bottom - 22 - 10, "Exit", kDDExitCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

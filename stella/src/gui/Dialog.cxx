@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.24 2005-08-04 22:59:54 stephena Exp $
+// $Id: Dialog.cxx,v 1.25 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@
 #include "Menu.hxx"
 #include "Dialog.hxx"
 #include "Widget.hxx"
+#include "TabWidget.hxx"
 
 /*
  * TODO list
@@ -38,18 +39,23 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem* instance, DialogContainer* parent,
                int x, int y, int w, int h)
-    : GuiObject(instance, parent, x, y, w, h),
-      _mouseWidget(0),
-      _focusedWidget(0),
-      _dragWidget(0),
-      _visible(true),
-      _openCount(0)
+  : GuiObject(instance, parent, x, y, w, h),
+    _mouseWidget(0),
+    _focusedWidget(0),
+    _dragWidget(0),
+    _visible(true),
+    _openCount(0),
+    _ourTab(NULL),
+    _focusID(0)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
+  for(unsigned int i = 0; i < _ourFocusList.size(); ++i)
+    _ourFocusList[i].focusList.clear();
+
   delete _firstWidget;
   _firstWidget = NULL;
 }
@@ -65,20 +71,12 @@ cerr << " ==> Dialog::open()\n";
   if(_openCount++ == 0)
     loadConfig();
 
-  Widget* w = _firstWidget;
-
-  // Search for the first objects that wantsFocus() (if any) and give it the focus
-  while(w && !w->wantsFocus())
-    w = w->_next;
-
-  if(w)
-  {
-    w->receivedFocus();
-    _focusedWidget = w;
-  }
+  // (Re)-build the focus list to use for the widgets which are currently
+  // onscreen
+  buildFocusWidgetList(_focusID);
 
   // Make all child widget dirty
-  w = _firstWidget;
+  Widget* w = _firstWidget;
   Widget::setDirtyInChain(w);
 }
 
@@ -113,6 +111,74 @@ void Dialog::releaseFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addFocusWidget(Widget* w)
+{
+  if(_ourFocusList.size() == 0)
+  {
+	Focus f;
+	_ourFocusList.push_back(f);
+  }
+  _ourFocusList[0].focusList.push_back(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addToFocusList(WidgetArray& list, int id)
+{
+  id++;  // Arrays start at 0, not -1.
+
+  // Make sure the array is large enough
+  while((int)_ourFocusList.size() <= id)
+  {
+	Focus f;
+	f.focusedWidget = NULL;
+	_ourFocusList.push_back(f);
+  }
+
+  _ourFocusList[id].focusList.push_back(list);
+
+  if(list.size() > 0)
+    _ourFocusList[id].focusedWidget = list[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::buildFocusWidgetList(int id)
+{
+  // Yes, this is hideously complex.  That's the price we pay for
+  // tab navigation ...
+
+  // Remember which item previously had focus, but only if it belongs
+  // to this focus list
+  if(_focusID < (int)_ourFocusList.size() && _focusID != id &&
+     Widget::isWidgetInChain(_ourFocusList[_focusID].focusList, _focusedWidget))
+    _ourFocusList[_focusID].focusedWidget = _focusedWidget;
+
+  _focusID = id;
+
+  // Create a focuslist for items currently onscreen
+  // We do this by starting with any dialog focus list (at index 0 in the
+  // focus lists, then appending the list indicated by 'id'.
+  if(_focusID < (int)_ourFocusList.size())
+  {
+    _focusList.clear();
+    _focusList.push_back(_ourFocusList[0].focusList);
+
+    // Append extra focus list
+    if(_focusID > 0)
+      _focusList.push_back(_ourFocusList[_focusID].focusList);
+
+    // Only update _focusedWidget if it doesn't belong to the main focus list
+    if(!Widget::isWidgetInChain(_ourFocusList[0].focusList, _focusedWidget))
+      _focusedWidget = _ourFocusList[_focusID].focusedWidget;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::redrawFocus()
+{
+  _focusedWidget = Widget::setFocusForChain(this, getFocusList(), _focusedWidget, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::draw()
 {
 }
@@ -137,8 +203,6 @@ void Dialog::drawDialog()
 
     // Tell the framebuffer this area is dirty
     fb.addDirtyRect(_x, _y, _w, _h);
-
-    _dirty = false;
   }
 
   // Draw all children
@@ -148,6 +212,12 @@ void Dialog::drawDialog()
     w->draw();
     w = w->_next;
   }
+
+  // Draw outlines for focused widgets
+  if(_dirty)
+    redrawFocus();
+
+  _dirty = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,15 +232,8 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
   // focused one, change the focus to that widget.
   if(w && w != _focusedWidget && w->wantsFocus())
   {
-    // The focus will change. Tell the old focused widget (if any)
-    // that it lost the focus.
-    releaseFocus();
-
-    // Tell the new focused widget (if any) that it just gained the focus.
-    if(w)
-      w->receivedFocus();
-
-    _focusedWidget = w;
+    // Redraw widgets for new focus
+    _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
   }
 
   if(w)
@@ -184,8 +247,6 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
 
   if(_focusedWidget)
   {
-    //w = _focusedWidget;
-
     // Lose focus on mouseup unless the widget requested to retain the focus
     if(! (_focusedWidget->getFlags() & WIDGET_RETAIN_FOCUS ))
       releaseFocus();
@@ -218,9 +279,40 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  if(_focusedWidget)
-    if (_focusedWidget->handleKeyDown(ascii, keycode, modifiers))
-      return;
+  // Test for TAB character
+  // Ctrl-Tab selects next tab
+  // Shift-Ctrl-Tab selects previous tab
+  // Tab sets next widget in current tab
+  // Shift-Tab sets previous widget in current tab
+  //
+  // Widgets are only cycled if currently focused key hasn't claimed
+  // the TAB key
+  // TODO - figure out workaround for this
+  if(keycode == 9)  // tab key
+  {
+    if(_ourTab && instance()->eventHandler().kbdControl(modifiers))
+    {
+      if(instance()->eventHandler().kbdShift(modifiers))
+        _ourTab->cycleTab(-1);
+      else
+        _ourTab->cycleTab(+1);
+
+      return;  // this key-combo is never passed to the child widget
+    }
+    else if(_focusedWidget && !(_focusedWidget->getFlags() & WIDGET_WANTS_TAB))
+    {
+      if(instance()->eventHandler().kbdShift(modifiers))
+        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+                                                  _focusedWidget, -1);
+      else
+        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+                                                  _focusedWidget, +1);
+      return;  // this key-combo is never passed to the child widget
+    }
+  }
+
+  if (_focusedWidget)
+    _focusedWidget->handleKeyDown(ascii, keycode, modifiers);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,6 +394,11 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
+    case kTabChangedCmd:
+      // Add this focus list for the given tab to the global focus list
+      buildFocusWidgetList(++data);
+      break;
+
     case kCloseCmd:
       close();
       break;
@@ -324,3 +421,23 @@ ButtonWidget* Dialog::addButton(int x, int y, const string& label,
 {
   return new ButtonWidget(this, x, y, kButtonWidth, 16, label, cmd, hotkey);
 }
+
+/*
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GuiObject::removeFromFocusList(WidgetArray& list)
+{
+  for(int i = 0; i < (int)list.size(); ++i)
+  {
+    // Start searching from the end, since more than likely
+    // that's where the previously added widgets will be
+    for(int j = (int)_focusList.size() - 1; j >= 0; --j)
+    {
+      if(list[i] == _focusList[j])
+      {
+        _focusList.remove_at(j);
+        break;
+      }
+    }
+  }
+}
+*/

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.22 2005-08-05 02:28:22 urchlay Exp $
+// $Id: OptionsDialog.cxx,v 1.23 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -77,7 +77,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   addBigButton("Audio Settings", kAudCmd, 0);
 #else
   ButtonWidget* b = addBigButton("Audio Settings", kAudCmd, 0);
-  b->setEnabled(false);
+  b->clearFlags(WIDGET_ENABLED);
 #endif
   addBigButton("Event Mapping", kEMapCmd, 0);
   addBigButton("Game Information", kInfoCmd, 0);

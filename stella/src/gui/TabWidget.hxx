@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.8 2005-07-05 15:25:44 stephena Exp $
+// $Id: TabWidget.hxx,v 1.9 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,12 +38,11 @@ class TabWidget : public Widget, public CommandSender
     string title;
     Widget* firstWidget;
     Widget* parentWidget;
-    Widget* activeWidget;
   };
   typedef GUI::Array<Tab> TabList;
 
   public:
-    TabWidget(GuiObject *boss, int x, int y, int w, int h);
+    TabWidget(GuiObject* boss, int x, int y, int w, int h);
     ~TabWidget();
 
     virtual int getChildY() const;
@@ -58,31 +57,32 @@ class TabWidget : public Widget, public CommandSender
 // Maybe we need to remove tabs again? Hm
     //void removeTab(int tabID);
 // Setting the active tab:
-    void setActiveTab(int tabID);
+    void setActiveTab(int tabID, bool show = false);
     void cycleTab(int direction);
-    void cycleWidget(int direction);
 // setActiveTab changes the value of _firstWidget. This means Widgets added afterwards
 // will be added to the active tab.
-    void setParentWidget(int tabID, Widget* parent, Widget* active);
+    void setParentWidget(int tabID, Widget* parent);
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     virtual void loadConfig();
 
   protected:
     virtual void drawWidget(bool hilite);
-    virtual Widget *findWidget(int x, int y);
+    virtual Widget* findWidget(int x, int y);
 
   protected:
-    int     _activeTab;
     TabList _tabs;
     int     _tabWidth;
+    int     _activeTab;
+    bool    _firstTime;
 
   private:
     void box(int x, int y, int width, int height,
              OverlayColor colorA, OverlayColor colorB, bool omitBottom);
+
+    void updateActiveTab();
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditNumWidget.cxx,v 1.7 2005-08-01 22:33:15 stephena Exp $
+// $Id: EditNumWidget.cxx,v 1.8 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,10 +28,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditNumWidget::EditNumWidget(GuiObject* boss, int x, int y, int w, int h,
                              const string& text)
-  : EditableWidget(boss, x, y - 1, w, h + 2)
+  : EditableWidget(boss, x, y, w, h)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_TAB_NAVIGATE;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kEditTextWidget;
 }
 

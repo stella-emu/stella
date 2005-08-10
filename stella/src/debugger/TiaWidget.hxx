@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,8 +39,6 @@ class TiaWidget : public Widget, public CommandSender
     TiaWidget(GuiObject* boss, int x, int y, int w, int h);
     virtual ~TiaWidget();
 
-    Widget* activeWidget() { return myActiveWidget; }
-
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
 
@@ -49,8 +47,6 @@ class TiaWidget : public Widget, public CommandSender
     void changeColorRegs();
 
   private:
-    Widget* myActiveWidget;
-
     DataGridWidget* myRamGrid;
     EditTextWidget* myBinValue;
     EditTextWidget* myDecValue;

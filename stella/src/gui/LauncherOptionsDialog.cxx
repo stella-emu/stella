@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.8 2005-08-01 22:33:15 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.9 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -91,7 +91,7 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   int baseH = instance()->frameBuffer().baseHeight();
   myBrowser = new BrowserDialog(this, 60, 20, baseW - 120, baseH - 40);
 
-  loadConfig();
+  loadConfig(); // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -103,6 +103,7 @@ LauncherOptionsDialog::~LauncherOptionsDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherOptionsDialog::loadConfig()
 {
+cerr << "LauncherOptionsDialog::loadConfig()\n";
   string s;
   bool b;
 

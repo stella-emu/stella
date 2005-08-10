@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,9 +47,11 @@
 PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w - kScrollBarWidth, h),
     CommandSender(boss),
-    _makeDirty(false)
+    _makeDirty(false),
+    _firstTime(true)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
+           WIDGET_WANTS_TAB;
   _type = kPromptWidget;
 
   _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
@@ -69,7 +71,6 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // Add scrollbar
   _scrollBar = new ScrollBarWidget(boss, _x + _w, _y, kScrollBarWidth, _h);
-
   _scrollBar->setTarget(this);
 
   // Init colors
@@ -88,13 +89,7 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
 
   _promptStartPos = _promptEndPos = -1;
 
-  // Display greetings & prompt
-  string version = string("Stella ") + STELLA_VERSION + "\n";
-  print(version.c_str());
-  print("Debugger is ready\n");
-  //print( instance()->debugger().state() + "\n"); // FIXME: this doesn't work yet
-  print(PROMPT);
-  _promptStartPos = _promptEndPos = _currentPos;
+  addFocusWidget(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,7 +100,7 @@ PromptWidget::~PromptWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::drawWidget(bool hilite)
 {
-cerr << "PromptWidget::drawWidget\n";
+//cerr << "PromptWidget::drawWidget\n";
   OverlayColor fgcolor, bgcolor;
 
   FrameBuffer& fb = _boss->instance()->frameBuffer();
@@ -144,9 +139,7 @@ cerr << "PromptWidget::drawWidget\n";
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-return;
-  _scrollBar->handleMouseDown(x, y, button, clickCount);
-cerr << "PromptWidget::handleMouseDown\n";
+  cerr << "PromptWidget::handleMouseDown\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -491,6 +484,22 @@ void PromptWidget::loadConfig()
 {
   // See logic at the end of handleKeyDown for an explanation of this
   _makeDirty = true;
+
+  // Show the prompt the first time we draw this widget
+  if(_firstTime)
+  {
+    // Display greetings & prompt
+    string version = string("Stella ") + STELLA_VERSION + "\n";
+    print(version.c_str());
+    print("Debugger is ready\n");
+    print(PROMPT);
+    _promptStartPos = _promptEndPos = _currentPos;
+
+    // Take care of one-time debugger stuff
+    instance()->debugger().autoExec();
+
+    _firstTime = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

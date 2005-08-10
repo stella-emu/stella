@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.17 2005-08-01 22:33:15 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.18 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,8 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent
   myActionsList = new ListWidget(this, 10, 20, 150, 100);
   myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
-  myActionsList->clearFlags(WIDGET_TAB_NAVIGATE);
+  myActionsList->setFlags(WIDGET_NODRAW_FOCUS);
+  addFocusWidget(myActionsList);
 
   myKeyMapping  = new StaticTextWidget(this, 10, 125, w - 20, kFontHeight,
                                        "Action: ", kTextAlignLeft);
@@ -56,7 +57,7 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent
   myMapButton       = addButton(170, 25, "Map", kStartMapCmd, 0);
   myEraseButton     = addButton(170, 45, "Erase", kEraseCmd, 0);
   myCancelMapButton = addButton(170, 65, "Cancel", kStopMapCmd, 0);
-  myCancelMapButton->setEnabled(false);
+  myCancelMapButton->clearFlags(WIDGET_ENABLED);
 
   // Add 'mouse to paddle' mapping
   myPaddleModeText = new StaticTextWidget(this, 168, 93, 50, kFontHeight,

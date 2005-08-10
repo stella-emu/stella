@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.3 2005-08-02 18:28:27 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.4 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,73 +53,45 @@ enum {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
+  : Widget(boss, x, y, 16, 16),
     CommandSender(boss)
 {
-  const GUI::Font& font = instance()->consoleFont();
-  int xpos = 10, ypos = 20, lwidth = 4 * font.getMaxCharWidth();
-  int fontHeight = font.getFontHeight(), lineHeight = font.getLineHeight();
+  const int fontWidth  = font.getMaxCharWidth(),
+            fontHeight = font.getFontHeight(),
+            lineHeight = font.getLineHeight();
+  int xpos, ypos, lwidth;
   StaticTextWidget* t;
 
   // Create a 1x5 grid with labels for the CPU registers
+  xpos = x + 10, ypos = y, lwidth = 4 * fontWidth;
   myCpuGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 5, 8, 16);
   myCpuGrid->setTarget(this);
-  myActiveWidget = myCpuGrid;
+  addFocusWidget(myCpuGrid);
 
   string labels[5] = { "PC:", "SP:", "A:", "X:", "Y:" };
   for(int row = 0; row < 5; ++row)
   {
     t = new StaticTextWidget(boss, xpos, ypos + row*lineHeight + 2,
-                             lwidth, fontHeight,
+                             lwidth-2, fontHeight,
                              labels[row], kTextAlignLeft);
     t->setFont(font);
   }
 
   // Create a read-only textbox containing the current PC label
-  xpos += lwidth + myCpuGrid->colWidth() + 10;
+  xpos += lwidth + myCpuGrid->getWidth() + 10;
   myPCLabel = new EditTextWidget(boss, xpos, ypos, 100, lineHeight, "");
-  myPCLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myPCLabel->setFont(font);
   myPCLabel->setEditable(false);
 
   // Create a bitfield widget for changing the processor status
-  xpos = 10;  ypos += 5*lineHeight + 5;
+  xpos = x + 10;  ypos += 5*lineHeight + 5;
   t = new StaticTextWidget(boss, xpos, ypos, lwidth-2, fontHeight,
                            "PS:", kTextAlignLeft);
   t->setFont(font);
   myPSRegister = new ToggleBitWidget(boss, font, xpos+lwidth, ypos-2, 8, 1);
   myPSRegister->setTarget(this);
-
-// FIXME --------------------------
-// The following will be moved to another part of the debugger dialog,
-// so I won't bother fixing it here.
-
-  // And some status fields
-  xpos = 10;  ypos += 2*lineHeight;
-  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Current Ins:", kTextAlignLeft);
-  xpos += 60;
-  myCurrentIns = new EditTextWidget(boss, xpos, ypos-2, 300, kLineHeight, "");
-  myCurrentIns->clearFlags(WIDGET_TAB_NAVIGATE);
-  myCurrentIns->setFont(font);
-  myCurrentIns->setEditable(false);
-
-  xpos = 10;  ypos += kLineHeight + 5;
-  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Cycle Count:", kTextAlignLeft);
-  xpos += 60;
-  myCycleCount = new EditTextWidget(boss, xpos, ypos-2, 50, kLineHeight, "");
-  myCycleCount->clearFlags(WIDGET_TAB_NAVIGATE);
-  myCycleCount->setFont(font);
-  myCycleCount->setEditable(false);
-
-  xpos = 10;  ypos += kLineHeight + 5;
-  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "BP/Trap:", kTextAlignLeft);
-  xpos += 60;
-  myStatus = new EditTextWidget(boss, xpos, ypos-2, 100, kLineHeight, "");
-  myStatus->clearFlags(WIDGET_TAB_NAVIGATE);
-  myStatus->setFont(font);
-  myStatus->setEditable(false);
-// FIXME --------------------------
+  addFocusWidget(myPSRegister);
 
   // Set the strings to be used in the PSRegister
   // We only do this once because it's the state that changes, not the strings
@@ -132,6 +104,39 @@ CpuWidget::CpuWidget(GuiObject* boss, int x, int y, int w, int h)
     on.push_back(onstr[i]);
   }
   myPSRegister->setList(off, on);
+
+  // Calculate real dimensions
+  _w = lwidth + myCpuGrid->getWidth() + myPSRegister->getWidth() + 20;
+  _h = ypos + myPSRegister->getHeight() - y;
+
+/*
+// FIXME --------------------------
+// The following will be moved to another part of the debugger dialog,
+// so I won't bother fixing it here.
+
+  // And some status fields
+  xpos = 10;  ypos += 2*lineHeight;
+  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Current Ins:", kTextAlignLeft);
+  xpos += 60;
+  myCurrentIns = new EditTextWidget(boss, xpos, ypos-2, 300, kLineHeight, "");
+  myCurrentIns->setFont(font);
+  myCurrentIns->setEditable(false);
+
+  xpos = 10;  ypos += kLineHeight + 5;
+  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Cycle Count:", kTextAlignLeft);
+  xpos += 60;
+  myCycleCount = new EditTextWidget(boss, xpos, ypos-2, 50, kLineHeight, "");
+  myCycleCount->setFont(font);
+  myCycleCount->setEditable(false);
+
+  xpos = 10;  ypos += kLineHeight + 5;
+  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "BP/Trap:", kTextAlignLeft);
+  xpos += 60;
+  myStatus = new EditTextWidget(boss, xpos, ypos-2, 100, kLineHeight, "");
+  myStatus->setFont(font);
+  myStatus->setEditable(false);
+// FIXME --------------------------
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,7 +221,6 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::loadConfig()
 {
-cerr << "CpuWidget::loadConfig()\n";
   fillGrid();
 }
 
@@ -263,6 +267,7 @@ void CpuWidget::fillGrid()
 
   myPSRegister->setState(state.PSbits, changed);
 
+/*
   // Update the other status fields
   int pc = state.PC;
   const char* buf;
@@ -286,4 +291,5 @@ void CpuWidget::fillGrid()
 
   // FIXME - add trap info
   myStatus->setEditString(status);
+*/
 }

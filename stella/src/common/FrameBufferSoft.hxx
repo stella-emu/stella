@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.20 2005-08-03 13:26:01 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.21 2005-08-10 12:23:42 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.20 2005-08-03 13:26:01 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.21 2005-08-10 12:23:42 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -185,6 +185,14 @@ class FrameBufferSoft : public FrameBuffer
       @param h      The height of the area
     */
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+
+    /**
+      Returns the current line dimensions (width/height) used by
+      hLine() and vLine().
+
+      @return  The line width/height (both are the same)
+    */
+    virtual uInt32 lineDim() { return theZoomLevel; }
 
   private:
     // Used in the dirty update of the SDL surface

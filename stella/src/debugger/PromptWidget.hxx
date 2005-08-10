@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -78,6 +78,9 @@ class PromptWidget : public Widget, public CommandSender
     void handleMouseWheel(int x, int y, int direction);
     bool handleKeyDown(int ascii, int keycode, int modifiers);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
+
+    virtual bool wantsFocus() { return true; }
+
     void loadConfig();
 
   protected:
@@ -109,6 +112,7 @@ class PromptWidget : public Widget, public CommandSender
     OverlayColor bgColor;
     bool _inverse;
     bool _makeDirty;
+    bool _firstTime;
 
     int compareHistory(const char *histLine);
 };

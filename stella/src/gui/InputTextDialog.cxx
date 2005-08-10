@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.2 2005-08-04 22:59:54 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.3 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,8 +61,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font)
   _input = new EditNumWidget(this, xpos, ypos,
                              _w - xpos - 10, lineHeight, "");
   _input->setFont(font);
-  _input->clearFlags(WIDGET_TAB_NAVIGATE);
-  _input->receivedFocus();
+  addFocusWidget(_input);
 
   xpos = 10; ypos = 2*lineHeight;
   _title = new StaticTextWidget(this, xpos, ypos, _w - 2*xpos, fontHeight,

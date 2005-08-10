@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.2 2005-08-04 16:31:23 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.3 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,7 +61,7 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   myEditBox = new EditNumWidget(boss, 90, ypos - 2, charWidth*10, charHeight, "");
   myEditBox->setFont(instance()->consoleFont());
 //  myEditBox->setTarget(this);
-  myActiveWidget = myEditBox;
+  addFocusWidget(myEditBox);
   ypos += border;
 
   // Add the result text string area
@@ -95,6 +95,7 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   myResultsList = new AddrValueWidget(boss, xpos, ypos, 100, 75, 0xff);
   myResultsList->setFont(instance()->consoleFont());
   myResultsList->setTarget(this);
+  addFocusWidget(myResultsList);
 
   myInputBox = new InputTextDialog(boss, instance()->consoleFont());
   myInputBox->setTarget(this);

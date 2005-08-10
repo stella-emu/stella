@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.11 2005-08-01 22:33:14 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.12 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -91,8 +91,6 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
   addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
-
-  setDefaults();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

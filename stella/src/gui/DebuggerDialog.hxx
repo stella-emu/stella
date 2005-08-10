@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.15 2005-08-04 22:59:54 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.16 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,8 @@
 class Debugger;
 class OSystem;
 class DialogContainer;
+class CpuWidget;
+class RamWidget;
 class TabWidget;
 class TiaInfoWidget;
 class TiaOutputWidget;
@@ -47,12 +49,14 @@ class DebuggerDialog : public Dialog
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-  protected:
+  private:
     TabWidget* myTab;
 
     PromptWidget*    myPrompt;
     TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;
+    CpuWidget*       myCpu;
+    RamWidget*       myRam;
 
   private:
     void addTiaArea();

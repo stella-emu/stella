@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.hxx,v 1.2 2005-08-04 16:31:24 stephena Exp $
+// $Id: CheatWidget.hxx,v 1.3 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,8 +51,6 @@ class CheatWidget : public Widget, public CommandSender
     CheatWidget(GuiObject *boss, int x, int y, int w, int h);
     virtual ~CheatWidget();
 
-    Widget* activeWidget() { return myActiveWidget; }
-
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
@@ -63,8 +61,6 @@ class CheatWidget : public Widget, public CommandSender
     void fillResultsList();
 
   private:
-    Widget* myActiveWidget;
-
     EditNumWidget* myEditBox;
     StaticTextWidget* myResult;
 

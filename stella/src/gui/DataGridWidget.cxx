@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.17 2005-08-02 18:28:28 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.18 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,8 +49,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 {
   setFont(font);
 
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_TAB_NAVIGATE;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kDataGridWidget;
   _editMode = false;
 
@@ -108,6 +107,8 @@ cerr << "_addrList.size() = "     << _addrList.size()
 
   // Send item selected signal for starting with cell 0
   sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,10 +130,6 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if (!isEnabled())
     return;
 
-  // A click indicates this widget has been selected
-  // It should receive focus (because it has the WIDGET_TAB_NAVIGATE property)
-  receivedFocus();
-
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
@@ -149,11 +146,8 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _currentCol = _selectedItem - (_currentRow * _cols);
 
     sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
+    setDirty(); draw();
   }
-	
-  // FIXME - this is only here for focus
-  //         it needs to be fixed
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -442,7 +436,6 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::drawWidget(bool hilite)
 {
-cerr << "DataGridWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int row, col, deltax;
   string buffer;

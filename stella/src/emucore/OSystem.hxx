@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.25 2005-07-14 00:54:28 stephena Exp $
+// $Id: OSystem.hxx,v 1.26 2005-08-10 12:23:42 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -32,8 +32,6 @@ class Debugger;
 #include "Console.hxx"
 #include "StringList.hxx"
 #include "Font.hxx"
-//#include "StellaFont.hxx"
-//#include "ConsoleFont.hxx"
 
 #include "bspf.hxx"
 
@@ -44,7 +42,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.25 2005-07-14 00:54:28 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.26 2005-08-10 12:23:42 stephena Exp $
 */
 class OSystem
 {

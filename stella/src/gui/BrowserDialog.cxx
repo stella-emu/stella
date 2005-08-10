@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.8 2005-08-01 22:33:14 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.9 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,7 +58,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, int x, int y, int w, int h)
   _fileList = new ListWidget(this, 10, 34, _w - 2 * 10, _h - 34 - 24 - 10);
   _fileList->setNumberingMode(kListNumberingOff);
   _fileList->setEditable(false);
-  _fileList->clearFlags(WIDGET_TAB_NAVIGATE);
+  _fileList->setFlags(WIDGET_NODRAW_FOCUS);
+  addFocusWidget(_fileList);
 
   // Buttons
   addButton(10, _h - 24, "Go up", kGoUpCmd, 0);

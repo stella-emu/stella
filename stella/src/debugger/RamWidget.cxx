@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.3 2005-08-02 18:28:27 stephena Exp $
+// $Id: RamWidget.cxx,v 1.4 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,12 +50,11 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
                                  16, 8, 2, 8, kBASE_16);
   myRamGrid->setTarget(this);
-  myRamGrid->clearFlags(WIDGET_TAB_NAVIGATE);
-  myActiveWidget = myRamGrid;
+  addFocusWidget(myRamGrid);
 
   for(int row = 0; row < 8; ++row)
   {
-    t = new StaticTextWidget(boss, xpos, ypos + row*lineHeight + 2,
+    t = new StaticTextWidget(boss, xpos-2, ypos + row*lineHeight + 2,
                              lwidth, fontHeight,
                              Debugger::to_hex_8(row*16 + kRamStart) + string(":"),
                              kTextAlignLeft);
@@ -78,7 +77,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   t->setFont(font);
   xpos += 6*fontWidth + 5;
   myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*fontWidth, lineHeight, "");
-  myLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myLabel->setFont(font);
   myLabel->setEditable(false);
 
@@ -89,7 +87,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   t->setFont(font);
   xpos += 4*fontWidth + 5;
   myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*fontWidth, lineHeight, "");
-  myDecValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myDecValue->setFont(font);
   myDecValue->setEditable(false);
 
@@ -100,7 +97,6 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   t->setFont(font);
   xpos += 4*fontWidth + 5;
   myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*fontWidth, lineHeight, "");
-  myBinValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 

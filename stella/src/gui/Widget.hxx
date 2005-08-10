@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.26 2005-08-01 22:33:16 stephena Exp $
+// $Id: Widget.hxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,6 +30,7 @@ class Dialog;
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "GuiUtils.hxx"
+#include "Array.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -39,9 +40,10 @@ enum {
   WIDGET_BORDER       = 1 << 3,
   WIDGET_INV_BORDER   = 1 << 4,
   WIDGET_CLEARBG      = 1 << 5,
-  WIDGET_TAB_NAVIGATE = 1 << 7,
-  WIDGET_TRACK_MOUSE  = 1 << 8,
-  WIDGET_RETAIN_FOCUS = 1 << 9
+  WIDGET_TRACK_MOUSE  = 1 << 6,
+  WIDGET_RETAIN_FOCUS = 1 << 7,
+  WIDGET_NODRAW_FOCUS = 1 << 8,
+  WIDGET_WANTS_TAB    = 1 << 9
 };
 
 enum {
@@ -69,7 +71,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.26 2005-08-01 22:33:16 stephena Exp $
+  @version $Id: Widget.hxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -95,18 +97,19 @@ class Widget : public GuiObject
 
     void draw();
     void receivedFocus();
-    void lostFocus() { _hasFocus = false; lostFocusWidget(); }
+    void lostFocus();
+    void addFocusWidget(Widget* w) { _focusList.push_back(w); }
 
     virtual bool wantsFocus() { return false; };
 
     /** Set/clear WIDGET_ENABLED flag and immediately redraw */
     void setEnabled(bool e);
 
-    void setFlags(int flags)    { _flags |= flags; }
+    void setFlags(int flags)    { _flags |= flags;  }
     void clearFlags(int flags)  { _flags &= ~flags; }
-    int getFlags() const        { return _flags; }
+    int  getFlags() const       { return _flags;    }
 
-    bool isEnabled() const      { return _flags & WIDGET_ENABLED; }
+    bool isEnabled() const      { return _flags & WIDGET_ENABLED;      }
     bool isVisible() const      { return !(_flags & WIDGET_INVISIBLE); }
 
     void setID(int id)  { _id = id;   }
@@ -148,16 +151,13 @@ class Widget : public GuiObject
     /** Determine if 'find' is in the chain pointed to by 'start' */
     static bool isWidgetInChain(Widget* start, Widget* find);
 
-    /** Widget 'hasFocus' has focus, make all other widgets in chain lose focus */
-    static void setFocusForChain(Widget* start, Widget* hasFocus);
+    /** Determine if 'find' is in the widget array */
+    static bool isWidgetInChain(WidgetArray& list, Widget* find);
 
-    /** Select previous widget in chain with WIDGET_TAB_NOTIFY property to have
-        focus, starting from 'hasFocus' */
-    static void setPrevInChain(Widget* start, Widget* hasFocus);
-
-    /** Select next widget in chain with WIDGET_TAB_NOTIFY property to have
-        focus, starting from 'hasFocus' */
-    static void setNextInChain(Widget* start, Widget* hasFocus);
+    /** Select either previous, current, or next widget in chain to have
+        focus, and deselects all others */
+    static Widget* setFocusForChain(GuiObject* boss, WidgetArray& arr,
+                                    Widget* w, int direction);
 
     /** Sets all widgets in this chain to be dirty (must be redrawn) */
     static void setDirtyInChain(Widget* start);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.6 2005-08-02 18:28:29 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.7 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,8 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int cols, int rows, int colchars)
-  : Widget(boss, x, y, cols*(colchars * font.getMaxCharWidth() + 8) + 1,
-           font.getLineHeight()*rows + 1),
+  : Widget(boss, x, y, 16, 16),
     CommandSender(boss),
     _rows(rows),
     _cols(cols),
@@ -40,10 +39,13 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
     _colWidth(colchars * font.getMaxCharWidth() + 8),
     _selectedItem(0)
 {
+  // Calculate real dimensions
+  _w = cols*(colchars * font.getMaxCharWidth() + 8) + 1;
+  _h = font.getLineHeight()*rows + 1;
+
   setFont(font);
 
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_TAB_NAVIGATE;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kToggleBitWidget;
 }
 
@@ -71,6 +73,8 @@ void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
   _stateList = state;
   _changedList.clear();
   _changedList = changed;
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,10 +82,6 @@ void ToggleBitWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if (!isEnabled())
     return;
-
-  // A click indicates this widget has been selected
-  // It should receive focus (because it has the WIDGET_TAB_NAVIGATE property)
-  receivedFocus();
 
   // First check whether the selection changed
   int newSelectedItem;
@@ -94,9 +94,8 @@ void ToggleBitWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _selectedItem = newSelectedItem;
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
+    setDirty(); draw();
   }
-	
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

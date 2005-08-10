@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.26 2005-08-01 22:33:16 stephena Exp $
+// $Id: Widget.cxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,6 +52,8 @@ Widget::~Widget()
 {
   delete _next;
   _next = NULL;
+
+  _focusList.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,11 +95,6 @@ void Widget::draw()
   // Now perform the actual widget draw
   drawWidget((_flags & WIDGET_HILITED) ? true : false);
 
-  // Indicate if this is the currently active widget
-  // by drawing a box around it.
-  if((_activeWidget == this) && (_flags & WIDGET_TAB_NAVIGATE))
-    fb.frameRect(_x-1, _y-1, _w+2, _h+2, kTextColorEm, kDashLine);
-
   // Restore x/y
   if (_flags & WIDGET_BORDER) {
     _x -= 4;
@@ -129,14 +126,16 @@ void Widget::receivedFocus()
 
   _hasFocus = true;
   receivedFocusWidget();
+}
 
-  // Only signal a new active widget if the widget has defined that capability
-  // We only care about widgets with WIDGET_TAB_NAVIGATE property
-  if(getFlags() & WIDGET_TAB_NAVIGATE)
-  {
-    _activeWidget = this;
-    _boss->handleCommand(NULL, kActiveWidgetCmd, 0, 0);
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::lostFocus()
+{
+  if(!_hasFocus)
+    return;
+
+  _hasFocus = false;
+  lostFocusWidget();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,147 +186,89 @@ bool Widget::isWidgetInChain(Widget* w, Widget* find)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setFocusForChain(Widget* w, Widget* hasFocus)
+bool Widget::isWidgetInChain(WidgetArray& list, Widget* find)
 {
-  if(!hasFocus)
-    return;
+  bool found = false;
 
-  while(w)
+  for(int i = 0; i < (int)list.size(); ++i)
   {
-    if(w != hasFocus)
-      w->lostFocus();
-
-    w = w->_next;
+    if(list[i] == find)
+    {
+      found = true;
+      break;
+    }
   }
+
+  return found;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setPrevInChain(Widget* start, Widget* hasFocus)
+Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
+                                 Widget* wid, int direction)
 {
-  if(!start)
-    return;
-
-  // We search the array in circular fashion until the 'end' is reached
-  Widget* w = hasFocus;
-  Widget* active = NULL;
-
-  if(w)  // start from 'hasFocus'
+  FrameBuffer& fb = boss->instance()->frameBuffer();
+  int size = arr.size(), pos = -1;
+  Widget* tmp;
+  for(int i = 0; i < size; ++i)
   {
-    w = w->_next;
-    while(w)
-    {
-      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
-      {
-        active = w;
-        break;
-      }
-      w = w->_next;
-    }
+    tmp = arr[i];
 
-    // If we haven't found an active widget by now, start searching from
-    // the beginning of the list
-    if(!active)
+    // Determine position of widget 'w'
+    if(wid == tmp)
+      pos = i;
+
+    int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
+        w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
+
+    // First clear area surrounding all widgets
+    if(tmp->_hasFocus)
     {
-      w = start;
-      while(w != hasFocus)
-      {
-        if(w->getFlags() & WIDGET_TAB_NAVIGATE)
-        {
-          active = w;
-          break;
-        }
-        w = w->_next;
-      }
-    }
-  }
-  else  // start from the beginning, since no widget currently has focus
-  {
-    w = start;
-    while(w)
-    {
-      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
-      {
-        active = w;
-        break;
-      }
-      w = w->_next;
+      tmp->lostFocus();
+      if(!(tmp->_flags & WIDGET_NODRAW_FOCUS))
+        fb.frameRect(x, y, w, h, kBGColor);
+      tmp->setDirty(); tmp->draw();
+      fb.addDirtyRect(x, y, w, h);
     }
   }
 
-  // At this point, we *should* have an active widget
-  if(active)
-    active->receivedFocus();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setNextInChain(Widget* start, Widget* hasFocus)
-{
-  if(!start)
-    return;
-// FIXME - get this working
-//cerr << "--------------------------------\nWidget list:\n";
-    Widget* w1 = start;
-    while(w1)
-    {
-      if(w1->getFlags() & WIDGET_TAB_NAVIGATE)
-      {
-//        cerr << w1 << endl;
-      }
-      w1 = w1->_next;
-    }
-//cerr << "\n--------------------------------\n";
-
-
-  // We search the array in circular fashion until the 'end' is reached
-  Widget* w = hasFocus;
-  Widget* active = NULL;
-
-  if(w)  // start from 'hasFocus'
+  // Figure out which which should be active
+  if(pos == -1)
+    return 0;
+  else
   {
-    w = w->_next;
-    while(w)
+    switch(direction)
     {
-      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
-      {
-        active = w;
+      case -1:  // previous widget
+        pos--;
+        if(pos < 0)
+          pos = size - 1;
         break;
-      }
-      w = w->_next;
-    }
 
-    // If we haven't found an active widget by now, start searching from
-    // the beginning of the list
-    if(!active)
-    {
-      w = start;
-      while(w != hasFocus)
-      {
-        if(w->getFlags() & WIDGET_TAB_NAVIGATE)
-        {
-          active = w;
-          break;
-        }
-        w = w->_next;
-      }
-    }
-  }
-  else  // start from the beginning, since no widget currently has focus
-  {
-    w = start;
-    while(w)
-    {
-      if(w->getFlags() & WIDGET_TAB_NAVIGATE)
-      {
-        active = w;
+      case +1:  // next widget
+        pos++;
+        if(pos >= size)
+          pos = 0;
         break;
-      }
-      w = w->_next;
+
+      default:
+        // pos already set
+        break;
     }
   }
 
-  // At this point, we *should* have an active widget
-  if(active)
-    active->receivedFocus();
+  // Now highlight the active widget
+  tmp = arr[pos];
+  int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
+      w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
+
+  tmp->receivedFocus();
+  if(!(tmp->_flags & WIDGET_NODRAW_FOCUS))
+    fb.frameRect(x, y, w, h, kTextColorEm, kDashLine);
+
+  tmp->setDirty(); tmp->draw();
+  fb.addDirtyRect(x, y, w, h);
+
+  return tmp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -348,7 +289,7 @@ StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kStaticTextWidget;
-  setLabel(text);
+  _label = text;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

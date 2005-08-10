@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.10 2005-08-01 22:33:16 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.11 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -246,7 +246,7 @@ void ScrollBarWidget::recalc()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::drawWidget(bool hilite)
 {
-cerr << "ScrollBarWidget::drawWidget\n";
+//cerr << "ScrollBarWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int bottomY = _y + _h;
   bool isSinglePage = (_numEntries <= _entriesPerPage);

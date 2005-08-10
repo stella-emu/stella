@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.26 2005-08-04 22:59:54 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -95,7 +95,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myList = new ListWidget(this, 10, 24, _w - 20, _h - 24 - 26 - 10 - 10);
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
-  myList->clearFlags(WIDGET_TAB_NAVIGATE);
+  myList->setFlags(WIDGET_NODRAW_FOCUS);
+  addFocusWidget(myList);
 
   // Add note textwidget to show any notes for the currently selected ROM
   new StaticTextWidget(this, 20, _h - 43, 30, fontHeight, "Note:", kTextAlignLeft);

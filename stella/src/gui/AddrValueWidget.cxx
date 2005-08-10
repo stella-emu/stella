@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.9 2005-08-01 22:33:14 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.10 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,8 +39,7 @@ AddrValueWidget::AddrValueWidget(GuiObject* boss, int x, int y, int w, int h,
 {
   _w = w - kScrollBarWidth;
 	
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_TAB_NAVIGATE;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kListWidget;  // we're just a slightly modified listwidget
   _editMode = false;
 
@@ -130,10 +129,6 @@ void AddrValueWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if (!isEnabled())
     return;
 
-  // A click indicates this widget has been selected
-  // It should receive focus (because it has the WIDGET_TAB_NAVIGATE property)
-  receivedFocus();
-
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
@@ -146,9 +141,8 @@ void AddrValueWidget::handleMouseDown(int x, int y, int button, int clickCount)
       abortEditMode();
     _selectedItem = newSelectedItem;
     sendCommand(kAVSelectionChangedCmd, _selectedItem, _id);
+    setDirty(); draw();
   }
-	
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

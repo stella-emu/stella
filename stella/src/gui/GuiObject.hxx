@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.13 2005-08-01 22:33:15 stephena Exp $
+// $Id: GuiObject.hxx,v 1.14 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,12 +27,15 @@ class DialogContainer;
 class Widget;
 
 #include "Command.hxx"
+#include "Array.hxx"
+
+typedef GUI::Array<Widget*> WidgetArray;
 
 /**
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.13 2005-08-01 22:33:15 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.14 2005-08-10 12:23:42 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
@@ -41,16 +44,16 @@ class GuiObject : public CommandReceiver
 
   public:
     GuiObject(OSystem* osystem, DialogContainer* parent, int x, int y, int w, int h)
-        : myOSystem(osystem),
-          myParent(parent),
-          _x(x),
-          _y(y),
-          _w(w),
-          _h(h),
-          _dirty(true),
-          _firstWidget(0) { }
+      : myOSystem(osystem),
+        myParent(parent),
+        _x(x),
+        _y(y),
+        _w(w),
+        _h(h),
+        _dirty(true),
+        _firstWidget(0) {}
 
-    virtual ~GuiObject() { }
+    virtual ~GuiObject() {}
 
     OSystem* instance() { return myOSystem; }
     DialogContainer* parent() { return myParent; }
@@ -70,7 +73,17 @@ class GuiObject : public CommandReceiver
     virtual bool isVisible() const = 0;
     virtual void draw() = 0;
 
-    static void resetActiveWidget() { _activeWidget = NULL; }
+    /** Add given widget to the focus list */
+    virtual void addFocusWidget(Widget* w) = 0;
+
+    /** Return focus list for this object */
+    WidgetArray& getFocusList() { return _focusList; }
+
+    /** Redraw the focus list */
+    virtual void redrawFocus() {}
+
+  protected:
+    virtual void releaseFocus() = 0;
 
   protected:
     OSystem*         myOSystem;
@@ -78,14 +91,10 @@ class GuiObject : public CommandReceiver
 
     int _x, _y;
     int _w, _h;
-
     bool _dirty;
 
     Widget* _firstWidget;
-    static Widget* _activeWidget;
-
-  protected:
-    virtual void releaseFocus() = 0;
+    WidgetArray _focusList;
 };
 
 #endif

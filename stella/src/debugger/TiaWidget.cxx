@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.3 2005-08-02 18:28:27 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.4 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,7 +64,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   myRamGrid->setEditable(false);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamID);
-  myActiveWidget = myRamGrid;
+  addFocusWidget(myRamGrid);
 
   t = new StaticTextWidget(boss, xpos, ypos + 2,
                            lwidth, fontHeight,
@@ -88,7 +88,6 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   t->setFont(font);
   xpos += 6*fontWidth + 5;
   myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*fontWidth, lineHeight, "");
-  myLabel->clearFlags(WIDGET_TAB_NAVIGATE);
   myLabel->setFont(font);
   myLabel->setEditable(false);
 
@@ -99,7 +98,6 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   t->setFont(font);
   xpos += 4*fontWidth + 5;
   myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*fontWidth, lineHeight, "");
-  myDecValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myDecValue->setFont(font);
   myDecValue->setEditable(false);
 
@@ -110,7 +108,6 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   t->setFont(font);
   xpos += 4*fontWidth + 5;
   myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*fontWidth, lineHeight, "");
-  myBinValue->clearFlags(WIDGET_TAB_NAVIGATE);
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 
@@ -130,6 +127,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
                                    1, 4, 2, 8, kBASE_16);
   myColorRegs->setTarget(this);
   myColorRegs->setID(kColorRegsID);
+  addFocusWidget(myColorRegs);
 
   xpos += myColorRegs->colWidth() + 5;
   myCOLUP0Color = new ColorWidget(boss, xpos, ypos+2, 20, lineHeight - 4);

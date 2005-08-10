@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.hxx,v 1.1 2005-08-01 22:33:12 stephena Exp $
+// $Id: CpuWidget.hxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,10 +36,8 @@ class ToggleBitWidget;
 class CpuWidget : public Widget, public CommandSender
 {
   public:
-    CpuWidget(GuiObject* boss, int x, int y, int w, int h);
+    CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     virtual ~CpuWidget();
-
-    Widget* activeWidget() { return myActiveWidget; }
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
@@ -48,8 +46,6 @@ class CpuWidget : public Widget, public CommandSender
     void fillGrid();
 
   private:
-    Widget* myActiveWidget;
-
     DataGridWidget*  myCpuGrid;
     ToggleBitWidget* myPSRegister;
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.28 2005-07-14 00:54:28 stephena Exp $
+// $Id: OSystem.cxx,v 1.29 2005-08-10 12:23:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -88,9 +88,6 @@ OSystem::OSystem()
 #ifdef DEVELOPER_SUPPORT
   myFeatures += "Debugger";
 #endif
-
-  // When we first start Stella, no GUI widget is active
-  GuiObject::resetActiveWidget();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

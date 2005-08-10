@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaInfoWidget.cxx,v 1.1 2005-07-21 19:30:15 stephena Exp $
+// $Id: TiaInfoWidget.cxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Frame:", kTextAlignLeft);
   xpos += lwidth;
   myFrameCount = new EditTextWidget(boss, xpos, ypos-2, 45, kLineHeight, "");
-  myFrameCount->clearFlags(WIDGET_TAB_NAVIGATE);
   myFrameCount->setFont(font);
   myFrameCount->setEditable(false);
 
@@ -50,25 +49,21 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "F. Cycles:", kTextAlignLeft);
   xpos += lwidth;
   myFrameCycles = new EditTextWidget(boss, xpos, ypos-2, 45, kLineHeight, "");
-  myFrameCycles->clearFlags(WIDGET_TAB_NAVIGATE);
   myFrameCycles->setFont(font);
   myFrameCycles->setEditable(false);
 
   xpos = x + 20;  ypos += kLineHeight + 5;
   myVSync = new CheckboxWidget(boss, xpos, ypos-3, 25, kLineHeight, "VSync", 0);
-  myVSync->clearFlags(WIDGET_TAB_NAVIGATE);
   myVSync->setEditable(false);
 
   xpos = x + 20;  ypos += kLineHeight + 5;
   myVBlank = new CheckboxWidget(boss, xpos, ypos-3, 30, kLineHeight, "VBlank", 0);
-  myVBlank->clearFlags(WIDGET_TAB_NAVIGATE);
   myVBlank->setEditable(false);
 
   xpos = x + 10 + 100;  ypos = y + 10;
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Scanline:", kTextAlignLeft);
   xpos += lwidth;
   myScanlineCount = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
-  myScanlineCount->clearFlags(WIDGET_TAB_NAVIGATE);
   myScanlineCount->setFont(font);
   myScanlineCount->setEditable(false);
 
@@ -76,7 +71,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "S. Cycles:", kTextAlignLeft);
   xpos += lwidth;
   myScanlineCycles = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
-  myScanlineCycles->clearFlags(WIDGET_TAB_NAVIGATE);
   myScanlineCycles->setFont(font);
   myScanlineCycles->setEditable(false);
 
@@ -84,7 +78,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Pixel Pos:", kTextAlignLeft);
   xpos += lwidth;
   myPixelPosition = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
-  myPixelPosition->clearFlags(WIDGET_TAB_NAVIGATE);
   myPixelPosition->setFont(font);
   myPixelPosition->setEditable(false);
 
@@ -92,7 +85,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Color Clk:", kTextAlignLeft);
   xpos += lwidth;
   myColorClocks = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
-  myColorClocks->clearFlags(WIDGET_TAB_NAVIGATE);
   myColorClocks->setFont(font);
   myColorClocks->setEditable(false);
 }
