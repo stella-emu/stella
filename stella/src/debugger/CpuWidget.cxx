@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.5 2005-08-10 14:44:00 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.6 2005-08-10 18:44:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,7 +64,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   StaticTextWidget* t;
 
   // Create a 1x5 grid with labels for the CPU registers
-  xpos = x + 10, ypos = y, lwidth = 4 * fontWidth;
+  xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
   myCpuGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 5, 8, 16);
   myCpuGrid->setTarget(this);
   addFocusWidget(myCpuGrid);
@@ -80,12 +80,12 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create a read-only textbox containing the current PC label
   xpos += lwidth + myCpuGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, xpos, ypos, 100, lineHeight, "");
+  myPCLabel = new EditTextWidget(boss, xpos, ypos, fontWidth*25, lineHeight, "");
   myPCLabel->setFont(font);
   myPCLabel->setEditable(false);
 
   // Create a bitfield widget for changing the processor status
-  xpos = x + 10;  ypos += 5*lineHeight + 5;
+  xpos = x;  ypos += 5*lineHeight + 5;
   t = new StaticTextWidget(boss, xpos, ypos, lwidth-2, fontHeight,
                            "PS:", kTextAlignLeft);
   t->setFont(font);
@@ -106,7 +106,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myPSRegister->setList(off, on);
 
   // Calculate real dimensions
-  _w = lwidth + myCpuGrid->getWidth() + myPSRegister->getWidth() + 20;
+  _w = lwidth + myCpuGrid->getWidth() + myPCLabel->getWidth() + 20;
   _h = ypos + myPSRegister->getHeight() - y;
 }
 

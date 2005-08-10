@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.10 2005-08-02 18:28:28 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.11 2005-08-10 18:44:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,21 +30,14 @@
 #include "EditableWidget.hxx"
 #include "Array.hxx"
 #include "Rect.hxx"
+#include "DataGridOpsWidget.hxx"
 
 // Some special commands
 enum {
   kDGItemDoubleClickedCmd = 'DGdb',
   kDGItemActivatedCmd     = 'DGac',
   kDGItemDataChangedCmd   = 'DGch',
-  kDGSelectionChangedCmd  = 'DGsc',
-
-  kDGZeroCmd   = 'DGze',
-  kDGInvertCmd = 'DGiv',
-  kDGNegateCmd = 'DGng',
-  kDGIncCmd    = 'DGic',
-  kDGDecCmd    = 'DGdc',
-  kDGShiftLCmd = 'DGls',
-  kDGShiftRCmd = 'DGrs'
+  kDGSelectionChangedCmd  = 'DGsc'
 };
 
 /* DataGridWidget */
@@ -76,6 +69,8 @@ class DataGridWidget : public EditableWidget, public CommandSender
 
     int colWidth() { return _colWidth; }
 
+    void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
+
   protected:
     void drawWidget(bool hilite);
 
@@ -85,6 +80,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
 
     GUI::Rect getEditRect() const;
 
+    void receivedFocusWidget();
     void lostFocusWidget();
 
     bool tryInsertChar(char c, int pos);
@@ -111,8 +107,10 @@ class DataGridWidget : public EditableWidget, public CommandSender
     int     _currentKeyDown;
     string  _backupString;
 
+    DataGridOpsWidget* _opsWidget;
+
   private:
-    //* Common operations on the currently selected cell */
+    /** Common operations on the currently selected cell */
     void negateCell();
     void invertCell();
     void decrementCell();

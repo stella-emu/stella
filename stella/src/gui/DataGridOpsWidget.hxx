@@ -13,48 +13,47 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.hxx,v 1.3 2005-08-10 18:44:37 stephena Exp $
+// $Id: DataGridOpsWidget.hxx,v 1.1 2005-08-10 18:44:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef CPU_WIDGET_HXX
-#define CPU_WIDGET_HXX
+#ifndef DATA_GRID_OPS_WIDGET_HXX
+#define DATA_GRID_OPS_WIDGET_HXX
 
-class GuiObject;
-class ButtonWidget;
-class EditTextWidget;
-class ToggleBitWidget;
-
-#include "Array.hxx"
+#include "GuiObject.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "DataGridWidget.hxx"
 
+// DataGridWidget operations
+enum {
+  kDGZeroCmd   = 'DGze',
+  kDGInvertCmd = 'DGiv',
+  kDGNegateCmd = 'DGng',
+  kDGIncCmd    = 'DGic',
+  kDGDecCmd    = 'DGdc',
+  kDGShiftLCmd = 'DGls',
+  kDGShiftRCmd = 'DGrs'
+};
 
-class CpuWidget : public Widget, public CommandSender
+class DataGridOpsWidget : public Widget, public CommandSender
 {
   public:
-    CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
-    virtual ~CpuWidget();
+    DataGridOpsWidget(GuiObject* boss, int x, int y);
+    virtual ~DataGridOpsWidget() {}
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    void loadConfig();
-    void setOpsWidget(DataGridOpsWidget* w) { myCpuGrid->setOpsWidget(w); }
+    void setTarget(CommandReceiver* target);
+    void setEnabled(bool e);
 
   private:
-    void fillGrid();
-
-  private:
-    DataGridWidget*  myCpuGrid;
-    ToggleBitWidget* myPSRegister;
-
-    EditTextWidget* myPCLabel;
-    EditTextWidget* myCurrentIns;
-    EditTextWidget* myCycleCount;
-    EditTextWidget* myStatus;
+    ButtonWidget* _zeroButton;
+    ButtonWidget* _invButton;
+    ButtonWidget* _negButton;
+    ButtonWidget* _incButton;
+    ButtonWidget* _decButton;
+    ButtonWidget* _shiftLeftButton;
+    ButtonWidget* _shiftRightButton;
 };
 
 #endif

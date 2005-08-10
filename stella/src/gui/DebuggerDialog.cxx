@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.32 2005-08-10 14:44:01 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.33 2005-08-10 18:44:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@
 #include "RamWidget.hxx"
 #include "TiaWidget.hxx"
 #include "CheatWidget.hxx"
+#include "DataGridOpsWidget.hxx"
 #include "Rect.hxx"
 #include "Debugger.hxx"
 
@@ -186,9 +187,19 @@ void DebuggerDialog::addRomArea()
   myCpu = new CpuWidget(this, instance()->consoleFont(), xpos, ypos);
   addToFocusList(myCpu->getFocusList());
 
-  ypos += myCpu->getHeight() + 10;
+  xpos = r.left + 10; ypos += myCpu->getHeight() + 10;
   myRam = new RamWidget(this, instance()->consoleFont(), xpos, ypos);
   addToFocusList(myRam->getFocusList());
+
+  xpos = r.left + 10 + myCpu->getWidth() + 20; ypos = 20;
+  DataGridOpsWidget* ops = new DataGridOpsWidget(this, xpos, ypos);
+  ops->setEnabled(false);
+
+  // Add the DataGridOpsWidget to any widgets which contain a
+  // DataGridWidget which we want controlled
+  myCpu->setOpsWidget(ops);
+  myRam->setOpsWidget(ops);
+
 
   // Add some buttons that are always shown, no matter which tab we're in
   // FIXME - these positions will definitely change

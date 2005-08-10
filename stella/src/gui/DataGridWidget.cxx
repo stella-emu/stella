@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.18 2005-08-10 12:23:42 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.19 2005-08-10 18:44:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _colWidth(colchars * font.getMaxCharWidth() + 8),
     _bits(bits),
     _base(base),
-    _selectedItem(0)
+    _selectedItem(0),
+    _opsWidget(NULL)
 {
   setFont(font);
 
@@ -122,6 +123,8 @@ void DataGridWidget::setSelectedValue(int value)
   _valueList[_selectedItem] = value;
 
   sendCommand(kDGItemDataChangedCmd, _selectedItem, _id);
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -300,62 +303,41 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
       case 'n': // negate
         if(_editable)
-        {
           negateCell();
-          dirty = true;
-        }
         break;
 
       case 'i': // invert
       case '!':
         if(_editable)
-        {
           invertCell();
-          dirty = true;
-        }
         break;
 
       case '-': // decrement
         if(_editable)
-        {
           decrementCell();
-          dirty = true;
-        }
         break;
 
       case '+': // increment
       case '=':
         if(_editable)
-        {
           incrementCell();
-          dirty = true;
-        }
         break;
 
       case '<': // shift left
       case ',':
         if(_editable)
-        {
           lshiftCell();
-          dirty = true;
-        }
         break;
 
       case '>': // shift right
       case '.':
         if(_editable)
-        {
           rshiftCell();
-          dirty = true;
-        }
         break;
 
       case 'z': // zero
         if(_editable)
-        {
           zeroCell();
-          dirty = true;
-        }
         break;
 
       default:
@@ -387,9 +369,24 @@ bool DataGridWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::receivedFocusWidget()
+{
+  // Enable the operations widget and make it send its signals here
+  if(_opsWidget)
+  {
+    _opsWidget->setEnabled(true);
+    _opsWidget->setTarget(this);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::lostFocusWidget()
 {
   _editMode = false;
+
+  // Disable the operations widget
+  if(_opsWidget)
+    _opsWidget->setEnabled(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

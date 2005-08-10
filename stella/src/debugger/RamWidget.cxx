@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.5 2005-08-10 14:44:00 stephena Exp $
+// $Id: RamWidget.cxx,v 1.6 2005-08-10 18:44:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
-  xpos = x + 10;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
+  xpos = x;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
   myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
                                  16, 8, 2, 8, kBASE_16);
   myRamGrid->setTarget(this);
@@ -77,11 +77,11 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
                            "Label:", kTextAlignLeft);
   t->setFont(font);
   xpos += 6*fontWidth + 5;
-  myLabel = new EditTextWidget(boss, xpos, ypos-2, 15*fontWidth, lineHeight, "");
+  myLabel = new EditTextWidget(boss, xpos, ypos-2, 17*fontWidth, lineHeight, "");
   myLabel->setFont(font);
   myLabel->setEditable(false);
 
-  xpos += 15*fontWidth + 20;
+  xpos += 17*fontWidth + 20;
   t = new StaticTextWidget(boss, xpos, ypos,
                            4*fontWidth, fontHeight,
                            "Dec:", kTextAlignLeft);
@@ -102,49 +102,13 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myBinValue->setEditable(false);
 
 /*
-  // Add some buttons for common actions
-  ButtonWidget* b;
-  xpos = vWidth + 10;  ypos = 20;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "0", kDGZeroCmd, 0);
-  b->setTarget(myRamGrid);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Inv", kDGInvertCmd, 0);
-  b->setTarget(myRamGrid);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "++", kDGIncCmd, 0);
-  b->setTarget(myRamGrid);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "<<", kDGShiftLCmd, 0);
-  b->setTarget(myRamGrid);
-
-  ypos += 16 + space;
   // keep a pointer to this one, it gets disabled/enabled
   myUndoButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Undo", kUndoCmd, 0);
   b->setTarget(this);
 
-  ypos += 16 + space;
   // keep a pointer to this one, it gets disabled/enabled
   myRevertButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Revert", kRevertCmd, 0);
   b->setTarget(this);
-
-  xpos = vWidth + 30 + 10;  ypos = 20;
-//  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "", kRCmd, 0);
-//  b->setTarget(this);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "Neg", kDGNegateCmd, 0);
-  b->setTarget(myRamGrid);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "--", kDGDecCmd, 0);
-  b->setTarget(myRamGrid);
-
-  ypos += 16 + space;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kDGShiftRCmd, 0);
-  b->setTarget(myRamGrid);
 */
 
   // Calculate real dimensions
