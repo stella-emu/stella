@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.4 2005-08-10 12:23:42 stephena Exp $
+// $Id: RamWidget.cxx,v 1.5 2005-08-10 14:44:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,20 +33,21 @@
 #include "RamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
+  : Widget(boss, x, y, 16, 16),
     CommandSender(boss)
 {
-  const GUI::Font& font = instance()->consoleFont();
-  int xpos = 10, ypos = 25, lwidth = 4 * font.getMaxCharWidth();
-  int fontHeight = font.getFontHeight(), lineHeight = font.getLineHeight();
-  int fontWidth = font.getMaxCharWidth();
+  const int fontWidth  = font.getMaxCharWidth(),
+            fontHeight = font.getFontHeight(),
+            lineHeight = font.getLineHeight();
+  int xpos, ypos, lwidth;
   StaticTextWidget* t;
 
 // FIXME - this contains magic numbers
   const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
+  xpos = x + 10;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
   myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
                                  16, 8, 2, 8, kBASE_16);
   myRamGrid->setTarget(this);
@@ -55,7 +56,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   for(int row = 0; row < 8; ++row)
   {
     t = new StaticTextWidget(boss, xpos-2, ypos + row*lineHeight + 2,
-                             lwidth, fontHeight,
+                             lwidth-2, fontHeight,
                              Debugger::to_hex_8(row*16 + kRamStart) + string(":"),
                              kTextAlignLeft);
     t->setFont(font);
@@ -70,7 +71,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
     t->setFont(font);
   }
   
-  xpos = 20;  ypos += 9 * lineHeight;
+  xpos = x + 10;  ypos += 9 * lineHeight;
   t = new StaticTextWidget(boss, xpos, ypos,
                            6*fontWidth, fontHeight,
                            "Label:", kTextAlignLeft);
@@ -100,6 +101,7 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 
+/*
   // Add some buttons for common actions
   ButtonWidget* b;
   xpos = vWidth + 10;  ypos = 20;
@@ -143,6 +145,11 @@ RamWidget::RamWidget(GuiObject* boss, int x, int y, int w, int h)
   ypos += 16 + space;
   b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, ">>", kDGShiftRCmd, 0);
   b->setTarget(myRamGrid);
+*/
+
+  // Calculate real dimensions
+  _w = lwidth + myRamGrid->getWidth();
+  _h = ypos + 2*lineHeight - y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,8 +179,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       dbg.write(addr, value);
       myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
-      myRevertButton->setEnabled(true);
-      myUndoButton->setEnabled(true);
+//      myRevertButton->setEnabled(true);
+//      myUndoButton->setEnabled(true);
       break;
 
     case kDGSelectionChangedCmd:
@@ -196,7 +203,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kUndoCmd:
       dbg.write(myUndoAddress, myUndoValue);
-      myUndoButton->setEnabled(false);
+//      myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
   }
@@ -235,7 +242,7 @@ void RamWidget::fillGrid(bool updateOld)
   myRamGrid->setList(alist, vlist, changed);
   if(updateOld)
   {
-    myRevertButton->setEnabled(false);
-    myUndoButton->setEnabled(false);
+//    myRevertButton->setEnabled(false);
+//    myUndoButton->setEnabled(false);
   }
 }

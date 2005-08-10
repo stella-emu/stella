@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.31 2005-08-10 12:23:42 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.32 2005-08-10 14:44:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,6 +67,7 @@ cerr << " ==> DebuggerDialog::loadConfig()\n";
   myTiaInfo->loadConfig();
   myTiaOutput->loadConfig();
   myCpu->loadConfig();
+  myRam->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,20 +151,14 @@ void DebuggerDialog::addTabArea()
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), tabID);
 
-  // The RAM tab (part of RIOT)
-  tabID = myTab->addTab("RAM");
-  RamWidget* ram = new RamWidget(myTab, 2, 2, widWidth, widHeight);
-  myTab->setParentWidget(tabID, ram);
-  addToFocusList(ram->getFocusList(), tabID);
-
-  // The input/output tab (part of RIOT)
-  tabID = myTab->addTab("I/O");
-
   // The TIA tab
   tabID = myTab->addTab("TIA");
   TiaWidget* tia = new TiaWidget(myTab, 2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, tia);
   addToFocusList(tia->getFocusList(), tabID);
+
+  // The input/output tab (part of RIOT)
+  tabID = myTab->addTab("I/O");
 
   // The Cheat tab
   tabID = myTab->addTab("Cheat");
@@ -190,6 +185,10 @@ void DebuggerDialog::addRomArea()
   xpos = r.left + 10; ypos = 10;
   myCpu = new CpuWidget(this, instance()->consoleFont(), xpos, ypos);
   addToFocusList(myCpu->getFocusList());
+
+  ypos += myCpu->getHeight() + 10;
+  myRam = new RamWidget(this, instance()->consoleFont(), xpos, ypos);
+  addToFocusList(myRam->getFocusList());
 
   // Add some buttons that are always shown, no matter which tab we're in
   // FIXME - these positions will definitely change

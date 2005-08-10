@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
+// $Id: RamWidget.hxx,v 1.3 2005-08-10 14:44:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ enum {
 class RamWidget : public Widget, public CommandSender
 {
   public:
-    RamWidget(GuiObject* boss, int x, int y, int w, int h);
+    RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     virtual ~RamWidget();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
@@ -58,6 +58,7 @@ class RamWidget : public Widget, public CommandSender
     EditTextWidget* myBinValue;
     EditTextWidget* myDecValue;
     EditTextWidget* myLabel;
+
     ButtonWidget *myRevertButton;
     ButtonWidget *myUndoButton;
 

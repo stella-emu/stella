@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.4 2005-08-10 12:23:42 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.5 2005-08-10 14:44:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -108,35 +108,6 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Calculate real dimensions
   _w = lwidth + myCpuGrid->getWidth() + myPSRegister->getWidth() + 20;
   _h = ypos + myPSRegister->getHeight() - y;
-
-/*
-// FIXME --------------------------
-// The following will be moved to another part of the debugger dialog,
-// so I won't bother fixing it here.
-
-  // And some status fields
-  xpos = 10;  ypos += 2*lineHeight;
-  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Current Ins:", kTextAlignLeft);
-  xpos += 60;
-  myCurrentIns = new EditTextWidget(boss, xpos, ypos-2, 300, kLineHeight, "");
-  myCurrentIns->setFont(font);
-  myCurrentIns->setEditable(false);
-
-  xpos = 10;  ypos += kLineHeight + 5;
-  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "Cycle Count:", kTextAlignLeft);
-  xpos += 60;
-  myCycleCount = new EditTextWidget(boss, xpos, ypos-2, 50, kLineHeight, "");
-  myCycleCount->setFont(font);
-  myCycleCount->setEditable(false);
-
-  xpos = 10;  ypos += kLineHeight + 5;
-  new StaticTextWidget(boss, xpos, ypos, 55, kLineHeight, "BP/Trap:", kTextAlignLeft);
-  xpos += 60;
-  myStatus = new EditTextWidget(boss, xpos, ypos-2, 100, kLineHeight, "");
-  myStatus->setFont(font);
-  myStatus->setEditable(false);
-// FIXME --------------------------
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
