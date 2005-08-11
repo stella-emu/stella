@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.59 2005-08-11 19:12:38 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.60 2005-08-11 21:57:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -608,7 +608,7 @@ const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
   { 104, 104, 104 },  // kColor
   {   0,   0,   0 },  // kBGColor
   {  64,  64,  64 },  // kShadowColor
-  {   0,  0,  200 },  // kHiliteColor
+  { 200, 200, 255 },  // kHiliteColor
   {  32, 160,  32 },  // kTextColor
   {   0, 255,   0 },  // kTextColorHi
   { 200,   0,   0 }   // kTextColorEm

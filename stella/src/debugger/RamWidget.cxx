@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.7 2005-08-11 19:12:38 stephena Exp $
+// $Id: RamWidget.cxx,v 1.8 2005-08-11 21:57:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,8 +47,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, x, y, 16, 16),
     CommandSender(boss),
     myUndoAddress(-1),
-    myUndoValue(-1),
-    mySearchValue(-1)
+    myUndoValue(-1)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
@@ -253,7 +252,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::loadConfig()
 {
-cerr << "RamWidget::loadConfig()\n";
+//cerr << "RamWidget::loadConfig()\n";
   fillGrid(true);
 }
 
@@ -304,27 +303,28 @@ const string RamWidget::doSearch(const string& str)
     return "Invalid input +|-";
   }
 
-  mySearchValue = instance()->debugger().stringToValue(str);
+  int searchVal = instance()->debugger().stringToValue(str);
 
   // Clear the search array of previous items
-  mySearchResults.clear();
+  mySearchAddr.clear();
+  mySearchValue.clear();
 
   // Now, search all memory locations for this value, and add it to the
   // search array
   RamDebug& dbg = instance()->debugger().ramDebug();
   for(int addr = 0; addr < kRamSize; ++addr)
   {
-    if(comparisonSearch)
-    {
-      if(dbg.read(addr) == mySearchValue)
-        mySearchResults.push_back(addr);
-    }
-    else  // match all memory locations
-      mySearchResults.push_back(addr);
+    int value = dbg.read(addr);
+
+    if(comparisonSearch && searchVal != value)
+      continue;
+
+    mySearchAddr.push_back(addr);
+    mySearchValue.push_back(value);
   }
 
   // If we have some hits, enable the comparison methods
-  if(mySearchResults.size() > 0)
+  if(mySearchAddr.size() > 0)
   {
     mySearchButton->setEnabled(false);
     myCompareButton->setEnabled(true);
@@ -332,7 +332,7 @@ const string RamWidget::doSearch(const string& str)
   }
 
   // Finally, show the search results in the list
-  myRamGrid->setHiliteList(mySearchResults);
+  myRamGrid->setHiliteList(mySearchAddr);
 
   return "";
 }
@@ -341,7 +341,7 @@ const string RamWidget::doSearch(const string& str)
 const string RamWidget::doCompare(const string& str)
 {
   bool comparitiveSearch = false;
-  int searchVal = 0;
+  int searchVal = 0, offset = 0;
 
   if(str.length() == 0)
     return "Enter an absolute or comparitive value";
@@ -365,44 +365,42 @@ const string RamWidget::doCompare(const string& str)
 
     string tmp = str;
     tmp.erase(0, 1);  // remove the operator
-    searchVal = instance()->debugger().stringToValue(tmp);
+    offset = instance()->debugger().stringToValue(tmp);
     if(negative)
-      searchVal = -searchVal;
+      offset = -offset;
   }
   else
     searchVal = instance()->debugger().stringToValue(str);
 
-cerr << " ==> searching for " << searchVal << endl;
-
   // Now, search all memory locations specified in mySearchArray for this value
   RamDebug& dbg = instance()->debugger().ramDebug();
   IntArray tempList;
-  for(unsigned int i = 0; i < mySearchResults.size(); ++i)
+  for(unsigned int i = 0; i < mySearchAddr.size(); ++i)
   {
     if(comparitiveSearch)
     {
-      searchVal += mySearchValue;
-      if(searchVal >= 0 && searchVal <= 255)
+      searchVal = mySearchValue[i] + offset;
+      if(searchVal < 0 || searchVal > 255)
         continue;
     }
 
-    int addr = mySearchResults[i];
+    int addr = mySearchAddr[i];
     if(dbg.read(addr) == searchVal)
       tempList.push_back(addr);
   }
 
   // Update the searchArray to the new results
-  mySearchResults = tempList;
+  mySearchAddr = tempList;
 
   // If we have some hits, enable the comparison methods
-  if(mySearchResults.size() > 0)
+  if(mySearchAddr.size() > 0)
   {
     myCompareButton->setEnabled(true);
     myRestartButton->setEnabled(true);
   }
 
   // Finally, show the search results in the list
-  myRamGrid->setHiliteList(mySearchResults);
+  myRamGrid->setHiliteList(mySearchAddr);
 
   return "";
 }
@@ -411,9 +409,9 @@ cerr << " ==> searching for " << searchVal << endl;
 void RamWidget::doRestart()
 {
   // Erase all search buffers, reset to start mode
-  mySearchValue = -1;
-  mySearchResults.clear();
-  myRamGrid->setHiliteList(mySearchResults);
+  mySearchAddr.clear();
+  mySearchValue.clear();
+  myRamGrid->setHiliteList(mySearchAddr);
 
   mySearchButton->setEnabled(true);
   myCompareButton->setEnabled(false);

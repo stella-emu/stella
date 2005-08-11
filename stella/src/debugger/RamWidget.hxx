@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.5 2005-08-11 19:12:38 stephena Exp $
+// $Id: RamWidget.hxx,v 1.6 2005-08-11 21:57:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,7 +55,6 @@ class RamWidget : public Widget, public CommandSender
   private:
     int myUndoAddress;
     int myUndoValue;
-    int mySearchValue;
 
     DataGridWidget* myRamGrid;
     EditTextWidget* myBinValue;
@@ -71,7 +70,8 @@ class RamWidget : public Widget, public CommandSender
     InputTextDialog* myInputBox;
 
     IntArray myOldValueList;
-    IntArray mySearchResults;
+    IntArray mySearchAddr;
+    IntArray mySearchValue;
 };
 
 #endif

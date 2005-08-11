@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.20 2005-08-11 19:12:39 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.21 2005-08-11 21:57:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -503,18 +503,22 @@ void DataGridWidget::drawWidget(bool hilite)
         buffer = _valueStringList[pos];
         deltax = 0;
 
+        OverlayColor color = kTextColor;
+
         if(_changedList[pos])
         {
           fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kTextColorEm);
-          fb.drawString(_font, buffer, x, y, _colWidth, kTextColorHi);
-        }
-        else
-          fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
-      }
 
-      // Hilite special items by drawing a frame
-      if (_hiliteList[pos])
-        fb.frameRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kHiliteColor);
+          if(_hiliteList[pos])
+            color = kHiliteColor;
+          else
+            color = kTextColorHi;
+        }
+        else if(_hiliteList[pos])
+          color = kHiliteColor;
+
+        fb.drawString(_font, buffer, x, y, _colWidth, color);
+      }
     }
   }
 

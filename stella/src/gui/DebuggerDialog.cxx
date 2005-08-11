@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.33 2005-08-10 18:44:37 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.34 2005-08-11 21:57:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,7 +28,6 @@
 #include "CpuWidget.hxx"
 #include "RamWidget.hxx"
 #include "TiaWidget.hxx"
-#include "CheatWidget.hxx"
 #include "DataGridOpsWidget.hxx"
 #include "Rect.hxx"
 #include "Debugger.hxx"
@@ -119,7 +118,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     default:
-      Dialog::handleCommand(sender, cmd, data, 0);
+      Dialog::handleCommand(sender, cmd, data, id);
   }
 }
 
@@ -159,13 +158,7 @@ void DebuggerDialog::addTabArea()
   addToFocusList(tia->getFocusList(), tabID);
 
   // The input/output tab (part of RIOT)
-  tabID = myTab->addTab("I/O");
-
-  // The Cheat tab
-  tabID = myTab->addTab("Cheat");
-  CheatWidget* cheat = new CheatWidget(myTab, 2, 2, widWidth, widHeight);
-  myTab->setParentWidget(tabID, cheat);
-  addToFocusList(cheat->getFocusList(), tabID);
+//  tabID = myTab->addTab("I/O");
 
   myTab->setActiveTab(0);
 }
