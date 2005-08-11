@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.58 2005-08-01 22:33:12 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.59 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -38,7 +38,6 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
    :  myOSystem(osystem),
       theRedrawTIAIndicator(true),
-      theRedrawOverlayIndicator(false),
       theZoomLevel(2),
       theMaxZoomLevel(2),
       theAspectRatio(1.0),
@@ -196,25 +195,19 @@ void FrameBuffer::update()
       if(theRedrawTIAIndicator)
         drawMediaSource();
 
-      // Only update the overlay if it's changed  
-      myOSystem->menu().draw(theRedrawOverlayIndicator);
-
+      myOSystem->menu().draw();
       break;  // S_MENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
-      // Only update the overlay if it's changed  
-      myOSystem->launcher().draw(theRedrawOverlayIndicator);
-
+      myOSystem->launcher().draw();
       break;  // S_LAUNCHER
     }
 
     case EventHandler::S_DEBUGGER:
     {
-      // Only update the overlay if it's changed  
-      myOSystem->debugger().draw(theRedrawOverlayIndicator);
-
+      myOSystem->debugger().draw();
       break;  // S_DEBUGGER
     }
 
@@ -227,11 +220,11 @@ void FrameBuffer::update()
   postFrameUpdate();
 
   // The frame doesn't need to be completely redrawn anymore
-  theRedrawTIAIndicator = theRedrawOverlayIndicator = false;
+  theRedrawTIAIndicator = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::refreshTIA(bool now)
+void FrameBuffer::refresh(bool now)
 {
   cerr << "refreshTIA() " << myNumRedraws++ << endl;
   theRedrawTIAIndicator = true;
@@ -240,17 +233,6 @@ void FrameBuffer::refreshTIA(bool now)
     myMessageTime = 0;
     update();
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::refreshOverlay(bool now)
-{
-  cerr << "refreshOverlay()\n";
-  if(myOSystem->eventHandler().state() == EventHandler::S_MENU)
-    refreshTIA(now);
-
-  theRedrawOverlayIndicator = true;
-  if(now) update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -623,10 +605,11 @@ void FrameBuffer::drawString(const GUI::Font* font, const string& s,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
-  {104, 104, 104},
-  {0, 0, 0},
-  {64, 64, 64},
-  {32, 160, 32},
-  {0, 255, 0},
-  {200, 0, 0}
+  { 104, 104, 104 },  // kColor
+  {   0,   0,   0 },  // kBGColor
+  {  64,  64,  64 },  // kShadowColor
+  {   0,  0,  200 },  // kHiliteColor
+  {  32, 160,  32 },  // kTextColor
+  {   0, 255,   0 },  // kTextColorHi
+  { 200,   0,   0 }   // kTextColorEm
 };

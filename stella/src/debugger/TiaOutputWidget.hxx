@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.hxx,v 1.4 2005-08-03 13:26:02 stephena Exp $
+// $Id: TiaOutputWidget.hxx,v 1.5 2005-08-11 19:12:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,6 +35,7 @@ class TiaOutputWidget : public Widget, public CommandSender
     virtual ~TiaOutputWidget();
 
     void handleMouseDown(int x, int y, int button, int clickCount);
+    void loadConfig();
 
 // Eventually, these methods will enable access to the onscreen TIA image
 // For example, clicking an area may cause an action

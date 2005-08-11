@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.cxx,v 1.10 2005-08-10 12:23:42 stephena Exp $
+// $Id: AddrValueWidget.cxx,v 1.11 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,7 +33,6 @@
 AddrValueWidget::AddrValueWidget(GuiObject* boss, int x, int y, int w, int h,
                                  int range, BaseFormat base)
   : EditableWidget(boss, x, y, w, h),
-    CommandSender(boss),
     _range(range),
     _base(base)
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.4 2005-08-10 18:44:37 stephena Exp $
+// $Id: RamWidget.hxx,v 1.5 2005-08-11 19:12:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,19 +23,15 @@
 #define RAM_WIDGET_HXX
 
 class GuiObject;
+class InputTextDialog;
 class ButtonWidget;
-class StaticTextWidget;
 class EditTextWidget;
+class StaticTextWidget;
 
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "DataGridWidget.hxx"
-
-enum {
-  kUndoCmd    = 'RWud',
-  kRevertCmd  = 'RWrv'
-};
 
 
 class RamWidget : public Widget, public CommandSender
@@ -52,19 +48,30 @@ class RamWidget : public Widget, public CommandSender
   private:
     void fillGrid(bool updateOld);
 
+    const string doSearch(const string& str);
+    const string doCompare(const string& str);
+    void doRestart();
+
   private:
     int myUndoAddress;
     int myUndoValue;
+    int mySearchValue;
 
     DataGridWidget* myRamGrid;
     EditTextWidget* myBinValue;
     EditTextWidget* myDecValue;
     EditTextWidget* myLabel;
 
-    ButtonWidget *myRevertButton;
-    ButtonWidget *myUndoButton;
+    ButtonWidget* myRevertButton;
+    ButtonWidget* myUndoButton;
+    ButtonWidget* mySearchButton;
+    ButtonWidget* myCompareButton;
+    ButtonWidget* myRestartButton;
 
-    IntArray _oldValueList;
+    InputTextDialog* myInputBox;
+
+    IntArray myOldValueList;
+    IntArray mySearchResults;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.19 2005-08-10 18:44:37 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.20 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                                int colchars, int bits, BaseFormat base)
   : EditableWidget(boss, x, y, cols*(colchars * font.getMaxCharWidth() + 8) + 1,
                    font.getLineHeight()*rows + 1),
-    CommandSender(boss),
     _rows(rows),
     _cols(cols),
     _currentRow(0),
@@ -59,6 +58,12 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   // The item is selected, thus _bgcolor is used to draw the caret and
   // _textcolorhi to erase it
   _caretInverse = true;
+
+  // Make sure hilite list contains all false values
+  _hiliteList.clear();
+  int size = _rows * _cols;
+  while((int)_hiliteList.size() < size)
+    _hiliteList.push_back(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -108,6 +113,27 @@ cerr << "_addrList.size() = "     << _addrList.size()
 
   // Send item selected signal for starting with cell 0
   sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
+
+  setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setHiliteList(const IntArray& hilitelist)
+{
+  // We can't assume this given list contains the exact number of
+  // items in this DataGrid, so we make sure
+  _hiliteList.clear();
+  int size = _rows * _cols;
+  while((int)_hiliteList.size() < size)
+    _hiliteList.push_back(false);
+
+  // Now fill it with the addresses/positions given in 'hilitelist'
+  for(unsigned int i = 0; i < hilitelist.size(); ++i)
+  {
+    int pos = hilitelist[i];
+    if(pos >= 0 && pos <= size)
+      _hiliteList[pos] = true;
+  }
 
   setDirty(); draw();
 }
@@ -485,6 +511,10 @@ void DataGridWidget::drawWidget(bool hilite)
         else
           fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
       }
+
+      // Hilite special items by drawing a frame
+      if (_hiliteList[pos])
+        fb.frameRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kHiliteColor);
     }
   }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.53 2005-08-10 12:23:42 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.54 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.53 2005-08-10 12:23:42 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.54 2005-08-11 19:12:38 stephena Exp $
 */
 class FrameBuffer
 {
@@ -137,13 +137,7 @@ class FrameBuffer
       @param now  Determine if the refresh should be done right away or in
                   the next frame
     */
-    void refreshTIA(bool now = false);
-
-    /**
-      Indicates that the overlay area is dirty, and certain areas need
-      to be redrawn.
-    */
-    void refreshOverlay(bool now = false);
+    void refresh(bool now = false);
 
     /**
       Toggles between fullscreen and window mode.
@@ -419,9 +413,6 @@ class FrameBuffer
 
     // Indicates if the TIA area should be redrawn
     bool theRedrawTIAIndicator;
-
-    // Indicates if the overlay area should be redrawn
-    bool theRedrawOverlayIndicator;
 
     // The SDL video buffer
     SDL_Surface* myScreen;

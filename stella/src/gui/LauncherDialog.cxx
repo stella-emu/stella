@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.28 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -127,12 +127,6 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list).
   if(myList->getList().isEmpty())
     updateListing();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::reset()
-{
-  myOptions->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

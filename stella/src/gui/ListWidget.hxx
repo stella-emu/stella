@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.8 2005-07-05 15:25:44 stephena Exp $
+// $Id: ListWidget.hxx,v 1.9 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,7 @@ enum {
 };
 
 /* ListWidget */
-class ListWidget : public EditableWidget, public CommandSender
+class ListWidget : public EditableWidget
 {
   public:
     ListWidget(GuiObject* boss, int x, int y, int w, int h);

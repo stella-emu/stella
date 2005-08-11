@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.6 2005-08-10 18:44:37 stephena Exp $
+// $Id: RamWidget.cxx,v 1.7 2005-08-11 19:12:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,26 +25,38 @@
 #include "FrameBuffer.hxx"
 #include "GuiUtils.hxx"
 #include "GuiObject.hxx"
+#include "InputTextDialog.hxx"
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "DataGridWidget.hxx"
 #include "RamDebug.hxx"
-
 #include "RamWidget.hxx"
+
+enum {
+  kUndoCmd     = 'RWud',
+  kRevertCmd   = 'RWrv',
+  kSearchCmd   = 'RWse',
+  kCmpCmd      = 'RWcp',
+  kRestartCmd  = 'RWrs',
+  kSValEntered = 'RWsv',
+  kCValEntered = 'RWcv'
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, x, y, 16, 16),
-    CommandSender(boss)
+    CommandSender(boss),
+    myUndoAddress(-1),
+    myUndoValue(-1),
+    mySearchValue(-1)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+            lineHeight = font.getLineHeight(),
+            bwidth  = 44,
+            bheight = 16;
   int xpos, ypos, lwidth;
   StaticTextWidget* t;
-
-// FIXME - this contains magic numbers
-  const int vWidth = _w - kButtonWidth - 20, space = 6, buttonw = 24;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
   xpos = x;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
@@ -53,6 +65,34 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myRamGrid->setTarget(this);
   addFocusWidget(myRamGrid);
 
+  // Create actions buttons to the left of the RAM grid
+  xpos += lwidth + myRamGrid->getWidth() + 4;
+  myUndoButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+                                  "Undo", kUndoCmd, 0);
+  myUndoButton->setTarget(this);
+
+  ypos += bheight + bheight/2;
+  myRevertButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+                                    "Revert", kRevertCmd, 0);
+  myRevertButton->setTarget(this);
+
+  ypos += 2 * bheight + 2;
+  mySearchButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+                                    "Search", kSearchCmd, 0);
+  mySearchButton->setTarget(this);
+
+  ypos += bheight + bheight/2;
+  myCompareButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+                                     "Compare", kCmpCmd, 0);
+  myCompareButton->setTarget(this);
+
+  ypos += bheight + bheight/2;
+  myRestartButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+                                     "Reset", kRestartCmd, 0);
+  myRestartButton->setTarget(this);
+
+  // Labels for RAM grid
+  xpos = x;  ypos = y + lineHeight;
   for(int row = 0; row < 8; ++row)
   {
     t = new StaticTextWidget(boss, xpos-2, ypos + row*lineHeight + 2,
@@ -101,15 +141,14 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 
-/*
-  // keep a pointer to this one, it gets disabled/enabled
-  myUndoButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Undo", kUndoCmd, 0);
-  b->setTarget(this);
+  // Inputbox which will pop up when searching RAM
+  xpos = x + lwidth + 20;  ypos = y + 2*lineHeight;
+  myInputBox = new InputTextDialog(boss, font, xpos, ypos);
+  myInputBox->setTarget(this);
 
-  // keep a pointer to this one, it gets disabled/enabled
-  myRevertButton = b = new ButtonWidget(boss, xpos, ypos, buttonw*2+10, 16, "Revert", kRevertCmd, 0);
-  b->setTarget(this);
-*/
+  // Start with these buttons disabled
+  myCompareButton->clearFlags(WIDGET_ENABLED);
+  myRestartButton->clearFlags(WIDGET_ENABLED);
 
   // Calculate real dimensions
   _w = lwidth + myRamGrid->getWidth();
@@ -143,8 +182,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       dbg.write(addr, value);
       myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
-//      myRevertButton->setEnabled(true);
-//      myUndoButton->setEnabled(true);
+      myRevertButton->setEnabled(true);
+      myUndoButton->setEnabled(true);
       break;
 
     case kDGSelectionChangedCmd:
@@ -161,15 +200,53 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kRevertCmd:
       for(unsigned int i = 0; i < kRamSize; i++)
-        dbg.write(i, _oldValueList[i]);
+        dbg.write(i, myOldValueList[i]);
       fillGrid(true);
       break;
 
     case kUndoCmd:
       dbg.write(myUndoAddress, myUndoValue);
-//      myUndoButton->setEnabled(false);
+      myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
+
+    case kSearchCmd:
+      myInputBox->setEditString("");
+      myInputBox->setTitle("");
+      myInputBox->setEmitSignal(kSValEntered);
+      parent()->addDialog(myInputBox);
+      break;
+
+    case kCmpCmd:
+      myInputBox->setEditString("");
+      myInputBox->setTitle("");
+      myInputBox->setEmitSignal(kCValEntered);
+      parent()->addDialog(myInputBox);
+      break;
+
+    case kRestartCmd:
+      doRestart();
+      break;
+
+    case kSValEntered:
+    {
+      const string& result = doSearch(myInputBox->getResult());
+      if(result != "")
+        myInputBox->setTitle(result);
+      else
+        parent()->removeDialog();
+      break;
+    }
+
+    case kCValEntered:
+    {
+      const string& result = doCompare(myInputBox->getResult());
+      if(result != "")
+        myInputBox->setTitle(result);
+      else
+        parent()->removeDialog();
+      break;
+    }
   }
 }
 
@@ -187,7 +264,7 @@ void RamWidget::fillGrid(bool updateOld)
   IntArray vlist;
   BoolArray changed;
 
-  if(updateOld) _oldValueList.clear();
+  if(updateOld) myOldValueList.clear();
 
   RamDebug& dbg = instance()->debugger().ramDebug();
 
@@ -195,7 +272,7 @@ void RamWidget::fillGrid(bool updateOld)
   RamState oldstate = (RamState&) dbg.getOldState();
 
   vlist = state.ram;
-  if(updateOld) _oldValueList = state.ram;
+  if(updateOld) myOldValueList = state.ram;
 
   for(unsigned int i = 0; i < 16*8; i++)
   {
@@ -206,7 +283,139 @@ void RamWidget::fillGrid(bool updateOld)
   myRamGrid->setList(alist, vlist, changed);
   if(updateOld)
   {
-//    myRevertButton->setEnabled(false);
-//    myUndoButton->setEnabled(false);
+    myRevertButton->setEnabled(false);
+    myUndoButton->setEnabled(false);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string RamWidget::doSearch(const string& str)
+{
+  bool comparisonSearch = true;
+
+  if(str.length() == 0)
+  {
+    // An empty field means return all memory locations
+    comparisonSearch = false;
+  }
+  else if(str.find_first_of("+-", 0) != string::npos)
+  {
+    // Don't accept these characters here, only in compare
+    return "Invalid input +|-";
+  }
+
+  mySearchValue = instance()->debugger().stringToValue(str);
+
+  // Clear the search array of previous items
+  mySearchResults.clear();
+
+  // Now, search all memory locations for this value, and add it to the
+  // search array
+  RamDebug& dbg = instance()->debugger().ramDebug();
+  for(int addr = 0; addr < kRamSize; ++addr)
+  {
+    if(comparisonSearch)
+    {
+      if(dbg.read(addr) == mySearchValue)
+        mySearchResults.push_back(addr);
+    }
+    else  // match all memory locations
+      mySearchResults.push_back(addr);
+  }
+
+  // If we have some hits, enable the comparison methods
+  if(mySearchResults.size() > 0)
+  {
+    mySearchButton->setEnabled(false);
+    myCompareButton->setEnabled(true);
+    myRestartButton->setEnabled(true);
+  }
+
+  // Finally, show the search results in the list
+  myRamGrid->setHiliteList(mySearchResults);
+
+  return "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string RamWidget::doCompare(const string& str)
+{
+  bool comparitiveSearch = false;
+  int searchVal = 0;
+
+  if(str.length() == 0)
+    return "Enter an absolute or comparitive value";
+
+  // Do some pre-processing on the string
+  string::size_type pos = str.find_first_of("+-", 0);
+  if(pos > 0 && pos != string::npos)
+  {
+    // Only accept '+' or '-' at the start of the string
+    return "Input must be [+|-]NUM";
+  }
+
+  // A comparitive search searches memory for locations that have changed by
+  // the specified amount, vs. for exact values
+  if(str[0] == '+' || str[0] == '-')
+  {
+    comparitiveSearch = true;
+    bool negative = false;
+    if(str[0] == '-')
+      negative = true;
+
+    string tmp = str;
+    tmp.erase(0, 1);  // remove the operator
+    searchVal = instance()->debugger().stringToValue(tmp);
+    if(negative)
+      searchVal = -searchVal;
+  }
+  else
+    searchVal = instance()->debugger().stringToValue(str);
+
+cerr << " ==> searching for " << searchVal << endl;
+
+  // Now, search all memory locations specified in mySearchArray for this value
+  RamDebug& dbg = instance()->debugger().ramDebug();
+  IntArray tempList;
+  for(unsigned int i = 0; i < mySearchResults.size(); ++i)
+  {
+    if(comparitiveSearch)
+    {
+      searchVal += mySearchValue;
+      if(searchVal >= 0 && searchVal <= 255)
+        continue;
+    }
+
+    int addr = mySearchResults[i];
+    if(dbg.read(addr) == searchVal)
+      tempList.push_back(addr);
+  }
+
+  // Update the searchArray to the new results
+  mySearchResults = tempList;
+
+  // If we have some hits, enable the comparison methods
+  if(mySearchResults.size() > 0)
+  {
+    myCompareButton->setEnabled(true);
+    myRestartButton->setEnabled(true);
+  }
+
+  // Finally, show the search results in the list
+  myRamGrid->setHiliteList(mySearchResults);
+
+  return "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamWidget::doRestart()
+{
+  // Erase all search buffers, reset to start mode
+  mySearchValue = -1;
+  mySearchResults.clear();
+  myRamGrid->setHiliteList(mySearchResults);
+
+  mySearchButton->setEnabled(true);
+  myCompareButton->setEnabled(false);
+  myRestartButton->setEnabled(false);
 }

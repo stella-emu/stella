@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.8 2005-08-10 12:23:42 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.9 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,12 +107,10 @@ void EditTextWidget::startEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::endEditMode()
 {
-  releaseFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::abortEditMode()
 {
   setEditString(_backupString);
-  releaseFocus();
 }

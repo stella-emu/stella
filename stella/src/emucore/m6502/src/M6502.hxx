@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.11 2005-07-18 23:00:18 urchlay Exp $
+// $Id: M6502.hxx,v 1.12 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef GUI::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.11 2005-07-18 23:00:18 urchlay Exp $ 
+  @version $Id: M6502.hxx,v 1.12 2005-08-11 19:12:38 stephena Exp $ 
 */
 class M6502
 {
@@ -49,7 +49,6 @@ class M6502
     /**
       The 6502 debugger class is a friend who needs special access
     */
-    friend class D6502; // FIXME - remove
     friend class CpuDebug;
 
   public:
@@ -184,13 +183,13 @@ class M6502
 
   public:
     void setBreakPoints(PackedBitArray *bp);
-	 void setTraps(PackedBitArray *read, PackedBitArray *write);
+    void setTraps(PackedBitArray *read, PackedBitArray *write);
     int totalInstructionCount() { return myTotalInstructionCount; }
 
     unsigned int addCondBreak(Expression *e, string name);
     void delCondBreak(unsigned int brk);
     void clearCondBreaks();
-	 const StringList getCondBreakNames();
+    const StringList& getCondBreakNames();
     int evalCondBreaks();
 
   protected:
@@ -282,4 +281,5 @@ class M6502
     StringList myBreakCondNames;
     ExpressionList myBreakConds;
 };
+
 #endif

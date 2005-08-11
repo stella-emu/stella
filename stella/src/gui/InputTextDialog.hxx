@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.1 2005-08-04 16:31:24 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.2 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,16 +24,15 @@
 
 class GuiObject;
 class StaticTextWidget;
-class EditNumWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
-#include "bspf.hxx"
+#include "EditTextWidget.hxx"
 
 class InputTextDialog : public Dialog, public CommandSender
 {
   public:
-    InputTextDialog(GuiObject* boss, const GUI::Font& font);
+    InputTextDialog(GuiObject* boss, const GUI::Font& font, int x, int y);
 
     const string& getResult() { return _input->getEditString(); }
 
@@ -46,7 +45,7 @@ class InputTextDialog : public Dialog, public CommandSender
 
   private:
     StaticTextWidget* _title;
-    EditNumWidget*    _input;
+    EditTextWidget*   _input;
 
     int	 _cmd;
 };

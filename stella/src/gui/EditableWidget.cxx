@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.9 2005-08-04 16:31:24 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.10 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
+    CommandSender(boss),
     _editable(true)
 {
   _caretVisible = false;
@@ -88,11 +89,13 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     case '\r':
       // confirm edit and exit editmode
       endEditMode();
+      sendCommand(kEditAcceptCmd, 0, _id);
       dirty = true;
       break;
 
     case 27:    // escape
       abortEditMode();
+      sendCommand(kEditCancelCmd, 0, _id);
       dirty = true;
       break;
 

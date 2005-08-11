@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.15 2005-08-10 12:23:42 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.16 2005-08-11 19:12:39 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -25,9 +25,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem* osystem)
-    : myOSystem(osystem),
-      myBaseDialog(NULL),
-      myTime(0)
+  : myOSystem(osystem),
+    myBaseDialog(NULL),
+    myTime(0),
+    myRefreshFlag(false)
 {
   myCurrentKeyDown.keycode = 0;
   myCurrentMouseDown.button = -1;
@@ -72,16 +73,17 @@ void DialogContainer::updateTime(uInt32 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::draw(bool fullrefresh)
+void DialogContainer::draw()
 {
   // Draw all the dialogs on the stack when we want a full refresh
-  if(fullrefresh)
+  if(myRefreshFlag)
   {
     for(int i = 0; i < myDialogStack.size(); i++)
     {
-      myDialogStack[i]->open();
+      myDialogStack[i]->setDirty();
       myDialogStack[i]->drawDialog();
     }
+    myRefreshFlag = false;
   }
   else if(!myDialogStack.empty())
   {
@@ -93,10 +95,8 @@ void DialogContainer::draw(bool fullrefresh)
 void DialogContainer::addDialog(Dialog* d)
 {
   myDialogStack.push(d);
-    myOSystem->frameBuffer().refreshTIA();
-    myOSystem->frameBuffer().refreshOverlay();
 
-//  d->open();  // FIXME
+  d->open();
   d->setDirty();  // Next update() will take care of drawing
 }
 
@@ -107,10 +107,9 @@ void DialogContainer::removeDialog()
   {
     myDialogStack.pop();
 
-    // We need to redraw all underlying dialogs, since we don't know
-    // which ones were obscured
-    myOSystem->frameBuffer().refreshTIA();
-    myOSystem->frameBuffer().refreshOverlay();
+    // We need to redraw the entire screen contents, since we don't know
+    // what was obscured
+    myOSystem->eventHandler().refreshDisplay();
   }
 }
 
@@ -121,9 +120,6 @@ void DialogContainer::reStack()
   while(!myDialogStack.empty())
     myDialogStack.pop();
   addDialog(myBaseDialog);
-
-  // Now make sure all dialog boxes are in a known (closed) state
-  myBaseDialog->reset();
 
   // Reset all continuous events
   myCurrentKeyDown.keycode = 0;

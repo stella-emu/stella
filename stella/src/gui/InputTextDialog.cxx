@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.3 2005-08-10 12:23:42 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.4 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,7 +21,7 @@
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "EditNumWidget.hxx"
+#include "EditTextWidget.hxx"
 #include "Dialog.hxx"
 #include "GuiObject.hxx"
 #include "GuiUtils.hxx"
@@ -34,8 +34,9 @@ enum {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
+InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
+                                 int x, int y)
+  : Dialog(boss->instance(), boss->parent(), x, y, 16, 16),
     CommandSender(boss)
 {
   const int fontWidth  = font.getMaxCharWidth(),
@@ -46,8 +47,6 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font)
   // Calculate real dimensions
   _w = fontWidth * 30;
   _h = lineHeight * 6;
-  _x = (boss->getWidth() - _w) / 2;
-  _y = (boss->getHeight() - _h) / 2;
 
   xpos = 10; ypos = lineHeight;
   int lwidth = font.getStringWidth("Enter Data:");
@@ -58,8 +57,8 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font)
   t->setFont(font);
 
   xpos += lwidth + fontWidth;
-  _input = new EditNumWidget(this, xpos, ypos,
-                             _w - xpos - 10, lineHeight, "");
+  _input = new EditTextWidget(this, xpos, ypos,
+                              _w - xpos - 10, lineHeight, "");
   _input->setFont(font);
   addFocusWidget(_input);
 
@@ -83,6 +82,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kAcceptCmd:
+    case kEditAcceptCmd:
     {
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
@@ -93,8 +93,13 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       // If the data isn't valid, the parent may wait until it is
       break;
     }
+
+    case kEditCancelCmd:
+      Dialog::handleCommand(sender, kCloseCmd, data, id);
+      break;
+
     default:
-      Dialog::handleCommand(sender, cmd, data, 0);
+      Dialog::handleCommand(sender, cmd, data, id);
       break;
   }
 }

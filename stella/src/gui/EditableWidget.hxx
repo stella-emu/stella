@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.5 2005-06-30 00:08:01 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.6 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,11 +25,16 @@
 #include "Widget.hxx"
 #include "Rect.hxx"
 
+enum {
+  kEditAcceptCmd = 'EDac',
+  kEditCancelCmd = 'EDcl'
+};
+
 /**
  * Base class for widgets which need to edit text, like ListWidget and
  * EditTextWidget.
  */
-class EditableWidget : public Widget
+class EditableWidget : public Widget, public CommandSender
 {
   public:
     EditableWidget(GuiObject *boss, int x, int y, int w, int h);

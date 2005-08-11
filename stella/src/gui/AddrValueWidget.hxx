@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AddrValueWidget.hxx,v 1.6 2005-07-05 15:25:44 stephena Exp $
+// $Id: AddrValueWidget.hxx,v 1.7 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,7 @@ enum {
 };
 
 /* AddrValueWidget */
-class AddrValueWidget : public EditableWidget, public CommandSender
+class AddrValueWidget : public EditableWidget
 {
   public:
     AddrValueWidget(GuiObject* boss, int x, int y, int w, int h,

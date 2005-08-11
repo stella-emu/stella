@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.12 2005-08-05 02:28:22 urchlay Exp $
+// $Id: OptionsDialog.hxx,v 1.13 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,6 @@ class OptionsDialog : public Dialog
 
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-    void reset();
     void setGameProfile(Properties& props) { myGameInfoDialog->setGameProfile(props); }
 
   protected:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatWidget.cxx,v 1.3 2005-08-10 12:23:42 stephena Exp $
+// $Id: CheatWidget.cxx,v 1.4 2005-08-11 19:12:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -97,7 +97,7 @@ CheatWidget::CheatWidget(GuiObject* boss, int x, int y, int w, int h)
   myResultsList->setTarget(this);
   addFocusWidget(myResultsList);
 
-  myInputBox = new InputTextDialog(boss, instance()->consoleFont());
+  myInputBox = new InputTextDialog(boss, instance()->consoleFont(), 20, 20);
   myInputBox->setTarget(this);
 }
 

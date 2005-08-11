@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.17 2005-08-10 12:23:42 stephena Exp $
+// $Id: GuiUtils.hxx,v 1.18 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,7 @@
   Probably not very neat, but at least it works ...
 
   @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.17 2005-08-10 12:23:42 stephena Exp $
+  @version $Id: GuiUtils.hxx,v 1.18 2005-08-11 19:12:39 stephena Exp $
 */
 
 #define kFontHeight   10
@@ -42,6 +42,7 @@ enum OverlayColor {
   kColor = 256,    // The rest of the enumerations will continue from 256
   kBGColor,
   kShadowColor,
+  kHiliteColor,
   kTextColor,
   kTextColorHi,
   kTextColorEm,

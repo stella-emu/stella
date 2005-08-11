@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.39 2005-08-03 13:26:01 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.40 2005-08-11 19:12:37 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -203,8 +203,8 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SwapBuffers();
   glClear(GL_COLOR_BUFFER_BIT);
 
-  refreshTIA();
-  refreshOverlay();
+  myOSystem->eventHandler().refreshDisplay();
+
   return true;
 }
 
@@ -256,7 +256,7 @@ void FrameBufferGL::postFrameUpdate()
 {
   // Do the following twice, since OpenGL mode is double-buffered,
   // and we need the contents placed in both buffers
-  if(theRedrawTIAIndicator || theRedrawOverlayIndicator || myDirtyFlag)
+  if(theRedrawTIAIndicator || myDirtyFlag)
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.25 2005-08-10 12:23:42 stephena Exp $
+// $Id: ListWidget.cxx,v 1.26 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,8 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
-  : EditableWidget(boss, x, y, w, h),
-    CommandSender(boss)
+  : EditableWidget(boss, x, y, w, h)
 {
   _w = w - kScrollBarWidth;
 	

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.29 2005-08-10 12:23:42 stephena Exp $
+// $Id: OSystem.cxx,v 1.30 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -336,7 +336,9 @@ void OSystem::createLauncher()
   // And start the base dialog
   myLauncher->initialize();
   myLauncher->reStack();
-  myFrameBuffer->refreshOverlay();
+
+  myEventHandler->refreshDisplay();
+
   myFrameBuffer->setCursorState();
   mySound->mute(true);
 }

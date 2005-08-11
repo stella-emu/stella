@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.23 2005-08-10 12:23:42 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.24 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -141,17 +141,6 @@ void OptionsDialog::checkBounds(int width, int height,
   if(*h > height) *h = height;
   *x = (width - *w) / 2;
   *y = (height - *h) / 2;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::reset()
-{
-  myVideoDialog->reset();
-  myAudioDialog->reset();
-  myEventMappingDialog->reset();
-  myGameInfoDialog->reset();
-  myHelpDialog->reset();
-  myAboutDialog->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

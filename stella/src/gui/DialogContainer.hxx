@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.7 2005-08-01 22:33:15 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.8 2005-08-11 19:12:39 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.7 2005-08-01 22:33:15 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.8 2005-08-11 19:12:39 stephena Exp $
 */
 class DialogContainer
 {
@@ -102,7 +102,7 @@ class DialogContainer
     /**
       Draw the stack of menus.
     */
-    void draw(bool fullrefresh = false);
+    void draw();
 
     /**
       Add a dialog box to the stack
@@ -118,6 +118,11 @@ class DialogContainer
       Reset dialog stack to the main configuration menu
     */
     void reStack();
+
+    /**
+      Redraw all dialogs on the stack
+    */
+    void refresh() { myRefreshFlag = true; }
 
     /**
       (Re)initialize the menuing system.  This is necessary if a new Console
@@ -140,6 +145,9 @@ class DialogContainer
 
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt32 myTime;
+
+    // Indicates a full refresh of all dialogs is required
+    bool myRefreshFlag;
 
     // For continuous events (keyDown)
     struct {

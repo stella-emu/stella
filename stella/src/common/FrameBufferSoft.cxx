@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.33 2005-08-04 22:59:38 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.34 2005-08-11 19:12:37 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -101,8 +101,8 @@ bool FrameBufferSoft::createScreen()
     return false;
   }
 
-  refreshTIA();
-  refreshOverlay();
+  myOSystem->eventHandler().refreshDisplay();
+
   return true;
 }
 

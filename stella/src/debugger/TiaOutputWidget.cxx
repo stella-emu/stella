@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.4 2005-08-03 13:26:02 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.5 2005-08-11 19:12:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,6 +39,12 @@ TiaOutputWidget::~TiaOutputWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::loadConfig()
+{
+  setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::advanceScanline(int lines)
 {
   while(lines)
@@ -46,7 +52,6 @@ void TiaOutputWidget::advanceScanline(int lines)
     instance()->console().mediaSource().updateScanline();
     --lines;
   }
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,7 +62,6 @@ void TiaOutputWidget::advance(int frames)
     instance()->console().mediaSource().update();
     --frames;
   }
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -76,6 +80,6 @@ cerr << "TiaOutputWidget button press:" << endl
 void TiaOutputWidget::drawWidget(bool hilite)
 {
 cerr << "TiaOutputWidget::drawWidget\n";
-  instance()->frameBuffer().refreshTIA();
+  instance()->frameBuffer().refresh();
   instance()->frameBuffer().drawMediaSource();
 }

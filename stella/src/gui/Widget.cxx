@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
+// $Id: Widget.cxx,v 1.28 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -347,7 +347,10 @@ void ButtonWidget::handleMouseLeft(int button)
 void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  {
+    clearFlags(WIDGET_HILITED);
     sendCommand(_cmd, 0, _id);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

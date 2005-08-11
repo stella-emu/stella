@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.11 2005-08-10 18:44:37 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.12 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ enum {
 };
 
 /* DataGridWidget */
-class DataGridWidget : public EditableWidget, public CommandSender
+class DataGridWidget : public EditableWidget
 {
   public:
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
@@ -51,6 +51,8 @@ class DataGridWidget : public EditableWidget, public CommandSender
 
     void setList(const IntArray& alist, const IntArray& vlist,
                  const BoolArray& changed);
+    void setHiliteList(const IntArray& hilitelist);
+
     void setSelectedValue(int value);
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
@@ -101,6 +103,7 @@ class DataGridWidget : public EditableWidget, public CommandSender
     StringList  _addrStringList;
     StringList  _valueStringList;
     BoolArray   _changedList;
+    BoolArray   _hiliteList;
 
     bool    _editMode;
     int     _selectedItem;

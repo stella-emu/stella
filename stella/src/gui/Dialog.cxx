@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.25 2005-08-10 12:23:42 stephena Exp $
+// $Id: Dialog.cxx,v 1.26 2005-08-11 19:12:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,6 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _focusedWidget(0),
     _dragWidget(0),
     _visible(true),
-    _openCount(0),
     _ourTab(NULL),
     _focusID(0)
 {
@@ -63,21 +62,15 @@ Dialog::~Dialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::open()
 {
-cerr << " ==> Dialog::open()\n";
   _result = 0;
   _visible = true;
-  _dirty = true;
 
-  if(_openCount++ == 0)
-    loadConfig();
+  loadConfig();
 
   // (Re)-build the focus list to use for the widgets which are currently
   // onscreen
+  _focusedWidget = 0;
   buildFocusWidgetList(_focusID);
-
-  // Make all child widget dirty
-  Widget* w = _firstWidget;
-  Widget::setDirtyInChain(w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,14 +83,6 @@ void Dialog::close()
 
   releaseFocus();
   parent()->removeDialog();
-
-  reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::reset()
-{
-  _openCount = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,6 +103,7 @@ void Dialog::addFocusWidget(Widget* w)
 	Focus f;
 	_ourFocusList.push_back(f);
   }
+  _ourFocusList[0].focusedWidget = w;
   _ourFocusList[0].focusList.push_back(w);
 }
 
@@ -201,23 +187,22 @@ void Dialog::drawDialog()
     Widget* w = _firstWidget;
     Widget::setDirtyInChain(w);
 
-    // Tell the framebuffer this area is dirty
-    fb.addDirtyRect(_x, _y, _w, _h);
-  }
+    // Draw all children
+    w = _firstWidget;
+    while(w)
+    {
+      w->draw();
+      w = w->_next;
+    }
 
-  // Draw all children
-  Widget* w = _firstWidget;
-  while(w)
-  {
-    w->draw();
-    w = w->_next;
-  }
-
-  // Draw outlines for focused widgets
-  if(_dirty)
+    // Draw outlines for focused widgets
     redrawFocus();
 
-  _dirty = false;
+    // Tell the framebuffer this area is dirty
+    fb.addDirtyRect(_x, _y, _w, _h);
+
+    _dirty = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

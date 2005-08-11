@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.84 2005-08-02 15:59:44 stephena Exp $
+// $Id: EventHandler.cxx,v 1.85 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -146,6 +146,33 @@ void EventHandler::reset(State state)
       break;
 
     case S_DEBUGGER:
+      break;
+
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::refreshDisplay()
+{
+  switch(myState)
+  {
+    case S_EMULATE:
+      myOSystem->frameBuffer().refresh();
+      break;
+
+    case S_MENU:
+      myOSystem->frameBuffer().refresh();
+      myOSystem->menu().refresh();
+      break;
+
+    case S_LAUNCHER:
+      myOSystem->launcher().refresh();
+      break;
+
+    case S_DEBUGGER:
+      myOSystem->debugger().refresh();
       break;
 
     default:
@@ -463,9 +490,7 @@ void EventHandler::poll(uInt32 time)
         break;  // SDL_QUIT
 
       case SDL_VIDEOEXPOSE:
-cerr << "SDL_VIDEOEXPOSE\n";
-        myOSystem->frameBuffer().refreshTIA();
-        myOSystem->frameBuffer().refreshOverlay();
+        refreshDisplay();
         break;  // SDL_VIDEOEXPOSE
     }
 
@@ -1289,7 +1314,7 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a Snapshot object and save the PNG
-  myOSystem->frameBuffer().refreshTIA(true);
+  myOSystem->frameBuffer().refresh(true);
   Snapshot snapshot(myOSystem->frameBuffer());
   string result = snapshot.savePNG(filename);
   myOSystem->frameBuffer().showMessage(result);
@@ -1318,7 +1343,9 @@ void EventHandler::enterMenuMode()
 {
   myState = S_MENU;
   myOSystem->menu().reStack();
-  myOSystem->frameBuffer().refreshOverlay();
+
+  refreshDisplay();
+
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(true);
   myEvent->clear();
@@ -1328,7 +1355,9 @@ void EventHandler::enterMenuMode()
 void EventHandler::leaveMenuMode()
 {
   myState = S_EMULATE;
-  myOSystem->frameBuffer().refreshTIA();
+
+  refreshDisplay();
+
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(false);
   myEvent->clear();
@@ -1354,7 +1383,7 @@ bool EventHandler::enterDebugMode()
 
   // Make sure screen is always refreshed when entering debug mode
   // (sometimes entering on a breakpoint doesn't draw contents)
-  myOSystem->frameBuffer().refreshOverlay(true);
+  refreshDisplay();
 
   return true;
 }
@@ -1371,7 +1400,7 @@ void EventHandler::leaveDebugMode()
 
   myState = S_EMULATE;
   myOSystem->createFrameBuffer();
-  myOSystem->frameBuffer().refreshTIA();
+  refreshDisplay();
   myOSystem->frameBuffer().setCursorState();
   myEvent->clear();
 

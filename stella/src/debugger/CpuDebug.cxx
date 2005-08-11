@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.cxx,v 1.5 2005-07-19 01:31:36 urchlay Exp $
+// $Id: CpuDebug.cxx,v 1.6 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #include "Array.hxx"
@@ -42,8 +42,6 @@ DebuggerState& CpuDebug::getState()
   myState.PSbits.clear();
   for(int i = 0; i < 8; ++i)
   {
-    // FIXME: Hey, Steve, I think these are *backwards*!
-    // At least, formatFlags was backwards
     if(myState.PS & (1<<(7-i)))
       myState.PSbits.push_back(true);
     else

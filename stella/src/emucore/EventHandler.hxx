@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.44 2005-07-10 02:16:00 stephena Exp $
+// $Id: EventHandler.hxx,v 1.45 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.44 2005-07-10 02:16:00 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.45 2005-08-11 19:12:38 stephena Exp $
 */
 class EventHandler
 {
@@ -156,6 +156,11 @@ class EventHandler
       @param state  The current state to set
     */
     void reset(State state);
+
+    /**
+      Refresh display according to the current state
+    */
+    void refreshDisplay();
 
     /**
       This method indicates whether a pause event has been received.

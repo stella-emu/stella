@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.12 2005-07-18 23:00:18 urchlay Exp $
+// $Id: M6502.cxx,v 1.13 2005-08-11 19:12:38 stephena Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -130,7 +130,7 @@ void M6502::clearCondBreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const StringList M6502::getCondBreakNames()
+const StringList& M6502::getCondBreakNames()
 {
   return myBreakCondNames;
 }
