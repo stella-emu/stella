@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.7 2005-08-10 12:23:42 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.8 2005-08-12 17:12:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -106,6 +106,7 @@ void ToggleBitWidget::handleMouseUp(int x, int y, int button, int clickCount)
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
+    _changedList[_selectedItem] = !_changedList[_selectedItem];
     sendCommand(kTBItemDataChangedCmd, _selectedItem, _id);
     setDirty(); draw();
   }
@@ -220,6 +221,7 @@ bool ToggleBitWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     if(toggle)
     {
       _stateList[_selectedItem] = !_stateList[_selectedItem];
+      _changedList[_selectedItem] = !_changedList[_selectedItem];
       sendCommand(kTBItemDataChangedCmd, _selectedItem, _id);
     }
 
@@ -271,13 +273,8 @@ cerr << "ToggleBitWidget::drawWidget\n";
       int pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.
-      if (_currentRow == row && _currentCol == col)
-      {
-        if (_hasFocus)
-          fb.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
-        else
-          fb.frameRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
-      }
+      if (_currentRow == row && _currentCol == col && _hasFocus)
+        fb.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
 
       if(_stateList[pos])
         buffer = _onList[pos];

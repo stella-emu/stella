@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.21 2005-08-11 21:57:30 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.22 2005-08-12 17:12:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -481,13 +481,9 @@ void DataGridWidget::drawWidget(bool hilite)
       int pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.
-      if (_currentRow == row && _currentCol == col)
-      {
-        if (_hasFocus && !_editMode)
-          fb.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
-        else
-          fb.frameRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
-      }
+      if (_currentRow == row && _currentCol == col &&
+          _hasFocus && !_editMode)
+        fb.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
 
       if (_selectedItem == pos && _editMode)
       {

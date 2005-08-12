@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.hxx,v 1.3 2005-08-10 18:44:37 stephena Exp $
+// $Id: CpuWidget.hxx,v 1.4 2005-08-12 17:12:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,19 +42,16 @@ class CpuWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void loadConfig();
-    void setOpsWidget(DataGridOpsWidget* w) { myCpuGrid->setOpsWidget(w); }
+    void setOpsWidget(DataGridOpsWidget* w);
 
   private:
     void fillGrid();
 
   private:
+    DataGridWidget*  myPCGrid;
     DataGridWidget*  myCpuGrid;
     ToggleBitWidget* myPSRegister;
-
-    EditTextWidget* myPCLabel;
-    EditTextWidget* myCurrentIns;
-    EditTextWidget* myCycleCount;
-    EditTextWidget* myStatus;
+    EditTextWidget*  myPCLabel;
 };
 
 #endif

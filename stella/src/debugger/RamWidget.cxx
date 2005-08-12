@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.8 2005-08-11 21:57:30 stephena Exp $
+// $Id: RamWidget.cxx,v 1.9 2005-08-12 17:12:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -102,7 +102,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   }
   for(int col = 0; col < 16; ++col)
   {
-    t = new StaticTextWidget(boss, xpos + col*myRamGrid->colWidth() + lwidth + 7,
+    t = new StaticTextWidget(boss, xpos + col*myRamGrid->colWidth() + lwidth + 8,
                              ypos - lineHeight,
                              fontWidth, fontHeight,
                              Debugger::to_hex_4(col),
@@ -141,7 +141,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myBinValue->setEditable(false);
 
   // Inputbox which will pop up when searching RAM
-  xpos = x + lwidth + 20;  ypos = y + 2*lineHeight;
+  xpos = x + lwidth + 20;  ypos = y + 2*lineHeight - 5;
   myInputBox = new InputTextDialog(boss, font, xpos, ypos);
   myInputBox->setTarget(this);
 
