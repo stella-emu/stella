@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.81 2005-08-10 12:23:42 stephena Exp $
+// $Id: Debugger.cxx,v 1.82 2005-08-15 18:52:15 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -307,7 +307,7 @@ void Debugger::autoExec() {
 	} else {
 		file += ".stella";
 	}
-	myPrompt->print("\nautoExec():\n" + myParser->exec(file));
+	myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
 	myPrompt->printPrompt();
 }
 
@@ -924,9 +924,7 @@ GUI::Rect Debugger::getDialogBounds() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect Debugger::getTiaBounds() const
 {
-  GUI::Rect r(0, 0,
-              myConsole->mediaSource().width() << 1,  // width is doubled
-              myConsole->mediaSource().height());
+  GUI::Rect r(0, 0, 320, myConsole->mediaSource().height());
   return r;
 }
 

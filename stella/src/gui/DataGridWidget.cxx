@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.22 2005-08-12 17:12:43 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.23 2005-08-15 18:52:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -115,6 +115,20 @@ cerr << "_addrList.size() = "     << _addrList.size()
   sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
 
   setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setList(const int a, const int v, const bool c)
+{
+  // Convenience method for when the datagrid contains only one value
+  IntArray alist, vlist;
+  BoolArray changed;
+
+  alist.push_back(a);
+  vlist.push_back(v);
+  changed.push_back(changed);
+
+  setList(alist, vlist, changed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.3 2005-08-15 18:52:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@ class GuiObject;
 class ButtonWidget;
 class DataGridWidget;
 class StaticTextWidget;
+class ToggleBitWidget;
 class EditTextWidget;
 class ColorWidget;
 
@@ -45,6 +46,7 @@ class TiaWidget : public Widget, public CommandSender
   private:
     void fillGrid();
     void changeColorRegs();
+    void convertCharToBool(BoolArray& b, unsigned char value);
 
   private:
     DataGridWidget* myRamGrid;
@@ -58,6 +60,9 @@ class TiaWidget : public Widget, public CommandSender
     ColorWidget* myCOLUP1Color;
     ColorWidget* myCOLUPFColor;
     ColorWidget* myCOLUBKColor;
+
+    ToggleBitWidget* myGRP0;
+    ToggleBitWidget* myGRP1;
 };
 
 #endif

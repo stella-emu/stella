@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.12 2005-08-11 19:12:39 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.13 2005-08-15 18:52:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,6 +51,7 @@ class DataGridWidget : public EditableWidget
 
     void setList(const IntArray& alist, const IntArray& vlist,
                  const BoolArray& changed);
+    void setList(const int a, const int v, const bool changed);
     void setHiliteList(const IntArray& hilitelist);
 
     void setSelectedValue(int value);

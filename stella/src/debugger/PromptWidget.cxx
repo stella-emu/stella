@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.3 2005-08-15 18:52:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -148,10 +148,16 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
   _scrollBar->handleMouseWheel(x, y, direction);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::printPrompt()
 {
+// FIXME - the following will probably be permanantly removed
+//         since it's always shown in the main dialog area
+/*
   print( instance()->debugger().showWatches() );
   print( instance()->debugger().cpuState() );
+  print("\n");
+*/
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
 }
@@ -188,7 +194,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         addToHistory(str);
 
         // Pass the command to the debugger, and print the result
-        print( instance()->debugger().run(str) );
+        print( instance()->debugger().run(str) + "\n");
 
         // Get rid of the string buffer
         delete [] str;
@@ -434,7 +440,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   // as dirty *after* they've been drawn above.  One such occurrence is
   // when we issue a command that indirectly redraws the entire parent
   // dialog (such as 'scanline' or 'frame').
-  // In those cases, the retunr code of the command must be shown, but the
+  // In those cases, the return code of the command must be shown, but the
   // entire dialog contents are redrawn at a later time.  So the prompt and
   // scrollbar won't be redrawn unless they're dirty again.
   if(_makeDirty)

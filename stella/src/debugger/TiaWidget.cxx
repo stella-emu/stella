@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.4 2005-08-10 12:23:42 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.5 2005-08-15 18:52:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "EditTextWidget.hxx"
 #include "DataGridWidget.hxx"
 #include "ColorWidget.hxx"
+#include "ToggleBitWidget.hxx"
 #include "TiaWidget.hxx"
 
 // ID's for the various widgets
@@ -67,9 +68,8 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   addFocusWidget(myRamGrid);
 
   t = new StaticTextWidget(boss, xpos, ypos + 2,
-                           lwidth, fontHeight,
-                           Debugger::to_hex_8(0) + string(":"),
-                           kTextAlignLeft);
+                           lwidth-2, fontHeight,
+                           "00:", kTextAlignLeft);
   t->setFont(font);
   for(int col = 0; col < 16; ++col)
   {
@@ -145,18 +145,29 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   myCOLUBKColor = new ColorWidget(boss, xpos, ypos+2, 20, lineHeight - 4);
   myCOLUBKColor->setTarget(this);
 
-/*
-  // Add some buttons for common actions
-  ButtonWidget* b;
-  xpos = vWidth + 10;  ypos = 20;
-  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "0", kRZeroCmd, 0);
-  b->setTarget(this);
+  // P0 register info
+  xpos = 10;  ypos += 2*lineHeight;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           7*fontWidth, fontHeight,
+                           "P0/ GR:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 7*fontWidth + 5;
+  myGRP0 = new ToggleBitWidget(boss, font, xpos, ypos, 8, 1);
+  myGRP0->setTarget(this);
+  addFocusWidget(myGRP0);
 
+  // Set the strings to be used in the PSRegister
+  // We only do this once because it's the state that changes, not the strings
+  const char* offstr[] = { "0", "0", "0", "0", "0", "0", "0", "0" };
+  const char* onstr[]  = { "1", "1", "1", "1", "1", "1", "1", "1" };
+  StringList off, on;
+  for(int i = 0; i < 8; ++i)
+  {
+    off.push_back(offstr[i]);
+    on.push_back(onstr[i]);
+  }
+  myGRP0->setList(off, on);
 
-  xpos = vWidth + 30 + 10;  ypos = 20;
-//  b = new ButtonWidget(boss, xpos, ypos, buttonw, 16, "", kRCmd, 0);
-//  b->setTarget(this);
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,7 +246,7 @@ void TiaWidget::fillGrid()
 {
   IntArray alist;
   IntArray vlist;
-  BoolArray changed;
+  BoolArray orig, changed;
 
   Debugger& dbg = instance()->debugger();
   TIADebug& tia = dbg.tiaDebug();
@@ -266,6 +277,29 @@ void TiaWidget::fillGrid()
   myCOLUP1Color->setColor(state.coluRegs[1]);
   myCOLUPFColor->setColor(state.coluRegs[2]);
   myCOLUBKColor->setColor(state.coluRegs[3]);
+
+  // GRP0 register
+  BoolArray grNew, grOld;
+  convertCharToBool(grNew, state.gr[P0]);
+  convertCharToBool(grOld, oldstate.gr[P0]);
+
+  changed.clear();
+  for(unsigned int i = 0; i < 8; ++i)
+    changed.push_back(grNew[i] != grOld[i]);
+
+  myGRP0->setState(grNew, changed);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWidget::convertCharToBool(BoolArray& b, unsigned char value)
+{
+  for(unsigned int i = 0; i < 8; ++i)
+  {
+    if(value & (1<<(7-i)))
+      b.push_back(true);
+    else
+      b.push_back(false);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

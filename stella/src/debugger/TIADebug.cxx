@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.16 2005-07-23 15:55:21 urchlay Exp $
+// $Id: TIADebug.cxx,v 1.17 2005-08-15 18:52:15 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -44,11 +44,42 @@ DebuggerState& TIADebug::getState()
   for(int i = 0; i < 0x010; ++i)
     myState.ram.push_back(myTIA->peek(i));
 
+  // Color registers
   myState.coluRegs.clear();
   myState.coluRegs.push_back(coluP0());
   myState.coluRegs.push_back(coluP1());
   myState.coluRegs.push_back(coluPF());
   myState.coluRegs.push_back(coluBK());
+
+  // Player 1 & 2 graphics registers
+  myState.gr.clear();
+  myState.gr.push_back(grP0());
+  myState.gr.push_back(grP1());
+
+  // Position registers
+  myState.pos.clear();
+  myState.pos.push_back(posP0());
+  myState.pos.push_back(posP1());
+  myState.pos.push_back(posM0());
+  myState.pos.push_back(posM1());
+  myState.pos.push_back(posBL());
+
+  // Horizontal move registers
+  myState.hm.clear();
+  myState.hm.push_back(hmP0());
+  myState.hm.push_back(hmP1());
+  myState.hm.push_back(hmM0());
+  myState.hm.push_back(hmM1());
+  myState.hm.push_back(hmBL());
+
+  // Playfield registers
+  myState.pf.clear();
+  myState.pf.push_back(pf0());
+  myState.pf.push_back(pf1());
+  myState.pf.push_back(pf2());
+
+  myState.refP0 = refP0();  myState.delP0 = vdelP0();
+  myState.refP1 = refP1();  myState.delP1 = vdelP1();
 
   return myState;
 }
@@ -60,11 +91,39 @@ void TIADebug::saveOldState()
   for(int i = 0; i < 0x010; ++i)
     myOldState.ram.push_back(myTIA->peek(i));
 
+  // Color registers
   myOldState.coluRegs.clear();
   myOldState.coluRegs.push_back(coluP0());
   myOldState.coluRegs.push_back(coluP1());
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
+
+  // Player 1 & 2 graphics registers
+  myOldState.gr.clear();
+  myOldState.gr.push_back(grP0());
+  myOldState.gr.push_back(grP1());
+
+  // Position registers
+  myOldState.pos.clear();
+  myOldState.pos.push_back(posP0());
+  myOldState.pos.push_back(posP1());
+  myOldState.pos.push_back(posM0());
+  myOldState.pos.push_back(posM1());
+  myOldState.pos.push_back(posBL());
+
+  // Horizontal move registers
+  myOldState.hm.clear();
+  myOldState.hm.push_back(hmP0());
+  myOldState.hm.push_back(hmP1());
+  myOldState.hm.push_back(hmM0());
+  myOldState.hm.push_back(hmM1());
+  myOldState.hm.push_back(hmBL());
+
+  // Playfield registers
+  myOldState.pf.clear();
+  myOldState.pf.push_back(pf0());
+  myOldState.pf.push_back(pf1());
+  myOldState.pf.push_back(pf2());
 }
 
 /* the set methods now use mySystem->poke(). This will save us the
@@ -322,7 +381,7 @@ uInt8 TIADebug::nusiz1(int newVal)
 uInt8 TIADebug::grP0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(GRP0, newVal);
+    mySystem->poke(GRP0, newVal);
 
   return myTIA->myGRP0;
 }
@@ -331,9 +390,59 @@ uInt8 TIADebug::grP0(int newVal)
 uInt8 TIADebug::grP1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(GRP1, newVal);
+    mySystem->poke(GRP1, newVal);
 
   return myTIA->myGRP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::posP0(int newVal)
+{
+/* FIXME
+  if(newVal > -1)
+    mySystem->poke(???, newVal);
+*/
+  return myTIA->myPOSP0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::posP1(int newVal)
+{
+/* FIXME
+  if(newVal > -1)
+    mySystem->poke(???, newVal);
+*/
+  return myTIA->myPOSP1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::posM0(int newVal)
+{
+/* FIXME
+  if(newVal > -1)
+    mySystem->poke(???, newVal);
+*/
+  return myTIA->myPOSM0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::posM1(int newVal)
+{
+/* FIXME
+  if(newVal > -1)
+    mySystem->poke(???, newVal);
+*/
+  return myTIA->myPOSM1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::posBL(int newVal)
+{
+/* FIXME
+  if(newVal > -1)
+    mySystem->poke(???, newVal);
+*/
+  return myTIA->myPOSBL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -475,28 +584,17 @@ string TIADebug::state()
   // TODO: inverse video for changed regs. Core needs to track this.
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
-  uInt8 COLUP0 = coluP0();
-  uInt8 COLUP1 = coluP1();
-  uInt8 COLUPF = coluPF();
-  uInt8 COLUBK = coluBK();
-
-  // TIA::myPF holds all 3 PFx regs, we shall extract
-  int PF = myTIA->myPF;
-  uInt8 PF0 = PF & 0x0f;
-  uInt8 PF1 = (PF >>  4) & 0xff;
-  uInt8 PF2 = (PF >> 12) & 0xff;
-
-  // Hope Brad never changes this:
-  uInt16 coll = myTIA->myCollision;
+  TiaState state    = (TiaState&) getState();
+// FIXME - change tracking  TiaState oldstate = (TiaState&) getOldState();
 
   // calculate sizes
   uInt8 ballSize = 1 << (myTIA->myCTRLPF & 0x18);
-  uInt8 m0Size = 1 <<   (myTIA->myNUSIZ0 & 0x18);
-  uInt8 m1Size = 1 <<   (myTIA->myNUSIZ1 & 0x18);
+  uInt8 m0Size   = 1 << (myTIA->myNUSIZ0 & 0x18);
+  uInt8 m1Size   = 1 << (myTIA->myNUSIZ1 & 0x18);
 
   // easier to use a table for these:
-  string p0Size = nusizStrings[myTIA->myNUSIZ0 & 0x07];
-  string p1Size = nusizStrings[myTIA->myNUSIZ1 & 0x07];
+  const string& p0Size = nusiz0String();
+  const string& p1Size = nusiz1String();
 
   // build up output, then return it.
   ret += "scanline ";
@@ -526,67 +624,65 @@ string TIADebug::state()
   ret += "\n";
 
   ret += "COLUP0: ";
-  ret += myDebugger->valueToString(COLUP0);
+  ret += myDebugger->valueToString(state.coluRegs[0]);
   ret += "/";
-  ret += colorSwatch(COLUP0);
+  ret += colorSwatch(state.coluRegs[0]);
 
   ret += "COLUP1: ";
-  ret += myDebugger->valueToString(COLUP1);
+  ret += myDebugger->valueToString(state.coluRegs[1]);
   ret += "/";
-  ret += colorSwatch(COLUP1);
+  ret += colorSwatch(state.coluRegs[1]);
 
   ret += "COLUPF: ";
-  ret += myDebugger->valueToString(COLUPF);
+  ret += myDebugger->valueToString(state.coluRegs[2]);
   ret += "/";
-  ret += colorSwatch(COLUPF);
+  ret += colorSwatch(state.coluRegs[2]);
 
   ret += "COLUBK: ";
-  ret += myDebugger->valueToString(COLUBK);
+  ret += myDebugger->valueToString(state.coluRegs[3]);
   ret += "/";
-  ret += colorSwatch(COLUBK);
+  ret += colorSwatch(state.coluRegs[3]);
 
   ret += "\n";
 
   ret += "P0: GR=";
-  // TODO:    ret += myDebugger->invIfChanged(myTIA->myGRP0, oldGRP0);
-  ret += Debugger::to_bin_8(myTIA->myGRP0);
+  ret += Debugger::to_bin_8(state.gr[P0]);
   ret += "/";
-  ret += myDebugger->valueToString(myTIA->myGRP0);
+  ret += myDebugger->valueToString(state.gr[P0]);
   ret += " pos=";
-  ret += myDebugger->valueToString(myTIA->myPOSP0);
+  ret += myDebugger->valueToString(state.pos[P0]);
   ret += " HM=";
-  ret += myDebugger->valueToString(myTIA->myHMP0);
+  ret += myDebugger->valueToString(state.hm[P0]);
   ret += " ";
   ret += p0Size;
   ret += " ";
-  ret += booleanWithLabel("reflect", (myTIA->myREFP0));
+  ret += booleanWithLabel("reflect", state.refP0);
   ret += " ";
-  ret += booleanWithLabel("delay", (myTIA->myVDELP0));
+  ret += booleanWithLabel("delay", state.delP0);
   ret += "\n";
 
   ret += "P1: GR=";
-  // TODO:    ret += myDebugger->invIfChanged(myTIA->myGRP1, oldGRP1);
-  ret += Debugger::to_bin_8(myTIA->myGRP1);
+  ret += Debugger::to_bin_8(state.gr[P1]);
   ret += "/";
-  ret += myDebugger->valueToString(myTIA->myGRP1);
+  ret += myDebugger->valueToString(state.gr[P1]);
   ret += " pos=";
-  ret += myDebugger->valueToString(myTIA->myPOSP1);
+  ret += myDebugger->valueToString(state.pos[P1]);
   ret += " HM=";
-  ret += myDebugger->valueToString(myTIA->myHMP1);
+  ret += myDebugger->valueToString(state.hm[P1]);
   ret += " ";
   ret += p1Size;
   ret += " ";
-  ret += booleanWithLabel("reflect", (myTIA->myREFP1));
+  ret += booleanWithLabel("reflect", state.refP1);
   ret += " ";
-  ret += booleanWithLabel("delay", (myTIA->myVDELP1));
+  ret += booleanWithLabel("delay", state.delP1);
   ret += "\n";
 
   ret += "M0: ";
   ret += (myTIA->myENAM0 ? " ENABLED" : "disabled");
   ret += " pos=";
-  ret += myDebugger->valueToString(myTIA->myPOSM0);
+  ret += myDebugger->valueToString(state.pos[M0]);
   ret += " HM=";
-  ret += myDebugger->valueToString(myTIA->myHMM0);
+  ret += myDebugger->valueToString(state.hm[M0]);
   ret += " size=";
   ret += myDebugger->valueToString(m0Size);
   ret += " ";
@@ -596,9 +692,9 @@ string TIADebug::state()
   ret += "M1: ";
   ret += (myTIA->myENAM1 ? " ENABLED" : "disabled");
   ret += " pos=";
-  ret += myDebugger->valueToString(myTIA->myPOSM1);
+  ret += myDebugger->valueToString(state.pos[M1]);
   ret += " HM=";
-  ret += myDebugger->valueToString(myTIA->myHMM1);
+  ret += myDebugger->valueToString(state.hm[M1]);
   ret += " size=";
   ret += myDebugger->valueToString(m1Size);
   ret += " ";
@@ -608,9 +704,9 @@ string TIADebug::state()
   ret += "BL: ";
   ret += (myTIA->myENABL ? " ENABLED" : "disabled");
   ret += " pos=";
-  ret += myDebugger->valueToString(myTIA->myPOSBL);
+  ret += myDebugger->valueToString(state.pos[BL]);
   ret += " HM=";
-  ret += myDebugger->valueToString(myTIA->myHMBL);
+  ret += myDebugger->valueToString(state.hm[BL]);
   ret += " size=";
   ret += myDebugger->valueToString(ballSize);
   ret += " ";
@@ -618,17 +714,17 @@ string TIADebug::state()
   ret += "\n";
 
   ret += "PF0: ";
-  ret += Debugger::to_bin_8(PF0);
+  ret += Debugger::to_bin_8(state.pf[0]);
   ret += "/";
-  ret += myDebugger->valueToString(PF0);
+  ret += myDebugger->valueToString(state.pf[0]);
   ret += " PF1: ";
-  ret += Debugger::to_bin_8(PF1);
+  ret += Debugger::to_bin_8(state.pf[1]);
   ret += "/";
-  ret += myDebugger->valueToString(PF1);
+  ret += myDebugger->valueToString(state.pf[1]);
   ret += " PF2: ";
-  ret += Debugger::to_bin_8(PF2);
+  ret += Debugger::to_bin_8(state.pf[2]);
   ret += "/";
-  ret += myDebugger->valueToString(PF2);
+  ret += myDebugger->valueToString(state.pf[2]);
   ret += "\n     ";
   ret += booleanWithLabel("reflect",  myTIA->myCTRLPF & 0x01);
   ret += " ";
@@ -636,6 +732,9 @@ string TIADebug::state()
   ret += " ";
   ret += booleanWithLabel("priority", myTIA->myCTRLPF & 0x04);
   ret += "\n";
+
+  // Hope Brad never changes this:
+  uInt16 coll = myTIA->myCollision;
 
   ret += "Collisions: ";
   ret += booleanWithLabel("m0_p1 ", bool(coll & 0x0001));

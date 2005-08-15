@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.14 2005-07-23 15:55:21 urchlay Exp $
+// $Id: TIADebug.hxx,v 1.15 2005-08-15 18:52:15 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -81,11 +81,23 @@ enum TIALabel {
 	CXCLR   // $2C
 };
 
+// Indices for various IntArray in TiaState
+enum {
+  P0, P1, M0, M1, BL
+};
+
 class TiaState : public DebuggerState
 {
   public:
     IntArray ram;
     IntArray coluRegs;
+    IntArray gr;
+    IntArray pos;
+    IntArray hm;
+    IntArray pf;
+
+    bool refP0, delP0;
+    bool refP1, delP1;
 };
 
 class TIADebug : public DebuggerSystem
@@ -101,6 +113,8 @@ class TIADebug : public DebuggerSystem
 	 /* TIA byte (or part of a byte) registers */
     uInt8 nusiz0(int newVal = -1);
     uInt8 nusiz1(int newVal = -1);
+    const string& nusiz0String() { return nusizStrings[myTIA->myNUSIZ0 & 0x07]; }
+    const string& nusiz1String() { return nusizStrings[myTIA->myNUSIZ1 & 0x07]; }
 
     uInt8 coluP0(int newVal = -1);
     uInt8 coluP1(int newVal = -1);
@@ -115,6 +129,11 @@ class TIADebug : public DebuggerSystem
 
     uInt8 grP0(int newVal = -1);
     uInt8 grP1(int newVal = -1);
+    uInt8 posP0(int newVal = -1);
+    uInt8 posP1(int newVal = -1);
+    uInt8 posM0(int newVal = -1);
+    uInt8 posM1(int newVal = -1);
+    uInt8 posBL(int newVal = -1);
     uInt8 hmP0(int newVal = -1);
     uInt8 hmP1(int newVal = -1);
     uInt8 hmM0(int newVal = -1);
@@ -135,24 +154,24 @@ class TIADebug : public DebuggerSystem
     bool enaM1(int newVal = -1);
     bool enaBL(int newVal = -1);
 
-	 bool vdelP0(int newVal = -1);
-	 bool vdelP1(int newVal = -1);
-	 bool vdelBL(int newVal = -1);
+    bool vdelP0(int newVal = -1);
+    bool vdelP1(int newVal = -1);
+    bool vdelBL(int newVal = -1);
 
-	 bool resMP0(int newVal = -1);
-	 bool resMP1(int newVal = -1);
+    bool resMP0(int newVal = -1);
+    bool resMP1(int newVal = -1);
 
-	 /* TIA strobe registers */
-	 void strobeWsync() { mySystem->poke(WSYNC, 0); }
-	 void strobeRsync() { mySystem->poke(RSYNC, 0); } // not emulated!
-	 void strobeResP0() { mySystem->poke(RESP0, 0); }
-	 void strobeResP1() { mySystem->poke(RESP1, 0); }
-	 void strobeResM0() { mySystem->poke(RESM0, 0); }
-	 void strobeResM1() { mySystem->poke(RESM1, 0); }
-	 void strobeResBL() { mySystem->poke(RESBL, 0); }
-	 void strobeHmove() { mySystem->poke(HMOVE, 0); }
-	 void strobeHmclr() { mySystem->poke(HMCLR, 0); }
-	 void strobeCxclr() { mySystem->poke(CXCLR, 0); }
+    /* TIA strobe registers */
+    void strobeWsync() { mySystem->poke(WSYNC, 0); }
+    void strobeRsync() { mySystem->poke(RSYNC, 0); } // not emulated!
+    void strobeResP0() { mySystem->poke(RESP0, 0); }
+    void strobeResP1() { mySystem->poke(RESP1, 0); }
+    void strobeResM0() { mySystem->poke(RESM0, 0); }
+    void strobeResM1() { mySystem->poke(RESM1, 0); }
+    void strobeResBL() { mySystem->poke(RESBL, 0); }
+    void strobeHmove() { mySystem->poke(HMOVE, 0); }
+    void strobeHmclr() { mySystem->poke(HMCLR, 0); }
+    void strobeCxclr() { mySystem->poke(CXCLR, 0); }
 
 	 /* read-only internal TIA state */
     int scanlines();

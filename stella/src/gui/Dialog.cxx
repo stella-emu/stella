@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.26 2005-08-11 19:12:39 stephena Exp $
+// $Id: Dialog.cxx,v 1.27 2005-08-15 18:52:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,7 +69,6 @@ void Dialog::open()
 
   // (Re)-build the focus list to use for the widgets which are currently
   // onscreen
-  _focusedWidget = 0;
   buildFocusWidgetList(_focusID);
 }
 
@@ -134,7 +133,7 @@ void Dialog::buildFocusWidgetList(int id)
 
   // Remember which item previously had focus, but only if it belongs
   // to this focus list
-  if(_focusID < (int)_ourFocusList.size() && _focusID != id &&
+  if(_focusID < (int)_ourFocusList.size() &&
      Widget::isWidgetInChain(_ourFocusList[_focusID].focusList, _focusedWidget))
     _ourFocusList[_focusID].focusedWidget = _focusedWidget;
 
@@ -406,23 +405,3 @@ ButtonWidget* Dialog::addButton(int x, int y, const string& label,
 {
   return new ButtonWidget(this, x, y, kButtonWidth, 16, label, cmd, hotkey);
 }
-
-/*
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GuiObject::removeFromFocusList(WidgetArray& list)
-{
-  for(int i = 0; i < (int)list.size(); ++i)
-  {
-    // Start searching from the end, since more than likely
-    // that's where the previously added widgets will be
-    for(int j = (int)_focusList.size() - 1; j >= 0; --j)
-    {
-      if(list[i] == _focusList[j])
-      {
-        _focusList.remove_at(j);
-        break;
-      }
-    }
-  }
-}
-*/
