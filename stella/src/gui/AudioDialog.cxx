@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.12 2005-08-10 12:23:42 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.13 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,6 +45,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
                          int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
+  const GUI::Font& font = instance()->font();
   int yoff = 10,
       xoff = 30,
       woff = _w - 80,
@@ -71,7 +72,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Enable sound
   new StaticTextWidget(this, xoff+8, yoff+3, 20, kLineHeight, "", kTextAlignLeft);
-  mySoundEnableCheckbox = new CheckboxWidget(this, xoff+28, yoff, woff - 14, kLineHeight,
+  mySoundEnableCheckbox = new CheckboxWidget(this, font, xoff+28, yoff,
                                              "Enable sound", kSoundEnableChanged);
   yoff += kAudioRowHeight + 12;
 

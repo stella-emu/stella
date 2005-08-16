@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.hxx,v 1.4 2005-08-02 18:28:29 stephena Exp $
+// $Id: ToggleBitWidget.hxx,v 1.5 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,6 +46,7 @@ class ToggleBitWidget : public Widget, public CommandSender
     void setList(const StringList& off, const StringList& on);
     void setState(const BoolArray& state, const BoolArray& changed);
 
+    const BoolArray& getState()    { return _stateList; }
     bool getSelectedState() const  { return _stateList[_selectedItem]; }
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);

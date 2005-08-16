@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.17 2005-08-15 18:52:15 stephena Exp $
+// $Id: TIADebug.cxx,v 1.18 2005-08-16 18:34:12 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -78,8 +78,13 @@ DebuggerState& TIADebug::getState()
   myState.pf.push_back(pf1());
   myState.pf.push_back(pf2());
 
-  myState.refP0 = refP0();  myState.delP0 = vdelP0();
-  myState.refP1 = refP1();  myState.delP1 = vdelP1();
+  // Reflect and delay registers
+  myState.refP0 = refP0();  myState.vdelP0 = vdelP0();
+  myState.refP1 = refP1();  myState.vdelP1 = vdelP1();
+
+  // NUSIZ registers
+  myState.nusiz.push_back(nusiz0());
+  myState.nusiz.push_back(nusiz1());
 
   return myState;
 }
@@ -124,6 +129,15 @@ void TIADebug::saveOldState()
   myOldState.pf.push_back(pf0());
   myOldState.pf.push_back(pf1());
   myOldState.pf.push_back(pf2());
+
+  // Reflect and delay registers
+  myOldState.refP0 = refP0();  myOldState.vdelP0 = vdelP0();
+  myOldState.refP1 = refP1();  myOldState.vdelP1 = vdelP1();
+
+  // NUSIZ registers
+  myOldState.nusiz.push_back(nusiz0());
+  myOldState.nusiz.push_back(nusiz1());
+
 }
 
 /* the set methods now use mySystem->poke(). This will save us the
@@ -365,7 +379,7 @@ uInt8 TIADebug::nusiz0(int newVal)
   if(newVal > -1)
 	  mySystem->poke(NUSIZ0, newVal);
 
-  return myTIA->myGRP0;
+  return myTIA->myNUSIZ0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -374,7 +388,7 @@ uInt8 TIADebug::nusiz1(int newVal)
   if(newVal > -1)
 	  mySystem->poke(NUSIZ1, newVal);
 
-  return myTIA->myGRP1;
+  return myTIA->myNUSIZ1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -658,7 +672,7 @@ string TIADebug::state()
   ret += " ";
   ret += booleanWithLabel("reflect", state.refP0);
   ret += " ";
-  ret += booleanWithLabel("delay", state.delP0);
+  ret += booleanWithLabel("delay", state.vdelP0);
   ret += "\n";
 
   ret += "P1: GR=";
@@ -674,7 +688,7 @@ string TIADebug::state()
   ret += " ";
   ret += booleanWithLabel("reflect", state.refP1);
   ret += " ";
-  ret += booleanWithLabel("delay", state.delP1);
+  ret += booleanWithLabel("delay", state.vdelP1);
   ret += "\n";
 
   ret += "M0: ";

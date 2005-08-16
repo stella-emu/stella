@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaInfoWidget.cxx,v 1.2 2005-08-10 12:23:42 stephena Exp $
+// $Id: TiaInfoWidget.cxx,v 1.3 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
     CommandSender(boss)
 {
   int xpos = x, ypos = y, lwidth = 45;
-  const GUI::Font& font = instance()->consoleFont();
+  const GUI::Font& font = instance()->font();
 
   // Add frame info
   xpos = x + 10;  ypos = y + 10;
@@ -53,11 +53,11 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
   myFrameCycles->setEditable(false);
 
   xpos = x + 20;  ypos += kLineHeight + 5;
-  myVSync = new CheckboxWidget(boss, xpos, ypos-3, 25, kLineHeight, "VSync", 0);
+  myVSync = new CheckboxWidget(boss, font, xpos, ypos-3, "VSync", 0);
   myVSync->setEditable(false);
 
   xpos = x + 20;  ypos += kLineHeight + 5;
-  myVBlank = new CheckboxWidget(boss, xpos, ypos-3, 30, kLineHeight, "VBlank", 0);
+  myVBlank = new CheckboxWidget(boss, font, xpos, ypos-3, "VBlank", 0);
   myVBlank->setEditable(false);
 
   xpos = x + 10 + 100;  ypos = y + 10;

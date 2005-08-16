@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.82 2005-08-15 18:52:15 stephena Exp $
+// $Id: Debugger.cxx,v 1.83 2005-08-16 18:34:12 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -341,13 +341,17 @@ const string Debugger::valueToString(int value, BaseFormat outputBase)
         sprintf(rendered, "%5d", value);
       break;
 
+    case kBASE_16_4:
+      sprintf(rendered, Debugger::to_hex_4(value));
+      break;
+
     case kBASE_16:
-      default:
-        if(value < 0x100)
-          sprintf(rendered, Debugger::to_hex_8(value));
-        else
-          sprintf(rendered, Debugger::to_hex_16(value));
-        break;
+    default:
+      if(value < 0x100)
+        sprintf(rendered, Debugger::to_hex_8(value));
+      else
+        sprintf(rendered, Debugger::to_hex_16(value));
+      break;
   }
 
   return string(rendered);

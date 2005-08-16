@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.1 2005-08-05 02:28:22 urchlay Exp $
+// $Id: CheatCodeDialog.cxx,v 1.2 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,11 +38,12 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
+  const GUI::Font& font = instance()->font();
+
   myTitle = new StaticTextWidget(this, 10, 5, w - 20, kFontHeight, "Cheat Codes", kTextAlignCenter);
   addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
   addButton(w - (kButtonWidth + 10), h - 48, "Load", kLoadCmd, 'C');
-  myEnableCheat = new CheckboxWidget(this, 10, 20, kButtonWidth+10, kLineHeight,
-                                            "Enabled", kEnableCheat);
+  myEnableCheat = new CheckboxWidget(this, font, 10, 20, "Enabled", kEnableCheat);
   myEnableCheat->setState(false);
   myCheat = 0;
 }

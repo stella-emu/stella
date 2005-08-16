@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.3 2005-08-15 18:52:15 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.4 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,6 +47,7 @@ class TiaWidget : public Widget, public CommandSender
     void fillGrid();
     void changeColorRegs();
     void convertCharToBool(BoolArray& b, unsigned char value);
+    int convertBoolToInt(const BoolArray& b);
 
   private:
     DataGridWidget* myRamGrid;
@@ -63,6 +64,22 @@ class TiaWidget : public Widget, public CommandSender
 
     ToggleBitWidget* myGRP0;
     ToggleBitWidget* myGRP1;
+
+    DataGridWidget* myPosP0;
+    DataGridWidget* myPosP1;
+
+    DataGridWidget* myHMP0;
+    DataGridWidget* myHMP1;
+
+    DataGridWidget* myNusiz0;
+    DataGridWidget* myNusiz1;
+    EditTextWidget* myNusiz0Text;
+    EditTextWidget* myNusiz1Text;
+
+    CheckboxWidget* myRefP0;
+    CheckboxWidget* myRefP1;
+    CheckboxWidget* myDelP0;
+    CheckboxWidget* myDelP1;
 };
 
 #endif

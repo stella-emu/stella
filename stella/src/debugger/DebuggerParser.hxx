@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.40 2005-07-30 22:08:25 urchlay Exp $
+// $Id: DebuggerParser.hxx,v 1.41 2005-08-16 18:34:12 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -27,6 +27,7 @@ struct Command;
 
 typedef enum {
 	kBASE_16,
+	kBASE_16_4,
 	kBASE_10,
 	kBASE_2,
 	kBASE_DEFAULT

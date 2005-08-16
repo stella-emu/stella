@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.20 2005-08-10 12:23:42 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.21 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,6 +44,8 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                          int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
+  const GUI::Font& font = instance()->font();
+
   int yoff = 10,
       xoff = 2,
       woff = 110,
@@ -120,11 +122,11 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myZoomLabel->setFlags(WIDGET_CLEARBG);
   yoff += kVideoRowHeight + 10;
 
-  myFullscreenCheckbox = new CheckboxWidget(this, xoff + 5, yoff, woff - 14, kLineHeight,
+  myFullscreenCheckbox = new CheckboxWidget(this, font, xoff + 5, yoff,
                                             "Fullscreen mode");
   yoff += kVideoRowHeight + 4;
 
-  myUseDeskResCheckbox = new CheckboxWidget(this, xoff + 5, yoff, woff - 14, kLineHeight,
+  myUseDeskResCheckbox = new CheckboxWidget(this, font, xoff + 5, yoff,
                                             "Desktop Res in FS");
   yoff += kVideoRowHeight + 20;
 

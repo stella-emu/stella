@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.15 2005-08-15 18:52:15 stephena Exp $
+// $Id: TIADebug.hxx,v 1.16 2005-08-16 18:34:12 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -95,9 +95,10 @@ class TiaState : public DebuggerState
     IntArray pos;
     IntArray hm;
     IntArray pf;
+    IntArray nusiz;
 
-    bool refP0, delP0;
-    bool refP1, delP1;
+    bool refP0, vdelP0;
+    bool refP1, vdelP1;
 };
 
 class TIADebug : public DebuggerSystem

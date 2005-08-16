@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
+// $Id: Widget.hxx,v 1.28 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -71,7 +71,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.27 2005-08-10 12:23:42 stephena Exp $
+  @version $Id: Widget.hxx,v 1.28 2005-08-16 18:34:12 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -200,6 +200,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void handleMouseEntered(int button);
     void handleMouseLeft(int button);
 
+    bool wantsFocus() { return true; };
+
   protected:
     void drawWidget(bool hilite);
 
@@ -213,12 +215,13 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 class CheckboxWidget : public ButtonWidget
 {
   public:
-    CheckboxWidget(GuiObject* boss, int x, int y, int w, int h,
+    CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    const string& label, int cmd = 0, uInt8 hotkey = 0);
 
     void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseEntered(int button)	{}
     virtual void handleMouseLeft(int button)	{}
+    virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
 
     void setEditable(bool editable) { _editable = editable; }
 

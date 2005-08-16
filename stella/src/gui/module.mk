@@ -2,7 +2,6 @@ MODULE := src/gui
 
 MODULE_OBJS := \
 	src/gui/AboutDialog.o \
-	src/gui/AddrValueWidget.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
 	src/gui/ColorWidget.o \

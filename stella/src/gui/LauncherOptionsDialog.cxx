@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.9 2005-08-10 12:23:42 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.10 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,6 +36,8 @@ LauncherOptionsDialog::LauncherOptionsDialog(
     CommandSender(boss),
     myBrowser(NULL)
 {
+  const GUI::Font& font = instance()->font();
+
   const int vBorder = 4;
   int yoffset;
 
@@ -71,7 +73,7 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   yoffset += 18;
 
   // Snapshot single or multiple saves
-  mySnapSingleCheckbox = new CheckboxWidget(myTab, 30, yoffset, 80, kLineHeight,
+  mySnapSingleCheckbox = new CheckboxWidget(myTab, font, 30, yoffset,
                                             "Multiple snapshots");
 
   // Activate the first tab

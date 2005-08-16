@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.28 2005-08-11 19:12:39 stephena Exp $
+// $Id: Widget.cxx,v 1.29 2005-08-16 18:34:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -325,7 +325,8 @@ ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
 	  _cmd(cmd),
       _hotkey(hotkey)
 {
-  _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
+  _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG |
+           WIDGET_RETAIN_FOCUS;
   _type = kButtonWidget;
 }
 
@@ -376,14 +377,19 @@ static unsigned int checked_img[8] =
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheckboxWidget::CheckboxWidget(GuiObject *boss, int x, int y, int w, int h,
-                               const string& label, int cmd, uInt8 hotkey)
-    : ButtonWidget(boss, x, y, w, h, label, cmd, hotkey),
-      _state(false),
-      _editable(true)
+CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
+                               int x, int y, const string& label,
+                               int cmd, uInt8 hotkey)
+  : ButtonWidget(boss, x, y, 16, 16, label, cmd, hotkey),
+    _state(false),
+    _editable(true)
 {
-  _flags = WIDGET_ENABLED;
+  _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
   _type = kCheckboxWidget;
+
+  setFont(font);
+  _w = font.getStringWidth(label) + 20;
+  _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,6 +402,26 @@ void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
     // We only send a command when the widget has been changed interactively
     sendCommand(_cmd, _state, _id);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CheckboxWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+{
+  bool handled = false;
+
+  // (De)activate with space or return
+  switch(keycode)
+  {
+    case '\n':  // enter/return
+    case '\r':
+    case ' ' :  // space
+      // Simulate mouse event
+      handleMouseUp(0, 0, 1, 0);
+      handled = true;
+      break;
+  }
+
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -414,18 +440,27 @@ void CheckboxWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
+  // Depending on font size, either the font or box will need to be 
+  // centered vertically
+  int box_yoff = 0, text_yoff = 0;
+  if(_h > 14)  // center box
+    box_yoff = (_h - 14) / 2;
+  else         // center text
+    text_yoff = (14 - _font->getFontHeight()) / 2;
+
   // Draw the box
-  fb.box(_x, _y, 14, 14, kColor, kShadowColor);
+  fb.box(_x, _y + box_yoff, 14, 14, kColor, kShadowColor);
 
   // If checked, draw cross inside the box
   if(_state)
-    fb.drawBitmap(checked_img, _x + 3, _y + 3,
+    fb.drawBitmap(checked_img, _x + 3, _y + box_yoff + 3,
                   isEnabled() ? _color : kColor);
   else
-    fb.fillRect(_x + 2, _y + 2, 10, 10, kBGColor);
+    fb.fillRect(_x + 2, _y + box_yoff + 2, 10, 10, kBGColor);
 
   // Finally draw the label
-  fb.drawString(_font, _label, _x + 20, _y + 3, _w, isEnabled() ? _color : kColor);
+  fb.drawString(_font, _label, _x + 20, _y + text_yoff, _w,
+                isEnabled() ? _color : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
