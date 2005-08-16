@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.18 2005-08-16 18:34:12 stephena Exp $
+// $Id: TIADebug.cxx,v 1.19 2005-08-16 19:04:44 urchlay Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -412,20 +412,16 @@ uInt8 TIADebug::grP1(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP0(int newVal)
 {
-/* FIXME
   if(newVal > -1)
-    mySystem->poke(???, newVal);
-*/
+    myTIA->myPOSP0 = newVal;
   return myTIA->myPOSP0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP1(int newVal)
 {
-/* FIXME
   if(newVal > -1)
-    mySystem->poke(???, newVal);
-*/
+    myTIA->myPOSP1 = newVal;
   return myTIA->myPOSP1;
 }
 
