@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.19 2005-08-16 19:04:44 urchlay Exp $
+// $Id: TIADebug.cxx,v 1.20 2005-08-17 21:38:34 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -78,13 +78,13 @@ DebuggerState& TIADebug::getState()
   myState.pf.push_back(pf1());
   myState.pf.push_back(pf2());
 
-  // Reflect and delay registers
-  myState.refP0 = refP0();  myState.vdelP0 = vdelP0();
-  myState.refP1 = refP1();  myState.vdelP1 = vdelP1();
-
-  // NUSIZ registers
-  myState.nusiz.push_back(nusiz0());
-  myState.nusiz.push_back(nusiz1());
+  // Size registers
+  myState.size.clear();
+  myState.size.push_back(nusizP0());
+  myState.size.push_back(nusizP1());
+  myState.size.push_back(nusizM0());
+  myState.size.push_back(nusizM1());
+  myState.size.push_back(sizeBL());
 
   return myState;
 }
@@ -130,13 +130,13 @@ void TIADebug::saveOldState()
   myOldState.pf.push_back(pf1());
   myOldState.pf.push_back(pf2());
 
-  // Reflect and delay registers
-  myOldState.refP0 = refP0();  myOldState.vdelP0 = vdelP0();
-  myOldState.refP1 = refP1();  myOldState.vdelP1 = vdelP1();
-
-  // NUSIZ registers
-  myOldState.nusiz.push_back(nusiz0());
-  myOldState.nusiz.push_back(nusiz1());
+  // Size registers
+  myOldState.size.clear();
+  myOldState.size.push_back(nusizP0());
+  myOldState.size.push_back(nusizP1());
+  myOldState.size.push_back(nusizM0());
+  myOldState.size.push_back(nusizM1());
+  myOldState.size.push_back(sizeBL());
 
 }
 
@@ -170,7 +170,7 @@ void TIADebug::saveOldState()
 bool TIADebug::vdelP0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(VDELP0, ((bool)newVal));
+    mySystem->poke(VDELP0, ((bool)newVal));
 
   return myTIA->myVDELP0;
 }
@@ -179,7 +179,7 @@ bool TIADebug::vdelP0(int newVal)
 bool TIADebug::vdelP1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(VDELP1, ((bool)newVal));
+    mySystem->poke(VDELP1, ((bool)newVal));
 
   return myTIA->myVDELP1;
 }
@@ -188,7 +188,7 @@ bool TIADebug::vdelP1(int newVal)
 bool TIADebug::vdelBL(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(VDELBL, ((bool)newVal));
+    mySystem->poke(VDELBL, ((bool)newVal));
 
   return myTIA->myVDELBL;
 }
@@ -197,7 +197,7 @@ bool TIADebug::vdelBL(int newVal)
 bool TIADebug::enaM0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(ENAM0, ((bool)newVal) << 1);
+    mySystem->poke(ENAM0, ((bool)newVal) << 1);
 
   return myTIA->myENAM0;
 }
@@ -206,7 +206,7 @@ bool TIADebug::enaM0(int newVal)
 bool TIADebug::enaM1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(ENAM1, ((bool)newVal) << 1);
+    mySystem->poke(ENAM1, ((bool)newVal) << 1);
 
   return myTIA->myENAM1;
 }
@@ -215,7 +215,7 @@ bool TIADebug::enaM1(int newVal)
 bool TIADebug::enaBL(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(ENABL, ((bool)newVal) << 1);
+    mySystem->poke(ENABL, ((bool)newVal) << 1);
 
   return myTIA->myENABL;
 }
@@ -224,7 +224,7 @@ bool TIADebug::enaBL(int newVal)
 bool TIADebug::resMP0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(RESMP0, ((bool)newVal) << 1);
+    mySystem->poke(RESMP0, ((bool)newVal) << 1);
 
   return myTIA->myRESMP0;
 }
@@ -233,7 +233,7 @@ bool TIADebug::resMP0(int newVal)
 bool TIADebug::resMP1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(RESMP1, ((bool)newVal) << 1);
+    mySystem->poke(RESMP1, ((bool)newVal) << 1);
 
   return myTIA->myRESMP1;
 }
@@ -242,7 +242,7 @@ bool TIADebug::resMP1(int newVal)
 bool TIADebug::refP0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(REFP0, ((bool)newVal) << 3);
+    mySystem->poke(REFP0, ((bool)newVal) << 3);
 
   return myTIA->myREFP0;
 }
@@ -251,7 +251,7 @@ bool TIADebug::refP0(int newVal)
 bool TIADebug::refP1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(REFP1, ((bool)newVal) << 3);
+    mySystem->poke(REFP1, ((bool)newVal) << 3);
 
   return myTIA->myREFP1;
 }
@@ -260,7 +260,7 @@ bool TIADebug::refP1(int newVal)
 uInt8 TIADebug::audC0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(AUDC0, newVal);
+    mySystem->poke(AUDC0, newVal);
 
   return myTIA->myAUDC0;
 }
@@ -269,7 +269,7 @@ uInt8 TIADebug::audC0(int newVal)
 uInt8 TIADebug::audC1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(AUDC1, newVal);
+    mySystem->poke(AUDC1, newVal);
 
   return myTIA->myAUDC1;
 }
@@ -278,7 +278,7 @@ uInt8 TIADebug::audC1(int newVal)
 uInt8 TIADebug::audV0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(AUDV0, newVal);
+    mySystem->poke(AUDV0, newVal);
 
   return myTIA->myAUDV0;
 }
@@ -287,7 +287,7 @@ uInt8 TIADebug::audV0(int newVal)
 uInt8 TIADebug::audV1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(AUDV1, newVal);
+    mySystem->poke(AUDV1, newVal);
 
   return myTIA->myAUDV1;
 }
@@ -296,7 +296,7 @@ uInt8 TIADebug::audV1(int newVal)
 uInt8 TIADebug::audF0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(AUDF0, newVal);
+    mySystem->poke(AUDF0, newVal);
 
   return myTIA->myAUDF0;
 }
@@ -305,7 +305,7 @@ uInt8 TIADebug::audF0(int newVal)
 uInt8 TIADebug::audF1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(AUDF1, newVal);
+    mySystem->poke(AUDF1, newVal);
 
   return myTIA->myAUDF1;
 }
@@ -314,7 +314,7 @@ uInt8 TIADebug::audF1(int newVal)
 uInt8 TIADebug::pf0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(PF0, newVal << 4);
+    mySystem->poke(PF0, newVal << 4);
 
   return myTIA->myPF & 0x0f;
 }
@@ -323,7 +323,7 @@ uInt8 TIADebug::pf0(int newVal)
 uInt8 TIADebug::pf1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(PF1, newVal);
+    mySystem->poke(PF1, newVal);
 
   return (myTIA->myPF & 0xff0) >> 4;
 }
@@ -332,7 +332,7 @@ uInt8 TIADebug::pf1(int newVal)
 uInt8 TIADebug::pf2(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(PF2, newVal);
+    mySystem->poke(PF2, newVal);
 
   return (myTIA->myPF & 0xff000) >> 12;
 }
@@ -341,7 +341,7 @@ uInt8 TIADebug::pf2(int newVal)
 uInt8 TIADebug::coluP0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(COLUP0, newVal);
+    mySystem->poke(COLUP0, newVal);
 
   return myTIA->myCOLUP0 & 0xff;
 }
@@ -350,7 +350,7 @@ uInt8 TIADebug::coluP0(int newVal)
 uInt8 TIADebug::coluP1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(COLUP0, newVal);
+    mySystem->poke(COLUP1, newVal);
 
   return myTIA->myCOLUP1 & 0xff;
 }
@@ -359,7 +359,7 @@ uInt8 TIADebug::coluP1(int newVal)
 uInt8 TIADebug::coluPF(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(COLUPF, newVal);
+    mySystem->poke(COLUPF, newVal);
 
   return myTIA->myCOLUPF & 0xff;
 }
@@ -368,7 +368,7 @@ uInt8 TIADebug::coluPF(int newVal)
 uInt8 TIADebug::coluBK(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(COLUBK, newVal);
+    mySystem->poke(COLUBK, newVal);
 
   return myTIA->myCOLUBK & 0xff;
 }
@@ -377,7 +377,7 @@ uInt8 TIADebug::coluBK(int newVal)
 uInt8 TIADebug::nusiz0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(NUSIZ0, newVal);
+    mySystem->poke(NUSIZ0, newVal);
 
   return myTIA->myNUSIZ0;
 }
@@ -386,9 +386,61 @@ uInt8 TIADebug::nusiz0(int newVal)
 uInt8 TIADebug::nusiz1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(NUSIZ1, newVal);
+    mySystem->poke(NUSIZ1, newVal);
 
   return myTIA->myNUSIZ1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::nusizP0(int newVal)
+{
+  if(newVal > -1)
+  {
+    uInt8 tmp = myTIA->myNUSIZ0 & ~0x07;
+    tmp |= (newVal & 0x07);
+    mySystem->poke(NUSIZ0, tmp);
+  }
+
+  return myTIA->myNUSIZ0 & 0x07;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::nusizP1(int newVal)
+{
+  if(newVal > -1)
+  {
+    uInt8 tmp = myTIA->myNUSIZ1 & ~0x07;
+    tmp |= newVal & 0x07;
+    mySystem->poke(NUSIZ1, tmp);
+  }
+
+  return myTIA->myNUSIZ1 & 0x07;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::nusizM0(int newVal)
+{
+  if(newVal > -1)
+  {
+    uInt8 tmp = myTIA->myNUSIZ0 & ~0x30;
+    tmp |= (newVal & 0x04) << 4;
+    mySystem->poke(NUSIZ0, tmp);
+  }
+
+  return (myTIA->myNUSIZ0 & 0x30) >> 4;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::nusizM1(int newVal)
+{
+  if(newVal > -1)
+  {
+    uInt8 tmp = myTIA->myNUSIZ1 & ~0x30;
+    tmp |= (newVal & 0x04) << 4;
+    mySystem->poke(NUSIZ1, tmp);
+  }
+
+  return (myTIA->myNUSIZ1 & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -459,16 +511,29 @@ uInt8 TIADebug::posBL(int newVal)
 uInt8 TIADebug::ctrlPF(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(CTRLPF, newVal);
+    mySystem->poke(CTRLPF, newVal);
 
   return myTIA->myCTRLPF;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIADebug::sizeBL(int newVal)
+{
+  if(newVal > -1)
+  {
+    uInt8 tmp = myTIA->myCTRLPF & ~0x30;
+    tmp |= (newVal & 0x04) << 4;
+    mySystem->poke(CTRLPF, tmp);
+  }
+
+  return (myTIA->myCTRLPF & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmP0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(HMP0, newVal << 4);
+    mySystem->poke(HMP0, newVal << 4);
 
   return myTIA->myHMP0;
 }
@@ -477,7 +542,7 @@ uInt8 TIADebug::hmP0(int newVal)
 uInt8 TIADebug::hmP1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(HMP1, newVal << 4);
+    mySystem->poke(HMP1, newVal << 4);
 
   return myTIA->myHMP1;
 }
@@ -486,7 +551,7 @@ uInt8 TIADebug::hmP1(int newVal)
 uInt8 TIADebug::hmM0(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(HMM0, newVal << 4);
+    mySystem->poke(HMM0, newVal << 4);
 
   return myTIA->myHMM0;
 }
@@ -495,7 +560,7 @@ uInt8 TIADebug::hmM0(int newVal)
 uInt8 TIADebug::hmM1(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(HMM1, newVal << 4);
+    mySystem->poke(HMM1, newVal << 4);
 
   return myTIA->myHMM1;
 }
@@ -504,7 +569,7 @@ uInt8 TIADebug::hmM1(int newVal)
 uInt8 TIADebug::hmBL(int newVal)
 {
   if(newVal > -1)
-	  mySystem->poke(HMBL, newVal << 4);
+    mySystem->poke(HMBL, newVal << 4);
 
   return myTIA->myHMBL;
 }
@@ -597,15 +662,6 @@ string TIADebug::state()
   TiaState state    = (TiaState&) getState();
 // FIXME - change tracking  TiaState oldstate = (TiaState&) getOldState();
 
-  // calculate sizes
-  uInt8 ballSize = 1 << (myTIA->myCTRLPF & 0x18);
-  uInt8 m0Size   = 1 << (myTIA->myNUSIZ0 & 0x18);
-  uInt8 m1Size   = 1 << (myTIA->myNUSIZ1 & 0x18);
-
-  // easier to use a table for these:
-  const string& p0Size = nusiz0String();
-  const string& p1Size = nusiz1String();
-
   // build up output, then return it.
   ret += "scanline ";
 
@@ -664,11 +720,11 @@ string TIADebug::state()
   ret += " HM=";
   ret += myDebugger->valueToString(state.hm[P0]);
   ret += " ";
-  ret += p0Size;
+  ret += nusizP0String();
   ret += " ";
-  ret += booleanWithLabel("reflect", state.refP0);
+  ret += booleanWithLabel("reflect", refP0());
   ret += " ";
-  ret += booleanWithLabel("delay", state.vdelP0);
+  ret += booleanWithLabel("delay", vdelP0());
   ret += "\n";
 
   ret += "P1: GR=";
@@ -680,11 +736,11 @@ string TIADebug::state()
   ret += " HM=";
   ret += myDebugger->valueToString(state.hm[P1]);
   ret += " ";
-  ret += p1Size;
+  ret += nusizP1String();
   ret += " ";
-  ret += booleanWithLabel("reflect", state.refP1);
+  ret += booleanWithLabel("reflect", refP1());
   ret += " ";
-  ret += booleanWithLabel("delay", state.vdelP1);
+  ret += booleanWithLabel("delay", vdelP1());
   ret += "\n";
 
   ret += "M0: ";
@@ -694,9 +750,9 @@ string TIADebug::state()
   ret += " HM=";
   ret += myDebugger->valueToString(state.hm[M0]);
   ret += " size=";
-  ret += myDebugger->valueToString(m0Size);
+  ret += myDebugger->valueToString(state.size[M0]);
   ret += " ";
-  ret += booleanWithLabel("reset", (myTIA->myRESMP0));
+  ret += booleanWithLabel("reset", resMP0());
   ret += "\n";
 
   ret += "M1: ";
@@ -706,9 +762,9 @@ string TIADebug::state()
   ret += " HM=";
   ret += myDebugger->valueToString(state.hm[M1]);
   ret += " size=";
-  ret += myDebugger->valueToString(m1Size);
+  ret += myDebugger->valueToString(state.size[M1]);
   ret += " ";
-  ret += booleanWithLabel("reset", (myTIA->myRESMP1));
+  ret += booleanWithLabel("reset", resMP1());
   ret += "\n";
 
   ret += "BL: ";
@@ -718,9 +774,9 @@ string TIADebug::state()
   ret += " HM=";
   ret += myDebugger->valueToString(state.hm[BL]);
   ret += " size=";
-  ret += myDebugger->valueToString(ballSize);
+  ret += myDebugger->valueToString(state.size[BL]);
   ret += " ";
-  ret += booleanWithLabel("delay", (myTIA->myVDELBL));
+  ret += booleanWithLabel("delay", vdelBL());
   ret += "\n";
 
   ret += "PF0: ";
@@ -785,11 +841,11 @@ string TIADebug::state()
   ret += audFreq(myTIA->myAUDF1);
   ret += " ";
 
-  ret += "AUDC0: ";
+  ret += "AUDC1: ";
   ret += myDebugger->valueToString(myTIA->myAUDC1);
   ret += " ";
 
-  ret += "AUDV0: ";
+  ret += "AUDV1: ";
   ret += myDebugger->valueToString(myTIA->myAUDV1);
   //ret += "\n";
 

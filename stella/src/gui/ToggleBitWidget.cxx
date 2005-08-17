@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.8 2005-08-12 17:12:43 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.9 2005-08-17 21:38:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -250,7 +250,7 @@ void ToggleBitWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleBitWidget::drawWidget(bool hilite)
 {
-cerr << "ToggleBitWidget::drawWidget\n";
+//cerr << "ToggleBitWidget::drawWidget\n";
   FrameBuffer& fb = instance()->frameBuffer();
   int row, col;
   string buffer;

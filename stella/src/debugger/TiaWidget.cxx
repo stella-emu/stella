@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.6 2005-08-16 18:34:12 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.7 2005-08-17 21:38:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,18 +36,18 @@
 enum {
   kRamID,
   kColorRegsID,
-  kGRP0ID,
-  kGRP1ID,
-  kPosP0ID,
-  kPosP1ID,
-  kHMP0ID,
-  kHMP1ID,
-  kRefP0ID,
-  kRefP1ID,
-  kDelP0ID,
-  kDelP1ID,
-  kNusizP0ID,
-  kNusizP1ID
+  kGRP0ID,    kGRP1ID,
+  kPosP0ID,   kPosP1ID,
+  kPosM0ID,   kPosM1ID,   kPosBLID,
+  kHMP0ID,    kHMP1ID,
+  kHMM0ID,    kHMM1ID,    kHMBLID,
+  kRefP0ID,   kRefP1ID,
+  kDelP0ID,   kDelP1ID,   kDelBLID,
+  kNusizP0ID, kNusizP1ID,
+  kNusizM0ID, kNusizM1ID, kSizeBLID,
+  kEnaM0ID,   kEnaM1ID,   kEnaBLID,
+  kResM0ID,   kResM1ID
+ 
 };
 
 // Color registers
@@ -174,7 +174,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   xpos = 10;  ypos += 2*lineHeight;
   t = new StaticTextWidget(boss, xpos, ypos+2,
                            7*fontWidth, fontHeight,
-                           "P0/ GR:", kTextAlignLeft);
+                           "P0: GR:", kTextAlignLeft);
   t->setFont(font);
   xpos += 7*fontWidth + 5;
   myGRP0 = new ToggleBitWidget(boss, font, xpos, ypos, 8, 1);
@@ -210,37 +210,37 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   addFocusWidget(myHMP0);
 
   // P0 reflect and delay
-  xpos += myHMP0->getWidth() + 10;
+  xpos += myHMP0->getWidth() + 15;
   myRefP0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reflect", kCheckActionCmd);
   myRefP0->setFont(font);
   myRefP0->setTarget(this);
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
-  xpos += myRefP0->getWidth() + 10;
+  xpos += myRefP0->getWidth() + 15;
   myDelP0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Delay", kCheckActionCmd);
   myDelP0->setFont(font);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
   addFocusWidget(myDelP0);
 
-  // NUSIZ0
+  // NUSIZ0 (player portion)
   xpos = 10 + lwidth;  ypos += myGRP0->getHeight() + 2;
   t = new StaticTextWidget(boss, xpos, ypos+2,
-                           7*fontWidth, fontHeight,
-                           "NUSIZ0:", kTextAlignLeft);
+                           8*fontWidth, fontHeight,
+                           "NusizP0:", kTextAlignLeft);
   t->setFont(font);
-  xpos += 7*fontWidth + 5;
-  myNusiz0 = new DataGridWidget(boss, font, xpos, ypos,
-                                1, 1, 1, 3, kBASE_16_4);
-  myNusiz0->setTarget(this);
-  myNusiz0->setID(kNusizP0ID);
-  addFocusWidget(myNusiz0);
+  xpos += 8*fontWidth + 5;
+  myNusizP0 = new DataGridWidget(boss, font, xpos, ypos,
+                                 1, 1, 1, 3, kBASE_16_4);
+  myNusizP0->setTarget(this);
+  myNusizP0->setID(kNusizP0ID);
+  addFocusWidget(myNusizP0);
 
-  xpos += myNusiz0->getWidth() + 5;
-  myNusiz0Text = new EditTextWidget(boss, xpos, ypos+1, 23*fontWidth, lineHeight, "");
-  myNusiz0Text->setFont(font);
-  myNusiz0Text->setEditable(false);
+  xpos += myNusizP0->getWidth() + 5;
+  myNusizP0Text = new EditTextWidget(boss, xpos, ypos+1, 23*fontWidth, lineHeight, "");
+  myNusizP0Text->setFont(font);
+  myNusizP0Text->setEditable(false);
 
   ////////////////////////////
   // P1 register info
@@ -249,7 +249,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   xpos = 10;  ypos += 2*lineHeight;
   t = new StaticTextWidget(boss, xpos, ypos+2,
                            7*fontWidth, fontHeight,
-                           "P1/ GR:", kTextAlignLeft);
+                           "P1: GR:", kTextAlignLeft);
   t->setFont(font);
   xpos += 7*fontWidth + 5;
   myGRP1 = new ToggleBitWidget(boss, font, xpos, ypos, 8, 1);
@@ -285,38 +285,226 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   addFocusWidget(myHMP1);
 
   // P1 reflect and delay
-  xpos += myHMP1->getWidth() + 10;
+  xpos += myHMP1->getWidth() + 15;
   myRefP1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reflect", kCheckActionCmd);
   myRefP1->setFont(font);
   myRefP1->setTarget(this);
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
-  xpos += myRefP1->getWidth() + 10;
+  xpos += myRefP1->getWidth() + 15;
   myDelP1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Delay", kCheckActionCmd);
   myDelP1->setFont(font);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
   addFocusWidget(myDelP1);
 
-  // NUSIZ1
+  // NUSIZ1 (player portion)
   xpos = 10 + lwidth;  ypos += myGRP1->getHeight() + 2;
   t = new StaticTextWidget(boss, xpos, ypos+2,
-                           7*fontWidth, fontHeight,
-                           "NUSIZ1:", kTextAlignLeft);
+                           8*fontWidth, fontHeight,
+                           "NusizP1:", kTextAlignLeft);
   t->setFont(font);
-  xpos += 7*fontWidth + 5;
-  myNusiz1 = new DataGridWidget(boss, font, xpos, ypos,
-                                1, 1, 1, 3, kBASE_16_4);
-  myNusiz1->setTarget(this);
-  myNusiz1->setID(kNusizP1ID);
-  addFocusWidget(myNusiz1);
+  xpos += 8*fontWidth + 5;
+  myNusizP1 = new DataGridWidget(boss, font, xpos, ypos,
+                                 1, 1, 1, 3, kBASE_16_4);
+  myNusizP1->setTarget(this);
+  myNusizP1->setID(kNusizP1ID);
+  addFocusWidget(myNusizP1);
 
-  xpos += myNusiz1->getWidth() + 5;
-  myNusiz1Text = new EditTextWidget(boss, xpos, ypos+1, 23*fontWidth, lineHeight, "");
-  myNusiz1Text->setFont(font);
-  myNusiz1Text->setEditable(false);
+  xpos += myNusizP1->getWidth() + 5;
+  myNusizP1Text = new EditTextWidget(boss, xpos, ypos+1, 23*fontWidth, lineHeight, "");
+  myNusizP1Text->setFont(font);
+  myNusizP1Text->setEditable(false);
 
+  ////////////////////////////
+  // M0 register info
+  ////////////////////////////
+  // enaM0
+  xpos = 10;  ypos += 2*lineHeight;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           3*fontWidth, fontHeight,
+                           "M0:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 3*fontWidth + 8;
+  myEnaM0 = new CheckboxWidget(boss, font, xpos, ypos+2, "Enable", kCheckActionCmd);
+  myEnaM0->setFont(font);
+  myEnaM0->setTarget(this);
+  myEnaM0->setID(kEnaM0ID);
+  addFocusWidget(myEnaM0);
+  
+  // posM0
+  xpos += myEnaM0->getWidth() + 12;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           4*fontWidth, fontHeight,
+                           "Pos:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 4*fontWidth + 5;
+  myPosM0 = new DataGridWidget(boss, font, xpos, ypos,
+                               1, 1, 2, 8, kBASE_16);
+  myPosM0->setTarget(this);
+  myPosM0->setID(kPosM0ID);
+  addFocusWidget(myPosM0);
+
+  // hmM0
+  xpos += myPosM0->getWidth() + 8;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           3*fontWidth, fontHeight,
+                           "HM:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 3*fontWidth + 5;
+  myHMM0 = new DataGridWidget(boss, font, xpos, ypos,
+                              1, 1, 1, 4, kBASE_16_4);
+  myHMM0->setTarget(this);
+  myHMM0->setID(kHMM0ID);
+  addFocusWidget(myHMM0);
+
+  // NUSIZ0 (missile portion)
+  xpos += myHMM0->getWidth() + 8;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           5*fontWidth, fontHeight,
+                           "Size:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 5*fontWidth + 5;
+  myNusizM0 = new DataGridWidget(boss, font, xpos, ypos,
+                                 1, 1, 1, 2, kBASE_16_4);
+  myNusizM0->setTarget(this);
+  myNusizM0->setID(kNusizM0ID);
+  addFocusWidget(myNusizM0);
+
+  // M0 reset
+  xpos += myNusizM0->getWidth() + 15;
+  myResM0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
+  myResM0->setFont(font);
+  myResM0->setTarget(this);
+  myResM0->setID(kResM0ID);
+  addFocusWidget(myResM0);
+
+  ////////////////////////////
+  // M1 register info
+  ////////////////////////////
+  // enaM1
+  xpos = 10;  ypos += 2*lineHeight;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           3*fontWidth, fontHeight,
+                           "M1:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 3*fontWidth + 8;
+  myEnaM1 = new CheckboxWidget(boss, font, xpos, ypos+2, "Enable", kCheckActionCmd);
+  myEnaM1->setFont(font);
+  myEnaM1->setTarget(this);
+  myEnaM1->setID(kEnaM1ID);
+  addFocusWidget(myEnaM1);
+  
+  // posM0
+  xpos += myEnaM1->getWidth() + 12;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           4*fontWidth, fontHeight,
+                           "Pos:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 4*fontWidth + 5;
+  myPosM1 = new DataGridWidget(boss, font, xpos, ypos,
+                               1, 1, 2, 8, kBASE_16);
+  myPosM1->setTarget(this);
+  myPosM1->setID(kPosM1ID);
+  addFocusWidget(myPosM1);
+
+  // hmM0
+  xpos += myPosM1->getWidth() + 8;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           3*fontWidth, fontHeight,
+                           "HM:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 3*fontWidth + 5;
+  myHMM1 = new DataGridWidget(boss, font, xpos, ypos,
+                              1, 1, 1, 4, kBASE_16_4);
+  myHMM1->setTarget(this);
+  myHMM1->setID(kHMM1ID);
+  addFocusWidget(myHMM1);
+
+  // NUSIZ1 (missile portion)
+  xpos += myHMM1->getWidth() + 8;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           5*fontWidth, fontHeight,
+                           "Size:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 5*fontWidth + 5;
+  myNusizM1 = new DataGridWidget(boss, font, xpos, ypos,
+                                 1, 1, 1, 2, kBASE_16_4);
+  myNusizM1->setTarget(this);
+  myNusizM1->setID(kNusizM1ID);
+  addFocusWidget(myNusizM1);
+
+  // M1 reset
+  xpos += myNusizM1->getWidth() + 15;
+  myResM1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
+  myResM1->setFont(font);
+  myResM1->setTarget(this);
+  myResM1->setID(kResM1ID);
+  addFocusWidget(myResM1);
+
+  ////////////////////////////
+  // BL register info
+  ////////////////////////////
+  // enaBL
+  xpos = 10;  ypos += 2*lineHeight;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           3*fontWidth, fontHeight,
+                           "BL:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 3*fontWidth + 8;
+  myEnaBL = new CheckboxWidget(boss, font, xpos, ypos+2, "Enable", kCheckActionCmd);
+  myEnaBL->setFont(font);
+  myEnaBL->setTarget(this);
+  myEnaBL->setID(kEnaBLID);
+  addFocusWidget(myEnaBL);
+  
+  // posBL
+  xpos += myEnaBL->getWidth() + 12;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           4*fontWidth, fontHeight,
+                           "Pos:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 4*fontWidth + 5;
+  myPosBL = new DataGridWidget(boss, font, xpos, ypos,
+                               1, 1, 2, 8, kBASE_16);
+  myPosBL->setTarget(this);
+  myPosBL->setID(kPosBLID);
+  addFocusWidget(myPosBL);
+
+  // hmBL
+  xpos += myPosBL->getWidth() + 8;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           3*fontWidth, fontHeight,
+                           "HM:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 3*fontWidth + 5;
+  myHMBL = new DataGridWidget(boss, font, xpos, ypos,
+                              1, 1, 1, 4, kBASE_16_4);
+  myHMBL->setTarget(this);
+  myHMBL->setID(kHMBLID);
+  addFocusWidget(myHMBL);
+
+  // CTRLPF (size portion)
+  xpos += myHMBL->getWidth() + 8;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           5*fontWidth, fontHeight,
+                           "Size:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 5*fontWidth + 5;
+  mySizeBL = new DataGridWidget(boss, font, xpos, ypos,
+                                1, 1, 1, 2, kBASE_16_4);
+  mySizeBL->setTarget(this);
+  mySizeBL->setID(kSizeBLID);
+  addFocusWidget(mySizeBL);
+
+  // BL delay
+  xpos += mySizeBL->getWidth() + 15;
+  myDelBL = new CheckboxWidget(boss, font, xpos, ypos+1, "Delay", kCheckActionCmd);
+  myDelBL->setFont(font);
+  myDelBL->setTarget(this);
+  myDelBL->setID(kDelBLID);
+  addFocusWidget(myDelBL);
 
 }
 
@@ -354,6 +542,18 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           tia.posP1(myPosP1->getSelectedValue());
           break;
 
+        case kPosM0ID:
+          tia.posM0(myPosM0->getSelectedValue());
+          break;
+
+        case kPosM1ID:
+          tia.posM1(myPosM1->getSelectedValue());
+          break;
+
+        case kPosBLID:
+          tia.posBL(myPosBL->getSelectedValue());
+          break;
+
         case kHMP0ID:
           tia.hmP0(myHMP0->getSelectedValue());
           break;
@@ -362,14 +562,38 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           tia.hmP1(myHMP1->getSelectedValue());
           break;
 
+        case kHMM0ID:
+          tia.hmM0(myHMM0->getSelectedValue());
+          break;
+
+        case kHMM1ID:
+          tia.hmM1(myHMM1->getSelectedValue());
+          break;
+
+        case kHMBLID:
+          tia.hmBL(myHMBL->getSelectedValue());
+          break;
+
         case kNusizP0ID:
-          tia.nusiz0(myNusiz0->getSelectedValue());
-          myNusiz0Text->setEditString(tia.nusiz0String());
+          tia.nusizP0(myNusizP0->getSelectedValue());
+          myNusizP0Text->setEditString(tia.nusizP0String());
           break;
 
         case kNusizP1ID:
-          tia.nusiz1(myNusiz1->getSelectedValue());
-          myNusiz1Text->setEditString(tia.nusiz1String());
+          tia.nusizP1(myNusizP1->getSelectedValue());
+          myNusizP1Text->setEditString(tia.nusizP1String());
+          break;
+
+        case kNusizM0ID:
+          tia.nusizM0(myNusizM0->getSelectedValue());
+          break;
+
+        case kNusizM1ID:
+          tia.nusizM1(myNusizM1->getSelectedValue());
+          break;
+
+        case kSizeBLID:
+          tia.sizeBL(mySizeBL->getSelectedValue());
           break;
 
         default:
@@ -425,6 +649,18 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
         case kDelP1ID:
           tia.vdelP1(myDelP1->getState() ? 1 : 0);
+          break;
+
+        case kDelBLID:
+          tia.vdelBL(myDelBL->getState() ? 1 : 0);
+          break;
+
+        case kResM0ID:
+          tia.resMP0(myResM0->getState() ? 1 : 0);
+          break;
+
+        case kResM1ID:
+          tia.resMP1(myResM1->getState() ? 1 : 0);
           break;
       }
       break;
@@ -492,16 +728,16 @@ void TiaWidget::fillGrid()
   // posP0
   myPosP0->setList(0, state.pos[P0], state.pos[P0] != oldstate.pos[P0]);
 
-  // hmP0 register
+  // hmP0
   myHMP0->setList(0, state.hm[P0], state.hm[P0] != oldstate.hm[P0]);
 
   // refP0 & vdelP0
-  myRefP0->setState(state.refP0);
-  myDelP0->setState(state.vdelP0);
+  myRefP0->setState(tia.refP0());
+  myDelP0->setState(tia.vdelP0());
 
-  // NUSIZ0
-  myNusiz0->setList(0, state.nusiz[0], state.nusiz[0] != oldstate.nusiz[0]);
-  myNusiz0Text->setEditString(tia.nusiz0String());
+  // NUSIZ0 (player portion)
+  myNusizP0->setList(0, state.size[P0], state.size[P0] != oldstate.size[P0]);
+  myNusizP0Text->setEditString(tia.nusizP0String());
 
   ////////////////////////////
   // P1 register info
@@ -520,16 +756,70 @@ void TiaWidget::fillGrid()
   // posP1
   myPosP1->setList(0, state.pos[P1], state.pos[P1] != oldstate.pos[P1]);
 
-  // hmP1 register
+  // hmP1
   myHMP1->setList(0, state.hm[P1], state.hm[P1] != oldstate.hm[P1]);
 
   // refP1 & vdelP1
-  myRefP1->setState(state.refP1);
-  myDelP1->setState(state.vdelP1);
+  myRefP1->setState(tia.refP1());
+  myDelP1->setState(tia.vdelP1());
 
-  // NUSIZ1
-  myNusiz1->setList(0, state.nusiz[1], state.nusiz[1] != oldstate.nusiz[1]);
-  myNusiz1Text->setEditString(tia.nusiz1String());
+  // NUSIZ1 (player portion)
+  myNusizP1->setList(0, state.size[P1], state.size[P1] != oldstate.size[P1]);
+  myNusizP1Text->setEditString(tia.nusizP1String());
+
+  ////////////////////////////
+  // M0 register info
+  ////////////////////////////
+  // enaM0
+  myEnaM0->setState(tia.enaM0());
+
+  // posM0
+  myPosM0->setList(0, state.pos[M0], state.pos[M0] != oldstate.pos[M0]);
+
+  // hmM0
+  myHMM0->setList(0, state.hm[M0], state.hm[M0] != oldstate.hm[M0]);
+
+  // NUSIZ0 (missile portion)
+  myNusizM0->setList(0, state.size[M0], state.size[M0] != oldstate.size[M0]);
+
+  // resMP0
+  myResM0->setState(tia.resMP0());
+
+  ////////////////////////////
+  // M1 register info
+  ////////////////////////////
+  // enaM1
+  myEnaM1->setState(tia.enaM1());
+
+  // posM1
+  myPosM1->setList(0, state.pos[M1], state.pos[M1] != oldstate.pos[M1]);
+
+  // hmM1
+  myHMM1->setList(0, state.hm[M1], state.hm[M1] != oldstate.hm[M1]);
+
+  // NUSIZ1 (missile portion)
+  myNusizM1->setList(0, state.size[M1], state.size[M1] != oldstate.size[M1]);
+
+  // resMP1
+  myResM1->setState(tia.resMP1());
+
+  ////////////////////////////
+  // BL register info
+  ////////////////////////////
+  // enaBL
+  myEnaBL->setState(tia.enaBL());
+
+  // posBL
+  myPosBL->setList(0, state.pos[BL], state.pos[BL] != oldstate.pos[BL]);
+
+  // hmBL
+  myHMBL->setList(0, state.hm[BL], state.hm[BL] != oldstate.hm[BL]);
+
+  // CTRLPF (size portion)
+  mySizeBL->setList(0, state.size[BL], state.size[BL] != oldstate.size[BL]);
+
+  // vdelBL
+  myDelBL->setState(tia.vdelBL());
 
 }
 

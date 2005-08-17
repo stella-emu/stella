@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.4 2005-08-16 18:34:12 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.5 2005-08-17 21:38:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,19 +67,36 @@ class TiaWidget : public Widget, public CommandSender
 
     DataGridWidget* myPosP0;
     DataGridWidget* myPosP1;
+    DataGridWidget* myPosM0;
+    DataGridWidget* myPosM1;
+    DataGridWidget* myPosBL;
 
     DataGridWidget* myHMP0;
     DataGridWidget* myHMP1;
+    DataGridWidget* myHMM0;
+    DataGridWidget* myHMM1;
+    DataGridWidget* myHMBL;
 
-    DataGridWidget* myNusiz0;
-    DataGridWidget* myNusiz1;
-    EditTextWidget* myNusiz0Text;
-    EditTextWidget* myNusiz1Text;
+    DataGridWidget* myNusizP0;
+    DataGridWidget* myNusizP1;
+    DataGridWidget* myNusizM0;
+    DataGridWidget* myNusizM1;
+    DataGridWidget* mySizeBL;
+    EditTextWidget* myNusizP0Text;
+    EditTextWidget* myNusizP1Text;
 
     CheckboxWidget* myRefP0;
     CheckboxWidget* myRefP1;
     CheckboxWidget* myDelP0;
     CheckboxWidget* myDelP1;
+    CheckboxWidget* myDelBL;
+
+    CheckboxWidget* myEnaM0;
+    CheckboxWidget* myEnaM1;
+    CheckboxWidget* myEnaBL;
+
+    CheckboxWidget* myResM0;
+    CheckboxWidget* myResM1;
 };
 
 #endif

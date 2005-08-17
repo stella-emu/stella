@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.16 2005-08-16 18:34:12 stephena Exp $
+// $Id: TIADebug.hxx,v 1.17 2005-08-17 21:38:34 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -95,10 +95,7 @@ class TiaState : public DebuggerState
     IntArray pos;
     IntArray hm;
     IntArray pf;
-    IntArray nusiz;
-
-    bool refP0, vdelP0;
-    bool refP1, vdelP1;
+    IntArray size;
 };
 
 class TIADebug : public DebuggerSystem
@@ -114,14 +111,19 @@ class TIADebug : public DebuggerSystem
 	 /* TIA byte (or part of a byte) registers */
     uInt8 nusiz0(int newVal = -1);
     uInt8 nusiz1(int newVal = -1);
-    const string& nusiz0String() { return nusizStrings[myTIA->myNUSIZ0 & 0x07]; }
-    const string& nusiz1String() { return nusizStrings[myTIA->myNUSIZ1 & 0x07]; }
+    uInt8 nusizP0(int newVal = -1);
+    uInt8 nusizP1(int newVal = -1);
+    uInt8 nusizM0(int newVal = -1);
+    uInt8 nusizM1(int newVal = -1);
+    const string& nusizP0String() { return nusizStrings[nusizP0()]; }
+    const string& nusizP1String() { return nusizStrings[nusizP1()]; }
 
     uInt8 coluP0(int newVal = -1);
     uInt8 coluP1(int newVal = -1);
     uInt8 coluPF(int newVal = -1);
     uInt8 coluBK(int newVal = -1);
 
+    uInt8 sizeBL(int newVal = -1);
     uInt8 ctrlPF(int newVal = -1);
 
     uInt8 pf0(int newVal = -1);
@@ -161,6 +163,8 @@ class TIADebug : public DebuggerSystem
 
     bool resMP0(int newVal = -1);
     bool resMP1(int newVal = -1);
+
+
 
     /* TIA strobe registers */
     void strobeWsync() { mySystem->poke(WSYNC, 0); }
