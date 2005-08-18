@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.8 2005-08-18 16:19:07 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.9 2005-08-18 18:18:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,8 +52,21 @@ enum {
   kNusizP0ID, kNusizP1ID,
   kNusizM0ID, kNusizM1ID, kSizeBLID,
   kEnaM0ID,   kEnaM1ID,   kEnaBLID,
-  kResM0ID,   kResM1ID
- 
+  kResMP0ID,  kResMP1ID
+};
+
+// Strobe button commands
+enum {
+  kWsyncCmd = 'Swsy',
+  kRsyncCmd = 'Srsy',
+  kResP0Cmd = 'Srp0',
+  kResP1Cmd = 'Srp1',
+  kResM0Cmd = 'Srm0',
+  kResM1Cmd = 'Srm1',
+  kResBLCmd = 'Srbl',
+  kHmoveCmd = 'Shmv',
+  kHmclrCmd = 'Shmc',
+  kCxclrCmd = 'Scxl'
 };
 
 // Color registers
@@ -130,7 +143,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // Color registers
   const char* regNames[] = { "COLUP0:", "COLUP1:", "COLUPF:", "COLUBK:" };
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += 3*lineHeight;
   for(int row = 0; row < 4; ++row)
   {
     t = new StaticTextWidget(boss, xpos, ypos + row*lineHeight + 2,
@@ -166,10 +179,16 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   // Collision register bits
   ////////////////////////////
   // Add horizontal labels
-  xpos += myCOLUBKColor->getWidth() + 2*fontWidth + 30;  ypos -= 3*lineHeight + 5;
+  xpos += myCOLUBKColor->getWidth() + 2*fontWidth + 30;  ypos -= 4*lineHeight + 5;
   t = new StaticTextWidget(boss, xpos, ypos,
                              14*fontWidth, fontHeight,
                              "PF BL M1 M0 P1", kTextAlignLeft);
+  t->setFont(font);
+
+  // Add label for Strobes; buttons will be added later
+  t = new StaticTextWidget(boss, xpos + t->getWidth() + 9*fontWidth, ypos,
+                           8*fontWidth, fontHeight,
+                           "Strobes:", kTextAlignLeft);
   t->setFont(font);
 
   // Add vertical labels
@@ -203,8 +222,50 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
     collY += lineHeight+3;
   }
 
-  // Add STROBE buttons
-  // TODO ...
+  ////////////////////////////
+  // Strobe buttons
+  ////////////////////////////
+  ButtonWidget* b;
+  unsigned int buttonX, buttonY;
+  buttonX = collX + 20*fontWidth;  buttonY = ypos;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "WSync", kWsyncCmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResP0", kResP0Cmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResM0", kResM0Cmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResBL", kResBLCmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "HmClr", kHmclrCmd);
+  b->setTarget(this);
+
+  buttonX += 50 + 10;  buttonY = ypos;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "RSync", kRsyncCmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResP1", kResP1Cmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResM1", kResM1Cmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "HMove", kHmoveCmd);
+  b->setTarget(this);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "CxClr", kCxclrCmd);
+  b->setTarget(this);
 
   // Set the strings to be used in the grPx registers
   // We only do this once because it's the state that changes, not the strings
@@ -221,7 +282,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   // P0 register info
   ////////////////////////////
   // grP0
-  xpos = 10;  ypos += 7*lineHeight;
+  xpos = 10;  ypos = 13*lineHeight;
   t = new StaticTextWidget(boss, xpos, ypos+2,
                            7*fontWidth, fontHeight,
                            "P0: GR:", kTextAlignLeft);
@@ -424,11 +485,11 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // M0 reset
   xpos += myNusizM0->getWidth() + 15;
-  myResM0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
-  myResM0->setFont(font);
-  myResM0->setTarget(this);
-  myResM0->setID(kResM0ID);
-  addFocusWidget(myResM0);
+  myResMP0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
+  myResMP0->setFont(font);
+  myResMP0->setTarget(this);
+  myResMP0->setID(kResMP0ID);
+  addFocusWidget(myResMP0);
 
   ////////////////////////////
   // M1 register info
@@ -487,11 +548,11 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // M1 reset
   xpos += myNusizM1->getWidth() + 15;
-  myResM1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
-  myResM1->setFont(font);
-  myResM1->setTarget(this);
-  myResM1->setID(kResM1ID);
-  addFocusWidget(myResM1);
+  myResMP1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
+  myResMP1->setFont(font);
+  myResMP1->setTarget(this);
+  myResMP1->setID(kResMP1ID);
+  addFocusWidget(myResMP1);
 
   ////////////////////////////
   // BL register info
@@ -577,6 +638,46 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
   switch(cmd)
   {
+    case kWsyncCmd:
+      tia.strobeWsync();
+      break;
+
+    case kRsyncCmd:
+      tia.strobeRsync();
+      break;
+
+    case kResP0Cmd:
+      tia.strobeResP0();
+      break;
+
+    case kResP1Cmd:
+      tia.strobeResP1();
+      break;
+
+    case kResM0Cmd:
+      tia.strobeResM0();
+      break;
+
+    case kResM1Cmd:
+      tia.strobeResM1();
+      break;
+
+    case kResBLCmd:
+      tia.strobeResBL();
+      break;
+
+    case kHmoveCmd:
+      tia.strobeHmove();
+      break;
+
+    case kHmclrCmd:
+      tia.strobeHmclr();
+      break;
+
+    case kCxclrCmd:
+      tia.strobeCxclr();
+      break;
+
     case kDGItemDataChangedCmd:
       switch(id)
       {
@@ -765,12 +866,12 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           tia.vdelBL(myDelBL->getState() ? 1 : 0);
           break;
 
-        case kResM0ID:
-          tia.resMP0(myResM0->getState() ? 1 : 0);
+        case kResMP0ID:
+          tia.resMP0(myResMP0->getState() ? 1 : 0);
           break;
 
-        case kResM1ID:
-          tia.resMP1(myResM1->getState() ? 1 : 0);
+        case kResMP1ID:
+          tia.resMP1(myResMP1->getState() ? 1 : 0);
           break;
       }
       break;
@@ -912,7 +1013,7 @@ void TiaWidget::fillGrid()
   myNusizM0->setList(0, state.size[M0], state.size[M0] != oldstate.size[M0]);
 
   // resMP0
-  myResM0->setState(tia.resMP0());
+  myResMP0->setState(tia.resMP0());
 
   ////////////////////////////
   // M1 register info
@@ -930,7 +1031,7 @@ void TiaWidget::fillGrid()
   myNusizM1->setList(0, state.size[M1], state.size[M1] != oldstate.size[M1]);
 
   // resMP1
-  myResM1->setState(tia.resMP1());
+  myResMP1->setState(tia.resMP1());
 
   ////////////////////////////
   // BL register info
