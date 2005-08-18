@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.21 2005-08-18 16:19:07 stephena Exp $
+// $Id: TIADebug.cxx,v 1.22 2005-08-18 16:21:11 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -528,7 +528,7 @@ uInt8 TIADebug::grP1(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP0(int newVal)
 {
-  if(newVal > -1 && )
+  if(newVal > -1)
     myTIA->myPOSP0 = newVal;
   return myTIA->myPOSP0;
 }
