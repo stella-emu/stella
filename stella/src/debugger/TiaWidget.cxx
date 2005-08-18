@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.7 2005-08-17 21:38:34 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.8 2005-08-18 16:19:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,12 @@
 // ID's for the various widgets
 // We need ID's, since there are more than one of several types of widgets
 enum {
+  kP0_PFID,   kP0_BLID,   kP0_M1ID,   kP0_M0ID,   kP0_P1ID,
+  kP1_PFID,   kP1_BLID,   kP1_M1ID,   kP1_M0ID,
+  kM0_PFID,   kM0_BLID,   kM0_M1ID,
+  kM1_PFID,   kM1_BLID,
+  kBL_PFID,   // Make these first, since we want them to start from 0
+
   kRamID,
   kColorRegsID,
   kGRP0ID,    kGRP1ID,
@@ -156,6 +162,50 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   myCOLUBKColor = new ColorWidget(boss, xpos, ypos+2, 20, lineHeight - 4);
   myCOLUBKColor->setTarget(this);
 
+  ////////////////////////////
+  // Collision register bits
+  ////////////////////////////
+  // Add horizontal labels
+  xpos += myCOLUBKColor->getWidth() + 2*fontWidth + 30;  ypos -= 3*lineHeight + 5;
+  t = new StaticTextWidget(boss, xpos, ypos,
+                             14*fontWidth, fontHeight,
+                             "PF BL M1 M0 P1", kTextAlignLeft);
+  t->setFont(font);
+
+  // Add vertical labels
+  xpos -= 2*fontWidth + 5;  ypos += lineHeight;
+  const char* collLabel[] = { "P0", "P1", "M0", "M1", "BL" };
+  for(int row = 0; row < 5; ++row)
+  {
+    t = new StaticTextWidget(boss, xpos, ypos + row*(lineHeight+3),
+                             2*fontWidth, fontHeight,
+                             collLabel[row], kTextAlignLeft);
+    t->setFont(font);
+  }
+
+  // Finally, add all 15 collision bits
+  xpos += 2 * fontWidth + 5;
+  unsigned int collX = xpos, collY = ypos, idx = 0;
+  for(unsigned int row = 0; row < 5; ++row)
+  {
+    for(unsigned int col = 0; col < 5 - row; ++col)
+    {
+      myCollision[idx] = new CheckboxWidget(boss, font, collX, collY, "", kCheckActionCmd);
+      myCollision[idx]->setFont(font);
+      myCollision[idx]->setTarget(this);
+      myCollision[idx]->setID(idx);
+      addFocusWidget(myCollision[idx]);
+
+      collX += myCollision[idx]->getWidth() + 10;
+      idx++;
+    }
+    collX = xpos;
+    collY += lineHeight+3;
+  }
+
+  // Add STROBE buttons
+  // TODO ...
+
   // Set the strings to be used in the grPx registers
   // We only do this once because it's the state that changes, not the strings
   const char* offstr[] = { "0", "0", "0", "0", "0", "0", "0", "0" };
@@ -171,7 +221,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   // P0 register info
   ////////////////////////////
   // grP0
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += 7*lineHeight;
   t = new StaticTextWidget(boss, xpos, ypos+2,
                            7*fontWidth, fontHeight,
                            "P0: GR:", kTextAlignLeft);
@@ -635,6 +685,66 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kCheckActionCmd:
       switch(id)
       {
+        case kP0_PFID:
+          tia.collP0_PF(myCollision[kP0_PFID]->getState() ? 1 : 0);
+          break;
+
+        case kP0_BLID:
+          tia.collP0_BL(myCollision[kP0_BLID]->getState() ? 1 : 0);
+          break;
+
+        case kP0_M1ID:
+          tia.collM1_P0(myCollision[kP0_M1ID]->getState() ? 1 : 0);
+          break;
+
+        case kP0_M0ID:
+          tia.collM0_P0(myCollision[kP0_M0ID]->getState() ? 1 : 0);
+          break;
+
+        case kP0_P1ID:
+          tia.collP0_P1(myCollision[kP0_P1ID]->getState() ? 1 : 0);
+          break;
+
+        case kP1_PFID:
+          tia.collP1_PF(myCollision[kP1_PFID]->getState() ? 1 : 0);
+          break;
+
+        case kP1_BLID:
+          tia.collP1_BL(myCollision[kP1_BLID]->getState() ? 1 : 0);
+          break;
+
+        case kP1_M1ID:
+          tia.collM1_P1(myCollision[kP1_M1ID]->getState() ? 1 : 0);
+          break;
+
+        case kP1_M0ID:
+          tia.collM0_P1(myCollision[kP1_M0ID]->getState() ? 1 : 0);
+          break;
+
+        case kM0_PFID:
+          tia.collM0_PF(myCollision[kM0_PFID]->getState() ? 1 : 0);
+          break;
+
+        case kM0_BLID:
+          tia.collM0_BL(myCollision[kM0_BLID]->getState() ? 1 : 0);
+          break;
+
+        case kM0_M1ID:
+          tia.collM0_M1(myCollision[kM0_M1ID]->getState() ? 1 : 0);
+          break;
+
+        case kM1_PFID:
+          tia.collM1_PF(myCollision[kM1_PFID]->getState() ? 1 : 0);
+          break;
+
+        case kM1_BLID:
+          tia.collM1_BL(myCollision[kM1_BLID]->getState() ? 1 : 0);
+          break;
+
+        case kBL_PFID:
+          tia.collBL_PF(myCollision[kBL_PFID]->getState() ? 1 : 0);
+          break;
+
         case kRefP0ID:
           tia.refP0(myRefP0->getState() ? 1 : 0);
           break;
@@ -710,6 +820,25 @@ void TiaWidget::fillGrid()
   myCOLUP1Color->setColor(state.coluRegs[1]);
   myCOLUPFColor->setColor(state.coluRegs[2]);
   myCOLUBKColor->setColor(state.coluRegs[3]);
+
+  ////////////////////////////
+  // Collision register bits
+  ////////////////////////////
+  myCollision[kP0_PFID]->setState(tia.collP0_PF());
+  myCollision[kP0_BLID]->setState(tia.collP0_BL());
+  myCollision[kP0_M1ID]->setState(tia.collM1_P0());
+  myCollision[kP0_M0ID]->setState(tia.collM0_P0());
+  myCollision[kP0_P1ID]->setState(tia.collP0_P1());
+  myCollision[kP1_PFID]->setState(tia.collP1_PF());
+  myCollision[kP1_BLID]->setState(tia.collP1_BL());
+  myCollision[kP1_M1ID]->setState(tia.collM1_P1());
+  myCollision[kP1_M0ID]->setState(tia.collM0_P1());
+  myCollision[kM0_PFID]->setState(tia.collM0_PF());
+  myCollision[kM0_BLID]->setState(tia.collM0_BL());
+  myCollision[kM0_M1ID]->setState(tia.collM0_M1());
+  myCollision[kM1_PFID]->setState(tia.collM1_PF());
+  myCollision[kM1_BLID]->setState(tia.collM1_BL());
+  myCollision[kBL_PFID]->setState(tia.collBL_PF());
 
   ////////////////////////////
   // P0 register info

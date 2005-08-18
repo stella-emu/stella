@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.20 2005-08-17 21:38:34 stephena Exp $
+// $Id: TIADebug.cxx,v 1.21 2005-08-18 16:19:07 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -257,6 +257,70 @@ bool TIADebug::refP1(int newVal)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::refPF(int newVal)
+{
+  if(newVal > -1)
+  {
+    int tmp = myTIA->myCTRLPF;
+    if(newVal)
+      tmp |= 0x01;
+    else
+      tmp &= ~0x01;
+    mySystem->poke(CTRLPF, tmp);
+  }
+
+  return myTIA->myCTRLPF & 0x01;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::scorePF(int newVal)
+{
+  if(newVal > -1)
+  {
+    int tmp = myTIA->myCTRLPF;
+    if(newVal)
+      tmp |= 0x02;
+    else
+      tmp &= ~0x02;
+    mySystem->poke(CTRLPF, tmp);
+  }
+
+  return myTIA->myCTRLPF & 0x02;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::priorityPF(int newVal)
+{
+  if(newVal > -1)
+  {
+    int tmp = myTIA->myCTRLPF;
+    if(newVal)
+      tmp |= 0x04;
+    else
+      tmp &= ~0x04;
+    mySystem->poke(CTRLPF, tmp);
+  }
+
+  return myTIA->myCTRLPF & 0x04;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::collision(int collID, int newVal)
+{
+  unsigned int mask = 1 << collID;
+
+  if(newVal > -1)
+  {
+    if(newVal)
+      myTIA->myCollision |= mask;
+    else
+      myTIA->myCollision &= ~mask;
+  }
+
+  return myTIA->myCollision & mask;
+}  
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audC0(int newVal)
 {
   if(newVal > -1)
@@ -464,7 +528,7 @@ uInt8 TIADebug::grP1(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP0(int newVal)
 {
-  if(newVal > -1)
+  if(newVal > -1 && )
     myTIA->myPOSP0 = newVal;
   return myTIA->myPOSP0;
 }
@@ -792,33 +856,30 @@ string TIADebug::state()
   ret += "/";
   ret += myDebugger->valueToString(state.pf[2]);
   ret += "\n     ";
-  ret += booleanWithLabel("reflect",  myTIA->myCTRLPF & 0x01);
+  ret += booleanWithLabel("reflect",  refPF());
   ret += " ";
-  ret += booleanWithLabel("score",    myTIA->myCTRLPF & 0x02);
+  ret += booleanWithLabel("score",    scorePF());
   ret += " ";
-  ret += booleanWithLabel("priority", myTIA->myCTRLPF & 0x04);
+  ret += booleanWithLabel("priority", priorityPF());
   ret += "\n";
 
-  // Hope Brad never changes this:
-  uInt16 coll = myTIA->myCollision;
-
   ret += "Collisions: ";
-  ret += booleanWithLabel("m0_p1 ", bool(coll & 0x0001));
-  ret += booleanWithLabel("m0_p0 ", bool(coll & 0x0002));
-  ret += booleanWithLabel("m1_p0 ", bool(coll & 0x0004));
-  ret += booleanWithLabel("m1_p1 ", bool(coll & 0x0008));
-  ret += booleanWithLabel("p0_pf ", bool(coll & 0x0010));
-  ret += booleanWithLabel("p0_bl ", bool(coll & 0x0020));
-  ret += booleanWithLabel("p1_pf ", bool(coll & 0x0040));
+  ret += booleanWithLabel("m0_p1 ", collM0_P1());
+  ret += booleanWithLabel("m0_p0 ", collM0_P0());
+  ret += booleanWithLabel("m1_p0 ", collM1_P0());
+  ret += booleanWithLabel("m1_p1 ", collM1_P1());
+  ret += booleanWithLabel("p0_pf ", collP0_PF());
+  ret += booleanWithLabel("p0_bl ", collP0_BL());
+  ret += booleanWithLabel("p1_pf ", collP1_PF());
   ret += "\n            ";
-  ret += booleanWithLabel("p1_bl ", bool(coll & 0x0080));
-  ret += booleanWithLabel("m0_pf ", bool(coll & 0x0100));
-  ret += booleanWithLabel("m0_bl ", bool(coll & 0x0200));
-  ret += booleanWithLabel("m1_pf ", bool(coll & 0x0400));
-  ret += booleanWithLabel("m1_bl ", bool(coll & 0x0800));
-  ret += booleanWithLabel("bl_pf ", bool(coll & 0x1000));
-  ret += booleanWithLabel("p0_p1 ", bool(coll & 0x2000));
-  ret += booleanWithLabel("m0_m1 ", bool(coll & 0x4000));
+  ret += booleanWithLabel("p1_bl ", collP1_BL());
+  ret += booleanWithLabel("m0_pf ", collM0_PF());
+  ret += booleanWithLabel("m0_bl ", collM0_BL());
+  ret += booleanWithLabel("m1_pf ", collM1_PF());
+  ret += booleanWithLabel("m1_bl ", collM1_BL());
+  ret += booleanWithLabel("bl_pf ", collBL_PF());
+  ret += booleanWithLabel("p0_p1 ", collP0_P1());
+  ret += booleanWithLabel("m0_m1 ", collM0_M1());
   ret += "\n";
 
   ret += "AUDF0: ";

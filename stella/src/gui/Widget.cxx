@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.29 2005-08-16 18:34:12 stephena Exp $
+// $Id: Widget.cxx,v 1.30 2005-08-18 16:19:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -379,8 +379,8 @@ static unsigned int checked_img[8] =
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
                                int x, int y, const string& label,
-                               int cmd, uInt8 hotkey)
-  : ButtonWidget(boss, x, y, 16, 16, label, cmd, hotkey),
+                               int cmd)
+  : ButtonWidget(boss, x, y, 16, 16, label, cmd, 0),
     _state(false),
     _editable(true)
 {
@@ -388,7 +388,10 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
   _type = kCheckboxWidget;
 
   setFont(font);
-  _w = font.getStringWidth(label) + 20;
+  if(label == "")
+    _w = 14;
+  else
+    _w = font.getStringWidth(label) + 20;
   _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
 }
 
