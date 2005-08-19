@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.9 2005-08-18 18:18:59 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.10 2005-08-19 15:05:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@
 #include "DataGridWidget.hxx"
 #include "ColorWidget.hxx"
 #include "ToggleBitWidget.hxx"
+#include "TogglePixelWidget.hxx"
 #include "TiaWidget.hxx"
 
 // ID's for the various widgets
@@ -213,7 +214,8 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
       myCollision[idx]->setFont(font);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
-      addFocusWidget(myCollision[idx]);
+      myCollision[idx]->setEditable(false);
+//      addFocusWidget(myCollision[idx]);
 
       collX += myCollision[idx]->getWidth() + 10;
       idx++;
@@ -288,8 +290,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
                            "P0: GR:", kTextAlignLeft);
   t->setFont(font);
   xpos += 7*fontWidth + 5;
-  myGRP0 = new ToggleBitWidget(boss, font, xpos, ypos, 8, 1);
-  myGRP0->setList(off, on);
+  myGRP0 = new TogglePixelWidget(boss, xpos, ypos+2, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
   addFocusWidget(myGRP0);
@@ -336,7 +337,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   addFocusWidget(myDelP0);
 
   // NUSIZ0 (player portion)
-  xpos = 10 + lwidth;  ypos += myGRP0->getHeight() + 2;
+  xpos = 10 + lwidth;  ypos += myGRP0->getHeight() + 5;
   t = new StaticTextWidget(boss, xpos, ypos+2,
                            8*fontWidth, fontHeight,
                            "NusizP0:", kTextAlignLeft);
@@ -363,8 +364,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
                            "P1: GR:", kTextAlignLeft);
   t->setFont(font);
   xpos += 7*fontWidth + 5;
-  myGRP1 = new ToggleBitWidget(boss, font, xpos, ypos, 8, 1);
-  myGRP1->setList(off, on);
+  myGRP1 = new TogglePixelWidget(boss, xpos, ypos+2, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
   addFocusWidget(myGRP1);
@@ -411,7 +411,7 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   addFocusWidget(myDelP1);
 
   // NUSIZ1 (player portion)
-  xpos = 10 + lwidth;  ypos += myGRP1->getHeight() + 2;
+  xpos = 10 + lwidth;  ypos += myGRP1->getHeight() + 5;
   t = new StaticTextWidget(boss, xpos, ypos+2,
                            8*fontWidth, fontHeight,
                            "NusizP1:", kTextAlignLeft);
@@ -753,7 +753,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kTBItemDataChangedCmd:
+    case kTWItemDataChangedCmd:
       switch(id)
       {
         case kGRP0ID:
@@ -890,7 +890,7 @@ void TiaWidget::fillGrid()
 {
   IntArray alist;
   IntArray vlist;
-  BoolArray orig, changed, grNew, grOld;
+  BoolArray blist, changed, grNew, grOld;
 
   Debugger& dbg = instance()->debugger();
   TIADebug& tia = dbg.tiaDebug();
@@ -945,15 +945,10 @@ void TiaWidget::fillGrid()
   // P0 register info
   ////////////////////////////
   // grP0
-  grNew.clear(); grOld.clear();
-  convertCharToBool(grNew, state.gr[P0]);
-  convertCharToBool(grOld, oldstate.gr[P0]);
-
-  changed.clear();
-  for(unsigned int i = 0; i < 8; ++i)
-    changed.push_back(grNew[i] != grOld[i]);
-
-  myGRP0->setState(grNew, changed);
+  blist.clear();
+  convertCharToBool(blist, state.gr[P0]);
+  myGRP0->setState(blist);
+  myGRP0->setColor((OverlayColor)state.coluRegs[0]);
 
   // posP0
   myPosP0->setList(0, state.pos[P0], state.pos[P0] != oldstate.pos[P0]);
@@ -973,15 +968,10 @@ void TiaWidget::fillGrid()
   // P1 register info
   ////////////////////////////
   // grP1
-  grNew.clear(); grOld.clear();
-  convertCharToBool(grNew, state.gr[P1]);
-  convertCharToBool(grOld, oldstate.gr[P1]);
-
-  changed.clear();
-  for(unsigned int i = 0; i < 8; ++i)
-    changed.push_back(grNew[i] != grOld[i]);
-
-  myGRP1->setState(grNew, changed);
+  blist.clear();
+  convertCharToBool(blist, state.gr[P1]);
+  myGRP1->setState(blist);
+  myGRP1->setColor((OverlayColor)state.coluRegs[1]);
 
   // posP1
   myPosP1->setList(0, state.pos[P1], state.pos[P1] != oldstate.pos[P1]);

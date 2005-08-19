@@ -30,7 +30,9 @@ MODULE_OBJS := \
 	src/gui/ProgressDialog.o \
 	src/gui/ScrollBarWidget.o \
 	src/gui/TabWidget.o \
+	src/gui/ToggleWidget.o \
 	src/gui/ToggleBitWidget.o \
+	src/gui/TogglePixelWidget.o \
 	src/gui/VideoDialog.o \
 	src/gui/Widget.o \
 

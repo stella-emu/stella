@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.10 2005-08-19 15:05:09 stephena Exp $
+// $Id: TogglePixelWidget.cxx,v 1.1 2005-08-19 15:05:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,58 +24,45 @@
 #include "Dialog.hxx"
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
-#include "StringList.hxx"
-#include "ToggleBitWidget.hxx"
+#include "TogglePixelWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int cols, int rows, int colchars)
-  : ToggleWidget(boss, x, y, cols, rows)
+TogglePixelWidget::TogglePixelWidget(GuiObject* boss, int x, int y,
+                                 int cols, int rows)
+  : ToggleWidget(boss, x, y, cols, rows),
+    _pixelColor(kBGColor)
 {
-  setFont(font);
-
-  _rowHeight = font.getLineHeight();
-  _colWidth  = colchars * font.getMaxCharWidth() + 8;
+  _rowHeight = _font->getLineHeight();
+  _colWidth  = 15;
 
   // Calculate real dimensions
   _w = _colWidth  * cols + 1;
   _h = _rowHeight * rows + 1;
+
+  // Changed state isn't used, but we still need to fill it
+  while((int)_changedList.size() < rows * cols)
+    _changedList.push_back(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ToggleBitWidget::~ToggleBitWidget()
+TogglePixelWidget::~TogglePixelWidget()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleBitWidget::setList(const StringList& off, const StringList& on)
-{
-  _offList.clear();
-  _offList = off;
-  _onList.clear();
-  _onList = on;
-
-  int size = _offList.size();  // assume _onList is the same size
-  assert(size == _rows * _cols);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
+void TogglePixelWidget::setState(const BoolArray& state)
 {
   _stateList.clear();
   _stateList = state;
-  _changedList.clear();
-  _changedList = changed;
 
   setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleBitWidget::drawWidget(bool hilite)
+void TogglePixelWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = instance()->frameBuffer();
   int row, col;
-  string buffer;
 
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
@@ -85,7 +72,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
   for (col = 0; col <= _cols; col++)
     fb.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
 
-  // Draw the list items
+  // Draw the pixels
   for (row = 0; row < _rows; row++)
   {
     for (col = 0; col < _cols; col++)
@@ -98,19 +85,11 @@ void ToggleBitWidget::drawWidget(bool hilite)
       if (_currentRow == row && _currentCol == col && _hasFocus)
         fb.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
 
+      // Either draw the pixel in given color, or erase (show background)
       if(_stateList[pos])
-        buffer = _onList[pos];
+        fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, _pixelColor);
       else
-        buffer = _offList[pos];
-
-      // Highlight changes
-      if(_changedList[pos])
-      {
-        fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kTextColorEm);
-        fb.drawString(_font, buffer, x, y, _colWidth, kTextColorHi);
-      }
-      else
-        fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);
+        fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kBGColor);
     }
   }
 }

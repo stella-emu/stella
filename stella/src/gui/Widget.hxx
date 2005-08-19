@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.29 2005-08-18 16:19:07 stephena Exp $
+// $Id: Widget.hxx,v 1.30 2005-08-19 15:05:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,7 +58,7 @@ enum {
   kTabWidget        = 'TABW',
   kPromptWidget     = 'PROM',
   kDataGridWidget   = 'BGRI',
-  kToggleBitWidget  = 'TGBT',
+  kToggleWidget     = 'TOGL',
   kColorWidget      = 'COLR'
 };
 
@@ -71,7 +71,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.29 2005-08-18 16:19:07 stephena Exp $
+  @version $Id: Widget.hxx,v 1.30 2005-08-19 15:05:09 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -222,6 +222,8 @@ class CheckboxWidget : public ButtonWidget
     virtual void handleMouseEntered(int button)	{}
     virtual void handleMouseLeft(int button)	{}
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
+
+    bool wantsFocus() { return _editable; };
 
     void setEditable(bool editable) { _editable = editable; }
 

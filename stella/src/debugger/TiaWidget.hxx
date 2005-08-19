@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.7 2005-08-18 18:18:59 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.8 2005-08-19 15:05:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@ class ButtonWidget;
 class DataGridWidget;
 class StaticTextWidget;
 class ToggleBitWidget;
+class TogglePixelWidget;
 class EditTextWidget;
 class ColorWidget;
 
@@ -62,8 +63,8 @@ class TiaWidget : public Widget, public CommandSender
     ColorWidget* myCOLUPFColor;
     ColorWidget* myCOLUBKColor;
 
-    ToggleBitWidget* myGRP0;
-    ToggleBitWidget* myGRP1;
+    TogglePixelWidget* myGRP0;
+    TogglePixelWidget* myGRP1;
 
     DataGridWidget* myPosP0;
     DataGridWidget* myPosP1;
