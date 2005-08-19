@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.8 2005-08-19 15:05:09 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.9 2005-08-19 23:02:08 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -101,6 +101,11 @@ class TiaWidget : public Widget, public CommandSender
 
     /** Collision register bits */
     CheckboxWidget* myCollision[15];
+
+    TogglePixelWidget* myPF[3];
+    CheckboxWidget* myRefPF;
+    CheckboxWidget* myScorePF;
+    CheckboxWidget* myPriorityPF;
 };
 
 #endif

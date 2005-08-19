@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.10 2005-08-19 15:05:09 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.11 2005-08-19 23:02:08 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,7 +53,9 @@ enum {
   kNusizP0ID, kNusizP1ID,
   kNusizM0ID, kNusizM1ID, kSizeBLID,
   kEnaM0ID,   kEnaM1ID,   kEnaBLID,
-  kResMP0ID,  kResMP1ID
+  kResMP0ID,  kResMP1ID,
+  kPF0ID,     kPF1ID,     kPF2ID,
+  kRefPFID,   kScorePFID, kPriorityPFID
 };
 
 // Strobe button commands
@@ -210,12 +212,15 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   {
     for(unsigned int col = 0; col < 5 - row; ++col)
     {
-      myCollision[idx] = new CheckboxWidget(boss, font, collX, collY, "", kCheckActionCmd);
+      myCollision[idx] = new CheckboxWidget(boss, font, collX, collY,
+                                            "", kCheckActionCmd);
       myCollision[idx]->setFont(font);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
+// TODO - make collisions editable in TIA //
       myCollision[idx]->setEditable(false);
 //      addFocusWidget(myCollision[idx]);
+////////////////////////////////////////////
 
       collX += myCollision[idx]->getWidth() + 10;
       idx++;
@@ -230,43 +235,53 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
   ButtonWidget* b;
   unsigned int buttonX, buttonY;
   buttonX = collX + 20*fontWidth;  buttonY = ypos;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "WSync", kWsyncCmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "WSync", kWsyncCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResP0", kResP0Cmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "ResP0", kResP0Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResM0", kResM0Cmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "ResM0", kResM0Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResBL", kResBLCmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "ResBL", kResBLCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "HmClr", kHmclrCmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "HmClr", kHmclrCmd);
   b->setTarget(this);
 
   buttonX += 50 + 10;  buttonY = ypos;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "RSync", kRsyncCmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "RSync", kRsyncCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResP1", kResP1Cmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "ResP1", kResP1Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "ResM1", kResM1Cmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "ResM1", kResM1Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "HMove", kHmoveCmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "HMove", kHmoveCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight, "CxClr", kCxclrCmd);
+  b = new ButtonWidget(boss, buttonX, buttonY, 50, lineHeight,
+                       "CxClr", kCxclrCmd);
   b->setTarget(this);
 
   // Set the strings to be used in the grPx registers
@@ -323,14 +338,16 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // P0 reflect and delay
   xpos += myHMP0->getWidth() + 15;
-  myRefP0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reflect", kCheckActionCmd);
+  myRefP0 = new CheckboxWidget(boss, font, xpos, ypos+1,
+                               "Reflect", kCheckActionCmd);
   myRefP0->setFont(font);
   myRefP0->setTarget(this);
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
   xpos += myRefP0->getWidth() + 15;
-  myDelP0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Delay", kCheckActionCmd);
+  myDelP0 = new CheckboxWidget(boss, font, xpos, ypos+1,
+                               "Delay", kCheckActionCmd);
   myDelP0->setFont(font);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
@@ -397,14 +414,16 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // P1 reflect and delay
   xpos += myHMP1->getWidth() + 15;
-  myRefP1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reflect", kCheckActionCmd);
+  myRefP1 = new CheckboxWidget(boss, font, xpos, ypos+1,
+                               "Reflect", kCheckActionCmd);
   myRefP1->setFont(font);
   myRefP1->setTarget(this);
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
   xpos += myRefP1->getWidth() + 15;
-  myDelP1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Delay", kCheckActionCmd);
+  myDelP1 = new CheckboxWidget(boss, font, xpos, ypos+1,
+                               "Delay", kCheckActionCmd);
   myDelP1->setFont(font);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
@@ -438,7 +457,8 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
                            "M0:", kTextAlignLeft);
   t->setFont(font);
   xpos += 3*fontWidth + 8;
-  myEnaM0 = new CheckboxWidget(boss, font, xpos, ypos+2, "Enable", kCheckActionCmd);
+  myEnaM0 = new CheckboxWidget(boss, font, xpos, ypos+2,
+                               "Enable", kCheckActionCmd);
   myEnaM0->setFont(font);
   myEnaM0->setTarget(this);
   myEnaM0->setID(kEnaM0ID);
@@ -485,7 +505,8 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // M0 reset
   xpos += myNusizM0->getWidth() + 15;
-  myResMP0 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
+  myResMP0 = new CheckboxWidget(boss, font, xpos, ypos+1,
+                                "Reset", kCheckActionCmd);
   myResMP0->setFont(font);
   myResMP0->setTarget(this);
   myResMP0->setID(kResMP0ID);
@@ -501,7 +522,8 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
                            "M1:", kTextAlignLeft);
   t->setFont(font);
   xpos += 3*fontWidth + 8;
-  myEnaM1 = new CheckboxWidget(boss, font, xpos, ypos+2, "Enable", kCheckActionCmd);
+  myEnaM1 = new CheckboxWidget(boss, font, xpos, ypos+2,
+                               "Enable", kCheckActionCmd);
   myEnaM1->setFont(font);
   myEnaM1->setTarget(this);
   myEnaM1->setID(kEnaM1ID);
@@ -548,7 +570,8 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // M1 reset
   xpos += myNusizM1->getWidth() + 15;
-  myResMP1 = new CheckboxWidget(boss, font, xpos, ypos+1, "Reset", kCheckActionCmd);
+  myResMP1 = new CheckboxWidget(boss, font, xpos, ypos+1,
+                                "Reset", kCheckActionCmd);
   myResMP1->setFont(font);
   myResMP1->setTarget(this);
   myResMP1->setID(kResMP1ID);
@@ -564,7 +587,8 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
                            "BL:", kTextAlignLeft);
   t->setFont(font);
   xpos += 3*fontWidth + 8;
-  myEnaBL = new CheckboxWidget(boss, font, xpos, ypos+2, "Enable", kCheckActionCmd);
+  myEnaBL = new CheckboxWidget(boss, font, xpos, ypos+2,
+                               "Enable", kCheckActionCmd);
   myEnaBL->setFont(font);
   myEnaBL->setTarget(this);
   myEnaBL->setID(kEnaBLID);
@@ -611,12 +635,66 @@ TiaWidget::TiaWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // BL delay
   xpos += mySizeBL->getWidth() + 15;
-  myDelBL = new CheckboxWidget(boss, font, xpos, ypos+1, "Delay", kCheckActionCmd);
+  myDelBL = new CheckboxWidget(boss, font, xpos, ypos+1,
+                               "Delay", kCheckActionCmd);
   myDelBL->setFont(font);
   myDelBL->setTarget(this);
   myDelBL->setID(kDelBLID);
   addFocusWidget(myDelBL);
 
+  ////////////////////////////
+  // PF 0/1/2 registers
+  ////////////////////////////
+  // PF0
+  xpos = 10;  ypos += 2*lineHeight;
+  t = new StaticTextWidget(boss, xpos, ypos+2,
+                           4*fontWidth, fontHeight,
+                           "PF:", kTextAlignLeft);
+  t->setFont(font);
+  xpos += 4*fontWidth;
+  myPF[0] = new TogglePixelWidget(boss, xpos, ypos+2, 4, 1);
+  myPF[0]->setTarget(this);
+  myPF[0]->setID(kPF0ID);
+  addFocusWidget(myPF[0]);
+
+  // PF1
+  xpos += myPF[0]->getWidth() + 2;
+  myPF[1] = new TogglePixelWidget(boss, xpos, ypos+2, 8, 1);
+  myPF[1]->setTarget(this);
+  myPF[1]->setID(kPF1ID);
+  addFocusWidget(myPF[1]);
+
+  // PF2
+  xpos += myPF[1]->getWidth() + 2;
+  myPF[2] = new TogglePixelWidget(boss, xpos, ypos+2, 8, 1);
+  myPF[2]->setTarget(this);
+  myPF[2]->setID(kPF2ID);
+  addFocusWidget(myPF[2]);
+
+  // PF reflect, score, priority
+  xpos = 10 + 4*fontWidth;  ypos += lineHeight + 2;
+  myRefPF = new CheckboxWidget(boss, font, xpos, ypos+1,
+                               "Reflect", kCheckActionCmd);
+  myRefPF->setFont(font);
+  myRefPF->setTarget(this);
+  myRefPF->setID(kRefPFID);
+  addFocusWidget(myRefPF);
+
+  xpos += myRefPF->getWidth() + 15;
+  myScorePF = new CheckboxWidget(boss, font, xpos, ypos+1,
+                                 "Score", kCheckActionCmd);
+  myScorePF->setFont(font);
+  myScorePF->setTarget(this);
+  myScorePF->setID(kScorePFID);
+  addFocusWidget(myScorePF);
+
+  xpos += myScorePF->getWidth() + 15;
+  myPriorityPF = new CheckboxWidget(boss, font, xpos, ypos+1,
+                                    "Priority", kCheckActionCmd);
+  myPriorityPF->setFont(font);
+  myPriorityPF->setTarget(this);
+  myPriorityPF->setID(kPriorityPFID);
+  addFocusWidget(myPriorityPF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -757,13 +835,23 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       switch(id)
       {
         case kGRP0ID:
-          value = convertBoolToInt(myGRP0->getState());
-          tia.grP0(value);
+          tia.grP0(myGRP0->getIntState());
           break;
 
         case kGRP1ID:
-          value = convertBoolToInt(myGRP1->getState());
-          tia.grP1(value);
+          tia.grP1(myGRP1->getIntState());
+          break;
+
+        case kPF0ID:
+          tia.pf0(myPF[0]->getIntState());
+          break;
+
+        case kPF1ID:
+          tia.pf1(myPF[1]->getIntState());
+          break;
+
+        case kPF2ID:
+          tia.pf2(myPF[2]->getIntState());
           break;
       }
       break;
@@ -873,6 +961,18 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kResMP1ID:
           tia.resMP1(myResMP1->getState() ? 1 : 0);
           break;
+
+        case kRefPFID:
+          tia.refPF(myRefPF->getState() ? 1 : 0);
+          break;
+
+        case kScorePFID:
+          tia.scorePF(myScorePF->getState() ? 1 : 0);
+          break;
+
+        case kPriorityPFID:
+          tia.priorityPF(myPriorityPF->getState() ? 1 : 0);
+          break;
       }
       break;
   }
@@ -881,7 +981,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::loadConfig()
 {
-cerr << "TiaWidget::loadConfig()\n";
+//cerr << "TiaWidget::loadConfig()\n";
   fillGrid();
 }
 
@@ -945,10 +1045,8 @@ void TiaWidget::fillGrid()
   // P0 register info
   ////////////////////////////
   // grP0
-  blist.clear();
-  convertCharToBool(blist, state.gr[P0]);
-  myGRP0->setState(blist);
   myGRP0->setColor((OverlayColor)state.coluRegs[0]);
+  myGRP0->setIntState(state.gr[P0], false);
 
   // posP0
   myPosP0->setList(0, state.pos[P0], state.pos[P0] != oldstate.pos[P0]);
@@ -968,10 +1066,8 @@ void TiaWidget::fillGrid()
   // P1 register info
   ////////////////////////////
   // grP1
-  blist.clear();
-  convertCharToBool(blist, state.gr[P1]);
-  myGRP1->setState(blist);
   myGRP1->setColor((OverlayColor)state.coluRegs[1]);
+  myGRP1->setIntState(state.gr[P1], false);
 
   // posP1
   myPosP1->setList(0, state.pos[P1], state.pos[P1] != oldstate.pos[P1]);
@@ -1041,32 +1137,29 @@ void TiaWidget::fillGrid()
   // vdelBL
   myDelBL->setState(tia.vdelBL());
 
-}
+  ////////////////////////////
+  // PF register info
+  ////////////////////////////
+  // PF0
+  myPF[0]->setColor((OverlayColor)state.coluRegs[2]);
+  myPF[0]->setIntState(state.pf[0], true);  // reverse bit order
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaWidget::convertCharToBool(BoolArray& b, unsigned char value)
-{
-  for(unsigned int i = 0; i < 8; ++i)
-  {
-    if(value & (1<<(7-i)))
-      b.push_back(true);
-    else
-      b.push_back(false);
-  }
-}
+  // PF1
+  myPF[1]->setColor((OverlayColor)state.coluRegs[2]);
+  myPF[1]->setIntState(state.pf[1], false);
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TiaWidget::convertBoolToInt(const BoolArray& b)
-{
-  unsigned int value = 0, size = b.size();
+  // PF2
+  myPF[2]->setColor((OverlayColor)state.coluRegs[2]);
+  myPF[2]->setIntState(state.pf[2], true);  // reverse bit order
 
-  for(unsigned int i = 0; i < size; ++i)
-  {
-    if(b[i])
-      value |= 1<<(size-i-1);
-  }
+  // Reflect
+  myRefPF->setState(tia.refPF());
 
-  return value;
+  // Score
+  myScorePF->setState(tia.scorePF());
+
+  // Priority
+  myPriorityPF->setState(tia.priorityPF());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

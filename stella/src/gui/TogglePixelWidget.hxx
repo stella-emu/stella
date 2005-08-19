@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TogglePixelWidget.hxx,v 1.1 2005-08-19 15:05:09 stephena Exp $
+// $Id: TogglePixelWidget.hxx,v 1.2 2005-08-19 23:02:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,11 +35,16 @@ class TogglePixelWidget : public ToggleWidget
     void setColor(OverlayColor color) { _pixelColor = color; }
     void setState(const BoolArray& state);
 
+    void setIntState(int value, bool swap);
+    int  getIntState();
+
   protected:
     void drawWidget(bool hilite);
 
-  protected:
+  private:
     OverlayColor _pixelColor;
+    unsigned int _numBits;
+    bool         _swapBits;
 };
 
 #endif

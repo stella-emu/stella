@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TogglePixelWidget.cxx,v 1.1 2005-08-19 15:05:09 stephena Exp $
+// $Id: TogglePixelWidget.cxx,v 1.2 2005-08-19 23:02:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,6 +56,57 @@ void TogglePixelWidget::setState(const BoolArray& state)
   _stateList = state;
 
   setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TogglePixelWidget::setIntState(int value, bool swap)
+{
+  unsigned int size = _rows * _cols;
+  _swapBits = swap;
+
+  // Create array of required size
+  BoolArray b;
+  while(b.size() < size)
+    b.push_back(false);
+
+  // Bits in an int increase from right to left, but a BoolArray
+  // is scanned from left to right.
+  //
+  //   Swap off means treat the above as normal (ie, contruct the
+  //   BoolArray as we read the int from right to left).
+  //
+  //   Swap on means reverse of swap off!  Sorry if this is
+  //   confusing.
+  for(unsigned int i = 0; i < size; ++i)
+  {
+    bool bitIsSet = value & (1 << i);
+    if(_swapBits)
+      b[i] = bitIsSet;
+    else
+      b[size-i-1] = bitIsSet;
+  }
+
+  setState(b);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TogglePixelWidget::getIntState()
+{
+  // Construct int based on current state and swap
+  unsigned int value = 0, size = _stateList.size();
+
+  for(unsigned int i = 0; i < size; ++i)
+  {
+    if(_stateList[i])
+    {
+      if(_swapBits)
+        value |= 1 << i;
+      else
+        value |= 1 << (size-i-1);
+    }
+  }
+
+  return value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
