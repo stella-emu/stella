@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.75 2005-08-05 02:28:21 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.76 2005-08-20 18:19:52 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1161,8 +1161,8 @@ bool DebuggerParser::saveScriptFile(string file) {
 
 	ofstream out(file.c_str());
 
-	FunctionMap funcs = debugger->getFunctionMap();
-	for(FunctionMap::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
+	FunctionDefMap funcs = debugger->getFunctionDefMap();
+	for(FunctionDefMap::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
 		out << "function " << i->first << " " << i->second << endl;
 
 	for(unsigned int i=0; i<watches.size(); i++)
@@ -1424,7 +1424,7 @@ void DebuggerParser::executeFunction() {
 
 	int res = YaccParser::parse(argStrings[1].c_str());
 	if(res == 0) {
-		debugger->addFunction(argStrings[0], YaccParser::getResult());
+		debugger->addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
 		commandResult = "Added function " + argStrings[0];
 	} else {
 		commandResult = red("invalid expression");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.67 2005-08-10 12:23:42 stephena Exp $
+// $Id: Debugger.hxx,v 1.68 2005-08-20 18:19:52 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -45,6 +45,7 @@ typedef multimap<string,string> ListFile;
 typedef ListFile::const_iterator ListIter;
 
 typedef map<string,Expression*> FunctionMap;
+typedef map<string,string> FunctionDefMap;
 
 #if 1
 enum {
@@ -82,7 +83,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.67 2005-08-10 12:23:42 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.68 2005-08-20 18:19:52 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -129,10 +130,11 @@ class Debugger : public DialogContainer
     */
     void quit();
 
-	 void addFunction(string name, Expression *exp);
+	 void addFunction(string name, string def, Expression *exp, bool builtin=false);
+	 string getFunctionDef(string name);
 	 void delFunction(string name);
 	 Expression *getFunction(string name);
-	 const FunctionMap getFunctionMap();
+	 const FunctionDefMap getFunctionDefMap();
 	 const string builtinHelp();
 
     /**
@@ -362,6 +364,7 @@ class Debugger : public DialogContainer
     static Debugger* myStaticDebugger;
 
     FunctionMap functions;
+    FunctionDefMap functionDefs;
 };
 
 #endif

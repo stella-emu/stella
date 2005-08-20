@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.83 2005-08-16 18:34:12 stephena Exp $
+// $Id: Debugger.cxx,v 1.84 2005-08-20 18:19:51 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -116,7 +116,7 @@ Debugger::Debugger(OSystem* osystem)
     int res = YaccParser::parse(f.c_str());
     if(res != 0) cerr << "ERROR in builtin function!" << endl;
     Expression *exp = YaccParser::getResult();
-    addFunction(builtin_functions[i][0], exp);
+    addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
   }
 }
 
@@ -988,8 +988,9 @@ cerr << "Debugger::resizeDialog()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addFunction(string name, Expression *exp) {
+void Debugger::addFunction(string name, string definition, Expression *exp, bool builtin) {
 	functions.insert(make_pair(name, exp));
+	if(!builtin) functionDefs.insert(make_pair(name, definition));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1000,6 +1001,12 @@ void Debugger::delFunction(string name) {
 
 	functions.erase(name);
 	delete iter->second;
+
+	FunctionDefMap::iterator def_iter = functionDefs.find(name);
+	if(def_iter == functionDefs.end())
+		return;
+
+	functionDefs.erase(name);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1012,8 +1019,17 @@ Expression *Debugger::getFunction(string name) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FunctionMap Debugger::getFunctionMap() {
-	return functions;
+string Debugger::getFunctionDef(string name) {
+	FunctionDefMap::iterator iter = functionDefs.find(name);
+	if(iter == functionDefs.end())
+		return "";
+	else
+		return iter->second;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FunctionDefMap Debugger::getFunctionDefMap() {
+	return functionDefs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
