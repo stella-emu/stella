@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.9 2005-08-11 19:12:39 stephena Exp $
+// $Id: ListWidget.hxx,v 1.10 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,17 +25,11 @@
 #include "GuiObject.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "StringList.hxx"
 #include "EditableWidget.hxx"
 #include "Rect.hxx"
 
+class StringList;
 class ScrollBarWidget;
-
-enum NumberingMode {
-  kListNumberingOff  = -1,
-  kListNumberingZero = 0,
-  kListNumberingOne  = 1
-};
 
 // Some special commands
 enum {
@@ -45,21 +39,23 @@ enum {
   kListSelectionChangedCmd  = 'Lsch'   // selection changed - 'data' will be item index
 };
 
-/* ListWidget */
+/** ListWidget */
 class ListWidget : public EditableWidget
 {
   public:
-    ListWidget(GuiObject* boss, int x, int y, int w, int h);
+    ListWidget(GuiObject* boss, const GUI::Font& font,
+               int x, int y, int w, int h);
     virtual ~ListWidget();
 
-    void setList(const StringList& list);
-    const StringList& getList()	const          { return _list; }
-    int getSelected() const                    { return _selectedItem; }
+    int getSelected() const     { return _selectedItem; }
     void setSelected(int item);
-    const string& getSelectedString() const    { return _list[_selectedItem]; }
-    void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
+
+    void setList(const StringList& list);
+    const StringList& getList()	const        { return _list; }
+    const string& getSelectedString() const  { return _list[_selectedItem]; }
+
     void scrollTo(int item);
-	
+
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
@@ -73,31 +69,35 @@ class ListWidget : public EditableWidget
     void endEditMode();
 
   protected:
-    void drawWidget(bool hilite);
+    virtual void drawWidget(bool hilite)  = 0;
+    virtual GUI::Rect getEditRect() const = 0;
 
     int findItem(int x, int y) const;
     void scrollBarRecalc();
 
     void abortEditMode();
 
-    GUI::Rect getEditRect() const;
-
     void lostFocusWidget();
     void scrollToCurrent();
 
-protected:
-    StringList       _list;
-    bool             _editMode;
-    NumberingMode    _numberingMode;
-    int              _currentPos;
-    int              _entriesPerPage;
-    int              _selectedItem;
-    ScrollBarWidget* _scrollBar;
-    int              _currentKeyDown;
-    string           _backupString;
+  protected:
+    int  _rows;
+    int  _cols;
+    int  _rowHeight;
+    int  _colWidth;
+    int  _currentPos;
+    int  _selectedItem;
+    int  _currentKeyDown;
 
-    string           _quickSelectStr;
-    int              _quickSelectTime;
+    bool _editMode;
+    bool _caretInverse;
+
+    ScrollBarWidget* _scrollBar;
+
+    StringList _list;
+    string     _backupString;
+    string     _quickSelectStr;
+    int        _quickSelectTime;
 };
 
 #endif

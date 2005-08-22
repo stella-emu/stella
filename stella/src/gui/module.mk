@@ -4,7 +4,6 @@ MODULE_OBJS := \
 	src/gui/AboutDialog.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
-	src/gui/CheckListWidget.o \
 	src/gui/ColorWidget.o \
 	src/gui/CheatCodeDialog.o \
 	src/gui/DataGridWidget.o \
@@ -30,6 +29,8 @@ MODULE_OBJS := \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \
 	src/gui/ScrollBarWidget.o \
+	src/gui/CheckListWidget.o \
+	src/gui/StringListWidget.o \
 	src/gui/TabWidget.o \
 	src/gui/ToggleWidget.o \
 	src/gui/ToggleBitWidget.o \

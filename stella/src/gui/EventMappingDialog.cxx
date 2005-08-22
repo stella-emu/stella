@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.cxx,v 1.18 2005-08-10 12:23:42 stephena Exp $
+// $Id: EventMappingDialog.cxx,v 1.19 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,7 +21,7 @@
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "ListWidget.hxx"
+#include "StringListWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Dialog.hxx"
 #include "GuiUtils.hxx"
@@ -42,8 +42,10 @@ EventMappingDialog::EventMappingDialog(OSystem* osystem, DialogContainer* parent
   myDefaultsButton = addButton(10, h - 24, "Defaults", kDefaultsCmd, 0);
   myOKButton       = addButton(w - (kButtonWidth + 10), h - 24, "OK", kOKCmd, 0);
 
-  new StaticTextWidget(this, 10, 8, 150, kFontHeight, "Select an event to remap:", kTextAlignCenter);
-  myActionsList = new ListWidget(this, 10, 20, 150, 100);
+  new StaticTextWidget(this, 10, 8, 150, kFontHeight,
+                       "Select an event to remap:", kTextAlignCenter);
+
+  myActionsList = new StringListWidget(this, instance()->font(), 10, 20, 150, 100);
   myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
   myActionsList->setFlags(WIDGET_NODRAW_FOCUS);

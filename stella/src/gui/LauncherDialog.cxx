@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.28 2005-08-11 19:12:39 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.29 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,7 @@
 #include "MD5.hxx"
 #include "FSNode.hxx"
 #include "Widget.hxx"
-#include "ListWidget.hxx"
+#include "StringListWidget.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "GuiUtils.hxx"
@@ -92,7 +92,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 #endif
 
   // Add list with game titles
-  myList = new ListWidget(this, 10, 24, _w - 20, _h - 24 - 26 - 10 - 10);
+  myList = new StringListWidget(this, instance()->font(),
+                                10, 24, _w - 20, _h - 24 - 26 - 10 - 10); // FIXME_NOW
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
   myList->setFlags(WIDGET_NODRAW_FOCUS);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.9 2005-08-10 12:23:42 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.10 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,7 +21,7 @@
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "ListWidget.hxx"
+#include "StringListWidget.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
 #include "GuiObject.hxx"
@@ -54,8 +54,9 @@ BrowserDialog::BrowserDialog(GuiObject* boss, int x, int y, int w, int h)
   _currentPath = new StaticTextWidget(this, 10, 20, _w - 2 * 10, kLineHeight,
                                       "DUMMY", kTextAlignLeft);
 
-  // Add file list
-  _fileList = new ListWidget(this, 10, 34, _w - 2 * 10, _h - 34 - 24 - 10);
+  // Add file list FIXME_NOW
+  _fileList = new StringListWidget(this, instance()->font(),
+                                   10, 34, _w - 2 * 10, _h - 34 - 24 - 10);
   _fileList->setNumberingMode(kListNumberingOff);
   _fileList->setEditable(false);
   _fileList->setFlags(WIDGET_NODRAW_FOCUS);

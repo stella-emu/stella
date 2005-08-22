@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.84 2005-08-20 18:19:51 urchlay Exp $
+// $Id: Debugger.cxx,v 1.85 2005-08-22 18:17:10 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -913,6 +913,8 @@ void Debugger::setQuitState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect Debugger::getDialogBounds() const
 {
+  GUI::Rect tia = getTiaBounds();
+
   int userHeight = myOSystem->settings().getInt("debugheight");
   if(userHeight < kDebuggerLines)
   {
@@ -921,14 +923,19 @@ GUI::Rect Debugger::getDialogBounds() const
   }
   userHeight = (userHeight + 3) * kDebuggerLineHeight - 8;
 
-  GUI::Rect r(0, 0, kDebuggerWidth, userHeight + myConsole->mediaSource().height());
+  // Make sure window is always at least 'kDebuggerHeight' high
+  // We need this to make positioning of widget easier
+  if(userHeight < kDebuggerHeight + tia.height())
+    userHeight = kDebuggerHeight - tia.height();
+
+  GUI::Rect r(0, 0, kDebuggerWidth, userHeight + tia.height());
   return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect Debugger::getTiaBounds() const
 {
-  GUI::Rect r(0, 0, 320, myConsole->mediaSource().height());
+  GUI::Rect r(0, 0, 320, 260);
   return r;
 }
 

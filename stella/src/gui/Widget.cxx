@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.30 2005-08-18 16:19:07 stephena Exp $
+// $Id: Widget.cxx,v 1.31 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -325,8 +325,7 @@ ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
 	  _cmd(cmd),
       _hotkey(hotkey)
 {
-  _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG |
-           WIDGET_RETAIN_FOCUS;
+  _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _type = kButtonWidget;
 }
 

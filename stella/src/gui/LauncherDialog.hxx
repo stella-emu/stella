@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.12 2005-08-11 19:12:39 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.13 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,7 +27,7 @@ class LauncherOptionsDialog;
 class ProgressDialog;
 class CommandSender;
 class StaticTextWidget;
-class ListWidget;
+class StringListWidget;
 class ButtonWidget;
 class OSystem;
 
@@ -65,7 +65,7 @@ class LauncherDialog : public Dialog
     ButtonWidget* myReloadButton;
     ButtonWidget* myQuitButton;
 
-    ListWidget*       myList;
+    StringListWidget* myList;
     StaticTextWidget* myNote;
     StaticTextWidget* myRomCount;
     GameList*         myGameList;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.hxx,v 1.11 2005-07-05 15:25:44 stephena Exp $
+// $Id: EventMappingDialog.hxx,v 1.12 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,7 +26,7 @@ class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
-class ListWidget;
+class StringListWidget;
 class PopUpWidget;
 
 #include "OSystem.hxx"
@@ -48,7 +48,7 @@ class EventMappingDialog : public Dialog
     ButtonWidget*     myEraseButton;
     ButtonWidget*     myOKButton;
     ButtonWidget*     myDefaultsButton;
-    ListWidget*       myActionsList;
+    StringListWidget* myActionsList;
     StaticTextWidget* myKeyMapping;
     PopUpWidget*      myPaddleModePopup;
     StaticTextWidget* myPaddleModeText;

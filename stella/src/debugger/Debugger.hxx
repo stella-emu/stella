@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.68 2005-08-20 18:19:52 urchlay Exp $
+// $Id: Debugger.hxx,v 1.69 2005-08-22 18:17:10 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -47,19 +47,12 @@ typedef ListFile::const_iterator ListIter;
 typedef map<string,Expression*> FunctionMap;
 typedef map<string,string> FunctionDefMap;
 
-#if 1
 enum {
-  kDebuggerWidth = 1023,
+  kDebuggerWidth  = 1023,
+  kDebuggerHeight = 767,
   kDebuggerLineHeight = 15,   // based on the height of the console font
   kDebuggerLines = 35,
 };
-#else
-enum {
-  kDebuggerWidth = 639,
-  kDebuggerLineHeight = 15,   // based on the height of the console font
-  kDebuggerLines = 20,
-};
-#endif
 
 // Constants for RAM area
 enum {
@@ -83,7 +76,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.68 2005-08-20 18:19:52 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.69 2005-08-22 18:17:10 stephena Exp $
 */
 class Debugger : public DialogContainer
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.hxx,v 1.5 2005-07-05 15:25:44 stephena Exp $
+// $Id: BrowserDialog.hxx,v 1.6 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,7 +24,7 @@
 
 class GuiObject;
 class StaticTextWidget;
-class ListWidget;
+class StringListWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -47,7 +47,7 @@ class BrowserDialog : public Dialog, public CommandSender
     void updateListing();
 
   protected:
-    ListWidget*       _fileList;
+    StringListWidget* _fileList;
     StaticTextWidget* _currentPath;
     StaticTextWidget* _title;
     FilesystemNode    _node;

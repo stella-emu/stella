@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.26 2005-08-11 19:12:39 stephena Exp $
+// $Id: ListWidget.cxx,v 1.27 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,27 +31,35 @@
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ListWidget::ListWidget(GuiObject* boss, int x, int y, int w, int h)
-  : EditableWidget(boss, x, y, w, h)
+ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
+                       int x, int y, int w, int h)
+  : EditableWidget(boss, x, y, 16, 16),
+    _rows(0),
+    _cols(0),
+    _currentPos(0),
+    _selectedItem(-1),
+    _currentKeyDown(0),
+    _editMode(false),
+    _caretInverse(true),
+    _quickSelectTime(0)
 {
-  _w = w - kScrollBarWidth;
-	
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kListWidget;
-  _editMode = false;
-  _numberingMode = kListNumberingOne;
-  _entriesPerPage = (_h - 2) / kLineHeight;
-  _currentPos = 0;
-  _selectedItem = -1;
+
+  setFont(font);
+
+  _colWidth  = font.getMaxCharWidth();
+  _rowHeight = font.getLineHeight();
+  _cols = w / _colWidth;
+  _rows = h / _rowHeight;
+
+  // Set real dimensions
+  _w = w - kScrollBarWidth;
+  _h = h + 2;
+
+  // Create scrollbar and attach to the list
   _scrollBar = new ScrollBarWidget(boss, _x + _w, _y, kScrollBarWidth, _h);
   _scrollBar->setTarget(this);
-  _currentKeyDown = 0;
-	
-  _quickSelectTime = 0;
-
-  // The item is selected, thus _bgcolor is used to draw the caret and
-  // _textcolorhi to erase it
-  _caretInverse = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,7 +80,7 @@ void ListWidget::setSelected(int item)
     _selectedItem = item;
     sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
 
-    _currentPos = _selectedItem - _entriesPerPage / 2;
+    _currentPos = _selectedItem - _rows / 2;
     scrollToCurrent();
     setDirty(); draw();
   }
@@ -111,9 +119,9 @@ void ListWidget::scrollTo(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollBarRecalc()
 {
-  _scrollBar->_numEntries = _list.size();
-  _scrollBar->_entriesPerPage = _entriesPerPage;
-  _scrollBar->_currentPos = _currentPos;
+  _scrollBar->_numEntries     = _list.size();
+  _scrollBar->_entriesPerPage = _rows;
+  _scrollBar->_currentPos     = _currentPos;
   _scrollBar->recalc();
 }
 
@@ -167,7 +175,7 @@ void ListWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ListWidget::findItem(int x, int y) const
 {
-  return (y - 1) / kLineHeight + _currentPos;
+  return (y - 1) / _rowHeight + _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -260,13 +268,13 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         break;
 
       case 256+24:  // pageup
-        _selectedItem -= _entriesPerPage - 1;
+        _selectedItem -= _rows - 1;
         if (_selectedItem < 0)
           _selectedItem = 0;
         break;
 
       case 256+25:	// pagedown
-        _selectedItem += _entriesPerPage - 1;
+        _selectedItem += _rows - 1;
         if (_selectedItem >= (int)_list.size() )
           _selectedItem = _list.size() - 1;
         break;
@@ -329,88 +337,6 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::drawWidget(bool hilite)
-{
-cerr << "ListWidget::drawWidget\n";
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
-  int i, pos, len = _list.size();
-  string buffer;
-  int deltax;
-
-  // Draw a thin frame around the list.
-  fb.hLine(_x, _y, _x + _w - 1, kColor);
-  fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
-  fb.vLine(_x, _y, _y + _h - 1, kColor);
-
-  // Draw the list items
-  for (i = 0, pos = _currentPos; i < _entriesPerPage && pos < len; i++, pos++)
-  {
-    const OverlayColor textColor = (_selectedItem == pos && _editMode)
-                                    ? kColor : kTextColor;
-    const int y = _y + 2 + kLineHeight * i;
-
-    // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos)
-    {
-      if (_hasFocus && !_editMode)
-        fb.fillRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
-      else
-        fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
-    }
-
-    // If in numbering mode, we first print a number prefix
-    if (_numberingMode != kListNumberingOff)
-    {
-      char temp[10];
-      sprintf(temp, "%2d. ", (pos + _numberingMode));
-      buffer = temp;
-      fb.drawString(_font, buffer, _x + 2, y, _w - 4, textColor);
-    }
-
-    GUI::Rect r(getEditRect());
-    if (_selectedItem == pos && _editMode)
-    {
-      buffer = _editString;
-      adjustOffset();
-      deltax = -_editScrollOffset;
-
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
-                    kTextAlignLeft, deltax, false);
-    }
-    else
-    {
-      buffer = _list[pos];
-      deltax = 0;
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
-    }
-  }
-
-  // Only draw the caret while editing, and if it's in the current viewport
-  if(_editMode && (_selectedItem >= _scrollBar->_currentPos) &&
-    (_selectedItem < _scrollBar->_currentPos + _entriesPerPage))
-    drawCaret();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect ListWidget::getEditRect() const
-{
-  GUI::Rect r(2, 1, _w - 2 , kLineHeight);
-  const int offset = (_selectedItem - _currentPos) * kLineHeight;
-  r.top += offset;
-  r.bottom += offset;
-
-  if (_numberingMode != kListNumberingOff)
-  {
-    char temp[10];
-    // FIXME: Assumes that all digits have the same width.
-    sprintf(temp, "%2d. ", (_list.size() - 1 + _numberingMode));
-    r.left += _font->getStringWidth(temp);
-  }
-	
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollToCurrent()
 {
   // Only do something if the current item is not in our view port
@@ -419,16 +345,16 @@ void ListWidget::scrollToCurrent()
     // it's above our view
     _currentPos = _selectedItem;
   }
-  else if (_selectedItem >= _currentPos + _entriesPerPage )
+  else if (_selectedItem >= _currentPos + _rows )
   {
     // it's below our view
-    _currentPos = _selectedItem - _entriesPerPage + 1;
+    _currentPos = _selectedItem - _rows + 1;
   }
 
-  if (_currentPos < 0 || _entriesPerPage > (int)_list.size())
+  if (_currentPos < 0 || _rows > (int)_list.size())
     _currentPos = 0;
-  else if (_currentPos + _entriesPerPage > (int)_list.size())
-    _currentPos = _list.size() - _entriesPerPage;
+  else if (_currentPos + _rows > (int)_list.size())
+    _currentPos = _list.size() - _rows;
 
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();

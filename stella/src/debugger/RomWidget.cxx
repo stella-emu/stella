@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.1 2005-08-22 13:53:23 stephena Exp $
+// $Id: RomWidget.cxx,v 1.2 2005-08-22 18:17:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +30,10 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, x, y, 16, 16),
     CommandSender(boss)
 {
-  myRomList = new CheckListWidget(boss, font, x, y, 58, 31);
+  int w = 58 * font.getMaxCharWidth(),
+      h = 31 * font.getLineHeight();
+
+  myRomList = new CheckListWidget(boss, font, x, y, w, h);
   myRomList->setTarget(this);
   addFocusWidget(myRomList);
 
@@ -54,6 +57,7 @@ void RomWidget::loadConfig()
 {
 cerr << "RomWidget::loadConfig()\n";
   fillGrid();
+  myRomList->setDirty(); myRomList->draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
