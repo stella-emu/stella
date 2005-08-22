@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	src/gui/AboutDialog.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
+	src/gui/CheckListWidget.o \
 	src/gui/ColorWidget.o \
 	src/gui/CheatCodeDialog.o \
 	src/gui/DataGridWidget.o \

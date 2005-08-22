@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.16 2005-08-10 12:23:42 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.17 2005-08-22 13:53:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@ class OSystem;
 class DialogContainer;
 class CpuWidget;
 class RamWidget;
+class RomWidget;
 class TabWidget;
 class TiaInfoWidget;
 class TiaOutputWidget;
@@ -57,6 +58,7 @@ class DebuggerDialog : public Dialog
     TiaOutputWidget* myTiaOutput;
     CpuWidget*       myCpu;
     RamWidget*       myRam;
+    RomWidget*       myRom;
 
   private:
     void addTiaArea();

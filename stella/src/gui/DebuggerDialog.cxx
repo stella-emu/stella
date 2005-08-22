@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.34 2005-08-11 21:57:30 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.35 2005-08-22 13:53:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@
 #include "PromptWidget.hxx"
 #include "CpuWidget.hxx"
 #include "RamWidget.hxx"
+#include "RomWidget.hxx"
 #include "TiaWidget.hxx"
 #include "DataGridOpsWidget.hxx"
 #include "Rect.hxx"
@@ -68,6 +69,7 @@ cerr << " ==> DebuggerDialog::loadConfig()\n";
   myTiaOutput->loadConfig();
   myCpu->loadConfig();
   myRam->loadConfig();
+  myRom->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,6 +170,8 @@ void DebuggerDialog::addStatusArea()
 {
   GUI::Rect r = instance()->debugger().getStatusBounds();
   myTiaInfo = new TiaInfoWidget(this, r.left, r.top, r.width(), r.height());
+// FIXME - remove width and height from TiaInfo, let it figure out its
+//         own dimensions
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -176,36 +180,37 @@ void DebuggerDialog::addRomArea()
   GUI::Rect r = instance()->debugger().getRomBounds();
   int xpos, ypos;
 
-  xpos = r.left + 10; ypos = 10;
+  xpos = r.left + 10;  ypos = 10;
   myCpu = new CpuWidget(this, instance()->consoleFont(), xpos, ypos);
   addToFocusList(myCpu->getFocusList());
 
-  xpos = r.left + 10; ypos += myCpu->getHeight() + 10;
+  xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
   myRam = new RamWidget(this, instance()->consoleFont(), xpos, ypos);
   addToFocusList(myRam->getFocusList());
 
-  xpos = r.left + 10 + myCpu->getWidth() + 20; ypos = 20;
-  DataGridOpsWidget* ops = new DataGridOpsWidget(this, xpos, ypos);
+  xpos = r.left + 10 + myCpu->getWidth() + 20;
+  DataGridOpsWidget* ops = new DataGridOpsWidget(this, xpos, 20);
   ops->setEnabled(false);
+
+  int buttonX = r.right - kButtonWidth - 5, buttonY = r.top + 5;
+  addButton(buttonX, buttonY, "Step", kDDStepCmd, 0);
+  buttonY += 22;
+  addButton(buttonX, buttonY, "Trace", kDDTraceCmd, 0);
+  buttonY += 22;
+  addButton(buttonX, buttonY, "Scan +1", kDDSAdvCmd, 0);
+  buttonY += 22;
+  addButton(buttonX, buttonY, "Frame +1", kDDAdvCmd, 0);
+  buttonY += 22;
+  addButton(buttonX, buttonY, "Exit", kDDExitCmd, 0);
+
+  xpos = r.left + 10;  ypos += myRam->getHeight() + 15;
+  myRom = new RomWidget(this, instance()->consoleFont(), xpos, ypos);
+  addToFocusList(myRom->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a
   // DataGridWidget which we want controlled
   myCpu->setOpsWidget(ops);
   myRam->setOpsWidget(ops);
-
-
-  // Add some buttons that are always shown, no matter which tab we're in
-  // FIXME - these positions will definitely change
-  xpos = r.right - 100; ypos = r.bottom - 150;
-  addButton(xpos, ypos, "Step", kDDStepCmd, 0);
-  ypos += 22;
-  addButton(xpos, ypos, "Trace", kDDTraceCmd, 0);
-  ypos += 22;
-  addButton(xpos, ypos, "Scan +1", kDDSAdvCmd, 0);
-  ypos += 22;
-  addButton(xpos, ypos, "Frame +1", kDDAdvCmd, 0);
-
-  addButton(xpos, r.bottom - 22 - 10, "Exit", kDDExitCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
