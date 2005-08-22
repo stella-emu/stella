@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.2 2005-08-22 18:17:10 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.3 2005-08-22 19:27:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,14 +21,25 @@
 
 #include "ScrollBarWidget.hxx"
 #include "CheckListWidget.hxx"
-
-#include "bspf.hxx"
+#include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
   : ListWidget(boss, font, x, y, w, h)
 {
+  int ypos = _y + 2;
+
+  // Create a CheckboxWidget for each row in the list
+  CheckboxWidget* t;
+  while((int)_checkList.size() < _rows)
+  {
+    t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
+    t->setTarget(this);
+    ypos += _rowHeight;
+
+    _checkList.push_back(t);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,34 +50,44 @@ CheckListWidget::~CheckListWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::drawWidget(bool hilite)
 {
-cerr << "CheckListWidget::drawWidget\n";
+//cerr << "CheckListWidget::drawWidget\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   int i, pos, len = _list.size();
   string buffer;
   int deltax;
 
-  // Draw a thin frame around the list.
+  // Draw a thin frame around the list and to separate columns
   fb.hLine(_x, _y, _x + _w - 1, kColor);
   fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
   fb.vLine(_x, _y, _y + _h - 1, kColor);
 
+  fb.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
+
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
-    const OverlayColor textColor = (_selectedItem == pos && _editMode)
-                                    ? kColor : kTextColor;
+    _checkList[i]->setDirty();
+    _checkList[i]->draw();
+
+//    const OverlayColor textColor = (_selectedItem == pos && _editMode)
+//                                    ? kColor : kTextColor;
     const int y = _y + 2 + _rowHeight * i;
+
+    GUI::Rect r(getEditRect());
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
     {
       if (_hasFocus && !_editMode)
-        fb.fillRect(_x + 1, _y + 1 + _rowHeight * i, _w - 1, _rowHeight, kTextColorHi);
+        fb.fillRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
+                    _w - r.left, _rowHeight,
+                    kTextColorHi);
       else
-        fb.frameRect(_x + 1, _y + 1 + _rowHeight * i, _w - 1, _rowHeight, kTextColorHi);
+        fb.frameRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
+                     _w - r.left, _rowHeight,
+                     kTextColorHi);
     }
 
-    GUI::Rect r(getEditRect());
     if (_selectedItem == pos && _editMode)
     {
       buffer = _editString;
@@ -93,20 +114,13 @@ cerr << "CheckListWidget::drawWidget\n";
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect CheckListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w - 2 , _rowHeight);
-  const int offset = (_selectedItem - _currentPos) * _rowHeight;
-  r.top += offset;
-  r.bottom += offset;
-
-/*
-  if (_numberingMode != kListNumberingOff)
-  {
-    char temp[10];
-    // FIXME: Assumes that all digits have the same width.
-    sprintf(temp, "%2d. ", (_list.size() - 1 + _numberingMode));
-    r.left += _font->getStringWidth(temp);
-  }
-*/
+  GUI::Rect r(2, 1, _w, _rowHeight);
+  const int yoffset = (_selectedItem - _currentPos) * _rowHeight,
+            xoffset = CheckboxWidget::boxSize() + 10;
+  r.top    += yoffset;
+  r.bottom += yoffset;
+  r.left  += xoffset;
+  r.right -= xoffset - 15;
 	
   return r;
 }
