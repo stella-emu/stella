@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.2 2005-08-22 18:17:10 stephena Exp $
+// $Id: RomWidget.cxx,v 1.3 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,6 +35,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   myRomList = new CheckListWidget(boss, font, x, y, w, h);
   myRomList->setTarget(this);
+  myRomList->setStyle(kSolidFill);
   addFocusWidget(myRomList);
 
   // Calculate real dimensions
@@ -50,11 +51,27 @@ RomWidget::~RomWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
+  switch(cmd)
+  {
+    case kListScrolledCmd:
+      cerr << "data invalidated; refill list\n";
+      break;
+
+    case kListItemChecked:
+      cerr << "(un)set a breakpoint at address " << data << endl;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
+  /* FIXME
+     We need logic here to only fill the grid at startup and when
+     bankswitching.  At other times, we receive 'kListScrolledCmd'
+     command, which means the current romlist view is invalid and
+     should be filled with new data.
+  */
 cerr << "RomWidget::loadConfig()\n";
   fillGrid();
   myRomList->setDirty(); myRomList->draw();
@@ -64,13 +81,16 @@ cerr << "RomWidget::loadConfig()\n";
 void RomWidget::fillGrid()
 {
   StringList l;
+  BoolArray b;
 
-  for(int i = 0; i < 100; ++i)
+  for(int i = 0; i < 50; ++i)
   {
     ostringstream tmp;
     tmp << "Test line " << i;
     l.push_back(tmp.str());
+
+    b.push_back(false);
   }
 
-  myRomList->setList(l);
+  myRomList->setList(l, b);
 }

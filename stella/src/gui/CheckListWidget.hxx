@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.hxx,v 1.3 2005-08-22 19:27:59 stephena Exp $
+// $Id: CheckListWidget.hxx,v 1.4 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,11 @@ enum {
   kListItemChecked = 'LIct'  // checkbox toggled on current line
 };
 
+enum CheckStyle {
+  kXFill,
+  kSolidFill
+};
+
 typedef GUI::Array<CheckboxWidget*> CheckboxArray;
 
 
@@ -41,6 +46,12 @@ class CheckListWidget : public ListWidget
     CheckListWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
     virtual ~CheckListWidget();
+
+    void setStyle(CheckStyle style);
+    void setList(const StringList& list, const BoolArray& state);
+    void setLine(int line, const string& str, const bool& state);
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   protected:
     void drawWidget(bool hilite);

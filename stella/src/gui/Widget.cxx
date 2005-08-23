@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.31 2005-08-22 18:17:10 stephena Exp $
+// $Id: Widget.cxx,v 1.32 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -381,7 +381,11 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
                                int cmd)
   : ButtonWidget(boss, x, y, 16, 16, label, cmd, 0),
     _state(false),
-    _editable(true)
+    _editable(true),
+    _holdFocus(true),
+    _fillRect(false),
+    _drawBox(true),
+    _fillColor(kColor)
 {
   _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
   _type = kCheckboxWidget;
@@ -427,6 +431,28 @@ bool CheckboxWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CheckboxWidget::wantsFocus()
+{
+  if(!_holdFocus)
+    return false;
+  else
+    return _editable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::setEditable(bool editable)
+{
+  _holdFocus = _editable = editable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::setFill(bool fill, OverlayColor color)
+{
+  _fillRect  = fill;
+  _fillColor = color;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setState(bool state)
 {
   if(_state != state)
@@ -451,12 +477,18 @@ void CheckboxWidget::drawWidget(bool hilite)
     text_yoff = (14 - _font->getFontHeight()) / 2;
 
   // Draw the box
-  fb.box(_x, _y + box_yoff, 14, 14, kColor, kShadowColor);
+  if(_drawBox)
+    fb.box(_x, _y + box_yoff, 14, 14, kColor, kShadowColor);
 
   // If checked, draw cross inside the box
   if(_state)
-    fb.drawBitmap(checked_img, _x + 3, _y + box_yoff + 3,
-                  isEnabled() ? _color : kColor);
+  {
+    if(_fillRect)
+      fb.fillRect(_x + 2, _y + box_yoff + 2, 10, 10, _fillColor);
+    else
+      fb.drawBitmap(checked_img, _x + 3, _y + box_yoff + 3,
+                    isEnabled() ? _color : kColor);
+  }
   else
     fb.fillRect(_x + 2, _y + box_yoff + 2, 10, 10, kBGColor);
 

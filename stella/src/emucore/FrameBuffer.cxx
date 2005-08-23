@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.60 2005-08-11 21:57:30 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.61 2005-08-23 18:32:51 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -226,7 +226,7 @@ void FrameBuffer::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refresh(bool now)
 {
-  cerr << "refreshTIA() " << myNumRedraws++ << endl;
+//  cerr << "refreshTIA() " << myNumRedraws++ << endl;
   theRedrawTIAIndicator = true;
   if(now)
   {

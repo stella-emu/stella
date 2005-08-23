@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringListWidget.cxx,v 1.1 2005-08-22 23:09:13 stephena Exp $
+// $Id: StringListWidget.cxx,v 1.2 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,6 +36,15 @@ StringListWidget::~StringListWidget()
 {
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StringListWidget::setList(const StringList& list)
+{
+  _list = list;
+
+  ListWidget::recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StringListWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();

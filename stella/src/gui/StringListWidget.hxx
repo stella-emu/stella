@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringListWidget.hxx,v 1.1 2005-08-22 23:09:13 stephena Exp $
+// $Id: StringListWidget.hxx,v 1.2 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,6 +38,7 @@ class StringListWidget : public ListWidget
                      int x, int y, int w, int h);
     virtual ~StringListWidget();
 
+    void setList(const StringList& list);
     void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
 
   protected:

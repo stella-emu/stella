@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.3 2005-08-22 19:27:59 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.4 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,12 +30,17 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 {
   int ypos = _y + 2;
 
+  // rowheight is determined by largest item on a line
+  _rowHeight = MAX(_rowHeight, CheckboxWidget::boxSize());
+
   // Create a CheckboxWidget for each row in the list
   CheckboxWidget* t;
-  while((int)_checkList.size() < _rows)
+  for(int i = 0; i < _rows; ++i)
   {
     t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
     t->setTarget(this);
+    t->setID(i);
+    t->holdFocus(false);
     ypos += _rowHeight;
 
     _checkList.push_back(t);
@@ -45,6 +50,54 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckListWidget::~CheckListWidget()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::setStyle(CheckStyle style)
+{
+  for(unsigned int i = 0; i < _checkList.size(); ++i)
+  {
+    if(style == kXFill)
+    {
+      _checkList[i]->drawBox(true);
+      _checkList[i]->setFill(false);
+    }
+    else if(style == kSolidFill)
+    {
+      _checkList[i]->drawBox(false);
+      _checkList[i]->setFill(true, kTextColorEm);
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::setList(const StringList& list, const BoolArray& state)
+{
+  _list = list;
+  _stateList = state;
+
+  assert(_list.size() == _stateList.size());
+
+  // Enable all checkboxes
+  for(int i = 0; i < _rows; ++i)
+    _checkList[i]->setFlags(WIDGET_ENABLED);
+
+  // Then turn off any extras
+  if((int)_stateList.size() < _rows)
+    for(int i = _stateList.size(); i < _rows; ++i)
+      _checkList[i]->clearFlags(WIDGET_ENABLED);
+
+  ListWidget::recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::setLine(int line, const string& str, const bool& state)
+{
+  if(line >= (int)_list.size())
+    return;
+
+  _list[line]      = str;
+  _stateList[line] = state;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,11 +119,11 @@ void CheckListWidget::drawWidget(bool hilite)
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
+    // Draw checkboxes for correct lines (takes scrolling into account)
+    _checkList[i]->setState(_stateList[pos]);
     _checkList[i]->setDirty();
     _checkList[i]->draw();
 
-//    const OverlayColor textColor = (_selectedItem == pos && _editMode)
-//                                    ? kColor : kTextColor;
     const int y = _y + 2 + _rowHeight * i;
 
     GUI::Rect r(getEditRect());
@@ -123,4 +176,26 @@ GUI::Rect CheckListWidget::getEditRect() const
   r.right -= xoffset - 15;
 	
   return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
+                                    int data, int id)
+{
+  switch(cmd)
+  {
+    case kCheckActionCmd:
+    {
+      // Figure out which line has been checked
+      int line = _currentPos + id;
+      _stateList[line] = bool(data);
+
+      // Let the boss know about it
+      sendCommand(kListItemChecked, line, _id);
+      break;
+    }
+
+    default:
+      ListWidget::handleCommand(sender, cmd, data, id);
+  }
 }

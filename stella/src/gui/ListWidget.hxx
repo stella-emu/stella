@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.10 2005-08-22 18:17:10 stephena Exp $
+// $Id: ListWidget.hxx,v 1.11 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,8 @@ enum {
   kListItemDoubleClickedCmd = 'LIdb',  // double click on item - 'data' will be item index
   kListItemActivatedCmd     = 'LIac',  // item activated by return/enter - 'data' will be item index
   kListItemDataChangedCmd   = 'LIch',  // item data changed - 'data' will be item index
-  kListSelectionChangedCmd  = 'Lsch'   // selection changed - 'data' will be item index
+  kListSelectionChangedCmd  = 'Lsch',  // selection changed - 'data' will be item index
+  kListScrolledCmd          = 'Lscl'   // list scrolled - 'data' will be current position
 };
 
 /** ListWidget */
@@ -50,7 +51,6 @@ class ListWidget : public EditableWidget
     int getSelected() const     { return _selectedItem; }
     void setSelected(int item);
 
-    void setList(const StringList& list);
     const StringList& getList()	const        { return _list; }
     const string& getSelectedString() const  { return _list[_selectedItem]; }
 
@@ -73,6 +73,7 @@ class ListWidget : public EditableWidget
     virtual GUI::Rect getEditRect() const = 0;
 
     int findItem(int x, int y) const;
+    void recalc();
     void scrollBarRecalc();
 
     void abortEditMode();

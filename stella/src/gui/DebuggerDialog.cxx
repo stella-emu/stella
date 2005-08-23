@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.35 2005-08-22 13:53:23 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.36 2005-08-23 18:32:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -63,7 +63,6 @@ DebuggerDialog::~DebuggerDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
-cerr << " ==> DebuggerDialog::loadConfig()\n";
   myTab->loadConfig();
   myTiaInfo->loadConfig();
   myTiaOutput->loadConfig();
