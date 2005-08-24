@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.37 2005-07-02 17:15:42 urchlay Exp $
+// $Id: Console.hxx,v 1.38 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.37 2005-07-02 17:15:42 urchlay Exp $
+  @version $Id: Console.hxx,v 1.38 2005-08-24 22:54:30 stephena Exp $
 */
 class Console
 {
@@ -172,7 +172,6 @@ class Console
     */
     void fry();
 
-#ifdef DEVELOPER_SUPPORT
   public:
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
@@ -220,7 +219,6 @@ class Console
   private:
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true);
     void setDeveloperProperties();
-#endif
 
   private:
     // Pointer to the osystem object

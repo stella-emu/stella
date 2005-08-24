@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.62 2005-08-24 05:29:59 markgrebe Exp $
+// $Id: FrameBuffer.cxx,v 1.63 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -29,8 +29,12 @@
 #include "GuiUtils.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
-#include "Debugger.hxx"
 #include "OSystem.hxx"
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Debugger.hxx"
+#endif
+
 #ifdef MAC_OSX
 extern "C" {
 uInt16 macOSXDisplayWidth(void);
@@ -213,13 +217,15 @@ void FrameBuffer::update()
       break;  // S_LAUNCHER
     }
 
+#ifdef DEVELOPER_SUPPORT
     case EventHandler::S_DEBUGGER:
     {
       myOSystem->debugger().draw();
       break;  // S_DEBUGGER
     }
+#endif
 
-    case EventHandler::S_NONE:
+    default:
       return;
       break;
   }

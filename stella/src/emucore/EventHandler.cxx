@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.85 2005-08-11 19:12:38 stephena Exp $
+// $Id: EventHandler.cxx,v 1.86 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -30,9 +30,12 @@
 #include "OSystem.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
-#include "Debugger.hxx"
 #include "GuiUtils.hxx"
 #include "bspf.hxx"
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Debugger.hxx"
+#endif
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
@@ -171,9 +174,11 @@ void EventHandler::refreshDisplay()
       myOSystem->launcher().refresh();
       break;
 
+#ifdef DEVELOPER_SUPPORT
     case S_DEBUGGER:
       myOSystem->debugger().refresh();
       break;
+#endif
 
     default:
       break;
@@ -630,9 +635,11 @@ void EventHandler::poll(uInt32 time)
       myOSystem->launcher().updateTime(time);
       break;
 
+#ifdef DEVELOPER_SUPPORT
     case S_DEBUGGER:
       myOSystem->debugger().updateTime(time);
       break;
+#endif
 
     default:
       break;
@@ -679,6 +686,7 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
       myOSystem->launcher().handleKeyEvent(unicode, key, mod, state);
       break;
 
+#ifdef DEVELOPER_SUPPORT
     case S_DEBUGGER:
       if(myKeyTable[key] == Event::DebuggerMode && state == 1 &&
          !(kbdAlt(mod) || kbdControl(mod) || kbdShift(mod)))
@@ -688,8 +696,9 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
       }
       myOSystem->debugger().handleKeyEvent(unicode, key, mod, state);
       break;
+#endif
 
-    case S_NONE:
+    default:
       return;
       break;
   }
@@ -726,11 +735,13 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
       myOSystem->launcher().handleMouseMotionEvent(x, y, 0);
       break;
 
+#ifdef DEVELOPER_SUPPORT
     case S_DEBUGGER:
       myOSystem->debugger().handleMouseMotionEvent(x, y, 0);
       break;
+#endif
 
-    case S_NONE:
+    default:
       return;
       break;
   }
@@ -784,8 +795,10 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
         myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
       else if(myState == S_LAUNCHER)
         myOSystem->launcher().handleMouseButtonEvent(button, x, y, state);
+#ifdef DEVELOPER_SUPPORT
       else
         myOSystem->debugger().handleMouseButtonEvent(button, x, y, state);
+#endif
       break;
     }
 
@@ -813,11 +826,13 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
       myOSystem->launcher().handleJoyEvent(stick, code, state);
       break;
 
+#ifdef DEVELOPER_SUPPORT
     case S_DEBUGGER:
       myOSystem->debugger().handleJoyEvent(stick, code, state);
       break;
+#endif
 
-    case S_NONE:
+    default:
       return;
       break;
   }
@@ -1366,6 +1381,7 @@ void EventHandler::leaveMenuMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::enterDebugMode()
 {
+#ifdef DEVELOPER_SUPPORT
   if(myState == S_DEBUGGER)
     return false;
 
@@ -1384,6 +1400,7 @@ bool EventHandler::enterDebugMode()
   // Make sure screen is always refreshed when entering debug mode
   // (sometimes entering on a breakpoint doesn't draw contents)
   refreshDisplay();
+#endif
 
   return true;
 }
@@ -1391,6 +1408,7 @@ bool EventHandler::enterDebugMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveDebugMode()
 {
+#ifdef DEVELOPER_SUPPORT
   // paranoia: this should never happen:
   if(myState != S_DEBUGGER)
     return;
@@ -1406,6 +1424,7 @@ void EventHandler::leaveDebugMode()
 
   if(myPauseFlag)  // Un-Pause when leaving debugger mode
     handleEvent(Event::Pause, 1);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

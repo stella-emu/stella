@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.65 2005-07-03 01:36:40 urchlay Exp $
+// $Id: Console.cxx,v 1.66 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -45,11 +45,14 @@
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
-#include "Debugger.hxx"
 #include "Version.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
+#endif
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Debugger.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -137,7 +140,9 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
 
   M6502* m6502;
   m6502 = new M6502High(1);
+#ifdef DEVELOPER_SUPPORT
   m6502->attach(myOSystem->debugger());
+#endif
 
   M6532* m6532 = new M6532(*this);
   TIA *tia = new TIA(*this, myOSystem->settings());
@@ -185,9 +190,11 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   myOSystem->menu().initialize();
   myOSystem->menu().setGameProfile(myProperties);
 
+#ifdef DEVELOPER_SUPPORT
   // Finally, initialize the debugging system, since it depends on the current ROM
   myOSystem->debugger().setConsole(this);
   myOSystem->debugger().initialize();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -374,7 +381,6 @@ void Console::fry()
   mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
 }
 
-#ifdef DEVELOPER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeXStart(const uInt32 direction)
 {
@@ -612,5 +618,3 @@ void Console::setDeveloperProperties()
   if(s != "")
     myProperties.set("Emulation.HmoveBlanks", s);
 }
-
-#endif

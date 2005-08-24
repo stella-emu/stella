@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.10 2005-07-09 23:44:08 urchlay Exp $
+// $Id: System.hxx,v 1.11 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -29,7 +29,6 @@ class Deserializer;
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "NullDev.hxx"
-#include "PackedBitArray.hxx"
 
 /**
   This class represents a system consisting of a 6502 microprocessor
@@ -48,7 +47,7 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.10 2005-07-09 23:44:08 urchlay Exp $
+  @version $Id: System.hxx,v 1.11 2005-08-24 22:54:30 stephena Exp $
 */
 class System
 {

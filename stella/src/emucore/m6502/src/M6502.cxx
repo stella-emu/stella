@@ -13,25 +13,30 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.13 2005-08-11 19:12:38 stephena Exp $
+// $Id: M6502.cxx,v 1.14 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #include "M6502.hxx"
-#include "Expression.hxx"
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Expression.hxx"
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
     : myExecutionStatus(0),
       mySystem(0),
-      myDebugger(0),
       mySystemCyclesPerProcessorCycle(systemCyclesPerProcessorCycle)
 {
-  uInt16 t;
+#ifdef DEVELOPER_SUPPORT
+  myDebugger  = NULL;
   breakPoints = NULL;
-  readTraps = NULL;
-  writeTraps = NULL;
+  readTraps   = NULL;
+  writeTraps  = NULL;
+#endif
 
   // Compute the BCD lookup table
+  uInt16 t;
   for(t = 0; t < 256; ++t)
   {
     ourBCDTable[0][t] = ((t >> 4) * 10) + (t & 0x0f);
@@ -51,8 +56,10 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::~M6502()
 {
+#ifdef DEVELOPER_SUPPORT
   myBreakConds.clear();
   myBreakCondNames.clear();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,13 +67,6 @@ void M6502::install(System& system)
 {
   // Remember which system I'm installed in
   mySystem = &system;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::attach(Debugger& debugger)
-{
-  // Remember the debugger for this microprocessor
-  myDebugger = &debugger;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,54 +100,6 @@ void M6502::nmi()
 void M6502::stop()
 {
   myExecutionStatus |= StopExecutionBit;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unsigned int M6502::addCondBreak(Expression *e, string name)
-{
-  myBreakConds.push_back(e);
-  myBreakCondNames.push_back(name);
-  return myBreakConds.size() - 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::delCondBreak(unsigned int brk)
-{
-  if(brk < myBreakConds.size()) {
-    delete myBreakConds[brk];
-    myBreakConds.remove_at(brk);
-    myBreakCondNames.remove_at(brk);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::clearCondBreaks()
-{
-  for(unsigned int i=0; i<myBreakConds.size(); i++)
-    delete myBreakConds[i];
-  myBreakConds.clear();
-  myBreakCondNames.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const StringList& M6502::getCondBreakNames()
-{
-  return myBreakCondNames;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int M6502::evalCondBreaks()
-{
-  for(unsigned int i=0; i<myBreakConds.size(); i++) {
-    Expression *e = myBreakConds[i];
-    if(e->evaluate()) {
-      string name = myBreakCondNames[i]; // TODO: use this
-		cerr << "breakpoint due to condition: " << name << endl;
-      return i;
-    }
-  }
-
-  return -1; // no break hit
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -397,6 +349,63 @@ const char* M6502::ourInstructionMnemonicTable[256] = {
   "SED",  "SBC",  "nop",  "isb",  "nop",  "SBC",  "INC",  "isb"
 };
 
+#ifdef DEVELOPER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::attach(Debugger& debugger)
+{
+  // Remember the debugger for this microprocessor
+  myDebugger = &debugger;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unsigned int M6502::addCondBreak(Expression *e, string name)
+{
+  myBreakConds.push_back(e);
+  myBreakCondNames.push_back(name);
+  return myBreakConds.size() - 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::delCondBreak(unsigned int brk)
+{
+  if(brk < myBreakConds.size()) {
+    delete myBreakConds[brk];
+    myBreakConds.remove_at(brk);
+    myBreakCondNames.remove_at(brk);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::clearCondBreaks()
+{
+  for(unsigned int i=0; i<myBreakConds.size(); i++)
+    delete myBreakConds[i];
+  myBreakConds.clear();
+  myBreakCondNames.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const StringList& M6502::getCondBreakNames()
+{
+  return myBreakCondNames;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int M6502::evalCondBreaks()
+{
+  for(unsigned int i=0; i<myBreakConds.size(); i++) {
+    Expression *e = myBreakConds[i];
+    if(e->evaluate()) {
+      string name = myBreakCondNames[i]; // TODO: use this
+		cerr << "breakpoint due to condition: " << name << endl;
+      return i;
+    }
+  }
+
+  return -1; // no break hit
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::setBreakPoints(PackedBitArray *bp) {
 	breakPoints = bp;
 }
@@ -406,4 +415,4 @@ void M6502::setTraps(PackedBitArray *read, PackedBitArray *write) {
   readTraps = read;
   writeTraps = write;
 }
-
+#endif

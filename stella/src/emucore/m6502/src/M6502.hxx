@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.12 2005-08-11 19:12:38 stephena Exp $
+// $Id: M6502.hxx,v 1.13 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -26,10 +26,10 @@ class Deserializer;
 class Debugger;
 class CpuDebug;
 class Expression;
+class PackedBitArray;
 
 #include "bspf.hxx"
 #include "System.hxx"
-#include "PackedBitArray.hxx"
 #include "Array.hxx"
 #include "StringList.hxx"
 
@@ -41,7 +41,7 @@ typedef GUI::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.12 2005-08-11 19:12:38 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.13 2005-08-24 22:54:30 stephena Exp $ 
 */
 class M6502
 {
@@ -86,14 +86,6 @@ class M6502
     */
     virtual void install(System& system);
 
-    /**
-      Attach the specified debugger.
-
-      @param debugger The debugger to attach to the microprocessor.
-    */
-    void attach(Debugger& debugger);
-
-  public:
     /**
       Reset the processor to its power-on state.  This method should not 
       be invoked until the entire 6502 system is constructed and installed
@@ -182,6 +174,15 @@ class M6502
     friend ostream& operator<<(ostream& out, const AddressingMode& mode);
 
   public:
+#ifdef DEVELOPER_SUPPORT
+    /**
+      Attach the specified debugger.
+
+      @param debugger The debugger to attach to the microprocessor.
+    */
+    void attach(Debugger& debugger);
+
+    // TODO - document these methods
     void setBreakPoints(PackedBitArray *bp);
     void setTraps(PackedBitArray *read, PackedBitArray *write);
     int totalInstructionCount() { return myTotalInstructionCount; }
@@ -191,6 +192,7 @@ class M6502
     void clearCondBreaks();
     const StringList& getCondBreakNames();
     int evalCondBreaks();
+#endif
 
   protected:
     /**
@@ -223,9 +225,20 @@ class M6502
     bool notZ;  // Z flag complement for processor status register
     bool C;     // C flag for processor status register
 
+#ifdef DEVELOPER_SUPPORT
+    /// Pointer to the debugger for this processor or the null pointer
+    Debugger* myDebugger;
+
     PackedBitArray *breakPoints;
     PackedBitArray *readTraps;
     PackedBitArray *writeTraps;
+
+    // did we just now hit a trap?
+    bool justHitTrap;
+
+    StringList myBreakCondNames;
+    ExpressionList myBreakConds;
+#endif
 
     /** 
       Bit fields used to indicate that certain conditions need to be 
@@ -247,9 +260,6 @@ class M6502
   
     /// Pointer to the system the processor is installed in or the null pointer
     System* mySystem;
-
-    /// Pointer to the debugger for this processor or the null pointer
-    Debugger* myDebugger;
 
     /// Indicates the number of system cycles per processor cycle 
     const uInt32 mySystemCyclesPerProcessorCycle;
@@ -273,13 +283,7 @@ class M6502
     /// Table of instruction mnemonics
     static const char* ourInstructionMnemonicTable[256];
 
-    // did we just now hit a trap?
-    bool justHitTrap;
-
     int myTotalInstructionCount;
-
-    StringList myBreakCondNames;
-    ExpressionList myBreakConds;
 };
 
 #endif

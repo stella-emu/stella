@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.31 2005-08-24 01:07:36 stephena Exp $
+// $Id: OSystem.cxx,v 1.32 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -34,13 +34,16 @@
   #include "SoundSDL.hxx"
 #endif
 
+#ifdef DEVELOPER_SUPPORT
+  #include "Debugger.hxx"
+#endif
+
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
 #include "Menu.hxx"
 #include "Launcher.hxx"
-#include "Debugger.hxx"
 #include "Font.hxx"
 #include "StellaFont.hxx"
 #include "ConsoleFont.hxx"
@@ -66,7 +69,9 @@ OSystem::OSystem()
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
   myLauncher = new Launcher(this);
+#ifdef DEVELOPER_SUPPORT
   myDebugger = new Debugger(this);
+#endif
 
   // Create fonts to draw text
   myFont        = new GUI::Font(GUI::stellaDesc);
@@ -97,9 +102,12 @@ OSystem::~OSystem()
 
   delete myMenu;
   delete myLauncher;
-  delete myDebugger;
   delete myFont;
   delete myConsoleFont;
+
+#ifdef DEVELOPER_SUPPORT
+  delete myDebugger;
+#endif
 
   // Remove any game console that is currently attached
   delete myConsole;
@@ -220,11 +228,13 @@ cout << " ==> video: " << video << endl;
       myLauncher->initializeVideo();
       break;  // S_LAUNCHER
 
+#ifdef DEVELOPER_SUPPORT
     case EventHandler::S_DEBUGGER:
       myDebugger->initializeVideo();
       break;  // S_DEBUGGER
+#endif
 
-    case EventHandler::S_NONE:
+    default:
       break;
   }
 

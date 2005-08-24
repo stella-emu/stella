@@ -13,13 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.11 2005-07-17 02:26:50 urchlay Exp $
+// $Id: M6502Hi.cxx,v 1.12 2005-08-24 22:54:30 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include "Debugger.hxx"
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Debugger.hxx"
+#endif
 
 #define debugStream cout
 
@@ -29,7 +32,10 @@ M6502High::M6502High(uInt32 systemCyclesPerProcessorCycle)
 {
   myNumberOfDistinctAccesses = 0;
   myLastAddress = 0;
+
+#ifdef DEVELOPER_SUPPORT
   justHitTrap = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,10 +53,11 @@ inline uInt8 M6502High::peek(uInt16 address)
   }
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
 
-  if(readTraps != NULL) {
+#ifdef DEVELOPER_SUPPORT
+  if(readTraps != NULL)
     if(readTraps->isSet(address))
       justHitTrap = true;
-  }
+#endif
 
   return mySystem->peek(address);
 }
@@ -65,10 +72,11 @@ inline void M6502High::poke(uInt16 address, uInt8 value)
   }
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
 
-  if(writeTraps != NULL) {
+#ifdef DEVELOPER_SUPPORT
+  if(writeTraps != NULL)
     if(writeTraps->isSet(address))
       justHitTrap = true;
-  }
+#endif
 
   mySystem->poke(address, value);
 }
@@ -87,6 +95,7 @@ bool M6502High::execute(uInt32 number)
       uInt16 operandAddress = 0;
       uInt8 operand = 0;
 
+#ifdef DEVELOPER_SUPPORT
       if(justHitTrap)
       {
         if(myDebugger->start()) {
@@ -110,6 +119,7 @@ bool M6502High::execute(uInt32 number)
           return true;
         }
       }
+#endif
 
 #ifdef DEBUG
       debugStream << "PC=" << hex << setw(4) << PC << " ";
