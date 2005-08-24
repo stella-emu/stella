@@ -12,7 +12,6 @@ MODULE_OBJS := \
 	src/gui/DialogContainer.o \
 	src/gui/Dialog.o \
 	src/gui/EditableWidget.o \
-	src/gui/EditNumWidget.o \
 	src/gui/EditTextWidget.o \
 	src/gui/EventMappingDialog.o \
 	src/gui/Font.o \

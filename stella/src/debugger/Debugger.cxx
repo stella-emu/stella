@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.86 2005-08-24 13:18:02 stephena Exp $
+// $Id: Debugger.cxx,v 1.87 2005-08-24 22:01:45 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -772,14 +772,15 @@ const string& Debugger::disassemble(int start, int lines) {
 
     result += " ";
     result += buf;
-	 result += "\n";
-  } while(--lines > 0);
+    result += "\n";
+  } while(--lines > 0 && start <= 0xffff);
 
   return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::disassemble(StringList& list, int start, int lines)
+void Debugger::disassemble(StringList& addr, StringList& data,
+                           int start, int lines)
 {
   char buf[255], bbuf[255];
   string result;
@@ -805,9 +806,10 @@ void Debugger::disassemble(StringList& list, int start, int lines)
     result += " ";
     result += buf;
 
-    list.push_back(result);
+    addr.push_back(label);
+    data.push_back(result);
 
-  } while(--lines > 0);
+  } while(--lines > 0 && start <= 0xffff);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.4 2005-08-24 13:18:02 stephena Exp $
+// $Id: RomWidget.cxx,v 1.5 2005-08-24 22:01:45 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,7 +31,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, x, y, 16, 16),
     CommandSender(boss),
     myFirstLoad(true),
-    mySourceAvailable(false)
+    mySourceAvailable(false),
+    myCurrentBank(-1)
 {
   int w = 58 * font.getMaxCharWidth(),
       h = 31 * font.getLineHeight();
@@ -76,7 +77,8 @@ void RomWidget::loadConfig()
      should be filled with new data.
   */
 cerr << "RomWidget::loadConfig()\n";
-  if(myFirstLoad)  // load the whole bank
+  // Only reload full bank when necessary
+  if(myFirstLoad || myCurrentBank != instance()->debugger().getBank())
   {
     initialUpdate();
     myFirstLoad = false;
@@ -92,19 +94,22 @@ void RomWidget::initialUpdate()
 {
   Debugger& dbg = instance()->debugger();
 
+  myCurrentBank = dbg.getBank();
+
   // Fill romlist with entire ROM (FIXME - only fill with current bank)
   if(mySourceAvailable)
     ; // FIXME
   else
   {
-    StringList l;
-    BoolArray b;
+    StringList addr, data;
+    BoolArray  state;
 
-    dbg.disassemble(l, 0, 2048);  // FIXME - use bank size
-    for(int i = 0; i < 2048; ++i)
-      b.push_back(false);
+    // Disassemble entire bank (up to 4096 lines)
+    dbg.disassemble(addr, data, 0xf000, 4096);
+    for(unsigned int i = 0; i < data.size(); ++i)
+      state.push_back(false);
 
-    myRomList->setList(l, b);
+    myRomList->setList(data, state);
   }
 }
 
