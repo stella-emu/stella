@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.61 2005-08-23 18:32:51 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.62 2005-08-24 05:29:59 markgrebe Exp $
 //============================================================================
 
 #include <sstream>
@@ -31,6 +31,12 @@
 #include "Launcher.hxx"
 #include "Debugger.hxx"
 #include "OSystem.hxx"
+#ifdef MAC_OSX
+extern "C" {
+uInt16 macOSXDisplayWidth(void);
+uInt16 macOSXDisplayHeight(void);
+}
+#endif
 
 #include "stella.xpm"   // The Stella icon
 
@@ -98,10 +104,12 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 #elif defined(WIN32)
 	myDesktopDim.w = (uInt16) GetSystemMetrics(SM_CXSCREEN);
 	myDesktopDim.h = (uInt16) GetSystemMetrics(SM_CYSCREEN);
-#elif defined(MAC_OSX)
-	// FIXME - add OSX Desktop code here (I don't think SDL supports it yet)
-#endif
+#endif	
   }
+#if defined(MAC_OSX)
+  myDesktopDim.w = macOSXDisplayWidth();
+  myDesktopDim.h = macOSXDisplayHeight();
+#endif
 
   // Set fullscreen flag
   mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;

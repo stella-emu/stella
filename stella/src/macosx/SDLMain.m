@@ -4,7 +4,7 @@
 
     Feel free to customize this file to suit your needs
 */
-/* $Id: SDLMain.m,v 1.4 2005-05-28 21:06:41 markgrebe Exp $ */
+/* $Id: SDLMain.m,v 1.5 2005-08-24 05:30:00 markgrebe Exp $ */
 
 #import "SDL.h"
 #import "SDLMain.h"
@@ -22,6 +22,17 @@ static BOOL   started=NO;
 static char   startupFile[FILENAME_MAX];
 int fileToLoad = FALSE;
 char parentdir[MAXPATHLEN];
+
+unsigned short macOSXDisplayWidth(void)
+{
+	return(CGDisplayPixelsWide(kCGDirectMainDisplay));
+}
+
+unsigned short macOSXDisplayHeight(void)
+{
+	return(CGDisplayPixelsHigh(kCGDirectMainDisplay));
+}
+
 
 /* A helper category for NSString */
 @interface NSString (ReplaceSubString)
