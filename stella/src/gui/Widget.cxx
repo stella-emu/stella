@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.32 2005-08-23 18:32:51 stephena Exp $
+// $Id: Widget.cxx,v 1.33 2005-08-24 13:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -446,13 +446,6 @@ void CheckboxWidget::setEditable(bool editable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::setFill(bool fill, OverlayColor color)
-{
-  _fillRect  = fill;
-  _fillColor = color;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setState(bool state)
 {
   if(_state != state)
@@ -484,7 +477,8 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(_state)
   {
     if(_fillRect)
-      fb.fillRect(_x + 2, _y + box_yoff + 2, 10, 10, _fillColor);
+      fb.fillRect(_x + 2, _y + box_yoff + 2, 10, 10,
+                  isEnabled() ? _color : kColor);
     else
       fb.drawBitmap(checked_img, _x + 3, _y + box_yoff + 3,
                     isEnabled() ? _color : kColor);

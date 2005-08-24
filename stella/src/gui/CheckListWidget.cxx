@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.4 2005-08-23 18:32:51 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.5 2005-08-24 13:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,11 +61,13 @@ void CheckListWidget::setStyle(CheckStyle style)
     {
       _checkList[i]->drawBox(true);
       _checkList[i]->setFill(false);
+      _checkList[i]->setColor(kTextColor);
     }
     else if(style == kSolidFill)
     {
       _checkList[i]->drawBox(false);
-      _checkList[i]->setFill(true, kTextColorEm);
+      _checkList[i]->setFill(true);
+      _checkList[i]->setColor(kTextColorEm);
     }
   }
 }

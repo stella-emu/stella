@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.1 2005-08-22 13:53:23 stephena Exp $
+// $Id: RomWidget.hxx,v 1.2 2005-08-24 13:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,10 +41,14 @@ class RomWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    void fillGrid();
+    void initialUpdate();
+    void incrementalUpdate();
 
   private:
     CheckListWidget* myRomList;
+
+    bool myFirstLoad;
+    bool mySourceAvailable;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.85 2005-08-22 18:17:10 stephena Exp $
+// $Id: Debugger.cxx,v 1.86 2005-08-24 13:18:02 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -776,6 +776,38 @@ const string& Debugger::disassemble(int start, int lines) {
   } while(--lines > 0);
 
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::disassemble(StringList& list, int start, int lines)
+{
+  char buf[255], bbuf[255];
+  string result;
+
+  do {
+    result = "";
+
+    const char *label = equateList->getFormatted(start, 4);
+
+    result += label;
+    result += ": ";
+
+    int count = myCpuDebug->disassemble(start, buf, equateList);
+
+    for(int i=0; i<count; i++) {
+      sprintf(bbuf, "%02x ", peek(start++));
+      result += bbuf;
+    }
+
+    if(count < 3) result += "   ";
+    if(count < 2) result += "   ";
+
+    result += " ";
+    result += buf;
+
+    list.push_back(result);
+
+  } while(--lines > 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

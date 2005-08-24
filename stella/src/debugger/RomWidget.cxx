@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.3 2005-08-23 18:32:51 stephena Exp $
+// $Id: RomWidget.cxx,v 1.4 2005-08-24 13:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,6 +21,7 @@
 
 #include <sstream>
 
+#include "Debugger.hxx"
 #include "GuiObject.hxx"
 #include "CheckListWidget.hxx"
 #include "RomWidget.hxx"
@@ -28,7 +29,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, x, y, 16, 16),
-    CommandSender(boss)
+    CommandSender(boss),
+    myFirstLoad(true),
+    mySourceAvailable(false)
 {
   int w = 58 * font.getMaxCharWidth(),
       h = 31 * font.getLineHeight();
@@ -54,7 +57,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case kListScrolledCmd:
-      cerr << "data invalidated; refill list\n";
+      incrementalUpdate();
       break;
 
     case kListItemChecked:
@@ -73,24 +76,39 @@ void RomWidget::loadConfig()
      should be filled with new data.
   */
 cerr << "RomWidget::loadConfig()\n";
-  fillGrid();
-  myRomList->setDirty(); myRomList->draw();
+  if(myFirstLoad)  // load the whole bank
+  {
+    initialUpdate();
+    myFirstLoad = false;
+  }
+  else  // only reload what's in current view
+  {
+    incrementalUpdate();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::fillGrid()
+void RomWidget::initialUpdate()
 {
-  StringList l;
-  BoolArray b;
+  Debugger& dbg = instance()->debugger();
 
-  for(int i = 0; i < 50; ++i)
+  // Fill romlist with entire ROM (FIXME - only fill with current bank)
+  if(mySourceAvailable)
+    ; // FIXME
+  else
   {
-    ostringstream tmp;
-    tmp << "Test line " << i;
-    l.push_back(tmp.str());
+    StringList l;
+    BoolArray b;
 
-    b.push_back(false);
+    dbg.disassemble(l, 0, 2048);  // FIXME - use bank size
+    for(int i = 0; i < 2048; ++i)
+      b.push_back(false);
+
+    myRomList->setList(l, b);
   }
+}
 
-  myRomList->setList(l, b);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::incrementalUpdate()
+{
 }

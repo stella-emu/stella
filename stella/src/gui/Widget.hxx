@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.34 2005-08-23 18:32:51 stephena Exp $
+// $Id: Widget.hxx,v 1.35 2005-08-24 13:18:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -71,7 +71,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.34 2005-08-23 18:32:51 stephena Exp $
+  @version $Id: Widget.hxx,v 1.35 2005-08-24 13:18:02 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -225,12 +225,12 @@ class CheckboxWidget : public ButtonWidget
     void holdFocus(bool status) { _holdFocus = status; }
 
     void setEditable(bool editable);
-    void setFill(bool fill, OverlayColor color = kColor);
-    void drawBox(bool draw) { _drawBox = draw; }
+    void setFill(bool fill) { _fillRect = fill; }
+    void drawBox(bool draw) { _drawBox = draw;  }
 
     void setState(bool state);
     void toggleState()     { setState(!_state); }
-    bool getState() const  { return _state; }
+    bool getState() const  { return _state;     }
 
     static int boxSize() { return 14; }  // box is square
 
