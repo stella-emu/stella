@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.34 2005-08-11 19:12:37 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.35 2005-08-24 01:07:36 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -30,10 +30,11 @@
 #include "GuiUtils.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
+FrameBufferSoft::FrameBufferSoft(OSystem* osystem, bool useHardSurface)
   : FrameBuffer(osystem),
     myRectList(NULL),
-    myOverlayRectList(NULL)
+    myOverlayRectList(NULL),
+    myUseHardSurface(useHardSurface)
 {
 }
 
@@ -47,7 +48,10 @@ FrameBufferSoft::~FrameBufferSoft()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSoft::initSubsystem()
 {
-  mySDLFlags |= SDL_SWSURFACE;
+  if(myUseHardSurface)
+    mySDLFlags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
+  else
+    mySDLFlags |= SDL_SWSURFACE;
 
   // Set up the rectangle list to be used in the dirty update
   delete myRectList;
@@ -274,9 +278,10 @@ void FrameBufferSoft::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::postFrameUpdate()
 {
-  // Now update all the rectangles at once
-  SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
-//  SDL_UpdateRect(myScreen, 0, 0, 0, 0);
+  if(myUseHardSurface)
+    SDL_Flip(myScreen);
+  else
+    SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.21 2005-08-16 18:34:12 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.22 2005-08-24 01:07:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,8 +72,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myRendererPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
                                     "Renderer: ", labelWidth, kRendererChanged);
   myRendererPopup->appendEntry("Software", 1);
+  myRendererPopup->appendEntry("Hardware", 2);
 #ifdef DISPLAY_OPENGL
-  myRendererPopup->appendEntry("OpenGL", 2);
+  myRendererPopup->appendEntry("OpenGL", 3);
 #endif
   yoff += kVideoRowHeight + 4;
 
@@ -170,10 +171,13 @@ void VideoDialog::loadConfig()
 
   // Renderer setting
   s = instance()->settings().getString("video");
+cout << " ==> video: " << s << endl;
   if(s == "soft")
     myRendererPopup->setSelectedTag(1);
-  else if(s == "gl")
+  else if(s == "hard")
     myRendererPopup->setSelectedTag(2);
+  else if(s == "gl")
+    myRendererPopup->setSelectedTag(3);
   else
     myRendererPopup->setSelectedTag(1);
 
@@ -244,6 +248,8 @@ void VideoDialog::saveConfig()
   if(i == 1)
     s = "soft";
   else if(i == 2)
+    s = "hard";
+  else if(i == 3)
     s = "gl";
   if(s != instance()->settings().getString("video"))
   {
@@ -341,7 +347,7 @@ void VideoDialog::setDefaults()
 void VideoDialog::handleRendererChange(int item)
 {
   // When we're in software mode, certain OpenGL-related options are disabled
-  bool active = item == 0 ? false : true;
+  bool active = (item == 0 || item == 1) ? false : true;
 
   myFilterPopup->setEnabled(active);
   myAspectRatioSlider->setEnabled(active);

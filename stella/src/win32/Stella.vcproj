@@ -129,9 +129,6 @@ opengl32.lib"
 				RelativePath="..\gui\AboutDialog.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\AddrValueWidget.cxx">
-			</File>
-			<File
 				RelativePath="..\gui\AudioDialog.cxx">
 			</File>
 			<File
@@ -228,6 +225,9 @@ opengl32.lib"
 				RelativePath="..\gui\CheatCodeDialog.cxx">
 			</File>
 			<File
+				RelativePath="..\gui\CheckListWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\debugger\CheetahCheat.cxx">
 			</File>
 			<File
@@ -286,9 +286,6 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\gui\EditableWidget.cxx">
-			</File>
-			<File
-				RelativePath="..\gui\EditNumWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\gui\EditTextWidget.cxx">
@@ -471,6 +468,9 @@ opengl32.lib"
 				RelativePath="..\emucore\Random.cxx">
 			</File>
 			<File
+				RelativePath="..\debugger\RomWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\gui\ScrollBarWidget.cxx">
 			</File>
 			<File
@@ -496,6 +496,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\common\SoundSDL.cxx">
+			</File>
+			<File
+				RelativePath="..\gui\StringListWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Switches.cxx">
@@ -531,6 +534,12 @@ opengl32.lib"
 				RelativePath="..\gui\ToggleBitWidget.cxx">
 			</File>
 			<File
+				RelativePath="..\gui\TogglePixelWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\gui\ToggleWidget.cxx">
+			</File>
+			<File
 				RelativePath="..\debugger\UnaryMinusExpression.cxx">
 			</File>
 			<File
@@ -555,9 +564,6 @@ opengl32.lib"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath="..\gui\AboutDialog.hxx">
-			</File>
-			<File
-				RelativePath="..\gui\AddrValueWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\Array.hxx">
@@ -662,6 +668,9 @@ opengl32.lib"
 				RelativePath="..\gui\CheatCodeDialog.hxx">
 			</File>
 			<File
+				RelativePath="..\gui\CheckListWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\debugger\CheetahCheat.hxx">
 			</File>
 			<File
@@ -726,9 +735,6 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\gui\EditableWidget.hxx">
-			</File>
-			<File
-				RelativePath="..\gui\EditNumWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\EditTextWidget.hxx">
@@ -917,6 +923,9 @@ opengl32.lib"
 				RelativePath="..\emucore\Random.hxx">
 			</File>
 			<File
+				RelativePath="..\debugger\RomWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\gui\ScrollBarWidget.hxx">
 			</File>
 			<File
@@ -959,6 +968,9 @@ opengl32.lib"
 				RelativePath="..\gui\StringList.hxx">
 			</File>
 			<File
+				RelativePath="..\gui\StringListWidget.hxx">
+			</File>
+			<File
 				RelativePath="..\emucore\Switches.hxx">
 			</File>
 			<File
@@ -990,6 +1002,12 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\gui\ToggleBitWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\gui\TogglePixelWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\gui\ToggleWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\UnaryMinusExpression.hxx">

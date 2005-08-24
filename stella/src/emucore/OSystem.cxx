@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.30 2005-08-11 19:12:38 stephena Exp $
+// $Id: OSystem.cxx,v 1.31 2005-08-24 01:07:36 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -159,6 +159,7 @@ void OSystem::setConfigFiles(const string& userconfig,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createFrameBuffer(bool showmessage)
 {
+/* FIXME - this will probably be discontinued for 2.0
   // Set the SDL_VIDEODRIVER environment variable, if possible
   string videodriver = mySettings->getString("video_driver");
   if(videodriver != "")
@@ -172,14 +173,18 @@ bool OSystem::createFrameBuffer(bool showmessage)
       cout << buf << endl << endl;
     }
   }
-
+*/
   // Delete the old framebuffer
   delete myFrameBuffer;  myFrameBuffer = NULL;
 
   // And recreate a new one
   string video = mySettings->getString("video");
+cout << " ==> video: " << video << endl;
+
   if(video == "soft")
     myFrameBuffer = new FrameBufferSoft(this);
+  else if(video == "hard")
+    myFrameBuffer = new FrameBufferSoft(this, true);
 #ifdef DISPLAY_OPENGL
   else if(video == "gl")
     myFrameBuffer = new FrameBufferGL(this);
@@ -199,7 +204,9 @@ bool OSystem::createFrameBuffer(bool showmessage)
       if(showmessage)
       {
         if(video == "soft")
-          myFrameBuffer->showMessage("Software mode");
+          myFrameBuffer->showMessage("Software mode (S)");
+        else if(video == "hard")
+          myFrameBuffer->showMessage("Software mode (H)");
       #ifdef DISPLAY_OPENGL
         else if(video == "gl")
           myFrameBuffer->showMessage("OpenGL mode");
@@ -230,6 +237,8 @@ void OSystem::toggleFrameBuffer()
   // First figure out which mode to switch to
   string video = mySettings->getString("video");
   if(video == "soft")
+    video = "hard";
+  else if(video == "hard")
     video = "gl";
   else if(video == "gl")
     video = "soft";
