@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.87 2005-08-25 15:19:17 stephena Exp $
+// $Id: EventHandler.cxx,v 1.88 2005-08-25 16:29:52 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1434,13 +1434,13 @@ void EventHandler::takeSnapshot()
   string sspath = myOSystem->settings().getString("ssdir");
   string ssname = myOSystem->settings().getString("ssname");
 
-  char separator = ssname[ssname.length()-1] != '/' ? BSPF_PATH_SEPARATOR : '';
+  if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
+    sspath += BSPF_PATH_SEPARATOR;
+
   if(ssname == "romname")
-    sspath = sspath + separator +
-             myOSystem->console().properties().get("Cartridge.Name");
+    sspath += myOSystem->console().properties().get("Cartridge.Name");
   else if(ssname == "md5sum")
-    sspath = sspath + separator +
-             myOSystem->console().properties().get("Cartridge.MD5");
+    sspath += myOSystem->console().properties().get("Cartridge.MD5");
 
   // Check whether we want multiple snapshots created
   if(!myOSystem->settings().getBool("sssingle"))
