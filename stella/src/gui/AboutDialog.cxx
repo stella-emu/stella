@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.6 2005-08-11 21:57:30 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.7 2005-08-25 15:19:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,6 +111,8 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       ADD_ATEXT("\\L\\c2""    Original author for OS/2 port");
       ADD_ATEXT("\\L\\c0""  Doodle");
       ADD_ATEXT("\\L\\c2""    Current maintainer for OS/2 port");
+      ADD_ATEXT("\\L\\c0""  David Voswinkel");
+      ADD_ATEXT("\\L\\c2""    Maintainer for PSP port");
       break;
 
     case 4:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.55 2005-08-24 01:07:36 stephena Exp $
+// $Id: Settings.cxx,v 1.56 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -83,6 +83,11 @@ void Settings::loadConfig()
 {
   string line, key, value;
   string::size_type equalPos, garbage;
+
+  // FIXME - add infrastructure to print output
+#ifdef PSP_DEBUG
+  fprintf(stdout,"Settings::loadConfig '%s'\n",myOSystem->configInputFilename().c_str());
+#endif
 
   ifstream in(myOSystem->configInputFilename().c_str());
   if(!in || !in.is_open())

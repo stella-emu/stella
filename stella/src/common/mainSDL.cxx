@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.48 2005-06-28 04:40:21 urchlay Exp $
+// $Id: mainSDL.cxx,v 1.49 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -45,9 +45,16 @@
 #elif defined(MAC_OSX)
   #include "SettingsMACOSX.hxx"
   #include "OSystemMACOSX.hxx"
-extern "C" {
-int stellaMain(int argc, char* argv[]);
-}
+
+  extern "C" {
+  int stellaMain(int argc, char* argv[]);
+  }
+#elif defined(PSP)
+  #include "SettingsPSP.hxx"
+  #include "OSystemPSP.hxx"
+  extern "C" {
+    int SDL_main(int argc, char* argv[]);
+  }
 #else
   #error Unsupported platform!
 #endif
@@ -104,6 +111,8 @@ void Cleanup()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #if defined(MAC_OSX)
 int stellaMain(int argc, char* argv[])
+#elif defined(PSP)
+int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
 #endif
@@ -118,9 +127,15 @@ int main(int argc, char* argv[])
 #elif defined(MAC_OSX)
   theOSystem = new OSystemMACOSX();
   SettingsMACOSX settings(theOSystem);
+#elif defined(PSP)
+  fprintf(stderr,"---------------- Stderr Begins ----------------\n");
+  fprintf(stdout,"---------------- Stdout Begins ----------------\n");
+  theOSystem = new OSystemPSP();
+  SettingsPSP settings(theOSystem);
 #else
   #error Unsupported platform!
 #endif
+
   theOSystem->settings().loadConfig();
 
   // Take care of commandline arguments

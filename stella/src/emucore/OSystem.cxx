@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.32 2005-08-24 22:54:30 stephena Exp $
+// $Id: OSystem.cxx,v 1.33 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -187,7 +187,6 @@ bool OSystem::createFrameBuffer(bool showmessage)
 
   // And recreate a new one
   string video = mySettings->getString("video");
-cout << " ==> video: " << video << endl;
 
   if(video == "soft")
     myFrameBuffer = new FrameBufferSoft(this);

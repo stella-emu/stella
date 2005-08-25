@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.35 2005-08-24 01:07:36 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.36 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -97,7 +97,30 @@ bool FrameBufferSoft::createScreen()
 
   // In software mode, the image and screen dimensions are always the same
   myImageDim = myScreenDim;
-
+					
+#ifdef PSP
+  if (myUseHardSurface)
+  {
+    /* double buff is broken */
+    mySDLFlags = SDL_HWSURFACE;
+    myScreenDim.w = myDesktopDim.w;
+    myScreenDim.h = myDesktopDim.w;
+  #ifdef PSP_DEBUG
+    fprintf(stdout, "FrameBufferSoft::createScreen Hardware Mode "
+            "myScreenDim.w='%i' myScreenDim.h='%i'\n",
+             myScreenDim.w,myScreenDim.h);
+  #endif
+  }
+  else
+  {
+  #ifdef PSP_DEBUG
+    fprintf(stdout, "FrameBufferSoft::createScreen Software Mode "
+            "myScreenDim.w='%i' myScreenDim.h='%i'\n",
+            myScreenDim.w,myScreenDim.h);
+  #endif
+  }
+#endif
+	
   myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 0, mySDLFlags);
   if(myScreen == NULL)
   {

@@ -112,15 +112,19 @@ find_sdlconfig()
 	_sdlconfig=
 	
 	IFS="${IFS=   }"; ac_save_ifs="$IFS"; IFS=":"
-	
+	done=0
 	for path_dir in $_sdlpath; do
 		for sdlconfig in $sdlconfigs; do
 			if test -x "$path_dir/$sdlconfig" ; then
 				_sdlconfig="$path_dir/$sdlconfig"
-				echo $_sdlconfig
+				done=1
 				break
 			fi
 		done
+		if test $done -eq 1 ; then
+			echo $_sdlconfig
+			break
+		fi
 	done
 	
 	IFS="$ac_save_ifs"
@@ -341,6 +345,14 @@ ppc-amigaos)
 	_host_os=amigaos
 	_host_cpu=ppc
 	;;
+psp)
+	_host_os=psp
+	_host_cpu=mips
+	_png=yes
+	# force psp sdl path 
+	_sdlpath=$(psp-config --pspdev-path)/psp/bin:$_sdlpath
+	PATH=$(psp-config --pspdev-path)/psp/bin:$(psp-config --pspdev-path)/bin:$PATH
+	;;
 *)
 	guessed_host=`$_srcdir/config.guess`
 	_host_cpu=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
@@ -359,6 +371,9 @@ mingw* | cygwin*)
 arm-riscos-aof)
 	EXEEXT=",ff8"
 	;;
+psp)
+	EXEEXT=".elf"
+	;;
 *)
 	EXEEXT=""
 	;;
@@ -375,6 +390,11 @@ else
 fi
 
 CXX=
+if [ "$_host" = "psp" ] ; then
+	compilers="$CXX psp-g++ psp-c++"
+	CXX="psp-c++"
+fi
+
 for compiler in $compilers; do
 	if test_compiler $compiler; then
 	CXX=$compiler
@@ -392,7 +412,7 @@ fi
 
 echocheck "compiler version"
 
-cxx_name=`( $cc -v ) 2>&1 | tail -1 | cut -d ' ' -f 1`
+cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
 cxx_version=`( $CXX -dumpversion ) 2>&1`
 if test "$?" -gt 0; then
 	cxx_version="not found"
@@ -465,6 +485,8 @@ if test -n "$_host"; then
 			type_4_byte='long'
 			CXXFLAGS="$CFLAGS -newlib -mstrict-align -mcpu=750 -mtune=7400"
 			LDFLAGS="$LDFLAGS -newlib"
+			;;
+		psp)
 			;;
 		*)
 			echo "Cross-compiling to unknown target, please add your target to configure."
@@ -669,7 +691,7 @@ else
 fi
 
 LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs` -lz"
-
+LD=$CXX 
 case $_host_os in
 		unix)
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
@@ -692,6 +714,33 @@ case $_host_os in
 				DEFINES="$DEFINES -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST"
 				LIBS="$LIBS -lopengl32"
 			fi
+			;;
+		psp)
+			# -O3 is need for speed
+			# -G0 to avoid c++ link problems
+			CXXFLAGS="-G0 -O3 -fomit-frame-pointer -funroll-loops"
+			# 2 times -lc to avoid link problems. psp-gcc seems to to forget the first -lc wiile stdc++ linking
+			LIBS="-L `psp-config  --pspsdk-path`/lib -L`psp-config  --pspsdk-path`/../lib  "
+			LIBS="$LIBS -lSDLmain -lSDL -lpng -lm -lpspsdk -lpspdebug -lpspgu -lpspctrl "
+			LIBS="$LIBS -lpspaudio -lc -lz -lpspkernel -lpspuser -lpspge -lpspdisplay -lpsphprm -lstdc++ -lc"
+			# psp compiler
+			CC="psp-gcc"
+			LD="psp-gcc"
+			_ranlib="psp-ranlib"
+			_ar="psp-ar cru"
+        
+			MODULES="$MODULES  src/psp"
+
+			# psp specific tool 
+			PSP_STRIP=`psp-config  --pspdev-path`"/bin/psp-strip"
+			PACK_PBP=`psp-config  --pspdev-path`"/bin/pack-pbp"
+			MKSFO="`psp-config  --pspdev-path`/bin/mksfo"
+
+			# mount point of psp
+			PSP_MOUNTPOINT="/mnt/psp"
+
+			INCLUDES="$INCLUDES -Isrc/psp  -I`psp-config --pspsdk-path`/include"
+			DEFINES="$DEFINES -Dmain=SDL_main -DPSP -DBSPF_PSP -DPSP_DEBUG"
 			;;
 		*)
 			echo "WARNING: host system not currenty supported"
@@ -726,6 +775,7 @@ cat > config.mak << EOF
 
 CXX := $CXX
 CXXFLAGS := $CXXFLAGS
+LD := $LD
 LIBS += $LIBS
 RANLIB := $_ranlib
 INSTALL := $_install
@@ -757,6 +807,17 @@ OBJS += $OBJS
 DEFINES += $DEFINES
 LDFLAGS += $LDFLAGS
 EOF
+
+if test $_host_os = "psp" ; then
+cat >> config.mak << EOF
+
+PSP-STRIP       := $PSP_STRIP
+PACK-PBP        := $PACK_PBP
+MKSFO           := $MKSFO
+PSP-MOUNTPOINT  := $PSP_MOUNTPOINT
+EOF
+fi
+
 
 # This should be taken care of elsewhere, but I'm not sure where
 rm -f stella-conf*

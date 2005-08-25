@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.86 2005-08-24 22:54:30 stephena Exp $
+// $Id: EventHandler.cxx,v 1.87 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -56,7 +56,12 @@ EventHandler::EventHandler(OSystem* osystem)
       myQuitFlag(false),
       myGrabMouseFlag(false),
       myUseLauncherFlag(false),
-      myPaddleMode(0)
+      myPaddleMode(0),
+      myMouseX(0),
+      myMouseY(0),
+      myLastMouseMoveX(0),
+      myLastMouseMoveY(0)
+
 {
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
@@ -75,7 +80,7 @@ EventHandler::EventHandler(OSystem* osystem)
   for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     myJoyTable[i] = Event::NoType;
 
-  // Erase the Message array 
+  // Erase the Message array
   for(Int32 i = 0; i < Event::LastType; ++i)
     ourMessageTable[i] = "";
 
@@ -472,6 +477,7 @@ void EventHandler::poll(uInt32 time)
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
 
+
       case SDL_MOUSEMOTION:
         handleMouseMotionEvent(event);
         break; // SDL_MOUSEMOTION
@@ -533,14 +539,19 @@ void EventHandler::poll(uInt32 time)
 
             code  = event.jbutton.button;
             state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
-
+#ifdef PSP
+            handleWarpMouseButton(code,state);
+#endif
             handleJoyEvent(stick, code, state);
             break;
 
           case SDL_JOYAXISMOTION:
             axis = event.jaxis.axis;
             value = event.jaxis.value;
-
+#ifdef PSP
+            if (state!=S_EMULATE)
+                handleMouseWarp(stick,axis,value);
+#endif
             if(axis == 0)  // x-axis
             {
               handleJoyEvent(stick, kJAxisLeft, (value < -16384) ? 1 : 0);
@@ -807,6 +818,126 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleWarpMouseButton(uInt8 event_button, uInt8 state)
+{
+#ifdef PSP
+  // Determine which mode we're in, then send the event to the appropriate place
+    switch(myState)
+    {
+        case S_EMULATE:
+        {
+            /* map joypad button to sdl key events*/
+            if (event_button == 11){    /*start*/
+                handleKeyEvent(0,SDLK_ESCAPE,(SDLMod)0,state);
+            } else if (event_button == 10){ /*select*/
+                handleKeyEvent(0,SDLK_TAB,(SDLMod)0,state);
+            } else if (event_button == 6){
+                handleKeyEvent(0,SDLK_UP,(SDLMod)0,state);
+            } else if (event_button == 8){
+                handleKeyEvent(0,SDLK_DOWN,(SDLMod)0,state);
+            } else if (event_button == 9){
+                handleKeyEvent(0,SDLK_RIGHT,(SDLMod)0,state);
+            } else if (event_button == 7){
+                handleKeyEvent(0,SDLK_LEFT,(SDLMod)0,state);
+            } else if (event_button == 0){ /*triangle*/
+                handleKeyEvent(0,SDLK_PAUSE,(SDLMod)0,state);
+            } else if (event_button == 2){ /*cross*/
+                handleKeyEvent(0,SDLK_SPACE,(SDLMod)0,state);
+            } else if (event_button == 1){ /*circle*/
+                handleKeyEvent(0,SDLK_F12,(SDLMod)0,state);
+            } else if (event_button == 3 && state){ /*square*/
+                myOSystem->console().toggleFormat();
+            } else if (event_button == 4){ /*left trigger*/
+                handleKeyEvent(0,SDLK_F11,(SDLMod)0,state);
+            } else if (event_button == 5){ /*right trigger*/
+                handleKeyEvent(0,SDLK_F9,(SDLMod)0,state);
+            }
+            break;
+        }
+
+        case S_MENU:
+        case S_LAUNCHER:
+        case S_DEBUGGER:
+        {
+            /* map up and down buttions to sdl events */
+            if (event_button == 8){
+                handleKeyEvent(0,SDLK_UP,(SDLMod)0,state);
+                break;
+            }   else if (event_button == 6){
+                handleKeyEvent(0,SDLK_DOWN,(SDLMod)0,state);
+                break;
+            }
+            Int32 x = myMouseX;
+            Int32 y = myMouseY;
+            myOSystem->frameBuffer().translateCoords(&x, &y);
+            MouseButton button;
+
+            /* enable 'select' button */
+            if (event_button == 10 && state){
+                handleKeyEvent(0,SDLK_TAB,(SDLMod)0,state);
+                break;
+            }
+            /* map the buttons to sdl mouse buttton events*/
+            if(state)
+            {
+                if(event_button  == 2)
+                    button = EVENT_LBUTTONDOWN;
+                else if(event_button == 1)
+                    button = EVENT_RBUTTONDOWN;
+                else
+                    break;
+            }
+            else
+            {
+                if(event_button == 2)
+                    button = EVENT_LBUTTONUP;
+                else if(event_button == 1)
+                    button = EVENT_RBUTTONUP;
+                else
+                    break;
+            }
+
+            if(myState == S_MENU)
+                myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
+            else if(myState == S_LAUNCHER)
+                myOSystem->launcher().handleMouseButtonEvent(button, x, y, state);
+            else
+                myOSystem->debugger().handleMouseButtonEvent(button, x, y, state);
+            break;
+        }
+
+        default:
+            break;
+    }
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleMouseWarp(uInt8 stick,uInt8 axis,Int16 value)
+{
+#ifdef PSP
+    Int32 new_x = myMouseX;
+    Int32 new_y = myMouseY;
+    value = value / 4000;
+    if (axis == 0)
+    {
+        myLastMouseMoveX = value;
+    }
+    else if (axis == 1)
+    {
+        myLastMouseMoveY = value;
+    }
+    new_x += myLastMouseMoveX;
+    new_y += myLastMouseMoveY;
+
+    if (new_x >=0  and new_x <= PSP_SCREEN_WIDTH)
+        myMouseX = new_x;
+    if (new_y >=0  and new_y <= PSP_SCREEN_HEIGHT)
+        myMouseY = new_y;
+    SDL_WarpMouse(myMouseX,myMouseY);
+#endif
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
@@ -1293,17 +1424,22 @@ void EventHandler::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::takeSnapshot()
 {
+#ifdef PSP_DEBUG
+  fprintf(stdout,"EventHandler::takeSnapshot\n");
+#endif
+
 #ifdef SNAPSHOT_SUPPORT
   // Figure out the correct snapshot name
   string filename;
   string sspath = myOSystem->settings().getString("ssdir");
   string ssname = myOSystem->settings().getString("ssname");
 
+  char separator = ssname[ssname.length()-1] != '/' ? BSPF_PATH_SEPARATOR : '';
   if(ssname == "romname")
-    sspath = sspath + BSPF_PATH_SEPARATOR +
+    sspath = sspath + separator +
              myOSystem->console().properties().get("Cartridge.Name");
   else if(ssname == "md5sum")
-    sspath = sspath + BSPF_PATH_SEPARATOR +
+    sspath = sspath + separator +
              myOSystem->console().properties().get("Cartridge.MD5");
 
   // Check whether we want multiple snapshots created
@@ -1319,6 +1455,9 @@ void EventHandler::takeSnapshot()
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
+#ifdef PSP_DEBUG
+        fprintf(stdout,"EventHandler::takeSnapshot '%s'\n",buf.str().c_str());
+#endif
         if(!FilesystemNode::fileExists(buf.str()))
           break;
       }
@@ -1331,7 +1470,7 @@ void EventHandler::takeSnapshot()
   // Now create a Snapshot object and save the PNG
   myOSystem->frameBuffer().refresh(true);
   Snapshot snapshot(myOSystem->frameBuffer());
-  string result = snapshot.savePNG(filename);
+  string result  = snapshot.savePNG(filename);
   myOSystem->frameBuffer().showMessage(result);
 #else
   myOSystem->frameBuffer().showMessage("Snapshots unsupported");

@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.6 2005-07-01 13:59:40 stephena Exp $
+## $Id: Makefile,v 1.7 2005-08-25 15:19:17 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -109,7 +109,7 @@ DEPFILES =
 
 # The build rule for the Stella executable
 $(EXECUTABLE):  $(OBJS)
-	$(CXX) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) -o $@
+	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) -o $@
 
 distclean: clean
 	$(RM_REC) $(DEPDIRS)
@@ -247,6 +247,40 @@ win32dist: scummvm$(EXEEXT)
 	cp /usr/local/README-SDL.txt $(WIN32PATH)
 	cp /usr/local/bin/SDL.dll $(WIN32PATH)
 	u2d $(WIN32PATH)/*.txt
+
+# Special target to create psp stuff
+psp-package: $(EXECUTABLE)
+	$(MKSFO) 'Stella' PARAM.SFO
+	mkdir -p "psp/stella"
+	$(PSP-STRIP) stella.elf -o psp/stella/EBOOT.PBP
+	mkdir -p "psp/stella%"
+	$(PACK-PBP) "psp/stella%/EBOOT.PBP" PARAM.SFO src/psp/data/ICON0.PNG NULL NULL src/psp/data/PIC1.PNG  NULL NULL NULL
+	rm -f PARAM.SFO
+	
+psp-upload: psp-package
+	mount | grep  $(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
+	cp -rv "psp/stella" "psp/stella%" $(PSP-MOUNTPOINT)/psp/game/
+	umount $(PSP-MOUNTPOINT)
+
+psp-debug:
+	mount | grep \$(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
+	@cat $(PSP-MOUNTPOINT)/stderr.txt
+	@echo -e "\n\n------------------------------------------------------------"
+	@cat $(PSP-MOUNTPOINT)/stdout.txt
+	umount $(PSP-MOUNTPOINT)
+
+psp-cleanup:
+	rm -rf psp
+	mount | grep $(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
+	rm -rf  $(PSP-MOUNTPOINT)/std*
+	umount $(PSP-MOUNTPOINT)
+	
+psp-layout:
+	mount | grep $(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
+	mkdir -p $(PSP-MOUNTPOINT)/stella/roms
+	mkdir -p $(PSP-MOUNTPOINT)/stella/snapshots
+	cp -v src/psp/data/stellarc.psp $(PSP-MOUNTPOINT)/stella/stellarc
+	umount $(PSP-MOUNTPOINT)
 
 
 .PHONY: deb bundle test osxsnap win32dist dist install uninstall

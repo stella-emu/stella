@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.19 2005-06-28 23:18:15 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.20 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -98,8 +98,14 @@ void SoundSDL::initialize(bool forcerestart)
       uInt32 fragsize = myOSystem->settings().getInt("fragsize");
 
       SDL_AudioSpec desired;
-      desired.freq = 31400;
+#ifndef PSP
+      desired.freq   = 31400;
       desired.format = AUDIO_U8;
+else
+      desired.freq   = 44100;
+      desired.format = AUDIO_U16;
+#endif
+
       desired.channels = 1;
       desired.samples = fragsize;
       desired.callback = callback;
@@ -138,7 +144,7 @@ void SoundSDL::initialize(bool forcerestart)
       */
 
       // Now initialize the TIASound object which will actually generate sound
-      Tia_sound_init(31400, myHardwareSpec.freq);
+      Tia_sound_init(desired.freq, myHardwareSpec.freq);
 
       // And start the SDL sound subsystem ...
       SDL_PauseAudio(0);

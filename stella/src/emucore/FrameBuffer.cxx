@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.64 2005-08-25 01:20:11 markgrebe Exp $
+// $Id: FrameBuffer.cxx,v 1.65 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -35,8 +35,10 @@
   #include "Debugger.hxx"
 #endif
 
-#ifdef MAC_OSX
-#include "macOSXDisplay.h"
+#if defined(MAC_OSX)
+  #include "macOSXDisplay.h"
+#elif defined(PSP)
+  #include "DisplayPSP.hxx"
 #endif
 
 #include "stella.xpm"   // The Stella icon
@@ -85,31 +87,29 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   }
 
   // Calculate the desktop size
+  // This is really the job of SDL
   myDesktopDim.w = myDesktopDim.h = 0;
-
-  // Get the system-specific WM information
+#if defined(UNIX)
   SDL_SysWMinfo myWMInfo;
   SDL_VERSION(&myWMInfo.version);
-  if(SDL_GetWMInfo(&myWMInfo) > 0)
+  if(SDL_GetWMInfo(&myWMInfo) > 0 && myWMInfo.subsystem == SDL_SYSWM_X11)
   {
-#if defined(UNIX)
-	if(myWMInfo.subsystem == SDL_SYSWM_X11)
-	{
-	  myWMInfo.info.x11.lock_func();
-	  myDesktopDim.w = DisplayWidth(myWMInfo.info.x11.display,
-						 DefaultScreen(myWMInfo.info.x11.display));
-	  myDesktopDim.h = DisplayHeight(myWMInfo.info.x11.display,
-						 DefaultScreen(myWMInfo.info.x11.display));
-	  myWMInfo.info.x11.unlock_func();
-	}
-#elif defined(WIN32)
-	myDesktopDim.w = (uInt16) GetSystemMetrics(SM_CXSCREEN);
-	myDesktopDim.h = (uInt16) GetSystemMetrics(SM_CYSCREEN);
-#endif	
+    myWMInfo.info.x11.lock_func();
+    myDesktopDim.w = DisplayWidth(myWMInfo.info.x11.display,
+                     DefaultScreen(myWMInfo.info.x11.display));
+    myDesktopDim.h = DisplayHeight(myWMInfo.info.x11.display,
+                     DefaultScreen(myWMInfo.info.x11.display));
+    myWMInfo.info.x11.unlock_func();
   }
-#if defined(MAC_OSX)
+#elif defined(WIN32)
+  myDesktopDim.w = (uInt16) GetSystemMetrics(SM_CXSCREEN);
+  myDesktopDim.h = (uInt16) GetSystemMetrics(SM_CYSCREEN);
+#elif defined(MAC_OSX)
   myDesktopDim.w = macOSXDisplayWidth();
   myDesktopDim.h = macOSXDisplayHeight();
+#elif defined(PSP)
+  myDesktopDim.w = PSP_SCREEN_WIDTH;
+  myDesktopDim.h = PSP_SCREEN_HEIGHT;
 #endif
 
   // Set fullscreen flag

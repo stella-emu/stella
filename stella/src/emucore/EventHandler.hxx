@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.45 2005-08-11 19:12:38 stephena Exp $
+// $Id: EventHandler.hxx,v 1.46 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.45 2005-08-11 19:12:38 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.46 2005-08-25 15:19:17 stephena Exp $
 */
 class EventHandler
 {
@@ -279,6 +279,8 @@ class EventHandler
       @param state  state of code (pressed/released)
     */
     void handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state);
+    void handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value);
+    void handleWarpMouseButton(uInt8 event_button, uInt8 state);
 
     /**
       The following methods take care of assigning action mappings.
@@ -350,6 +352,11 @@ class EventHandler
 
     // The current joymap in string form
     string myJoymapString;
+
+    Int32 myMouseX;
+    Int32 myMouseY;
+    Int32 myLastMouseMoveX;
+    Int32 myLastMouseMoveY;
 };
 
 #endif

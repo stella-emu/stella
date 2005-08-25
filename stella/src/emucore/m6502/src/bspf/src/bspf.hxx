@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.8 2005-07-20 17:49:26 stephena Exp $
+// $Id: bspf.hxx,v 1.9 2005-08-25 15:19:17 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.8 2005-07-20 17:49:26 stephena Exp $
+  @version $Id: bspf.hxx,v 1.9 2005-08-25 15:19:17 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -52,6 +52,10 @@ typedef unsigned int uInt32;
   using namespace std;
 #endif
 
+#ifdef PSP
+	#include "pspstdint.h"
+#endif
+	
 #ifdef HAVE_INTTYPES
   #include <inttypes.h>
 #endif
@@ -63,6 +67,8 @@ typedef unsigned int uInt32;
   #define BSPF_PATH_SEPARATOR  "\\"
 #elif defined BSPF_MAC_OSX
   #define BSPF_PATH_SEPARATOR  "/"
+#elif defined BSPF_PSP
+    #define BSPF_PATH_SEPARATOR  "/"
 #endif
 
 // I wish Windows had a complete POSIX layer
