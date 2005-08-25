@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.63 2005-08-24 22:54:30 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.64 2005-08-25 01:20:11 markgrebe Exp $
 //============================================================================
 
 #include <sstream>
@@ -36,10 +36,7 @@
 #endif
 
 #ifdef MAC_OSX
-extern "C" {
-uInt16 macOSXDisplayWidth(void);
-uInt16 macOSXDisplayHeight(void);
-}
+#include "macOSXDisplay.h"
 #endif
 
 #include "stella.xpm"   // The Stella icon
