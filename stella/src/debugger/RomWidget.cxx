@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.5 2005-08-24 22:01:45 stephena Exp $
+// $Id: RomWidget.cxx,v 1.6 2005-08-25 18:18:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,7 +62,13 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kListItemChecked:
-      cerr << "(un)set a breakpoint at address " << data << endl;
+      // We don't care about state, as breakpoints are turned on
+      // and off with the same command
+      // FIXME - at some point, we might want to add 'breakon'
+      //         and 'breakoff' to DebuggerParser, so the states
+      //         don't get out of sync
+      instance()->debugger().run(string("break " + myAddrList[data]));
+
       break;
   }
 }
@@ -70,13 +76,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
-  /* FIXME
-     We need logic here to only fill the grid at startup and when
-     bankswitching.  At other times, we receive 'kListScrolledCmd'
-     command, which means the current romlist view is invalid and
-     should be filled with new data.
-  */
-cerr << "RomWidget::loadConfig()\n";
+//cerr << "RomWidget::loadConfig()\n";
   // Only reload full bank when necessary
   if(myFirstLoad || myCurrentBank != instance()->debugger().getBank())
   {
@@ -96,16 +96,17 @@ void RomWidget::initialUpdate()
 
   myCurrentBank = dbg.getBank();
 
-  // Fill romlist with entire ROM (FIXME - only fill with current bank)
+  // Fill romlist the current bank of source or disassembly
   if(mySourceAvailable)
     ; // FIXME
   else
   {
-    StringList addr, data;
+    StringList data;
     BoolArray  state;
+    myAddrList.clear();
 
     // Disassemble entire bank (up to 4096 lines)
-    dbg.disassemble(addr, data, 0xf000, 4096);
+    dbg.disassemble(myAddrList, data, 0xf000, 4096);
     for(unsigned int i = 0; i < data.size(); ++i)
       state.push_back(false);
 

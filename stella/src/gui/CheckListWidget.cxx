@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.5 2005-08-24 13:18:02 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.6 2005-08-25 18:18:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -178,6 +178,15 @@ GUI::Rect CheckListWidget::getEditRect() const
   r.right -= xoffset - 15;
 	
   return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CheckListWidget::getState(int line)
+{
+  if(line < (int)_stateList.size())
+    return _stateList[line];
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

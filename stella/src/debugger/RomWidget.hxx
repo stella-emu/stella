@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.3 2005-08-24 22:01:45 stephena Exp $
+// $Id: RomWidget.hxx,v 1.4 2005-08-25 18:18:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,14 +24,11 @@
 
 class GuiObject;
 class CheckListWidget;
-
-#include <map>
+class StringList;
 
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-
-typedef multimap<int,int> LinePCMapping;
 
 class RomWidget : public Widget, public CommandSender
 {
@@ -50,7 +47,7 @@ class RomWidget : public Widget, public CommandSender
   private:
     CheckListWidget* myRomList;
 
-    LinePCMapping myLinePCMapping;
+    StringList myAddrList;
 
     bool myFirstLoad;
     bool mySourceAvailable;

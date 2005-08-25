@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.hxx,v 1.4 2005-08-23 18:32:51 stephena Exp $
+// $Id: CheckListWidget.hxx,v 1.5 2005-08-25 18:18:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,6 +50,8 @@ class CheckListWidget : public ListWidget
     void setStyle(CheckStyle style);
     void setList(const StringList& list, const BoolArray& state);
     void setLine(int line, const string& str, const bool& state);
+
+    bool getState(int line);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
