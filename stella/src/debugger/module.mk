@@ -48,6 +48,7 @@ MODULE_OBJS := \
 	src/debugger/PromptWidget.o \
 	src/debugger/RamWidget.o \
 	src/debugger/RomWidget.o \
+	src/debugger/RomListWidget.o \
 	src/debugger/TiaWidget.o
 
 MODULE_DIRS += \

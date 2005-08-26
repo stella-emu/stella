@@ -13,55 +13,34 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.hxx,v 1.6 2005-08-26 16:44:17 stephena Exp $
+// $Id: RomListWidget.hxx,v 1.1 2005-08-26 16:44:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef CHECK_LIST_WIDGET_HXX
-#define CHECK_LIST_WIDGET_HXX
+#ifndef ROM_LIST_WIDGET_HXX
+#define ROM_LIST_WIDGET_HXX
 
 class CheckboxWidget;
 
-#include "ListWidget.hxx"
-
-// Some special commands
-enum {
-  kListItemChecked = 'LIct'  // checkbox toggled on current line
-};
-
-enum CheckStyle {
-  kXFill,
-  kSolidFill
-};
-
-typedef GUI::Array<CheckboxWidget*> CheckboxArray;
+#include "CheckListWidget.hxx"
 
 
-/** CheckListWidget */
-class CheckListWidget : public ListWidget
+/** RomListWidget */
+class RomListWidget : public CheckListWidget
 {
   public:
-    CheckListWidget(GuiObject* boss, const GUI::Font& font,
+    RomListWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
-    virtual ~CheckListWidget();
-
-    void setStyle(CheckStyle style);
-    void setList(const StringList& list, const BoolArray& state);
-    void setLine(int line, const string& str, const bool& state);
-
-    bool getState(int line);
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    virtual ~RomListWidget();
 
   protected:
     void drawWidget(bool hilite);
     GUI::Rect getEditRect() const;
 
-  protected:
-    BoolArray     _stateList;
-    CheckboxArray _checkList;
+  private:
+    int myHighlightedItem;
 };
 
 #endif

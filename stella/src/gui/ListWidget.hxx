@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.11 2005-08-23 18:32:51 stephena Exp $
+// $Id: ListWidget.hxx,v 1.12 2005-08-26 16:44:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,10 +26,10 @@
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "EditableWidget.hxx"
+#include "ScrollBarWidget.hxx"
 #include "Rect.hxx"
 
 class StringList;
-class ScrollBarWidget;
 
 // Some special commands
 enum {
@@ -48,8 +48,11 @@ class ListWidget : public EditableWidget
                int x, int y, int w, int h);
     virtual ~ListWidget();
 
-    int getSelected() const     { return _selectedItem; }
+    int getSelected() const        { return _selectedItem; }
     void setSelected(int item);
+
+    int getHighlighted() const     { return _highlightedItem; }
+    void setHighlighted(int item);
 
     const StringList& getList()	const        { return _list; }
     const string& getSelectedString() const  { return _list[_selectedItem]; }
@@ -79,7 +82,11 @@ class ListWidget : public EditableWidget
     void abortEditMode();
 
     void lostFocusWidget();
-    void scrollToCurrent();
+    void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
+    void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
+
+  private:
+    void scrollToCurrent(int item);
 
   protected:
     int  _rows;
@@ -88,6 +95,7 @@ class ListWidget : public EditableWidget
     int  _colWidth;
     int  _currentPos;
     int  _selectedItem;
+    int  _highlightedItem;
     int  _currentKeyDown;
 
     bool _editMode;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.88 2005-08-25 18:18:48 stephena Exp $
+// $Id: Debugger.cxx,v 1.89 2005-08-26 16:44:16 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -779,8 +779,8 @@ const string& Debugger::disassemble(int start, int lines) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::disassemble(StringList& addr, StringList& data,
-                           int start, int lines)
+void Debugger::disassemble(StringList& addrLabel, IntArray& addr,
+                           StringList& data, int start, int lines)
 {
   char buf[255], bbuf[255];
   string result;
@@ -789,7 +789,8 @@ void Debugger::disassemble(StringList& addr, StringList& data,
     result = "";
 
     const char *label = equateList->getFormatted(start, 4);
-    addr.push_back(label);
+    addrLabel.push_back(label);
+    addr.push_back(start);
 
     result += label;
     result += ": ";

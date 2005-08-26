@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.28 2005-08-23 18:32:51 stephena Exp $
+// $Id: ListWidget.cxx,v 1.29 2005-08-26 16:44:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,6 +38,7 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
     _cols(0),
     _currentPos(0),
     _selectedItem(-1),
+    _highlightedItem(-1),
     _currentKeyDown(0),
     _editMode(false),
     _caretInverse(true),
@@ -81,7 +82,31 @@ void ListWidget::setSelected(int item)
     sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
 
     _currentPos = _selectedItem - _rows / 2;
-    scrollToCurrent();
+    scrollToSelected();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setHighlighted(int item)
+{
+  assert(item >= -1 && item < (int)_list.size());
+
+  if (isEnabled() && _highlightedItem != item)
+  {
+    if (_editMode)
+      abortEditMode();
+
+    _highlightedItem = item;
+    // FIXME - don't know if we need to send a signal
+    //sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+
+    // Only scroll the list if we're about to pass the page boundary
+    if(_currentPos == 0)
+      _currentPos = _highlightedItem;
+    else if(_highlightedItem == _currentPos + _rows)
+      _currentPos += _rows;
+
+    scrollToHighlighted();
   }
 }
 
@@ -99,6 +124,8 @@ void ListWidget::scrollTo(int item)
     _currentPos = item;
     scrollBarRecalc();
   }
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -238,6 +265,15 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     // not editmode
     switch (keycode)
     {
+      case ' ':  // space
+        // Snap list back to currently highlighted line
+        if(_highlightedItem >= 0)
+        {
+          _currentPos = _highlightedItem;
+          scrollToHighlighted();
+        }
+        break;
+
       case '\n':  // enter/return
       case '\r':
         if (_selectedItem >= 0)
@@ -288,7 +324,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   if (_selectedItem != oldSelectedItem)
   {
     _scrollBar->draw();
-    scrollToCurrent();
+    scrollToSelected();
 
     sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
   }
@@ -330,21 +366,21 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::scrollToCurrent()
+void ListWidget::scrollToCurrent(int item)
 {
   bool scrolled = false;
 
   // Only do something if the current item is not in our view port
-  if (_selectedItem < _currentPos)
+  if (item < _currentPos)
   {
     // it's above our view
-    _currentPos = _selectedItem;
+    _currentPos = item;
     scrolled = true;
   }
-  else if (_selectedItem >= _currentPos + _rows )
+  else if (item >= _currentPos + _rows )
   {
     // it's below our view
-    _currentPos = _selectedItem - _rows + 1;
+    _currentPos = item - _rows + 1;
     scrolled = true;
   }
 

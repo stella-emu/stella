@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.5 2005-08-11 19:12:38 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.6 2005-08-26 16:44:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -79,7 +79,7 @@ cerr << "TiaOutputWidget button press:" << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
-cerr << "TiaOutputWidget::drawWidget\n";
+//cerr << "TiaOutputWidget::drawWidget\n";
   instance()->frameBuffer().refresh();
   instance()->frameBuffer().drawMediaSource();
 }

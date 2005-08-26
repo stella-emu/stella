@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.27 2005-08-15 18:52:15 stephena Exp $
+// $Id: Dialog.cxx,v 1.28 2005-08-26 16:44:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -176,7 +176,7 @@ void Dialog::drawDialog()
 
   if(_dirty)
   {
-    cerr << "Dialog::drawDialog()\n";
+//    cerr << "Dialog::drawDialog()\n";
     FrameBuffer& fb = instance()->frameBuffer();
 
     fb.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);

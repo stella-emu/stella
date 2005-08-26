@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.4 2005-08-25 18:18:48 stephena Exp $
+// $Id: RomWidget.hxx,v 1.5 2005-08-26 16:44:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,12 +23,17 @@
 #define ROM_WIDGET_HXX
 
 class GuiObject;
-class CheckListWidget;
+class RomListWidget;
 class StringList;
+
+#include <map>
 
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
+
+typedef map<int,int> AddrToLine;
+
 
 class RomWidget : public Widget, public CommandSender
 {
@@ -45,9 +50,13 @@ class RomWidget : public Widget, public CommandSender
     void incrementalUpdate();
 
   private:
-    CheckListWidget* myRomList;
+    RomListWidget* myRomList;
 
-    StringList myAddrList;
+    /** List of addresses indexed by line number */
+    IntArray myAddrList;
+
+    /** List of line numbers indexed by address */
+    AddrToLine myLineList;
 
     bool myFirstLoad;
     bool mySourceAvailable;
