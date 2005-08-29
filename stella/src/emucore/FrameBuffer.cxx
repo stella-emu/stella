@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.65 2005-08-25 15:19:17 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.66 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -28,6 +28,7 @@
 #include "Font.hxx"
 #include "GuiUtils.hxx"
 #include "Menu.hxx"
+#include "CommandMenu.hxx"
 #include "Launcher.hxx"
 #include "OSystem.hxx"
 
@@ -173,28 +174,7 @@ void FrameBuffer::update()
 
       // Draw any pending messages
       if(myMessageTime > 0 && !myPauseStatus)
-      {
-        int w = myOSystem->font().getStringWidth(myMessageText) + 10;
-        int h = myOSystem->font().getFontHeight() + 8;
-        int x = (myBaseDim.w >> 1) - (w >> 1);
-        int y = myBaseDim.h - h - 10/2;
-
-        // Draw the bounded box and text
-        fillRect(x+1, y+2, w-2, h-4, kBGColor);
-        box(x, y+1, w, h-2, kColor, kColor);
-        drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
-        myMessageTime--;
-
-        // Either erase the entire message (when time is reached),
-        // or show again this frame
-        if(myMessageTime == 0)
-        {
-          theRedrawTIAIndicator = true;
-          drawMediaSource();
-        }
-        else
-          addDirtyRect(x, y, w, h);
-      }
+        drawMessage();
       break;  // S_EMULATE
     }
 
@@ -206,6 +186,20 @@ void FrameBuffer::update()
 
       myOSystem->menu().draw();
       break;  // S_MENU
+    }
+
+    case EventHandler::S_CMDMENU:
+    {
+      // Only update the screen if it's been invalidated
+      if(theRedrawTIAIndicator)
+        drawMediaSource();
+
+      myOSystem->commandMenu().draw();
+
+      // Draw any pending messages
+      if(myMessageTime > 0 && !myPauseStatus)
+        drawMessage();
+      break;  // S_CMDMENU
     }
 
     case EventHandler::S_LAUNCHER:
@@ -258,6 +252,14 @@ void FrameBuffer::showMessage(const string& message)
 
   myMessageText = message;
   myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::hideMessage()
+{
+  // Erase old messages on the screen
+  if(myMessageTime > 0)
+    refresh(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -485,6 +487,31 @@ void FrameBuffer::setWindowIcon()
   SDL_WM_SetIcon(surface, (unsigned char *) mask);
   SDL_FreeSurface(surface);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void FrameBuffer::drawMessage()
+{
+  int w = myOSystem->font().getStringWidth(myMessageText) + 10;
+  int h = myOSystem->font().getFontHeight() + 8;
+  int x = (myBaseDim.w >> 1) - (w >> 1);
+  int y = myBaseDim.h - h - 10/2;
+
+  // Draw the bounded box and text
+  fillRect(x+1, y+2, w-2, h-4, kBGColor);
+  box(x, y+1, w, h-2, kColor, kColor);
+  drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
+  myMessageTime--;
+
+  // Either erase the entire message (when time is reached),
+  // or show again this frame
+  if(myMessageTime == 0)
+  {
+	theRedrawTIAIndicator = true;
+	drawMediaSource();
+  }
+  else
+	addDirtyRect(x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

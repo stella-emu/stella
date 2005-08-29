@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.46 2005-08-25 15:19:17 stephena Exp $
+// $Id: EventHandler.hxx,v 1.47 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.46 2005-08-25 15:19:17 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.47 2005-08-29 18:36:41 stephena Exp $
 */
 class EventHandler
 {
@@ -90,7 +90,7 @@ class EventHandler
     virtual ~EventHandler();
 
     // Enumeration representing the different states of operation
-    enum State { S_NONE, S_EMULATE, S_LAUNCHER, S_MENU, S_DEBUGGER };
+    enum State { S_NONE, S_EMULATE, S_LAUNCHER, S_MENU, S_CMDMENU, S_DEBUGGER };
 
     /**
       Returns the event object associated with this handler class.
@@ -220,11 +220,13 @@ class EventHandler
 
     void enterMenuMode();
     void leaveMenuMode();
+    void enterCmdMenuMode();
+    void leaveCmdMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
 
     // Holds static strings for the remap menu
-    static ActionList ourActionList[61];
+    static ActionList ourActionList[62];
 
     // Lookup table for paddle resistance events
     static const Event::Type Paddle_Resistance[4];

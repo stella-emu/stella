@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.33 2005-08-25 15:19:17 stephena Exp $
+// $Id: OSystem.cxx,v 1.34 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -43,6 +43,7 @@
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
 #include "Menu.hxx"
+#include "CommandMenu.hxx"
 #include "Launcher.hxx"
 #include "Font.hxx"
 #include "StellaFont.hxx"
@@ -59,6 +60,7 @@ OSystem::OSystem()
     myPropSet(NULL),
     myConsole(NULL),
     myMenu(NULL),
+    myCommandMenu(NULL),
     myLauncher(NULL),
     myDebugger(NULL),
     myRomFile(""),
@@ -68,6 +70,7 @@ OSystem::OSystem()
 {
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
+  myCommandMenu = new CommandMenu(this);
   myLauncher = new Launcher(this);
 #ifdef DEVELOPER_SUPPORT
   myDebugger = new Debugger(this);
@@ -101,6 +104,7 @@ OSystem::~OSystem()
   myDriverList.clear();
 
   delete myMenu;
+  delete myCommandMenu;
   delete myLauncher;
   delete myFont;
   delete myConsoleFont;
@@ -207,6 +211,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_MENU:
+    case EventHandler::S_CMDMENU:
       myConsole->initializeVideo();
       if(showmessage)
       {
@@ -221,7 +226,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
         else   // a driver that doesn't exist was requested, so use software mode
           myFrameBuffer->showMessage("Software mode");
       }
-      break;  // S_EMULATE, S_MENU
+      break;  // S_EMULATE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:
       myLauncher->initializeVideo();
@@ -278,14 +283,12 @@ void OSystem::createSound()
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_MENU:
+    case EventHandler::S_CMDMENU:
     case EventHandler::S_DEBUGGER:
       myConsole->initializeAudio();
       break;  // S_EMULATE, S_MENU, S_DEBUGGER
 
-    case EventHandler::S_LAUNCHER:
-      break;  // S_LAUNCHER
-
-    case EventHandler::S_NONE:
+    default:
       break;
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.54 2005-08-11 19:12:38 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.55 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.54 2005-08-11 19:12:38 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.55 2005-08-29 18:36:41 stephena Exp $
 */
 class FrameBuffer
 {
@@ -91,6 +91,11 @@ class FrameBuffer
       @param message  The message to be shown
     */
     void showMessage(const string& message);
+
+    /**
+      Hides any onscreen messages.
+    */
+    void hideMessage();
 
     /**
       Returns the current width of the framebuffer *before* any scaling.
@@ -440,6 +445,11 @@ class FrameBuffer
       Set the icon for the main SDL window.
     */
     void setWindowIcon();
+
+    /**
+      Set the icon for the main SDL window.
+    */
+    void drawMessage();
 
   private:
     // Indicates the current framerate of the system

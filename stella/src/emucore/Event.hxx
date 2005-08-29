@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.12 2005-06-28 03:34:41 urchlay Exp $
+// $Id: Event.hxx,v 1.13 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.12 2005-06-28 03:34:41 urchlay Exp $
+  @version $Id: Event.hxx,v 1.13 2005-08-29 18:36:41 stephena Exp $
 */
 class Event
 {
@@ -72,7 +72,7 @@ class Event
 	  DrivingOneFire,
 	  
       ChangeState, LoadState, SaveState, TakeSnapshot, Pause, Quit,
-      MenuMode, DebuggerMode, LauncherMode, Fry,
+      MenuMode, CmdMenuMode, DebuggerMode, LauncherMode, Fry,
 
       LastType
     };

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.88 2005-08-25 16:29:52 stephena Exp $
+// $Id: EventHandler.cxx,v 1.89 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -29,6 +29,7 @@
 #include "Sound.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
+#include "CommandMenu.hxx"
 #include "Launcher.hxx"
 #include "GuiUtils.hxx"
 #include "bspf.hxx"
@@ -143,17 +144,8 @@ void EventHandler::reset(State state)
 
   switch(myState)
   {
-    case S_EMULATE:
-      break;
-
-    case S_MENU:
-      break;
-
     case S_LAUNCHER:
       myUseLauncherFlag = true;
-      break;
-
-    case S_DEBUGGER:
       break;
 
     default:
@@ -173,6 +165,11 @@ void EventHandler::refreshDisplay()
     case S_MENU:
       myOSystem->frameBuffer().refresh();
       myOSystem->menu().refresh();
+      break;
+
+    case S_CMDMENU:
+      myOSystem->frameBuffer().refresh();
+      myOSystem->commandMenu().refresh();
       break;
 
     case S_LAUNCHER:
@@ -642,6 +639,10 @@ void EventHandler::poll(uInt32 time)
       myOSystem->menu().updateTime(time);
       break;
 
+    case S_CMDMENU:
+      myOSystem->commandMenu().updateTime(time);
+      break;
+
     case S_LAUNCHER:
       myOSystem->launcher().updateTime(time);
       break;
@@ -670,6 +671,11 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
         enterMenuMode();
         return;
       }
+      else if(myKeyTable[key] == Event::CmdMenuMode && state == 1 && !myPauseFlag)
+      {
+        enterCmdMenuMode();
+        return;
+      }
       else if(myKeyTable[key] == Event::DebuggerMode && state == 1 && !myPauseFlag)
       {
         enterDebugMode();
@@ -691,6 +697,15 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
         return;
       }
       myOSystem->menu().handleKeyEvent(unicode, key, mod, state);
+      break;
+
+    case S_CMDMENU:
+      if(myKeyTable[key] == Event::CmdMenuMode && state == 1)
+      {
+        leaveCmdMenuMode();
+        return;
+      }
+      myOSystem->commandMenu().handleKeyEvent(unicode, key, mod, state);
       break;
 
     case S_LAUNCHER:
@@ -742,6 +757,10 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
       myOSystem->menu().handleMouseMotionEvent(x, y, 0);
       break;
 
+    case S_CMDMENU:
+      myOSystem->commandMenu().handleMouseMotionEvent(x, y, 0);
+      break;
+
     case S_LAUNCHER:
       myOSystem->launcher().handleMouseMotionEvent(x, y, 0);
       break;
@@ -769,6 +788,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
       break;
 
     case S_MENU:
+    case S_CMDMENU:
     case S_LAUNCHER:
     case S_DEBUGGER:
     {
@@ -804,6 +824,8 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
 
       if(myState == S_MENU)
         myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
+      else if(myState == S_CMDMENU)
+        myOSystem->commandMenu().handleMouseButtonEvent(button, x, y, state);
       else if(myState == S_LAUNCHER)
         myOSystem->launcher().handleMouseButtonEvent(button, x, y, state);
 #ifdef DEVELOPER_SUPPORT
@@ -949,6 +971,8 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
       handleEvent(myJoyTable[stick*kNumJoyButtons + code], state);
       break;
 
+// FIXME - remove handleJoyEvent from DialogContainer, have it pass
+//         mouse events instead
     case S_MENU:
       myOSystem->menu().handleJoyEvent(stick, code, state);
       break;
@@ -1036,7 +1060,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
 void EventHandler::setActionMappings()
 {
   // Fill the ActionList with the current key and joystick mappings
-  for(Int32 i = 0; i < 61; ++i)
+  for(Int32 i = 0; i < 62; ++i)
   {
     Event::Type event = ourActionList[i].event;
     ourActionList[i].key = "None";
@@ -1277,6 +1301,7 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_F12 ]       = Event::TakeSnapshot;
   myKeyTable[ SDLK_PAUSE ]     = Event::Pause;
   myKeyTable[ SDLK_TAB ]       = Event::MenuMode;
+  myKeyTable[ SDLK_BACKSLASH ] = Event::CmdMenuMode;
   myKeyTable[ SDLK_BACKQUOTE ] = Event::DebuggerMode;
   myKeyTable[ SDLK_ESCAPE ]    = Event::LauncherMode;
   myKeyTable[ SDLK_BACKSPACE ] = Event::Fry;
@@ -1507,6 +1532,31 @@ void EventHandler::enterMenuMode()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
+{
+  myState = S_EMULATE;
+
+  refreshDisplay();
+
+  myOSystem->frameBuffer().setCursorState();
+  myOSystem->sound().mute(false);
+  myEvent->clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enterCmdMenuMode()
+{
+  myState = S_CMDMENU;
+  myOSystem->commandMenu().reStack();
+
+  refreshDisplay();
+
+  myOSystem->frameBuffer().setCursorState();
+  myOSystem->sound().mute(true);
+  myEvent->clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::leaveCmdMenuMode()
 {
   myState = S_EMULATE;
 
@@ -1803,7 +1853,7 @@ void EventHandler::setSDLMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ActionList EventHandler::ourActionList[61] = {
+ActionList EventHandler::ourActionList[62] = {
   { Event::ConsoleSelect,               "Select",                          "" },
   { Event::ConsoleReset,                "Reset",                           "" },
   { Event::ConsoleColor,                "Color TV",                        "" },
@@ -1817,7 +1867,8 @@ ActionList EventHandler::ourActionList[61] = {
   { Event::LoadState,                   "Load State",                      "" },
   { Event::TakeSnapshot,                "Snapshot",                        "" },
   { Event::Pause,                       "Pause",                           "" },
-  { Event::MenuMode,                    "Toggle menu/options mode",        "" },
+  { Event::MenuMode,                    "Toggle options menu mode",        "" },
+  { Event::CmdMenuMode,                 "Toggle command menu mode",        "" },
   { Event::DebuggerMode,                "Toggle debugger mode",            "" },
   { Event::LauncherMode,                "Enter ROM launcher",              "" },
   { Event::Quit,                        "Quit",                            "" },

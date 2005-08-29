@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.66 2005-08-24 22:54:30 stephena Exp $
+// $Id: Console.cxx,v 1.67 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -45,6 +45,7 @@
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
+#include "CommandMenu.hxx"
 #include "Version.hxx"
 
 #ifdef SNAPSHOT_SUPPORT
@@ -186,9 +187,12 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   myOSystem->sound().setFrameRate(framerate);
   myOSystem->sound().initialize();
 
-  // Initialize the menuing system with updated values from the framebuffer
+  // Initialize the options menu system with updated values from the framebuffer
   myOSystem->menu().initialize();
   myOSystem->menu().setGameProfile(myProperties);
+
+  // Initialize the command menu system with updated values from the framebuffer
+  myOSystem->commandMenu().initialize();
 
 #ifdef DEVELOPER_SUPPORT
   // Finally, initialize the debugging system, since it depends on the current ROM

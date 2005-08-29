@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.27 2005-08-24 22:54:30 stephena Exp $
+// $Id: OSystem.hxx,v 1.28 2005-08-29 18:36:41 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -22,6 +22,7 @@
 class PropertiesSet;
 
 class Menu;
+class CommandMenu;
 class Launcher;
 class Debugger;
 
@@ -42,7 +43,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.27 2005-08-24 22:54:30 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.28 2005-08-29 18:36:41 stephena Exp $
 */
 class OSystem
 {
@@ -127,6 +128,13 @@ class OSystem
       @return The settings menu object
     */
     Menu& menu(void) const { return *myMenu; }
+
+    /**
+      Get the command menu of the system.
+
+      @return The command menu object
+    */
+    CommandMenu& commandMenu(void) const { return *myCommandMenu; }
 
     /**
       Get the ROM launcher of the system.
@@ -350,6 +358,9 @@ class OSystem
 
     // Pointer to the Menu object
     Menu* myMenu;
+
+    // Pointer to the CommandMenu object
+    CommandMenu* myCommandMenu;
 
     // Pointer to the Launcher object
     Launcher* myLauncher;
