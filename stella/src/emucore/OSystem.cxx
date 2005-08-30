@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.34 2005-08-29 18:36:41 stephena Exp $
+// $Id: OSystem.cxx,v 1.35 2005-08-30 01:10:54 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -348,7 +348,7 @@ bool OSystem::createConsole(const string& romfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createLauncher()
 {
-  setFramerate(20);  // We don't need a large framerate for the launcher
+  setFramerate(60);
   myEventHandler->reset(EventHandler::S_LAUNCHER);
 
   // Create the window

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.29 2005-08-22 18:17:10 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.30 2005-08-30 01:10:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,9 +53,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myProgressBar(NULL)
 {
   const GUI::Font& font = instance()->font();
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+  const int fontHeight = font.getFontHeight();
 
   // Show game name
   new StaticTextWidget(this, 10, 8, 200, fontHeight,

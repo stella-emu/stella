@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.55 2005-08-29 18:36:41 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.56 2005-08-30 01:10:54 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.55 2005-08-29 18:36:41 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.56 2005-08-30 01:10:54 stephena Exp $
 */
 class FrameBuffer
 {
@@ -195,6 +195,11 @@ class FrameBuffer
       Only works in X11/Win32 for now, otherwise always return 4.
     */
     uInt32 maxWindowSizeForScreen();
+
+    /**
+      Returns current zoomlevel of the framebuffer.
+    */
+    uInt32 zoomLevel() { return theZoomLevel; }
 
     /**
       Set the title for the main SDL window.

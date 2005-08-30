@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.47 2005-08-29 18:36:41 stephena Exp $
+// $Id: EventHandler.hxx,v 1.48 2005-08-30 01:10:54 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.47 2005-08-29 18:36:41 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.48 2005-08-30 01:10:54 stephena Exp $
 */
 class EventHandler
 {
@@ -285,6 +285,13 @@ class EventHandler
     void handleWarpMouseButton(uInt8 event_button, uInt8 state);
 
     /**
+      Handle joystick movement emulating mouse motion
+
+      @param time  Current millisecond count
+    */
+    void handleJoyMouse(uInt32 time);
+
+    /**
       The following methods take care of assigning action mappings.
     */
     void setActionMappings();
@@ -355,10 +362,16 @@ class EventHandler
     // The current joymap in string form
     string myJoymapString;
 
-    Int32 myMouseX;
-    Int32 myMouseY;
-    Int32 myLastMouseMoveX;
-    Int32 myLastMouseMoveY;
+    // Used for joystick to mouse emulation
+    struct JoyMouse {	
+      int x, y, x_vel, y_vel, x_max, y_max, x_down_count, y_down_count;
+      unsigned int last_time, delay_time, x_down_time, y_down_time;
+    };
+
+    JoyMouse myJoyMouse;
+
+    // How far the joystick will move the mouse on each frame tick
+    int myMouseMove;
 };
 
 #endif

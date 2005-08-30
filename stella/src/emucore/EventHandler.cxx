@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.89 2005-08-29 18:36:41 stephena Exp $
+// $Id: EventHandler.cxx,v 1.90 2005-08-30 01:10:54 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -48,21 +48,19 @@ void handleMacOSXKeypress(int key);
 }
 #endif
 
+#define JOY_DEADZONE 3200
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
-    : myOSystem(osystem),
-      myState(S_NONE),
-      myLSState(0),
-      myPauseFlag(false),
-      myQuitFlag(false),
-      myGrabMouseFlag(false),
-      myUseLauncherFlag(false),
-      myPaddleMode(0),
-      myMouseX(0),
-      myMouseY(0),
-      myLastMouseMoveX(0),
-      myLastMouseMoveY(0)
-
+  : myOSystem(osystem),
+    myState(S_NONE),
+    myLSState(0),
+    myPauseFlag(false),
+    myQuitFlag(false),
+    myGrabMouseFlag(false),
+    myUseLauncherFlag(false),
+    myPaddleMode(0),
+    myMouseMove(3)
 {
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
@@ -103,6 +101,9 @@ EventHandler::EventHandler(OSystem* osystem)
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
 
   myFryingFlag = false;
+
+  memset(&myJoyMouse, 0, sizeof(myJoyMouse));
+  myJoyMouse.delay_time = 25;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,6 +157,11 @@ void EventHandler::reset(State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::refreshDisplay()
 {
+  // These are reset each time the display changes size
+  myJoyMouse.x_max = myOSystem->frameBuffer().imageWidth();
+  myJoyMouse.y_max = myOSystem->frameBuffer().imageHeight();
+  myMouseMove      = myOSystem->frameBuffer().zoomLevel() * 3;
+
   switch(myState)
   {
     case S_EMULATE:
@@ -268,6 +274,9 @@ void EventHandler::setupJoysticks()
 void EventHandler::poll(uInt32 time)
 {
   SDL_Event event;
+
+  // Handle joystick to mouse emulation
+  handleJoyMouse(time);
 
   // Check for an event
   while(SDL_PollEvent(&event))
@@ -474,7 +483,6 @@ void EventHandler::poll(uInt32 time)
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
 
-
       case SDL_MOUSEMOTION:
         handleMouseMotionEvent(event);
         break; // SDL_MOUSEMOTION
@@ -506,7 +514,7 @@ void EventHandler::poll(uInt32 time)
     // Read joystick events and modify event states
     uInt8  stick;
     uInt32 code;
-    uInt8  state;
+    uInt8  state = 0;
     Uint8 axis;
     Uint8 button;
     Int32 resistance;
@@ -536,19 +544,19 @@ void EventHandler::poll(uInt32 time)
 
             code  = event.jbutton.button;
             state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
-#ifdef PSP
+//#ifdef PSP
             handleWarpMouseButton(code,state);
-#endif
+//#endif
             handleJoyEvent(stick, code, state);
             break;
 
           case SDL_JOYAXISMOTION:
             axis = event.jaxis.axis;
             value = event.jaxis.value;
-#ifdef PSP
-            if (state!=S_EMULATE)
-                handleMouseWarp(stick,axis,value);
-#endif
+//#ifdef PSP
+//            if(state != S_EMULATE)
+              handleMouseWarp(stick, axis, value);
+//#endif
             if(axis == 0)  // x-axis
             {
               handleJoyEvent(stick, kJAxisLeft, (value < -16384) ? 1 : 0);
@@ -735,6 +743,9 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 {
   // Take window zooming into account
   int x = event.motion.x, y = event.motion.y;
+  myJoyMouse.x = x;
+  myJoyMouse.y = y;
+
   myOSystem->frameBuffer().translateCoords(&x, &y);
 
   // Determine which mode we're in, then send the event to the appropriate place
@@ -841,9 +852,100 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleJoyMouse(uInt32 time)
+{
+  bool mouseAccel = false;  // FIXME - make this a commandline option
+
+  if (time >= myJoyMouse.last_time + myJoyMouse.delay_time)
+  {
+    myJoyMouse.last_time = time;
+    if (myJoyMouse.x_down_count == 1)
+    {
+      myJoyMouse.x_down_time = time;
+      myJoyMouse.x_down_count = 2;
+    }
+    if (myJoyMouse.y_down_count == 1)
+    {
+      myJoyMouse.y_down_time = time;
+      myJoyMouse.y_down_count = 2;
+    }
+
+    if (myJoyMouse.x_vel || myJoyMouse.y_vel)
+    {
+      if (myJoyMouse.x_down_count)
+      {
+        if (mouseAccel && time > myJoyMouse.x_down_time + myJoyMouse.delay_time * 12)
+        {
+          if (myJoyMouse.x_vel > 0)
+            myJoyMouse.x_vel++;
+          else
+            myJoyMouse.x_vel--;
+        }
+        else if (time > myJoyMouse.x_down_time + myJoyMouse.delay_time * 8)
+        {
+          if (myJoyMouse.x_vel > 0)
+            myJoyMouse.x_vel = myMouseMove;
+          else
+            myJoyMouse.x_vel = -myMouseMove;
+        }
+      }
+      if (myJoyMouse.y_down_count)
+      {
+        if (mouseAccel && time > myJoyMouse.y_down_time + myJoyMouse.delay_time * 12)
+        {
+          if (myJoyMouse.y_vel > 0)
+            myJoyMouse.y_vel++;
+          else
+            myJoyMouse.y_vel--;
+        }
+        else if (time > myJoyMouse.y_down_time + myJoyMouse.delay_time * 8)
+        {
+          if (myJoyMouse.y_vel > 0)
+            myJoyMouse.y_vel = myMouseMove;
+          else
+            myJoyMouse.y_vel = -myMouseMove;
+        }
+      }
+
+      myJoyMouse.x += myJoyMouse.x_vel;
+      myJoyMouse.y += myJoyMouse.y_vel;
+
+      if (myJoyMouse.x < 0)
+      {
+        myJoyMouse.x = 0;
+        myJoyMouse.x_vel = -1;
+        myJoyMouse.x_down_count = 1;
+      }
+      else if (myJoyMouse.x > myJoyMouse.x_max)
+      {
+        myJoyMouse.x = myJoyMouse.x_max;
+        myJoyMouse.x_vel = 1;
+        myJoyMouse.x_down_count = 1;
+      }
+
+      if (myJoyMouse.y < 0)
+      {
+        myJoyMouse.y = 0;
+        myJoyMouse.y_vel = -1;
+        myJoyMouse.y_down_count = 1;
+      }
+      else if (myJoyMouse.y > myJoyMouse.y_max)
+      {
+        myJoyMouse.y = myJoyMouse.y_max;
+        myJoyMouse.y_vel = 1;
+        myJoyMouse.y_down_count = 1;
+      }
+
+      SDL_WarpMouse(myJoyMouse.x, myJoyMouse.y);
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleWarpMouseButton(uInt8 event_button, uInt8 state)
 {
-#ifdef PSP
+// FIXME - this will disappear, and be integrated directly into handleJoyEvent()
+#if 0
   // Determine which mode we're in, then send the event to the appropriate place
     switch(myState)
     {
@@ -936,29 +1038,43 @@ void EventHandler::handleWarpMouseButton(uInt8 event_button, uInt8 state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseWarp(uInt8 stick,uInt8 axis,Int16 value)
+void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
 {
-#ifdef PSP
-    Int32 new_x = myMouseX;
-    Int32 new_y = myMouseY;
-    value = value / 4000;
-    if (axis == 0)
-    {
-        myLastMouseMoveX = value;
-    }
-    else if (axis == 1)
-    {
-        myLastMouseMoveY = value;
-    }
-    new_x += myLastMouseMoveX;
-    new_y += myLastMouseMoveY;
+  if(value > JOY_DEADZONE)
+    value -= JOY_DEADZONE;
+  else if(value < -JOY_DEADZONE )
+    value += JOY_DEADZONE;
+  else
+    value = 0;
 
-    if (new_x >=0  and new_x <= PSP_SCREEN_WIDTH)
-        myMouseX = new_x;
-    if (new_y >=0  and new_y <= PSP_SCREEN_HEIGHT)
-        myMouseY = new_y;
-    SDL_WarpMouse(myMouseX,myMouseY);
-#endif
+  if(axis == 0)  // X axis
+  {
+    if (value != 0)
+    {
+      myJoyMouse.x_vel = (value > 0) ? 1 : -1;
+      myJoyMouse.x_down_count = 1;
+    }
+    else
+    {
+      myJoyMouse.x_vel = 0;
+      myJoyMouse.x_down_count = 0;
+    }
+  }
+  else if(axis == 1)  // Y axis
+  { 
+    value = -value;
+
+    if (value != 0)
+    {
+      myJoyMouse.y_vel = (-value > 0) ? 1 : -1;
+      myJoyMouse.y_down_count = 1;
+    }
+    else
+    {
+      myJoyMouse.y_vel = 0;
+      myJoyMouse.y_down_count = 0;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

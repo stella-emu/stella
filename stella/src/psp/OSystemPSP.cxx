@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemPSP.cxx,v 1.1 2005-08-25 15:19:17 stephena Exp $
+// $Id: OSystemPSP.cxx,v 1.2 2005-08-30 01:10:54 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -23,6 +23,9 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include <pspkernel.h>
+#include <psppower.h>
 
 #include "bspf.hxx"
 #include "OSystem.hxx"
@@ -72,7 +75,8 @@ OSystemPSP::OSystemPSP()
   string cacheFile = basedir + "/stella.cache";
   setCacheFile(cacheFile);
 
-  // No drivers are specified for Unix
+  // Overclock CPU to 333MHz
+  scePowerSetClockFrequency(333,333,166);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,71 +91,32 @@ void OSystemPSP::mainLoop()
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(mySettings->getBool("accurate"))   // normal, CPU-intensive timing
+  // Set up less accurate timing stuff
+  uInt32 startTime, virtualTime, currentTime;
+
+  // Set the base for the timers
+  virtualTime = getTicks();
+  frameTime = 0;
+
+  // Main game loop
+  for(;;)
   {
-    // Set up accurate timing stuff
-    uInt32 startTime, delta;
+    // Exit if the user wants to quit
+    if(myEventHandler->doQuit())
+      break;
 
-    // Set the base for the timers
-    frameTime = 0;
+    startTime = getTicks();
+    myEventHandler->poll(startTime);
+    myFrameBuffer->update();
+    currentTime = getTicks();
+    virtualTime += myTimePerFrame;
+    if(currentTime < virtualTime)
+      SDL_Delay((virtualTime - currentTime)/1000);
 
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-      if(myEventHandler->doQuit()){
-            break;
-      }
-      startTime = getTicks();
-      myEventHandler->poll(startTime);
-      myFrameBuffer->update();
-
-      // Now, waste time if we need to so that we are at the desired frame rate
-      for(;;)
-      {
-        delta = getTicks() - startTime;
-
-        if(delta >= myTimePerFrame)
-          break;
-      }
-
-      frameTime += getTicks() - startTime;
-      ++numberOfFrames;
-    }
+    currentTime = getTicks() - startTime;
+    frameTime += currentTime;
+    ++numberOfFrames;
   }
-  else    // less accurate, less CPU-intensive timing
-  {
-     // Set up less accurate timing stuff
-    uInt32 startTime, virtualTime, currentTime;
-
-    // Set the base for the timers
-    virtualTime = getTicks();
-    frameTime = 0;
-
-
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-        if(myEventHandler->doQuit()){
-            break;
-        }
-
-      startTime = getTicks();
-      myEventHandler->poll(startTime);
-      myFrameBuffer->update();
-      currentTime = getTicks();
-      virtualTime += myTimePerFrame;
-      if(currentTime < virtualTime)
-      {
-        SDL_Delay((virtualTime - currentTime)/1000);
-      }
-      currentTime = getTicks() - startTime;
-      frameTime += currentTime;
-      ++numberOfFrames;
-   }
-  }
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
