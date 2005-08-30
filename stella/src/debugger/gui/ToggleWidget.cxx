@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleWidget.cxx,v 1.1 2005-08-19 15:05:09 stephena Exp $
+// $Id: ToggleWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project

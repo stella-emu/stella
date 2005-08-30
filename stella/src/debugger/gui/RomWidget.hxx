@@ -13,48 +13,54 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.hxx,v 1.2 2005-08-01 22:33:14 stephena Exp $
+// $Id: RomWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef COLOR_WIDGET_HXX
-#define COLOR_WIDGET_HXX
+#ifndef ROM_WIDGET_HXX
+#define ROM_WIDGET_HXX
 
-class ColorDialog;
 class GuiObject;
+class RomListWidget;
+class StringList;
 
+#include <map>
+
+#include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 
-#include "bspf.hxx"
+typedef map<int,int> AddrToLine;
 
-/**
-  Displays a color from the TIA palette.  This class will eventually
-  be expanded with a TIA palette table, to set the color visually.
-  
-  @author  Stephen Anthony
-  @version $Id: ColorWidget.hxx,v 1.2 2005-08-01 22:33:14 stephena Exp $
-*/
-class ColorWidget : public Widget, public CommandSender
+
+class RomWidget : public Widget, public CommandSender
 {
-  friend class ColorDialog;
-
   public:
-    ColorWidget(GuiObject* boss, int x, int y, int w, int h, int cmd = 0);
-    ~ColorWidget();
+    RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    virtual ~RomWidget();
 
-    void setColor(int color);
-    int  getColor() const    { return _color;  }
-	
-  protected:
-    void drawWidget(bool hilite);
-    void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-  protected:
-    int _color;
-    int	_cmd;
+    void loadConfig();
+
+  private:
+    void initialUpdate();
+    void incrementalUpdate();
+
+  private:
+    RomListWidget* myRomList;
+
+    /** List of addresses indexed by line number */
+    IntArray myAddrList;
+
+    /** List of line numbers indexed by address */
+    AddrToLine myLineList;
+
+    bool myFirstLoad;
+    bool mySourceAvailable;
+    int  myCurrentBank;
 };
 
 #endif

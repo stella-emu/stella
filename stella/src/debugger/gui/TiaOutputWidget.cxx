@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.cxx,v 1.2 2005-08-01 22:33:14 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,55 +21,65 @@
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
-#include "Command.hxx"
+#include "Widget.hxx"
 #include "GuiObject.hxx"
-#include "bspf.hxx"
-#include "GuiUtils.hxx"
-#include "ColorWidget.hxx"
+
+#include "TiaOutputWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ColorWidget::ColorWidget(GuiObject* boss, int x, int y, int w, int h, int cmd)
+TiaOutputWidget::TiaOutputWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
-    CommandSender(boss),
-    _color(0),
-    _cmd(cmd)
-{
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kColorWidget;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ColorWidget::~ColorWidget()
+    CommandSender(boss)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ColorWidget::setColor(int color)
+TiaOutputWidget::~TiaOutputWidget()
 {
-  _color = color;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::loadConfig()
+{
   setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ColorWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void TiaOutputWidget::advanceScanline(int lines)
 {
-// FIXME - add ColorDialog, which will show all 256 colors in the
-//         TIA palette
-//  if(isEnabled())
-//    parent()->addDialog(myColorDialog);
+  while(lines)
+  {
+    instance()->console().mediaSource().updateScanline();
+    --lines;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ColorWidget::drawWidget(bool hilite)
+void TiaOutputWidget::advance(int frames)
 {
-  FrameBuffer& fb = instance()->frameBuffer();
+  while(frames)
+  {
+    instance()->console().mediaSource().update();
+    --frames;
+  }
+}
 
-  // Draw a thin frame around us.
-  fb.hLine(_x, _y, _x + _w - 1, kColor);
-  fb.hLine(_x, _y +_h, _x + _w - 1, kShadowColor);
-  fb.vLine(_x, _y, _y+_h, kColor);
-  fb.vLine(_x + _w - 1, _y, _y +_h - 1, kShadowColor);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
+{
+  int xstart = atoi(instance()->console().properties().get("Display.XStart").c_str());
+  int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
 
-  // Show the currently selected color
-  fb.fillRect(_x+1, _y+1, _w-2, _h-1, (OverlayColor) _color);
+cerr << "TiaOutputWidget button press:" << endl
+     << "x = " << x << ", y = " << y << endl
+     << "xstart = " << xstart << ", ystart = " << ystart << endl
+     << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::drawWidget(bool hilite)
+{
+//cerr << "TiaOutputWidget::drawWidget\n";
+  instance()->frameBuffer().refresh();
+  instance()->frameBuffer().drawMediaSource();
 }

@@ -13,38 +13,45 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TogglePixelWidget.hxx,v 1.2 2005-08-19 23:02:09 stephena Exp $
+// $Id: CpuWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef TOGGLE_PIXEL_WIDGET_HXX
-#define TOGGLE_PIXEL_WIDGET_HXX
+#ifndef CPU_WIDGET_HXX
+#define CPU_WIDGET_HXX
 
-#include "FrameBuffer.hxx"
-#include "ToggleWidget.hxx"
+class GuiObject;
+class ButtonWidget;
+class EditTextWidget;
+class ToggleBitWidget;
 
-/* TogglePixelWidget */
-class TogglePixelWidget : public ToggleWidget
+#include "Array.hxx"
+#include "Widget.hxx"
+#include "Command.hxx"
+#include "DataGridWidget.hxx"
+
+
+class CpuWidget : public Widget, public CommandSender
 {
   public:
-    TogglePixelWidget(GuiObject* boss, int x, int y, int cols, int rows);
-    virtual ~TogglePixelWidget();
+    CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    virtual ~CpuWidget();
 
-    void setColor(OverlayColor color) { _pixelColor = color; }
-    void setState(const BoolArray& state);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-    void setIntState(int value, bool swap);
-    int  getIntState();
-
-  protected:
-    void drawWidget(bool hilite);
+    void loadConfig();
+    void setOpsWidget(DataGridOpsWidget* w);
 
   private:
-    OverlayColor _pixelColor;
-    unsigned int _numBits;
-    bool         _swapBits;
+    void fillGrid();
+
+  private:
+    DataGridWidget*  myPCGrid;
+    DataGridWidget*  myCpuGrid;
+    ToggleBitWidget* myPSRegister;
+    EditTextWidget*  myPCLabel;
 };
 
 #endif

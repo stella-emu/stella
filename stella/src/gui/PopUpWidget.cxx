@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.15 2005-08-01 22:33:15 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.16 2005-08-30 17:51:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -80,7 +80,7 @@ void PopUpDialog::drawDialog()
   // by the ScummVM guys, so I'm not going to mess with it.
   if(_dirty)
   {
-    cerr << "PopUpDialog::drawDialog()\n";
+//    cerr << "PopUpDialog::drawDialog()\n";
     FrameBuffer& fb = _popUpBoss->instance()->frameBuffer();
 
     // Draw the menu border

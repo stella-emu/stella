@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.67 2005-08-29 18:36:41 stephena Exp $
+// $Id: Console.cxx,v 1.68 2005-08-30 17:51:26 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -80,10 +80,8 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   if(myProperties.get("Cartridge.MD5") == "")
     myProperties.set("Cartridge.MD5", md5);
 
-#ifdef DEVELOPER_SUPPORT
   // A developer can override properties from the commandline
   setDeveloperProperties();
-#endif
 
   // Setup the controllers based on properties
   string left = myProperties.get("Controller.Left");

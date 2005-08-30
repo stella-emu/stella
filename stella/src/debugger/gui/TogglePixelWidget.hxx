@@ -13,36 +13,38 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.hxx,v 1.6 2005-08-19 15:05:09 stephena Exp $
+// $Id: TogglePixelWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef TOGGLE_BIT_WIDGET_HXX
-#define TOGGLE_BIT_WIDGET_HXX
+#ifndef TOGGLE_PIXEL_WIDGET_HXX
+#define TOGGLE_PIXEL_WIDGET_HXX
 
-class StringList;
-
+#include "FrameBuffer.hxx"
 #include "ToggleWidget.hxx"
 
-/* ToggleBitWidget */
-class ToggleBitWidget : public ToggleWidget
+/* TogglePixelWidget */
+class TogglePixelWidget : public ToggleWidget
 {
   public:
-    ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                    int x, int y, int cols, int rows, int colchars = 1);
-    virtual ~ToggleBitWidget();
+    TogglePixelWidget(GuiObject* boss, int x, int y, int cols, int rows);
+    virtual ~TogglePixelWidget();
 
-    void setList(const StringList& off, const StringList& on);
-    void setState(const BoolArray& state, const BoolArray& changed);
+    void setColor(OverlayColor color) { _pixelColor = color; }
+    void setState(const BoolArray& state);
+
+    void setIntState(int value, bool swap);
+    int  getIntState();
 
   protected:
     void drawWidget(bool hilite);
 
-  protected:
-    StringList  _offList;
-    StringList  _onList;
+  private:
+    OverlayColor _pixelColor;
+    unsigned int _numBits;
+    bool         _swapBits;
 };
 
 #endif

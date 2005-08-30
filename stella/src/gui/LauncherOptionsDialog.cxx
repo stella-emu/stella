@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.10 2005-08-16 18:34:12 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.11 2005-08-30 17:51:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -105,7 +105,6 @@ LauncherOptionsDialog::~LauncherOptionsDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherOptionsDialog::loadConfig()
 {
-cerr << "LauncherOptionsDialog::loadConfig()\n";
   string s;
   bool b;
 

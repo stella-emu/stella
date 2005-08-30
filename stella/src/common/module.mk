@@ -1,6 +1,8 @@
 MODULE := src/common
 
 MODULE_OBJS := \
+	src/common/Cheat.o \
+	src/common/CheetahCheat.o \
 	src/common/mainSDL.o \
 	src/common/SoundNull.o \
 	src/common/SoundSDL.o \

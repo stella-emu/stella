@@ -4,13 +4,9 @@ MODULE_OBJS := \
 	src/gui/AboutDialog.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
-	src/gui/ColorWidget.o \
 	src/gui/CheatCodeDialog.o \
 	src/gui/CommandDialog.o \
 	src/gui/CommandMenu.o \
-	src/gui/DataGridWidget.o \
-	src/gui/DataGridOpsWidget.o \
-	src/gui/DebuggerDialog.o \
 	src/gui/DialogContainer.o \
 	src/gui/Dialog.o \
 	src/gui/EditableWidget.o \
@@ -33,11 +29,8 @@ MODULE_OBJS := \
 	src/gui/CheckListWidget.o \
 	src/gui/StringListWidget.o \
 	src/gui/TabWidget.o \
-	src/gui/ToggleWidget.o \
-	src/gui/ToggleBitWidget.o \
-	src/gui/TogglePixelWidget.o \
 	src/gui/VideoDialog.o \
-	src/gui/Widget.o \
+	src/gui/Widget.o
 
 MODULE_DIRS += \
 	src/gui

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.90 2005-08-30 01:10:54 stephena Exp $
+// $Id: EventHandler.cxx,v 1.91 2005-08-30 17:51:26 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -331,7 +331,6 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->sound().adjustVolume(1);
                 break;
 
-    #ifdef DEVELOPER_SUPPORT
               case SDLK_END:       // Alt-End increases XStart
                 myOSystem->console().changeXStart(1);
                 break;
@@ -347,8 +346,7 @@ void EventHandler::poll(uInt32 time)
               case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
                 myOSystem->console().changeYStart(0);
                 break;
-      #endif
-      #ifdef DEVELOPER_SUPPORT
+
               case SDLK_z:
                 myOSystem->console().toggleP0Bit();
                 break;
@@ -380,7 +378,7 @@ void EventHandler::poll(uInt32 time)
               case SDLK_SLASH:
                 myOSystem->console().enableBits(true);
                 break;
-      #endif
+
               case SDLK_s:	 // Alt-s merges properties into stella.pro
                 myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
                 break;
@@ -451,7 +449,6 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->createConsole();
                 break;
 
-  #ifdef DEVELOPER_SUPPORT
               case SDLK_END:       // Ctrl-End increases Width
                 myOSystem->console().changeWidth(1);
                 break;
@@ -467,7 +464,7 @@ void EventHandler::poll(uInt32 time)
               case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
                 myOSystem->console().changeHeight(0);
                 break;
-  #endif
+
               case SDLK_s:         // Ctrl-s saves properties to a file
                 string newPropertiesFile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
                   myOSystem->console().properties().get("Cartridge.Name") + ".pro";
@@ -1705,6 +1702,8 @@ bool EventHandler::enterDebugMode()
   // Make sure screen is always refreshed when entering debug mode
   // (sometimes entering on a breakpoint doesn't draw contents)
   refreshDisplay();
+#else
+  myOSystem->frameBuffer().showMessage("Developer/debugger unsupported");
 #endif
 
   return true;

@@ -1,8 +1,6 @@
 MODULE := src/debugger
 
 MODULE_OBJS := \
-	src/debugger/Cheat.o \
-	src/debugger/CheetahCheat.o \
 	src/debugger/Debugger.o \
 	src/debugger/DebuggerParser.o \
 	src/debugger/EquateList.o \
@@ -41,15 +39,7 @@ MODULE_OBJS := \
 	src/debugger/PackedBitArray.o \
 	src/debugger/CpuDebug.o \
 	src/debugger/RamDebug.o \
-	src/debugger/TIADebug.o \
-	src/debugger/TiaInfoWidget.o \
-	src/debugger/TiaOutputWidget.o \
-	src/debugger/CpuWidget.o \
-	src/debugger/PromptWidget.o \
-	src/debugger/RamWidget.o \
-	src/debugger/RomWidget.o \
-	src/debugger/RomListWidget.o \
-	src/debugger/TiaWidget.o
+	src/debugger/TIADebug.o
 
 MODULE_DIRS += \
 	src/debugger
