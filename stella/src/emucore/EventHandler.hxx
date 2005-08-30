@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.48 2005-08-30 01:10:54 stephena Exp $
+// $Id: EventHandler.hxx,v 1.49 2005-08-30 23:32:42 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.48 2005-08-30 01:10:54 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.49 2005-08-30 23:32:42 stephena Exp $
 */
 class EventHandler
 {
@@ -281,8 +281,15 @@ class EventHandler
       @param state  state of code (pressed/released)
     */
     void handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state);
+
+    /**
+      Convert joystick motion events to simulated mouse motion events
+
+      @param stick  SDL joystick
+      @param code   Event code
+      @param state  state of code (pressed/released)
+    */
     void handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value);
-    void handleWarpMouseButton(uInt8 event_button, uInt8 state);
 
     /**
       Handle joystick movement emulating mouse motion

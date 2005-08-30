@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.91 2005-08-30 17:51:26 stephena Exp $
+// $Id: EventHandler.cxx,v 1.92 2005-08-30 23:32:42 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -541,29 +541,30 @@ void EventHandler::poll(uInt32 time)
 
             code  = event.jbutton.button;
             state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
-//#ifdef PSP
-            handleWarpMouseButton(code,state);
-//#endif
+
             handleJoyEvent(stick, code, state);
             break;
 
           case SDL_JOYAXISMOTION:
             axis = event.jaxis.axis;
             value = event.jaxis.value;
-//#ifdef PSP
-//            if(state != S_EMULATE)
+
+            // Handle emulation of mouse using the joystick
+            if(myState == S_EMULATE)
+            {
+              if(axis == 0)  // x-axis
+              {
+                handleJoyEvent(stick, kJAxisLeft, (value < -16384) ? 1 : 0);
+                handleJoyEvent(stick, kJAxisRight, (value > 16384) ? 1 : 0);
+              }
+              else if(axis == 1)  // y-axis
+              {
+                handleJoyEvent(stick, kJAxisUp, (value < -16384) ? 1 : 0);
+                handleJoyEvent(stick, kJAxisDown, (value > 16384) ? 1 : 0);
+              }
+            }
+            else
               handleMouseWarp(stick, axis, value);
-//#endif
-            if(axis == 0)  // x-axis
-            {
-              handleJoyEvent(stick, kJAxisLeft, (value < -16384) ? 1 : 0);
-              handleJoyEvent(stick, kJAxisRight, (value > 16384) ? 1 : 0);
-            }
-            else if(axis == 1)  // y-axis
-            {
-              handleJoyEvent(stick, kJAxisUp, (value < -16384) ? 1 : 0);
-              handleJoyEvent(stick, kJAxisDown, (value > 16384) ? 1 : 0);
-            }
             break;
         }
         break;  // Regular joystick
@@ -939,102 +940,6 @@ void EventHandler::handleJoyMouse(uInt32 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleWarpMouseButton(uInt8 event_button, uInt8 state)
-{
-// FIXME - this will disappear, and be integrated directly into handleJoyEvent()
-#if 0
-  // Determine which mode we're in, then send the event to the appropriate place
-    switch(myState)
-    {
-        case S_EMULATE:
-        {
-            /* map joypad button to sdl key events*/
-            if (event_button == 11){    /*start*/
-                handleKeyEvent(0,SDLK_ESCAPE,(SDLMod)0,state);
-            } else if (event_button == 10){ /*select*/
-                handleKeyEvent(0,SDLK_TAB,(SDLMod)0,state);
-            } else if (event_button == 6){
-                handleKeyEvent(0,SDLK_UP,(SDLMod)0,state);
-            } else if (event_button == 8){
-                handleKeyEvent(0,SDLK_DOWN,(SDLMod)0,state);
-            } else if (event_button == 9){
-                handleKeyEvent(0,SDLK_RIGHT,(SDLMod)0,state);
-            } else if (event_button == 7){
-                handleKeyEvent(0,SDLK_LEFT,(SDLMod)0,state);
-            } else if (event_button == 0){ /*triangle*/
-                handleKeyEvent(0,SDLK_PAUSE,(SDLMod)0,state);
-            } else if (event_button == 2){ /*cross*/
-                handleKeyEvent(0,SDLK_SPACE,(SDLMod)0,state);
-            } else if (event_button == 1){ /*circle*/
-                handleKeyEvent(0,SDLK_F12,(SDLMod)0,state);
-            } else if (event_button == 3 && state){ /*square*/
-                myOSystem->console().toggleFormat();
-            } else if (event_button == 4){ /*left trigger*/
-                handleKeyEvent(0,SDLK_F11,(SDLMod)0,state);
-            } else if (event_button == 5){ /*right trigger*/
-                handleKeyEvent(0,SDLK_F9,(SDLMod)0,state);
-            }
-            break;
-        }
-
-        case S_MENU:
-        case S_LAUNCHER:
-        case S_DEBUGGER:
-        {
-            /* map up and down buttions to sdl events */
-            if (event_button == 8){
-                handleKeyEvent(0,SDLK_UP,(SDLMod)0,state);
-                break;
-            }   else if (event_button == 6){
-                handleKeyEvent(0,SDLK_DOWN,(SDLMod)0,state);
-                break;
-            }
-            Int32 x = myMouseX;
-            Int32 y = myMouseY;
-            myOSystem->frameBuffer().translateCoords(&x, &y);
-            MouseButton button;
-
-            /* enable 'select' button */
-            if (event_button == 10 && state){
-                handleKeyEvent(0,SDLK_TAB,(SDLMod)0,state);
-                break;
-            }
-            /* map the buttons to sdl mouse buttton events*/
-            if(state)
-            {
-                if(event_button  == 2)
-                    button = EVENT_LBUTTONDOWN;
-                else if(event_button == 1)
-                    button = EVENT_RBUTTONDOWN;
-                else
-                    break;
-            }
-            else
-            {
-                if(event_button == 2)
-                    button = EVENT_LBUTTONUP;
-                else if(event_button == 1)
-                    button = EVENT_RBUTTONUP;
-                else
-                    break;
-            }
-
-            if(myState == S_MENU)
-                myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
-            else if(myState == S_LAUNCHER)
-                myOSystem->launcher().handleMouseButtonEvent(button, x, y, state);
-            else
-                myOSystem->debugger().handleMouseButtonEvent(button, x, y, state);
-            break;
-        }
-
-        default:
-            break;
-    }
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
 {
   if(value > JOY_DEADZONE)
@@ -1077,31 +982,67 @@ void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
 {
+  // Joystick button zero acts as left mouse button and cannot be remapped
+  if(myState != S_EMULATE && code == 0)
+  {
+    // This button acts as mouse button zero, and can never be remapped
+    SDL_MouseButtonEvent mouseEvent;
+    mouseEvent.type   = state ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+    mouseEvent.button = SDL_BUTTON_LEFT;
+    mouseEvent.state  = state ? SDL_PRESSED : SDL_RELEASED;
+    mouseEvent.x      = myJoyMouse.x;
+    mouseEvent.y      = myJoyMouse.y;
+
+    handleMouseButtonEvent((SDL_Event&)mouseEvent, state);
+    return;
+  }
+
   // Determine which mode we're in, then send the event to the appropriate place
+  // FIXME - this is almost exactly the same as handleKeyEvent
+  //         the similar code should be handled in handleEvent ...
+  Event::Type event = myJoyTable[stick*kNumJoyButtons + code];
   switch(myState)
   {
     case S_EMULATE:
-      handleEvent(myJoyTable[stick*kNumJoyButtons + code], state);
-      break;
+      if(event == Event::MenuMode && state == 1 && !myPauseFlag)
+      {
+        enterMenuMode();
+        return;
+      }
+      else if(event == Event::CmdMenuMode && state == 1 && !myPauseFlag)
+      {
+        enterCmdMenuMode();
+        return;
+      }
+      else if(event == Event::DebuggerMode && state == 1 && !myPauseFlag)
+      {
+        enterDebugMode();
+        return;
+      }
+      else
+        handleEvent(event, state);
 
-// FIXME - remove handleJoyEvent from DialogContainer, have it pass
-//         mouse events instead
+      break;  // S_EMULATE
+
     case S_MENU:
+      if(event == Event::MenuMode && state == 1)
+      {
+        leaveMenuMode();
+        return;
+      }
       myOSystem->menu().handleJoyEvent(stick, code, state);
       break;
 
-    case S_LAUNCHER:
-      myOSystem->launcher().handleJoyEvent(stick, code, state);
+    case S_CMDMENU:
+      if(event == Event::CmdMenuMode && state == 1)
+      {
+        leaveCmdMenuMode();
+        return;
+      }
+      myOSystem->commandMenu().handleJoyEvent(stick, code, state);
       break;
-
-#ifdef DEVELOPER_SUPPORT
-    case S_DEBUGGER:
-      myOSystem->debugger().handleJoyEvent(stick, code, state);
-      break;
-#endif
 
     default:
-      return;
       break;
   }
 }

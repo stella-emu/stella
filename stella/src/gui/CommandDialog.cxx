@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.1 2005-08-29 18:36:42 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.2 2005-08-30 23:32:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,7 +38,11 @@ enum {
   kSaveStateCmd  = 'Csst',
   kStateSlotCmd  = 'Ccst',
   kLoadStateCmd  = 'Clst',
-  kSnapshotCmd   = 'Csnp'
+  kSnapshotCmd   = 'Csnp',
+  kFormatCmd     = 'Cfmt',
+  kPaletteCmd    = 'Cpal',
+  kReloadRomCmd  = 'Crom',
+  kLauncherCmd   = 'Clch'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,7 +58,7 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
 
   // Set real dimensions
   _w = 4 * (lwidth) + 5;
-  _h = 3 * (buttonHeight+5) + 5;
+  _h = 4 * (buttonHeight+5) + 5;
   _x = (osystem->frameBuffer().baseWidth()  - _w) / 2;
   _y = (osystem->frameBuffer().baseHeight() - _h) / 2;
 
@@ -98,6 +102,20 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
   xoffset += lwidth;
   new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
                    "Snapshot", kSnapshotCmd, 0);
+
+  xoffset = 5;  yoffset += buttonHeight + 5;
+
+  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                   "NTSC/PAL", kFormatCmd, 0);
+  xoffset += lwidth;
+  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                   "Palette", kPaletteCmd, 0);
+  xoffset += lwidth;
+  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                   "Reload ROM", kReloadRomCmd, 0);
+  xoffset += lwidth;
+  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                   "Exit Game", kLauncherCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,6 +178,28 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSnapshotCmd:
       event = Event::TakeSnapshot;
+      break;
+
+    case kFormatCmd:
+      instance()->eventHandler().leaveCmdMenuMode();
+      instance()->console().toggleFormat();
+      return;
+      break;
+
+    case kPaletteCmd:
+      instance()->eventHandler().leaveCmdMenuMode();
+      instance()->console().togglePalette();
+      return;
+      break;
+
+    case kReloadRomCmd:
+      instance()->eventHandler().leaveCmdMenuMode();
+      instance()->createConsole();
+      return;
+      break;
+
+    case kLauncherCmd:
+      event = Event::LauncherMode;
       break;
 
     default:
