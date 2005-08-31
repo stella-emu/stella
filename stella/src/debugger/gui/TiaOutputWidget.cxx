@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.2 2005-08-31 22:34:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,19 +23,34 @@
 #include "FrameBuffer.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
+#include "ContextMenu.hxx"
+#include "TiaZoomWidget.hxx"
 
 #include "TiaOutputWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaOutputWidget::TiaOutputWidget(GuiObject* boss, int x, int y, int w, int h)
   : Widget(boss, x, y, w, h),
-    CommandSender(boss)
+    CommandSender(boss),
+    myMenu(NULL),
+    myZoom(NULL)
 {
+  // Create context menu for commands
+  myMenu = new ContextMenu(this, instance()->consoleFont());
+
+  StringList l;
+  l.push_back("Fill to scanline");
+  l.push_back("Set breakpoint");
+  l.push_back("Set zoom position");
+
+  myMenu->setList(l);
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaOutputWidget::~TiaOutputWidget()
 {
+  delete myMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,13 +82,45 @@ void TiaOutputWidget::advance(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
+  // FIXME - these coords aren't yet accurate, but that doesn't stop
+  //         us from implementing the functionality
   int xstart = atoi(instance()->console().properties().get("Display.XStart").c_str());
   int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
 
-cerr << "TiaOutputWidget button press:" << endl
-     << "x = " << x << ", y = " << y << endl
-     << "xstart = " << xstart << ", ystart = " << ystart << endl
-     << endl;
+  // Grab right mouse button for zoom context menu
+  if(button == 2)
+  {
+    myClickX = x + getAbsX();
+    myClickY = y + getAbsY();
+
+    myMenu->setPos(myClickX, myClickY);
+    myMenu->show();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+{
+  switch(cmd)
+  {
+    case kCMenuItemSelectedCmd:
+      switch(myMenu->getSelected())
+      {
+        case 0:
+          cerr << "Fill to scanline\n";
+          break;
+
+        case 1:
+          cerr << "Set breakpoint\n";
+          break;
+
+        case 2:
+          if(myZoom)
+            myZoom->setPos(myClickX, myClickY);
+          break;
+      }
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

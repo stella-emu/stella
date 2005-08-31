@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.hxx,v 1.1 2005-08-31 19:15:10 stephena Exp $
+// $Id: ContextMenu.hxx,v 1.2 2005-08-31 22:34:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,6 +50,7 @@ class ContextMenu : public Dialog, public CommandSender
 
     void setList(const StringList& list);
     const string& getSelectedString() const;
+    int getSelected() const { return _selectedItem; }
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);

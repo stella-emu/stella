@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.hxx,v 1.1 2005-08-31 19:15:10 stephena Exp $
+// $Id: TiaZoomWidget.hxx,v 1.2 2005-08-31 22:34:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define TIA_ZOOM_WIDGET_HXX
 
 class GuiObject;
+class ContextMenu;
 
 #include "Widget.hxx"
 #include "Command.hxx"
@@ -35,6 +36,7 @@ class TiaZoomWidget : public Widget, public CommandSender
     virtual ~TiaZoomWidget();
 
     void loadConfig();
+    void setPos(int x, int y);
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
@@ -46,9 +48,14 @@ class TiaZoomWidget : public Widget, public CommandSender
 
   private:
     void zoom(int level);
+    void recalc();
 
   private:
+    ContextMenu* myMenu;
+
     int myZoomLevel;
+    int myNumCols, myNumRows;
+    int myXoff, myYoff;
 };
 
 #endif
