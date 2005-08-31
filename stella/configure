@@ -723,7 +723,7 @@ case $_host_os in
 			# 2 times -lc to avoid link problems. psp-gcc seems to to forget the first -lc wiile stdc++ linking
 			LIBS="-L `psp-config  --pspsdk-path`/lib -L`psp-config  --pspsdk-path`/../lib  "
 			LIBS="$LIBS -lSDLmain -lSDL -lpng -lm -lpspsdk -lpspdebug -lpspgu -lpspctrl "
-			LIBS="$LIBS -lpspaudio -lc -lz -lpspkernel -lpspuser -lpspge -lpspdisplay -lpsphprm -lstdc++ -lc"
+			LIBS="$LIBS -lpspaudio -lc -lz -lpspkernel -lpspuser -lpspge -lpspdisplay -lpsphprm -lpsppower -lstdc++ -lc"
 			# psp compiler
 			CC="psp-gcc"
 			LD="psp-gcc"
