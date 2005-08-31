@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.17 2005-08-29 18:36:42 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.18 2005-08-31 19:15:10 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -184,6 +184,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
+  int button = (b == EVENT_LBUTTONDOWN || b == EVENT_LBUTTONUP) ? 1 : 2;
   switch(b)
   {
     case EVENT_LBUTTONDOWN:
@@ -213,20 +214,20 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
       // Now account for repeated mouse events (click and hold)
       myCurrentMouseDown.x = x;
       myCurrentMouseDown.y = y;
-      myCurrentMouseDown.button = 1;  // in the future, we may differentiate buttons
+      myCurrentMouseDown.button = button;
       myClickRepeatTime = myTime + kClickRepeatInitialDelay;
 
       activeDialog->handleMouseDown(x - activeDialog->_x, y - activeDialog->_y,
-                                    1, myLastClick.count);
+                                    button, myLastClick.count);
       break;
 
     case EVENT_LBUTTONUP:
     case EVENT_RBUTTONUP:
       activeDialog->handleMouseUp(x - activeDialog->_x, y - activeDialog->_y,
-                                  1, myLastClick.count);
-      // Since all buttons are treated equally, we don't need to check which button
-      //if (button == myCurrentClickDown.button)
-      myCurrentMouseDown.button = -1;
+                                  button, myLastClick.count);
+
+      if(button == myCurrentMouseDown.button)
+        myCurrentMouseDown.button = -1;
       break;
 
     case EVENT_WHEELUP:

@@ -9,7 +9,9 @@ MODULE_OBJS := \
 	src/debugger/gui/TiaWidget.o \
 	src/debugger/gui/TiaInfoWidget.o \
 	src/debugger/gui/TiaOutputWidget.o \
+	src/debugger/gui/TiaZoomWidget.o \
 	src/debugger/gui/ColorWidget.o \
+	src/debugger/gui/ContextMenu.o \
 	src/debugger/gui/DataGridOpsWidget.o \
 	src/debugger/gui/DataGridWidget.o \
 	src/debugger/gui/DebuggerDialog.o \

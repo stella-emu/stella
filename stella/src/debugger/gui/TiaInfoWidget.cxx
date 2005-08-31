@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaInfoWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: TiaInfoWidget.cxx,v 1.2 2005-08-31 19:15:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,63 +30,70 @@
 #include "TiaInfoWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+TiaInfoWidget::TiaInfoWidget(GuiObject* boss, int x, int y)
+  : Widget(boss, x, y, 16, 16),
     CommandSender(boss)
 {
+  const GUI::Font& font = instance()->consoleFont();
+  const int fontWidth  = font.getMaxCharWidth(),
+            fontHeight = font.getFontHeight(),
+            lineHeight = font.getLineHeight();
   int xpos = x, ypos = y, lwidth = 45;
-  const GUI::Font& font = instance()->font();
 
   // Add frame info
   xpos = x + 10;  ypos = y + 10;
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Frame:", kTextAlignLeft);
   xpos += lwidth;
-  myFrameCount = new EditTextWidget(boss, xpos, ypos-2, 45, kLineHeight, "");
+  myFrameCount = new EditTextWidget(boss, xpos, ypos-2, 45, lineHeight, "");
   myFrameCount->setFont(font);
   myFrameCount->setEditable(false);
 
   xpos = x + 10;  ypos += kLineHeight + 5;
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "F. Cycles:", kTextAlignLeft);
   xpos += lwidth;
-  myFrameCycles = new EditTextWidget(boss, xpos, ypos-2, 45, kLineHeight, "");
+  myFrameCycles = new EditTextWidget(boss, xpos, ypos-2, 45, lineHeight, "");
   myFrameCycles->setFont(font);
   myFrameCycles->setEditable(false);
 
   xpos = x + 20;  ypos += kLineHeight + 5;
-  myVSync = new CheckboxWidget(boss, font, xpos, ypos-3, "VSync", 0);
+  myVSync = new CheckboxWidget(boss, instance()->font(), xpos, ypos-3, "VSync", 0);
   myVSync->setEditable(false);
 
   xpos = x + 20;  ypos += kLineHeight + 5;
-  myVBlank = new CheckboxWidget(boss, font, xpos, ypos-3, "VBlank", 0);
+  myVBlank = new CheckboxWidget(boss, instance()->font(), xpos, ypos-3, "VBlank", 0);
   myVBlank->setEditable(false);
 
   xpos = x + 10 + 100;  ypos = y + 10;
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Scanline:", kTextAlignLeft);
   xpos += lwidth;
-  myScanlineCount = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
+  myScanlineCount = new EditTextWidget(boss, xpos, ypos-2, 30, lineHeight, "");
   myScanlineCount->setFont(font);
   myScanlineCount->setEditable(false);
 
   xpos = x + 10 + 100;  ypos += kLineHeight + 5;
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "S. Cycles:", kTextAlignLeft);
   xpos += lwidth;
-  myScanlineCycles = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
+  myScanlineCycles = new EditTextWidget(boss, xpos, ypos-2, 30, lineHeight, "");
   myScanlineCycles->setFont(font);
   myScanlineCycles->setEditable(false);
 
   xpos = x + 10 + 100;  ypos += kLineHeight + 5;
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Pixel Pos:", kTextAlignLeft);
   xpos += lwidth;
-  myPixelPosition = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
+  myPixelPosition = new EditTextWidget(boss, xpos, ypos-2, 30, lineHeight, "");
   myPixelPosition->setFont(font);
   myPixelPosition->setEditable(false);
 
   xpos = x + 10 + 100;  ypos += kLineHeight + 5;
   new StaticTextWidget(boss, xpos, ypos, lwidth, kLineHeight, "Color Clk:", kTextAlignLeft);
   xpos += lwidth;
-  myColorClocks = new EditTextWidget(boss, xpos, ypos-2, 30, kLineHeight, "");
+  myColorClocks = new EditTextWidget(boss, xpos, ypos-2, 30, lineHeight, "");
   myColorClocks->setFont(font);
   myColorClocks->setEditable(false);
+
+  // Calculate actual dimensions
+  _w = 110 + 30 + lwidth;
+  _h = ypos + lineHeight;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

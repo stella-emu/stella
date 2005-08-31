@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.2 2005-08-31 19:15:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,7 @@ class RomWidget;
 class TabWidget;
 class TiaInfoWidget;
 class TiaOutputWidget;
+class TiaZoomWidget;
 
 #include "Dialog.hxx"
 #include "PromptWidget.hxx"
@@ -45,6 +46,7 @@ class DebuggerDialog : public Dialog
     PromptWidget* prompt()       { return myPrompt;    }
     TiaInfoWidget* tiaInfo()     { return myTiaInfo;   }
     TiaOutputWidget* tiaOutput() { return myTiaOutput; }
+    TiaZoomWidget* tiaZoom()     { return myTiaZoom;   }
 
     virtual void loadConfig();
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
@@ -56,6 +58,7 @@ class DebuggerDialog : public Dialog
     PromptWidget*    myPrompt;
     TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;
+    TiaZoomWidget*   myTiaZoom;
     CpuWidget*       myCpu;
     RamWidget*       myRam;
     RomWidget*       myRom;

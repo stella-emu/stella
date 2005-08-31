@@ -13,45 +13,42 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaInfoWidget.hxx,v 1.2 2005-08-31 19:15:10 stephena Exp $
+// $Id: TiaZoomWidget.hxx,v 1.1 2005-08-31 19:15:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef TIA_INFO_WIDGET_HXX
-#define TIA_INFO_WIDGET_HXX
+#ifndef TIA_ZOOM_WIDGET_HXX
+#define TIA_ZOOM_WIDGET_HXX
 
 class GuiObject;
-class EditTextWidget;
 
 #include "Widget.hxx"
 #include "Command.hxx"
 
 
-class TiaInfoWidget : public Widget, public CommandSender
+class TiaZoomWidget : public Widget, public CommandSender
 {
   public:
-    TiaInfoWidget(GuiObject *boss, int x, int y);
-    virtual ~TiaInfoWidget();
+    TiaZoomWidget(GuiObject *boss, int x, int y);
+    virtual ~TiaZoomWidget();
 
     void loadConfig();
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
+    bool handleKeyDown(int ascii, int keycode, int modifiers);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    void drawWidget(bool hilite);
+    bool wantsFocus() { return true; }
+
   private:
-    EditTextWidget* myFrameCount;
-    EditTextWidget* myFrameCycles;
+    void zoom(int level);
 
-    EditTextWidget* myScanlineCount;
-    EditTextWidget* myScanlineCycles;
-    EditTextWidget* myPixelPosition;
-    EditTextWidget* myColorClocks;
-
-    CheckboxWidget* myVSync;
-    CheckboxWidget* myVBlank;
+  private:
+    int myZoomLevel;
 };
 
 #endif

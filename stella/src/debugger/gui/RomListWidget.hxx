@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: RomListWidget.hxx,v 1.2 2005-08-31 19:15:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define ROM_LIST_WIDGET_HXX
 
 class CheckboxWidget;
+class ContextMenu;
 
 #include "CheckListWidget.hxx"
 
@@ -36,10 +37,14 @@ class RomListWidget : public CheckListWidget
     virtual ~RomListWidget();
 
   protected:
+    void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+
     void drawWidget(bool hilite);
     GUI::Rect getEditRect() const;
 
   private:
+    ContextMenu* myMenu;
     int myHighlightedItem;
 };
 

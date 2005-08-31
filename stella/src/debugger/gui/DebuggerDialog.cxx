@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.2 2005-08-31 19:15:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,8 +22,9 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "TabWidget.hxx"
-#include "TiaOutputWidget.hxx"
 #include "TiaInfoWidget.hxx"
+#include "TiaOutputWidget.hxx"
+#include "TiaZoomWidget.hxx"
 #include "PromptWidget.hxx"
 #include "CpuWidget.hxx"
 #include "RamWidget.hxx"
@@ -66,6 +67,7 @@ void DebuggerDialog::loadConfig()
   myTab->loadConfig();
   myTiaInfo->loadConfig();
   myTiaOutput->loadConfig();
+  myTiaZoom->loadConfig();
   myCpu->loadConfig();
   myRam->loadConfig();
   myRom->loadConfig();
@@ -168,9 +170,14 @@ void DebuggerDialog::addTabArea()
 void DebuggerDialog::addStatusArea()
 {
   GUI::Rect r = instance()->debugger().getStatusBounds();
-  myTiaInfo = new TiaInfoWidget(this, r.left, r.top, r.width(), r.height());
-// FIXME - remove width and height from TiaInfo, let it figure out its
-//         own dimensions
+  int xpos, ypos;
+
+  xpos = r.left;  ypos = r.top;
+  myTiaInfo = new TiaInfoWidget(this, xpos, ypos);
+
+  ypos += myTiaInfo->getHeight() + 10;
+  myTiaZoom = new TiaZoomWidget(this, xpos, ypos);
+  addToFocusList(myTiaZoom->getFocusList());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

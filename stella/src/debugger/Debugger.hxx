@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.72 2005-08-26 16:44:16 stephena Exp $
+// $Id: Debugger.hxx,v 1.73 2005-08-31 19:15:10 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -27,6 +27,7 @@ class RamDebug;
 class TIADebug;
 class TiaInfoWidget;
 class TiaOutputWidget;
+class TiaZoomWidget;
 class Expression;
 
 #include <map>
@@ -76,7 +77,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.72 2005-08-26 16:44:16 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.73 2005-08-31 19:15:10 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -352,6 +353,7 @@ class Debugger : public DialogContainer
 
     TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;
+    TiaZoomWidget*   myTiaZoom;
 
     EquateList *equateList;
     PackedBitArray *breakPoints;

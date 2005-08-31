@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.89 2005-08-26 16:44:16 stephena Exp $
+// $Id: Debugger.cxx,v 1.90 2005-08-31 19:15:10 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -40,6 +40,7 @@
 
 #include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"
+#include "TiaZoomWidget.hxx"
 #include "Expression.hxx"
 
 #include "YaccParser.hxx"
@@ -92,6 +93,7 @@ Debugger::Debugger(OSystem* osystem)
     myTiaDebug(NULL),
     myTiaInfo(NULL),
     myTiaOutput(NULL),
+    myTiaZoom(NULL),
     equateList(NULL),
     breakPoints(NULL),
     readTraps(NULL),
@@ -148,6 +150,7 @@ void Debugger::initialize()
   myPrompt    = dd->prompt();
   myTiaInfo   = dd->tiaInfo();
   myTiaOutput = dd->tiaOutput();
+  myTiaZoom   = dd->tiaZoom();
 
   // set up any breakpoint that was on the command line
   // (and remove the key from the settings, so they won't get set again)

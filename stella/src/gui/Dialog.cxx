@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.28 2005-08-26 16:44:17 stephena Exp $
+// $Id: Dialog.cxx,v 1.29 2005-08-31 19:15:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,7 +75,8 @@ void Dialog::open()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::close()
 {
-  if (_mouseWidget) {
+  if (_mouseWidget)
+  {
     _mouseWidget->handleMouseLeft(0);
     _mouseWidget = 0;
   }
@@ -219,6 +220,7 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
     // Redraw widgets for new focus
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
   }
+
 
   if(w)
     w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
