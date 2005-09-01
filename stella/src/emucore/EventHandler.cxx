@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.92 2005-08-30 23:32:42 stephena Exp $
+// $Id: EventHandler.cxx,v 1.93 2005-09-01 21:53:44 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -43,12 +43,18 @@
 #endif
 
 #ifdef MAC_OSX
-extern "C" {
-void handleMacOSXKeypress(int key);
-}
+  extern "C" {
+    void handleMacOSXKeypress(int key);
+  }
 #endif
 
 #define JOY_DEADZONE 3200
+
+#ifdef PSP
+  #define JOYMOUSE_LEFT_BUTTON 2
+#else
+  #define JOYMOUSE_LEFT_BUTTON 0
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
@@ -983,7 +989,7 @@ void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
 void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
 {
   // Joystick button zero acts as left mouse button and cannot be remapped
-  if(myState != S_EMULATE && code == 0)
+  if(myState != S_EMULATE && code == JOYMOUSE_LEFT_BUTTON)
   {
     // This button acts as mouse button zero, and can never be remapped
     SDL_MouseButtonEvent mouseEvent;
@@ -1379,6 +1385,23 @@ void EventHandler::setDefaultJoymap()
   myJoyTable[i + kJAxisLeft]  = Event::JoystickZeroLeft;
   myJoyTable[i + kJAxisRight] = Event::JoystickZeroRight;
   myJoyTable[i + 0]           = Event::JoystickZeroFire;
+
+#ifdef PSP
+  myJoyTable[i + 0]  = Event::TakeSnapshot;      // Triangle
+  myJoyTable[i + 1]  = Event::LoadState;         // Circle
+  myJoyTable[i + 2]  = Event::JoystickZeroFire;  // Cross
+  myJoyTable[i + 3]  = Event::SaveState;         // Square
+  myJoyTable[i + 4]  = Event::MenuMode;          // Left trigger
+  myJoyTable[i + 5]  = Event::CmdMenuMode;       // Right trigger
+//  myJoyTable[i + 6]  = Event::NoType           // Down
+//  myJoyTable[i + 7]  = Event::NoType           // Left
+//  myJoyTable[i + 8]  = Event::NoType           // Up
+//  myJoyTable[i + 9]  = Event::NoType           // Right
+  myJoyTable[i + 10] = Event::ConsoleSelect;     // Select
+  myJoyTable[i + 11] = Event::ConsoleReset;      // Start
+  myJoyTable[i + 12] = Event::NoType;            // Home
+  myJoyTable[i + 13] = Event::NoType;            // Hold
+#endif
 
   // Right joystick
   i = 1 * kNumJoyButtons;

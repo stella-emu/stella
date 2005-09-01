@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.36 2005-08-25 15:19:17 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.37 2005-09-01 21:53:44 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -136,6 +136,34 @@ bool FrameBufferSoft::createScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::drawMediaSource()
 {
+#ifdef PSP
+  MediaSource& mediasrc = myOSystem->console().mediaSource();
+
+  SDL_LockSurface(myScreen);
+
+  uInt8* currentFrame = mediasrc.currentFrameBuffer();
+
+  uInt32 width  = mediasrc.width();
+  uInt32 height = mediasrc.height();
+
+  register uInt32* buffer = (uInt32*) myScreen->pixels;
+  register uInt32 y;
+
+  for(y = 0; y < height; ++y )
+  {
+    const uInt32 bufofsY    = y * width;
+    const uInt32 screenofsY = y * (myScreen->pitch >> 3);
+
+    register uInt32 x;
+    for(x = 0; x < width; ++x )
+    {
+      const uInt32 off = screenofsY + x << 1;
+      buffer[off] = buffer[off + 1] = myPalette[currentFrame[bufofsY + x]];
+    }
+  }
+
+  SDL_UnlockSurface(myScreen);
+#else
   MediaSource& mediasrc = myOSystem->console().mediaSource();
 
   uInt8* currentFrame   = mediasrc.currentFrameBuffer();
@@ -283,11 +311,13 @@ void FrameBufferSoft::drawMediaSource()
     myRectList->add(&temp);
     SDL_FillRect(myScreen, &temp, myPalette[active.color]);
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::preFrameUpdate()
 {
+#ifndef PSP
   // Start a new rectlist on each display update
   myRectList->start();
 
@@ -296,6 +326,7 @@ void FrameBufferSoft::preFrameUpdate()
   for(unsigned int i = 0; i < myOverlayRectList->numRects(); ++i)
     myRectList->add(&dirtyOverlayRects[i]);
   myOverlayRectList->start();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
