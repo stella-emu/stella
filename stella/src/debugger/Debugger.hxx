@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.73 2005-08-31 19:15:10 stephena Exp $
+// $Id: Debugger.hxx,v 1.74 2005-09-01 19:14:09 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -77,7 +77,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.73 2005-08-31 19:15:10 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.74 2005-09-01 19:14:09 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -186,10 +186,11 @@ class Debugger : public DialogContainer
 
     /**
       Disassemble from the starting address the specified number of lines
-      and place addresses and data in given arrays.
+      and place addresses, bytes and data in given arrays.
     */
-    void disassemble(StringList& addrLabel, IntArray& addr,
-                     StringList& data, int start, int lines);
+    void disassemble(IntArray& addr, StringList& addrLabel,
+                     StringList& bytes, StringList& data,
+                     int start, int lines);
 
     int step();
     int trace();

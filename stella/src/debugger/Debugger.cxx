@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.90 2005-08-31 19:15:10 stephena Exp $
+// $Id: Debugger.cxx,v 1.91 2005-09-01 19:14:09 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -782,38 +782,31 @@ const string& Debugger::disassemble(int start, int lines) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::disassemble(StringList& addrLabel, IntArray& addr,
-                           StringList& data, int start, int lines)
+void Debugger::disassemble(IntArray& addr, StringList& addrLabel, 
+                           StringList& bytes, StringList& data,
+                           int start, int lines)
 {
   char buf[255], bbuf[255];
-  string result;
+  string tmp;
 
-  do {
-    result = "";
-
-    const char *label = equateList->getFormatted(start, 4);
-    addrLabel.push_back(label);
+  do
+  {
+    tmp = equateList->getFormatted(start, 4);
+    addrLabel.push_back(tmp + ":");
     addr.push_back(start);
-
-    result += label;
-    result += ": ";
 
     int count = myCpuDebug->disassemble(start, buf, equateList);
 
+    tmp = "";
     for(int i=0; i<count; i++) {
       sprintf(bbuf, "%02x ", peek(start++));
-      result += bbuf;
+      tmp += bbuf;
     }
+    bytes.push_back(tmp);
 
-    if(count < 3) result += "   ";
-    if(count < 2) result += "   ";
-
-    result += " ";
-    result += buf;
-
-    data.push_back(result);
-
-  } while(--lines > 0 && start <= 0xffff);
+    data.push_back(buf);
+  }
+  while(--lines > 0 && start <= 0xffff);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

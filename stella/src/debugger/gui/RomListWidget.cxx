@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.2 2005-08-31 19:15:10 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.3 2005-09-01 19:14:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
     myMenu(NULL),
     myHighlightedItem(-1)
 {
-  myMenu = new ContextMenu(this, instance()->consoleFont());
+  setFont(font);
+  myMenu = new ContextMenu(this, font);
 
   StringList l;
   l.push_back("Add bookmark");
@@ -39,12 +40,25 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   l.push_back("Set PC");
 
   myMenu->setList(l);
+
+  myLabelWidth  = font.getMaxCharWidth() * 16;
+  myBytesWidth  = font.getMaxCharWidth() * 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::~RomListWidget()
 {
   delete myMenu;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::setList(StringList& label, StringList& bytes, StringList& disasm,
+                            BoolArray& state)
+{
+  myLabel  = label;
+  myDisasm = disasm;
+
+  CheckListWidget::setList(bytes, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,8 +70,8 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     myMenu->setPos(x + getAbsX(), y + getAbsY());
     myMenu->show();
   }
-  else
-    ListWidget::handleMouseDown(x, y, button, clickCount);
+
+  ListWidget::handleMouseDown(x, y, button, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,29 +115,38 @@ void RomListWidget::drawWidget(bool hilite)
 
     const int y = _y + 2 + _rowHeight * i;
 
-    GUI::Rect r(getEditRect());
+    GUI::Rect l = getLineRect();
+    GUI::Rect r = getEditRect();
 
-    // Draw highlighted item inverted, on a highlighted background.
+    // Draw highlighted item in a frame
     if (_highlightedItem == pos)
     {
-      fb.fillRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
-                  _w - r.left, _rowHeight,
-                  kHiliteColor);
+      fb.frameRect(_x + l.left - 3, _y + 1 + _rowHeight * i,
+                   _w - l.left, _rowHeight,
+                   kHiliteColor);
     }
 
     // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos)
+    if (_selectedItem == pos && _hasFocus)
     {
-      if (_hasFocus && !_editMode)
+      if (!_editMode)
         fb.fillRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
-                    _w - r.left, _rowHeight,
+                    r.width(), _rowHeight,
                     kTextColorHi);
       else
         fb.frameRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
-                     _w - r.left, _rowHeight,
+                     r.width(), _rowHeight,
                      kTextColorHi);
     }
 
+    // Draw labels and actual disassembly
+    fb.drawString(_font, myLabel[pos], _x + r.left - myLabelWidth, y,
+                  myLabelWidth, kTextColor);
+
+    fb.drawString(_font, myDisasm[pos], _x + r.right, y,
+                  _w - r.right, kTextColor);
+
+    // Draw editable bytes
     if (_selectedItem == pos && _editMode)
     {
       buffer = _editString;
@@ -148,7 +171,7 @@ void RomListWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect RomListWidget::getEditRect() const
+GUI::Rect RomListWidget::getLineRect() const
 {
   GUI::Rect r(2, 1, _w, _rowHeight);
   const int yoffset = (_selectedItem - _currentPos) * _rowHeight,
@@ -157,6 +180,20 @@ GUI::Rect RomListWidget::getEditRect() const
   r.bottom += yoffset;
   r.left  += xoffset;
   r.right -= xoffset - 15;
+	
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect RomListWidget::getEditRect() const
+{
+  GUI::Rect r(2, 1, _w, _rowHeight);
+  const int yoffset = (_selectedItem - _currentPos) * _rowHeight,
+            xoffset = CheckboxWidget::boxSize() + 10;
+  r.top    += yoffset;
+  r.bottom += yoffset;
+  r.left   += xoffset + myLabelWidth;
+  r.right   = r.left + myBytesWidth;
 	
   return r;
 }

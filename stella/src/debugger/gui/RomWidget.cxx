@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: RomWidget.cxx,v 1.2 2005-09-01 19:14:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -114,13 +114,15 @@ void RomWidget::initialUpdate()
     ; // FIXME
   else
   {
-    StringList label, data;
-    BoolArray  state;
+    // Clear old mappings
     myAddrList.clear();
     myLineList.clear();
 
+    StringList label, data, disasm;
+    BoolArray state;
+
     // Disassemble entire bank (up to 4096 lines)
-    dbg.disassemble(label, myAddrList, data, 0xf000, 4096);
+    dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 4096);
     for(unsigned int i = 0; i < data.size(); ++i)
       state.push_back(false);
 
@@ -129,7 +131,7 @@ void RomWidget::initialUpdate()
     for(unsigned int i = 0; i < myAddrList.size(); ++i)
       myLineList.insert(make_pair(myAddrList[i], i));
 
-    myRomList->setList(data, state);
+    myRomList->setList(label, data, disasm, state);
   }
 }
 
