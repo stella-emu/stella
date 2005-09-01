@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.2 2005-08-31 22:34:43 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.3 2005-09-01 16:49:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,8 @@
 #include "GuiObject.hxx"
 #include "ContextMenu.hxx"
 #include "TiaZoomWidget.hxx"
+#include "Debugger.hxx"
+#include "TIADebug.hxx"
 
 #include "TiaOutputWidget.hxx"
 
@@ -82,18 +84,13 @@ void TiaOutputWidget::advance(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  // FIXME - these coords aren't yet accurate, but that doesn't stop
-  //         us from implementing the functionality
-  int xstart = atoi(instance()->console().properties().get("Display.XStart").c_str());
-  int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
-
-  // Grab right mouse button for zoom context menu
+  // Grab right mouse button for command context menu
   if(button == 2)
   {
-    myClickX = x + getAbsX();
-    myClickY = y + getAbsY();
+    myClickX = x;
+    myClickY = y;
 
-    myMenu->setPos(myClickX, myClickY);
+    myMenu->setPos(x + getAbsX(), y + getAbsY());
     myMenu->show();
   }
 }
@@ -101,14 +98,24 @@ void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
+  // FIXME - these coords aren't yet accurate, but that doesn't stop
+  //         us from implementing the functionality
+  //         Maybe they're accurate enough for our purposes??
+  int xstart = atoi(instance()->console().properties().get("Display.XStart").c_str());
+  int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
+
   switch(cmd)
   {
     case kCMenuItemSelectedCmd:
       switch(myMenu->getSelected())
       {
         case 0:
-          cerr << "Fill to scanline\n";
+        {
+          int lines = myClickY + ystart - instance()->debugger().tiaDebug().scanlines();
+          if(lines > 0)
+            instance()->debugger().nextScanline(lines);
           break;
+        }
 
         case 1:
           cerr << "Set breakpoint\n";

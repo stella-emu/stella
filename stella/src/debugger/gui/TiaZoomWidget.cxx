@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.2 2005-08-31 22:34:43 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.3 2005-09-01 16:49:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,6 +46,8 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, int x, int y)
   myNumRows = (_h - 4) / myZoomLevel;
   myXoff = 0;
   myYoff = 0;
+  myXCenter = myNumCols >> 1;
+  myYCenter = myNumRows >> 1;
 
   // Create context menu for zoom levels
   myMenu = new ContextMenu(this, instance()->consoleFont());
@@ -73,8 +75,11 @@ void TiaZoomWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::setPos(int x, int y)
 {
-  myXoff = x;
-  myYoff = y;
+  // Center zoom on given x,y point
+  myXCenter = x >> 1;
+  myYCenter = y;
+
+//cerr << " ==> myXCenter = " << myXCenter << ", myYCenter = " << myYCenter << endl;
 
   recalc();
 }
@@ -96,19 +101,32 @@ void TiaZoomWidget::zoom(int level)
 void TiaZoomWidget::recalc()
 {
   // Don't go past end of framebuffer
-  int imageWidth  = instance()->console().mediaSource().width();
-  int imageHeight = instance()->console().mediaSource().height();
+  const int width  = instance()->console().mediaSource().width(),
+            height = instance()->console().mediaSource().height();
 
-  if(myXoff < 0)
-    myXoff = 0;
-  else if(myXoff > imageWidth - myNumCols)
-    myXoff = imageWidth - myNumCols;
-  else if(myYoff < 0)
-    myYoff = 0;
-  else if(myYoff > imageHeight - myNumRows)
-    myYoff = imageHeight - myNumRows;
+  // Figure out the bounding rectangle for the current center coords
+  const int xoff = myNumCols >> 1,
+            yoff = myNumRows >> 1;
 
-  setDirty(); draw();
+  if(myXCenter < xoff)
+    myXCenter = xoff;
+  else if(myXCenter + xoff >= width)
+    myXCenter = width - xoff - 1;
+  else if(myYCenter < yoff)
+    myYCenter = yoff;
+  else if(myYCenter + yoff >= height)
+    myYCenter = height - yoff - 1;
+
+  // Only redraw when necessary
+  int oldXoff = myXoff, oldYoff = myYoff;
+  myXoff = myXCenter - (myNumCols >> 1);
+  myYoff = myYCenter - (myNumRows >> 1);
+  if(oldXoff != myXoff || oldYoff != myYoff)
+  {
+    setDirty(); draw();
+//cerr << " OLD ==> myXoff: " << oldXoff << ", myYoff = " << oldYoff << endl;
+//cerr << " NEW ==> myXoff: " << myXoff << ", myYoff = " << myYoff << endl << endl;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,22 +148,22 @@ bool TiaZoomWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   switch (keycode)
   {
     case 256+17:  // up arrow
-      myYoff -= 4;
+      myYCenter -= 4;
       handled = true;
       break;
 
     case 256+18:  // down arrow
-      myYoff += 4;
+      myYCenter += 4;
       handled = true;
       break;
 
     case 256+20:  // left arrow
-      myXoff -= 2;
+      myXCenter -= 2;
       handled = true;
       break;
 
     case 256+19:  // right arrow
-      myXoff += 2;
+      myXCenter += 2;
       handled = true;
       break;
   }

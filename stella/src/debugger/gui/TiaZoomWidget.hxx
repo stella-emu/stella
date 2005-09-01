@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.hxx,v 1.2 2005-08-31 22:34:43 stephena Exp $
+// $Id: TiaZoomWidget.hxx,v 1.3 2005-09-01 16:49:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,6 +56,7 @@ class TiaZoomWidget : public Widget, public CommandSender
     int myZoomLevel;
     int myNumCols, myNumRows;
     int myXoff, myYoff;
+    int myXCenter, myYCenter;
 };
 
 #endif
