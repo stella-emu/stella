@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32"
+				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -73,7 +73,7 @@ opengl32.lib"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger;..\win32"
+				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -90,7 +90,6 @@ libpng.lib
 opengl32.lib"
 				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
-				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -219,7 +218,7 @@ opengl32.lib"
 				RelativePath="..\emucore\CartUA.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\Cheat.cxx">
+				RelativePath="..\common\Cheat.cxx">
 			</File>
 			<File
 				RelativePath="..\gui\CheatCodeDialog.cxx">
@@ -228,16 +227,25 @@ opengl32.lib"
 				RelativePath="..\gui\CheckListWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\CheetahCheat.cxx">
+				RelativePath="..\common\CheetahCheat.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\ColorWidget.cxx">
+				RelativePath="..\debugger\gui\ColorWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\gui\CommandDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\gui\CommandMenu.cxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Console.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\ConstExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\debugger\gui\ContextMenu.cxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Control.cxx">
@@ -249,19 +257,19 @@ opengl32.lib"
 				RelativePath="..\debugger\CpuMethodExpression.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\CpuWidget.cxx">
+				RelativePath="..\debugger\gui\CpuWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\DataGridOpsWidget.cxx">
+				RelativePath="..\debugger\gui\DataGridOpsWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\DataGridWidget.cxx">
+				RelativePath="..\debugger\gui\DataGridWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\Debugger.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\DebuggerDialog.cxx">
+				RelativePath="..\debugger\gui\DebuggerDialog.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\DebuggerParser.cxx">
@@ -450,7 +458,7 @@ opengl32.lib"
 				RelativePath="..\gui\ProgressDialog.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\PromptWidget.cxx">
+				RelativePath="..\debugger\gui\PromptWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Props.cxx">
@@ -462,13 +470,16 @@ opengl32.lib"
 				RelativePath="..\debugger\RamDebug.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\RamWidget.cxx">
+				RelativePath="..\debugger\gui\RamWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Random.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\RomWidget.cxx">
+				RelativePath="..\debugger\gui\RomListWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\debugger\gui\RomWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\gui\ScrollBarWidget.cxx">
@@ -516,28 +527,31 @@ opengl32.lib"
 				RelativePath="..\debugger\TIADebug.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\TiaInfoWidget.cxx">
+				RelativePath="..\debugger\gui\TiaInfoWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\TiaMethodExpression.cxx">
 			</File>
 			<File
-				RelativePath="..\debugger\TiaOutputWidget.cxx">
+				RelativePath="..\debugger\gui\TiaOutputWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\emucore\TIASound.c">
 			</File>
 			<File
-				RelativePath="..\debugger\TiaWidget.cxx">
+				RelativePath="..\debugger\gui\TiaWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\ToggleBitWidget.cxx">
+				RelativePath="..\debugger\gui\TiaZoomWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\TogglePixelWidget.cxx">
+				RelativePath="..\debugger\gui\ToggleBitWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\ToggleWidget.cxx">
+				RelativePath="..\debugger\gui\TogglePixelWidget.cxx">
+			</File>
+			<File
+				RelativePath="..\debugger\gui\ToggleWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\UnaryMinusExpression.cxx">
@@ -662,7 +676,7 @@ opengl32.lib"
 				RelativePath="..\emucore\CartUA.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\Cheat.hxx">
+				RelativePath="..\common\Cheat.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\CheatCodeDialog.hxx">
@@ -671,13 +685,19 @@ opengl32.lib"
 				RelativePath="..\gui\CheckListWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\CheetahCheat.hxx">
+				RelativePath="..\common\CheetahCheat.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\ColorWidget.hxx">
+				RelativePath="..\debugger\gui\ColorWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\Command.hxx">
+			</File>
+			<File
+				RelativePath="..\gui\CommandDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\gui\CommandMenu.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Console.hxx">
@@ -689,6 +709,9 @@ opengl32.lib"
 				RelativePath="..\debugger\ConstExpression.hxx">
 			</File>
 			<File
+				RelativePath="..\debugger\gui\ContextMenu.hxx">
+			</File>
+			<File
 				RelativePath="..\emucore\Control.hxx">
 			</File>
 			<File
@@ -698,19 +721,19 @@ opengl32.lib"
 				RelativePath="..\debugger\CpuMethodExpression.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\CpuWidget.hxx">
+				RelativePath="..\debugger\gui\CpuWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\DataGridOpsWidget.hxx">
+				RelativePath="..\debugger\gui\DataGridOpsWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\DataGridWidget.hxx">
+				RelativePath="..\debugger\gui\DataGridWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\Debugger.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\DebuggerDialog.hxx">
+				RelativePath="..\debugger\gui\DebuggerDialog.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\DebuggerParser.hxx">
@@ -905,7 +928,7 @@ opengl32.lib"
 				RelativePath="..\gui\ProgressDialog.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\PromptWidget.hxx">
+				RelativePath="..\debugger\gui\PromptWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Props.hxx">
@@ -917,13 +940,16 @@ opengl32.lib"
 				RelativePath="..\debugger\RamDebug.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\RamWidget.hxx">
+				RelativePath="..\debugger\gui\RamWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Random.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\RomWidget.hxx">
+				RelativePath="..\debugger\gui\RomListWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\debugger\gui\RomWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\ScrollBarWidget.hxx">
@@ -986,13 +1012,13 @@ opengl32.lib"
 				RelativePath="..\debugger\TIADebug.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\TiaInfoWidget.hxx">
+				RelativePath="..\debugger\gui\TiaInfoWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\TiaMethodExpression.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\TiaOutputWidget.hxx">
+				RelativePath="..\debugger\gui\TiaOutputWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\TIASound.h">
@@ -1001,13 +1027,16 @@ opengl32.lib"
 				RelativePath="..\debugger\TiaWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\ToggleBitWidget.hxx">
+				RelativePath="..\debugger\gui\TiaZoomWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\TogglePixelWidget.hxx">
+				RelativePath="..\debugger\gui\ToggleBitWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\ToggleWidget.hxx">
+				RelativePath="..\debugger\gui\TogglePixelWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\debugger\gui\ToggleWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\UnaryMinusExpression.hxx">
