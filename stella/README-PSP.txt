@@ -7,7 +7,7 @@ Building
 --------
 To build for the PSP, make sure psp-config is in the path and run:
 
-   ./configure --host=psp
+   ./configure --host=psp --disable-developer
    make
    make psp-upload
    make psp-layout
@@ -36,16 +36,17 @@ Keymap
 
     Menu
         Cross       - Left Mouse Button
-        Circle      - Right Mouse Button
 
 
     Emulation
-        Cross       - Fire
-        Circle      - Snapshot
-        Square      - toggle PAL/NTSC
-        Triangle    - Pause
-        Select      - toggle Menu
-        Start       - back to Launcher
+        Cross         - Fire
+        Circle        - Load State
+        Square        - Save State
+        Triangle      - Snapshot
+        Select        - Console Select
+        Start         - Console Reset
+				Left Trigger  - Games Menu 
+				Right Trigger - Command Menu
 
 
 Known Bugs
