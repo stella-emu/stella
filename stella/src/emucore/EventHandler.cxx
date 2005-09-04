@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.93 2005-09-01 21:53:44 stephena Exp $
+// $Id: EventHandler.cxx,v 1.94 2005-09-04 13:26:44 optixx Exp $
 //============================================================================
 
 #include <algorithm>
@@ -385,7 +385,7 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->console().enableBits(true);
                 break;
 
-              case SDLK_s:	 // Alt-s merges properties into stella.pro
+              case SDLK_s:  // Alt-s merges properties into stella.pro
                 myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
                 break;
             }
@@ -969,7 +969,7 @@ void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
     }
   }
   else if(axis == 1)  // Y axis
-  { 
+  {
     value = -value;
 
     if (value != 0)
@@ -1393,10 +1393,10 @@ void EventHandler::setDefaultJoymap()
   myJoyTable[i + 3]  = Event::SaveState;         // Square
   myJoyTable[i + 4]  = Event::MenuMode;          // Left trigger
   myJoyTable[i + 5]  = Event::CmdMenuMode;       // Right trigger
-//  myJoyTable[i + 6]  = Event::NoType           // Down
-//  myJoyTable[i + 7]  = Event::NoType           // Left
-//  myJoyTable[i + 8]  = Event::NoType           // Up
-//  myJoyTable[i + 9]  = Event::NoType           // Right
+  myJoyTable[i + 6]  = Event::JoystickZeroDown;  // Down
+  myJoyTable[i + 7]  = Event::JoystickZeroLeft;  // Left
+  myJoyTable[i + 8]  = Event::JoystickZeroUp;    // Up
+  myJoyTable[i + 9]  = Event::JoystickZeroRight; // Right
   myJoyTable[i + 10] = Event::ConsoleSelect;     // Select
   myJoyTable[i + 11] = Event::ConsoleReset;      // Start
   myJoyTable[i + 12] = Event::NoType;            // Home
@@ -1409,7 +1409,7 @@ void EventHandler::setDefaultJoymap()
   myJoyTable[i + kJAxisDown]  = Event::JoystickOneDown;
   myJoyTable[i + kJAxisLeft]  = Event::JoystickOneLeft;
   myJoyTable[i + kJAxisRight] = Event::JoystickOneRight;
-  myJoyTable[i + 0] 		  = Event::JoystickOneFire;
+  myJoyTable[i + 0]     = Event::JoystickOneFire;
 
   saveJoyMapping();
 }
