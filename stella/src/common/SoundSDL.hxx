@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.13 2005-06-28 23:18:15 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.14 2005-09-04 23:59:30 bwmott Exp $
 //============================================================================
 
 #ifndef SOUND_SDL_HXX
@@ -28,12 +28,13 @@ class OSystem;
 #include "Sound.hxx"
 #include "bspf.hxx"
 #include "MediaSrc.hxx"
+#include "TIASnd.hxx"
 
 /**
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.13 2005-06-28 23:18:15 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.14 2005-09-04 23:59:30 bwmott Exp $
 */
 class SoundSDL : public Sound
 {
@@ -53,12 +54,12 @@ class SoundSDL : public Sound
     /**
       Enables/disables the sound subsystem.
 
-      @param enable  Either true or false, to enable or disable the sound system
+      @param state True or false, to enable or disable the sound system
     */
-    void setEnabled(bool enable);
+    void setEnabled(bool state);
 
     /**
-      The system cycle counter is being adjusting by the specified amount.  Any
+      The system cycle counter is being adjusting by the specified amount. Any
       members using the system cycle counter should be adjusted as needed.
 
       @param amount The amount the cycle counter is being adjusted by
@@ -121,8 +122,8 @@ class SoundSDL : public Sound
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param direction  Increase or decrease the current volume by a predefined
-                        amount based on the direction (1 = increase, -1 =decrease)
+      @param direction Increase or decrease the current volume by a predefined
+          amount based on the direction (1 = increase, -1 = decrease)
     */
     void adjustVolume(Int8 direction);
 
@@ -228,6 +229,9 @@ class SoundSDL : public Sound
     };
 
   private:
+    // TIASound emulation object
+    TIASound myTIASound;
+
     // Indicates if the sound subsystem is to be initialized
     bool myIsEnabled;
 
@@ -237,7 +241,7 @@ class SoundSDL : public Sound
     // Indicates the cycle when a sound register was last set
     Int32 myLastRegisterSetCycle;
 
-    // Indicates the base framerate depending on whether the ROM is NTSC or PAL
+    // Indicates the base framerate depending on if the ROM is NTSC or PAL
     uInt32 myDisplayFrameRate;
 
     // Log base 2 of the selected fragment size
@@ -264,5 +268,4 @@ class SoundSDL : public Sound
 };
 
 #endif  // SOUND_SUPPORT
-
 #endif

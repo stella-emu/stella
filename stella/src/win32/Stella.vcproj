@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SNAPSHOT_SUPPORT;SOUND_SUPPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -37,7 +37,7 @@
 SDLmain.lib
 libpng.lib
 opengl32.lib"
-				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -536,7 +536,7 @@ opengl32.lib"
 				RelativePath="..\debugger\gui\TiaOutputWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\emucore\TIASound.c">
+				RelativePath="..\emucore\TIASnd.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\gui\TiaWidget.cxx">
@@ -1021,7 +1021,7 @@ opengl32.lib"
 				RelativePath="..\debugger\gui\TiaOutputWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\emucore\TIASound.h">
+				RelativePath="..\emucore\TIASnd.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\TiaWidget.hxx">
