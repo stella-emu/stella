@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.22 2005-09-04 23:59:30 bwmott Exp $
+// $Id: SoundSDL.cxx,v 1.23 2005-09-05 01:12:56 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -23,7 +23,7 @@
 #include <cmath>
 #include <SDL.h>
 
-#include "TIASound.h"
+#include "TIASnd.hxx"
 #include "FrameBuffer.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIASnd.cxx,v 1.1 2005-09-04 23:48:33 bwmott Exp $
+// $Id: TIASnd.cxx,v 1.2 2005-09-05 01:12:56 stephena Exp $
 //============================================================================
 
 #include "System.hxx"

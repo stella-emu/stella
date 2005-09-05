@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIASnd.hxx,v 1.1 2005-09-04 23:48:33 bwmott Exp $
+// $Id: TIASnd.hxx,v 1.2 2005-09-05 01:12:56 stephena Exp $
 //============================================================================
 
 #ifndef TIASOUND_HXX
@@ -26,7 +26,7 @@
   hardware.
 
   @author  Bradford W. Mott
-  @version $Id: TIASnd.hxx,v 1.1 2005-09-04 23:48:33 bwmott Exp $
+  @version $Id: TIASnd.hxx,v 1.2 2005-09-05 01:12:56 stephena Exp $
 */
 class TIASound
 {
@@ -133,9 +133,10 @@ class TIASound
     uInt8 myP4[2];           // 4-bit register LFSR (lower 4 bits used)
     uInt8 myP5[2];           // 5-bit register LFSR (lower 5 bits used)
 
-    Int32 myOutputFrequency;
-    Int32 myOutputCounter;
+    Int32  myOutputFrequency;
     uInt32 myChannels;
+    Int32  myOutputCounter;
     uInt32 myVolumePercentage;
 };
+
 #endif

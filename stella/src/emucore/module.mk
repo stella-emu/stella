@@ -45,7 +45,7 @@ MODULE_OBJS := \
 	src/emucore/Settings.o \
 	src/emucore/Switches.o \
 	src/emucore/TIA.o \
-	src/emucore/TIASound.o \
+	src/emucore/TIASnd.o \
 	src/emucore/unzip.o
 
 MODULE_DIRS += \
