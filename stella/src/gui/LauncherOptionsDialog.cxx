@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.11 2005-08-30 17:51:26 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.12 2005-09-06 22:25:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,41 +39,46 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   const GUI::Font& font = instance()->font();
 
   const int vBorder = 4;
-  int yoffset;
+  int xpos, ypos;
 
   // The tab widget
-  myTab = new TabWidget(this, 0, vBorder, _w, _h - 24 - 2 * vBorder);
+  xpos = 2; ypos = vBorder;
+  myTab = new TabWidget(this, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
 
   // 1) The ROM locations tab
   myTab->addTab("ROM Settings");
-  yoffset = vBorder;
 
   // ROM path
-  new ButtonWidget(myTab, 15, yoffset, kButtonWidth + 14, 16, "Path", kChooseRomDirCmd, 0);
-  myRomPath = new StaticTextWidget(myTab, 5 + kButtonWidth + 30,
-                                   yoffset + 3, _w - (5 + kButtonWidth + 20) - 10,
-                                   kLineHeight, "", kTextAlignLeft);
+  xpos = 15;
+  new ButtonWidget(myTab, xpos, ypos, kButtonWidth + 14, 16, "Path",
+                   kChooseRomDirCmd, 0);
+  xpos += kButtonWidth + 30;
+  myRomPath = new StaticTextWidget(myTab, xpos, ypos + 3,
+                                   _w - xpos - 10, kLineHeight,
+                                   "", kTextAlignLeft);
 
   // 2) The snapshot settings tab
   myTab->addTab(" Snapshot Settings ");
-  yoffset = vBorder;
 
   // Snapshot path
-  new ButtonWidget(myTab, 15, yoffset, kButtonWidth + 14, 16, "Path", kChooseSnapDirCmd, 0);
-  mySnapPath = new StaticTextWidget(myTab, 5 + kButtonWidth + 30,
-                                    yoffset + 3, _w - (5 + kButtonWidth + 20) - 10,
-                                    kLineHeight, "", kTextAlignLeft);
-  yoffset += 22;
+  xpos = 15;
+  new ButtonWidget(myTab, xpos, ypos, kButtonWidth + 14, 16, "Path",
+                   kChooseSnapDirCmd, 0);
+  xpos += kButtonWidth + 30;
+  mySnapPath = new StaticTextWidget(myTab, xpos, ypos + 3,
+                                   _w - xpos - 10, kLineHeight,
+                                   "", kTextAlignLeft);
 
   // Snapshot save name
-  mySnapTypePopup = new PopUpWidget(myTab, 10, yoffset, 140, kLineHeight,
+  xpos = 10; ypos += 22;
+  mySnapTypePopup = new PopUpWidget(myTab, xpos, ypos, 140, kLineHeight,
                                     "Save snapshot as: ", 87, 0);
   mySnapTypePopup->appendEntry("romname", 1);
   mySnapTypePopup->appendEntry("md5sum", 2);
-  yoffset += 18;
 
   // Snapshot single or multiple saves
-  mySnapSingleCheckbox = new CheckboxWidget(myTab, font, 30, yoffset,
+  xpos = 30;  ypos += 18;
+  mySnapSingleCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                             "Multiple snapshots");
 
   // Activate the first tab

@@ -761,7 +761,7 @@ fi
 
 if test "$_build_snapshot" = yes ; then
 	DEFINES="$DEFINES -DSNAPSHOT_SUPPORT"
-	LIBS="$LIBS -lpng -lz" # FIXME: -lz included twice
+	LIBS="$LIBS -lpng"
 fi
 
 if test "$_build_joystick" = yes ; then

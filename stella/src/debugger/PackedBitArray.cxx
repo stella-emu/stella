@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PackedBitArray.cxx,v 1.4 2005-06-29 13:11:03 stephena Exp $
+// $Id: PackedBitArray.cxx,v 1.5 2005-09-06 22:25:40 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -24,8 +24,6 @@ PackedBitArray::PackedBitArray(int length) {
 	words = length / wordSize + 1;
 	bits = new unsigned int[ words ];
 
-	// FIXME: find out if this is necessary (does a new array
-	// start out zeroed already?
 	for(int i=0; i<words; i++)
 		bits[i] = 0;
 }

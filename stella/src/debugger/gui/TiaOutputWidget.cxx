@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.3 2005-09-01 16:49:52 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.4 2005-09-06 22:25:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -98,12 +98,6 @@ void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  // FIXME - these coords aren't yet accurate, but that doesn't stop
-  //         us from implementing the functionality
-  //         Maybe they're accurate enough for our purposes??
-  int xstart = atoi(instance()->console().properties().get("Display.XStart").c_str());
-  int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
-
   switch(cmd)
   {
     case kCMenuItemSelectedCmd:
@@ -111,6 +105,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       {
         case 0:
         {
+          int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
           int lines = myClickY + ystart - instance()->debugger().tiaDebug().scanlines();
           if(lines > 0)
             instance()->debugger().nextScanline(lines);

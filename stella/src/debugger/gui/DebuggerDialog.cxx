@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.3 2005-08-31 22:34:43 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.4 2005-09-06 22:25:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -176,10 +176,10 @@ void DebuggerDialog::addStatusArea()
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
-  myTiaInfo = new TiaInfoWidget(this, xpos, ypos);
+  myTiaInfo = new TiaInfoWidget(this, xpos+20, ypos);
 
   ypos += myTiaInfo->getHeight() + 10;
-  myTiaZoom = new TiaZoomWidget(this, xpos, ypos);
+  myTiaZoom = new TiaZoomWidget(this, xpos+10, ypos);
   addToFocusList(myTiaZoom->getFocusList());
 }
 

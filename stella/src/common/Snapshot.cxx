@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.8 2005-08-25 15:19:17 stephena Exp $
+// $Id: Snapshot.cxx,v 1.9 2005-09-06 22:25:40 stephena Exp $
 //============================================================================
 
 #ifdef SNAPSHOT_SUPPORT
@@ -74,8 +74,8 @@ string Snapshot::savePNG(string filename)
   uInt32 width  = myFrameBuffer.imageWidth();
   uInt32 height = myFrameBuffer.imageHeight();
 
-  // FIXME - this should really call something like OSystem::message()
-  //         so we can get rid of annoying ifdefs everywhere
+  // TODO - this should really call something like OSystem::message()
+  //        so we can get rid of annoying ifdefs everywhere
 #ifdef PSP
   fprintf(stdout,"ok w=%i h=%i\n",width,height);
 #endif
