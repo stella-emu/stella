@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.57 2005-08-30 17:51:26 stephena Exp $
+// $Id: Settings.cxx,v 1.58 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -279,6 +279,7 @@ void Settings::usage()
     << "  -holdbutton0                 Start the emulator with the left joystick button held down\n"
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
+    << "  -channels     <1|2>          Enable mono or stereo sound\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
   #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.56 2005-07-21 04:10:15 urchlay Exp $
+// $Id: TIA.cxx,v 1.57 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -30,6 +30,7 @@
 #include "Deserializer.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
+#include "GuiUtils.hxx"
 
 #define HBLANK 68
 
@@ -222,6 +223,10 @@ void TIA::reset()
   myFrameWidth = atoi(myConsole.properties().get("Display.Width").c_str());
   myFrameYStart = atoi(myConsole.properties().get("Display.YStart").c_str());
   myFrameHeight = atoi(myConsole.properties().get("Display.Height").c_str());
+
+  // Make sure frameHeight is no less than 190 pixels
+  // This is a hack for the onscreen menus
+  myFrameHeight = MAX((int)myFrameHeight, 190);
 
   // Make sure the starting x and width values are reasonable
   if((myFrameXStart + myFrameWidth) > 160)

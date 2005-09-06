@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.14 2005-09-04 23:59:30 bwmott Exp $
+// $Id: SoundSDL.hxx,v 1.15 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_SDL_HXX
@@ -34,7 +34,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.14 2005-09-04 23:59:30 bwmott Exp $
+  @version $Id: SoundSDL.hxx,v 1.15 2005-09-06 19:42:35 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -65,6 +65,13 @@ class SoundSDL : public Sound
       @param amount The amount the cycle counter is being adjusted by
     */
     void adjustCycleCounter(Int32 amount);
+
+    /**
+      Sets the number of channels (mono or stereo sound).
+
+      @param channels The number of channels
+    */
+    void setChannels(uInt32 channels);
 
     /**
       Sets the display framerate.  Sound generation for NTSC and PAL games
@@ -243,6 +250,9 @@ class SoundSDL : public Sound
 
     // Indicates the base framerate depending on if the ROM is NTSC or PAL
     uInt32 myDisplayFrameRate;
+
+    // Indicates the number of channels (mono or stereo)
+    uInt32 myNumChannels;
 
     // Log base 2 of the selected fragment size
     double myFragmentSizeLogBase2;

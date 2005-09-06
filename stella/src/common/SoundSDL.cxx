@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.23 2005-09-05 01:12:56 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.24 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -41,11 +41,11 @@ SoundSDL::SoundSDL(OSystem* osystem)
       myIsInitializedFlag(false),
       myLastRegisterSetCycle(0),
       myDisplayFrameRate(60),
+      myNumChannels(1),
       myFragmentSizeLogBase2(0),
       myIsMuted(false),
       myVolume(100)
 {
-  initialize(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,7 +106,7 @@ void SoundSDL::initialize(bool forcerestart)
       desired.freq   = 44100;
       desired.format = AUDIO_U16;
 #endif
-      desired.channels = 1;    // Set to 2 for stereo TIA sound support
+      desired.channels = myNumChannels;
       desired.samples = fragsize;
       desired.callback = callback;
       desired.userdata = (void*)this;
@@ -155,7 +155,8 @@ void SoundSDL::initialize(bool forcerestart)
       if(myOSystem->settings().getBool("showinfo"))
         cout << "Sound enabled:" << endl
              << "  Volume   : "  << myVolume << endl
-             << "  Frag size: "  << fragsize << endl << endl;
+             << "  Frag size: "  << fragsize << endl
+             << "  Channels : "  << myNumChannels << endl << endl;
     }
   }
 
@@ -249,6 +250,16 @@ void SoundSDL::adjustVolume(Int8 direction)
 void SoundSDL::adjustCycleCounter(Int32 amount)
 {
   myLastRegisterSetCycle += amount;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::setChannels(uInt32 channels)
+{
+  if(channels == 1 || channels == 2)
+  {
+    myNumChannels = channels;
+    myOSystem->settings().setInt("channels", myNumChannels, false);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

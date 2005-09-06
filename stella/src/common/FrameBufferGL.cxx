@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.40 2005-08-11 19:12:37 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.41 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -274,13 +274,6 @@ void FrameBufferGL::postFrameUpdate()
 
     // Now show all changes made to the textures
     SDL_GL_SwapBuffers();
-
-    glBegin(GL_QUADS);
-      glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
-      glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(w, 0);
-      glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
-      glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
-    glEnd();
 
     myDirtyFlag = false;
   }

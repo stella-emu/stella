@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.10 2005-06-16 01:11:28 stephena Exp $
+// $Id: PropsSet.cxx,v 1.11 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -271,6 +271,7 @@ const Properties& PropertiesSet::defaultProperties()
   ourDefaultProperties.set("Cartridge.Name", "Untitled");
   ourDefaultProperties.set("Cartridge.Note", "");
   ourDefaultProperties.set("Cartridge.Rarity", "");
+  ourDefaultProperties.set("Cartridge.Sound", "Mono");
   ourDefaultProperties.set("Cartridge.Type", "Auto-detect");
 
   ourDefaultProperties.set("Console.LeftDifficulty", "B");

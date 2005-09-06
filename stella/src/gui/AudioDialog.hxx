@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.hxx,v 1.5 2005-07-05 15:25:44 stephena Exp $
+// $Id: AudioDialog.hxx,v 1.6 2005-09-06 19:42:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,6 +33,11 @@ class CheckboxWidget;
 #include "OSystem.hxx"
 #include "bspf.hxx"
 
+enum {
+  kVolumeChanged      = 'ADvc',
+  kSoundEnableChanged = 'ADse'
+};
+
 class AudioDialog : public Dialog
 {
   public:
@@ -44,6 +49,7 @@ class AudioDialog : public Dialog
     SliderWidget*     myVolumeSlider;
     StaticTextWidget* myVolumeLabel;
     PopUpWidget*      myFragsizePopup;
+    CheckboxWidget*   mySoundTypeCheckbox;
     CheckboxWidget*   mySoundEnableCheckbox;
 
   private:

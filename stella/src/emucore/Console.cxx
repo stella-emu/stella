@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.68 2005-08-30 17:51:26 stephena Exp $
+// $Id: Console.cxx,v 1.69 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -82,6 +82,11 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
 
   // A developer can override properties from the commandline
   setDeveloperProperties();
+
+  // Make sure height is set properly for PAL ROM
+  if(myProperties.get("Display.Format") == "PAL")
+    if(myProperties.get("Display.Height") == "210")
+      myProperties.set("Display.Height", "250");
 
   // Setup the controllers based on properties
   string left = myProperties.get("Controller.Left");
@@ -182,6 +187,19 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   initializeVideo();
 
   // Initialize the sound interface.
+  // The # of channels can be overridden in the AudioDialog box or on
+  // the commandline, but it can't be saved.
+  uInt32 channels = myOSystem->settings().getInt("channels");
+  if(channels == 0)
+  {
+    if(myProperties.get("Cartridge.Sound") == "Stereo")
+      channels = 2;
+    else if(myProperties.get("Cartridge.Sound") == "Mono")
+      channels = 1;
+    else
+      channels = 1;
+  }
+  myOSystem->sound().setChannels(channels);
   myOSystem->sound().setFrameRate(framerate);
   myOSystem->sound().initialize();
 
@@ -254,7 +272,7 @@ void Console::toggleFormat()
 
   setPalette();
   myOSystem->setFramerate(framerate);
-//FIXME - should be change sound rate as well??
+  myOSystem->sound().setFrameRate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

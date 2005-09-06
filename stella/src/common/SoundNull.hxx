@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundNull.hxx,v 1.2 2005-06-16 00:55:56 stephena Exp $
+// $Id: SoundNull.hxx,v 1.3 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_NULL_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   is completely disabled.
 
   @author Stephen Anthony
-  @version $Id: SoundNull.hxx,v 1.2 2005-06-16 00:55:56 stephena Exp $
+  @version $Id: SoundNull.hxx,v 1.3 2005-09-06 19:42:35 stephena Exp $
 */
 class SoundNull : public Sound
 {
@@ -63,6 +63,13 @@ class SoundNull : public Sound
       @param amount The amount the cycle counter is being adjusted by
     */
     void adjustCycleCounter(Int32 amount) { }
+
+    /**
+      Sets the number of channels (mono or stereo sound).
+
+      @param channels The number of channels
+    */
+    void setChannels(uInt32 channels) { }
 
     /**
       Sets the display framerate.  Sound generation for NTSC and PAL games

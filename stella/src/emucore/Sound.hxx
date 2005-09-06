@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.19 2005-06-16 00:55:58 stephena Exp $
+// $Id: Sound.hxx,v 1.20 2005-09-06 19:42:35 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -30,7 +30,7 @@ class Deserializer;
   It has no functionality whatsoever.
 
   @author Stephen Anthony
-  @version $Id: Sound.hxx,v 1.19 2005-06-16 00:55:58 stephena Exp $
+  @version $Id: Sound.hxx,v 1.20 2005-09-06 19:42:35 stephena Exp $
 */
 class Sound
 {
@@ -61,6 +61,13 @@ class Sound
       @param amount The amount the cycle counter is being adjusted by
     */
     virtual void adjustCycleCounter(Int32 amount) = 0;
+
+    /**
+      Sets the number of channels (mono or stereo sound).
+
+      @param channels The number of channels
+    */
+    virtual void setChannels(uInt32 channels) = 0;
 
     /**
       Sets the display framerate.  Sound generation for NTSC and PAL games

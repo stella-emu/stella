@@ -2967,6 +2967,7 @@
 
 "Cartridge.MD5" "22b22c4ce240303012e8a9596ae8d189"
 "Cartridge.Name" "Skeleton+ (03-05-2003) (Eric Ball) (PAL)"
+"Cartridge.Sound" "Stereo"
 "Display.Format" "PAL"
 "Display.Height" "256"
 ""
@@ -5706,10 +5707,25 @@
 "Cartridge.Name" "Star Fire (17-02-2003) (MP)"
 ""
 
-"Cartridge.MD5" "43f8459d39fb4eddf9186d62722ff795"
-"Cartridge.Name" "Skeleton+ (17-04-2003) (Eric Ball) (PAL)"
-"Display.Format" "PAL"
-"Display.Height" "256"
+"Cartridge.MD5"           "eafe8b40313a65792e88ff9f2fe2655c"
+"Cartridge.Name"          "Skeleton+ (NTSC)"
+"Cartridge.Manufacturer"  "Eric Ball"
+"Cartridge.ModelNo"       "ELB004"
+"Cartridge.Note"          "Stereo sound"
+"Cartridge.Rarity"        "Homebrew"
+"Cartridge.Type"          "4K"
+"Cartridge.Sound"         "Stereo"
+""
+
+"Cartridge.MD5"           "63c7395d412a3cd095ccdd9b5711f387"
+"Cartridge.Name"          "Skeleton+ (PAL)"
+"Cartridge.Manufacturer"  "Eric Ball"
+"Cartridge.ModelNo"       "ELB005"
+"Cartridge.Note"          "Stereo sound"
+"Cartridge.Rarity"        "Homebrew"
+"Cartridge.Type"          "4K"
+"Cartridge.Sound"         "Stereo"
+"Display.Format"          "PAL"
 ""
 
 "Cartridge.MD5" "458883f1d952cd772cf0057abca57497"
@@ -8089,12 +8105,6 @@
 "Display.YStart" "27"
 ""
 
-"Cartridge.MD5" "63c7395d412a3cd095ccdd9b5711f387"
-"Cartridge.Name" "Skeleton+ (14-05-2003) (Eric Ball) (PAL)"
-"Display.Format" "PAL"
-"Display.Height" "256"
-""
-
 "Cartridge.MD5" "640a08e9ca019172d612df22a9190afb"
 "Cartridge.Name" "Joust (1982) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
@@ -9641,6 +9651,7 @@
 
 "Cartridge.MD5" "75b22fdf632d76e246433db1ebccd3c4"
 "Cartridge.Name" "Skeleton+ (05-05-2003) (Eric Ball) (PAL)"
+"Cartridge.Sound" "Stereo"
 "Display.Format" "PAL"
 "Display.Height" "256"
 ""
@@ -16612,6 +16623,7 @@
 
 "Cartridge.MD5" "cfef1a2d1f6a5ee7a5e1f43f3056f112"
 "Cartridge.Name" "Skeleton+ (05-05-2003) (Eric Ball) (NTSC)"
+"Cartridge.Sound" "Stereo"
 ""
 
 "Cartridge.MD5" "cfee10bd7119f10b136921ced2ee8972"
@@ -18791,10 +18803,6 @@
 "Controller.Right" "Paddles"
 ""
 
-"Cartridge.MD5" "eafe8b40313a65792e88ff9f2fe2655c"
-"Cartridge.Name" "Skeleton+ (14-05-2003) (Eric Ball) (NTSC)"
-""
-
 "Cartridge.MD5" "eaf744185d5e8def899950ba7c6e7bb5"
 "Cartridge.Name" "Xenophobe (1990) (Atari) (PAL) [a1]"
 "Cartridge.Manufacturer" "Atari"
@@ -19470,6 +19478,7 @@
 
 "Cartridge.MD5" "f20bd756f3990e06c492f53cd0168e68"
 "Cartridge.Name" "Skeleton+ (03-05-2003) (Eric Ball) (NTSC)"
+"Cartridge.Sound" "Stereo"
 ""
 
 "Cartridge.MD5" "f1eeeccc4bba6999345a2575ae96508e"
@@ -20124,6 +20133,7 @@
 
 "Cartridge.MD5" "f98d869f287d2ce4f8fb36e0686929d9"
 "Cartridge.Name" "Skeleton+ (17-04-2003) (Eric Ball) (NTSC)"
+"Cartridge.Sound" "Stereo"
 ""
 
 "Cartridge.MD5" "f992a39b46aa48188fab12ad3809ae4a"

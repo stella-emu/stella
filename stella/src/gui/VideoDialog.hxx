@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.8 2005-07-05 15:25:44 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.9 2005-09-06 19:42:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,6 +32,13 @@ class CheckboxWidget;
 #include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "bspf.hxx"
+
+enum {
+  kRendererChanged    = 'VDrd',
+  kAspectRatioChanged = 'VDar',
+  kFrameRateChanged   = 'VDfr',
+  kZoomChanged        = 'VDzm'
+};
 
 class VideoDialog : public Dialog
 {
