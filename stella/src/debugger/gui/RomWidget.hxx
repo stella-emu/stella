@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: RomWidget.hxx,v 1.2 2005-09-07 18:34:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,6 +48,11 @@ class RomWidget : public Widget, public CommandSender
   private:
     void initialUpdate();
     void incrementalUpdate();
+
+    void setBreak(int data);
+    void setPC(int data);
+    void patchROM(int data, const string& bytes);
+    void saveROM();
 
   private:
     RomListWidget* myRomList;

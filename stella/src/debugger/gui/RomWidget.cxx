@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.2 2005-09-01 19:14:09 stephena Exp $
+// $Id: RomWidget.cxx,v 1.3 2005-09-07 18:34:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,8 +22,10 @@
 #include <sstream>
 
 #include "Debugger.hxx"
+#include "DebuggerParser.hxx"
 #include "CpuDebug.hxx"
 #include "GuiObject.hxx"
+#include "ContextMenu.hxx"
 #include "RomListWidget.hxx"
 #include "RomWidget.hxx"
 
@@ -40,6 +42,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   myRomList = new RomListWidget(boss, font, x, y, w, h);
   myRomList->setTarget(this);
+  myRomList->myMenu->setTarget(this);
   myRomList->setStyle(kSolidFill);
   addFocusWidget(myRomList);
 
@@ -65,15 +68,21 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kListItemChecked:
+      setBreak(data);
+      break;
+
+    case kListItemDataChangedCmd:
+      patchROM(data, myRomList->getSelectedString());
+      break;
+
+    case kCMenuItemSelectedCmd:
     {
-      // We don't care about state, as breakpoints are turned on
-      // and off with the same command
-      // FIXME - at some point, we might want to add 'breakon'
-      //         and 'breakoff' to DebuggerParser, so the states
-      //         don't get out of sync
-      ostringstream cmd;
-      cmd << "break #" << myAddrList[data];
-      instance()->debugger().run(cmd.str());
+      const string& rmb = myRomList->myMenu->getSelectedString();
+
+      if(rmb == "Save ROM")
+        saveROM();
+      else if(rmb == "Set PC")
+        setPC(myRomList->getSelected());
 
       break;
     }
@@ -83,9 +92,10 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
-//cerr << "RomWidget::loadConfig()\n";
   // Only reload full bank when necessary
-  if(myFirstLoad || myCurrentBank != instance()->debugger().getBank())
+//  if(myFirstLoad || myCurrentBank != instance()->debugger().getBank())
+// FIXME - always do a full reload for now, will optimize later
+  if(true)
   {
     initialUpdate();
     myFirstLoad = false;
@@ -138,4 +148,49 @@ void RomWidget::initialUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::incrementalUpdate()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::setBreak(int data)
+{
+  // We don't care about state, as breakpoints are turned on
+  // and off with the same command
+  // FIXME - at some point, we might want to add 'breakon'
+  //         and 'breakoff' to DebuggerParser, so the states
+  //         don't get out of sync
+  ostringstream command;
+  command << "break #" << myAddrList[data];
+  instance()->debugger().run(command.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::setPC(int data)
+{
+  ostringstream command;
+  command << "pc #" << myAddrList[data];
+  instance()->debugger().run(command.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::patchROM(int data, const string& bytes)
+{
+  ostringstream command;
+
+  // Temporarily set to base 16, since that's the format the disassembled
+  // byte string is in.  This eliminates the need to prefix each byte with
+  // a '$' character
+  BaseFormat oldbase = instance()->debugger().parser()->base();
+  instance()->debugger().parser()->setBase(kBASE_16);
+
+  command << "rom #" << myAddrList[data] << " " << bytes;
+  instance()->debugger().run(command.str());
+
+  // Restore previous base
+  instance()->debugger().parser()->setBase(oldbase);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::saveROM()
+{
+cerr << "save ROM\n";
 }

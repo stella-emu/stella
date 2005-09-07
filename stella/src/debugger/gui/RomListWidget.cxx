@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.3 2005-09-01 19:14:09 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.4 2005-09-07 18:34:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,7 +24,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int w, int h)
+                             int x, int y, int w, int h)
   : CheckListWidget(boss, font, x, y, w, h),
     myMenu(NULL),
     myHighlightedItem(-1)
@@ -33,10 +33,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   myMenu = new ContextMenu(this, font);
 
   StringList l;
-  l.push_back("Add bookmark");
-  l.push_back("Patch ROM");
+//  l.push_back("Add bookmark");
   l.push_back("Save ROM");
-  l.push_back("Set Breakpoint");
   l.push_back("Set PC");
 
   myMenu->setList(l);
@@ -72,21 +70,6 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   }
 
   ListWidget::handleMouseDown(x, y, button, clickCount);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
-{
-  switch(cmd)
-  {
-    case kCMenuItemSelectedCmd:
-      cerr << "RMB selected: " << myMenu->getSelectedString() << endl;
-      break;
-
-    default:
-      ListWidget::handleCommand(sender, cmd, data, id);
-      break;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

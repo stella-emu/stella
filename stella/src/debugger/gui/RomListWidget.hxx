@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.hxx,v 1.3 2005-09-01 19:14:09 stephena Exp $
+// $Id: RomListWidget.hxx,v 1.4 2005-09-07 18:34:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,8 @@ class ContextMenu;
 /** RomListWidget */
 class RomListWidget : public CheckListWidget
 {
+  friend class RomWidget;
+
   public:
     RomListWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
@@ -41,7 +43,6 @@ class RomListWidget : public CheckListWidget
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void drawWidget(bool hilite);
     GUI::Rect getLineRect() const;

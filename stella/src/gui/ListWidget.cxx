@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.29 2005-08-26 16:44:17 stephena Exp $
+// $Id: ListWidget.cxx,v 1.30 2005-09-07 18:34:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -97,8 +97,6 @@ void ListWidget::setHighlighted(int item)
       abortEditMode();
 
     _highlightedItem = item;
-    // FIXME - don't know if we need to send a signal
-    //sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
 
     // Only scroll the list if we're about to pass the page boundary
     if(_currentPos == 0)
@@ -124,8 +122,6 @@ void ListWidget::scrollTo(int item)
     _currentPos = item;
     scrollBarRecalc();
   }
-
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,6 +145,8 @@ void ListWidget::scrollBarRecalc()
   _scrollBar->_entriesPerPage = _rows;
   _scrollBar->_currentPos     = _currentPos;
   _scrollBar->recalc();
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
