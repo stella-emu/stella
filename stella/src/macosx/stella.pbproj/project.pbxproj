@@ -237,7 +237,7 @@
 			buildSettings = {
 				DEBUGGING_SYMBOLS = NO;
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" .";
-				HEADER_SEARCH_PATHS = "./SDL.framework/Headers ../emucore ../emucore/m6502/src/bspf/src ../emucore/m6502/src ../ui/sound ../common ../debugger ../yacc ../../../../debugger ../gui .";
+				HEADER_SEARCH_PATHS = "./SDL.framework/Headers ../emucore ../emucore/m6502/src/bspf/src ../emucore/m6502/src ../ui/sound ../common ../debugger ../debugger/gui ../yacc ../../../../debugger ./gui ../gui .";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = .;
 				OPTIMIZATION_CFLAGS = "-O3";
@@ -286,7 +286,7 @@
 	<key>CFBundleExecutable</key>
 	<string>StellaOSX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.0 Alpha 4</string>
+	<string>2.0 Alpha 7</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -302,7 +302,7 @@
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>2.0 Alpha 4</string>
+	<string>2.0 Alpha 7</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
@@ -355,7 +355,6 @@
 				2DE2DFA30627AE34006BEC99,
 				2DE2DFA50627AE34006BEC99,
 				2DE2DFA70627AE34006BEC99,
-				2DE2DFB00627AFF9006BEC99,
 				2DE2DFCD0627B1DF006BEC99,
 				2DE2DFCF0627B1DF006BEC99,
 				2DE2DFD10627B1DF006BEC99,
@@ -404,7 +403,6 @@
 				2DDBEBE5084582C400812C11,
 				2D62C40F085011050063A4A3,
 				2D1A6CD6085135F9007CDBA8,
-				2D1A6D6E08514245007CDBA8,
 				2D9217FD0857CC88001D664B,
 				2D9217FF0857CC88001D664B,
 				2D659E38085D3DD6005D96C8,
@@ -416,14 +414,11 @@
 				2D403BCB08611898001E31A1,
 				2D403BCD08611898001E31A1,
 				2D403BD108611A69001E31A1,
-				2D30F8740868A4BC00938B9D,
 				2D30F8780868A4DB00938B9D,
-				2D313F090879C3B8005BD3E5,
 				2D313F0D0879C4C0005BD3E5,
 				2D9555DC0880E78000466554,
 				2D9555E20880E79600466554,
 				2D9555E40880E79600466554,
-				2DF971C60892CE5400F64D23,
 				2DF9720D0892CEA400F64D23,
 				2DF9720F0892CEA400F64D23,
 				2DF972110892CEA400F64D23,
@@ -454,26 +449,36 @@
 				2DF972420892CEA400F64D23,
 				2DF972440892CEA400F64D23,
 				2DF972460892CEA400F64D23,
-				2DF972480892CEA400F64D23,
 				2DF9724A0892CEA400F64D23,
-				2DF9724C0892CEA400F64D23,
 				2DF9724E0892CEA400F64D23,
 				2DF972500892CEA400F64D23,
-				2D323E4708A1D37F00FDA2DD,
-				2D323E4908A1D37F00FDA2DD,
-				2D323E4B08A1D37F00FDA2DD,
-				2D323E4D08A1D37F00FDA2DD,
 				2D02208208A301F200B9C76B,
 				2DDA8D4008A43D5500881DB3,
-				2DDA8D4608A43D7500881DB3,
-				2DDA8D4808A43D7500881DB3,
-				2DFA416008AC325400B3CF75,
-				2DA8072208B98C3200EE5A4C,
-				2DA8072408B98C3200EE5A4C,
-				2DEF21F708BC031800B246B4,
 				2DEF21FD08BC033500B246B4,
 				2DEF21FF08BC033500B246B4,
 				2DDB4E1408BD52F8001BF554,
+				2D73959808C3EB4E0060BB99,
+				2D73959A08C3EB4E0060BB99,
+				2D20FA0308C603EC00A73076,
+				2D20FA0508C603EC00A73076,
+				2D20FA0708C603EC00A73076,
+				2D20FA0908C603EC00A73076,
+				2D20FA0B08C603EC00A73076,
+				2D20FA0D08C603EC00A73076,
+				2D20FA0F08C603EC00A73076,
+				2D20FA1108C603EC00A73076,
+				2D20FA1308C603EC00A73076,
+				2D20FA1508C603EC00A73076,
+				2D20FA1708C603EC00A73076,
+				2D20FA1908C603EC00A73076,
+				2D20FA1B08C603EC00A73076,
+				2D20FA1D08C603EC00A73076,
+				2D20FA1F08C603EC00A73076,
+				2DA15DEC08C69CA5000E496A,
+				2DA15DEE08C69CA5000E496A,
+				2D6CC10608C811A600B8F642,
+				2D6CC10808C811A600B8F642,
+				2DE7243008CE910900C889A8,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -532,7 +537,6 @@
 				2DE2DFA00627AE34006BEC99,
 				2DE2DFA40627AE34006BEC99,
 				2DE2DFA60627AE34006BEC99,
-				2DE2DFAF0627AFF9006BEC99,
 				2DE2DFCC0627B1DF006BEC99,
 				2DE2DFCE0627B1DF006BEC99,
 				2DE2DFD00627B1DF006BEC99,
@@ -577,7 +581,6 @@
 				2DDBEBE6084582C400812C11,
 				2D47A45308491D4500ABFB6A,
 				2D1A6CD7085135F9007CDBA8,
-				2D1A6D6D08514245007CDBA8,
 				2D9217FE0857CC88001D664B,
 				2D659E37085D3DD6005D96C8,
 				2D659E3B085D3DD6005D96C8,
@@ -587,14 +590,11 @@
 				2D403BAA086116D1001E31A1,
 				2D403BCC08611898001E31A1,
 				2D403BD008611A69001E31A1,
-				2D30F8730868A4BC00938B9D,
 				2D30F8770868A4DB00938B9D,
-				2D313F080879C3B8005BD3E5,
 				2D313F0C0879C4C0005BD3E5,
 				2D9555DB0880E78000466554,
 				2D9555E10880E79600466554,
 				2D9555E30880E79600466554,
-				2DF971C50892CE5400F64D23,
 				2DF9720C0892CEA400F64D23,
 				2DF9720E0892CEA400F64D23,
 				2DF972100892CEA400F64D23,
@@ -624,25 +624,35 @@
 				2DF972410892CEA400F64D23,
 				2DF972430892CEA400F64D23,
 				2DF972450892CEA400F64D23,
-				2DF972470892CEA400F64D23,
 				2DF972490892CEA400F64D23,
-				2DF9724B0892CEA400F64D23,
 				2DF9724D0892CEA400F64D23,
 				2DF9724F0892CEA400F64D23,
-				2D323E4608A1D37F00FDA2DD,
-				2D323E4808A1D37F00FDA2DD,
-				2D323E4A08A1D37F00FDA2DD,
-				2D323E4C08A1D37F00FDA2DD,
 				2D02208108A301F200B9C76B,
 				2DDA8D3F08A43D5500881DB3,
-				2DDA8D4508A43D7500881DB3,
-				2DDA8D4708A43D7500881DB3,
-				2DFA415F08AC325400B3CF75,
-				2DA8072108B98C3200EE5A4C,
-				2DA8072308B98C3200EE5A4C,
-				2DEF21F608BC031800B246B4,
 				2DEF21FC08BC033500B246B4,
 				2DEF21FE08BC033500B246B4,
+				2D73959708C3EB4E0060BB99,
+				2D73959908C3EB4E0060BB99,
+				2D20FA0208C603EC00A73076,
+				2D20FA0408C603EC00A73076,
+				2D20FA0608C603EC00A73076,
+				2D20FA0808C603EC00A73076,
+				2D20FA0A08C603EC00A73076,
+				2D20FA0C08C603EC00A73076,
+				2D20FA0E08C603EC00A73076,
+				2D20FA1008C603EC00A73076,
+				2D20FA1208C603EC00A73076,
+				2D20FA1408C603EC00A73076,
+				2D20FA1608C603EC00A73076,
+				2D20FA1808C603EC00A73076,
+				2D20FA1A08C603EC00A73076,
+				2D20FA1C08C603EC00A73076,
+				2D20FA1E08C603EC00A73076,
+				2DA15DEB08C69CA5000E496A,
+				2DA15DED08C69CA5000E496A,
+				2D6CC10508C811A600B8F642,
+				2D6CC10708C811A600B8F642,
+				2DE7242F08CE910900C889A8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -825,32 +835,490 @@
 			settings = {
 			};
 		};
-		2D1A6D6B08514245007CDBA8 = {
+		2D20F9E308C603C500A73076 = {
+			children = (
+				2D20F9E408C603EC00A73076,
+				2D20F9E508C603EC00A73076,
+				2D20F9E608C603EC00A73076,
+				2D20F9E708C603EC00A73076,
+				2D20F9E808C603EC00A73076,
+				2D20F9E908C603EC00A73076,
+				2D20F9EA08C603EC00A73076,
+				2D20F9EB08C603EC00A73076,
+				2D20F9EC08C603EC00A73076,
+				2D20F9ED08C603EC00A73076,
+				2D20F9EE08C603EC00A73076,
+				2D20F9EF08C603EC00A73076,
+				2D20F9F008C603EC00A73076,
+				2D20F9F108C603EC00A73076,
+				2D20F9F208C603EC00A73076,
+				2D20F9F308C603EC00A73076,
+				2D20F9F408C603EC00A73076,
+				2D20F9F508C603EC00A73076,
+				2D20F9F608C603EC00A73076,
+				2D20F9F708C603EC00A73076,
+				2D20F9F808C603EC00A73076,
+				2D20F9F908C603EC00A73076,
+				2D20F9FA08C603EC00A73076,
+				2D20F9FB08C603EC00A73076,
+				2D20F9FC08C603EC00A73076,
+				2D20F9FD08C603EC00A73076,
+				2D20F9FE08C603EC00A73076,
+				2D20F9FF08C603EC00A73076,
+				2D20FA0008C603EC00A73076,
+				2D20FA0108C603EC00A73076,
+			);
+			isa = PBXGroup;
+			name = gui;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2D20F9E408C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ColorWidget.cxx;
+			path = ../debugger/gui/ColorWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9E508C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = ColorWidget.hxx;
+			path = ../debugger/gui/ColorWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9E608C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CpuWidget.cxx;
+			path = ../debugger/gui/CpuWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9E708C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CpuWidget.hxx;
+			path = ../debugger/gui/CpuWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9E808C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = DataGridOpsWidget.cxx;
+			path = ../debugger/gui/DataGridOpsWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9E908C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = DataGridOpsWidget.hxx;
+			path = ../debugger/gui/DataGridOpsWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9EA08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = DataGridWidget.cxx;
+			path = ../debugger/gui/DataGridWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9EB08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = DataGridWidget.hxx;
+			path = ../debugger/gui/DataGridWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9EC08C603EC00A73076 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = DebuggerDialog.cxx;
-			path = ../gui/DebuggerDialog.cxx;
+			path = ../debugger/gui/DebuggerDialog.cxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2D1A6D6C08514245007CDBA8 = {
+		2D20F9ED08C603EC00A73076 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = DebuggerDialog.hxx;
-			path = ../gui/DebuggerDialog.hxx;
+			path = ../debugger/gui/DebuggerDialog.hxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2D1A6D6D08514245007CDBA8 = {
-			fileRef = 2D1A6D6B08514245007CDBA8;
+		2D20F9EE08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = PromptWidget.cxx;
+			path = ../debugger/gui/PromptWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9EF08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = PromptWidget.hxx;
+			path = ../debugger/gui/PromptWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F008C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = RamWidget.cxx;
+			path = ../debugger/gui/RamWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F108C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = RamWidget.hxx;
+			path = ../debugger/gui/RamWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F208C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = RomListWidget.cxx;
+			path = ../debugger/gui/RomListWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F308C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = RomListWidget.hxx;
+			path = ../debugger/gui/RomListWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F408C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = RomWidget.cxx;
+			path = ../debugger/gui/RomWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F508C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = RomWidget.hxx;
+			path = ../debugger/gui/RomWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F608C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TiaInfoWidget.cxx;
+			path = ../debugger/gui/TiaInfoWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F708C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = TiaInfoWidget.hxx;
+			path = ../debugger/gui/TiaInfoWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F808C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TiaOutputWidget.cxx;
+			path = ../debugger/gui/TiaOutputWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9F908C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = TiaOutputWidget.hxx;
+			path = ../debugger/gui/TiaOutputWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9FA08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TiaWidget.cxx;
+			path = ../debugger/gui/TiaWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9FB08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = TiaWidget.hxx;
+			path = ../debugger/gui/TiaWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9FC08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ToggleBitWidget.cxx;
+			path = ../debugger/gui/ToggleBitWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9FD08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = ToggleBitWidget.hxx;
+			path = ../debugger/gui/ToggleBitWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9FE08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TogglePixelWidget.cxx;
+			path = ../debugger/gui/TogglePixelWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20F9FF08C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = TogglePixelWidget.hxx;
+			path = ../debugger/gui/TogglePixelWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20FA0008C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ToggleWidget.cxx;
+			path = ../debugger/gui/ToggleWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20FA0108C603EC00A73076 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = ToggleWidget.hxx;
+			path = ../debugger/gui/ToggleWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D20FA0208C603EC00A73076 = {
+			fileRef = 2D20F9E408C603EC00A73076;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		2D1A6D6E08514245007CDBA8 = {
-			fileRef = 2D1A6D6C08514245007CDBA8;
+		2D20FA0308C603EC00A73076 = {
+			fileRef = 2D20F9E508C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0408C603EC00A73076 = {
+			fileRef = 2D20F9E608C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0508C603EC00A73076 = {
+			fileRef = 2D20F9E708C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0608C603EC00A73076 = {
+			fileRef = 2D20F9E808C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0708C603EC00A73076 = {
+			fileRef = 2D20F9E908C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0808C603EC00A73076 = {
+			fileRef = 2D20F9EA08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0908C603EC00A73076 = {
+			fileRef = 2D20F9EB08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0A08C603EC00A73076 = {
+			fileRef = 2D20F9EC08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0B08C603EC00A73076 = {
+			fileRef = 2D20F9ED08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0C08C603EC00A73076 = {
+			fileRef = 2D20F9EE08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0D08C603EC00A73076 = {
+			fileRef = 2D20F9EF08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0E08C603EC00A73076 = {
+			fileRef = 2D20F9F008C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA0F08C603EC00A73076 = {
+			fileRef = 2D20F9F108C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1008C603EC00A73076 = {
+			fileRef = 2D20F9F208C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1108C603EC00A73076 = {
+			fileRef = 2D20F9F308C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1208C603EC00A73076 = {
+			fileRef = 2D20F9F408C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1308C603EC00A73076 = {
+			fileRef = 2D20F9F508C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1408C603EC00A73076 = {
+			fileRef = 2D20F9F608C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1508C603EC00A73076 = {
+			fileRef = 2D20F9F708C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1608C603EC00A73076 = {
+			fileRef = 2D20F9F808C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1708C603EC00A73076 = {
+			fileRef = 2D20F9F908C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1808C603EC00A73076 = {
+			fileRef = 2D20F9FA08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1908C603EC00A73076 = {
+			fileRef = 2D20F9FB08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1A08C603EC00A73076 = {
+			fileRef = 2D20F9FC08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1B08C603EC00A73076 = {
+			fileRef = 2D20F9FD08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1C08C603EC00A73076 = {
+			fileRef = 2D20F9FE08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1D08C603EC00A73076 = {
+			fileRef = 2D20F9FF08C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1E08C603EC00A73076 = {
+			fileRef = 2D20FA0008C603EC00A73076;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D20FA1F08C603EC00A73076 = {
+			fileRef = 2D20FA0108C603EC00A73076;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -867,36 +1335,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cp ../../docs/stella.html build/StellaOSX.app/Contents/Resources/docs/index.html;\n";
-		};
-		2D30F86F0868A4BC00938B9D = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = DataGridWidget.cxx;
-			path = ../gui/DataGridWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D30F8700868A4BC00938B9D = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = DataGridWidget.hxx;
-			path = ../gui/DataGridWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D30F8730868A4BC00938B9D = {
-			fileRef = 2D30F86F0868A4BC00938B9D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D30F8740868A4BC00938B9D = {
-			fileRef = 2D30F8700868A4BC00938B9D;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		2D30F8750868A4DB00938B9D = {
 			fileEncoding = 30;
@@ -928,36 +1366,6 @@
 			settings = {
 			};
 		};
-		2D313F040879C3B8005BD3E5 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ToggleBitWidget.cxx;
-			path = ../gui/ToggleBitWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D313F050879C3B8005BD3E5 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = ToggleBitWidget.hxx;
-			path = ../gui/ToggleBitWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D313F080879C3B8005BD3E5 = {
-			fileRef = 2D313F040879C3B8005BD3E5;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D313F090879C3B8005BD3E5 = {
-			fileRef = 2D313F050879C3B8005BD3E5;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		2D313F0A0879C4C0005BD3E5 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -984,126 +1392,6 @@
 		};
 		2D313F0D0879C4C0005BD3E5 = {
 			fileRef = 2D313F0B0879C4C0005BD3E5;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E3C08A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = CpuWidget.cxx;
-			path = ../debugger/CpuWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E3D08A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = CpuWidget.hxx;
-			path = ../debugger/CpuWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E3E08A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = PromptWidget.cxx;
-			path = ../debugger/PromptWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E3F08A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = PromptWidget.hxx;
-			path = ../debugger/PromptWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E4008A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = RamWidget.cxx;
-			path = ../debugger/RamWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E4108A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = RamWidget.hxx;
-			path = ../debugger/RamWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E4208A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TiaWidget.cxx;
-			path = ../debugger/TiaWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E4308A1D37F00FDA2DD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = TiaWidget.hxx;
-			path = ../debugger/TiaWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D323E4608A1D37F00FDA2DD = {
-			fileRef = 2D323E3C08A1D37F00FDA2DD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E4708A1D37F00FDA2DD = {
-			fileRef = 2D323E3D08A1D37F00FDA2DD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E4808A1D37F00FDA2DD = {
-			fileRef = 2D323E3E08A1D37F00FDA2DD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E4908A1D37F00FDA2DD = {
-			fileRef = 2D323E3F08A1D37F00FDA2DD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E4A08A1D37F00FDA2DD = {
-			fileRef = 2D323E4008A1D37F00FDA2DD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E4B08A1D37F00FDA2DD = {
-			fileRef = 2D323E4108A1D37F00FDA2DD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E4C08A1D37F00FDA2DD = {
-			fileRef = 2D323E4208A1D37F00FDA2DD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D323E4D08A1D37F00FDA2DD = {
-			fileRef = 2D323E4308A1D37F00FDA2DD;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1332,6 +1620,10 @@
 		};
 		2D6050C5089876F300C6DE89 = {
 			children = (
+				2DA15DE708C69CA5000E496A,
+				2DA15DE808C69CA5000E496A,
+				2DA15DE908C69CA5000E496A,
+				2DA15DEA08C69CA5000E496A,
 				2D733D5D062893E7006265D9,
 				2D733D5E062893E7006265D9,
 				2D733D61062893E7006265D9,
@@ -1462,8 +1754,8 @@
 				2DE2DF8F0627AE34006BEC99,
 				2DE2DF900627AE34006BEC99,
 				2DE2DF910627AE34006BEC99,
-				2DE2DFAD0627AFF9006BEC99,
-				2DE2DFAE0627AFF9006BEC99,
+				2DE7242D08CE910900C889A8,
+				2DE7242E08CE910900C889A8,
 				2DDBEB7608457B7D00812C11,
 				2DDBEB7708457B7D00812C11,
 				2D6050EB0898781500C6DE89,
@@ -1506,20 +1798,16 @@
 				2DDA8D3E08A43D5500881DB3,
 				2DEF21F808BC033500B246B4,
 				2DEF21F908BC033500B246B4,
-				2DF971C30892CE5400F64D23,
-				2DF971C40892CE5400F64D23,
 				2DDBEAAA084578BF00812C11,
+				2D73959308C3EB4E0060BB99,
+				2D73959408C3EB4E0060BB99,
+				2D73959508C3EB4E0060BB99,
+				2D73959608C3EB4E0060BB99,
 				2D9217FA0857CC88001D664B,
-				2D30F86F0868A4BC00938B9D,
-				2D30F8700868A4BC00938B9D,
-				2DFA415D08AC325400B3CF75,
-				2DFA415E08AC325400B3CF75,
 				2DDBEAAB084578BF00812C11,
 				2DDBEAAC084578BF00812C11,
 				2DDBEAAD084578BF00812C11,
 				2DDBEAAE084578BF00812C11,
-				2D1A6D6B08514245007CDBA8,
-				2D1A6D6C08514245007CDBA8,
 				2D403BA0086116D1001E31A1,
 				2D403BA1086116D1001E31A1,
 				2D403BA2086116D1001E31A1,
@@ -1564,12 +1852,6 @@
 				2DEF21FB08BC033500B246B4,
 				2DDBEAD0084578BF00812C11,
 				2DDBEAD1084578BF00812C11,
-				2D313F040879C3B8005BD3E5,
-				2D313F050879C3B8005BD3E5,
-				2DA8071D08B98C3200EE5A4C,
-				2DA8071E08B98C3200EE5A4C,
-				2DA8071F08B98C3200EE5A4C,
-				2DA8072008B98C3200EE5A4C,
 				2DDBEAD2084578BF00812C11,
 				2DDBEAD3084578BF00812C11,
 				2DDBEAD4084578BF00812C11,
@@ -1582,6 +1864,7 @@
 		};
 		2D605130089879BA00C6DE89 = {
 			children = (
+				2D20F9E308C603C500A73076,
 				2DF971C70892CEA400F64D23,
 				2DF971C80892CEA400F64D23,
 				2DF971C90892CEA400F64D23,
@@ -1594,16 +1877,12 @@
 				2DF971D00892CEA400F64D23,
 				2DF971D10892CEA400F64D23,
 				2DF971D20892CEA400F64D23,
-				2DDA8D4108A43D7500881DB3,
-				2DDA8D4208A43D7500881DB3,
-				2DDA8D4308A43D7500881DB3,
-				2DDA8D4408A43D7500881DB3,
 				2DF971D30892CEA400F64D23,
 				2DF971D40892CEA400F64D23,
+				2D6CC10108C811A600B8F642,
+				2D6CC10208C811A600B8F642,
 				2D9555DD0880E79600466554,
 				2D9555DE0880E79600466554,
-				2D323E3C08A1D37F00FDA2DD,
-				2D323E3D08A1D37F00FDA2DD,
 				2DF971D50892CEA400F64D23,
 				2DF971D60892CEA400F64D23,
 				2D659E2D085D3DD6005D96C8,
@@ -1654,28 +1933,18 @@
 				2D403BCF08611A69001E31A1,
 				2DF971FC0892CEA400F64D23,
 				2DF971FD0892CEA400F64D23,
-				2D323E3E08A1D37F00FDA2DD,
-				2D323E3F08A1D37F00FDA2DD,
 				2D9555DF0880E79600466554,
 				2D9555E00880E79600466554,
-				2D323E4008A1D37F00FDA2DD,
-				2D323E4108A1D37F00FDA2DD,
-				2DEF21F408BC031800B246B4,
-				2DEF21F508BC031800B246B4,
 				2DF971FE0892CEA400F64D23,
 				2DF971FF0892CEA400F64D23,
 				2DF972000892CEA400F64D23,
 				2DF972010892CEA400F64D23,
 				2D30F8750868A4DB00938B9D,
 				2D30F8760868A4DB00938B9D,
-				2D323E4208A1D37F00FDA2DD,
-				2D323E4308A1D37F00FDA2DD,
-				2DF972020892CEA400F64D23,
-				2DF972030892CEA400F64D23,
 				2DF972040892CEA400F64D23,
 				2DF972050892CEA400F64D23,
-				2DF972060892CEA400F64D23,
-				2DF972070892CEA400F64D23,
+				2D6CC10308C811A600B8F642,
+				2D6CC10408C811A600B8F642,
 				2DF972080892CEA400F64D23,
 				2DF972090892CEA400F64D23,
 				2DF9720A0892CEA400F64D23,
@@ -1768,6 +2037,66 @@
 		};
 		2D659E3C085D3DD6005D96C8 = {
 			fileRef = 2D659E32085D3DD6005D96C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D6CC10108C811A600B8F642 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ContextMenu.cxx;
+			path = ../debugger/gui/ContextMenu.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D6CC10208C811A600B8F642 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = ContextMenu.hxx;
+			path = ../debugger/gui/ContextMenu.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D6CC10308C811A600B8F642 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TiaZoomWidget.cxx;
+			path = ../debugger/gui/TiaZoomWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D6CC10408C811A600B8F642 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = TiaZoomWidget.hxx;
+			path = ../debugger/gui/TiaZoomWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D6CC10508C811A600B8F642 = {
+			fileRef = 2D6CC10108C811A600B8F642;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D6CC10608C811A600B8F642 = {
+			fileRef = 2D6CC10208C811A600B8F642;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D6CC10708C811A600B8F642 = {
+			fileRef = 2D6CC10308C811A600B8F642;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D6CC10808C811A600B8F642 = {
+			fileRef = 2D6CC10408C811A600B8F642;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1903,6 +2232,66 @@
 		};
 		2D733D79062895F1006265D9 = {
 			fileRef = 2D733D77062895F1006265D9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D73959308C3EB4E0060BB99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandDialog.cxx;
+			path = ../gui/CommandDialog.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D73959408C3EB4E0060BB99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CommandDialog.hxx;
+			path = ../gui/CommandDialog.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D73959508C3EB4E0060BB99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandMenu.cxx;
+			path = ../gui/CommandMenu.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D73959608C3EB4E0060BB99 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = CommandMenu.hxx;
+			path = ../gui/CommandMenu.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D73959708C3EB4E0060BB99 = {
+			fileRef = 2D73959308C3EB4E0060BB99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D73959808C3EB4E0060BB99 = {
+			fileRef = 2D73959408C3EB4E0060BB99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D73959908C3EB4E0060BB99 = {
+			fileRef = 2D73959508C3EB4E0060BB99;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D73959A08C3EB4E0060BB99 = {
+			fileRef = 2D73959608C3EB4E0060BB99;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2112,62 +2501,62 @@
 			shellPath = /bin/sh;
 			shellScript = "m4 ../emucore/m6502/src/M6502Low.m4 ../emucore/m6502/src/M6502.m4 > M6502Low.ins\nm4 ../emucore/m6502/src/M6502Hi.m4 ../emucore/m6502/src/M6502.m4 > M6502Hi.ins\n";
 		};
-		2DA8071D08B98C3200EE5A4C = {
+		2DA15DE708C69CA5000E496A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TogglePixelWidget.cxx;
-			path = ../gui/TogglePixelWidget.cxx;
+			name = Cheat.cxx;
+			path = ../common/Cheat.cxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2DA8071E08B98C3200EE5A4C = {
+		2DA15DE808C69CA5000E496A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
-			name = TogglePixelWidget.hxx;
-			path = ../gui/TogglePixelWidget.hxx;
+			name = Cheat.hxx;
+			path = ../common/Cheat.hxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2DA8071F08B98C3200EE5A4C = {
+		2DA15DE908C69CA5000E496A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ToggleWidget.cxx;
-			path = ../gui/ToggleWidget.cxx;
+			name = CheetahCheat.cxx;
+			path = ../common/CheetahCheat.cxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2DA8072008B98C3200EE5A4C = {
+		2DA15DEA08C69CA5000E496A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
-			name = ToggleWidget.hxx;
-			path = ../gui/ToggleWidget.hxx;
+			name = CheetahCheat.hxx;
+			path = ../common/CheetahCheat.hxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2DA8072108B98C3200EE5A4C = {
-			fileRef = 2DA8071D08B98C3200EE5A4C;
+		2DA15DEB08C69CA5000E496A = {
+			fileRef = 2DA15DE708C69CA5000E496A;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		2DA8072208B98C3200EE5A4C = {
-			fileRef = 2DA8071E08B98C3200EE5A4C;
+		2DA15DEC08C69CA5000E496A = {
+			fileRef = 2DA15DE808C69CA5000E496A;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		2DA8072308B98C3200EE5A4C = {
-			fileRef = 2DA8071F08B98C3200EE5A4C;
+		2DA15DED08C69CA5000E496A = {
+			fileRef = 2DA15DE908C69CA5000E496A;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		2DA8072408B98C3200EE5A4C = {
-			fileRef = 2DA8072008B98C3200EE5A4C;
+		2DA15DEE08C69CA5000E496A = {
+			fileRef = 2DA15DEA08C69CA5000E496A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2228,66 +2617,6 @@
 		};
 		2DDA8D4008A43D5500881DB3 = {
 			fileRef = 2DDA8D3E08A43D5500881DB3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDA8D4108A43D7500881DB3 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = Cheat.cxx;
-			path = ../debugger/Cheat.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDA8D4208A43D7500881DB3 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = Cheat.hxx;
-			path = ../debugger/Cheat.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDA8D4308A43D7500881DB3 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = CheetahCheat.cxx;
-			path = ../debugger/CheetahCheat.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDA8D4408A43D7500881DB3 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = CheetahCheat.hxx;
-			path = ../debugger/CheetahCheat.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDA8D4508A43D7500881DB3 = {
-			fileRef = 2DDA8D4108A43D7500881DB3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDA8D4608A43D7500881DB3 = {
-			fileRef = 2DDA8D4208A43D7500881DB3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDA8D4708A43D7500881DB3 = {
-			fileRef = 2DDA8D4308A43D7500881DB3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDA8D4808A43D7500881DB3 = {
-			fileRef = 2DDA8D4408A43D7500881DB3;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -4357,36 +4686,6 @@
 			settings = {
 			};
 		};
-		2DE2DFAD0627AFF9006BEC99 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = TIASound.c;
-			path = ../emucore/TIASound.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DE2DFAE0627AFF9006BEC99 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = TIASound.h;
-			path = ../emucore/TIASound.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DE2DFAF0627AFF9006BEC99 = {
-			fileRef = 2DE2DFAD0627AFF9006BEC99;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DE2DFB00627AFF9006BEC99 = {
-			fileRef = 2DE2DFAE0627AFF9006BEC99;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		2DE2DFBE0627B1DF006BEC99 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -4537,6 +4836,36 @@
 			settings = {
 			};
 		};
+		2DE7242D08CE910900C889A8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TIASnd.cxx;
+			path = ../emucore/TIASnd.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE7242E08CE910900C889A8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = TIASnd.hxx;
+			path = ../emucore/TIASnd.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DE7242F08CE910900C889A8 = {
+			fileRef = 2DE7242D08CE910900C889A8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2DE7243008CE910900C889A8 = {
+			fileRef = 2DE7242E08CE910900C889A8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		2DEB3D4C0629BD24007EBBD3 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -4547,36 +4876,6 @@
 		};
 		2DEB3D4D0629BD24007EBBD3 = {
 			fileRef = 2DEB3D4C0629BD24007EBBD3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DEF21F408BC031800B246B4 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = RomWidget.cxx;
-			path = ../debugger/RomWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DEF21F508BC031800B246B4 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = RomWidget.hxx;
-			path = ../debugger/RomWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DEF21F608BC031800B246B4 = {
-			fileRef = 2DEF21F408BC031800B246B4;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DEF21F708BC031800B246B4 = {
-			fileRef = 2DEF21F508BC031800B246B4;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -4637,36 +4936,6 @@
 		};
 		2DEF21FF08BC033500B246B4 = {
 			fileRef = 2DEF21FB08BC033500B246B4;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DF971C30892CE5400F64D23 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ColorWidget.cxx;
-			path = ../gui/ColorWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DF971C40892CE5400F64D23 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = ColorWidget.hxx;
-			path = ../gui/ColorWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DF971C50892CE5400F64D23 = {
-			fileRef = 2DF971C30892CE5400F64D23;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DF971C60892CE5400F64D23 = {
-			fileRef = 2DF971C40892CE5400F64D23;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -5202,24 +5471,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2DF972020892CEA400F64D23 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TiaInfoWidget.cxx;
-			path = ../debugger/TiaInfoWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DF972030892CEA400F64D23 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = TiaInfoWidget.hxx;
-			path = ../debugger/TiaInfoWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		2DF972040892CEA400F64D23 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -5235,24 +5486,6 @@
 			lastKnownFileType = sourcecode.cpp.h;
 			name = TiaMethodExpression.hxx;
 			path = ../debugger/TiaMethodExpression.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DF972060892CEA400F64D23 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TiaOutputWidget.cxx;
-			path = ../debugger/TiaOutputWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DF972070892CEA400F64D23 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = TiaOutputWidget.hxx;
-			path = ../debugger/TiaOutputWidget.hxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -5646,18 +5879,6 @@
 			settings = {
 			};
 		};
-		2DF972470892CEA400F64D23 = {
-			fileRef = 2DF972020892CEA400F64D23;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DF972480892CEA400F64D23 = {
-			fileRef = 2DF972030892CEA400F64D23;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		2DF972490892CEA400F64D23 = {
 			fileRef = 2DF972040892CEA400F64D23;
 			isa = PBXBuildFile;
@@ -5666,18 +5887,6 @@
 		};
 		2DF9724A0892CEA400F64D23 = {
 			fileRef = 2DF972050892CEA400F64D23;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DF9724B0892CEA400F64D23 = {
-			fileRef = 2DF972060892CEA400F64D23;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DF9724C0892CEA400F64D23 = {
-			fileRef = 2DF972070892CEA400F64D23;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -5702,36 +5911,6 @@
 		};
 		2DF972500892CEA400F64D23 = {
 			fileRef = 2DF9720B0892CEA400F64D23;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DFA415D08AC325400B3CF75 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = DataGridOpsWidget.cxx;
-			path = ../gui/DataGridOpsWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DFA415E08AC325400B3CF75 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = DataGridOpsWidget.hxx;
-			path = ../gui/DataGridOpsWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DFA415F08AC325400B3CF75 = {
-			fileRef = 2DFA415D08AC325400B3CF75;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DFA416008AC325400B3CF75 = {
-			fileRef = 2DFA415E08AC325400B3CF75;
 			isa = PBXBuildFile;
 			settings = {
 			};
