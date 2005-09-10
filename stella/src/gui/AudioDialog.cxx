@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.14 2005-09-06 19:42:35 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.15 2005-09-10 16:19:20 bwmott Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -167,7 +167,7 @@ void AudioDialog::saveConfig()
   // be a time-consuming operation
   if(restart)
   {
-    instance()->sound().initialize(true);
+    instance()->sound().initialize();
     instance()->sound().mute(true);
   }
 }

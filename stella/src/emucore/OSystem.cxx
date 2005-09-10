@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.36 2005-09-06 19:42:35 stephena Exp $
+// $Id: OSystem.cxx,v 1.37 2005-09-10 16:19:20 bwmott Exp $
 //============================================================================
 
 #include <cassert>
@@ -333,6 +333,7 @@ bool OSystem::createConsole(const string& romfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createLauncher()
 {
+  mySound->close();
   setFramerate(60);
   myEventHandler->reset(EventHandler::S_LAUNCHER);
 
@@ -346,7 +347,6 @@ void OSystem::createLauncher()
   myEventHandler->refreshDisplay();
 
   myFrameBuffer->setCursorState();
-  mySound->mute(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.15 2005-09-06 19:42:35 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.16 2005-09-10 16:19:20 bwmott Exp $
 //============================================================================
 
 #ifndef SOUND_SDL_HXX
@@ -34,7 +34,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.15 2005-09-06 19:42:35 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.16 2005-09-10 16:19:20 bwmott Exp $
 */
 class SoundSDL : public Sound
 {
@@ -84,10 +84,14 @@ class SoundSDL : public Sound
     /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
-
-      @param forcerestart  Do a soft or hard reset of the sound subsystem
     */
-    void initialize(bool forcerestart = false);
+    void initialize();
+
+    /**
+      Should be called to close the sound device.  Once called the sound
+      device can be started again using the initialize method.
+    */
+    void close();
 
     /**
       Return true iff the sound device was successfully initialized.
@@ -272,9 +276,6 @@ class SoundSDL : public Sound
   private:
     // Callback function invoked by the SDL Audio library when it needs data
     static void callback(void* udata, uInt8* stream, int len);
-
-    // Closes the audio device
-    void closeAudio();
 };
 
 #endif  // SOUND_SUPPORT

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundNull.hxx,v 1.3 2005-09-06 19:42:35 stephena Exp $
+// $Id: SoundNull.hxx,v 1.4 2005-09-10 16:19:20 bwmott Exp $
 //============================================================================
 
 #ifndef SOUND_NULL_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   is completely disabled.
 
   @author Stephen Anthony
-  @version $Id: SoundNull.hxx,v 1.3 2005-09-06 19:42:35 stephena Exp $
+  @version $Id: SoundNull.hxx,v 1.4 2005-09-10 16:19:20 bwmott Exp $
 */
 class SoundNull : public Sound
 {
@@ -82,10 +82,14 @@ class SoundNull : public Sound
     /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
-
-      @param forcerestart  Do a soft or hard reset of the sound subsystem
     */
-    void initialize(bool forcerestart = false) { }
+    void initialize() { }
+
+    /**
+      Should be called to close the sound device.  Once called the sound
+      device can be started again using the initialize method.
+    */
+    void close() { }
 
     /**
       Return true iff the sound device was successfully initialized.

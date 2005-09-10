@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.24 2005-09-06 19:42:35 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.25 2005-09-10 16:19:20 bwmott Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -52,7 +52,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
 SoundSDL::~SoundSDL()
 {
   // Close the SDL audio system if it's initialized
-  closeAudio();
+  close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,24 +63,20 @@ void SoundSDL::setEnabled(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::initialize(bool forcerestart)
+void SoundSDL::initialize()
 {
   // Check whether to start the sound subsystem
   if(!myIsEnabled)
   {
-    closeAudio();
+    close();
     if(myOSystem->settings().getBool("showinfo"))
       cout << "Sound disabled." << endl << endl;
     return;
   }
 
-  // Clear the sound queue  FIXME - still an annoying partial sound playing?
-  SDL_PauseAudio(1);
+  // Make sure the sound queue is clear
   myRegWriteQueue.clear();
   myTIASound.reset();
-
-  if(forcerestart && myIsInitializedFlag)
-    closeAudio();
 
   if(!((SDL_WasInit(SDL_INIT_AUDIO) & SDL_INIT_AUDIO) > 0))
   {
@@ -164,6 +160,16 @@ void SoundSDL::initialize(bool forcerestart)
   if(myIsInitializedFlag)
   {
     SDL_PauseAudio(0);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::close()
+{
+  if(myIsInitializedFlag)
+  {
+    SDL_CloseAudio();
+    myIsInitializedFlag = false;
   }
 }
 
@@ -393,17 +399,6 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
   sound->processFragment(stream, (Int32)len);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::closeAudio()
-{
-  if(myIsInitializedFlag)
-  {
-    SDL_PauseAudio(1);
-    SDL_CloseAudio();
-    myIsInitializedFlag = false;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
