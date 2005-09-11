@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.58 2005-09-06 19:42:35 stephena Exp $
+// $Id: Settings.cxx,v 1.59 2005-09-11 15:44:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -195,7 +195,7 @@ void Settings::validate()
   int i;
 
   s = getString("video");
-  if(s != "soft" && s != "hard" && s != "gl")
+  if(s != "soft" && s != "gl")
     set("video", "soft");
 
 #ifdef DISPLAY_OPENGL

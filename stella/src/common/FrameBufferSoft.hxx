@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.22 2005-08-24 01:07:36 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.23 2005-09-11 15:44:51 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.22 2005-08-24 01:07:36 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.23 2005-09-11 15:44:51 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -43,7 +43,7 @@ class FrameBufferSoft : public FrameBuffer
     /**
       Creates a new software framebuffer
     */
-    FrameBufferSoft(OSystem* osystem, bool useHardSurface = false);
+    FrameBufferSoft(OSystem* osystem);
 
     /**
       Destructor
@@ -200,9 +200,6 @@ class FrameBufferSoft : public FrameBuffer
 
     // Used in the dirty update of the overlay surface
     RectList* myOverlayRectList;
-
-    // Whether to use hardware or software surface
-    bool myUseHardSurface;
 };
 
 class RectList

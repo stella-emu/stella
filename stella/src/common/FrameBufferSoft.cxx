@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.37 2005-09-01 21:53:44 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.38 2005-09-11 15:44:51 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -30,11 +30,10 @@
 #include "GuiUtils.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferSoft::FrameBufferSoft(OSystem* osystem, bool useHardSurface)
+FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
     myRectList(NULL),
-    myOverlayRectList(NULL),
-    myUseHardSurface(useHardSurface)
+    myOverlayRectList(NULL)
 {
 }
 
@@ -48,11 +47,6 @@ FrameBufferSoft::~FrameBufferSoft()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSoft::initSubsystem()
 {
-  if(myUseHardSurface)
-    mySDLFlags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
-  else
-    mySDLFlags |= SDL_SWSURFACE;
-
   // Set up the rectangle list to be used in the dirty update
   delete myRectList;
   myRectList = new RectList();
@@ -92,42 +86,19 @@ void FrameBufferSoft::setAspectRatio()
 bool FrameBufferSoft::createScreen()
 {
   myScreenDim.x = myScreenDim.y = 0;
+
   myScreenDim.w = myBaseDim.w * theZoomLevel;
   myScreenDim.h = myBaseDim.h * theZoomLevel;
 
   // In software mode, the image and screen dimensions are always the same
   myImageDim = myScreenDim;
-					
-#ifdef PSP
-  if (myUseHardSurface)
-  {
-    /* double buff is broken */
-    mySDLFlags = SDL_HWSURFACE;
-    myScreenDim.w = myDesktopDim.w;
-    myScreenDim.h = myDesktopDim.w;
-  #ifdef PSP_DEBUG
-    fprintf(stdout, "FrameBufferSoft::createScreen Hardware Mode "
-            "myScreenDim.w='%i' myScreenDim.h='%i'\n",
-             myScreenDim.w,myScreenDim.h);
-  #endif
-  }
-  else
-  {
-  #ifdef PSP_DEBUG
-    fprintf(stdout, "FrameBufferSoft::createScreen Software Mode "
-            "myScreenDim.w='%i' myScreenDim.h='%i'\n",
-            myScreenDim.w,myScreenDim.h);
-  #endif
-  }
-#endif
-	
+
   myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 0, mySDLFlags);
   if(myScreen == NULL)
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
-
   myOSystem->eventHandler().refreshDisplay();
 
   return true;
@@ -136,34 +107,6 @@ bool FrameBufferSoft::createScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::drawMediaSource()
 {
-#ifdef PSP
-  MediaSource& mediasrc = myOSystem->console().mediaSource();
-
-  SDL_LockSurface(myScreen);
-
-  uInt8* currentFrame = mediasrc.currentFrameBuffer();
-
-  uInt32 width  = mediasrc.width();
-  uInt32 height = mediasrc.height();
-
-  register uInt32* buffer = (uInt32*) myScreen->pixels;
-  register uInt32 y;
-
-  for(y = 0; y < height; ++y )
-  {
-    const uInt32 bufofsY    = y * width;
-    const uInt32 screenofsY = y * (myScreen->pitch >> 3);
-
-    register uInt32 x;
-    for(x = 0; x < width; ++x )
-    {
-      const uInt32 off = screenofsY + x << 1;
-      buffer[off] = buffer[off + 1] = myPalette[currentFrame[bufofsY + x]];
-    }
-  }
-
-  SDL_UnlockSurface(myScreen);
-#else
   MediaSource& mediasrc = myOSystem->console().mediaSource();
 
   uInt8* currentFrame   = mediasrc.currentFrameBuffer();
@@ -217,9 +160,9 @@ void FrameBufferSoft::drawMediaSource()
           {
             // Can we extend a rectangle or do we have to create a new one?
             if((currentCount != 0) && 
-               (currentRectangles[currentCount - 1].color == *c) &&
-               ((currentRectangles[currentCount - 1].x + 
-                 currentRectangles[currentCount - 1].width) == (x + i)))
+                (currentRectangles[currentCount - 1].color == *c) &&
+                ((currentRectangles[currentCount - 1].x + 
+                  currentRectangles[currentCount - 1].width) == (x + i)))
             {
               currentRectangles[currentCount - 1].width += 1;
             }
@@ -247,7 +190,7 @@ void FrameBufferSoft::drawMediaSource()
 
       // Can we merge the current rectangle with an active one?
       if((current.x == active.x) && (current.width == active.width) &&
-         (current.color == active.color))
+          (current.color == active.color))
       {
         current.y = active.y;
         current.height = active.height + 1;
@@ -292,7 +235,7 @@ void FrameBufferSoft::drawMediaSource()
     currentRectangles = activeRectangles;
     activeRectangles = tmp;
     activeCount = currentCount;
- 
+
     currentFrame  += width;
     previousFrame += width;
   }
@@ -311,13 +254,11 @@ void FrameBufferSoft::drawMediaSource()
     myRectList->add(&temp);
     SDL_FillRect(myScreen, &temp, myPalette[active.color]);
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::preFrameUpdate()
 {
-#ifndef PSP
   // Start a new rectlist on each display update
   myRectList->start();
 
@@ -326,16 +267,23 @@ void FrameBufferSoft::preFrameUpdate()
   for(unsigned int i = 0; i < myOverlayRectList->numRects(); ++i)
     myRectList->add(&dirtyOverlayRects[i]);
   myOverlayRectList->start();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::postFrameUpdate()
 {
-  if(myUseHardSurface)
+  // This is a performance hack until I have more time to work
+  // on the Win32 code.  It seems that SDL_UpdateRects() is very
+  // expensive in Windows, so we force a full screen update instead.
+#ifdef WIN32
+  if(myRectList->numRects() > 0)
+  {
     SDL_Flip(myScreen);
-  else
-    SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
+    myRectList->start();
+  }
+#else
+  SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

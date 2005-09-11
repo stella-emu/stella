@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.6 2005-07-05 00:07:58 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.7 2005-09-11 15:44:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,6 +72,16 @@ static const char* lastPathComponent(const string& str)
     --cur;
 
   return cur + 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static string validatePath(const string& p)
+{
+  string path = p;
+  if(p.size() < 2 || p[1] != ':')
+    path = "c:";
+
+  return path;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,8 +164,8 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode(const string& path)
 {
-  _path = path;
-  _displayName = lastPathComponent(path);
+  _path = validatePath(path);
+  _displayName = lastPathComponent(_path);
   _isValid = true;
   _isDirectory = true;
   _isPseudoRoot = false;

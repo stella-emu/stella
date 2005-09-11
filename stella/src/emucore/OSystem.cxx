@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.37 2005-09-10 16:19:20 bwmott Exp $
+// $Id: OSystem.cxx,v 1.38 2005-09-11 15:44:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -179,8 +179,6 @@ bool OSystem::createFrameBuffer(bool showmessage)
 
   if(video == "soft")
     myFrameBuffer = new FrameBufferSoft(this);
-  else if(video == "hard")
-    myFrameBuffer = new FrameBufferSoft(this, true);
 #ifdef DISPLAY_OPENGL
   else if(video == "gl")
     myFrameBuffer = new FrameBufferGL(this);
@@ -201,9 +199,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
       if(showmessage)
       {
         if(video == "soft")
-          myFrameBuffer->showMessage("Software mode (S)");
-        else if(video == "hard")
-          myFrameBuffer->showMessage("Software mode (H)");
+          myFrameBuffer->showMessage("Software mode");
       #ifdef DISPLAY_OPENGL
         else if(video == "gl")
           myFrameBuffer->showMessage("OpenGL mode");
@@ -236,8 +232,6 @@ void OSystem::toggleFrameBuffer()
   // First figure out which mode to switch to
   string video = mySettings->getString("video");
   if(video == "soft")
-    video = "hard";
-  else if(video == "hard")
     video = "gl";
   else if(video == "gl")
     video = "soft";

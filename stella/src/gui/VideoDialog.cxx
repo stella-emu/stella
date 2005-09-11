@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.23 2005-08-25 15:19:17 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.24 2005-09-11 15:44:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,7 +72,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myRendererPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
                                     "Renderer: ", labelWidth, kRendererChanged);
   myRendererPopup->appendEntry("Software", 1);
+#ifdef PSP
   myRendererPopup->appendEntry("Hardware", 2);
+#endif
 #ifdef DISPLAY_OPENGL
   myRendererPopup->appendEntry("OpenGL", 3);
 #endif
