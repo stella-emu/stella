@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.12 2005-06-16 01:11:29 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.13 2005-09-11 22:55:51 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -39,7 +39,7 @@
 
   setBaseDir()
   setStateDir()
-  setPropertiesFiles()
+  setPropertiesDir()
   setConfigFiles()
   setCacheFile()
 
@@ -60,9 +60,7 @@ OSystemUNIX::OSystemUNIX()
   string statedir = basedir + "/state";
   setStateDir(statedir);
 
-  string userPropertiesFile   = basedir + "/stella.pro";
-  string systemPropertiesFile = "/etc/stella.pro";
-  setPropertiesFiles(userPropertiesFile, systemPropertiesFile);
+  setPropertiesDir(basedir, "/etc");
 
   string userConfigFile   = basedir + "/stellarc";
   string systemConfigFile = "/etc/stellarc";

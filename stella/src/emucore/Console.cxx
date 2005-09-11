@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.69 2005-09-06 19:42:35 stephena Exp $
+// $Id: Console.cxx,v 1.70 2005-09-11 22:55:51 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -333,7 +333,7 @@ void Console::saveProperties(string filename, bool merge)
     if(myOSystem->propSet().merge(myProperties, filename))
       myOSystem->frameBuffer().showMessage("Properties merged");
     else
-      myOSystem->frameBuffer().showMessage("Properties not merged");
+      myOSystem->frameBuffer().showMessage("Error merging properties");
   }
   else  // Save to the specified file directly
   {
@@ -347,7 +347,7 @@ void Console::saveProperties(string filename, bool merge)
     }
     else
     {
-      myOSystem->frameBuffer().showMessage("Properties not saved");
+      myOSystem->frameBuffer().showMessage("Error saving properties");
     }
   }
 }
@@ -398,7 +398,7 @@ void Console::setPalette()
 void Console::fry()
 {
   for (int ZPmem=0; ZPmem<0x100; ZPmem += rand() % 4)
-  mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
+    mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

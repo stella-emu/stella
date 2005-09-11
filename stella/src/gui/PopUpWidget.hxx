@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.7 2005-06-16 00:56:00 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.8 2005-09-11 22:55:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -74,7 +74,7 @@ class PopUpWidget : public Widget, public CommandSender
     /** Select the first entry matching the given tag. */
     void setSelectedTag(int tag);
 
-    int getSelected() const               { return _selectedItem; }
+    int getSelected() const              { return _selectedItem; }
     int getSelectedTag() const           { return (_selectedItem >= 0) ? _entries[_selectedItem].tag : (int)-1; }
     const string& getSelectedString() const { return (_selectedItem >= 0) ? _entries[_selectedItem].name : EmptyString; }
 
@@ -95,10 +95,10 @@ class PopUpDialog : public Dialog
 {
   protected:
     PopUpWidget* _popUpBoss;
-    int        _clickX, _clickY;
+    int          _clickX, _clickY;
     uInt8*       _buffer;
-    int        _selection;
-    int       _openTime;
+    int          _selection;
+    int          _openTime;
 
   public:
     PopUpDialog(PopUpWidget* boss, int clickX, int clickY);
@@ -106,9 +106,9 @@ class PopUpDialog : public Dialog
     void drawDialog();
 
     void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction);           // Scroll through entries with scroll wheel
-    void handleMouseMoved(int x, int y, int button);              // Redraw selections depending on mouse position
-    void handleKeyDown(int ascii, int keycode, int modifiers);   // Scroll through entries with arrow keys etc.
+    void handleMouseWheel(int x, int y, int direction);         // Scroll through entries with scroll wheel
+    void handleMouseMoved(int x, int y, int button);            // Redraw selections depending on mouse position
+    void handleKeyDown(int ascii, int keycode, int modifiers);  // Scroll through entries with arrow keys etc.
 
   protected:
     void drawMenuEntry(int entry, bool hilite);

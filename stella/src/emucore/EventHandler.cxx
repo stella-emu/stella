@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.94 2005-09-04 13:26:44 optixx Exp $
+// $Id: EventHandler.cxx,v 1.95 2005-09-11 22:55:51 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -385,8 +385,8 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->console().enableBits(true);
                 break;
 
-              case SDLK_s:  // Alt-s merges properties into stella.pro
-                myOSystem->console().saveProperties(myOSystem->propertiesOutputFilename(), true);
+              case SDLK_s:  // Alt-s merges properties into user properties (user.pro)
+                myOSystem->console().saveProperties(myOSystem->userProperties(), true);
                 break;
             }
           }

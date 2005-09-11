@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.49 2005-08-25 15:19:17 stephena Exp $
+// $Id: mainSDL.cxx,v 1.50 2005-09-11 22:55:51 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -72,23 +72,29 @@ OSystem* theOSystem = (OSystem*) NULL;
 */
 void SetupProperties(PropertiesSet& set)
 {
-  bool useMemList = true;  // It seems we always need the list in memory
-  string theAltPropertiesFile = theOSystem->settings().getString("pro");
-  string thePropertiesFile    = theOSystem->propertiesInputFilename();
+  // Several properties files can exist, so we attempt to load from
+  // all of them.  If the user has specified a properties file, use
+  // that one.  Otherwise, load both the system and user properties
+  // files, and have the user file override all entries from the
+  // system file.
 
-  stringstream buf;
-  if(theAltPropertiesFile != "")
+  ostringstream buf;
+
+  string altpro = theOSystem->settings().getString("pro");
+  if(altpro != "")
   {
-    buf << "Game properties: \'" << theAltPropertiesFile << "\'\n";
-    set.load(theAltPropertiesFile, useMemList);
-  }
-  else if(thePropertiesFile != "")
-  {
-    buf << "Game properties: \'" << thePropertiesFile << "\'\n";
-    set.load(thePropertiesFile, useMemList);
+    buf << "Game properties: \'" << altpro << "\'\n";
+    set.load(altpro);
   }
   else
-    set.load("", false);
+  {
+    const string& sysPro  = theOSystem->systemProperties();
+    const string& userPro = theOSystem->userProperties();
+    buf << "Game properties: \'" << sysPro << "\', \'" << userPro << "\'\n";
+
+    set.load(sysPro);
+    set.load(userPro);
+  }
 
   if(theOSystem->settings().getBool("showinfo"))
     cout << buf.str() << endl;

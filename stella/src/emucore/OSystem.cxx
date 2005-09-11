@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.38 2005-09-11 15:44:51 stephena Exp $
+// $Id: OSystem.cxx,v 1.39 2005-09-11 22:55:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -139,18 +139,12 @@ void OSystem::setStateDir(const string& statedir)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setPropertiesFiles(const string& userprops,
-                                 const string& systemprops)
+void OSystem::setPropertiesDir(const string& userpath,
+                               const string& systempath)
 {
   // Set up the input and output properties files
-  myPropertiesOutputFile = userprops;
-
-  if(FilesystemNode::fileExists(userprops))
-    myPropertiesInputFile = userprops;
-  else if(FilesystemNode::fileExists(systemprops))
-    myPropertiesInputFile = systemprops;
-  else
-    myPropertiesInputFile = "";
+  myUserPropertiesFile   = userpath + BSPF_PATH_SEPARATOR + "user.pro";
+  mySystemPropertiesFile = systempath + BSPF_PATH_SEPARATOR + "stella.pro";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

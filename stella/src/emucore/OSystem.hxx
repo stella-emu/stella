@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.28 2005-08-29 18:36:41 stephena Exp $
+// $Id: OSystem.hxx,v 1.29 2005-09-11 22:55:51 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -43,7 +43,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.28 2005-08-29 18:36:41 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.29 2005-09-11 22:55:51 stephena Exp $
 */
 class OSystem
 {
@@ -195,19 +195,19 @@ class OSystem
 
     /**
       This method should be called to get the filename of the
-      properties (stella.pro) file for the purpose of loading.
+      system-wide properties file (stella.pro).
 
       @return String representing the full path of the properties filename.
     */
-    const string& propertiesInputFilename() { return myPropertiesInputFile; }
+    const string& systemProperties() { return mySystemPropertiesFile; }
 
     /**
       This method should be called to get the filename of the
-      properties (stella.pro) file for the purpose of saving.
+      user-specific properties file (user.pro).
 
       @return String representing the full path of the properties filename.
     */
-    const string& propertiesOutputFilename() { return myPropertiesOutputFile; }
+    const string& userProperties() { return myUserPropertiesFile; }
 
     /**
       This method should be called to get the filename of the config file
@@ -325,7 +325,7 @@ class OSystem
     /**
       Set the locations of game properties files
     */
-    void setPropertiesFiles(const string& userprops, const string& systemprops);
+    void setPropertiesDir(const string& userpath, const string& systempath);
 
     /**
       Set the locations of config files
@@ -381,8 +381,8 @@ class OSystem
     string myBaseDir;
     string myStateDir;
 
-    string myPropertiesInputFile;
-    string myPropertiesOutputFile;
+    string mySystemPropertiesFile;
+    string myUserPropertiesFile;
     string myConfigInputFile;
     string myConfigOutputFile;
 

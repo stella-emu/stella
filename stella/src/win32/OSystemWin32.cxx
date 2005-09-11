@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.6 2005-09-11 15:44:51 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.7 2005-09-11 22:55:51 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -29,7 +29,7 @@
 
   setBaseDir()
   setStateDir()
-  setPropertiesFiles()
+  setPropertiesDir()
   setConfigFiles()
   setCacheFile()
 
@@ -55,8 +55,7 @@ OSystemWin32::OSystemWin32()
   string stateDir = basedir + "state\\";
   setStateDir(stateDir);
 
-  string propsFile = basedir + "stella.pro";
-  setPropertiesFiles(propsFile, propsFile);  // Input and output are the same
+  setPropertiesDir(basedir, basedir);
 
   string configFile = basedir + "stella.ini";
   setConfigFiles(configFile, configFile);  // Input and output are the same

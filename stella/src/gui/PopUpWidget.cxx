@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.16 2005-08-30 17:51:26 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.17 2005-09-11 22:55:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -204,7 +204,9 @@ void PopUpDialog::setSelection(int item)
 void PopUpDialog::sendSelection()
 {
   if(_popUpBoss->_cmd)
-    _popUpBoss->sendCommand(_popUpBoss->_cmd, _selection, _popUpBoss->_id);
+    _popUpBoss->sendCommand(_popUpBoss->_cmd,
+                            _popUpBoss->_entries[_selection].tag,
+                            _popUpBoss->_id);
 
   // We remove the dialog when the user has selected an item
   parent()->removeDialog();
