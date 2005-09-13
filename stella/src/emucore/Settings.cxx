@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.59 2005-09-11 15:44:51 stephena Exp $
+// $Id: Settings.cxx,v 1.60 2005-09-13 18:27:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -39,7 +39,6 @@ Settings::Settings(OSystem* osystem)
 
   // Now fill it with options that are common to all versions of Stella
   set("video", "soft");
-  set("video_driver", "");
 
   set("gl_filter", "nearest");
   set("gl_aspect", "2.0");
@@ -47,8 +46,8 @@ Settings::Settings(OSystem* osystem)
 
   set("zoom", "2");
   set("fullscreen", "false");
-  set("grabmouse", "false");
   set("center", "true");
+  set("grabmouse", "false");
   set("palette", "standard");
   set("debugheight", "0");
 
@@ -255,7 +254,6 @@ void Settings::usage()
     << "                 soft            SDL software mode\n"
   #ifdef DISPLAY_OPENGL
     << "                 gl              SDL OpenGL mode\n"
-    << "  -video_driver <type>         SDL Video driver (see manual).\n"
     << endl
     << "  -gl_filter    <type>         Type is one of the following:\n"
     << "                 nearest         Normal scaling (GL_NEAREST)\n"
@@ -266,22 +264,19 @@ void Settings::usage()
   #endif
     << "  -zoom         <size>         Makes window be 'size' times normal\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
-    << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
+    << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -palette      <original|     Use the specified color palette\n"
     << "                 standard|\n"
     << "                 z26>\n"
     << "  -framerate    <number>       Display the given number of frames per second\n"
-    << "  -debug        <1|0>          Start in the debugger\n"
-    << "  -debugheight  <number>       Set height of debugger in lines of text (NOT pixels)\n"
-    << "  -holdreset                   Start the emulator with the Game Reset switch held down\n"
-    << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
-    << "  -holdbutton0                 Start the emulator with the left joystick button held down\n"
+    << endl
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -channels     <1|2>          Enable mono or stereo sound\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
+    << endl
   #endif
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
@@ -292,12 +287,19 @@ void Settings::usage()
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -ssname       <name>         How to name the snapshot (romname or md5sum)\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
+    << endl
   #endif
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -help                        Show the text you're now reading\n"
     << endl
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
+    << endl
+    << "   -debugheight  <number>      Set height of debugger in lines of text (NOT pixels)\n"
+    << "   -debug                      Start in debugger mode\n"
+    << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"
+    << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
+    << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
     << endl
     << "   -pro         <props file>   Use the given properties file instead of stella.pro\n"
     << "   -type        <arg>          Sets the 'Cartridge.Type' property\n"

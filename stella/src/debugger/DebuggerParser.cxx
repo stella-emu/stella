@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.76 2005-08-20 18:19:52 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.77 2005-09-13 18:27:42 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1534,7 +1534,7 @@ void DebuggerParser::executeRom() {
 
 // "run"
 void DebuggerParser::executeRun() {
-	debugger->saveOldState();  // FIXME - why is this here?
+	debugger->saveOldState();
 	debugger->quit();
 	commandResult = "exiting debugger";
 }

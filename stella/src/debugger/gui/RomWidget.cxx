@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.3 2005-09-07 18:34:52 stephena Exp $
+// $Id: RomWidget.cxx,v 1.4 2005-09-13 18:27:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,7 +64,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case kListScrolledCmd:
-      incrementalUpdate();
+      incrementalUpdate(data, myRomList->rows());
       break;
 
     case kListItemChecked:
@@ -92,21 +92,25 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
+cerr << " ==> RomWidget::loadConfig()\n";
+
+  Debugger& dbg = instance()->debugger();
+
   // Only reload full bank when necessary
-//  if(myFirstLoad || myCurrentBank != instance()->debugger().getBank())
-// FIXME - always do a full reload for now, will optimize later
-  if(true)
+  if(myFirstLoad || myCurrentBank != instance()->debugger().getBank())
   {
     initialUpdate();
     myFirstLoad = false;
   }
   else  // only reload what's in current view
   {
-    incrementalUpdate();
+    incrementalUpdate(myRomList->currentPos(), myRomList->rows());
   }
 
+  myCurrentBank = dbg.getBank();
+
   // Update romlist to point to current PC
-  int pc = instance()->debugger().cpuDebug().pc();
+  int pc = dbg.cpuDebug().pc();
   AddrToLine::iterator iter = myLineList.find(pc);
   if(iter != myLineList.end())
     myRomList->setHighlighted(iter->second);
@@ -116,8 +120,6 @@ void RomWidget::loadConfig()
 void RomWidget::initialUpdate()
 {
   Debugger& dbg = instance()->debugger();
-
-  myCurrentBank = dbg.getBank();
 
   // Fill romlist the current bank of source or disassembly
   if(mySourceAvailable)
@@ -131,7 +133,7 @@ void RomWidget::initialUpdate()
     StringList label, data, disasm;
     BoolArray state;
 
-    // Disassemble entire bank (up to 4096 lines)
+    // Disassemble entire bank (up to 4096 lines) and invalidate all lines
     dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 4096);
     for(unsigned int i = 0; i < data.size(); ++i)
       state.push_back(false);
@@ -146,7 +148,7 @@ void RomWidget::initialUpdate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::incrementalUpdate()
+void RomWidget::incrementalUpdate(int line, int rows)
 {
 }
 

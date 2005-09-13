@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.30 2005-09-07 18:34:52 stephena Exp $
+// $Id: ListWidget.cxx,v 1.31 2005-09-13 18:27:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -147,6 +147,7 @@ void ListWidget::scrollBarRecalc()
   _scrollBar->recalc();
 
   setDirty(); draw();
+  sendCommand(kListScrolledCmd, _currentPos, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -366,20 +367,16 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollToCurrent(int item)
 {
-  bool scrolled = false;
-
   // Only do something if the current item is not in our view port
   if (item < _currentPos)
   {
     // it's above our view
     _currentPos = item;
-    scrolled = true;
   }
   else if (item >= _currentPos + _rows )
   {
     // it's below our view
     _currentPos = item - _rows + 1;
-    scrolled = true;
   }
 
   if (_currentPos < 0 || _rows > (int)_list.size())
@@ -387,12 +384,13 @@ void ListWidget::scrollToCurrent(int item)
   else if (_currentPos + _rows > (int)_list.size())
     _currentPos = _list.size() - _rows;
 
+  int oldScrollPos = _scrollBar->_currentPos;
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
 
   setDirty(); draw();
 
-  if(scrolled)
+  if(oldScrollPos != _currentPos)
     sendCommand(kListScrolledCmd, _currentPos, _id);
 }
 

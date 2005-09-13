@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.17 2005-08-24 01:07:37 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.18 2005-09-13 18:27:42 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -28,9 +28,8 @@
 SettingsWin32::SettingsWin32(OSystem* osystem)
     : Settings(osystem)
 {
-  set("video_driver", "directx"); // This seems to be much faster than DirectX
-  set("fragsize", "2048");       // Anything less than this usually causes sound skipping
-  set("video", "hard");          // Use software mode with hardware surface
+  set("fragsize", "2048");  // Anything less than this usually causes sound skipping
+  set("video", "hard");     // Use software mode with hardware surface
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

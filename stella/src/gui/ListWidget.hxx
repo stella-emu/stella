@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.12 2005-08-26 16:44:17 stephena Exp $
+// $Id: ListWidget.hxx,v 1.13 2005-09-13 18:27:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,6 +47,9 @@ class ListWidget : public EditableWidget
     ListWidget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h);
     virtual ~ListWidget();
+
+    int rows() const        { return _rows; }
+    int currentPos() const  { return _currentPos; }
 
     int getSelected() const        { return _selectedItem; }
     void setSelected(int item);

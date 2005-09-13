@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.41 2005-09-06 19:42:35 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.42 2005-09-13 18:27:42 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -254,8 +254,6 @@ void FrameBufferGL::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
-  // Do the following twice, since OpenGL mode is double-buffered,
-  // and we need the contents placed in both buffers
   if(theRedrawTIAIndicator || myDirtyFlag)
   {
     // Texturemap complete texture to surface so we have free scaling 
@@ -272,7 +270,7 @@ void FrameBufferGL::postFrameUpdate()
       glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
     glEnd();
 
-    // Now show all changes made to the textures
+    // Now show all changes made to the texture
     SDL_GL_SwapBuffers();
 
     myDirtyFlag = false;

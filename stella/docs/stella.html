@@ -35,7 +35,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - (FIXME)February 2005</b></center>
+	<center><b>February 1999 - September 2005</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -230,13 +230,21 @@
 			(the Windows and Linux frontends) have been discontinued.  The OSX
 			port now uses the launcher as well.</li>
 
-		<li>FIXME - add info about integrated debugger</li>
+		<li>Added an integrated debugger for game developers.  This is currently
+			the first version of a debugger in Stella, but it's already quite
+			usable.</li>
 
-		<li>Further consolidation and integration of SDL.  This should lead to
-			faster operation and a more consistent look for all ports.</li>
+		<li>Added new sound subsystem, which is much faster and more accurate.  Related
+			to this, added stereo sound output (used by some homebrew games).
 
 		<li>Added ZIP support.  Stella can now open ROM's compressed in zip
 			format.</li>
+
+		<li>Reworked properties system to use both a system-wide 'stella.pro' and
+			a per-user 'user.pro' properties files.  Changes made by the user
+			and stored in 'user.pro' are no longer erased when upgrading Stella.</li>
+
+		<li>Added support for cartridges with 3E bankswitching format.</li>
 
 		<li>Added <b>Alt/Shift-Cmd z, x, c, v, b, n</b> keys to enable/disable the
 			P0, P1, M0, M1, BL, PL bits in the TIA, respectively.</li> 
@@ -266,15 +274,22 @@
 		<li>Removed <b>mergeprops</b> commandline argument, since there are now
 			dedicated keys to do either save or merge game properties.</li>
 
-		<li>Removed <b>grabmouse</b> and <b>hidecursor</b> commandline arguments.
-			Stella will	now automatically decide when to use these settings.
-			You can still use <b>Ctrl/Cmd g</b> to grab/ungrab the mouse.</li>
+		<li>Removed <b>hidecursor</b> commandline argument.  Stella will now
+			automatically decide when to use this setting.</li>
 
 		<li>Fixed framerate when switching between NTSC and PAL modes.  Stella
-			now uses the correct framerate based on the format of the ROM.</li>
+			now uses the correct framerate based on the format of the ROM,
+			in terms of both video <b>and</b> audio.</li>
+
+		<li>Added 'configure' support to the build process for both Linux and
+			Win32 (using MinGW).  Developers can now use the familiar 'configure;
+			make; make install' commands to compile Stella.</li>
+
+		<li>Further consolidation and integration of SDL.  This should lead to
+			faster operation and a more consistent look for all ports.</li>
 
 		<li>Fixed some 64-bit issues.  Stella now compiles and runs correctly
-			on AMD64 and PPC64 systems.</li>
+			on AMD64 and PPC64 Linux systems.</li>
 
 		<li>Updated the Stella manual with pictures of the new integrated GUI.</li>
 	</ul>
@@ -284,8 +299,8 @@
 
 	<ul>
 		<li>High speed emulation using optimized C++ code</li>
-		<li>Supports high quality sound emulation using Ron Fries' TIA Sound Emulation
-			library</li>
+		<li>Supports high quality sound emulation using code derived from Ron Fries'
+			TIA Sound Emulation library, including stereo sound support</li>
 		<li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard
 			or joysticks</li>
 		<li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard</li>
@@ -349,7 +364,7 @@
 	<ul>
 		<li>Linux Kernel 2.4.x, Linux Kernel 2.6.x is highly recommended</li>
 		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling
-			the Stella source code; GNU C++ compiler version 3.2.x or later is highly
+			the Stella source code; GNU C++ compiler version 3.2.x/4.x or later is highly
 			recommended</li>
 		<li>Pentium class machine required (Stella <b>may</b> compile on other
 			architectures, but it hasn't been extensively tested)</li>
@@ -364,6 +379,8 @@
 		<li>Mac OSX 10.1 or Above</li>
 		<li>500 MHz G4 PPC processor or above (Stella <b>may</b> work with a G3
 			processor, but this is still a work-in-progress)</li>
+		<li>OpenGL capable video card.  Software rendering mode is still available,
+			but as of OSX 10.4 is substandard compared to OpenGL.</li>
 	</ul>
 
 	<p>
@@ -402,15 +419,14 @@
 		<ol>
 			<li>Extract files from the distribution:
 				<pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-			<li>Change directories to the stella-<i>release</i>/src/build directory</li>
-			<li>Edit the <b>makefile</b> to meet your needs</li>
+			<li>Change directories to the stella-<i>release</i> directory</li>
+
+			<li>Configure the build with the following command:
+				<pre>   ./configure (--help for list of options)</pre></li>
 			<li>Build the executable with the following command:
-				<pre>   make linux (or make linux-gl)</pre></li>
-			<li>Copy the executable to a directory that's in your path:
-				<pre>   cp stella /usr/local/bin</pre></li>
-			<li>Copy the supplied stella.pro properties file to the system-wide location:
-				<pre>   cp stella.pro /etc</pre> or to your home directory:
-				<pre>   mkdir ~/.stella<br>   cp stella.pro ~/.stella</pre></li>
+				<pre>   make</pre></li>
+			<li>Install the executable with the following command:
+				<pre>   make install</pre></li>
 		</ol>
 		<li><b>Source RPM</b> (stella-<i>release</i>-1.src.rpm)</li>
 		<ol>
@@ -442,19 +458,11 @@
 			<li>Extract files from the distribution using <b>Winzip</b>,
 				<b>Total Commander</b>, or some other archiving program that supports
 				gzipped tar files</li>
-			<li>If compiling the Stella executable using MinGW:</li>
-			<ul>
-				<li>Change directories to the stella-<i>release</i>/src/build
-					directory</li>
-				<li>Edit the <b>makefile</b> to meet your needs</li>
-				<li>Build the executable with the following command:
-					<pre>   make win32 (or make win32-gl)</pre></li>
-				<li>Copy the <b>Stella</b> (commandline executable) and <b>stella.pro</b>
-					files to some directory</li>
-			</ul>
+			<li>If compiling the Stella executable using MinGW, use the same commands
+				as specified under <i>Linux/UNIX - Compressed tarball</i></li>
 			<li>If compiling using Visual C++ 7:</li>
 			<ul>
-				<li>Open the <b>stella-<i>release</i>/src/win32/Stella_Emulator.sln</b>
+				<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
 					file using Visual C++ 7</li>
 				<li>Build the 'Stella' solution</li>
 				<li>Copy the <b>Stella.exe</b> and <b>stella.pro</b> files
@@ -562,8 +570,8 @@
 	<img src="graphics/rom_browser.png"></p>
 
 	<p>Once a ROM directory has been selected, clicking 'Reload' will update the
-	ROM listing.  You can start emulation by selecting a ROM and pressing 'Enter',
-	clicking 'Play' or double-clicking a ROM.</p>
+	ROM listing.  You can start emulation by selecting a ROM and pressing 'Enter'
+	or clicking 'Play', or double-clicking a ROM.</p>
 
 	<p>
 	<h2><b>Command Line</b></h2>
@@ -587,12 +595,6 @@
 		<tr>
 			<td><pre>-video &lt;soft|gl&gt;</pre></td>
 			<td>Use SDL software or OpenGL rendering mode.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-video_driver &lt;windib|directx&gt;</pre></td>
-			<td>Use the specified video driver.  Windows works best with 'windib'.
-				Currently, only Windows makes use of this argument.</td>
 		</tr>
 
 		<tr>
@@ -628,6 +630,11 @@
 		</tr>
 
 		<tr>
+			<td><pre>-center &lt;0|1&gt;</pre></td>
+			<td>Centers game window (if possible).</td>
+		</tr>
+
+		<tr>
 			<td><pre>-grabmouse &lt;0|1&gt;</pre></td>
 			<td>Keeps the mouse in the game window.</td>
 		</tr>
@@ -645,8 +652,13 @@
 		</tr>
 
 		<tr>
-			<td><pre>-sound &lt;0|1&gt;</pre></td>
-			<td>Disable or enable sound.</td>
+			<td><pre>-sound &lt;1|0&gt;</pre></td>
+			<td>Enable or disable sound generation.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-channels &lt;1|2&gt;</pre></td>
+			<td>Enable mono or stereo sound.</td>
 		</tr>
 
 		<tr>
@@ -668,12 +680,6 @@
 		<tr>
 			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
 			<td>Shows some game info while Stella is running.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-mergeprops &lt;0|1&gt;</pre></td>
-			<td>Save the current properties to a separate file in the users' home directory,
-				or merge them into the users' stella.pro file.</td>
 		</tr>
 
 		<tr>
@@ -721,6 +727,31 @@
 		<tr>
 			<th>Argument</th>
 			<th>Description</th>
+		</tr>
+
+		<tr>
+			<td><pre>-debugheight &lt;number&gt;</pre></td>
+			<td>Set height of debugger in lines of text (currently not 100% working)</td>
+		</tr>
+
+		<tr>
+			<td><pre>-debug</pre></td>
+			<td>Immediately jump to debugger mode when starting Stella.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-holdreset</pre></td>
+			<td>Start the emulator with the Game Reset switch held down.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-holdselect</pre></td>
+			<td>Start the emulator with the Game Select switch held down.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-holdbutton0</pre></td>
+			<td>Start the emulator with the left joystick button held down.</td>
 		</tr>
 
 		<tr>
@@ -1483,7 +1514,7 @@
 		<tr>
 			<td>Toggle fullscreen/windowed mode</td>
 			<td>Alt + Enter</td>
-			<td>Shift-Cmd + Enter(FIXME)</td>
+			<td>Cmd + Enter</td>
 		</tr>
 
 		<tr>
@@ -1585,7 +1616,9 @@
 	<p><h1>
 	<a name="Debugger">10. Integrated Debugger</a></h1>
 	<hr>
-FIXME - add info and snapshots for debugger
+
+	<p>Have a look at <a href="debugger.html">this page</a> for integrated debugger
+	documentation.
 
 	<br><br><br>
 	<p><h1>
@@ -1597,20 +1630,27 @@ FIXME - add info and snapshots for debugger
 	You must use the included <b>stella.pro</b> file.  Otherwise, the emulator
 	will try to guess the best settings for the game.</p>
 
+	<p>As of Stella 2.0, the properties file handling has changed.  Stella now uses
+	two properties files; a system-wide <b>stella.pro</b> and a per-user <b>user.pro</b>.
+	The system-wide file will not be modified by Stella, and is used as a default
+	database of properties.  The per-user file will contain all properties 'merged' by
+	the user (by pressing Alt-s while a game is running).  So this means that when
+	you upgrade Stella and stella.pro, your personal profile settings are preserved.</p>
+
 	<p>
 	<h2><b>Linux/Unix</b></h2>
-	<p>The Linux and Unix versions of Stella looks for the property file
-	in your <i>$HOME/.stella</i> directory.  If this file is not found there, 
-	Stella will look in the <i>/etc/</i> directory.
+	<p>The Linux and Unix versions of Stella looks for the system properties file
+	in <i>/etc/stella.pro</i> and your personal properties file in
+	<i>$HOME/.stella/user.pro</i>.
 
 	<p>
 	<h2><b>Macintosh</b></h2>
-	<p>The Mac version of Stella looks for the property file in the
+	<p>The Mac version of Stella looks for the properties file(s) in the
 	directory containing the application.</p>
 
 	<p>
 	<h2><b>Windows</b></h2>
-	<p>The Windows version of Stella looks for the property file in the same directory
+	<p>The Windows version of Stella looks for the properties file(s) in the directory
 	containing the application.  Future versions of Stella for Windows may look in
 	user-specific locations	(C:\Documents and Settings\...).</p>
 
@@ -1696,6 +1736,14 @@ FIXME - add info and snapshots for debugger
 			<td>This property contains any special notes about playing the game.
 			Currently this property is not being used, however, future versions of
 			Stella will probably allow the user to view this information.</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP"><i>Cartridge.Sound:</i></td>
+			<td>This property determines if the game should use 1 or 2 channels for
+			sound output.  All original Atari 2600 machines supported 1 channel only,
+			but some homebrew games have been written to take advantage of stereo
+			sound.  The value of this property must be Mono or Stereo.</td>
 		</tr>
 
 		<tr>
@@ -2028,7 +2076,9 @@ FIXME - add info and snapshots for debugger
 			<td VALIGN="TOP">Brian&nbsp;Watson</td>
 			<td>Helped with getting the illegal CPU instruction support working with Stella.
 			Brian also submitted a number of other changes, such as debugger support, which
-			will be integrated into the 1.5 release of Stella.</td>
+			have been finally integrated into the 2.0 release of Stella.  Without
+			a doubt, there would be no debugger support in Stella if not for the
+			tireless work of Brian.</td>
 		</tr>
 
 		<tr>

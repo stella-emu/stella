@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.2 2005-09-07 18:34:52 stephena Exp $
+// $Id: RomWidget.hxx,v 1.3 2005-09-13 18:27:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ class RomWidget : public Widget, public CommandSender
 
   private:
     void initialUpdate();
-    void incrementalUpdate();
+    void incrementalUpdate(int line, int rows);
 
     void setBreak(int data);
     void setPC(int data);
@@ -62,6 +62,10 @@ class RomWidget : public Widget, public CommandSender
 
     /** List of line numbers indexed by address */
     AddrToLine myLineList;
+
+    /** Indicates whether a given line is valid or not;
+        Invalid lines need to be disassembled again */
+    BoolArray myLineValid;
 
     bool myFirstLoad;
     bool mySourceAvailable;
