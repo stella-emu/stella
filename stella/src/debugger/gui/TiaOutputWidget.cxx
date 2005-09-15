@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.4 2005-09-06 22:25:40 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.5 2005-09-15 19:43:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <sstream>
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -26,6 +28,7 @@
 #include "ContextMenu.hxx"
 #include "TiaZoomWidget.hxx"
 #include "Debugger.hxx"
+#include "DebuggerParser.hxx"
 #include "TIADebug.hxx"
 
 #include "TiaOutputWidget.hxx"
@@ -105,10 +108,14 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       {
         case 0:
         {
+          ostringstream command;
           int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
           int lines = myClickY + ystart - instance()->debugger().tiaDebug().scanlines();
           if(lines > 0)
-            instance()->debugger().nextScanline(lines);
+          {
+            command << "scanline #" << lines;
+            instance()->debugger().parser()->run(command.str());
+          }
           break;
         }
 

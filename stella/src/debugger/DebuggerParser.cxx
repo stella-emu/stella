@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.77 2005-09-13 18:27:42 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.78 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -27,6 +27,7 @@
 #include "Expression.hxx"
 #include "CheetahCheat.hxx"
 #include "Cheat.hxx"
+#include "RomWidget.hxx"
 
 #include "DebuggerParser.hxx"
 
@@ -34,6 +35,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"a",
 		"Set Accumulator to value xx",
+		true,
 		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeA
@@ -43,6 +45,7 @@ Command DebuggerParser::commands[] = {
 		"bank",
 		"Show # of banks (with no args), Switch to bank (with 1 arg)",
 		false,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeBank
 	},
@@ -50,6 +53,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"base",
 		"Set default base (hex, dec, or bin)",
+		true,
 		true,
 		{ kARG_BASE_SPCL, kARG_END_ARGS },
 		&DebuggerParser::executeBase
@@ -59,6 +63,7 @@ Command DebuggerParser::commands[] = {
 		"break",
 		"Set/clear breakpoint at address (default: current pc)",
 		false,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeBreak
 	},
@@ -67,6 +72,7 @@ Command DebuggerParser::commands[] = {
 		"breakif",
 		"Set breakpoint on condition",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeBreakif
 	},
@@ -75,6 +81,7 @@ Command DebuggerParser::commands[] = {
 		"c",
 		"Carry Flag: set (to 0 or 1), or toggle (no arg)",
 		false,
+		true,
 		{ kARG_BOOL, kARG_END_ARGS },
 		&DebuggerParser::executeC
 	},
@@ -82,6 +89,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"cheetah",
 		"Use Cheetah cheat code (see http://members.cox.net/rcolbert/)",
+		false,
 		false,
 		// lame: accept 0-4 args instead of inventing a kARG_MULTI_LABEL type
 		{ kARG_LABEL, kARG_LABEL, kARG_LABEL, kARG_LABEL, kARG_END_ARGS },
@@ -92,6 +100,7 @@ Command DebuggerParser::commands[] = {
 		"clearbreaks",
 		"Clear all breakpoints",
 		false,
+		true,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeClearbreaks
 	},
@@ -99,6 +108,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"cleartraps",
 		"Clear all traps",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeCleartraps
@@ -108,6 +118,7 @@ Command DebuggerParser::commands[] = {
 		"clearwatches",
 		"Clear all watches",
 		false,
+		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeClearwatches
 	},
@@ -116,6 +127,7 @@ Command DebuggerParser::commands[] = {
 		"colortest",
 		"Color Test",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeColortest
 	},
@@ -124,6 +136,7 @@ Command DebuggerParser::commands[] = {
 		"d",
 		"Decimal Flag: set (to 0 or 1), or toggle (no arg)",
 		false,
+		true,
 		{ kARG_BOOL, kARG_END_ARGS },
 		&DebuggerParser::executeD
 	},
@@ -131,6 +144,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"define",
 		"Define label",
+		true,
 		true,
 		{ kARG_LABEL, kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeDefine
@@ -140,6 +154,7 @@ Command DebuggerParser::commands[] = {
 		"delbreakif",
 		"Delete conditional break created with breakif",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeDelbreakif
 	},
@@ -148,6 +163,7 @@ Command DebuggerParser::commands[] = {
 		"delwatch",
 		"Delete watch",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeDelwatch
 	},
@@ -155,6 +171,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"disasm",
 		"Disassemble from address (default=pc)",
+		false,
 		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeDisasm
@@ -164,6 +181,7 @@ Command DebuggerParser::commands[] = {
 		"dump",
 		"Dump 128 bytes of memory at address",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeDump
 	},
@@ -171,6 +189,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"exec",
 		"Execute script file",
+		true,
 		true,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeExec
@@ -180,6 +199,7 @@ Command DebuggerParser::commands[] = {
 		"frame",
 		"Advance emulation by xx frames (default=1)",
 		false,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeFrame
 	},
@@ -187,6 +207,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"function",
 		"Define expression as a function for later use",
+		false,
 		false,
 		{ kARG_LABEL, kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeFunction
@@ -196,6 +217,7 @@ Command DebuggerParser::commands[] = {
 		"height",
 		"Change height of debugger window",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeHeight
 	},
@@ -203,6 +225,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"help",
 		"This cruft",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeHelp
@@ -212,6 +235,7 @@ Command DebuggerParser::commands[] = {
 		"list",
 		"List source (if loaded with loadlst)",
 		false,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeList
 	},
@@ -219,6 +243,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"listbreaks",
 		"List breakpoints",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeListbreaks
@@ -228,6 +253,7 @@ Command DebuggerParser::commands[] = {
 		"listtraps",
 		"List traps",
 		false,
+		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeListtraps
 	},
@@ -235,6 +261,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"listwatches",
 		"List watches",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeListwatches
@@ -244,6 +271,7 @@ Command DebuggerParser::commands[] = {
 		"loadstate",
 		"Load emulator state (0-9)",
 		true,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeLoadstate
 	},
@@ -251,6 +279,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"loadlist",
 		"Load DASM listing file",
+		true,
 		true,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeLoadlist
@@ -260,6 +289,7 @@ Command DebuggerParser::commands[] = {
 		"loadsym",
 		"Load symbol file",
 		true,
+		true,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeLoadsym
 	},
@@ -268,6 +298,7 @@ Command DebuggerParser::commands[] = {
 		"n",
 		"Negative Flag: set (to 0 or 1), or toggle (no arg)",
 		false,
+		true,
 		{ kARG_BOOL, kARG_END_ARGS },
 		&DebuggerParser::executeN
 	},
@@ -275,6 +306,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"pc",
 		"Set Program Counter to address",
+		true,
 		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executePc
@@ -284,6 +316,7 @@ Command DebuggerParser::commands[] = {
 		"poke",
 		"Set address to value. Can give multiple values (for address+1, etc)",
 		true,
+		true,
 		{ kARG_WORD, kARG_MULTI_BYTE },
 		&DebuggerParser::executeRam
 	},
@@ -292,6 +325,7 @@ Command DebuggerParser::commands[] = {
 		"print",
 		"Evaluate and print expression in hex/dec/binary",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executePrint
 	},
@@ -300,6 +334,7 @@ Command DebuggerParser::commands[] = {
 		"ram",
 		"Show RAM contents (no args), or set address xx to value yy",
 		false,
+		true,
 		{ kARG_WORD, kARG_MULTI_BYTE },
 		&DebuggerParser::executeRam
 	},
@@ -308,6 +343,7 @@ Command DebuggerParser::commands[] = {
 		"reload",
 		"Reload ROM and symbol file",
 		false,
+		true,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeReload
 	},
@@ -316,6 +352,7 @@ Command DebuggerParser::commands[] = {
 		"reset",
 		"Reset 6507 to init vector (does not reset TIA, RIOT)",
 		false,
+		true,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeReset
 	},
@@ -323,6 +360,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"riot",
 		"Show RIOT timer/input status",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeRiot
@@ -332,6 +370,7 @@ Command DebuggerParser::commands[] = {
 		"rom",
 		"Change ROM contents",
 		true,
+		true,
 		{ kARG_WORD, kARG_MULTI_BYTE },
 		&DebuggerParser::executeRom
 	},
@@ -339,6 +378,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"run",
 		"Exit debugger, return to emulator",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeRun
@@ -348,6 +388,7 @@ Command DebuggerParser::commands[] = {
 		"runto",
 		"Run until first occurrence of string in disassembly",
 		false,
+		true,
 		{ kARG_LABEL, kARG_END_ARGS },
 		&DebuggerParser::executeRunTo
 	},
@@ -355,6 +396,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"s",
 		"Set Stack Pointer to value xx",
+		true,
 		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeS
@@ -364,6 +406,7 @@ Command DebuggerParser::commands[] = {
 		"save",
 		"Save breaks, watches, traps as a .stella script file",
 		true,
+		false,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeSave
 	},
@@ -372,6 +415,7 @@ Command DebuggerParser::commands[] = {
 		"saverom",
 		"Save (possibly patched) ROM to file",
 		true,
+		false,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeSaverom
 	},
@@ -380,6 +424,7 @@ Command DebuggerParser::commands[] = {
 		"saveses",
 		"Save console session to file",
 		true,
+		false,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeSaveses
 	},
@@ -388,6 +433,7 @@ Command DebuggerParser::commands[] = {
 		"savestate",
 		"Save emulator state (valid args 0-9)",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeSavestate
 	},
@@ -396,6 +442,7 @@ Command DebuggerParser::commands[] = {
 		"savesym",
 		"Save symbols to file",
 		true,
+		false,
 		{ kARG_FILE, kARG_END_ARGS },
 		&DebuggerParser::executeSavesym
 	},
@@ -404,6 +451,7 @@ Command DebuggerParser::commands[] = {
 		"scanline",
 		"Advance emulation by xx scanlines (default=1)",
 		false,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeScanline
 	},
@@ -412,6 +460,7 @@ Command DebuggerParser::commands[] = {
 		"step",
 		"Single step CPU (optionally, with count)",
 		false,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeStep
 	},
@@ -419,6 +468,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"tia",
 		"Show TIA state (NOT FINISHED YET)",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		&DebuggerParser::executeTia
@@ -428,6 +478,7 @@ Command DebuggerParser::commands[] = {
 		"trace",
 		"Single step CPU (optionally, with count), subroutines count as one instruction",
 		false,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeTrace
 	},
@@ -436,6 +487,7 @@ Command DebuggerParser::commands[] = {
 		"trap",
 		"Trap read and write accesses to address",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeTrap
 	},
@@ -444,6 +496,7 @@ Command DebuggerParser::commands[] = {
 		"trapread",
 		"Trap read accesses to address",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeTrapread
 	},
@@ -452,6 +505,7 @@ Command DebuggerParser::commands[] = {
 		"trapwrite",
 		"Trap write accesses to address",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeTrapwrite
 	},
@@ -459,6 +513,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"undef",
 		"Undefine label (if defined)",
+		true,
 		true,
 		{ kARG_LABEL, kARG_END_ARGS },
 		&DebuggerParser::executeUndef
@@ -468,6 +523,7 @@ Command DebuggerParser::commands[] = {
 		"v",
 		"Overflow Flag: set (to 0 or 1), or toggle (no arg)",
 		false,
+		true,
 		{ kARG_BOOL, kARG_END_ARGS },
 		&DebuggerParser::executeV
 	},
@@ -476,6 +532,7 @@ Command DebuggerParser::commands[] = {
 		"watch",
 		"Print contents of address before every prompt",
 		true,
+		false,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeWatch
 	},
@@ -483,6 +540,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"x",
 		"Set X Register to value xx",
+		true,
 		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeX
@@ -492,6 +550,7 @@ Command DebuggerParser::commands[] = {
 		"y",
 		"Set Y Register to value xx",
 		true,
+		true,
 		{ kARG_WORD, kARG_END_ARGS },
 		&DebuggerParser::executeY
 	},
@@ -500,6 +559,7 @@ Command DebuggerParser::commands[] = {
 		"z",
 		"Zero Flag: set (to 0 or 1), or toggle (no arg)",
 		false,
+		true,
 		{ kARG_BOOL, kARG_END_ARGS },
 		&DebuggerParser::executeZ
 	},
@@ -507,6 +567,7 @@ Command DebuggerParser::commands[] = {
 	{
 		"",
 		"",
+		false,
 		false,
 		{ kARG_END_ARGS },
 		NULL
@@ -1070,6 +1131,9 @@ string DebuggerParser::run(const string& command) {
 			if( validateArgs(i) )
 				CALL_METHOD(commands[i].executor);
 
+			if( commands[i].refreshRequired )
+				debugger->myBaseDialog->loadConfig();
+
 			return commandResult;
 		}
 
@@ -1526,6 +1590,13 @@ void DebuggerParser::executeRom() {
 			return;
 		}
 	}
+
+	// Normally the run() method calls loadConfig() on the debugger,
+	// which results in all child widgets being redrawn.
+	// The RomWidget is a special case, since we don't want to re-disassemble
+	// any more than necessary.  So we only do it by calling the following
+	// method ...
+	debugger->myRom->invalidate();
 
 	commandResult = "changed ";
 	commandResult += debugger->valueToString( args.size() - 1 );

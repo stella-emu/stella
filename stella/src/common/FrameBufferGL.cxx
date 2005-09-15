@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.42 2005-09-13 18:27:42 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.43 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -427,7 +427,10 @@ void FrameBufferGL::translateCoords(Int32* x, Int32* y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
-  // FIXME
+  // TODO
+  //    Add logic to create one large dirty-rect that encompasses all
+  //    smaller dirty rects.  Then in postFrameUpdate(), change the
+  //    coordinates to only update that portion of the texture.
   myDirtyFlag = true;
 }
 

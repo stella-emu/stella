@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.4 2005-09-06 22:25:40 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.5 2005-09-15 19:43:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,6 +33,7 @@
 #include "DataGridOpsWidget.hxx"
 #include "Rect.hxx"
 #include "Debugger.hxx"
+#include "DebuggerParser.hxx"
 
 #include "DebuggerDialog.hxx"
 
@@ -225,25 +226,25 @@ void DebuggerDialog::addRomArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doStep()
 {
-  instance()->debugger().step();
+  instance()->debugger().parser()->run("step");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doTrace()
 {
-  instance()->debugger().trace();
+  instance()->debugger().parser()->run("trace");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doAdvance()
 {
-  instance()->debugger().nextFrame(1);
+  instance()->debugger().parser()->run("frame #1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doScanlineAdvance()
 {
-  instance()->debugger().nextScanline(1);
+  instance()->debugger().parser()->run("scanline #1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

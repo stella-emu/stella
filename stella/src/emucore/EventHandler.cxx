@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.95 2005-09-11 22:55:51 stephena Exp $
+// $Id: EventHandler.cxx,v 1.96 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -858,7 +858,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyMouse(uInt32 time)
 {
-  bool mouseAccel = false;  // FIXME - make this a commandline option
+  bool mouseAccel = false;  // TODO - make this a commandline option
 
   if (time >= myJoyMouse.last_time + myJoyMouse.delay_time)
   {
@@ -1004,8 +1004,8 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
   }
 
   // Determine which mode we're in, then send the event to the appropriate place
-  // FIXME - this is almost exactly the same as handleKeyEvent
-  //         the similar code should be handled in handleEvent ...
+  // TODO - this is almost exactly the same as handleKeyEvent
+  //        the similar code should be handled in handleEvent ...
   Event::Type event = myJoyTable[stick*kNumJoyButtons + code];
   switch(myState)
   {

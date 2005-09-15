@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.10 2005-08-22 18:17:10 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.11 2005-09-15 19:43:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,6 +39,7 @@ enum {
  * - to select the data dir for a game
  * - to select the place where save games are stored
  * - others???
+ * TODO - make this dialog font sensitive
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,7 +55,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, int x, int y, int w, int h)
   _currentPath = new StaticTextWidget(this, 10, 20, _w - 2 * 10, kLineHeight,
                                       "DUMMY", kTextAlignLeft);
 
-  // Add file list FIXME_NOW
+  // Add file list
   _fileList = new StringListWidget(this, instance()->font(),
                                    10, 34, _w - 2 * 10, _h - 34 - 24 - 10);
   _fileList->setNumberingMode(kListNumberingOff);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.4 2005-09-13 18:27:42 stephena Exp $
+// $Id: RomWidget.cxx,v 1.5 2005-09-15 19:43:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,7 +33,7 @@
 RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, x, y, 16, 16),
     CommandSender(boss),
-    myFirstLoad(true),
+    myListIsDirty(true),
     mySourceAvailable(false),
     myCurrentBank(-1)
 {
@@ -92,15 +92,13 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
-cerr << " ==> RomWidget::loadConfig()\n";
-
   Debugger& dbg = instance()->debugger();
 
   // Only reload full bank when necessary
-  if(myFirstLoad || myCurrentBank != instance()->debugger().getBank())
+  if(myListIsDirty || myCurrentBank != dbg.getBank())
   {
     initialUpdate();
-    myFirstLoad = false;
+    myListIsDirty = false;
   }
   else  // only reload what's in current view
   {
@@ -123,7 +121,7 @@ void RomWidget::initialUpdate()
 
   // Fill romlist the current bank of source or disassembly
   if(mySourceAvailable)
-    ; // FIXME
+    ; // TODO - actually implement this
   else
   {
     // Clear old mappings
@@ -150,6 +148,7 @@ void RomWidget::initialUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::incrementalUpdate(int line, int rows)
 {
+  // TODO - implement this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,9 +156,9 @@ void RomWidget::setBreak(int data)
 {
   // We don't care about state, as breakpoints are turned on
   // and off with the same command
-  // FIXME - at some point, we might want to add 'breakon'
-  //         and 'breakoff' to DebuggerParser, so the states
-  //         don't get out of sync
+  // TODO - at some point, we might want to add 'breakon'
+  //        and 'breakoff' to DebuggerParser, so the states
+  //        don't get out of sync
   ostringstream command;
   command << "break #" << myAddrList[data];
   instance()->debugger().run(command.str());

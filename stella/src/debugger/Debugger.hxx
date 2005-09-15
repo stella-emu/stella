@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.74 2005-09-01 19:14:09 stephena Exp $
+// $Id: Debugger.hxx,v 1.75 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -28,6 +28,7 @@ class TIADebug;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
+class RomWidget;
 class Expression;
 
 #include <map>
@@ -77,7 +78,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.74 2005-09-01 19:14:09 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.75 2005-09-15 19:43:36 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -192,10 +193,6 @@ class Debugger : public DialogContainer
                      StringList& bytes, StringList& data,
                      int start, int lines);
 
-    int step();
-    int trace();
-    void nextScanline(int lines);
-    void nextFrame(int frames);
     void autoExec();
 
     string showWatches();
@@ -305,6 +302,11 @@ class Debugger : public DialogContainer
     */
     void resizeDialog();
 
+    int step();
+    int trace();
+    void nextScanline(int lines);
+    void nextFrame(int frames);
+
     void toggleBreakPoint(int bp);
 
     bool breakPoint(int bp);
@@ -355,6 +357,7 @@ class Debugger : public DialogContainer
     TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;
     TiaZoomWidget*   myTiaZoom;
+    RomWidget*       myRom;
 
     EquateList *equateList;
     PackedBitArray *breakPoints;

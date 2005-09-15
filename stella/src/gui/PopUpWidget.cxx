@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.17 2005-09-11 22:55:51 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.18 2005-09-15 19:43:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -215,7 +215,7 @@ void PopUpDialog::sendSelection()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PopUpDialog::isMouseDown()
 {
-  // TODO/FIXME - need a way to determine whether any mouse buttons are pressed or not.
+  // TODO - need a way to determine whether any mouse buttons are pressed or not.
   // Sure, we could just count mouse button up/down events, but that is cumbersome and
   // error prone. Would be much nicer to add an API to OSystem for this...
 

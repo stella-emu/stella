@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.30 2005-08-30 01:10:54 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.31 2005-09-15 19:43:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,6 +39,10 @@
 #include "LauncherDialog.hxx"
 
 #include "bspf.hxx"
+
+/////////////////////////////////////////
+// TODO - make this dialog font sensitive
+/////////////////////////////////////////
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
@@ -91,7 +95,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add list with game titles
   myList = new StringListWidget(this, instance()->font(),
-                                10, 24, _w - 20, _h - 24 - 26 - 10 - 10); // FIXME_NOW
+                                10, 24, _w - 20, _h - 24 - 26 - 10 - 10);
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
   myList->setFlags(WIDGET_NODRAW_FOCUS);

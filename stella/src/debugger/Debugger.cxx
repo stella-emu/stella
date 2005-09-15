@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.91 2005-09-01 19:14:09 stephena Exp $
+// $Id: Debugger.cxx,v 1.92 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -41,6 +41,8 @@
 #include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"
 #include "TiaZoomWidget.hxx"
+
+#include "RomWidget.hxx"
 #include "Expression.hxx"
 
 #include "YaccParser.hxx"
@@ -94,6 +96,7 @@ Debugger::Debugger(OSystem* osystem)
     myTiaInfo(NULL),
     myTiaOutput(NULL),
     myTiaZoom(NULL),
+    myRom(NULL),
     equateList(NULL),
     breakPoints(NULL),
     readTraps(NULL),
@@ -111,15 +114,6 @@ Debugger::Debugger(OSystem* osystem)
   // there will only be ever one instance of debugger in Stella,
   // I don't care :)
   myStaticDebugger = this;
-
-  // init builtins
-  for(int i=0; builtin_functions[i][0] != ""; i++) {
-    string f = builtin_functions[i][1];
-    int res = YaccParser::parse(f.c_str());
-    if(res != 0) cerr << "ERROR in builtin function!" << endl;
-    Expression *exp = YaccParser::getResult();
-    addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,6 +145,7 @@ void Debugger::initialize()
   myTiaInfo   = dd->tiaInfo();
   myTiaOutput = dd->tiaOutput();
   myTiaZoom   = dd->tiaZoom();
+  myRom       = dd->rom();
 
   // set up any breakpoint that was on the command line
   // (and remove the key from the settings, so they won't get set again)
@@ -312,6 +307,15 @@ void Debugger::autoExec() {
 	}
 	myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
 	myPrompt->printPrompt();
+
+	// init builtins
+	for(int i=0; builtin_functions[i][0] != ""; i++) {
+		string f = builtin_functions[i][1];
+		int res = YaccParser::parse(f.c_str());
+		if(res != 0) cerr << "ERROR in builtin function!" << endl;
+		Expression *exp = YaccParser::getResult();
+		addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
+	}
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -660,8 +664,6 @@ int Debugger::step()
   mySystem->m6502().execute(1);
   mySystem->lockDataBus();
 
-  myBaseDialog->loadConfig();
-
   return mySystem->cycles() - cyc;
 }
 
@@ -692,7 +694,6 @@ int Debugger::trace()
       mySystem->m6502().execute(1);
 
     mySystem->lockDataBus();
-    myBaseDialog->loadConfig();
 
     return mySystem->cycles() - cyc;
   } else {
@@ -815,7 +816,6 @@ void Debugger::nextScanline(int lines) {
   mySystem->unlockDataBus();
   myTiaOutput->advanceScanline(lines);
   mySystem->lockDataBus();
-  myBaseDialog->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -824,7 +824,6 @@ void Debugger::nextFrame(int frames) {
   mySystem->unlockDataBus();
   myTiaOutput->advance(frames);
   mySystem->lockDataBus();
-  myBaseDialog->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

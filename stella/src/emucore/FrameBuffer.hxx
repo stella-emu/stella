@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.56 2005-08-30 01:10:54 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.57 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.56 2005-08-30 01:10:54 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.57 2005-09-15 19:43:36 stephena Exp $
 */
 class FrameBuffer
 {
@@ -221,8 +221,8 @@ class FrameBuffer
       @param y      The y coordinate
       @param w      The width of the box
       @param h      The height of the box
-      @param colorA FIXME
-      @param colorB FIXME
+      @param colorA Lighter color for outside line.
+      @param colorB Darker color for inside line.
     */
     void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
              OverlayColor colorA, OverlayColor colorB);

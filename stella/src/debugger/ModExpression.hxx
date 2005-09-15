@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ModExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
+// $Id: ModExpression.hxx,v 1.3 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #ifndef MOD_EXPRESSION_HXX
@@ -24,14 +24,15 @@
 
 /**
   @author  B. Watson
-  @version $Id: ModExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
+  @version $Id: ModExpression.hxx,v 1.3 2005-09-15 19:43:36 stephena Exp $
 */
 class ModExpression : public Expression
 {
   public:
     ModExpression(Expression *left, Expression *right);
-    uInt16 evaluate() { return myLHS->evaluate() % myRHS->evaluate(); } // FIXME: div by zero?
+    uInt16 evaluate() { int rhs = myRHS->evaluate();
+                        return rhs == 0 ? 0 : myLHS->evaluate() % rhs;
+                      }
 };
 
 #endif
-

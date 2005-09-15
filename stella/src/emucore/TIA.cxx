@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.57 2005-09-06 19:42:35 stephena Exp $
+// $Id: TIA.cxx,v 1.58 2005-09-15 19:43:36 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -3261,7 +3261,7 @@ const uInt32 TIA::ourPALPalette11[256] = {
   0x000000, 0x000000, 0x242424, 0x242424, 
   0x484848, 0x484848, 0x6d6d6d, 0x6d6d6d, 
   0x919191, 0x919191, 0xb6b6b6, 0xb6b6b6, 
-  0xdadada, 0xdadada, 0xffffff, 0xff4ffff  // FIXME - check this out
+  0xdadada, 0xdadada, 0xffffff, 0xff4ffff
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
