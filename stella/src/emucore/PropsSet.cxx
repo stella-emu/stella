@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.12 2005-09-11 22:55:51 stephena Exp $
+// $Id: PropsSet.cxx,v 1.13 2005-09-16 18:15:44 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -75,13 +75,14 @@ void PropertiesSet::getMD5(const string& md5, Properties &properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::insert(const Properties& properties)
+void PropertiesSet::insert(const Properties& properties, bool save)
 {
-	insertNode(myRoot, properties);
+	insertNode(myRoot, properties, save);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties)
+void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties,
+                               bool save)
 {
   if(t)
   {
@@ -89,14 +90,14 @@ void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties)
     string currentMd5 = t->props->get("Cartridge.MD5");
 
     if(md5 < currentMd5)
-      insertNode(t->left, properties);
+      insertNode(t->left, properties, save);
     else if(md5 > currentMd5)
-      insertNode(t->right, properties);
+      insertNode(t->right, properties, save);
     else
     {
       delete t->props;
       t->props = new Properties(properties);
-      t->count++;
+      t->save = save;
     }
   }
   else
@@ -105,7 +106,7 @@ void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties)
     t->props = new Properties(properties);
     t->left = 0;
     t->right = 0;
-    t->count = 1;
+    t->save = save;
 
     ++mySize;
   }
@@ -124,7 +125,7 @@ void PropertiesSet::deleteNode(TreeNode *node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(const string& filename)
+void PropertiesSet::load(const string& filename, bool save)
 {
   ifstream in(filename.c_str(), ios::in);
 
@@ -141,7 +142,7 @@ void PropertiesSet::load(const string& filename)
 
     // If the stream is still good then insert the properties
     if(in)
-      insert(properties);
+      insert(properties, save);
   }
   if(in)
     in.close();
@@ -165,7 +166,7 @@ void PropertiesSet::saveNode(ostream& out, TreeNode *node)
 {
   if(node)
   {
-    if(node->count > 1)
+    if(node->save)
       node->props->save(out);
     saveNode(out, node->left);
     saveNode(out, node->right);
@@ -195,7 +196,7 @@ bool PropertiesSet::merge(const Properties& properties, const string& filename)
   ofstream out(filename.c_str());
   if(out.is_open())
   {
-    insert(properties);
+    insert(properties, true);  // always save merged properties
     save(out);
     out.close();
     return true;

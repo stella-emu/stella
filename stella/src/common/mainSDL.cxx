@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.50 2005-09-11 22:55:51 stephena Exp $
+// $Id: mainSDL.cxx,v 1.51 2005-09-16 18:15:44 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -84,7 +84,7 @@ void SetupProperties(PropertiesSet& set)
   if(altpro != "")
   {
     buf << "Game properties: \'" << altpro << "\'\n";
-    set.load(altpro);
+    set.load(altpro, false);  // don't save alternate properties to userPro
   }
   else
   {
@@ -92,8 +92,8 @@ void SetupProperties(PropertiesSet& set)
     const string& userPro = theOSystem->userProperties();
     buf << "Game properties: \'" << sysPro << "\', \'" << userPro << "\'\n";
 
-    set.load(sysPro);
-    set.load(userPro);
+    set.load(sysPro, false);  // don't save system-wide properties
+    set.load(userPro, true);
   }
 
   if(theOSystem->settings().getBool("showinfo"))

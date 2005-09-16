@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.36 2005-08-31 19:15:10 stephena Exp $
+// $Id: Widget.hxx,v 1.37 2005-09-16 18:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,7 @@ class Dialog;
 #include "GuiObject.hxx"
 #include "GuiUtils.hxx"
 #include "Array.hxx"
+#include "Rect.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -71,7 +72,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.36 2005-08-31 19:15:10 stephena Exp $
+  @version $Id: Widget.hxx,v 1.37 2005-09-16 18:15:44 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -100,6 +101,7 @@ class Widget : public GuiObject
     void lostFocus();
     void addFocusWidget(Widget* w) { _focusList.push_back(w); }
 
+    virtual GUI::Rect getRect() const;
     virtual bool wantsFocus() { return false; };
 
     /** Set/clear WIDGET_ENABLED flag and immediately redraw */

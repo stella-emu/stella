@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.49 2005-08-30 23:32:42 stephena Exp $
+// $Id: EventHandler.hxx,v 1.50 2005-09-16 18:15:44 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.49 2005-08-30 23:32:42 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.50 2005-09-16 18:15:44 stephena Exp $
 */
 class EventHandler
 {
@@ -149,6 +149,12 @@ class EventHandler
       @return The State type
     */
     inline State state() { return myState; }
+
+    /**
+      Returns the current launcher state (decide whether to enter launcher
+      on game exit).
+    */
+    inline bool useLauncher() { return myUseLauncherFlag; }
 
     /**
       Resets the state machine of the EventHandler to the defaults

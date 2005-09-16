@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.2 2005-08-30 23:32:42 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.3 2005-09-16 18:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,7 @@ enum {
   kFormatCmd     = 'Cfmt',
   kPaletteCmd    = 'Cpal',
   kReloadRomCmd  = 'Crom',
-  kLauncherCmd   = 'Clch'
+  kExitCmd       = 'Clex'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,7 +115,7 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
                    "Reload ROM", kReloadRomCmd, 0);
   xoffset += lwidth;
   new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Exit Game", kLauncherCmd, 0);
+                   "Exit Game", kExitCmd, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,8 +198,11 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       return;
       break;
 
-    case kLauncherCmd:
-      event = Event::LauncherMode;
+    case kExitCmd:
+      if(instance()->eventHandler().useLauncher())
+        event = Event::LauncherMode;
+      else
+        event = Event::Quit;
       break;
 
     default:

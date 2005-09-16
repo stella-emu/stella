@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.8 2005-09-11 22:55:51 stephena Exp $
+// $Id: PropsSet.hxx,v 1.9 2005-09-16 18:15:44 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -64,8 +64,10 @@ class PropertiesSet
       defaults properties as the defaults for any properties loaded.
 
       @param filename  Full pathname of input file to use
+      @param save      Indicates whether to set the 'save' tag for
+                       these properties
     */
-    void load(const string& filename);
+    void load(const string& filename, bool save);
 
     /**
       Save properties to the specified output stream 
@@ -102,7 +104,7 @@ class PropertiesSet
       Properties* props;
       TreeNode* left;
       TreeNode* right;
-      int count;
+      bool save;
     };
 
     /**
@@ -110,16 +112,20 @@ class PropertiesSet
       the old properties are overwritten with the new ones.
 
       @param properties  The collection of properties
+      @param save        Indicates whether to set the 'save' tag for
+                         this property
     */
-    void insert(const Properties& properties);
+    void insert(const Properties& properties, bool save);
 
     /**
       Insert a node in the bst, keeping the tree sorted.
 
       @param node        The current subroot of the tree
       @param properties  The collection of properties
+      @param save        Indicates whether to set the 'save' tag for
+                         this property
     */
-    void insertNode(TreeNode* &node, const Properties& properties);
+    void insertNode(TreeNode* &node, const Properties& properties, bool save);
 
     /**
       Deletes a node from the bst.  Does not preserve bst sorting.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.34 2005-08-31 19:15:10 stephena Exp $
+// $Id: Widget.cxx,v 1.35 2005-09-16 18:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -138,6 +138,16 @@ void Widget::lostFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect Widget::getRect() const
+{
+  int x = getAbsX() - 1,  y = getAbsY() - 1,
+      w = getWidth() + 2, h = getHeight() + 2;
+
+  GUI::Rect r(x, y, x+w, y+h);
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setEnabled(bool e)
 {
   if(e)
@@ -216,8 +226,9 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     if(wid == tmp)
       pos = i;
 
-    int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
-        w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
+    GUI::Rect rect = tmp->getRect();
+    int x = rect.left,    y = rect.top,
+        w = rect.width(), h = rect.height();
 
     // First clear area surrounding all widgets
     if(tmp->_hasFocus)
@@ -257,8 +268,9 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
 
   // Now highlight the active widget
   tmp = arr[pos];
-  int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
-      w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
+  GUI::Rect rect = tmp->getRect();
+  int x = rect.left,    y = rect.top,
+      w = rect.width(), h = rect.height();
 
   tmp->receivedFocus();
   if(!(tmp->_flags & WIDGET_NODRAW_FOCUS))
