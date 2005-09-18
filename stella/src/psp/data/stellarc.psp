@@ -38,3 +38,4 @@ lastrom =
 modtime =
 accurate = false
 break =
+pspoverclock = false
