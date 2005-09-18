@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.23 2005-09-11 15:44:51 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.24 2005-09-18 14:38:52 optixx Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.23 2005-09-11 15:44:51 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.24 2005-09-18 14:38:52 optixx Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -194,7 +194,7 @@ class FrameBufferSoft : public FrameBuffer
     */
     virtual uInt32 lineDim() { return theZoomLevel; }
 
-  private:
+  protected:
     // Used in the dirty update of the SDL surface
     RectList* myRectList;
 
