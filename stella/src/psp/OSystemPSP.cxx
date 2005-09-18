@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemPSP.cxx,v 1.2 2005-08-30 01:10:54 stephena Exp $
+// $Id: OSystemPSP.cxx,v 1.3 2005-09-18 14:31:36 optixx Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -66,7 +66,7 @@ OSystemPSP::OSystemPSP()
 
   string userPropertiesFile   = basedir + "/stella.pro";
   string systemPropertiesFile = "/etc/stella.pro";
-  setPropertiesFiles(userPropertiesFile, systemPropertiesFile);
+  setConfigFiles(userPropertiesFile, systemPropertiesFile);
 
   string userConfigFile   = basedir + "/stellarc";
   string systemConfigFile = "/etc/stellarc";
@@ -75,8 +75,6 @@ OSystemPSP::OSystemPSP()
   string cacheFile = basedir + "/stella.cache";
   setCacheFile(cacheFile);
 
-  // Overclock CPU to 333MHz
-  scePowerSetClockFrequency(333,333,166);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +96,15 @@ void OSystemPSP::mainLoop()
   virtualTime = getTicks();
   frameTime = 0;
 
+  // Overclock CPU to 333MHz
+  if (settings().getBool("pspoverclock"))
+  {
+    scePowerSetClockFrequency(333,333,166);
+    fprintf(stderr,"OSystemPSP::mainLoop overclock to 333\n");
+  } else
+  {
+    fprintf(stderr,"OSystemPSP::mainLoop NOT overclock\n");
+  }
   // Main game loop
   for(;;)
   {
