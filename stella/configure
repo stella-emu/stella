@@ -719,11 +719,14 @@ case $_host_os in
 		psp)
 			# -O3 is need for speed
 			# -G0 to avoid c++ link problems
-			CXXFLAGS="-G0 -O3 -fomit-frame-pointer -funroll-loops"
+			CXXFLAGS="-G0 -O2  -fno-rtti"
 			# 2 times -lc to avoid link problems. psp-gcc seems to to forget the first -lc wiile stdc++ linking
 			LIBS="-L `psp-config  --pspsdk-path`/lib -L`psp-config  --pspsdk-path`/../lib  "
-			LIBS="$LIBS -lSDLmain -lSDL -lpng -lm -lpspsdk -lpspdebug -lpspgu -lpspctrl "
-			LIBS="$LIBS -lpspaudio -lc -lz -lpspkernel -lpspuser -lpspge -lpspdisplay -lpsphprm -lpsppower -lstdc++ -lc"
+			#LIBS="$LIBS -lSDLmain -lSDL -lpng -lm -lpspsdk -lpspdebug -lpspgu -lpspctrl "
+			#LIBS="$LIBS -lpspaudio -lc -lz -lpspkernel -lpspuser -lpspge -lpspdisplay -lpsphprm -lpsppower -lstdc++ -lc"
+			
+			LIBS="$LIBS -lSDLmain -lSDL -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpspaudio -lc -lpspuser -lpspkernel -lpsppower -lpng -lz -lm -lg -lstdc++ -lc"
+			
 			# psp compiler
 			CC="psp-gcc"
 			LD="psp-gcc"
@@ -734,6 +737,7 @@ case $_host_os in
 
 			# psp specific tool 
 			PSP_STRIP=`psp-config  --pspdev-path`"/bin/psp-strip"
+			PSP_FIX=`psp-config  --pspdev-path`"/bin/psp-fixup-imports"
 			PACK_PBP=`psp-config  --pspdev-path`"/bin/pack-pbp"
 			MKSFO="`psp-config  --pspdev-path`/bin/mksfo"
 
@@ -813,6 +817,7 @@ if test $_host_os = "psp" ; then
 cat >> config.mak << EOF
 
 PSP-STRIP       := $PSP_STRIP
+PSP-FIX				  := $PSP_FIX
 PACK-PBP        := $PACK_PBP
 MKSFO           := $MKSFO
 PSP-MOUNTPOINT  := $PSP_MOUNTPOINT

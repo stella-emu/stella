@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.7 2005-08-25 15:19:17 stephena Exp $
+## $Id: Makefile,v 1.8 2005-09-18 14:28:17 optixx Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -252,6 +252,7 @@ win32dist: scummvm$(EXEEXT)
 psp-package: $(EXECUTABLE)
 	$(MKSFO) 'Stella' PARAM.SFO
 	mkdir -p "psp/stella"
+	$(PSP-FIX) stella.elf
 	$(PSP-STRIP) stella.elf -o psp/stella/EBOOT.PBP
 	mkdir -p "psp/stella%"
 	$(PACK-PBP) "psp/stella%/EBOOT.PBP" PARAM.SFO src/psp/data/ICON0.PNG NULL NULL src/psp/data/PIC1.PNG  NULL NULL NULL
