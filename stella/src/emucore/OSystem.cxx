@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.39 2005-09-11 22:55:51 stephena Exp $
+// $Id: OSystem.cxx,v 1.40 2005-09-18 14:40:55 optixx Exp $
 //============================================================================
 
 #include <cassert>
@@ -37,6 +37,11 @@
 #ifdef DEVELOPER_SUPPORT
   #include "Debugger.hxx"
 #endif
+
+#ifdef PSP
+  #include "FrameBufferPSP.hxx"
+#endif
+
 
 #include "FSNode.hxx"
 #include "Settings.hxx"
@@ -84,7 +89,7 @@ OSystem::OSystem()
 #ifdef DISPLAY_OPENGL
   myFeatures += "OpenGL ";
 #endif
-#ifdef SOUND_SUPPORT 
+#ifdef SOUND_SUPPORT
   myFeatures += "Sound ";
 #endif
 #ifdef JOYSTICK_SUPPORT
@@ -172,7 +177,12 @@ bool OSystem::createFrameBuffer(bool showmessage)
   string video = mySettings->getString("video");
 
   if(video == "soft")
+#ifdef PSP
+    myFrameBuffer = new FrameBufferPSP(this);
+#else
     myFrameBuffer = new FrameBufferSoft(this);
+#endif
+
 #ifdef DISPLAY_OPENGL
   else if(video == "gl")
     myFrameBuffer = new FrameBufferGL(this);
@@ -347,7 +357,7 @@ bool OSystem::openROM(const string& rom, uInt8** image, int* size)
   {
     if(unzGoToFirstFile(tz) == UNZ_OK)
     {
-      unz_file_info ufo; 
+      unz_file_info ufo;
       unzGetCurrentFileInfo(tz, &ufo, 0, 0, 0, 0, 0, 0);
 
       if(ufo.uncompressed_size <= 0)
