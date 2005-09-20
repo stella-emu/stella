@@ -3,8 +3,7 @@
 
 # can use "yacc" instead of "bison -y"
 
-all: stella.y stella.l
-	flex stella.l
+all: stella.y
 	bison -y -d stella.y
 
 
