@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.14 2005-08-24 22:54:30 stephena Exp $
+// $Id: M6502.cxx,v 1.15 2005-09-20 19:09:10 stephena Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -29,10 +29,10 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
       mySystemCyclesPerProcessorCycle(systemCyclesPerProcessorCycle)
 {
 #ifdef DEVELOPER_SUPPORT
-  myDebugger  = NULL;
-  breakPoints = NULL;
-  readTraps   = NULL;
-  writeTraps  = NULL;
+  myDebugger    = NULL;
+  myBreakPoints = NULL;
+  myReadTraps   = NULL;
+  myWriteTraps  = NULL;
 #endif
 
   // Compute the BCD lookup table
@@ -368,7 +368,8 @@ unsigned int M6502::addCondBreak(Expression *e, string name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::delCondBreak(unsigned int brk)
 {
-  if(brk < myBreakConds.size()) {
+  if(brk < myBreakConds.size())
+  {
     delete myBreakConds[brk];
     myBreakConds.remove_at(brk);
     myBreakCondNames.remove_at(brk);
@@ -393,26 +394,26 @@ const StringList& M6502::getCondBreakNames()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int M6502::evalCondBreaks()
 {
-  for(unsigned int i=0; i<myBreakConds.size(); i++) {
-    Expression *e = myBreakConds[i];
-    if(e->evaluate()) {
-      string name = myBreakCondNames[i]; // TODO: use this
-		cerr << "breakpoint due to condition: " << name << endl;
+  for(unsigned int i=0; i<myBreakConds.size(); i++)
+  {
+    Expression* e = myBreakConds[i];
+    if(e->evaluate())
       return i;
-    }
   }
 
   return -1; // no break hit
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::setBreakPoints(PackedBitArray *bp) {
-	breakPoints = bp;
+void M6502::setBreakPoints(PackedBitArray *bp)
+{
+  myBreakPoints = bp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::setTraps(PackedBitArray *read, PackedBitArray *write) {
-  readTraps = read;
-  writeTraps = write;
+void M6502::setTraps(PackedBitArray *read, PackedBitArray *write)
+{
+  myReadTraps = read;
+  myWriteTraps = write;
 }
 #endif

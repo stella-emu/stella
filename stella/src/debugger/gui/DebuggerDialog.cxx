@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.5 2005-09-15 19:43:36 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.6 2005-09-20 19:09:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,7 @@
 #include "RomWidget.hxx"
 #include "TiaWidget.hxx"
 #include "DataGridOpsWidget.hxx"
+#include "EditTextWidget.hxx"
 #include "Rect.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
@@ -75,6 +76,8 @@ void DebuggerDialog::loadConfig()
   myCpu->loadConfig();
   myRam->loadConfig();
   myRom->loadConfig();
+
+  myMessageBox->setEditString("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -173,6 +176,7 @@ void DebuggerDialog::addTabArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addStatusArea()
 {
+  const GUI::Font& font = instance()->consoleFont();
   GUI::Rect r = instance()->debugger().getStatusBounds();
   int xpos, ypos;
 
@@ -182,6 +186,12 @@ void DebuggerDialog::addStatusArea()
   ypos += myTiaInfo->getHeight() + 10;
   myTiaZoom = new TiaZoomWidget(this, xpos+10, ypos);
   addToFocusList(myTiaZoom->getFocusList());
+
+  xpos += 10;  ypos += myTiaZoom->getHeight() + 20;
+  myMessageBox = new EditTextWidget(this, xpos, ypos, myTiaZoom->getWidth(),
+                                    font.getLineHeight(), "");
+  myMessageBox->setFont(font);
+  myMessageBox->setEditable(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

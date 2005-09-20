@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.92 2005-09-15 19:43:36 stephena Exp $
+// $Id: Debugger.cxx,v 1.93 2005-09-20 19:09:10 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -41,6 +41,7 @@
 #include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"
 #include "TiaZoomWidget.hxx"
+#include "EditTextWidget.hxx"
 
 #include "RomWidget.hxx"
 #include "Expression.hxx"
@@ -146,6 +147,7 @@ void Debugger::initialize()
   myTiaOutput = dd->tiaOutput();
   myTiaZoom   = dd->tiaZoom();
   myRom       = dd->rom();
+  myMessage   = dd->message();
 
   // set up any breakpoint that was on the command line
   // (and remove the key from the settings, so they won't get set again)
@@ -195,9 +197,20 @@ void Debugger::setConsole(Console* console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::start()
+bool Debugger::start(const string& message, int address)
 {
-  return myOSystem->eventHandler().enterDebugMode();
+  bool result = myOSystem->eventHandler().enterDebugMode();
+
+  // This must be done *after* we enter debug mode,
+  // so the message isn't erased
+  ostringstream buf;
+  buf << message;
+  if(address > -1)
+    buf << valueToString(address);
+
+  myMessage->setEditString(buf.str());
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

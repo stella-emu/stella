@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.12 2005-08-24 22:54:30 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.13 2005-09-20 19:09:10 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -34,7 +34,7 @@ M6502High::M6502High(uInt32 systemCyclesPerProcessorCycle)
   myLastAddress = 0;
 
 #ifdef DEVELOPER_SUPPORT
-  justHitTrap = false;
+  myJustHitTrapFlag = false;
 #endif
 }
 
@@ -54,9 +54,12 @@ inline uInt8 M6502High::peek(uInt16 address)
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
 
 #ifdef DEVELOPER_SUPPORT
-  if(readTraps != NULL)
-    if(readTraps->isSet(address))
-      justHitTrap = true;
+  if(myReadTraps != NULL && myReadTraps->isSet(address))
+  {
+    myJustHitTrapFlag = true;
+    myHitTrapInfo.message = "Read trap: ";
+    myHitTrapInfo.address = address;
+  }
 #endif
 
   return mySystem->peek(address);
@@ -73,9 +76,12 @@ inline void M6502High::poke(uInt16 address, uInt8 value)
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
 
 #ifdef DEVELOPER_SUPPORT
-  if(writeTraps != NULL)
-    if(writeTraps->isSet(address))
-      justHitTrap = true;
+  if(myWriteTraps != NULL && myWriteTraps->isSet(address))
+  {
+    myJustHitTrapFlag = true;
+    myHitTrapInfo.message = "Write trap: ";
+    myHitTrapInfo.address = address;
+  }
 #endif
 
   mySystem->poke(address, value);
@@ -84,6 +90,8 @@ inline void M6502High::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502High::execute(uInt32 number)
 {
+  int cond = -1;
+
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
 
@@ -96,28 +104,29 @@ bool M6502High::execute(uInt32 number)
       uInt8 operand = 0;
 
 #ifdef DEVELOPER_SUPPORT
-      if(justHitTrap)
+      if(myJustHitTrapFlag)
       {
-        if(myDebugger->start()) {
-          justHitTrap = false;
+        if(myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address))
+        {
+          myJustHitTrapFlag = false;
           return true;
         }
       }
 
-      if(breakPoints != NULL)
+      if(myBreakPoints != NULL)
       {
-        if(breakPoints->isSet(PC)) {
-          if(myDebugger->start()) {
+        if(myBreakPoints->isSet(PC))
+        {
+          if(myDebugger->start("Breakpoint hit: ", PC))
             return true;
-          }
         }
       }
 
-      if(evalCondBreaks() > -1)
+      if((cond = evalCondBreaks()) > -1)
       {
-        if(myDebugger->start()) {
+        string buf = "CBP: " + myBreakCondNames[cond];
+        if(myDebugger->start(buf))
           return true;
-        }
       }
 #endif
 

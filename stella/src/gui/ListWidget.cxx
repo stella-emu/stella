@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.31 2005-09-13 18:27:42 stephena Exp $
+// $Id: ListWidget.cxx,v 1.32 2005-09-20 19:09:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -91,9 +91,9 @@ void ListWidget::setHighlighted(int item)
 {
   assert(item >= -1 && item < (int)_list.size());
 
-  if (isEnabled() && _highlightedItem != item)
+  if(isEnabled())
   {
-    if (_editMode)
+    if(_editMode)
       abortEditMode();
 
     _highlightedItem = item;
@@ -133,7 +133,10 @@ void ListWidget::recalc()
     _currentPos = size - 1;
   if (_currentPos < 0)
     _currentPos = 0;
-  _selectedItem = -1;
+
+  if(_selectedItem < 0 || _selectedItem >= size)
+    _selectedItem = 0;
+
   _editMode = false;
   scrollBarRecalc();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.75 2005-09-15 19:43:36 stephena Exp $
+// $Id: Debugger.hxx,v 1.76 2005-09-20 19:09:10 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -28,6 +28,7 @@ class TIADebug;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
+class EditTextWidget;
 class RomWidget;
 class Expression;
 
@@ -78,7 +79,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.75 2005-09-15 19:43:36 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.76 2005-09-20 19:09:10 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -116,8 +117,11 @@ class Debugger : public DialogContainer
     /**
       Wrapper method for EventHandler::enterDebugMode() for those classes
       that don't have access to EventHandler.
+
+      @param message  Message to display when entering debugger
+      @param data     An address associated with the message
     */
-    bool start();
+    bool start(const string& message = "", int address = -1);
 
     /**
       Wrapper method for EventHandler::leaveDebugMode() for those classes
@@ -358,6 +362,7 @@ class Debugger : public DialogContainer
     TiaOutputWidget* myTiaOutput;
     TiaZoomWidget*   myTiaZoom;
     RomWidget*       myRom;
+    EditTextWidget*  myMessage;
 
     EquateList *equateList;
     PackedBitArray *breakPoints;

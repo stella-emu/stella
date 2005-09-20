@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.hxx,v 1.3 2005-09-15 19:43:36 stephena Exp $
+// $Id: DebuggerDialog.hxx,v 1.4 2005-09-20 19:09:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@ class CpuWidget;
 class RamWidget;
 class RomWidget;
 class TabWidget;
+class EditTextWidget;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
@@ -43,11 +44,12 @@ class DebuggerDialog : public Dialog
                           int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    PromptWidget* prompt()       { return myPrompt;    }
-    TiaInfoWidget* tiaInfo()     { return myTiaInfo;   }
-    TiaOutputWidget* tiaOutput() { return myTiaOutput; }
-    TiaZoomWidget* tiaZoom()     { return myTiaZoom;   }
-    RomWidget* rom()             { return myRom;       }
+    PromptWidget* prompt()       { return myPrompt;     }
+    TiaInfoWidget* tiaInfo()     { return myTiaInfo;    }
+    TiaOutputWidget* tiaOutput() { return myTiaOutput;  }
+    TiaZoomWidget* tiaZoom()     { return myTiaZoom;    }
+    RomWidget* rom()             { return myRom;        }
+    EditTextWidget* message()    { return myMessageBox; }
 
     virtual void loadConfig();
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
@@ -63,6 +65,7 @@ class DebuggerDialog : public Dialog
     CpuWidget*       myCpu;
     RamWidget*       myRam;
     RomWidget*       myRom;
+    EditTextWidget*  myMessageBox;
 
   private:
     void addTiaArea();
