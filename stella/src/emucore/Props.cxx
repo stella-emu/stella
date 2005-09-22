@@ -13,8 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.10 2005-06-16 01:11:28 stephena Exp $
+// $Id: Props.cxx,v 1.11 2005-09-22 22:10:57 stephena Exp $
 //============================================================================
+
+#include <cctype>
+#include <algorithm>
 
 #include "Props.hxx"
 
@@ -41,14 +44,19 @@ Properties::~Properties()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Properties::get(const string& key) const
+string Properties::get(const string& key, bool useUppercase) const
 {
+  string s;
+
   // Try to find the named property and answer its value
   for(uInt32 i = 0; i < mySize; ++i)
   {
     if(key == myProperties[i].key)
     {
-      return myProperties[i].value;
+      s = myProperties[i].value;
+      if(useUppercase)
+        transform(s.begin(), s.end(), s.begin(), (int(*)(int)) toupper);
+      return s;
     }
   }
 
@@ -56,7 +64,10 @@ string Properties::get(const string& key) const
   if(myDefaults != 0)
   {
     // Ask the default properties object to find the key
-    return myDefaults->get(key);
+    s = myDefaults->get(key);
+    if(useUppercase)
+      transform(s.begin(), s.end(), s.begin(), (int(*)(int)) toupper);
+    return s;
   } 
   else
   {
@@ -263,23 +274,6 @@ void Properties::copy(const Properties& properties)
   for(uInt32 i = 0; i < mySize; ++i)
   {
     myProperties[i] = properties.myProperties[i];
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::merge(const Properties& properties)
-{
-  // Merge each property from properties if it isn't -1
-  for(uInt32 i = 0; i < properties.mySize; ++i)
-  {
-    if(properties.myProperties[i].value != "-1")
-    {
-      cerr << "Properties::merge ==> changing " << properties.myProperties[i].key
-           << " from value " << get(properties.myProperties[i].key) << " to "
-           << properties.myProperties[i].value << endl;
-
-      set(properties.myProperties[i].key, properties.myProperties[i].value);
-    }
   }
 }
 

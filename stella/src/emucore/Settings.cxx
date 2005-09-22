@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.60 2005-09-13 18:27:42 stephena Exp $
+// $Id: Settings.cxx,v 1.61 2005-09-22 22:10:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -314,7 +314,6 @@ void Settings::usage()
     << "   -ystart      <arg>          Sets the 'Display.YStart' property\n"
     << "   -width       <arg>          Sets the 'Display.Width' property\n"
     << "   -height      <arg>          Sets the 'Display.Height' property\n"
-    << "   -cpu         <arg>          Sets the 'Emulation.CPU' property\n"
     << "   -hmove       <arg>          Sets the 'Emulation.HmoveBlanks' property\n"
     << endl;
 #endif

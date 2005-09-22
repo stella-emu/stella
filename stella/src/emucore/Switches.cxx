@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.cxx,v 1.3 2005-06-16 00:55:58 stephena Exp $
+// $Id: Switches.cxx,v 1.4 2005-09-22 22:10:57 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -25,7 +25,7 @@ Switches::Switches(const Event& event, const Properties& properties)
     : myEvent(event),
       mySwitches(0xFF)
 {
-  if(properties.get("Console.RightDifficulty") == "B")
+  if(properties.get("Console.RightDifficulty", true) == "B")
   {
     mySwitches &= ~0x80;
   }
@@ -34,7 +34,7 @@ Switches::Switches(const Event& event, const Properties& properties)
     mySwitches |= 0x80;
   }
 
-  if(properties.get("Console.LeftDifficulty") == "B")
+  if(properties.get("Console.LeftDifficulty", true) == "B")
   {
     mySwitches &= ~0x40;
   }
@@ -43,7 +43,7 @@ Switches::Switches(const Event& event, const Properties& properties)
     mySwitches |= 0x40;
   }
 
-  if(properties.get("Console.TelevisionType") == "Color")
+  if(properties.get("Console.TelevisionType", true) == "COLOR")
   {
     mySwitches |= 0x08;
   }

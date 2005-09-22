@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.5 2005-06-16 01:11:28 stephena Exp $
+// $Id: Props.hxx,v 1.6 2005-09-22 22:10:57 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -30,7 +30,7 @@
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.5 2005-06-16 01:11:28 stephena Exp $
+  @version $Id: Props.hxx,v 1.6 2005-09-22 22:10:57 stephena Exp $
 */
 class Properties
 {
@@ -60,10 +60,12 @@ class Properties
       Get the value assigned to the specified key.  If the key does
       not exist then the empty string is returned.
 
-      @param key The key of the property to lookup
+      @param key          The key of the property to lookup
+      @param useUppercase Convert the property to uppercase
+
       @return The value of the property 
     */
-    string get(const string& key) const;
+    string get(const string& key, bool useUppercase = false) const;
 
     /**
       Set the value associated with key to the given value.
@@ -87,13 +89,6 @@ class Properties
       @param out The output stream to use
     */
     void save(ostream& out);
-
-    /**
-      Merge the given properties into this properties object
-
-      @param properties The properties object to merge
-    */
-    void merge(const Properties& properties);
 
     /**
       Print the attributes of this properties object

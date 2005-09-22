@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.58 2005-09-15 19:43:36 stephena Exp $
+// $Id: TIA.cxx,v 1.59 2005-09-22 22:10:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -217,7 +217,7 @@ void TIA::reset()
   myDumpDisabledCycle = 0;
 
   myAllowHMOVEBlanks = 
-      (myConsole.properties().get("Emulation.HmoveBlanks") == "Yes");
+      (myConsole.properties().get("Emulation.HmoveBlanks", true) == "YES");
 
   myFrameXStart = atoi(myConsole.properties().get("Display.XStart").c_str());
   myFrameWidth = atoi(myConsole.properties().get("Display.Width").c_str());
@@ -236,7 +236,7 @@ void TIA::reset()
     myFrameWidth = 160;
   }
 
-  if(myConsole.properties().get("Display.Format") == "PAL")
+  if(myConsole.properties().get("Display.Format", true) == "PAL")
   {
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;
@@ -616,7 +616,7 @@ const uInt32* TIA::palette() const
 {
   // See which palette we should be using
   string type   = mySettings.getString("palette");
-  string format = myConsole.properties().get("Display.Format");
+  string format = myConsole.properties().get("Display.Format", true);
 
   if(type == "standard")
     return (format == "PAL") ? ourPALPalette : ourNTSCPalette;

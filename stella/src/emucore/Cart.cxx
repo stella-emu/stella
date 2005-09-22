@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.15 2005-07-30 16:25:48 urchlay Exp $
+// $Id: Cart.cxx,v 1.16 2005-09-22 22:10:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -49,13 +49,11 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   Cartridge* cartridge = 0;
 
   // Get the type of the cartridge we're creating
-  string type = properties.get("Cartridge.Type");
+  string type = properties.get("Cartridge.Type", true);
 
   // See if we should try to auto-detect the cartridge type
-  if(type == "Auto-detect")
-  {
+  if(type == "AUTO-DETECT")
     type = autodetectType(image, size);
-  }
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")

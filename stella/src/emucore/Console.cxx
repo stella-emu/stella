@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.70 2005-09-11 22:55:51 stephena Exp $
+// $Id: Console.cxx,v 1.71 2005-09-22 22:10:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -84,28 +84,28 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   setDeveloperProperties();
 
   // Make sure height is set properly for PAL ROM
-  if(myProperties.get("Display.Format") == "PAL")
+  if(myProperties.get("Display.Format", true) == "PAL")
     if(myProperties.get("Display.Height") == "210")
       myProperties.set("Display.Height", "250");
 
   // Setup the controllers based on properties
-  string left = myProperties.get("Controller.Left");
-  string right = myProperties.get("Controller.Right");
+  string left  = myProperties.get("Controller.Left", true);
+  string right = myProperties.get("Controller.Right", true);
 
   // Construct left controller
-  if(left == "Booster-Grip")
+  if(left == "BOOSTER-GRIP")
   {
     myControllers[0] = new BoosterGrip(Controller::Left, *myEvent);
   }
-  else if(left == "Driving")
+  else if(left == "DRIVING")
   {
     myControllers[0] = new Driving(Controller::Left, *myEvent);
   }
-  else if((left == "Keyboard") || (left == "Keypad"))
+  else if((left == "KEYBOARD") || (left == "KEYPAD"))
   {
     myControllers[0] = new Keyboard(Controller::Left, *myEvent);
   }
-  else if(left == "Paddles")
+  else if(left == "PADDLES")
   {
     myControllers[0] = new Paddles(Controller::Left, *myEvent);
   }
@@ -115,19 +115,19 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   }
   
   // Construct right controller
-  if(right == "Booster-Grip")
+  if(right == "BOOSTER-GRIP")
   {
     myControllers[1] = new BoosterGrip(Controller::Right, *myEvent);
   }
-  else if(right == "Driving")
+  else if(right == "DRIVING")
   {
     myControllers[1] = new Driving(Controller::Right, *myEvent);
   }
-  else if((right == "Keyboard") || (right == "Keypad"))
+  else if((right == "KEYBOARD") || (right == "KEYPAD"))
   {
     myControllers[1] = new Keyboard(Controller::Right, *myEvent);
   }
-  else if(right == "Paddles")
+  else if(right == "PADDLES")
   {
     myControllers[1] = new Paddles(Controller::Right, *myEvent);
   }
@@ -173,9 +173,10 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   uInt32 framerate = myOSystem->settings().getInt("framerate");
   if(framerate == 0)
   {
-    if(myProperties.get("Display.Format") == "NTSC")
+    string s = myProperties.get("Display.Format", true);
+    if(s == "NTSC")
       framerate = 60;
-    else if(myProperties.get("Display.Format") == "PAL")
+    else if(s == "PAL")
       framerate = 50;
     else
       framerate = 60;
@@ -192,9 +193,10 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   uInt32 channels = myOSystem->settings().getInt("channels");
   if(channels == 0)
   {
-    if(myProperties.get("Cartridge.Sound") == "Stereo")
+    string s = myProperties.get("Cartridge.Sound", true);
+    if(s == "STEREO")
       channels = 2;
-    else if(myProperties.get("Cartridge.Sound") == "Mono")
+    else if(s == "MONO")
       channels = 1;
     else
       channels = 1;
@@ -252,7 +254,7 @@ Console& Console::operator = (const Console&)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
-  string format = myProperties.get("Display.Format");
+  string format = myProperties.get("Display.Format", true);
   uInt32 framerate = 60;
 
   if(format == "NTSC")
@@ -629,10 +631,6 @@ void Console::setDeveloperProperties()
   s = settings.getString("height");
   if(s != "")
     myProperties.set("Display.Height", s);
-
-  s = settings.getString("cpu");
-  if(s != "")
-    myProperties.set("Emulation.CPU", s);
 
   s = settings.getString("hmove");
   if(s != "")
