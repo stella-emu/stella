@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.18 2005-09-15 19:43:36 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.19 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -157,7 +157,7 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   if(isMouseDown())
     return;
 
-  switch(keycode)
+  switch (ascii)
   {
     case '\n':      // enter/return
     case '\r':

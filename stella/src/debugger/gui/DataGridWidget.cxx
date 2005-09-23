@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.2 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -241,7 +241,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   else
   {
     // not editmode
-    switch (keycode)
+    switch(ascii)
     {
       case '\n':  // enter/return
       case '\r':

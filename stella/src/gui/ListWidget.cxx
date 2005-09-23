@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.32 2005-09-20 19:09:10 stephena Exp $
+// $Id: ListWidget.cxx,v 1.33 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -265,7 +265,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   else
   {
     // not editmode
-    switch (keycode)
+    switch (ascii)
     {
       case ' ':  // space
         // Snap list back to currently highlighted line

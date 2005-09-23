@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.11 2005-09-15 19:43:36 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.12 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -101,7 +101,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       // If nothing is selected in the list widget, choose the current dir.
       // Else, choose the dir that is selected.
       int selection = _fileList->getSelected();
-      if (selection >= 0)
+      if (selection >= 0 && selection < (int)_nodeContent.size())
         _choice = _nodeContent[selection];
       else
         _choice = _node;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.94 2005-09-23 17:38:26 stephena Exp $
+// $Id: Debugger.cxx,v 1.95 2005-09-23 23:35:02 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -71,8 +71,8 @@ static const string builtin_functions[][3] = {
 	{ "_joy1button", "!(*INPT5 & $80)", "Right joystick button pressed" },
 
 	// console switches:
-	{ "_select", "!(*SWCHB & $01)", "Game Select pressed" },
-	{ "_reset", "!(*SWCHB & $02)", "Game Reset pressed" },
+	{ "_select", "!(*SWCHB & $02)", "Game Select pressed" },
+	{ "_reset", "!(*SWCHB & $01)", "Game Reset pressed" },
 	{ "_color", "*SWCHB & $08", "Color/BW set to Color" },
 	{ "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
 	{ "_diff0a", "!(*SWCHB & $40)", "Right difficulty set to A (easy)" },

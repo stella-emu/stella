@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.38 2005-08-24 22:54:30 stephena Exp $
+// $Id: Console.hxx,v 1.39 2005-09-23 23:35:02 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.38 2005-08-24 22:54:30 stephena Exp $
+  @version $Id: Console.hxx,v 1.39 2005-09-23 23:35:02 stephena Exp $
 */
 class Console
 {
@@ -166,6 +166,13 @@ class Console
       Sets the palette to that specified in the mediasource
     */
     void setPalette();
+
+    /**
+      Sets the number of sound channels
+
+      @param channels  Number of channels (indicates stereo or mono)
+    */
+    void setChannels(int channels);
 
     /**
       "Fry" the Atari (mangle memory/TIA contents)

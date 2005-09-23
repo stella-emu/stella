@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.2 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -139,7 +139,7 @@ void PromptWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  cerr << "PromptWidget::handleMouseDown\n";
+//  cerr << "PromptWidget::handleMouseDown\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,13 +151,10 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::printPrompt()
 {
-// FIXME - the following will probably be permanantly removed
-//         since it's always shown in the main dialog area
-/*
-  print( instance()->debugger().showWatches() );
-  print( instance()->debugger().cpuState() );
-  print("\n");
-*/
+  string watches = instance()->debugger().showWatches();
+  if(watches.length() > 0)
+    print(watches);
+
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
 }
@@ -169,7 +166,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool handled = true;
   bool dirty = false;
 	
-  switch (keycode)
+  switch(ascii)
   {
     case '\n': // enter/return
     case '\r':
@@ -205,92 +202,92 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
     }
 
-    case 9:   // tab
-      {
-        // Tab completion: we complete either commands or labels, but not
-        // both at once.
+    case '\t':   // tab
+    {
+      // Tab completion: we complete either commands or labels, but not
+      // both at once.
 
-        if(_currentPos <= _promptStartPos)
-          break;
+      if(_currentPos <= _promptStartPos)
+    	break;
 
-        scrollToCurrent();
-        int len = _promptEndPos - _promptStartPos;
+      scrollToCurrent();
+      int len = _promptEndPos - _promptStartPos;
 
-        int lastDelimPos = -1;
-        char delimiter = '\0';
+      int lastDelimPos = -1;
+      char delimiter = '\0';
 
-        char *str = new char[len + 1];
-        for (i = 0; i < len; i++) {
-          str[i] = buffer(_promptStartPos + i) & 0x7f;
-          if(strchr("*@<> ", str[i]) != NULL ) {
-            lastDelimPos = i;
-            delimiter = str[i];
-          }
-        }
-        str[len] = '\0';
+      char *str = new char[len + 1];
+      for (i = 0; i < len; i++) {
+    	str[i] = buffer(_promptStartPos + i) & 0x7f;
+    	if(strchr("*@<> ", str[i]) != NULL ) {
+    	  lastDelimPos = i;
+    	  delimiter = str[i];
+    	}
+      }
+      str[len] = '\0';
 
-        const char *completionList;
-        const char *prefix;
-        int possibilities;
+      const char *completionList;
+      const char *prefix;
+      int possibilities;
 
-        if(lastDelimPos < 0) {
-          // no delimiters, do command completion:
-          DebuggerParser *parser = instance()->debugger().parser();
-          possibilities = parser->countCompletions(str);
+      if(lastDelimPos < 0) {
+    	// no delimiters, do command completion:
+    	DebuggerParser *parser = instance()->debugger().parser();
+    	possibilities = parser->countCompletions(str);
 
-          if(possibilities < 1) {
-            delete[] str;
-            break;
-          }
+    	if(possibilities < 1) {
+    	  delete[] str;
+    	  break;
+    	}
 
-          completionList = parser->getCompletions();
-          prefix = parser->getCompletionPrefix();
-		  } else {
-          // we got a delimiter, so this must be a label:
-          EquateList *equates = instance()->debugger().equates();
-          possibilities = equates->countCompletions(str + lastDelimPos + 1);
+    	completionList = parser->getCompletions();
+    	prefix = parser->getCompletionPrefix();
+	    } else {
+    	// we got a delimiter, so this must be a label:
+    	EquateList *equates = instance()->debugger().equates();
+    	possibilities = equates->countCompletions(str + lastDelimPos + 1);
 
-          if(possibilities < 1) {
-            delete[] str;
-            break;
-          }
+    	if(possibilities < 1) {
+    	  delete[] str;
+    	  break;
+    	}
 
-			  completionList = equates->getCompletions();
-			  prefix = equates->getCompletionPrefix();
-		  }
+	    	completionList = equates->getCompletions();
+	    	prefix = equates->getCompletionPrefix();
+	    }
 
-        if(possibilities == 1) {
-          // add to buffer as though user typed it (plus a space)
-          _currentPos = _promptStartPos + lastDelimPos + 1;
-          while(*completionList != '\0') {
-            putcharIntern(*completionList++);
-          }
-          putcharIntern(' ');
-          _promptEndPos = _currentPos;
-        } else {
-          nextLine();
-          // add to buffer as-is, then add PROMPT plus whatever we have so far
-          _currentPos = _promptStartPos + lastDelimPos + 1;
+      if(possibilities == 1) {
+    	// add to buffer as though user typed it (plus a space)
+    	_currentPos = _promptStartPos + lastDelimPos + 1;
+    	while(*completionList != '\0') {
+    	  putcharIntern(*completionList++);
+    	}
+    	putcharIntern(' ');
+    	_promptEndPos = _currentPos;
+      } else {
+    	nextLine();
+    	// add to buffer as-is, then add PROMPT plus whatever we have so far
+    	_currentPos = _promptStartPos + lastDelimPos + 1;
 
-          print("\n");
-          print(completionList);
-          print("\n");
-          print(PROMPT);
+    	print("\n");
+    	print(completionList);
+    	print("\n");
+    	print(PROMPT);
 
-          _promptStartPos = _currentPos;
+    	_promptStartPos = _currentPos;
 
-          for(i=0; i<lastDelimPos; i++)
-            putcharIntern(str[i]);
+    	for(i=0; i<lastDelimPos; i++)
+    	  putcharIntern(str[i]);
 
-          if(lastDelimPos > 0)
-            putcharIntern(delimiter);
+    	if(lastDelimPos > 0)
+    	  putcharIntern(delimiter);
 
-          print(prefix);
-          _promptEndPos = _currentPos;
-        }
-        delete[] str;
-        dirty = true;
-        break;
+    	print(prefix);
+    	_promptEndPos = _currentPos;
+      }
+      delete[] str;
+      dirty = true;
+      break;
     }
 
     case 8:  // backspace

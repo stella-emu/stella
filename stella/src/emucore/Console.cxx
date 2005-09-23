@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.71 2005-09-22 22:10:57 stephena Exp $
+// $Id: Console.cxx,v 1.72 2005-09-23 23:35:02 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -375,6 +375,16 @@ void Console::initializeAudio()
 void Console::setPalette()
 {
   myOSystem->frameBuffer().setPalette(myMediaSource->palette());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::setChannels(int channels)
+{
+  myOSystem->sound().setChannels(channels);
+
+  // Save to properties
+  string sound = channels == 2 ? "Stereo" : "Mono";
+  myProperties.set("Cartridge.Sound", sound);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

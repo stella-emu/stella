@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.96 2005-09-15 19:43:36 stephena Exp $
+// $Id: EventHandler.cxx,v 1.97 2005-09-23 23:35:02 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -674,71 +674,76 @@ void EventHandler::poll(uInt32 time)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 state)
 {
-  // Determine which mode we're in, then send the event to the appropriate place
-  switch(myState)
+  if(myState == S_EMULATE)
   {
-    case S_EMULATE:
-      if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
-      {
-        enterMenuMode();
-        return;
-      }
-      else if(myKeyTable[key] == Event::CmdMenuMode && state == 1 && !myPauseFlag)
-      {
-        enterCmdMenuMode();
-        return;
-      }
-      else if(myKeyTable[key] == Event::DebuggerMode && state == 1 && !myPauseFlag)
-      {
-        enterDebugMode();
-        return;
-      }
-      else if(myKeyTable[key] == Event::Fry)
-      {
-        myFryingFlag = bool(state);
-      }
-      else
-        handleEvent(myKeyTable[key], state);
+	if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
+	{
+	  enterMenuMode();
+	  return;
+	}
+	else if(myKeyTable[key] == Event::CmdMenuMode && state == 1 && !myPauseFlag)
+	{
+	  enterCmdMenuMode();
+	  return;
+	}
+	else if(myKeyTable[key] == Event::DebuggerMode && state == 1 && !myPauseFlag)
+	{
+	  enterDebugMode();
+	  return;
+	}
+	else if(myKeyTable[key] == Event::Fry)
+	{
+	  myFryingFlag = bool(state);
+	}
+	else
+	  handleEvent(myKeyTable[key], state);
+  }
+  else  // Determine which dialog to send events to
+  {
+    // Make sure the unicode field is valid
+    if (key >= SDLK_F1 && key <= SDLK_F9)
+      unicode = key - SDLK_F1 + 315;
+    else if (key >= SDLK_KP0 && key <= SDLK_KP9)
+      unicode = key - SDLK_KP0 + '0';
+    else if (key >= SDLK_UP && key <= SDLK_PAGEDOWN)
+      unicode = key;
 
-      break;  // S_EMULATE
+    switch((int)myState)
+    {
+      case S_MENU:
+        if(myKeyTable[key] == Event::MenuMode && state == 1)
+        {
+          leaveMenuMode();
+          return;
+        }
+        myOSystem->menu().handleKeyEvent(unicode, key, mod, state);
+        break;
 
-    case S_MENU:
-      if(myKeyTable[key] == Event::MenuMode && state == 1)
-      {
-        leaveMenuMode();
-        return;
-      }
-      myOSystem->menu().handleKeyEvent(unicode, key, mod, state);
-      break;
+      case S_CMDMENU:
+        if(myKeyTable[key] == Event::CmdMenuMode && state == 1)
+        {
+          leaveCmdMenuMode();
+          return;
+        }
+        myOSystem->commandMenu().handleKeyEvent(unicode, key, mod, state);
+        break;
 
-    case S_CMDMENU:
-      if(myKeyTable[key] == Event::CmdMenuMode && state == 1)
-      {
-        leaveCmdMenuMode();
-        return;
-      }
-      myOSystem->commandMenu().handleKeyEvent(unicode, key, mod, state);
-      break;
-
-    case S_LAUNCHER:
-      myOSystem->launcher().handleKeyEvent(unicode, key, mod, state);
-      break;
+      case S_LAUNCHER:
+        myOSystem->launcher().handleKeyEvent(unicode, key, mod, state);
+        break;
 
 #ifdef DEVELOPER_SUPPORT
-    case S_DEBUGGER:
-      if(myKeyTable[key] == Event::DebuggerMode && state == 1 &&
-         !(kbdAlt(mod) || kbdControl(mod) || kbdShift(mod)))
-      {
-        leaveDebugMode();
-        return;
-      }
-      myOSystem->debugger().handleKeyEvent(unicode, key, mod, state);
-      break;
+      case S_DEBUGGER:
+        if(myKeyTable[key] == Event::DebuggerMode && state == 1 &&
+           !(kbdAlt(mod) || kbdControl(mod) || kbdShift(mod)))
+        {
+          leaveDebugMode();
+          return;
+        }
+        myOSystem->debugger().handleKeyEvent(unicode, key, mod, state);
+        break;
 #endif
-
-    default:
-      return;
-      break;
+    }
   }
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.4 2005-09-06 22:25:40 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.5 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -145,7 +145,7 @@ bool TiaZoomWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   bool handled = false;
 
-  switch (keycode)
+  switch(ascii)
   {
     case 256+17:  // up arrow
       myYCenter -= 4;

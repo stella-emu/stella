@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.16 2005-09-11 22:55:51 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.17 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -151,7 +151,7 @@ void AudioDialog::saveConfig()
   b = mySoundTypeCheckbox->getState();
   if((instance()->settings().getInt("channels") == 2) != b)
   {
-    instance()->sound().setChannels(b ? 2 : 1);
+    instance()->console().setChannels(b ? 2 : 1);
     restart = true;
   }
 

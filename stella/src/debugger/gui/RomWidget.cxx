@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.6 2005-09-23 17:38:27 stephena Exp $
+// $Id: RomWidget.cxx,v 1.7 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -109,7 +109,8 @@ void RomWidget::loadConfig()
   myCurrentBank = dbg.getBank();
 
   // Update romlist to point to current PC
-  int pc = dbg.cpuDebug().pc();
+  // Take mirroring of PC into account
+  int pc = dbg.cpuDebug().pc() | 0xe000;
   AddrToLine::iterator iter = myLineList.find(pc);
   if(iter != myLineList.end())
     myRomList->setHighlighted(iter->second);
@@ -133,7 +134,7 @@ void RomWidget::initialUpdate()
     StringList label, data, disasm;
     BoolArray state;
 
-    // Disassemble entire bank (up to 4096 lines) and invalidate all lines
+    // Disassemble entire bank (up to 4096 lines) and reset breakpoints
     dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 4096);
     for(unsigned int i = 0; i < data.size(); ++i)
     {

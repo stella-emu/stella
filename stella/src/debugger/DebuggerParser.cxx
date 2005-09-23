@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.79 2005-09-23 17:38:26 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.80 2005-09-23 23:35:02 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -926,7 +926,7 @@ string DebuggerParser::eval() {
 }
 
 string DebuggerParser::showWatches() {
-	string ret = "\n";
+	string ret;
 	char buf[10];
 
 	for(unsigned int i=0; i<watches.size(); i++) {
@@ -944,14 +944,12 @@ string DebuggerParser::showWatches() {
 				ret += buf;
 				ret += ": " + argStrings[0] + "\n";
 			} else {
-				ret += "  watch #";
+				ret += " watch #";
 				ret += buf;
 				ret += " (" + argStrings[0] + ") -> " + eval() + "\n";
 			}
 		}
 	}
-	// get rid of trailing \n
-	ret.erase(ret.length()-1, 1);
 	return ret;
 }
 

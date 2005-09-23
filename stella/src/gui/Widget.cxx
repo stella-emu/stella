@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.35 2005-09-16 18:15:44 stephena Exp $
+// $Id: Widget.cxx,v 1.36 2005-09-23 23:35:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -427,7 +427,7 @@ bool CheckboxWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool handled = false;
 
   // (De)activate with space or return
-  switch(keycode)
+  switch(ascii)
   {
     case '\n':  // enter/return
     case '\r':
