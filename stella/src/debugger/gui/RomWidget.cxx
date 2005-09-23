@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.5 2005-09-15 19:43:36 stephena Exp $
+// $Id: RomWidget.cxx,v 1.6 2005-09-23 17:38:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 #include "CpuDebug.hxx"
+#include "PackedBitArray.hxx"
 #include "GuiObject.hxx"
 #include "ContextMenu.hxx"
 #include "RomListWidget.hxx"
@@ -118,6 +119,7 @@ void RomWidget::loadConfig()
 void RomWidget::initialUpdate()
 {
   Debugger& dbg = instance()->debugger();
+  PackedBitArray* bp = dbg.breakpoints();
 
   // Fill romlist the current bank of source or disassembly
   if(mySourceAvailable)
@@ -134,7 +136,12 @@ void RomWidget::initialUpdate()
     // Disassemble entire bank (up to 4096 lines) and invalidate all lines
     dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 4096);
     for(unsigned int i = 0; i < data.size(); ++i)
-      state.push_back(false);
+    {
+      if(bp && bp->isSet(myAddrList[i]))
+        state.push_back(true);
+      else
+        state.push_back(false);
+    }
 
     // Create a mapping from addresses to line numbers
     myLineList.clear();
@@ -154,14 +161,8 @@ void RomWidget::incrementalUpdate(int line, int rows)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::setBreak(int data)
 {
-  // We don't care about state, as breakpoints are turned on
-  // and off with the same command
-  // TODO - at some point, we might want to add 'breakon'
-  //        and 'breakoff' to DebuggerParser, so the states
-  //        don't get out of sync
-  ostringstream command;
-  command << "break #" << myAddrList[data];
-  instance()->debugger().run(command.str());
+  bool state = myRomList->getState(data);
+  instance()->debugger().setBreakPoint(myAddrList[data], state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

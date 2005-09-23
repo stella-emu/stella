@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.93 2005-09-20 19:09:10 stephena Exp $
+// $Id: Debugger.cxx,v 1.94 2005-09-23 17:38:26 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -724,6 +724,17 @@ void Debugger::toggleBreakPoint(int bp) {
   mySystem->m6502().setBreakPoints(breakPoints);
   if(bp < 0) bp = myCpuDebug->pc();
   breakPoints->toggle(bp);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setBreakPoint(int bp, bool set)
+{
+  mySystem->m6502().setBreakPoints(breakPoints);
+  if(bp < 0) bp = myCpuDebug->pc();
+  if(set)
+    breakPoints->set(bp);
+  else
+    breakPoints->clear(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

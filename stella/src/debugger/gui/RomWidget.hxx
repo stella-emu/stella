@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.4 2005-09-15 19:43:36 stephena Exp $
+// $Id: RomWidget.hxx,v 1.5 2005-09-23 17:38:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -63,10 +63,6 @@ class RomWidget : public Widget, public CommandSender
 
     /** List of line numbers indexed by address */
     AddrToLine myLineList;
-
-    /** Indicates whether a given line is valid or not;
-        Invalid lines need to be disassembled again */
-    BoolArray myLineValid;
 
     bool myListIsDirty;
     bool mySourceAvailable;

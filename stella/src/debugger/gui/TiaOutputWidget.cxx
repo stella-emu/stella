@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.5 2005-09-15 19:43:36 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.6 2005-09-23 17:38:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -120,8 +120,14 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         }
 
         case 1:
-          cerr << "Set breakpoint\n";
+        {
+          ostringstream command;
+          int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
+          int scanline = myClickY + ystart;
+          command << "breakif _scan==#" << scanline;
+          instance()->debugger().parser()->run(command.str());
           break;
+        }
 
         case 2:
           if(myZoom)
@@ -135,7 +141,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
-//cerr << "TiaOutputWidget::drawWidget\n";
+  // FIXME - check if we're in 'greyed out mode' and act accordingly
   instance()->frameBuffer().refresh();
   instance()->frameBuffer().drawMediaSource();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.78 2005-09-15 19:43:36 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.79 2005-09-23 17:38:26 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1328,6 +1328,7 @@ void DebuggerParser::executeBreak() {
 		bp = args[0];
 
 	debugger->toggleBreakPoint(bp);
+	debugger->myRom->invalidate();
 
 	if(debugger->breakPoint(bp))
 		commandResult = "Set";
