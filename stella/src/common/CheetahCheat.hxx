@@ -2,11 +2,12 @@
 #ifndef CHEETAH_CHEAT_HXX
 #define CHEETAH_CHEAT_HXX
 
+#include "OSystem.hxx"
 #include "Cheat.hxx"
 
 class CheetahCheat : public Cheat {
 	public:
-		CheetahCheat(string code);
+		CheetahCheat(OSystem *os, string code);
 		~CheetahCheat();
 
 		virtual bool enabled();
@@ -20,6 +21,7 @@ class CheetahCheat : public Cheat {
 		uInt16 address;
 		uInt8 value;
 		uInt8 count;
+		OSystem *myOSystem;
 };
 
 #endif

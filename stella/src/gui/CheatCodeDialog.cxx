@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.3 2005-09-25 18:35:26 urchlay Exp $
+// $Id: CheatCodeDialog.cxx,v 1.4 2005-09-25 20:18:46 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,7 +61,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
 	{
 		case kEditAcceptCmd:
 			cerr << myInput->getEditString() << endl;
-			myCheat = Cheat::parse(myInput->getEditString());
+			myCheat = Cheat::parse(instance(), myInput->getEditString());
 			if(myCheat) {
 				myError->setFlags(WIDGET_INVISIBLE);
 				loadConfig();

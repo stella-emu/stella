@@ -3,10 +3,11 @@
 #define CHEAT_HXX
 
 #include "bspf.hxx"
+#include "OSystem.hxx"
 
 class Cheat {
 	public:
-		static Cheat *parse(string code);
+		static Cheat *parse(OSystem *osystem, string code);
 		static uInt16 unhex(string hex);
 
 		virtual ~Cheat();

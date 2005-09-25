@@ -3,7 +3,8 @@
 //#include "Debugger.hxx"
 #include "CheetahCheat.hxx"
 
-CheetahCheat::CheetahCheat(string code) {
+CheetahCheat::CheetahCheat(OSystem *os, string code) {
+	myOSystem = os;
 	_enabled = false;
 
 	address = 0xf000 + unhex(code.substr(0, 3));
@@ -17,20 +18,16 @@ CheetahCheat::~CheetahCheat() {
 bool CheetahCheat::enabled() { return _enabled; }
 
 bool CheetahCheat::enable() {
-/*  FIXME
 	for(int i=0; i<count; i++) {
-		savedRom[i] = Debugger::debugger().peek(address + i);
-		Debugger::debugger().patchROM(address + i, value);
+		savedRom[i] = myOSystem->console().cartridge().peek(address + i);
+		myOSystem->console().cartridge().patch(address + i, value);
 	}
-*/
 	return _enabled = true;
 }
 
 bool CheetahCheat::disable() {
-/*  FIXME
 	for(int i=0; i<count; i++) {
-		Debugger::debugger().patchROM(address + i, savedRom[i]);
+		myOSystem->console().cartridge().patch(address + i, savedRom[i]);
 	}
-*/
 	return _enabled = false;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.81 2005-09-25 18:35:26 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.82 2005-09-25 20:18:46 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1369,7 +1369,7 @@ void DebuggerParser::executeCheetah() {
 
 	for(int arg = 0; arg < argCount; arg++) {
 		string& cheat = argStrings[arg];
-		Cheat *c = Cheat::parse(cheat);
+		Cheat *c = Cheat::parse(debugger->getOSystem(), cheat);
 		if(c) {
 			c->enable();
 			commandResult = "Cheetah code " + cheat + " enabled\n";

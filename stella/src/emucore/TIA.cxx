@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.60 2005-09-25 18:35:26 urchlay Exp $
+// $Id: TIA.cxx,v 1.61 2005-09-25 20:18:46 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -522,7 +522,6 @@ void TIA::update()
     myFrameGreyed = true;
   } else {
     endFrame();
-    myFrameGreyed = false;
   }
 }
 
@@ -571,6 +570,8 @@ inline void TIA::startFrame() {
       myCOLUBK &= 0xfefefefe;
     }
   }   
+
+  myFrameGreyed = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -581,6 +582,8 @@ inline void TIA::endFrame() {
 
   // Stats counters
   myFrameCounter++;
+
+  myFrameGreyed = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -589,7 +592,6 @@ void TIA::updateScanline()
   // Start a new frame if the old one was finished
   if(!myPartialFrameFlag) {
     startFrame();
-	 myFrameGreyed = false;
   }
 
   // grey out old frame contents

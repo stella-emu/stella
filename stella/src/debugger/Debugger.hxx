@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.77 2005-09-23 17:38:26 stephena Exp $
+// $Id: Debugger.hxx,v 1.78 2005-09-25 20:18:46 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -79,7 +79,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.77 2005-09-23 17:38:26 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.78 2005-09-25 20:18:46 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -99,6 +99,8 @@ class Debugger : public DialogContainer
     virtual ~Debugger();
 
   public:
+	 OSystem *getOSystem() { return myOSystem; }
+
     /**
       Updates the basedialog to be of the type defined for this derived class.
     */

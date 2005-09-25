@@ -20,14 +20,14 @@ uInt16 Cheat::unhex(string hex) {
 	return ret;
 }
 
-Cheat* Cheat::parse(string code) {
+Cheat* Cheat::parse(OSystem *osystem, string code) {
 	for(unsigned int i=0; i<code.size(); i++)
 		if(!isxdigit(code[i]))
 			return 0;
 
 	switch(code.size()) {
 		case 6:
-			return new CheetahCheat(code);
+			return new CheetahCheat(osystem, code);
 
 		default:
 			return 0;
