@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.80 2005-09-23 23:35:02 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.81 2005-09-25 18:35:26 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1225,7 +1225,7 @@ bool DebuggerParser::saveScriptFile(string file) {
 
 	FunctionDefMap funcs = debugger->getFunctionDefMap();
 	for(FunctionDefMap::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
-		out << "function " << i->first << " " << i->second << endl;
+		out << "function " << i->first << " { " << i->second << " }" << endl;
 
 	for(unsigned int i=0; i<watches.size(); i++)
 		out << "watch " << watches[i] << endl;

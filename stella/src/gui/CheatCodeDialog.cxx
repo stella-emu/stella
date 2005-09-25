@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.2 2005-08-16 18:34:12 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.3 2005-09-25 18:35:26 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,14 +38,14 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
-  const GUI::Font& font = instance()->font();
+  //	const GUI::Font& font = instance()->font();
 
-  myTitle = new StaticTextWidget(this, 10, 5, w - 20, kFontHeight, "Cheat Codes", kTextAlignCenter);
+  myTitle = new StaticTextWidget(this, 10, 5, w - 20, kFontHeight, "Cheat Code", kTextAlignCenter);
+  myError = new StaticTextWidget(this, 10, 32, w - 20, kFontHeight, "Invalid Code", kTextAlignLeft);
+  myError->setFlags(WIDGET_INVISIBLE);
+  myInput = new EditTextWidget(this, 10, 20, 48, kFontHeight, "");
+  addFocusWidget(myInput);
   addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
-  addButton(w - (kButtonWidth + 10), h - 48, "Load", kLoadCmd, 'C');
-  myEnableCheat = new CheckboxWidget(this, font, 10, 20, "Enabled", kEnableCheat);
-  myEnableCheat->setState(false);
-  myCheat = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,30 +59,36 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
 {
 	switch(cmd)
 	{
-		case kLoadCmd:
-			myCheat = Cheat::parse("db000f");
-			loadConfig();
+		case kEditAcceptCmd:
+			cerr << myInput->getEditString() << endl;
+			myCheat = Cheat::parse(myInput->getEditString());
+			if(myCheat) {
+				myError->setFlags(WIDGET_INVISIBLE);
+				loadConfig();
+				draw();
+				myCheat->enable();
+				delete myCheat; // TODO: keep and add to list
+				Dialog::handleCommand(sender, kCloseCmd, data, id);
+			} else {
+				cerr << "bad cheat code" << endl;
+				myInput->setEditString("");
+				myError->clearFlags(WIDGET_INVISIBLE);
+				loadConfig();
+				draw();
+				Dialog::handleCommand(sender, cmd, data, 0);
+			}
 			break;
 
-		case kEnableCheat:
-			if(!myCheat)
-				myEnableCheat->setState(false);
-			else if(myCheat->enabled())
-				myCheat->disable();
-			else
-				myCheat->enable();
-
+		case kEditCancelCmd:
+			Dialog::handleCommand(sender, kCloseCmd, data, id);
 			break;
 
 		default:
 			Dialog::handleCommand(sender, cmd, data, 0);
+			break;
 	}
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::loadConfig() {
-	cerr << "CheatCodeDialog::loadConfig()" << endl;
-
-	myEnableCheat->setState(myCheat && myCheat->enabled());
-	myEnableCheat->setEnabled(myCheat != 0);
 }

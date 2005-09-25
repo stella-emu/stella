@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.26 2005-09-06 22:25:40 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.27 2005-09-25 18:35:26 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -83,7 +83,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   addBigButton("Event Mapping", kEMapCmd, 0);
   addBigButton("Game Information", kInfoCmd, 0);
   b = addBigButton("Cheat Code", kCheatCmd, 0);
-  b->clearFlags(WIDGET_ENABLED);     // TODO - finish after next release
+  //	b->clearFlags(WIDGET_ENABLED);     // TODO - finish after next release
   addBigButton("Help", kHelpCmd, 0);
   addBigButton("About", kAboutCmd, 0);
   addBigButton("Exit Menu", kExitCmd, 0);

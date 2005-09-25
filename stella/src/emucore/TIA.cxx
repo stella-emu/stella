@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.59 2005-09-22 22:10:57 stephena Exp $
+// $Id: TIA.cxx,v 1.60 2005-09-25 18:35:26 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -516,8 +516,14 @@ void TIA::update()
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myCurrentScanline = totalClocks / 228;
 
-  if(!myPartialFrameFlag)
+  if(myPartialFrameFlag) {
+    // grey out old frame contents
+    if(!myFrameGreyed) greyOutFrame();
+    myFrameGreyed = true;
+  } else {
     endFrame();
+    myFrameGreyed = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
