@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.4 2005-09-25 20:18:46 urchlay Exp $
+// $Id: CheatCodeDialog.cxx,v 1.5 2005-09-25 23:14:00 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,12 +40,12 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
 {
   //	const GUI::Font& font = instance()->font();
 
-  myTitle = new StaticTextWidget(this, 10, 5, w - 20, kFontHeight, "Cheat Code", kTextAlignCenter);
-  myError = new StaticTextWidget(this, 10, 32, w - 20, kFontHeight, "Invalid Code", kTextAlignLeft);
+  myTitle = new StaticTextWidget(this, 10, 5, w - 20, kFontHeight, "Cheat Code", kTextAlignLeft);
+  myError = new StaticTextWidget(this, 10, 5 + kFontHeight + 2, w - 20, kFontHeight, "Invalid Code", kTextAlignLeft);
   myError->setFlags(WIDGET_INVISIBLE);
-  myInput = new EditTextWidget(this, 10, 20, 48, kFontHeight, "");
+  myInput = new EditTextWidget(this, 80, 5, 48, kFontHeight, "");
   addFocusWidget(myInput);
-  addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
+  //	addButton(w - (kButtonWidth + 10), 5, "Close", kCloseCmd, 'C');
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,27 +60,40 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
 	switch(cmd)
 	{
 		case kEditAcceptCmd:
-			cerr << myInput->getEditString() << endl;
+			//	cerr << myInput->getEditString() << endl;
 			myCheat = Cheat::parse(instance(), myInput->getEditString());
+
 			if(myCheat) {
+				// make sure "invalid code" isn't showing any more:
 				myError->setFlags(WIDGET_INVISIBLE);
-				loadConfig();
-				draw();
+				myError->setDirty();
+				myError->draw();
+
+				// set up the cheat
 				myCheat->enable();
 				delete myCheat; // TODO: keep and add to list
+
+				// get out of menu mode (back to emulation):
 				Dialog::handleCommand(sender, kCloseCmd, data, id);
-			} else {
-				cerr << "bad cheat code" << endl;
+				instance()->eventHandler().leaveMenuMode();
+
+			} else { // parse() returned 0 (null)
+				//	cerr << "bad cheat code" << endl;
+
+				// show error message "invalid code":
 				myInput->setEditString("");
 				myError->clearFlags(WIDGET_INVISIBLE);
-				loadConfig();
-				draw();
+				myError->setDirty();
+				myError->draw();
+
+				// not sure this does anything useful:
 				Dialog::handleCommand(sender, cmd, data, 0);
 			}
 			break;
 
 		case kEditCancelCmd:
 			Dialog::handleCommand(sender, kCloseCmd, data, id);
+			instance()->eventHandler().leaveMenuMode();
 			break;
 
 		default:

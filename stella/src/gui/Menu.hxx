@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.hxx,v 1.9 2005-06-16 00:56:00 stephena Exp $
+// $Id: Menu.hxx,v 1.10 2005-09-25 23:14:00 urchlay Exp $
 //============================================================================
 
 #ifndef MENU_HXX
@@ -28,7 +28,7 @@ class OSystem;
   The base dialog for all configuration menus in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Menu.hxx,v 1.9 2005-06-16 00:56:00 stephena Exp $
+  @version $Id: Menu.hxx,v 1.10 2005-09-25 23:14:00 urchlay Exp $
 */
 class Menu : public DialogContainer
 {
@@ -55,6 +55,11 @@ class Menu : public DialogContainer
       @param props  The properties of the current game
     */
     void setGameProfile(Properties& props);
+
+    /**
+      Ugly hack: enter cheat mode
+    */
+    void enterCheatMode();
 };
 
 #endif

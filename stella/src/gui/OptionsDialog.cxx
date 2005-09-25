@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.27 2005-09-25 18:35:26 urchlay Exp $
+// $Id: OptionsDialog.cxx,v 1.28 2005-09-25 23:14:00 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -110,7 +110,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myGameInfoDialog = new GameInfoDialog(myOSystem, parent, x, y, w, h);
 
-  w = 255; h = 150;
+  w = 140; h = 35;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, x, y, w, h);
 
@@ -186,4 +186,10 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OptionsDialog::enterCheatMode()
+{
+  parent()->addDialog(myCheatCodeDialog);
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.10 2005-06-16 00:55:59 stephena Exp $
+// $Id: Menu.cxx,v 1.11 2005-09-25 23:14:00 urchlay Exp $
 //============================================================================
 
 #include "Dialog.hxx"
@@ -45,4 +45,10 @@ void Menu::initialize()
 void Menu::setGameProfile(Properties& props)
 {
   ((OptionsDialog*)myBaseDialog)->setGameProfile(props);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Menu::enterCheatMode()
+{
+  ((OptionsDialog*)myBaseDialog)->enterCheatMode();
 }
