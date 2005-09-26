@@ -1,6 +1,7 @@
 
 #include "Cheat.hxx"
 #include "CheetahCheat.hxx"
+#include "BankRomCheat.hxx"
 
 uInt16 Cheat::unhex(string hex) {
 	int ret = 0;
@@ -26,6 +27,10 @@ Cheat* Cheat::parse(OSystem *osystem, string code) {
 			return 0;
 
 	switch(code.size()) {
+		case 7:
+		case 8:
+			return new BankRomCheat(osystem, code);
+
 		case 6:
 			return new CheetahCheat(osystem, code);
 
