@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.4 2005-08-11 19:12:39 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.5 2005-09-26 19:10:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 
   // Calculate real dimensions
   _w = fontWidth * 30;
-  _h = lineHeight * 6;
+  _h = lineHeight * 5;
 
   xpos = 10; ypos = lineHeight;
   int lwidth = font.getStringWidth("Enter Data:");
@@ -62,9 +62,11 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   _input->setFont(font);
   addFocusWidget(_input);
 
-  xpos = 10; ypos = 2*lineHeight;
+  xpos = 10; ypos = 2*lineHeight + 5;
   _title = new StaticTextWidget(this, xpos, ypos, _w - 2*xpos, fontHeight,
                                 "", kTextAlignCenter);
+  _title->setFont(font);
+  _title->setColor(kTextColorEm);
 
 #ifndef MAC_OSX
   addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "OK", kAcceptCmd, 0);

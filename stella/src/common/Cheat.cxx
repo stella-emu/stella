@@ -1,8 +1,26 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: Cheat.cxx,v 1.4 2005-09-26 19:10:37 stephena Exp $
+//============================================================================
 
 #include "Cheat.hxx"
 #include "CheetahCheat.hxx"
 #include "BankRomCheat.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cheat::unhex(string hex) {
 	int ret = 0;
 
@@ -21,6 +39,7 @@ uInt16 Cheat::unhex(string hex) {
 	return ret;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cheat* Cheat::parse(OSystem *osystem, string code) {
 	for(unsigned int i=0; i<code.size(); i++)
 		if(!isxdigit(code[i]))
@@ -37,7 +56,4 @@ Cheat* Cheat::parse(OSystem *osystem, string code) {
 		default:
 			return 0;
 	}
-}
-
-Cheat::~Cheat() {
 }

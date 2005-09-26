@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.hxx,v 1.2 2005-09-25 18:35:26 urchlay Exp $
+// $Id: CheatCodeDialog.hxx,v 1.3 2005-09-26 19:10:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,18 +42,18 @@ class CheatCodeDialog : public Dialog
                    int x, int y, int w, int h);
     ~CheatCodeDialog();
 
-
   protected:
-    ButtonWidget *myExitButton;
-    StaticTextWidget *myTitle;
-    StaticTextWidget *myError;
-	 //	CheckboxWidget *myEnableCheat;
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig();
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-	 void loadConfig();
-	 Cheat *myCheat;
-	 EditTextWidget *myInput;
+    Cheat* myCheat;
+
+    ButtonWidget*     myExitButton;
+    StaticTextWidget* myTitle;
+    StaticTextWidget* myError;
+    EditTextWidget*   myInput;
+    // CheckboxWidget*   myEnableCheat;
 };
 
 #endif
