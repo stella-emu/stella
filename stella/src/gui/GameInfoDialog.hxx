@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.7 2005-07-05 15:25:44 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.8 2005-09-28 19:59:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,51 +22,55 @@
 #ifndef GAME_INFO_DIALOG_HXX
 #define GAME_INFO_DIALOG_HXX
 
-class DialogContainer;
-class CommandSender;
-class ButtonWidget;
+class OSystem;
+class GuiObject;
+class EditTextWidget;
+class PopUpWidget;
 class StaticTextWidget;
+class TabWidget;
 
-#define ADD_BIND(k,d) do { key[i] = k; dsc[i] = d; i++; } while(0)
-#define ADD_TEXT(d) ADD_BIND("",d)
-#define ADD_LINE ADD_BIND("","")
-
-#define LINES_PER_PAGE 10
-
-#include "OSystem.hxx"
 #include "Dialog.hxx"
-#include "Props.hxx"
-#include "bspf.hxx"
+#include "Command.hxx"
 
-class GameInfoDialog : public Dialog
+class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
     GameInfoDialog(OSystem* osystem, DialogContainer* parent,
+                   GuiObject* boss,
                    int x, int y, int w, int h);
     ~GameInfoDialog();
 
-    void setGameProfile(Properties& props) { myGameProperties = &props; }
+    virtual void loadConfig();
+    virtual void saveConfig();
 
-  protected:
-    ButtonWidget* myNextButton;
-    ButtonWidget* myPrevButton;
-
-    StaticTextWidget* myTitle;
-    StaticTextWidget* myKey[LINES_PER_PAGE];
-    StaticTextWidget* myDesc[LINES_PER_PAGE];
-
-    uInt8 myPage;
-    uInt8 myNumPages;
-
-  private:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    virtual void updateStrings(uInt8 page, uInt8 lines,
-                               string& title, string*& key, string* &dsc);
-	void displayInfo();
-    void loadConfig() { displayInfo(); }
 
   private:
-    Properties* myGameProperties;
+    TabWidget* myTab;
+
+    // Cartridge properties
+    EditTextWidget*   myName;
+    StaticTextWidget* myMD5;
+    EditTextWidget*   myManufacturer;
+    EditTextWidget*   myModelNo;
+    EditTextWidget*   myNote;
+    PopupWidget*      mySound;
+    PopupWidget*      myType;
+
+    // Console/controller properties
+    PopupWidget* myLeftDiff;
+    PopupWidget* myRightDiff;
+    PopupWidget* myTVType;
+    PopupWidget* myLeftController;
+    PopupWidget* myRightController;
+
+    // Display properties
+    PopupWidget*    myFormat;
+    EditTextWidget* myXStart;
+    EditTextWidget* myWidth;
+    EditTextWidget* myYStart;
+    EditTextWidget* myHeight;
+    PopupWidget*    myHmoveBlanks;
 };
 
 #endif

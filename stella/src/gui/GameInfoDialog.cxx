@@ -13,143 +13,202 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.10 2005-08-11 21:57:30 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.11 2005-09-28 19:59:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
-#include "Props.hxx"
-#include "Widget.hxx"
-#include "Dialog.hxx"
-#include "GameInfoDialog.hxx"
-#include "GuiUtils.hxx"
-
+#include "DialogContainer.hxx"
+#include "BrowserDialog.hxx"
+#include "PopUpWidget.hxx"
+#include "TabWidget.hxx"
+#include "FSNode.hxx"
 #include "bspf.hxx"
+#include "LauncherDialog.hxx"
+#include "LauncherOptionsDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::GameInfoDialog(OSystem* osystem, DialogContainer* parent,
-                               int x, int y, int w, int h)
-    : Dialog(osystem, parent, x, y, w, h),
-      myPage(1),
-      myNumPages(2),
-      myGameProperties(NULL)
+LauncherOptionsDialog::LauncherOptionsDialog(
+      OSystem* osystem, DialogContainer* parent, GuiObject* boss,
+      int x, int y, int w, int h)
+  : Dialog(osystem, parent, x, y, w, h),
+    CommandSender(boss),
+    myBrowser(NULL)
 {
-  // Add Previous, Next and Close buttons
-  myPrevButton = addButton(10, h - 24, "Previous", kPrevCmd, 'P');
-  myNextButton = addButton((kButtonWidth + 15), h - 24,
-                           "Next", kNextCmd, 'N');
-  addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
-  myPrevButton->clearFlags(WIDGET_ENABLED);
+  const GUI::Font& font = instance()->font();
 
-  myTitle = new StaticTextWidget(this, 5, 5, w-10, kFontHeight, "", kTextAlignCenter);
-  for(uInt8 i = 0; i < LINES_PER_PAGE; i++)
-  {
-    myKey[i]  = new StaticTextWidget(this, 10, 18 + (10 * i), 80, kFontHeight,
-                                     "", kTextAlignLeft);
-    myDesc[i] = new StaticTextWidget(this, 90, 18 + (10 * i), 160, kFontHeight,
-                                     "", kTextAlignLeft);
-  }
+  const int vBorder = 4;
+  int xpos, ypos;
+
+  // The tab widget
+  xpos = 2; ypos = vBorder;
+  myTab = new TabWidget(this, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
+
+  // 1) The ROM locations tab
+  myTab->addTab("ROM Settings");
+
+  // ROM path
+  xpos = 15;
+  new ButtonWidget(myTab, xpos, ypos, kButtonWidth + 14, 16, "Path",
+                   kChooseRomDirCmd, 0);
+  xpos += kButtonWidth + 30;
+  myRomPath = new StaticTextWidget(myTab, xpos, ypos + 3,
+                                   _w - xpos - 10, kLineHeight,
+                                   "", kTextAlignLeft);
+
+  // 2) The snapshot settings tab
+  myTab->addTab(" Snapshot Settings ");
+
+  // Snapshot path
+  xpos = 15;
+  new ButtonWidget(myTab, xpos, ypos, kButtonWidth + 14, 16, "Path",
+                   kChooseSnapDirCmd, 0);
+  xpos += kButtonWidth + 30;
+  mySnapPath = new StaticTextWidget(myTab, xpos, ypos + 3,
+                                   _w - xpos - 10, kLineHeight,
+                                   "", kTextAlignLeft);
+
+  // Snapshot save name
+  xpos = 10; ypos += 22;
+  mySnapTypePopup = new PopUpWidget(myTab, xpos, ypos, 140, kLineHeight,
+                                    "Save snapshot as: ", 87, 0);
+  mySnapTypePopup->appendEntry("romname", 1);
+  mySnapTypePopup->appendEntry("md5sum", 2);
+
+  // Snapshot single or multiple saves
+  xpos = 30;  ypos += 18;
+  mySnapSingleCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                            "Multiple snapshots");
+
+  // Activate the first tab
+  myTab->setActiveTab(0);
+
+  // Add OK & Cancel buttons
+#ifndef MAC_OSX
+  addButton(_w - 2 *(kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+#else
+  addButton(_w - 2 *(kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+#endif
+
+  // Create file browser dialog
+  int baseW = instance()->frameBuffer().baseWidth();
+  int baseH = instance()->frameBuffer().baseHeight();
+  myBrowser = new BrowserDialog(this, 60, 20, baseW - 120, baseH - 40);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::~GameInfoDialog()
+LauncherOptionsDialog::~LauncherOptionsDialog()
 {
+  delete myBrowser;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::updateStrings(uInt8 page, uInt8 lines,
-                                   string& title, string*& key, string* &dsc)
+void LauncherOptionsDialog::loadConfig()
 {
-  if(myGameProperties == NULL)
-    return;
+  string s;
+  bool b;
 
-  key = new string[lines];
-  dsc = new string[lines];
+  s = instance()->settings().getString("romdir");
+  myRomPath->setLabel(s);
 
-  uInt8 i = 0;
-  switch(page)
-  {
-    case 1:
-      title = "Common game properties";
-      ADD_BIND("Name:", myGameProperties->get("Cartridge.Name"));
-      ADD_LINE;
-      ADD_BIND("Manufacturer:", myGameProperties->get("Cartridge.Manufacturer"));
-      ADD_BIND("Model:",        myGameProperties->get("Cartridge.ModelNo"));
-      ADD_BIND("Rarity:",       myGameProperties->get("Cartridge.Rarity"));
-      ADD_BIND("Note:",         myGameProperties->get("Cartridge.Note"));
-      ADD_BIND("Type:",         myGameProperties->get("Cartridge.Type"));
-      ADD_LINE;
-      ADD_BIND("MD5sum:",       myGameProperties->get("Cartridge.MD5"));
-      break;
+  s = instance()->settings().getString("ssdir");
+  mySnapPath->setLabel(s);
 
-    case 2:
-      title = "Other game properties";
-      ADD_BIND("TV Type:",          myGameProperties->get("Console.TelevisionType"));
-      ADD_BIND("Left Controller:",  myGameProperties->get("Controller.Left"));
-      ADD_BIND("Right Controller:", myGameProperties->get("Controller.Left"));
-      ADD_BIND("Format:",           myGameProperties->get("Display.Format"));
-      ADD_BIND("XStart:",           myGameProperties->get("Display.XStart"));
-      ADD_BIND("Width:",            myGameProperties->get("Display.Width"));
-      ADD_BIND("YStart:",           myGameProperties->get("Display.YStart"));
-      ADD_BIND("Height:",           myGameProperties->get("Display.Height"));
-      ADD_BIND("CPU Type:",         myGameProperties->get("Emulation.CPU"));
-      ADD_BIND("Use HMoveBlanks:",  myGameProperties->get("Emulation.HmoveBlanks"));
-      break;
-  }
+  s = instance()->settings().getString("ssname");
+  if(s == "romname")
+    mySnapTypePopup->setSelectedTag(1);
+  else if(s == "md5sum")
+    mySnapTypePopup->setSelectedTag(2);
+  else
+    mySnapTypePopup->setSelectedTag(0);
 
-  while(i < lines)
-    ADD_LINE;
+  b = instance()->settings().getBool("sssingle");
+  mySnapSingleCheckbox->setState(!b);
+
+  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::displayInfo()
+void LauncherOptionsDialog::saveConfig()
 {
-  string titleStr, *keyStr, *dscStr;
+  string s;
+  bool b;
 
-  updateStrings(myPage, LINES_PER_PAGE, titleStr, keyStr, dscStr);
+  s  = myRomPath->getLabel();
+  instance()->settings().setString("romdir", s);
 
-  myTitle->setLabel(titleStr);
-  for(uInt8 i = 0; i < LINES_PER_PAGE; i++)
-  {
-    myKey[i]->setLabel(keyStr[i]);
-    myDesc[i]->setLabel(dscStr[i]);
-  }
+  s = mySnapPath->getLabel();
+  instance()->settings().setString("ssdir", s);
 
-  delete[] keyStr;
-  delete[] dscStr;
+  s = mySnapTypePopup->getSelectedString();
+  instance()->settings().setString("ssname", s);
 
-  _dirty = true;
+  b = mySnapSingleCheckbox->getState();
+  instance()->settings().setBool("sssingle", !b);
+
+  // Flush changes to disk
+  instance()->settings().saveConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
-                                   int data, int id)
+void LauncherOptionsDialog::openRomBrowser()
 {
-  switch(cmd)
+  myBrowser->setTitle("Select ROM directory:");
+  myBrowser->setEmitSignal(kRomDirChosenCmd);
+  myBrowser->setStartPath(myRomPath->getLabel());
+
+  parent()->addDialog(myBrowser);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherOptionsDialog::openSnapBrowser()
+{
+  myBrowser->setTitle("Select snapshot directory:");
+  myBrowser->setEmitSignal(kSnapDirChosenCmd);
+  myBrowser->setStartPath(mySnapPath->getLabel());
+
+  parent()->addDialog(myBrowser);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd,
+                                          int data, int id)
+{
+  switch (cmd)
   {
-    case kNextCmd:
-      myPage++;
-      if(myPage >= myNumPages)
-        myNextButton->clearFlags(WIDGET_ENABLED);
-      if(myPage >= 2)
-        myPrevButton->setFlags(WIDGET_ENABLED);
-
-      displayInfo();
+    case kOKCmd:
+      saveConfig();
+      close();
+      sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
       break;
 
-    case kPrevCmd:
-      myPage--;
-      if(myPage <= myNumPages)
-        myNextButton->setFlags(WIDGET_ENABLED);
-      if(myPage <= 1)
-        myPrevButton->clearFlags(WIDGET_ENABLED);
-
-      displayInfo();
+    case kChooseRomDirCmd:
+      openRomBrowser();
       break;
+
+    case kChooseSnapDirCmd:
+      openSnapBrowser();
+      break;
+
+    case kRomDirChosenCmd:
+    {
+      FilesystemNode dir(myBrowser->getResult());
+      myRomPath->setLabel(dir.path());
+      break;
+    }
+
+    case kSnapDirChosenCmd:
+    {
+      FilesystemNode dir(myBrowser->getResult());
+      mySnapPath->setLabel(dir.path());
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
+      break;
   }
 }
