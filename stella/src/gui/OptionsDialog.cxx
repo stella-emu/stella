@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.29 2005-09-26 19:10:37 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.30 2005-09-28 22:49:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -106,7 +106,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myGameInfoDialog = new GameInfoDialog(myOSystem, parent, x, y, w, h);
+  myGameInfoDialog = new GameInfoDialog(myOSystem, parent, this, x, y, w, h);
 
   w = 140; h = 40;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);

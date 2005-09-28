@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.8 2005-09-28 19:59:24 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.9 2005-09-28 22:49:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@ class EditTextWidget;
 class PopUpWidget;
 class StaticTextWidget;
 class TabWidget;
+class Properties;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -35,15 +36,15 @@ class TabWidget;
 class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
-    GameInfoDialog(OSystem* osystem, DialogContainer* parent,
-                   GuiObject* boss,
+    GameInfoDialog(OSystem* osystem, DialogContainer* parent, GuiObject* boss,
                    int x, int y, int w, int h);
     ~GameInfoDialog();
 
-    virtual void loadConfig();
-    virtual void saveConfig();
+    void setGameProfile(Properties& props) { myGameProperties = &props; }
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig();
+    void saveConfig();
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     TabWidget* myTab;
@@ -53,24 +54,30 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myMD5;
     EditTextWidget*   myManufacturer;
     EditTextWidget*   myModelNo;
+    PopUpWidget*      myRarity;
     EditTextWidget*   myNote;
-    PopupWidget*      mySound;
-    PopupWidget*      myType;
+    PopUpWidget*      mySound;
+    PopUpWidget*      myType;
 
     // Console/controller properties
-    PopupWidget* myLeftDiff;
-    PopupWidget* myRightDiff;
-    PopupWidget* myTVType;
-    PopupWidget* myLeftController;
-    PopupWidget* myRightController;
+    PopUpWidget* myLeftDiff;
+    PopUpWidget* myRightDiff;
+    PopUpWidget* myTVType;
+    PopUpWidget* myLeftController;
+    PopUpWidget* myRightController;
 
     // Display properties
-    PopupWidget*    myFormat;
+    PopUpWidget*    myFormat;
     EditTextWidget* myXStart;
     EditTextWidget* myWidth;
     EditTextWidget* myYStart;
     EditTextWidget* myHeight;
-    PopupWidget*    myHmoveBlanks;
+    PopUpWidget*    myHmoveBlanks;
+
+    Properties* myGameProperties;
+
+    ButtonWidget* myNextButton;
+    ButtonWidget* myPrevButton;
 };
 
 #endif

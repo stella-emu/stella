@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.99 2005-09-25 23:14:00 urchlay Exp $
+// $Id: EventHandler.cxx,v 1.100 2005-09-28 22:49:06 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -711,8 +711,11 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
     else if (key >= SDLK_KP0 && key <= SDLK_KP9)
       unicode = key - SDLK_KP0 + '0';
     else if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
-             (key >= SDLK_UP && key <= SDLK_PAGEDOWN) ||
-             !unicode)
+             (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
+      unicode = key;
+    else if (key >= SDLK_NUMLOCK && key <= SDLK_UNDO)
+      return;
+    else
       unicode = key;
 
     switch((int)myState)

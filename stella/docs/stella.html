@@ -244,6 +244,15 @@
 			a per-user 'user.pro' properties files.  Changes made by the user
 			and stored in 'user.pro' are no longer erased when upgrading Stella.</li>
 
+		<li>Added ability to edit current ROM properties from directly within
+			Stella, which can then be saved directly into the 'user.pro' file.
+			So creating a properties entry for a new ROM can be done without
+			any external tools.</li>
+
+		<li>Added cartridge 'frying', thanks to Fred "batari" Quimby.  This
+			emulates the action of turning the power button on and off on a
+			real Atari, often resulting in some strange effects.</li>
+
 		<li>Added support for cartridges with 3E bankswitching format.</li>
 
 		<li>Added <b>Alt/Shift-Cmd z, x, c, v, b, n</b> keys to enable/disable the
@@ -272,7 +281,7 @@
 			further details.</li>
 
 		<li>Removed <b>mergeprops</b> commandline argument, since there are now
-			dedicated keys to do either save or merge game properties.</li>
+				dedicated keys to either save or merge game properties.</li>
 
 		<li>Removed <b>hidecursor</b> commandline argument.  Stella will now
 			automatically decide when to use this setting.</li>
@@ -821,11 +830,6 @@
 		<tr>
 			<td><pre>-height &lt;number&gt;</pre></td>
 			<td>Set "Display.Height" property (100 - 256).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-cpu &lt;High|Low&gt;</pre></td>
-			<td>Set "Emulation.CPU" property.</td>
 		</tr>
 
 		<tr>
@@ -1818,12 +1822,6 @@
 			<td>This property indicates the number of scan-lines to display.
 			The value of this property must be <i>n</i> such that
 			100 &lt;= <i>n</i> &lt;= 256.</td>
-		</tr>
-
-		<tr>
-			<td VALIGN="TOP"><i>Emulation.CPU:</i></td>
-			<td>This property indicates the CPU emulation quality.  The value of
-			this property must be High or Low.</td>
 		</tr>
 
 		<tr>
