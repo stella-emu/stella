@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.17 2005-08-10 12:23:42 stephena Exp $
+// $Id: TabWidget.cxx,v 1.18 2005-09-29 18:50:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -121,6 +121,9 @@ void TabWidget::updateActiveTab()
     _tabs[_activeTab].parentWidget->loadConfig();
 
   setDirty(); draw();
+
+  // Redraw focused areas
+  _boss->redrawFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,7 +197,6 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::loadConfig()
 {
-//cerr << "TabWidget::loadConfig()\n";
   if(_firstTime)
   {
     setActiveTab(_activeTab, true);
@@ -227,7 +229,6 @@ void TabWidget::box(int x, int y, int width, int height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::drawWidget(bool hilite)
 {
-//cerr << "TabWidget::drawWidget: " << _tabs[_activeTab].firstWidget << endl;
   // The tab widget is strange in that it acts as both a widget (obviously)
   // and a dialog (it contains other widgets).  Because of the latter,
   // it must assume responsibility for refreshing all its children.
@@ -264,9 +265,6 @@ void TabWidget::drawWidget(bool hilite)
   fb.hLine(_x+1, _y + _h - 1, _x + _w - 2, kColor);
   fb.vLine(_x + _w - 2, _y + kTabHeight - 1, _y + _h - 2, kColor);
   fb.vLine(_x + _w - 1, _y + kTabHeight - 1, _y + _h - 2, kShadowColor);
-
-  // Redraw focused areas
-  _boss->redrawFocus();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

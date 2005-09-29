@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.100 2005-09-28 22:49:06 stephena Exp $
+// $Id: EventHandler.cxx,v 1.101 2005-09-29 18:50:51 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -706,6 +706,7 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
   else  // Determine which dialog to send events to
   {
     // Make sure the unicode field is valid
+/*
     if (key >= SDLK_F1 && key <= SDLK_F9)
       unicode = key - SDLK_F1 + 315;
     else if (key >= SDLK_KP0 && key <= SDLK_KP9)
@@ -713,9 +714,15 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
     else if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
              (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
       unicode = key;
+    else if (key >= 'a' && key <= 'z' && mod & KMOD_SHIFT)
+      unicode = key & ~0x20;
     else if (key >= SDLK_NUMLOCK && key <= SDLK_UNDO)
       return;
     else
+      unicode = key;
+*/
+    if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
+       (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
       unicode = key;
 
     switch((int)myState)

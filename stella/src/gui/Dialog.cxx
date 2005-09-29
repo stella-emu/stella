@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.29 2005-08-31 19:15:10 stephena Exp $
+// $Id: Dialog.cxx,v 1.30 2005-09-29 18:50:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -156,12 +156,15 @@ void Dialog::buildFocusWidgetList(int id)
     if(!Widget::isWidgetInChain(_ourFocusList[0].focusList, _focusedWidget))
       _focusedWidget = _ourFocusList[_focusID].focusedWidget;
   }
+  else
+    _focusedWidget = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::redrawFocus()
 {
-  _focusedWidget = Widget::setFocusForChain(this, getFocusList(), _focusedWidget, 0);
+  if(_focusedWidget)
+    _focusedWidget = Widget::setFocusForChain(this, getFocusList(), _focusedWidget, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,26 +269,30 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Test for TAB character
-  // Ctrl-Tab selects next tab
-  // Shift-Ctrl-Tab selects previous tab
+  // Shift-left/shift-right cursor selects next tab
   // Tab sets next widget in current tab
   // Shift-Tab sets previous widget in current tab
   //
   // Widgets are only cycled if currently focused key hasn't claimed
   // the TAB key
   // TODO - figure out workaround for this
-  if(keycode == 9)  // tab key
+  if(_ourTab && instance()->eventHandler().kbdShift(modifiers))
   {
-    if(_ourTab && instance()->eventHandler().kbdControl(modifiers))
+    // these key-combos are never passed to the child widget
+    if(ascii == 256 + 20)      // left arrow
     {
-      if(instance()->eventHandler().kbdShift(modifiers))
-        _ourTab->cycleTab(-1);
-      else
-        _ourTab->cycleTab(+1);
-
-      return;  // this key-combo is never passed to the child widget
+      _ourTab->cycleTab(-1);
+      return;
     }
-    else if(_focusedWidget && !(_focusedWidget->getFlags() & WIDGET_WANTS_TAB))
+    else if(ascii == 256 + 19) // right arrow
+    {
+      _ourTab->cycleTab(+1);
+      return;
+    }
+  }
+  else if(keycode == 9)  // tab key
+  {
+    if(_focusedWidget && !(_focusedWidget->getFlags() & WIDGET_WANTS_TAB))
     {
       if(instance()->eventHandler().kbdShift(modifiers))
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),

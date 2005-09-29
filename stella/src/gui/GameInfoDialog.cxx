@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.12 2005-09-28 22:49:06 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.13 2005-09-29 18:50:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ GameInfoDialog::GameInfoDialog(
             lineHeight = font.getLineHeight();
 
   const int vBorder = 4;
-  int xpos, ypos, lwidth, tabID;
+  int xpos, ypos, lwidth, fwidth, tabID;
   WidgetArray wid;
 
   // The tab widget
@@ -51,26 +51,22 @@ GameInfoDialog::GameInfoDialog(
   // 1) Cartridge properties
   wid.clear();
   tabID = myTab->addTab("Cartridge");
-//  myPrompt = new PromptWidget(myTab, 2, 2, widWidth, widHeight);
-//  myTab->setParentWidget(tabID, myPrompt);
-//  addToFocusList(myPrompt->getFocusList(), tabID);
 
   xpos = 10;
   lwidth = font.getStringWidth("Manufacturer: ");
+  fwidth = _w - xpos - lwidth - 10;
   new StaticTextWidget(myTab, xpos, ypos, lwidth, fontHeight,
                        "Name:", kTextAlignLeft);
-  myName = new EditTextWidget(myTab, xpos+lwidth, ypos, 100, fontHeight, "");
+  myName = new EditTextWidget(myTab, xpos+lwidth, ypos, fwidth, fontHeight, "");
   wid.push_back(myName);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos, lwidth, fontHeight,
                        "MD5:", kTextAlignLeft);
-/*
-  myMD5 = new StaticTextWidget(myTab, xpos, ypos,
-                               xpos+lwidth, fontHeight,
-                               "HAHA!", kTextAlignLeft);
-  myMD5->setLabel("GAGA!");
-*/
+  myMD5 = new StaticTextWidget(myTab, xpos+lwidth, ypos,
+                               fwidth, fontHeight,
+                               "", kTextAlignLeft);
+
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos, lwidth, fontHeight,
                        "Manufacturer:", kTextAlignLeft);
@@ -88,30 +84,15 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos, lwidth, fontHeight,
                        "Rarity:", kTextAlignLeft);
-  myRarity = new PopUpWidget(myTab, xpos+lwidth, ypos, 100, lineHeight,
-                             "", 0, 0);
-  myRarity->appendEntry("(1) Common", 1);
-  myRarity->appendEntry("(2) Common+", 2);
-  myRarity->appendEntry("(3) Scarce", 3);
-  myRarity->appendEntry("(4) Scarce+", 4);
-  myRarity->appendEntry("(5) Rare", 5);
-/*
-  myRarity->appendEntry("(6) Rare+", 6);
-  myRarity->appendEntry("(7) Very Rare", 7);
-  myRarity->appendEntry("(8) Very Rare+", 8);
-  myRarity->appendEntry("(9) Extremely Rare", 9);
-  myRarity->appendEntry("(10) Unbelievably Rare", 10);
-  myRarity->appendEntry("(H) Homebrew", 11);
-  myRarity->appendEntry("(R) Reproduction", 12);
-  myRarity->appendEntry("(P) Prototype", 13);
-*/
+  myRarity = new EditTextWidget(myTab, xpos+lwidth, ypos,
+                                100, fontHeight, "");
   wid.push_back(myRarity);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos, lwidth, fontHeight,
                        "Note:", kTextAlignLeft);
   myNote = new EditTextWidget(myTab, xpos+lwidth, ypos,
-                              100, fontHeight, "");
+                              fwidth, fontHeight, "");
   wid.push_back(myNote);
 
 /*
@@ -134,15 +115,24 @@ GameInfoDialog::GameInfoDialog(
   addToFocusList(wid, tabID);
 
   // 2) Console/Controller properties
-//  myTab->addTab("Console");
+  wid.clear();
+  tabID = myTab->addTab("Console");
+
+  addToFocusList(wid, tabID);
 
 
   // 3) Controller properties
-//  myTab->addTab("Controller");
+  wid.clear();
+  tabID = myTab->addTab("Controller");
+
+  addToFocusList(wid, tabID);
 
 
   // 4) Display properties
-//  myTab->addTab("Display");
+  wid.clear();
+  tabID = myTab->addTab("Display");
+
+  addToFocusList(wid, tabID);
 
 /*
   // Snapshot path
@@ -170,12 +160,16 @@ GameInfoDialog::GameInfoDialog(
   // Activate the first tab
   myTab->setActiveTab(0);
 
-  // Add OK & Cancel buttons
+  // Add message concerning usage
+  new StaticTextWidget(this, 10, _h - 20, 120, fontHeight,
+                       "(*) Requires a ROM reload", kTextAlignLeft);
+
+  // Add Defaults, OK and Cancel buttons
 #ifndef MAC_OSX
-  addButton(_w - 2 *(kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
   addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 *(kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
   addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 }
@@ -188,17 +182,27 @@ GameInfoDialog::~GameInfoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
-cerr << "loadConfig()\n";
-/*
   string s;
-  bool b;
 
-  s = instance()->settings().getString("romdir");
-  myRomPath->setLabel(s);
+  s = myGameProperties->get("Cartridge.Name");
+  myName->setEditString(s);
 
-  s = instance()->settings().getString("ssdir");
-  mySnapPath->setLabel(s);
+  s = myGameProperties->get("Cartridge.MD5");
+  myMD5->setLabel(s);
 
+  s = myGameProperties->get("Cartridge.Manufacturer");
+  myManufacturer->setEditString(s);
+
+  s = myGameProperties->get("Cartridge.ModelNo");
+  myModelNo->setEditString(s);
+
+  s = myGameProperties->get("Cartridge.Rarity");
+  myRarity->setEditString(s);
+
+  s = myGameProperties->get("Cartridge.Note");
+  myNote->setEditString(s);
+
+/*
   s = instance()->settings().getString("ssname");
   if(s == "romname")
     mySnapTypePopup->setSelectedTag(1);
@@ -206,10 +210,8 @@ cerr << "loadConfig()\n";
     mySnapTypePopup->setSelectedTag(2);
   else
     mySnapTypePopup->setSelectedTag(0);
-
-  b = instance()->settings().getBool("sssingle");
-  mySnapSingleCheckbox->setState(!b);
 */
+
   myTab->loadConfig();
 }
 

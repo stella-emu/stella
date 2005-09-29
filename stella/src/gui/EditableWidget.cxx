@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.11 2005-09-23 23:35:02 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.12 2005-09-29 18:50:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -165,7 +165,7 @@ int EditableWidget::getCaretOffset() const
 void EditableWidget::drawCaret()
 {
   // Only draw if item is visible
-  if (!_editable || !isVisible() || !_boss->isVisible())
+  if (!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus)
     return;
 
   GUI::Rect editRect = getEditRect();
