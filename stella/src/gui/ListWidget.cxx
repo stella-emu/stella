@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.33 2005-09-23 23:35:02 stephena Exp $
+// $Id: ListWidget.cxx,v 1.34 2005-09-30 18:17:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -365,6 +365,11 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect ListWidget::getRect() const
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

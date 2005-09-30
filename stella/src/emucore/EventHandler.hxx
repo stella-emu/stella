@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.50 2005-09-16 18:15:44 stephena Exp $
+// $Id: EventHandler.hxx,v 1.51 2005-09-30 18:17:29 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.50 2005-09-16 18:15:44 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.51 2005-09-30 18:17:29 stephena Exp $
 */
 class EventHandler
 {
@@ -230,6 +230,7 @@ class EventHandler
     void leaveCmdMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
+    void saveProperties();
 
     // Holds static strings for the remap menu
     static ActionList ourActionList[62];

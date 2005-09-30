@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.13 2005-09-13 18:27:42 stephena Exp $
+// $Id: ListWidget.hxx,v 1.14 2005-09-30 18:17:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,6 +69,7 @@ class ListWidget : public EditableWidget
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    virtual GUI::Rect getRect() const;
     virtual bool wantsFocus() { return true; }
 
     void startEditMode();

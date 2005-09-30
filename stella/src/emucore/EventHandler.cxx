@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.101 2005-09-29 18:50:51 stephena Exp $
+// $Id: EventHandler.cxx,v 1.102 2005-09-30 18:17:29 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -386,7 +386,7 @@ void EventHandler::poll(uInt32 time)
                 break;
 
               case SDLK_s:  // Alt-s merges properties into user properties (user.pro)
-                myOSystem->console().saveProperties(myOSystem->userProperties(), true);
+                saveProperties();
                 break;
             }
           }
@@ -1715,6 +1715,12 @@ void EventHandler::leaveDebugMode()
   if(myPauseFlag)  // Un-Pause when leaving debugger mode
     handleEvent(Event::Pause, 1);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveProperties()
+{
+  myOSystem->console().saveProperties(myOSystem->userProperties(), true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

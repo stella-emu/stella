@@ -13,14 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.14 2005-09-30 00:40:34 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.15 2005-09-30 18:17:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
-
-#include <cctype>
-#include <algorithm>
 
 #include "GuiUtils.hxx"
 #include "OSystem.hxx"
@@ -324,14 +321,6 @@ void GameInfoDialog::loadConfig()
   else
     myRightDiff->setSelectedTag(0);
 
-  s = myGameProperties->get("Console.RightDifficulty", true);
-  if(s == "B")
-    myRightDiff->setSelectedTag(1);
-  else if(s == "A")
-    myRightDiff->setSelectedTag(2);
-  else
-    myRightDiff->setSelectedTag(0);
-
   s = myGameProperties->get("Console.TelevisionType", true);
   if(s == "COLOR")
     myTVType->setSelectedTag(1);
@@ -395,7 +384,7 @@ void GameInfoDialog::loadConfig()
 void GameInfoDialog::saveConfig()
 {
   string s;
-  int i;
+  int i, tag;
 
   // Cartridge properties
   s = myName->getEditString();
@@ -413,14 +402,66 @@ void GameInfoDialog::saveConfig()
   s = myNote->getEditString();
   myGameProperties->set("Cartridge.Note", s);
 
-  i = mySound->getSelectedTag();
-  s = (i == 1) ? "Mono" : "Stereo";
+  tag = mySound->getSelectedTag();
+  s = (tag == 1) ? "Mono" : "Stereo";
   myGameProperties->set("Cartridge.Sound", s);
 
   // FIXME - type
 
+  // Console properties
+  tag = myLeftDiff->getSelectedTag();
+  s = (tag == 1) ? "B" : "A";
+  myGameProperties->set("Console.LeftDifficulty", s);
 
+  tag = myRightDiff->getSelectedTag();
+  s = (tag == 1) ? "B" : "A";
+  myGameProperties->set("Console.RightDifficulty", s);
 
+  tag = myTVType->getSelectedTag();
+  s = (tag == 1) ? "Color" : "BlackAndWhite";
+  myGameProperties->set("Console.TelevisionType", s);
+
+  // Controller properties
+  tag = myLeftController->getSelectedTag();
+  for(i = 0; i < 5; ++i)
+  {
+    if(i == tag-1)
+    {
+      myGameProperties->set("Controller.Left", ourControllerList[i].name);
+      break;
+    }
+  }
+
+  tag = myRightController->getSelectedTag();
+  for(i = 0; i < 5; ++i)
+  {
+    if(i == tag-1)
+    {
+      myGameProperties->set("Controller.Right", ourControllerList[i].name);
+      break;
+    }
+  }
+
+  // Display properties
+  tag = myFormat->getSelectedTag();
+  s = (tag == 1) ? "NTSC" : "PAL";
+  myGameProperties->set("Display.Format", s);
+
+  s = myXStart->getEditString();
+  myGameProperties->set("Cartridge.XStart", s);
+
+  s = myWidth->getEditString();
+  myGameProperties->set("Cartridge.Width", s);
+
+  s = myYStart->getEditString();
+  myGameProperties->set("Cartridge.YStart", s);
+
+  s = myHeight->getEditString();
+  myGameProperties->set("Cartridge.Height", s);
+
+  tag = myHmoveBlanks->getSelectedTag();
+  s = (tag == 1) ? "Yes" : "No";
+  myGameProperties->set("Emulation.HmoveBlanks", s);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -431,6 +472,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
   {
     case kOKCmd:
       saveConfig();
+      instance()->eventHandler().saveProperties();
       close();
       break;
 
