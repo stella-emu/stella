@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.6 2005-08-11 19:12:39 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.7 2005-09-30 00:40:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,8 +26,9 @@
 #include "Rect.hxx"
 
 enum {
-  kEditAcceptCmd = 'EDac',
-  kEditCancelCmd = 'EDcl'
+  kEditAcceptCmd  = 'EDac',
+  kEditCancelCmd  = 'EDcl',
+  kEditChangedCmd = 'EDch'
 };
 
 /**

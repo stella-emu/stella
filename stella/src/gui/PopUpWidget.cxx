@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.19 2005-09-23 23:35:02 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.20 2005-09-30 00:40:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -272,7 +272,8 @@ PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
       _labelWidth(labelWidth),
       _cmd(cmd)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
+           WIDGET_NODRAW_FOCUS;
   _type = kPopUpWidget;
 
   _selectedItem = -1;

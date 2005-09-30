@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.30 2005-09-29 18:50:51 stephena Exp $
+// $Id: Dialog.cxx,v 1.31 2005-09-30 00:40:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -122,7 +122,7 @@ void Dialog::addToFocusList(WidgetArray& list, int id)
 
   _ourFocusList[id].focusList.push_back(list);
 
-  if(list.size() > 0)
+  if(list.size() > 0 && !(list[0]->getFlags() & WIDGET_NODRAW_FOCUS))
     _ourFocusList[id].focusedWidget = list[0];
 }
 

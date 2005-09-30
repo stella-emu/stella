@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.10 2005-09-29 18:50:51 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.11 2005-09-30 00:40:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,8 +30,15 @@ class StaticTextWidget;
 class TabWidget;
 class Properties;
 
+#include "Array.hxx"
 #include "Dialog.hxx"
 #include "Command.hxx"
+
+// Structure used for cartridge and controller types
+struct PropType {
+  string name;
+  string comparitor;
+};
 
 class GameInfoDialog : public Dialog, public CommandSender
 {
@@ -59,10 +66,12 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*      mySound;
     PopUpWidget*      myType;
 
-    // Console/controller properties
+    // Console properties
     PopUpWidget* myLeftDiff;
     PopUpWidget* myRightDiff;
     PopUpWidget* myTVType;
+
+    // Controller properties
     PopUpWidget* myLeftController;
     PopUpWidget* myRightController;
 
@@ -74,10 +83,14 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget* myHeight;
     PopUpWidget*    myHmoveBlanks;
 
+    /** Game properties for currently loaded ROM */
     Properties* myGameProperties;
 
-    ButtonWidget* myNextButton;
-    ButtonWidget* myPrevButton;
+    /** Holds static strings for Cartridge type */
+    static const PropType ourCartridgeList[20];
+
+    /** Holds static strings for Controller type */
+    static const PropType ourControllerList[5];
 };
 
 #endif

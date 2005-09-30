@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.25 2005-09-10 16:19:20 bwmott Exp $
+// $Id: SoundSDL.cxx,v 1.26 2005-09-30 00:40:33 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -103,7 +103,7 @@ void SoundSDL::initialize()
       desired.format = AUDIO_U16;
 #endif
       desired.channels = myNumChannels;
-      desired.samples = fragsize;
+      desired.samples  = fragsize;
       desired.callback = callback;
       desired.userdata = (void*)this;
 

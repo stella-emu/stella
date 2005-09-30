@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.72 2005-09-23 23:35:02 stephena Exp $
+// $Id: Console.cxx,v 1.73 2005-09-30 00:40:33 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -190,17 +190,16 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   // Initialize the sound interface.
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
-  uInt32 channels = myOSystem->settings().getInt("channels");
-  if(channels == 0)
-  {
-    string s = myProperties.get("Cartridge.Sound", true);
-    if(s == "STEREO")
-      channels = 2;
-    else if(s == "MONO")
-      channels = 1;
-    else
-      channels = 1;
-  }
+  uInt32 channels;
+  string s = myProperties.get("Cartridge.Sound", true);
+  if(s == "STEREO")
+    channels = 2;
+  else if(s == "MONO")
+    channels = 1;
+  else
+    channels = 1;
+
+  myOSystem->sound().close();
   myOSystem->sound().setChannels(channels);
   myOSystem->sound().setFrameRate(framerate);
   myOSystem->sound().initialize();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.30 2005-09-28 22:49:06 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.31 2005-09-30 00:40:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -80,7 +80,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   b->clearFlags(WIDGET_ENABLED);
 #endif
   addBigButton("Event Mapping", kEMapCmd, 0);
-  addBigButton("Game Information", kInfoCmd, 0);
+  addBigButton("Game Properties", kInfoCmd, 0);
   addBigButton("Cheat Code", kCheatCmd, 0);
   addBigButton("Help", kHelpCmd, 0);
   addBigButton("About", kAboutCmd, 0);
@@ -104,7 +104,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myEventMappingDialog = new EventMappingDialog(myOSystem, parent, x, y, w, h);
 
-  w = 255; h = 150;
+  w = 255; h = 175;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myGameInfoDialog = new GameInfoDialog(myOSystem, parent, this, x, y, w, h);
 

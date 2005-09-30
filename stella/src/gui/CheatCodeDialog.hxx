@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.hxx,v 1.3 2005-09-26 19:10:37 stephena Exp $
+// $Id: CheatCodeDialog.hxx,v 1.4 2005-09-30 00:40:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,6 +54,8 @@ class CheatCodeDialog : public Dialog
     StaticTextWidget* myError;
     EditTextWidget*   myInput;
     // CheckboxWidget*   myEnableCheat;
+
+    bool myErrorFlag;
 };
 
 #endif

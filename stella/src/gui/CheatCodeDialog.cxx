@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.6 2005-09-26 19:10:37 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.7 2005-09-30 00:40:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,7 +38,8 @@ enum {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+  : Dialog(osystem, parent, x, y, w, h),
+    myErrorFlag(false)
 {
   const GUI::Font& font = instance()->font();
   const int fontHeight = font.getFontHeight(),
@@ -85,6 +86,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       {
         // make sure "invalid code" isn't showing any more:
         myError->setLabel("");
+        myErrorFlag = false;
 
         // set up the cheat
         myCheat->enable();
@@ -96,11 +98,11 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       }
       else  // parse() returned 0 (null)
       { 
-        // cerr << "bad cheat code" << endl;
+        myInput->setEditString("");
 
         // show error message "invalid code":
-        myInput->setEditString("");
         myError->setLabel("Invalid Code");
+        myErrorFlag = true;
 
         // not sure this does anything useful:
         Dialog::handleCommand(sender, cmd, data, 0);
@@ -110,6 +112,15 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
     case kEditCancelCmd:
       Dialog::handleCommand(sender, kCloseCmd, data, id);
       instance()->eventHandler().leaveMenuMode();
+      break;
+
+    case kEditChangedCmd:
+      // Erase the invalid message once editing is restarted
+      if(myErrorFlag)
+      {
+        myError->setLabel("");
+        myErrorFlag = false;
+      }
       break;
 
     default:
