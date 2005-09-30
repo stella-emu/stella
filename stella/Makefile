@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.8 2005-09-18 14:28:17 optixx Exp $
+## $Id: Makefile,v 1.9 2005-09-30 22:12:18 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -64,17 +64,6 @@ all: $(EXECUTABLE)
 # Various minor settings
 ######################################################################
 
-# Files that are to be included in the archive built by "make dist"
-DISTFILES := \
-	Makefile Makefile.common \
-	AUTHORS NEWS README COPYING scummvm.6 Info.plist \
-	scumm.dsp  scummvm.dsp scummvm.dsw scummvm.icns scummvm.ico \
-	scummvm.proj scummvm.rc scummvm.spec scummvm.xpm simon.dsp sky.dsp \
-	scummvm.vcproj scumm.vcproj simon.vcproj sky.vcproj scummvm.sln
-
-# The dist file name
-ZIPFILE := scummvm-`date '+%Y-%m-%d'`.zip
-
 # The name for the directory used for dependency tracking
 DEPDIR := .deps
 
@@ -118,7 +107,7 @@ distclean: clean
 clean:
 	$(RM) $(OBJS) $(EXECUTABLE)
 
-.PHONY: all clean dist distclean plugins
+.PHONY: all clean dist distclean
 
 .SUFFIXES: .cxx
 ifndef HAVE_GCC3
@@ -170,83 +159,30 @@ config.mak: $(srcdir)/configure
 
 install: all
 	$(INSTALL) -d "$(DESTDIR)$(BINDIR)"
-	$(INSTALL) -c -s -m 755 "$(srcdir)/scummvm$(EXEEXT)" "$(DESTDIR)$(BINDIR)/scummvm$(EXEEXT)"
-	$(INSTALL) -d "$(DESTDIR)$(MANDIR)/man6/"
-	$(INSTALL) -c -m 644 "$(srcdir)/scummvm.6" "$(DESTDIR)$(MANDIR)/man6/scummvm.6"
-	$(INSTALL) -d "$(DESTDIR)$(PREFIX)/share/pixmaps/"
-	$(INSTALL) -c -m 644 "$(srcdir)/scummvm.xpm" "$(DESTDIR)$(PREFIX)/share/pixmaps/scummvm.xpm"
-	$(INSTALL) -d "$(DESTDIR)$(PREFIX)/share/doc/scummvm/"
-	$(INSTALL) -c -m 644 "$(srcdir)/AUTHORS" "$(srcdir)/COPYING" "$(srcdir)/NEWS" "$(srcdir)/README" "$(DESTDIR)$(PREFIX)/share/doc/scummvm/"
+	$(INSTALL) -c -s -m 755 "$(srcdir)/stella$(EXEEXT)" "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
+	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)"
+	$(INSTALL) -c -m 644 "$(srcdir)/Announce.txt" "$(srcdir)/Changes.txt" "$(srcdir)/Copyright.txt" "$(srcdir)/License.txt" "$(srcdir)/README-PSP.txt" "$(srcdir)/README-SDL.txt" "$(srcdir)/Readme.txt" "$(srcdir)/Todo.txt" "$(srcdir)/docs/stella.html" "$(srcdir)/docs/debugger.html" "$(DESTDIR)$(DOCDIR)/"
+	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)/graphics"
+	$(INSTALL) -c -m 644 "$(srcdir)/docs/graphics/chucky_cheese.png" "$(srcdir)/docs/graphics/circuit.png" "$(srcdir)/docs/graphics/console.png" "$(srcdir)/docs/graphics/eventmapping.png" "$(srcdir)/docs/graphics/eventmapping_remap.png" "$(srcdir)/docs/graphics/jr_pacman.png" "$(srcdir)/docs/graphics/launcher_options_rom.png" "$(srcdir)/docs/graphics/launcher_options_snap.png" "$(srcdir)/docs/graphics/launcher.png" "$(srcdir)/docs/graphics/options_about.png" "$(srcdir)/docs/graphics/options_audio.png" "$(srcdir)/docs/graphics/options_gameinfo.png" "$(srcdir)/docs/graphics/options_help.png" "$(srcdir)/docs/graphics/options_video.png" "$(srcdir)/docs/graphics/pacman.png" "$(srcdir)/docs/graphics/rom_browser.png" "$(srcdir)/docs/graphics/secret_quest.png" "$(srcdir)/docs/graphics/space_invaders.png" "$(DESTDIR)$(DOCDIR)/graphics"
+	$(INSTALL) -d "$(DESTDIR)/etc"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/emucore/stella.pro" "$(DESTDIR)/etc"
+
+install-strip: install
+	strip stella$(EXEEXT)
 
 uninstall:
-	rm -f "$(DESTDIR)$(BINDIR)/scummvm$(EXEEXT)"
-	rm -f "$(DESTDIR)$(MANDIR)/man6/scummvm.6"
-	rm -f "$(DESTDIR)$(PREFIX)/share/pixmaps/scummvm.xpm"
-	rm -rf "$(DESTDIR)$(PREFIX)/share/doc/scummvm/"
+	rm -f "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
+	rm -rf "$(DESTDIR)$(DOCDIR)/"
+	rm -f "$(DESTDIR)/etc/stella.pro"
 
-scummvmico.o: scummvm.ico
-	windres scummvm.rc scummvmico.o
-
-dist:
-	$(RM) $(ZIPFILE)
-	$(ZIP) $(ZIPFILE) $(DISTFILES)
-
-deb:
-	ln -sf dists/debian;
-	debian/prepare
-	fakeroot debian/rules binary
-
-
-# Special target to create a application wrapper for Mac OS X
-bundle_name = ScummVM.app
-bundle: scummvm-static
-	mkdir -p $(bundle_name)/Contents/MacOS
-	mkdir -p $(bundle_name)/Contents/Resources
-	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
-	cp $(srcdir)/Info.plist $(bundle_name)/Contents/
-	cp $(srcdir)/scummvm.icns $(bundle_name)/Contents/Resources/
-	cp scummvm-static $(bundle_name)/Contents/MacOS/scummvm
-	$(srcdir)/tools/credits.pl --rtf > $(bundle_name)/Contents/Resources/Credits.rtf
-	strip $(bundle_name)/Contents/MacOS/scummvm
-
-# location of additional libs for OS X usually /sw/ for fink or
-# /opt/local/ for darwinports
-OSXOPT=/sw
-# Special target to create a static linked binary for Mac OS X
-scummvm-static: $(OBJS)
-	$(CXX) $(LDFLAGS) -o scummvm-static $(OBJS) \
-		`sdl-config --static-libs` \
-		$(OSXOPT)/lib/libmad.a \
-		$(OSXOPT)/lib/libvorbisfile.a \
-		$(OSXOPT)/lib/libvorbis.a \
-		$(OSXOPT)/lib/libogg.a \
-		$(OSXOPT)/lib/libmpeg2.a \
-		$(OSXOPT)/lib/libFLAC.a \
-		-lz
-
-# Special target to create a snapshot disk image for Mac OS X
-osxsnap: bundle
-	mkdir ScummVM-snapshot
-	cp AUTHORS ./ScummVM-snapshot/ScummVM\ Authors
-	cp COPYING ./ScummVM-snapshot/License
-	cp NEWS ./ScummVM-snapshot/News
-	cp README ./ScummVM-snapshot/ScummVM\ ReadMe
-	/Developer/Tools/SetFile -t TEXT -c ttxt ./ScummVM-snapshot/*
-	/Developer/Tools/CpMac -r $(bundle_name) ./ScummVM-snapshot/
-	hdiutil create -ov -format UDZO -srcfolder ScummVM-snapshot ScummVM-snapshot.dmg
-	rm -rf ScummVM-snapshot
-
-# Special target to create a win32 snapshot binary
-win32dist: scummvm$(EXEEXT)
-	mkdir -p $(WIN32PATH)
-	strip scummvm.exe -o $(WIN32PATH)/scummvm$(EXEEXT)
-	cp AUTHORS $(WIN32PATH)/AUTHORS.txt
-	cp COPYING $(WIN32PATH)/COPYING.txt
-	cp NEWS $(WIN32PATH)/NEWS.txt
-	cp README $(WIN32PATH)/README.txt
-	cp /usr/local/README-SDL.txt $(WIN32PATH)
-	cp /usr/local/bin/SDL.dll $(WIN32PATH)
-	u2d $(WIN32PATH)/*.txt
+# Special target to create a snapshot binary
+dist: stella$(EXEEXT)
+	rm -rf stella-snapshot
+	mkdir -p stella-snapshot/docs
+	strip stella$(EXEEXT) -o stella-snapshot/stella$(EXEEXT)
+	cp src/emucore/stella.pro stella-snapshot
+	cp Announce.txt Changes.txt Copyright.txt License.txt README-PSP.txt README-SDL.txt Readme.txt Todo.txt stella-snapshot/docs
+	cp -r docs/graphics stella-snapshot/docs
 
 # Special target to create psp stuff
 psp-package: $(EXECUTABLE)
@@ -284,4 +220,4 @@ psp-layout:
 	umount $(PSP-MOUNTPOINT)
 
 
-.PHONY: deb bundle test osxsnap win32dist dist install uninstall
+.PHONY: deb bundle test win32dist dist install uninstall

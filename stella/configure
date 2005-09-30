@@ -242,9 +242,9 @@ Configuration:
   -h, --help             display this help and exit
 
 Installation directories:
-  --prefix=DIR           use this prefix for installing Stella [/usr/local]
-  --bindir=DIR           directory to install the stella binary in [PREFIX/bin]
-  --mandir=DIR           directory to install the manpage in [PREFIX/man]
+  --prefix=DIR           use this prefix for installing stella [/usr/local]
+  --bindir=DIR           directory to install the stella binary [PREFIX/bin]
+  --docdir=DIR           directory to install documentation [PREFIX/share/doc/stella]
 
 Optional Features:
   --disable-gl           disable OpenGL rendering support
@@ -321,8 +321,8 @@ for ac_option in $@; do
       --bindir=*)
         _bindir=`echo $ac_option | cut -d '=' -f 2`
         ;;
-      --mandir=*)
-        _mandir=`echo $ac_option | cut -d '=' -f 2`
+      --docdir=*)
+        _docdir=`echo $ac_option | cut -d '=' -f 2`
         ;;
       *)
         echo "warning: unrecognised option: $ac_option"
@@ -600,7 +600,7 @@ echo "$_opengl"
 # figure out installation directories
 #
 test -z "$_bindir" && _bindir="$_prefix/bin"
-test -z "$_mandir" && _mandir="$_prefix/man"
+test -z "$_docdir" && _docdir="$_prefix/share/doc/stella"
 
 echo
 echo_n "Summary:"
@@ -802,7 +802,7 @@ NASMFLAGS := $NASMFLAGS
 
 PREFIX := $_prefix
 BINDIR := $_bindir
-MANDIR := $_mandir
+DOCDIR := $_docdir
 
 $_make_def_HAVE_GCC3
 #$_make_def_HAVE_NASM

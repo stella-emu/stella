@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.2 2005-09-23 23:35:02 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.3 2005-09-30 22:12:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -480,6 +480,17 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
       }
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect PromptWidget::getRect() const
+{
+  // Account for attached scrollbar when calculating width
+  int x = getAbsX() - 1,  y = getAbsY() - 1,
+      w = getWidth() + kScrollBarWidth + 2, h = getHeight() + 2;
+
+  GUI::Rect r(x, y, x+w, y+h);
+  return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
