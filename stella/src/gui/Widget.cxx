@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.37 2005-09-30 00:40:34 stephena Exp $
+// $Id: Widget.cxx,v 1.38 2005-09-30 00:53:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,7 +40,6 @@ Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
     _id(-1),
     _flags(0),
     _hasFocus(false),
-    _drawFocusBorder(false),
     _color(kTextColor)
 {
   // Insert into the widget list of the boss
@@ -76,16 +75,6 @@ void Widget::draw()
   _x = getAbsX();
   _y = getAbsY();
 
-if(_type == kEditTextWidget)
-{
-  EditableWidget* t = (EditableWidget*) this;
-  if(t->getEditString() == "name")
-  {
-cerr << "oldX = " << oldX << ", oldY = " << oldY << endl
-     << "_x = " << _x << ", _y = " << _y << endl << endl;
-  }
-}
-
   // Clear background (unless alpha blending is enabled)
   if(_flags & WIDGET_CLEARBG)
     fb.fillRect(_x, _y, _w, _h, kBGColor);
@@ -105,13 +94,6 @@ cerr << "oldX = " << oldX << ", oldY = " << oldY << endl
 
   // Now perform the actual widget draw
   drawWidget((_flags & WIDGET_HILITED) ? true : false);
-
-  // Draw focus border
-  if(_drawFocusBorder)
-  {
-
-    _drawFocusBorder = false;
-  }
 
   // Restore x/y
   if (_flags & WIDGET_BORDER) {
@@ -254,7 +236,6 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     {
       tmp->lostFocus();
       if(!(tmp->_flags & WIDGET_NODRAW_FOCUS))
-//        tmp->_drawFocusBorder = true;
         fb.frameRect(x, y, w, h, kBGColor);
 
       tmp->setDirty(); tmp->draw();
@@ -295,7 +276,6 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
 
   tmp->receivedFocus();
   if(!(tmp->_flags & WIDGET_NODRAW_FOCUS))
-//    tmp->_drawFocusBorder = true;
     fb.frameRect(x, y, w, h, kTextColorEm, kDashLine);
 
   tmp->setDirty(); tmp->draw();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.10 2005-09-30 00:40:34 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.11 2005-09-30 00:53:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,9 +32,6 @@ EditTextWidget::EditTextWidget(GuiObject* boss, int x, int y, int w, int h,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kEditTextWidget;
-
-if(text == "name")
-  cerr << "EditTextWidget(): _x = " << _x << ", _y = " << _y << endl << endl;
 
   setEditString(text);
 }
@@ -71,9 +68,6 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::drawWidget(bool hilite)
 {
-//cerr << "EditTextWidget::drawWidget(): (" << _editString << ") " << this << endl
-//     << "_x = " << _x << ", _y = " << _y << endl << endl;
-
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   // Draw a thin frame around us.
