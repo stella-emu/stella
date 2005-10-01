@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.15 2005-09-30 18:17:29 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.16 2005-10-01 01:42:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -112,10 +112,9 @@ GameInfoDialog::GameInfoDialog(
   myType = new PopUpWidget(myTab, xpos+lwidth, ypos,
                            font.getStringWidth("Auto-detect") + 15, lineHeight,
                            "", 0, 0);
-  myType->appendEntry("Auto-detect", 1);
-  myType->appendEntry("2K", 2);
-  myType->appendEntry("3E", 3);
-  wid.push_back(myType);  // FIXME - add rest of types
+  for(i = 0; i < 21; ++i)
+    myType->appendEntry(ourCartridgeList[i].name, i+1);
+  wid.push_back(myType);
 
   // Add items for tab 0
   addToFocusList(wid, tabID);
@@ -302,7 +301,14 @@ void GameInfoDialog::loadConfig()
   else
     mySound->setSelectedTag(0);
 
-  // FIXME - add type properties
+  s = myGameProperties->get("Cartridge.Type", true);
+  for(i = 0; i < 21; ++i)
+  {
+    if(s == ourCartridgeList[i].comparitor)
+      break;
+  }
+  i = (i == 21) ? 0: i + 1;
+  myType->setSelectedTag(i);
 
   // Console properties
   s = myGameProperties->get("Console.LeftDifficulty", true);
@@ -406,7 +412,15 @@ void GameInfoDialog::saveConfig()
   s = (tag == 1) ? "Mono" : "Stereo";
   myGameProperties->set("Cartridge.Sound", s);
 
-  // FIXME - type
+  tag = myType->getSelectedTag();
+  for(i = 0; i < 21; ++i)
+  {
+    if(i == tag-1)
+    {
+      myGameProperties->set("Cartridge.Type", ourCartridgeList[i].comparitor);
+      break;
+    }
+  }
 
   // Console properties
   tag = myLeftDiff->getSelectedTag();
@@ -489,4 +503,29 @@ const PropType GameInfoDialog::ourControllerList[5] = {
   { "Keyboard",     "KEYBOARD"     },
   { "Paddles",      "PADDLES"      },
   { "Joystick",     "JOYSTICK"     }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const PropType GameInfoDialog::ourCartridgeList[21] = {
+  { "Auto-detect", "AUTO-DETECT" },
+  { "Cart2K",      "2K"   },
+  { "Cart3E",      "3E"   },
+  { "Cart3F",      "3F"   },
+  { "Cart4K",      "4K"   },
+  { "CartAR",      "AR"   },
+  { "CartCV",      "CV"   },
+  { "CartDPC",     "DPC"  },
+  { "CartE0",      "E0"   },
+  { "CartE7",      "E7"   },
+  { "CartF4",      "F4"   },
+  { "CartF4SC",    "F4SC" },
+  { "CartF6",      "F6"   },
+  { "CartF6SC",    "F6SC" },
+  { "CartF8",      "F8"   },
+  { "CartF8SC",    "F8SC" },
+  { "CartFASC",    "FASC" },
+  { "CartFE",      "FE"   },
+  { "CartMB",      "MB"   },
+  { "CartMC",      "MC"   },
+  { "CartUA",      "UA"   }
 };

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.8 2005-09-11 22:55:51 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.9 2005-10-01 01:42:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -93,12 +93,7 @@ class PopUpWidget : public Widget, public CommandSender
 //
 class PopUpDialog : public Dialog
 {
-  protected:
-    PopUpWidget* _popUpBoss;
-    int          _clickX, _clickY;
-    uInt8*       _buffer;
-    int          _selection;
-    int          _openTime;
+  friend class PopUpWidget;
 
   public:
     PopUpDialog(PopUpWidget* boss, int clickX, int clickY);
@@ -112,7 +107,8 @@ class PopUpDialog : public Dialog
 
   protected:
     void drawMenuEntry(int entry, bool hilite);
-	
+
+    void recalc();
     int findItem(int x, int y) const;
     void setSelection(int item);
     bool isMouseDown();
@@ -122,6 +118,15 @@ class PopUpDialog : public Dialog
 
   private:
     void sendSelection();
+
+  protected:
+    PopUpWidget* _popUpBoss;
+    int          _clickX, _clickY;
+    uInt8*       _buffer;
+    int          _selection;
+    int          _openTime;
+    bool         _twoColumns;
+    int          _entriesPerColumn;
 };
 
 #endif
