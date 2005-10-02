@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.102 2005-09-30 18:17:29 stephena Exp $
+// $Id: EventHandler.cxx,v 1.103 2005-10-02 19:10:39 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -65,6 +65,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myQuitFlag(false),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
+    myEmulateMouseFlag(false),
     myPaddleMode(0),
     myMouseMove(3)
 {
@@ -105,6 +106,7 @@ EventHandler::EventHandler(OSystem* osystem)
   setActionMappings();
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
+  myEmulateMouseFlag = myOSystem->settings().getBool("joymouse");
 
   myFryingFlag = false;
 
@@ -282,7 +284,8 @@ void EventHandler::poll(uInt32 time)
   SDL_Event event;
 
   // Handle joystick to mouse emulation
-  handleJoyMouse(time);
+  if(myEmulateMouseFlag)
+    handleJoyMouse(time);
 
   // Check for an event
   while(SDL_PollEvent(&event))
@@ -706,21 +709,6 @@ void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 sta
   else  // Determine which dialog to send events to
   {
     // Make sure the unicode field is valid
-/*
-    if (key >= SDLK_F1 && key <= SDLK_F9)
-      unicode = key - SDLK_F1 + 315;
-    else if (key >= SDLK_KP0 && key <= SDLK_KP9)
-      unicode = key - SDLK_KP0 + '0';
-    else if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
-             (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
-      unicode = key;
-    else if (key >= 'a' && key <= 'z' && mod & KMOD_SHIFT)
-      unicode = key & ~0x20;
-    else if (key >= SDLK_NUMLOCK && key <= SDLK_UNDO)
-      return;
-    else
-      unicode = key;
-*/
     if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
        (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
       unicode = key;
@@ -1011,7 +999,8 @@ void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
 void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
 {
   // Joystick button zero acts as left mouse button and cannot be remapped
-  if(myState != S_EMULATE && code == JOYMOUSE_LEFT_BUTTON)
+  if(myState != S_EMULATE && code == JOYMOUSE_LEFT_BUTTON &&
+     myEmulateMouseFlag)
   {
     // This button acts as mouse button zero, and can never be remapped
     SDL_MouseButtonEvent mouseEvent;

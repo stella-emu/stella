@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.61 2005-09-22 22:10:57 stephena Exp $
+// $Id: Settings.cxx,v 1.62 2005-10-02 19:10:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -58,6 +58,7 @@ Settings::Settings(OSystem* osystem)
   set("keymap", "");
   set("joymap", "");
   set("paddle", "0");
+  set("joymouse", "false");
 
   set("showinfo", "false");
 
@@ -279,6 +280,7 @@ void Settings::usage()
     << endl
   #endif
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
+    << "  -joymouse     <1|0>          Enable joystick emulates mouse in GUI\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"

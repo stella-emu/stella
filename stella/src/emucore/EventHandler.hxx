@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.51 2005-09-30 18:17:29 stephena Exp $
+// $Id: EventHandler.hxx,v 1.52 2005-10-02 19:10:39 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -74,7 +74,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.51 2005-09-30 18:17:29 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.52 2005-10-02 19:10:39 stephena Exp $
 */
 class EventHandler
 {
@@ -363,6 +363,9 @@ class EventHandler
 
     // Indicates whether to use launcher mode when exiting a game
     bool myUseLauncherFlag;
+
+    // Indicates whether the joystick emulates the mouse in GUI mode
+    bool myEmulateMouseFlag;
 
     // Indicates whether or not we're in frying mode
     bool myFryingFlag;

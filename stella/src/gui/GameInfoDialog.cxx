@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.16 2005-10-01 01:42:36 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.17 2005-10-02 19:10:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -110,8 +110,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
                        "Type:", kTextAlignLeft);
   myType = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                           font.getStringWidth("Auto-detect") + 15, lineHeight,
-                           "", 0, 0);
+                           font.getStringWidth("CV (Commavid extra ram)") + 15,
+                           lineHeight, "", 0, 0);
   for(i = 0; i < 21; ++i)
     myType->appendEntry(ourCartridgeList[i].name, i+1);
   wid.push_back(myType);
@@ -508,24 +508,24 @@ const PropType GameInfoDialog::ourControllerList[5] = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PropType GameInfoDialog::ourCartridgeList[21] = {
   { "Auto-detect", "AUTO-DETECT" },
-  { "Cart2K",      "2K"   },
-  { "Cart3E",      "3E"   },
-  { "Cart3F",      "3F"   },
-  { "Cart4K",      "4K"   },
-  { "CartAR",      "AR"   },
-  { "CartCV",      "CV"   },
-  { "CartDPC",     "DPC"  },
-  { "CartE0",      "E0"   },
-  { "CartE7",      "E7"   },
-  { "CartF4",      "F4"   },
-  { "CartF4SC",    "F4SC" },
-  { "CartF6",      "F6"   },
-  { "CartF6SC",    "F6SC" },
-  { "CartF8",      "F8"   },
-  { "CartF8SC",    "F8SC" },
-  { "CartFASC",    "FASC" },
-  { "CartFE",      "FE"   },
-  { "CartMB",      "MB"   },
-  { "CartMC",      "MC"   },
-  { "CartUA",      "UA"   }
+  { "2K (2K Atari)",            "2K"   },
+  { "3E (32K Tigervision)",     "3E"   },
+  { "3F (512K Tigervision)",    "3F"   },
+  { "4K (4K Atari)",            "4K"   },
+  { "AR (Supercharger)",        "AR"   },
+  { "CV (Commavid extra ram)",  "CV"   },
+  { "DPC (Pitfall II)",         "DPC"  },
+  { "E0 (8K Parker Bros)",      "E0"   },
+  { "E7 (16K M-network)",       "E7"   },
+  { "F4 (32K Atari)",           "F4"   },
+  { "F4SC (32K Atari + ram)",   "F4SC" },
+  { "F6 (16K Atari)",           "F6"   },
+  { "F6SC (16K Atari + ram)",   "F6SC" },
+  { "F8 (8K Atari)",            "F8"   },
+  { "F8SC (8K Atari + ram)",    "F8SC" },
+  { "FASC (CBS RAM Plus)",      "FASC" },
+  { "FE (8K Decathlon)",        "FE"   },
+  { "MB (Dynacom Megaboy)",     "MB"   },
+  { "MC (C. Wilkson Megacart)", "MC"   },
+  { "UA (8K UA Ltd.)",          "UA"   }
 };
