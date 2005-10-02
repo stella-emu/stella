@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.82 2005-09-25 20:18:46 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.83 2005-10-02 01:15:53 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -997,85 +997,114 @@ string DebuggerParser::trapStatus(int addr) {
 	return result;
 }
 
-bool DebuggerParser::validateArgs(int cmd) {
-	// cerr << "entering validateArgs(" << cmd << ")" << endl;
-	bool required = commands[cmd].parmsRequired;
-	parameters *p = commands[cmd].parms;
+bool DebuggerParser::validateArgs(int cmd)
+{
+  // cerr << "entering validateArgs(" << cmd << ")" << endl;
+  bool required = commands[cmd].parmsRequired;
+  parameters *p = commands[cmd].parms;
 
-	if(argCount == 0) {
-		if(required) {
-			commandResult = red("missing required argument(s)");
-			return false; // needed args. didn't get 'em.
-		} else {
-			return true;  // no args needed, no args got
-		}
-	}
+  if(argCount == 0)
+  {
+    if(required)
+    {
+      commandResult = red("missing required argument(s)");
+      return false; // needed args. didn't get 'em.
+    }
+    else
+      return true;  // no args needed, no args got
+  }
 
-	int curCount = 0;
+  // Figure out how many arguments are required by the command
+  int count = 0, argRequiredCount = 0;
+  while(*p != kARG_END_ARGS && *p != kARG_MULTI_BYTE)
+  {
+    count++;
+    *p++;
+  }
 
-	do {
-		if(argCount == curCount) {
-			return true;
-		}
+  // Evil hack: some commands intentionally take multiple arguments
+  // In this case, the required number of arguments is unbounded
+  argRequiredCount = (*p == kARG_END_ARGS) ? count : argCount;
 
-		int curArgInt = args[curCount];
-		string curArgStr = argStrings[curCount];
+  p = commands[cmd].parms;
+  int curCount = 0;
 
-		switch(*p) {
-			case kARG_WORD:
-				if(curArgInt < 0 || curArgInt > 0xffff) {
-					commandResult = red("invalid word argument (must be 0-$ffff)");
-					return false;
-				}
-				break;
+  do {
+    if(curCount >= argCount)
+      break;
 
-			case kARG_BYTE:
-				if(curArgInt < 0 || curArgInt > 0xff) {
-					commandResult = red("invalid byte argument (must be 0-$ff)");
-					return false;
-				}
-				break;
+    int curArgInt     = args[curCount];
+    string& curArgStr = argStrings[curCount];
 
-			case kARG_BOOL:
-				if(curArgInt != 0 && curArgInt != 1) {
-					commandResult = red("invalid boolean argument (must be 0 or 1)");
-					return false;
-				}
-				break;
+    switch(*p)
+    {
+      case kARG_WORD:
+        if(curArgInt < 0 || curArgInt > 0xffff)
+        {
+          commandResult = red("invalid word argument (must be 0-$ffff)");
+          return false;
+        }
+        break;
 
-			case kARG_BASE_SPCL:
-				if(curArgInt != 2 && curArgInt != 10 && curArgInt != 16
-					&& curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
-				{
-					commandResult = red("invalid base (must be #2, #10, #16, \"bin\", \"dec\", or \"hex\")");
-					return false;
-				}
-				break;
+      case kARG_BYTE:
+        if(curArgInt < 0 || curArgInt > 0xff)
+        {
+          commandResult = red("invalid byte argument (must be 0-$ff)");
+          return false;
+        }
+        break;
 
-			case kARG_LABEL:
-			case kARG_FILE:
-				break; // TODO: validate these (for now any string's allowed)
+      case kARG_BOOL:
+        if(curArgInt != 0 && curArgInt != 1)
+        {
+          commandResult = red("invalid boolean argument (must be 0 or 1)");
+          return false;
+        }
+        break;
 
-			case kARG_MULTI_BYTE:
-			case kARG_MULTI_WORD:
-				break; // FIXME: validate these (for now, any number's allowed)
+      case kARG_BASE_SPCL:
+        if(curArgInt != 2 && curArgInt != 10 && curArgInt != 16
+           && curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
+        {
+          commandResult = red("invalid base (must be #2, #10, #16, \"bin\", \"dec\", or \"hex\")");
+          return false;
+        }
+        break;
 
-			default:
-				commandResult = red("too many arguments");
-				return false;
-				break;
-		}
+      case kARG_LABEL:
+      case kARG_FILE:
+        break; // TODO: validate these (for now any string's allowed)
 
-		curCount++;
+      case kARG_MULTI_BYTE:
+      case kARG_MULTI_WORD:
+        break; // FIXME: validate these (for now, any number's allowed)
 
-	} while(*p++ != kARG_END_ARGS);
+      case kARG_END_ARGS:
+        break;
+    }
+    curCount++;
+    *p++;
 
-	if(curCount < argCount) {
-		commandResult = red("too many arguments");
-		return false;
-	}
+  } while(*p != kARG_END_ARGS && curCount < argRequiredCount);
 
-	return true;
+/*
+cerr << "curCount         = " << curCount << endl
+     << "argRequiredCount = " << argRequiredCount << endl
+     << "*p               = " << *p << endl << endl;
+*/
+
+  if(curCount < argRequiredCount)
+  {
+    commandResult = red("missing required argument(s)");
+    return false;
+  }
+  else if(argCount > curCount)
+  {
+    commandResult = red("too many arguments");
+    return false;
+  }
+
+  return true;
 }
 
 // main entry point: PromptWidget calls this method.
@@ -1417,6 +1446,7 @@ void DebuggerParser::executeD() {
 void DebuggerParser::executeDefine() {
 	// TODO: check if label already defined?
 	debugger->addLabel(argStrings[0], args[1]);
+	debugger->myRom->invalidate();
 	commandResult = "label " + argStrings[0] + " defined as " + debugger->valueToString(args[1]);
 }
 
@@ -1728,7 +1758,10 @@ void DebuggerParser::executeTrapwrite() {
 // "undef"
 void DebuggerParser::executeUndef() {
 	if(debugger->equateList->undefine(argStrings[0]))
+	{
+		debugger->myRom->invalidate();
 		commandResult = argStrings[0] + " now undefined";
+	}
 	else
 		commandResult = red("no such label");
 }
