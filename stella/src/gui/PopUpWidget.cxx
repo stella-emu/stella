@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.21 2005-10-01 01:42:36 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.22 2005-10-02 22:09:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,8 +45,8 @@ static unsigned int up_down_arrows[8] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpDialog::PopUpDialog(PopUpWidget* boss, int clickX, int clickY)
-    : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
-      _popUpBoss(boss)
+  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
+    _popUpBoss(boss)
 {
   // Copy the selection index
   _selection = _popUpBoss->_selectedItem;
@@ -56,10 +56,6 @@ PopUpDialog::PopUpDialog(PopUpWidget* boss, int clickX, int clickY)
   _y = _popUpBoss->getAbsY() - _popUpBoss->_selectedItem * kLineHeight;
   _w = _popUpBoss->_w - kLineHeight + 2 - _popUpBoss->_labelWidth;
   _h = 2;
-
-  // Remember original mouse position
-  _clickX = clickX - _x;
-  _clickY = clickY - _y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,7 +66,6 @@ void PopUpDialog::drawDialog()
   // by the ScummVM guys, so I'm not going to mess with it.
   if(_dirty)
   {
-//    cerr << "PopUpDialog::drawDialog()\n";
     FrameBuffer& fb = instance()->frameBuffer();
 
     // Draw the menu border
@@ -101,11 +96,11 @@ void PopUpDialog::drawDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpDialog::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  sendSelection();
-
-  _clickX = -1;
-  _clickY = -1;
-  _openTime = (unsigned int)-1;
+  // Only make a selection if we're in the dialog area
+  if(x >= 0 && x < _w && y >= 0 && y < _h)
+    sendSelection();
+  else
+    cancelSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,6 +139,9 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
     case '\n':      // enter/return
     case '\r':
       sendSelection();
+      break;
+    case 27:        // escape
+      cancelSelection();
       break;
     case 256+17:    // up arrow
       moveUp();
@@ -321,6 +319,13 @@ void PopUpDialog::sendSelection()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpDialog::cancelSelection()
+{
+  setSelection(_oldSelection);
+  parent()->removeDialog();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PopUpDialog::isMouseDown()
 {
   // TODO - need a way to determine whether any mouse buttons are pressed or not.
@@ -374,11 +379,11 @@ void PopUpDialog::moveDown()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
                          const string& label, int labelWidth, int cmd)
-    : Widget(boss, x, y - 1, w, h + 2),
-      CommandSender(boss),
-      _label(label),
-      _labelWidth(labelWidth),
-      _cmd(cmd)
+  : Widget(boss, x, y - 1, w, h + 2),
+    CommandSender(boss),
+    _label(label),
+    _labelWidth(labelWidth),
+    _cmd(cmd)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_NODRAW_FOCUS;
@@ -403,7 +408,10 @@ PopUpWidget::~PopUpWidget()
 void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if(isEnabled())
+  {
+    myPopUpDialog->_oldSelection = _selectedItem;
     parent()->addDialog(myPopUpDialog);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

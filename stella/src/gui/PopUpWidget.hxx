@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.9 2005-10-01 01:42:36 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.10 2005-10-02 22:09:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -118,12 +118,14 @@ class PopUpDialog : public Dialog
 
   private:
     void sendSelection();
+    void cancelSelection();
 
   protected:
     PopUpWidget* _popUpBoss;
     int          _clickX, _clickY;
     uInt8*       _buffer;
     int          _selection;
+    int          _oldSelection;
     int          _openTime;
     bool         _twoColumns;
     int          _entriesPerColumn;
