@@ -777,7 +777,14 @@ if test "$_build_joystick" = yes ; then
 	DEFINES="$DEFINES -DJOYSTICK_SUPPORT"
 fi
 
-
+# 20051003 bkw: fix static Linux build.
+# No guarantee this will work for anyone other than me, and no
+# guarantee it's needed by anyone but me (and Steve)...
+if test "$_host_os" = unix ; then
+  if test "$_build_static" = yes ; then
+    LIBS="`echo \"$LIBS\" | sed 's/-lz -lpng/-lpng -lz/'`"
+  fi
+fi
 
 echo "Creating config.mak"
 cat > config.mak << EOF
