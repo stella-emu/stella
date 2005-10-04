@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.11 2005-09-30 00:53:30 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.12 2005-10-04 22:46:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,6 +32,8 @@ EditTextWidget::EditTextWidget(GuiObject* boss, int x, int y, int w, int h,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kEditTextWidget;
+
+  _editable = true;
 
   setEditString(text);
 }
@@ -62,7 +64,9 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
   }
 
   if (setCaretPos(i))
+  {
     setDirty(); draw();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
