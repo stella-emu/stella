@@ -286,7 +286,7 @@
 	<key>CFBundleExecutable</key>
 	<string>StellaOSX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.0 Alpha 7</string>
+	<string>2.0 Beta 1</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -297,12 +297,14 @@
 	<string>StellaOSX2.0</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>StellaOSX 2.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>2.0 Alpha 7</string>
+	<string>2.0 Beta 1</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
@@ -407,7 +409,6 @@
 				2D9217FF0857CC88001D664B,
 				2D659E38085D3DD6005D96C8,
 				2D659E3C085D3DD6005D96C8,
-				2D403B9F086116C2001E31A1,
 				2D403BA7086116D1001E31A1,
 				2D403BA9086116D1001E31A1,
 				2D403BAB086116D1001E31A1,
@@ -479,6 +480,7 @@
 				2D6CC10608C811A600B8F642,
 				2D6CC10808C811A600B8F642,
 				2DE7243008CE910900C889A8,
+				2D1DF99908ECE09E00BAEE4F,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -584,7 +586,6 @@
 				2D9217FE0857CC88001D664B,
 				2D659E37085D3DD6005D96C8,
 				2D659E3B085D3DD6005D96C8,
-				2D403B9E086116C2001E31A1,
 				2D403BA6086116D1001E31A1,
 				2D403BA8086116D1001E31A1,
 				2D403BAA086116D1001E31A1,
@@ -653,6 +654,7 @@
 				2D6CC10508C811A600B8F642,
 				2D6CC10708C811A600B8F642,
 				2DE7242F08CE910900C889A8,
+				2D1DF99808ECE09E00BAEE4F,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -831,6 +833,36 @@
 		};
 		2D1A6CD908513610007CDBA8 = {
 			fileRef = 2D1A6CD808513610007CDBA8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D1DF99608ECE09E00BAEE4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = BankRomCheat.cxx;
+			path = ../common/BankRomCheat.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D1DF99708ECE09E00BAEE4F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = BankRomCheat.hxx;
+			path = ../common/BankRomCheat.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D1DF99808ECE09E00BAEE4F = {
+			fileRef = 2D1DF99608ECE09E00BAEE4F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D1DF99908ECE09E00BAEE4F = {
+			fileRef = 2D1DF99708ECE09E00BAEE4F;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1396,36 +1428,6 @@
 			settings = {
 			};
 		};
-		2D403B9C086116C2001E31A1 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = AddrValueWidget.cxx;
-			path = ../gui/AddrValueWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D403B9D086116C2001E31A1 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = AddrValueWidget.hxx;
-			path = ../gui/AddrValueWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D403B9E086116C2001E31A1 = {
-			fileRef = 2D403B9C086116C2001E31A1;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D403B9F086116C2001E31A1 = {
-			fileRef = 2D403B9D086116C2001E31A1;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		2D403BA0086116D1001E31A1 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1620,6 +1622,8 @@
 		};
 		2D6050C5089876F300C6DE89 = {
 			children = (
+				2D1DF99608ECE09E00BAEE4F,
+				2D1DF99708ECE09E00BAEE4F,
 				2DA15DE708C69CA5000E496A,
 				2DA15DE808C69CA5000E496A,
 				2DA15DE908C69CA5000E496A,
@@ -1787,8 +1791,6 @@
 			children = (
 				2DDBEAA3084578BF00812C11,
 				2DDBEAA4084578BF00812C11,
-				2D403B9C086116C2001E31A1,
-				2D403B9D086116C2001E31A1,
 				2DDBEAA5084578BF00812C11,
 				2DDBEAA6084578BF00812C11,
 				2DDBEAA7084578BF00812C11,
