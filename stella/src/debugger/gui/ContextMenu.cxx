@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.3 2005-09-23 23:35:02 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.4 2005-10-06 17:28:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -157,10 +157,10 @@ void ContextMenu::setSelection(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::sendSelection()
 {
-  sendCommand(kCMenuItemSelectedCmd, _selectedItem, -1);
-
   // We remove the dialog when the user has selected an item
   parent()->removeDialog();
+
+  sendCommand(kCMenuItemSelectedCmd, _selectedItem, -1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

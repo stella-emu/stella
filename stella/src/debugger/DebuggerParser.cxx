@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.83 2005-10-02 01:15:53 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.84 2005-10-06 17:28:54 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1673,7 +1673,7 @@ void DebuggerParser::executeSave() {
 // "saverom"
 void DebuggerParser::executeSaverom() {
   if(debugger->saveROM(argStrings[0]))
-    commandResult = "saved ROM";
+    commandResult = "saved ROM as " + argStrings[0];
   else
     commandResult = red("failed to save ROM");
 }

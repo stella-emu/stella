@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.7 2005-09-23 23:35:02 stephena Exp $
+// $Id: RomWidget.cxx,v 1.8 2005-10-06 17:28:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,9 +26,14 @@
 #include "CpuDebug.hxx"
 #include "PackedBitArray.hxx"
 #include "GuiObject.hxx"
+#include "InputTextDialog.hxx"
 #include "ContextMenu.hxx"
 #include "RomListWidget.hxx"
 #include "RomWidget.hxx"
+
+enum {
+  kRomNameEntered = 'RWrn'
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
@@ -50,6 +55,10 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Calculate real dimensions
   _w = myRomList->getWidth();
   _h = myRomList->getHeight();
+
+  // Create dialog box for save ROM (get name)
+  mySaveRom = new InputTextDialog(boss, font, _x + 50, _y + 80);
+  mySaveRom->setTarget(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -81,10 +90,27 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       const string& rmb = myRomList->myMenu->getSelectedString();
 
       if(rmb == "Save ROM")
-        saveROM();
+      {
+        mySaveRom->setTitle("");
+        mySaveRom->setEmitSignal(kRomNameEntered);
+        parent()->addDialog(mySaveRom);
+      }
       else if(rmb == "Set PC")
         setPC(myRomList->getSelected());
 
+      break;
+    }
+
+    case kRomNameEntered:
+    {
+      const string& rom = mySaveRom->getResult();
+      if(rom == "")
+        mySaveRom->setTitle("Invalid name");
+      else
+      {
+        saveROM(rom);
+        parent()->removeDialog();
+      }
       break;
     }
   }
@@ -193,7 +219,9 @@ void RomWidget::patchROM(int data, const string& bytes)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::saveROM()
+void RomWidget::saveROM(const string& rom)
 {
-cerr << "save ROM\n";
+  ostringstream command;
+  command << "saverom " << rom;
+  instance()->debugger().run(command.str());
 }

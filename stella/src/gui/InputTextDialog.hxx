@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.2 2005-08-11 19:12:39 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.3 2005-10-06 17:28:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,8 +37,8 @@ class InputTextDialog : public Dialog, public CommandSender
     const string& getResult() { return _input->getEditString(); }
 
     void setEditString(const string& str) { _input->setEditString(str); }
-    void setTitle(const string& title) { _title->setLabel(title); }
     void setEmitSignal(int cmd) { _cmd = cmd; }
+    void setTitle(const string& title);
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
@@ -48,6 +48,7 @@ class InputTextDialog : public Dialog, public CommandSender
     EditTextWidget*   _input;
 
     int	 _cmd;
+    bool _errorFlag;
 };
 
 #endif

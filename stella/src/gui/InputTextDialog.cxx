@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.5 2005-09-26 19:10:37 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.6 2005-10-06 17:28:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,7 +37,8 @@ enum {
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  int x, int y)
   : Dialog(boss->instance(), boss->parent(), x, y, 16, 16),
-    CommandSender(boss)
+    CommandSender(boss),
+    _errorFlag(false)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
@@ -78,6 +79,13 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::setTitle(const string& title)
+{
+  _title->setLabel(title);
+  _errorFlag = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
                                     int data, int id)
 {
@@ -96,9 +104,19 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
+    case kEditChangedCmd:
+      // Erase the invalid message once editing is restarted
+      if(_errorFlag)
+      {
+        _title->setLabel("");
+        _errorFlag = false;
+      }
+      break;
+
     case kEditCancelCmd:
       Dialog::handleCommand(sender, kCloseCmd, data, id);
       break;
+
 
     default:
       Dialog::handleCommand(sender, cmd, data, id);

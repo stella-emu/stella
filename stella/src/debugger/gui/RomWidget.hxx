@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.5 2005-09-23 17:38:27 stephena Exp $
+// $Id: RomWidget.hxx,v 1.6 2005-10-06 17:28:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define ROM_WIDGET_HXX
 
 class GuiObject;
+class InputTextDialog;
 class RomListWidget;
 class StringList;
 
@@ -53,7 +54,7 @@ class RomWidget : public Widget, public CommandSender
     void setBreak(int data);
     void setPC(int data);
     void patchROM(int data, const string& bytes);
-    void saveROM();
+    void saveROM(const string& rom);
 
   private:
     RomListWidget* myRomList;
@@ -63,6 +64,8 @@ class RomWidget : public Widget, public CommandSender
 
     /** List of line numbers indexed by address */
     AddrToLine myLineList;
+
+    InputTextDialog* mySaveRom;
 
     bool myListIsDirty;
     bool mySourceAvailable;

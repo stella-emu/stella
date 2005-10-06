@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.95 2005-09-23 23:35:02 stephena Exp $
+// $Id: Debugger.cxx,v 1.96 2005-10-06 17:28:54 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1110,7 +1110,8 @@ const string Debugger::builtinHelp() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::saveROM(string filename) {
+bool Debugger::saveROM(string filename)
+{
   // TODO: error checking
   ofstream *out = new ofstream(filename.c_str(), ios::out | ios::binary);
   bool res = myConsole->cartridge().save(*out);
