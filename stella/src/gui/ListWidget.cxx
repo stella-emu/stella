@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.35 2005-09-30 22:12:18 stephena Exp $
+// $Id: ListWidget.cxx,v 1.36 2005-10-09 20:49:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -219,9 +219,8 @@ static bool matchingCharsIgnoringCase(string s, string pattern)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  // Ignore all mod keys
-  if(instance()->eventHandler().kbdControl(modifiers) ||
-     instance()->eventHandler().kbdAlt(modifiers))
+  // Ignore all Alt-mod keys
+  if(instance()->eventHandler().kbdAlt(modifiers))
     return true;
 
   bool handled = true;
