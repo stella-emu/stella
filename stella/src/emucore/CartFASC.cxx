@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
+// $Id: CartFASC.cxx,v 1.7 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -34,7 +34,7 @@ CartridgeFASC::CartridgeFASC(const uInt8* image)
   }
 
   // Initialize RAM with random values
-  Random random;
+  class Random random;
   for(uInt32 i = 0; i < 256; ++i)
   {
     myRAM[i] = random.next();

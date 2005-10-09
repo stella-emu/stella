@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.20 2005-09-28 22:49:06 stephena Exp $
+// $Id: GuiUtils.hxx,v 1.21 2005-10-09 17:31:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,7 @@
   Probably not very neat, but at least it works ...
 
   @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.20 2005-09-28 22:49:06 stephena Exp $
+  @version $Id: GuiUtils.hxx,v 1.21 2005-10-09 17:31:47 stephena Exp $
 */
 
 #define kFontHeight   10
@@ -70,7 +70,7 @@ enum Size {
   NextSize
 };
 
-static const string& EmptyString("");
+static const string EmptyString("");
 
 template<typename T> inline void SWAP(T &a, T &b) { T tmp = a; a = b; b = tmp; }
 template<typename T> inline T ABS (T x) { return (x>=0) ? x : -x; }

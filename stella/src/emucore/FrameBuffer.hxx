@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.57 2005-09-15 19:43:36 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.58 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -52,7 +52,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.57 2005-09-15 19:43:36 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.58 2005-10-09 17:31:47 stephena Exp $
 */
 class FrameBuffer
 {
@@ -211,7 +211,7 @@ class FrameBuffer
 
       @param palette  The array of colors
     */
-    void setPalette(const uInt32* palette);
+    virtual void setPalette(const uInt32* palette);
 
     /**
       This method should be called to draw a rectangular box with sides
@@ -393,14 +393,6 @@ class FrameBuffer
       @param h      The height of the area
     */
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
-
-    /**
-      Returns the current line dimensions (width/height) used by
-      hLine() and vLine().
-
-      @return  The line width/height (both are the same)
-    */
-    virtual uInt32 lineDim() = 0;
 
   protected:
     // The parent system for the framebuffer

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.61 2005-09-25 20:18:46 urchlay Exp $
+// $Id: TIA.cxx,v 1.62 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -46,13 +46,15 @@ TIA::TIA(const Console& console, Settings& settings)
       myCOLUP0(myColor[2]),
       myCOLUP1(myColor[3])
 {
+  uInt32 i;
+
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 300];
   myPreviousFrameBuffer = new uInt8[160 * 300];
 
   myFrameGreyed = false;
 
-  for(uInt32 i = 0; i < 6; ++i)
+  for(i = 0; i < 6; ++i)
     myBitEnabled[i] = true;
 
   for(uInt16 x = 0; x < 2; ++x)
@@ -92,10 +94,8 @@ TIA::TIA(const Console& console, Settings& settings)
     }
   }
 
-  for(uInt32 i = 0; i < 640; ++i)
-  {
+  for(i = 0; i < 640; ++i)
     ourDisabledMaskTable[i] = 0;
-  }
 
   // Compute all of the mask tables
   computeBallMaskTable();

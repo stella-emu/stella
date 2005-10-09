@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIASnd.cxx,v 1.2 2005-09-05 01:12:56 stephena Exp $
+// $Id: TIASnd.cxx,v 1.3 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -371,3 +371,6 @@ void TIASound::process(uInt8* buffer, uInt32 samples)
     }
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const int TIASound::TIASoundFrequency = 31400;

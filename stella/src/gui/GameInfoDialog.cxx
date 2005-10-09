@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.17 2005-10-02 19:10:39 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.18 2005-10-09 17:31:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -496,7 +496,9 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
   }
 }
 
+// FIXME - the following should be handled in a better way
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#ifndef _WIN32_WCE
 const PropType GameInfoDialog::ourControllerList[5] = {
   { "Booster-Grip", "BOOSTER-GRIP" },
   { "Driving",      "DRIVING"      },
@@ -504,8 +506,12 @@ const PropType GameInfoDialog::ourControllerList[5] = {
   { "Paddles",      "PADDLES"      },
   { "Joystick",     "JOYSTICK"     }
 };
+#else
+const PropType GameInfoDialog::ourControllerList[5];
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#ifndef _WIN32_WCE
 const PropType GameInfoDialog::ourCartridgeList[21] = {
   { "Auto-detect", "AUTO-DETECT" },
   { "2K (2K Atari)",            "2K"   },
@@ -529,3 +535,6 @@ const PropType GameInfoDialog::ourCartridgeList[21] = {
   { "MC (C. Wilkson Megacart)", "MC"   },
   { "UA (8K UA Ltd.)",          "UA"   }
 };
+#else
+const PropType GameInfoDialog::ourCartridgeList[21];
+#endif

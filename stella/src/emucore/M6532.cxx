@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.4 2005-06-16 00:55:58 stephena Exp $
+// $Id: M6532.cxx,v 1.5 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -31,7 +31,7 @@ M6532::M6532(const Console& console)
     : myConsole(console)
 {
   // Randomize the 128 bytes of memory
-  Random random;
+  class Random random;
 
   for(uInt32 t = 0; t < 128; ++t)
   {
@@ -56,7 +56,7 @@ const char* M6532::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {
-  Random random;
+  class Random random;
 
   myTimer = 25 + (random.next() % 75);
   myIntervalShift = 6;

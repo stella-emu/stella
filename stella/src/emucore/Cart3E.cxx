@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
+// $Id: Cart3E.cxx,v 1.7 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -39,7 +39,7 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
   }
 
   // Initialize RAM with random values
-  Random random;
+  class Random random;
   for(uInt32 i = 0; i < 32768; ++i)
   {
     myRam[i] = random.next();
@@ -199,6 +199,7 @@ void Cartridge3E::bank(uInt16 bank)
 
     uInt32 offset = bank * 1024;
     uInt16 shift = mySystem->pageShift();
+    uInt32 address;
   
     // Setup the page access methods for the current bank
     System::PageAccess access;
@@ -206,7 +207,7 @@ void Cartridge3E::bank(uInt16 bank)
     access.directPokeBase = 0;
   
     // Map read-port RAM image into the system
-    for(uInt32 address = 0x1000; address < 0x1400; address += (1 << shift))
+    for(address = 0x1000; address < 0x1400; address += (1 << shift))
     {
       access.directPeekBase = &myRam[offset + (address & 0x03FF)];
       mySystem->setPageAccess(address >> shift, access);
@@ -215,7 +216,7 @@ void Cartridge3E::bank(uInt16 bank)
     access.directPeekBase = 0;
 
     // Map write-port RAM image into the system
-    for(uInt32 address = 0x1400; address < 0x1800; address += (1 << shift))
+    for(address = 0x1400; address < 0x1800; address += (1 << shift))
     {
       access.directPokeBase = &myRam[offset + (address & 0x03FF)];
       mySystem->setPageAccess(address >> shift, access);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.10 2005-08-25 16:29:52 stephena Exp $
+// $Id: bspf.hxx,v 1.11 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.10 2005-08-25 16:29:52 stephena Exp $
+  @version $Id: bspf.hxx,v 1.11 2005-10-09 17:31:47 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -80,6 +80,11 @@ typedef unsigned int uInt32;
   #define STR_CASE_CMP strcasecmp
   #define STR_N_CASE_CMP strncasecmp
   #define IS_BLANK(c) isblank(c)
+#endif
+
+
+#ifdef _WIN32_WCE
+  #include "missing.h"
 #endif
 
 #endif

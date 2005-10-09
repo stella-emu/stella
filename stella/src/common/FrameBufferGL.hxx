@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.24 2005-09-15 19:43:36 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.25 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.24 2005-09-15 19:43:36 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.25 2005-10-09 17:31:47 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -187,14 +187,6 @@ class FrameBufferGL : public FrameBuffer
       @param h      The height of the area
     */
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-
-    /**
-      Returns the current line dimensions (width/height) used by
-      hLine() and vLine().
-
-      @return  The line width/height (both are the same)
-    */
-    virtual uInt32 lineDim() { return 1; /* zooming done at hardware level */ }
 
   private:
     bool createTextures();

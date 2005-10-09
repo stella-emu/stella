@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.103 2005-10-02 19:10:39 stephena Exp $
+// $Id: EventHandler.cxx,v 1.104 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -69,6 +69,8 @@ EventHandler::EventHandler(OSystem* osystem)
     myPaddleMode(0),
     myMouseMove(3)
 {
+  uInt32 i;
+
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
 
@@ -76,14 +78,14 @@ EventHandler::EventHandler(OSystem* osystem)
   myEvent = new Event();
 
   // Erase the KeyEvent arrays
-  for(Int32 i = 0; i < SDLK_LAST; ++i)
+  for(i = 0; i < SDLK_LAST; ++i)
   {
     myKeyTable[i] = Event::NoType;
     ourSDLMapping[i] = "";
   }
 
   // Erase the JoyEvent array
-  for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
+  for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     myJoyTable[i] = Event::NoType;
 
   // Erase the Message array
@@ -1133,10 +1135,12 @@ void EventHandler::setActionMappings()
   // Fill the ActionList with the current key and joystick mappings
   for(Int32 i = 0; i < 62; ++i)
   {
+    uInt32 j;
+
     Event::Type event = ourActionList[i].event;
     ourActionList[i].key = "None";
     string key = "";
-    for(uInt32 j = 0; j < SDLK_LAST; ++j)   // size of myKeyTable
+    for(j = 0; j < SDLK_LAST; ++j)   // size of myKeyTable
     {
       if(myKeyTable[j] == event)
       {
@@ -1146,7 +1150,7 @@ void EventHandler::setActionMappings()
           key = key + ", " + ourSDLMapping[j];
       }
     }
-    for(uInt32 j = 0; j < kNumJoysticks * kNumJoyButtons; ++j)
+    for(j = 0; j < kNumJoysticks * kNumJoyButtons; ++j)
     {
       if(myJoyTable[j] == event)
       {
@@ -1276,14 +1280,16 @@ void EventHandler::addJoyMapping(Event::Type event, uInt8 stick, uInt32 code)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event)
 {
+  uInt32 i;
+
   // Erase the KeyEvent arrays
-  for(Int32 i = 0; i < SDLK_LAST; ++i)
+  for(i = 0; i < SDLK_LAST; ++i)
     if(myKeyTable[i] == event && i != SDLK_TAB && i != SDLK_ESCAPE)
       myKeyTable[i] = Event::NoType;
   saveKeyMapping();
 
   // Erase the JoyEvent array
-  for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
+  for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     if(myJoyTable[i] == event)
       myJoyTable[i] = Event::NoType;
   saveJoyMapping();
@@ -1949,6 +1955,8 @@ void EventHandler::setSDLMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// FIXME - this must be handled better in the future ///
+#ifndef _WIN32_WCE
 ActionList EventHandler::ourActionList[62] = {
   { Event::ConsoleSelect,               "Select",                          "" },
   { Event::ConsoleReset,                "Reset",                           "" },
@@ -2021,6 +2029,9 @@ ActionList EventHandler::ourActionList[62] = {
   { Event::KeyboardOne0,                "P2 GamePad 0",                    "" },
   { Event::KeyboardOnePound,            "P2 GamePad #",                    "" }
 };
+#else
+ActionList EventHandler::ourActionList[62];
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::Type EventHandler::Paddle_Resistance[4] = {

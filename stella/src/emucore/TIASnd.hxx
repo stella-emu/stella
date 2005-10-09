@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIASnd.hxx,v 1.2 2005-09-05 01:12:56 stephena Exp $
+// $Id: TIASnd.hxx,v 1.3 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #ifndef TIASOUND_HXX
@@ -26,12 +26,12 @@
   hardware.
 
   @author  Bradford W. Mott
-  @version $Id: TIASnd.hxx,v 1.2 2005-09-05 01:12:56 stephena Exp $
+  @version $Id: TIASnd.hxx,v 1.3 2005-10-09 17:31:47 stephena Exp $
 */
 class TIASound
 {
   public:
-    static const int TIASoundFrequency = 31400;
+    static const int TIASoundFrequency;
 
   public:
     /**

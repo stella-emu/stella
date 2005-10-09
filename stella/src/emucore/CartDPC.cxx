@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.12 2005-07-30 19:14:35 urchlay Exp $
+// $Id: CartDPC.cxx,v 1.13 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -593,15 +593,16 @@ bool CartridgeDPC::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeDPC::getImage(int& size) {
+uInt8* CartridgeDPC::getImage(int& size)
+{
   size = 8192 + 2048 + 255;
 
-  for(int i=0; i<8192; i++)
+  int i;
+  for(i = 0; i < 8192; i++)
     myImageCopy[i] = myProgramImage[i];
 
-  for(int i=0; i<2048; i++)
+  for(i = 0; i < 2048; i++)
     myImageCopy[i + 8192] = myDisplayImage[i];
 
   return &myImageCopy[0];
 }
-

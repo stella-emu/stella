@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.40 2005-09-18 14:40:55 optixx Exp $
+// $Id: OSystem.cxx,v 1.41 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -22,26 +22,32 @@
 
 #include "unzip.h"
 
+// FIXME - clean up this mess of platform-specific ifdefs
 #include "FrameBuffer.hxx"
 #include "FrameBufferSoft.hxx"
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
 #endif
 
+#if defined(PSP)
+  #include "FrameBufferPSP.hxx"
+#elif defined (_WIN32_WCE)
+  #include "FrameBufferWinCE.hxx"
+#endif
+
 #include "Sound.hxx"
 #include "SoundNull.hxx"
 #ifdef SOUND_SUPPORT
-  #include "SoundSDL.hxx"
+  #ifndef _WIN32_WCE
+    #include "SoundSDL.hxx"
+  #else
+    #include "SoundWinCE.hxx"
+  #endif
 #endif
 
 #ifdef DEVELOPER_SUPPORT
   #include "Debugger.hxx"
 #endif
-
-#ifdef PSP
-  #include "FrameBufferPSP.hxx"
-#endif
-
 
 #include "FSNode.hxx"
 #include "Settings.hxx"
@@ -177,8 +183,10 @@ bool OSystem::createFrameBuffer(bool showmessage)
   string video = mySettings->getString("video");
 
   if(video == "soft")
-#ifdef PSP
+#if defined (PSP)
     myFrameBuffer = new FrameBufferPSP(this);
+#elif defined (WIN32_WCE)
+    myFrameBuffer = new FrameBufferWinCE(this);
 #else
     myFrameBuffer = new FrameBufferSoft(this);
 #endif
@@ -255,7 +263,11 @@ void OSystem::createSound()
 
   // And recreate a new sound device
 #ifdef SOUND_SUPPORT
-  mySound = new SoundSDL(this);
+  #if defined (WIN32_WCE)
+    mySound = new SoundWinCE(this);
+  #else
+    mySound = new SoundSDL(this);
+  #endif
 #else
   mySettings->setBool("sound", false);
   mySound = new SoundNull(this);

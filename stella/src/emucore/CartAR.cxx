@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.10 2005-07-30 16:58:22 urchlay Exp $
+// $Id: CartAR.cxx,v 1.11 2005-10-09 17:31:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -38,7 +38,7 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size)
   memcpy(myLoadImages, image, size);
 
   // Initialize RAM with random values
-  Random random;
+  class Random random;
   for(i = 0; i < 6 * 1024; ++i)
   {
     myImage[i] = random.next();
