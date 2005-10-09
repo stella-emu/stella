@@ -131,6 +131,9 @@ opengl32.lib"
 				RelativePath="..\gui\AudioDialog.cxx">
 			</File>
 			<File
+				RelativePath="..\common\BankRomCheat.cxx">
+			</File>
+			<File
 				RelativePath="..\debugger\BinAndExpression.cxx">
 			</File>
 			<File
@@ -584,6 +587,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\gui\AudioDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\common\BankRomCheat.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\BinAndExpression.hxx">
