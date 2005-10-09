@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.7 2005-08-25 15:19:17 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.8 2005-10-09 21:55:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,12 +107,12 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       ADD_ATEXT("\\L\\c2""    Maintainer of the 'stella.pro' game properties file");
       ADD_ATEXT("\\L\\c0""  Joe D'Andrea");
       ADD_ATEXT("\\L\\c2""    Maintainer for Solaris port");
-      ADD_ATEXT("\\L\\c0""  Darrell Spice Jr.");
-      ADD_ATEXT("\\L\\c2""    Original author for OS/2 port");
-      ADD_ATEXT("\\L\\c0""  Doodle");
-      ADD_ATEXT("\\L\\c2""    Current maintainer for OS/2 port");
+      ADD_ATEXT("\\L\\c0""  Darrell Spice Jr. & Doodle");
+      ADD_ATEXT("\\L\\c2""    Authors for OS/2 port");
       ADD_ATEXT("\\L\\c0""  David Voswinkel");
       ADD_ATEXT("\\L\\c2""    Maintainer for PSP port");
+      ADD_ATEXT("\\L\\c0""  Kostas Nakos");
+      ADD_ATEXT("\\L\\c2""    Author/maintainer for WinCE port");
       break;
 
     case 4:

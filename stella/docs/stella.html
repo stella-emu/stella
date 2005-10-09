@@ -35,7 +35,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - September 2005</b></center>
+	<center><b>February 1999 - October 2005</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -240,14 +240,19 @@
 		<li>Added ZIP support.  Stella can now open ROM's compressed in zip
 			format.</li>
 
-		<li>Reworked properties system to use both a system-wide 'stella.pro' and
-			a per-user 'user.pro' properties files.  Changes made by the user
-			and stored in 'user.pro' are no longer erased when upgrading Stella.</li>
-
 		<li>Added ability to edit current ROM properties from directly within
 			Stella, which can then be saved directly into the 'user.pro' file.
 			So creating a properties entry for a new ROM can be done without
 			any external tools.</li>
+
+		<li>Added initial support for using Stella in an 'arcade-box'
+			environment without a keyboard.  This consists of an in-game
+			menu for choosing common actions in Stella, as well as using the
+			game to navigate the mouse pointer.</li>
+
+		<li>Reworked properties system to use both a system-wide 'stella.pro' and
+			a per-user 'user.pro' properties files.  Changes made by the user
+			and stored in 'user.pro' are no longer erased when upgrading Stella.</li>
 
 		<li>Added cartridge 'frying', thanks to Fred "batari" Quimby.  This
 			emulates the action of turning the power button on and off on a
@@ -687,6 +692,11 @@
 		</tr>
 
 		<tr>
+			<td><pre>-joymouse &lt;0|1&gt;</pre></td>
+			<td>Indicates whether the joystick emulates the mouse in GUI mode (defaults to off).</td>
+		</tr>
+
+		<tr>
 			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
 			<td>Shows some game info while Stella is running.</td>
 		</tr>
@@ -965,6 +975,12 @@
 			<td>Enter/exit options mode</td>
 			<td>Tab</td>
 			<td>Tab</td>
+		</tr>
+
+		<tr>
+			<td>Enter/exit command mode</td>
+			<td>Backslash (\)</td>
+			<td>Backslash (\)</td>
 		</tr>
 
 		<tr>

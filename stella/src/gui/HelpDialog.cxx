@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.12 2005-08-11 21:57:30 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.13 2005-10-09 21:55:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,7 +72,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("Ctrl Q",    "Quit emulation");
       ADD_BIND("Escape",    "Exit current game");
       ADD_BIND("Tab",       "Enter/exit configuration menu");
-      ADD_LINE;
+      ADD_BIND("\\",        "Enter/exit command menu");
       ADD_BIND("Alt =",     "Increase window size");
       ADD_BIND("Alt -",     "Decrease window size");
       ADD_BIND("Alt Enter", "Toggle fullscreen/windowed mode");
@@ -85,7 +85,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       title = "Special commands:";
       ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
       ADD_BIND("Ctrl f", "Switch between NTSC and PAL");
-      ADD_BIND("Ctrl s", "Save (or merge) game properties");
+      ADD_BIND("Ctrl s", "Save game properties to new file");
+      ADD_BIND("Alt s",  "Merge game properties");
       ADD_LINE;
       ADD_BIND("Ctrl 0", "Mouse emulates paddle 0");
       ADD_BIND("Ctrl 1", "Mouse emulates paddle 1");
@@ -107,40 +108,41 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
 #else
     case 1:
       title = "Common commands:";
-      ADD_BIND("Cmd Q",     "Quit emulation");
-      ADD_BIND("Escape",    "Exit current game");
-      ADD_BIND("Tab",       "Enter/exit configuration menu");
+      ADD_BIND("Cmd Q",        "Quit emulation");
+      ADD_BIND("Escape",       "Exit current game");
+      ADD_BIND("Tab",          "Enter/exit configuration menu");
+      ADD_BIND("\\",           "Enter/exit command menu");
+      ADD_BIND("Shift-Cmd =",  "Increase window size");
+      ADD_BIND("Shift-Cmd -",  "Decrease window size");
+      ADD_BIND("Cmd Enter",    "Toggle fullscreen/windowed mode");
       ADD_LINE;
-      ADD_BIND("Shift-Cmd =",     "Increase window size");
-      ADD_BIND("Shift-Cmd -",     "Decrease window size");
-      ADD_BIND("Shift-Cmd Enter", "Toggle fullscreen/windowed mode");
-      ADD_LINE;
-      ADD_BIND("Shift-Cmd ]",     "Increase volume by 2%");
-      ADD_BIND("Shift-Cmd [",     "Decrease volume by 2%");
+      ADD_BIND("Shift-Cmd ]",  "Increase volume by 2%");
+      ADD_BIND("Shift-Cmd [",  "Decrease volume by 2%");
       break;
 
     case 2:
       title = "Special commands:";
-      ADD_BIND("Cmd g", "Grab mouse (keep in window)");
-      ADD_BIND("Cmd f", "Switch between NTSC and PAL");
-      ADD_BIND("Cmd s", "Save (or merge) game properties");
+      ADD_BIND("Cmd g",       "Grab mouse (keep in window)");
+      ADD_BIND("Cmd f",       "Switch between NTSC and PAL");
+      ADD_BIND("Cmd s",       "Save (or merge) game properties");
+      ADD_BIND("Shift-Cmd s", "Merge game properties");
       ADD_LINE;
-      ADD_BIND("Cmd 0", "Mouse emulates paddle 0");
-      ADD_BIND("Cmd 1", "Mouse emulates paddle 1");
-      ADD_BIND("Cmd 2", "Mouse emulates paddle 2");
-      ADD_BIND("Cmd 3", "Mouse emulates paddle 3");
+      ADD_BIND("Cmd 0",       "Mouse emulates paddle 0");
+      ADD_BIND("Cmd 1",       "Mouse emulates paddle 1");
+      ADD_BIND("Cmd 2",       "Mouse emulates paddle 2");
+      ADD_BIND("Cmd 3",       "Mouse emulates paddle 3");
       break;
 
     case 3:
       title = "Developer commands:";
       ADD_BIND("Shift-Cmd PageUp",    "Increase Display.YStart");
       ADD_BIND("Shift-Cmd PageDown",  "Decrease Display.YStart");
-      ADD_BIND("Cmd PageUp",   "Increase Display.Height");
-      ADD_BIND("Cmd PageDown", "Decrease Display.Height");
+      ADD_BIND("Cmd PageUp",          "Increase Display.Height");
+      ADD_BIND("Cmd PageDown",        "Decrease Display.Height");
       ADD_BIND("Shift-Cmd End",       "Increase Display.XStart");
       ADD_BIND("Shift-Cmd Home",      "Decrease Display.XStart");
-      ADD_BIND("Cmd End",      "Increase Display.Width");
-      ADD_BIND("Cmd Home",     "Decrease Display.Width");
+      ADD_BIND("Cmd End",             "Increase Display.Width");
+      ADD_BIND("Cmd Home",            "Decrease Display.Width");
       break;
 #endif
     case 4:
