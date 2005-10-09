@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.13 2005-09-30 00:40:34 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.14 2005-10-09 20:41:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,9 +75,8 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   if(!_editable)
     return true;
 
-  // Ignore all mod keys
-  if(instance()->eventHandler().kbdControl(modifiers) ||
-     instance()->eventHandler().kbdAlt(modifiers))
+  // Ignore all alt-mod keys
+  if(instance()->eventHandler().kbdAlt(modifiers))
     return true;
 
   bool handled = true;
@@ -100,17 +99,11 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 8:     // backspace
-      if (_caretPos > 0)
-      {
-        _caretPos--;
-        _editString.erase(_caretPos, 1);
-        dirty = true;
-      }
+      dirty = killChar(-1);
       break;
 
     case 127:   // delete
-      _editString.erase(_caretPos, 1);
-      dirty = true;
+      dirty = killChar(+1);
       break;
 
     case 256 + 20:  // left arrow
@@ -132,7 +125,11 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     default:
-      if (tryInsertChar((char)ascii, _caretPos))
+      if (instance()->eventHandler().kbdControl(modifiers))
+      {
+        dirty = specialKeys(keycode);
+      }
+      else if (tryInsertChar((char)ascii, _caretPos))
       {
         _caretPos++;
         sendCommand(kEditChangedCmd, ascii, _id);
@@ -228,4 +225,127 @@ bool EditableWidget::adjustOffset()
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::specialKeys(int keycode)
+{
+  bool handled = true;
+
+  switch (keycode)
+  {
+    case 'a':
+      setCaretPos(0);
+      break;
+
+    case 'e':
+      setCaretPos(_editString.size());
+      break;
+
+    case 'd':
+      handled = killChar(+1);
+      break;
+
+    case 'k':
+      handled = killLine(+1);
+      break;
+
+    case 'u':
+      handled = killLine(-1);
+      break;
+
+    case 'w':
+      handled = killLastWord();
+      break;
+
+    default:
+      handled = false;
+  }
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::killChar(int direction)
+{
+  bool handled = false;
+
+  if(direction == -1)      // Delete previous character (backspace)
+  {
+    if(_caretPos > 0)
+    {
+      _caretPos--;
+      _editString.erase(_caretPos, 1);
+      handled = true;
+    }
+  }
+  else if(direction == 1)  // Delete next character (delete)
+  {
+    _editString.erase(_caretPos, 1);
+    handled = true;
+  }
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::killLine(int direction)
+{
+  bool handled = false;
+
+  if(direction == -1)  // erase from current position to beginning of line
+  {
+    int count = _caretPos;
+    if(count > 0)
+    {
+      for (int i = 0; i < count; i++)
+        killChar(-1);
+
+      handled = true;
+    }
+  }
+  else if(direction == 1)  // erase from current position to end of line
+  {
+    int count = _editString.size() - _caretPos;
+    if(count > 0)
+    {
+      for (int i = 0; i < count; i++)
+        killChar(+1);
+
+      handled = true;
+    }
+  }
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::killLastWord()
+{
+  bool handled = false;
+  int count = 0, currentPos = _caretPos;
+  bool space = true;
+  while (currentPos > 0)
+  {
+    if (_editString[currentPos - 1] == ' ')
+    {
+      if (!space)
+        break;
+    }
+    else
+      space = false;
+
+    currentPos--;
+    count++;
+  }
+
+  if(count > 0)
+  {
+    for (int i = 0; i < count; i++)
+      killChar(-1);
+
+    handled = true;
+  }
+
+  return handled;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.7 2005-09-30 00:40:34 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.8 2005-10-09 20:41:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,6 +64,13 @@ class EditableWidget : public Widget, public CommandSender
     bool adjustOffset();
 	
     virtual bool tryInsertChar(char c, int pos);
+
+  private:
+    // Line editing
+    bool specialKeys(int keycode);
+    bool killChar(int direction);
+    bool killLine(int direction);
+    bool killLastWord();
 
   protected:
     bool   _editable;
