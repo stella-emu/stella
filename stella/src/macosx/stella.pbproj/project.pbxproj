@@ -411,7 +411,6 @@
 				2D659E38085D3DD6005D96C8,
 				2D659E3C085D3DD6005D96C8,
 				2D403BA7086116D1001E31A1,
-				2D403BA9086116D1001E31A1,
 				2D403BAB086116D1001E31A1,
 				2D403BCB08611898001E31A1,
 				2D403BCD08611898001E31A1,
@@ -588,7 +587,6 @@
 				2D659E37085D3DD6005D96C8,
 				2D659E3B085D3DD6005D96C8,
 				2D403BA6086116D1001E31A1,
-				2D403BA8086116D1001E31A1,
 				2D403BAA086116D1001E31A1,
 				2D403BCC08611898001E31A1,
 				2D403BD008611A69001E31A1,
@@ -1447,24 +1445,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2D403BA2086116D1001E31A1 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = EditNumWidget.cxx;
-			path = ../gui/EditNumWidget.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D403BA3086116D1001E31A1 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = EditNumWidget.hxx;
-			path = ../gui/EditNumWidget.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		2D403BA4086116D1001E31A1 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1491,18 +1471,6 @@
 		};
 		2D403BA7086116D1001E31A1 = {
 			fileRef = 2D403BA1086116D1001E31A1;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D403BA8086116D1001E31A1 = {
-			fileRef = 2D403BA2086116D1001E31A1;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D403BA9086116D1001E31A1 = {
-			fileRef = 2D403BA3086116D1001E31A1;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1813,8 +1781,6 @@
 				2DDBEAAE084578BF00812C11,
 				2D403BA0086116D1001E31A1,
 				2D403BA1086116D1001E31A1,
-				2D403BA2086116D1001E31A1,
-				2D403BA3086116D1001E31A1,
 				2D403BA4086116D1001E31A1,
 				2D403BA5086116D1001E31A1,
 				2DDBEAAF084578BF00812C11,
