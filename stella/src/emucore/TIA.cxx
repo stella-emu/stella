@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.62 2005-10-09 17:31:47 stephena Exp $
+// $Id: TIA.cxx,v 1.63 2005-10-11 03:22:43 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -137,11 +137,12 @@ void TIA::reset()
   // Reset pixel pointer and drawing flag
   myFramePointer = myCurrentFrameBuffer;
 
+  myYStart = atoi(myConsole.properties().get("Display.YStart").c_str());
+  myHeight = atoi(myConsole.properties().get("Display.Height").c_str());
+
   // Calculate color clock offsets for starting and stoping frame drawing
-  myStartDisplayOffset = 228 * 
-      atoi(myConsole.properties().get("Display.YStart").c_str());
-  myStopDisplayOffset = myStartDisplayOffset + 228 *
-      atoi(myConsole.properties().get("Display.Height").c_str());
+  myStartDisplayOffset = 228 * myYStart;
+  myStopDisplayOffset = myStartDisplayOffset + 228 * myHeight;
 
   // Reasonable values to start and stop the current frame drawing
   myClockWhenFrameStarted = mySystem->cycles() * 3;
@@ -1892,16 +1893,14 @@ inline void TIA::waitHorizontalSync()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::greyOutFrame()
 {
-	/*
-  for(int s = scanlines() + 1; s < 300; s++)
-    for(int i = 0; i < 160; i++)
-      myCurrentFrameBuffer[s * 160 + i] = 0;
-		*/
-  for(int s = scanlines(); s < 300; s++)
-	  for(int i = 0; i < 160; i++) {
-		  uInt8 tmp = myCurrentFrameBuffer[s * 160 + i] & 0x0f;
+  unsigned int c = scanlines();
+  if(c < myYStart) c = myYStart;
+
+  for(unsigned int s = c; s < (myHeight + myYStart); s++)
+	  for(unsigned int i = 0; i < 160; i++) {
+		  uInt8 tmp = myCurrentFrameBuffer[ (s - myYStart) * 160 + i] & 0x0f;
 		  tmp >>= 1;
-		  myCurrentFrameBuffer[s * 160 + i] = tmp;
+		  myCurrentFrameBuffer[ (s - myYStart) * 160 + i] = tmp;
 	  }
 
 }

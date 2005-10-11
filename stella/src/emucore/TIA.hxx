@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.31 2005-07-21 04:10:16 urchlay Exp $
+// $Id: TIA.hxx,v 1.32 2005-10-11 03:22:43 urchlay Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.31 2005-07-21 04:10:16 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.32 2005-10-11 03:22:43 urchlay Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -311,6 +311,13 @@ class TIA : public Device , public MediaSource
     uInt32 myFrameHeight;
 
   private:
+    // Indicates offset in scanlines when display should begin
+	 // (aka the Display.YStart property)
+    uInt32 myYStart;
+
+	 // Height of display (aka Display.Height)
+    uInt32 myHeight;
+
     // Indicates offset in color clocks when display should begin
     uInt32 myStartDisplayOffset;
 
