@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.3 2005-09-30 22:12:18 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.4 2005-10-11 17:14:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -618,7 +618,7 @@ void PromptWidget::killLastWord()
   bool space = true;
   while (_currentPos > _promptStartPos)
   {
-    if (buffer(_currentPos - 1) == ' ')
+    if ((buffer(_currentPos - 1) & 0xff) == ' ')
     {
       if (!space)
         break;
@@ -768,12 +768,8 @@ int PromptWidget::printf(const char *format, ...)
 int PromptWidget::vprintf(const char *format, va_list argptr)
 {
   char buf[2048];
+  int count = VSNPRINTF(buf, sizeof(buf), format, argptr);
 
-#if defined(WIN32)
-  int count = _vsnprintf(buf, sizeof(buf), format, argptr);
-#else
-  int count = vsnprintf(buf, sizeof(buf), format, argptr);
-#endif
   print(buf);
   return count;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.2 2005-10-11 17:14:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -238,7 +238,8 @@ void CpuWidget::fillGrid()
 
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
-  CpuDebug& cpu = instance()->debugger().cpuDebug();
+  Debugger& dbg = instance()->debugger();
+  CpuDebug& cpu = dbg.cpuDebug();
   CpuState state    = (CpuState&) cpu.getState();
   CpuState oldstate = (CpuState&) cpu.getOldState();
 
@@ -277,4 +278,5 @@ void CpuWidget::fillGrid()
     changed.push_back(state.PSbits[i] != oldstate.PSbits[i]);
 
   myPSRegister->setState(state.PSbits, changed);
+  myPCLabel->setEditString(dbg.equates()->getLabel(state.PC));
 }

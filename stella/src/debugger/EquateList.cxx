@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.18 2005-07-14 15:28:51 urchlay Exp $
+// $Id: EquateList.cxx,v 1.19 2005-10-11 17:14:34 stephena Exp $
 //============================================================================
 
 #include <string>
@@ -98,204 +98,252 @@ static Equate hardCodedEquates[] = {
   { "TIM1024T", 0x0297 }
 };
 
-EquateList::EquateList() {
-	int size = sizeof(hardCodedEquates)/sizeof(struct Equate);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EquateList::EquateList()
+{
+  int size = sizeof(hardCodedEquates)/sizeof(struct Equate);
 
-	for(int i=0; i<size; i++) {
-		string l = hardCodedEquates[i].label;	
-		int a = hardCodedEquates[i].address;
+  for(int i=0; i<size; i++)
+  {
+    string l = hardCodedEquates[i].label;	
+    int a = hardCodedEquates[i].address;
 
-		myFwdMap.insert(make_pair(l, a));
-		myRevMap.insert(make_pair(a, l));
-	}
-	calcSize();
+    myFwdMap.insert(make_pair(l, a));
+    myRevMap.insert(make_pair(a, l));
+  }
+  calcSize();
 }
 
-EquateList::~EquateList() {
-	myFwdMap.clear();
-	myRevMap.clear();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EquateList::~EquateList()
+{
+  myFwdMap.clear();
+  myRevMap.clear();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int EquateList::calcSize() {
 	currentSize = myFwdMap.size();
 	return currentSize;
 }
 
-const string& EquateList::getLabel(int addr) {
-	static string nothing = "";
-	addrToLabel::const_iterator iter = myRevMap.find(addr);
-	if(iter == myRevMap.end())
-		return nothing;
-	else
-		return iter->second;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& EquateList::getLabel(int addr)
+{
+  static string nothing = "";
+  addrToLabel::const_iterator iter = myRevMap.find(addr);
+
+  if(iter == myRevMap.end())
+    return nothing;
+  else
+    return iter->second;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // returns either the label, or a formatted hex string
 // if no label found.
-const char *EquateList::getFormatted(int addr, int places) {
-	static char fmt[10], buf[255];
-	string res = getLabel(addr);
-	if(res != "")
-		return res.c_str();
+const char *EquateList::getFormatted(int addr, int places)
+{
+  static char fmt[10], buf[255];
+  string res = getLabel(addr);
+  if(res != "")
+    return res.c_str();
 
-	sprintf(fmt, "$%%0%dx", places);
-	//cerr << addr << ", " << fmt << ", " << places << endl;
-	sprintf(buf, fmt, addr);
-	return buf;
+  sprintf(fmt, "$%%0%dx", places);
+  //cerr << addr << ", " << fmt << ", " << places << endl;
+  sprintf(buf, fmt, addr);
+
+  return buf;
 }
 
-int EquateList::getAddress(const string& label) {
-	labelToAddr::const_iterator iter = myFwdMap.find(label);
-	if(iter == myFwdMap.end())
-		return -1;
-	else
-		return iter->second;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EquateList::getAddress(const string& label)
+{
+  labelToAddr::const_iterator iter = myFwdMap.find(label);
+  if(iter == myFwdMap.end())
+    return -1;
+  else
+    return iter->second;
 }
 
-bool EquateList::undefine(string& label) {
-	labelToAddr::iterator iter = myFwdMap.find(label);
-	if(iter == myFwdMap.end()) {
-		return false;
-	} else {
-		myRevMap.erase( myRevMap.find(iter->second) ); // FIXME: error check?
-		myFwdMap.erase(iter);
-		return true;
-	}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EquateList::undefine(string& label)
+{
+  labelToAddr::iterator iter = myFwdMap.find(label);
+  if(iter == myFwdMap.end())
+  {
+    return false;
+  }
+  else
+  {
+    myRevMap.erase( myRevMap.find(iter->second) ); // FIXME: error check?
+    myFwdMap.erase(iter);
+    return true;
+  }
 }
 
-bool EquateList::saveFile(string file) {
-	char buf[256];
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EquateList::saveFile(string file)
+{
+  char buf[256];
 
-	ofstream out(file.c_str());
-	if(!out.is_open())
-		return false;
+  ofstream out(file.c_str());
+  if(!out.is_open())
+    return false;
 
-	out << "--- Symbol List (sorted by symbol)" << endl;
+  out << "--- Symbol List (sorted by symbol)" << endl;
 
-	labelToAddr::iterator iter;
-	for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++) {
-		sprintf(buf, "%-24s %04x                  \n", iter->first.c_str(), iter->second);
-		out << buf;
-	}
+  labelToAddr::iterator iter;
+  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
+  {
+    sprintf(buf, "%-24s %04x                  \n", iter->first.c_str(), iter->second);
+    out << buf;
+  }
 
-	out << "--- End of Symbol List." << endl;
-	return true;
+  out << "--- End of Symbol List." << endl;
+
+  return true;
 }
 
-string EquateList::loadFile(string file) {
-	int lines = 0;
-	string curLabel;
-	int curVal;
-	char buffer[256]; // FIXME: static buffers suck
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EquateList::loadFile(string file)
+{
+  int lines = 0, curVal;
+  string curLabel;
+  char buffer[256]; // FIXME: static buffers suck
 
-	ifstream in(file.c_str());
-	if(!in.is_open())
-		return "Unable to read symbols from " + file;
+  ifstream in(file.c_str());
+  if(!in.is_open())
+    return "Unable to read symbols from " + file;
 
-	myFwdMap.clear();
-	myRevMap.clear();
+  myFwdMap.clear();
+  myRevMap.clear();
 
-	while( !in.eof() ) {
-		curVal = 0;
-		curLabel = "";
+  while( !in.eof() )
+  {
+    curVal = 0;
+    curLabel = "";
 
-		if(!in.getline(buffer, 255))
-			break;
+    if(!in.getline(buffer, 255))
+      break;
 
-		if(buffer[0] != '-') {
-			curLabel = extractLabel(buffer);
-			if((curVal = extractValue(buffer)) < 0)
-				return "invalid symbol file";
+    if(buffer[0] != '-')
+    {
+      curLabel = extractLabel(buffer);
+      if((curVal = extractValue(buffer)) < 0)
+        return "invalid symbol file";
 
-			addEquate(curLabel, curVal);
+      addEquate(curLabel, curVal);
 
-			lines++;
-		}
-	}
-	in.close();
+      lines++;
+    }
+  }
+  in.close();
 
-	calcSize();
+  calcSize();
 
-	return "loaded " + file + " OK";
+  return "loaded " + file + " OK";
 }
 
-void EquateList::addEquate(string label, int address) {
-	undefine(label);
-	myFwdMap.insert(make_pair(label, address));
-	myRevMap.insert(make_pair(address, label));
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EquateList::addEquate(string label, int address)
+{
+  undefine(label);
+  myFwdMap.insert(make_pair(label, address));
+  myRevMap.insert(make_pair(address, label));
 }
 
-int EquateList::parse4hex(char *c) {
-	int ret = 0;
-	for(int i=0; i<4; i++) {
-		if(*c >= '0' && *c <= '9')
-			ret = (ret << 4) + (*c) - '0';
-		else if(*c >= 'a' && *c <= 'f')
-			ret = (ret << 4) + (*c) - 'a' + 10;
-		else
-			return -1;
-		c++;
-	}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EquateList::parse4hex(char *c)
+{
+  int ret = 0;
+  for(int i=0; i<4; i++)
+  {
+    if(*c >= '0' && *c <= '9')
+      ret = (ret << 4) + (*c) - '0';
+    else if(*c >= 'a' && *c <= 'f')
+      ret = (ret << 4) + (*c) - 'a' + 10;
+    else
+      return -1;
+    c++;
+  }
 
-	return ret;
+  return ret;
 }
 
-int EquateList::extractValue(char *c) {
-	while(*c != ' ') {
-		if(*c == '\0')
-			return -1;
-		c++;
-	}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EquateList::extractValue(char *c)
+{
+  while(*c != ' ')
+  {
+    if(*c == '\0')
+      return -1;
+    c++;
+  }
 
-	while(*c == ' ') {
-		if(*c == '\0')
-			return -1;
-		c++;
-	}
+  while(*c == ' ')
+  {
+    if(*c == '\0')
+      return -1;
+    c++;
+  }
 
-	return parse4hex(c);
+  return parse4hex(c);
 }
 
-string EquateList::extractLabel(char *c) {
-	string l = "";
-	while(*c != ' ')
-		l += *c++;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EquateList::extractLabel(char *c)
+{
+  string l = "";
+  while(*c != ' ')
+    l += *c++;
 
-	return l;
+  return l;
 }
 
-int EquateList::countCompletions(const char *in) {
-	int count = 0;
-	completions = compPrefix = "";
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EquateList::countCompletions(const char *in)
+{
+  int count = 0;
+  completions = compPrefix = "";
 
-	labelToAddr::iterator iter;
-	for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++) {
-		const char *l = iter->first.c_str();
+  labelToAddr::iterator iter;
+  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
+  {
+    const char *l = iter->first.c_str();
 
-		if(STR_N_CASE_CMP(l, in, strlen(in)) == 0) {
-			if(compPrefix == "")
-				compPrefix += l;
-			else {
-				int nonMatch = 0;
-				const char *c = compPrefix.c_str();
-				while(*c != '\0' && tolower(*c) == tolower(l[nonMatch])) {
-					c++;
-					nonMatch++;
-				}
-				compPrefix.erase(nonMatch, compPrefix.length());
-			}
+    if(STR_N_CASE_CMP(l, in, strlen(in)) == 0)
+    {
+      if(compPrefix == "")
+        compPrefix += l;
+      else
+      {
+        int nonMatch = 0;
+        const char *c = compPrefix.c_str();
+        while(*c != '\0' && tolower(*c) == tolower(l[nonMatch]))
+        {
+          c++;
+          nonMatch++;
+        }
+        compPrefix.erase(nonMatch, compPrefix.length());
+      }
 
-			if(count++) completions += "  ";
-			completions += l;
-		}
-	}
-	return count;
+      if(count++) completions += "  ";
+        completions += l;
+    }
+  }
+
+  return count;
 }
 
-const char *EquateList::getCompletions() {
-	return completions.c_str();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char *EquateList::getCompletions()
+{
+  return completions.c_str();
 }
 
-const char *EquateList::getCompletionPrefix() {
-	return compPrefix.c_str();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char *EquateList::getCompletionPrefix()
+{
+  return compPrefix.c_str();
 }

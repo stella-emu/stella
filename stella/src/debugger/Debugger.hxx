@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.78 2005-09-25 20:18:46 urchlay Exp $
+// $Id: Debugger.hxx,v 1.79 2005-10-11 17:14:34 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -64,7 +64,7 @@ enum {
 };
 
 /*
-	// These will probably turn out to be unneeded, left for reference for now
+// These will probably turn out to be unneeded, left for reference for now
 // pointer types for Debugger instance methods
 typedef uInt8 (Debugger::*DEBUGGER_BYTE_METHOD)();
 typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
@@ -79,7 +79,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.78 2005-09-25 20:18:46 urchlay Exp $
+  @version $Id: Debugger.hxx,v 1.79 2005-10-11 17:14:34 stephena Exp $
 */
 class Debugger : public DialogContainer
 {

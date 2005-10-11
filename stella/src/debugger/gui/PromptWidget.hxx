@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.2 2005-09-30 22:12:18 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.3 2005-10-11 17:14:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -85,7 +85,7 @@ class PromptWidget : public Widget, public CommandSender
     void loadConfig();
 
   protected:
-    int _buffer[kBufferSize];
+    int  _buffer[kBufferSize];
     int  _linesInBuffer;
 
     int  _lineWidth;
