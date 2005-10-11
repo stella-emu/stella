@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.32 2005-10-11 03:22:43 urchlay Exp $
+// $Id: TIA.hxx,v 1.33 2005-10-11 19:38:10 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.32 2005-10-11 03:22:43 urchlay Exp $
+  @version $Id: TIA.hxx,v 1.33 2005-10-11 19:38:10 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -130,12 +130,6 @@ class TIA : public Device , public MediaSource
     virtual void update();
 
     /**
-      This method should be called to update the media source with
-      a new scanline.
-    */
-    virtual void updateScanline();
-
-    /**
       Answers the current frame buffer
 
       @return Pointer to the current frame buffer
@@ -220,6 +214,26 @@ class TIA : public Device , public MediaSource
       @param mode  Whether to enable or disable all bits
     */
     void enableBits(bool mode) { for(uInt8 i = 0; i < 6; ++i) myBitEnabled[i] = mode; }
+
+#ifdef DEVELOPER_SUPPORT
+    /**
+      This method should be called to update the media source with
+      a new scanline.
+    */
+    virtual void updateScanline();
+
+    /**
+      This method should be called to update the media source with
+      a new partial scanline by stepping one CPU instruction.
+    */
+    virtual void updateScanlineByStep();
+
+    /**
+      This method should be called to update the media source with
+      a new partial scanline by tracing to target address.
+    */
+    virtual void updateScanlineByTrace(int target);
+#endif
 
   private:
     // Compute the ball mask table

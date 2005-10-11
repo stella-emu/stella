@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.6 2005-09-23 17:38:27 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.7 2005-10-11 19:38:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -101,6 +101,8 @@ void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
+  int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
+
   switch(cmd)
   {
     case kCMenuItemSelectedCmd:
@@ -109,8 +111,8 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         case 0:
         {
           ostringstream command;
-          int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
-          int lines = myClickY + ystart - instance()->debugger().tiaDebug().scanlines();
+          int lines = myClickY + ystart -
+              instance()->debugger().tiaDebug().scanlines();
           if(lines > 0)
           {
             command << "scanline #" << lines;
@@ -122,7 +124,6 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         case 1:
         {
           ostringstream command;
-          int ystart = atoi(instance()->console().properties().get("Display.YStart").c_str());
           int scanline = myClickY + ystart;
           command << "breakif _scan==#" << scanline;
           instance()->debugger().parser()->run(command.str());

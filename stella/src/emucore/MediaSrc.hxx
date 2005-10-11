@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.12 2005-07-15 18:19:29 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.13 2005-10-11 19:38:10 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -30,7 +30,7 @@ class Sound;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.12 2005-07-15 18:19:29 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.13 2005-10-11 19:38:10 stephena Exp $
 */
 class MediaSource
 {
@@ -55,13 +55,6 @@ class MediaSource
     virtual void update() = 0;
 
     /**
-      This method should be called whenever a new scanline is to be drawn.
-      Invoking this method will update the graphics buffer and generate
-      the corresponding audio samples.
-    */
-    virtual void updateScanline() = 0;
-
-    /**
       Answers the current frame buffer
 
       @return Pointer to the current frame buffer
@@ -74,6 +67,29 @@ class MediaSource
       @return Pointer to the previous frame buffer
     */
     virtual uInt8* previousFrameBuffer() const = 0;
+
+#ifdef DEVELOPER_SUPPORT
+    /**
+      This method should be called whenever a new scanline is to be drawn.
+      Invoking this method will update the graphics buffer and generate
+      the corresponding audio samples.
+    */
+    virtual void updateScanline() = 0;
+
+    /**
+      This method should be called whenever a new partial scanline is to be
+      drawn by stepping one CPU instruction. Invoking this method will update the
+      graphics buffer and generate the corresponding audio samples.
+    */
+    virtual void updateScanlineByStep() = 0;
+
+    /**
+      This method should be called whenever a new partial scanline is to be
+      drawn by tracing to target address. Invoking this method will update the
+      graphics buffer and generate the corresponding audio samples.
+    */
+    virtual void updateScanlineByTrace(int target) = 0;
+#endif
 
   public:
     /**

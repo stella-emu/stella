@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.14 2005-09-20 19:09:10 stephena Exp $
+// $Id: M6502.hxx,v 1.15 2005-10-11 19:38:10 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef GUI::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.14 2005-09-20 19:09:10 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.15 2005-10-11 19:38:10 stephena Exp $ 
 */
 class M6502
 {
@@ -164,6 +164,13 @@ class M6502
       return myExecutionStatus & FatalErrorBit;
     }
   
+    /**
+      Get the 16-bit value of the Program Counter register.
+
+      @return The program counter register
+    */
+    uInt16 getPC() const { return PC; }
+
   public:
     /**
       Overload the ostream output operator for addressing modes.

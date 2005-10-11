@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.96 2005-10-06 17:28:54 stephena Exp $
+// $Id: Debugger.cxx,v 1.97 2005-10-11 19:38:10 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -674,7 +674,7 @@ int Debugger::step()
 
   int cyc = mySystem->cycles();
   mySystem->unlockDataBus();
-  mySystem->m6502().execute(1);
+  myOSystem->console().mediaSource().updateScanlineByStep();
   mySystem->lockDataBus();
 
   return mySystem->cycles() - cyc;
@@ -693,7 +693,6 @@ int Debugger::step()
 
 int Debugger::trace()
 {
-
   // 32 is the 6502 JSR instruction:
   if(mySystem->peek(myCpuDebug->pc()) == 32) {
     saveOldState();
@@ -702,10 +701,7 @@ int Debugger::trace()
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     mySystem->unlockDataBus();
-
-    while(myCpuDebug->pc() != targetPC)
-      mySystem->m6502().execute(1);
-
+    myOSystem->console().mediaSource().updateScanlineByTrace(targetPC);
     mySystem->lockDataBus();
 
     return mySystem->cycles() - cyc;
@@ -835,7 +831,8 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::nextScanline(int lines) {
+void Debugger::nextScanline(int lines)
+{
   saveOldState();
   mySystem->unlockDataBus();
   myTiaOutput->advanceScanline(lines);
@@ -843,7 +840,8 @@ void Debugger::nextScanline(int lines) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::nextFrame(int frames) {
+void Debugger::nextFrame(int frames)
+{
   saveOldState();
   mySystem->unlockDataBus();
   myTiaOutput->advance(frames);

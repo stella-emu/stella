@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.63 2005-10-11 03:22:43 urchlay Exp $
+// $Id: TIA.cxx,v 1.64 2005-10-11 19:38:10 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -527,7 +527,8 @@ void TIA::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void TIA::startFrame() {
+inline void TIA::startFrame()
+{
   // This stuff should only happen at the beginning of a new frame.
   uInt8* tmp = myCurrentFrameBuffer;
   myCurrentFrameBuffer = myPreviousFrameBuffer;
@@ -576,7 +577,8 @@ inline void TIA::startFrame() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void TIA::endFrame() {
+inline void TIA::endFrame()
+{
   // This stuff should only happen at the end of a frame
   // Compute the number of scanlines in the frame
   myScanlineCountForLastFrame = myCurrentScanline;
@@ -587,6 +589,7 @@ inline void TIA::endFrame() {
   myFrameGreyed = false;
 }
 
+#ifdef DEVELOPER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
 {
@@ -619,6 +622,67 @@ void TIA::updateScanline()
   if(!myPartialFrameFlag)
     endFrame();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::updateScanlineByStep()
+{
+  // Start a new frame if the old one was finished
+  if(!myPartialFrameFlag) {
+    startFrame();
+  }
+
+  // grey out old frame contents
+  if(!myFrameGreyed) greyOutFrame();
+  myFrameGreyed = true;
+
+  // true either way:
+  myPartialFrameFlag = true;
+
+  int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+
+  // Update frame by one CPU instruction/color clock
+  mySystem->m6502().execute(1);
+  updateFrame(mySystem->cycles() * 3);
+
+  totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+  myCurrentScanline = totalClocks / 228;
+
+  // if we finished the frame, get ready for the next one
+  if(!myPartialFrameFlag)
+    endFrame();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::updateScanlineByTrace(int target)
+{
+  // Start a new frame if the old one was finished
+  if(!myPartialFrameFlag) {
+    startFrame();
+  }
+
+  // grey out old frame contents
+  if(!myFrameGreyed) greyOutFrame();
+  myFrameGreyed = true;
+
+  // true either way:
+  myPartialFrameFlag = true;
+
+  int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+
+  while(mySystem->m6502().getPC() != target)
+  {
+    mySystem->m6502().execute(1);
+    updateFrame(mySystem->cycles() * 3);
+  }
+
+  totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
+  myCurrentScanline = totalClocks / 228;
+
+  // if we finished the frame, get ready for the next one
+  if(!myPartialFrameFlag)
+    endFrame();
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt32* TIA::palette() const

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.13 2005-09-20 19:09:10 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.14 2005-10-11 19:38:10 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -90,8 +90,6 @@ inline void M6502High::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502High::execute(uInt32 number)
 {
-  int cond = -1;
-
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
 
@@ -122,7 +120,8 @@ bool M6502High::execute(uInt32 number)
         }
       }
 
-      if((cond = evalCondBreaks()) > -1)
+      int cond = evalCondBreaks();
+      if(cond > -1)
       {
         string buf = "CBP: " + myBreakCondNames[cond];
         if(myDebugger->start(buf))
