@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4.cxx,v 1.5 2005-07-30 16:58:22 urchlay Exp $
+// $Id: CartF4.cxx,v 1.6 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -113,6 +113,8 @@ bool CartridgeF4::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4::bank(uInt16 bank)
 { 
+  if(bankLocked) return;
+
   // Remember what bank we're in
   myCurrentBank = bank;
   uInt16 offset = myCurrentBank * 4096;

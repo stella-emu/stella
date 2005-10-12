@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.11 2005-10-09 17:31:47 stephena Exp $
+// $Id: CartE7.cxx,v 1.12 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -149,6 +149,8 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bank(uInt16 slice)
 { 
+  if(bankLocked) return;
+
   // Remember what bank we're in
   myCurrentSlice[0] = slice;
   uInt16 offset = slice << 11;

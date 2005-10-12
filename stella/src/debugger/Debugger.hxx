@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.79 2005-10-11 17:14:34 stephena Exp $
+// $Id: Debugger.hxx,v 1.80 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -79,7 +79,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.79 2005-10-11 17:14:34 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.80 2005-10-12 03:32:28 urchlay Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -277,6 +277,9 @@ class Debugger : public DialogContainer
 
     bool setBank(int bank);
     bool patchROM(int addr, int value);
+
+	 void lockState();
+	 void unlockState();
 
   private:
     /**

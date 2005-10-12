@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8SC.cxx,v 1.7 2005-10-09 17:31:47 stephena Exp $
+// $Id: CartF8SC.cxx,v 1.8 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -106,21 +106,23 @@ uInt8 CartridgeF8SC::peek(uInt16 address)
 {
   address = address & 0x0FFF;
 
-  // Switch banks if necessary
-  switch(address)
-  {
-    case 0x0FF8:
-      // Set the current bank to the lower 4k bank
-      bank(0);
-      break;
-
-    case 0x0FF9:
-      // Set the current bank to the upper 4k bank
-      bank(1);
-      break;
-
-    default:
-      break;
+  if(!bankLocked) {
+    // Switch banks if necessary
+    switch(address)
+    {
+      case 0x0FF8:
+        // Set the current bank to the lower 4k bank
+        bank(0);
+        break;
+  
+      case 0x0FF9:
+        // Set the current bank to the upper 4k bank
+        bank(1);
+        break;
+  
+      default:
+        break;
+    }
   }
 
   // NOTE: This does not handle accessing RAM, however, this function
@@ -134,21 +136,23 @@ void CartridgeF8SC::poke(uInt16 address, uInt8)
 {
   address = address & 0x0FFF;
 
-  // Switch banks if necessary
-  switch(address)
-  {
-    case 0x0FF8:
-      // Set the current bank to the lower 4k bank
-      bank(0);
-      break;
-
-    case 0x0FF9:
-      // Set the current bank to the upper 4k bank
-      bank(1);
-      break;
-
-    default:
-      break;
+  if(!bankLocked) {
+    // Switch banks if necessary
+    switch(address)
+    {
+      case 0x0FF8:
+        // Set the current bank to the lower 4k bank
+        bank(0);
+        break;
+  
+      case 0x0FF9:
+        // Set the current bank to the upper 4k bank
+        bank(1);
+        break;
+  
+      default:
+        break;
+    }
   }
 
   // NOTE: This does not handle accessing RAM, however, this function

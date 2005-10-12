@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.8 2005-07-30 16:25:48 urchlay Exp $
+// $Id: Cart.hxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -32,7 +32,7 @@ class System;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.8 2005-07-30 16:25:48 urchlay Exp $
+  @version $Id: Cart.hxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
 */
 class Cartridge : public Device
 {
@@ -66,8 +66,16 @@ class Cartridge : public Device
     virtual bool patch(uInt16 address, uInt8 value); // yes, this writes to ROM
     bool save(ofstream& out); // need a way to save patched ROMs
     virtual uInt8* getImage(int& size); // save() uses this
+    void lockBank() { bankLocked = true; }
+    void unlockBank() { bankLocked = false; }
+
+  protected:
+	 // If bankLocked is true, ignore attempts at bankswitching. This is used
+	 // by the debugger, when disassembling/dumping ROM.
+    bool bankLocked;
 
   private:
+
     /**
       Try to auto-detect the bankswitching type of the cartridge
 

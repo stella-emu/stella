@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.10 2005-07-30 16:58:22 urchlay Exp $
+// $Id: Cart3F.cxx,v 1.11 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -140,6 +140,8 @@ bool Cartridge3F::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3F::bank(uInt16 bank)
 { 
+  if(bankLocked) return;
+
   // Make sure the bank they're asking for is reasonable
   if((uInt32)bank * 2048 < mySize)
   {

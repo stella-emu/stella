@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.8 2005-10-06 17:28:55 stephena Exp $
+// $Id: RomWidget.cxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -138,6 +138,18 @@ void RomWidget::loadConfig()
   // Take mirroring of PC into account
   int pc = dbg.cpuDebug().pc() | 0xe000;
   AddrToLine::iterator iter = myLineList.find(pc);
+
+  // if current PC not found, do an update (we're executing what
+  // we thought was an operand)
+
+  // This doesn't help, and seems to actually hurt.
+  /*
+  if(iter == myLineList.end()) {
+    incrementalUpdate(myRomList->currentPos(), myRomList->rows());
+    iter = myLineList.find(pc);
+  }
+  */
+
   if(iter != myLineList.end())
     myRomList->setHighlighted(iter->second);
 }

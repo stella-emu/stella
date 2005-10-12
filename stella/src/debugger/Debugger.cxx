@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.97 2005-10-11 19:38:10 stephena Exp $
+// $Id: Debugger.cxx,v 1.98 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -673,9 +673,11 @@ int Debugger::step()
   saveOldState();
 
   int cyc = mySystem->cycles();
-  mySystem->unlockDataBus();
+  //	mySystem->unlockDataBus();
+  unlockState();
   myOSystem->console().mediaSource().updateScanlineByStep();
-  mySystem->lockDataBus();
+  //	mySystem->lockDataBus();
+  unlockState();
 
   return mySystem->cycles() - cyc;
 }
@@ -700,9 +702,11 @@ int Debugger::trace()
     int cyc = mySystem->cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
-    mySystem->unlockDataBus();
+    //	mySystem->unlockDataBus();
+	 unlockState();
     myOSystem->console().mediaSource().updateScanlineByTrace(targetPC);
-    mySystem->lockDataBus();
+    //	mySystem->lockDataBus();
+	 lockState();
 
     return mySystem->cycles() - cyc;
   } else {
@@ -834,18 +838,22 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 void Debugger::nextScanline(int lines)
 {
   saveOldState();
-  mySystem->unlockDataBus();
+  //	mySystem->unlockDataBus();
+  unlockState();
   myTiaOutput->advanceScanline(lines);
-  mySystem->lockDataBus();
+  //	mySystem->lockDataBus();
+  lockState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames)
 {
   saveOldState();
-  mySystem->unlockDataBus();
+  //	mySystem->unlockDataBus();
+  unlockState();
   myTiaOutput->advance(frames);
-  mySystem->lockDataBus();
+  //	mySystem->lockDataBus();
+  lockState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -946,14 +954,16 @@ void Debugger::saveOldState()
 void Debugger::setStartState()
 {
   // Lock the bus each time the debugger is entered, so we don't disturb anything
-  mySystem->lockDataBus();
+  //	mySystem->lockDataBus();
+  lockState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
   // Bus must be unlocked for normal operation when leaving debugger mode
-  mySystem->unlockDataBus();
+  //	mySystem->unlockDataBus();
+  unlockState();
 
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
@@ -1115,4 +1125,16 @@ bool Debugger::saveROM(string filename)
   bool res = myConsole->cartridge().save(*out);
   delete out;
   return res;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::lockState() {
+  mySystem->lockDataBus();
+  myConsole->cartridge().lockBank();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::unlockState() {
+  mySystem->unlockDataBus();
+  myConsole->cartridge().unlockBank();
 }

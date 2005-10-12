@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.11 2005-10-09 17:31:47 stephena Exp $
+// $Id: CartAR.cxx,v 1.12 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -299,6 +299,8 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::bank(uInt16 b) {
+  if(bankLocked) return;
+
   bankConfiguration(b);
 }
 

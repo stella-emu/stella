@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
+// $Id: CartE0.cxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -95,18 +95,20 @@ uInt8 CartridgeE0::peek(uInt16 address)
 {
   address = address & 0x0FFF;
 
-  // Switch banks if necessary
-  if((address >= 0x0FE0) && (address <= 0x0FE7))
-  {
-    segmentZero(address & 0x0007);
-  }
-  else if((address >= 0x0FE8) && (address <= 0x0FEF))
-  {
-    segmentOne(address & 0x0007);
-  }
-  else if((address >= 0x0FF0) && (address <= 0x0FF7))
-  {
-    segmentTwo(address & 0x0007);
+  if(!bankLocked) {
+    // Switch banks if necessary
+    if((address >= 0x0FE0) && (address <= 0x0FE7))
+    {
+      segmentZero(address & 0x0007);
+    }
+    else if((address >= 0x0FE8) && (address <= 0x0FEF))
+    {
+      segmentOne(address & 0x0007);
+    }
+    else if((address >= 0x0FF0) && (address <= 0x0FF7))
+    {
+      segmentTwo(address & 0x0007);
+    }
   }
 
   return myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)];
@@ -117,18 +119,20 @@ void CartridgeE0::poke(uInt16 address, uInt8)
 {
   address = address & 0x0FFF;
 
-  // Switch banks if necessary
-  if((address >= 0x0FE0) && (address <= 0x0FE7))
-  {
-    segmentZero(address & 0x0007);
-  }
-  else if((address >= 0x0FE8) && (address <= 0x0FEF))
-  {
-    segmentOne(address & 0x0007);
-  }
-  else if((address >= 0x0FF0) && (address <= 0x0FF7))
-  {
-    segmentTwo(address & 0x0007);
+  if(!bankLocked) {
+    // Switch banks if necessary
+    if((address >= 0x0FE0) && (address <= 0x0FE7))
+    {
+      segmentZero(address & 0x0007);
+    }
+    else if((address >= 0x0FE8) && (address <= 0x0FEF))
+    {
+      segmentOne(address & 0x0007);
+    }
+    else if((address >= 0x0FF0) && (address <= 0x0FF7))
+    {
+      segmentTwo(address & 0x0007);
+    }
   }
 }
 
