@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.16 2005-09-22 22:10:57 stephena Exp $
+// $Id: Cart.cxx,v 1.17 2005-10-13 02:05:36 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -108,6 +108,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge::Cartridge()
 {
+  unlockBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
