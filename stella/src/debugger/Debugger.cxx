@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.99 2005-10-13 00:59:30 urchlay Exp $
+// $Id: Debugger.cxx,v 1.100 2005-10-13 01:13:20 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -955,7 +955,6 @@ void Debugger::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setStartState()
 {
-  cerr << "Debugger::setStartState()" << endl;
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   //	mySystem->lockDataBus();
   lockState();
@@ -1056,7 +1055,7 @@ GUI::Rect Debugger::getTabBounds() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::resizeDialog()
 {
-cerr << "Debugger::resizeDialog()\n";
+//	cerr << "Debugger::resizeDialog()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
