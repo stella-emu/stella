@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.2 2005-09-23 23:35:02 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.3 2005-10-13 18:53:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,6 +64,9 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   int size = _rows * _cols;
   while((int)_hiliteList.size() < size)
     _hiliteList.push_back(false);
+
+  // Set lower and upper bounds to sane values
+  setRange(0, 1 << bits);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,6 +168,13 @@ void DataGridWidget::setSelectedValue(int value)
   sendCommand(kDGItemDataChangedCmd, _selectedItem, _id);
 
   setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setRange(int lower, int upper)
+{
+  _lowerBound = MAX(0, lower);
+  _upperBound = MIN(1 << _bits, upper);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -572,7 +582,7 @@ void DataGridWidget::endEditMode()
 
   // Update the both the string representation and the real data
   int value = instance()->debugger().stringToValue(_editString);
-  if(value < 0 || value > (1 << _bits))
+  if(value < _lowerBound || value >= _upperBound)
   {
     abortEditMode();
     return;
@@ -609,6 +619,8 @@ void DataGridWidget::negateCell()
 {
   int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
+  if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
+    return;
 
   value = ((~value) + 1) & mask;
   setSelectedValue(value);
@@ -619,6 +631,8 @@ void DataGridWidget::invertCell()
 {
   int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
+  if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
+    return;
 
   value = ~value & mask;
   setSelectedValue(value);
@@ -629,6 +643,8 @@ void DataGridWidget::decrementCell()
 {
   int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
+  if(value <= _lowerBound)        // take care of wrap-around
+    value = _upperBound;
 
   value = (value - 1) & mask;
   setSelectedValue(value);
@@ -639,6 +655,8 @@ void DataGridWidget::incrementCell()
 {
   int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
+  if(value >= _upperBound - 1)    // take care of wrap-around
+    value = _lowerBound - 1;
 
   value = (value + 1) & mask;
   setSelectedValue(value);
@@ -649,6 +667,8 @@ void DataGridWidget::lshiftCell()
 {
   int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
+  if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
+    return;
 
   value = (value << 1) & mask;
   setSelectedValue(value);
@@ -659,6 +679,8 @@ void DataGridWidget::rshiftCell()
 {
   int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
+  if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
+    return;
 
   value = (value >> 1) & mask;
   setSelectedValue(value);

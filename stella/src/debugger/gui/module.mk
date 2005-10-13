@@ -1,6 +1,7 @@
 MODULE := src/debugger/gui
 
 MODULE_OBJS := \
+	src/debugger/gui/AudioWidget.o \
 	src/debugger/gui/CpuWidget.o \
 	src/debugger/gui/PromptWidget.o \
 	src/debugger/gui/RamWidget.o \

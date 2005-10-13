@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: DataGridWidget.hxx,v 1.2 2005-10-13 18:53:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,6 +59,8 @@ class DataGridWidget : public EditableWidget
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
 
+    void setRange(int lower, int upper);
+
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
@@ -96,6 +98,8 @@ class DataGridWidget : public EditableWidget
     int  _rowHeight;
     int  _colWidth;
     int  _bits;
+    int  _lowerBound;
+    int  _upperBound;
 
     BaseFormat _base;
 

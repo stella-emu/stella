@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.11 2005-10-13 01:13:20 urchlay Exp $
+// $Id: RomWidget.cxx,v 1.12 2005-10-13 18:53:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 #include "CpuDebug.hxx"
+#include "DataGridWidget.hxx"
 #include "PackedBitArray.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
@@ -44,9 +45,42 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     myCurrentBank(-1)
 {
   int w = 58 * font.getMaxCharWidth(),
-      h = 31 * font.getLineHeight();
+      h = 30 * font.getLineHeight(),
+      xpos, ypos;
+  StaticTextWidget* t;
 
-  myRomList = new RomListWidget(boss, font, x, y, w, h);
+  // Create bank editable area
+  xpos = x + 40;  ypos = y;
+  t = new StaticTextWidget(boss, xpos, ypos,
+                           font.getStringWidth("Current bank: "),
+                           font.getFontHeight(),
+                           "Current bank:", kTextAlignLeft);
+  t->setFont(font);
+
+  xpos += t->getWidth() + 10;
+  myBank = new DataGridWidget(boss, font, xpos, ypos-2,
+                              1, 1, 1, 2, kBASE_16_4);
+  myBank->setTarget(this);
+  myBank->setRange(0, instance()->debugger().bankCount());
+  addFocusWidget(myBank);
+
+  // Show number of banks
+  xpos += myBank->getWidth() + 45;
+  t = new StaticTextWidget(boss, xpos, ypos,
+                           font.getStringWidth("Total banks: "),
+                           font.getFontHeight(),
+                           "Total banks:", kTextAlignLeft);
+  t->setFont(font);
+
+  xpos += t->getWidth() + 10;
+  myBankCount = new EditTextWidget(boss, xpos, ypos-2,
+                                   20, font.getLineHeight(), "");
+  myBankCount->setFont(font);
+  myBankCount->setEditable(false);
+
+  // Create rom listing
+  xpos = x;  ypos += myBank->getHeight() + 2;
+  myRomList = new RomListWidget(boss, font, xpos, ypos, w, h);
   myRomList->setTarget(this);
   myRomList->myMenu->setTarget(this);
   myRomList->setStyle(kSolidFill);
@@ -113,6 +147,12 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
     }
+
+    case kDGItemDataChangedCmd:
+    {
+      int bank = myBank->getSelectedValue();
+      instance()->debugger().setBank(bank);
+    }
   }
 }
 
@@ -120,9 +160,10 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 void RomWidget::loadConfig()
 {
   Debugger& dbg = instance()->debugger();
+  bool bankChanged = myCurrentBank != dbg.getBank();
 
   // Only reload full bank when necessary
-  if(myListIsDirty || myCurrentBank != dbg.getBank())
+  if(myListIsDirty || bankChanged)
   {
     initialUpdate();
     myListIsDirty = false;
@@ -131,7 +172,6 @@ void RomWidget::loadConfig()
   {
     incrementalUpdate(myRomList->currentPos(), myRomList->rows());
   }
-
   myCurrentBank = dbg.getBank();
 
   // Update romlist to point to current PC
@@ -152,6 +192,20 @@ void RomWidget::loadConfig()
 
   if(iter != myLineList.end())
     myRomList->setHighlighted(iter->second);
+
+  // Set current bank
+  IntArray alist;
+  IntArray vlist;
+  BoolArray changed;
+
+  alist.push_back(-1);
+  vlist.push_back(dbg.getBank());
+  changed.push_back(bankChanged);
+  myBank->setList(alist, vlist, changed);
+
+  // Indicate total number of banks
+  int bankCount = dbg.bankCount();
+  myBankCount->setEditString(dbg.valueToString(bankCount));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

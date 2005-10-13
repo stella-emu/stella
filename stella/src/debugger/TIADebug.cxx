@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.22 2005-08-18 16:21:11 stephena Exp $
+// $Id: TIADebug.cxx,v 1.23 2005-10-13 18:53:07 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -86,6 +86,15 @@ DebuggerState& TIADebug::getState()
   myState.size.push_back(nusizM1());
   myState.size.push_back(sizeBL());
 
+  // Audio registers
+  myState.aud.clear();
+  myState.aud.push_back(audF0());
+  myState.aud.push_back(audF1());
+  myState.aud.push_back(audC0());
+  myState.aud.push_back(audC1());
+  myState.aud.push_back(audV0());
+  myState.aud.push_back(audV1());
+
   return myState;
 }
 
@@ -138,6 +147,14 @@ void TIADebug::saveOldState()
   myOldState.size.push_back(nusizM1());
   myOldState.size.push_back(sizeBL());
 
+  // Audio registers
+  myOldState.aud.clear();
+  myOldState.aud.push_back(audF0());
+  myOldState.aud.push_back(audF1());
+  myOldState.aud.push_back(audC0());
+  myOldState.aud.push_back(audC1());
+  myOldState.aud.push_back(audV0());
+  myOldState.aud.push_back(audV1());
 }
 
 /* the set methods now use mySystem->poke(). This will save us the

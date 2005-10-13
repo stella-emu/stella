@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.7 2005-09-30 00:40:33 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.8 2005-10-13 18:53:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 #include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"
 #include "TiaZoomWidget.hxx"
+#include "AudioWidget.hxx"
 #include "PromptWidget.hxx"
 #include "CpuWidget.hxx"
 #include "RamWidget.hxx"
@@ -166,6 +167,12 @@ void DebuggerDialog::addTabArea()
   TiaWidget* tia = new TiaWidget(myTab, 2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, tia);
   addToFocusList(tia->getFocusList(), tabID);
+
+  // The Audio tab
+  tabID = myTab->addTab("Audio");
+  AudioWidget* aud = new AudioWidget(myTab, 2, 2, widWidth, widHeight);
+  myTab->setParentWidget(tabID, aud);
+  addToFocusList(aud->getFocusList(), tabID);
 
   // The input/output tab (part of RIOT)
 //  tabID = myTab->addTab("I/O");

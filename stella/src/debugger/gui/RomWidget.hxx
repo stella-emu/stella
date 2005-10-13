@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.hxx,v 1.6 2005-10-06 17:28:55 stephena Exp $
+// $Id: RomWidget.hxx,v 1.7 2005-10-13 18:53:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,8 @@
 #define ROM_WIDGET_HXX
 
 class GuiObject;
+class DataGridWidget;
+class EditTextWidget;
 class InputTextDialog;
 class RomListWidget;
 class StringList;
@@ -65,6 +67,8 @@ class RomWidget : public Widget, public CommandSender
     /** List of line numbers indexed by address */
     AddrToLine myLineList;
 
+    DataGridWidget*  myBank;
+    EditTextWidget*  myBankCount;
     InputTextDialog* mySaveRom;
 
     bool myListIsDirty;
