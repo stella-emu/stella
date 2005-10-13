@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.98 2005-10-12 03:32:28 urchlay Exp $
+// $Id: Debugger.cxx,v 1.99 2005-10-13 00:59:30 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -916,7 +916,9 @@ void Debugger::reloadROM() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::setBank(int bank) {
   if(myConsole->cartridge().bankCount() > 1) {
+    myConsole->cartridge().unlockBank();
     myConsole->cartridge().bank(bank);
+    myConsole->cartridge().lockBank();
     return true;
   }
   return false;
@@ -953,6 +955,7 @@ void Debugger::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setStartState()
 {
+  cerr << "Debugger::setStartState()" << endl;
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   //	mySystem->lockDataBus();
   lockState();

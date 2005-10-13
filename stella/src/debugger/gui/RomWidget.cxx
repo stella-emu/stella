@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
+// $Id: RomWidget.cxx,v 1.10 2005-10-13 00:59:30 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,6 +43,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     mySourceAvailable(false),
     myCurrentBank(-1)
 {
+  cerr << "new RomWidget()" << endl;
+
   int w = 58 * font.getMaxCharWidth(),
       h = 31 * font.getLineHeight();
 
@@ -160,6 +162,9 @@ void RomWidget::initialUpdate()
   Debugger& dbg = instance()->debugger();
   PackedBitArray* bp = dbg.breakpoints();
 
+  // Reading from ROM might trigger a bankswitch, so save the current bank
+  myCurrentBank = dbg.getBank();
+
   // Fill romlist the current bank of source or disassembly
   if(mySourceAvailable)
     ; // TODO - actually implement this
@@ -189,6 +194,9 @@ void RomWidget::initialUpdate()
 
     myRomList->setList(label, data, disasm, state);
   }
+
+  // Restore the old bank, in case we inadvertently switched while reading.
+  dbg.setBank(myCurrentBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
