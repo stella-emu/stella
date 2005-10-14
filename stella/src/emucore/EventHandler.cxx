@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.104 2005-10-09 17:31:47 stephena Exp $
+// $Id: EventHandler.cxx,v 1.105 2005-10-14 14:07:24 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -773,7 +773,7 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 
       // Grabmouse introduces some lag into the mouse movement,
       // so we need to fudge the numbers a bit
-      // FIXME - possibly do x *= 1.5 ??
+      if(myGrabMouseFlag) x = MIN(w, (int) (x * 1.5));
 
       int resistance = (int)(1000000.0 * (w - x) / w);
       handleEvent(Paddle_Resistance[myPaddleMode], resistance);
