@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.8 2005-10-13 18:53:07 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.9 2005-10-14 13:50:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -231,7 +231,7 @@ void DebuggerDialog::addRomArea()
   buttonY += 22;
   addButton(buttonX, buttonY, "Exit", kDDExitCmd, 0);
 
-  xpos = r.left + 10;  ypos += myRam->getHeight() + 15;
+  xpos = r.left + 10;  ypos += myRam->getHeight() + 5;
   myRom = new RomWidget(this, instance()->consoleFont(), xpos, ypos);
   addToFocusList(myRom->getFocusList());
 

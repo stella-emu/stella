@@ -11,6 +11,100 @@
 ===============================================================================
                                Release History
 ===============================================================================
+
+1.4.2 to 2.0: (October 16, 2005)
+
+  * Added integrated GUI.  Stella is now a fully graphical application, and all
+    settings can be changed dynamically while the application is running.  That
+    means the commandline is no longer required (but support is still there
+    for those who want to use it).
+
+  * Added ROM launcher.  You can now exit a game and start playing another one
+    from directly within Stella (you no longer have to quit Stella and
+    restart it).
+
+  * Because of the integrated GUI and ROM launcher, StellaX and KStella
+    (the Windows and Linux frontends) have been discontinued.  The OSX
+    port now uses the launcher as well.
+
+  * Added an integrated debugger for game developers.  This is currently
+    the first version of a debugger in Stella, but it's already quite
+    usable.
+
+  * Added new sound subsystem, which is much faster and more accurate.
+    Related to this, added stereo sound output (used by some homebrew games).
+
+  * Added ZIP support.  Stella can now open ROM's compressed in zip
+    format.
+
+  * Added cartridge 'frying', thanks to Fred "batari" Quimby.  This
+    emulates the action of turning the power button on and off on a
+    real Atari, often resulting in some strange effects.
+
+  * Added ability to edit current ROM properties from directly within
+    Stella, which can then be saved directly into the 'user.pro' file.
+    So creating a properties entry for a new ROM can be done without
+    any external tools.
+
+  * Added initial support for using Stella in an 'arcade-box'
+    environment without a keyboard.  This consists of an in-game
+    menu for choosing common actions in Stella, as well as using the
+    joystick navigate the mouse pointer.
+
+  * Reworked properties system to use both a system-wide 'stella.pro' and
+    a per-user 'user.pro' properties files.  Changes made by the user
+    and stored in 'user.pro' are no longer erased when upgrading Stella.
+
+  * Added support for cartridges with 3E bankswitching format.
+
+  * Added preliminary Cheat support.
+
+  * Added 'Alt/Shift-Cmd' z, x, c, v, b, n keys to enable/disable the
+    P0, P1, M0, M1, BL, PL bits in the TIA, respectively.
+
+  * Added 'Alt/Shift-Cmd .' key to disable all bits in the TIA.
+
+  * Added 'Alt/Shift-Cmd /' key to enable all bits in the TIA.
+
+  * Added 'Alt/Shift-Cmd g' key to switch dynamically switch between
+    software and OpenGL modes while Stella is running.
+
+  * Added 'Ctrl/Cmd r' key to reload the ROM currently being emulated.
+
+  * Added 'Alt/Shift-Cmd s' key to merge the current game properties
+    into the properties file.
+
+  * Added 'help' commandline argument.  Launching Stella from the
+    commandline with no options now starts Stella in ROM launcher mode,
+    instead of showing help (as in previous versions).
+
+  * Added the following commandline arguments for developers:
+    "pro, type, ld, rd, tv, lc, rc, bc, format, xstart, ystart, width
+    height, cpu, hmove".  Developers can consult the manual for
+    further details.
+
+  * Removed 'mergeprops' commandline argument, since there are now
+    dedicated keys to either save or merge game properties.
+
+  * Removed 'hidecursor' commandline argument.  Stella will now
+    automatically decide when to use this setting.
+
+  * Fixed framerate when switching between NTSC and PAL modes.  Stella
+    now uses the correct framerate based on the format of the ROM,
+    in terms of both video and audio.
+
+  * Added 'configure' support to the build process for both Linux and
+    Win32 (using MinGW).  Developers can now use the familiar 'configure;
+    make; make install' commands to compile Stella.
+
+  * Further consolidation and integration of SDL.  This should lead to
+    faster operation and a more consistent look for all ports.
+
+  * Fixed some 64-bit issues.  Stella now compiles and runs correctly
+    on AMD64 and PPC64 Linux systems.
+
+  * Updated the Stella manual with pictures of the new integrated GUI.
+
 1.4.2a to 1.4.2b: MacOSX version only (February 27, 2005)
 
   * Added fix to mute sound while user is loading a new cartridge, or using

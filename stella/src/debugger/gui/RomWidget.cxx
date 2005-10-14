@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.12 2005-10-13 18:53:07 stephena Exp $
+// $Id: RomWidget.cxx,v 1.13 2005-10-14 13:50:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   StaticTextWidget* t;
 
   // Create bank editable area
-  xpos = x + 40;  ypos = y;
+  xpos = x + 40;  ypos = y + 7;
   t = new StaticTextWidget(boss, xpos, ypos,
                            font.getStringWidth("Current bank: "),
                            font.getFontHeight(),
@@ -62,6 +62,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
                               1, 1, 1, 2, kBASE_16_4);
   myBank->setTarget(this);
   myBank->setRange(0, instance()->debugger().bankCount());
+  if(instance()->debugger().bankCount() <= 1)
+    myBank->setEditable(false);
   addFocusWidget(myBank);
 
   // Show number of banks
@@ -79,7 +81,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myBankCount->setEditable(false);
 
   // Create rom listing
-  xpos = x;  ypos += myBank->getHeight() + 2;
+  xpos = x;  ypos += myBank->getHeight() + 4;
   myRomList = new RomListWidget(boss, font, xpos, ypos, w, h);
   myRomList->setTarget(this);
   myRomList->myMenu->setTarget(this);

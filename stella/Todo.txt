@@ -9,43 +9,37 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - February 19, 2005
+                         To Do List - October 16, 2005
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-For all ports (in order of importance):
-
-  * Provide a fully integrated GUI where all settings can be changed, multiple
-    games can be run, etc; basically, move all functionality of external
-    frontends into Stella itself
-
-  * Add an internal debugger to Stella for game developers
-
-  * Provide suggestions for improving Stella
-
-  * Provide suggestions for improving the Stella User's Manual
+  * Improve debugger support for cartridges with dedicated RAM, and add
+    source-level debugging
 
   * Find people to actually do the above ports, and try to more actively
     recruit people into the Stella project
 
+  * Improve cheatcode support, add GUI, etc
 
-For the various frontends
+  * Either Support DASM as frontend or integrate a 6507 Assembler
 
-  - Discontinue all external frontends; integrate into Stella itself
-  - Add a Sprite/Animation Editor 
-  - Add a PF Editor
-  - Add a Sourcecode Editor
-  - Either Support DASM as frontend or integrate a 6507 Assembler
-  - Either Support Distella as frontend or integrate a 6507 Disassembler
-  - AVI/MPEG export
-  - WAV/MP3 export
-  - Client/Server networked play for up to 4 Computers via LAN/Internet
-  - Tracking Hiscores
-  - Record and Playback games - not as real movie, but by logging
+  * Either Support Distella as frontend or integrate a 6507 Disassembler
+
+  * Add a Sprite/Animation Editor 
+
+  * Record and Playback games - not as real movie, but by logging
     Input/RAM/processor states in given intervals.
-  - Cheatcodes
-  - Improve frontend by adding snapshots, labels, manuals, etc.
+
+  * AVI/MPEG export
+
+  * Add a PF Editor
+
+  * Client/Server networked play for up to 4 Computers via LAN/Internet
+
+  * Tracking Hiscores
+
+  * Improve frontend by adding snapshots, labels, manuals, etc.
     Like KStella for Linux. (Suggestion from Brian Luttrull)

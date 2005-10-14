@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.31 2005-09-30 00:40:34 stephena Exp $
+// $Id: Dialog.cxx,v 1.32 2005-10-14 13:50:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -290,7 +290,8 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
       return;
     }
   }
-  else if(keycode == 9)  // tab key
+
+  if(keycode == 9)  // tab key
   {
     if(_focusedWidget && !(_focusedWidget->getFlags() & WIDGET_WANTS_TAB))
     {

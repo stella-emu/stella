@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.2 2005-10-11 17:14:35 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.3 2005-10-14 13:50:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -157,24 +157,30 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       switch(addr)
       {
         case kPCRegAddr:
-        dbg.setPC(value);
-        break;
+        {
+          // Use the parser to set PC, since we want to propagate the
+          // event the rest of the debugger widgets
+          ostringstream command;
+          command << "pc #" << value;
+          instance()->debugger().run(command.str());
+          break;
+        }
 
         case kSPRegAddr:
-        dbg.setSP(value);
-        break;
+          dbg.setSP(value);
+          break;
 
         case kARegAddr:
-        dbg.setA(value);
-        break;
+          dbg.setA(value);
+          break;
 
         case kXRegAddr:
-        dbg.setX(value);
-        break;
+          dbg.setX(value);
+          break;
 
         case kYRegAddr:
-        dbg.setY(value);
-        break;
+          dbg.setY(value);
+          break;
       }
       break;
 
