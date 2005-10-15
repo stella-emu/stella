@@ -287,7 +287,7 @@
 	<key>CFBundleExecutable</key>
 	<string>StellaOSX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.0 Beta 1</string>
+	<string>2.0</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -305,7 +305,7 @@
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>2.0 Beta 1</string>
+	<string>2.0</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
