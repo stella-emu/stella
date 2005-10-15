@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.18 2005-10-09 17:31:47 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.19 2005-10-15 22:30:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -462,16 +462,16 @@ void GameInfoDialog::saveConfig()
   myGameProperties->set("Display.Format", s);
 
   s = myXStart->getEditString();
-  myGameProperties->set("Cartridge.XStart", s);
+  myGameProperties->set("Display.XStart", s);
 
   s = myWidth->getEditString();
-  myGameProperties->set("Cartridge.Width", s);
+  myGameProperties->set("Display.Width", s);
 
   s = myYStart->getEditString();
-  myGameProperties->set("Cartridge.YStart", s);
+  myGameProperties->set("Display.YStart", s);
 
   s = myHeight->getEditString();
-  myGameProperties->set("Cartridge.Height", s);
+  myGameProperties->set("Display.Height", s);
 
   tag = myHmoveBlanks->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
