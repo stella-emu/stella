@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.4 2005-10-11 17:14:35 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.5 2005-10-15 16:38:17 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -509,10 +509,10 @@ void PromptWidget::loadConfig()
     print(PROMPT);
     _promptStartPos = _promptEndPos = _currentPos;
 
+    _firstTime = false;
+
     // Take care of one-time debugger stuff
     instance()->debugger().autoExec();
-
-    _firstTime = false;
   }
 }
 

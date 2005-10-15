@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.100 2005-10-13 01:13:20 urchlay Exp $
+// $Id: Debugger.cxx,v 1.101 2005-10-15 16:38:17 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -310,6 +310,10 @@ const string Debugger::getSourceLines(int addr) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::autoExec() {
+	// autoexec.stella is always run
+	myPrompt->print("autoExec():\n" + myParser->exec(myOSystem->baseDir() + "/autoexec.stella") + "\n");
+
+	// also, "romname.stella" if present
 	string file = myOSystem->romFile();
 
 	string::size_type pos;
