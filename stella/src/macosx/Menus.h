@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.6 2005-06-03 06:00:22 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.7 2005-10-15 19:02:15 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
@@ -22,7 +22,6 @@
 - (IBAction)pauseGame:(id)sender;
 - (IBAction)ntscPalMode:(id)sender;
 - (IBAction)togglePallette:(id)sender;
-- (IBAction)toggleGlFilter:(id)sender;
 - (IBAction)grabMouse:(id)sender;
 - (IBAction)xStartPlus:(id)sender;
 - (IBAction)xStartMinus:(id)sender;

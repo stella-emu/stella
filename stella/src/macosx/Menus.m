@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.9 2005-06-03 06:00:22 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.10 2005-10-15 19:02:15 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "SDL.h"
@@ -153,11 +153,6 @@ static Menus *sharedInstance = nil;
 - (IBAction)ntscPalMode:(id)sender
 {
 	[self pushKeyEvent:SDLK_f:NO:YES];
-}
-
-- (IBAction)toggleGlFilter:(id)sender
-{
-	[self pushKeyEvent:SDLK_f:YES:YES];
 }
 
 - (IBAction)togglePallette:(id)sender
