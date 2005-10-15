@@ -611,6 +611,96 @@ decreased by 1:
 file is loaded, the disassembly will have labels. Even without a symbol
 file, the standard TIA/RIOT labels will still be present.</p>
 
+<p>Each line of disassembly has four fields:</p>
+<ul>
+<li>Breakpoint - This is the area at the far left, to the left of the
+address. Normally there will be nothing there: this indicates that there's
+no breakpoint set at that address. You can set and clear breakpoints by
+double-clicking in this area. When a breakpoint is set, there will be a
+red square in this area. These are the same breakpoints as used
+by the "break" command, <b>not</b> the conditional "breakif" breakpoints
+(which makes sense: cond-breaks can break on any condition, the Program
+Counter isn't necessarily involved).</li>
+<li>Address (which may be a label or a hex address)</li>
+<li>Hex bytes. These are the raw machine code bytes for the instruction.</li>
+<li>Instruction. This is a standard 6502 mnemonic (possibly with operand).
+This field also contains the cycle count for the instruction (separated by a
+semicolon).</li>
+</ul>
+
+<p>The 6502 mnemonic will be UPPERCASE for all standard instructions,
+or lowercase for "illegal" 6502 instructions (like "dcp"). Since there's
+no way to tell code from data, you'll likely see a lot of illegal opcodes
+if you scroll to a data table in ROM.</p>
+
+<p>Beware: the cycle counts don't take into account any penalty cycles
+for crossing page boundaries. All branches are shown as 2 cycles, which
+is how long they take if the branch isn't taken. Branches that are
+taken will actually take 3 cycles (plus a penalty cycle if they cross
+page boundaries).</p>
+
+<p>You can scroll through the disassembly with the mouse or keyboard. To
+center the display on the current PC, press the Space bar.</p>
+
+<p>Any time the Program Counter changes (due to a Step, Trace, Frame
+or Scanline advance, or manually setting the PC), the disassembly will
+scroll to the current PC location.</p>
+
+<p>Even though ROM is supposed to be Read Only Memory, this is an
+emulator: you can change ROM all you want within the debugger.  The hex
+bytes in the ROM Widget are editable. Double-click on them to edit
+them. When you're done, press Enter to accept the changes or Escape to
+cancel them.  Any time you edit ROM, there will be a short pause while
+the ROM Widget disassembles the current bank again.</p>
+
+<p>Speaking of banks: Above the disassembly there's an indicator for the
+current bank and total number of banks. If there's more than one bank,
+you can manually switch banks by double-clicking the bank number and enter
+a new number. This won't work if the ROM only has one bank, of course.</p>
+
+<p>If you patch your ROM, you'll want a way to save it. To do this,
+right-click on any line of the disassembly and choose "Save ROM" from the
+pop-up menu.  You'll be asked for a filename, and then the ROM will be
+saved. Note that the filename is considered relative to the <b>current</b>
+directory, not the ROM or base directory. You can enter a full path,
+though, in which case it doesn't matter.<p>
+
+<p>There's one more thing you can do from the ROM Widget: you can set
+the Program Counter to the address of any disassembly line. Right-click
+on the line you want and choose "Set PC" from the pop-up menu.</p>
+
+<h3>Limitations</h3>
+
+<ul>
+
+<li>The ROM Widget only works on ROM. If your game runs code from RAM,
+the ROM Widget will get "confused" while the PC is pointing to RAM. It
+will highlight instructions in ROM instead. If the PC points to (for
+example) $80, the ROM Widget will display the instruction at $F080
+instead. No permanent harm is done: once your RAM routine returns, the
+ROM Widget will work normally again. You can still disassemble RAM with
+the "disasm" command from the Prompt.</li>
+
+<li>The standard VCS memory map has the cartridge port at locations
+$F000-$FFFF.  However, not all the address lines exist on a 6507, so
+the cartridge port is "mirrored" at every other 4K chunk of address
+space ($1000, $3000, up to $D000).  Some programmers find it easier
+to think of the different banks of ROM as being at different addresses
+(such as: Bank 0 at $D000 and bank 1 at $F000). When such a ROM runs,
+the Program Counter can point to one of the mirrors instead of the main
+area at $F000. This is perfectly OK, and everything works just fine,
+except that the ROM Widget will show the "real" address instead of the
+mirrored one. For instance, if the PC contains $D010, the ROM Widget
+will highlight the instruction at $F010. This is the same instruction,
+since $D010 reads the same ROM location as $F010. However, the breakpoint
+indicator may be wrong: breakpoints are set on actual addresses. If
+there were a breakpoint set at $F010, it wouldn't be triggered by the
+PC hitting $D010 (but the ROM Widget will show a breakpoint indicator
+if the PC hits $D010, even though it shouldn't)</li>
+
+</ul>
+
+<p>These limitations will be addressed in a future release of Stella.</p>
 
 <h2>Global Buttons</h2>
 
