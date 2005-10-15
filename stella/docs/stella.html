@@ -797,7 +797,7 @@
 		</tr>
 
 		<tr>
-			<td><pre>-tv &lt;Color|BlankAndWhite&gt;</pre></td>
+			<td><pre>-tv &lt;Color|BlackAndWhite&gt;</pre></td>
 			<td>Set "Console.TelevisionType" property.</td>
 		</tr>
 
@@ -1539,16 +1539,17 @@
 			<td>Cmd + Enter</td>
 		</tr>
 
+<!--
 		<tr>
 			<td>Toggle OpenGL filtering modes</td>
 			<td>Alt + f</td>
 			<td>Shift-Cmd + f</td>
 		</tr>
-
+-->
 		<tr>
 			<td>Increase volume</td>
-			<td>Alt + f</td>
-			<td>Shift-Cmd + f</td>
+			<td>Alt + ]</td>
+			<td>Shift-Cmd + ]</td>
 		</tr>
 
 		<tr>
@@ -1603,6 +1604,12 @@
 			<td>Set mouse to emulate paddle 3</td>
 			<td>Control + 3</td>
 			<td>Cmd + 3</td>
+		</tr>
+
+		<tr>
+			<td>Reload current ROM</td>
+			<td>Control + r</td>
+			<td>Cmd + r</td>
 		</tr>
 
 		<tr>
@@ -1777,9 +1784,10 @@
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Type:</i></td>
 			<td>This property indicates the bank-switching type for the game.
-			The value of this property must be: Auto-detect, 2K, 3F, 4K, AR, E0,
-			E7, F4SC, F6, F6SC, F8, F8SC, FASC, or FE.  For more information about
-			bank-switching see Kevin Horton's 2600 bank-switching document.</td>
+			The value of this property must be: Auto-detect, 2K, 3E, 3F, 4K, AR,
+			CV, DPC, E0, E7, F4, F4SC, F6, F6SC, F8, F8SC, FASC, FE, MB, MC or UA.
+			For more information about bank-switching see Kevin Horton's 2600
+			bank-switching document.</td>
 		</tr>
 
 		<tr>
