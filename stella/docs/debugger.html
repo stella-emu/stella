@@ -87,11 +87,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Source-level debugging: if a DASM .lst file is available, we'll show
 		the listing in the ROM tab instead of a disassembly. This is already
 		available in a very crude form ("loadlist" and "list" commands).</li>
-	<li>More "special variables" for the expression parser. Currently, you can
-		use all the CPU registers and flags in expressions (e.g. "print a+1" does
-		what you expect), and the pseudo-variables "_scan" and "_bank" (which
-		evaluate the the current scanline and bank number). Need to add more TIA,
-		RIOT registers too. Also, more functions for the builtin function lib.</li>
+	<li>More "special variables" for the expression parser.</li>
 	<li>Possibly a mini-assembler</li>
 	<li>Support for extra RAM in Supercharger and other cart types.</li>
 	<li>Possibly support for recording and playing back input files, like
@@ -107,11 +103,15 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 <p>Pressing ` (aka backtick, backquote, grave accent) toggles the debugger on
 &amp; off. When you exit the debugger, the emulation resumes at the current
 program counter, and continues until either a breakpoint/trap is hit,
-or the ` key is pressed again.  Pressing Ctrl-Tab cycles between tabs
+or the ` key is pressed again.</p>
+<p>For space reasons, the Prompt, TIA, and Audio displays are split into
+3 tabs, only one of which is visible at a time. You can use the mouse or
+keyboard to select which tab you want to view.</p>
+<p>Pressing Ctrl-Tab cycles between tabs
 from left to right, and Shift-Ctrl-Tab cycles from right to left.
 Pressing Tab cycles between widgets in the current tab.</p>
 
-<p>You can also enter the debugger by giving a breakpoint on the command line:
+<p>You can also enter the debugger at emulator startup by giving a breakpoint on the command line:
 <pre>
   ; will enter the debugger the first time the instruction at "kernel" runs
   stella -break kernel mygame.bin
@@ -123,13 +123,31 @@ Pressing Tab cycles between widgets in the current tab.</p>
 </pre>
 </p>
 
+<p>Using the ` key will always enter the debugger at the end of the
+frame (scanline 262, for NTSC games). This is because Stella only checks
+for keystrokes once per frame. Once in the debugger, you can control
+execution by stepping one instruction, scanline, or frame at a time
+(or more than one at a time, using commands in the prompt).  You can
+also set breakpoints or traps, which will cause the emulator to enter
+the debugger when they are triggered, even if it happens in mid-frame.</p>
+
+<h2>Change Tracking</h2>
+
+<p>The debugger tracks changes to the CPU registers and RAM by displaying
+changed locations or registers with a red background after each step,
+trace, scanline, or frame advance. This sounds simple, and it is, but
+it's also amazingly useful.</p>
+
+<p>One clarification about the change tracking: it only tracks when values
+have <b>changed</b>. If the ROM writes a value into a RAM location that
+already contained the same value, that's not considered a change (old
+value was $whatever, new value is the same, so nothing got tracked). This
+may change in a future version of Stella.</p>
+
 <h2>Prompt tab</h2>
 
 <p>This is a command-line interface, similar to the DOS DEBUG command
-or Supermon for the C=64. It shows you the current CPU state, including
-the disassembly of the instruction pointed to by the Program Counter.
-This instruction is the NEXT one that will execute, NOT the one that
-just executed!</p>
+or Supermon for the C=64.</p>
 
 <p>Editing keys work about like you'd expect them to: Home, End, Delete,
 arrows, etc. To scroll with the keyboard, use Shift-PageUp and
@@ -393,7 +411,22 @@ of letters, numbers, and punctuation. We can do a little better:</p>
 you're going to use readable expressions with spaces in them,
 enclose the entire expression in curly braces {}.</p>
 
-<p>There is one annoyance about this complex expression: once we
+<p>Remember that Stella only checks for input once per frame, so a break
+condition that depends on input (like SWCHB) will always happen at the
+end of a frame. This is different from how a real 2600 works, but most
+ROMs only check for input once per frame anyway.</p>
+
+<p>Conditional breaks appear in "listbreaks", numbered starting from
+zero.  You can remove a cond-break with "delbreakif number", where
+the number comes from "listbreaks".</p>
+
+<p>Any time the debugger is entered due to a trap, breakpoint, or
+conditional break, the reason will be displayed in the status area above
+below the TIA Zoom display.</p>
+
+<h4>Functions</h4>
+
+<p>There is one annoyance about complex expressions: once we
 remove the conditional break with "delbreakif" or "clearbreaks",
 we'd have to retype it (or search backwards with the up-arrow key)
 if we wanted to use it again.</p>
@@ -417,16 +450,75 @@ presses both Select and Reset:</p>
 </pre>
 
 <p>If you've defined a lot of complex functions, you probably will
-want to re-use them in future runs of the debugger. You can save
-all your functions, breakpoints, conditional breaks, and watches
-with the "save" command. If you name your saved file the same
-as the ROM filename, it'll be auto-loaded next time you load the
-same ROM in Stella. The save file is just a plain text file called
-"filename.stella", so you can edit it and add new functions, etc.</p>
+want to re-use them in future runs of the debugger. You can save all
+your functions, breakpoints, conditional breaks, and watches with the
+"save" command. If you name your saved file the same as the ROM filename
+and place it in the ROM directory, it'll be auto-loaded next time you
+load the same ROM in Stella. The save file is just a plain text file
+called "filename.stella", so you can edit it and add new functions, etc.
+You can also create a file called "autoexec.stella" which will be loaded
+when the debugger starts, no matter what ROM you have loaded. This file
+should live in the "base directory" (which is the current directory on
+Windows or $HOME/.stella on UNIX), <b>not</b> the ROM directory.</p>
 
-<p>Conditional breaks appear in "listbreaks", numbered starting from
-zero.  You can remove a cond. break with "delbreakif number", where
-the number comes from "listbreaks".</p>
+<h4>Built-in Functions</h4>
+
+<p>Stella has some pre-defined functions for use with the "breakif"
+command.  These allow you to break and enter the debugger on various
+conditions without having to define the conditions yourself.</p>
+
+<p>Built-in functions and pseudo-registers always start with an _
+(underscore) character. It is suggested that you don't start labels in
+your game's source with underscores, if you plan to use them with the
+Stella debugger.</p>
+
+<table border="1">
+<tr><th>Function</th><th>Definition</th><th>Description</th></tr>
+<tr><td> _joy0left</td><td> !(*SWCHA &amp; $40)</td><td> Left joystick moved left</td></tr>
+<tr><td> _joy0right</td><td> !(*SWCHA &amp; $80)</td><td> Left joystick moved right</td></tr>
+<tr><td> _joy0up</td><td> !(*SWCHA &amp; $10)</td><td> Left joystick moved up</td></tr>
+<tr><td> _joy0down</td><td> !(*SWCHA &amp; $20)</td><td> Left joystick moved down</td></tr>
+<tr><td> _joy0button</td><td> !(*INPT4 &amp; $80)</td><td> Left joystick button pressed</td></tr>
+<tr><td> _joy1left</td><td> !(*SWCHA &amp; $04)</td><td> Right joystick moved left</td></tr>
+<tr><td> _joy1right</td><td> !(*SWCHA &amp; $08)</td><td> Right joystick moved right</td></tr>
+<tr><td> _joy1up</td><td> !(*SWCHA &amp; $01)</td><td> Right joystick moved up</td></tr>
+<tr><td> _joy1down</td><td> !(*SWCHA &amp; $02)</td><td> Right joystick moved down</td></tr>
+<tr><td> _joy1button</td><td> !(*INPT5 &amp; $80)</td><td> Right joystick button pressed</td></tr>
+<tr><td> _select</td><td> !(*SWCHB &amp; $01)</td><td> Game Select pressed</td></tr>
+<tr><td> _reset</td><td> !(*SWCHB &amp; $02)</td><td> Game Reset pressed</td></tr>
+<tr><td> _color</td><td> *SWCHB &amp; $08</td><td> Color/BW set to Color</td></tr>
+<tr><td> _bw</td><td> !(*SWCHB &amp; $08)</td><td> Color/BW set to BW</td></tr>
+<tr><td> _diff0a</td><td> !(*SWCHB &amp; $40)</td><td> Right difficulty set to A (easy)</td></tr>
+<tr><td> _diff0b</td><td> *SWCHB &amp; $40</td><td> Right difficulty set to B (hard)</td></tr>
+<tr><td> _diff1a</td><td> !(*SWCHB &amp; $80)</td><td> Right difficulty set to A (easy)</td></tr>
+<tr><td> _diff1b</td><td> *SWCHB &amp; $80</td><td> Right difficulty set to B (hard)</td></tr>
+</table>
+
+<p>Don't worry about memorizing them all: the Prompt "help" command
+will show you a list of them.</p>
+
+<h4>Pseudo-Registers</h4>
+
+<p>Two "registers" are provided for you to use in your conditional breaks.
+These are <b>_scan</b> and <b>_bank</b>.</p>
+
+<p><b>_scan</b> always contains the current scanline count. You can use
+this to break your program in the middle of your kernel. Example:</p>
+<pre>
+    breakif _scan==#64
+</pre>
+<p>This will cause Stella to enter the debugger when the TIA reaches the
+beginning of the 64th scanline.</p>
+
+<p><b>_bank</b> always contains the currently selected bank. For 2K or 4K
+(non-bankswitched) ROMs, it will always contain 0. One useful use is:</p>
+
+<pre>
+    breakif { pc==myLabel &amp;&amp; _bank==1 }
+</pre>
+
+<p>This is similar to setting a regular breakpoint, but it will only trigger
+when bank 1 is selected.</p>
 
 <h4>Watches</h4>
 
@@ -446,7 +538,7 @@ also delete them all with the "clearwatches" command.</p>
 
 <p>Note that there's no real point in watching a label or CPU register
 without dereferencing it: Labels are constants, and CPU registers
-are already visible in the prompt status.</p>
+are already visible in the CPU Widget</p>
 
 <h4>Traps</h4>
 
@@ -465,11 +557,11 @@ can in the future when we implement that feature in the TIA dump!)</p>
 
 <p>Unlike breakpoints, traps stop the emulation *after* the instruction
 that triggered the trap. The reason for this is simple: until the
-instruction is executed, the emulator can't know it's going to hit
-a trap. After the trap is hit, the instruction is done executing,
-and whatever effects it may have had on e.g. the TIA state have
-already happened...  so we don't have a way to run the emulated CPU
-in reverse.</p>
+instruction is executed, the emulator can't know it's going to hit a
+trap. After the trap is hit, the instruction is done executing, and
+whatever effects it may have had on e.g. the TIA state have already
+happened...  but we don't have a way to run the emulated VCS in reverse,
+so the best we can do is stop before the next instruction runs.</p>
 
 <p>Traps come in two varieties: read access traps and write access traps.
 It is possible to set both types of trap on the same address (that's
@@ -482,47 +574,59 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
 
 <h3>Prompt commands:</h3>
 
+<p>Type "help" to see this list in the debugger.</p>
+
 <pre>
             a - Set Accumulator to value xx
-         bank - Show # of banks (with no args), Switch to bank (with
-                1 arg)
+         bank - Show # of banks (with no args), Switch to bank (with 1 arg)
          base - Set default base (hex, dec, or bin)
-        break - Set/clear breakpoint at address (default=pc)
+        break - Set/clear breakpoint at address (default: current pc)
+      breakif - Set breakpoint on condition
             c - Carry Flag: set (to 0 or 1), or toggle (no arg)
+      cheetah - Use Cheetah cheat code (see http://members.cox.net/rcolbert/)
   clearbreaks - Clear all breakpoints
    cleartraps - Clear all traps
  clearwatches - Clear all watches
     colortest - Color Test
             d - Decimal Flag: set (to 0 or 1), or toggle (no arg)
        define - Define label
+   delbreakif - Delete conditional break created with breakif
      delwatch - Delete watch
        disasm - Disassemble from address (default=pc)
          dump - Dump 128 bytes of memory at address
+         exec - Execute script file
         frame - Advance emulation by xx frames (default=1)
+     function - Define expression as a function for later use
+       height - Change height of debugger window
          help - This cruft
++        list - List source (if loaded with loadlist)
    listbreaks - List breakpoints
     listtraps - List traps
   listwatches - List watches
     loadstate - Load emulator state (0-9)
++    loadlist - Load DASM listing file
       loadsym - Load symbol file
             n - Negative Flag: set (to 0 or 1), or toggle (no arg)
            pc - Set Program Counter to address
+         poke - Set address to value. Can give multiple values (for address+1, etc)
         print - Evaluate and print expression in hex/dec/binary
-          ram - Show RAM contents (no args), or set RAM address xx to
-                value yy
+          ram - Show RAM contents (no args), or set address xx to value yy
        reload - Reload ROM and symbol file
         reset - Reset 6507 to init vector (does not reset TIA, RIOT)
          riot - Show RIOT timer/input status
           rom - Change ROM contents
           run - Exit debugger, return to emulator
++       runto - Run until first occurrence of string in disassembly
             s - Set Stack Pointer to value xx
+         save - Save breaks, watches, traps as a .stella script file
+      saverom - Save (possibly patched) ROM to file
       saveses - Save console session to file
     savestate - Save emulator state (valid args 0-9)
       savesym - Save symbols to file
+     scanline - Advance emulation by xx scanlines (default=1)
          step - Single step CPU (optionally, with count)
-          tia - Show TIA state
-        trace - Single step CPU (optionally, with count), subroutines
-                count as one instruction
++         tia - Show TIA state (NOT FINISHED YET)
+        trace - Single step CPU (optionally, with count), subroutines count as one instruction
          trap - Trap read and write accesses to address
      trapread - Trap read accesses to address
     trapwrite - Trap write accesses to address
@@ -532,20 +636,65 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
             x - Set X Register to value xx
             y - Set Y Register to value xx
             z - Zero Flag: set (to 0 or 1), or toggle (no arg)
-
 </pre>
-<p>This list may be outdated: see the output of the "help" command
-for the current list. Commands marked with a * are unimplemented.
-Commands marked with a + are partially implemented. Most commands can
-be abbreviated just by typing a partial command: "st" for "step", or
-"f" for "frame". Where there are conflicts, generally the shortest
-name is chosen (so "tra" is "trap", not "trapread").</p>
 
+<!-- <p>Commands marked with a * are unimplemented.</p> -->
+<p>Commands marked with a + are partially implemented.</p>
+
+<p>Most commands can be abbreviated just by typing a partial command:
+"st" for "step", or "f" for "frame". Where there are conflicts, generally
+the shortest name is chosen (so "tra" is "trap", not "trapread"). When
+in doubt, press TAB.</p>
+
+<h2>TIA Tab</h2>
+
+<p>When selected, this tab shows detailed status of all the TIA registers
+(except for audio; use the Audio tab for those).</p>
+
+<p>Most of the values on the TIA tab will be self-explanatory to a 2600
+programmer. The top line (with all the hex values) displays the raw
+values read from the TIA locations, as they would be seen by the CPU.<p>
+
+<p>Many of the variables inside the TIA can only be written to by the
+6502.  The debugger lets you get inside the TIA and see the contents
+of these variables. These include the color registers, player/missile
+graphics and positions, and the playfield.</p>
+
+<p>You can control almost every aspect of the TIA from here, too: most
+of the displays are editable. You can even toggle individual bits in
+the GRP0/1 and playfield registers (remember to double-click).</p>
+
+<p>The group of buttons labelled "Strobes" allows you to write to any
+of the strobe registers at any time.</p>
+
+<p>The collision registers are displayed in decoded format, in a table.
+You can see exactly which objects have hit what. These are read-only
+displays; you can't toggle the bits in the current release of Stella. Of
+course, you can clear all the collisions from the TIA tab with the CXCLR
+Strobe button.</p>
+
+<p>To the right of each color register, you'll see a small rectangle
+drawn in the current color. Changing a color register will change the
+color of this rectangle.</p>
+
+<h2>Audio Tab</h2>
+
+<p>This tab lets you view the contents of the TIA audio registers. In
+the current release of Stella, these are read-only displays. This tab
+will grow some features in a future release.</p>
 
 <h2>CPU Widget</h2>
 
-<p>TODO: add documentation</p>
+<p>This shows the current CPU state. All the registers and flags are
+displayed, and can be changed by double-clicking on them. Flags are
+toggled on double-click.</p>
 
+<p>The 0, Inv, Neg, ++, --, &lt;&lt;, and &gt;&gt; buttons affect the
+currently-selected register (see <b>RAM Widget</b> below).</p>
+
+<p>There's not much else to say about the CPU widget: if you know 6502
+assembly, it's pretty self-explanatory. If you don't, well, you should
+learn :)</p>
 
 <h2>RAM Widget</h2>
 
@@ -558,17 +707,21 @@ press Enter to make the change. If you change your mind, press Escape
 and the original value will be restored.</p>
 
 <p>Nearby there are also some buttons to do various things to the
-currently-selected memory location. The buttons are:</p>
+currently-selected memory location from the RAM widget or
+CPU register from the CPU widget (whichever was most recently
+selected). The buttons are:</p>
 
 <pre>
-  0   - Set the current location to zero.
-  Inv - Invert the current location (toggle all its bits).
-  Neg - Negate the current location (twos' complement negative).
-  ++  - Increment the current location
-  --  - Decrement the current location
-  &lt;&lt;  - Shift the current location left. Any bits shifted off the left
-        are lost (they will NOT end up in the Carry flag).
-  &gt;&gt;  - Shift the current location right (opposite of &lt;&lt; above).
+  0   - Set the current location/register to zero.
+  Inv - Invert the current location/register (toggle all its bits).
+  Neg - Negate the current location/register (twos' complement negative).
+  ++  - Increment the current location/register
+  --  - Decrement the current location/register
+  &lt;&lt;  - Shift the current location/register left.
+  &gt;&gt;  - Shift the current location/register right.
+
+  Any bits shifted out of the location/register with &lt;&lt; or &gt;&gt;
+  are lost (they will NOT end up in the Carry flag).
 </pre>
 
 <p>This widget also lets you search memory for values such as lives or remaining
@@ -577,7 +730,7 @@ memory location holds which quantity.</p>
 
 <p>To search RAM, click 'Search' and enter a byte value into the search editbox (0-255).
 All matching values will be highlighted in the RAM widget.  If 'Search' is clicked
-and input is empty, all RAM locations are searched.</p>
+when the input is empty, all RAM locations are searched.</p>
 
 <p>The 'Compare' button is used to compare the given value using all
 addresses currently highlighted.  This may be an absolute number (such as 2),
@@ -601,9 +754,50 @@ decreased by 1:
 		addresses and allow another search</li>
 </ul>
 
-<h2>TIA Tab</h2>
+<h2>TIA Display</h2>
 
-<p>TODO: add documentation</p>
+<p>In the upper left of the debugger, you'll see the current frame of
+video as generated by the TIA. If a complete frame hasn't been drawn,
+the partial contents of the current frame will be displayed up to the
+current scanline, with the contents of the old frame (in black &amp;
+white) filling the rest of the display.</p>
+
+<p>You can use the "Scan+1" button or the prompt "scan" command to watch
+the TIA draw the frame one scanline at a time.</p>
+
+<p>To the right of the video display, there are indicators for:</p>
+<ul>
+<li>Frame - The current frame number, since this ROM was loaded or reset.</li>
+<li>Scanline - The scanline that's currently being drawn. Scanline 0 is the one
+on which VSYNC is cleared (after being set for 3 scanlines, as per the Stella
+Programmer's Guide)</li>
+<li>F. Cycle - The number of CPU cycles that have been executed this frame, since
+VSYNC was cleared at scanline 0.</li>
+<li>S. Cycle - The number of CPU cycles that have been executed since the beginning
+of the current scanline.</li>
+<li>VSYNC and VBLANK indicators</li>
+<li>Pixel Pos. - The current number of visible color clocks that have been displayed on
+the current scanline, starting from the beginning of the Horizontal Blank period.
+During HBLANK, this value will be negative (representing the number of clocks
+until the first visible one). Since there are 68 color clocks per HBLANK and
+160 visible clocks per scanline, the Pixel Position will range from -68 to 159.</li>
+<li>Color Clk. - The current number of total color clocks since the beginning of this
+scanline's HBLANK. This counter starts at zero, but otherwise displays the same
+information as the Pixel Position (so Color Clock will always be 68 more than Pixel
+Position, and will range from 0 to 228).</li>
+</ul>
+
+<p>Below the indicators is the TIA Zoom area. This allows you to enlarge
+part of the TIA display, so you can see fine details. To set the zoom
+region, right-click on the TIA display and choose "Set Zoom Position". To
+set the magnification level, right-click on the TIA Zoom area and choose
+2x, 4x, or 8x from the pop-up menu.</p>
+
+<p>Below the TIA Zoom, there is a status line that shows the reason the
+debugger was entered (if a breakpoint/trap was hit). This isn't really
+part of the TIA display; see "Breakpoints" below for details.</p>
+
+<p></p>
 
 <h2>ROM Widget</h2>
 
