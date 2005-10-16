@@ -76,7 +76,7 @@ class SoundWinCE : public Sound
     bool myIsMuted;
     uInt32 myVolume;
     RegWriteQueue myRegWriteQueue;
-	//static void CALLBACK SoundWinCE::waveOutProc(HWAVEOUT hwo,	UINT uMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2);
+	//static void CALLBACK SoundWinCE::waveOutProc(HWAVEOUT hwo, UINT uMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2);
 	int myLatency, myMixRate, myBuffnum;
 	WAVEHDR *myBuffers;
 	HWAVEOUT myWout;

@@ -5,9 +5,10 @@
 #include "OSystem.hxx"
 #include "OSystemWinCE.hxx"
 #include "SoundWinCE.hxx"
+#include "FrameBufferWinCE.hxx"
 //#include <sstream>
 extern void KeyCheck(void);
-int EventHandlerState;
+extern int EventHandlerState;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemWinCE::OSystemWinCE()
@@ -15,7 +16,7 @@ OSystemWinCE::OSystemWinCE()
   string basedir = ((string) getcwd()) + '\\';
   setBaseDir(basedir);
 
-  string stateDir = basedir + "state\\";
+  string stateDir = basedir;// + "state\\";
   setStateDir(stateDir);
 
   setPropertiesDir(basedir, basedir);
@@ -43,19 +44,15 @@ void OSystemWinCE::setFramerate(uInt32 framerate)
 void OSystemWinCE::mainLoop()
 {
 
-  // These variables are common to both timing options
-  // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
-
-  // Set up less accurate timing stuff
   uInt32 startTime, virtualTime, currentTime;
 
-  // Set the base for the timers
   virtualTime = GetTickCount();
   frameTime = 0;
 
   // Main game loop
   MSG msg;
+  int laststate = -1;
   for(;;)
   {
 	while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
@@ -76,6 +73,10 @@ void OSystemWinCE::mainLoop()
 	startTime = GetTickCount();
 
 	EventHandlerState = (int) myEventHandler->state();
+	if ((laststate != -1) && (laststate != EventHandlerState) && (EventHandlerState != 2))
+		((FrameBufferWinCE *)myFrameBuffer)->wipescreen();
+	laststate = EventHandlerState;
+
 	myEventHandler->poll(startTime);
 	myFrameBuffer->update();
 	((SoundWinCE *)mySound)->update();
@@ -84,6 +85,8 @@ void OSystemWinCE::mainLoop()
 	virtualTime += myTimePerFrame;
 	if(currentTime < virtualTime)
 	  Sleep(virtualTime - currentTime);
+	else
+		virtualTime = currentTime;
 
 	currentTime = GetTickCount() - startTime;
 	frameTime += currentTime;

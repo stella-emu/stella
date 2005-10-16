@@ -224,6 +224,20 @@ void SoundWinCE::processFragment(uInt8* stream, Int32 length)
   float position = 0.0;
   float remaining = length;
 
+  if(myRegWriteQueue.duration() > 
+      (9.0 / myDisplayFrameRate))
+  {
+    float removed = 0.0;
+    while(removed < ((9.0 - 1) / myDisplayFrameRate))
+    {
+      RegWrite& info = myRegWriteQueue.front();
+      removed += info.delta;
+      myTIASound.set(info.addr, info.value);
+      myRegWriteQueue.dequeue();
+    }
+//    cout << "Removed Items from RegWriteQueue!" << endl;
+  }
+
   while(remaining > 0.0)
   {
     if(myRegWriteQueue.size() == 0)

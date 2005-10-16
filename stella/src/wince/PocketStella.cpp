@@ -1,10 +1,10 @@
 #include <windows.h>
-#include <gx.h>
 #include "EventHandler.hxx"
 #include "OSystemWinCE.hxx"
 #include "SettingsWinCE.hxx"
 #include "PropsSet.hxx"
 #include "FSNode.hxx"
+#include "FrameBufferWinCE.hxx"
 
 #define KEYSCHECK_ASYNC
 
@@ -17,20 +17,30 @@ struct key2event
 };
 extern key2event keycodes[2][MAX_KEYS];
 extern void KeySetup(void);
+extern void KeySetMode(int);
 
 OSystemWinCE* theOSystem = (OSystemWinCE*) NULL;
 HWND hWnd;
+uInt16 rotkeystate = 0;
+
 
 void KeyCheck(void)
 {
 #ifdef KEYSCHECK_ASYNC
-	if (GetAsyncKeyState(keycodes[0][K_QUIT].keycode) & 0x8000)
+	if (GetAsyncKeyState(VK_F3))
 	{
-		PostQuitMessage(0);
-		return;
+		if (rotkeystate == 0)
+			KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
+		rotkeystate = 1;
 	}
-	for (int i=0; i<MAX_KEYS-1; i++)
-		keycodes[0][i].state = ((uInt16) GetAsyncKeyState(keycodes[0][i].keycode)) >> 15;
+	else
+		rotkeystate = 0;
+
+	for (int i=0; i<MAX_KEYS; i++)
+		if (GetAsyncKeyState(keycodes[0][i].keycode))
+			keycodes[0][i].state = 1;
+		else
+			keycodes[0][i].state = 0;
 #endif
 }
 
@@ -44,33 +54,30 @@ void CleanUp(void)
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-	static PAINTSTRUCT ps;
-
 	switch (uMsg)
 	{
 	case WM_KEYDOWN:
+		if (wParam == VK_F3)
+		{
+			if (rotkeystate == 0)
+				KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
+			rotkeystate = 1;
+		}
+		else
+			rotkeystate = 0;
 #ifndef KEYSCHECK_ASYNC
 		uInt8 i;
-		if (wParam == keycodes[K_QUIT].keycode)
-			PostQuitMessage(0);
-		else
-			for (i=0; i<MAX_KEYS-1; i++)
-				if (wParam == keycodes[i].keycode)
-				{
-					theConsole->eventHandler().event()->set(keycodes[i].event,1);
-					break;
-				}
+			for (i=0; i<MAX_KEYS; i++)
+				if (wParam == keycodes[0][i].keycode)
+					keycodes[0][i].state = 1;
 #endif
 		return 0;
 
 	case WM_KEYUP:
 #ifndef KEYSCHECK_ASYNC
-		for (i=0; i<MAX_KEYS-1; i++)
-			if (wParam == keycodes[i].keycode)
-			{
-				theConsole->eventHandler().event()->set(keycodes[i].event,0);
-				break;
-			}
+		for (i=0; i<MAX_KEYS; i++)
+			if (wParam == keycodes[0][i].keycode)
+				keycodes[0][i].state = 0;
 #endif
 		return 0;
 
@@ -91,13 +98,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	case WM_HIBERNATE:
 		GXResume();
 		return 0;
-
-	case WM_PAINT:
-		BeginPaint(hWnd, &ps);
-		EndPaint(hWnd, &ps);
-		return 0;
-
 	}
+
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
@@ -110,8 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	hWnd = CreateWindow(wndname, wndname, WS_VISIBLE, 0, 0, GetSystemMetrics(SM_CXSCREEN),
 						GetSystemMetrics(SM_CYSCREEN), NULL, NULL, hInstance, NULL);
 	if (!hWnd) return 1;
-	SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-	
+	SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);	
+
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 	{
@@ -119,6 +121,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 		DispatchMessage(&msg);
 	}
 
+	LOGFONT f = {11, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+				 OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, _T("")};
+	HFONT hFnt = CreateFontIndirect(&f);
+	HDC hDC = GetDC(hWnd);
+	SelectObject(hDC, hFnt);
+	RECT RWnd;
+	GetClipBox(hDC, &RWnd);
+	SetTextColor(hDC, 0xA0A0A0);
+	SetBkColor(hDC, 0);
+	DrawText(hDC, _T("PocketStella Initializing..."), -1, &RWnd, DT_CENTER | DT_VCENTER);
+	ReleaseDC(hWnd, hDC);
+	DeleteObject(hFnt);
+	
 	theOSystem = new OSystemWinCE();
 	SettingsWinCE theSettings(theOSystem);
 	theOSystem->settings().loadConfig();
@@ -146,12 +161,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	if (!FilesystemNode::fileExists(romfile))
 		theOSystem->createLauncher();
 	else
-	{
-	/*TCHAR tmp[200];
-	MultiByteToWideChar(CP_ACP, 0, romfile.c_str(), strlen(romfile.c_str()) + 1, tmp, 200);
-	MessageBox(hWnd, tmp, _T("..."),0);*/
 		theOSystem->createConsole(romfile);
-	}
 
 	theOSystem->mainLoop();
 

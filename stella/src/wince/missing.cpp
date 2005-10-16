@@ -3,7 +3,7 @@
 #include "gx.h"
 
 char *msg = NULL;
-extern int EventHandlerState;
+int EventHandlerState;
 
 int time(int dummy)
 {
@@ -16,15 +16,11 @@ char *getcwd(void)
 	static char cwd[MAX_PATH+1] = "";
 	char *plast;
 	
-//	if(cwd[0] == 0)
-//	{
-		GetModuleFileName(NULL, fileUnc, MAX_PATH);
-		WideCharToMultiByte(CP_ACP, 0, fileUnc, -1, cwd, MAX_PATH, NULL, NULL);
-		plast = strrchr(cwd, '\\');
-		if(plast)
-			*plast = 0;
-
-//	}
+	GetModuleFileName(NULL, fileUnc, MAX_PATH);
+	WideCharToMultiByte(CP_ACP, 0, fileUnc, -1, cwd, MAX_PATH, NULL, NULL);
+	plast = strrchr(cwd, '\\');
+	if(plast)
+		*plast = 0;
 
 	return cwd;
 }
@@ -64,17 +60,49 @@ void KeySetup(void)
 		keycodes[i][K_FIRE].sdlkey = SDLK_SPACE;
 		keycodes[i][K_RESET].sdlkey = SDLK_F2;
 		keycodes[i][K_SELECT].sdlkey = SDLK_F1;
-		keycodes[i][K_QUIT].sdlkey = SDLK_q;
+		keycodes[i][K_QUIT].sdlkey = SDLK_ESCAPE;
 
 		keycodes[i][K_UP].launcherkey = SDLK_UP;
 		keycodes[i][K_DOWN].launcherkey = SDLK_DOWN;
-		keycodes[i][K_LEFT].launcherkey = SDLK_LEFT;
-		keycodes[i][K_RIGHT].launcherkey = SDLK_RIGHT;
+		keycodes[i][K_LEFT].launcherkey = SDLK_PAGEUP;
+		keycodes[i][K_RIGHT].launcherkey = SDLK_PAGEDOWN;
 		keycodes[i][K_RESET].launcherkey = SDLK_RETURN;
+		keycodes[i][K_QUIT].launcherkey = SDLK_ESCAPE;
 	}
 }
 
+void KeySetMode(int mode)
+{
+	GXKeyList klist = GXGetDefaultKeys(GX_NORMALKEYS);
 
+	for (int i=0; i<2; i++)
+	{
+		switch (mode)
+		{
+		case 0:
+			keycodes[i][K_UP].keycode = klist.vkUp;
+			keycodes[i][K_DOWN].keycode = klist.vkDown;
+			keycodes[i][K_LEFT].keycode = klist.vkLeft;
+			keycodes[i][K_RIGHT].keycode = klist.vkRight;
+			break;
+
+		case 2:
+			keycodes[i][K_UP].keycode = klist.vkRight;
+			keycodes[i][K_DOWN].keycode = klist.vkLeft;
+			keycodes[i][K_LEFT].keycode = klist.vkUp;
+			keycodes[i][K_RIGHT].keycode = klist.vkDown;
+			break;
+
+		case 1:
+			keycodes[i][K_UP].keycode = klist.vkLeft;
+			keycodes[i][K_DOWN].keycode = klist.vkRight;
+			keycodes[i][K_LEFT].keycode = klist.vkDown;
+			keycodes[i][K_RIGHT].keycode = klist.vkUp;
+			break;
+
+		}
+	}
+}
 
 // SDL
 DECLSPEC Uint32 SDLCALL SDL_WasInit(Uint32 flags) { return 0xFFFFFFFF; }
@@ -95,16 +123,21 @@ DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 		if (keycodes[0][i].state != keycodes[1][i].state)
 		{
 			keycodes[1][i].state = keycodes[0][i].state;
-			if (keycodes[1][i].state == 1)
-				event->type = event->key.type = SDL_KEYDOWN;
-			else
-				event->type = event->key.type = SDL_KEYUP;
-			if (EventHandlerState == 0)
+			if (i!=K_QUIT || EventHandlerState!=2)
+			{
+				if (keycodes[1][i].state == 1)
+					event->type = event->key.type = SDL_KEYDOWN;
+				else
+					event->type = event->key.type = SDL_KEYUP;
+			}
+			else if (keycodes[1][i].state == 1)
+				event->type = SDL_QUIT;
+			if (EventHandlerState != 2)
 				event->key.keysym.sym = keycodes[0][i].sdlkey;
 			else
 				event->key.keysym.sym = keycodes[0][i].launcherkey;
 			event->key.keysym.mod = (SDLMod) 0;
-			event->key.keysym.unicode = 0;
+			event->key.keysym.unicode = '\n';  // hack
 			return 1;
 		}
 	}
