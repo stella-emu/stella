@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.41 2005-10-09 17:31:47 stephena Exp $
+// $Id: OSystem.cxx,v 1.42 2005-10-18 18:49:46 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -370,15 +370,37 @@ bool OSystem::openROM(const string& rom, uInt8** image, int* size)
     if(unzGoToFirstFile(tz) == UNZ_OK)
     {
       unz_file_info ufo;
-      unzGetCurrentFileInfo(tz, &ufo, 0, 0, 0, 0, 0, 0);
 
+      for(;;)  // Loop through all files for valid 2600 images
+      {
+        // Longer filenames might be possible, but I don't
+        // think people would name files that long in zip files...
+        char filename[1024];
+
+        unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
+        filename[1023] = '\0';
+
+        if(strlen(filename) >= 4)
+        {
+          // Grab 3-character extension
+          char* ext = filename + strlen(filename) - 4;
+
+          if(!STR_CASE_CMP(ext, ".bin") || !STR_CASE_CMP(ext, ".a26"))
+            break;
+        }
+
+        // Scan the next file in the zip
+        if(unzGoToNextFile(tz) != UNZ_OK)
+          break;
+      }
+
+      // Now see if we got a valid image
       if(ufo.uncompressed_size <= 0)
       {
         unzClose(tz);
         return false;
       }
-
-      *size = ufo.uncompressed_size;
+      *size  = ufo.uncompressed_size;
       *image = new uInt8[*size];
 
       // We don't have to check for any return errors from these functions,

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.66 2005-08-29 18:36:41 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.67 2005-10-18 18:49:46 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -146,6 +146,8 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   // Erase any messages from a previous run
   myMessageTime = 0;
+
+  myUseDirtyRects = myOSystem->settings().getBool("dirtyrects");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

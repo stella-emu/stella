@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.38 2005-09-11 15:44:51 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.39 2005-10-18 18:49:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -275,15 +275,13 @@ void FrameBufferSoft::postFrameUpdate()
   // This is a performance hack until I have more time to work
   // on the Win32 code.  It seems that SDL_UpdateRects() is very
   // expensive in Windows, so we force a full screen update instead.
-#ifdef WIN32
-  if(myRectList->numRects() > 0)
+  if(myUseDirtyRects)
+    SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
+  else if(myRectList->numRects() > 0)
   {
     SDL_Flip(myScreen);
     myRectList->start();
   }
-#else
-  SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.24 2005-09-11 15:44:51 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.25 2005-10-18 18:49:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,21 +51,11 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
       woff = 110,
       labelWidth = 55;
 
-  // Video driver (query OSystem for what's supported)
-  myDriverPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
-                                  "Driver: ", labelWidth);
-  unsigned int itemNum = 1;
-  StringList::const_iterator iter;
-  if(instance()->driverList().size() > 0)
-  {
-    for (iter = instance()->driverList().begin(); iter != instance()->driverList().end();
-         ++iter, ++itemNum)
-    {
-      myDriverPopup->appendEntry(*iter, itemNum);
-    }
-  }
-  else
-    myDriverPopup->setEnabled(false);
+  // Use dirty rectangle updates
+  myDirtyPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
+                                 "Dirty Rects: ", labelWidth);
+  myDirtyPopup->appendEntry("Yes", 1);
+  myDirtyPopup->appendEntry("No", 2);
   yoff += kVideoRowHeight + 4;
 
   // Video renderer
@@ -158,18 +148,9 @@ void VideoDialog::loadConfig()
   double f;
 
   // Driver setting
-  s = instance()->settings().getString("video_driver");
-  unsigned int itemNum = 1;
-  StringList::const_iterator iter;
-  for (iter = instance()->driverList().begin(); iter != instance()->driverList().end();
-       ++iter, ++itemNum)
-  {
-    if(*iter == s)
-    {
-      myDriverPopup->setSelectedTag(itemNum);
-      break;
-    }
-  }
+  b = instance()->settings().getBool("dirtyrects");
+  i = b ? 1 : 2;
+  myDirtyPopup->setSelectedTag(i);
 
   // Renderer setting
   s = instance()->settings().getString("video");
@@ -240,9 +221,14 @@ void VideoDialog::saveConfig()
   int i;
   bool b, restart = false;
 
-  // Driver setting
-  s = myDriverPopup->getSelectedString();
-  instance()->settings().setString("video_driver", s);
+  // Dirty rectangle updates
+  i = myDirtyPopup->getSelectedTag();
+  b = (i == 1) ? 1 : 0;
+  if(b != instance()->settings().getBool("dirtyrects"))
+  {
+    instance()->settings().setBool("dirtyrects", b);
+    restart = true;
+  }
 
   // Renderer setting
   i = myRendererPopup->getSelectedTag();
@@ -322,8 +308,7 @@ void VideoDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::setDefaults()
 {
-  if(myDriverPopup->isEnabled())
-    myDriverPopup->setSelectedTag(1);
+  myDirtyPopup->setSelectedTag(1);
   myRendererPopup->setSelectedTag(1);
   myFilterPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(1);
@@ -354,6 +339,9 @@ void VideoDialog::handleRendererChange(int item)
   myAspectRatioSlider->setEnabled(active);
   myAspectRatioLabel->setEnabled(active);
   myUseDeskResCheckbox->setEnabled(active);
+
+  // Also, in OpenGL mode, certain software related items are disabled
+  myDirtyPopup->setEnabled(!active);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

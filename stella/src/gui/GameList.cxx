@@ -13,11 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cxx,v 1.5 2005-06-16 00:55:59 stephena Exp $
+// $Id: GameList.cxx,v 1.6 2005-10-18 18:49:46 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
 //============================================================================
+
+#include <cctype>
+#include <algorithm>
 
 #include "GuiUtils.hxx"
 #include "GameList.hxx"
@@ -34,7 +37,8 @@ GameList::~GameList()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameList::appendGame(const string& rom, const string& name, const string& note)
+void GameList::appendGame(const string& rom, const string& name,
+                          const string& note)
 {
   Entry g;
   g._rom  = rom;
@@ -55,9 +59,17 @@ void GameList::sortByName()
   {
     unsigned int min = i;
     for (unsigned int j = i+1; j < myArray.size(); j++)
-      if (myArray[j]._name < myArray[min]._name)
+    {
+      // TODO - add option for this
+      string atJ   = myArray[j]._name;
+      string atMin = myArray[min]._name;
+      transform(atJ.begin(), atJ.end(), atJ.begin(), (int(*)(int)) toupper);
+      transform(atMin.begin(), atMin.end(), atMin.begin(), (int(*)(int)) toupper);
+
+      if (atJ < atMin)
         min = j;
       if (min != i)
         SWAP(myArray[min], myArray[i]);
+    }
   }
 }

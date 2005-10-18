@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.105 2005-10-14 14:07:24 stephena Exp $
+// $Id: EventHandler.cxx,v 1.106 2005-10-18 18:49:46 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -311,6 +311,7 @@ void EventHandler::poll(uInt32 time)
           // These keys work in all states
           switch(int(key))
           {
+    #ifndef MAC_OSX
             case SDLK_EQUALS:
               myOSystem->frameBuffer().resize(NextSize);
               break;
@@ -319,7 +320,6 @@ void EventHandler::poll(uInt32 time)
               myOSystem->frameBuffer().resize(PreviousSize);
               break;
 
-    #ifndef MAC_OSX
             case SDLK_RETURN:
               myOSystem->frameBuffer().toggleFullscreen();
               break;
@@ -410,6 +410,14 @@ void EventHandler::poll(uInt32 time)
             case SDLK_m:
             case SDLK_SLASH:
               handleMacOSXKeypress(int(key));
+              break;
+
+            case SDLK_EQUALS:
+              myOSystem->frameBuffer().resize(NextSize);
+              break;
+
+            case SDLK_MINUS:
+              myOSystem->frameBuffer().resize(PreviousSize);
               break;
 
             case SDLK_RETURN:
@@ -1553,8 +1561,9 @@ void EventHandler::takeSnapshot()
   string sspath = myOSystem->settings().getString("ssdir");
   string ssname = myOSystem->settings().getString("ssname");
 
-  if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
-    sspath += BSPF_PATH_SEPARATOR;
+  if(sspath.length() > 0)
+    if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
+      sspath += BSPF_PATH_SEPARATOR;
 
   if(ssname == "romname")
     sspath += myOSystem->console().properties().get("Cartridge.Name");
