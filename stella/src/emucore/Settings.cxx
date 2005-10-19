@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.63 2005-10-18 18:49:46 stephena Exp $
+// $Id: Settings.cxx,v 1.64 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -294,6 +294,7 @@ void Settings::usage()
   #endif
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -help                        Show the text you're now reading\n"
+  #ifdef DEVELOPER_SUPPORT
     << endl
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
@@ -318,6 +319,7 @@ void Settings::usage()
     << "   -width       <arg>          Sets the 'Display.Width' property\n"
     << "   -height      <arg>          Sets the 'Display.Height' property\n"
     << "   -hmove       <arg>          Sets the 'Emulation.HmoveBlanks' property\n"
+  #endif
     << endl;
 #endif
 }

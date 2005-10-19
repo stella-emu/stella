@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.73 2005-09-30 00:40:33 stephena Exp $
+// $Id: Console.cxx,v 1.74 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -32,7 +32,6 @@
 #include "Keyboard.hxx"
 #include "M6502Hi.hxx"
 #include "M6532.hxx"
-#include "MD5.hxx"
 #include "MediaSrc.hxx"
 #include "Paddles.hxx"
 #include "Props.hxx"
@@ -57,7 +56,8 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
+Console::Console(const uInt8* image, uInt32 size, const string& md5,
+                 OSystem* osystem)
     : myOSystem(osystem)
 {
   myControllers[0] = 0;
@@ -70,18 +70,13 @@ Console::Console(const uInt8* image, uInt32 size, OSystem* osystem)
   // Attach the event subsystem to the current console
   myEvent = myOSystem->eventHandler().event();
 
-  // Get the MD5 message-digest for the ROM image
-  string md5 = MD5(image, size);
-
   // Search for the properties based on MD5
   myOSystem->propSet().getMD5(md5, myProperties);
 
-  // Make sure the MD5 value of the cartridge is set in the properties
-  if(myProperties.get("Cartridge.MD5") == "")
-    myProperties.set("Cartridge.MD5", md5);
-
+#ifdef DEVELOPER_SUPPORT
   // A developer can override properties from the commandline
   setDeveloperProperties();
+#endif
 
   // Make sure height is set properly for PAL ROM
   if(myProperties.get("Display.Format", true) == "PAL")

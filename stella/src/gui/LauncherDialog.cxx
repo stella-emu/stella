@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.31 2005-09-15 19:43:36 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.32 2005-10-19 00:59:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -245,11 +245,7 @@ void LauncherDialog::loadListFromDisk()
     name = props.get("Cartridge.Name");
     note = props.get("Cartridge.Note");
 
-    // Some games may not have a name, since there may not
-    // be an entry in stella.pro.  In that case, we use the rom name
-    if(name == "Untitled")
-      name = files[idx].displayName();
-
+    // Indicate that this ROM doesn't have a properties entry
     myGameList->appendGame(rom, name, note);
 
     // Update the progress bar, indicating one more ROM has been processed
@@ -333,11 +329,9 @@ string LauncherDialog::MD5FromFile(const string& path)
   int size = -1;
   string md5 = "";
 
-  if(instance()->openROM(path, &image, &size))
-    md5 = MD5(image, size);
-
-  if(size != -1)
-    delete[] image;
+  if(instance()->openROM(path, md5, &image, &size))
+    if(size != -1)
+      delete[] image;
 
   return md5;
 }

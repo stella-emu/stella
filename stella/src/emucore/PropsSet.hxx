@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.9 2005-09-16 18:15:44 stephena Exp $
+// $Id: PropsSet.hxx,v 1.10 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -99,14 +99,6 @@ class PropertiesSet
     */
     bool merge(const Properties& properties, const string& filename);
 
-  private:
-    struct TreeNode {
-      Properties* props;
-      TreeNode* left;
-      TreeNode* right;
-      bool save;
-    };
-
     /**
       Insert the properties into the set.  If a duplicate is inserted 
       the old properties are overwritten with the new ones.
@@ -115,7 +107,15 @@ class PropertiesSet
       @param save        Indicates whether to set the 'save' tag for
                          this property
     */
-    void insert(const Properties& properties, bool save);
+    void insert(const Properties& properties, bool save = true);
+
+  private:
+    struct TreeNode {
+      Properties* props;
+      TreeNode* left;
+      TreeNode* right;
+      bool save;
+    };
 
     /**
       Insert a node in the bst, keeping the tree sorted.

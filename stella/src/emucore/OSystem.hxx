@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.29 2005-09-11 22:55:51 stephena Exp $
+// $Id: OSystem.hxx,v 1.30 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -43,7 +43,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.29 2005-09-11 22:55:51 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.30 2005-10-19 00:59:51 stephena Exp $
 */
 class OSystem
 {
@@ -283,14 +283,15 @@ class OSystem
       Open the given ROM and return an array containing its contents.
 
       @param rom    The absolute pathname of the ROM file
+      @param md5    The md5 calculated from the ROM file
       @param image  A pointer to store the ROM data
                     Note, the calling method is responsible for deleting this
       @param size   The amount of data read into the image array
       @return  False on any errors, else true
     */
-    bool openROM(const string& rom, uInt8** image, int* size);
+    bool openROM(const string& rom, string& md5, uInt8** image, int* size);
 
-	 const string& romFile() { return myRomFile; }
+    const string& romFile() { return myRomFile; }
 
   public:
     //////////////////////////////////////////////////////////////////////

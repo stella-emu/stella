@@ -16,7 +16,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MD5.cxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+// $Id: MD5.cxx,v 1.3 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #include "MD5.hxx"
@@ -344,4 +344,3 @@ string MD5(const uInt8* buffer, uInt32 length)
 
   return result;
 }
-

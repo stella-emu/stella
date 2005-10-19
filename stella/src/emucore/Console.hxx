@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.39 2005-09-23 23:35:02 stephena Exp $
+// $Id: Console.hxx,v 1.40 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.39 2005-09-23 23:35:02 stephena Exp $
+  @version $Id: Console.hxx,v 1.40 2005-10-19 00:59:51 stephena Exp $
 */
 class Console
 {
@@ -48,9 +48,11 @@ class Console
 
       @param image       The ROM image of the game to emulate
       @param size        The size of the ROM image  
+      @param md5         The md5 of the ROM image
       @param osystem     The OSystem object to use
     */
-    Console(const uInt8* image, uInt32 size, OSystem* osystem);
+    Console(const uInt8* image, uInt32 size, const string& md5,
+            OSystem* osystem);
 
     /**
       Create a new console object by copying another one

@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.42 2005-10-18 18:49:46 stephena Exp $
+// $Id: OSystem.cxx,v 1.43 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
-
-#include "unzip.h"
 
 // FIXME - clean up this mess of platform-specific ifdefs
 #include "FrameBuffer.hxx"
@@ -49,6 +47,8 @@
   #include "Debugger.hxx"
 #endif
 
+#include "unzip.h"
+#include "MD5.hxx"
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
@@ -309,13 +309,14 @@ bool OSystem::createConsole(const string& romfile)
   // Open the cartridge image and read it in
   uInt8* image;
   int size = -1;
-  if(openROM(myRomFile, &image, &size))
+  string md5;
+  if(openROM(myRomFile, md5, &image, &size))
   {
     delete myConsole;  myConsole = NULL;
 
     // Create an instance of the 2600 game console
     // The Console c'tor takes care of updating the eventhandler state
-    myConsole = new Console(image, size, this);
+    myConsole = new Console(image, size, md5, this);
 
     if(showmessage)
       myFrameBuffer->showMessage("New console created");
@@ -360,7 +361,7 @@ void OSystem::createLauncher()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::openROM(const string& rom, uInt8** image, int* size)
+bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
 {
   // Try to open the file as a zipped archive
   // If that fails, we assume it's just a normal data file
@@ -427,6 +428,30 @@ bool OSystem::openROM(const string& rom, uInt8** image, int* size)
     in.read((char*)(*image), 512 * 1024);
     *size = in.gcount();
     in.close();
+  }
+
+  // If we get to this point, we know we have a valid file to open
+  // Now we make sure that the file has a valid properties entry
+  md5 = MD5(*image, *size);
+
+  // Some games may not have a name, since there may not
+  // be an entry in stella.pro.  In that case, we use the rom name
+  // and reinsert the properties object
+  Properties props;
+  myPropSet->getMD5(md5, props);
+
+  string name = props.get("Cartridge.Name");
+  if(name == "Untitled")
+  {
+    // Get the filename from the rom pathname
+    string::size_type pos = rom.find_last_of(BSPF_PATH_SEPARATOR);
+    if(pos+1 != string::npos)
+    {
+      name = rom.substr(pos+1);
+      props.set("Cartridge.MD5", md5);
+      props.set("Cartridge.Name", name);
+      myPropSet->insert(props);
+    }
   }
 
   return true;

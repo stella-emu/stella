@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.13 2005-09-16 18:15:44 stephena Exp $
+// $Id: PropsSet.cxx,v 1.14 2005-10-19 00:59:51 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -77,7 +77,7 @@ void PropertiesSet::getMD5(const string& md5, Properties &properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
-	insertNode(myRoot, properties, save);
+  insertNode(myRoot, properties, save);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
