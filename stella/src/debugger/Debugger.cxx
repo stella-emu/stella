@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.102 2005-10-15 17:35:16 urchlay Exp $
+// $Id: Debugger.cxx,v 1.103 2005-10-22 15:43:16 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -986,6 +986,9 @@ void Debugger::setQuitState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect Debugger::getDialogBounds() const
 {
+  // FIXME - This whole method is due for an overall
+  //         We need to decide if Stella GUI size will be pixel based
+  //         or font based, and update the GUI code everywhere
   GUI::Rect tia = getTiaBounds();
 
   int userHeight = myOSystem->settings().getInt("debugheight");
@@ -998,8 +1001,8 @@ GUI::Rect Debugger::getDialogBounds() const
 
   // Make sure window is always at least 'kDebuggerHeight' high
   // We need this to make positioning of widget easier
-  if(userHeight < kDebuggerHeight + tia.height())
-    userHeight = kDebuggerHeight - tia.height();
+  if(userHeight + tia.height() < kDebuggerHeight)
+    userHeight = kDebuggerHeight;
 
   GUI::Rect r(0, 0, kDebuggerWidth, userHeight + tia.height());
   return r;

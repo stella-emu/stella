@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.84 2005-10-06 17:28:54 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.85 2005-10-22 15:43:16 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1477,8 +1477,9 @@ void DebuggerParser::executeExec() {
 
 // "height"
 void DebuggerParser::executeHeight() {
-	int height = debugger->setHeight(args[0]);
-	commandResult = "height set to " + debugger->valueToString(height, kBASE_10);
+  int height = debugger->setHeight(args[0]);
+  commandResult = "height set to " + debugger->valueToString(height, kBASE_10) +
+                  "\nExit debugger and reload ROM to take effect";
 }
 
 // "help"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.13 2005-10-14 13:50:00 stephena Exp $
+// $Id: RomWidget.cxx,v 1.14 2005-10-22 15:43:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,8 +45,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     myCurrentBank(-1)
 {
   int w = 58 * font.getMaxCharWidth(),
-      h = 30 * font.getLineHeight(),
-      xpos, ypos;
+      h = 0, xpos, ypos;
   StaticTextWidget* t;
 
   // Create bank editable area
@@ -82,6 +81,12 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
+
+  // Update height of widget to use all remaining vertical space
+  GUI::Rect dialog = instance()->debugger().getDialogBounds();
+  int rows = ((dialog.height() - ypos) / font.getLineHeight()) - 1;
+  h = rows * font.getLineHeight();
+
   myRomList = new RomListWidget(boss, font, xpos, ypos, w, h);
   myRomList->setTarget(this);
   myRomList->myMenu->setTarget(this);

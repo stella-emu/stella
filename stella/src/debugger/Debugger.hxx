@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.81 2005-10-20 19:01:58 stephena Exp $
+// $Id: Debugger.hxx,v 1.82 2005-10-22 15:43:16 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -79,7 +79,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.81 2005-10-20 19:01:58 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.82 2005-10-22 15:43:16 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -262,7 +262,17 @@ class Debugger : public DialogContainer
     */
     static Debugger& debugger() { return *myStaticDebugger; }
 
-	 /* these are now exposed so Expressions can use them. */
+    /**
+      Get the dimensions of the various debugger dialog areas
+      (takes mediasource into account)
+    */
+    GUI::Rect getDialogBounds() const;
+    GUI::Rect getTiaBounds() const;
+    GUI::Rect getRomBounds() const;
+    GUI::Rect getStatusBounds() const;
+    GUI::Rect getTabBounds() const;
+
+    /* These are now exposed so Expressions can use them. */
     int peek(int addr);
     int dpeek(int addr);
     int getBank();
@@ -278,8 +288,8 @@ class Debugger : public DialogContainer
     bool setBank(int bank);
     bool patchROM(int addr, int value);
 
-	 void lockState();
-	 void unlockState();
+    void lockState();
+    void unlockState();
 
   private:
     /**
@@ -296,16 +306,6 @@ class Debugger : public DialogContainer
       Set final state before leaving the debugger.
     */
     void setQuitState();
-
-    /**
-      Get the dimensions of the various debugger dialog areas
-      (takes mediasource into account)
-    */
-    GUI::Rect getDialogBounds() const;
-    GUI::Rect getTiaBounds() const;
-    GUI::Rect getRomBounds() const;
-    GUI::Rect getStatusBounds() const;
-    GUI::Rect getTabBounds() const;
 
     /**
       Resize the debugger dialog based on the current dimensions from
