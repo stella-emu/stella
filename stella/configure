@@ -714,6 +714,7 @@ case $_host_os in
 			DEFINES="$DEFINES -DBSPF_WIN32 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/win32"
 			INCLUDES="$INCLUDES -I$SRC/win32"
+			LIBS="$LIBS -lmingw32 -lwinmm"
 
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then

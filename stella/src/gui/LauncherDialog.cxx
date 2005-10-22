@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.32 2005-10-19 00:59:51 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.33 2005-10-22 20:33:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -158,6 +158,7 @@ void LauncherDialog::updateListing(bool fullReload)
   if(romdir == "")
   {
     myOptionsButton->setEnabled(true);
+    myQuitButton->setEnabled(true);
     parent()->addDialog(myOptions);
     return;
   }
