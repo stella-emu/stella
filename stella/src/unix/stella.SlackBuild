@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# $Id: stella.SlackBuild,v 1.1 2005-10-23 23:15:33 urchlay Exp $
+
+# stella.SlackBuild for Stella 2.x, B. Watson, 2005
+
+# Comment out following line to build without OpenGL support
+#BUILD_GL=1
+
+die() {
+	echo "Fatal error: $*"
+	echo "(Look for error messages above)"
+	exit 1
+}
+
+VERSION=2.0
+ARCH=${ARCH-i486}
+BUILD=1
+
+TMP=${TMP-/tmp}
+PKG=/tmp/package-stella
+CWD=`pwd`
+
+rm -rf $PKG $TMP/stella-$VERSION
+mkdir -p $PKG
+
+cd $TMP
+tar xvfz $CWD/stella-$VERSION-src.tar.gz
+cd stella-$VERSION || die "extraction failed"
+
+if [ "$BUILD_GL" = "" ]; then
+	NOGL="--disable-gl"
+	NAME="stella_nogl"
+else
+	NOGL=""
+	NAME="stella_gl"
+fi
+
+./configure --prefix=/usr $NOGL || die "configure failed"
+make || die "make failed"
+make install DESTDIR=$PKG DOCDIR=/usr/doc/stella-$VERSION || die "make install failed"
+
+cd $PKG
+mkdir -p install
+cat <<EOF >install/slack-desc
+stella: Stella is a multi-platform Atari 2600 VCS emulator released under the
+stella: GNU General Public License (GPL).
+stella: 
+stella: Version 2.0 includes many new features, such as "frying", cheat code
+stella: support, and an integrated debugger for VCS game developers (with DASM
+stella: symbol file support).
+stella: 
+stella: Homepage: http://stella.sourceforge.net/
+stella: Author: Bradford W. Mott
+stella:
+stella:
+EOF
+
+strip usr/bin/stella
+chown -R root.bin usr/bin
+
+makepkg -l y -c n $TMP/$NAME-$VERSION-$ARCH-$BUILD.tgz
+
