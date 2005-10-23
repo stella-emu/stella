@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.52 2005-10-02 19:10:39 stephena Exp $
+// $Id: EventHandler.hxx,v 1.53 2005-10-23 14:51:51 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -23,6 +23,7 @@
 
 #include "bspf.hxx"
 #include "Event.hxx"
+#include "Array.hxx"
 
 class Console;
 class OSystem;
@@ -74,7 +75,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.52 2005-10-02 19:10:39 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.53 2005-10-23 14:51:51 stephena Exp $
 */
 class EventHandler
 {
@@ -317,7 +318,16 @@ class EventHandler
     void saveKeyMapping();
     void saveJoyMapping();
 
-    bool isValidList(string list, uInt32 length);
+    /**
+      Tests if a mapping list is valid, both by length and by event count.
+
+      @param list    The string containing the mappings, separated by ':'
+      @param map     The result of parsing the string for int mappings
+      @param length  The number of items that should be in the list
+
+      @return      True if valid list, else false
+    */
+    bool isValidList(string& list, IntArray& map, uInt32 length);
 
     void saveState();
     void changeState();

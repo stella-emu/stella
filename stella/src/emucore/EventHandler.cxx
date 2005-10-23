@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.106 2005-10-18 18:49:46 stephena Exp $
+// $Id: EventHandler.cxx,v 1.107 2005-10-23 14:51:51 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1218,22 +1218,14 @@ void EventHandler::setActionMappings()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setKeymap()
 {
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
   string list = myOSystem->settings().getString("keymap");
-  replace(list.begin(), list.end(), ':', ' ');
+  IntArray map;
 
-  if(isValidList(list, SDLK_LAST))
+  if(isValidList(list, map, SDLK_LAST))
   {
-    istringstream buf(list);
-    string key;
-
     // Fill the keymap table with events
     for(Int32 i = 0; i < SDLK_LAST; ++i)
-    {
-      buf >> key;
-      myKeyTable[i] = (Event::Type) atoi(key.c_str());
-    }
+      myKeyTable[i] = (Event::Type) map[i];
   }
   else
     setDefaultKeymap();
@@ -1242,22 +1234,14 @@ void EventHandler::setKeymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setJoymap()
 {
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
   string list = myOSystem->settings().getString("joymap");
-  replace(list.begin(), list.end(), ':', ' ');
+  IntArray map;
 
-  if(isValidList(list, kNumJoysticks*kNumJoyButtons))
+  if(isValidList(list, map, kNumJoysticks*kNumJoyButtons))
   {
-    istringstream buf(list);
-    string key;
-
     // Fill the joymap table with events
     for(Int32 i = 0; i < kNumJoysticks*kNumJoyButtons; ++i)
-    {
-      buf >> key;
-      myJoyTable[i] = (Event::Type) atoi(key.c_str());
-    }
+      myJoyTable[i] = (Event::Type) map[i];
   }
   else
     setDefaultJoymap();
@@ -1443,7 +1427,9 @@ void EventHandler::setDefaultJoymap()
 void EventHandler::saveKeyMapping()
 {
   // Iterate through the keymap table and create a colon-separated list
+  // Prepend the event count, so we can check it on next load
   ostringstream keybuf;
+  keybuf << Event::LastType << ":";
   for(uInt32 i = 0; i < SDLK_LAST; ++i)
     keybuf << myKeyTable[i] << ":";
 
@@ -1454,7 +1440,9 @@ void EventHandler::saveKeyMapping()
 void EventHandler::saveJoyMapping()
 {
   // Iterate through the joymap table and create a colon-separated list
+  // Prepend the event count, so we can check it on next load
   ostringstream joybuf;
+  joybuf << Event::LastType << ":";
   for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     joybuf << myJoyTable[i] << ":";
 
@@ -1462,17 +1450,27 @@ void EventHandler::saveJoyMapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::isValidList(string list, uInt32 length)
+bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length)
 {
-  // Rudimentary check to see if the list contains 'length' keys
-  istringstream buf(list);
   string key;
-  uInt32 i = 0;
+  Event::Type event;
 
-  while(buf >> key)
-    i++;
+  // Since istringstream swallows whitespace, we have to make the
+  // delimiters be spaces
+  replace(list.begin(), list.end(), ':', ' ');
+  istringstream buf(list);
 
-  return (i == length);
+  // Get event count, which should be the first int in the list
+  buf >> key;
+  event = (Event::Type) atoi(key.c_str());
+  if(event == Event::LastType)
+    while(buf >> key)
+      map.push_back(atoi(key.c_str()));
+
+  if(event == Event::LastType && map.size() == length)
+    return true;
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
