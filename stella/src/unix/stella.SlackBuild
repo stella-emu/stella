@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# $Id: stella.SlackBuild,v 1.1 2005-10-23 23:15:33 urchlay Exp $
+# $Id: stella.SlackBuild,v 1.2 2005-10-23 23:47:21 urchlay Exp $
 
 # stella.SlackBuild for Stella 2.x, B. Watson, 2005
 
 # Comment out following line to build without OpenGL support
-#BUILD_GL=1
+BUILD_GL=1
 
 die() {
 	echo "Fatal error: $*"
@@ -13,7 +13,7 @@ die() {
 	exit 1
 }
 
-VERSION=2.0
+VERSION=2.0.1
 ARCH=${ARCH-i486}
 BUILD=1
 
