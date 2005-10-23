@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.19 2005-10-11 17:14:34 stephena Exp $
+// $Id: EquateList.cxx,v 1.20 2005-10-23 15:54:55 urchlay Exp $
 //============================================================================
 
 #include <string>
@@ -208,9 +208,9 @@ bool EquateList::saveFile(string file)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string EquateList::loadFile(string file)
 {
-  int lines = 0, curVal;
+  int pos = 0, lines = 0, curVal;
   string curLabel;
-  char buffer[256]; // FIXME: static buffers suck
+  char line[1024];
 
   ifstream in(file.c_str());
   if(!in.is_open())
@@ -224,18 +224,26 @@ string EquateList::loadFile(string file)
     curVal = 0;
     curLabel = "";
 
-    if(!in.getline(buffer, 255))
-      break;
+    int got = in.get();
 
-    if(buffer[0] != '-')
+    if(got == -1 || got == '\r' || got == '\n' || pos == 1023) {
+      line[pos] = '\0';
+      pos = 0;
+
+      if(strlen(line) > 0 && line[0] != '-')
+      {
+        curLabel = extractLabel(line);
+        if((curVal = extractValue(line)) < 0)
+          return "invalid symbol file";
+  
+        addEquate(curLabel, curVal);
+  
+        lines++;
+      }
+    }
+    else
     {
-      curLabel = extractLabel(buffer);
-      if((curVal = extractValue(buffer)) < 0)
-        return "invalid symbol file";
-
-      addEquate(curLabel, curVal);
-
-      lines++;
+      line[pos++] = got;
     }
   }
   in.close();

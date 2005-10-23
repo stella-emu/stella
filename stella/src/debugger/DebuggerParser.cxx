@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.85 2005-10-22 15:43:16 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.86 2005-10-23 15:54:54 urchlay Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -1565,6 +1565,7 @@ void DebuggerParser::executeLoadlist() {
 // "loadsym"
 void DebuggerParser::executeLoadsym() {
 	commandResult = debugger->equateList->loadFile(argStrings[0]);
+	debugger->myRom->invalidate();
 }
 
 // "n"
