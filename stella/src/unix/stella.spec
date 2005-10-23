@@ -1,6 +1,6 @@
 %define name    stella
-%define version 2.0
-%define rel 1
+%define version 2.0.1
+%define rel     1
 
 %define build_plf 0
 
@@ -12,9 +12,10 @@
 %define enable_static 0
 
 %if %build_plf
-%define release %{rel}plf
+  %define release %mkrel %{rel}
+  %define distsuffix plf
 %else
-%define release %{rel}
+  %define release %{rel}
 %endif
 
 Summary:        An Atari 2600 Video Computer System emulator
@@ -27,7 +28,7 @@ URL:            http://stella.sourceforge.net
 Source:         %{name}-%{version}.tar.bz2
 BuildRoot:      %_tmppath/%name-%version-%release-root
 BuildRequires:  SDL-devel
-BuildRequires:  XFree86-devel
+BuildRequires:	MesaGLU-devel
 BuildRequires:  zlib-devel
 %if %enable_snapshot
 BuildRequires:  libpng-devel
@@ -106,8 +107,12 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 /etc/stella.pro
 
 %changelog
-* Sun Oct 02 2005 Stephen Anthony <stephena@zarb.org> 2.0-1
-- Version 2.0 release, and plaform-agnostic SRPM (hopefully)
+* Sun Oct 23 2005 Stephen Anthony <stephena@zarb.org> 2.0.1-1
+- Version 2.0.1 release, and plaform-agnostic SRPM (hopefully)
+
+* Sun Oct  9 2005 Stefan van der Eijk <stefan@eijk.nu> 1.4.2-3plf
+- BuildRequires
+- distsuffix & mkrel
 
 * Sun Jul 31 2005 Stephen Anthony <stephena@zarb.org> 1.4.2-2plf
 - Recompile for distro name change
@@ -124,8 +129,8 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 - BuildRequires
 
 * Thu Oct 24 2002 Olivier Thauvin <thauvin@aerov.jussieu.fr> 1.2-2plf 
--by Rob Kudla <rpm@kudla.org>
-	- doh!  forgot to build the sound server!
+- by Rob Kudla <rpm@kudla.org>
+- doh!  forgot to build the sound server!
 
 * Wed Oct 22 2002 Rob Kudla <rpm@kudla.org> 1.2-1plf
 - oh yeah, I guess emulators go in plf
