@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.25 2005-10-18 18:49:46 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.26 2005-10-24 18:18:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   const GUI::Font& font = instance()->font();
 
   int yoff = 10,
-      xoff = 2,
+      xoff = 5,
       woff = 110,
       labelWidth = 55;
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.13 2005-10-09 21:55:53 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.14 2005-10-24 18:18:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -112,8 +112,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("Escape",       "Exit current game");
       ADD_BIND("Tab",          "Enter/exit configuration menu");
       ADD_BIND("\\",           "Enter/exit command menu");
-      ADD_BIND("Shift-Cmd =",  "Increase window size");
-      ADD_BIND("Shift-Cmd -",  "Decrease window size");
+      ADD_BIND("Cmd =",        "Increase window size");
+      ADD_BIND("Cmd -",        "Decrease window size");
       ADD_BIND("Cmd Enter",    "Toggle fullscreen/windowed mode");
       ADD_LINE;
       ADD_BIND("Shift-Cmd ]",  "Increase volume by 2%");

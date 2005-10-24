@@ -248,12 +248,19 @@ Installation directories:
   --datadir=DIR          directory to install icons/data files  [PREFIX/share]
 
 Optional Features:
-  --disable-gl           disable OpenGL rendering support
-  --disable-sound        disable sound support
-  --disable-developer    disable all developer options (including debugger)
-  --disable-snapshot     disable snapshot support
-  --disable-joystick     disable joystick support
-  --enable-static        build static binary (if possible)
+  --enable-gl            enable/disable OpenGL rendering support [enabled]
+  --disable-gl
+  --enable-sound         enable/disable sound support [enabled]
+  --disable-sound
+  --enable-developer     enable/disable all developer/debugger options [enabled]
+  --disable-developer
+  --enable-snapshot      enable/disable snapshot support [enabled]
+  --disable-snapshot
+  --enable-joystick      enable/disable joystick support [enabled]
+  --disable-joystick
+  --enable-shared        build shared binary [enabled]
+  --enable-static        build static binary (if possible) [disabled]
+  --disable-static
 
 Optional Libraries:
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
@@ -282,19 +289,25 @@ done # for parm in ...
 
 for ac_option in $@; do
     case "$ac_option" in
-      --disable-gl)             _build_gl=no        ;;
-      --disable-sound)          _build_sound=no     ;;
-      --disable-developer)      _build_developer=no ;;
-      --disable-snapshot)       _build_snapshot=no  ;;
-      --disable-joystick)       _build_joystick=no  ;;
-      --enable-zlib)            _zlib=yes       ;;
-      --disable-zlib)           _zlib=no        ;;
-      --enable-png)             _png=yes        ;;
-      --disable-png)            _png=no         ;;
-      --enable-nasm)            _nasm=yes       ;;
-      --disable-nasm)           _nasm=no        ;;
-      --enable-static)          _build_static=yes       ;;
-      --disable-static)         _build_static=no        ;;
+      --enable-gl)              _build_gl=yes        ;;
+      --disable-gl)             _build_gl=no         ;;
+      --enable-sound)           _build_sound=yes     ;;
+      --disable-sound)          _build_sound=no      ;;
+      --enable-developer)       _build_developer=yes ;;
+      --disable-developer)      _build_developer=no  ;;
+      --enable-snapshot)        _build_snapshot=yes  ;;
+      --disable-snapshot)       _build_snapshot=no   ;;
+      --enable-joystick)        _build_joystick=yes  ;;
+      --disable-joystick)       _build_joystick=no   ;;
+      --enable-zlib)            _zlib=yes            ;;
+      --disable-zlib)           _zlib=no             ;;
+      --enable-png)             _png=yes             ;;
+      --disable-png)            _png=no              ;;
+      --enable-nasm)            _nasm=yes            ;;
+      --disable-nasm)           _nasm=no             ;;
+      --enable-shared)          _build_static=no     ;;
+      --enable-static)          _build_static=yes    ;;
+      --disable-static)         _build_static=no     ;;
       --with-zlib-prefix=*)
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ZLIB_CFLAGS="-I$_prefix/include"

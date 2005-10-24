@@ -12,6 +12,45 @@
                                Release History
 ===============================================================================
 
+2.0 to 2.0.1: (October 24, 2005)
+
+  * Added 'dirtyrects' support, which speeds up rendering for some Windows users.
+
+  * Fixed bug where taking snapshots would fail if the snapshot directory
+    wasn't specified.
+
+  * Made ROM launcher case-insensitive, so upper and lowercase names are now
+    mixed in the correct order.
+
+  * Fixed ZIP ROM support to search the archive for ROMs ending with either
+    .bin or .a26 (case insensitive).
+
+  * ROMs which don't have an associated properties entry are no longer named
+    'Untitled' in the Stella window or when taking snapshots.  The actual
+    ROM name is now used.
+
+  * Changed minimum height of debugger to be 27 lines in the prompt, or approx.
+    700 pixels high.  This should make using the debugger easier for users
+    with lower resolution monitors.  Related to this, the RomWidget now uses
+    all possible vertical space when changing the debugger height.
+
+  * Fixed bug related to upgrading Stella and event mappings being incorrect.
+    Stella now detects this, and uses the default mappings.  So upgrading
+    to version 2.0.1 means your event mappings will be reset.
+
+  * Fixed bug in loading debugger symbol files generated on different
+    operating systems.
+
+  * For the Windows port; added exe installer based on InnoSetup.
+
+  * For the Windows port; compiled icon into Stella, so it now looks like
+    a real Win32 application.
+
+  * For the OSX port, reverted window resize key combos back to 'Cmd =' and
+   'Cmd -' to match the 1.4.2 release.
+
+Have fun!
+
 1.4.2 to 2.0: (October 16, 2005)
 
   * Added integrated GUI.  Stella is now a fully graphical application, and all

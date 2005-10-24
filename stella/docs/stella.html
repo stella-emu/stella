@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.0</b></h4></center>
+	<center><h4><b>Release 2.0.1</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -214,101 +214,44 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.0</b></h2>
+	<h2><b>New in Release 2.0.1</b></h2>
 
 	<ul>
-		<li>Added integrated GUI.  Stella is now a fully graphical application, and all
-			settings can be changed dynamically while the application is running.  That
-			means the commandline is no longer required (but support is still there
-			for those who want to use it).</li>
+		<li>Added 'dirtyrects' support, which speeds up rendering for some Windows
+			users.</li>
 
-		<li>Added ROM launcher.  You can now exit a game and start playing another one
-			from directly within Stella (you no longer have to quit Stella and
-			restart it).</li>
+		<li>Fixed bug where taking snapshots would fail if the snapshot directory
+			wasn't specified.</li>
 
-		<li>Because of the integrated GUI and ROM launcher, StellaX and KStella
-			(the Windows and Linux frontends) have been discontinued.  The OSX
-			port now uses the launcher as well.</li>
+		<li>Made ROM launcher case-insensitive, so upper and lowercase names are now
+			mixed in the correct order.</li>
 
-		<li>Added an integrated debugger for game developers.  This is currently
-			the first version of a debugger in Stella, but it's already quite
-			usable.</li>
+		<li>Fixed ZIP ROM support to search the archive for ROMs ending with either
+			.bin or .a26 (case insensitive).</li>
 
-		<li>Added new sound subsystem, which is much faster and more accurate.  Related
-			to this, added stereo sound output (used by some homebrew games).
+		<li>ROMs which don't have an associated properties entry are no longer named
+			'Untitled' in the Stella window or when taking snapshots.  The actual
+			ROM name is now used.</li>
 
-		<li>Added ZIP support.  Stella can now open ROM's compressed in zip
-			format.</li>
+		<li>Changed minimum height of debugger to be 27 lines in the prompt, or approx.
+			700 pixels high.  This should make using the debugger easier for users
+			with lower resolution monitors.  Related to this, the RomWidget now uses
+			all possible vertical space when changing the debugger height.</li>
 
-		<li>Added cartridge 'frying', thanks to Fred "batari" Quimby.  This
-			emulates the action of turning the power button on and off on a
-			real Atari, often resulting in some strange effects.</li>
+		<li>Fixed bug related to upgrading Stella and event mappings being incorrect.
+			Stella now detects this, and uses the default mappings.  So upgrading
+			to version 2.0.1 means your event mappings will be reset.</li>
 
-		<li>Added ability to edit current ROM properties from directly within
-			Stella, which can then be saved directly into the 'user.pro' file.
-			So creating a properties entry for a new ROM can be done without
-			any external tools.</li>
+		<li>Fixed bug in loading debugger symbol files generated on different
+			operating systems.</li>
 
-		<li>Added initial support for using Stella in an 'arcade-box'
-			environment without a keyboard.  This consists of an in-game
-			menu for choosing common actions in Stella, as well as using the
-			joystick navigate the mouse pointer.</li>
+		<li>For the Windows port; added exe installer based on InnoSetup.</li>
 
-		<li>Reworked properties system to use both a system-wide 'stella.pro' and
-			a per-user 'user.pro' properties files.  Changes made by the user
-			and stored in 'user.pro' are no longer erased when upgrading Stella.</li>
+		<li>For the Windows port; compiled icon into Stella, so it now looks like
+			a real Win32 application.</li>
 
-		<li>Added support for cartridges with 3E bankswitching format, thanks
-		   to Armin "Kroko" Vogl.</li>
-
-		<li>Added preliminary Cheat support.</li>
-
-		<li>Added <b>Alt/Shift-Cmd z, x, c, v, b, n</b> keys to enable/disable the
-			P0, P1, M0, M1, BL, PL bits in the TIA, respectively.</li> 
-
-		<li>Added <b>Alt/Shift-Cmd .</b> key to disable all bits in the TIA.</li>
- 
-		<li>Added <b>Alt/Shift-Cmd /</b> key to enable all bits in the TIA.</li>
-
-		<li>Added <b>Alt/Shift-Cmd g</b> key to switch dynamically switch between
-			software and OpenGL modes while Stella is running.</li>
-
-		<li>Added <b>Ctrl/Cmd r</b> key to reload the ROM currently being
-			emulated.</li>
-
-		<li>Added <b>Alt/Shift-Cmd s</b> key to merge the current game properties
-			into the properties file.</li>
-
-		<li>Added <b>help</b> commandline argument.  Launching Stella from the
-			commandline with no options now starts Stella in ROM launcher mode,
-			instead of showing help (as in previous versions).</li>
-
-		<li>Added the following commandline arguments for developers:
-			<b>pro, type, ld, rd, tv, lc, rc, bc, format, xstart, ystart, width
-			height, cpu, hmove</b>.  Developers can consult the manual for
-			further details.</li>
-
-		<li>Removed <b>mergeprops</b> commandline argument, since there are now
-				dedicated keys to either save or merge game properties.</li>
-
-		<li>Removed <b>hidecursor</b> commandline argument.  Stella will now
-			automatically decide when to use this setting.</li>
-
-		<li>Fixed framerate when switching between NTSC and PAL modes.  Stella
-			now uses the correct framerate based on the format of the ROM,
-			in terms of both video <b>and</b> audio.</li>
-
-		<li>Added 'configure' support to the build process for both Linux and
-			Win32 (using MinGW).  Developers can now use the familiar 'configure;
-			make; make install' commands to compile Stella.</li>
-
-		<li>Further consolidation and integration of SDL.  This should lead to
-			faster operation and a more consistent look for all ports.</li>
-
-		<li>Fixed some 64-bit issues.  Stella now compiles and runs correctly
-			on AMD64 and PPC64 Linux systems.</li>
-
-		<li>Updated the Stella manual with pictures of the new integrated GUI.</li>
+		<li>For the OSX port, reverted window resize key combos back to 'Cmd =' and
+			'Cmd -' to match the 1.4.2 release.</li>
 	</ul>
 
 	<p>
@@ -490,6 +433,10 @@
 		<ol>
 			<li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b>
 				and copy that directory somewhere</li>
+		</ol>
+		<li><b>Binary EXE installer</b> (stella-<i>release</i>-win32.exe)</li>
+		<ol>
+			<li>Double-click on the installer on follow the onscreen instructions</li>
 		</ol>
 	</ul>
 
@@ -1658,6 +1605,7 @@
 
 	<p>The following screenshots illustrate the event remapping process:<br><br>
 	<img src="graphics/eventmapping.png">
+	<p>
 	<img src="graphics/eventmapping_remap.png">
 
 	<br><br><br>

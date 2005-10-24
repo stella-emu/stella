@@ -50,23 +50,35 @@ This package is in PLF as Mandriva Linux policy forbids emulators in contribs.
 %build
 export CXXFLAGS=$RPM_OPT_FLAGS
 ./configure \
-%if !%enable_gl
+%if %enable_gl
+	--enable-gl \
+%else
 	--disable-gl \
 %endif
-%if !%enable_sound
+%if %enable_sound
+	--enable-sound \
+%else
 	--disable-sound \
 %endif
-%if !%enable_developer
+%if %enable_developer
+	--enable-developer \
+%else
 	--disable-developer \
 %endif
-%if !%enable_snapshot
+%if %enable_snapshot
+	--enable-snapshot \
+%else
 	--disable-snapshot \
 %endif
-%if !%enable_joystick
+%if %enable_joystick
+	--enable-joystick \
+%else
 	--disable-joystick \
 %endif
 %if %enable_static
 	--enable-static \
+%else
+	--enable-shared \
 %endif
 	--prefix=%{_prefix} \
 	--bindir=%{_bindir} \
@@ -107,7 +119,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 /etc/stella.pro
 
 %changelog
-* Sun Oct 23 2005 Stephen Anthony <stephena@zarb.org> 2.0.1-1
+* Sun Oct 24 2005 Stephen Anthony <stephena@zarb.org> 2.0.1-1
 - Version 2.0.1 release, and plaform-agnostic SRPM (hopefully)
 
 * Sun Oct  9 2005 Stefan van der Eijk <stefan@eijk.nu> 1.4.2-3plf
