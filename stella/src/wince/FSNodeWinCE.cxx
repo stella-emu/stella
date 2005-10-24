@@ -1,15 +1,33 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// Windows CE Port by Kostas Nakos
+//============================================================================
+
 #include <sstream>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 #include <tchar.h>
-//#include <direct.h>
 
 #include "FSNode.hxx"
 
 /*
- * Implementation of the Stella file system API based on Windows API.
+ * Implementation of the Stella file system API based on Windows CE API.
+ * Modified from the Win32 version
  */
 
 class WindowsFilesystemNode : public AbstractFilesystemNode
@@ -54,20 +72,14 @@ static const char* lastPathComponent(const string& str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 static string validatePath(const string& p)
-
 {
-
   string path = p;
 
-/*  if(p.size() < 2 || p[1] != ':')
+  if (p.size() < 2) path = "\\";
 
-    path = "c:";
-*/
   return path;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 char* WindowsFilesystemNode::toAscii(TCHAR* x)
@@ -142,7 +154,7 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 
   // Create a virtual root directory for standard Windows system
   _isValid = false;
-  _path = "";
+  _path = "\\";
   _isPseudoRoot = true;
 }
 
@@ -173,48 +185,22 @@ FSList WindowsFilesystemNode::listDir(ListMode mode) const
 
   FSList myList;
 
-  if (_isPseudoRoot)
-  {
-	  addFile(myList, mode, "\\", NULL);
-    // Drives enumeration
-/*    TCHAR drive_buffer[100];
-    GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
+  // Files enumeration
+  WIN32_FIND_DATA desc;
+  HANDLE handle;
+  char searchPath[MAX_PATH + 10];
 
-    for (TCHAR *current_drive = drive_buffer; *current_drive; 
-         current_drive += _tcslen(current_drive) + 1)
-    {
-      WindowsFilesystemNode entry;		
-      char drive_name[2];
+  sprintf(searchPath, "%s*", _path.c_str());
 
-      drive_name[0] = toAscii(current_drive)[0];
-      drive_name[1] = '\0';
-      entry._displayName = drive_name;
-      entry._isDirectory = true;
-      entry._isValid = true;
-      entry._isPseudoRoot = false;
-      entry._path = toAscii(current_drive);
-      myList.push_back(wrap(new WindowsFilesystemNode(&entry)));
-    }*/
-  }
-  else
-  {
-    // Files enumeration
-    WIN32_FIND_DATA desc;
-    HANDLE handle;
-    char searchPath[MAX_PATH + 10];
+  handle = FindFirstFile(toUnicode(searchPath), &desc);
+  if (handle == INVALID_HANDLE_VALUE)
+    return myList;
 
-    sprintf(searchPath, "%s*", _path.c_str());
-
-    handle = FindFirstFile(toUnicode(searchPath), &desc);
-    if (handle == INVALID_HANDLE_VALUE)
-      return myList;
-
+  addFile(myList, mode, _path.c_str(), &desc);
+  while (FindNextFile(handle, &desc))
     addFile(myList, mode, _path.c_str(), &desc);
-    while (FindNextFile(handle, &desc))
-      addFile(myList, mode, _path.c_str(), &desc);
 
-    FindClose(handle);
-  }
+  FindClose(handle);
 
   return myList;
 }
@@ -244,33 +230,22 @@ AbstractFilesystemNode* WindowsFilesystemNode::parent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 bool AbstractFilesystemNode::fileExists(const string& path)
 
 {
-
   WIN32_FILE_ATTRIBUTE_DATA attr;
 
   static TCHAR unicodeString[MAX_PATH];
   MultiByteToWideChar(CP_ACP, 0, path.c_str(), strlen(path.c_str()) + 1, unicodeString, sizeof(unicodeString));
 
-
   BOOL b = GetFileAttributesEx(unicodeString, GetFileExInfoStandard, &attr);
 
-
-
   return ((b != 0) && !(attr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
-
 }
 
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 bool AbstractFilesystemNode::dirExists(const string& path)
-
 {
-
   WIN32_FILE_ATTRIBUTE_DATA attr;
   TCHAR unicodeString[MAX_PATH];
   string tmp(path);
@@ -280,18 +255,11 @@ bool AbstractFilesystemNode::dirExists(const string& path)
 
   BOOL b = GetFileAttributesEx(unicodeString, GetFileExInfoStandard, &attr);
 
-
-
   return ((b != 0) && (attr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
-
 }
 
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 bool AbstractFilesystemNode::makeDir(const string& path)
-
 {
   TCHAR unicodeString[MAX_PATH];
   string tmp(path);
@@ -300,17 +268,11 @@ bool AbstractFilesystemNode::makeDir(const string& path)
   MultiByteToWideChar(CP_ACP, 0, tmp.c_str(), strlen(path.c_str()) + 1, unicodeString, sizeof(unicodeString));
 
   return CreateDirectory(unicodeString, NULL) != 0;
-
 }
 
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 string AbstractFilesystemNode::modTime(const string& path)
-
 {
-
   WIN32_FILE_ATTRIBUTE_DATA attr;
 
   static TCHAR unicodeString[MAX_PATH];
@@ -318,12 +280,9 @@ string AbstractFilesystemNode::modTime(const string& path)
 
   BOOL b = GetFileAttributesEx(unicodeString, GetFileExInfoStandard, &attr);
 
-  if(b == 0)
-
-    return "";
+  if(b == 0) return "";
 
   ostringstream buf;
-
   buf << attr.ftLastWriteTime.dwHighDateTime << attr.ftLastWriteTime.dwLowDateTime;
 
   return buf.str();

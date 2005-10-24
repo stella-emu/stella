@@ -1,3 +1,21 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// Windows CE Port by Kostas Nakos
+//============================================================================
+
 #include <windows.h>
 #include "EventHandler.hxx"
 #include "OSystemWinCE.hxx"
@@ -12,12 +30,13 @@ struct key2event
 {
 	UINT keycode;
 	SDLKey sdlkey;
-	uInt8 state;
+	uInt32 state;
 	SDLKey launcherkey;
 };
-extern key2event keycodes[2][MAX_KEYS];
+extern key2event keycodes[2][MAX_KEYS+NUM_MOUSEKEYS];
 extern void KeySetup(void);
 extern void KeySetMode(int);
+bool RequestRefresh = false;
 
 OSystemWinCE* theOSystem = (OSystemWinCE*) NULL;
 HWND hWnd;
@@ -54,6 +73,8 @@ void CleanUp(void)
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
+	static PAINTSTRUCT ps;
+
 	switch (uMsg)
 	{
 	case WM_KEYDOWN:
@@ -81,6 +102,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 #endif
 		return 0;
 
+	case WM_MOUSEMOVE:
+		keycodes[0][M_POS].state = lParam;
+		return 0;
+
+	case WM_LBUTTONDOWN:
+		keycodes[0][M_BUT].state = lParam | 0x80000000;
+		return 0;
+
+	case WM_LBUTTONUP:
+		keycodes[0][M_BUT].state = lParam & 0x7FFFFFFF;
+		return 0;
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -91,12 +124,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 	case WM_SETFOCUS:
 	case WM_ACTIVATE:
-		GXSuspend();
+		GXResume();
 		return 0;
 
 	case WM_KILLFOCUS:
 	case WM_HIBERNATE:
-		GXResume();
+		GXSuspend();
+		return 0;
+
+	case WM_PAINT:
+		BeginPaint(hWnd, &ps);
+		EndPaint(hWnd, &ps);
+		RequestRefresh = true;
 		return 0;
 	}
 
@@ -109,11 +148,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	WNDCLASS wc = { CS_HREDRAW | CS_VREDRAW, WindowProc, 0, 0, hInstance, NULL, NULL, 
 		(HBRUSH)GetStockObject(BLACK_BRUSH), NULL, wndname};
 	RegisterClass(&wc);
-	hWnd = CreateWindow(wndname, wndname, WS_VISIBLE, 0, 0, GetSystemMetrics(SM_CXSCREEN),
+	hWnd = CreateWindow(wndname, wndname, WS_VISIBLE | WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN),
 						GetSystemMetrics(SM_CYSCREEN), NULL, NULL, hInstance, NULL);
 	if (!hWnd) return 1;
-	SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);	
-
+	SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+	
+	// pump the messages to get the window up
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 	{

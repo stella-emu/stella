@@ -1,3 +1,21 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// Windows CE Port by Kostas Nakos
+//============================================================================
+
 #include <windows.h>
 #include "FrameBufferWinCE.hxx"
 #include "Console.hxx"
@@ -64,13 +82,17 @@ bool FrameBufferWinCE::initSubsystem()
 
 	scrwidth = gxdp.cxWidth;
 	scrheight = gxdp.cyHeight;
+	scrpixelstep = gxdp.cbxPitch;
+	scrlinestep = gxdp.cbyPitch;
+
 	if (scrwidth == 176 && scrheight == 220)
 		issmartphone = true;
 	else
 		issmartphone = false;
-	islandscape = false;
+	/*islandscape = false;
 	setmode(0);
-
+	*/
+	setmode(displaymode);
 	SubsystemInited = false;
 	return true;
 }
@@ -107,7 +129,7 @@ void FrameBufferWinCE::setmode(uInt8 mode)
 	SubsystemInited = false;
 }
 
-int FrameBufferWinCE::rotatedisplay(void)
+uInt8 FrameBufferWinCE::rotatedisplay(void)
 {
 	displaymode = (displaymode + 1) % 3;
 	setmode(displaymode);
@@ -186,10 +208,9 @@ void FrameBufferWinCE::preFrameUpdate()
 
 void FrameBufferWinCE::drawMediaSource()
 {
-	// TODO: define these static, also x & y
-	uInt8 *sc, *sp;
-	uInt8 *d, *pl;
-	uInt16 pix1, pix2;
+	static uInt8 *sc, *sp;
+	static uInt8 *d, *pl, *p;
+	static uInt16 pix1, pix2;
 
 	if (!SubsystemInited)
 		lateinit();
@@ -201,6 +222,14 @@ void FrameBufferWinCE::drawMediaSource()
 	pl = d;
 	sc = myOSystem->console().mediaSource().currentFrameBuffer();
 	sp = myOSystem->console().mediaSource().previousFrameBuffer();
+
+	if (theRedrawTIAIndicator)
+	{
+		p = sp;
+		for (uInt16 y=0; y<myHeight; y++)
+			for (uInt16 x=0; x<myWidth; x += 4, *p = *p + 1, p += 4);
+		theRedrawTIAIndicator = false;
+	}
 	
 	if (issmartphone && islandscape == 0)
 	{
@@ -322,9 +351,8 @@ void FrameBufferWinCE::drawMediaSource()
 					pix2 = pal[*sc++];
 					*((uInt16 *)d) = pix1; d += pixelstep;
 					*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
-					pix1 = pal[*sc++];
 					*((uInt16 *)d) = pix2; d += pixelstep;
-					*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
+					*((uInt16 *)d) = pix2; d += pixelstep;
 				}
 				else
 				{
@@ -347,15 +375,14 @@ void FrameBufferWinCE::wipescreen(void)
 	if (!SubsystemInited)
 		lateinit();
 
-	if (&(myOSystem->console().mediaSource()) != NULL)
-	{
-		uInt8 *s = myOSystem->console().mediaSource().currentFrameBuffer();
-		memset(s, 0, myWidth*myHeight-1);
-	}
-	
+	uInt8 *s = myOSystem->console().mediaSource().currentFrameBuffer();
+	memset(s, 0, myWidth*myHeight-1);
+	s = myOSystem->console().mediaSource().previousFrameBuffer();
+	memset(s, 0, myWidth*myHeight-1);
+
 	if ( (d = (uInt8 *) GXBeginDraw()) == NULL )
 		return;
-	for (int i=0; i < scrwidth*scrheight; i++, *((uInt16 *)d) = 0, d += 2);
+	for (int i=0; i < scrwidth*scrheight; i++, *((uInt16 *)d) = 0, d += scrpixelstep);
 	GXEndDraw();
 }
 
@@ -378,32 +405,62 @@ void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32
     c = desc.defaultchar;
   }
 
-  const Int32 w = myfont->getCharWidth(c) >> 1;
+  Int32 w = myfont->getCharWidth(c);
   const Int32 h = myfont->getFontHeight();
   c -= desc.firstchar;
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[c] : (c * h));
 
   if (x<0 || y<0 || (x>>1)+w>scrwidth || y+h>scrheight) return;
 
-  uInt8 *d = myDstScreen + (y/* >> 1*/) * linestep + (x >> 1) * pixelstep;
-  uInt32 stride = (scrwidth - w) * pixelstep;
+  uInt8 *d;
+  uInt32 stride;
+  if (issmartphone)
+  {
+	  d = myDstScreen + y * scrlinestep + ((x+1) >> 1) * scrpixelstep;
+	  stride = (scrwidth - w) * scrpixelstep;
+  }
+  else
+  {
+	  if (displaymode != 2)
+		d = myDstScreen + (scrheight-x-1) * scrlinestep + (y-1) * scrpixelstep;
+	  else
+		d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
+  }
+
   uInt16 col = guipal[((int) color) - 256];
-  uInt16 col2 = (col >> 1) & 0xFFE0;
 
   for(int y2 = 0; y2 < h; y2++)
   {
     const uInt16 buffer = *tmp++;
-    uInt16 mask = 0x8000;
-
-    for(int x2 = 0; x2 < w; x2++, mask >>= 2)
-    {
-      if (((buffer & mask) != 0) ^ ((buffer & mask>>1) != 0))
-		  *((uInt16 *)d) = col2;
-	  else if (((buffer & mask) != 0) && ((buffer & mask>>1) != 0))
-		  *((uInt16 *)d) = col;
-	  d += pixelstep;
-    }
-	d += stride;
+	if (issmartphone)
+	{
+		uInt16 mask = 0xC000;
+		for(int x2 = 0; x2 < w; x2++, mask >>= 2)
+		{
+		  if (buffer & mask)
+			  *((uInt16 *)d) = col;
+		  d += scrpixelstep;
+		}
+		d += stride;
+	}
+	else
+	{
+		uInt16 mask = 0x8000;
+		uInt8 *tmp = d;
+		for(int x2 = 0; x2 < w; x2++, mask >>= 1)
+		{
+		  if (buffer & mask)
+			  *((uInt16 *)d) = col;
+		  if (displaymode != 2)
+			d -= scrlinestep;
+		  else
+			d += scrlinestep;
+		}
+		if (displaymode != 2)
+			d = tmp + scrpixelstep;
+		else
+			d = tmp - scrpixelstep;
+	}
   }
 }
 
@@ -434,51 +491,83 @@ uInt32 FrameBufferWinCE::mapRGB(Uint8 r, Uint8 g, Uint8 b)
 
 void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 {
-	if (!myDstScreen) return;
-	int kx = x >> 1; int ky = y/* >> 1*/; int kx2 = x2>> 1;
-	
-	//if (kx<0 || ky<0 || kx2<0 || kx+kx2>scrwidth || ky>scrheight) return;
-	if (kx<0) kx=0; if (ky<0) ky=0; if (ky>scrheight-1) return; if (kx2>scrwidth-1) kx2=scrwidth-1;
+	if (issmartphone)
+	{
+		int kx = x >> 1; int ky = y; int kx2 = x2>> 1;
+		if (kx<0) kx=0; if (ky<0) ky=0; if (ky>scrheight-1) return; if (kx2>scrwidth-1) kx2=scrwidth-1;
+		PlothLine(kx, ky, kx2, color);
+	}
+	else
+		if (displaymode != 2)
+			PlotvLine(y, scrheight-x, scrheight-x2-1, color);
+		else
+			PlotvLine(scrwidth-y-1, x, x2+1, color);
+}
 
-	uInt8 *d = myDstScreen + ky * linestep + kx * pixelstep;
+void FrameBufferWinCE::PlothLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
+{
+	if (!myDstScreen) return;
+	if (x>x2) { x2 ^= x; x ^= x2; x2 ^= x;} //lazy swap
+	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
 	uInt16 col = guipal[((int) color) - 256];
-	for (;kx < kx2; kx++, *((uInt16 *)d) = col, d += pixelstep);
+	for (;x < x2; x++, *((uInt16 *)d) = col, d += scrpixelstep);
 }
 
 void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
 {
+	if (issmartphone)
+	{
+		int kx = x >> 1; int ky = y; int ky2 = y2;
+		if (kx<0) kx=0; if (ky<0) ky=0; if (kx>scrwidth-1) return; if (ky2>scrheight-1) ky2=scrheight-1;
+		PlotvLine(kx, ky, ky2, color);
+	}
+	else
+		if (displaymode != 2)
+			PlothLine(y, scrheight-x-1, y2, color);
+		else
+			PlothLine(scrwidth-y, x, scrwidth-y2, color);
+
+}
+
+void FrameBufferWinCE::PlotvLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
+{
+	if (y>y2) { y2 ^= y; y ^= y2; y2 ^= y;} //lazy swap
 	if (!myDstScreen) return;
-	int kx = x >> 1; int ky = y/* >> 1*/; int ky2 = y2 /*>> 1*/;
-
-	//if (kx<0 || ky<0 || ky2<0 || ky+ky2>scrheight || kx>scrwidth) return;
-	if (kx<0) kx=0; if (ky<0) ky=0; if (kx>scrwidth-1) return; if (ky2>scrheight-1) ky2=scrheight-1;
-
-	uInt8 *d = myDstScreen + ky * linestep + kx * pixelstep;
+	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
 	uInt16 col = guipal[((int) color) - 256];
-	for (;ky < ky2; ky++, *((uInt16 *)d) = col, d += linestep);
+	for (;y < y2; y++, *((uInt16 *)d) = col, d += scrlinestep);
 }
 
 void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayColor color)
 {
-	if (!myDstScreen) return;
-	int kx = x >> 1; int ky = y/* >> 1*/; int kw = (w >> 1) - 1; int kh = h /*>> 1*/;
-
-	//if (kx<0 || ky<0 || kw<0 || kh<0 || kx+kw>scrwidth || ky+kh>scrheight) return;
-	if (kx<0) kx=0; if (ky<0) ky=0;if (kw<0) kw=0; if (kh<0) kh=0;
-	if (kx+kw>scrwidth-1) kw=scrwidth-kx-1; if (ky+kh>scrheight-1) kh=scrheight-ky-1;
-
-	uInt8 *d = myDstScreen + ky * linestep + kx * pixelstep;
-	uInt16 col = guipal[((int) color) - 256];
-	uInt32 stride = (scrwidth - kw - 1) * pixelstep;
-	for (int h2 = kh; h2 >= 0; h2--)
+	if (issmartphone)
 	{
-		for (int w2 = kw; w2>=0; w2--)
-		{
-			*((uInt16 *)d) = col;
-			d += pixelstep;
-		}
-		d += stride;
+		int kx = x >> 1; int ky = y; int kw = (w >> 1); int kh = h;
+		if (ky>scrheight-1) return; if (kx>scrwidth-1) return;
+		if (kx<0) kx=0; if (ky<0) ky=0;if (kw<0) kw=0; if (kh<0) kh=0;
+		if (kx+kw>scrwidth-1) kw=scrwidth-kx-1; if (ky+kh>scrheight-1) kh=scrheight-ky-1;
+		PlotfillRect(kx, ky, kw, kh, color);
 	}
+	else
+	{
+		if (x>scrheight) return; if (y>scrwidth) return;
+		if (x+w>scrheight) w=scrheight-x; if (y+h>scrwidth) h=scrwidth-y;
+		if (displaymode != 2)
+			PlotfillRect(y, scrheight-x-w, h-1, w-1, color);
+		else
+			PlotfillRect(scrwidth-y-h, x, h-1, w-1, color);
+	}
+
+}
+
+void FrameBufferWinCE::PlotfillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayColor color)
+{
+	if (!myDstScreen) return;
+	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
+	uInt16 col = guipal[((int) color) - 256];
+	uInt32 stride = (scrwidth - w - 1) * scrpixelstep;
+	for (h++; h != 0; h--, d += stride)
+		for (int w2=w; w2>=0; w2--, *((uInt16 *)d) = col, d += scrpixelstep);
 }
 
 void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color, Int32 h)
@@ -488,11 +577,37 @@ void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor
 
 void FrameBufferWinCE::translateCoords(Int32* x, Int32* y)
 {
+	if (!issmartphone)
+	{
+		if ((displaymode == 1) || (displaymode==0 && myOSystem->eventHandler().state() != 1))
+		{
+			Int32 x2 = *x;
+			*x = scrheight - *y;
+			*y = x2;
+		}
+		else if (displaymode == 2)
+		{
+			Int32 x2 = *x;
+			*x = *y;
+			*y = scrwidth - x2;
+		}
+	}
 	return;
 }
 
 void FrameBufferWinCE::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
+	static bool initflag = false;
+
+	if (myOSystem->eventHandler().state() == 3)
+		initflag = true;
+
+	if (myOSystem->eventHandler().state()==1 && initflag)
+	{
+		// TODO: optimize here
+		theRedrawTIAIndicator = true;
+	}
+
 	return;
 }
 

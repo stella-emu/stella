@@ -1,3 +1,21 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// Windows CE Port by Kostas Nakos
+//============================================================================
+
 #ifndef FRAMEBUFFER_WINCE_HXX
 #define FRAMEBUFFER_WINCE_HXX
 
@@ -32,16 +50,17 @@ class FrameBufferWinCE : public FrameBuffer
     virtual uInt32 lineDim();
 	void wipescreen(void);
 	void setmode(uInt8 mode);
-	int rotatedisplay(void);
+	uInt8 rotatedisplay(void);
 	
 	private:
 
-	void FrameBufferWinCE::lateinit(void);
+	void lateinit(void);
+	void PlothLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color);
+    void PlotvLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
+	void PlotfillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayColor color);
 
-//	uInt32 myXstart, myYstart;
-//	uInt8 *currentFrame, *previousFrame;
 	uInt16 pal[256], myWidth, myHeight, guipal[kNumColors-256], scrwidth, scrheight;
-	Int32 pixelstep, linestep;
+	Int32 pixelstep, linestep, scrpixelstep, scrlinestep;
 	uInt32 displacement;
 	bool SubsystemInited;
 	uInt8 *myDstScreen;
@@ -51,6 +70,10 @@ class FrameBufferWinCE : public FrameBuffer
 	Int32 pixelsteptimes5, pixelsteptimes6;
 	GXDisplayProperties gxdp;
 	uInt8 displaymode;
+
+	public:
+	bool IsSmartphone(void) { return issmartphone; }
+	uInt8 getmode(void) { return displaymode; }
 };
 
 #endif

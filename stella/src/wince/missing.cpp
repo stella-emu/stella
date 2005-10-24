@@ -1,9 +1,30 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// Windows CE Port by Kostas Nakos
+//============================================================================
+
 #include "bspf.hxx"
 #include "SDL.h"
-#include "gx.h"
+//#include "gx.h"
+#include "OSystemWinCE.hxx"
+#include "FrameBufferWinCE.hxx"
 
 char *msg = NULL;
 int EventHandlerState;
+extern OSystemWinCE *theOSystem;
 
 int time(int dummy)
 {
@@ -30,10 +51,10 @@ struct key2event
 {
 	UINT keycode;
 	SDLKey sdlkey;
-	uInt8 state;
+	uInt32 state;
 	SDLKey launcherkey;
 };
-key2event keycodes[2][MAX_KEYS];
+key2event keycodes[2][MAX_KEYS+NUM_MOUSEKEYS];
 
 void KeySetup(void)
 {
@@ -41,7 +62,7 @@ void KeySetup(void)
 
 	for (int i=0; i<2; i++)
 	{
-		for (int j=0; j<MAX_KEYS; j++,	keycodes[i][j].state = 0,
+		for (int j=0; j<MAX_KEYS+NUM_MOUSEKEYS; j++,	keycodes[i][j].state = 0,
 										keycodes[i][j].launcherkey = SDLK_UNKNOWN);
 
 		keycodes[i][K_UP].keycode = klist.vkUp;
@@ -118,26 +139,65 @@ DECLSPEC void SDLCALL SDL_WarpMouse(Uint16 x, Uint16 y) { return; }
 
 DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 {
-	for (int i=0; i<MAX_KEYS; i++)
+	for (int i=0; i<MAX_KEYS+NUM_MOUSEKEYS; i++)
 	{
 		if (keycodes[0][i].state != keycodes[1][i].state)
 		{
 			keycodes[1][i].state = keycodes[0][i].state;
 			if (i!=K_QUIT || EventHandlerState!=2)
 			{
-				if (keycodes[1][i].state == 1)
-					event->type = event->key.type = SDL_KEYDOWN;
+				if (i < MAX_KEYS)
+				{
+					if (keycodes[1][i].state == 1)
+						event->type = event->key.type = SDL_KEYDOWN;
+					else
+						event->type = event->key.type = SDL_KEYUP;
+
+					if (EventHandlerState != 2)
+						event->key.keysym.sym = keycodes[0][i].sdlkey;
+					else
+						event->key.keysym.sym = keycodes[0][i].launcherkey;
+					event->key.keysym.mod = (SDLMod) 0;
+					event->key.keysym.unicode = '\n';  // hack
+				}
+				else if (i == M_POS)
+				{
+					event->type = SDL_MOUSEMOTION;
+					event->motion.x = LOWORD(keycodes[0][M_POS].state);
+					event->motion.y = HIWORD(keycodes[0][M_POS].state);
+				}
 				else
-					event->type = event->key.type = SDL_KEYUP;
+				{
+					if (keycodes[0][M_BUT].state & 0x80000000)
+						event->type = event->button.type = SDL_MOUSEBUTTONDOWN;
+					else
+						event->type = SDL_MOUSEBUTTONUP;
+					event->motion.x = LOWORD(keycodes[0][M_BUT].state);
+					event->motion.y = HIWORD(keycodes[0][M_BUT].state & 0x7FFFFFFF);
+					event->button.button = SDL_BUTTON_LEFT;
+
+					if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x>220 && event->motion.y>300 && EventHandlerState!=2)
+					{
+						// bottom right corner for rotate
+						KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
+						event->type = SDL_NOEVENT;
+					}
+					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20 && event->motion.y>300 && EventHandlerState!=2)
+					{
+						// bottom left corner for launcher
+						keycodes[0][K_QUIT].state = 1;
+						event->type = SDL_NOEVENT;
+					}
+					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20 && event->motion.y<20 && EventHandlerState!=2 && EventHandlerState!=3)
+					{
+						// top left for menu
+						theOSystem->eventHandler().enterMenuMode();
+					}
+				}
 			}
 			else if (keycodes[1][i].state == 1)
 				event->type = SDL_QUIT;
-			if (EventHandlerState != 2)
-				event->key.keysym.sym = keycodes[0][i].sdlkey;
-			else
-				event->key.keysym.sym = keycodes[0][i].launcherkey;
-			event->key.keysym.mod = (SDLMod) 0;
-			event->key.keysym.unicode = '\n';  // hack
+
 			return 1;
 		}
 	}
