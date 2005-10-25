@@ -25,7 +25,6 @@ Source: "H:\windows\src\stella\stella.exe"; DestDir: "{app}"; Flags: ignoreversi
 Source: "H:\windows\src\stella\stella-2.0.1\zlib1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "H:\windows\src\stella\stella-2.0.1\libpng12.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "H:\windows\src\stella\stella-2.0.1\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.0.1\stella.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "H:\windows\src\stella\stella-2.0.1\stella.pro"; DestDir: "{app}"; Flags: ignoreversion
 Source: "H:\windows\src\stella\stella-2.0.1\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

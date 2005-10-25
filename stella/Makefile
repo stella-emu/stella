@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.11 2005-10-22 20:33:57 stephena Exp $
+## $Id: Makefile,v 1.12 2005-10-25 20:30:59 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -45,9 +45,9 @@ include config.mak
 ifdef CXXFLAGS
   CXXFLAGS:= $(CXXFLAGS)
 else
-  CXXFLAGS:= -O2
+  CXXFLAGS:= -O2 -march=i586 -mtune=pentiumpro
 endif
-CXXFLAGS+= -Wall -Wno-multichar -Wunused
+CXXFLAGS+= -Wall -Wno-multichar -Wunused -fomit-frame-pointer
 # Even more warnings...
 #CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion
 #CXXFLAGS+= -Wshadow -Wimplicit -Wundef -Wnon-virtual-dtor
@@ -192,7 +192,6 @@ win32dist: stella$(EXEEXT)
 	cp Announce.txt Changes.txt Copyright.txt License.txt README-PSP.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
 	cp -r docs/*.html $(DISTNAME)/docs
 	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
-	cp src/win32/stella.ico $(DISTNAME)
 	cp /usr/bin/SDL.dll /mingw/bin/libpng12.dll /mingw/bin/zlib1.dll $(DISTNAME)
 #	u2d $(DISTNAME)/*.txt
 #	zip $(DISTNAME)-win32.zip $(DISTNAME)
