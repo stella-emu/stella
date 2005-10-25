@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.12 2005-10-25 20:30:59 stephena Exp $
+## $Id: Makefile,v 1.13 2005-10-25 21:21:15 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,7 @@ include config.mak
 ifdef CXXFLAGS
   CXXFLAGS:= $(CXXFLAGS)
 else
-  CXXFLAGS:= -O2 -march=i586 -mtune=pentiumpro
+  CXXFLAGS:= -O2
 endif
 CXXFLAGS+= -Wall -Wno-multichar -Wunused -fomit-frame-pointer
 # Even more warnings...
