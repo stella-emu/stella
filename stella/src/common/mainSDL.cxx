@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.51 2005-09-16 18:15:44 stephena Exp $
+// $Id: mainSDL.cxx,v 1.52 2005-10-27 19:15:14 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -57,6 +57,10 @@
   }
 #else
   #error Unsupported platform!
+#endif
+
+#ifdef DEVELOPER_SUPPORT
+  #include "Debugger.hxx"
 #endif
 
 static void SetupProperties(PropertiesSet& set);
@@ -211,8 +215,31 @@ int main(int argc, char* argv[])
     if(theOSystem->settings().getBool("holdbutton0"))
       theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire, 1);
 
+#ifdef DEVELOPER_SUPPORT
+    Debugger& dbg = theOSystem->debugger();
+
+    // Set up any breakpoint that was on the command line
+    // (and remove the key from the settings, so they won't get set again)
+    string initBreak = theOSystem->settings().getString("break");
+    if(initBreak != "")
+    {
+      int bp = dbg.stringToValue(initBreak);
+      dbg.setBreakPoint(bp, true);
+      theOSystem->settings().setString("break", "", false);
+    }
+
+    // Set up any cheeetah code that was on the command line
+    // (and remove the key from the settings, so they won't get set again)
+    string cheetah = theOSystem->settings().getString("cheetah");
+    if(cheetah != "")
+    {
+      dbg.run("cheetah " + cheetah);
+      theOSystem->settings().setString("cheetah", "", false);
+    }
+
     if(theOSystem->settings().getBool("debug"))
       handler.enterDebugMode();
+#endif
   }
 
   // Start the main loop, and don't exit until the user issues a QUIT command

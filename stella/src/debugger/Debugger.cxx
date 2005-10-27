@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.103 2005-10-22 15:43:16 stephena Exp $
+// $Id: Debugger.cxx,v 1.104 2005-10-27 19:15:14 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -148,18 +148,6 @@ void Debugger::initialize()
   myTiaZoom   = dd->tiaZoom();
   myRom       = dd->rom();
   myMessage   = dd->message();
-
-  // set up any breakpoint that was on the command line
-  // (and remove the key from the settings, so they won't get set again)
-  string initBreak = myOSystem->settings().getString("break");
-  if(initBreak != "") run("break " + initBreak);
-  myOSystem->settings().setString("break", "", false);
-
-  // set up any cheeetah code that was on the command line
-  // (and remove the key from the settings, so they won't get set again)
-  string cheetah = myOSystem->settings().getString("cheetah");
-  if(cheetah != "") run("cheetah " + cheetah);
-  myOSystem->settings().setString("cheetah", "", false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

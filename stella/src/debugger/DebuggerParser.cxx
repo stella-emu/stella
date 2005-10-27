@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.86 2005-10-23 15:54:54 urchlay Exp $
+// $Id: DebuggerParser.cxx,v 1.87 2005-10-27 19:15:14 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -91,8 +91,7 @@ Command DebuggerParser::commands[] = {
 		"Use Cheetah cheat code (see http://members.cox.net/rcolbert/)",
 		false,
 		false,
-		// lame: accept 0-4 args instead of inventing a kARG_MULTI_LABEL type
-		{ kARG_LABEL, kARG_LABEL, kARG_LABEL, kARG_LABEL, kARG_END_ARGS },
+		{ kARG_LABEL, kARG_END_ARGS },
 		&DebuggerParser::executeCheetah
 	},
 
@@ -1353,7 +1352,6 @@ void DebuggerParser::executeBreak() {
 		bp = debugger->cpuDebug().pc();
 	else
 		bp = args[0];
-
 	debugger->toggleBreakPoint(bp);
 	debugger->myRom->invalidate();
 
