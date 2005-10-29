@@ -83,8 +83,8 @@ export CXXFLAGS=$RPM_OPT_FLAGS
 	--prefix=%{_prefix} \
 	--bindir=%{_bindir} \
 	--docdir=%{_docdir}/stella-%{version} \
-	--datadir=%{_datadir}
-    --x-libraries=%{_prefix}/X11R6/%{_lib}
+	--datadir=%{_datadir} \
+	--x-libraries=%{_prefix}/X11R6/%{_lib}
 %make
 
 %install
