@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.4 2005-06-16 01:11:27 stephena Exp $
+// $Id: Deserializer.cxx,v 1.5 2005-10-29 18:11:29 stephena Exp $
 //============================================================================
 
 #include <iostream>
@@ -78,8 +78,8 @@ string Deserializer::getString(void)
 {
   long len = getLong();
   string str;
-  str.resize(len);
-  myStream->read(&str[0], len);
+  str.resize((string::size_type)len);
+  myStream->read(&str[0], (streamsize)len);
 
   if(myStream->bad())
     throw "Deserializer: file read failed";

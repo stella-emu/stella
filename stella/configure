@@ -45,6 +45,7 @@ NASMFLAGS=""
 NASM=""
 _prefix=/usr/local
 _have_x86=""
+X_LIBS="/usr/X11R6/lib"
 
 _srcdir=`dirname $0`
 
@@ -274,6 +275,8 @@ Optional Libraries:
   --with-nasm-prefix=DIR   Prefix where nasm executable is installed (optional)
   --disable-nasm           disable assembly language optimizations [autodetect]
 
+  --x-libraries            Path to X11 libraries [${X_LIBS}]
+
 Some influential environment variables:
   LDFLAGS	linker flags, e.g. -L<lib dir> if you have libraries in a
   		nonstandard directory <lib dir>
@@ -325,6 +328,10 @@ for ac_option in $@; do
       --with-nasm-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
         _nasmpath="$arg:$arg/bin"
+        ;;
+      --x-libraries=*)
+        arg=`echo $ac_option | cut -d '=' -f 2`
+        X_LIBS="$arg"
         ;;
       --host=*)
         _host=`echo $ac_option | cut -d '=' -f 2`
@@ -720,7 +727,7 @@ case $_host_os in
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then
 				DEFINES="$DEFINES -DDISPLAY_OPENGL"
-				LIBS="$LIBS -L/usr/X11R6/lib -lGL"
+				LIBS="$LIBS -L$X_LIBS -lGL"
 			fi
 			;;
 		win32)
