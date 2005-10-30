@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.64 2005-10-19 00:59:51 stephena Exp $
+// $Id: Settings.cxx,v 1.65 2005-10-30 20:29:56 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -60,6 +60,8 @@ Settings::Settings(OSystem* osystem)
   set("joymap", "");
   set("paddle", "0");
   set("joymouse", "false");
+  set("leftport", "0");
+  set("rightport", "1");
 
   set("showinfo", "false");
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.107 2005-10-23 14:51:51 stephena Exp $
+// $Id: EventHandler.cxx,v 1.108 2005-10-30 20:29:56 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -28,6 +28,7 @@
 #include "FrameBuffer.hxx"
 #include "Sound.hxx"
 #include "OSystem.hxx"
+#include "DialogContainer.hxx"
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Launcher.hxx"
@@ -59,7 +60,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
   : myOSystem(osystem),
+    myLeftJoyPort(0),
+    myRightJoyPort(0),
     myState(S_NONE),
+    myOverlay(NULL),
     myLSState(0),
     myPauseFlag(false),
     myQuitFlag(false),
@@ -143,7 +147,8 @@ Event* EventHandler::event()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::reset(State state)
 {
-  myState = state;
+  setEventState(state);
+
   myLSState = 0;
   myPauseFlag = false;
   myQuitFlag = false;
@@ -153,15 +158,8 @@ void EventHandler::reset(State state)
   myOSystem->sound().mute(myPauseFlag);
   myEvent->clear();
 
-  switch(myState)
-  {
-    case S_LAUNCHER:
-      myUseLauncherFlag = true;
-      break;
-
-    default:
-      break;
-  }
+  if(myState == S_LAUNCHER)
+    myUseLauncherFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,24 +177,12 @@ void EventHandler::refreshDisplay()
       break;
 
     case S_MENU:
-      myOSystem->frameBuffer().refresh();
-      myOSystem->menu().refresh();
-      break;
-
     case S_CMDMENU:
       myOSystem->frameBuffer().refresh();
-      myOSystem->commandMenu().refresh();
-      break;
-
     case S_LAUNCHER:
-      myOSystem->launcher().refresh();
-      break;
-
-#ifdef DEVELOPER_SUPPORT
     case S_DEBUGGER:
-      myOSystem->debugger().refresh();
+      myOverlay->refresh();
       break;
-#endif
 
     default:
       break;
@@ -220,6 +206,8 @@ void EventHandler::setupJoysticks()
   }
 
   // Initialize the joystick subsystem
+  if(showinfo)
+    cerr << "Joystick devices found:" << endl;
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
     if(showinfo)
@@ -239,6 +227,7 @@ void EventHandler::setupJoysticks()
     if(ourJoysticks[i].stick == NULL)
     {
       ourJoysticks[i].type = JT_NONE;
+      ourJoysticks[i].name = "None";
       continue;
     }
 
@@ -253,30 +242,107 @@ void EventHandler::setupJoysticks()
       }
       else if(saCount == 1)
       {
-        name = "Left Stelladaptor (Left joystick, Paddles 0 and 1, Left driving controller)";
         ourJoysticks[i].type = JT_STELLADAPTOR_1;
+        ourJoysticks[i].name = "Stelladaptor 1";
       }
       else if(saCount == 2)
       {
-        name = "Right Stelladaptor (Right joystick, Paddles 2 and 3, Right driving controller)";
         ourJoysticks[i].type = JT_STELLADAPTOR_2;
+        ourJoysticks[i].name = "Stelladaptor 2";
       }
 
       if(showinfo)
-        cout << "Joystick " << i << ": " << name << endl;
+        cout << "  " << i << ": " << ourJoysticks[i].name << endl;
     }
     else
     {
       ourJoysticks[i].type = JT_REGULAR;
+      ourJoysticks[i].name = SDL_JoystickName(i);
 
       if(showinfo)
-        cout << "Joystick " << i << ": " << SDL_JoystickName(i)
+        cout << "  " << i << ": " << ourJoysticks[i].name
              << " with " << SDL_JoystickNumButtons(ourJoysticks[i].stick)
-             << " buttons." << endl;
+             << " buttons" << endl;
     }
-    if(showinfo)
-      cout << endl;
   }
+  if(showinfo)
+    cout << endl;
+
+  // Map the joysticks we've found according to the specified ports
+  int lport = myOSystem->settings().getInt("leftport");
+  int rport = myOSystem->settings().getInt("rightport");
+  mapJoysticks(lport, rport);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::mapJoysticks(int leftport, int rightport)
+{
+#ifdef JOYSTICK_SUPPORT
+  bool showinfo = myOSystem->settings().getBool("showinfo");
+  JoyType type;
+
+  for(uInt32 i = 0; i < kNumJoysticks; i++)
+  {
+    ourJoystickMapping[i].stick = -1;
+    ourJoystickMapping[i].type  = JT_NONE;
+  }
+
+  if(showinfo)
+    cout << "Joystick mapping:" << endl;
+
+  // Map left port
+  if(leftport >= 0 && leftport < kNumJoysticks)
+  {
+    type = ourJoysticks[leftport].type;
+
+    ourJoystickMapping[leftport].stick = 0;
+    ourJoystickMapping[leftport].type = type;
+
+    if(showinfo)
+      cout << "  Left port : " << ourJoysticks[leftport].name << endl;
+
+    // JT_STELLADAPTOR_1 is *always* tied to left port events,
+    // so we always remap it type 'JT_STELLADAPTOR_1'
+    if(type == JT_STELLADAPTOR_2)
+      ourJoystickMapping[leftport].type = JT_STELLADAPTOR_1;
+  }
+  else
+  {
+    if(showinfo)
+      cout << "  Left port : None" << endl;
+  }
+
+  // Map right port (can't be the same as the left port)
+  if(leftport == rightport)
+    rightport = -1;
+
+  if(rightport >= 0 && rightport < kNumJoysticks)
+  {
+    type = ourJoysticks[rightport].type;
+
+    ourJoystickMapping[rightport].stick = 1;
+    ourJoystickMapping[rightport].type = type;
+
+    if(showinfo)
+      cout << "  Right port: " << ourJoysticks[rightport].name << endl;
+
+    // JT_STELLADAPTOR_2 is *always* tied to right port events,
+    // so we always remap it type 'JT_STELLADAPTOR_2'
+    if(type == JT_STELLADAPTOR_1)
+      ourJoystickMapping[rightport].type = JT_STELLADAPTOR_2;
+  }
+  else
+  {
+    if(showinfo)
+      cout << "  Right port: None" << endl;
+  }
+
+  if(showinfo)
+    cout << endl;
+
+  myOSystem->settings().setInt("leftport", leftport);
+  myOSystem->settings().setInt("rightport", rightport);
 #endif
 }
 
@@ -441,7 +507,7 @@ void EventHandler::poll(uInt32 time)
             switch(int(key))
             {
               case SDLK_c:
-                enterMenuMode();
+                enterMenuMode(S_MENU);
                 myOSystem->menu().enterCheatMode();
                 break;
 
@@ -498,8 +564,24 @@ void EventHandler::poll(uInt32 time)
           }
         }
 
+        // Handle keys which switch eventhandler state
+        // Arrange the logic to take advantage of short-circuit evaluation
+        if(!(kbdControl(mod) || kbdShift(mod) || kbdAlt(mod)) &&
+            state && eventStateChange(myKeyTable[key]))
+          return;
+
         // Otherwise, let the event handler deal with it
-        handleKeyEvent(unicode, key, mod, state);
+        if(myState == S_EMULATE)
+          handleEvent(myKeyTable[key], state);
+        else if(myOverlay != NULL)
+        {
+          // Make sure the unicode field is valid
+          if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
+             (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
+            unicode = key;
+
+          myOverlay->handleKeyEvent(unicode, key, mod, state);
+        }
 
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
@@ -533,7 +615,7 @@ void EventHandler::poll(uInt32 time)
 
 #ifdef JOYSTICK_SUPPORT
     // Read joystick events and modify event states
-    uInt8  stick;
+    int  stick;
     uInt32 code;
     uInt8  state = 0;
     Uint8 axis;
@@ -545,11 +627,10 @@ void EventHandler::poll(uInt32 time)
     if(event.jbutton.which >= kNumJoysticks)
       return;
 
-    stick = event.jbutton.which;
-    type  = ourJoysticks[stick].type;
-
     // Figure put what type of joystick we're dealing with
     // Stelladaptors behave differently, and can't be remapped
+    stick = ourJoystickMapping[event.jbutton.which].stick;
+    type  = ourJoystickMapping[event.jbutton.which].type;
     switch(type)
     {
       case JT_NONE:
@@ -663,103 +744,8 @@ void EventHandler::poll(uInt32 time)
 
   // Update the current dialog container at regular intervals
   // Used to implement continuous events
-  switch(myState)
-  {
-    case S_MENU:
-      myOSystem->menu().updateTime(time);
-      break;
-
-    case S_CMDMENU:
-      myOSystem->commandMenu().updateTime(time);
-      break;
-
-    case S_LAUNCHER:
-      myOSystem->launcher().updateTime(time);
-      break;
-
-#ifdef DEVELOPER_SUPPORT
-    case S_DEBUGGER:
-      myOSystem->debugger().updateTime(time);
-      break;
-#endif
-
-    default:
-      break;
-  }
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 state)
-{
-  if(myState == S_EMULATE)
-  {
-	if(myKeyTable[key] == Event::MenuMode && state == 1 && !myPauseFlag)
-	{
-	  enterMenuMode();
-	  return;
-	}
-	else if(myKeyTable[key] == Event::CmdMenuMode && state == 1 && !myPauseFlag)
-	{
-	  enterCmdMenuMode();
-	  return;
-	}
-	else if(myKeyTable[key] == Event::DebuggerMode && state == 1 && !myPauseFlag)
-	{
-	  enterDebugMode();
-	  return;
-	}
-	else if(myKeyTable[key] == Event::Fry)
-	{
-	  myFryingFlag = bool(state);
-	}
-	else
-	  handleEvent(myKeyTable[key], state);
-  }
-  else  // Determine which dialog to send events to
-  {
-    // Make sure the unicode field is valid
-    if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
-       (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
-      unicode = key;
-
-    switch((int)myState)
-    {
-      case S_MENU:
-        if(myKeyTable[key] == Event::MenuMode && state == 1)
-        {
-          leaveMenuMode();
-          return;
-        }
-        myOSystem->menu().handleKeyEvent(unicode, key, mod, state);
-        break;
-
-      case S_CMDMENU:
-        if(myKeyTable[key] == Event::CmdMenuMode && state == 1)
-        {
-          leaveCmdMenuMode();
-          return;
-        }
-        myOSystem->commandMenu().handleKeyEvent(unicode, key, mod, state);
-        break;
-
-      case S_LAUNCHER:
-        myOSystem->launcher().handleKeyEvent(unicode, key, mod, state);
-        break;
-
-#ifdef DEVELOPER_SUPPORT
-      case S_DEBUGGER:
-        if(myKeyTable[key] == Event::DebuggerMode && state == 1 &&
-           !(kbdAlt(mod) || kbdControl(mod) || kbdShift(mod)))
-        {
-          leaveDebugMode();
-          return;
-        }
-        myOSystem->debugger().handleKeyEvent(unicode, key, mod, state);
-        break;
-#endif
-    }
-  }
+  if(myOverlay)
+    myOverlay->updateTime(time);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -789,22 +775,11 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
     }
 
     case S_MENU:
-      myOSystem->menu().handleMouseMotionEvent(x, y, 0);
-      break;
-
     case S_CMDMENU:
-      myOSystem->commandMenu().handleMouseMotionEvent(x, y, 0);
-      break;
-
     case S_LAUNCHER:
-      myOSystem->launcher().handleMouseMotionEvent(x, y, 0);
-      break;
-
-#ifdef DEVELOPER_SUPPORT
     case S_DEBUGGER:
-      myOSystem->debugger().handleMouseMotionEvent(x, y, 0);
+      myOverlay->handleMouseMotionEvent(x, y, 0);
       break;
-#endif
 
     default:
       return;
@@ -857,16 +832,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
           break;
       }
 
-      if(myState == S_MENU)
-        myOSystem->menu().handleMouseButtonEvent(button, x, y, state);
-      else if(myState == S_CMDMENU)
-        myOSystem->commandMenu().handleMouseButtonEvent(button, x, y, state);
-      else if(myState == S_LAUNCHER)
-        myOSystem->launcher().handleMouseButtonEvent(button, x, y, state);
-#ifdef DEVELOPER_SUPPORT
-      else
-        myOSystem->debugger().handleMouseButtonEvent(button, x, y, state);
-#endif
+      myOverlay->handleMouseButtonEvent(button, x, y, state);
       break;
     }
 
@@ -1008,6 +974,8 @@ void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
 {
+  Event::Type event = myJoyTable[stick*kNumJoyButtons + code];
+
   // Joystick button zero acts as left mouse button and cannot be remapped
   if(myState != S_EMULATE && code == JOYMOUSE_LEFT_BUTTON &&
      myEmulateMouseFlag)
@@ -1023,118 +991,126 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
     handleMouseButtonEvent((SDL_Event&)mouseEvent, state);
     return;
   }
+  else if(state && eventStateChange(event))
+    return;
 
   // Determine which mode we're in, then send the event to the appropriate place
-  // TODO - this is almost exactly the same as handleKeyEvent
-  //        the similar code should be handled in handleEvent ...
-  Event::Type event = myJoyTable[stick*kNumJoyButtons + code];
-  switch(myState)
-  {
-    case S_EMULATE:
-      if(event == Event::MenuMode && state == 1 && !myPauseFlag)
-      {
-        enterMenuMode();
-        return;
-      }
-      else if(event == Event::CmdMenuMode && state == 1 && !myPauseFlag)
-      {
-        enterCmdMenuMode();
-        return;
-      }
-      else if(event == Event::DebuggerMode && state == 1 && !myPauseFlag)
-      {
-        enterDebugMode();
-        return;
-      }
-      else
-        handleEvent(event, state);
-
-      break;  // S_EMULATE
-
-    case S_MENU:
-      if(event == Event::MenuMode && state == 1)
-      {
-        leaveMenuMode();
-        return;
-      }
-      myOSystem->menu().handleJoyEvent(stick, code, state);
-      break;
-
-    case S_CMDMENU:
-      if(event == Event::CmdMenuMode && state == 1)
-      {
-        leaveCmdMenuMode();
-        return;
-      }
-      myOSystem->commandMenu().handleJoyEvent(stick, code, state);
-      break;
-
-    default:
-      break;
-  }
+  if(myState == S_EMULATE)
+    handleEvent(event, state);
+  else if(myOverlay != NULL)
+    myOverlay->handleJoyEvent(stick, code, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleEvent(Event::Type event, Int32 state)
 {
-  // Ignore unmapped events
-  if(event == Event::NoType)
+  if(event == Event::NoType)  // Ignore unmapped events
     return;
-
-  // Take care of special events that aren't part of the emulation core
-  if(state == 1)
+  else if(event == Event::Fry)
+    myFryingFlag = bool(state);
+  else if(state == 1)
   {
-    if(event == Event::SaveState)
+    // Take care of special events that aren't part of the emulation core
+    bool handled = true;
+
+    switch(event)
     {
-      saveState();
-      return;
-    }
-    else if(event == Event::ChangeState)
-    {
-      changeState();
-      return;
-    }
-    else if(event == Event::LoadState)
-    {
-      loadState();
-      return;
-    }
-    else if(event == Event::TakeSnapshot)
-    {
-      takeSnapshot();
-      return;
-    }
-    else if(event == Event::Pause)
-    {
-      myPauseFlag = !myPauseFlag;
-      myOSystem->frameBuffer().pause(myPauseFlag);
-      myOSystem->sound().mute(myPauseFlag);
-      return;
-    }
-    else if(event == Event::LauncherMode)
-    {
-      // ExitGame will only work when we've launched stella using the ROM
-      // launcher.  Otherwise, the only way to exit the main loop is to Quit.
-      if(myState == S_EMULATE && myUseLauncherFlag)
-      {
+      case Event::Fry:
+        myFryingFlag = true;
+        break;
+
+      case Event::SaveState:
+        saveState();
+        break;
+
+      case Event::ChangeState:
+        changeState();
+        break;
+
+      case Event::LoadState:
+        loadState();
+        break;
+
+      case Event::TakeSnapshot:
+        takeSnapshot();
+        break;
+
+      case Event::Pause:
+        myPauseFlag = !myPauseFlag;
+        myOSystem->frameBuffer().pause(myPauseFlag);
+        myOSystem->sound().mute(myPauseFlag);
+        break;
+
+      case Event::LauncherMode:
+        // ExitGame will only work when we've launched stella using the ROM
+        // launcher.  Otherwise, the only way to exit the main loop is to Quit.
+        if(myState == S_EMULATE && myUseLauncherFlag)
+        {
+          myOSystem->settings().saveConfig();
+          myOSystem->createLauncher();
+          return;
+        }
+        break;
+
+      case Event::Quit:
+        myQuitFlag = true;
         myOSystem->settings().saveConfig();
-        myOSystem->createLauncher();
-        return;
-      }
-    }
-    else if(event == Event::Quit)
-    {
-      myQuitFlag = true;
-      myOSystem->settings().saveConfig();
-      return;
+        break;
+
+      default:
+        handled = false;
+        break;
     }
 
-    if(ourMessageTable[event] != "")
+    if(handled)
+      return;
+    else if(ourMessageTable[event] != "")
       myOSystem->frameBuffer().showMessage(ourMessageTable[event]);
   }
 
   // Otherwise, pass it to the emulation core
   myEvent->set(event, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::eventStateChange(Event::Type type)
+{
+  bool handled = true;
+
+  switch(type)
+  {
+    case Event::MenuMode:
+      if(!myPauseFlag)
+      {
+        if(myState != S_MENU)
+          enterMenuMode(S_MENU);
+        else
+          leaveMenuMode();
+      }
+      break;
+
+    case Event::CmdMenuMode:
+      if(!myPauseFlag)
+      {
+        if(myState != S_CMDMENU)
+          enterMenuMode(S_CMDMENU);
+        else
+          leaveMenuMode();
+      }
+      break;
+
+    case Event::DebuggerMode:
+      if(myState != S_DEBUGGER)
+        enterDebugMode();
+      else
+        leaveDebugMode();
+      break;
+
+    default:
+      handled = false;
+  }
+
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1505,10 +1481,7 @@ void EventHandler::saveState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeState()
 {
-  if(myLSState == 9)
-    myLSState = 0;
-  else
-    ++myLSState;
+  myLSState = (myLSState + 1) % 10;
 
   // Print appropriate message
   ostringstream buf;
@@ -1619,10 +1592,10 @@ void EventHandler::setPaddleMode(uInt32 num, bool showmessage)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::enterMenuMode()
+void EventHandler::enterMenuMode(State state)
 {
-  myState = S_MENU;
-  myOSystem->menu().reStack();
+  setEventState(state);
+  myOverlay->reStack();
 
   refreshDisplay();
 
@@ -1634,32 +1607,7 @@ void EventHandler::enterMenuMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
 {
-  myState = S_EMULATE;
-
-  refreshDisplay();
-
-  myOSystem->frameBuffer().setCursorState();
-  myOSystem->sound().mute(false);
-  myEvent->clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::enterCmdMenuMode()
-{
-  myState = S_CMDMENU;
-  myOSystem->commandMenu().reStack();
-
-  refreshDisplay();
-
-  myOSystem->frameBuffer().setCursorState();
-  myOSystem->sound().mute(true);
-  myEvent->clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::leaveCmdMenuMode()
-{
-  myState = S_EMULATE;
+  setEventState(S_EMULATE);
 
   refreshDisplay();
 
@@ -1675,9 +1623,9 @@ bool EventHandler::enterDebugMode()
   if(myState == S_DEBUGGER)
     return false;
 
-  myState = S_DEBUGGER;
+  setEventState(S_DEBUGGER);
   myOSystem->createFrameBuffer();
-  myOSystem->debugger().reStack();
+  myOverlay->reStack();
   myOSystem->frameBuffer().setCursorState();
   myEvent->clear();
 
@@ -1708,7 +1656,7 @@ void EventHandler::leaveDebugMode()
   // Make sure debugger quits in a consistent state
   myOSystem->debugger().setQuitState();
 
-  myState = S_EMULATE;
+  setEventState(S_EMULATE);
   myOSystem->createFrameBuffer();
   refreshDisplay();
   myOSystem->frameBuffer().setCursorState();
@@ -1717,6 +1665,40 @@ void EventHandler::leaveDebugMode()
   if(myPauseFlag)  // Un-Pause when leaving debugger mode
     handleEvent(Event::Pause, 1);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setEventState(State state)
+{
+  myState = state;
+  switch(myState)
+  {
+    case S_EMULATE:
+      myOverlay = NULL;
+      break;
+
+    case S_MENU:
+      myOverlay = &myOSystem->menu();
+      break;
+
+    case S_CMDMENU:
+      myOverlay = &myOSystem->commandMenu();
+      break;
+
+    case S_LAUNCHER:
+      myOverlay = &myOSystem->launcher();
+      break;
+
+#ifdef DEVELOPER_SUPPORT
+    case S_DEBUGGER:
+      myOverlay = &myOSystem->debugger();
+      break;
+#endif
+
+    default:
+      myOverlay = NULL;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

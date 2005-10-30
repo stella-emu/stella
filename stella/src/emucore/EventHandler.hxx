@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.53 2005-10-23 14:51:51 stephena Exp $
+// $Id: EventHandler.hxx,v 1.54 2005-10-30 20:29:56 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -27,6 +27,7 @@
 
 class Console;
 class OSystem;
+class DialogContainer;
 
 enum MouseButton {
   EVENT_LBUTTONDOWN,
@@ -59,6 +60,12 @@ enum JoyType { JT_NONE, JT_REGULAR, JT_STELLADAPTOR_1, JT_STELLADAPTOR_2 };
 struct Stella_Joystick {
   SDL_Joystick* stick;
   JoyType       type;
+  string        name;
+};
+
+struct Joystick_Map {
+  int     stick;
+  JoyType type;
 };
 
 
@@ -75,7 +82,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.53 2005-10-23 14:51:51 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.54 2005-10-30 20:29:56 stephena Exp $
 */
 class EventHandler
 {
@@ -225,26 +232,14 @@ class EventHandler
       return (mod & KMOD_SHIFT);
     }
 
-    void enterMenuMode();
+    void enterMenuMode(State state);
     void leaveMenuMode();
-    void enterCmdMenuMode();
-    void leaveCmdMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
     void saveProperties();
 
     // Holds static strings for the remap menu
     static ActionList ourActionList[62];
-
-    // Lookup table for paddle resistance events
-    static const Event::Type Paddle_Resistance[4];
-
-    // Lookup table for paddle button events
-    static const Event::Type Paddle_Button[4];
-
-    // Static lookup tables for Stelladaptor axis support
-    static const Event::Type SA_Axis[2][2][3];
-    static const Event::Type SA_DrivingValue[2];
 
     /**
       Send an event directly to the event handler.
@@ -258,15 +253,6 @@ class EventHandler
     bool frying() { return myFryingFlag; }
 
   private:
-    /**
-      Send a keyboard event to the handler.
-
-      @param key   keysym
-      @param mod   modifiers
-      @param state state of key
-    */
-    void handleKeyEvent(int unicode, SDLKey key, SDLMod mod, uInt8 state);
-
     /**
       Send a mouse motion event to the handler.
 
@@ -307,6 +293,22 @@ class EventHandler
     void handleJoyMouse(uInt32 time);
 
     /**
+      Detects and changes the eventhandler state
+
+      @param type  The event
+      @return      True if the state changed, else false
+    */
+    inline bool eventStateChange(Event::Type type);
+
+    /**
+      Maps the enumerated joysticks to the specified ports on a real 2600
+
+      @param leftport  Index of joystick to use for the left Atari 2600 port
+      @param rightport Index of joystick to use for the right Atari 2600 port
+    */
+    void mapJoysticks(int leftport, int rightport);
+
+    /**
       The following methods take care of assigning action mappings.
     */
     void setActionMappings();
@@ -333,6 +335,7 @@ class EventHandler
     void changeState();
     void loadState();
     void takeSnapshot();
+    void setEventState(State state);
 
   private:
     // Global OSystem object
@@ -353,8 +356,16 @@ class EventHandler
     // Array of joysticks available to Stella
     Stella_Joystick ourJoysticks[kNumJoysticks];
 
+    // Mappings from SDL_Joystick to internal 2600 joystick ports
+    Joystick_Map ourJoystickMapping[kNumJoysticks];
+    int myLeftJoyPort;
+    int myRightJoyPort;
+
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
+
+    // Indicates current overlay object
+    DialogContainer* myOverlay;
 
     // Global Event object
     Event* myEvent;
@@ -399,6 +410,16 @@ class EventHandler
 
     // How far the joystick will move the mouse on each frame tick
     int myMouseMove;
+
+    // Lookup table for paddle resistance events
+    static const Event::Type Paddle_Resistance[4];
+
+    // Lookup table for paddle button events
+    static const Event::Type Paddle_Button[4];
+
+    // Static lookup tables for Stelladaptor axis support
+    static const Event::Type SA_Axis[2][2][3];
+    static const Event::Type SA_DrivingValue[2];
 };
 
 #endif

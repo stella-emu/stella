@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.3 2005-09-16 18:15:44 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.4 2005-10-30 20:29:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -181,19 +181,19 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kFormatCmd:
-      instance()->eventHandler().leaveCmdMenuMode();
+      instance()->eventHandler().leaveMenuMode();
       instance()->console().toggleFormat();
       return;
       break;
 
     case kPaletteCmd:
-      instance()->eventHandler().leaveCmdMenuMode();
+      instance()->eventHandler().leaveMenuMode();
       instance()->console().togglePalette();
       return;
       break;
 
     case kReloadRomCmd:
-      instance()->eventHandler().leaveCmdMenuMode();
+      instance()->eventHandler().leaveMenuMode();
       instance()->createConsole();
       return;
       break;
@@ -212,7 +212,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
   // Show changes onscreen
   if(execute)
   {
-    instance()->eventHandler().leaveCmdMenuMode();
+    instance()->eventHandler().leaveMenuMode();
     instance()->eventHandler().handleEvent(event, 1);
     instance()->console().mediaSource().update();
     instance()->eventHandler().handleEvent(event, 0);
