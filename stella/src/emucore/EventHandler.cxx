@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.108 2005-10-30 20:29:56 stephena Exp $
+// $Id: EventHandler.cxx,v 1.109 2005-11-01 16:32:27 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -114,6 +114,8 @@ EventHandler::EventHandler(OSystem* osystem)
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
   myEmulateMouseFlag = myOSystem->settings().getBool("joymouse");
 
+  setPaddleMode(myOSystem->settings().getInt("paddle"), false);
+
   myFryingFlag = false;
 
   memset(&myJoyMouse, 0, sizeof(myJoyMouse));
@@ -152,7 +154,6 @@ void EventHandler::reset(State state)
   myLSState = 0;
   myPauseFlag = false;
   myQuitFlag = false;
-  myPaddleMode = 0;
 
   myOSystem->frameBuffer().pause(myPauseFlag);
   myOSystem->sound().mute(myPauseFlag);
@@ -1082,28 +1083,38 @@ bool EventHandler::eventStateChange(Event::Type type)
     case Event::MenuMode:
       if(!myPauseFlag)
       {
-        if(myState != S_MENU)
+        if(myState == S_EMULATE)
           enterMenuMode(S_MENU);
-        else
+        else if(myState == S_MENU)
           leaveMenuMode();
+        else
+          handled = false;
       }
+      else
+        handled = false;
       break;
 
     case Event::CmdMenuMode:
       if(!myPauseFlag)
       {
-        if(myState != S_CMDMENU)
+        if(myState == S_EMULATE)
           enterMenuMode(S_CMDMENU);
-        else
+        else if(myState == S_CMDMENU)
           leaveMenuMode();
+        else
+          handled = false;
       }
+      else
+        handled = false;
       break;
 
     case Event::DebuggerMode:
-      if(myState != S_DEBUGGER)
+      if(myState == S_EMULATE)
         enterDebugMode();
-      else
+      else if(myState == S_DEBUGGER)
         leaveDebugMode();
+      else
+        handled = false;
       break;
 
     default:
@@ -1579,6 +1590,9 @@ void EventHandler::takeSnapshot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setPaddleMode(uInt32 num, bool showmessage)
 {
+  if(num < 0 || num > 3)
+    return;
+
   myPaddleMode = num;
 
   if(showmessage)
