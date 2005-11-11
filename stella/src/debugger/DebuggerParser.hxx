@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.42 2005-09-15 19:43:36 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.43 2005-11-11 21:44:19 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -106,7 +106,9 @@ class DebuggerParser
     void executeBreak();
     void executeBreakif();
     void executeC();
-    void executeCheetah();
+#ifdef CHEATCODE_SUPPORT
+    void executeCheat();
+#endif
     void executeClearbreaks();
     void executeCleartraps();
     void executeClearwatches();

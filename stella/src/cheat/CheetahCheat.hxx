@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll
-//  SS  SS   tt           ll   ll
-//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -13,30 +13,30 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cheat.hxx,v 1.3 2005-09-26 19:10:37 stephena Exp $
+// $Id: CheetahCheat.hxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
 //============================================================================
 
-#ifndef CHEAT_HXX
-#define CHEAT_HXX
+#ifndef CHEETAH_CHEAT_HXX
+#define CHEETAH_CHEAT_HXX
 
-#include "bspf.hxx"
-#include "OSystem.hxx"
+#include "Cheat.hxx"
 
-class Cheat
+class CheetahCheat : public Cheat
 {
   public:
-    Cheat() { }
-    virtual ~Cheat() { }
+    CheetahCheat(OSystem* os, const string& name, const string& code);
+    ~CheetahCheat();
 
-    static Cheat *parse(OSystem *osystem, string code);
-    static uInt16 unhex(string hex);
+    virtual bool enable();
+    virtual bool disable();
 
-    virtual bool enabled() = 0;
-    virtual bool enable() = 0;
-    virtual bool disable() = 0;
+    virtual void evaluate();
 
-  protected:
-    //Cheat(string code);
+  private:
+    uInt8  savedRom[16];
+    uInt16 address;
+    uInt8  value;
+    uInt8  count;
 };
 
 #endif

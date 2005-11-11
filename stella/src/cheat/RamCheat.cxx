@@ -13,50 +13,48 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheetahCheat.cxx,v 1.3 2005-09-26 19:10:37 stephena Exp $
+// $Id: RamCheat.cxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
 //============================================================================
 
-#include "CheetahCheat.hxx"
+#include "System.hxx"
+#include "CheatManager.hxx"
+
+#include "RamCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheetahCheat::CheetahCheat(OSystem *os, string code)
+RamCheat::RamCheat(OSystem* os, const string& name, const string& code)
+  : Cheat(os, name, code)
 {
-  myOSystem = os;
-  _enabled = false;
-
-  address = 0xf000 + unhex(code.substr(0, 3));
-  value = unhex(code.substr(3, 2));
-  count = unhex(code.substr(5, 1)) + 1;
+  address = (uInt16) unhex(myCode.substr(0, 2));
+  value   = (uInt8) unhex(myCode.substr(2, 2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheetahCheat::~CheetahCheat()
+RamCheat::~RamCheat()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheetahCheat::enabled()
+bool RamCheat::enable()
 {
-  return _enabled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheetahCheat::enable()
-{
-  for(int i=0; i<count; i++)
+  if(!myEnabled)
   {
-    savedRom[i] = myOSystem->console().cartridge().peek(address + i);
-    myOSystem->console().cartridge().patch(address + i, value);
+    myOSystem->cheat().addPerFrame(this, true);
+    myEnabled = true;
   }
 
-  return _enabled = true;
+  return myEnabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheetahCheat::disable()
+bool RamCheat::disable()
 {
-  for(int i=0; i<count; i++)
-    myOSystem->console().cartridge().patch(address + i, savedRom[i]);
+  cerr << "perFrame remove " << myName << ":" << myCode << endl;
+  return false;
+}
 
-  return _enabled = false;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamCheat::evaluate()
+{
+  myOSystem->console().system().poke(address, value);
 }

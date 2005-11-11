@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.109 2005-11-01 16:32:27 stephena Exp $
+// $Id: EventHandler.cxx,v 1.110 2005-11-11 21:44:19 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -41,6 +41,10 @@
 
 #ifdef SNAPSHOT_SUPPORT
   #include "Snapshot.hxx"
+#endif
+
+#ifdef CHEATCODE_SUPPORT
+  #include "CheatManager.hxx"
 #endif
 
 #ifdef MAC_OSX
@@ -747,6 +751,12 @@ void EventHandler::poll(uInt32 time)
   // Used to implement continuous events
   if(myOverlay)
     myOverlay->updateTime(time);
+
+#ifdef CHEATCODE_SUPPORT
+  const CheatList& cheats = myOSystem->cheat().perFrame();
+  for(unsigned int i = 0; i < cheats.size(); i++)
+    cheats[i]->evaluate();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

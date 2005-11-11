@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.hxx,v 1.4 2005-09-30 00:40:34 stephena Exp $
+// $Id: CheatCodeDialog.hxx,v 1.5 2005-11-11 21:44:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +30,7 @@ class StaticTextWidget;
 #include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "Widget.hxx"
-#include "Cheat.hxx"
+#include "CheatManager.hxx"
 #include "EditTextWidget.hxx"
 #include "Props.hxx"
 #include "bspf.hxx"
@@ -47,8 +47,6 @@ class CheatCodeDialog : public Dialog
     void loadConfig();
 
   private:
-    Cheat* myCheat;
-
     ButtonWidget*     myExitButton;
     StaticTextWidget* myTitle;
     StaticTextWidget* myError;

@@ -13,24 +13,22 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BankRomCheat.cxx,v 1.2 2005-09-26 19:10:37 stephena Exp $
+// $Id: BankRomCheat.cxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
 //============================================================================
 
 #include "BankRomCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BankRomCheat::BankRomCheat(OSystem *os, string code)
+BankRomCheat::BankRomCheat(OSystem* os, const string& name, const string& code)
+  : Cheat(os, name, code)
 {
-  myOSystem = os;
-  _enabled = false;
+  if(myCode.length() == 7)
+    myCode = "0" + code;
 
-  if(code.length() == 7)
-    code = "0" + code;
-
-  bank = unhex(code.substr(0, 2));
-  address = 0xf000 + unhex(code.substr(2, 3));
-  value = unhex(code.substr(5, 2));
-  count = unhex(code.substr(7, 1)) + 1;
+  bank = unhex(myCode.substr(0, 2));
+  address = 0xf000 + unhex(myCode.substr(2, 3));
+  value = unhex(myCode.substr(5, 2));
+  count = unhex(myCode.substr(7, 1)) + 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,25 +37,10 @@ BankRomCheat::~BankRomCheat()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool BankRomCheat::enabled()
-{
-  return _enabled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool BankRomCheat::enable()
 {
-  int oldBank = myOSystem->console().cartridge().bank();
-  myOSystem->console().cartridge().bank(bank);
-
-  for(int i=0; i<count; i++)
-  {
-    savedRom[i] = myOSystem->console().cartridge().peek(address + i);
-    myOSystem->console().cartridge().patch(address + i, value);
-  }
-  myOSystem->console().cartridge().bank(oldBank);
-
-  return _enabled = true;
+  evaluate();
+  return myEnabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,5 +53,24 @@ bool BankRomCheat::disable()
 
   myOSystem->console().cartridge().bank(oldBank);
 
-  return _enabled = false;
+  return myEnabled = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BankRomCheat::evaluate()
+{
+  if(!myEnabled)
+  {
+    int oldBank = myOSystem->console().cartridge().bank();
+    myOSystem->console().cartridge().bank(bank);
+
+    for(int i=0; i<count; i++)
+    {
+      savedRom[i] = myOSystem->console().cartridge().peek(address + i);
+      myOSystem->console().cartridge().patch(address + i, value);
+    }
+    myOSystem->console().cartridge().bank(oldBank);
+
+    myEnabled = true;
+  }
 }

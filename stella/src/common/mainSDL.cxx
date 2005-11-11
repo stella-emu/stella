@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.52 2005-10-27 19:15:14 stephena Exp $
+// $Id: mainSDL.cxx,v 1.53 2005-11-11 21:44:19 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -61,6 +61,10 @@
 
 #ifdef DEVELOPER_SUPPORT
   #include "Debugger.hxx"
+#endif
+
+#ifdef CHEATCODE_SUPPORT
+  #include "CheatManager.hxx"
 #endif
 
 static void SetupProperties(PropertiesSet& set);
@@ -215,6 +219,17 @@ int main(int argc, char* argv[])
     if(theOSystem->settings().getBool("holdbutton0"))
       theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire, 1);
 
+#ifdef CHEATCODE_SUPPORT
+    // Set up any cheeetah code that was on the command line
+    // (and remove the key from the settings, so they won't get set again)
+    string cheats = theOSystem->settings().getString("cheat");
+    if(cheats != "")
+    {
+      theOSystem->cheat().parse(cheats);
+      theOSystem->settings().setString("cheat", "", false);
+    }
+#endif
+
 #ifdef DEVELOPER_SUPPORT
     Debugger& dbg = theOSystem->debugger();
 
@@ -226,15 +241,6 @@ int main(int argc, char* argv[])
       int bp = dbg.stringToValue(initBreak);
       dbg.setBreakPoint(bp, true);
       theOSystem->settings().setString("break", "", false);
-    }
-
-    // Set up any cheeetah code that was on the command line
-    // (and remove the key from the settings, so they won't get set again)
-    string cheetah = theOSystem->settings().getString("cheetah");
-    if(cheetah != "")
-    {
-      dbg.run("cheetah " + cheetah);
-      theOSystem->settings().setString("cheetah", "", false);
     }
 
     if(theOSystem->settings().getBool("debug"))

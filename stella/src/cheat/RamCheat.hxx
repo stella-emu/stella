@@ -13,34 +13,28 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BankRomCheat.hxx,v 1.2 2005-09-28 19:59:24 stephena Exp $
+// $Id: RamCheat.hxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
 //============================================================================
 
-#ifndef BANK_ROM_CHEAT_HXX
-#define BANK_ROM_CHEAT_HXX
+#ifndef RAM_CHEAT_HXX
+#define RAM_CHEAT_HXX
 
-#include "OSystem.hxx"
 #include "Cheat.hxx"
 
-class BankRomCheat : public Cheat
+class RamCheat : public Cheat
 {
   public:
-    BankRomCheat(OSystem *os, string code);
-    ~BankRomCheat();
+    RamCheat(OSystem* os, const string& name, const string& code);
+    ~RamCheat();
 
-    virtual bool enabled();
     virtual bool enable();
     virtual bool disable();
 
-  private:
-    OSystem* myOSystem;
+    virtual void evaluate();
 
-    bool   _enabled;
-    uInt8  savedRom[16];
+  private:
     uInt16 address;
     uInt8  value;
-    uInt8  count;
-    int    bank;
 };
 
 #endif

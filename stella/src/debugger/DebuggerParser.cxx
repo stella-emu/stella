@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.87 2005-10-27 19:15:14 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.88 2005-11-11 21:44:19 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -25,9 +25,11 @@
 #include "YaccParser.hxx"
 #include "M6502.hxx"
 #include "Expression.hxx"
-#include "CheetahCheat.hxx"
-#include "Cheat.hxx"
 #include "RomWidget.hxx"
+
+#ifdef CHEATCODE_SUPPORT
+  #include "CheatManager.hxx"
+#endif
 
 #include "DebuggerParser.hxx"
 
@@ -86,14 +88,16 @@ Command DebuggerParser::commands[] = {
 		&DebuggerParser::executeC
 	},
 
+#ifdef CHEATCODE_SUPPORT
 	{
-		"cheetah",
-		"Use Cheetah cheat code (see http://members.cox.net/rcolbert/)",
+		"cheat",
+		"Use a cheat code (see Stella manual for cheat types)",
 		false,
 		false,
 		{ kARG_LABEL, kARG_END_ARGS },
-		&DebuggerParser::executeCheetah
+		&DebuggerParser::executeCheat
 	},
+#endif
 
 	{
 		"clearbreaks",
@@ -1386,9 +1390,10 @@ void DebuggerParser::executeC() {
 		debugger->cpuDebug().setC(args[0]);
 }
 
-// "cheetah"
-// (see http://members.cox.net/rcolbert/chtdox.htm)
-void DebuggerParser::executeCheetah() {
+#ifdef CHEATCODE_SUPPORT
+// "cheat"
+// (see Stella manual for different cheat types)
+void DebuggerParser::executeCheat() {
 	if(argCount == 0) {
 		commandResult = red("Missing cheat code");
 		return;
@@ -1396,15 +1401,15 @@ void DebuggerParser::executeCheetah() {
 
 	for(int arg = 0; arg < argCount; arg++) {
 		string& cheat = argStrings[arg];
-		Cheat *c = Cheat::parse(debugger->getOSystem(), cheat);
-		if(c) {
-			c->enable();
-			commandResult = "Cheetah code " + cheat + " enabled\n";
+		const Cheat* c = debugger->getOSystem()->cheat().add("DBG", cheat);
+		if(c && c->enabled()) {
+			commandResult = "Cheat code " + cheat + " enabled\n";
 		} else {
-			commandResult = red("Invalid cheetah code " + cheat + "\n");
+			commandResult = red("Invalid cheat code " + cheat + "\n");
 		}
 	}
 }
+#endif
 
 // "clearbreaks"
 void DebuggerParser::executeClearbreaks() {

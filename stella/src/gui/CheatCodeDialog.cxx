@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.7 2005-09-30 00:40:34 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.8 2005-11-11 21:44:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -80,17 +80,14 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
   {
     case kEditAcceptCmd:
       // cerr << myInput->getEditString() << endl;
-      myCheat = Cheat::parse(instance(), myInput->getEditString());
+      const Cheat* cheat = 
+        instance()->cheat().add("DLG", myInput->getEditString(), true);
 
-      if(myCheat)
+      if(cheat)
       {
         // make sure "invalid code" isn't showing any more:
         myError->setLabel("");
         myErrorFlag = false;
-
-        // set up the cheat
-        myCheat->enable();
-        delete myCheat; // TODO: keep and add to list
 
         // get out of menu mode (back to emulation):
         Dialog::handleCommand(sender, kCloseCmd, data, id);

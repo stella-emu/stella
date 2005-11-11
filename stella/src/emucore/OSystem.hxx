@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.30 2005-10-19 00:59:51 stephena Exp $
+// $Id: OSystem.hxx,v 1.31 2005-11-11 21:44:19 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -25,6 +25,7 @@ class Menu;
 class CommandMenu;
 class Launcher;
 class Debugger;
+class CheatManager;
 
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
@@ -43,7 +44,7 @@ class Debugger;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.30 2005-10-19 00:59:51 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.31 2005-11-11 21:44:19 stephena Exp $
 */
 class OSystem
 {
@@ -150,6 +151,15 @@ class OSystem
       @return The debugger object
     */
     Debugger& debugger(void) const { return *myDebugger; }
+#endif
+
+#ifdef CHEATCODE_SUPPORT
+    /**
+      Get the cheat manager of the system.
+
+      @return The cheatmanager object
+    */
+    CheatManager& cheat(void) const { return *myCheatManager; }
 #endif
 
     /**
@@ -368,6 +378,9 @@ class OSystem
 
     // Pointer to the Debugger object
     Debugger* myDebugger;
+
+    // Pointer to the CheatManager object
+    CheatManager* myCheatManager;
 
     // Number of times per second to iterate through the main loop
     uInt32 myDisplayFrameRate;

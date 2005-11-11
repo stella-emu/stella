@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.43 2005-10-19 00:59:51 stephena Exp $
+// $Id: OSystem.cxx,v 1.44 2005-11-11 21:44:19 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -47,6 +47,10 @@
   #include "Debugger.hxx"
 #endif
 
+#ifdef CHEATCODE_SUPPORT
+  #include "CheatManager.hxx"
+#endif
+
 #include "unzip.h"
 #include "MD5.hxx"
 #include "FSNode.hxx"
@@ -74,6 +78,7 @@ OSystem::OSystem()
     myCommandMenu(NULL),
     myLauncher(NULL),
     myDebugger(NULL),
+    myCheatManager(NULL),
     myRomFile(""),
     myFeatures(""),
     myFont(NULL),
@@ -85,6 +90,9 @@ OSystem::OSystem()
   myLauncher = new Launcher(this);
 #ifdef DEVELOPER_SUPPORT
   myDebugger = new Debugger(this);
+#endif
+#ifdef CHEATCODE_SUPPORT
+  myCheatManager = new CheatManager(this);
 #endif
 
   // Create fonts to draw text
@@ -107,6 +115,9 @@ OSystem::OSystem()
 #ifdef DEVELOPER_SUPPORT
   myFeatures += "Debugger";
 #endif
+#ifdef CHEATCODE_SUPPORT
+  myFeatures += "Cheats";
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,6 +133,9 @@ OSystem::~OSystem()
 
 #ifdef DEVELOPER_SUPPORT
   delete myDebugger;
+#endif
+#ifdef CHEATCODE_SUPPORT
+  delete myCheatManager;
 #endif
 
   // Remove any game console that is currently attached

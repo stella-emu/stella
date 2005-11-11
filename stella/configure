@@ -24,6 +24,7 @@ _build_sound=yes
 _build_developer=yes
 _build_snapshot=yes
 _build_joystick=yes
+_build_cheats=yes
 _build_static=no
 
 # more defaults
@@ -259,6 +260,8 @@ Optional Features:
   --disable-snapshot
   --enable-joystick      enable/disable joystick support [enabled]
   --disable-joystick
+  --enable-cheats        enable/disable cheatcode support [enabled]
+  --disable-cheats
   --enable-shared        build shared binary [enabled]
   --enable-static        build static binary (if possible) [disabled]
   --disable-static
@@ -302,6 +305,8 @@ for ac_option in $@; do
       --disable-snapshot)       _build_snapshot=no   ;;
       --enable-joystick)        _build_joystick=yes  ;;
       --disable-joystick)       _build_joystick=no   ;;
+      --enable-cheats)          _build_cheats=yes    ;;
+      --disable-cheats)         _build_cheats=no     ;;
       --enable-zlib)            _zlib=yes            ;;
       --disable-zlib)           _zlib=no             ;;
       --enable-png)             _png=yes             ;;
@@ -683,6 +688,14 @@ else
 	echo
 fi
 
+if test "$_build_cheats" = yes ; then
+	echo_n "   Cheatcode support enabled"
+	echo
+else
+	echo_n "   Cheatcode support disabled"
+	echo
+fi
+
 if test "$_build_static" = yes ; then
 	echo_n "   Static binary enabled"
 	echo
@@ -705,6 +718,7 @@ GUI="$SRC/gui"
 DBG="$SRC/debugger"
 DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
+CHEAT="$SRC/cheat"
 
 INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
 
@@ -798,6 +812,13 @@ if test "$_build_joystick" = yes ; then
 	DEFINES="$DEFINES -DJOYSTICK_SUPPORT"
 fi
 
+if test "$_build_cheats" = yes ; then
+	DEFINES="$DEFINES -DCHEATCODE_SUPPORT"
+	MODULES="$MODULES $CHEAT"
+	INCLUDES="$INCLUDES -I$CHEAT"
+fi
+
+
 # 20051003 bkw: fix static Linux build.
 # No guarantee this will work for anyone other than me, and no
 # guarantee it's needed by anyone but me (and Steve)...
@@ -851,7 +872,7 @@ if test $_host_os = "psp" ; then
 cat >> config.mak << EOF
 
 PSP-STRIP       := $PSP_STRIP
-PSP-FIX				  := $PSP_FIX
+PSP-FIX         := $PSP_FIX
 PACK-PBP        := $PACK_PBP
 MKSFO           := $MKSFO
 PSP-MOUNTPOINT  := $PSP_MOUNTPOINT
