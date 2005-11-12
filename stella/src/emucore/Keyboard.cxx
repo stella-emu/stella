@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Keyboard.cxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+// $Id: Keyboard.cxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -205,3 +205,8 @@ void Keyboard::write(DigitalPin pin, bool value)
   } 
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Controller::Type Keyboard::type()
+{
+  return Controller::Keyboard;
+}

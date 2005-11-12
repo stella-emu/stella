@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.cxx,v 1.3 2005-06-16 00:55:57 stephena Exp $
+// $Id: Booster.cxx,v 1.4 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -103,3 +103,8 @@ void BoosterGrip::write(DigitalPin, bool)
   // Writing doesn't do anything to the booster grip...
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Controller::Type BoosterGrip::type()
+{
+  return Controller::BoosterGrip;
+}

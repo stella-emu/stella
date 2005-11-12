@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.53 2005-11-11 21:44:19 stephena Exp $
+// $Id: mainSDL.cxx,v 1.54 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -247,6 +247,11 @@ int main(int argc, char* argv[])
       handler.enterDebugMode();
 #endif
   }
+
+  // Swallow any spurious events in the queue
+  // These are normally caused by joystick/mouse jitter
+  SDL_Event event;
+  while(SDL_PollEvent(&event)) /* swallow event */ ;
 
   // Start the main loop, and don't exit until the user issues a QUIT command
   theOSystem->mainLoop();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.cxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+// $Id: Joystick.cxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -74,3 +74,8 @@ void Joystick::write(DigitalPin, bool)
   // Writing doesn't do anything to the joystick...
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Controller::Type Joystick::type()
+{
+  return Controller::Joystick;
+}

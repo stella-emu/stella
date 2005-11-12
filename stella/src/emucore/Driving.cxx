@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.4 2005-06-16 01:11:27 stephena Exp $
+// $Id: Driving.cxx,v 1.5 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -134,3 +134,8 @@ void Driving::write(DigitalPin, bool)
   // Writing doesn't do anything to the driving controller...
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Controller::Type Driving::type()
+{
+  return Controller::Driving;
+}

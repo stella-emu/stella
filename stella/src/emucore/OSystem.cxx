@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.44 2005-11-11 21:44:19 stephena Exp $
+// $Id: OSystem.cxx,v 1.45 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -113,10 +113,10 @@ OSystem::OSystem()
   myFeatures += "Snapshot ";
 #endif
 #ifdef DEVELOPER_SUPPORT
-  myFeatures += "Debugger";
+  myFeatures += "Debugger ";
 #endif
 #ifdef CHEATCODE_SUPPORT
-  myFeatures += "Cheats";
+  myFeatures += "Cheats";  // FIXME - string too long in 'About'
 #endif
 }
 

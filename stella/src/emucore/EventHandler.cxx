@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.110 2005-11-11 21:44:19 stephena Exp $
+// $Id: EventHandler.cxx,v 1.111 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -593,7 +593,7 @@ void EventHandler::poll(uInt32 time)
 
       case SDL_MOUSEMOTION:
         handleMouseMotionEvent(event);
-        break; // SDL_MOUSEMOTION
+        break;  // SDL_MOUSEMOTION
 
       case SDL_MOUSEBUTTONUP:
       case SDL_MOUSEBUTTONDOWN:
@@ -616,48 +616,78 @@ void EventHandler::poll(uInt32 time)
       case SDL_VIDEOEXPOSE:
         refreshDisplay();
         break;  // SDL_VIDEOEXPOSE
-    }
 
 #ifdef JOYSTICK_SUPPORT
-    // Read joystick events and modify event states
-    int  stick;
-    uInt32 code;
-    uInt8  state = 0;
-    Uint8 axis;
-    Uint8 button;
-    Int32 resistance;
-    Sint16 value;
-    JoyType type;
+      case SDL_JOYBUTTONUP:
+      case SDL_JOYBUTTONDOWN:
+      {
+        if(event.jbutton.which >= kNumJoysticks)
+          break;
 
-    if(event.jbutton.which >= kNumJoysticks)
-      return;
-
-    // Figure put what type of joystick we're dealing with
-    // Stelladaptors behave differently, and can't be remapped
-    stick = ourJoystickMapping[event.jbutton.which].stick;
-    type  = ourJoystickMapping[event.jbutton.which].type;
-    switch(type)
-    {
-      case JT_NONE:
-        break;
-
-      case JT_REGULAR:
-        switch(event.type)
+        // Stelladaptors handle buttons differently than regular joysticks
+        int type = ourJoystickMapping[event.jbutton.which].type;
+        switch(type)
         {
-          case SDL_JOYBUTTONUP:
-          case SDL_JOYBUTTONDOWN:
+          case JT_REGULAR:
+          {
             if(event.jbutton.button >= kNumJoyButtons-4)
               return;
 
-            code  = event.jbutton.button;
-            state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+            int stick = ourJoystickMapping[event.jbutton.which].stick;
+            int code  = event.jbutton.button;
+            int state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
             handleJoyEvent(stick, code, state);
-            break;
+            break;  // Regular joystick button
+          }
 
-          case SDL_JOYAXISMOTION:
-            axis = event.jaxis.axis;
-            value = event.jaxis.value;
+          case JT_STELLADAPTOR_1:
+          case JT_STELLADAPTOR_2:
+          {
+            int button = event.jbutton.button;
+            int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+
+            // Since we can't detect what controller is attached to a
+            // Stelladaptor, we only send events based on controller
+            // type in ROM properties
+            Controller::Type ctype = myController[type-2];
+            switch((int)ctype)
+            {
+              // Send button events for the joysticks
+              case Controller::Joystick:
+                handleEvent(SA_Button[type-2][button][0], state);
+                break;
+
+              // Send axis events for the paddles
+              case Controller::Paddles:
+                handleEvent(SA_Button[type-2][button][1], state);
+                break;
+
+              // Send events for the driving controllers
+              case Controller::Driving:
+                handleEvent(SA_Button[type-2][button][2], state);
+                break;
+            }
+            break;  // Stelladaptor button
+          }
+        }
+        break;  // SDL_JOYBUTTONUP, SDL_JOYBUTTONDOWN
+      }  
+
+      case SDL_JOYAXISMOTION:
+      {
+        if(event.jbutton.which >= kNumJoysticks)
+          break;
+
+        // Stelladaptors handle axis differently than regular joysticks
+        int type = ourJoystickMapping[event.jbutton.which].type;
+        switch(type)
+        {
+          case JT_REGULAR:
+          {
+            int stick = ourJoystickMapping[event.jbutton.which].stick;
+            int axis  = event.jaxis.axis;
+            int value = event.jaxis.value;
 
             // Handle emulation of mouse using the joystick
             if(myState == S_EMULATE)
@@ -675,76 +705,54 @@ void EventHandler::poll(uInt32 time)
             }
             else
               handleMouseWarp(stick, axis, value);
-            break;
+            break;  // Regular joystick axis
+          }
+
+          case JT_STELLADAPTOR_1:
+          case JT_STELLADAPTOR_2:
+          {
+            int axis  = event.jaxis.axis;
+            int value = event.jaxis.value;
+
+            // Since we can't detect what controller is attached to a
+            // Stelladaptor, we only send events based on controller
+            // type in ROM properties
+            Controller::Type ctype = myController[type-2];
+            switch((int)ctype)
+            {
+              // Send axis events for the joysticks
+              case Controller::Joystick:
+                handleEvent(SA_Axis[type-2][axis][0], (value < -16384) ? 1 : 0);
+                handleEvent(SA_Axis[type-2][axis][1], (value > 16384) ? 1 : 0);
+                break;
+
+              // Send axis events for the paddles
+              case Controller::Paddles:
+                int resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
+                handleEvent(SA_Axis[type-2][axis][2], resistance);
+                break;
+
+              // Send events for the driving controllers
+              case Controller::Driving:
+                if(axis == 1)
+                {
+                  if(value <= -16384-4096)
+                    handleEvent(SA_DrivingValue[type-2],2);
+                  else if(value > 16384+4096)
+                    handleEvent(SA_DrivingValue[type-2],1);
+                  else if(value >= 16384-4096)
+                    handleEvent(SA_DrivingValue[type-2],0);
+                  else
+                    handleEvent(SA_DrivingValue[type-2],3);
+                }
+            }
+            break;  // Stelladaptor axis
+          }
         }
-        break;  // Regular joystick
-
-      case JT_STELLADAPTOR_1:
-      case JT_STELLADAPTOR_2:
-        switch(event.type)
-        {
-          case SDL_JOYBUTTONUP:
-          case SDL_JOYBUTTONDOWN:
-            button = event.jbutton.button;
-            state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
-
-            // Send button events for the joysticks/paddles/driving controllers
-            if(button == 0)
-            {
-              if(type == JT_STELLADAPTOR_1)
-              {
-                handleEvent(Event::JoystickZeroFire, state);
-                handleEvent(Event::DrivingZeroFire, state);
-                handleEvent(Event::PaddleZeroFire, state);
-              }
-              else
-              {
-                handleEvent(Event::JoystickOneFire, state);
-                handleEvent(Event::DrivingOneFire, state);
-                handleEvent(Event::PaddleTwoFire, state);
-              }
-            }
-            else if(button == 1)
-            {
-              if(type == JT_STELLADAPTOR_1)
-                handleEvent(Event::PaddleOneFire, state);
-              else
-                handleEvent(Event::PaddleThreeFire, state);
-            }
-            break;
-
-          case SDL_JOYAXISMOTION:
-            axis = event.jaxis.axis;
-            value = event.jaxis.value;
-
-            // Send axis events for the joysticks
-            handleEvent(SA_Axis[type-2][axis][0], (value < -16384) ? 1 : 0);
-            handleEvent(SA_Axis[type-2][axis][1], (value > 16384) ? 1 : 0);
-
-            // Send axis events for the paddles
-            resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
-            handleEvent(SA_Axis[type-2][axis][2], resistance);
-
-            // Send events for the driving controllers
-            if(axis == 1)
-            {
-              if(value <= -16384-4096)
-                handleEvent(SA_DrivingValue[type-2],2);
-              else if(value > 16384+4096)
-                handleEvent(SA_DrivingValue[type-2],1);
-              else if(value >= 16384-4096)
-                handleEvent(SA_DrivingValue[type-2],0);
-              else
-                handleEvent(SA_DrivingValue[type-2],3);
-            }
-            break;
-        }
-        break;  // Stelladaptor joystick
-
-      default:
-        break;
+        break;  // SDL_JOYAXISMOTION
+      }
+#endif  // JOYSTICK_SUPPORT
     }
-#endif
   }
 
   // Update the current dialog container at regular intervals
@@ -1059,7 +1067,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
         {
           myOSystem->settings().saveConfig();
           myOSystem->createLauncher();
-          return;
         }
         break;
 
@@ -1699,6 +1706,10 @@ void EventHandler::setEventState(State state)
   {
     case S_EMULATE:
       myOverlay = NULL;
+
+      // Controller types only make sense in Emulate mode
+      myController[0] = myOSystem->console().controller(Controller::Left).type();
+      myController[1] = myOSystem->console().controller(Controller::Right).type();
       break;
 
     case S_MENU:
@@ -2061,9 +2072,17 @@ const Event::Type EventHandler::Paddle_Button[4] = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::Type EventHandler::SA_Axis[2][2][3] = {
   { {Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance},
-    {Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance }  },
+    {Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance}   },
   { {Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance},
     {Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance} }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Event::Type EventHandler::SA_Button[2][2][3] = {
+  { {Event::JoystickZeroFire, Event::PaddleZeroFire,  Event::DrivingZeroFire },
+    {Event::NoType,           Event::PaddleOneFire,   Event::NoType}            },
+  { {Event::JoystickOneFire,  Event::PaddleTwoFire,   Event::DrivingOneFire },
+    {Event::NoType,           Event::PaddleThreeFire, Event::NoType}            }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

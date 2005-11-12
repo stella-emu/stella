@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.54 2005-10-30 20:29:56 stephena Exp $
+// $Id: EventHandler.hxx,v 1.55 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -24,6 +24,7 @@
 #include "bspf.hxx"
 #include "Event.hxx"
 #include "Array.hxx"
+#include "Control.hxx"
 
 class Console;
 class OSystem;
@@ -82,7 +83,7 @@ struct Joystick_Map {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.54 2005-10-30 20:29:56 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.55 2005-11-12 22:04:57 stephena Exp $
 */
 class EventHandler
 {
@@ -411,14 +412,18 @@ class EventHandler
     // How far the joystick will move the mouse on each frame tick
     int myMouseMove;
 
+    // Type of device on each controller port (based on ROM properties)
+    Controller::Type myController[2];
+
     // Lookup table for paddle resistance events
     static const Event::Type Paddle_Resistance[4];
 
     // Lookup table for paddle button events
     static const Event::Type Paddle_Button[4];
 
-    // Static lookup tables for Stelladaptor axis support
+    // Static lookup tables for Stelladaptor axis/button support
     static const Event::Type SA_Axis[2][2][3];
+    static const Event::Type SA_Button[2][2][3];
     static const Event::Type SA_DrivingValue[2];
 };
 

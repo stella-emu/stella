@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.hxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+// $Id: Driving.hxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #ifndef DRIVING_HXX
@@ -29,7 +29,7 @@ class System;
   The standard Atari 2600 Indy 500 driving controller.
 
   @author  Bradford W. Mott
-  @version $Id: Driving.hxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: Driving.hxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
 */
 class Driving : public Controller
 {
@@ -75,6 +75,11 @@ class Driving : public Controller
       @param value The value to write to the pin
     */
     virtual void write(DigitalPin pin, bool value);
+
+    /**
+      Returns the type of this controller.
+    */
+    virtual Type type();
 
   private:
     // Counter to iterate through the gray codes

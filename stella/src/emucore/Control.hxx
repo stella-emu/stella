@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+// $Id: Control.hxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -55,7 +55,7 @@ class Event;
   of the controller from the prespective of the controller's jack.  
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: Control.hxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
 */
 class Controller
 {
@@ -66,6 +66,14 @@ class Controller
     enum Jack
     {
       Left, Right
+    };
+
+    /**
+      Enumeration of the controller types
+    */
+    enum Type
+    {
+      BoosterGrip, Driving, Keyboard, Paddles, Joystick
     };
 
   public:
@@ -126,6 +134,11 @@ class Controller
       @param value The value to write to the pin
     */
     virtual void write(DigitalPin pin, bool value) = 0;
+
+    /**
+      Returns the type of this controller.
+    */
+    virtual Type type() = 0;
 
   public:
     /// Constant which represents maximum resistance for analog pins
