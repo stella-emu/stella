@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.hxx,v 1.4 2005-11-12 22:04:57 stephena Exp $
+// $Id: Booster.hxx,v 1.5 2005-11-12 22:59:20 stephena Exp $
 //============================================================================
 
 #ifndef BOOSTERGRIP_HXX
@@ -28,7 +28,7 @@
   on it (a booster and a trigger).
 
   @author  Bradford W. Mott
-  @version $Id: Booster.hxx,v 1.4 2005-11-12 22:04:57 stephena Exp $
+  @version $Id: Booster.hxx,v 1.5 2005-11-12 22:59:20 stephena Exp $
 */
 class BoosterGrip : public Controller
 {
@@ -73,11 +73,6 @@ class BoosterGrip : public Controller
       @param value The value to write to the pin
     */
     virtual void write(DigitalPin pin, bool value);
-
-    /**
-      Returns the type of this controller,
-    */
-    virtual Type type();
 };
 #endif
 

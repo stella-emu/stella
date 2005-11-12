@@ -1,6 +1,7 @@
 MODULE := src/cheat
 
 MODULE_OBJS := \
+	src/cheat/CheatCodeDialog.o \
 	src/cheat/CheatManager.o \
 	src/cheat/CheetahCheat.o \
 	src/cheat/BankRomCheat.o \

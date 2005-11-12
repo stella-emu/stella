@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
+// $Id: Control.hxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -55,7 +55,7 @@ class Event;
   of the controller from the prespective of the controller's jack.  
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
+  @version $Id: Control.hxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
 */
 class Controller
 {
@@ -89,6 +89,11 @@ class Controller
       Destructor
     */
     virtual ~Controller();
+
+    /**
+      Returns the type of this controller.
+    */
+    const Type type();
 
   public:
     /**
@@ -135,11 +140,6 @@ class Controller
     */
     virtual void write(DigitalPin pin, bool value) = 0;
 
-    /**
-      Returns the type of this controller.
-    */
-    virtual Type type() = 0;
-
   public:
     /// Constant which represents maximum resistance for analog pins
     static const Int32 maximumResistance;
@@ -154,6 +154,9 @@ class Controller
     /// Reference to the event object this controller uses
     const Event& myEvent;
 
+    /// Specifies which type of controller this is (defined by child classes)
+    Type myType;
+
   protected:
     // Copy constructor isn't supported by controllers so make it private
     Controller(const Controller&);
@@ -161,5 +164,5 @@ class Controller
     // Assignment operator isn't supported by controllers so make it private
     Controller& operator = (const Controller&);
 };
-#endif
 
+#endif

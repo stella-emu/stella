@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.14 2005-09-25 23:14:00 urchlay Exp $
+// $Id: OptionsDialog.hxx,v 1.15 2005-11-12 22:59:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,13 +28,14 @@ class DialogContainer;
 class VideoDialog;
 class AudioDialog;
 class EventMappingDialog;
+class GameInfoDialog;
+class CheatCodeDialog;
 class HelpDialog;
 class AboutDialog;
 
 #include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "GameInfoDialog.hxx"
-#include "CheatCodeDialog.hxx"
 #include "bspf.hxx"
 
 class OptionsDialog : public Dialog
@@ -46,7 +47,7 @@ class OptionsDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void setGameProfile(Properties& props) { myGameInfoDialog->setGameProfile(props); }
-	 void enterCheatMode();
+    void enterCheatMode();
 
   protected:
     VideoDialog*        myVideoDialog;

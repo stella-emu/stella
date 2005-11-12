@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Keyboard.cxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
+// $Id: Keyboard.cxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -24,6 +24,7 @@ Keyboard::Keyboard(Jack jack, const Event& event)
     : Controller(jack, event),
       myPinState(0)
 {
+  myType = Controller::Keyboard;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,10 +204,4 @@ void Keyboard::write(DigitalPin pin, bool value)
     default:
       break;
   } 
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::Type Keyboard::type()
-{
-  return Controller::Keyboard;
 }

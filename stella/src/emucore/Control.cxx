@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.2 2005-06-16 01:11:27 stephena Exp $
+// $Id: Control.cxx,v 1.3 2005-11-12 22:59:20 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -22,13 +22,20 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Controller(Jack jack, const Event& event)
     : myJack(jack),
-      myEvent(event)
+      myEvent(event),
+      myType(Joystick)  // use joystick by default
 {
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::~Controller()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Controller::Type Controller::type()
+{
+  return myType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,7 +47,8 @@ const Int32 Controller::minimumResistance = 0x00000000;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Controller(const Controller& c)
     : myJack(c.myJack),
-      myEvent(c.myEvent)
+      myEvent(c.myEvent),
+      myType(c.myType)
 {
   assert(false);
 }
@@ -51,4 +59,3 @@ Controller& Controller::operator = (const Controller&)
   assert(false);
   return *this;
 }
-

@@ -4,7 +4,6 @@ MODULE_OBJS := \
 	src/gui/AboutDialog.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
-	src/gui/CheatCodeDialog.o \
 	src/gui/CommandDialog.o \
 	src/gui/CommandMenu.o \
 	src/gui/DialogContainer.o \

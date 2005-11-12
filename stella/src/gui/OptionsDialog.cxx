@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.31 2005-09-30 00:40:34 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.32 2005-11-12 22:59:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,10 @@
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
+
+#ifdef CHEATCODE_SUPPORT
+  #include "CheatCodeDialog.hxx"
+#endif
 
 #include "bspf.hxx"
 
@@ -71,17 +75,23 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
 {
   int yoffset = 7;
   const int xoffset = (_w - kBigButtonWidth) / 2;
+  ButtonWidget* b = NULL;
 
-  addBigButton("Video Settings", kVidCmd, 0);
+  b = addBigButton("Video Settings", kVidCmd, 0);
 #ifdef SOUND_SUPPORT
   addBigButton("Audio Settings", kAudCmd, 0);
 #else
-  ButtonWidget* b = addBigButton("Audio Settings", kAudCmd, 0);
+  b = addBigButton("Audio Settings", kAudCmd, 0);
   b->clearFlags(WIDGET_ENABLED);
 #endif
   addBigButton("Event Mapping", kEMapCmd, 0);
   addBigButton("Game Properties", kInfoCmd, 0);
+#ifdef CHEATCODE_SUPPORT
   addBigButton("Cheat Code", kCheatCmd, 0);
+#else
+  b = addBigButton("Cheat Code", kCheatCmd, 0);
+  b->clearFlags(WIDGET_ENABLED);
+#endif
   addBigButton("Help", kHelpCmd, 0);
   addBigButton("About", kAboutCmd, 0);
   addBigButton("Exit Menu", kExitCmd, 0);
@@ -108,9 +118,11 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myGameInfoDialog = new GameInfoDialog(myOSystem, parent, this, x, y, w, h);
 
+#ifdef CHEATCODE_SUPPORT
   w = 140; h = 40;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, x, y, w, h);
+#endif
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
@@ -128,7 +140,9 @@ OptionsDialog::~OptionsDialog()
   delete myAudioDialog;
   delete myEventMappingDialog;
   delete myGameInfoDialog;
+#ifdef CHEATCODE_SUPPORT
   delete myCheatCodeDialog;
+#endif
   delete myHelpDialog;
   delete myAboutDialog;
 }
@@ -165,9 +179,11 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       parent()->addDialog(myGameInfoDialog);
       break;
 
+#ifdef CHEATCODE_SUPPORT
     case kCheatCmd:
       parent()->addDialog(myCheatCodeDialog);
       break;
+#endif
 
     case kHelpCmd:
       parent()->addDialog(myHelpDialog);
@@ -189,5 +205,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OptionsDialog::enterCheatMode()
 {
+#ifdef CHEATCODE_SUPPORT
   parent()->addDialog(myCheatCodeDialog);
+#endif
 }

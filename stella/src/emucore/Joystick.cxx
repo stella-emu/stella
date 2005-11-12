@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.cxx,v 1.3 2005-11-12 22:04:57 stephena Exp $
+// $Id: Joystick.cxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -24,6 +24,7 @@
 Joystick::Joystick(Jack jack, const Event& event)
     : Controller(jack, event)
 {
+  myType = Controller::Joystick;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,10 +73,4 @@ Int32 Joystick::read(AnalogPin)
 void Joystick::write(DigitalPin, bool)
 {
   // Writing doesn't do anything to the joystick...
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::Type Joystick::type()
-{
-  return Controller::Joystick;
 }
