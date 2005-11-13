@@ -320,7 +320,7 @@ opengl32.lib"
 				RelativePath="..\emucore\EventHandler.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\EventMappingDialog.cxx">
+				RelativePath="..\gui\EventMappingWidget.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\Expression.cxx">
@@ -363,6 +363,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\debugger\HiByteExpression.cxx">
+			</File>
+			<File
+				RelativePath="..\gui\InputDialog.cxx">
 			</File>
 			<File
 				RelativePath="..\gui\InputTextDialog.cxx">
@@ -799,7 +802,7 @@ opengl32.lib"
 				RelativePath="..\emucore\EventHandler.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\EventMappingDialog.hxx">
+				RelativePath="..\gui\EventMappingWidget.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\Expression.hxx">
@@ -848,6 +851,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\debugger\HiByteExpression.hxx">
+			</File>
+			<File
+				RelativePath="..\gui\InputDialog.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\InputTextDialog.hxx">
