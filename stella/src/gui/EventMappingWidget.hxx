@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingDialog.hxx,v 1.12 2005-08-22 18:17:10 stephena Exp $
+// $Id: EventMappingWidget.hxx,v 1.1 2005-11-13 22:25:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef EVENT_MAPPING_DIALOG_HXX
-#define EVENT_MAPPING_DIALOG_HXX
+#ifndef EVENT_MAPPING_WIDGET_HXX
+#define EVENT_MAPPING_WIDGET_HXX
 
 class DialogContainer;
 class CommandSender;
@@ -28,30 +28,31 @@ class ButtonWidget;
 class StaticTextWidget;
 class StringListWidget;
 class PopUpWidget;
+class GuiObject;
 
-#include "OSystem.hxx"
+#include "Widget.hxx"
+#include "Command.hxx"
 #include "bspf.hxx"
 
-class EventMappingDialog : public Dialog
+
+class EventMappingWidget : public Widget, public CommandSender
 {
   public:
-    EventMappingDialog(OSystem* osystem, DialogContainer* parent,
-                       int x, int y, int w, int h);
-    ~EventMappingDialog();
+    EventMappingWidget(GuiObject* boss, int x, int y, int w, int h);
+    ~EventMappingWidget();
 
-    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
+    virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleJoyDown(int stick, int button);
+
+    bool remapMode() { return myRemapStatus; }
 
   protected:
     ButtonWidget*     myMapButton;
     ButtonWidget*     myCancelMapButton;
     ButtonWidget*     myEraseButton;
-    ButtonWidget*     myOKButton;
     ButtonWidget*     myDefaultsButton;
     StringListWidget* myActionsList;
     StaticTextWidget* myKeyMapping;
-    PopUpWidget*      myPaddleModePopup;
-    StaticTextWidget* myPaddleModeText;
 
   private:
     enum {

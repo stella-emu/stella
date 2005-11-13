@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.32 2005-10-14 13:50:00 stephena Exp $
+// $Id: Dialog.cxx,v 1.33 2005-11-13 22:25:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -223,7 +223,6 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
     // Redraw widgets for new focus
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
   }
-
 
   if(w)
     w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.32 2005-11-12 22:59:20 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.33 2005-11-13 22:25:47 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,7 +26,7 @@
 #include "Control.hxx"
 #include "VideoDialog.hxx"
 #include "AudioDialog.hxx"
-#include "EventMappingDialog.hxx"
+#include "InputDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
@@ -41,7 +41,7 @@
 enum {
   kVidCmd   = 'VIDO',
   kAudCmd   = 'AUDO',
-  kEMapCmd  = 'EMAP',
+  kInptCmd  = 'INPT',
   kInfoCmd  = 'INFO',
   kHelpCmd  = 'HELP',
   kAboutCmd = 'ABOU',
@@ -61,18 +61,19 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
-    : Dialog(osystem, parent,
-            (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2,
-            (osystem->frameBuffer().baseHeight() - kMainMenuHeight)/2,
-            kMainMenuWidth, kMainMenuHeight),
-      myVideoDialog(NULL),
-      myAudioDialog(NULL),
-      myEventMappingDialog(NULL),
-      myGameInfoDialog(NULL),
-      myCheatCodeDialog(NULL),
-      myHelpDialog(NULL),
-      myAboutDialog(NULL)
+  : Dialog(osystem, parent, 0, 0, kMainMenuWidth, kMainMenuHeight),
+    myVideoDialog(NULL),
+    myAudioDialog(NULL),
+    myInputDialog(NULL),
+    myGameInfoDialog(NULL),
+    myCheatCodeDialog(NULL),
+    myHelpDialog(NULL),
+    myAboutDialog(NULL)
 {
+  // Set actual dialog dimensions
+  _x = (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2;
+  _y = (osystem->frameBuffer().baseHeight() - kMainMenuHeight) / 2;
+
   int yoffset = 7;
   const int xoffset = (_w - kBigButtonWidth) / 2;
   ButtonWidget* b = NULL;
@@ -84,7 +85,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   b = addBigButton("Audio Settings", kAudCmd, 0);
   b->clearFlags(WIDGET_ENABLED);
 #endif
-  addBigButton("Event Mapping", kEMapCmd, 0);
+  addBigButton("Input Settings", kInptCmd, 0);
   addBigButton("Game Properties", kInfoCmd, 0);
 #ifdef CHEATCODE_SUPPORT
   addBigButton("Cheat Code", kCheatCmd, 0);
@@ -112,7 +113,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
 
   w = 230; h = 170;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myEventMappingDialog = new EventMappingDialog(myOSystem, parent, x, y, w, h);
+  myInputDialog = new InputDialog(myOSystem, parent, x, y, w, h);
 
   w = 255; h = 175;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
@@ -138,7 +139,7 @@ OptionsDialog::~OptionsDialog()
 {
   delete myVideoDialog;
   delete myAudioDialog;
-  delete myEventMappingDialog;
+  delete myInputDialog;
   delete myGameInfoDialog;
 #ifdef CHEATCODE_SUPPORT
   delete myCheatCodeDialog;
@@ -171,8 +172,8 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       parent()->addDialog(myAudioDialog);
       break;
 
-    case kEMapCmd:
-      parent()->addDialog(myEventMappingDialog);
+    case kInptCmd:
+      parent()->addDialog(myInputDialog);
       break;
 
     case kInfoCmd:
