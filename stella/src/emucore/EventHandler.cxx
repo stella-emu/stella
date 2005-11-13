@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.112 2005-11-13 03:55:24 stephena Exp $
+// $Id: EventHandler.cxx,v 1.113 2005-11-13 16:17:10 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1147,7 +1147,7 @@ bool EventHandler::eventStateChange(Event::Type type)
 void EventHandler::setActionMappings()
 {
   // Fill the ActionList with the current key and joystick mappings
-  for(Int32 i = 0; i < 62; ++i)
+  for(Int32 i = 0; i < kActionListSize; ++i)
   {
     uInt32 j;
 
@@ -1257,7 +1257,7 @@ void EventHandler::setJoymap()
 void EventHandler::addKeyMapping(Event::Type event, uInt16 key)
 {
   // These keys cannot be remapped.
-  if(key == SDLK_TAB || key == SDLK_ESCAPE)
+  if(key == SDLK_TAB)
     return;
 
   myKeyTable[key] = event;
@@ -1282,7 +1282,7 @@ void EventHandler::eraseMapping(Event::Type event)
 
   // Erase the KeyEvent arrays
   for(i = 0; i < SDLK_LAST; ++i)
-    if(myKeyTable[i] == event && i != SDLK_TAB && i != SDLK_ESCAPE)
+    if(myKeyTable[i] == event && i != SDLK_TAB)
       myKeyTable[i] = Event::NoType;
   saveKeyMapping();
 
@@ -1375,11 +1375,11 @@ void EventHandler::setDefaultKeymap()
   myKeyTable[ SDLK_F11 ]       = Event::LoadState;
   myKeyTable[ SDLK_F12 ]       = Event::TakeSnapshot;
   myKeyTable[ SDLK_PAUSE ]     = Event::Pause;
+  myKeyTable[ SDLK_BACKSPACE ] = Event::Fry;
   myKeyTable[ SDLK_TAB ]       = Event::MenuMode;
   myKeyTable[ SDLK_BACKSLASH ] = Event::CmdMenuMode;
   myKeyTable[ SDLK_BACKQUOTE ] = Event::DebuggerMode;
   myKeyTable[ SDLK_ESCAPE ]    = Event::LauncherMode;
-  myKeyTable[ SDLK_BACKSPACE ] = Event::Fry;
 
   saveKeyMapping();
 }
@@ -1983,7 +1983,7 @@ void EventHandler::setSDLMappings()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // FIXME - this must be handled better in the future ///
 #ifndef _WIN32_WCE
-ActionList EventHandler::ourActionList[62] = {
+ActionList EventHandler::ourActionList[kActionListSize] = {
   { Event::ConsoleSelect,               "Select",                          "" },
   { Event::ConsoleReset,                "Reset",                           "" },
   { Event::ConsoleColor,                "Color TV",                        "" },
@@ -1997,6 +1997,7 @@ ActionList EventHandler::ourActionList[62] = {
   { Event::LoadState,                   "Load State",                      "" },
   { Event::TakeSnapshot,                "Snapshot",                        "" },
   { Event::Pause,                       "Pause",                           "" },
+  { Event::Fry,                         "Fry cartridge",                   "" },
   { Event::MenuMode,                    "Toggle options menu mode",        "" },
   { Event::CmdMenuMode,                 "Toggle command menu mode",        "" },
   { Event::DebuggerMode,                "Toggle debugger mode",            "" },
@@ -2056,7 +2057,7 @@ ActionList EventHandler::ourActionList[62] = {
   { Event::KeyboardOnePound,            "P2 GamePad #",                    "" }
 };
 #else
-ActionList EventHandler::ourActionList[62];
+ActionList EventHandler::ourActionList[kActionListSize];
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.55 2005-11-12 22:04:57 stephena Exp $
+// $Id: EventHandler.hxx,v 1.56 2005-11-13 16:17:10 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -44,6 +44,10 @@ struct ActionList {
   Event::Type event;
   string action;
   string key;
+};
+
+enum {
+  kActionListSize = 63
 };
 
 // Joystick related items
@@ -83,7 +87,7 @@ struct Joystick_Map {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.55 2005-11-12 22:04:57 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.56 2005-11-13 16:17:10 stephena Exp $
 */
 class EventHandler
 {
@@ -240,7 +244,7 @@ class EventHandler
     void saveProperties();
 
     // Holds static strings for the remap menu
-    static ActionList ourActionList[62];
+    static ActionList ourActionList[kActionListSize];
 
     /**
       Send an event directly to the event handler.
@@ -251,7 +255,7 @@ class EventHandler
     */
     void handleEvent(Event::Type type, Int32 value);
 
-    bool frying() { return myFryingFlag; }
+    inline bool frying() { return myFryingFlag; }
 
   private:
     /**
