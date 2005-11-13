@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.1 2005-11-12 22:59:20 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.2 2005-11-13 03:55:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -79,6 +79,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kEditAcceptCmd:
+    {
       // cerr << myInput->getEditString() << endl;
       const Cheat* cheat = 
         instance()->cheat().add("DLG", myInput->getEditString(), true);
@@ -105,6 +106,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
         Dialog::handleCommand(sender, cmd, data, 0);
       }
       break;
+    }
 
     case kEditCancelCmd:
       Dialog::handleCommand(sender, kCloseCmd, data, id);

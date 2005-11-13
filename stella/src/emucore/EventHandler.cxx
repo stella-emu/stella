@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.111 2005-11-12 22:04:57 stephena Exp $
+// $Id: EventHandler.cxx,v 1.112 2005-11-13 03:55:24 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -728,9 +728,11 @@ void EventHandler::poll(uInt32 time)
 
               // Send axis events for the paddles
               case Controller::Paddles:
+              {
                 int resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
                 handleEvent(SA_Axis[type-2][axis][2], resistance);
                 break;
+              }
 
               // Send events for the driving controllers
               case Controller::Driving:

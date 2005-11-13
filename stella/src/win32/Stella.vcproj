@@ -20,8 +20,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SNAPSHOT_SUPPORT;SOUND_SUPPORT"
+				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SNAPSHOT_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -73,8 +73,8 @@ opengl32.lib"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT"
+				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;SNAPSHOT_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="2"
@@ -134,7 +134,7 @@ opengl32.lib"
 				RelativePath="..\debugger\gui\AudioWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\common\BankRomCheat.cxx">
+				RelativePath="..\cheat\BankRomCheat.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\BinAndExpression.cxx">
@@ -224,16 +224,16 @@ opengl32.lib"
 				RelativePath="..\emucore\CartUA.cxx">
 			</File>
 			<File
-				RelativePath="..\common\Cheat.cxx">
+				RelativePath="..\cheat\CheatCodeDialog.cxx">
 			</File>
 			<File
-				RelativePath="..\gui\CheatCodeDialog.cxx">
+				RelativePath="..\cheat\CheatManager.cxx">
 			</File>
 			<File
 				RelativePath="..\gui\CheckListWidget.cxx">
 			</File>
 			<File
-				RelativePath="..\common\CheetahCheat.cxx">
+				RelativePath="..\cheat\CheetahCheat.cxx">
 			</File>
 			<File
 				RelativePath="..\debugger\gui\ColorWidget.cxx">
@@ -473,6 +473,9 @@ opengl32.lib"
 				RelativePath="..\emucore\PropsSet.cxx">
 			</File>
 			<File
+				RelativePath="..\cheat\RamCheat.cxx">
+			</File>
+			<File
 				RelativePath="..\debugger\RamDebug.cxx">
 			</File>
 			<File
@@ -595,7 +598,7 @@ opengl32.lib"
 				RelativePath="..\debugger\gui\AudioWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\common\BankRomCheat.hxx">
+				RelativePath="..\cheat\BankRomCheat.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\BinAndExpression.hxx">
@@ -688,16 +691,19 @@ opengl32.lib"
 				RelativePath="..\emucore\CartUA.hxx">
 			</File>
 			<File
-				RelativePath="..\common\Cheat.hxx">
+				RelativePath="..\cheat\Cheat.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\CheatCodeDialog.hxx">
+				RelativePath="..\cheat\CheatCodeDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\cheat\CheatManager.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\CheckListWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\common\CheetahCheat.hxx">
+				RelativePath="..\cheat\CheetahCheat.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\gui\ColorWidget.hxx">
@@ -947,6 +953,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\emucore\PropsSet.hxx">
+			</File>
+			<File
+				RelativePath="..\cheat\RamCheat.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\RamDebug.hxx">
