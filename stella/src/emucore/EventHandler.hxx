@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.56 2005-11-13 16:17:10 stephena Exp $
+// $Id: EventHandler.hxx,v 1.57 2005-11-14 17:01:18 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -25,6 +25,7 @@
 #include "Event.hxx"
 #include "Array.hxx"
 #include "Control.hxx"
+#include "StringList.hxx"
 
 class Console;
 class OSystem;
@@ -87,7 +88,7 @@ struct Joystick_Map {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.56 2005-11-13 16:17:10 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.57 2005-11-14 17:01:18 stephena Exp $
 */
 class EventHandler
 {
@@ -118,6 +119,14 @@ class EventHandler
       intialized before joysticks can be probed.
     */
     void setupJoysticks();
+
+    /**
+      Maps the enumerated joysticks to the specified ports on a real 2600
+
+      @param leftport  Index of joystick to use for the left Atari 2600 port
+      @param rightport Index of joystick to use for the right Atari 2600 port
+    */
+    void mapJoysticks(int leftport, int rightport);
 
     /**
       Collects and dispatches any pending events.  This method should be
@@ -214,6 +223,13 @@ class EventHandler
     */
     void setPaddleMode(uInt32 num, bool showmessage = false);
 
+    /**
+      The list of joysticks found by SDL.
+
+      @return  List of joystick names in SDL-enumerated order
+    */
+    const StringList& joystickNames() { return ourJoystickNames; }
+
     inline bool kbdAlt(int mod)
     {
   #ifndef MAC_OSX
@@ -304,14 +320,6 @@ class EventHandler
       @return      True if the state changed, else false
     */
     inline bool eventStateChange(Event::Type type);
-
-    /**
-      Maps the enumerated joysticks to the specified ports on a real 2600
-
-      @param leftport  Index of joystick to use for the left Atari 2600 port
-      @param rightport Index of joystick to use for the right Atari 2600 port
-    */
-    void mapJoysticks(int leftport, int rightport);
 
     /**
       The following methods take care of assigning action mappings.
@@ -418,6 +426,9 @@ class EventHandler
 
     // Type of device on each controller port (based on ROM properties)
     Controller::Type myController[2];
+
+    // List of names of all joysticks found by SDL
+    StringList ourJoystickNames;
 
     // Lookup table for paddle resistance events
     static const Event::Type Paddle_Resistance[4];

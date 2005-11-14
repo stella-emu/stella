@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.113 2005-11-13 16:17:10 stephena Exp $
+// $Id: EventHandler.cxx,v 1.114 2005-11-14 17:01:18 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -129,6 +129,8 @@ EventHandler::EventHandler(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::~EventHandler()
 {
+  ourJoystickNames.clear();
+
   if(myEvent)
     delete myEvent;
 
@@ -269,6 +271,7 @@ void EventHandler::setupJoysticks()
              << " with " << SDL_JoystickNumButtons(ourJoysticks[i].stick)
              << " buttons" << endl;
     }
+    ourJoystickNames.push_back(ourJoysticks[i].name);
   }
   if(showinfo)
     cout << endl;

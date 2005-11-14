@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.1 2005-11-13 22:25:47 stephena Exp $
+// $Id: InputDialog.cxx,v 1.2 2005-11-14 17:01:19 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -26,19 +26,19 @@
 
 #include "bspf.hxx"
 
+enum {
+  kPaddleChanged = 'PDch',
+  kSenseChanged  = 'PSch'
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(
       OSystem* osystem, DialogContainer* parent,
       int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
-  const GUI::Font& font = instance()->font();
-  const int fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
-
   const int vBorder = 4;
   int xpos, ypos, tabID;
-  WidgetArray wid;
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -54,22 +54,7 @@ InputDialog::InputDialog(
   addToFocusList(myEventMapper->getFocusList(), tabID);
 
   // 2) Virtual device support
-  wid.clear();
-  tabID = myTab->addTab("Virtual Devices");
-
-  // Add 'mouse to paddle' mapping
-  myPaddleModeText = new StaticTextWidget(myTab, 168, 93, 50, fontHeight,
-                                          "Mouse is", kTextAlignCenter);
-  myPaddleModePopup = new PopUpWidget(myTab, 160, 105, 60, lineHeight,
-                                     "paddle: ", 40, 0);
-  myPaddleModePopup->appendEntry("0", 0);
-  myPaddleModePopup->appendEntry("1", 1);
-  myPaddleModePopup->appendEntry("2", 2);
-  myPaddleModePopup->appendEntry("3", 3);
-  wid.push_back(myPaddleModePopup);
-
-  // Add items for virtual device ports
-  addToFocusList(wid, tabID);
+  addVDeviceTab();
 
   // Activate the first tab
   myTab->setActiveTab(0);
@@ -90,19 +75,108 @@ InputDialog::~InputDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::addVDeviceTab()
+{
+  const GUI::Font& font = instance()->font();
+  const int fontHeight = font.getFontHeight(),
+            lineHeight = font.getLineHeight();
+  const StringList& joynames = instance()->eventHandler().joystickNames();
+
+  WidgetArray wid;
+  int xpos, ypos, lwidth, fwidth, tabID;
+
+  // Virtual device/ports
+  tabID = myTab->addTab("Virtual Devices");
+
+  // Leftport and rightport commandline arguments
+  xpos = 5;  ypos = 5;
+  lwidth = font.getStringWidth("Right port: ");
+  fwidth = _w - xpos - lwidth - 10;
+  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+                       "Left Port:", kTextAlignLeft);
+  myLeftPort = new PopUpWidget(myTab, xpos+lwidth, ypos,
+                               fwidth, lineHeight, "", 0, 0);
+  myLeftPort->appendEntry("None", 0);
+  for(unsigned int i = 0; i < joynames.size(); ++i)
+    myLeftPort->appendEntry(joynames[i], i+1);
+  wid.push_back(myLeftPort);
+
+  ypos += lineHeight + 3;
+  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+                       "Right Port:", kTextAlignLeft);
+  myRightPort = new PopUpWidget(myTab, xpos+lwidth, ypos,
+                                fwidth, lineHeight, "", 0, 0);
+  myRightPort->appendEntry("None", 0);
+  for(unsigned int i = 0; i < joynames.size(); ++i)
+    myRightPort->appendEntry(joynames[i], i+1);
+  wid.push_back(myRightPort);
+
+  // Add 'mouse to paddle' mapping
+  ypos += 2*lineHeight + 3;
+  lwidth = font.getStringWidth("Mouse sensitivity: ");
+  myPaddleMode = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+                                  "Mouse is paddle: ",
+                                  lwidth, kPaddleChanged);
+  myPaddleMode->setMinValue(0); myPaddleMode->setMaxValue(3);
+  xpos += myPaddleMode->getWidth() + 5;
+  myPaddleLabel = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+                                       "", kTextAlignLeft);
+  myPaddleLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleMode);
+
+  // Add mouse sensitivity
+  xpos = 5;  ypos += lineHeight + 3;
+  myPaddleSense = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+                                   "Mouse sensitivity: ",
+                                   lwidth, kSenseChanged);
+  myPaddleSense->setMinValue(1); myPaddleSense->setMaxValue(100);
+  xpos += myPaddleSense->getWidth() + 5;
+  mySenseLabel = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+                                      "", kTextAlignLeft);
+  mySenseLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleSense);
+
+  // Add items for virtual device ports
+  addToFocusList(wid, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
+  // Left & right ports
+  int lport = instance()->settings().getInt("leftport") + 1;
+  myLeftPort->setSelectedTag(lport);
+  int rport = instance()->settings().getInt("rightport") + 1;
+  myRightPort->setSelectedTag(rport);
+
   // Paddle mode
-  int mode = instance()->settings().getInt("paddle");
-  myPaddleModePopup->setSelectedTag(mode);
+  myPaddleMode->setValue(instance()->settings().getInt("paddle"));
+  myPaddleLabel->setLabel(instance()->settings().getString("paddle"));
+
+/*  FIXME - add this to eventhandler core
+  // Paddle sensitivity
+  myPaddleSense->setValue(instance()->settings().getInt("paddle"));
+  mySenseLabel->setLabel(instance()->settings().getString("paddle"));
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::saveConfig()
 {
+  // Left & right ports
+  int lport = myLeftPort->getSelectedTag() - 1;
+  int rport = myRightPort->getSelectedTag() - 1;
+  instance()->eventHandler().mapJoysticks(lport, rport);
+
   // Paddle mode
-  int mode = myPaddleModePopup->getSelectedTag();
+  int mode = myPaddleMode->getValue();
   instance()->eventHandler().setPaddleMode(mode);
+
+/*  FIXME - add this to eventhandler core
+  // Paddle sensitivity
+  int sense = myPaddleSense->getValue();
+  instance()->eventHandler().setPaddleSensee(sense);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,6 +213,14 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloseCmd:
       // Revert changes made to event mapping
       close();
+      break;
+
+    case kPaddleChanged:
+      myPaddleLabel->setValue(myPaddleMode->getValue());
+      break;
+
+    case kSenseChanged:
+      mySenseLabel->setValue(myPaddleSense->getValue());
       break;
 
     default:

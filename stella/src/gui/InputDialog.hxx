@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.1 2005-11-13 22:25:47 stephena Exp $
+// $Id: InputDialog.hxx,v 1.2 2005-11-14 17:01:19 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -23,8 +23,10 @@ class OSystem;
 class GuiObject;
 class TabWidget;
 class EventMappingWidget;
-class StaticTextWidget;
+class CheckBoxWidget;
 class PopUpWidget;
+class SliderWidget;
+class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "bspf.hxx"
@@ -46,11 +48,22 @@ class InputDialog : public Dialog
     void saveConfig();
 
   private:
+    void addVDeviceTab();
+
+  private:
     TabWidget* myTab;
 
     EventMappingWidget* myEventMapper;
-    PopUpWidget*        myPaddleModePopup;
-    StaticTextWidget*   myPaddleModeText;
+
+    PopUpWidget* myLeftPort;
+    PopUpWidget* myRightPort;
+
+    SliderWidget*     myPaddleMode;
+    StaticTextWidget* myPaddleLabel;
+    SliderWidget*     myPaddleSense;
+    StaticTextWidget* mySenseLabel;
+
+    CheckBoxWidget* myJoyMouse;
 };
 
 #endif
