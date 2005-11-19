@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.67 2005-10-18 18:49:46 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.68 2005-11-19 22:26:13 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -40,22 +40,25 @@
   #include "macOSXDisplay.h"
 #elif defined(PSP)
   #include "DisplayPSP.hxx"
+#elif defined(OS2)
+  #define INCL_WIN
+  #include <os2emx.h>
 #endif
 
 #include "stella.xpm"   // The Stella icon
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem* osystem)
-   :  myOSystem(osystem),
-      theRedrawTIAIndicator(true),
-      theZoomLevel(2),
-      theMaxZoomLevel(2),
-      theAspectRatio(1.0),
-      myFrameRate(0),
-      myPauseStatus(false),
-      myMessageTime(0),
-      myMessageText(""),
-      myNumRedraws(0)
+  : myOSystem(osystem),
+    theRedrawTIAIndicator(true),
+    theZoomLevel(2),
+    theMaxZoomLevel(2),
+    theAspectRatio(1.0),
+    myFrameRate(0),
+    myPauseStatus(false),
+    myMessageTime(0),
+    myMessageText(""),
+    myNumRedraws(0)
 {
   myBaseDim.x = myBaseDim.y = myBaseDim.w = myBaseDim.h = 0;
   myImageDim = myScreenDim = myDesktopDim = myBaseDim;
@@ -90,7 +93,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   // Calculate the desktop size
   // This is really the job of SDL
   myDesktopDim.w = myDesktopDim.h = 0;
-#if defined(UNIX)
+#if defined(UNIX) && !defined(OS2)
   SDL_SysWMinfo myWMInfo;
   SDL_VERSION(&myWMInfo.version);
   if(SDL_GetWMInfo(&myWMInfo) > 0 && myWMInfo.subsystem == SDL_SYSWM_X11)
@@ -111,6 +114,9 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 #elif defined(PSP)
   myDesktopDim.w = PSP_SCREEN_WIDTH;
   myDesktopDim.h = PSP_SCREEN_HEIGHT;
+#elif defined(OS2)
+  myDesktopDim.w = WinQuerySysValue(HWND_DESKTOP, SV_CXSCREEN);
+  myDesktopDim.h = WinQuerySysValue(HWND_DESKTOP, SV_CYSCREEN);
 #endif
 
   // Set fullscreen flag

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.65 2005-10-30 20:29:56 stephena Exp $
+// $Id: Settings.cxx,v 1.66 2005-11-19 22:26:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -60,8 +60,8 @@ Settings::Settings(OSystem* osystem)
   set("joymap", "");
   set("paddle", "0");
   set("joymouse", "false");
-  set("leftport", "0");
-  set("rightport", "1");
+  set("sa1", "left");
+  set("sa2", "right");
 
   set("showinfo", "false");
 
@@ -285,6 +285,8 @@ void Settings::usage()
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -joymouse     <1|0>          Enable joystick emulates mouse in GUI\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
+    << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
+    << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #endif
@@ -480,14 +482,14 @@ bool Settings::getBool(const string& key) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Settings::getString(const string& key) const
+const string& Settings::getString(const string& key) const
 {
   // Try to find the named setting and answer its value
   for(unsigned int i = 0; i < mySize; ++i)
     if(key == mySettings[i].key)
       return mySettings[i].value;
 
-  return "";
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

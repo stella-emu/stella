@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.25 2005-06-16 01:11:28 stephena Exp $
+// $Id: Settings.hxx,v 1.26 2005-11-19 22:26:13 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.25 2005-06-16 01:11:28 stephena Exp $
+  @version $Id: Settings.hxx,v 1.26 2005-11-19 22:26:13 stephena Exp $
 */
 class Settings
 {
@@ -106,7 +106,7 @@ class Settings
       @param key The key of the setting to lookup
       @return The string value of the setting
     */
-    string getString(const string& key) const;
+    const string& getString(const string& key) const;
 
     /**
       Set the value associated with key to the given value.

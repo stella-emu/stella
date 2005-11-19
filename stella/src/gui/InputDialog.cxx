@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.2 2005-11-14 17:01:19 stephena Exp $
+// $Id: InputDialog.cxx,v 1.3 2005-11-19 22:26:14 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -80,7 +80,6 @@ void InputDialog::addVDeviceTab()
   const GUI::Font& font = instance()->font();
   const int fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
-  const StringList& joynames = instance()->eventHandler().joystickNames();
 
   WidgetArray wid;
   int xpos, ypos, lwidth, fwidth, tabID;
@@ -88,27 +87,25 @@ void InputDialog::addVDeviceTab()
   // Virtual device/ports
   tabID = myTab->addTab("Virtual Devices");
 
-  // Leftport and rightport commandline arguments
+  // Stelladaptor mappings
   xpos = 5;  ypos = 5;
-  lwidth = font.getStringWidth("Right port: ");
+  lwidth = font.getStringWidth("Stelladaptor 2 is: ");
   fwidth = _w - xpos - lwidth - 10;
   new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
-                       "Left Port:", kTextAlignLeft);
+                       "Stelladaptor 1 is:", kTextAlignLeft);
   myLeftPort = new PopUpWidget(myTab, xpos+lwidth, ypos,
                                fwidth, lineHeight, "", 0, 0);
-  myLeftPort->appendEntry("None", 0);
-  for(unsigned int i = 0; i < joynames.size(); ++i)
-    myLeftPort->appendEntry(joynames[i], i+1);
+  myLeftPort->appendEntry("left virtual port", 1);
+  myLeftPort->appendEntry("right virtual port", 2);
   wid.push_back(myLeftPort);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
-                       "Right Port:", kTextAlignLeft);
+                       "Stelladaptor 2 is:", kTextAlignLeft);
   myRightPort = new PopUpWidget(myTab, xpos+lwidth, ypos,
                                 fwidth, lineHeight, "", 0, 0);
-  myRightPort->appendEntry("None", 0);
-  for(unsigned int i = 0; i < joynames.size(); ++i)
-    myRightPort->appendEntry(joynames[i], i+1);
+  myRightPort->appendEntry("left virtual port", 1);
+  myRightPort->appendEntry("right virtual port", 2);
   wid.push_back(myRightPort);
 
   // Add 'mouse to paddle' mapping
@@ -144,9 +141,11 @@ void InputDialog::addVDeviceTab()
 void InputDialog::loadConfig()
 {
   // Left & right ports
-  int lport = instance()->settings().getInt("leftport") + 1;
+  const string& sa1 = instance()->settings().getString("sa1");
+  int lport = sa1 == "right" ? 2 : 1;
   myLeftPort->setSelectedTag(lport);
-  int rport = instance()->settings().getInt("rightport") + 1;
+  const string& sa2 = instance()->settings().getString("sa2");
+  int rport = sa2 == "right" ? 2 : 1;
   myRightPort->setSelectedTag(rport);
 
   // Paddle mode
@@ -164,9 +163,9 @@ void InputDialog::loadConfig()
 void InputDialog::saveConfig()
 {
   // Left & right ports
-  int lport = myLeftPort->getSelectedTag() - 1;
-  int rport = myRightPort->getSelectedTag() - 1;
-  instance()->eventHandler().mapJoysticks(lport, rport);
+  string sa1 = myLeftPort->getSelectedTag() == 2 ? "right" : "left";
+  string sa2 = myRightPort->getSelectedTag() == 2 ? "right" : "left";
+  instance()->eventHandler().mapStelladaptors(sa1, sa2);
 
   // Paddle mode
   int mode = myPaddleMode->getValue();
@@ -175,7 +174,7 @@ void InputDialog::saveConfig()
 /*  FIXME - add this to eventhandler core
   // Paddle sensitivity
   int sense = myPaddleSense->getValue();
-  instance()->eventHandler().setPaddleSensee(sense);
+  instance()->eventHandler().setPaddleSense(sense);
 */
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.114 2005-11-14 17:01:18 stephena Exp $
+// $Id: EventHandler.cxx,v 1.115 2005-11-19 22:26:13 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -64,8 +64,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
   : myOSystem(osystem),
-    myLeftJoyPort(0),
-    myRightJoyPort(0),
     myState(S_NONE),
     myOverlay(NULL),
     myLSState(0),
@@ -243,20 +241,11 @@ void EventHandler::setupJoysticks()
     {
       saCount++;
       if(saCount > 2)  // Ignore more than 2 Stelladaptors
-      {
-        ourJoysticks[i].type = JT_NONE;
         continue;
-      }
       else if(saCount == 1)
-      {
-        ourJoysticks[i].type = JT_STELLADAPTOR_1;
         ourJoysticks[i].name = "Stelladaptor 1";
-      }
       else if(saCount == 2)
-      {
-        ourJoysticks[i].type = JT_STELLADAPTOR_2;
         ourJoysticks[i].name = "Stelladaptor 2";
-      }
 
       if(showinfo)
         cout << "  " << i << ": " << ourJoysticks[i].name << endl;
@@ -271,86 +260,61 @@ void EventHandler::setupJoysticks()
              << " with " << SDL_JoystickNumButtons(ourJoysticks[i].stick)
              << " buttons" << endl;
     }
-    ourJoystickNames.push_back(ourJoysticks[i].name);
   }
   if(showinfo)
     cout << endl;
 
-  // Map the joysticks we've found according to the specified ports
-  int lport = myOSystem->settings().getInt("leftport");
-  int rport = myOSystem->settings().getInt("rightport");
-  mapJoysticks(lport, rport);
+  // Map the stelladaptors we've found according to the specified ports
+  const string& sa1 = myOSystem->settings().getString("sa1");
+  const string& sa2 = myOSystem->settings().getString("sa2");
+  mapStelladaptors(sa1, sa2);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::mapJoysticks(int leftport, int rightport)
+void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
 {
 #ifdef JOYSTICK_SUPPORT
   bool showinfo = myOSystem->settings().getBool("showinfo");
-  JoyType type;
 
-  for(uInt32 i = 0; i < kNumJoysticks; i++)
+  for(int i = 0; i < kNumJoysticks; i++)
   {
-    ourJoystickMapping[i].stick = -1;
-    ourJoystickMapping[i].type  = JT_NONE;
+    if(ourJoysticks[i].name == "Stelladaptor 1")
+    {
+      if(sa1 == "left")
+      {
+        ourJoysticks[i].type = JT_STELLADAPTOR_LEFT;
+        if(showinfo)
+          cout << "  Stelladaptor 1 emulates left joystick port\n";
+      }
+      else if(sa1 == "right")
+      {
+        ourJoysticks[i].type = JT_STELLADAPTOR_RIGHT;
+        if(showinfo)
+          cout << "  Stelladaptor 1 emulates right joystick port\n";
+      }
+    }
+    else if(ourJoysticks[i].name == "Stelladaptor 2")
+    {
+      if(sa2 == "left")
+      {
+        ourJoysticks[i].type = JT_STELLADAPTOR_LEFT;
+        if(showinfo)
+          cout << "  Stelladaptor 2 emulates left joystick port\n";
+      }
+      else if(sa2 == "right")
+      {
+        ourJoysticks[i].type = JT_STELLADAPTOR_RIGHT;
+        if(showinfo)
+          cout << "  Stelladaptor 2 emulates right joystick port\n";
+      }
+    }
   }
-
-  if(showinfo)
-    cout << "Joystick mapping:" << endl;
-
-  // Map left port
-  if(leftport >= 0 && leftport < kNumJoysticks)
-  {
-    type = ourJoysticks[leftport].type;
-
-    ourJoystickMapping[leftport].stick = 0;
-    ourJoystickMapping[leftport].type = type;
-
-    if(showinfo)
-      cout << "  Left port : " << ourJoysticks[leftport].name << endl;
-
-    // JT_STELLADAPTOR_1 is *always* tied to left port events,
-    // so we always remap it type 'JT_STELLADAPTOR_1'
-    if(type == JT_STELLADAPTOR_2)
-      ourJoystickMapping[leftport].type = JT_STELLADAPTOR_1;
-  }
-  else
-  {
-    if(showinfo)
-      cout << "  Left port : None" << endl;
-  }
-
-  // Map right port (can't be the same as the left port)
-  if(leftport == rightport)
-    rightport = -1;
-
-  if(rightport >= 0 && rightport < kNumJoysticks)
-  {
-    type = ourJoysticks[rightport].type;
-
-    ourJoystickMapping[rightport].stick = 1;
-    ourJoystickMapping[rightport].type = type;
-
-    if(showinfo)
-      cout << "  Right port: " << ourJoysticks[rightport].name << endl;
-
-    // JT_STELLADAPTOR_2 is *always* tied to right port events,
-    // so we always remap it type 'JT_STELLADAPTOR_2'
-    if(type == JT_STELLADAPTOR_1)
-      ourJoystickMapping[rightport].type = JT_STELLADAPTOR_2;
-  }
-  else
-  {
-    if(showinfo)
-      cout << "  Right port: None" << endl;
-  }
-
   if(showinfo)
     cout << endl;
 
-  myOSystem->settings().setInt("leftport", leftport);
-  myOSystem->settings().setInt("rightport", rightport);
+  myOSystem->settings().setString("sa1", sa1);
+  myOSystem->settings().setString("sa2", sa2);
 #endif
 }
 
@@ -628,7 +592,7 @@ void EventHandler::poll(uInt32 time)
           break;
 
         // Stelladaptors handle buttons differently than regular joysticks
-        int type = ourJoystickMapping[event.jbutton.which].type;
+        int type = ourJoysticks[event.jbutton.which].type;
         switch(type)
         {
           case JT_REGULAR:
@@ -636,7 +600,7 @@ void EventHandler::poll(uInt32 time)
             if(event.jbutton.button >= kNumJoyButtons-4)
               return;
 
-            int stick = ourJoystickMapping[event.jbutton.which].stick;
+            int stick = event.jbutton.which;
             int code  = event.jbutton.button;
             int state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
@@ -644,8 +608,8 @@ void EventHandler::poll(uInt32 time)
             break;  // Regular joystick button
           }
 
-          case JT_STELLADAPTOR_1:
-          case JT_STELLADAPTOR_2:
+          case JT_STELLADAPTOR_LEFT:
+          case JT_STELLADAPTOR_RIGHT:
           {
             int button = event.jbutton.button;
             int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
@@ -683,12 +647,12 @@ void EventHandler::poll(uInt32 time)
           break;
 
         // Stelladaptors handle axis differently than regular joysticks
-        int type = ourJoystickMapping[event.jbutton.which].type;
+        int type = ourJoysticks[event.jbutton.which].type;
         switch(type)
         {
           case JT_REGULAR:
           {
-            int stick = ourJoystickMapping[event.jbutton.which].stick;
+            int stick = event.jbutton.which;
             int axis  = event.jaxis.axis;
             int value = event.jaxis.value;
 
@@ -711,8 +675,8 @@ void EventHandler::poll(uInt32 time)
             break;  // Regular joystick axis
           }
 
-          case JT_STELLADAPTOR_1:
-          case JT_STELLADAPTOR_2:
+          case JT_STELLADAPTOR_LEFT:
+          case JT_STELLADAPTOR_RIGHT:
           {
             int axis  = event.jaxis.axis;
             int value = event.jaxis.value;
@@ -1757,20 +1721,20 @@ void EventHandler::setSDLMappings()
   ourSDLMapping[ SDLK_PAUSE ]        = "PAUSE";
   ourSDLMapping[ SDLK_ESCAPE ]       = "ESCAPE";
   ourSDLMapping[ SDLK_SPACE ]        = "SPACE";
-  ourSDLMapping[ SDLK_EXCLAIM ]      = "EXCLAIM";
-  ourSDLMapping[ SDLK_QUOTEDBL ]     = "QUOTEDBL";
-  ourSDLMapping[ SDLK_HASH ]         = "HASH";
-  ourSDLMapping[ SDLK_DOLLAR ]       = "DOLLAR";
-  ourSDLMapping[ SDLK_AMPERSAND ]    = "AMPERSAND";
-  ourSDLMapping[ SDLK_QUOTE ]        = "QUOTE";
-  ourSDLMapping[ SDLK_LEFTPAREN ]    = "LEFTPAREN";
-  ourSDLMapping[ SDLK_RIGHTPAREN ]   = "RIGHTPAREN";
-  ourSDLMapping[ SDLK_ASTERISK ]     = "ASTERISK";
-  ourSDLMapping[ SDLK_PLUS ]         = "PLUS";
+  ourSDLMapping[ SDLK_EXCLAIM ]      = "!";
+  ourSDLMapping[ SDLK_QUOTEDBL ]     = "\"";
+  ourSDLMapping[ SDLK_HASH ]         = "#";
+  ourSDLMapping[ SDLK_DOLLAR ]       = "$";
+  ourSDLMapping[ SDLK_AMPERSAND ]    = "&";
+  ourSDLMapping[ SDLK_QUOTE ]        = "\'";
+  ourSDLMapping[ SDLK_LEFTPAREN ]    = "(";
+  ourSDLMapping[ SDLK_RIGHTPAREN ]   = ")";
+  ourSDLMapping[ SDLK_ASTERISK ]     = "*";
+  ourSDLMapping[ SDLK_PLUS ]         = "+";
   ourSDLMapping[ SDLK_COMMA ]        = "COMMA";
-  ourSDLMapping[ SDLK_MINUS ]        = "MINUS";
-  ourSDLMapping[ SDLK_PERIOD ]       = "PERIOD";
-  ourSDLMapping[ SDLK_SLASH ]        = "SLASH";
+  ourSDLMapping[ SDLK_MINUS ]        = "-";
+  ourSDLMapping[ SDLK_PERIOD ]       = ".";
+  ourSDLMapping[ SDLK_SLASH ]        = "/";
   ourSDLMapping[ SDLK_0 ]            = "0";
   ourSDLMapping[ SDLK_1 ]            = "1";
   ourSDLMapping[ SDLK_2 ]            = "2";
@@ -1781,19 +1745,19 @@ void EventHandler::setSDLMappings()
   ourSDLMapping[ SDLK_7 ]            = "7";
   ourSDLMapping[ SDLK_8 ]            = "8";
   ourSDLMapping[ SDLK_9 ]            = "9";
-  ourSDLMapping[ SDLK_COLON ]        = "COLON";
-  ourSDLMapping[ SDLK_SEMICOLON ]    = "SEMICOLON";
-  ourSDLMapping[ SDLK_LESS ]         = "LESS";
-  ourSDLMapping[ SDLK_EQUALS ]       = "EQUALS";
-  ourSDLMapping[ SDLK_GREATER ]      = "GREATER";
-  ourSDLMapping[ SDLK_QUESTION ]     = "QUESTION";
-  ourSDLMapping[ SDLK_AT ]           = "AT";
-  ourSDLMapping[ SDLK_LEFTBRACKET ]  = "LEFTBRACKET";
-  ourSDLMapping[ SDLK_BACKSLASH ]    = "BACKSLASH";
-  ourSDLMapping[ SDLK_RIGHTBRACKET ] = "RIGHTBRACKET";
-  ourSDLMapping[ SDLK_CARET ]        = "CARET";
-  ourSDLMapping[ SDLK_UNDERSCORE ]   = "UNDERSCORE";
-  ourSDLMapping[ SDLK_BACKQUOTE ]    = "BACKQUOTE";
+  ourSDLMapping[ SDLK_COLON ]        = ":";
+  ourSDLMapping[ SDLK_SEMICOLON ]    = ";";
+  ourSDLMapping[ SDLK_LESS ]         = "<";
+  ourSDLMapping[ SDLK_EQUALS ]       = "=";
+  ourSDLMapping[ SDLK_GREATER ]      = ">";
+  ourSDLMapping[ SDLK_QUESTION ]     = "?";
+  ourSDLMapping[ SDLK_AT ]           = "@";
+  ourSDLMapping[ SDLK_LEFTBRACKET ]  = "[";
+  ourSDLMapping[ SDLK_BACKSLASH ]    = "\\";
+  ourSDLMapping[ SDLK_RIGHTBRACKET ] = "]";
+  ourSDLMapping[ SDLK_CARET ]        = "^";
+  ourSDLMapping[ SDLK_UNDERSCORE ]   = "_";
+  ourSDLMapping[ SDLK_BACKQUOTE ]    = "`";
   ourSDLMapping[ SDLK_a ]            = "A";
   ourSDLMapping[ SDLK_b ]            = "B";
   ourSDLMapping[ SDLK_c ]            = "C";
@@ -1927,22 +1891,22 @@ void EventHandler::setSDLMappings()
   ourSDLMapping[ SDLK_KP7 ]          = "KP7";
   ourSDLMapping[ SDLK_KP8 ]          = "KP8";
   ourSDLMapping[ SDLK_KP9 ]          = "KP9";
-  ourSDLMapping[ SDLK_KP_PERIOD ]    = "KP_PERIOD";
-  ourSDLMapping[ SDLK_KP_DIVIDE ]    = "KP_DIVIDE";
-  ourSDLMapping[ SDLK_KP_MULTIPLY ]  = "KP_MULTIPLY";
-  ourSDLMapping[ SDLK_KP_MINUS ]     = "KP_MINUS";
-  ourSDLMapping[ SDLK_KP_PLUS ]      = "KP_PLUS";
-  ourSDLMapping[ SDLK_KP_ENTER ]     = "KP_ENTER";
-  ourSDLMapping[ SDLK_KP_EQUALS ]    = "KP_EQUALS";
+  ourSDLMapping[ SDLK_KP_PERIOD ]    = "KP .";
+  ourSDLMapping[ SDLK_KP_DIVIDE ]    = "KP /";
+  ourSDLMapping[ SDLK_KP_MULTIPLY ]  = "KP *";
+  ourSDLMapping[ SDLK_KP_MINUS ]     = "KP -";
+  ourSDLMapping[ SDLK_KP_PLUS ]      = "KP +";
+  ourSDLMapping[ SDLK_KP_ENTER ]     = "KP ENTER";
+  ourSDLMapping[ SDLK_KP_EQUALS ]    = "KP =";
   ourSDLMapping[ SDLK_UP ]           = "UP";
   ourSDLMapping[ SDLK_DOWN ]         = "DOWN";
   ourSDLMapping[ SDLK_RIGHT ]        = "RIGHT";
   ourSDLMapping[ SDLK_LEFT ]         = "LEFT";
-  ourSDLMapping[ SDLK_INSERT ]       = "INSERT";
+  ourSDLMapping[ SDLK_INSERT ]       = "INS";
   ourSDLMapping[ SDLK_HOME ]         = "HOME";
   ourSDLMapping[ SDLK_END ]          = "END";
-  ourSDLMapping[ SDLK_PAGEUP ]       = "PAGEUP";
-  ourSDLMapping[ SDLK_PAGEDOWN ]     = "PAGEDOWN";
+  ourSDLMapping[ SDLK_PAGEUP ]       = "PGUP";
+  ourSDLMapping[ SDLK_PAGEDOWN ]     = "PGDN";
   ourSDLMapping[ SDLK_F1 ]           = "F1";
   ourSDLMapping[ SDLK_F2 ]           = "F2";
   ourSDLMapping[ SDLK_F3 ]           = "F3";

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.57 2005-11-14 17:01:18 stephena Exp $
+// $Id: EventHandler.hxx,v 1.58 2005-11-19 22:26:13 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,19 +61,18 @@ enum {
   kJAxisRight    = kNumJoyButtons - 1
 };
 
-enum JoyType { JT_NONE, JT_REGULAR, JT_STELLADAPTOR_1, JT_STELLADAPTOR_2 };
+enum JoyType {
+  JT_NONE,
+  JT_REGULAR,
+  JT_STELLADAPTOR_LEFT,
+  JT_STELLADAPTOR_RIGHT
+};
 
 struct Stella_Joystick {
   SDL_Joystick* stick;
   JoyType       type;
   string        name;
 };
-
-struct Joystick_Map {
-  int     stick;
-  JoyType type;
-};
-
 
 /**
   This class takes care of event remapping and dispatching for the
@@ -88,7 +87,7 @@ struct Joystick_Map {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.57 2005-11-14 17:01:18 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.58 2005-11-19 22:26:13 stephena Exp $
 */
 class EventHandler
 {
@@ -121,12 +120,12 @@ class EventHandler
     void setupJoysticks();
 
     /**
-      Maps the enumerated joysticks to the specified ports on a real 2600
+      Maps the given stelladaptors to specified ports on a real 2600
 
-      @param leftport  Index of joystick to use for the left Atari 2600 port
-      @param rightport Index of joystick to use for the right Atari 2600 port
+      @param sa1  Port for the first Stelladaptor to emulate (left or right)
+      @param sa2  Port for the second Stelladaptor to emulate (left or right)
     */
-    void mapJoysticks(int leftport, int rightport);
+    void mapStelladaptors(const string& sa1, const string& sa2);
 
     /**
       Collects and dispatches any pending events.  This method should be
@@ -368,11 +367,6 @@ class EventHandler
 
     // Array of joysticks available to Stella
     Stella_Joystick ourJoysticks[kNumJoysticks];
-
-    // Mappings from SDL_Joystick to internal 2600 joystick ports
-    Joystick_Map ourJoystickMapping[kNumJoysticks];
-    int myLeftJoyPort;
-    int myRightJoyPort;
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
