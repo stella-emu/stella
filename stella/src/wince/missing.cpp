@@ -21,6 +21,7 @@
 //#include "gx.h"
 #include "OSystemWinCE.hxx"
 #include "FrameBufferWinCE.hxx"
+#include "EventHandler.hxx"
 
 char *msg = NULL;
 int EventHandlerState;
@@ -191,7 +192,7 @@ DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20 && event->motion.y<20 && EventHandlerState!=2 && EventHandlerState!=3)
 					{
 						// top left for menu
-						theOSystem->eventHandler().enterMenuMode();
+						theOSystem->eventHandler().enterMenuMode((enum EventHandler::State)3); //S_MENU
 					}
 				}
 			}
