@@ -59,7 +59,7 @@ class FrameBufferWinCE : public FrameBuffer
     void PlotvLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
 	void PlotfillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayColor color);
 
-	uInt16 pal[256], myWidth, myHeight, guipal[kNumColors-256], scrwidth, scrheight;
+	uInt16 pal[256], myWidth, myWidthdiv4, myHeight, guipal[kNumColors-256], scrwidth, scrheight;
 	Int32 pixelstep, linestep, scrpixelstep, scrlinestep;
 	uInt32 displacement;
 	bool SubsystemInited;

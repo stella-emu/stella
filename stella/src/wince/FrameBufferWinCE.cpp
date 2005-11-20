@@ -89,9 +89,7 @@ bool FrameBufferWinCE::initSubsystem()
 		issmartphone = true;
 	else
 		issmartphone = false;
-	/*islandscape = false;
-	setmode(0);
-	*/
+
 	setmode(displaymode);
 	SubsystemInited = false;
 	return true;
@@ -139,20 +137,27 @@ uInt8 FrameBufferWinCE::rotatedisplay(void)
 
 void FrameBufferWinCE::lateinit(void)
 {
-	int w;
+	int w,h;
+
 	myWidth = myOSystem->console().mediaSource().width();
 	myHeight = myOSystem->console().mediaSource().height();
+	myWidthdiv4 = myWidth >> 2;
 
 	if (issmartphone)
 		if (!islandscape)
 			w = myWidth;
 		else
-			w = (int) ((float) myWidth * 11.0 / 8.0 + 0.5);
+			w = (int) ((float) myWidth * 11.0f / 8.0f + 0.5f);
 	else
 		if (!islandscape)
-			w = (int) ((float) myWidth * 3.0 / 2.0 + 0.5);
+			w = (int) ((float) myWidth * 3.0f / 2.0f + 0.5f);
 		else
 			w = myWidth * 2;
+
+	if (issmartphone && islandscape)
+		h = (int) ((float) myHeight * 4.0f / 5.0f + 0.5f);
+	else
+		h = myHeight;
 
 	switch (displaymode)
 	{
@@ -161,10 +166,10 @@ void FrameBufferWinCE::lateinit(void)
 				displacement = (scrwidth - w) / 2 * gxdp.cbxPitch;
 			else
 				displacement = 0;
-			if (scrheight > myHeight)
+			if (scrheight > h)
 			{
-				displacement += (scrheight - myHeight) / 2 * gxdp.cbyPitch;
-				minydim = myHeight;
+				displacement += (scrheight - h) / 2 * gxdp.cbyPitch;
+				minydim = h;
 			}
 			else
 				minydim = scrheight;
@@ -172,10 +177,10 @@ void FrameBufferWinCE::lateinit(void)
 
 		case 1:
 			displacement = gxdp.cbyPitch*(gxdp.cyHeight-1);
-			if (scrwidth > myHeight)
+			if (scrwidth > h)
 			{
-				minydim = myHeight;
-				displacement += (scrwidth - myHeight) / 2 * gxdp.cbxPitch;
+				minydim = h;
+				displacement += (scrwidth - h) / 2 * gxdp.cbxPitch;
 			}
 			else
 				minydim = scrwidth;
@@ -185,10 +190,10 @@ void FrameBufferWinCE::lateinit(void)
 
 		case 2:
 			displacement = gxdp.cbxPitch*(gxdp.cxWidth-1);
-			if (scrwidth > myHeight)
+			if (scrwidth > h)
 			{
-				minydim = myHeight;
-				displacement -= (scrwidth - myHeight) / 2 * gxdp.cbxPitch;
+				minydim = h;
+				displacement -= (scrwidth - h) / 2 * gxdp.cbxPitch;
 			}
 			else
 				minydim = scrwidth;
@@ -208,9 +213,9 @@ void FrameBufferWinCE::preFrameUpdate()
 
 void FrameBufferWinCE::drawMediaSource()
 {
-	static uInt8 *sc, *sp;
+	static uInt8 *sc, *sp, *sc_n, *sp_n;
 	static uInt8 *d, *pl, *p;
-	static uInt16 pix1, pix2;
+	static uInt16 pix1, pix2, pix3, x, y;
 
 	if (!SubsystemInited)
 		lateinit();
@@ -234,9 +239,9 @@ void FrameBufferWinCE::drawMediaSource()
 	if (issmartphone && islandscape == 0)
 	{
 		// straight
-		for (uInt16 y=0; y<myHeight; y++)
+		for (y=0; y<myHeight; y++)
 		{
-			for (uInt16 x=0; x<(myWidth>>2); x++)
+			for (x=0; x<myWidthdiv4; x++)
 			{
 				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
 				{
@@ -258,47 +263,116 @@ void FrameBufferWinCE::drawMediaSource()
 	}
 	else if (issmartphone && islandscape)
 	{
-		for (uInt16 y=0; y<minydim; y++)
+		for (y=0; y<minydim; y++)
 		{
-			for (uInt16 x=0; x<(myWidth>>2); x++)
-			{
-				// 11/8
-				// **X**
-				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
+			// 4/5
+			if ((y & 3) ^ 3)
+			{	// normal line
+				for (x=0; x<myWidthdiv4; x++)
 				{
-					*((uInt16 *)d) = pal[*sc++]; d += pixelstep;
-					pix1 = pal[*sc++]; pix2 = pal[*sc++];
-					*((uInt16 *)d) = pix1; d += pixelstep;
-					*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
-					*((uInt16 *)d) = pix2; d += pixelstep;
-					*((uInt16 *)d) = pal[*sc++]; d += pixelstep;
-				}
-				else
-				{
-					sc += 4;
-					d += pixelsteptimes5;
-				}
-				sp += 4;
-				if (++x>=(myWidth>>2)) break;
+					// 11/8
+					// **X**
+					if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
+					{
+						*((uInt16 *)d) = pal[*sc++]; d += pixelstep;
+						pix1 = pal[*sc++]; pix2 = pal[*sc++];
+						*((uInt16 *)d) = pix1; d += pixelstep;
+						*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
+						*((uInt16 *)d) = pix2; d += pixelstep;
+						*((uInt16 *)d) = pal[*sc++]; d += pixelstep;
+					}
+					else
+					{
+						sc += 4;
+						d += pixelsteptimes5;
+					}
+					sp += 4;
+					if (++x>=myWidthdiv4) break;
 
-				// *X**X*
-				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
-				{
-					pix1 = pal[*sc++]; pix2 = pal[*sc++];
-					*((uInt16 *)d) = pix1; d += pixelstep;
-					*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
-					*((uInt16 *)d) = pix2; d += pixelstep;
-					pix1 = pal[*sc++]; pix2 = pal[*sc++];
-					*((uInt16 *)d) = pix1; d += pixelstep;
-					*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
-					*((uInt16 *)d) = pix2; d += pixelstep;
+					// *X**X*
+					if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
+					{
+						pix1 = pal[*sc++]; pix2 = pal[*sc++];
+						*((uInt16 *)d) = pix1; d += pixelstep;
+						*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
+						*((uInt16 *)d) = pix2; d += pixelstep;
+						pix1 = pal[*sc++]; pix2 = pal[*sc++];
+						*((uInt16 *)d) = pix1; d += pixelstep;
+						*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
+						*((uInt16 *)d) = pix2; d += pixelstep;
+					}
+					else
+					{
+						sc += 4;
+						d += pixelsteptimes6;
+					}
+					sp += 4;
 				}
-				else
+			}
+			else
+			{	// skipped line
+				sc_n = sc + myWidth;
+				sp_n = sp + myWidth;
+				for (x=0; x<myWidthdiv4; x++)
 				{
-					sc += 4;
-					d += pixelsteptimes6;
+					// 11/8
+					// **X**
+					if ( (*((uInt32 *) sc) != *((uInt32 *) sp)) || (*((uInt32 *) sc_n) != *((uInt32 *) sp_n)) )
+					{
+						pix1 = pal[*sc++]; pix2 = pal[*sc_n++];
+						*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
+						pix1 = pal[*sc++]; pix2 = pal[*sc_n++];
+						pix1 = OPTPIXAVERAGE(pix1,pix2);
+						*((uInt16 *)d) = pix1; d += pixelstep;
+						pix2 = pal[*sc++]; pix3 = pal[*sc_n++];
+						pix2 = OPTPIXAVERAGE(pix2,pix3);
+						pix3 = OPTPIXAVERAGE(pix1,pix2);
+						*((uInt16 *)d) = pix3; d += pixelstep;
+						*((uInt16 *)d) = pix2; d += pixelstep;
+						pix1 = pal[*sc++]; pix2 = pal[*sc_n++];
+						*((uInt16 *)d) = OPTPIXAVERAGE(pix1,pix2); d += pixelstep;
+					}
+					else
+					{
+						sc += 4;
+						sc_n += 4;
+						d += pixelsteptimes5;
+					}
+					sp += 4;
+					sp_n += 4;
+					if (++x>=myWidthdiv4) break;
+
+					// *X**X*
+					if ( (*((uInt32 *) sc) != *((uInt32 *) sp)) || (*((uInt32 *) sc_n) != *((uInt32 *) sp_n)) )
+					{
+						pix1 = pal[*sc++]; pix2 = pal[*sc_n++];
+						pix1 = OPTPIXAVERAGE(pix1,pix2);
+						*((uInt16 *)d) = pix1; d += pixelstep;
+						pix2 = pal[*sc++]; pix3 = pal[*sc_n++];
+						pix2 = OPTPIXAVERAGE(pix2,pix3);
+						pix3 = OPTPIXAVERAGE(pix1,pix2);
+						*((uInt16 *)d) = pix3; d += pixelstep;
+						*((uInt16 *)d) = pix2; d += pixelstep;
+						pix1 = pal[*sc++]; pix2 = pal[*sc_n++];
+						pix1 = OPTPIXAVERAGE(pix1,pix2);
+						*((uInt16 *)d) = pix1; d += pixelstep;
+						pix2 = pal[*sc++]; pix3 = pal[*sc_n++];
+						pix2 = OPTPIXAVERAGE(pix2,pix3);
+						pix3 = OPTPIXAVERAGE(pix1,pix2);
+						*((uInt16 *)d) = pix3; d += pixelstep;
+						*((uInt16 *)d) = pix2; d += pixelstep;
+					}
+					else
+					{
+						sc += 4;
+						sc_n += 4;
+						d += pixelsteptimes6;
+					}
+					sp += 4;
+					sp_n += 4;
 				}
-				sp += 4;
+				sc += myWidth;
+				sp += myWidth;
 			}
 			d = pl + linestep;
 			pl = d;
@@ -307,9 +381,9 @@ void FrameBufferWinCE::drawMediaSource()
 	else if (issmartphone == 0 && islandscape == 0)
 	{
 		// 3/2
-		for (uInt16 y=0; y<myHeight; y++)
+		for (y=0; y<myHeight; y++)
 		{
-			for (uInt16 x=0; x<(myWidth>>2); x++)
+			for (x=0; x<myWidthdiv4; x++)
 			{
 				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
 				{
@@ -336,9 +410,9 @@ void FrameBufferWinCE::drawMediaSource()
 	else if (issmartphone == 0 && islandscape)
 	{
 		// 2/1
-		for (uInt16 y=0; y<myHeight; y++)
+		for (y=0; y<myHeight; y++)
 		{
-			for (uInt16 x=0; x<(myWidth>>2); x++)
+			for (x=0; x<myWidthdiv4; x++)
 			{
 				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
 				{
