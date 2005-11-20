@@ -32,6 +32,7 @@ class OSystemWinCE : public OSystem
     virtual void mainLoop();
 	virtual uInt32 getTicks(void);
     virtual void setFramerate(uInt32 framerate);
+	inline const GUI::Font& font() const;
 };
 
 #endif

@@ -162,3 +162,11 @@ uInt32 OSystemWinCE::getTicks(void)
 {
 	return GetTickCount();
 }
+
+inline const GUI::Font& OSystemWinCE::font() const
+{
+	if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphone() )
+		return consoleFont();
+	else
+		return OSystem::font();
+}
