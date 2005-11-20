@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.115 2005-11-19 22:26:13 stephena Exp $
+// $Id: EventHandler.cxx,v 1.116 2005-11-20 01:04:04 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -242,7 +242,7 @@ void EventHandler::setupJoysticks()
       saCount++;
       if(saCount > 2)  // Ignore more than 2 Stelladaptors
         continue;
-      else if(saCount == 1)
+      else if(saCount == 1)  // Type will be set by mapStelladaptors()
         ourJoysticks[i].name = "Stelladaptor 1";
       else if(saCount == 2)
         ourJoysticks[i].name = "Stelladaptor 2";
@@ -617,8 +617,7 @@ void EventHandler::poll(uInt32 time)
             // Since we can't detect what controller is attached to a
             // Stelladaptor, we only send events based on controller
             // type in ROM properties
-            Controller::Type ctype = myController[type-2];
-            switch((int)ctype)
+            switch((int)myController[type-2])
             {
               // Send button events for the joysticks
               case Controller::Joystick:
@@ -684,8 +683,7 @@ void EventHandler::poll(uInt32 time)
             // Since we can't detect what controller is attached to a
             // Stelladaptor, we only send events based on controller
             // type in ROM properties
-            Controller::Type ctype = myController[type-2];
-            switch((int)ctype)
+            switch((int)myController[type-2])
             {
               // Send axis events for the joysticks
               case Controller::Joystick:
@@ -992,68 +990,97 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleEvent(Event::Type event, Int32 state)
 {
-  if(event == Event::NoType)  // Ignore unmapped events
-    return;
-  else if(event == Event::Fry)
-    myFryingFlag = bool(state);
-  else if(state == 1)
+  // Take care of special events that aren't part of the emulation core
+  // or need to be preprocessed before passing them on
+  switch((int)event)
   {
-    // Take care of special events that aren't part of the emulation core
-    bool handled = true;
+    ////////////////////////////////////////////////////////////////////////
+    // Make sure that simultaneous events that are impossible on a real
+    // Atari 2600 cannot happen.  Maybe this should be in the Event class??
+    case Event::JoystickZeroUp:
+      if(state) myEvent->set(Event::JoystickZeroDown, 0);
+      break;
 
-    switch(event)
-    {
-      case Event::Fry:
-        myFryingFlag = true;
-        break;
+    case Event::JoystickZeroDown:
+      if(state) myEvent->set(Event::JoystickZeroUp, 0);
+      break;
 
-      case Event::SaveState:
-        saveState();
-        break;
+    case Event::JoystickZeroLeft:
+      if(state) myEvent->set(Event::JoystickZeroRight, 0);
+      break;
 
-      case Event::ChangeState:
-        changeState();
-        break;
+    case Event::JoystickZeroRight:
+      if(state) myEvent->set(Event::JoystickZeroLeft, 0);
+      break;
 
-      case Event::LoadState:
-        loadState();
-        break;
+    case Event::JoystickOneUp:
+      if(state) myEvent->set(Event::JoystickOneDown, 0);
+      break;
 
-      case Event::TakeSnapshot:
-        takeSnapshot();
-        break;
+    case Event::JoystickOneDown:
+      if(state) myEvent->set(Event::JoystickOneUp, 0);
+      break;
 
-      case Event::Pause:
+    case Event::JoystickOneLeft:
+      if(state) myEvent->set(Event::JoystickOneRight, 0);
+      break;
+
+    case Event::JoystickOneRight:
+      if(state) myEvent->set(Event::JoystickOneLeft, 0);
+      break;
+    ////////////////////////////////////////////////////////////////////////
+
+    case Event::NoType:  // Ignore unmapped events
+      return;
+
+    case Event::Fry:
+      if(!myPauseFlag)
+        myFryingFlag = bool(state);
+      return;
+
+    case Event::SaveState:
+      if(state && !myPauseFlag) saveState();
+      return;
+
+    case Event::ChangeState:
+      if(state && !myPauseFlag) changeState();
+      return;
+
+    case Event::LoadState:
+      if(state && !myPauseFlag) loadState();
+      return;
+
+    case Event::TakeSnapshot:
+      if(state && !myPauseFlag) takeSnapshot();
+      return;
+
+    case Event::Pause:
+      if(state)
+      {
         myPauseFlag = !myPauseFlag;
         myOSystem->frameBuffer().pause(myPauseFlag);
         myOSystem->sound().mute(myPauseFlag);
-        break;
-
-      case Event::LauncherMode:
-        // ExitGame will only work when we've launched stella using the ROM
-        // launcher.  Otherwise, the only way to exit the main loop is to Quit.
-        if(myState == S_EMULATE && myUseLauncherFlag)
-        {
-          myOSystem->settings().saveConfig();
-          myOSystem->createLauncher();
-        }
-        break;
-
-      case Event::Quit:
-        myQuitFlag = true;
-        myOSystem->settings().saveConfig();
-        break;
-
-      default:
-        handled = false;
-        break;
-    }
-
-    if(handled)
+      }
       return;
-    else if(ourMessageTable[event] != "")
-      myOSystem->frameBuffer().showMessage(ourMessageTable[event]);
+
+    case Event::LauncherMode:
+      // ExitGame will only work when we've launched stella using the ROM
+      // launcher.  Otherwise, the only way to exit the main loop is to Quit.
+      if(myState == S_EMULATE && myUseLauncherFlag && state)
+      {
+        myOSystem->settings().saveConfig();
+        myOSystem->createLauncher();
+      }
+      return;
+
+    case Event::Quit:
+      if(state) myQuitFlag = true;
+      myOSystem->settings().saveConfig();
+      return;
   }
+
+  if(state && ourMessageTable[event] != "")
+    myOSystem->frameBuffer().showMessage(ourMessageTable[event]);
 
   // Otherwise, pass it to the emulation core
   myEvent->set(event, state);
