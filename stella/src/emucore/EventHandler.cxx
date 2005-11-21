@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.116 2005-11-20 01:04:04 stephena Exp $
+// $Id: EventHandler.cxx,v 1.117 2005-11-21 00:20:22 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -621,17 +621,17 @@ void EventHandler::poll(uInt32 time)
             {
               // Send button events for the joysticks
               case Controller::Joystick:
-                handleEvent(SA_Button[type-2][button][0], state);
+                myEvent->set(SA_Button[type-2][button][0], state);
                 break;
 
               // Send axis events for the paddles
               case Controller::Paddles:
-                handleEvent(SA_Button[type-2][button][1], state);
+                myEvent->set(SA_Button[type-2][button][1], state);
                 break;
 
               // Send events for the driving controllers
               case Controller::Driving:
-                handleEvent(SA_Button[type-2][button][2], state);
+                myEvent->set(SA_Button[type-2][button][2], state);
                 break;
             }
             break;  // Stelladaptor button
@@ -687,15 +687,15 @@ void EventHandler::poll(uInt32 time)
             {
               // Send axis events for the joysticks
               case Controller::Joystick:
-                handleEvent(SA_Axis[type-2][axis][0], (value < -16384) ? 1 : 0);
-                handleEvent(SA_Axis[type-2][axis][1], (value > 16384) ? 1 : 0);
+                myEvent->set(SA_Axis[type-2][axis][0], (value < -16384) ? 1 : 0);
+                myEvent->set(SA_Axis[type-2][axis][1], (value > 16384) ? 1 : 0);
                 break;
 
               // Send axis events for the paddles
               case Controller::Paddles:
               {
                 int resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
-                handleEvent(SA_Axis[type-2][axis][2], resistance);
+                myEvent->set(SA_Axis[type-2][axis][2], resistance);
                 break;
               }
 
@@ -704,13 +704,13 @@ void EventHandler::poll(uInt32 time)
                 if(axis == 1)
                 {
                   if(value <= -16384-4096)
-                    handleEvent(SA_DrivingValue[type-2],2);
+                    myEvent->set(SA_DrivingValue[type-2],2);
                   else if(value > 16384+4096)
-                    handleEvent(SA_DrivingValue[type-2],1);
+                    myEvent->set(SA_DrivingValue[type-2],1);
                   else if(value >= 16384-4096)
-                    handleEvent(SA_DrivingValue[type-2],0);
+                    myEvent->set(SA_DrivingValue[type-2],0);
                   else
-                    handleEvent(SA_DrivingValue[type-2],3);
+                    myEvent->set(SA_DrivingValue[type-2],3);
                 }
             }
             break;  // Stelladaptor axis
