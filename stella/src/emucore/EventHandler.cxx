@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.117 2005-11-21 00:20:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.118 2005-11-21 13:47:34 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -95,7 +95,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myJoyTable[i] = Event::NoType;
 
   // Erase the Message array
-  for(Int32 i = 0; i < Event::LastType; ++i)
+  for(i = 0; i < Event::LastType; ++i)
     ourMessageTable[i] = "";
 
   // Set unchanging messages

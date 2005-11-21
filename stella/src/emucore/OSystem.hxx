@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.31 2005-11-11 21:44:19 stephena Exp $
+// $Id: OSystem.hxx,v 1.32 2005-11-21 13:47:34 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.31 2005-11-11 21:44:19 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.32 2005-11-21 13:47:34 stephena Exp $
 */
 class OSystem
 {
@@ -182,9 +182,7 @@ class OSystem
 
       @param framerate  The video framerate to use
     */
-    void setFramerate(uInt32 framerate)
-         { myDisplayFrameRate = framerate;
-           myTimePerFrame = (uInt32)(1000000.0 / (double)myDisplayFrameRate); }
+    virtual void setFramerate(uInt32 framerate);
 
     /**
       Get the current framerate for the video system.
@@ -281,13 +279,6 @@ class OSystem
       @return  The supported features
     */
     const string& features() { return myFeatures; }
-
-    /**
-      The features which are conditionally compiled into Stella.
-
-      @return  The supported features
-    */
-    const StringList& driverList() { return myDriverList; }
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -387,9 +378,6 @@ class OSystem
 
     // Time per frame for a video update, based on the current framerate
     uInt32 myTimePerFrame;
-
-    // Holds the types of SDL video driver supported by this OSystem
-    StringList myDriverList;
 
   private:
     string myBaseDir;

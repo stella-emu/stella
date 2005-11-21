@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.45 2005-11-12 22:04:57 stephena Exp $
+// $Id: OSystem.cxx,v 1.46 2005-11-21 13:47:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -123,8 +123,6 @@ OSystem::OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
-  myDriverList.clear();
-
   delete myMenu;
   delete myCommandMenu;
   delete myLauncher;
@@ -188,6 +186,13 @@ void OSystem::setConfigFiles(const string& userconfig,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setFramerate(uInt32 framerate)
+{
+  myDisplayFrameRate = framerate;
+  myTimePerFrame = (uInt32)(1000000.0 / (double)myDisplayFrameRate);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createFrameBuffer(bool showmessage)
 {
   // Delete the old framebuffer
@@ -199,18 +204,15 @@ bool OSystem::createFrameBuffer(bool showmessage)
   if(video == "soft")
 #if defined (PSP)
     myFrameBuffer = new FrameBufferPSP(this);
-#elif defined (WIN32_WCE)
+#elif defined (_WIN32_WCE)
     myFrameBuffer = new FrameBufferWinCE(this);
 #else
     myFrameBuffer = new FrameBufferSoft(this);
 #endif
-
 #ifdef DISPLAY_OPENGL
   else if(video == "gl")
     myFrameBuffer = new FrameBufferGL(this);
 #endif
-  else   // a driver that doesn't exist was requested, so use software mode
-    myFrameBuffer = new FrameBufferSoft(this);
 
   if(!myFrameBuffer)
     return false;
@@ -277,7 +279,7 @@ void OSystem::createSound()
 
   // And recreate a new sound device
 #ifdef SOUND_SUPPORT
-  #if defined (WIN32_WCE)
+  #if defined (_WIN32_WCE)
     mySound = new SoundWinCE(this);
   #else
     mySound = new SoundSDL(this);
