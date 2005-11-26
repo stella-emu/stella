@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.7 2005-08-26 16:44:17 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.8 2005-11-26 21:23:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,8 +29,10 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 {
   int ypos = _y + 2;
 
-  // rowheight is determined by largest item on a line
+  // rowheight is determined by largest item on a line,
+  // possibly meaning that number of rows will change
   _rowHeight = MAX(_rowHeight, CheckboxWidget::boxSize());
+  _rows = h / _rowHeight;
 
   // Create a CheckboxWidget for each row in the list
   CheckboxWidget* t;
@@ -125,7 +127,8 @@ void CheckListWidget::drawWidget(bool hilite)
     _checkList[i]->setDirty();
     _checkList[i]->draw();
 
-    const int y = _y + 2 + _rowHeight * i;
+    // FIXME - properly account for differing font heights
+    const int y = _y + 2 + _rowHeight * i + 2;
 
     GUI::Rect r(getEditRect());
 

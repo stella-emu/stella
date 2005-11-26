@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.2 2005-11-13 03:55:24 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.3 2005-11-26 21:23:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <sstream>
 
 #include "OSystem.hxx"
 #include "Props.hxx"
@@ -25,41 +27,64 @@
 #include "Dialog.hxx"
 #include "CheatCodeDialog.hxx"
 #include "GuiUtils.hxx"
+#include "CheckListWidget.hxx"
 
 #include "bspf.hxx"
 
-/*
 enum {
-  kEnableCheat = 'ENAC',
-  kLoadCmd     = 'LDCH'
+  kAddCheatCmd   = 'CHTA',
+  kEditCheatCmd  = 'CHTE',
+  kRemCheatCmd   = 'CHTR',
+  kAddOneShotCmd = 'CHTO'
 };
-*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
-    myErrorFlag(false)
+  : Dialog(osystem, parent, x, y, w, h)
 {
   const GUI::Font& font = instance()->font();
-  const int fontHeight = font.getFontHeight(),
-            lwidth = font.getMaxCharWidth() * 8;
   int xpos, ypos;
 
+  // List of cheats, with checkboxes to enable/disable
   xpos = 10;  ypos = 10;
+  myCheatList = new CheckListWidget(this, font, xpos, ypos,
+                                    _w - 25 - kButtonWidth, _h - 50);
+  myCheatList->setStyle(kXFill);
+  myCheatList->setEditable(false);
+  myCheatList->setFlags(WIDGET_NODRAW_FOCUS);
+  addFocusWidget(myCheatList);
+
+  xpos += myCheatList->getWidth() + 15;  ypos = 15;
+  addButton(xpos, ypos, "Add", kAddCheatCmd, 0);
+  addButton(xpos, ypos+=20, "Edit", kEditCheatCmd, 0);
+  addButton(xpos, ypos+=20, "Remove", kRemCheatCmd, 0);
+  addButton(xpos, ypos+=30, "One shot", kAddOneShotCmd, 0);
+
+/*
+Move this to new dialog
+  xpos = 10;  ypos = 10 + myCheatList->getHeight() + 10;
   myTitle = new StaticTextWidget(this, xpos, ypos, lwidth, fontHeight,
                                  "Cheat Code", kTextAlignLeft);
 
   xpos += myTitle->getWidth();
   myInput = new EditTextWidget(this, xpos, ypos-1, 48, fontHeight, "");
-  addFocusWidget(myInput);
 
   xpos = 10;  ypos += fontHeight + 5;
   myError = new StaticTextWidget(this, xpos, ypos, lwidth, kFontHeight,
                                  "", kTextAlignLeft);
   myError->setColor(kTextColorEm);
+*/
 
-  //	addButton(w - (kButtonWidth + 10), 5, "Close", kCloseCmd, 'C');
+
+  // Add OK and Cancel buttons
+#ifndef MAC_OSX
+  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
+  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+#else
+  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,6 +95,45 @@ CheatCodeDialog::~CheatCodeDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::loadConfig()
 {
+  // FIXME - connect to CheatManager
+  StringList l;
+  BoolArray b;
+
+  ostringstream buf;
+  for(int i = 0; i < 10; ++i)
+  {
+    buf << "Line " << i+1;
+    l.push_back(buf.str());
+    b.push_back(bool(i % 2));
+    buf.str("");
+  }
+  myCheatList->setList(l, b);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::saveConfig()
+{
+  // FIXME - connect to CheatManager
+  for(int i = 0; i < 10; ++i)
+    cerr << "Cheat " << i << ": " << myCheatList->getState(i) << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::addCheat()
+{
+cerr << "CheatCodeDialog::addCheat()\n";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::editCheat(int cheatNumber)
+{
+cerr << "CheatCodeDialog::editCheat() " << cheatNumber << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::removeCheat(int cheatNumber)
+{
+cerr << "CheatCodeDialog::removeCheat() " << cheatNumber << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,6 +142,36 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
+    case kOKCmd:
+      saveConfig();
+      close();
+      break;
+
+    case kCloseCmd:
+      close();
+      break;
+
+    case kListItemDoubleClickedCmd:
+      editCheat(myCheatList->getSelected());
+      break;
+
+    case kAddCheatCmd:
+      addCheat();
+      break;
+
+    case kEditCheatCmd:
+      editCheat(myCheatList->getSelected());
+      break;
+
+    case kRemCheatCmd:
+      removeCheat(myCheatList->getSelected());
+      break;
+
+    case kAddOneShotCmd:
+      cerr << "add one-shot cheat\n";
+      break;
+
+/*
     case kEditAcceptCmd:
     {
       // cerr << myInput->getEditString() << endl;
@@ -121,7 +215,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
         myErrorFlag = false;
       }
       break;
-
+*/
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;

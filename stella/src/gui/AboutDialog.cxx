@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.8 2005-10-09 21:55:53 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.9 2005-11-26 21:23:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -78,7 +78,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
     case 1:
       title = string("Stella ") + STELLA_VERSION;
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
-      ADD_ATEXT(string("\\C\\c2Supports: ") + instance()->features());
+      ADD_ATEXT(string("\\C\\c2") + instance()->features());
       ADD_ALINE;
       ADD_ATEXT("\\CCopyright (C) 1995-2005 The Stella team");
       ADD_ATEXT("\\Chttp://stella.sourceforge.net");

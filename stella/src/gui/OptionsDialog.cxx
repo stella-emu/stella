@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.33 2005-11-13 22:25:47 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.34 2005-11-26 21:23:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -120,7 +120,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   myGameInfoDialog = new GameInfoDialog(myOSystem, parent, this, x, y, w, h);
 
 #ifdef CHEATCODE_SUPPORT
-  w = 140; h = 40;
+  w = 230; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, x, y, w, h);
 #endif
