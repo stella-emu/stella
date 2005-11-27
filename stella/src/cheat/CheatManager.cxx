@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.2 2005-11-27 00:17:16 stephena Exp $
+// $Id: CheatManager.cxx,v 1.3 2005-11-27 15:48:05 stephena Exp $
 //============================================================================
+
+#include <sstream>
 
 #include "OSystem.hxx"
 #include "Cheat.hxx"
@@ -33,7 +35,7 @@ CheatManager::CheatManager(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::~CheatManager()
 {
-  saveAllCheats();
+  saveCheatDatabase();
   myCheatMap.clear();
   clear();
 }
@@ -48,44 +50,37 @@ const Cheat* CheatManager::add(const string& name, const string& code,
 
   Cheat* cheat = (Cheat*) NULL;
 
-  // Check if already present
-  bool duplicate = false;
+  // Delete duplicate entries
   for(unsigned int i = 0; i < myCheatList.size(); i++)
   {
     if(myCheatList[i]->code() == code)
     {
-      cheat = myCheatList[i];
-      duplicate = true;
-cerr << "Duplicate found: " << cheat->name() << ":" << cheat->code() << endl;
+      myCheatList.remove_at(i);
       break;
     }
   }
 
-  // Only create new cheat when necessary
-  if(!duplicate)
+  // Create new cheat based on string length
+  switch(code.size())
   {
-    switch(code.size())
-    {
-      case 4:
-        cheat = new RamCheat(myOSystem, name, code);
-        break;
+    case 4:
+      cheat = new RamCheat(myOSystem, name, code);
+      break;
 
-      case 6:
-        cheat = new CheetahCheat(myOSystem, name, code);
-        break;
+    case 6:
+      cheat = new CheetahCheat(myOSystem, name, code);
+      break;
 
-      case 8:
-        cheat = new BankRomCheat(myOSystem, name, code);
-        break;
-    }
-
-    // Add the cheat to the main cheat list
-    if(cheat)
-      myCheatList.push_back(cheat);
+    case 8:
+      cheat = new BankRomCheat(myOSystem, name, code);
+      break;
   }
 
+  // Add the cheat to the main cheat list
   if(cheat)
   {
+    myCheatList.push_back(cheat);
+
     // And enable/disable it (the cheat knows how to enable or disable itself)
     if(enable)
       cheat->enable();
@@ -104,7 +99,7 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
 
   // Make sure there are no duplicates
   bool found = false;
-  unsigned int i = 0;
+  unsigned int i;
   for(i = 0; i < myPerFrameList.size(); i++)
   {
     if(myPerFrameList[i]->code() == cheat->code())
@@ -115,11 +110,15 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
   }
 
   if(enable)
+  {
     if(!found)
       myPerFrameList.push_back(cheat);
+  }
   else
+  {
     if(found)
       myPerFrameList.remove_at(i);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,9 +173,6 @@ void CheatManager::parse(const string& cheats)
     lastPos = cheats.find_first_not_of(",", pos);
     pos     = cheats.find_first_of(",", lastPos);
   }
-
-
-//  add("TEST", cheats, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,7 +192,7 @@ void CheatManager::enable(const string& code, bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::loadAllCheats()
+void CheatManager::loadCheatDatabase()
 {
   string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
   ifstream in(cheatfile.c_str(), ios::in);
@@ -233,7 +229,7 @@ void CheatManager::loadAllCheats()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::saveAllCheats()
+void CheatManager::saveCheatDatabase()
 {
   string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
   ofstream out(cheatfile.c_str(), ios::out);
@@ -254,11 +250,41 @@ void CheatManager::loadCheats(const string& md5sum)
 {
   clear();
 
+  // Set up any cheatcodes that was on the command line
+  // (and remove the key from the settings, so they won't get set again)
+  string cheats = myOSystem->settings().getString("cheat");
+  if(cheats != "")
+    myOSystem->settings().setString("cheat", "", false);
+
   CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
-  if(iter == myCheatMap.end())
+  if(iter == myCheatMap.end() && cheats == "")
     return;
 
-  parse(iter->second);
+  parse(iter->second + cheats);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatManager::saveCheats(const string& md5sum)
+{
+  ostringstream cheats;
+  for(unsigned int i = 0; i < myCheatList.size(); i++)
+  {
+    cheats << myCheatList[i]->name() << ":"
+           << myCheatList[i]->code() << ":"
+           << myCheatList[i]->enabled();
+    if(i+1 < myCheatList.size())
+      cheats << ",";
+  }
+
+  CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
+
+  // Erase old entry
+  if(iter != myCheatMap.end())
+    myCheatMap.erase(iter);
+
+  // Add new entry only if there are any cheats defined
+  if(cheats.str() != "")
+    myCheatMap.insert(make_pair(md5sum, cheats.str()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.47 2005-11-26 21:23:35 stephena Exp $
+// $Id: OSystem.cxx,v 1.48 2005-11-27 15:48:06 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -129,13 +129,6 @@ OSystem::~OSystem()
   delete myFont;
   delete myConsoleFont;
 
-#ifdef DEVELOPER_SUPPORT
-  delete myDebugger;
-#endif
-#ifdef CHEATCODE_SUPPORT
-  delete myCheatManager;
-#endif
-
   // Remove any game console that is currently attached
   delete myConsole;
 
@@ -143,6 +136,16 @@ OSystem::~OSystem()
   // since it created them
   delete myFrameBuffer;
   delete mySound;
+
+  // These must be deleted after all the others
+  // This is a bit hacky, since it depends on ordering
+  // of d'tor calls
+#ifdef DEVELOPER_SUPPORT
+  delete myDebugger;
+#endif
+#ifdef CHEATCODE_SUPPORT
+  delete myCheatManager;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

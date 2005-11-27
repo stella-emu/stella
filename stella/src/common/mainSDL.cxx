@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.55 2005-11-27 00:17:16 stephena Exp $
+// $Id: mainSDL.cxx,v 1.56 2005-11-27 15:48:05 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -210,16 +210,7 @@ int main(int argc, char* argv[])
   {
 #ifdef CHEATCODE_SUPPORT
     // Create internal cheat database for all ROMs
-    theOSystem->cheat().loadAllCheats();
-
-    // Set up any cheeetah code that was on the command line
-    // (and remove the key from the settings, so they won't get set again)
-    string cheats = theOSystem->settings().getString("cheat");
-    if(cheats != "")
-    {
-      theOSystem->cheat().parse(cheats);
-      theOSystem->settings().setString("cheat", "", false);
-    }
+    theOSystem->cheat().loadCheatDatabase();
 #endif
 
     theOSystem->createConsole(romfile);

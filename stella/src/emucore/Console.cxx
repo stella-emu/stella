@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.75 2005-11-27 00:17:16 stephena Exp $
+// $Id: Console.cxx,v 1.76 2005-11-27 15:48:06 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -232,6 +232,10 @@ Console::Console(const Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::~Console()
 {
+#ifdef CHEATCODE_SUPPORT
+  myOSystem->cheat().saveCheats(myProperties.get("Cartridge.MD5"));
+#endif
+
   delete mySystem;
   delete mySwitches;
   delete myControllers[0];

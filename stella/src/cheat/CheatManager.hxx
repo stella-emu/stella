@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.hxx,v 1.2 2005-11-27 00:17:16 stephena Exp $
+// $Id: CheatManager.hxx,v 1.3 2005-11-27 15:48:05 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_MANAGER_HXX
@@ -36,10 +36,12 @@ typedef map<string,string> CheatCodeMap;
   the list of all cheats currently in use.
 
   @author  Stephen Anthony
-  @version $Id: CheatManager.hxx,v 1.2 2005-11-27 00:17:16 stephena Exp $
+  @version $Id: CheatManager.hxx,v 1.3 2005-11-27 15:48:05 stephena Exp $
 */
 class CheatManager
 {
+  friend class CheatCodeDialog;
+
   public:
     CheatManager(OSystem* osystem);
     virtual ~CheatManager();
@@ -66,13 +68,6 @@ class CheatManager
     void addPerFrame(Cheat* cheat, bool enable);
 
     /**
-      Parses a list of cheats and adds/enables each one.
-
-      @param cheats  Comma-separated list of cheats (without any names)
-    */
-    void parse(const string& cheats);
-
-    /**
       Enable/disabled the cheat specified by the given code.
 
       @param code    The actual cheatcode to search for
@@ -88,19 +83,31 @@ class CheatManager
     /**
       Load all cheats (for all ROMs) from disk to internal database.
     */
-    void loadAllCheats();
+    void loadCheatDatabase();
 
     /**
       Save all cheats (for all ROMs) in internal database to disk.
     */
-    void saveAllCheats();
+    void saveCheatDatabase();
 
     /**
       Load cheats for ROM with given MD5sum to cheatlist(s).
     */
     void loadCheats(const string& md5sum);
 
+    /**
+      Saves cheats for ROM with given MD5sum to cheat map.
+    */
+    void saveCheats(const string& md5sum);
+
   private:
+    /**
+      Parses a list of cheats and adds/enables each one.
+
+      @param cheats  Comma-separated list of cheats (without any names)
+    */
+    void parse(const string& cheats);
+
     /**
       Clear all per-ROM cheats lists.
     */

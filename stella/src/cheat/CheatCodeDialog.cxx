@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.3 2005-11-26 21:23:35 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.4 2005-11-27 15:48:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "CheatCodeDialog.hxx"
 #include "GuiUtils.hxx"
 #include "CheckListWidget.hxx"
+#include "CheatManager.hxx"
 
 #include "bspf.hxx"
 
@@ -95,17 +96,17 @@ CheatCodeDialog::~CheatCodeDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::loadConfig()
 {
-  // FIXME - connect to CheatManager
+  // Load items from CheatManager
+  // Note that the items are always in the same order/number as given in
+  // the CheatManager, so the arrays will be one-to-one
   StringList l;
   BoolArray b;
 
-  ostringstream buf;
-  for(int i = 0; i < 10; ++i)
+  const CheatList& list = instance()->cheat().myCheatList;
+  for(unsigned int i = 0; i < list.size(); ++i)
   {
-    buf << "Line " << i+1;
-    l.push_back(buf.str());
-    b.push_back(bool(i % 2));
-    buf.str("");
+    l.push_back(list[i]->name());
+    b.push_back(bool(list[i]->enabled()));
   }
   myCheatList->setList(l, b);
 }
@@ -113,9 +114,14 @@ void CheatCodeDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::saveConfig()
 {
-  // FIXME - connect to CheatManager
-  for(int i = 0; i < 10; ++i)
-    cerr << "Cheat " << i << ": " << myCheatList->getState(i) << endl;
+  // Inspect checkboxes for enable/disable codes
+  for(unsigned int i = 0; i < myCheatList->getList().size(); ++i)
+  {
+    if(myCheatList->getState(i))
+      instance()->cheat().myCheatList[i]->enable();
+    else
+      instance()->cheat().myCheatList[i]->disable();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

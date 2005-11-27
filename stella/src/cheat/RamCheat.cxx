@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamCheat.cxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
+// $Id: RamCheat.cxx,v 1.2 2005-11-27 15:48:05 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -39,18 +39,21 @@ bool RamCheat::enable()
 {
   if(!myEnabled)
   {
-    myOSystem->cheat().addPerFrame(this, true);
     myEnabled = true;
+    myOSystem->cheat().addPerFrame(this, myEnabled);
   }
-
   return myEnabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RamCheat::disable()
 {
-  cerr << "perFrame remove " << myName << ":" << myCode << endl;
-  return false;
+  if(myEnabled)
+  {
+    myEnabled = false;
+    myOSystem->cheat().addPerFrame(this, myEnabled);
+  }
+  return myEnabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
