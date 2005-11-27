@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.hxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
+// $Id: CheatManager.hxx,v 1.2 2005-11-27 00:17:16 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_MANAGER_HXX
 #define CHEAT_MANAGER_HXX
+
+#include <map>
 
 #include "OSystem.hxx"
 #include "bspf.hxx"
@@ -26,6 +28,7 @@
 #include "Cheat.hxx"
 
 typedef GUI::Array<Cheat*> CheatList;
+typedef map<string,string> CheatCodeMap;
 
 /**
   This class provides an interface for performing all cheat operations
@@ -33,7 +36,7 @@ typedef GUI::Array<Cheat*> CheatList;
   the list of all cheats currently in use.
 
   @author  Stephen Anthony
-  @version $Id: CheatManager.hxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
+  @version $Id: CheatManager.hxx,v 1.2 2005-11-27 00:17:16 stephena Exp $
 */
 class CheatManager
 {
@@ -78,20 +81,39 @@ class CheatManager
     void enable(const string& code, bool enable);
 
     /**
-      Clear all lists of all cheats.
-    */
-    void clear();
-
-    /**
       Returns the per-frame cheatlist (needed to evaluate cheats each frame)
     */
     const CheatList& perFrame() { return myPerFrameList; }
+
+    /**
+      Load all cheats (for all ROMs) from disk to internal database.
+    */
+    void loadAllCheats();
+
+    /**
+      Save all cheats (for all ROMs) in internal database to disk.
+    */
+    void saveAllCheats();
+
+    /**
+      Load cheats for ROM with given MD5sum to cheatlist(s).
+    */
+    void loadCheats(const string& md5sum);
+
+  private:
+    /**
+      Clear all per-ROM cheats lists.
+    */
+    void clear();
 
   private:
     OSystem* myOSystem;
 
     CheatList myCheatList;
     CheatList myPerFrameList;
+
+    CheatCodeMap myCheatMap;
+    string myCheatFile;
 };
 
 #endif

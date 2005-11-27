@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
+// $Id: CheatManager.cxx,v 1.2 2005-11-27 00:17:16 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -33,16 +33,9 @@ CheatManager::CheatManager(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::~CheatManager()
 {
-  // Don't delete the items from per-frame list, since it will be done in
-  // the following loop
-  myPerFrameList.clear();
-
-  for(unsigned int i = 0; i < myCheatList.size(); i++)
-  {
-    cerr << myCheatList[i]->name() << ": " << myCheatList[i]->code() << endl;
-    delete myCheatList[i];
-  }
-  myCheatList.clear();
+  saveAllCheats();
+  myCheatMap.clear();
+  clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,10 +125,58 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::parse(const string& cheats)
 {
-  // FIXME - deal with comma-separated cheats
   cerr << "parsing cheats: " << cheats << endl;
 
-  add("TEST", cheats, true);
+  StringList s;
+  string::size_type lastPos = cheats.find_first_not_of(",", 0);
+  string::size_type pos     = cheats.find_first_of(",", lastPos);
+  string cheat, name, code;
+
+  // Split string by comma, getting each cheat
+  while(string::npos != pos || string::npos != lastPos)
+  {
+    // Get the next cheat
+    cheat = cheats.substr(lastPos, pos - lastPos);
+
+    // Split cheat by colon, separating each part
+    string::size_type lastColonPos = cheat.find_first_not_of(":", 0);
+    string::size_type colonPos     = cheat.find_first_of(":", lastColonPos);
+    while(string::npos != colonPos || string::npos != lastColonPos)
+    {
+      s.push_back(cheat.substr(lastColonPos, colonPos - lastColonPos));
+      lastColonPos = cheat.find_first_not_of(":", colonPos);
+      colonPos     = cheat.find_first_of(":", lastColonPos);
+    }
+
+    // Account for variable number of items specified for cheat
+    switch(s.size())
+    {
+      case 1:
+        name = s[0];
+        code = name;
+        add(name, code, true);
+        break;
+
+      case 2:
+        name = s[0];
+        code = s[1];
+        add(name, code, true);
+        break;
+
+      case 3:
+        name = s[0];
+        code = s[1];
+        add(name, code, s[2] == "1");
+        break;
+    }
+    s.clear();
+
+    lastPos = cheats.find_first_not_of(",", pos);
+    pos     = cheats.find_first_of(",", lastPos);
+  }
+
+
+//  add("TEST", cheats, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,4 +193,82 @@ void CheatManager::enable(const string& code, bool enable)
       break;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatManager::loadAllCheats()
+{
+  string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
+  ifstream in(cheatfile.c_str(), ios::in);
+  if(!in)
+    return;
+
+  string line, md5, cheat;
+  string::size_type one, two, three, four;
+
+  // Loop reading cheats
+  while(getline(in, line))
+  {
+    if(line.length() == 0)
+      continue;
+
+    one = line.find("\"", 0);
+    two = line.find("\"", one + 1);
+    three = line.find("\"", two + 1);
+    four = line.find("\"", three + 1);
+
+    // Invalid line if it doesn't contain 4 quotes
+    if((one == string::npos) || (two == string::npos) ||
+       (three == string::npos) || (four == string::npos))
+      break;
+
+    // Otherwise get the ms5sum and associated cheats
+    md5   = line.substr(one + 1, two - one - 1);
+    cheat = line.substr(three + 1, four - three - 1);
+
+    myCheatMap.insert(make_pair(md5, cheat));
+  }
+
+  in.close();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatManager::saveAllCheats()
+{
+  string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
+  ofstream out(cheatfile.c_str(), ios::out);
+  if(!out)
+    return;
+
+  CheatCodeMap::iterator iter;
+  for(iter = myCheatMap.begin(); iter != myCheatMap.end(); ++iter)
+    out << "\"" << iter->first << "\" "
+        << "\"" << iter->second << "\""
+        << endl;
+
+  out.close();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatManager::loadCheats(const string& md5sum)
+{
+  clear();
+
+  CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
+  if(iter == myCheatMap.end())
+    return;
+
+  parse(iter->second);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatManager::clear()
+{
+  // Don't delete the items from per-frame list, since it will be done in
+  // the following loop
+  myPerFrameList.clear();
+
+  for(unsigned int i = 0; i < myCheatList.size(); i++)
+    delete myCheatList[i];
+  myCheatList.clear();
 }
