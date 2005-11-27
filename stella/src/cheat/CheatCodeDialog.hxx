@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.hxx,v 1.2 2005-11-26 21:23:35 stephena Exp $
+// $Id: CheatCodeDialog.hxx,v 1.3 2005-11-27 22:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@ class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
 class CheckListWidget;
+class InputTextDialog;
 
 #include "OSystem.hxx"
 #include "Dialog.hxx"
@@ -50,19 +51,16 @@ class CheatCodeDialog : public Dialog
 
   private:
     void addCheat();
-    void editCheat(int cheatNumber);
-    void removeCheat(int cheatNumber);
+    void editCheat();
+    void removeCheat();
 
   private:
-    CheckListWidget*  myCheatList;
-/*
-    ButtonWidget*     myExitButton;
-    StaticTextWidget* myTitle;
-    StaticTextWidget* myError;
-    EditTextWidget*   myInput;
+    CheckListWidget* myCheatList;
+    InputTextDialog* myCheatInput;
 
-    bool myErrorFlag;
-*/
+    ButtonWidget* myEditButton;
+    ButtonWidget* myRemoveButton;
+    ButtonWidget* myCancelButton;
 };
 
 #endif

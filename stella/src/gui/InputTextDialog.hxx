@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.3 2005-10-06 17:28:55 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.4 2005-11-27 22:37:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,31 +24,36 @@
 
 class GuiObject;
 class StaticTextWidget;
+class EditTextWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
-#include "EditTextWidget.hxx"
+
+typedef GUI::Array<EditTextWidget*> InputWidget;
 
 class InputTextDialog : public Dialog, public CommandSender
 {
   public:
-    InputTextDialog(GuiObject* boss, const GUI::Font& font, int x, int y);
+    InputTextDialog(GuiObject* boss, const GUI::Font& font,
+                    const StringList& labels, int x, int y);
+    virtual ~InputTextDialog();
 
-    const string& getResult() { return _input->getEditString(); }
+    const string& getResult(int idx = 0);
 
-    void setEditString(const string& str) { _input->setEditString(str); }
-    void setEmitSignal(int cmd) { _cmd = cmd; }
+    void setEditString(const string& str, int idx = 0);
+    void setEmitSignal(int cmd) { myCmd = cmd; }
     void setTitle(const string& title);
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    StaticTextWidget* _title;
-    EditTextWidget*   _input;
+  private:
+    InputWidget       myInput;
+    StaticTextWidget* myTitle;
 
-    int	 _cmd;
-    bool _errorFlag;
+    bool myErrorFlag;
+    int	 myCmd;
 };
 
 #endif

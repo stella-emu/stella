@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.hxx,v 1.3 2005-11-27 15:48:05 stephena Exp $
+// $Id: CheatManager.hxx,v 1.4 2005-11-27 22:37:24 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_MANAGER_HXX
@@ -36,12 +36,10 @@ typedef map<string,string> CheatCodeMap;
   the list of all cheats currently in use.
 
   @author  Stephen Anthony
-  @version $Id: CheatManager.hxx,v 1.3 2005-11-27 15:48:05 stephena Exp $
+  @version $Id: CheatManager.hxx,v 1.4 2005-11-27 22:37:24 stephena Exp $
 */
 class CheatManager
 {
-  friend class CheatCodeDialog;
-
   public:
     CheatManager(OSystem* osystem);
     virtual ~CheatManager();
@@ -52,10 +50,19 @@ class CheatManager
       @param name    Name of the cheat (not absolutely required)
       @param code    The actual cheatcode (in hex)
       @param enable  Whether to enable this cheat right away
+      @param idx     Index at which to insert the cheat
 
       @return  The cheat (if was created), else NULL.
     */
-    const Cheat* add(const string& name, const string& code, bool enable = true);
+    const Cheat* add(const string& name, const string& code,
+                     bool enable = true, int idx = -1);
+
+    /**
+      Remove the cheat at 'idx' from the cheat list(s).
+
+      @param index  Location in myCheatList of the cheat to remove
+    */
+    void remove(int idx);
 
     /**
       Adds the specified cheat to the internal per-frame list.
@@ -74,6 +81,11 @@ class CheatManager
       @param enable  Enable/disable the cheat
     */
     void enable(const string& code, bool enable);
+
+    /**
+      Returns the game cheatlist.
+    */
+    const CheatList& list() { return myCheatList; }
 
     /**
       Returns the per-frame cheatlist (needed to evaluate cheats each frame)
@@ -99,6 +111,11 @@ class CheatManager
       Saves cheats for ROM with given MD5sum to cheat map.
     */
     void saveCheats(const string& md5sum);
+
+    /**
+      Checks if a code is valid.
+    */
+    bool isValidCode(const string& code);
 
   private:
     /**

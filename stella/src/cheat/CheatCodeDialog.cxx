@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.4 2005-11-27 15:48:04 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.5 2005-11-27 22:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,18 +25,23 @@
 #include "Props.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "CheatCodeDialog.hxx"
 #include "GuiUtils.hxx"
 #include "CheckListWidget.hxx"
 #include "CheatManager.hxx"
+#include "InputTextDialog.hxx"
+#include "StringList.hxx"
 
 #include "bspf.hxx"
 
 enum {
-  kAddCheatCmd   = 'CHTA',
-  kEditCheatCmd  = 'CHTE',
-  kRemCheatCmd   = 'CHTR',
-  kAddOneShotCmd = 'CHTO'
+  kAddCheatCmd   = 'CHTa',
+  kEditCheatCmd  = 'CHTe',
+  kCheatAdded    = 'CHad',
+  kCheatEdited   = 'CHed',
+  kRemCheatCmd   = 'CHTr',
+  kAddOneShotCmd = 'CHTo'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,32 +63,25 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
 
   xpos += myCheatList->getWidth() + 15;  ypos = 15;
   addButton(xpos, ypos, "Add", kAddCheatCmd, 0);
-  addButton(xpos, ypos+=20, "Edit", kEditCheatCmd, 0);
-  addButton(xpos, ypos+=20, "Remove", kRemCheatCmd, 0);
+  myEditButton = addButton(xpos, ypos+=20, "Edit", kEditCheatCmd, 0);
+  myRemoveButton = addButton(xpos, ypos+=20, "Remove", kRemCheatCmd, 0);
   addButton(xpos, ypos+=30, "One shot", kAddOneShotCmd, 0);
 
-/*
-Move this to new dialog
-  xpos = 10;  ypos = 10 + myCheatList->getHeight() + 10;
-  myTitle = new StaticTextWidget(this, xpos, ypos, lwidth, fontHeight,
-                                 "Cheat Code", kTextAlignLeft);
-
-  xpos += myTitle->getWidth();
-  myInput = new EditTextWidget(this, xpos, ypos-1, 48, fontHeight, "");
-
-  xpos = 10;  ypos += fontHeight + 5;
-  myError = new StaticTextWidget(this, xpos, ypos, lwidth, kFontHeight,
-                                 "", kTextAlignLeft);
-  myError->setColor(kTextColorEm);
-*/
-
+  // Inputbox which will pop up when adding/editing a cheat
+  StringList labels;
+  labels.push_back("Name: ");
+  labels.push_back("Code: ");
+  myCheatInput = new InputTextDialog(this, font, labels, _x+20, _y+20);
+  myCheatInput->setTarget(this);
 
   // Add OK and Cancel buttons
 #ifndef MAC_OSX
   addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  myCancelButton = addButton(_w - (kButtonWidth + 10), _h - 24,
+                             "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
+  myCancelButton = addButton(_w - 2 * (kButtonWidth + 7), _h - 24,
+                             "Cancel", kCloseCmd, 0);
   addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 }
@@ -102,44 +100,65 @@ void CheatCodeDialog::loadConfig()
   StringList l;
   BoolArray b;
 
-  const CheatList& list = instance()->cheat().myCheatList;
+  const CheatList& list = instance()->cheat().list();
   for(unsigned int i = 0; i < list.size(); ++i)
   {
     l.push_back(list[i]->name());
     b.push_back(bool(list[i]->enabled()));
   }
   myCheatList->setList(l, b);
+
+  bool enabled = (list.size() > 0);
+  myEditButton->setEnabled(enabled);
+  myRemoveButton->setEnabled(enabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::saveConfig()
 {
   // Inspect checkboxes for enable/disable codes
+  const CheatList& list = instance()->cheat().list();
   for(unsigned int i = 0; i < myCheatList->getList().size(); ++i)
   {
     if(myCheatList->getState(i))
-      instance()->cheat().myCheatList[i]->enable();
+      list[i]->enable();
     else
-      instance()->cheat().myCheatList[i]->disable();
+      list[i]->disable();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::addCheat()
 {
-cerr << "CheatCodeDialog::addCheat()\n";
+  myCheatInput->setEditString("", 0);
+  myCheatInput->setEditString("", 1);
+  myCheatInput->setTitle("");
+  myCheatInput->setEmitSignal(kCheatAdded);
+  parent()->addDialog(myCheatInput);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatCodeDialog::editCheat(int cheatNumber)
+void CheatCodeDialog::editCheat()
 {
-cerr << "CheatCodeDialog::editCheat() " << cheatNumber << endl;
+  int idx = myCheatList->getSelected();
+  if(idx < 0)
+    return;
+
+  const CheatList& list = instance()->cheat().list();
+  const string& name = list[idx]->name();
+  const string& code = list[idx]->code();
+
+  myCheatInput->setEditString(name, 0);
+  myCheatInput->setEditString(code, 1);
+  myCheatInput->setEmitSignal(kCheatEdited);
+  parent()->addDialog(myCheatInput);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatCodeDialog::removeCheat(int cheatNumber)
+void CheatCodeDialog::removeCheat()
 {
-cerr << "CheatCodeDialog::removeCheat() " << cheatNumber << endl;
+  instance()->cheat().remove(myCheatList->getSelected());
+  loadConfig();  // reload the cheat list
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -158,7 +177,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kListItemDoubleClickedCmd:
-      editCheat(myCheatList->getSelected());
+      editCheat();
       break;
 
     case kAddCheatCmd:
@@ -166,62 +185,51 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kEditCheatCmd:
-      editCheat(myCheatList->getSelected());
+      editCheat();
       break;
 
+    case kCheatAdded:
+    {
+      const string& name = myCheatInput->getResult(0);
+      const string& code = myCheatInput->getResult(1);
+      if(instance()->cheat().isValidCode(code))
+      {
+        instance()->cheat().add(name, code);
+        parent()->removeDialog();
+        loadConfig();  // show changes onscreen
+        myCancelButton->setEnabled(false);  // cannot cancel when a new cheat added
+      }
+      else
+        myCheatInput->setTitle("Invalid code");
+      break;
+    }
+
+    case kCheatEdited:
+    {
+      const string& name = myCheatInput->getResult(0);
+      const string& code = myCheatInput->getResult(1);
+      bool enable = myCheatList->getSelectedState();
+      int idx = myCheatList->getSelected();
+      if(instance()->cheat().isValidCode(code))
+      {
+        instance()->cheat().add(name, code, enable, idx);
+        parent()->removeDialog();
+        loadConfig();  // show changes onscreen
+        myCancelButton->setEnabled(false);  // cannot cancel when a new cheat added
+      }
+      else
+        myCheatInput->setTitle("Invalid code");
+      break;
+    }
+
     case kRemCheatCmd:
-      removeCheat(myCheatList->getSelected());
+      removeCheat();
       break;
 
     case kAddOneShotCmd:
       cerr << "add one-shot cheat\n";
       break;
 
-/*
-    case kEditAcceptCmd:
-    {
-      // cerr << myInput->getEditString() << endl;
-      const Cheat* cheat = 
-        instance()->cheat().add("DLG", myInput->getEditString(), true);
-
-      if(cheat)
-      {
-        // make sure "invalid code" isn't showing any more:
-        myError->setLabel("");
-        myErrorFlag = false;
-
-        // get out of menu mode (back to emulation):
-        Dialog::handleCommand(sender, kCloseCmd, data, id);
-        instance()->eventHandler().leaveMenuMode();
-      }
-      else  // parse() returned 0 (null)
-      { 
-        myInput->setEditString("");
-
-        // show error message "invalid code":
-        myError->setLabel("Invalid Code");
-        myErrorFlag = true;
-
-        // not sure this does anything useful:
-        Dialog::handleCommand(sender, cmd, data, 0);
-      }
-      break;
-    }
-
-    case kEditCancelCmd:
-      Dialog::handleCommand(sender, kCloseCmd, data, id);
-      instance()->eventHandler().leaveMenuMode();
-      break;
-
-    case kEditChangedCmd:
-      // Erase the invalid message once editing is restarted
-      if(myErrorFlag)
-      {
-        myError->setLabel("");
-        myErrorFlag = false;
-      }
-      break;
-*/
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cheat.hxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
+// $Id: Cheat.hxx,v 1.2 2005-11-27 22:37:24 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_HXX
@@ -29,7 +29,7 @@ class Cheat
       : myOSystem(osystem),
         myName(name),
         myCode(code),
-        myEnabled(false) { }
+        myEnabled(false) { if(name == "") myName = code; }
     virtual ~Cheat()     { }
 
     bool enabled() const { return myEnabled; }

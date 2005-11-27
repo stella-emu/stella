@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.76 2005-11-27 15:48:06 stephena Exp $
+// $Id: Console.cxx,v 1.77 2005-11-27 22:37:24 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -214,10 +214,6 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // Finally, initialize the debugging system, since it depends on the current ROM
   myOSystem->debugger().setConsole(this);
   myOSystem->debugger().initialize();
-#endif
-
-#ifdef CHEATCODE_SUPPORT
-  myOSystem->cheat().loadCheats(md5);
 #endif
 }
 

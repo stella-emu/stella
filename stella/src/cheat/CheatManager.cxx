@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.3 2005-11-27 15:48:05 stephena Exp $
+// $Id: CheatManager.cxx,v 1.4 2005-11-27 22:37:24 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -42,11 +42,10 @@ CheatManager::~CheatManager()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Cheat* CheatManager::add(const string& name, const string& code,
-                               bool enable)
+                               bool enable, int idx)
 {
-  for(unsigned int i = 0; i < code.size(); i++)
-    if(!isxdigit(code[i]))
-      return NULL;
+  if(!isValidCode(code))
+    return NULL;
 
   Cheat* cheat = (Cheat*) NULL;
 
@@ -79,7 +78,10 @@ const Cheat* CheatManager::add(const string& name, const string& code,
   // Add the cheat to the main cheat list
   if(cheat)
   {
-    myCheatList.push_back(cheat);
+    if(idx == -1)
+      myCheatList.push_back(cheat);
+    else
+      myCheatList.insert_at(idx, cheat);
 
     // And enable/disable it (the cheat knows how to enable or disable itself)
     if(enable)
@@ -89,6 +91,22 @@ const Cheat* CheatManager::add(const string& name, const string& code,
   }
 
   return cheat;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatManager::remove(int idx)
+{
+  if((unsigned int)idx >= myCheatList.size())
+    return;
+
+  Cheat* c = myCheatList[idx];
+
+  // First remove it from the per-frame list
+  addPerFrame(c, false);
+
+  // Then remove it from the cheatlist entirely
+  myCheatList.remove_at(idx);
+  delete c;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,8 +142,6 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::parse(const string& cheats)
 {
-  cerr << "parsing cheats: " << cheats << endl;
-
   StringList s;
   string::size_type lastPos = cheats.find_first_not_of(",", 0);
   string::size_type pos     = cheats.find_first_of(",", lastPos);
@@ -297,4 +313,15 @@ void CheatManager::clear()
   for(unsigned int i = 0; i < myCheatList.size(); i++)
     delete myCheatList[i];
   myCheatList.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CheatManager::isValidCode(const string& code)
+{
+  for(unsigned int i = 0; i < code.size(); i++)
+    if(!isxdigit(code[i]))
+      return false;
+
+  int length = code.length();
+  return (length == 4 || length == 6 || length == 8);
 }

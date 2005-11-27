@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.14 2005-10-22 15:43:17 stephena Exp $
+// $Id: RomWidget.cxx,v 1.15 2005-11-27 22:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "PackedBitArray.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
+#include "EditTextWidget.hxx"
 #include "ContextMenu.hxx"
 #include "RomListWidget.hxx"
 #include "RomWidget.hxx"
@@ -98,7 +99,9 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   _h = myRomList->getHeight();
 
   // Create dialog box for save ROM (get name)
-  mySaveRom = new InputTextDialog(boss, font, _x + 50, _y + 80);
+  StringList label;
+  label.push_back("Filename: ");
+  mySaveRom = new InputTextDialog(boss, font, label, _x + 50, _y + 80);
   mySaveRom->setTarget(this);
 }
 

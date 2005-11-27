@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: RamWidget.cxx,v 1.2 2005-11-27 22:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -140,18 +140,20 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myBinValue->setFont(font);
   myBinValue->setEditable(false);
 
+  // Calculate real dimensions
+  _w = lwidth + myRamGrid->getWidth();
+  _h = ypos + lineHeight - y;
+
   // Inputbox which will pop up when searching RAM
-  myInputBox = new InputTextDialog(boss, font,
+  StringList label;
+  label.push_back("Search: ");
+  myInputBox = new InputTextDialog(boss, font, label,
                                    x + lwidth + 20, y + 2*lineHeight - 5);
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled
   myCompareButton->clearFlags(WIDGET_ENABLED);
   myRestartButton->clearFlags(WIDGET_ENABLED);
-
-  // Calculate real dimensions
-  _w = lwidth + myRamGrid->getWidth();
-  _h = ypos + lineHeight - y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
