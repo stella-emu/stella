@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.56 2005-11-27 15:48:05 stephena Exp $
+// $Id: mainSDL.cxx,v 1.57 2005-11-28 15:05:43 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -198,6 +198,11 @@ int main(int argc, char* argv[])
   // Setup the SDL joysticks (must be done after FrameBuffer is created)
   theOSystem->eventHandler().setupJoysticks();
 
+#ifdef CHEATCODE_SUPPORT
+    // Create internal cheat database for all ROMs
+    theOSystem->cheat().loadCheatDatabase();
+#endif
+
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if
   //   the ROM actually exists, use it to create a new console.
@@ -208,11 +213,6 @@ int main(int argc, char* argv[])
     theOSystem->createLauncher();
   else
   {
-#ifdef CHEATCODE_SUPPORT
-    // Create internal cheat database for all ROMs
-    theOSystem->cheat().loadCheatDatabase();
-#endif
-
     theOSystem->createConsole(romfile);
 
     if(theOSystem->settings().getBool("holdreset"))
