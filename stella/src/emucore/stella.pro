@@ -6500,6 +6500,13 @@
 
 "Cartridge.MD5" "4dbf47c7f5ac767a3b07843a530d29a5"
 "Cartridge.Name" "Breaking News (2002) (Ric Pryor) (Bump 'n' Jump Hack)"
+"Cartridge.Type" "E7"
+"Cartridge.Manufacturer" "Ric Pryor"
+"Cartridge.Note" "Bump 'n' Jump Hack"
+"Display.XStart" "8"
+"Display.Width" "152"
+"Display.YStart" "41"
+"Display.Height" "188"
 ""
 
 "Cartridge.MD5" "4d8396deeabb40b5e8578276eb5a8b6d"
@@ -16403,6 +16410,9 @@
 "Cartridge.MD5" "cddabfd68363a76cd30bee4e8094c646"
 "Cartridge.Name" "Magicard (CommaVid)"
 "Cartridge.Manufacturer" "CommaVid"
+"Cartridge.Type" "CV"
+"Controller.Left" "Keyboard"
+"Display.YStart" "25"
 ""
 
 "Cartridge.MD5" "cdc1a5c61d7488eadc9aba36166b253d"
@@ -16610,7 +16620,7 @@
 "Cartridge.Manufacturer" "Paul Slocum"
 "Cartridge.Note" "Hack of Berzerk (Atari)"
 "Cartridge.Rarity" "New Release (Hack)"
-"Cartridge.Type" "4K"
+"Cartridge.Type" "F8"
 "Display.FrameRate" "20"
 "Display.Height" "188"
 "Display.Width" "152"
