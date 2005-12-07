@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.118 2005-11-21 13:47:34 stephena Exp $
+// $Id: EventHandler.cxx,v 1.119 2005-12-07 02:33:56 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -75,7 +75,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myPaddleMode(0),
     myMouseMove(3)
 {
-  uInt32 i;
+  int i, j;
 
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
@@ -83,16 +83,21 @@ EventHandler::EventHandler(OSystem* osystem)
   // Create the event object which will be used for this handler
   myEvent = new Event();
 
-  // Erase the KeyEvent arrays
+  // Erase the key mapping array
   for(i = 0; i < SDLK_LAST; ++i)
   {
     myKeyTable[i] = Event::NoType;
     ourSDLMapping[i] = "";
   }
 
-  // Erase the JoyEvent array
+  // Erase the joystick button mapping array
   for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
     myJoyTable[i] = Event::NoType;
+
+  // Erase the joystick axis mapping array
+  for(i = 0; i < kNumJoysticks; ++i)
+    for(j = 0; j < kNumJoyAxis; ++j)
+      myJoyAxisTable[i][j][0] = myJoyAxisTable[i][j][1] = Event::NoType;
 
   // Erase the Message array
   for(i = 0; i < Event::LastType; ++i)
@@ -657,20 +662,12 @@ void EventHandler::poll(uInt32 time)
 
             // Handle emulation of mouse using the joystick
             if(myState == S_EMULATE)
+              handleJoyAxisEvent(stick, axis, value);
+            else if(myOverlay != NULL)
             {
-              if(axis == 0)  // x-axis
-              {
-                handleJoyEvent(stick, kJAxisLeft, (value < -16384) ? 1 : 0);
-                handleJoyEvent(stick, kJAxisRight, (value > 16384) ? 1 : 0);
-              }
-              else if(axis == 1)  // y-axis
-              {
-                handleJoyEvent(stick, kJAxisUp, (value < -16384) ? 1 : 0);
-                handleJoyEvent(stick, kJAxisDown, (value > 16384) ? 1 : 0);
-              }
-            }
-            else
               handleMouseWarp(stick, axis, value);
+              myOverlay->handleJoyAxisEvent(stick, axis, value);
+            }
             break;  // Regular joystick axis
           }
 
@@ -988,6 +985,60 @@ void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
+{
+  // Every axis event has two associated values, negative and positive
+  Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
+  Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
+
+  // Determine if the events should be treated as discrete/digital
+  // or continuous/analog values
+  bool analog = false;
+  switch((int)eventAxisNeg)
+  {
+    case Event::PaddleZeroResistance:
+    case Event::PaddleOneResistance:
+    case Event::PaddleTwoResistance:
+    case Event::PaddleThreeResistance:
+      analog = true;
+      break;
+  }
+  switch((int)eventAxisPos)
+  {
+    case Event::PaddleZeroResistance:
+    case Event::PaddleOneResistance:
+    case Event::PaddleTwoResistance:
+    case Event::PaddleThreeResistance:
+      analog = true;
+      break;
+  }
+
+  // Analog vs. digital events treat the input values differently
+  // A value of zero might mean that an action should be turned off
+  // (this is the case for all events that are togglable).
+  // On the other hand, if the event represents a continuous analog
+  // value, then a zero is just another valid number in the range.
+  if(!analog)
+  {
+    if(value == 0)
+    {
+      // Turn off both events, since we don't know exactly which one
+      // was previously activated.
+      handleEvent(eventAxisNeg, 0);
+      handleEvent(eventAxisPos, 0);
+    }
+    else if(value < 0)
+      handleEvent(eventAxisNeg, 1);
+    else
+      handleEvent(eventAxisPos, 1);
+  }
+  else
+  {
+    cerr << "do paddle event for " << value << endl;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleEvent(Event::Type event, Int32 state)
 {
   // Take care of special events that aren't part of the emulation core
@@ -1168,6 +1219,7 @@ void EventHandler::setActionMappings()
 
         switch(button)
         {
+/*
           case kJAxisUp:
             joyevent << "J" << stick << " UP";
             break;
@@ -1183,7 +1235,7 @@ void EventHandler::setActionMappings()
           case kJAxisRight:
             joyevent << "J" << stick << " RIGHT";
             break;
-
+*/
           default:
             joyevent << "J" << stick << " B" << button;
             break;
@@ -1389,10 +1441,12 @@ void EventHandler::setDefaultJoymap()
 
   // Left joystick
   i = 0 * kNumJoyButtons;
+/*
   myJoyTable[i + kJAxisUp]    = Event::JoystickZeroUp;
   myJoyTable[i + kJAxisDown]  = Event::JoystickZeroDown;
   myJoyTable[i + kJAxisLeft]  = Event::JoystickZeroLeft;
   myJoyTable[i + kJAxisRight] = Event::JoystickZeroRight;
+*/
   myJoyTable[i + 0]           = Event::JoystickZeroFire;
 
 #ifdef PSP
@@ -1414,10 +1468,12 @@ void EventHandler::setDefaultJoymap()
 
   // Right joystick
   i = 1 * kNumJoyButtons;
+/*
   myJoyTable[i + kJAxisUp]    = Event::JoystickOneUp;
   myJoyTable[i + kJAxisDown]  = Event::JoystickOneDown;
   myJoyTable[i + kJAxisLeft]  = Event::JoystickOneLeft;
   myJoyTable[i + kJAxisRight] = Event::JoystickOneRight;
+*/
   myJoyTable[i + 0]     = Event::JoystickOneFire;
 
   saveJoyMapping();

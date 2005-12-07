@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.3 2005-11-19 22:26:14 stephena Exp $
+// $Id: InputDialog.cxx,v 1.4 2005-12-07 02:33:56 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -181,6 +181,7 @@ void InputDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
+cerr << "InputDialog::handleKeyDown: " << ascii << endl;
   // Remap key events in remap mode, otherwise pass to listwidget
   if(myEventMapper->remapMode())
     myEventMapper->handleKeyDown(ascii, keycode, modifiers);
@@ -191,6 +192,7 @@ void InputDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleJoyDown(int stick, int button)
 {
+cerr << "InputDialog::handleJoyDown: stick = " << stick << ", button = " << button << endl;
   // Remap joystick buttons in remap mode, otherwise pass to listwidget
   if(myEventMapper->remapMode())
     myEventMapper->handleJoyDown(stick, button);

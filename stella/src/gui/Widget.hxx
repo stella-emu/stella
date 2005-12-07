@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.39 2005-09-30 00:53:30 stephena Exp $
+// $Id: Widget.hxx,v 1.40 2005-12-07 02:33:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,7 +72,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.39 2005-09-30 00:53:30 stephena Exp $
+  @version $Id: Widget.hxx,v 1.40 2005-12-07 02:33:56 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -95,6 +95,7 @@ class Widget : public GuiObject
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers)   { return false; }
     virtual void handleJoyDown(int stick, int button) {}
     virtual void handleJoyUp(int stick, int button) {}
+    virtual void handleJoyAxis(int stick, int axis, int value) {}
 
     void draw();
     void receivedFocus();

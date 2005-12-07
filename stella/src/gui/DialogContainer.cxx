@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.18 2005-08-31 19:15:10 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.19 2005-12-07 02:33:56 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -252,4 +252,12 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
     activeDialog->handleJoyDown(stick, button);
   else
     activeDialog->handleJoyUp(stick, button);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
+{
+cerr << "DialogContainer::handleJoyAxisEvent\n"
+     << "  stick = " << stick << ", axis = " << axis << ", value = " << value
+     << endl;
 }

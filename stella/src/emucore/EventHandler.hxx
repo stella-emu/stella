@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.58 2005-11-19 22:26:13 stephena Exp $
+// $Id: EventHandler.hxx,v 1.59 2005-12-07 02:33:56 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -55,10 +55,7 @@ enum {
 enum {
   kNumJoysticks  = 8,
   kNumJoyButtons = 24,
-  kJAxisUp       = kNumJoyButtons - 4,  // Upper 4 buttons are actually
-  kJAxisDown     = kNumJoyButtons - 3,  // directions
-  kJAxisLeft     = kNumJoyButtons - 2,
-  kJAxisRight    = kNumJoyButtons - 1
+  kNumJoyAxis    = 16
 };
 
 enum JoyType {
@@ -87,7 +84,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.58 2005-11-19 22:26:13 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.59 2005-12-07 02:33:56 stephena Exp $
 */
 class EventHandler
 {
@@ -296,6 +293,9 @@ class EventHandler
     */
     void handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state);
 
+    // FIXME - comment
+    void handleJoyAxisEvent(int stick, int axis, int value);
+
     /**
       Convert joystick motion events to simulated mouse motion events
 
@@ -356,8 +356,11 @@ class EventHandler
     // Array of key events, indexed by SDLKey
     Event::Type myKeyTable[SDLK_LAST];
 
-    // Array of joystick events
+    // Array of joystick button events
     Event::Type myJoyTable[kNumJoysticks * kNumJoyButtons];
+
+    // Array of joystick axis events
+    Event::Type myJoyAxisTable[kNumJoysticks][kNumJoyAxis][2];
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
