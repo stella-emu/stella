@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.19 2005-12-07 02:33:56 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.20 2005-12-07 20:46:49 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -257,7 +257,10 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
 {
-cerr << "DialogContainer::handleJoyAxisEvent\n"
-     << "  stick = " << stick << ", axis = " << axis << ", value = " << value
-     << endl;
+  if(myDialogStack.empty())
+    return;
+
+  // Send the event to the dialog box on the top of the stack
+  Dialog* activeDialog = myDialogStack.top();
+  activeDialog->handleJoyAxis(stick, axis, value);
 }

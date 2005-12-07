@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.119 2005-12-07 02:33:56 stephena Exp $
+// $Id: EventHandler.cxx,v 1.120 2005-12-07 20:46:49 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -116,6 +116,7 @@ EventHandler::EventHandler(OSystem* osystem)
   setSDLMappings();
   setKeymap();
   setJoymap();
+  setJoyAxisMap();
   setActionMappings();
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
@@ -771,7 +772,7 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseButtonEvent(SDL_Event& event, uInt8 state)
+void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   switch(myState)
@@ -915,7 +916,7 @@ void EventHandler::handleJoyMouse(uInt32 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
+void EventHandler::handleMouseWarp(int stick, int axis, int value)
 {
   if(value > JOY_DEADZONE)
     value -= JOY_DEADZONE;
@@ -955,7 +956,7 @@ void EventHandler::handleMouseWarp(uInt8 stick, uInt8 axis, Int16 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyEvent(uInt8 stick, uInt32 code, uInt8 state)
+void EventHandler::handleJoyEvent(int stick, int code, int state)
 {
   Event::Type event = myJoyTable[stick*kNumJoyButtons + code];
 
@@ -993,25 +994,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 
   // Determine if the events should be treated as discrete/digital
   // or continuous/analog values
-  bool analog = false;
-  switch((int)eventAxisNeg)
-  {
-    case Event::PaddleZeroResistance:
-    case Event::PaddleOneResistance:
-    case Event::PaddleTwoResistance:
-    case Event::PaddleThreeResistance:
-      analog = true;
-      break;
-  }
-  switch((int)eventAxisPos)
-  {
-    case Event::PaddleZeroResistance:
-    case Event::PaddleOneResistance:
-    case Event::PaddleTwoResistance:
-    case Event::PaddleThreeResistance:
-      analog = true;
-      break;
-  }
+  bool analog = eventIsAnalog(eventAxisNeg) || eventIsAnalog(eventAxisPos);
 
   // Analog vs. digital events treat the input values differently
   // A value of zero might mean that an action should be turned off
@@ -1039,7 +1022,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleEvent(Event::Type event, Int32 state)
+void EventHandler::handleEvent(Event::Type event, int state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
@@ -1191,15 +1174,16 @@ bool EventHandler::eventStateChange(Event::Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setActionMappings()
 {
-  // Fill the ActionList with the current key and joystick mappings
-  for(Int32 i = 0; i < kActionListSize; ++i)
-  {
-    uInt32 j;
+  int i, j, stick, axis, dir;
+  ostringstream buf;
 
+  // Fill the ActionList with the current key and joystick mappings
+  for(i = 0; i < kActionListSize; ++i)
+  {
     Event::Type event = ourActionList[i].event;
     ourActionList[i].key = "None";
     string key = "";
-    for(j = 0; j < SDLK_LAST; ++j)   // size of myKeyTable
+    for(j = 0; j < SDLK_LAST; ++j)   // key mapping
     {
       if(myKeyTable[j] == event)
       {
@@ -1209,41 +1193,43 @@ void EventHandler::setActionMappings()
           key = key + ", " + ourSDLMapping[j];
       }
     }
-    for(j = 0; j < kNumJoysticks * kNumJoyButtons; ++j)
+    // Joystick button mapping/labeling
+    for(stick = 0; stick < kNumJoysticks * kNumJoyButtons; ++stick)
     {
       if(myJoyTable[j] == event)
       {
-        ostringstream joyevent;
-        uInt32 stick  = j / kNumJoyButtons;
-        uInt32 button = j % kNumJoyButtons;
-
-        switch(button)
-        {
-/*
-          case kJAxisUp:
-            joyevent << "J" << stick << " UP";
-            break;
-
-          case kJAxisDown:
-            joyevent << "J" << stick << " DOWN";
-            break;
-
-          case kJAxisLeft:
-            joyevent << "J" << stick << " LEFT";
-            break;
-
-          case kJAxisRight:
-            joyevent << "J" << stick << " RIGHT";
-            break;
-*/
-          default:
-            joyevent << "J" << stick << " B" << button;
-            break;
-        }
+        buf.str("");
+        buf << "J" << (j / kNumJoyButtons) << " B" << (j % kNumJoyButtons);
         if(key == "")
-          key = key + joyevent.str();
+          key = key + buf.str();
         else
-          key = key + ", " + joyevent.str();
+          key = key + ", " + buf.str();
+      }
+    }
+    // Joystick axis mapping/labeling
+    for(stick = 0; stick < kNumJoysticks; ++stick)
+    {
+      for(axis = 0; axis < kNumJoyAxis; ++axis)
+      {
+        for(dir = 0; dir < 2; ++dir)
+        {
+          if(myJoyAxisTable[stick][axis][dir] == event)
+          {
+            buf.str("");
+            buf << "J" << stick << " axis " << axis;
+            if(eventIsAnalog(event))
+              buf << " abs";
+            else if(dir == 0)
+              buf << " neg";
+            else
+              buf << " pos";
+
+            if(key == "")
+              key = key + buf.str();
+            else
+              key = key + ", " + buf.str();
+          }
+        }
       }
     }
 
@@ -1300,7 +1286,26 @@ void EventHandler::setJoymap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addKeyMapping(Event::Type event, uInt16 key)
+void EventHandler::setJoyAxisMap()
+{
+  string list = myOSystem->settings().getString("joyaxismap");
+  IntArray map;
+
+  if(isValidList(list, map, kNumJoysticks*kNumJoyAxis*2))
+  {
+    // Fill the joyaxismap table with events
+    int idx = 0;
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyAxis; ++j)
+        for(int k = 0; k < 2; ++k)
+          myJoyAxisTable[i][j][k] = (Event::Type) map[idx++];
+  }
+  else
+    setDefaultJoyAxisMap();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::addKeyMapping(Event::Type event, int key)
 {
   // These keys cannot be remapped.
   if(key == SDLK_TAB)
@@ -1313,18 +1318,27 @@ void EventHandler::addKeyMapping(Event::Type event, uInt16 key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addJoyMapping(Event::Type event, uInt8 stick, uInt32 code)
+void EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 {
-  myJoyTable[stick * kNumJoyButtons + code] = event;
+  myJoyTable[stick * kNumJoyButtons + button] = event;
   saveJoyMapping();
 
   setActionMappings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
+                                     int value)
+{
+cerr << "Remap event " << (int) event
+     << " to stick " << stick << ", axis = " << axis << ", value = " << value
+     << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event)
 {
-  uInt32 i;
+  int i, j, k;
 
   // Erase the KeyEvent arrays
   for(i = 0; i < SDLK_LAST; ++i)
@@ -1338,6 +1352,13 @@ void EventHandler::eraseMapping(Event::Type event)
       myJoyTable[i] = Event::NoType;
   saveJoyMapping();
 
+  // Erase the JoyAxisEvent array
+  for(i = 0; i < kNumJoysticks; ++i)
+    for(j = 0; j < kNumJoyAxis; ++j)
+      for(k = 0; k < 2; ++k)
+        myJoyAxisTable[i][j][k] = Event::NoType;
+  saveJoyAxisMapping();
+
   setActionMappings();
 }
 
@@ -1346,6 +1367,7 @@ void EventHandler::setDefaultMapping()
 {
   setDefaultKeymap();
   setDefaultJoymap();
+  setDefaultJoyAxisMap();
 
   setActionMappings();
 }
@@ -1441,12 +1463,6 @@ void EventHandler::setDefaultJoymap()
 
   // Left joystick
   i = 0 * kNumJoyButtons;
-/*
-  myJoyTable[i + kJAxisUp]    = Event::JoystickZeroUp;
-  myJoyTable[i + kJAxisDown]  = Event::JoystickZeroDown;
-  myJoyTable[i + kJAxisLeft]  = Event::JoystickZeroLeft;
-  myJoyTable[i + kJAxisRight] = Event::JoystickZeroRight;
-*/
   myJoyTable[i + 0]           = Event::JoystickZeroFire;
 
 #ifdef PSP
@@ -1468,15 +1484,37 @@ void EventHandler::setDefaultJoymap()
 
   // Right joystick
   i = 1 * kNumJoyButtons;
-/*
-  myJoyTable[i + kJAxisUp]    = Event::JoystickOneUp;
-  myJoyTable[i + kJAxisDown]  = Event::JoystickOneDown;
-  myJoyTable[i + kJAxisLeft]  = Event::JoystickOneLeft;
-  myJoyTable[i + kJAxisRight] = Event::JoystickOneRight;
-*/
   myJoyTable[i + 0]     = Event::JoystickOneFire;
 
   saveJoyMapping();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setDefaultJoyAxisMap()
+{
+  // Erase all mappings
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyAxis; ++j)
+      for(int k = 0; k < 2; ++k)
+        myJoyAxisTable[i][j][k] = Event::NoType;
+
+  // Left joystick left/right directions (assume joystick zero)
+  myJoyAxisTable[0][0][0] = Event::JoystickZeroLeft;
+  myJoyAxisTable[0][0][1] = Event::JoystickZeroRight;
+
+  // Left joystick up/down directions (assume joystick zero)
+  myJoyAxisTable[0][1][0] = Event::JoystickZeroUp;
+  myJoyAxisTable[0][1][1] = Event::JoystickZeroDown;
+
+  // Right joystick left/right directions (assume joystick one)
+  myJoyAxisTable[1][0][0] = Event::JoystickOneLeft;
+  myJoyAxisTable[1][0][1] = Event::JoystickOneRight;
+
+  // Right joystick left/right directions (assume joystick one)
+  myJoyAxisTable[1][1][0] = Event::JoystickOneUp;
+  myJoyAxisTable[1][1][1] = Event::JoystickOneDown;
+
+  saveJoyAxisMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1506,6 +1544,21 @@ void EventHandler::saveJoyMapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveJoyAxisMapping()
+{
+  // Iterate through the joyaxismap table and create a colon-separated list
+  // Prepend the event count, so we can check it on next load
+  ostringstream buf;
+  buf << Event::LastType << ":";
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyAxis; ++j)
+      for(int k = 0; k < 2; ++k)
+        buf << myJoyAxisTable[i][j][k] << ":";
+
+  myOSystem->settings().setString("joyaxismap", buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length)
 {
   string key;
@@ -1527,6 +1580,23 @@ bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length)
     return true;
   else
     return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline bool EventHandler::eventIsAnalog(Event::Type event)
+{
+  bool analog = false;
+  switch((int)event)
+  {
+    case Event::PaddleZeroResistance:
+    case Event::PaddleOneResistance:
+    case Event::PaddleTwoResistance:
+    case Event::PaddleThreeResistance:
+      analog = true;
+      break;
+  }
+
+  return analog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

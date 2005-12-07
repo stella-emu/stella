@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.20 2005-08-11 19:12:39 stephena Exp $
+// $Id: Dialog.hxx,v 1.21 2005-12-07 20:46:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.20 2005-08-11 19:12:39 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.21 2005-12-07 20:46:49 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -80,6 +80,7 @@ class Dialog : public GuiObject
     virtual void handleMouseMoved(int x, int y, int button);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyUp(int stick, int button);
+    virtual void handleJoyAxis(int stick, int axis, int value);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
     virtual void handleScreenChanged() {}
 	

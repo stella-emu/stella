@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.33 2005-11-13 22:25:47 stephena Exp $
+// $Id: Dialog.cxx,v 1.34 2005-12-07 20:46:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -380,6 +380,14 @@ void Dialog::handleJoyUp(int stick, int button)
   // Focused widget receives joystick events
   if(_focusedWidget)
     _focusedWidget->handleJoyUp(stick, button);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::handleJoyAxis(int stick, int axis, int value)
+{
+  // Focused widget receives joystick events
+  if(_focusedWidget)
+    _focusedWidget->handleJoyAxis(stick, axis, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
