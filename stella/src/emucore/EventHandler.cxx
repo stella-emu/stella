@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.121 2005-12-08 01:12:07 stephena Exp $
+// $Id: EventHandler.cxx,v 1.122 2005-12-08 19:01:38 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -95,10 +95,15 @@ EventHandler::EventHandler(OSystem* osystem)
     for(j = 0; j < kNumJoyButtons; ++j)
       myJoyTable[i][j] = Event::NoType;
 
-  // Erase the joystick axis mapping array
+  // Erase the joystick axis mapping and type arrays
   for(i = 0; i < kNumJoysticks; ++i)
+  {
     for(j = 0; j < kNumJoyAxis; ++j)
+    {
       myJoyAxisTable[i][j][0] = myJoyAxisTable[i][j][1] = Event::NoType;
+      myJoyAxisType[i][j] = JA_DIGITAL;
+    }
+  }
 
   // Erase the Message array
   for(i = 0; i < Event::LastType; ++i)
@@ -202,9 +207,9 @@ void EventHandler::refreshDisplay()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setupJoysticks()
 {
-#ifdef JOYSTICK_SUPPORT
   bool showinfo = myOSystem->settings().getBool("showinfo");
 
+#ifdef JOYSTICK_SUPPORT
   // Keep track of how many Stelladaptors we've found
   uInt8 saCount = 0;
 
@@ -221,7 +226,7 @@ void EventHandler::setupJoysticks()
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
     if(showinfo)
-      cout << "No joysticks present, use the keyboard." << endl;
+      cout << "No joysticks present." << endl;
     return;
   }
 
@@ -273,6 +278,9 @@ void EventHandler::setupJoysticks()
   const string& sa1 = myOSystem->settings().getString("sa1");
   const string& sa2 = myOSystem->settings().getString("sa2");
   mapStelladaptors(sa1, sa2);
+#else
+  if(showinfo)
+    cout << "No joysticks present." << endl;
 #endif
 }
 
@@ -647,7 +655,7 @@ void EventHandler::poll(uInt32 time)
 
       case SDL_JOYAXISMOTION:
       {
-        if(event.jbutton.which >= kNumJoysticks)
+        if(event.jaxis.which >= kNumJoysticks)
           break;
 
         // Stelladaptors handle axis differently than regular joysticks
@@ -656,7 +664,7 @@ void EventHandler::poll(uInt32 time)
         {
           case JT_REGULAR:
           {
-            int stick = event.jbutton.which;
+            int stick = event.jaxis.which;
             int axis  = event.jaxis.axis;
             int value = event.jaxis.value;
 
@@ -991,33 +999,74 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
   Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
 
-  // Determine if the events should be treated as discrete/digital
-  // or continuous/analog values
-  bool analog = eventIsAnalog(eventAxisNeg) || eventIsAnalog(eventAxisPos);
+  // Determine what type of axis we're dealing with
+  // Figure out the actual type if it's undefined
+  JoyAxisType type = myJoyAxisType[stick][axis];
+  if(type == JA_NONE)
+  {
+    // TODO - will this always work??
+    if((value > JOY_DEADZONE && value < 32667 - JOY_DEADZONE) ||
+       (value < -JOY_DEADZONE && value > -32767 - JOY_DEADZONE))
+      type = myJoyAxisType[stick][axis] = JA_ANALOG;
+    else 
+      type = myJoyAxisType[stick][axis] = JA_DIGITAL;
+  }
 
-  // Analog vs. digital events treat the input values differently
-  // A value of zero might mean that an action should be turned off
-  // (this is the case for all events that are togglable).
-  // On the other hand, if the event represents a continuous analog
-  // value, then a zero is just another valid number in the range.
-  if(!analog)
+  // Make use of an analog axis/stick for those events that are analog
+  // in nature (currently only paddle resistance).
+  // If an event is analog in nature but the axis is digital, then
+  // emulate the analog values.
+  switch((int)type)
   {
-    if(value == 0)
-    {
-      // Turn off both events, since we don't know exactly which one
-      // was previously activated.
-      handleEvent(eventAxisNeg, 0);
-      handleEvent(eventAxisPos, 0);
-    }
-    else if(value < 0)
-      handleEvent(eventAxisNeg, 1);
-    else
-      handleEvent(eventAxisPos, 1);
+    case JA_ANALOG:
+      switch((int)eventAxisNeg)
+      {
+        case Event::PaddleZeroResistance:
+        case Event::PaddleOneResistance:
+        case Event::PaddleTwoResistance:
+        case Event::PaddleThreeResistance:
+          cerr << "paddle resistance from analog axis\n";
+          return;
+          break;
+      }
+      break;
+
+    case JA_DIGITAL:
+      switch((int)eventAxisNeg)
+      {
+        case Event::PaddleZeroResistance:
+        case Event::PaddleOneResistance:
+        case Event::PaddleTwoResistance:
+        case Event::PaddleThreeResistance:
+          cerr << "paddle resistance - from digital axis\n";
+          return;
+          break;
+      }
+      switch((int)eventAxisPos)
+      {
+        case Event::PaddleZeroResistance:
+        case Event::PaddleOneResistance:
+        case Event::PaddleTwoResistance:
+        case Event::PaddleThreeResistance:
+          cerr << "paddle resistance + from digital axis\n";
+          return;
+          break;
+      }
+      break;
   }
+
+  // Otherwise, treat values as digital
+  if(value == 0)
+  {
+    // Turn off both events, since we don't know exactly which one
+    // was previously activated.
+    handleEvent(eventAxisNeg, 0);
+    handleEvent(eventAxisPos, 0);
+  }
+  else if(value < 0)
+    handleEvent(eventAxisNeg, 1);
   else
-  {
-    cerr << "do paddle event for " << value << endl;
-  }
+    handleEvent(eventAxisPos, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
