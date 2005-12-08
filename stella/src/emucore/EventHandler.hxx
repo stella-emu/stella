@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.60 2005-12-07 20:46:49 stephena Exp $
+// $Id: EventHandler.hxx,v 1.61 2005-12-08 01:12:07 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -84,7 +84,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.60 2005-12-07 20:46:49 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.61 2005-12-08 01:12:07 stephena Exp $
 */
 class EventHandler
 {
@@ -228,13 +228,6 @@ class EventHandler
       @param showmessage  Print a message to the framebuffer
     */
     void setPaddleMode(uInt32 num, bool showmessage = false);
-
-    /**
-      The list of joysticks found by SDL.
-
-      @return  List of joystick names in SDL-enumerated order
-    */
-    const StringList& joystickNames() { return ourJoystickNames; }
 
     inline bool kbdAlt(int mod)
     {
@@ -384,7 +377,7 @@ class EventHandler
     Event::Type myKeyTable[SDLK_LAST];
 
     // Array of joystick button events
-    Event::Type myJoyTable[kNumJoysticks * kNumJoyButtons];
+    Event::Type myJoyTable[kNumJoysticks][kNumJoyButtons];
 
     // Array of joystick axis events
     Event::Type myJoyAxisTable[kNumJoysticks][kNumJoyAxis][2];
@@ -450,9 +443,6 @@ class EventHandler
 
     // Type of device on each controller port (based on ROM properties)
     Controller::Type myController[2];
-
-    // List of names of all joysticks found by SDL
-    StringList ourJoystickNames;
 
     // Lookup table for paddle resistance events
     static const Event::Type Paddle_Resistance[4];

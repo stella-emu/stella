@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.120 2005-12-07 20:46:49 stephena Exp $
+// $Id: EventHandler.cxx,v 1.121 2005-12-08 01:12:07 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -91,8 +91,9 @@ EventHandler::EventHandler(OSystem* osystem)
   }
 
   // Erase the joystick button mapping array
-  for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
-    myJoyTable[i] = Event::NoType;
+  for(i = 0; i < kNumJoysticks; ++i)
+    for(j = 0; j < kNumJoyButtons; ++j)
+      myJoyTable[i][j] = Event::NoType;
 
   // Erase the joystick axis mapping array
   for(i = 0; i < kNumJoysticks; ++i)
@@ -133,8 +134,6 @@ EventHandler::EventHandler(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::~EventHandler()
 {
-  ourJoystickNames.clear();
-
   if(myEvent)
     delete myEvent;
 
@@ -956,12 +955,12 @@ void EventHandler::handleMouseWarp(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyEvent(int stick, int code, int state)
+void EventHandler::handleJoyEvent(int stick, int button, int state)
 {
-  Event::Type event = myJoyTable[stick*kNumJoyButtons + code];
+  Event::Type event = myJoyTable[stick][button];
 
   // Joystick button zero acts as left mouse button and cannot be remapped
-  if(myState != S_EMULATE && code == JOYMOUSE_LEFT_BUTTON &&
+  if(myState != S_EMULATE && button == JOYMOUSE_LEFT_BUTTON &&
      myEmulateMouseFlag)
   {
     // This button acts as mouse button zero, and can never be remapped
@@ -982,7 +981,7 @@ void EventHandler::handleJoyEvent(int stick, int code, int state)
   if(myState == S_EMULATE)
     handleEvent(event, state);
   else if(myOverlay != NULL)
-    myOverlay->handleJoyEvent(stick, code, state);
+    myOverlay->handleJoyEvent(stick, button, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1174,7 +1173,7 @@ bool EventHandler::eventStateChange(Event::Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setActionMappings()
 {
-  int i, j, stick, axis, dir;
+  int i, j, stick, button, axis, dir;
   ostringstream buf;
 
   // Fill the ActionList with the current key and joystick mappings
@@ -1194,16 +1193,19 @@ void EventHandler::setActionMappings()
       }
     }
     // Joystick button mapping/labeling
-    for(stick = 0; stick < kNumJoysticks * kNumJoyButtons; ++stick)
+    for(stick = 0; stick < kNumJoysticks; ++stick)
     {
-      if(myJoyTable[j] == event)
+      for(button = 0; button < kNumJoyButtons; ++button)
       {
-        buf.str("");
-        buf << "J" << (j / kNumJoyButtons) << " B" << (j % kNumJoyButtons);
-        if(key == "")
-          key = key + buf.str();
-        else
-          key = key + ", " + buf.str();
+        if(myJoyTable[stick][button] == event)
+        {
+          buf.str("");
+          buf << "J" << stick << " B" << button;
+          if(key == "")
+            key = key + buf.str();
+          else
+            key = key + ", " + buf.str();
+        }
       }
     }
     // Joystick axis mapping/labeling
@@ -1278,8 +1280,10 @@ void EventHandler::setJoymap()
   if(isValidList(list, map, kNumJoysticks*kNumJoyButtons))
   {
     // Fill the joymap table with events
-    for(Int32 i = 0; i < kNumJoysticks*kNumJoyButtons; ++i)
-      myJoyTable[i] = (Event::Type) map[i];
+    int idx = 0;
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyAxis; ++j)
+        myJoyTable[i][j] = (Event::Type) map[idx++];
   }
   else
     setDefaultJoymap();
@@ -1320,7 +1324,7 @@ void EventHandler::addKeyMapping(Event::Type event, int key)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 {
-  myJoyTable[stick * kNumJoyButtons + button] = event;
+  myJoyTable[stick][button] = event;
   saveJoyMapping();
 
   setActionMappings();
@@ -1330,9 +1334,11 @@ void EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
                                      int value)
 {
-cerr << "Remap event " << (int) event
-     << " to stick " << stick << ", axis = " << axis << ", value = " << value
-     << endl;
+  int dir = value > 0;
+  myJoyAxisTable[stick][axis][dir] = event;
+  saveJoyAxisMapping();
+
+  setActionMappings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1347,16 +1353,18 @@ void EventHandler::eraseMapping(Event::Type event)
   saveKeyMapping();
 
   // Erase the JoyEvent array
-  for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
-    if(myJoyTable[i] == event)
-      myJoyTable[i] = Event::NoType;
+  for(i = 0; i < kNumJoysticks; ++i)
+    for(j = 0; j < kNumJoyButtons; ++j)
+      if(myJoyTable[i][j] == event)
+        myJoyTable[i][j] = Event::NoType;
   saveJoyMapping();
 
   // Erase the JoyAxisEvent array
   for(i = 0; i < kNumJoysticks; ++i)
     for(j = 0; j < kNumJoyAxis; ++j)
       for(k = 0; k < 2; ++k)
-        myJoyAxisTable[i][j][k] = Event::NoType;
+        if(myJoyAxisTable[i][j][k] == event)
+          myJoyAxisTable[i][j][k] = Event::NoType;
   saveJoyAxisMapping();
 
   setActionMappings();
@@ -1455,36 +1463,33 @@ void EventHandler::setDefaultKeymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultJoymap()
 {
-  uInt32 i;
-
   // Erase all mappings
-  for(i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
-    myJoyTable[i] = Event::NoType;
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyButtons; ++j)
+      myJoyTable[i][j] = Event::NoType;
 
-  // Left joystick
-  i = 0 * kNumJoyButtons;
-  myJoyTable[i + 0]           = Event::JoystickZeroFire;
+  // Left joystick (assume joystick zero, button zero)
+  myJoyTable[0][0]   = Event::JoystickZeroFire;
+
+  // Right joystick (assume joystick one, button zero)
+  myJoyTable[1][0]   = Event::JoystickOneFire;
 
 #ifdef PSP
-  myJoyTable[i + 0]  = Event::TakeSnapshot;      // Triangle
-  myJoyTable[i + 1]  = Event::LoadState;         // Circle
-  myJoyTable[i + 2]  = Event::JoystickZeroFire;  // Cross
-  myJoyTable[i + 3]  = Event::SaveState;         // Square
-  myJoyTable[i + 4]  = Event::MenuMode;          // Left trigger
-  myJoyTable[i + 5]  = Event::CmdMenuMode;       // Right trigger
-  myJoyTable[i + 6]  = Event::JoystickZeroDown;  // Down
-  myJoyTable[i + 7]  = Event::JoystickZeroLeft;  // Left
-  myJoyTable[i + 8]  = Event::JoystickZeroUp;    // Up
-  myJoyTable[i + 9]  = Event::JoystickZeroRight; // Right
-  myJoyTable[i + 10] = Event::ConsoleSelect;     // Select
-  myJoyTable[i + 11] = Event::ConsoleReset;      // Start
-  myJoyTable[i + 12] = Event::NoType;            // Home
-  myJoyTable[i + 13] = Event::NoType;            // Hold
+  myJoyTable[0][0]  = Event::TakeSnapshot;      // Triangle
+  myJoyTable[0][1]  = Event::LoadState;         // Circle
+  myJoyTable[0][2]  = Event::JoystickZeroFire;  // Cross
+  myJoyTable[0][3]  = Event::SaveState;         // Square
+  myJoyTable[0][4]  = Event::MenuMode;          // Left trigger
+  myJoyTable[0][5]  = Event::CmdMenuMode;       // Right trigger
+  myJoyTable[0][6]  = Event::JoystickZeroDown;  // Down
+  myJoyTable[0][7]  = Event::JoystickZeroLeft;  // Left
+  myJoyTable[0][8]  = Event::JoystickZeroUp;    // Up
+  myJoyTable[0][9]  = Event::JoystickZeroRight; // Right
+  myJoyTable[0][10] = Event::ConsoleSelect;     // Select
+  myJoyTable[0][11] = Event::ConsoleReset;      // Start
+  myJoyTable[0][12] = Event::NoType;            // Home
+  myJoyTable[0][13] = Event::NoType;            // Hold
 #endif
-
-  // Right joystick
-  i = 1 * kNumJoyButtons;
-  myJoyTable[i + 0]     = Event::JoystickOneFire;
 
   saveJoyMapping();
 }
@@ -1535,12 +1540,13 @@ void EventHandler::saveJoyMapping()
 {
   // Iterate through the joymap table and create a colon-separated list
   // Prepend the event count, so we can check it on next load
-  ostringstream joybuf;
-  joybuf << Event::LastType << ":";
-  for(Int32 i = 0; i < kNumJoysticks * kNumJoyButtons; ++i)
-    joybuf << myJoyTable[i] << ":";
+  ostringstream buf;
+  buf << Event::LastType << ":";
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyButtons; ++j)
+      buf << myJoyTable[i][j] << ":";
 
-  myOSystem->settings().setString("joymap", joybuf.str());
+  myOSystem->settings().setString("joymap", buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
