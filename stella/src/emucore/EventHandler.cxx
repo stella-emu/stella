@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.122 2005-12-08 19:01:38 stephena Exp $
+// $Id: EventHandler.cxx,v 1.123 2005-12-08 22:30:53 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -101,7 +101,7 @@ EventHandler::EventHandler(OSystem* osystem)
     for(j = 0; j < kNumJoyAxis; ++j)
     {
       myJoyAxisTable[i][j][0] = myJoyAxisTable[i][j][1] = Event::NoType;
-      myJoyAxisType[i][j] = JA_DIGITAL;
+      myJoyAxisType[i][j] = JA_NONE;
     }
   }
 
@@ -999,17 +999,17 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
   Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
 
+#if 0  // FIXME - This isn't ready for production use just yet ...
   // Determine what type of axis we're dealing with
   // Figure out the actual type if it's undefined
   JoyAxisType type = myJoyAxisType[stick][axis];
   if(type == JA_NONE)
   {
     // TODO - will this always work??
-    if((value > JOY_DEADZONE && value < 32667 - JOY_DEADZONE) ||
-       (value < -JOY_DEADZONE && value > -32767 - JOY_DEADZONE))
-      type = myJoyAxisType[stick][axis] = JA_ANALOG;
-    else 
+    if(value > 32667 - JOY_DEADZONE || value < -32767 + JOY_DEADZONE)
       type = myJoyAxisType[stick][axis] = JA_DIGITAL;
+    else 
+      type = myJoyAxisType[stick][axis] = JA_ANALOG;
   }
 
   // Make use of an analog axis/stick for those events that are analog
@@ -1025,9 +1025,27 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
         case Event::PaddleOneResistance:
         case Event::PaddleTwoResistance:
         case Event::PaddleThreeResistance:
-          cerr << "paddle resistance from analog axis\n";
+        {
+          if(value > 0) break;
+          int resistance = (int) (1000000.0 * -value / 32767);
+          myEvent->set(eventAxisNeg, resistance);
           return;
           break;
+        }
+      }
+      switch((int)eventAxisPos)
+      {
+        case Event::PaddleZeroResistance:
+        case Event::PaddleOneResistance:
+        case Event::PaddleTwoResistance:
+        case Event::PaddleThreeResistance:
+        {
+          if(value < 0) return;
+          int resistance = (int) (1000000.0 * value / 32767);
+          myEvent->set(eventAxisPos, resistance);
+          return;
+          break;
+        }
       }
       break;
 
@@ -1038,6 +1056,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
         case Event::PaddleOneResistance:
         case Event::PaddleTwoResistance:
         case Event::PaddleThreeResistance:
+          if(value > 0) break;
           cerr << "paddle resistance - from digital axis\n";
           return;
           break;
@@ -1048,12 +1067,14 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
         case Event::PaddleOneResistance:
         case Event::PaddleTwoResistance:
         case Event::PaddleThreeResistance:
+          if(value < 0) return;
           cerr << "paddle resistance + from digital axis\n";
           return;
           break;
       }
       break;
   }
+#endif
 
   // Otherwise, treat values as digital
   if(value == 0)
@@ -2205,31 +2226,31 @@ ActionList EventHandler::ourActionList[kActionListSize] = {
   { Event::DrivingOneClockwise,         "P2 Driving Controller Right",     "" },
   { Event::DrivingOneFire,              "P2 Driving Controller Fire",      "" },
 
-  { Event::KeyboardZero1,               "P1 GamePad 1",                    "" },
-  { Event::KeyboardZero2,               "P1 GamePad 2",                    "" },
-  { Event::KeyboardZero3,               "P1 GamePad 3",                    "" },
-  { Event::KeyboardZero4,               "P1 GamePad 4",                    "" },
-  { Event::KeyboardZero5,               "P1 GamePad 5",                    "" },
-  { Event::KeyboardZero6,               "P1 GamePad 6",                    "" },
-  { Event::KeyboardZero7,               "P1 GamePad 7",                    "" },
-  { Event::KeyboardZero8,               "P1 GamePad 8",                    "" },
-  { Event::KeyboardZero9,               "P1 GamePad 9",                    "" },
-  { Event::KeyboardZeroStar,            "P1 GamePad *",                    "" },
-  { Event::KeyboardZero0,               "P1 GamePad 0",                    "" },
-  { Event::KeyboardZeroPound,           "P1 GamePad #",                    "" },
+  { Event::KeyboardZero1,               "P1 KeyPad 1",                     "" },
+  { Event::KeyboardZero2,               "P1 KeyPad 2",                     "" },
+  { Event::KeyboardZero3,               "P1 KeyPad 3",                     "" },
+  { Event::KeyboardZero4,               "P1 KeyPad 4",                     "" },
+  { Event::KeyboardZero5,               "P1 KeyPad 5",                     "" },
+  { Event::KeyboardZero6,               "P1 KeyPad 6",                     "" },
+  { Event::KeyboardZero7,               "P1 KeyPad 7",                     "" },
+  { Event::KeyboardZero8,               "P1 KeyPad 8",                     "" },
+  { Event::KeyboardZero9,               "P1 KeyPad 9",                     "" },
+  { Event::KeyboardZeroStar,            "P1 KeyPad *",                     "" },
+  { Event::KeyboardZero0,               "P1 KeyPad 0",                     "" },
+  { Event::KeyboardZeroPound,           "P1 KeyPad #",                     "" },
 
-  { Event::KeyboardOne1,                "P2 GamePad 1",                    "" },
-  { Event::KeyboardOne2,                "P2 GamePad 2",                    "" },
-  { Event::KeyboardOne3,                "P2 GamePad 3",                    "" },
-  { Event::KeyboardOne4,                "P2 GamePad 4",                    "" },
-  { Event::KeyboardOne5,                "P2 GamePad 5",                    "" },
-  { Event::KeyboardOne6,                "P2 GamePad 6",                    "" },
-  { Event::KeyboardOne7,                "P2 GamePad 7",                    "" },
-  { Event::KeyboardOne8,                "P2 GamePad 8",                    "" },
-  { Event::KeyboardOne9,                "P2 GamePad 9",                    "" },
-  { Event::KeyboardOneStar,             "P2 GamePad *",                    "" },
-  { Event::KeyboardOne0,                "P2 GamePad 0",                    "" },
-  { Event::KeyboardOnePound,            "P2 GamePad #",                    "" }
+  { Event::KeyboardOne1,                "P2 KeyPad 1",                     "" },
+  { Event::KeyboardOne2,                "P2 KeyPad 2",                     "" },
+  { Event::KeyboardOne3,                "P2 KeyPad 3",                     "" },
+  { Event::KeyboardOne4,                "P2 KeyPad 4",                     "" },
+  { Event::KeyboardOne5,                "P2 KeyPad 5",                     "" },
+  { Event::KeyboardOne6,                "P2 KeyPad 6",                     "" },
+  { Event::KeyboardOne7,                "P2 KeyPad 7",                     "" },
+  { Event::KeyboardOne8,                "P2 KeyPad 8",                     "" },
+  { Event::KeyboardOne9,                "P2 KeyPad 9",                     "" },
+  { Event::KeyboardOneStar,             "P2 KeyPad *",                     "" },
+  { Event::KeyboardOne0,                "P2 KeyPad 0",                     "" },
+  { Event::KeyboardOnePound,            "P2 KeyPad #",                     "" }
 };
 #else
 ActionList EventHandler::ourActionList[kActionListSize];
