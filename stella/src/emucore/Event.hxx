@@ -13,20 +13,21 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.14 2005-12-09 01:16:13 stephena Exp $
+// $Id: Event.hxx,v 1.15 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
 #define EVENT_HXX
 
 class Event;
+class Serializer;
 
 #include "Array.hxx"
 #include "bspf.hxx"
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.14 2005-12-09 01:16:13 stephena Exp $
+  @version $Id: Event.hxx,v 1.15 2005-12-09 19:09:49 stephena Exp $
 */
 class Event
 {
@@ -106,11 +107,6 @@ class Event
     virtual void clear();
 
     /**
-      Returns the history for this event
-    */
-    virtual const IntArray& history() { return myEventHistory; }
-
-    /**
       Start/stop recording events to the event history
 
       @param enable  Start or stop recording
@@ -121,6 +117,19 @@ class Event
       Indicate that a new frame has been processed
     */
     virtual void nextFrame();
+
+    /**
+      Answers if we're in recording mode
+    */
+    virtual bool isRecording() { return myEventRecordFlag; }
+
+    /**
+      Saves the current event history to the given Serializer
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    virtual bool save(Serializer& out);
 
   protected:
     // Number of event types there are

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.5 2005-10-29 18:11:29 stephena Exp $
+// $Id: Deserializer.cxx,v 1.6 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #include <iostream>
@@ -43,7 +43,7 @@ bool Deserializer::open(const string& fileName)
   close();
   myStream = new ifstream(fileName.c_str(), ios::in | ios::binary);
 
-  return (myStream && myStream->is_open());
+  return isOpen();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,6 +57,12 @@ void Deserializer::close(void)
     delete myStream;
     myStream = (ifstream*) 0;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Deserializer::isOpen(void)
+{
+  return myStream && myStream->is_open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

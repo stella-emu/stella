@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.13 2005-07-09 23:44:08 urchlay Exp $
+// $Id: System.cxx,v 1.14 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -54,10 +54,6 @@ System::System(uInt16 n, uInt16 m)
     setPageAccess(page, access);
   }
 
-  // Set up (de)serializer in case we are asked to save/load state
-  serializer = new Serializer();
-  deserializer = new Deserializer();
-
   // Bus starts out unlocked (in other words, peek() changes myDataBusState)
   myDataBusLocked = false;
 }
@@ -76,12 +72,6 @@ System::~System()
 
   // Free my page access table
   delete[] myPageAccessTable;
-
-  // Free the serializer stuff
-  if(serializer)
-    delete serializer;
-  if(deserializer)
-    delete deserializer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,11 +125,9 @@ void System::attach(TIA* tia)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::save(Serializer& out)
 {
-  string name = "System";
-
   try
   {
-    out.putString(name);
+    out.putString("System");
     out.putLong(myCycles);
   }
   catch(char *msg)
@@ -149,7 +137,7 @@ bool System::save(Serializer& out)
   }
   catch(...)
   {
-    cerr << "Unknown error in save state for " << name << endl;
+    cerr << "Unknown error in save state for \'System\'" << endl;
     return false;
   }
 
@@ -159,11 +147,9 @@ bool System::save(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::load(Deserializer& in)
 {
-  string name = "System";
-
   try
   {
-    if(in.getString() != name)
+    if(in.getString() != "System")
       return false;
 
     myCycles = (uInt32) in.getLong();
@@ -175,7 +161,7 @@ bool System::load(Deserializer& in)
   }
   catch(...)
   {
-    cerr << "Unknown error in load state for " << name << endl;
+    cerr << "Unknown error in load state for \'System\'" << endl;
     return false;
   }
 
@@ -217,91 +203,58 @@ const System::PageAccess& System::getPageAccess(uInt16 page)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int System::saveState(const string& fileName, const string& md5sum)
+bool System::saveState(const string& md5sum, Serializer& out)
 {
   // Open the file as a new Serializer
-  if(!serializer->open(fileName))
-  {
-    serializer->close();
-    return 2;
-  }
+  if(!out.isOpen())
+    return false;
 
   // Prepend the state file with the md5sum of this cartridge
   // This is the first defensive check for an invalid state file
-  serializer->putString(md5sum);
+  out.putString(md5sum);
 
   // First save state for this system
-  if(!save(*serializer))
-  {
-    serializer->close();
-    return 3;
-  }
+  if(!save(out))
+    return false;
 
   // Next, save state for the CPU
-  if(!myM6502->save(*serializer))
-  {
-    serializer->close();
-    return 3;
-  }
+  if(!myM6502->save(out))
+    return false;
 
   // Now save the state of each device
   for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-  {
-    if(!myDevices[i]->save(*serializer))
-    {
-      serializer->close();
-      return 3;
-    }
-  }
+    if(!myDevices[i]->save(out))
+      return false;
 
-  serializer->close();
-  return 1;  // success
+  return true;  // success
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int System::loadState(const string &fileName, const string& md5sum)
+bool System::loadState(const string& md5sum, Deserializer& in)
 {
   // Open the file as a new Deserializer
-  if(!deserializer->open(fileName))
-  {
-    deserializer->close();
-    return 2;
-  }
+  if(!in.isOpen())
+    return false;
 
   // Look at the beginning of the state file.  It should contain the md5sum
   // of the current cartridge.  If it doesn't, this state file is invalid.
-  if(deserializer->getString() != md5sum)
-  {
-    deserializer->close();
-    return 3;
-  }
+  if(in.getString() != md5sum)
+    return false;
 
   // First load state for this system
-  if(!load(*deserializer))
-  {
-    deserializer->close();
-    return 3;
-  }
+  if(!load(in))
+    return false;
 
   // Next, load state for the CPU
-  if(!myM6502->load(*deserializer))
-  {
-    deserializer->close();
-    return 3;
-  }
+  if(!myM6502->load(in))
+    return false;
 
   // Now load the state of each device
   for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-  {
-    if(!myDevices[i]->load(*deserializer))
-    {
-      deserializer->close();
-      return 3;
-    }
-  }
+    if(!myDevices[i]->load(in))
+      return false;
 
-  deserializer->close();
-  return 1;  // success
+  return true;  // success
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.124 2005-12-09 01:16:13 stephena Exp $
+// $Id: EventHandler.cxx,v 1.125 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -33,6 +33,8 @@
 #include "CommandMenu.hxx"
 #include "Launcher.hxx"
 #include "GuiUtils.hxx"
+#include "Deserializer.hxx"
+#include "Serializer.hxx"
 #include "bspf.hxx"
 
 #ifdef DEVELOPER_SUPPORT
@@ -139,6 +141,8 @@ EventHandler::EventHandler(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::~EventHandler()
 {
+  stopRecording();
+
   if(myEvent)
     delete myEvent;
 
@@ -524,6 +528,18 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->createConsole();
                 break;
 
+// FIXME - these will be removed when a UI is added for event recording
+              case SDLK_e:  // Ctrl-e starts/stops event recording
+                if(myEvent->isRecording())
+                  stopRecording();
+                else
+                  startRecording();
+                break;
+
+              case SDLK_l:  // Ctrl-l loads a recording
+                loadRecording();
+                break;
+////////////////////////////////////////////////////////////////////////
               case SDLK_END:       // Ctrl-End increases Width
                 myOSystem->console().changeWidth(1);
                 break;
@@ -1682,22 +1698,26 @@ inline bool EventHandler::eventIsAnalog(Event::Type event)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveState()
 {
-  // Do a state save using the System
   string md5 = myOSystem->console().properties().get("Cartridge.MD5");
   ostringstream buf;
   buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR << md5 << ".st" << myLSState;
 
-  int result = myOSystem->console().system().saveState(buf.str(), md5);
+  // Make sure the file can be opened for writing
+  Serializer out;
+  if(!out.open(buf.str()))
+  {
+    myOSystem->frameBuffer().showMessage("Error saving state file");
+    return;
+  }
 
-  // Print appropriate message
+  // Do a state save using the System
   buf.str("");
-  if(result == 1)
+  if(myOSystem->console().system().saveState(md5, out))
     buf << "State " << myLSState << " saved";
-  else if(result == 2)
-    buf << "Error saving state " << myLSState;
-  else if(result == 3)
+  else
     buf << "Invalid state " << myLSState << " file";
 
+  out.close();
   myOSystem->frameBuffer().showMessage(buf.str());
 }
 
@@ -1723,22 +1743,28 @@ void EventHandler::changeState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::loadState()
 {
-  // Do a state save using the System
   string md5 = myOSystem->console().properties().get("Cartridge.MD5");
   ostringstream buf;
   buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR << md5 << ".st" << myLSState;
 
-  int result = myOSystem->console().system().loadState(buf.str(), md5);
-
-  // Print appropriate message
-  buf.str("");
-  if(result == 1)
-    buf << "State " << myLSState << " loaded";
-  else if(result == 2)
+  // Make sure the file can be opened for reading
+  Deserializer in;
+  if(!in.open(buf.str()))
+  {
+    buf.str("");
     buf << "Error loading state " << myLSState;
-  else if(result == 3)
+    myOSystem->frameBuffer().showMessage(buf.str());
+    return;
+  }
+
+  // Do a state load using the System
+  buf.str("");
+  if(myOSystem->console().system().loadState(md5, in))
+    buf << "State " << myLSState << " loaded";
+  else
     buf << "Invalid state " << myLSState << " file";
 
+  in.close();
   myOSystem->frameBuffer().showMessage(buf.str());
 }
 
@@ -1804,6 +1830,50 @@ void EventHandler::takeSnapshot()
 #else
   myOSystem->frameBuffer().showMessage("Snapshots unsupported");
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::startRecording()
+{
+  if(myEvent->isRecording())
+    return;
+
+  string eventfile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
+  myEventStream.close();
+  if(!myEventStream.open(eventfile))
+  {
+    myOSystem->frameBuffer().showMessage("Error opening eventstream");
+    return;
+  }
+
+  // And save the current state to it
+  string md5 = myOSystem->console().properties().get("Cartridge.MD5");
+  myOSystem->console().system().saveState(md5, myEventStream);
+
+  myEvent->record(true);
+  myOSystem->frameBuffer().showMessage("Recording started");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::stopRecording()
+{
+  if(!myEvent->isRecording())
+    return;
+
+  // Append the event history to the eventstream
+  myEvent->save(myEventStream);
+
+  // And reset the state
+  myEvent->record(false);
+  myOSystem->frameBuffer().showMessage("Recording stopped");
+
+  myEventStream.close();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::loadRecording()
+{
+cerr << "load recording!\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

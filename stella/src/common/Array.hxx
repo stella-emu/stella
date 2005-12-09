@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Array.hxx,v 1.1 2005-12-09 01:16:13 stephena Exp $
+// $Id: Array.hxx,v 1.2 2005-12-09 19:09:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,7 @@ class Array
     Array<T>(const Array<T>& array) : _capacity(0), _size(0), _data(0)
     {
       _size = array._size;
-      _capacity = _size + 32;
+      _capacity = _size + 128;
       _data = new T[_capacity];
       for(int i = 0; i < _size; i++)
         _data[i] = array._data[i];
@@ -115,7 +115,7 @@ class Array
       if (_data)
         delete [] _data;
       _size = array._size;
-      _capacity = _size + 32;
+      _capacity = _size + 128;
       _data = new T[_capacity];
       for(int i = 0; i < _size; i++)
         _data[i] = array._data[i];
@@ -177,7 +177,7 @@ class Array
         return;
 
       T *old_data = _data;
-      _capacity = new_len + 32;
+      _capacity = new_len + 128;
       _data = new T[_capacity];
 
       if (old_data)

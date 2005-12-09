@@ -13,15 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.4 2005-12-09 01:16:13 stephena Exp $
+// $Id: Event.cxx,v 1.5 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
+#include "Serializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Event()
   : myNumberOfTypes(Event::LastType),
-    myEventRecordFlag(true)
+    myEventRecordFlag(false)
 {
   // Set all of the events to 0 / false to start with
   clear();
@@ -30,27 +31,6 @@ Event::Event()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::~Event()
 {
-  int events = 0, waits = 0, totalwaits = 0;
-  cerr << "Event history contains " << myEventHistory.size()/2 << " events\n";
-  for(unsigned int i = 0; i < myEventHistory.size(); ++i)
-  {
-    int tmp = myEventHistory[i];
-    if(tmp < 0)
-    {
-      ++waits;
-      totalwaits += -tmp;
-    }
-    else
-      ++events;
-
-    cerr << tmp << " ";
-  }
-  cerr << endl
-       << "events pairs = " << events/2
-       << ", frame waits = " << waits
-       << ", total frame waits = " << totalwaits
-       << endl;
-
   myEventHistory.clear();
 }
 
@@ -105,4 +85,16 @@ void Event::nextFrame()
     else
       myEventHistory.push_back(-1);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Event::save(Serializer& out)
+{
+  int size = myEventHistory.size();
+  out.putString("EventStream");
+  out.putLong(size);
+  for(int i = 0; i < size; ++i)
+    out.putLong(myEventHistory[i]);
+
+  return true;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.7 2005-06-16 01:11:28 stephena Exp $
+// $Id: Serializer.hxx,v 1.8 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #ifndef SERIALIZER_HXX
@@ -33,7 +33,7 @@
   Boolean values are written using a special pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.7 2005-06-16 01:11:28 stephena Exp $
+  @version $Id: Serializer.hxx,v 1.8 2005-12-09 19:09:49 stephena Exp $
 */
 class Serializer
 {
@@ -65,6 +65,11 @@ class Serializer
       Closes the current output stream.
     */
     void close(void);
+
+    /**
+      Answers whether the serializer is currently opened
+    */
+    bool isOpen(void);
 
     /**
       Writes a long value to the current output stream.

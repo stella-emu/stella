@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.62 2005-12-08 19:01:38 stephena Exp $
+// $Id: EventHandler.hxx,v 1.63 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -26,6 +26,7 @@
 #include "Array.hxx"
 #include "Control.hxx"
 #include "StringList.hxx"
+#include "Serializer.hxx"
 
 class Console;
 class OSystem;
@@ -90,7 +91,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.62 2005-12-08 19:01:38 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.63 2005-12-09 19:09:49 stephena Exp $
 */
 class EventHandler
 {
@@ -220,12 +221,27 @@ class EventHandler
     /**
       Save state to explicit state number (debugger uses this)
     */
-	 void saveState(int state);
+    void saveState(int state);
 
     /**
       Load state from explicit state number (debugger uses this)
     */
-	 void loadState(int state);
+    void loadState(int state);
+
+    /**
+      Start recording event-stream to disk
+    */
+    void startRecording();
+
+    /**
+      Stop recording event-stream
+    */
+    void stopRecording();
+
+    /**
+      Load recorded event-stream into the system
+    */
+    void loadRecording();
 
     /**
       Sets the mouse to act as paddle 'num'
@@ -402,6 +418,9 @@ class EventHandler
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
+
+    // The serializer to use for saving eventstreams
+    Serializer myEventStream;
 
     // Indicates current overlay object
     DialogContainer* myOverlay;

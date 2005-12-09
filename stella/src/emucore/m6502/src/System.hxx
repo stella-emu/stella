@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.11 2005-08-24 22:54:30 stephena Exp $
+// $Id: System.hxx,v 1.12 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -47,7 +47,7 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.11 2005-08-24 22:54:30 stephena Exp $
+  @version $Id: System.hxx,v 1.12 2005-12-09 19:09:49 stephena Exp $
 */
 class System
 {
@@ -118,25 +118,23 @@ class System
       Saves the current state of Stella to the given file.  Calls
       save on every device and CPU attached to this system.
 
-      @param out The serializer device to save to.
-      @return The result of the save.  Error codes as follows:
-              1  success
-              2  file could not be opened for read/write
-              3  invalid state file
+      @param md5sum   MD5 of the current ROM
+      @param out      The serializer device to save to
+
+      @return  False on any errors, else true
     */
-    int saveState(const string& fileName, const string& md5sum);
+    bool saveState(const string& md5sum, Serializer& out);
 
     /**
       Loads the current state of Stella from the given file.  Calls
       load on every device and CPU attached to this system.
 
-      @param in The deserializer device to load from.
-      @return The result of the load.  Error codes as follows:
-              1  success
-              2  file could not be opened for read/write
-              3  invalid state file
+      @param md5sum   MD5 of the current ROM
+      @param in       The deserializer device to load from
+
+      @return  False on any errors, else true
     */
-    int loadState(const string& fileName, const string& md5sum);
+    bool loadState(const string& md5sum, Deserializer& in);
 
   public:
     /**
@@ -358,12 +356,6 @@ class System
     // is true during normal emulation, and false when the
     // debugger is active.
     bool myDataBusLocked;
-
-    // The serializer for the system.  Used to save state.
-    Serializer* serializer;
-
-    // The deserializer for the system.  Used to load state.
-    Deserializer* deserializer;
 
   private:
     // Copy constructor isn't supported by this class so make it private

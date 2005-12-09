@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.6 2005-06-16 01:11:27 stephena Exp $
+// $Id: Deserializer.hxx,v 1.7 2005-12-09 19:09:49 stephena Exp $
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
@@ -32,7 +32,7 @@
   return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.6 2005-06-16 01:11:27 stephena Exp $
+  @version $Id: Deserializer.hxx,v 1.7 2005-12-09 19:09:49 stephena Exp $
 */
 class Deserializer
 {
@@ -64,6 +64,11 @@ class Deserializer
       Closes the current input stream.
     */
     void close(void);
+
+    /**
+      Answers whether the deserializer is currently opened
+    */
+    bool isOpen(void);
 
     /**
       Reads a long value from the current input stream.
