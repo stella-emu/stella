@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.4 2005-11-27 22:37:25 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.5 2005-12-09 01:16:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,7 @@ class EditTextWidget;
 #include "Dialog.hxx"
 #include "Command.hxx"
 
-typedef GUI::Array<EditTextWidget*> InputWidget;
+typedef Common::Array<EditTextWidget*> InputWidget;
 
 class InputTextDialog : public Dialog, public CommandSender
 {

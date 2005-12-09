@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.11 2005-07-12 02:27:06 urchlay Exp $
+// $Id: EquateList.hxx,v 1.12 2005-12-09 01:16:13 stephena Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
@@ -30,7 +30,7 @@ using namespace std;
 typedef map<int, string> addrToLabel;
 typedef map<string, int> labelToAddr;
 
-typedef GUI::Array<Equate> Equates;
+typedef Common::Array<Equate> Equates;
 
 class EquateList {
 	public:

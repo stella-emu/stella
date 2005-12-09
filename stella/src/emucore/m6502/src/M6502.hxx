@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.15 2005-10-11 19:38:10 stephena Exp $
+// $Id: M6502.hxx,v 1.16 2005-12-09 01:16:13 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -33,7 +33,7 @@ class PackedBitArray;
 #include "Array.hxx"
 #include "StringList.hxx"
 
-typedef GUI::Array<Expression*> ExpressionList;
+typedef Common::Array<Expression*> ExpressionList;
 
 /**
   This is an abstract base class for classes that emulate the
@@ -41,7 +41,7 @@ typedef GUI::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.15 2005-10-11 19:38:10 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.16 2005-12-09 01:16:13 stephena Exp $ 
 */
 class M6502
 {

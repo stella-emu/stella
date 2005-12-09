@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.hxx,v 1.4 2005-11-27 22:37:24 stephena Exp $
+// $Id: CheatManager.hxx,v 1.5 2005-12-09 01:16:13 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_MANAGER_HXX
@@ -27,7 +27,7 @@
 
 #include "Cheat.hxx"
 
-typedef GUI::Array<Cheat*> CheatList;
+typedef Common::Array<Cheat*> CheatList;
 typedef map<string,string> CheatCodeMap;
 
 /**
@@ -36,7 +36,7 @@ typedef map<string,string> CheatCodeMap;
   the list of all cheats currently in use.
 
   @author  Stephen Anthony
-  @version $Id: CheatManager.hxx,v 1.4 2005-11-27 22:37:24 stephena Exp $
+  @version $Id: CheatManager.hxx,v 1.5 2005-12-09 01:16:13 stephena Exp $
 */
 class CheatManager
 {

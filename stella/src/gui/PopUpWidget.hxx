@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.10 2005-10-02 22:09:12 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.11 2005-12-09 01:16:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,7 @@ class PopUpWidget : public Widget, public CommandSender
     int tag;
   };
 
-  typedef GUI::Array<Entry> EntryList;
+  typedef Common::Array<Entry> EntryList;
 
   protected:
     EntryList _entries;

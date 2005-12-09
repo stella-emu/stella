@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.21 2005-12-07 20:46:49 stephena Exp $
+// $Id: Dialog.hxx,v 1.22 2005-12-09 01:16:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.21 2005-12-07 20:46:49 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.22 2005-12-09 01:16:13 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -46,7 +46,7 @@ class Dialog : public GuiObject
     Widget* focusedWidget;
     WidgetArray focusList;
   };
-  typedef GUI::Array<Focus> FocusList;
+  typedef Common::Array<Focus> FocusList;
 
   public:
     Dialog(OSystem* instance, DialogContainer* parent,

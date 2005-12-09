@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.7 2005-06-16 00:55:58 stephena Exp $
+// $Id: FSNode.hxx,v 1.8 2005-12-09 01:16:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,7 +61,7 @@ class FilesystemNode;
 /**
  * List of multiple file system nodes. E.g. the contents of a given directory.
  */
-class FSList : public GUI::Array<FilesystemNode>
+class FSList : public Common::Array<FilesystemNode>
 {
   public:
     void sort();

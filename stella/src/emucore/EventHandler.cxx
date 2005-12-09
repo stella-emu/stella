@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.123 2005-12-08 22:30:53 stephena Exp $
+// $Id: EventHandler.cxx,v 1.124 2005-12-09 01:16:13 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -737,6 +737,10 @@ void EventHandler::poll(uInt32 time)
   for(unsigned int i = 0; i < cheats.size(); i++)
     cheats[i]->evaluate();
 #endif
+
+  // Tell the event object that another frame has finished
+  // This is used for event recording
+  myEvent->nextFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

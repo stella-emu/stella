@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.hxx,v 1.7 2005-11-27 22:37:25 stephena Exp $
+// $Id: CheckListWidget.hxx,v 1.8 2005-12-09 01:16:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ enum CheckStyle {
   kSolidFill
 };
 
-typedef GUI::Array<CheckboxWidget*> CheckboxArray;
+typedef Common::Array<CheckboxWidget*> CheckboxArray;
 
 
 /** CheckListWidget */

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Array.hxx,v 1.7 2005-07-14 18:28:36 stephena Exp $
+// $Id: Array.hxx,v 1.1 2005-12-09 01:16:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,7 +26,7 @@
 
 #include "bspf.hxx"
 
-namespace GUI {
+namespace Common {
 
 template <class T>
 class Array
@@ -192,8 +192,8 @@ class Array
 
 }  // Namespace GUI
 
-typedef GUI::Array<int>   IntArray;
-typedef GUI::Array<bool>  BoolArray;
-typedef GUI::Array<uInt8> ByteArray;
+typedef Common::Array<int>   IntArray;
+typedef Common::Array<bool>  BoolArray;
+typedef Common::Array<uInt8> ByteArray;
 
 #endif

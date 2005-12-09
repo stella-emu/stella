@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.9 2005-08-10 12:23:42 stephena Exp $
+// $Id: TabWidget.hxx,v 1.10 2005-12-09 01:16:14 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,7 +39,7 @@ class TabWidget : public Widget, public CommandSender
     Widget* firstWidget;
     Widget* parentWidget;
   };
-  typedef GUI::Array<Tab> TabList;
+  typedef Common::Array<Tab> TabList;
 
   public:
     TabWidget(GuiObject* boss, int x, int y, int w, int h);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.13 2005-08-29 18:36:41 stephena Exp $
+// $Id: Event.hxx,v 1.14 2005-12-09 01:16:13 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -21,11 +21,12 @@
 
 class Event;
 
+#include "Array.hxx"
 #include "bspf.hxx"
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.13 2005-08-29 18:36:41 stephena Exp $
+  @version $Id: Event.hxx,v 1.14 2005-12-09 01:16:13 stephena Exp $
 */
 class Event
 {
@@ -104,12 +105,35 @@ class Event
     */
     virtual void clear();
 
+    /**
+      Returns the history for this event
+    */
+    virtual const IntArray& history() { return myEventHistory; }
+
+    /**
+      Start/stop recording events to the event history
+
+      @param enable  Start or stop recording
+    */
+    virtual void record(bool enable);
+
+    /**
+      Indicate that a new frame has been processed
+    */
+    virtual void nextFrame();
+
   protected:
     // Number of event types there are
     const Int32 myNumberOfTypes;
 
     // Array of values associated with each event type
     Int32 myValues[LastType];
+
+    // Indicates if we're in recording mode
+    bool myEventRecordFlag;
+
+    // Stores the history/record of all events that have been set
+    IntArray myEventHistory;
 };
 
 #endif
