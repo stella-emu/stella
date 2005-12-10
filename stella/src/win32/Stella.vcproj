@@ -592,7 +592,7 @@ opengl32.lib"
 				RelativePath="..\gui\AboutDialog.hxx">
 			</File>
 			<File
-				RelativePath="..\gui\Array.hxx">
+				RelativePath="..\common\Array.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\AudioDialog.hxx">
