@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.125 2005-12-09 19:09:49 stephena Exp $
+// $Id: EventHandler.cxx,v 1.126 2005-12-12 19:04:03 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1019,7 +1019,93 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
   Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
 
-#if 0  // FIXME - This isn't ready for production use just yet ...
+  // Paddle emulation *REALLY* complicates this method
+  if(value == 0)
+  {
+    if(0)//stick is analog && (isPaddleEvent(eventAxisNeg) || isPaddleEvent(eventAxisPos)))
+    {
+      // deal with zero value for analog input
+    }
+    else
+    {
+      // Turn off both events, since we don't know exactly which one
+      // was previously activated.
+      handleEvent(eventAxisNeg, 0);
+      handleEvent(eventAxisPos, 0);
+    }
+  }
+  else if(value < 0)
+  {
+    if(0)//isPaddleEvent(eventAxisNeg))
+    {
+      // turn on paddle event defined here
+    }
+    else
+      handleEvent(eventAxisNeg, 1);
+  }
+  else  // value > 0
+  {
+    if(0)//isPaddleEvent(eventAxisPos))
+    {
+      // turn on paddle event defined here
+    }
+    else
+      handleEvent(eventAxisPos, 1);
+  }
+
+/*
+  if(1)//isPaddleEvent(eventAxisNeg) || isPaddleEvent(eventAxisPos))
+  {
+    if(value == 0)
+    {
+      // turn off paddle movement
+    }
+    else
+    {
+      Event::type event = value < 0 ? eventAxisNeg : eventAxisPos;
+      int dir = 0;
+      switch((int)event)
+      {
+        case Event::PaddleZeroDecrease:
+          cerr << "paddle 0 decrease\n";
+          break;
+        case Event::PaddleZeroIncrease:
+          cerr << "paddle 0 increase\n";
+          break;
+        case Event::PaddleOneDecrease:
+          cerr << "paddle 1 decrease\n";
+          break;
+        case Event::PaddleOneIncrease:
+          cerr << "paddle 1 increase\n";
+          break;
+        case Event::PaddleTwoDecrease:
+          cerr << "paddle 2 decrease\n";
+          break;
+        case Event::PaddleTwoIncrease:
+          cerr << "paddle 2 increase\n";
+          break;
+        case Event::PaddleThreeDecrease:
+          cerr << "paddle 3 decrease\n";
+          break;
+        case Event::PaddleThreeIncrease:
+          cerr << "paddle 3 increase\n";
+          break;
+      }
+    }
+  }
+  else  // Otherwise, treat values as digital
+  {
+    if(value == 0)
+    {
+    }
+    else if(value < 0)
+    else
+      handleEvent(eventAxisPos, 1);
+  }
+*/
+
+/*
+  // FIXME - This isn't ready for production use just yet ...
   // Determine what type of axis we're dealing with
   // Figure out the actual type if it's undefined
   JoyAxisType type = myJoyAxisType[stick][axis];
@@ -1094,20 +1180,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
       }
       break;
   }
-#endif
-
-  // Otherwise, treat values as digital
-  if(value == 0)
-  {
-    // Turn off both events, since we don't know exactly which one
-    // was previously activated.
-    handleEvent(eventAxisNeg, 0);
-    handleEvent(eventAxisPos, 0);
-  }
-  else if(value < 0)
-    handleEvent(eventAxisNeg, 1);
-  else
-    handleEvent(eventAxisPos, 1);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2285,6 +2358,26 @@ ActionList EventHandler::ourActionList[kActionListSize] = {
   { Event::JoystickOneLeft,             "P2 Joystick Left",                "" },
   { Event::JoystickOneRight,            "P2 Joystick Right",               "" },
   { Event::JoystickOneFire,             "P2 Joystick Fire",                "" },
+
+//  { Event::PaddleZeroAnalog,            "Paddle 1 Analog",                 "" },
+  { Event::PaddleZeroDecrease,          "Paddle 1 Decrease",               "" },
+  { Event::PaddleZeroIncrease,          "Paddle 1 Increase",               "" },
+  { Event::PaddleZeroFire,              "Paddle 1 Fire",                   "" },
+
+//  { Event::PaddleOneAnalog,             "Paddle 2 Analog",                 "" },
+  { Event::PaddleOneDecrease,           "Paddle 2 Decrease",               "" },
+  { Event::PaddleOneIncrease,           "Paddle 2 Increase",               "" },
+  { Event::PaddleOneFire,               "Paddle 2 Fire",                   "" },
+
+//  { Event::PaddleTwoAnalog,             "Paddle 3 Analog",                 "" },
+  { Event::PaddleTwoDecrease,           "Paddle 3 Decrease",               "" },
+  { Event::PaddleTwoIncrease,           "Paddle 3 Increase",               "" },
+  { Event::PaddleTwoFire,               "Paddle 3 Fire",                   "" },
+
+//  { Event::PaddleThreeAnalog,           "Paddle 4 Analog",                 "" },
+  { Event::PaddleThreeDecrease,         "Paddle 4 Decrease",               "" },
+  { Event::PaddleThreeIncrease,         "Paddle 4 Increase",               "" },
+  { Event::PaddleThreeFire,             "Paddle 4 Fire",                   "" },
 
   { Event::BoosterGripZeroTrigger,      "P1 Booster-Grip Trigger",         "" },
   { Event::BoosterGripZeroBooster,      "P1 Booster-Grip Booster",         "" },

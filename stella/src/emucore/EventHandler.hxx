@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.63 2005-12-09 19:09:49 stephena Exp $
+// $Id: EventHandler.hxx,v 1.64 2005-12-12 19:04:03 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -31,6 +31,7 @@
 class Console;
 class OSystem;
 class DialogContainer;
+class EventMappingWidget;
 
 enum MouseButton {
   EVENT_LBUTTONDOWN,
@@ -49,7 +50,7 @@ struct ActionList {
 };
 
 enum {
-  kActionListSize = 63
+  kActionListSize = 75
 };
 
 // Joystick related items
@@ -91,10 +92,12 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.63 2005-12-09 19:09:49 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.64 2005-12-12 19:04:03 stephena Exp $
 */
 class EventHandler
 {
+  friend class EventMappingWidget;
+
   public:
     /**
       Create a new event handler object
@@ -279,9 +282,6 @@ class EventHandler
     bool enterDebugMode();
     void leaveDebugMode();
     void saveProperties();
-
-    // Holds static strings for the remap menu
-    static ActionList ourActionList[kActionListSize];
 
     /**
       Send an event directly to the event handler.
@@ -471,6 +471,9 @@ class EventHandler
 
     // Type of device on each controller port (based on ROM properties)
     Controller::Type myController[2];
+
+    // Holds static strings for the remap menu
+    static ActionList ourActionList[kActionListSize];
 
     // Lookup table for paddle resistance events
     static const Event::Type Paddle_Resistance[4];

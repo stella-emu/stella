@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.15 2005-12-09 19:09:49 stephena Exp $
+// $Id: Event.hxx,v 1.16 2005-12-12 19:04:03 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -27,7 +27,7 @@ class Serializer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.15 2005-12-09 19:09:49 stephena Exp $
+  @version $Id: Event.hxx,v 1.16 2005-12-12 19:04:03 stephena Exp $
 */
 class Event
 {
@@ -53,10 +53,10 @@ class Event
       BoosterGripZeroTrigger, BoosterGripZeroBooster,
       BoosterGripOneTrigger, BoosterGripOneBooster,
 
-      PaddleZeroResistance, PaddleZeroFire,
-      PaddleOneResistance, PaddleOneFire,
-      PaddleTwoResistance, PaddleTwoFire,
-      PaddleThreeResistance, PaddleThreeFire,
+      PaddleZeroResistance, PaddleZeroFire, PaddleZeroDecrease, PaddleZeroIncrease,
+      PaddleOneResistance, PaddleOneFire, PaddleOneDecrease, PaddleOneIncrease,
+      PaddleTwoResistance, PaddleTwoFire, PaddleTwoDecrease, PaddleTwoIncrease,
+      PaddleThreeResistance, PaddleThreeFire, PaddleThreeDecrease, PaddleThreeIncrease,
 
       KeyboardZero1, KeyboardZero2, KeyboardZero3,
       KeyboardZero4, KeyboardZero5, KeyboardZero6,
