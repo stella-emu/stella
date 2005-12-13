@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.126 2005-12-12 19:04:03 stephena Exp $
+// $Id: EventHandler.cxx,v 1.127 2005-12-13 00:35:24 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -179,6 +179,12 @@ void EventHandler::reset(State state)
 
   if(myState == S_LAUNCHER)
     myUseLauncherFlag = true;
+
+  for(int i = 0; i < 4; ++i)
+  {
+    memset(&myPaddle[i], 0, sizeof(myJoyMouse));
+    myPaddle[i].amt = 70000; // FIXME - get scale factor from GUI and apply to this value
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,7 +193,7 @@ void EventHandler::refreshDisplay()
   // These are reset each time the display changes size
   myJoyMouse.x_max = myOSystem->frameBuffer().imageWidth();
   myJoyMouse.y_max = myOSystem->frameBuffer().imageHeight();
-  myMouseMove      = myOSystem->frameBuffer().zoomLevel() * 3;
+  myJoyMouse.amt = myOSystem->frameBuffer().zoomLevel() * 3;
 
   switch(myState)
   {
@@ -340,9 +346,9 @@ void EventHandler::poll(uInt32 time)
 {
   SDL_Event event;
 
-  // Handle joystick to mouse emulation
-  if(myEmulateMouseFlag)
-    handleJoyMouse(time);
+  // Handle joystick to mouse emulation FIXME
+//  if(myEmulateMouseFlag)
+//    handleJoyMouse(time);
 
   // Check for an event
   while(SDL_PollEvent(&event))
@@ -743,6 +749,29 @@ void EventHandler::poll(uInt32 time)
     }
   }
 
+  // Handle paddle emulation using joystick or key events
+  for(int i = 0; i < 4; ++i)
+  {
+    if(myPaddle[i].active)
+    {
+      myPaddle[i].x += myPaddle[i].x_amt;
+      if(myPaddle[i].x < 0)
+      {
+        myPaddle[i].x = 0;  continue;
+      }
+      else if(myPaddle[i].x > 1000000)
+      {
+        myPaddle[i].x = 1000000;  continue;
+      }
+      else
+      {
+        int resistance = (int)(1000000.0 * (1000000.0 - myPaddle[i].x) / 1000000.0);
+        myEvent->set(Paddle_Resistance[i], resistance);
+        cerr << "do paddle resistance for value = " << myPaddle[i].x << endl;
+      }
+    }
+  }
+
   // Update the current dialog container at regular intervals
   // Used to implement continuous events
   if(myOverlay)
@@ -781,7 +810,7 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
       if(myGrabMouseFlag) x = MIN(w, (int) (x * 1.5));
 
       int resistance = (int)(1000000.0 * (w - x) / w);
-      handleEvent(Paddle_Resistance[myPaddleMode], resistance);
+      myEvent->set(Paddle_Resistance[myPaddleMode], resistance);
       break;
     }
 
@@ -853,91 +882,91 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyMouse(uInt32 time)
+void EventHandler::handleJoyMouse(JoyMouse& jm, uInt32 time)
 {
   bool mouseAccel = false;  // TODO - make this a commandline option
 
-  if (time >= myJoyMouse.last_time + myJoyMouse.delay_time)
+  if (jm.active || (time >= jm.last_time + jm.delay_time))
   {
-    myJoyMouse.last_time = time;
-    if (myJoyMouse.x_down_count == 1)
+    jm.last_time = time;
+    if (jm.x_down_count == 1)
     {
-      myJoyMouse.x_down_time = time;
-      myJoyMouse.x_down_count = 2;
+      jm.x_down_time = time;
+      jm.x_down_count = 2;
     }
-    if (myJoyMouse.y_down_count == 1)
+    if (jm.y_down_count == 1)
     {
-      myJoyMouse.y_down_time = time;
-      myJoyMouse.y_down_count = 2;
+      jm.y_down_time = time;
+      jm.y_down_count = 2;
     }
 
-    if (myJoyMouse.x_vel || myJoyMouse.y_vel)
+    if (jm.x_vel || jm.y_vel)
     {
-      if (myJoyMouse.x_down_count)
+      if (jm.x_down_count)
       {
-        if (mouseAccel && time > myJoyMouse.x_down_time + myJoyMouse.delay_time * 12)
+        if (mouseAccel && time > jm.x_down_time + jm.delay_time * 12)
         {
-          if (myJoyMouse.x_vel > 0)
-            myJoyMouse.x_vel++;
+          if (jm.x_vel > 0)
+            jm.x_vel++;
           else
-            myJoyMouse.x_vel--;
+            jm.x_vel--;
         }
-        else if (time > myJoyMouse.x_down_time + myJoyMouse.delay_time * 8)
+        else if (time > jm.x_down_time + jm.delay_time * 8)
         {
-          if (myJoyMouse.x_vel > 0)
-            myJoyMouse.x_vel = myMouseMove;
+          if (jm.x_vel > 0)
+            jm.x_vel = jm.x_amt;
           else
-            myJoyMouse.x_vel = -myMouseMove;
+            jm.x_vel = -jm.x_amt;
         }
       }
-      if (myJoyMouse.y_down_count)
+      if (jm.y_down_count)
       {
-        if (mouseAccel && time > myJoyMouse.y_down_time + myJoyMouse.delay_time * 12)
+        if (mouseAccel && time > jm.y_down_time + jm.delay_time * 12)
         {
-          if (myJoyMouse.y_vel > 0)
-            myJoyMouse.y_vel++;
+          if (jm.y_vel > 0)
+            jm.y_vel++;
           else
-            myJoyMouse.y_vel--;
+            jm.y_vel--;
         }
-        else if (time > myJoyMouse.y_down_time + myJoyMouse.delay_time * 8)
+        else if (time > jm.y_down_time + jm.delay_time * 8)
         {
-          if (myJoyMouse.y_vel > 0)
-            myJoyMouse.y_vel = myMouseMove;
+          if (jm.y_vel > 0)
+            jm.y_vel = jm.x_amt;
           else
-            myJoyMouse.y_vel = -myMouseMove;
+            jm.y_vel = -jm.x_amt;
         }
       }
 
-      myJoyMouse.x += myJoyMouse.x_vel;
-      myJoyMouse.y += myJoyMouse.y_vel;
+      jm.x += jm.x_vel;
+      jm.y += jm.y_vel;
 
-      if (myJoyMouse.x < 0)
+      if (jm.x < 0)
       {
-        myJoyMouse.x = 0;
-        myJoyMouse.x_vel = -1;
-        myJoyMouse.x_down_count = 1;
+        jm.x = 0;
+        jm.x_vel = -1;
+        jm.x_down_count = 1;
       }
-      else if (myJoyMouse.x > myJoyMouse.x_max)
+      else if (jm.x > jm.x_max)
       {
-        myJoyMouse.x = myJoyMouse.x_max;
-        myJoyMouse.x_vel = 1;
-        myJoyMouse.x_down_count = 1;
-      }
-
-      if (myJoyMouse.y < 0)
-      {
-        myJoyMouse.y = 0;
-        myJoyMouse.y_vel = -1;
-        myJoyMouse.y_down_count = 1;
-      }
-      else if (myJoyMouse.y > myJoyMouse.y_max)
-      {
-        myJoyMouse.y = myJoyMouse.y_max;
-        myJoyMouse.y_vel = 1;
-        myJoyMouse.y_down_count = 1;
+        jm.x = jm.x_max;
+        jm.x_vel = 1;
+        jm.x_down_count = 1;
       }
 
-      SDL_WarpMouse(myJoyMouse.x, myJoyMouse.y);
+      if (jm.y < 0)
+      {
+        jm.y = 0;
+        jm.y_vel = -1;
+        jm.y_down_count = 1;
+      }
+      else if (jm.y > jm.y_max)
+      {
+        jm.y = myJoyMouse.y_max;
+        jm.y_vel = 1;
+        jm.y_down_count = 1;
+      }
+
+//FIXME      SDL_WarpMouse(myJoyMouse.x, myJoyMouse.y);
     }
   }
 }
@@ -1036,7 +1065,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   }
   else if(value < 0)
   {
-    if(0)//isPaddleEvent(eventAxisNeg))
+    if(0)//stick is analog && isPaddleEvent(eventAxisNeg))
     {
       // turn on paddle event defined here
     }
@@ -1045,64 +1074,13 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   }
   else  // value > 0
   {
-    if(0)//isPaddleEvent(eventAxisPos))
+    if(0)//stick is analog && isPaddleEvent(eventAxisPos))
     {
       // turn on paddle event defined here
     }
     else
       handleEvent(eventAxisPos, 1);
   }
-
-/*
-  if(1)//isPaddleEvent(eventAxisNeg) || isPaddleEvent(eventAxisPos))
-  {
-    if(value == 0)
-    {
-      // turn off paddle movement
-    }
-    else
-    {
-      Event::type event = value < 0 ? eventAxisNeg : eventAxisPos;
-      int dir = 0;
-      switch((int)event)
-      {
-        case Event::PaddleZeroDecrease:
-          cerr << "paddle 0 decrease\n";
-          break;
-        case Event::PaddleZeroIncrease:
-          cerr << "paddle 0 increase\n";
-          break;
-        case Event::PaddleOneDecrease:
-          cerr << "paddle 1 decrease\n";
-          break;
-        case Event::PaddleOneIncrease:
-          cerr << "paddle 1 increase\n";
-          break;
-        case Event::PaddleTwoDecrease:
-          cerr << "paddle 2 decrease\n";
-          break;
-        case Event::PaddleTwoIncrease:
-          cerr << "paddle 2 increase\n";
-          break;
-        case Event::PaddleThreeDecrease:
-          cerr << "paddle 3 decrease\n";
-          break;
-        case Event::PaddleThreeIncrease:
-          cerr << "paddle 3 increase\n";
-          break;
-      }
-    }
-  }
-  else  // Otherwise, treat values as digital
-  {
-    if(value == 0)
-    {
-    }
-    else if(value < 0)
-    else
-      handleEvent(eventAxisPos, 1);
-  }
-*/
 
 /*
   // FIXME - This isn't ready for production use just yet ...
@@ -1196,35 +1174,61 @@ void EventHandler::handleEvent(Event::Type event, int state)
     case Event::JoystickZeroUp:
       if(state) myEvent->set(Event::JoystickZeroDown, 0);
       break;
-
     case Event::JoystickZeroDown:
       if(state) myEvent->set(Event::JoystickZeroUp, 0);
       break;
-
     case Event::JoystickZeroLeft:
       if(state) myEvent->set(Event::JoystickZeroRight, 0);
       break;
-
     case Event::JoystickZeroRight:
       if(state) myEvent->set(Event::JoystickZeroLeft, 0);
       break;
-
     case Event::JoystickOneUp:
       if(state) myEvent->set(Event::JoystickOneDown, 0);
       break;
-
     case Event::JoystickOneDown:
       if(state) myEvent->set(Event::JoystickOneUp, 0);
       break;
-
     case Event::JoystickOneLeft:
       if(state) myEvent->set(Event::JoystickOneRight, 0);
       break;
-
     case Event::JoystickOneRight:
       if(state) myEvent->set(Event::JoystickOneLeft, 0);
       break;
     ////////////////////////////////////////////////////////////////////////
+
+    case Event::PaddleZeroDecrease:
+      myPaddle[0].active = (bool) state;
+      myPaddle[0].x_amt  = -myPaddle[0].amt;
+      return;
+    case Event::PaddleZeroIncrease:
+      myPaddle[0].active = (bool) state;
+      myPaddle[0].x_amt  = myPaddle[0].amt;
+      return;
+    case Event::PaddleOneDecrease:
+      myPaddle[1].active = (bool) state;
+      myPaddle[1].x_amt  = -myPaddle[1].amt;
+      return;
+    case Event::PaddleOneIncrease:
+      myPaddle[1].active = (bool) state;
+      myPaddle[1].x_amt  = myPaddle[1].amt;
+      return;
+    case Event::PaddleTwoDecrease:
+      myPaddle[2].active = (bool) state;
+      myPaddle[2].x_amt  = -myPaddle[2].amt;
+      return;
+    case Event::PaddleTwoIncrease:
+      myPaddle[2].active = (bool) state;
+      myPaddle[2].x_amt  = myPaddle[2].amt;
+      return;
+    case Event::PaddleThreeDecrease:
+      myPaddle[3].active = (bool) state;
+      myPaddle[3].x_amt  = -myPaddle[3].amt;
+      return;
+    case Event::PaddleThreeIncrease:
+      myPaddle[3].active = (bool) state;
+      myPaddle[3].x_amt  = myPaddle[3].amt;
+      return;
 
     case Event::NoType:  // Ignore unmapped events
       return;
@@ -1754,18 +1758,24 @@ bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline bool EventHandler::eventIsAnalog(Event::Type event)
 {
-  bool analog = false;
   switch((int)event)
   {
     case Event::PaddleZeroResistance:
+    case Event::PaddleZeroDecrease:
+    case Event::PaddleZeroIncrease:
     case Event::PaddleOneResistance:
+    case Event::PaddleOneDecrease:
+    case Event::PaddleOneIncrease:
     case Event::PaddleTwoResistance:
+    case Event::PaddleTwoDecrease:
+    case Event::PaddleTwoIncrease:
     case Event::PaddleThreeResistance:
-      analog = true;
-      break;
+    case Event::PaddleThreeDecrease:
+    case Event::PaddleThreeIncrease:
+      return true;
+    default:
+      return false;
   }
-
-  return analog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.64 2005-12-12 19:04:03 stephena Exp $
+// $Id: EventHandler.hxx,v 1.65 2005-12-13 00:35:24 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -92,7 +92,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.64 2005-12-12 19:04:03 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.65 2005-12-13 00:35:24 stephena Exp $
 */
 class EventHandler
 {
@@ -295,6 +295,14 @@ class EventHandler
     inline bool frying() { return myFryingFlag; }
 
   private:
+    // Used for joystick to mouse emulation
+    struct JoyMouse {	
+      bool active;
+      int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
+          x_down_count, y_down_count;
+      unsigned int last_time, delay_time, x_down_time, y_down_time;
+    };
+
     /**
       Send a mouse motion event to the handler.
 
@@ -339,9 +347,10 @@ class EventHandler
     /**
       Handle joystick movement emulating mouse motion
 
-      @param time  Current millisecond count
+      @param jm   JoyMouse structure to modify
+      @param time Current millisecond count
     */
-    void handleJoyMouse(uInt32 time);
+    void handleJoyMouse(JoyMouse& jm, uInt32 time);
 
     /**
       Detects and changes the eventhandler state
@@ -458,13 +467,8 @@ class EventHandler
     // The current joymap in string form
     string myJoymapString;
 
-    // Used for joystick to mouse emulation
-    struct JoyMouse {	
-      int x, y, x_vel, y_vel, x_max, y_max, x_down_count, y_down_count;
-      unsigned int last_time, delay_time, x_down_time, y_down_time;
-    };
-
     JoyMouse myJoyMouse;
+    JoyMouse myPaddle[4];
 
     // How far the joystick will move the mouse on each frame tick
     int myMouseMove;
