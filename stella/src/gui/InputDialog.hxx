@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.3 2005-12-07 20:46:49 stephena Exp $
+// $Id: InputDialog.hxx,v 1.4 2005-12-16 14:41:15 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -59,9 +59,9 @@ class InputDialog : public Dialog
     PopUpWidget* myRightPort;
 
     SliderWidget*     myPaddleMode;
-    StaticTextWidget* myPaddleLabel;
-    SliderWidget*     myPaddleSense;
-    StaticTextWidget* mySenseLabel;
+    StaticTextWidget* myPaddleModeLabel;
+    SliderWidget*     myPaddleSpeed[4];
+    StaticTextWidget* myPaddleLabel[4];
 
     CheckBoxWidget* myJoyMouse;
 };

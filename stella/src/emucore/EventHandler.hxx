@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.65 2005-12-13 00:35:24 stephena Exp $
+// $Id: EventHandler.hxx,v 1.66 2005-12-16 14:41:14 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -92,7 +92,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.65 2005-12-13 00:35:24 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.66 2005-12-16 14:41:14 stephena Exp $
 */
 class EventHandler
 {
@@ -252,7 +252,15 @@ class EventHandler
       @param num          The paddle which the mouse should emulate
       @param showmessage  Print a message to the framebuffer
     */
-    void setPaddleMode(uInt32 num, bool showmessage = false);
+    void setPaddleMode(int num, bool showmessage = false);
+
+    /**
+      Sets the speed of the given paddle
+
+      @param num    The paddle number (0-3)
+      @param speed  The speed of paddle movement for the given paddle
+    */
+    void setPaddleSpeed(int num, int speed);
 
     inline bool kbdAlt(int mod)
     {

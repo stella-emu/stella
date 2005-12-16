@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.5 2005-12-07 20:46:49 stephena Exp $
+// $Id: InputDialog.cxx,v 1.6 2005-12-16 14:41:15 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -27,8 +27,11 @@
 #include "bspf.hxx"
 
 enum {
-  kPaddleChanged = 'PDch',
-  kSenseChanged  = 'PSch'
+  kPaddleChanged  = 'PDch',
+  kP0SpeedID = 100,
+  kP1SpeedID = 101,
+  kP2SpeedID = 102,
+  kP3SpeedID = 103
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,29 +112,65 @@ void InputDialog::addVDeviceTab()
   wid.push_back(myRightPort);
 
   // Add 'mouse to paddle' mapping
-  ypos += 2*lineHeight + 3;
-  lwidth = font.getStringWidth("Mouse sensitivity: ");
+  ypos += 2*lineHeight;
+  lwidth = font.getStringWidth("Mouse is paddle: ");
   myPaddleMode = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
                                   "Mouse is paddle: ",
                                   lwidth, kPaddleChanged);
   myPaddleMode->setMinValue(0); myPaddleMode->setMaxValue(3);
   xpos += myPaddleMode->getWidth() + 5;
-  myPaddleLabel = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
-                                       "", kTextAlignLeft);
-  myPaddleLabel->setFlags(WIDGET_CLEARBG);
+  myPaddleModeLabel = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+                                           "", kTextAlignLeft);
+  myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleMode);
 
-  // Add mouse sensitivity
+  // Add paddle 0 speed
   xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSense = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
-                                   "Mouse sensitivity: ",
-                                   lwidth, kSenseChanged);
-  myPaddleSense->setMinValue(1); myPaddleSense->setMaxValue(100);
-  xpos += myPaddleSense->getWidth() + 5;
-  mySenseLabel = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
-                                      "", kTextAlignLeft);
-  mySenseLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleSense);
+  myPaddleSpeed[0] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+                                      "Paddle 1 speed: ",
+                                      lwidth, kP0SpeedID);
+  myPaddleSpeed[0]->setMinValue(1); myPaddleSpeed[0]->setMaxValue(100);
+  xpos += myPaddleSpeed[0]->getWidth() + 5;
+  myPaddleLabel[0] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+                                          "", kTextAlignLeft);
+  myPaddleLabel[0]->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleSpeed[0]);
+
+  // Add paddle 1 speed
+  xpos = 5;  ypos += lineHeight + 3;
+  myPaddleSpeed[1] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+                                      "Paddle 2 speed: ",
+                                      lwidth, kP1SpeedID);
+  myPaddleSpeed[1]->setMinValue(1); myPaddleSpeed[1]->setMaxValue(100);
+  xpos += myPaddleSpeed[1]->getWidth() + 5;
+  myPaddleLabel[1] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+                                          "", kTextAlignLeft);
+  myPaddleLabel[1]->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleSpeed[1]);
+
+  // Add paddle 2 speed
+  xpos = 5;  ypos += lineHeight + 3;
+  myPaddleSpeed[2] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+                                      "Paddle 3 speed: ",
+                                      lwidth, kP2SpeedID);
+  myPaddleSpeed[2]->setMinValue(1); myPaddleSpeed[2]->setMaxValue(100);
+  xpos += myPaddleSpeed[2]->getWidth() + 5;
+  myPaddleLabel[2] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+                                        "", kTextAlignLeft);
+  myPaddleLabel[2]->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleSpeed[2]);
+
+  // Add paddle 3 speed
+  xpos = 5;  ypos += lineHeight + 3;
+  myPaddleSpeed[3] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+                                      "Paddle 4 speed: ",
+                                      lwidth, kP3SpeedID);
+  myPaddleSpeed[3]->setMinValue(1); myPaddleSpeed[3]->setMaxValue(100);
+  xpos += myPaddleSpeed[3]->getWidth() + 5;
+  myPaddleLabel[3] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+                                        "", kTextAlignLeft);
+  myPaddleLabel[3]->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleSpeed[3]);
 
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
@@ -150,13 +189,17 @@ void InputDialog::loadConfig()
 
   // Paddle mode
   myPaddleMode->setValue(instance()->settings().getInt("paddle"));
-  myPaddleLabel->setLabel(instance()->settings().getString("paddle"));
+  myPaddleModeLabel->setLabel(instance()->settings().getString("paddle"));
 
-/*  FIXME - add this to eventhandler core
-  // Paddle sensitivity
-  myPaddleSense->setValue(instance()->settings().getInt("paddle"));
-  mySenseLabel->setLabel(instance()->settings().getString("paddle"));
-*/
+  // Paddle speed settings
+  myPaddleSpeed[0]->setValue(instance()->settings().getInt("p1speed"));
+  myPaddleLabel[0]->setLabel(instance()->settings().getString("p1speed"));
+  myPaddleSpeed[1]->setValue(instance()->settings().getInt("p2speed"));
+  myPaddleLabel[1]->setLabel(instance()->settings().getString("p2speed"));
+  myPaddleSpeed[2]->setValue(instance()->settings().getInt("p3speed"));
+  myPaddleLabel[2]->setLabel(instance()->settings().getString("p3speed"));
+  myPaddleSpeed[3]->setValue(instance()->settings().getInt("p4speed"));
+  myPaddleLabel[3]->setLabel(instance()->settings().getString("p4speed"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,11 +214,9 @@ void InputDialog::saveConfig()
   int mode = myPaddleMode->getValue();
   instance()->eventHandler().setPaddleMode(mode);
 
-/*  FIXME - add this to eventhandler core
-  // Paddle sensitivity
-  int sense = myPaddleSense->getValue();
-  instance()->eventHandler().setPaddleSense(sense);
-*/
+  // Paddle speed settings
+  for(int i = 0; i < 4; ++i)
+    instance()->eventHandler().setPaddleSpeed(i, myPaddleSpeed[i]->getValue());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -225,11 +266,14 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPaddleChanged:
-      myPaddleLabel->setValue(myPaddleMode->getValue());
+      myPaddleModeLabel->setValue(myPaddleMode->getValue());
       break;
 
-    case kSenseChanged:
-      mySenseLabel->setValue(myPaddleSense->getValue());
+    case kP0SpeedID:
+    case kP1SpeedID:
+    case kP2SpeedID:
+    case kP3SpeedID:
+      myPaddleLabel[cmd-100]->setValue(myPaddleSpeed[cmd-100]->getValue());
       break;
 
     default:

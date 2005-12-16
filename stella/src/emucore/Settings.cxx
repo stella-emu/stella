@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.67 2005-12-07 20:46:49 stephena Exp $
+// $Id: Settings.cxx,v 1.68 2005-12-16 14:41:14 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -63,6 +63,11 @@ Settings::Settings(OSystem* osystem)
   set("joymouse", "false");
   set("sa1", "left");
   set("sa2", "right");
+  set("mspeed", "50");
+  set("p1speed", "50");
+  set("p2speed", "50");
+  set("p3speed", "50");
+  set("p4speed", "50");
 
   set("showinfo", "false");
 

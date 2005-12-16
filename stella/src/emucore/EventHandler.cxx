@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.127 2005-12-13 00:35:24 stephena Exp $
+// $Id: EventHandler.cxx,v 1.128 2005-12-16 14:41:14 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -180,11 +180,16 @@ void EventHandler::reset(State state)
   if(myState == S_LAUNCHER)
     myUseLauncherFlag = true;
 
+  // Start paddle emulation in a known state
   for(int i = 0; i < 4; ++i)
   {
     memset(&myPaddle[i], 0, sizeof(myJoyMouse));
-    myPaddle[i].amt = 70000; // FIXME - get scale factor from GUI and apply to this value
+    myEvent->set(Paddle_Resistance[i], 1000000);
   }
+  setPaddleSpeed(0, myOSystem->settings().getInt("p1speed"));
+  setPaddleSpeed(1, myOSystem->settings().getInt("p2speed"));
+  setPaddleSpeed(2, myOSystem->settings().getInt("p3speed"));
+  setPaddleSpeed(3, myOSystem->settings().getInt("p4speed"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -767,7 +772,6 @@ void EventHandler::poll(uInt32 time)
       {
         int resistance = (int)(1000000.0 * (1000000.0 - myPaddle[i].x) / 1000000.0);
         myEvent->set(Paddle_Resistance[i], resistance);
-        cerr << "do paddle resistance for value = " << myPaddle[i].x << endl;
       }
     }
   }
@@ -1960,7 +1964,7 @@ cerr << "load recording!\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setPaddleMode(uInt32 num, bool showmessage)
+void EventHandler::setPaddleMode(int num, bool showmessage)
 {
   if(num < 0 || num > 3)
     return;
@@ -1975,6 +1979,18 @@ void EventHandler::setPaddleMode(uInt32 num, bool showmessage)
   }
 
   myOSystem->settings().setInt("paddle", myPaddleMode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setPaddleSpeed(int num, int speed)
+{
+  if(num < 0 || num > 3 || speed < 0 || speed > 100)
+    return;
+
+  myPaddle[num].amt = (int) (20000 + speed/100.0 * 50000);
+  ostringstream buf;
+  buf << "p" << num+1 << "speed";
+  myOSystem->settings().setInt(buf.str(), speed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
