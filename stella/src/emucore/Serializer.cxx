@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.cxx,v 1.7 2005-12-17 01:23:07 stephena Exp $
+// $Id: Serializer.cxx,v 1.8 2005-12-17 22:48:24 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer(void)
-  : myStream(0)
 {
 }
 
@@ -34,7 +33,7 @@ Serializer::~Serializer(void)
 bool Serializer::open(const string& fileName)
 {
   close();
-  myStream = new ofstream(fileName.c_str(), ios::out | ios::binary);
+  myStream.open(fileName.c_str(), ios::out | ios::binary);
 
   return isOpen();
 }
@@ -42,20 +41,13 @@ bool Serializer::open(const string& fileName)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::close(void)
 {
-  if(myStream)
-  {
-    if(myStream->is_open())
-      myStream->close();
-
-    delete myStream;
-    myStream = (ofstream*) 0;
-  }
+  myStream.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Serializer::isOpen(void)
 {
-  return myStream && myStream->is_open();
+  return myStream.is_open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,8 +57,8 @@ void Serializer::putInt(int value)
   for(int i = 0; i < 4; ++i)
     buf[i] = (value >> (i<<3)) & 0xff;
 
-  myStream->write((char*)buf, 4);
-  if(myStream->bad())
+  myStream.write((char*)buf, 4);
+  if(myStream.bad())
     throw "Serializer: file write failed";
 }
 
@@ -75,18 +67,14 @@ void Serializer::putString(const string& str)
 {
   int len = str.length();
   putInt(len);
-  myStream->write(str.data(), (streamsize)len);
+  myStream.write(str.data(), (streamsize)len);
 
-  if(myStream->bad())
+  if(myStream.bad())
     throw "Serializer: file write failed";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putBool(bool b)
 {
-  int l = b ? TruePattern: FalsePattern;
-  putInt(l);
-
-  if(myStream->bad ())
-    throw "Serializer: file write failed";
+  putInt(b ? TruePattern: FalsePattern);
 }

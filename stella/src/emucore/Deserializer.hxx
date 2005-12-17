@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.8 2005-12-17 01:23:07 stephena Exp $
+// $Id: Deserializer.hxx,v 1.9 2005-12-17 22:48:24 stephena Exp $
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
@@ -31,7 +31,7 @@
   return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.8 2005-12-17 01:23:07 stephena Exp $
+  @version $Id: Deserializer.hxx,v 1.9 2005-12-17 22:48:24 stephena Exp $
 */
 class Deserializer
 {
@@ -92,7 +92,7 @@ class Deserializer
 
   private:
     // The stream to get the deserialized data from.
-    ifstream* myStream;
+    fstream myStream;
 
     enum {
       TruePattern  = 0xfab1fab2,

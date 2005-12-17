@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.128 2005-12-16 14:41:14 stephena Exp $
+// $Id: EventHandler.cxx,v 1.129 2005-12-17 22:48:24 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1052,42 +1052,6 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
   Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
 
-  // Paddle emulation *REALLY* complicates this method
-  if(value == 0)
-  {
-    if(0)//stick is analog && (isPaddleEvent(eventAxisNeg) || isPaddleEvent(eventAxisPos)))
-    {
-      // deal with zero value for analog input
-    }
-    else
-    {
-      // Turn off both events, since we don't know exactly which one
-      // was previously activated.
-      handleEvent(eventAxisNeg, 0);
-      handleEvent(eventAxisPos, 0);
-    }
-  }
-  else if(value < 0)
-  {
-    if(0)//stick is analog && isPaddleEvent(eventAxisNeg))
-    {
-      // turn on paddle event defined here
-    }
-    else
-      handleEvent(eventAxisNeg, 1);
-  }
-  else  // value > 0
-  {
-    if(0)//stick is analog && isPaddleEvent(eventAxisPos))
-    {
-      // turn on paddle event defined here
-    }
-    else
-      handleEvent(eventAxisPos, 1);
-  }
-
-/*
-  // FIXME - This isn't ready for production use just yet ...
   // Determine what type of axis we're dealing with
   // Figure out the actual type if it's undefined
   JoyAxisType type = myJoyAxisType[stick][axis];
@@ -1100,69 +1064,43 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
       type = myJoyAxisType[stick][axis] = JA_ANALOG;
   }
 
-  // Make use of an analog axis/stick for those events that are analog
-  // in nature (currently only paddle resistance).
-  // If an event is analog in nature but the axis is digital, then
-  // emulate the analog values.
-  switch((int)type)
+  // Paddle emulation *REALLY* complicates this method
+  if(type == JA_ANALOG)
   {
-    case JA_ANALOG:
-      switch((int)eventAxisNeg)
-      {
-        case Event::PaddleZeroResistance:
-        case Event::PaddleOneResistance:
-        case Event::PaddleTwoResistance:
-        case Event::PaddleThreeResistance:
-        {
-          if(value > 0) break;
-          int resistance = (int) (1000000.0 * -value / 32767);
-          myEvent->set(eventAxisNeg, resistance);
-          return;
-          break;
-        }
-      }
-      switch((int)eventAxisPos)
-      {
-        case Event::PaddleZeroResistance:
-        case Event::PaddleOneResistance:
-        case Event::PaddleTwoResistance:
-        case Event::PaddleThreeResistance:
-        {
-          if(value < 0) return;
-          int resistance = (int) (1000000.0 * value / 32767);
-          myEvent->set(eventAxisPos, resistance);
-          return;
-          break;
-        }
-      }
-      break;
-
-    case JA_DIGITAL:
-      switch((int)eventAxisNeg)
-      {
-        case Event::PaddleZeroResistance:
-        case Event::PaddleOneResistance:
-        case Event::PaddleTwoResistance:
-        case Event::PaddleThreeResistance:
-          if(value > 0) break;
-          cerr << "paddle resistance - from digital axis\n";
-          return;
-          break;
-      }
-      switch((int)eventAxisPos)
-      {
-        case Event::PaddleZeroResistance:
-        case Event::PaddleOneResistance:
-        case Event::PaddleTwoResistance:
-        case Event::PaddleThreeResistance:
-          if(value < 0) return;
-          cerr << "paddle resistance + from digital axis\n";
-          return;
-          break;
-      }
-      break;
+    int idx = -1;
+    switch((int)eventAxisNeg)
+    {
+      case Event::PaddleZeroAnalog:
+        idx = 0;
+        break;
+      case Event::PaddleOneAnalog:
+        idx = 1;
+        break;
+      case Event::PaddleTwoAnalog:
+        idx = 2;
+        break;
+      case Event::PaddleThreeAnalog:
+        idx = 3;
+        break;
+    }
+    if(idx >= 0)
+    {
+      int resistance = (int)(1000000.0 * (32767 - value) / 65534);
+      myEvent->set(Paddle_Resistance[idx], resistance);
+      return;
+    }
   }
-*/
+
+  // Otherwise, we know the event is digital
+  if(value == 0)
+  {
+    // Turn off both events, since we don't know exactly which one
+    // was previously activated.
+    handleEvent(eventAxisNeg, 0);
+    handleEvent(eventAxisPos, 0);
+  }
+  else
+    handleEvent(value < 0 ? eventAxisNeg : eventAxisPos, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1391,7 +1329,12 @@ void EventHandler::setActionMappings()
             buf.str("");
             buf << "J" << stick << " axis " << axis;
             if(eventIsAnalog(event))
+            {
+              myJoyAxisTable[stick][axis][0] = event;
+              myJoyAxisTable[stick][axis][1] = event;
+              dir = 2;  // Immediately exit the inner loop after this iteration
               buf << " abs";
+            }
             else if(dir == 0)
               buf << " neg";
             else
@@ -1764,18 +1707,10 @@ inline bool EventHandler::eventIsAnalog(Event::Type event)
 {
   switch((int)event)
   {
-    case Event::PaddleZeroResistance:
-    case Event::PaddleZeroDecrease:
-    case Event::PaddleZeroIncrease:
-    case Event::PaddleOneResistance:
-    case Event::PaddleOneDecrease:
-    case Event::PaddleOneIncrease:
-    case Event::PaddleTwoResistance:
-    case Event::PaddleTwoDecrease:
-    case Event::PaddleTwoIncrease:
-    case Event::PaddleThreeResistance:
-    case Event::PaddleThreeDecrease:
-    case Event::PaddleThreeIncrease:
+    case Event::PaddleZeroAnalog:
+    case Event::PaddleOneAnalog:
+    case Event::PaddleTwoAnalog:
+    case Event::PaddleThreeAnalog:
       return true;
     default:
       return false;
@@ -1926,7 +1861,6 @@ void EventHandler::startRecording()
     return;
 
   string eventfile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
-  myEventStream.close();
   if(!myEventStream.open(eventfile))
   {
     myOSystem->frameBuffer().showMessage("Error opening eventstream");
@@ -2385,22 +2319,22 @@ ActionList EventHandler::ourActionList[kActionListSize] = {
   { Event::JoystickOneRight,            "P2 Joystick Right",               "" },
   { Event::JoystickOneFire,             "P2 Joystick Fire",                "" },
 
-//  { Event::PaddleZeroAnalog,            "Paddle 1 Analog",                 "" },
+  { Event::PaddleZeroAnalog,            "Paddle 1 Analog",                 "" },
   { Event::PaddleZeroDecrease,          "Paddle 1 Decrease",               "" },
   { Event::PaddleZeroIncrease,          "Paddle 1 Increase",               "" },
   { Event::PaddleZeroFire,              "Paddle 1 Fire",                   "" },
 
-//  { Event::PaddleOneAnalog,             "Paddle 2 Analog",                 "" },
+  { Event::PaddleOneAnalog,             "Paddle 2 Analog",                 "" },
   { Event::PaddleOneDecrease,           "Paddle 2 Decrease",               "" },
   { Event::PaddleOneIncrease,           "Paddle 2 Increase",               "" },
   { Event::PaddleOneFire,               "Paddle 2 Fire",                   "" },
 
-//  { Event::PaddleTwoAnalog,             "Paddle 3 Analog",                 "" },
+  { Event::PaddleTwoAnalog,             "Paddle 3 Analog",                 "" },
   { Event::PaddleTwoDecrease,           "Paddle 3 Decrease",               "" },
   { Event::PaddleTwoIncrease,           "Paddle 3 Increase",               "" },
   { Event::PaddleTwoFire,               "Paddle 3 Fire",                   "" },
 
-//  { Event::PaddleThreeAnalog,           "Paddle 4 Analog",                 "" },
+  { Event::PaddleThreeAnalog,           "Paddle 4 Analog",                 "" },
   { Event::PaddleThreeDecrease,         "Paddle 4 Decrease",               "" },
   { Event::PaddleThreeIncrease,         "Paddle 4 Increase",               "" },
   { Event::PaddleThreeFire,             "Paddle 4 Fire",                   "" },

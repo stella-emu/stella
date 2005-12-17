@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.9 2005-12-17 01:23:07 stephena Exp $
+// $Id: Serializer.hxx,v 1.10 2005-12-17 22:48:24 stephena Exp $
 //============================================================================
 
 #ifndef SERIALIZER_HXX
@@ -32,7 +32,7 @@
   Boolean values are written using a special pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.9 2005-12-17 01:23:07 stephena Exp $
+  @version $Id: Serializer.hxx,v 1.10 2005-12-17 22:48:24 stephena Exp $
 */
 class Serializer
 {
@@ -93,7 +93,7 @@ class Serializer
 
   private:
     // The stream to send the serialized data to.
-    ofstream* myStream;
+    fstream myStream;
 
     enum {
       TruePattern  = 0xfab1fab2,

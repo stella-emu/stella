@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.66 2005-12-16 14:41:14 stephena Exp $
+// $Id: EventHandler.hxx,v 1.67 2005-12-17 22:48:24 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -50,7 +50,7 @@ struct ActionList {
 };
 
 enum {
-  kActionListSize = 75
+  kActionListSize = 79
 };
 
 // Joystick related items
@@ -92,7 +92,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.66 2005-12-16 14:41:14 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.67 2005-12-17 22:48:24 stephena Exp $
 */
 class EventHandler
 {
