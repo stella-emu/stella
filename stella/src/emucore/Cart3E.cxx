@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.8 2005-10-12 03:32:28 urchlay Exp $
+// $Id: Cart3E.cxx,v 1.9 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -245,12 +245,12 @@ bool Cartridge3E::save(Serializer& out)
   try
   {
     out.putString(cart);
-    out.putLong(myCurrentBank);
+    out.putInt(myCurrentBank);
 
     // Output RAM
-    out.putLong(32768);
+    out.putInt(32768);
     for(uInt32 addr = 0; addr < 32768; ++addr)
-      out.putLong(myRam[addr]);
+      out.putInt(myRam[addr]);
   }
   catch(char *msg)
   {
@@ -276,12 +276,12 @@ bool Cartridge3E::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
 
-    myCurrentBank = (uInt16) in.getLong();
+    myCurrentBank = (uInt16) in.getInt();
 
     // Input RAM
-    uInt32 limit = (uInt32) in.getLong();
+    uInt32 limit = (uInt32) in.getInt();
     for(uInt32 addr = 0; addr < limit; ++addr)
-      myRam[addr] = (uInt8) in.getLong();
+      myRam[addr] = (uInt8) in.getInt();
   }
   catch(char *msg)
   {

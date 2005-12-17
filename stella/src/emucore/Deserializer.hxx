@@ -13,26 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.7 2005-12-09 19:09:49 stephena Exp $
+// $Id: Deserializer.hxx,v 1.8 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
 #define DESERIALIZER_HXX
 
-#include "bspf.hxx"
 #include <fstream>
-#include <string>
+#include "bspf.hxx"
 
 /**
   This class implements a Deserializer device, whereby data is
   deserialized from an input binary file in a system-independent
   way.
 
-  All longs should be cast to their appropriate data type upon method
+  All ints should be cast to their appropriate data type upon method
   return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.7 2005-12-09 19:09:49 stephena Exp $
+  @version $Id: Deserializer.hxx,v 1.8 2005-12-17 01:23:07 stephena Exp $
 */
 class Deserializer
 {
@@ -71,11 +70,11 @@ class Deserializer
     bool isOpen(void);
 
     /**
-      Reads a long value from the current input stream.
+      Reads an int value from the current input stream.
 
-      @result The long value which has been read from the stream.
+      @result The int value which has been read from the stream.
     */
-    long getLong(void);
+    int getInt(void);
 
     /**
       Reads a string from the current input stream.
@@ -95,11 +94,10 @@ class Deserializer
     // The stream to get the deserialized data from.
     ifstream* myStream;
 
-    // A long pattern that represents a boolean value of true.
-    long TruePattern;
-
-    // A long pattern that represents a boolean value of false.
-    long FalsePattern;
+    enum {
+      TruePattern  = 0xfab1fab2,
+      FalsePattern = 0xbad1bad2
+    };
 };
 
 #endif

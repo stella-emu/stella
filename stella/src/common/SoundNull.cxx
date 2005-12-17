@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundNull.cxx,v 1.3 2005-06-16 00:55:56 stephena Exp $
+// $Id: SoundNull.cxx,v 1.4 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -47,15 +47,15 @@ bool SoundNull::load(Deserializer& in)
     return false;
 
   uInt8 reg;
-  reg = (uInt8) in.getLong();
-  reg = (uInt8) in.getLong();
-  reg = (uInt8) in.getLong();
-  reg = (uInt8) in.getLong();
-  reg = (uInt8) in.getLong();
-  reg = (uInt8) in.getLong();
+  reg = (uInt8) in.getInt();
+  reg = (uInt8) in.getInt();
+  reg = (uInt8) in.getInt();
+  reg = (uInt8) in.getInt();
+  reg = (uInt8) in.getInt();
+  reg = (uInt8) in.getInt();
 
   // myLastRegisterSetCycle
-  in.getLong();
+  in.getInt();
 
   return true;
 }
@@ -66,15 +66,15 @@ bool SoundNull::save(Serializer& out)
   out.putString("TIASound");
 
   uInt8 reg = 0;
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
-  out.putLong(reg);
+  out.putInt(reg);
+  out.putInt(reg);
+  out.putInt(reg);
+  out.putInt(reg);
+  out.putInt(reg);
+  out.putInt(reg);
 
   // myLastRegisterSetCycle
-  out.putLong(0);
+  out.putInt(0);
 
   return true;
 }

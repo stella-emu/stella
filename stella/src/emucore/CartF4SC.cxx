@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4SC.cxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
+// $Id: CartF4SC.cxx,v 1.10 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -184,12 +184,12 @@ bool CartridgeF4SC::save(Serializer& out)
   {
     out.putString(cart);
 
-    out.putLong(myCurrentBank);
+    out.putInt(myCurrentBank);
 
     // The 128 bytes of RAM
-    out.putLong(128);
+    out.putInt(128);
     for(uInt32 i = 0; i < 128; ++i)
-      out.putLong(myRAM[i]);
+      out.putInt(myRAM[i]);
   }
   catch(char *msg)
   {
@@ -215,11 +215,11 @@ bool CartridgeF4SC::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
 
-    myCurrentBank = (uInt16) in.getLong();
+    myCurrentBank = (uInt16) in.getInt();
 
-    uInt32 limit = (uInt32) in.getLong();
+    uInt32 limit = (uInt32) in.getInt();
     for(uInt32 i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getLong();
+      myRAM[i] = (uInt8) in.getInt();
   }
   catch(char *msg)
   {

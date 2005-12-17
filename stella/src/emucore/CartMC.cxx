@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.8 2005-10-09 17:31:47 stephena Exp $
+// $Id: CartMC.cxx,v 1.9 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -237,14 +237,14 @@ bool CartridgeMC::save(Serializer& out)
     out.putString(cart);
 
     // The currentBlock array
-    out.putLong(4);
+    out.putInt(4);
     for(i = 0; i < 4; ++i)
-      out.putLong(myCurrentBlock[i]);
+      out.putInt(myCurrentBlock[i]);
 
     // The 32K of RAM
-    out.putLong(32 * 1024);
+    out.putInt(32 * 1024);
     for(i = 0; i < 32 * 1024; ++i)
-      out.putLong(myRAM[i]);
+      out.putInt(myRAM[i]);
   }
   catch(char *msg)
   {
@@ -274,14 +274,14 @@ bool CartridgeMC::load(Deserializer& in)
       return false;
 
     // The currentBlock array
-    limit = (uInt32) in.getLong();
+    limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myCurrentBlock[i] = (uInt8) in.getLong();
+      myCurrentBlock[i] = (uInt8) in.getInt();
 
     // The 32K of RAM
-    limit = (uInt32) in.getLong();
+    limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getLong();
+      myRAM[i] = (uInt8) in.getInt();
   }
   catch(char *msg)
   {

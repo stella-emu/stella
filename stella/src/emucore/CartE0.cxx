@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
+// $Id: CartE0.cxx,v 1.10 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -213,9 +213,9 @@ bool CartridgeE0::save(Serializer& out)
   {
     out.putString(cart);
 
-    out.putLong(4);
+    out.putInt(4);
     for(uInt32 i = 0; i < 4; ++i)
-      out.putLong(myCurrentSlice[i]);
+      out.putInt(myCurrentSlice[i]);
   }
   catch(char *msg)
   {
@@ -241,9 +241,9 @@ bool CartridgeE0::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
 
-    uInt32 limit = (uInt32) in.getLong();
+    uInt32 limit = (uInt32) in.getInt();
     for(uInt32 i = 0; i < limit; ++i)
-      myCurrentSlice[i] = (uInt16) in.getLong();
+      myCurrentSlice[i] = (uInt16) in.getInt();
   }
   catch(char *msg)
   {

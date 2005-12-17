@@ -13,22 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.6 2005-12-09 19:09:49 stephena Exp $
+// $Id: Deserializer.cxx,v 1.7 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
-
-#include <iostream>
-#include <fstream>
-#include <string>
 
 #include "Deserializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Deserializer::Deserializer(void)
+  : myStream(0)
 {
-  TruePattern = 0xfab1fab2;
-  FalsePattern = 0xbad1bad2;
-
-  myStream = (ifstream*) 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,23 +59,24 @@ bool Deserializer::isOpen(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-long Deserializer::getLong(void)
+int Deserializer::getInt(void)
 {
   if(myStream->eof())
     throw "Deserializer: end of file";
 
-  long l;
-  myStream->read(reinterpret_cast<char *> (&l), sizeof (long));
-  if(myStream->bad())
-    throw "Deserializer: file read failed";
+  int val = 0;
+  unsigned char buf[4];
+  myStream->read((char*)buf, 4);
+  for(int i = 0; i < 4; ++i)
+    val += (int)(buf[i]) << (i<<3);
 
-  return l;
+  return val;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Deserializer::getString(void)
 {
-  long len = getLong();
+  int len = getInt();
   string str;
   str.resize((string::size_type)len);
   myStream->read(&str[0], (streamsize)len);
@@ -98,13 +92,13 @@ bool Deserializer::getBool(void)
 {
   bool result = false;
 
-  long b = getLong();
+  int b = getInt();
   if(myStream->bad())
     throw "Deserializer: file read failed";
 
-  if(b == TruePattern)
+  if(b == (int)TruePattern)
     result = true;
-  else if(b == FalsePattern)
+  else if(b == (int)FalsePattern)
     result = false;
   else
     throw "Deserializer: data corruption";

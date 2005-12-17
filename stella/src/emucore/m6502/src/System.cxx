@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.14 2005-12-09 19:09:49 stephena Exp $
+// $Id: System.cxx,v 1.15 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -128,7 +128,7 @@ bool System::save(Serializer& out)
   try
   {
     out.putString("System");
-    out.putLong(myCycles);
+    out.putInt(myCycles);
   }
   catch(char *msg)
   {
@@ -152,7 +152,7 @@ bool System::load(Deserializer& in)
     if(in.getString() != "System")
       return false;
 
-    myCycles = (uInt32) in.getLong();
+    myCycles = (uInt32) in.getInt();
   }
   catch(char *msg)
   {

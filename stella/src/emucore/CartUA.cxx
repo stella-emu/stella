@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.6 2005-10-12 03:32:28 urchlay Exp $
+// $Id: CartUA.cxx,v 1.7 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -189,7 +189,7 @@ bool CartridgeUA::save(Serializer& out)
   {
     out.putString(cart);
 
-    out.putLong(myCurrentBank);
+    out.putInt(myCurrentBank);
   }
   catch(char *msg)
   {
@@ -215,7 +215,7 @@ bool CartridgeUA::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
 
-    myCurrentBank = (uInt16)in.getLong();
+    myCurrentBank = (uInt16)in.getInt();
   }
   catch(char *msg)
   {

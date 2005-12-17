@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.11 2005-10-12 03:32:28 urchlay Exp $
+// $Id: Cart3F.cxx,v 1.12 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -189,7 +189,7 @@ bool Cartridge3F::save(Serializer& out)
   try
   {
     out.putString(cart);
-    out.putLong(myCurrentBank);
+    out.putInt(myCurrentBank);
   }
   catch(char *msg)
   {
@@ -215,7 +215,7 @@ bool Cartridge3F::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
 
-    myCurrentBank = (uInt16) in.getLong();
+    myCurrentBank = (uInt16) in.getInt();
   }
   catch(char *msg)
   {

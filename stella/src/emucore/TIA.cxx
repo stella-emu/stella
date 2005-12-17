@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.64 2005-10-11 19:38:10 stephena Exp $
+// $Id: TIA.cxx,v 1.65 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -310,59 +310,59 @@ bool TIA::save(Serializer& out)
   {
     out.putString(device);
 
-    out.putLong(myClockWhenFrameStarted);
-    out.putLong(myClockStartDisplay);
-    out.putLong(myClockStopDisplay);
-    out.putLong(myClockAtLastUpdate);
-    out.putLong(myClocksToEndOfScanLine);
-    out.putLong(myScanlineCountForLastFrame);
-    out.putLong(myCurrentScanline);
-    out.putLong(myVSYNCFinishClock);
+    out.putInt(myClockWhenFrameStarted);
+    out.putInt(myClockStartDisplay);
+    out.putInt(myClockStopDisplay);
+    out.putInt(myClockAtLastUpdate);
+    out.putInt(myClocksToEndOfScanLine);
+    out.putInt(myScanlineCountForLastFrame);
+    out.putInt(myCurrentScanline);
+    out.putInt(myVSYNCFinishClock);
 
-    out.putLong(myEnabledObjects);
+    out.putInt(myEnabledObjects);
 
-    out.putLong(myVSYNC);
-    out.putLong(myVBLANK);
-    out.putLong(myNUSIZ0);
-    out.putLong(myNUSIZ1);
+    out.putInt(myVSYNC);
+    out.putInt(myVBLANK);
+    out.putInt(myNUSIZ0);
+    out.putInt(myNUSIZ1);
 
-    out.putLong(myCOLUP0);
-    out.putLong(myCOLUP1);
-    out.putLong(myCOLUPF);
-    out.putLong(myCOLUBK);
+    out.putInt(myCOLUP0);
+    out.putInt(myCOLUP1);
+    out.putInt(myCOLUPF);
+    out.putInt(myCOLUBK);
 
-    out.putLong(myCTRLPF);
-    out.putLong(myPlayfieldPriorityAndScore);
+    out.putInt(myCTRLPF);
+    out.putInt(myPlayfieldPriorityAndScore);
     out.putBool(myREFP0);
     out.putBool(myREFP1);
-    out.putLong(myPF);
-    out.putLong(myGRP0);
-    out.putLong(myGRP1);
-    out.putLong(myDGRP0);
-    out.putLong(myDGRP1);
+    out.putInt(myPF);
+    out.putInt(myGRP0);
+    out.putInt(myGRP1);
+    out.putInt(myDGRP0);
+    out.putInt(myDGRP1);
     out.putBool(myENAM0);
     out.putBool(myENAM1);
     out.putBool(myENABL);
     out.putBool(myDENABL);
-    out.putLong(myHMP0);
-    out.putLong(myHMP1);
-    out.putLong(myHMM0);
-    out.putLong(myHMM1);
-    out.putLong(myHMBL);
+    out.putInt(myHMP0);
+    out.putInt(myHMP1);
+    out.putInt(myHMM0);
+    out.putInt(myHMM1);
+    out.putInt(myHMBL);
     out.putBool(myVDELP0);
     out.putBool(myVDELP1);
     out.putBool(myVDELBL);
     out.putBool(myRESMP0);
     out.putBool(myRESMP1);
-    out.putLong(myCollision);
-    out.putLong(myPOSP0);
-    out.putLong(myPOSP1);
-    out.putLong(myPOSM0);
-    out.putLong(myPOSM1);
-    out.putLong(myPOSBL);
+    out.putInt(myCollision);
+    out.putInt(myPOSP0);
+    out.putInt(myPOSP1);
+    out.putInt(myPOSM0);
+    out.putInt(myPOSM1);
+    out.putInt(myPOSBL);
 
-    out.putLong(myCurrentGRP0);
-    out.putLong(myCurrentGRP1);
+    out.putInt(myCurrentGRP0);
+    out.putInt(myCurrentGRP1);
 
 // pointers
 //  myCurrentBLMask = ourBallMaskTable[0][0];
@@ -372,13 +372,13 @@ bool TIA::save(Serializer& out)
 //  myCurrentP1Mask = ourPlayerMaskTable[0][0][0];
 //  myCurrentPFMask = ourPlayfieldTable[0];
 
-    out.putLong(myLastHMOVEClock);
+    out.putInt(myLastHMOVEClock);
     out.putBool(myHMOVEBlankEnabled);
     out.putBool(myM0CosmicArkMotionEnabled);
-    out.putLong(myM0CosmicArkCounter);
+    out.putInt(myM0CosmicArkCounter);
 
     out.putBool(myDumpEnabled);
-    out.putLong(myDumpDisabledCycle);
+    out.putInt(myDumpDisabledCycle);
 
     // Save the sound sample stuff ...
     mySound->save(out);
@@ -407,59 +407,59 @@ bool TIA::load(Deserializer& in)
     if(in.getString() != device)
       return false;
 
-    myClockWhenFrameStarted = (Int32) in.getLong();
-    myClockStartDisplay = (Int32) in.getLong();
-    myClockStopDisplay = (Int32) in.getLong();
-    myClockAtLastUpdate = (Int32) in.getLong();
-    myClocksToEndOfScanLine = (Int32) in.getLong();
-    myScanlineCountForLastFrame = (Int32) in.getLong();
-    myCurrentScanline = (Int32) in.getLong();
-    myVSYNCFinishClock = (Int32) in.getLong();
+    myClockWhenFrameStarted = (Int32) in.getInt();
+    myClockStartDisplay = (Int32) in.getInt();
+    myClockStopDisplay = (Int32) in.getInt();
+    myClockAtLastUpdate = (Int32) in.getInt();
+    myClocksToEndOfScanLine = (Int32) in.getInt();
+    myScanlineCountForLastFrame = (Int32) in.getInt();
+    myCurrentScanline = (Int32) in.getInt();
+    myVSYNCFinishClock = (Int32) in.getInt();
 
-    myEnabledObjects = (uInt8) in.getLong();
+    myEnabledObjects = (uInt8) in.getInt();
 
-    myVSYNC = (uInt8) in.getLong();
-    myVBLANK = (uInt8) in.getLong();
-    myNUSIZ0 = (uInt8) in.getLong();
-    myNUSIZ1 = (uInt8) in.getLong();
+    myVSYNC = (uInt8) in.getInt();
+    myVBLANK = (uInt8) in.getInt();
+    myNUSIZ0 = (uInt8) in.getInt();
+    myNUSIZ1 = (uInt8) in.getInt();
 
-    myCOLUP0 = (uInt32) in.getLong();
-    myCOLUP1 = (uInt32) in.getLong();
-    myCOLUPF = (uInt32) in.getLong();
-    myCOLUBK = (uInt32) in.getLong();
+    myCOLUP0 = (uInt32) in.getInt();
+    myCOLUP1 = (uInt32) in.getInt();
+    myCOLUPF = (uInt32) in.getInt();
+    myCOLUBK = (uInt32) in.getInt();
 
-    myCTRLPF = (uInt8) in.getLong();
-    myPlayfieldPriorityAndScore = (uInt8) in.getLong();
+    myCTRLPF = (uInt8) in.getInt();
+    myPlayfieldPriorityAndScore = (uInt8) in.getInt();
     myREFP0 = in.getBool();
     myREFP1 = in.getBool();
-    myPF = (uInt32) in.getLong();
-    myGRP0 = (uInt8) in.getLong();
-    myGRP1 = (uInt8) in.getLong();
-    myDGRP0 = (uInt8) in.getLong();
-    myDGRP1 = (uInt8) in.getLong();
+    myPF = (uInt32) in.getInt();
+    myGRP0 = (uInt8) in.getInt();
+    myGRP1 = (uInt8) in.getInt();
+    myDGRP0 = (uInt8) in.getInt();
+    myDGRP1 = (uInt8) in.getInt();
     myENAM0 = in.getBool();
     myENAM1 = in.getBool();
     myENABL = in.getBool();
     myDENABL = in.getBool();
-    myHMP0 = (Int8) in.getLong();
-    myHMP1 = (Int8) in.getLong();
-    myHMM0 = (Int8) in.getLong();
-    myHMM1 = (Int8) in.getLong();
-    myHMBL = (Int8) in.getLong();
+    myHMP0 = (Int8) in.getInt();
+    myHMP1 = (Int8) in.getInt();
+    myHMM0 = (Int8) in.getInt();
+    myHMM1 = (Int8) in.getInt();
+    myHMBL = (Int8) in.getInt();
     myVDELP0 = in.getBool();
     myVDELP1 = in.getBool();
     myVDELBL = in.getBool();
     myRESMP0 = in.getBool();
     myRESMP1 = in.getBool();
-    myCollision = (uInt16) in.getLong();
-    myPOSP0 = (Int16) in.getLong();
-    myPOSP1 = (Int16) in.getLong();
-    myPOSM0 = (Int16) in.getLong();
-    myPOSM1 = (Int16) in.getLong();
-    myPOSBL = (Int16) in.getLong();
+    myCollision = (uInt16) in.getInt();
+    myPOSP0 = (Int16) in.getInt();
+    myPOSP1 = (Int16) in.getInt();
+    myPOSM0 = (Int16) in.getInt();
+    myPOSM1 = (Int16) in.getInt();
+    myPOSBL = (Int16) in.getInt();
 
-    myCurrentGRP0 = (uInt8) in.getLong();
-    myCurrentGRP1 = (uInt8) in.getLong();
+    myCurrentGRP0 = (uInt8) in.getInt();
+    myCurrentGRP1 = (uInt8) in.getInt();
 
 // pointers
 //  myCurrentBLMask = ourBallMaskTable[0][0];
@@ -469,13 +469,13 @@ bool TIA::load(Deserializer& in)
 //  myCurrentP1Mask = ourPlayerMaskTable[0][0][0];
 //  myCurrentPFMask = ourPlayfieldTable[0];
 
-    myLastHMOVEClock = (Int32) in.getLong();
+    myLastHMOVEClock = (Int32) in.getInt();
     myHMOVEBlankEnabled = in.getBool();
     myM0CosmicArkMotionEnabled = in.getBool();
-    myM0CosmicArkCounter = (uInt32) in.getLong();
+    myM0CosmicArkCounter = (uInt32) in.getInt();
 
     myDumpEnabled = in.getBool();
-    myDumpDisabledCycle = (Int32) in.getLong();
+    myDumpDisabledCycle = (Int32) in.getInt();
 
     // Load the sound sample stuff ...
     mySound->load(in);

@@ -13,27 +13,26 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.8 2005-12-09 19:09:49 stephena Exp $
+// $Id: Serializer.hxx,v 1.9 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #ifndef SERIALIZER_HXX
 #define SERIALIZER_HXX
 
-#include "bspf.hxx"
 #include <fstream>
-#include <string>
+#include "bspf.hxx"
 
 /**
   This class implements a Serializer device, whereby data is
   serialized and sent to an output binary file in a system-
   independent way.
 
-  All bytes and integers are written as long's.  Strings are
+  All bytes and integers are written as int's.  Strings are
   written as characters prepended by the length of the string.
   Boolean values are written using a special pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.8 2005-12-09 19:09:49 stephena Exp $
+  @version $Id: Serializer.hxx,v 1.9 2005-12-17 01:23:07 stephena Exp $
 */
 class Serializer
 {
@@ -72,11 +71,11 @@ class Serializer
     bool isOpen(void);
 
     /**
-      Writes a long value to the current output stream.
+      Writes an int value to the current output stream.
 
-      @param value The long value to write to the output stream.
+      @param value The int value to write to the output stream.
     */
-    void putLong(long value);
+    void putInt(int value);
 
     /**
       Writes a string to the current output stream.
@@ -96,11 +95,10 @@ class Serializer
     // The stream to send the serialized data to.
     ofstream* myStream;
 
-    // A long pattern that represents a boolean value of true.
-    long TruePattern;
-
-    // A long pattern that represents a boolean value of false.
-    long FalsePattern;
+    enum {
+      TruePattern  = 0xfab1fab2,
+      FalsePattern = 0xbad1bad2
+    };
 };
 
 #endif

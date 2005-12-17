@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.5 2005-10-09 17:31:47 stephena Exp $
+// $Id: M6532.cxx,v 1.6 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -304,17 +304,17 @@ bool M6532::save(Serializer& out)
     out.putString(device);
 
     // Output the RAM
-    out.putLong(128);
+    out.putInt(128);
     for(uInt32 t = 0; t < 128; ++t)
-      out.putLong(myRAM[t]);
+      out.putInt(myRAM[t]);
 
-    out.putLong(myTimer);
-    out.putLong(myIntervalShift);
-    out.putLong(myCyclesWhenTimerSet);
-    out.putLong(myCyclesWhenInterruptReset);
+    out.putInt(myTimer);
+    out.putInt(myIntervalShift);
+    out.putInt(myCyclesWhenTimerSet);
+    out.putInt(myCyclesWhenInterruptReset);
     out.putBool(myTimerReadAfterInterrupt);
-    out.putLong(myDDRA);
-    out.putLong(myDDRB);
+    out.putInt(myDDRA);
+    out.putInt(myDDRB);
   }
   catch(char *msg)
   {
@@ -341,18 +341,18 @@ bool M6532::load(Deserializer& in)
       return false;
 
     // Input the RAM
-    uInt32 limit = (uInt32) in.getLong();
+    uInt32 limit = (uInt32) in.getInt();
     for(uInt32 t = 0; t < limit; ++t)
-      myRAM[t] = (uInt8) in.getLong();
+      myRAM[t] = (uInt8) in.getInt();
 
-    myTimer = (uInt32) in.getLong();
-    myIntervalShift = (uInt32) in.getLong();
-    myCyclesWhenTimerSet = (uInt32) in.getLong();
-    myCyclesWhenInterruptReset = (uInt32) in.getLong();
+    myTimer = (uInt32) in.getInt();
+    myIntervalShift = (uInt32) in.getInt();
+    myCyclesWhenTimerSet = (uInt32) in.getInt();
+    myCyclesWhenInterruptReset = (uInt32) in.getInt();
     myTimerReadAfterInterrupt = in.getBool();
 
-    myDDRA = (uInt8) in.getLong();
-    myDDRB = (uInt8) in.getLong();
+    myDDRA = (uInt8) in.getInt();
+    myDDRB = (uInt8) in.getInt();
   }
   catch(char *msg)
   {

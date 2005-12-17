@@ -13,22 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.cxx,v 1.6 2005-12-09 19:09:49 stephena Exp $
+// $Id: Serializer.cxx,v 1.7 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
-
-#include <iostream>
-#include <fstream>
-#include <string>
 
 #include "Serializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer(void)
+  : myStream(0)
 {
-  TruePattern = 0xfab1fab2;
-  FalsePattern = 0xbad1bad2;
-
-  myStream = (ofstream*) 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,9 +59,13 @@ bool Serializer::isOpen(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putLong(long value)
+void Serializer::putInt(int value)
 {
-  myStream->write(reinterpret_cast<char *> (&value), sizeof (long));
+  unsigned char buf[4];
+  for(int i = 0; i < 4; ++i)
+    buf[i] = (value >> (i<<3)) & 0xff;
+
+  myStream->write((char*)buf, 4);
   if(myStream->bad())
     throw "Serializer: file write failed";
 }
@@ -77,8 +74,8 @@ void Serializer::putLong(long value)
 void Serializer::putString(const string& str)
 {
   int len = str.length();
-  putLong(len);
-  myStream->write(str.data(), len);
+  putInt(len);
+  myStream->write(str.data(), (streamsize)len);
 
   if(myStream->bad())
     throw "Serializer: file write failed";
@@ -87,8 +84,8 @@ void Serializer::putString(const string& str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putBool(bool b)
 {
-  long l = b ? TruePattern: FalsePattern;
-  putLong(l);
+  int l = b ? TruePattern: FalsePattern;
+  putInt(l);
 
   if(myStream->bad ())
     throw "Serializer: file write failed";

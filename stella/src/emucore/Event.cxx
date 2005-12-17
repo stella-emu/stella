@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.5 2005-12-09 19:09:49 stephena Exp $
+// $Id: Event.cxx,v 1.6 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -92,9 +92,9 @@ bool Event::save(Serializer& out)
 {
   int size = myEventHistory.size();
   out.putString("EventStream");
-  out.putLong(size);
+  out.putInt(size);
   for(int i = 0; i < size; ++i)
-    out.putLong(myEventHistory[i]);
+    out.putInt(myEventHistory[i]);
 
   return true;
 }

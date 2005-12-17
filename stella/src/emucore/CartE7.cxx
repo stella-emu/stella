@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.12 2005-10-12 03:32:28 urchlay Exp $
+// $Id: CartE7.cxx,v 1.13 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -247,16 +247,16 @@ bool CartridgeE7::save(Serializer& out)
 
     out.putString(cart);
 
-    out.putLong(2);
+    out.putInt(2);
     for(i = 0; i < 2; ++i)
-      out.putLong(myCurrentSlice[i]);
+      out.putInt(myCurrentSlice[i]);
 
-    out.putLong(myCurrentRAM);
+    out.putInt(myCurrentRAM);
 
     // The 2048 bytes of RAM
-    out.putLong(2048);
+    out.putInt(2048);
     for(i = 0; i < 2048; ++i)
-      out.putLong(myRAM[i]);
+      out.putInt(myRAM[i]);
   }
   catch(char *msg)
   {
@@ -284,16 +284,16 @@ bool CartridgeE7::load(Deserializer& in)
 
     uInt32 i, limit;
 
-    limit = (uInt32) in.getLong();
+    limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myCurrentSlice[i] = (uInt16) in.getLong();
+      myCurrentSlice[i] = (uInt16) in.getInt();
 
-    myCurrentRAM = (uInt16) in.getLong();
+    myCurrentRAM = (uInt16) in.getInt();
 
     // The 2048 bytes of RAM
-    limit = (uInt32) in.getLong();
+    limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getLong();
+      myRAM[i] = (uInt8) in.getInt();
   }
   catch(char *msg)
   {

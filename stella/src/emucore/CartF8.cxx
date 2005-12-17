@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.10 2005-10-13 01:13:20 urchlay Exp $
+// $Id: CartF8.cxx,v 1.11 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -176,7 +176,7 @@ bool CartridgeF8::save(Serializer& out)
   {
     out.putString(cart);
 
-    out.putLong(myCurrentBank);
+    out.putInt(myCurrentBank);
   }
   catch(char *msg)
   {
@@ -202,7 +202,7 @@ bool CartridgeF8::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
 
-    myCurrentBank = (uInt16) in.getLong();
+    myCurrentBank = (uInt16) in.getInt();
   }
   catch(char *msg)
   {

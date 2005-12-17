@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.26 2005-09-30 00:40:33 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.27 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -412,14 +412,14 @@ bool SoundSDL::load(Deserializer& in)
       return false;
 
     uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
-    reg1 = (uInt8) in.getLong();
-    reg2 = (uInt8) in.getLong();
-    reg3 = (uInt8) in.getLong();
-    reg4 = (uInt8) in.getLong();
-    reg5 = (uInt8) in.getLong();
-    reg6 = (uInt8) in.getLong();
+    reg1 = (uInt8) in.getInt();
+    reg2 = (uInt8) in.getInt();
+    reg3 = (uInt8) in.getInt();
+    reg4 = (uInt8) in.getInt();
+    reg5 = (uInt8) in.getInt();
+    reg6 = (uInt8) in.getInt();
 
-    myLastRegisterSetCycle = (Int32) in.getLong();
+    myLastRegisterSetCycle = (Int32) in.getInt();
 
     // Only update the TIA sound registers if sound is enabled
     // Make sure to empty the queue of previous sound fragments
@@ -472,14 +472,14 @@ bool SoundSDL::save(Serializer& out)
       reg6 = myTIASound.get(0x1a);
     }
 
-    out.putLong(reg1);
-    out.putLong(reg2);
-    out.putLong(reg3);
-    out.putLong(reg4);
-    out.putLong(reg5);
-    out.putLong(reg6);
+    out.putInt(reg1);
+    out.putInt(reg2);
+    out.putInt(reg3);
+    out.putInt(reg4);
+    out.putInt(reg5);
+    out.putInt(reg6);
 
-    out.putLong(myLastRegisterSetCycle);
+    out.putInt(myLastRegisterSetCycle);
   }
   catch(char *msg)
   {

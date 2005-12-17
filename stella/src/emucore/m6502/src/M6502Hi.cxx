@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.14 2005-10-11 19:38:10 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.15 2005-12-17 01:23:07 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -236,12 +236,12 @@ bool M6502High::save(Serializer& out)
   {
     out.putString(CPU);
 
-    out.putLong(A);    // Accumulator
-    out.putLong(X);    // X index register
-    out.putLong(Y);    // Y index register
-    out.putLong(SP);   // Stack Pointer
-    out.putLong(IR);   // Instruction register
-    out.putLong(PC);   // Program Counter
+    out.putInt(A);    // Accumulator
+    out.putInt(X);    // X index register
+    out.putInt(Y);    // Y index register
+    out.putInt(SP);   // Stack Pointer
+    out.putInt(IR);   // Instruction register
+    out.putInt(PC);   // Program Counter
 
     out.putBool(N);     // N flag for processor status register
     out.putBool(V);     // V flag for processor status register
@@ -251,12 +251,12 @@ bool M6502High::save(Serializer& out)
     out.putBool(notZ);  // Z flag complement for processor status register
     out.putBool(C);     // C flag for processor status register
 
-    out.putLong(myExecutionStatus);
+    out.putInt(myExecutionStatus);
 
     // Indicates the number of distinct memory accesses
-    out.putLong(myNumberOfDistinctAccesses);
+    out.putInt(myNumberOfDistinctAccesses);
     // Indicates the last address which was accessed
-    out.putLong(myLastAddress);
+    out.putInt(myLastAddress);
 
   }
   catch(char *msg)
@@ -283,12 +283,12 @@ bool M6502High::load(Deserializer& in)
     if(in.getString() != CPU)
       return false;
 
-    A = (uInt8) in.getLong();    // Accumulator
-    X = (uInt8) in.getLong();    // X index register
-    Y = (uInt8) in.getLong();    // Y index register
-    SP = (uInt8) in.getLong();   // Stack Pointer
-    IR = (uInt8) in.getLong();   // Instruction register
-    PC = (uInt16) in.getLong();  // Program Counter
+    A = (uInt8) in.getInt();    // Accumulator
+    X = (uInt8) in.getInt();    // X index register
+    Y = (uInt8) in.getInt();    // Y index register
+    SP = (uInt8) in.getInt();   // Stack Pointer
+    IR = (uInt8) in.getInt();   // Instruction register
+    PC = (uInt16) in.getInt();  // Program Counter
 
     N = in.getBool();     // N flag for processor status register
     V = in.getBool();     // V flag for processor status register
@@ -298,12 +298,12 @@ bool M6502High::load(Deserializer& in)
     notZ = in.getBool();  // Z flag complement for processor status register
     C = in.getBool();     // C flag for processor status register
 
-    myExecutionStatus = (uInt8) in.getLong();
+    myExecutionStatus = (uInt8) in.getInt();
 
     // Indicates the number of distinct memory accesses
-    myNumberOfDistinctAccesses = (uInt32) in.getLong();
+    myNumberOfDistinctAccesses = (uInt32) in.getInt();
     // Indicates the last address which was accessed
-    myLastAddress = (uInt16) in.getLong();
+    myLastAddress = (uInt16) in.getInt();
   }
   catch(char *msg)
   {
