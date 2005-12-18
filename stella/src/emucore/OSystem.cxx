@@ -13,35 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.49 2005-11-27 22:37:24 stephena Exp $
+// $Id: OSystem.cxx,v 1.50 2005-12-18 18:37:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
 
-// FIXME - clean up this mess of platform-specific ifdefs
-#include "FrameBuffer.hxx"
-#include "FrameBufferSoft.hxx"
-#ifdef DISPLAY_OPENGL
-  #include "FrameBufferGL.hxx"
-#endif
-
-#if defined(PSP)
-  #include "FrameBufferPSP.hxx"
-#elif defined (_WIN32_WCE)
-  #include "FrameBufferWinCE.hxx"
-#endif
-
-#include "Sound.hxx"
-#include "SoundNull.hxx"
-#ifdef SOUND_SUPPORT
-  #ifndef _WIN32_WCE
-    #include "SoundSDL.hxx"
-  #else
-    #include "SoundWinCE.hxx"
-  #endif
-#endif
+#include "MediaFactory.hxx"
 
 #ifdef DEVELOPER_SUPPORT
   #include "Debugger.hxx"
@@ -203,20 +182,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
 
   // And recreate a new one
   string video = mySettings->getString("video");
-
-  if(video == "soft")
-#if defined (PSP)
-    myFrameBuffer = new FrameBufferPSP(this);
-#elif defined (_WIN32_WCE)
-    myFrameBuffer = new FrameBufferWinCE(this);
-#else
-    myFrameBuffer = new FrameBufferSoft(this);
-#endif
-#ifdef DISPLAY_OPENGL
-  else if(video == "gl")
-    myFrameBuffer = new FrameBufferGL(this);
-#endif
-
+  myFrameBuffer = MediaFactory::createVideo(video, this);
   if(!myFrameBuffer)
     return false;
 
@@ -281,15 +247,9 @@ void OSystem::createSound()
   delete mySound;  mySound = NULL;
 
   // And recreate a new sound device
-#ifdef SOUND_SUPPORT
-  #if defined (_WIN32_WCE)
-    mySound = new SoundWinCE(this);
-  #else
-    mySound = new SoundSDL(this);
-  #endif
-#else
+  mySound = MediaFactory::createAudio("", this);
+#ifndef SOUND_SUPPORT
   mySettings->setBool("sound", false);
-  mySound = new SoundNull(this);
 #endif
 
   // Re-initialize the sound object to current settings

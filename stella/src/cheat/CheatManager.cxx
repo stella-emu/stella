@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.4 2005-11-27 22:37:24 stephena Exp $
+// $Id: CheatManager.cxx,v 1.5 2005-12-18 18:37:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -44,10 +44,9 @@ CheatManager::~CheatManager()
 const Cheat* CheatManager::add(const string& name, const string& code,
                                bool enable, int idx)
 {
-  if(!isValidCode(code))
+  Cheat* cheat = (Cheat*) createCheat(name, code);
+  if(!cheat)
     return NULL;
-
-  Cheat* cheat = (Cheat*) NULL;
 
   // Delete duplicate entries
   for(unsigned int i = 0; i < myCheatList.size(); i++)
@@ -59,36 +58,17 @@ const Cheat* CheatManager::add(const string& name, const string& code,
     }
   }
 
-  // Create new cheat based on string length
-  switch(code.size())
-  {
-    case 4:
-      cheat = new RamCheat(myOSystem, name, code);
-      break;
-
-    case 6:
-      cheat = new CheetahCheat(myOSystem, name, code);
-      break;
-
-    case 8:
-      cheat = new BankRomCheat(myOSystem, name, code);
-      break;
-  }
-
   // Add the cheat to the main cheat list
-  if(cheat)
-  {
-    if(idx == -1)
-      myCheatList.push_back(cheat);
-    else
-      myCheatList.insert_at(idx, cheat);
+  if(idx == -1)
+    myCheatList.push_back(cheat);
+  else
+    myCheatList.insert_at(idx, cheat);
 
-    // And enable/disable it (the cheat knows how to enable or disable itself)
-    if(enable)
-      cheat->enable();
-    else
-      cheat->disable();
-  }
+  // And enable/disable it (the cheat knows how to enable or disable itself)
+  if(enable)
+    cheat->enable();
+  else
+    cheat->disable();
 
   return cheat;
 }
@@ -136,6 +116,44 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
   {
     if(found)
       myPerFrameList.remove_at(i);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatManager::addOneShot(const string& name, const string& code)
+{
+  Cheat* cheat = (Cheat*) createCheat(name, code);
+  if(!cheat)
+    return;
+
+  // Enable this cheat once, and then immediately delete it
+  cheat->enable();
+  delete cheat;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Cheat* CheatManager::createCheat(const string& name, const string& code)
+{
+  if(!isValidCode(code))
+    return NULL;
+
+  // Create new cheat based on string length
+  switch(code.size())
+  {
+    case 4:
+      return new RamCheat(myOSystem, name, code);
+      break;
+
+    case 6:
+      return new CheetahCheat(myOSystem, name, code);
+      break;
+
+    case 8:
+      return new BankRomCheat(myOSystem, name, code);
+      break;
+
+    default:
+      return NULL;
   }
 }
 

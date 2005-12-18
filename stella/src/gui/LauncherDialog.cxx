@@ -13,13 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.33 2005-10-22 20:33:57 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.34 2005-12-18 18:37:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include <algorithm>
 #include <sstream>
 
 #include "OSystem.hxx"

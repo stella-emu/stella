@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.5 2005-11-27 22:37:24 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.6 2005-12-18 18:37:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,12 +36,13 @@
 #include "bspf.hxx"
 
 enum {
-  kAddCheatCmd   = 'CHTa',
-  kEditCheatCmd  = 'CHTe',
-  kCheatAdded    = 'CHad',
-  kCheatEdited   = 'CHed',
-  kRemCheatCmd   = 'CHTr',
-  kAddOneShotCmd = 'CHTo'
+  kAddCheatCmd       = 'CHTa',
+  kEditCheatCmd      = 'CHTe',
+  kAddOneShotCmd     = 'CHTo',
+  kCheatAdded        = 'CHad',
+  kCheatEdited       = 'CHed',
+  kOneShotCheatAdded = 'CHoa',
+  kRemCheatCmd       = 'CHTr'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,6 +163,16 @@ void CheatCodeDialog::removeCheat()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::addOneShotCheat()
+{
+  myCheatInput->setEditString("One-shot cheat", 0);
+  myCheatInput->setEditString("", 1);
+  myCheatInput->setTitle("");
+  myCheatInput->setEmitSignal(kOneShotCheatAdded);
+  parent()->addDialog(myCheatInput);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
                                     int data, int id)
 {
@@ -227,8 +238,22 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kAddOneShotCmd:
-      cerr << "add one-shot cheat\n";
+      addOneShotCheat();
       break;
+
+    case kOneShotCheatAdded:
+    {
+      const string& name = myCheatInput->getResult(0);
+      const string& code = myCheatInput->getResult(1);
+      if(instance()->cheat().isValidCode(code))
+      {
+        instance()->cheat().addOneShot(name, code);
+        parent()->removeDialog();
+      }
+      else
+        myCheatInput->setTitle("Invalid code");
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

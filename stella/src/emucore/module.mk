@@ -46,7 +46,8 @@ MODULE_OBJS := \
 	src/emucore/Switches.o \
 	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \
-	src/emucore/unzip.o
+	src/emucore/unzip.o \
+	src/emucore/MediaFactory.o
 
 MODULE_DIRS += \
 	src/emucore

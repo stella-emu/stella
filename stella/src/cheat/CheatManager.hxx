@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.hxx,v 1.5 2005-12-09 01:16:13 stephena Exp $
+// $Id: CheatManager.hxx,v 1.6 2005-12-18 18:37:01 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_MANAGER_HXX
@@ -36,7 +36,7 @@ typedef map<string,string> CheatCodeMap;
   the list of all cheats currently in use.
 
   @author  Stephen Anthony
-  @version $Id: CheatManager.hxx,v 1.5 2005-12-09 01:16:13 stephena Exp $
+  @version $Id: CheatManager.hxx,v 1.6 2005-12-18 18:37:01 stephena Exp $
 */
 class CheatManager
 {
@@ -73,6 +73,16 @@ class CheatManager
       @param enable  Add or remove the cheat to the per-frame list
     */
     void addPerFrame(Cheat* cheat, bool enable);
+
+    /**
+      Creates and enables a one-shot cheat.  One-shot cheats are the
+      same as normal cheats, except they are only enabled once, and
+      they're not saved at all.
+
+      @param name  Name of the cheat (not absolutely required)
+      @param code  The actual cheatcode (in hex)
+    */
+    void addOneShot(const string& name, const string& code);
 
     /**
       Enable/disabled the cheat specified by the given code.
@@ -118,6 +128,16 @@ class CheatManager
     bool isValidCode(const string& code);
 
   private:
+    /**
+      Create a cheat defined by the given code.
+
+      @param name  Name of the cheat (not absolutely required)
+      @param code  The actual cheatcode (in hex)
+
+      @return  The cheat (if was created), else NULL.
+    */
+    const Cheat* createCheat(const string& name, const string& code);
+
     /**
       Parses a list of cheats and adds/enables each one.
 

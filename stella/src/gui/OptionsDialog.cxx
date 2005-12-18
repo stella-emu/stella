@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.34 2005-11-26 21:23:35 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.35 2005-12-18 18:37:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -201,12 +201,4 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::enterCheatMode()
-{
-#ifdef CHEATCODE_SUPPORT
-  parent()->addDialog(myCheatCodeDialog);
-#endif
 }

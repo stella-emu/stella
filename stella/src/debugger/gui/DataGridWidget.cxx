@@ -13,14 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.3 2005-10-13 18:53:07 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.4 2005-12-18 18:37:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
-
-#include <cctype>
-#include <algorithm>
 
 #include "OSystem.hxx"
 #include "Widget.hxx"

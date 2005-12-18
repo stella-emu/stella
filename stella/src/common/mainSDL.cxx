@@ -13,15 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.57 2005-11-28 15:05:43 stephena Exp $
+// $Id: mainSDL.cxx,v 1.58 2005-12-18 18:37:02 stephena Exp $
 //============================================================================
 
-#include <fstream>
-#include <iostream>
-#include <string>
 #include <sstream>
-#include <algorithm>
-#include <cstdlib>
 
 #include <SDL.h>
 

@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cheat.hxx,v 1.2 2005-11-27 22:37:24 stephena Exp $
+// $Id: Cheat.hxx,v 1.3 2005-12-18 18:37:01 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_HXX
 #define CHEAT_HXX
 
+#include "StringList.hxx"
 #include "OSystem.hxx"
 #include "bspf.hxx"
 
@@ -29,7 +30,11 @@ class Cheat
       : myOSystem(osystem),
         myName(name),
         myCode(code),
-        myEnabled(false) { if(name == "") myName = code; }
+        myEnabled(false)
+    {
+      if(name == "") myName = code;
+      myName = StringList::removePattern(myName, "\":");
+    }
     virtual ~Cheat()     { }
 
     bool enabled() const { return myEnabled; }

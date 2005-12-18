@@ -13,10 +13,9 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.130 2005-12-18 14:15:53 stephena Exp $
+// $Id: EventHandler.cxx,v 1.131 2005-12-18 18:37:03 stephena Exp $
 //============================================================================
 
-#include <algorithm>
 #include <sstream>
 #include <SDL.h>
 
@@ -506,11 +505,6 @@ void EventHandler::poll(uInt32 time)
           {
             switch(int(key))
             {
-              case SDLK_c:
-                enterMenuMode(S_MENU);
-                myOSystem->menu().enterCheatMode();
-                break;
-
               case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0
                 setPaddleMode(0, true);
                 break;
