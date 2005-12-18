@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.8 2005-12-17 22:48:24 stephena Exp $
+// $Id: Deserializer.cxx,v 1.9 2005-12-18 22:28:05 stephena Exp $
 //============================================================================
 
 #include "Deserializer.hxx"
@@ -47,7 +47,7 @@ void Deserializer::close(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Deserializer::isOpen(void)
 {
-  return myStream && myStream.is_open();
+  return myStream.is_open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

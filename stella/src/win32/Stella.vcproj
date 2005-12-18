@@ -422,6 +422,9 @@ opengl32.lib"
 				RelativePath="..\emucore\MD5.cxx">
 			</File>
 			<File
+				RelativePath="..\emucore\MediaFactory.cxx">
+			</File>
+			<File
 				RelativePath="..\emucore\MediaSrc.cxx">
 			</File>
 			<File
@@ -905,6 +908,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\emucore\MD5.hxx">
+			</File>
+			<File
+				RelativePath="..\emucore\MediaFactory.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\MediaSrc.hxx">
