@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.129 2005-12-17 22:48:24 stephena Exp $
+// $Id: EventHandler.cxx,v 1.130 2005-12-18 14:15:53 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1330,8 +1330,6 @@ void EventHandler::setActionMappings()
             buf << "J" << stick << " axis " << axis;
             if(eventIsAnalog(event))
             {
-              myJoyAxisTable[stick][axis][0] = event;
-              myJoyAxisTable[stick][axis][1] = event;
               dir = 2;  // Immediately exit the inner loop after this iteration
               buf << " abs";
             }
@@ -1448,8 +1446,10 @@ void EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
                                      int value)
 {
-  int dir = value > 0;
-  myJoyAxisTable[stick][axis][dir] = event;
+  if(eventIsAnalog(event))
+    myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
+  else
+    myJoyAxisTable[stick][axis][(value > 0)] = event;
   saveJoyAxisMapping();
 
   setActionMappings();
