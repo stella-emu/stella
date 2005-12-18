@@ -20737,3 +20737,9 @@
 "Display.YStart" "40"
 "Display.Height" "240"
 ""
+
+"Cartridge.MD5" "2f16663b01591539624d0ef52934a17d"
+"Cartridge.Name" "Rocky and Bullwinkle"
+"Cartridge.Manufacturer" "M Network"
+"Cartridge.Rarity" "Prototype"
+""
