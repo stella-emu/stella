@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.4 2005-10-30 20:29:56 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.5 2005-12-19 02:19:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,9 +45,20 @@ enum {
   kExitCmd       = 'Clex'
 };
 
+enum {
+  kUpArrow    = 256+17,
+  kDownArrow  = 256+18,
+  kLeftArrow  = 256+20,
+  kRightArrow = 256+19,
+
+  kNumRows = 4,
+  kNumCols = 4
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
-  : Dialog(osystem, parent, 0, 0, 16, 16)
+  : Dialog(osystem, parent, 0, 0, 16, 16),
+    mySelectedItem(0)
 {
   int lineHeight   = osystem->font().getLineHeight(),
       buttonWidth  = 60,
@@ -62,65 +73,192 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
   _x = (osystem->frameBuffer().baseWidth()  - _w) / 2;
   _y = (osystem->frameBuffer().baseHeight() - _h) / 2;
 
+  WidgetArray wid;
+  ButtonWidget* b;
 
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Select", kSelectCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Select", kSelectCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Reset", kResetCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Reset", kResetCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Color TV", kColorCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Color TV", kColorCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "B/W TV", kBWCmd, 0);
-
-  xoffset = 5;  yoffset += buttonHeight + 5;
-
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Left Diff A", kLeftDiffACmd, 0);
-  xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Left Diff B", kLeftDiffBCmd, 0);
-  xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Right Diff A", kRightDiffACmd, 0);
-  xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Right Diff B", kRightDiffBCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "B/W TV", kBWCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
 
   xoffset = 5;  yoffset += buttonHeight + 5;
 
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Save State", kSaveStateCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Left Diff A", kLeftDiffACmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "State Slot", kStateSlotCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Left Diff B", kLeftDiffBCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Load State", kLoadStateCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Right Diff A", kRightDiffACmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Snapshot", kSnapshotCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Right Diff B", kRightDiffBCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
 
   xoffset = 5;  yoffset += buttonHeight + 5;
 
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "NTSC/PAL", kFormatCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Save State", kSaveStateCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Palette", kPaletteCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "State Slot", kStateSlotCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Reload ROM", kReloadRomCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Load State", kLoadStateCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
   xoffset += lwidth;
-  new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
-                   "Exit Game", kExitCmd, 0);
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Snapshot", kSnapshotCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
+
+  xoffset = 5;  yoffset += buttonHeight + 5;
+
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "NTSC/PAL", kFormatCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
+  xoffset += lwidth;
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Palette", kPaletteCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
+  xoffset += lwidth;
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Reload ROM", kReloadRomCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
+  xoffset += lwidth;
+  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+                       "Exit Game", kExitCmd, 0);
+  b->setEditable(true);
+  wid.push_back(b);
+
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::~CommandDialog()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::handleKeyDown(int ascii, int keycode, int modifiers)
+{
+  bool handled = true;
+  int row = mySelectedItem / kNumRows,
+      col = mySelectedItem - (row * kNumCols);
+
+  // Only detect the cursor keys, otherwise pass to base class
+  switch(ascii)
+  {
+    case kUpArrow:
+      if (row > 0)
+        --row;
+      else if(col > 0)
+      {
+        row = kNumRows - 1;
+        --col;
+      }
+      break;
+
+    case kDownArrow:
+      if (row < kNumRows - 1)
+        ++row;
+      else if(col < kNumCols - 1)
+      {
+        row = 0;
+        ++col;
+      }
+      break;
+
+    case kLeftArrow:
+      if (col > 0)
+        --col;
+      else if(row > 0)
+      {
+        col = kNumCols - 1;
+        --row;
+      }
+      break;
+
+    case kRightArrow:
+      if (col < kNumCols - 1)
+        ++col;
+      else if(row < kNumRows - 1)
+      {
+        col = 0;
+        ++row;
+      }
+      break;
+
+    default:
+      handled = false;
+      break;
+  }
+
+  if(handled)
+  {
+    mySelectedItem = row * kNumCols + col;
+    Dialog::setFocus(getFocusList()[mySelectedItem]);
+  }
+  else
+    Dialog::handleKeyDown(ascii, keycode, modifiers);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::handleJoyAxis(int stick, int axis, int value)
+{
+  // We make the (hopefully) valid assumption that all joysticks
+  // treat axis the same way.  Eventually, we may need to remap
+  // these actions of this assumption is invalid.
+  // TODO - make this work better with analog axes ...
+  int key = -1;
+  if(axis % 2 == 0)  // x-direction
+  {
+    if(value < 0)
+      key = kLeftArrow;
+    else if(value > 0)
+      key = kRightArrow;
+  }
+  else   // y-direction
+  {
+    if(value < 0)
+      key = kUpArrow;
+    else if(value > 0)
+      key = kDownArrow;
+  }
+
+  if(key != -1)
+    handleKeyDown(key, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

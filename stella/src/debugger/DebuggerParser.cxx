@@ -13,12 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.88 2005-11-11 21:44:19 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.89 2005-12-19 02:19:48 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
 #include <iostream>
 #include <fstream>
+
+#include "Dialog.hxx"
 #include "Debugger.hxx"
 #include "CpuDebug.hxx"
 #include "DebuggerParser.hxx"

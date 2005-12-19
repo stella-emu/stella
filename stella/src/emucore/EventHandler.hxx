@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.67 2005-12-17 22:48:24 stephena Exp $
+// $Id: EventHandler.hxx,v 1.68 2005-12-19 02:19:49 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -92,7 +92,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.67 2005-12-17 22:48:24 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.68 2005-12-19 02:19:49 stephena Exp $
 */
 class EventHandler
 {
@@ -326,15 +326,6 @@ class EventHandler
     void handleMouseButtonEvent(SDL_Event& event, int state);
 
     /**
-      Send a joystick button event to the handler
-
-      @param stick  The joystick number
-      @param button The joystick button
-      @param state  State of button (pressed/released)
-    */
-    void handleJoyEvent(int stick, int button, int state);
-
-    /**
       Send a joystick axis event to the handler (directions are encoded as buttons)
 
       @param stick  The joystick number
@@ -342,23 +333,6 @@ class EventHandler
       @param value  The value on the given axis
     */
     void handleJoyAxisEvent(int stick, int axis, int value);
-
-    /**
-      Convert joystick motion events to simulated mouse motion events
-
-      @param stick  The joystick number
-      @param axis   The joystick axis
-      @param value  The value on the given axis
-    */
-    void handleMouseWarp(int stick, int axis, int value);
-
-    /**
-      Handle joystick movement emulating mouse motion
-
-      @param jm   JoyMouse structure to modify
-      @param time Current millisecond count
-    */
-    void handleJoyMouse(JoyMouse& jm, uInt32 time);
 
     /**
       Detects and changes the eventhandler state

@@ -13,17 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.9 2005-12-07 02:33:56 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.10 2005-12-19 02:19:49 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
 #define DIALOG_CONTAINER_HXX
 
+class Dialog;
 class OSystem;
 
-#include "Stack.hxx"
 #include "EventHandler.hxx"
-#include "Dialog.hxx"
+#include "Stack.hxx"
 #include "bspf.hxx"
 
 typedef FixedStack<Dialog *> DialogStack;
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.9 2005-12-07 02:33:56 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.10 2005-12-19 02:19:49 stephena Exp $
 */
 class DialogContainer
 {

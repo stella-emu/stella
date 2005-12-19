@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.34 2005-12-07 20:46:49 stephena Exp $
+// $Id: Dialog.cxx,v 1.35 2005-12-19 02:19:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -124,6 +124,18 @@ void Dialog::addToFocusList(WidgetArray& list, int id)
 
   if(list.size() > 0 && !(list[0]->getFlags() & WIDGET_NODRAW_FOCUS))
     _ourFocusList[id].focusedWidget = list[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setFocus(Widget* w)
+{
+  // If the click occured inside a widget which is not the currently
+  // focused one, change the focus to that widget.
+  if(w && w != _focusedWidget && w->wantsFocus())
+  {
+    // Redraw widgets for new focus
+    _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

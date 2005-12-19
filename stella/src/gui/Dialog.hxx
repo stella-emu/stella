@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.22 2005-12-09 01:16:13 stephena Exp $
+// $Id: Dialog.hxx,v 1.23 2005-12-19 02:19:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.22 2005-12-09 01:16:13 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.23 2005-12-19 02:19:49 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -67,6 +67,7 @@ class Dialog : public GuiObject
     void addToFocusList(WidgetArray& list, int id = -1);
     void redrawFocus();
     void addTabWidget(TabWidget* w) { _ourTab = w; }
+    void setFocus(Widget* w);
 
   protected:
     virtual void draw();

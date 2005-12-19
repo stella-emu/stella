@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.131 2005-12-18 18:37:03 stephena Exp $
+// $Id: EventHandler.cxx,v 1.132 2005-12-19 02:19:49 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -55,12 +55,6 @@
 #endif
 
 #define JOY_DEADZONE 3200
-
-#ifdef PSP
-  #define JOYMOUSE_LEFT_BUTTON 2
-#else
-  #define JOYMOUSE_LEFT_BUTTON 0
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
@@ -350,10 +344,6 @@ void EventHandler::poll(uInt32 time)
 {
   SDL_Event event;
 
-  // Handle joystick to mouse emulation FIXME
-//  if(myEmulateMouseFlag)
-//    handleJoyMouse(time);
-
   // Check for an event
   while(SDL_PollEvent(&event))
   {
@@ -634,11 +624,18 @@ void EventHandler::poll(uInt32 time)
             if(event.jbutton.button >= kNumJoyButtons-4)
               return;
 
-            int stick = event.jbutton.which;
-            int code  = event.jbutton.button;
-            int state = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+            int stick  = event.jbutton.which;
+            int button = event.jbutton.button;
+            int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-            handleJoyEvent(stick, code, state);
+            if(state && eventStateChange(myJoyTable[stick][button]))
+              return;
+
+            // Determine which mode we're in, then send the event to the appropriate place
+            if(myState == S_EMULATE)
+              handleEvent(myJoyTable[stick][button], state);
+            else if(myOverlay != NULL)
+              myOverlay->handleJoyEvent(stick, button, state);
             break;  // Regular joystick button
           }
 
@@ -693,10 +690,7 @@ void EventHandler::poll(uInt32 time)
             if(myState == S_EMULATE)
               handleJoyAxisEvent(stick, axis, value);
             else if(myOverlay != NULL)
-            {
-              handleMouseWarp(stick, axis, value);
               myOverlay->handleJoyAxisEvent(stick, axis, value);
-            }
             break;  // Regular joystick axis
           }
 
@@ -877,166 +871,6 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
     default:
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyMouse(JoyMouse& jm, uInt32 time)
-{
-  bool mouseAccel = false;  // TODO - make this a commandline option
-
-  if (jm.active || (time >= jm.last_time + jm.delay_time))
-  {
-    jm.last_time = time;
-    if (jm.x_down_count == 1)
-    {
-      jm.x_down_time = time;
-      jm.x_down_count = 2;
-    }
-    if (jm.y_down_count == 1)
-    {
-      jm.y_down_time = time;
-      jm.y_down_count = 2;
-    }
-
-    if (jm.x_vel || jm.y_vel)
-    {
-      if (jm.x_down_count)
-      {
-        if (mouseAccel && time > jm.x_down_time + jm.delay_time * 12)
-        {
-          if (jm.x_vel > 0)
-            jm.x_vel++;
-          else
-            jm.x_vel--;
-        }
-        else if (time > jm.x_down_time + jm.delay_time * 8)
-        {
-          if (jm.x_vel > 0)
-            jm.x_vel = jm.x_amt;
-          else
-            jm.x_vel = -jm.x_amt;
-        }
-      }
-      if (jm.y_down_count)
-      {
-        if (mouseAccel && time > jm.y_down_time + jm.delay_time * 12)
-        {
-          if (jm.y_vel > 0)
-            jm.y_vel++;
-          else
-            jm.y_vel--;
-        }
-        else if (time > jm.y_down_time + jm.delay_time * 8)
-        {
-          if (jm.y_vel > 0)
-            jm.y_vel = jm.x_amt;
-          else
-            jm.y_vel = -jm.x_amt;
-        }
-      }
-
-      jm.x += jm.x_vel;
-      jm.y += jm.y_vel;
-
-      if (jm.x < 0)
-      {
-        jm.x = 0;
-        jm.x_vel = -1;
-        jm.x_down_count = 1;
-      }
-      else if (jm.x > jm.x_max)
-      {
-        jm.x = jm.x_max;
-        jm.x_vel = 1;
-        jm.x_down_count = 1;
-      }
-
-      if (jm.y < 0)
-      {
-        jm.y = 0;
-        jm.y_vel = -1;
-        jm.y_down_count = 1;
-      }
-      else if (jm.y > jm.y_max)
-      {
-        jm.y = myJoyMouse.y_max;
-        jm.y_vel = 1;
-        jm.y_down_count = 1;
-      }
-
-//FIXME      SDL_WarpMouse(myJoyMouse.x, myJoyMouse.y);
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseWarp(int stick, int axis, int value)
-{
-  if(value > JOY_DEADZONE)
-    value -= JOY_DEADZONE;
-  else if(value < -JOY_DEADZONE )
-    value += JOY_DEADZONE;
-  else
-    value = 0;
-
-  if(axis == 0)  // X axis
-  {
-    if (value != 0)
-    {
-      myJoyMouse.x_vel = (value > 0) ? 1 : -1;
-      myJoyMouse.x_down_count = 1;
-    }
-    else
-    {
-      myJoyMouse.x_vel = 0;
-      myJoyMouse.x_down_count = 0;
-    }
-  }
-  else if(axis == 1)  // Y axis
-  {
-    value = -value;
-
-    if (value != 0)
-    {
-      myJoyMouse.y_vel = (-value > 0) ? 1 : -1;
-      myJoyMouse.y_down_count = 1;
-    }
-    else
-    {
-      myJoyMouse.y_vel = 0;
-      myJoyMouse.y_down_count = 0;
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyEvent(int stick, int button, int state)
-{
-  Event::Type event = myJoyTable[stick][button];
-
-  // Joystick button zero acts as left mouse button and cannot be remapped
-  if(myState != S_EMULATE && button == JOYMOUSE_LEFT_BUTTON &&
-     myEmulateMouseFlag)
-  {
-    // This button acts as mouse button zero, and can never be remapped
-    SDL_MouseButtonEvent mouseEvent;
-    mouseEvent.type   = state ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
-    mouseEvent.button = SDL_BUTTON_LEFT;
-    mouseEvent.state  = state ? SDL_PRESSED : SDL_RELEASED;
-    mouseEvent.x      = myJoyMouse.x;
-    mouseEvent.y      = myJoyMouse.y;
-
-    handleMouseButtonEvent((SDL_Event&)mouseEvent, state);
-    return;
-  }
-  else if(state && eventStateChange(event))
-    return;
-
-  // Determine which mode we're in, then send the event to the appropriate place
-  if(myState == S_EMULATE)
-    handleEvent(event, state);
-  else if(myOverlay != NULL)
-    myOverlay->handleJoyEvent(stick, button, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

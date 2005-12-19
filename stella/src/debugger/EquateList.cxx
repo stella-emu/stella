@@ -13,11 +13,9 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.20 2005-10-23 15:54:55 urchlay Exp $
+// $Id: EquateList.cxx,v 1.21 2005-12-19 02:19:48 stephena Exp $
 //============================================================================
 
-#include <string>
-#include <iostream>
 #include <fstream>
 
 #include "bspf.hxx"

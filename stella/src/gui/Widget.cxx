@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.38 2005-09-30 00:53:30 stephena Exp $
+// $Id: Widget.cxx,v 1.39 2005-12-19 02:19:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -357,6 +357,30 @@ void ButtonWidget::handleMouseLeft(int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ButtonWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+{
+  // (De)activate with space or return
+  switch(ascii)
+  {
+    case '\n':  // enter/return
+    case '\r':
+    case ' ' :  // space
+      // Simulate mouse event
+      handleMouseUp(0, 0, 1, 0);
+      return true;
+    default:
+      return false;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::handleJoyDown(int stick, int button)
+{
+  // Any button activates the button
+  handleMouseUp(0, 0, 1, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
@@ -364,6 +388,22 @@ void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
     clearFlags(WIDGET_HILITED);
     sendCommand(_cmd, 0, _id);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ButtonWidget::wantsFocus()
+{
+  return _editable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::setEditable(bool editable)
+{
+  _editable = editable;
+  if(_editable)
+    setFlags(WIDGET_RETAIN_FOCUS);
+  else
+    clearFlags(WIDGET_RETAIN_FOCUS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -426,8 +466,6 @@ void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheckboxWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  bool handled = false;
-
   // (De)activate with space or return
   switch(ascii)
   {
@@ -436,11 +474,10 @@ bool CheckboxWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     case ' ' :  // space
       // Simulate mouse event
       handleMouseUp(0, 0, 1, 0);
-      handled = true;
-      break;
+      return true;
+    default:
+      return false;
   }
-
-  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
