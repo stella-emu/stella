@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.132 2005-12-19 02:19:49 stephena Exp $
+// $Id: EventHandler.cxx,v 1.133 2005-12-20 00:56:31 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1274,10 +1274,20 @@ void EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
                                      int value)
 {
+  // This confusing code is because each axis has two associated values,
+  // but analog events only affect on of the axis.
   if(eventIsAnalog(event))
     myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
   else
+  {
+    // Otherwise, turn off the analog event(s) for this axis
+    if(eventIsAnalog(myJoyAxisTable[stick][axis][0]))
+      myJoyAxisTable[stick][axis][0] = Event::NoType;
+    if(eventIsAnalog(myJoyAxisTable[stick][axis][1]))
+      myJoyAxisTable[stick][axis][1] = Event::NoType;
+    
     myJoyAxisTable[stick][axis][(value > 0)] = event;
+  }
   saveJoyAxisMapping();
 
   setActionMappings();
@@ -1416,6 +1426,8 @@ void EventHandler::setDefaultJoymap()
   // Right joystick (assume joystick one, button zero)
   myJoyTable[1][0]   = Event::JoystickOneFire;
 
+  // FIXME - add call to OSystem (or some other class) to set default
+  // joy button mapping for the specific platform
 #ifdef PSP
   myJoyTable[0][0]  = Event::TakeSnapshot;      // Triangle
   myJoyTable[0][1]  = Event::LoadState;         // Circle
@@ -1524,10 +1536,7 @@ bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length)
     while(buf >> key)
       map.push_back(atoi(key.c_str()));
 
-  if(event == Event::LastType && map.size() == length)
-    return true;
-  else
-    return false;
+  return (event == Event::LastType && map.size() == length);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

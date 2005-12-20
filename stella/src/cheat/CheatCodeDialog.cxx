@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.6 2005-12-18 18:37:01 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.7 2005-12-20 00:56:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -134,6 +134,7 @@ void CheatCodeDialog::addCheat()
   myCheatInput->setEditString("", 0);
   myCheatInput->setEditString("", 1);
   myCheatInput->setTitle("");
+  myCheatInput->setFocus(0);
   myCheatInput->setEmitSignal(kCheatAdded);
   parent()->addDialog(myCheatInput);
 }
@@ -151,6 +152,7 @@ void CheatCodeDialog::editCheat()
 
   myCheatInput->setEditString(name, 0);
   myCheatInput->setEditString(code, 1);
+  myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kCheatEdited);
   parent()->addDialog(myCheatInput);
 }
@@ -168,6 +170,7 @@ void CheatCodeDialog::addOneShotCheat()
   myCheatInput->setEditString("One-shot cheat", 0);
   myCheatInput->setEditString("", 1);
   myCheatInput->setTitle("");
+  myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kOneShotCheatAdded);
   parent()->addDialog(myCheatInput);
 }

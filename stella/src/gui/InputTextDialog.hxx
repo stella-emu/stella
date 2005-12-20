@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.5 2005-12-09 01:16:14 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.6 2005-12-20 00:56:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,6 +43,8 @@ class InputTextDialog : public Dialog, public CommandSender
     void setEditString(const string& str, int idx = 0);
     void setEmitSignal(int cmd) { myCmd = cmd; }
     void setTitle(const string& title);
+
+    void setFocus(int idx = 0);
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
