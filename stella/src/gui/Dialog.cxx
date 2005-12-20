@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.35 2005-12-19 02:19:49 stephena Exp $
+// $Id: Dialog.cxx,v 1.36 2005-12-20 19:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -121,6 +121,8 @@ void Dialog::addToFocusList(WidgetArray& list, int id)
   }
 
   _ourFocusList[id].focusList.push_back(list);
+  if(id == 0)
+    _focusList = _ourFocusList[id].focusList;
 
   if(list.size() > 0 && !(list[0]->getFlags() & WIDGET_NODRAW_FOCUS))
     _ourFocusList[id].focusedWidget = list[0];
@@ -263,6 +265,8 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseWheel(int x, int y, int direction)
 {
+cerr << "_focusedWidget = " << _focusedWidget << endl;
+
   Widget* w;
 
   // This may look a bit backwards, but I think it makes more sense for

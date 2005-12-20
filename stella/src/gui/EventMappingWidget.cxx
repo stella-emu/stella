@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.2 2005-12-07 20:46:49 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.3 2005-12-20 19:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, int x, int y, int w, int
   myActionsList->setTarget(this);
   myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
-//  myActionsList->setFlags(WIDGET_NODRAW_FOCUS);
+  myActionsList->setFlags(WIDGET_NODRAW_FOCUS);
   addFocusWidget(myActionsList);
 
   // Add remap, erase, cancel and default buttons
@@ -81,6 +81,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, int x, int y, int w, int
     l.push_back(EventHandler::ourActionList[i].action);
 
   myActionsList->setList(l);
+  myActionSelected = myActionsList->getSelected();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,6 +152,7 @@ void EventMappingWidget::stopRemapping()
   myCancelMapButton->setEnabled(false);
 
   // Make sure the list widget is in a known state
+cerr << "myActionSelected = " << myActionSelected << endl;
   if(myActionSelected >= 0)
   {
     drawKeyMapping();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.9 2005-10-14 13:50:00 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.10 2005-12-20 19:05:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -87,14 +87,21 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Doing this means we disallow 'Alt xxx' events to any widget in the tabset
   if(instance()->eventHandler().kbdAlt(modifiers))
   {
-    if(ascii == 's')
-      doStep();
-    else if(ascii == 't')
-      doTrace();
-    else if(ascii == 'f')
-      doAdvance();
-    else if(ascii == 'l')
-      doScanlineAdvance();
+    switch(ascii)
+    {
+      case 's':
+        doStep();
+        break;
+      case 't':
+        doTrace();
+        break;
+      case 'f':
+        doAdvance();
+        break;
+      case 'l':
+        doScanlineAdvance();
+        break;
+    }
   }
   else
     Dialog::handleKeyDown(ascii, keycode, modifiers);

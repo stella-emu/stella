@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.hxx,v 1.2 2005-12-07 20:46:49 stephena Exp $
+// $Id: EventMappingWidget.hxx,v 1.3 2005-12-20 19:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@ class StaticTextWidget;
 class StringListWidget;
 class PopUpWidget;
 class GuiObject;
+class InputDialog;
 
 #include "Widget.hxx"
 #include "Command.hxx"
@@ -37,6 +38,8 @@ class GuiObject;
 
 class EventMappingWidget : public Widget, public CommandSender
 {
+  friend class InputDialog;
+
   public:
     EventMappingWidget(GuiObject* boss, int x, int y, int w, int h);
     ~EventMappingWidget();

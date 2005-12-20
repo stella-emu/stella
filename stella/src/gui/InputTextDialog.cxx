@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.9 2005-12-20 00:56:31 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.10 2005-12-20 19:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -129,13 +129,8 @@ void InputTextDialog::setEditString(const string& str, int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setFocus(int idx)
 {
-cerr << "size = " << getFocusList().size() << endl;
-/* FIXME - a related problem in InputDialog EventMappingWidget list
-           is occurring, whereby the focuslist isn't being filled
-           right away
   if((unsigned int)idx < myInput.size())
     Dialog::setFocus(getFocusList()[idx]);
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
