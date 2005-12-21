@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.36 2005-12-20 19:05:16 stephena Exp $
+// $Id: Dialog.cxx,v 1.37 2005-12-21 01:50:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -101,6 +101,7 @@ void Dialog::addFocusWidget(Widget* w)
   if(_ourFocusList.size() == 0)
   {
 	Focus f;
+    f.focusedWidget = 0;
 	_ourFocusList.push_back(f);
   }
   _ourFocusList[0].focusedWidget = w;
@@ -121,8 +122,8 @@ void Dialog::addToFocusList(WidgetArray& list, int id)
   }
 
   _ourFocusList[id].focusList.push_back(list);
-  if(id == 0)
-    _focusList = _ourFocusList[id].focusList;
+  if(id == 0 && _ourFocusList.size() > 0)
+    _focusList = _ourFocusList[0].focusList;
 
   if(list.size() > 0 && !(list[0]->getFlags() & WIDGET_NODRAW_FOCUS))
     _ourFocusList[id].focusedWidget = list[0];
@@ -167,7 +168,11 @@ void Dialog::buildFocusWidgetList(int id)
       _focusList.push_back(_ourFocusList[_focusID].focusList);
 
     // Only update _focusedWidget if it doesn't belong to the main focus list
-    if(!Widget::isWidgetInChain(_ourFocusList[0].focusList, _focusedWidget))
+    // HACK - figure out how to properly deal with only one focus-able widget
+    // in a tab -- TabWidget is the spawn of the devil
+    if(_focusList.size() == 1)
+      _focusedWidget = _focusList[0];
+    else if(!Widget::isWidgetInChain(_ourFocusList[0].focusList, _focusedWidget))
       _focusedWidget = _ourFocusList[_focusID].focusedWidget;
   }
   else
@@ -230,13 +235,7 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
 
   _dragWidget = w;
 
-  // If the click occured inside a widget which is not the currently
-  // focused one, change the focus to that widget.
-  if(w && w != _focusedWidget && w->wantsFocus())
-  {
-    // Redraw widgets for new focus
-    _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
-  }
+  setFocus(w);
 
   if(w)
     w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
@@ -265,8 +264,6 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseWheel(int x, int y, int direction)
 {
-cerr << "_focusedWidget = " << _focusedWidget << endl;
-
   Widget* w;
 
   // This may look a bit backwards, but I think it makes more sense for

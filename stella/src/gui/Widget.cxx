@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.39 2005-12-19 02:19:49 stephena Exp $
+// $Id: Widget.cxx,v 1.40 2005-12-21 01:50:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -333,10 +333,11 @@ void StaticTextWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
                            const string& label, int cmd, uInt8 hotkey)
-    : StaticTextWidget(boss, x, y, w, h, label, kTextAlignCenter),
-      CommandSender(boss),
-	  _cmd(cmd),
-      _hotkey(hotkey)
+  : StaticTextWidget(boss, x, y, w, h, label, kTextAlignCenter),
+    CommandSender(boss),
+    _cmd(cmd),
+    _editable(false),
+    _hotkey(hotkey)
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _type = kButtonWidget;

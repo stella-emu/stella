@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.7 2005-12-20 19:05:16 stephena Exp $
+// $Id: InputDialog.cxx,v 1.8 2005-12-21 01:50:16 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -56,13 +56,11 @@ InputDialog::InputDialog(
   myTab->setParentWidget(tabID, myEventMapper);
   addToFocusList(myEventMapper->getFocusList(), tabID);
 
-cerr << "size = " << myEventMapper->getFocusList().size()
-     << ", tabid = " << tabID << endl;
-
   // 2) Virtual device support
   addVDeviceTab();
 
-  // Activate the first tab
+  // Finalize the tabs, and activate the first tab
+  myTab->activateTabs();
   myTab->setActiveTab(0);
 
   // Add OK and Cancel buttons
@@ -182,8 +180,6 @@ void InputDialog::addVDeviceTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
-  myEventMapper->loadConfig();
-
   // Left & right ports
   const string& sa1 = instance()->settings().getString("sa1");
   int lport = sa1 == "right" ? 2 : 1;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.18 2005-09-29 18:50:51 stephena Exp $
+// $Id: TabWidget.cxx,v 1.19 2005-12-21 01:50:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -124,6 +124,13 @@ void TabWidget::updateActiveTab()
 
   // Redraw focused areas
   _boss->redrawFocus();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::activateTabs()
+{
+  for(unsigned int i = 0; i <_tabs.size(); ++i)
+    sendCommand(kTabChangedCmd, i-1, -1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
