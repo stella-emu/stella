@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.36 2005-10-09 20:49:57 stephena Exp $
+// $Id: ListWidget.cxx,v 1.37 2005-12-21 19:31:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -73,9 +73,9 @@ void ListWidget::setSelected(int item)
 {
   assert(item >= -1 && item < (int)_list.size());
 
-  if (isEnabled() && _selectedItem != item)
+  if(isEnabled())
   {
-    if (_editMode)
+    if(_editMode)
       abortEditMode();
 
     _selectedItem = item;

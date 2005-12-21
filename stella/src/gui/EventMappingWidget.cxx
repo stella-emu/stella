@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.4 2005-12-21 01:50:16 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.5 2005-12-21 19:31:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -81,7 +81,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, int x, int y, int w, int
     l.push_back(EventHandler::ourActionList[i].action);
 
   myActionsList->setList(l);
-  myActionSelected = myActionsList->getSelected();
+  myActionsList->setSelected(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -225,6 +225,14 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
         myMapButton->setEnabled(true);
         myEraseButton->setEnabled(true);
         myCancelMapButton->setEnabled(false);
+      }
+      break;
+
+    case kListItemDoubleClickedCmd:
+      if(myActionsList->getSelected() >= 0)
+      {
+        myActionSelected = myActionsList->getSelected();
+        startRemapping();
       }
       break;
 
