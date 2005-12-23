@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.58 2005-12-18 18:37:02 stephena Exp $
+// $Id: mainSDL.cxx,v 1.59 2005-12-23 20:48:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -206,10 +206,8 @@ int main(int argc, char* argv[])
   string romfile = argv[argc - 1];
   if(argc == 1 || !FilesystemNode::fileExists(romfile))
     theOSystem->createLauncher();
-  else
+  else if(theOSystem->createConsole(romfile))
   {
-    theOSystem->createConsole(romfile);
-
     if(theOSystem->settings().getBool("holdreset"))
       theOSystem->eventHandler().handleEvent(Event::ConsoleReset, 1);
 
@@ -235,6 +233,11 @@ int main(int argc, char* argv[])
     if(theOSystem->settings().getBool("debug"))
       handler.enterDebugMode();
 #endif
+  }
+  else
+  {
+    Cleanup();
+    return 0;
   }
 
   // Swallow any spurious events in the queue

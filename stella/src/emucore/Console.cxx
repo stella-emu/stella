@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.77 2005-11-27 22:37:24 stephena Exp $
+// $Id: Console.cxx,v 1.78 2005-12-23 20:48:50 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -62,7 +62,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const string& md5,
                  OSystem* osystem)
-    : myOSystem(osystem)
+  : myOSystem(osystem),
+    myIsInitializedFlag(false)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -151,6 +152,8 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   TIA *tia = new TIA(*this, myOSystem->settings());
   tia->setSound(myOSystem->sound());
   Cartridge* cartridge = Cartridge::create(image, size, myProperties);
+  if(!cartridge)
+    return;
 
   mySystem->attach(m6502);
   mySystem->attach(m6532);
@@ -215,6 +218,9 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   myOSystem->debugger().setConsole(this);
   myOSystem->debugger().initialize();
 #endif
+
+  // If we get this far, the console must be valid
+  myIsInitializedFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.50 2005-12-18 18:37:03 stephena Exp $
+// $Id: OSystem.cxx,v 1.51 2005-12-23 20:48:50 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -296,23 +296,29 @@ bool OSystem::createConsole(const string& romfile)
     // Create an instance of the 2600 game console
     // The Console c'tor takes care of updating the eventhandler state
     myConsole = new Console(image, size, md5, this);
-#ifdef CHEATCODE_SUPPORT
-    myCheatManager->loadCheats(md5);
-#endif
+    if(myConsole->isInitialized())
+    {
+    #ifdef CHEATCODE_SUPPORT
+      myCheatManager->loadCheats(md5);
+    #endif
+      if(showmessage)
+        myFrameBuffer->showMessage("New console created");
+      if(mySettings->getBool("showinfo"))
+        cout << "Game console created: " << myRomFile << endl;
 
-    if(showmessage)
-      myFrameBuffer->showMessage("New console created");
-    if(mySettings->getBool("showinfo"))
-      cout << "Game console created: " << myRomFile << endl;
-
-    retval = true;
-    myEventHandler->reset(EventHandler::S_EMULATE);
-    myFrameBuffer->setCursorState();
+      myEventHandler->reset(EventHandler::S_EMULATE);
+      myFrameBuffer->setCursorState();
+      retval = true;
+    }
+    else
+    {
+      cerr << "ERROR: Couldn't create console for " << myRomFile << " ..." << endl;
+      retval = false;
+    }
   }
   else
   {
-    cerr << "ERROR: Couldn't open " << myRomFile << "..." << endl;
-//    myEventHandler->quit();
+    cerr << "ERROR: Couldn't open " << myRomFile << " ..." << endl;
     retval = false;
   }
 

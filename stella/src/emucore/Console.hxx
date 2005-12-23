@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.40 2005-10-19 00:59:51 stephena Exp $
+// $Id: Console.hxx,v 1.41 2005-12-23 20:48:50 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.40 2005-10-19 00:59:51 stephena Exp $
+  @version $Id: Console.hxx,v 1.41 2005-12-23 20:48:50 stephena Exp $
 */
 class Console
 {
@@ -118,6 +118,11 @@ class Console
       @return The 6532 for this console
     */
     M6532& riot() const { return *myRiot; }
+
+    /**
+      Determine whether the console was successfully created
+    */
+    bool isInitialized() { return myIsInitializedFlag; }
 
   public:
     /**
@@ -257,6 +262,10 @@ class Console
     // Pointer to the 6532 (aka RIOT) (the debugger needs it)
     // A RIOT of my own! (...with apologies to The Clash...)
     M6532 *myRiot;
+
+    // Indicates whether the console was correctly initialized
+    // We don't really care why it wasn't initialized ...
+    bool myIsInitializedFlag;
 };
 
 #endif

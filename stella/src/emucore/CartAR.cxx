@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.13 2005-12-17 01:23:07 stephena Exp $
+// $Id: CartAR.cxx,v 1.14 2005-12-23 20:48:50 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -200,8 +200,8 @@ void CartridgeAR::poke(uInt16 addr, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::patch(uInt16 address, uInt8 value)
 {
-	//	myImage[address & 0x0FFF] = value;
-	return false;
+  // myImage[address & 0x0FFF] = value;
+  return false;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -298,19 +298,23 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::bank(uInt16 b) {
-  if(bankLocked) return;
+void CartridgeAR::bank(uInt16 b)
+{
+  if(bankLocked)
+    return;
 
   bankConfiguration(b);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bank() {
+int CartridgeAR::bank()
+{
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bankCount() {
+int CartridgeAR::bankCount()
+{
   return 32;
 }
 
@@ -584,7 +588,8 @@ bool CartridgeAR::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeAR::getImage(int& size) {
+uInt8* CartridgeAR::getImage(int& size)
+{
   size = myNumberOfLoadImages * 8448;
   return &myLoadImages[0];
 }

@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.17 2005-10-13 02:05:36 stephena Exp $
+// $Id: Cart.cxx,v 1.18 2005-12-23 20:48:50 stephena Exp $
 //============================================================================
 
 #include <assert.h>
-#include <string.h>
+
+#include "bspf.hxx"
 #include "Cart.hxx"
 #include "Cart2K.hxx"
 #include "Cart3E.hxx"
@@ -97,10 +98,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   else if(type == "UA")
     cartridge = new CartridgeUA(image);
   else
-  {
-    // TODO: At some point this should be handled in a better way...
-    assert(false);
-  }
+    cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 
   return cartridge;
 }
