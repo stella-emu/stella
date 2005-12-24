@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.68 2005-12-16 14:41:14 stephena Exp $
+// $Id: Settings.cxx,v 1.69 2005-12-24 22:50:52 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -60,7 +60,6 @@ Settings::Settings(OSystem* osystem)
   set("joymap", "");
   set("joyaxismap", "");
   set("paddle", "0");
-  set("joymouse", "false");
   set("sa1", "left");
   set("sa2", "right");
   set("mspeed", "50");
@@ -289,7 +288,6 @@ void Settings::usage()
     << endl
   #endif
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
-    << "  -joymouse     <1|0>          Enable joystick emulates mouse in GUI\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"

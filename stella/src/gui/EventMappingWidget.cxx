@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.6 2005-12-24 22:09:36 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.7 2005-12-24 22:50:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -235,6 +235,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
+/*
     case kListItemDoubleClickedCmd:
       if(myActionsList->getSelected() >= 0)
       {
@@ -242,6 +243,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
         startRemapping();
       }
       break;
+*/
 
     case kStartMapCmd:
       startRemapping();

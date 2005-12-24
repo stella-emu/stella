@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.21 2005-12-24 22:09:36 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.22 2005-12-24 22:50:53 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -30,8 +30,7 @@ DialogContainer::DialogContainer(OSystem* osystem)
   : myOSystem(osystem),
     myBaseDialog(NULL),
     myTime(0),
-    myRefreshFlag(false),
-    myEmulateMouseFlag(true)
+    myRefreshFlag(false)
 {
   memset(&ourJoyMouse, 0, sizeof(JoyMouse));
   ourJoyMouse.delay_time = 25;
@@ -268,7 +267,12 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
   if(myDialogStack.empty())
     return;
 
-  if(myEmulateMouseFlag)
+  // Send the event to the dialog box on the top of the stack
+  Dialog* activeDialog = myDialogStack.top();
+
+  if(activeDialog->wantsEvents())
+    activeDialog->handleJoyAxis(stick, axis, value);
+  else
   {
     if(value > JOY_DEADZONE)
       value -= JOY_DEADZONE;
@@ -305,12 +309,6 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
         ourJoyMouse.y_down_count = 0;
       }
     }
-  }
-  else
-  {
-    // Send the event to the dialog box on the top of the stack
-    Dialog* activeDialog = myDialogStack.top();
-    activeDialog->handleJoyAxis(stick, axis, value);
   }
 }
 

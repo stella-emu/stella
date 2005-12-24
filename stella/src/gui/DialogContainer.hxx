@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.11 2005-12-24 22:09:36 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.12 2005-12-24 22:50:53 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.11 2005-12-24 22:09:36 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.12 2005-12-24 22:50:53 stephena Exp $
 */
 class DialogContainer
 {
@@ -166,9 +166,6 @@ class DialogContainer
 
     // Indicates a full refresh of all dialogs is required
     bool myRefreshFlag;
-
-    // Indicates if we should emulate mouse motion events for this container
-    bool myEmulateMouseFlag;
 
     // For continuous events (keyDown)
     struct {
