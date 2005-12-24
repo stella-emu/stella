@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.20 2005-12-07 20:46:49 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.21 2005-12-24 22:09:36 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -23,18 +23,20 @@
 #include "bspf.hxx"
 #include "DialogContainer.hxx"
 
+#define JOY_DEADZONE 3200
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem* osystem)
   : myOSystem(osystem),
     myBaseDialog(NULL),
     myTime(0),
-    myRefreshFlag(false)
+    myRefreshFlag(false),
+    myEmulateMouseFlag(true)
 {
-  myCurrentKeyDown.keycode = 0;
-  myCurrentMouseDown.button = -1;
-  myLastClick.x = myLastClick.y = 0;
-  myLastClick.time = 0;
-  myLastClick.count = 0;
+  memset(&ourJoyMouse, 0, sizeof(JoyMouse));
+  ourJoyMouse.delay_time = 25;
+
+  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,6 +72,9 @@ void DialogContainer::updateTime(uInt32 time)
                                   myCurrentMouseDown.button, 1);
     myClickRepeatTime = myTime + kClickRepeatSustainDelay;
   }
+
+  // Update joy to mouse events
+  handleJoyMouse(time);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,11 +130,7 @@ void DialogContainer::reStack()
   myOSystem->frameBuffer().hideMessage();
 
   // Reset all continuous events
-  myCurrentKeyDown.keycode = 0;
-  myCurrentMouseDown.button = -1;
-  myLastClick.x = myLastClick.y = 0;
-  myLastClick.time = 0;
-  myLastClick.count = 0;
+  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -248,10 +249,17 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
-  if(state == 1)
-    activeDialog->handleJoyDown(stick, button);
+
+  if(activeDialog->wantsEvents())
+  {
+    if(state == 1)
+      activeDialog->handleJoyDown(stick, button);
+    else
+      activeDialog->handleJoyUp(stick, button);
+  }
   else
-    activeDialog->handleJoyUp(stick, button);
+    myOSystem->eventHandler().createMouseButtonEvent(
+        ourJoyMouse.x, ourJoyMouse.y, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -260,7 +268,162 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
   if(myDialogStack.empty())
     return;
 
-  // Send the event to the dialog box on the top of the stack
-  Dialog* activeDialog = myDialogStack.top();
-  activeDialog->handleJoyAxis(stick, axis, value);
+  if(myEmulateMouseFlag)
+  {
+    if(value > JOY_DEADZONE)
+      value -= JOY_DEADZONE;
+    else if(value < -JOY_DEADZONE )
+      value += JOY_DEADZONE;
+    else
+      value = 0;
+
+    if(axis % 2 == 0)  // x-direction
+    {
+      if(value != 0)
+      {
+        ourJoyMouse.x_vel = (value > 0) ? 1 : -1;
+        ourJoyMouse.x_down_count = 1;
+      }
+      else
+      {
+        ourJoyMouse.x_vel = 0;
+        ourJoyMouse.x_down_count = 0;
+      }
+    }
+    else   // y-direction
+    {
+      value = -value;
+
+      if(value != 0)
+      {
+        ourJoyMouse.y_vel = (-value > 0) ? 1 : -1;
+        ourJoyMouse.y_down_count = 1;
+      }
+      else
+      {
+        ourJoyMouse.y_vel = 0;
+        ourJoyMouse.y_down_count = 0;
+      }
+    }
+  }
+  else
+  {
+    // Send the event to the dialog box on the top of the stack
+    Dialog* activeDialog = myDialogStack.top();
+    activeDialog->handleJoyAxis(stick, axis, value);
+  }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleJoyMouse(uInt32 time)
+{
+  bool mouseAccel = true;//false;  // TODO - make this a commandline option
+  int oldX = ourJoyMouse.x, oldY = ourJoyMouse.y;
+
+  if(time >= ourJoyMouse.last_time + ourJoyMouse.delay_time)
+  {
+    ourJoyMouse.last_time = time;
+    if(ourJoyMouse.x_down_count == 1)
+    {
+      ourJoyMouse.x_down_time = time;
+      ourJoyMouse.x_down_count = 2;
+    }
+    if(ourJoyMouse.y_down_count == 1)
+    {
+      ourJoyMouse.y_down_time = time;
+      ourJoyMouse.y_down_count = 2;
+    }
+
+    if(ourJoyMouse.x_vel || ourJoyMouse.y_vel)
+    {
+      if(ourJoyMouse.x_down_count)
+      {
+        if(mouseAccel && time > ourJoyMouse.x_down_time + ourJoyMouse.delay_time * 12)
+        {
+          if(ourJoyMouse.x_vel > 0)
+            ourJoyMouse.x_vel++;
+          else
+            ourJoyMouse.x_vel--;
+        }
+        else if(time > ourJoyMouse.x_down_time + ourJoyMouse.delay_time * 8)
+        {
+          if(ourJoyMouse.x_vel > 0)
+            ourJoyMouse.x_vel = ourJoyMouse.amt;
+          else
+            ourJoyMouse.x_vel = -ourJoyMouse.amt;
+        }
+      }
+      if(ourJoyMouse.y_down_count)
+      {
+        if(mouseAccel && time > ourJoyMouse.y_down_time + ourJoyMouse.delay_time * 12)
+        {
+          if(ourJoyMouse.y_vel > 0)
+            ourJoyMouse.y_vel++;
+          else
+            ourJoyMouse.y_vel--;
+        }
+        else if(time > ourJoyMouse.y_down_time + ourJoyMouse.delay_time * 8)
+        {
+          if(ourJoyMouse.y_vel > 0)
+            ourJoyMouse.y_vel = ourJoyMouse.amt;
+          else
+            ourJoyMouse.y_vel = -ourJoyMouse.amt;
+        }
+      }
+
+      ourJoyMouse.x += ourJoyMouse.x_vel;
+      ourJoyMouse.y += ourJoyMouse.y_vel;
+
+      if(ourJoyMouse.x < 0)
+      {
+        ourJoyMouse.x = 0;
+        ourJoyMouse.x_vel = -1;
+        ourJoyMouse.x_down_count = 1;
+      }
+      else if(ourJoyMouse.x > ourJoyMouse.x_max)
+      {
+        ourJoyMouse.x = ourJoyMouse.x_max;
+        ourJoyMouse.x_vel = 1;
+        ourJoyMouse.x_down_count = 1;
+      }
+
+      if(ourJoyMouse.y < 0)
+      {
+        ourJoyMouse.y = 0;
+        ourJoyMouse.y_vel = -1;
+        ourJoyMouse.y_down_count = 1;
+      }
+      else if(ourJoyMouse.y > ourJoyMouse.y_max)
+      {
+        ourJoyMouse.y = ourJoyMouse.y_max;
+        ourJoyMouse.y_vel = 1;
+        ourJoyMouse.y_down_count = 1;
+      }
+
+      if(oldX != ourJoyMouse.x || oldY != ourJoyMouse.y)
+        myOSystem->eventHandler().createMouseMotionEvent(ourJoyMouse.x, ourJoyMouse.y);
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::reset()
+{
+  myCurrentKeyDown.keycode = 0;
+  myCurrentMouseDown.button = -1;
+  myLastClick.x = myLastClick.y = 0;
+  myLastClick.time = 0;
+  myLastClick.count = 0;
+
+  int oldX = ourJoyMouse.x, oldY = ourJoyMouse.y;
+  if(ourJoyMouse.x > ourJoyMouse.x_max)
+    ourJoyMouse.x = ourJoyMouse.x_max;
+  if(ourJoyMouse.y > ourJoyMouse.y_max)
+    ourJoyMouse.y = ourJoyMouse.y_max;
+
+  if(oldX != ourJoyMouse.x || oldY != ourJoyMouse.y)
+    myOSystem->eventHandler().createMouseMotionEvent(ourJoyMouse.x, ourJoyMouse.y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+JoyMouse DialogContainer::ourJoyMouse;

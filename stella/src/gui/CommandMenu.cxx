@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandMenu.cxx,v 1.1 2005-08-29 18:36:42 stephena Exp $
+// $Id: CommandMenu.cxx,v 1.2 2005-12-24 22:09:36 stephena Exp $
 //============================================================================
 
 #include "Dialog.hxx"
@@ -24,6 +24,9 @@
 CommandMenu::CommandMenu(OSystem* osystem)
     : DialogContainer(osystem)
 {
+  // Tell the DialogContainer that we don't want to emulate mouse motion
+  // with the joystick axis, since we want to directly receive axis events
+  myEmulateMouseFlag = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

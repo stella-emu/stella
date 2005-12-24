@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.133 2005-12-20 00:56:31 stephena Exp $
+// $Id: EventHandler.cxx,v 1.134 2005-12-24 22:09:36 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -126,9 +126,6 @@ EventHandler::EventHandler(OSystem* osystem)
   setPaddleMode(myOSystem->settings().getInt("paddle"), false);
 
   myFryingFlag = false;
-
-  memset(&myJoyMouse, 0, sizeof(myJoyMouse));
-  myJoyMouse.delay_time = 25;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -176,7 +173,7 @@ void EventHandler::reset(State state)
   // Start paddle emulation in a known state
   for(int i = 0; i < 4; ++i)
   {
-    memset(&myPaddle[i], 0, sizeof(myJoyMouse));
+    memset(&myPaddle[i], 0, sizeof(JoyMouse));
     myEvent->set(Paddle_Resistance[i], 1000000);
   }
   setPaddleSpeed(0, myOSystem->settings().getInt("p1speed"));
@@ -189,9 +186,9 @@ void EventHandler::reset(State state)
 void EventHandler::refreshDisplay()
 {
   // These are reset each time the display changes size
-  myJoyMouse.x_max = myOSystem->frameBuffer().imageWidth();
-  myJoyMouse.y_max = myOSystem->frameBuffer().imageHeight();
-  myJoyMouse.amt = myOSystem->frameBuffer().zoomLevel() * 3;
+  DialogContainer::ourJoyMouse.x_max = myOSystem->frameBuffer().imageWidth();
+  DialogContainer::ourJoyMouse.y_max = myOSystem->frameBuffer().imageHeight();
+  DialogContainer::ourJoyMouse.amt = myOSystem->frameBuffer().zoomLevel() * 3;
 
   switch(myState)
   {
@@ -766,7 +763,7 @@ void EventHandler::poll(uInt32 time)
 
   // Update the current dialog container at regular intervals
   // Used to implement continuous events
-  if(myOverlay)
+  if(myState != S_EMULATE && myOverlay)
     myOverlay->updateTime(time);
 
 #ifdef CHEATCODE_SUPPORT
@@ -785,91 +782,60 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 {
   // Take window zooming into account
   int x = event.motion.x, y = event.motion.y;
-  myJoyMouse.x = x;
-  myJoyMouse.y = y;
+  DialogContainer::ourJoyMouse.x = x;
+  DialogContainer::ourJoyMouse.y = y;
 
   myOSystem->frameBuffer().translateCoords(&x, &y);
 
   // Determine which mode we're in, then send the event to the appropriate place
-  switch(myState)
+  if(myState == S_EMULATE)
   {
-    case S_EMULATE:
-    {
-      int w = myOSystem->frameBuffer().baseWidth();
+    int w = myOSystem->frameBuffer().baseWidth();
 
-      // Grabmouse introduces some lag into the mouse movement,
-      // so we need to fudge the numbers a bit
-      if(myGrabMouseFlag) x = MIN(w, (int) (x * 1.5));
+    // Grabmouse introduces some lag into the mouse movement,
+    // so we need to fudge the numbers a bit
+    if(myGrabMouseFlag) x = MIN(w, (int) (x * 1.5));
 
-      int resistance = (int)(1000000.0 * (w - x) / w);
-      myEvent->set(Paddle_Resistance[myPaddleMode], resistance);
-      break;
-    }
-
-    case S_MENU:
-    case S_CMDMENU:
-    case S_LAUNCHER:
-    case S_DEBUGGER:
-      myOverlay->handleMouseMotionEvent(x, y, 0);
-      break;
-
-    default:
-      return;
-      break;
+    int resistance = (int)(1000000.0 * (w - x) / w);
+    myEvent->set(Paddle_Resistance[myPaddleMode], resistance);
   }
+  else if(myOverlay)
+    myOverlay->handleMouseMotionEvent(x, y, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 {
   // Determine which mode we're in, then send the event to the appropriate place
-  switch(myState)
+  if(myState == S_EMULATE)
+    myEvent->set(Paddle_Button[myPaddleMode], state);
+  else if(myOverlay)
   {
-    case S_EMULATE:
-      handleEvent(Paddle_Button[myPaddleMode], state);
-      break;
-
-    case S_MENU:
-    case S_CMDMENU:
-    case S_LAUNCHER:
-    case S_DEBUGGER:
-    {
-      // Take window zooming into account
-      Int32 x = event.button.x, y = event.button.y;
+    // Take window zooming into account
+    Int32 x = event.button.x, y = event.button.y;
 //if (state) cerr << "B: x = " << x << ", y = " << y << endl;
-      myOSystem->frameBuffer().translateCoords(&x, &y);
+    myOSystem->frameBuffer().translateCoords(&x, &y);
 //if (state) cerr << "A: x = " << x << ", y = " << y << endl << endl;
-      MouseButton button;
+    MouseButton button;
 
-      if(state == 1)
-      {
-        if(event.button.button == SDL_BUTTON_LEFT)
-          button = EVENT_LBUTTONDOWN;
-        else if(event.button.button == SDL_BUTTON_RIGHT)
-          button = EVENT_RBUTTONDOWN;
-        else if(event.button.button == SDL_BUTTON_WHEELUP)
-          button = EVENT_WHEELUP;
-        else if(event.button.button == SDL_BUTTON_WHEELDOWN)
-          button = EVENT_WHEELDOWN;
-        else
-          break;
-      }
-      else
-      {
-        if(event.button.button == SDL_BUTTON_LEFT)
-          button = EVENT_LBUTTONUP;
-        else if(event.button.button == SDL_BUTTON_RIGHT)
-          button = EVENT_RBUTTONUP;
-        else
-          break;
-      }
-
-      myOverlay->handleMouseButtonEvent(button, x, y, state);
-      break;
+    switch(event.button.button)
+    {
+      case SDL_BUTTON_LEFT:
+        button = state ? EVENT_LBUTTONDOWN : EVENT_LBUTTONUP;
+        break;
+      case SDL_BUTTON_RIGHT:
+        button = state ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP;
+        break;
+      case SDL_BUTTON_WHEELDOWN:
+        button = EVENT_WHEELDOWN;
+        break;
+      case SDL_BUTTON_WHEELUP:
+        button = EVENT_WHEELUP;
+        break;
+      default:
+        return;
     }
-
-    default:
-      break;
+    myOverlay->handleMouseButtonEvent(button, x, y, state);
   }
 }
 
@@ -1108,6 +1074,26 @@ bool EventHandler::eventStateChange(Event::Type type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::createMouseMotionEvent(int x, int y)
+{
+  SDL_WarpMouse(x, y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::createMouseButtonEvent(int x, int y, int state)
+{
+  // Synthesize an left mouse button press/release event
+  SDL_MouseButtonEvent mouseEvent;
+  mouseEvent.type   = state ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+  mouseEvent.button = SDL_BUTTON_LEFT;
+  mouseEvent.state  = state ? SDL_PRESSED : SDL_RELEASED;
+  mouseEvent.x      = x;
+  mouseEvent.y      = y;
+
+  handleMouseButtonEvent((SDL_Event&)mouseEvent, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setActionMappings()
 {
   int i, j, stick, button, axis, dir;
@@ -1275,7 +1261,7 @@ void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
                                      int value)
 {
   // This confusing code is because each axis has two associated values,
-  // but analog events only affect on of the axis.
+  // but analog events only affect one of the axis.
   if(eventIsAnalog(event))
     myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
   else

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.42 2005-12-21 01:50:16 stephena Exp $
+// $Id: Widget.hxx,v 1.43 2005-12-24 22:09:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,8 @@ enum {
   WIDGET_TRACK_MOUSE  = 1 << 6,
   WIDGET_RETAIN_FOCUS = 1 << 7,
   WIDGET_NODRAW_FOCUS = 1 << 8,
-  WIDGET_WANTS_TAB    = 1 << 9
+  WIDGET_WANTS_TAB    = 1 << 9,
+  WIDGET_WANTS_EVENTS = 1 << 10
 };
 
 enum {
@@ -72,7 +73,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.42 2005-12-21 01:50:16 stephena Exp $
+  @version $Id: Widget.hxx,v 1.43 2005-12-24 22:09:36 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -103,7 +104,7 @@ class Widget : public GuiObject
     void addFocusWidget(Widget* w) { _focusList.push_back(w); }
 
     virtual GUI::Rect getRect() const;
-    virtual bool wantsFocus() { return false; };
+    virtual bool wantsFocus()  { return false; }
 
     /** Set/clear WIDGET_ENABLED flag and immediately redraw */
     void setEnabled(bool e);
@@ -114,6 +115,7 @@ class Widget : public GuiObject
 
     bool isEnabled() const      { return _flags & WIDGET_ENABLED;      }
     bool isVisible() const      { return !(_flags & WIDGET_INVISIBLE); }
+    bool wantsEvents() const    { return _flags & WIDGET_WANTS_EVENTS; }
 
     void setID(int id)  { _id = id;   }
     int  getID()        { return _id; }

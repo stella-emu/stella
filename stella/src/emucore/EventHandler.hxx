@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.68 2005-12-19 02:19:49 stephena Exp $
+// $Id: EventHandler.hxx,v 1.69 2005-12-24 22:09:36 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -79,6 +79,14 @@ struct Stella_Joystick {
   string        name;
 };
 
+// Used for joystick to mouse emulation
+struct JoyMouse {	
+  bool active;
+  int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
+      x_down_count, y_down_count;
+  unsigned int last_time, delay_time, x_down_time, y_down_time;
+};
+
 /**
   This class takes care of event remapping and dispatching for the
   Stella core, as well as keeping track of the current 'mode'.
@@ -92,7 +100,7 @@ struct Stella_Joystick {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.68 2005-12-19 02:19:49 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.69 2005-12-24 22:09:36 stephena Exp $
 */
 class EventHandler
 {
@@ -302,15 +310,24 @@ class EventHandler
 
     inline bool frying() { return myFryingFlag; }
 
-  private:
-    // Used for joystick to mouse emulation
-    struct JoyMouse {	
-      bool active;
-      int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
-          x_down_count, y_down_count;
-      unsigned int last_time, delay_time, x_down_time, y_down_time;
-    };
+    /**
+      Create a synthetic SDL mouse motion event based on the given x,y values.
 
+      @param x  The x coordinate of motion, scaled in value
+      @param y  The y coordinate of motion, scaled in value
+    */
+    void createMouseMotionEvent(int x, int y);
+
+    /**
+      Create a synthetic SDL mouse button event based on the given x,y values.
+
+      @param x     The x coordinate of motion, scaled in value
+      @param y     The y coordinate of motion, scaled in value
+      @param state The state of the button click (on or off)
+    */
+    void createMouseButtonEvent(int x, int y, int state);
+
+  private:
     /**
       Send a mouse motion event to the handler.
 
@@ -449,7 +466,7 @@ class EventHandler
     // The current joymap in string form
     string myJoymapString;
 
-    JoyMouse myJoyMouse;
+    // Used for paddle emulation by keyboard or joystick
     JoyMouse myPaddle[4];
 
     // How far the joystick will move the mouse on each frame tick

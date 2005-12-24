@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.37 2005-12-21 01:50:16 stephena Exp $
+// $Id: Dialog.cxx,v 1.38 2005-12-24 22:09:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -187,6 +187,12 @@ void Dialog::redrawFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::wantsEvents()
+{
+  return _focusedWidget && _focusedWidget->wantsEvents();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::draw()
 {
 }
@@ -274,7 +280,9 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
   if(!w)
     w = _focusedWidget;
   if (w)
+{cerr << w << endl;
     w->handleMouseWheel(x, y, direction);
+}
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

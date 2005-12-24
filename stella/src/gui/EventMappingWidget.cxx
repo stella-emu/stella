@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.5 2005-12-21 19:31:18 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.6 2005-12-24 22:09:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -124,6 +124,10 @@ void EventMappingWidget::startRemapping()
                "' event";	 	
   myKeyMapping->setColor(kTextColorEm);
   myKeyMapping->setLabel(buf);
+
+  // Make sure that this widget receives all events,
+  // and they aren't handled anywhere else
+  myActionsList->setFlags(WIDGET_WANTS_EVENTS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -158,6 +162,9 @@ void EventMappingWidget::stopRemapping()
     myMapButton->setEnabled(true);
     myEraseButton->setEnabled(true);
   }
+
+  // Widget is now free to process events normally
+  myActionsList->clearFlags(WIDGET_WANTS_EVENTS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

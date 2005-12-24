@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.10 2005-12-19 02:19:49 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.11 2005-12-24 22:09:36 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,10 +37,12 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.10 2005-12-19 02:19:49 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.11 2005-12-24 22:09:36 stephena Exp $
 */
 class DialogContainer
 {
+  friend class EventHandler;
+
   public:
     /**
       Create a new DialogContainer stack
@@ -139,6 +141,13 @@ class DialogContainer
     */
     virtual void initialize() = 0;
 
+    // Emulation of mouse using joystick axis events
+    static JoyMouse ourJoyMouse;
+
+  private:
+    void handleJoyMouse(uInt32);
+    void reset();
+
   protected:
     OSystem* myOSystem;
     Dialog*  myBaseDialog;
@@ -157,6 +166,9 @@ class DialogContainer
 
     // Indicates a full refresh of all dialogs is required
     bool myRefreshFlag;
+
+    // Indicates if we should emulate mouse motion events for this container
+    bool myEmulateMouseFlag;
 
     // For continuous events (keyDown)
     struct {
