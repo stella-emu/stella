@@ -239,7 +239,7 @@ void FrameBufferWinCE::drawMediaSource()
 	if (issmartphone && islandscape == 0)
 	{
 		// straight
-		for (y=0; y<myHeight; y++)
+		for (y=0; y<minydim; y++)
 		{
 			for (x=0; x<myWidthdiv4; x++)
 			{
@@ -381,7 +381,7 @@ void FrameBufferWinCE::drawMediaSource()
 	else if (issmartphone == 0 && islandscape == 0)
 	{
 		// 3/2
-		for (y=0; y<myHeight; y++)
+		for (y=0; y<minydim; y++)
 		{
 			for (x=0; x<myWidthdiv4; x++)
 			{
@@ -410,7 +410,7 @@ void FrameBufferWinCE::drawMediaSource()
 	else if (issmartphone == 0 && islandscape)
 	{
 		// 2/1
-		for (y=0; y<myHeight; y++)
+		for (y=0; y<minydim; y++)
 		{
 			for (x=0; x<myWidthdiv4; x++)
 			{
