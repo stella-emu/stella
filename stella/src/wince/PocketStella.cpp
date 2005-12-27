@@ -41,6 +41,9 @@ bool RequestRefresh = false;
 OSystemWinCE* theOSystem = (OSystemWinCE*) NULL;
 HWND hWnd;
 uInt16 rotkeystate = 0;
+int paddlespeed;
+
+DWORD REG_bat, REG_ac, REG_disp;
 
 
 void KeyCheck(void)
@@ -61,14 +64,6 @@ void KeyCheck(void)
 		else
 			keycodes[0][i].state = 0;
 #endif
-}
-
-
-void CleanUp(void)
-{
-	if(theOSystem) delete theOSystem;
-	GXCloseDisplay();
-	GXCloseInput();
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -124,11 +119,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 	case WM_SETFOCUS:
 	case WM_ACTIVATE:
+		if (theOSystem)
+		{
+			if (theOSystem->eventHandler().doPause())
+				theOSystem->eventHandler().handleEvent(Event::Pause, theOSystem->eventHandler().state());
+			theOSystem->frameBuffer().refresh(false);
+		}
 		GXResume();
 		return 0;
 
 	case WM_KILLFOCUS:
 	case WM_HIBERNATE:
+		if (theOSystem)
+			if (!theOSystem->eventHandler().doPause())
+				theOSystem->eventHandler().handleEvent(Event::Pause, theOSystem->eventHandler().state());
 		GXSuspend();
 		return 0;
 
@@ -142,6 +146,57 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+static DWORD reg_access(TCHAR *key, TCHAR *val, DWORD data)
+{
+	HKEY regkey;
+	DWORD tmpval, cbdata;
+
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, key, 0, 0, &regkey) != ERROR_SUCCESS)
+		return data;
+
+	cbdata = sizeof(DWORD);
+	if (RegQueryValueEx(regkey, val, NULL, NULL, (LPBYTE) &tmpval, &cbdata) != ERROR_SUCCESS)
+	{
+		RegCloseKey(regkey);
+		return data;
+	}
+
+	cbdata = sizeof(DWORD);
+	if (RegSetValueEx(regkey, val, 0, REG_DWORD, (LPBYTE) &data, cbdata) != ERROR_SUCCESS)
+	{
+		RegCloseKey(regkey);
+		return data;
+	}
+
+	RegCloseKey(regkey);
+	return tmpval;
+}
+
+static void backlight_xchg(void)
+{
+	HANDLE h;
+
+	REG_bat = reg_access(_T("ControlPanel\\BackLight"), _T("BatteryTimeout"), REG_bat);
+	REG_ac = reg_access(_T("ControlPanel\\BackLight"), _T("ACTimeout"), REG_ac);
+	REG_disp = reg_access(_T("ControlPanel\\Power"), _T("Display"), REG_disp);
+
+	h = CreateEvent(NULL, FALSE, FALSE, _T("BackLightChangeEvent"));
+	if (h)
+	{
+		SetEvent(h);
+		CloseHandle(h);
+	}
+}
+
+void CleanUp(void)
+{
+	if(theOSystem) delete theOSystem;
+	GXCloseDisplay();
+	GXCloseInput();
+	backlight_xchg();
+}
+
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nShowCmd )
 {
 	LPTSTR wndname = _T("PocketStella");
@@ -152,6 +207,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 						GetSystemMetrics(SM_CYSCREEN), NULL, NULL, hInstance, NULL);
 	if (!hWnd) return 1;
 	SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+
+	/* backlight */
+	REG_bat = REG_ac = REG_disp = 2 * 60 * 60 * 1000; /* 2hrs should do it */
+	backlight_xchg();
 	
 	// pump the messages to get the window up
 	MSG msg;
@@ -196,6 +255,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 		return 1;
 	}
 	theOSystem->createSound();
+
+	paddlespeed = theSettings.getInt("wce_smartphone_paddlespeed");
 
 	string romfile = ((string) getcwd()) + ((string) "\\") + theSettings.getString("GameFilename");
 	if (!FilesystemNode::fileExists(romfile))
