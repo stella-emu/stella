@@ -26,6 +26,7 @@
 char *msg = NULL;
 int EventHandlerState;
 extern OSystemWinCE *theOSystem;
+extern int paddlespeed;
 
 int time(int dummy)
 {
@@ -140,6 +141,8 @@ DECLSPEC void SDLCALL SDL_WarpMouse(Uint16 x, Uint16 y) { return; }
 
 DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 {
+	static int paddleres = 300000;
+
 	for (int i=0; i<MAX_KEYS+NUM_MOUSEKEYS; i++)
 	{
 		if (keycodes[0][i].state != keycodes[1][i].state)
@@ -201,6 +204,18 @@ DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 
 			return 1;
 		}
+
+		if ( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->IsSmartphone() )
+		{
+			if (keycodes[0][K_RIGHT].state == 1 && paddleres > 200000)
+				paddleres -= paddlespeed;
+			else if (keycodes[0][K_LEFT].state == 1 && paddleres < 900000)
+				paddleres += paddlespeed;
+
+			theOSystem->eventHandler().event()->set(Event::PaddleZeroResistance, paddleres);
+			theOSystem->eventHandler().event()->set(Event::PaddleZeroFire, keycodes[0][K_FIRE].state);
+		}
+
 	}
 	event->type = SDL_NOEVENT;
 	return 0;
