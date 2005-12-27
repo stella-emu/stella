@@ -26,10 +26,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsWinCE::SettingsWinCE(OSystem* osystem) : Settings(osystem) 
 {
-  //set("GameFilename", "Mega Force (1982) (20th Century Fox).bin");
-  //set("GameFilename", "Enduro (1983) (Activision).bin");
-  //set("GameFilename", "Night Driver (1978) (Atari).bin");
   set("romdir", (string) getcwd() + '\\');
+  setInt("wce_smartphone_paddlespeed", 3000);
 }
 
 SettingsWinCE::~SettingsWinCE()
