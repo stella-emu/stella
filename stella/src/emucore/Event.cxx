@@ -13,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.6 2005-12-17 01:23:07 stephena Exp $
+// $Id: Event.cxx,v 1.7 2005-12-28 22:56:36 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
-#include "Serializer.hxx"
+#include "EventStreamer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Event()
+Event::Event(EventStreamer* ev)
   : myNumberOfTypes(Event::LastType),
-    myEventRecordFlag(false)
+    myEventStreamer(ev)
 {
   // Set all of the events to 0 / false to start with
   clear();
@@ -31,7 +31,6 @@ Event::Event()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::~Event()
 {
-  myEventHistory.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,55 +45,13 @@ void Event::set(Type type, Int32 value)
   myValues[type] = value;
 
   // Add to history if we're in recording mode
-  if(myEventRecordFlag)
-  {
-    myEventHistory.push_back(type);
-    myEventHistory.push_back(value);
-  }
+  if(myEventStreamer->isRecording())
+    myEventStreamer->addEvent(type, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Event::clear()
 {
   for(int i = 0; i < myNumberOfTypes; ++i)
-  {
     myValues[i] = 0;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Event::record(bool enable)
-{
-  if(myEventRecordFlag == enable)
-    return;
-  else
-    myEventRecordFlag = enable;
-
-  if(myEventRecordFlag)
-    myEventHistory.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Event::nextFrame()
-{
-  if(myEventRecordFlag)
-  {
-    int idx = myEventHistory.size() - 1;
-    if(idx >= 0 && myEventHistory[idx] < 0)
-      --myEventHistory[idx];
-    else
-      myEventHistory.push_back(-1);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Event::save(Serializer& out)
-{
-  int size = myEventHistory.size();
-  out.putString("EventStream");
-  out.putInt(size);
-  for(int i = 0; i < size; ++i)
-    out.putInt(myEventHistory[i]);
-
-  return true;
 }

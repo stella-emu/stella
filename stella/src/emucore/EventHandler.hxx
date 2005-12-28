@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.69 2005-12-24 22:09:36 stephena Exp $
+// $Id: EventHandler.hxx,v 1.70 2005-12-28 22:56:36 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -32,6 +32,7 @@ class Console;
 class OSystem;
 class DialogContainer;
 class EventMappingWidget;
+class EventStreamer;
 
 enum MouseButton {
   EVENT_LBUTTONDOWN,
@@ -100,7 +101,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.69 2005-12-24 22:09:36 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.70 2005-12-28 22:56:36 stephena Exp $
 */
 class EventHandler
 {
@@ -125,7 +126,7 @@ class EventHandler
 
       @return The event object
     */
-    Event* event();
+    Event* event() { return myEvent; }
 
     /**
       Set up any joysticks on the system.  This must be called *after* the
@@ -238,21 +239,6 @@ class EventHandler
       Load state from explicit state number (debugger uses this)
     */
     void loadState(int state);
-
-    /**
-      Start recording event-stream to disk
-    */
-    void startRecording();
-
-    /**
-      Stop recording event-stream
-    */
-    void stopRecording();
-
-    /**
-      Load recorded event-stream into the system
-    */
-    void loadRecording();
 
     /**
       Sets the mouse to act as paddle 'num'
@@ -403,6 +389,15 @@ class EventHandler
     // Global OSystem object
     OSystem* myOSystem;
 
+    // Global Event object
+    Event* myEvent;
+
+    // The EventStreamer to use for loading/saving eventstreams
+    EventStreamer* myEventStreamer;
+
+    // Indicates current overlay object
+    DialogContainer* myOverlay;
+
     // Array of key events, indexed by SDLKey
     Event::Type myKeyTable[SDLK_LAST];
 
@@ -426,15 +421,6 @@ class EventHandler
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
-
-    // The serializer to use for saving eventstreams
-    Serializer myEventStream;
-
-    // Indicates current overlay object
-    DialogContainer* myOverlay;
-
-    // Global Event object
-    Event* myEvent;
 
     // Indicates the current state to use for state loading/saving
     uInt32 myLSState;
@@ -460,17 +446,8 @@ class EventHandler
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;
 
-    // The current keymap in string form
-    string myKeymapString;
-
-    // The current joymap in string form
-    string myJoymapString;
-
     // Used for paddle emulation by keyboard or joystick
     JoyMouse myPaddle[4];
-
-    // How far the joystick will move the mouse on each frame tick
-    int myMouseMove;
 
     // Type of device on each controller port (based on ROM properties)
     Controller::Type myController[2];

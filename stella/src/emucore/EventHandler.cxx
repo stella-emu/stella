@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.134 2005-12-24 22:09:36 stephena Exp $
+// $Id: EventHandler.cxx,v 1.135 2005-12-28 22:56:36 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -21,6 +21,7 @@
 
 #include "Event.hxx"
 #include "EventHandler.hxx"
+#include "EventStreamer.hxx"
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
@@ -59,24 +60,27 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
   : myOSystem(osystem),
-    myState(S_NONE),
+    myEvent(NULL),
+    myEventStreamer(NULL),
     myOverlay(NULL),
+    myState(S_NONE),
     myLSState(0),
     myPauseFlag(false),
     myQuitFlag(false),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
-    myEmulateMouseFlag(false),
-    myPaddleMode(0),
-    myMouseMove(3)
+    myPaddleMode(0)
 {
   int i, j;
 
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
 
+  // Create the streamer used for accessing eventstreams/recordings
+  myEventStreamer = new EventStreamer(myOSystem);
+
   // Create the event object which will be used for this handler
-  myEvent = new Event();
+  myEvent = new Event(myEventStreamer);
 
   // Erase the key mapping array
   for(i = 0; i < SDLK_LAST; ++i)
@@ -121,7 +125,6 @@ EventHandler::EventHandler(OSystem* osystem)
   setActionMappings();
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
-  myEmulateMouseFlag = myOSystem->settings().getBool("joymouse");
 
   setPaddleMode(myOSystem->settings().getInt("paddle"), false);
 
@@ -131,10 +134,8 @@ EventHandler::EventHandler(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::~EventHandler()
 {
-  stopRecording();
-
-  if(myEvent)
-    delete myEvent;
+  delete myEvent;
+  delete myEventStreamer;
 
 #ifdef JOYSTICK_SUPPORT
   if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
@@ -146,12 +147,6 @@ EventHandler::~EventHandler()
     }
   }
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event* EventHandler::event()
-{
-  return myEvent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -445,6 +440,27 @@ void EventHandler::poll(uInt32 time)
               case SDLK_s:  // Alt-s merges properties into user properties (user.pro)
                 saveProperties();
                 break;
+
+// FIXME - these will be removed when a UI is added for event recording
+              case SDLK_e:  // Alt-e starts/stops event recording
+                if(myEventStreamer->isRecording())
+                {
+                  if(myEventStreamer->stopRecording())
+                    myOSystem->frameBuffer().showMessage("Recording stopped");
+                }
+                else
+                {
+                  if(myEventStreamer->startRecording())
+                    myOSystem->frameBuffer().showMessage("Recording started");
+                  else
+                    myOSystem->frameBuffer().showMessage("Error opening eventstream");
+                }
+                break;
+
+              case SDLK_l:  // Alt-l loads a recording
+                myEventStreamer->loadRecording();
+                break;
+////////////////////////////////////////////////////////////////////////
             }
           }
         }
@@ -520,18 +536,6 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->createConsole();
                 break;
 
-// FIXME - these will be removed when a UI is added for event recording
-              case SDLK_e:  // Ctrl-e starts/stops event recording
-                if(myEvent->isRecording())
-                  stopRecording();
-                else
-                  startRecording();
-                break;
-
-              case SDLK_l:  // Ctrl-l loads a recording
-                loadRecording();
-                break;
-////////////////////////////////////////////////////////////////////////
               case SDLK_END:       // Ctrl-End increases Width
                 myOSystem->console().changeWidth(1);
                 break;
@@ -772,9 +776,9 @@ void EventHandler::poll(uInt32 time)
     cheats[i]->evaluate();
 #endif
 
-  // Tell the event object that another frame has finished
+  // Tell the eventstreamer that another frame has finished
   // This is used for event recording
-  myEvent->nextFrame();
+  myEventStreamer->nextFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1675,49 +1679,6 @@ void EventHandler::takeSnapshot()
 #else
   myOSystem->frameBuffer().showMessage("Snapshots unsupported");
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::startRecording()
-{
-  if(myEvent->isRecording())
-    return;
-
-  string eventfile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
-  if(!myEventStream.open(eventfile))
-  {
-    myOSystem->frameBuffer().showMessage("Error opening eventstream");
-    return;
-  }
-
-  // And save the current state to it
-  string md5 = myOSystem->console().properties().get("Cartridge.MD5");
-  myOSystem->console().system().saveState(md5, myEventStream);
-
-  myEvent->record(true);
-  myOSystem->frameBuffer().showMessage("Recording started");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::stopRecording()
-{
-  if(!myEvent->isRecording())
-    return;
-
-  // Append the event history to the eventstream
-  myEvent->save(myEventStream);
-
-  // And reset the state
-  myEvent->record(false);
-  myOSystem->frameBuffer().showMessage("Recording stopped");
-
-  myEventStream.close();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::loadRecording()
-{
-cerr << "load recording!\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

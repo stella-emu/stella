@@ -13,21 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.17 2005-12-17 22:48:24 stephena Exp $
+// $Id: Event.hxx,v 1.18 2005-12-28 22:56:36 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
 #define EVENT_HXX
 
-class Event;
-class Serializer;
-
-#include "Array.hxx"
 #include "bspf.hxx"
+
+class Event;
+class EventStreamer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.17 2005-12-17 22:48:24 stephena Exp $
+  @version $Id: Event.hxx,v 1.18 2005-12-28 22:56:36 stephena Exp $
 */
 class Event
 {
@@ -85,9 +84,9 @@ class Event
 
   public:
     /**
-      Create a new event object
+      Create a new event object and use the given eventstreamer
     */
-    Event();
+    Event(EventStreamer* ev);
  
     /**
       Destructor
@@ -110,31 +109,6 @@ class Event
     */
     virtual void clear();
 
-    /**
-      Start/stop recording events to the event history
-
-      @param enable  Start or stop recording
-    */
-    virtual void record(bool enable);
-
-    /**
-      Indicate that a new frame has been processed
-    */
-    virtual void nextFrame();
-
-    /**
-      Answers if we're in recording mode
-    */
-    virtual bool isRecording() { return myEventRecordFlag; }
-
-    /**
-      Saves the current event history to the given Serializer
-
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
-    */
-    virtual bool save(Serializer& out);
-
   protected:
     // Number of event types there are
     const Int32 myNumberOfTypes;
@@ -142,11 +116,8 @@ class Event
     // Array of values associated with each event type
     Int32 myValues[LastType];
 
-    // Indicates if we're in recording mode
-    bool myEventRecordFlag;
-
-    // Stores the history/record of all events that have been set
-    IntArray myEventHistory;
+    // The eventstreamer to record events to
+    EventStreamer* myEventStreamer;
 };
 
 #endif
