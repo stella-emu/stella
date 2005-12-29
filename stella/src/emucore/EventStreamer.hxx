@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.hxx,v 1.1 2005-12-28 22:56:36 stephena Exp $
+// $Id: EventStreamer.hxx,v 1.2 2005-12-29 01:25:07 stephena Exp $
 //============================================================================
 
 #ifndef EVENTSTREAMER_HXX
@@ -48,7 +48,7 @@ class OSystem;
   the correct order at the correct time.
 
   @author  Stephen Anthony
-  @version $Id: EventStreamer.hxx,v 1.1 2005-12-28 22:56:36 stephena Exp $
+  @version $Id: EventStreamer.hxx,v 1.2 2005-12-29 01:25:07 stephena Exp $
 */
 class EventStreamer
 {
@@ -85,9 +85,14 @@ class EventStreamer
     void addEvent(int type, int value);
 
     /**
+      Gets the next event from the event history
+    */
+    bool pollEvent(int& type, int& value);
+
+    /**
       Answers if we're in recording mode
     */
-    bool isRecording() { return myEventRecordFlag; }
+    bool isRecording() { return myEventWriteFlag; }
 
     /**
       Indicate that a new frame has been processed
@@ -100,15 +105,22 @@ class EventStreamer
     // Global OSystem object
     OSystem* myOSystem;
 
-    // Indicates if we're in recording mode
-    bool myEventRecordFlag;
+    // Indicates if we're in save/write or load/read mode
+    bool myEventWriteFlag;
+    bool myEventReadFlag;
+
+    // Current frame count (used for waiting while polling)
+    int myFrameCounter;
+
+    // Current position in the event history queue
+    int myEventPos;
+
+    // Stores the history/record of all events that have been set
+    IntArray myEventHistory;
 
     // Serializer classes used to save/load the eventstream
     Serializer   myStreamWriter;
     Deserializer myStreamReader;
-
-    // Stores the history/record of all events that have been set
-    IntArray myEventHistory;
 };
 
 #endif

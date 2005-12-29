@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.cxx,v 1.1 2005-12-28 22:56:36 stephena Exp $
+// $Id: EventStreamer.cxx,v 1.2 2005-12-29 01:25:07 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -27,7 +27,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventStreamer::EventStreamer(OSystem* osystem)
   : myOSystem(osystem),
-    myEventRecordFlag(false)
+    myEventWriteFlag(false),
+    myEventReadFlag(false),
+    myFrameCounter(-1),
+    myEventPos(0)
 {
 }
 
@@ -53,13 +56,16 @@ bool EventStreamer::startRecording()
   myOSystem->console().system().saveState(md5, myStreamWriter);
   myEventHistory.clear();
 
-  return myEventRecordFlag = true;
+  myEventWriteFlag = true;
+  myEventReadFlag = false;
+
+  return myEventWriteFlag;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventStreamer::stopRecording()
 {
-  if(!myStreamWriter.isOpen() || !myEventRecordFlag)
+  if(!myStreamWriter.isOpen() || !myEventWriteFlag)
     return false;
 
   // Append the event history to the eventstream
@@ -76,8 +82,6 @@ bool EventStreamer::stopRecording()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventStreamer::loadRecording()
 {
-cerr << "EventStreamer::loadRecording()\n";
-
   string eventfile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
   if(!myStreamReader.open(eventfile))
     return false;
@@ -95,15 +99,18 @@ cerr << "EventStreamer::loadRecording()\n";
   for(int i = 0; i < size; ++i)
     myEventHistory.push_back(myStreamReader.getInt());
 
-cerr << "event queue contains " << myEventHistory.size() << " items\n";
+  myEventWriteFlag = false;
+  myEventReadFlag  = myEventHistory.size() > 0;
+  myFrameCounter = -1;
+  myEventPos = 0;
 
-  return myEventRecordFlag = false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventStreamer::addEvent(int type, int value)
 {
-  if(myEventRecordFlag)
+  if(myEventWriteFlag)
   {
     myEventHistory.push_back(type);
     myEventHistory.push_back(value);
@@ -111,9 +118,41 @@ void EventStreamer::addEvent(int type, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventStreamer::pollEvent(int& type, int& value)
+{
+  if(!myEventReadFlag)
+    return false;
+
+  bool status = false;
+
+  // Read a new event from the stream when we've waited the appropriate
+  // number of frames
+  ++myFrameCounter;
+  if(myFrameCounter >= 0)
+  {
+    int first = myEventHistory[myEventPos++];
+    if(first < 0)
+    {
+      myFrameCounter = first;
+      cerr << "wait " << -myFrameCounter << " frames\n";
+    }
+    else if(myEventPos < (int)myEventHistory.size())
+    {
+      type = first;
+      value = myEventHistory[myEventPos++];
+cerr << "type = " << type << ", value = " << value << endl;
+      status = true;
+    }
+  }
+
+  myEventReadFlag = myEventPos < (int)myEventHistory.size() - 2;
+  return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventStreamer::nextFrame()
 {
-  if(myEventRecordFlag)
+  if(myEventWriteFlag)
   {
     int idx = myEventHistory.size() - 1;
     if(idx >= 0 && myEventHistory[idx] < 0)

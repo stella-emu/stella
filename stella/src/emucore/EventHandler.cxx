@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.135 2005-12-28 22:56:36 stephena Exp $
+// $Id: EventHandler.cxx,v 1.136 2005-12-29 01:25:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -334,9 +334,14 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt32 time)
 {
-  SDL_Event event;
+  // Check if we have an event from the eventstreamer
+  // TODO - should we lock out input from the user while getting synthetic events?
+  int type, value;
+  if(myEventStreamer->pollEvent(type, value))
+    myEvent->set((Event::Type)type, value);
 
   // Check for an event
+  SDL_Event event;
   while(SDL_PollEvent(&event))
   {
     switch(event.type)
@@ -455,10 +460,13 @@ void EventHandler::poll(uInt32 time)
                   else
                     myOSystem->frameBuffer().showMessage("Error opening eventstream");
                 }
+                return;
                 break;
 
               case SDLK_l:  // Alt-l loads a recording
-                myEventStreamer->loadRecording();
+                if(myEventStreamer->loadRecording())
+                  myOSystem->frameBuffer().showMessage("Playing recording");
+                return;
                 break;
 ////////////////////////////////////////////////////////////////////////
             }
