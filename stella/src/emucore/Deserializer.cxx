@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.9 2005-12-18 22:28:05 stephena Exp $
+// $Id: Deserializer.cxx,v 1.10 2005-12-29 21:16:26 stephena Exp $
 //============================================================================
 
 #include "Deserializer.hxx"
@@ -42,6 +42,7 @@ bool Deserializer::open(const string& fileName)
 void Deserializer::close(void)
 {
   myStream.close();
+  myStream.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

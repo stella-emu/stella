@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.15 2005-12-17 01:23:07 stephena Exp $
+// $Id: System.cxx,v 1.16 2005-12-29 21:16:28 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -209,22 +209,35 @@ bool System::saveState(const string& md5sum, Serializer& out)
   if(!out.isOpen())
     return false;
 
-  // Prepend the state file with the md5sum of this cartridge
-  // This is the first defensive check for an invalid state file
-  out.putString(md5sum);
+  try
+  {
+    // Prepend the state file with the md5sum of this cartridge
+    // This is the first defensive check for an invalid state file
+    out.putString(md5sum);
 
-  // First save state for this system
-  if(!save(out))
-    return false;
-
-  // Next, save state for the CPU
-  if(!myM6502->save(out))
-    return false;
-
-  // Now save the state of each device
-  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-    if(!myDevices[i]->save(out))
+    // First save state for this system
+    if(!save(out))
       return false;
+
+    // Next, save state for the CPU
+    if(!myM6502->save(out))
+      return false;
+
+    // Now save the state of each device
+    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+      if(!myDevices[i]->save(out))
+        return false;
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for \'System\'" << endl;
+    return false;
+  }
 
   return true;  // success
 }
@@ -236,23 +249,36 @@ bool System::loadState(const string& md5sum, Deserializer& in)
   if(!in.isOpen())
     return false;
 
-  // Look at the beginning of the state file.  It should contain the md5sum
-  // of the current cartridge.  If it doesn't, this state file is invalid.
-  if(in.getString() != md5sum)
-    return false;
-
-  // First load state for this system
-  if(!load(in))
-    return false;
-
-  // Next, load state for the CPU
-  if(!myM6502->load(in))
-    return false;
-
-  // Now load the state of each device
-  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-    if(!myDevices[i]->load(in))
+  try
+  {
+    // Look at the beginning of the state file.  It should contain the md5sum
+    // of the current cartridge.  If it doesn't, this state file is invalid.
+    if(in.getString() != md5sum)
       return false;
+
+    // First load state for this system
+    if(!load(in))
+      return false;
+
+    // Next, load state for the CPU
+    if(!myM6502->load(in))
+      return false;
+
+    // Now load the state of each device
+    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+      if(!myDevices[i]->load(in))
+        return false;
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for \'System\'" << endl;
+    return false;
+  }
 
   return true;  // success
 }
@@ -318,12 +344,14 @@ void System::poke(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::lockDataBus() {
+void System::lockDataBus()
+{
   myDataBusLocked = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::unlockDataBus() {
+void System::unlockDataBus()
+{
   myDataBusLocked = false;
 }
 

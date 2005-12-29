@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.137 2005-12-29 01:40:41 stephena Exp $
+// $Id: EventHandler.cxx,v 1.138 2005-12-29 21:16:26 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -452,13 +452,15 @@ void EventHandler::poll(uInt32 time)
                 {
                   if(myEventStreamer->stopRecording())
                     myOSystem->frameBuffer().showMessage("Recording stopped");
+                  else
+                    myOSystem->frameBuffer().showMessage("Stop recording error");
                 }
                 else
                 {
                   if(myEventStreamer->startRecording())
                     myOSystem->frameBuffer().showMessage("Recording started");
                   else
-                    myOSystem->frameBuffer().showMessage("Error opening eventstream");
+                    myOSystem->frameBuffer().showMessage("Start recording error");
                 }
                 return;
                 break;
@@ -466,6 +468,8 @@ void EventHandler::poll(uInt32 time)
               case SDLK_l:  // Alt-l loads a recording
                 if(myEventStreamer->loadRecording())
                   myOSystem->frameBuffer().showMessage("Playing recording");
+                else
+                  myOSystem->frameBuffer().showMessage("Playing recording error");
                 return;
                 break;
 ////////////////////////////////////////////////////////////////////////
@@ -1572,7 +1576,7 @@ void EventHandler::saveState()
   if(myOSystem->console().system().saveState(md5, out))
     buf << "State " << myLSState << " saved";
   else
-    buf << "Invalid state " << myLSState << " file";
+    buf << "Error saving state " << myLSState;
 
   out.close();
   myOSystem->frameBuffer().showMessage(buf.str());

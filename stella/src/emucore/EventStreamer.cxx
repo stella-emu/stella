@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.cxx,v 1.2 2005-12-29 01:25:07 stephena Exp $
+// $Id: EventStreamer.cxx,v 1.3 2005-12-29 21:16:28 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -53,7 +53,8 @@ bool EventStreamer::startRecording()
 
   // And save the current state to it
   string md5 = myOSystem->console().properties().get("Cartridge.MD5");
-  myOSystem->console().system().saveState(md5, myStreamWriter);
+  if(!myOSystem->console().system().saveState(md5, myStreamWriter))
+    return false;
   myEventHistory.clear();
 
   myEventWriteFlag = true;
@@ -70,10 +71,24 @@ bool EventStreamer::stopRecording()
 
   // Append the event history to the eventstream
   int size = myEventHistory.size();
-  myStreamWriter.putString("EventStream");
-  myStreamWriter.putInt(size);
-  for(int i = 0; i < size; ++i)
-    myStreamWriter.putInt(myEventHistory[i]);
+
+  try
+  {
+    myStreamWriter.putString("EventStream");
+    myStreamWriter.putInt(size);
+    for(int i = 0; i < size; ++i)
+      myStreamWriter.putInt(myEventHistory[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Error saving eventstream" << endl;
+    return false;
+  }
 
   myStreamWriter.close();
   return true;
@@ -88,16 +103,30 @@ bool EventStreamer::loadRecording()
 
   // Load ROM state
   string md5 = myOSystem->console().properties().get("Cartridge.MD5");
-  myOSystem->console().system().loadState(md5, myStreamReader);
-
-  if(myStreamReader.getString() != "EventStream")
+  if(!myOSystem->console().system().loadState(md5, myStreamReader))
     return false;
 
-  // Now load the event stream
-  myEventHistory.clear();
-  int size = myStreamReader.getInt();
-  for(int i = 0; i < size; ++i)
-    myEventHistory.push_back(myStreamReader.getInt());
+  try
+  {
+    if(myStreamReader.getString() != "EventStream")
+      return false;
+
+    // Now load the event stream
+    myEventHistory.clear();
+    int size = myStreamReader.getInt();
+    for(int i = 0; i < size; ++i)
+      myEventHistory.push_back(myStreamReader.getInt());
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Error loading eventstream" << endl;
+    return false;
+  }
 
   myEventWriteFlag = false;
   myEventReadFlag  = myEventHistory.size() > 0;

@@ -323,6 +323,9 @@ opengl32.lib"
 				RelativePath="..\gui\EventMappingWidget.cxx">
 			</File>
 			<File
+				RelativePath="..\emucore\EventStreamer.cxx">
+			</File>
+			<File
 				RelativePath="..\debugger\Expression.cxx">
 			</File>
 			<File
@@ -806,6 +809,9 @@ opengl32.lib"
 			</File>
 			<File
 				RelativePath="..\gui\EventMappingWidget.hxx">
+			</File>
+			<File
+				RelativePath="..\emucore\EventStreamer.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\Expression.hxx">

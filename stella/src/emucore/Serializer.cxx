@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.cxx,v 1.8 2005-12-17 22:48:24 stephena Exp $
+// $Id: Serializer.cxx,v 1.9 2005-12-29 21:16:28 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -42,6 +42,7 @@ bool Serializer::open(const string& fileName)
 void Serializer::close(void)
 {
   myStream.close();
+  myStream.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
