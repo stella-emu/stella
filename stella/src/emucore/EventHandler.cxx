@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.136 2005-12-29 01:25:07 stephena Exp $
+// $Id: EventHandler.cxx,v 1.137 2005-12-29 01:40:41 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -337,7 +337,7 @@ void EventHandler::poll(uInt32 time)
   // Check if we have an event from the eventstreamer
   // TODO - should we lock out input from the user while getting synthetic events?
   int type, value;
-  if(myEventStreamer->pollEvent(type, value))
+  while(myEventStreamer->pollEvent(type, value))
     myEvent->set((Event::Type)type, value);
 
   // Check for an event
