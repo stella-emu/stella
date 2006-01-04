@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.138 2005-12-29 21:16:26 stephena Exp $
+// $Id: EventHandler.cxx,v 1.139 2006-01-04 01:24:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -175,6 +175,8 @@ void EventHandler::reset(State state)
   setPaddleSpeed(1, myOSystem->settings().getInt("p2speed"));
   setPaddleSpeed(2, myOSystem->settings().getInt("p3speed"));
   setPaddleSpeed(3, myOSystem->settings().getInt("p4speed"));
+
+  myEventStreamer->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

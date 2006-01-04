@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.37 2005-12-21 19:31:18 stephena Exp $
+// $Id: ListWidget.cxx,v 1.38 2006-01-04 01:24:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -287,33 +287,33 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+17:  // up arrow
+      case kCursorUp:
         if (_selectedItem > 0)
           _selectedItem--;
         break;
 
-      case 256+18:  // down arrow
+      case kCursorDown:
         if (_selectedItem < (int)_list.size() - 1)
           _selectedItem++;
         break;
 
-      case 256+24:  // pageup
+      case kCursorPgUp:
         _selectedItem -= _rows - 1;
         if (_selectedItem < 0)
           _selectedItem = 0;
         break;
 
-      case 256+25:	// pagedown
+      case kCursorPgDn:
         _selectedItem += _rows - 1;
         if (_selectedItem >= (int)_list.size() )
           _selectedItem = _list.size() - 1;
         break;
 
-      case 256+22:  // home
+      case kCursorHome:
         _selectedItem = 0;
         break;
 
-      case 256+23:  // end
+      case kCursorEnd:
         _selectedItem = _list.size() - 1;
         break;
 

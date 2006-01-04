@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.hxx,v 1.2 2005-12-29 01:25:07 stephena Exp $
+// $Id: EventStreamer.hxx,v 1.3 2006-01-04 01:24:17 stephena Exp $
 //============================================================================
 
 #ifndef EVENTSTREAMER_HXX
@@ -48,7 +48,7 @@ class OSystem;
   the correct order at the correct time.
 
   @author  Stephen Anthony
-  @version $Id: EventStreamer.hxx,v 1.2 2005-12-29 01:25:07 stephena Exp $
+  @version $Id: EventStreamer.hxx,v 1.3 2006-01-04 01:24:17 stephena Exp $
 */
 class EventStreamer
 {
@@ -98,6 +98,11 @@ class EventStreamer
       Indicate that a new frame has been processed
     */
     void nextFrame();
+
+    /**
+      Reset to base state (not saving or loading an eventstream)
+    */
+    void reset();
 
   private:
 

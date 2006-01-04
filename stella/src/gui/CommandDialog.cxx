@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.5 2005-12-19 02:19:49 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.6 2006-01-04 01:24:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,35 +25,6 @@
 #include "Widget.hxx"
 #include "CommandDialog.hxx"
 #include "EventHandler.hxx"
-
-enum {
-  kSelectCmd     = 'Csel',
-  kResetCmd      = 'Cres',
-  kColorCmd      = 'Ccol',
-  kBWCmd         = 'Cbwt',
-  kLeftDiffACmd  = 'Clda',
-  kLeftDiffBCmd  = 'Cldb',
-  kRightDiffACmd = 'Crda',
-  kRightDiffBCmd = 'Crdb',
-  kSaveStateCmd  = 'Csst',
-  kStateSlotCmd  = 'Ccst',
-  kLoadStateCmd  = 'Clst',
-  kSnapshotCmd   = 'Csnp',
-  kFormatCmd     = 'Cfmt',
-  kPaletteCmd    = 'Cpal',
-  kReloadRomCmd  = 'Crom',
-  kExitCmd       = 'Clex'
-};
-
-enum {
-  kUpArrow    = 256+17,
-  kDownArrow  = 256+18,
-  kLeftArrow  = 256+20,
-  kRightArrow = 256+19,
-
-  kNumRows = 4,
-  kNumCols = 4
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
@@ -180,7 +151,7 @@ void CommandDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Only detect the cursor keys, otherwise pass to base class
   switch(ascii)
   {
-    case kUpArrow:
+    case kCursorUp:
       if (row > 0)
         --row;
       else if(col > 0)
@@ -190,7 +161,7 @@ void CommandDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       }
       break;
 
-    case kDownArrow:
+    case kCursorDown:
       if (row < kNumRows - 1)
         ++row;
       else if(col < kNumCols - 1)
@@ -200,7 +171,7 @@ void CommandDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       }
       break;
 
-    case kLeftArrow:
+    case kCursorLeft:
       if (col > 0)
         --col;
       else if(row > 0)
@@ -210,7 +181,7 @@ void CommandDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       }
       break;
 
-    case kRightArrow:
+    case kCursorRight:
       if (col < kNumCols - 1)
         ++col;
       else if(row < kNumRows - 1)
@@ -245,16 +216,16 @@ void CommandDialog::handleJoyAxis(int stick, int axis, int value)
   if(axis % 2 == 0)  // x-direction
   {
     if(value < 0)
-      key = kLeftArrow;
+      key = kCursorLeft;
     else if(value > 0)
-      key = kRightArrow;
+      key = kCursorRight;
   }
   else   // y-direction
   {
     if(value < 0)
-      key = kUpArrow;
+      key = kCursorUp;
     else if(value > 0)
-      key = kDownArrow;
+      key = kCursorDown;
   }
 
   if(key != -1)

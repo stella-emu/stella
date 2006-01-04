@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.16 2005-12-09 01:16:13 stephena Exp $
+// $Id: GuiObject.hxx,v 1.17 2006-01-04 01:24:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,11 +32,22 @@ class Widget;
 
 typedef Common::Array<Widget*> WidgetArray;
 
+enum {
+  kCursorUp    = 256+17,
+  kCursorDown  = 256+18,
+  kCursorRight = 256+19,
+  kCursorLeft  = 256+20,
+  kCursorHome  = 256+22,
+  kCursorEnd   = 256+23,
+  kCursorPgUp  = 256+24,
+  kCursorPgDn  = 256+25
+};
+
 /**
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.16 2005-12-09 01:16:13 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.17 2006-01-04 01:24:17 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.13 2005-08-22 18:17:10 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.14 2006-01-04 01:24:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,10 +36,6 @@ class OSystem;
 #include "bspf.hxx"
 
 enum {
-  kStartCmd   = 'STRT',
-  kOptionsCmd = 'OPTI',
-  kReloadCmd  = 'RELO',
-  kQuitCmd    = 'QUIT',
   kChooseRomDirCmd  = 'roms',  // rom select
   kChooseSnapDirCmd = 'snps',  // snap select
   kRomDirChosenCmd  = 'romc',  // rom chosen
@@ -53,11 +49,15 @@ class LauncherDialog : public Dialog
                    int x, int y, int w, int h);
     ~LauncherDialog();
 
+  protected:
+    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
+    virtual void handleJoyAxis(int stick, int axis, int value);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-  protected:
     void updateListing(bool fullReload = false);
     void loadConfig();
+
+    virtual bool wantsEvents() { return true; }
 
   protected:
     ButtonWidget* myStartButton;
@@ -79,6 +79,16 @@ class LauncherDialog : public Dialog
     void loadListFromCache();
     void createListCache();
     string MD5FromFile(const string& path);
+
+  private:
+    int mySelectedItem;
+
+    enum {
+      kStartCmd   = 'STRT',
+      kOptionsCmd = 'OPTI',
+      kReloadCmd  = 'RELO',
+      kQuitCmd    = 'QUIT'
+    };
 };
 
 #endif

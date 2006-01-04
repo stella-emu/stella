@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.12 2005-12-24 22:50:53 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.13 2006-01-04 01:24:17 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.12 2005-12-24 22:50:53 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.13 2006-01-04 01:24:17 stephena Exp $
 */
 class DialogContainer
 {
@@ -154,11 +154,13 @@ class DialogContainer
     DialogStack myDialogStack;
 
     enum {
-      kDoubleClickDelay = 500,
-      kKeyRepeatInitialDelay = 400,
-      kKeyRepeatSustainDelay = 50,
+      kDoubleClickDelay        = 500,
+      kKeyRepeatInitialDelay   = 400,
+      kKeyRepeatSustainDelay   = 50,
       kClickRepeatInitialDelay = kKeyRepeatInitialDelay,
-      kClickRepeatSustainDelay = kKeyRepeatSustainDelay
+      kClickRepeatSustainDelay = kKeyRepeatSustainDelay,
+      kAxisRepeatInitialDelay  = kKeyRepeatInitialDelay,
+      kAxisRepeatSustainDelay  = kKeyRepeatSustainDelay
     };
 
     // Indicates the most current time (in milliseconds) as set by updateTime()
@@ -183,6 +185,15 @@ class DialogContainer
     } myCurrentMouseDown;
     uInt32 myClickRepeatTime;
 	
+    // For continuous events (joyaxisDown)
+    struct {
+      int stick;
+      int axis;
+      int value;
+      int count;
+    } myCurrentAxisDown;
+    uInt32 myAxisRepeatTime;
+
     // Position and time of last mouse click (used to detect double clicks)
     struct {
       int x, y;     // Position of mouse when the click occured

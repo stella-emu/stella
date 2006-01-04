@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.22 2005-12-24 22:50:53 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.23 2006-01-04 01:24:17 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -70,6 +70,31 @@ void DialogContainer::updateTime(uInt32 time)
                                   myCurrentMouseDown.y - activeDialog->_y,
                                   myCurrentMouseDown.button, 1);
     myClickRepeatTime = myTime + kClickRepeatSustainDelay;
+  }
+
+  if(myCurrentAxisDown.stick != -1 && myAxisRepeatTime < myTime)
+  {
+    // The longer an axis event is enabled, the faster it should change
+    // We do this by decreasing the amount of time between consecutive axis events
+    // After a certain threshold, send 10 events at a time (this is necessary
+    // since at some point, we'd like to process more eventss than the
+    // current framerate allows)
+    myCurrentAxisDown.count++;
+    int interval = myCurrentAxisDown.count / 40 + 1;
+    myAxisRepeatTime = myTime + kAxisRepeatSustainDelay / interval;
+    if(interval > 3)
+    {
+      for(int i = 0; i < 10; ++i)
+        activeDialog->handleJoyAxis(myCurrentAxisDown.stick, myCurrentAxisDown.axis,
+                                    myCurrentAxisDown.value);
+      myAxisRepeatTime = myTime + kAxisRepeatSustainDelay / 3;
+    }
+    else
+    {
+      activeDialog->handleJoyAxis(myCurrentAxisDown.stick, myCurrentAxisDown.axis,
+                                  myCurrentAxisDown.value);
+      myAxisRepeatTime = myTime + kAxisRepeatSustainDelay / interval;
+    }
   }
 
   // Update joy to mouse events
@@ -270,17 +295,33 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
+  if(value > JOY_DEADZONE)
+    value -= JOY_DEADZONE;
+  else if(value < -JOY_DEADZONE )
+    value += JOY_DEADZONE;
+  else
+    value = 0;
+
   if(activeDialog->wantsEvents())
+  {
+    // Only stop firing events if it's the current key
+    if(myCurrentAxisDown.stick == stick && value == 0)
+    {
+      myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
+      myCurrentAxisDown.count = 0;
+    }
+    else
+    {
+      // Now account for repeated axis events (press and hold)
+      myCurrentAxisDown.stick = stick;
+      myCurrentAxisDown.axis  = axis;
+      myCurrentAxisDown.value = value;
+      myAxisRepeatTime = myTime + kAxisRepeatInitialDelay;
+    }
     activeDialog->handleJoyAxis(stick, axis, value);
+  }
   else
   {
-    if(value > JOY_DEADZONE)
-      value -= JOY_DEADZONE;
-    else if(value < -JOY_DEADZONE )
-      value += JOY_DEADZONE;
-    else
-      value = 0;
-
     if(axis % 2 == 0)  // x-direction
     {
       if(value != 0)
@@ -309,6 +350,8 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
         ourJoyMouse.y_down_count = 0;
       }
     }
+    myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
+    myCurrentAxisDown.count = 0;
   }
 }
 
@@ -412,6 +455,9 @@ void DialogContainer::reset()
   myLastClick.x = myLastClick.y = 0;
   myLastClick.time = 0;
   myLastClick.count = 0;
+
+  myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
+  myCurrentAxisDown.count = 0;
 
   int oldX = ourJoyMouse.x, oldY = ourJoyMouse.y;
   if(ourJoyMouse.x > ourJoyMouse.x_max)

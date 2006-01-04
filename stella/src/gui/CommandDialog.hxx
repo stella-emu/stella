@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.hxx,v 1.3 2005-12-24 22:09:36 stephena Exp $
+// $Id: CommandDialog.hxx,v 1.4 2006-01-04 01:24:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,6 +44,30 @@ class CommandDialog : public Dialog
 
   private:
     int mySelectedItem;
+
+    enum {
+      kSelectCmd     = 'Csel',
+      kResetCmd      = 'Cres',
+      kColorCmd      = 'Ccol',
+      kBWCmd         = 'Cbwt',
+      kLeftDiffACmd  = 'Clda',
+      kLeftDiffBCmd  = 'Cldb',
+      kRightDiffACmd = 'Crda',
+      kRightDiffBCmd = 'Crdb',
+      kSaveStateCmd  = 'Csst',
+      kStateSlotCmd  = 'Ccst',
+      kLoadStateCmd  = 'Clst',
+      kSnapshotCmd   = 'Csnp',
+      kFormatCmd     = 'Cfmt',
+      kPaletteCmd    = 'Cpal',
+      kReloadRomCmd  = 'Crom',
+      kExitCmd       = 'Clex'
+    };
+
+    enum {
+      kNumRows = 4,
+      kNumCols = 4
+    };
 };
 
 #endif

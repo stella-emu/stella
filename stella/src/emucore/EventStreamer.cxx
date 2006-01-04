@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.cxx,v 1.3 2005-12-29 21:16:28 stephena Exp $
+// $Id: EventStreamer.cxx,v 1.4 2006-01-04 01:24:17 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -45,6 +45,16 @@ EventStreamer::~EventStreamer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventStreamer::reset()
+{
+cerr << "EventStreamer::reset()\n";
+  myEventWriteFlag = false;
+  myEventReadFlag = false;
+  myFrameCounter = -1;
+  myEventPos = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventStreamer::startRecording()
 {
   string eventfile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
@@ -57,10 +67,8 @@ bool EventStreamer::startRecording()
     return false;
   myEventHistory.clear();
 
-  myEventWriteFlag = true;
-  myEventReadFlag = false;
-
-  return myEventWriteFlag;
+  reset();
+  return myEventWriteFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,6 +105,7 @@ bool EventStreamer::stopRecording()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventStreamer::loadRecording()
 {
+cerr << "EventStreamer::loadRecording()\n";
   string eventfile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
   if(!myStreamReader.open(eventfile))
     return false;
@@ -128,10 +137,8 @@ bool EventStreamer::loadRecording()
     return false;
   }
 
-  myEventWriteFlag = false;
+  reset();
   myEventReadFlag  = myEventHistory.size() > 0;
-  myFrameCounter = -1;
-  myEventPos = 0;
 
   return true;
 }
