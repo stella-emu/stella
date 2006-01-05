@@ -782,8 +782,7 @@ case $_host_os in
 			CXXFLAGS="-G0 -O2  -fno-rtti"
 			# 2 times -lc to avoid link problems. psp-gcc seems to to forget the first -lc wiile stdc++ linking
 			LIBS="-L `psp-config  --pspsdk-path`/lib -L`psp-config  --pspsdk-path`/../lib  "
-			LIBS="$LIBS -lSDLmain -lSDL -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpspaudio -lc -lpspuser -lpspkernel -lpsppower -lpng -lz -lm -lg -lstdc++ -lc -lpsputility"
-			
+			LIBS="$LIBS -lSDLmain -lSDL -lGL -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpsprtc -lpspaudio -lc -lpspuser -lpspkernel -lpsppower -lpng -lz -lm -lg -lstdc++ -lc -lpsputility"
 			# psp compiler
 			CC="psp-gcc"
 			LD="psp-gcc"
