@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.35 2006-01-04 01:24:17 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.36 2006-01-05 18:53:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -91,6 +91,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myQuitButton->setEditable(true);
   wid.push_back(myQuitButton);
     xpos += space + width;
+  mySelectedItem = 0;  // Highlight 'Play' button
 #else
   myQuitButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
   myQuitButton->setEditable(true);
@@ -108,6 +109,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myStartButton->setEditable(true);
   wid.push_back(myStartButton);
     xpos += space + width;
+  mySelectedItem = 3;  // Highlight 'Play' button
 #endif
 
   // Add list with game titles
@@ -151,6 +153,8 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list).
   if(myList->getList().isEmpty())
     updateListing();
+
+  Dialog::setFocus(getFocusList()[mySelectedItem]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

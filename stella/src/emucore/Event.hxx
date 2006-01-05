@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.18 2005-12-28 22:56:36 stephena Exp $
+// $Id: Event.hxx,v 1.19 2006-01-05 18:53:22 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -26,7 +26,7 @@ class EventStreamer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.18 2005-12-28 22:56:36 stephena Exp $
+  @version $Id: Event.hxx,v 1.19 2006-01-05 18:53:22 stephena Exp $
 */
 class Event
 {
@@ -78,6 +78,7 @@ class Event
 	  
       ChangeState, LoadState, SaveState, TakeSnapshot, Pause, Quit,
       MenuMode, CmdMenuMode, DebuggerMode, LauncherMode, Fry,
+      VolumeDecrease, VolumeIncrease,
 
       LastType
     };

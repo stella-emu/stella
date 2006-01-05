@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.51 2005-12-23 20:48:50 stephena Exp $
+// $Id: OSystem.cxx,v 1.52 2006-01-05 18:53:23 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -443,6 +443,42 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::getJoyButtonDirections(int& up, int& down, int& left, int& right)
+{
+  up = down = left = right = -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setDefaultJoymap()
+{
+  // Left joystick (assume joystick zero, button zero)
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire, 0, 0);
+
+  // Right joystick (assume joystick one, button zero)
+  myEventHandler->setDefaultJoyMapping(Event::JoystickOneFire, 1, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setDefaultJoyAxisMap()
+{
+  // Left joystick left/right directions (assume joystick zero)
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroLeft, 0, 0, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroRight, 0, 0, 1);
+
+  // Left joystick up/down directions (assume joystick zero)
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroUp, 0, 1, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroDown, 0, 1, 1);
+
+  // Right joystick left/right directions (assume joystick one)
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneLeft, 1, 0, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneRight, 1, 0, 1);
+
+  // Right joystick left/right directions (assume joystick one)
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneUp, 1, 1, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneDown, 1, 1, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemPSP.hxx,v 1.1 2005-08-25 15:19:17 stephena Exp $
+// $Id: OSystemPSP.hxx,v 1.2 2006-01-05 18:53:23 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_PSP_HXX
@@ -23,10 +23,10 @@
 
 
 /**
-  This class defines PSP-like OS's (Linux) system specific settings.
+  This class defines PSP-specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemPSP.hxx,v 1.1 2005-08-25 15:19:17 stephena Exp $
+  @version $Id: OSystemPSP.hxx,v 1.2 2006-01-05 18:53:23 stephena Exp $
 */
 class OSystemPSP : public OSystem
 {
@@ -47,14 +47,32 @@ class OSystemPSP : public OSystem
       may use different timing methods and/or algorithms, this method has
       been abstracted to each platform.
     */
-    virtual void mainLoop();
+    void mainLoop();
 
     /**
       This method returns number of ticks in microseconds.
 
       @return Current time in microseconds.
     */
-    virtual uInt32 getTicks();
+    uInt32 getTicks();
+
+    /**
+      This method gives joystick button numbers representing the 'up', 'down',
+      'left' and 'right' directions for use in the internal GUI.
+    */
+    void getJoyButtonDirections(int& up, int& down, int& left, int& right);
+
+    /**
+      This method determines the default mapping of joystick buttons to
+      Stella events for the PSP device.
+    */
+    void setDefaultJoymap();
+
+    /**
+      This method determines the default mapping of joystick axis to
+      Stella events for for the PSP device.
+    */
+    void setDefaultJoyAxisMap();
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.70 2005-12-28 22:56:36 stephena Exp $
+// $Id: EventHandler.hxx,v 1.71 2006-01-05 18:53:23 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -51,7 +51,7 @@ struct ActionList {
 };
 
 enum {
-  kActionListSize = 79
+  kActionListSize = 81
 };
 
 // Joystick related items
@@ -101,7 +101,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.70 2005-12-28 22:56:36 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.71 2006-01-05 18:53:23 stephena Exp $
 */
 class EventHandler
 {
@@ -152,43 +152,24 @@ class EventHandler
     void poll(uInt32 time);
 
     /**
-      Bind a key to an event/action
+      Set the default action for a joystick button to the given event
 
-      @param event  The event we are remapping
-      @param key    The key to bind to this event
-    */
-    void addKeyMapping(Event::Type event, int key);
-
-    /**
-      Bind a joystick button to an event/action
-
-      @param event  The event we are remapping
+      @param event  The event we are assigning
       @param stick  The joystick number
       @param button The joystick button
     */
-    void addJoyMapping(Event::Type event, int stick, int button);
+    void setDefaultJoyMapping(Event::Type event, int stick, int button);
 
     /**
-      Bind a joystick axis direction to an event/action
+      Set the default for a joystick axis to the given event
 
-      @param event  The event we are remapping
+      @param event  The event we are assigning
       @param stick  The joystick number
       @param axis   The joystick axis
       @param value  The value on the given axis
     */
-    void addJoyAxisMapping(Event::Type event, int stick, int axis, int value);
-
-    /**
-      Erase the specified mapping
-
-      @event  The event for which we erase all mappings
-    */
-    void eraseMapping(Event::Type event);
-
-    /**
-      Resets the event mappings to default values
-    */
-    void setDefaultMapping();
+    void setDefaultJoyAxisMapping(Event::Type event, int stick, int axis,
+                                  int value);
 
     /**
       Returns the current state of the EventHandler
@@ -314,6 +295,47 @@ class EventHandler
     void createMouseButtonEvent(int x, int y, int state);
 
   private:
+    /**
+      Bind a key to an event/action and regenerate the mapping array(s)
+
+      @param event  The event we are remapping
+      @param key    The key to bind to this event
+    */
+    void addKeyMapping(Event::Type event, int key);
+
+    /**
+      Bind a joystick button to an event/action and regenerate the
+      mapping array(s)
+
+      @param event  The event we are remapping
+      @param stick  The joystick number
+      @param button The joystick button
+    */
+    void addJoyMapping(Event::Type event, int stick, int button);
+
+    /**
+      Bind a joystick axis direction to an event/action and regenerate
+      the mapping array(s)
+
+      @param event  The event we are remapping
+      @param stick  The joystick number
+      @param axis   The joystick axis
+      @param value  The value on the given axis
+    */
+    void addJoyAxisMapping(Event::Type event, int stick, int axis, int value);
+
+    /**
+      Erase the specified mapping
+
+      @event  The event for which we erase all mappings
+    */
+    void eraseMapping(Event::Type event);
+
+    /**
+      Resets the event mappings to default values
+    */
+    void setDefaultMapping();
+
     /**
       Send a mouse motion event to the handler.
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.139 2006-01-04 01:24:17 stephena Exp $
+// $Id: EventHandler.cxx,v 1.140 2006-01-05 18:53:23 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -870,7 +870,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   if(type == JA_NONE)
   {
     // TODO - will this always work??
-    if(value > 32667 - JOY_DEADZONE || value < -32767 + JOY_DEADZONE)
+    if(value > 32767 - JOY_DEADZONE || value < -32767 + JOY_DEADZONE)
       type = myJoyAxisType[stick][axis] = JA_DIGITAL;
     else 
       type = myJoyAxisType[stick][axis] = JA_ANALOG;
@@ -990,6 +990,12 @@ void EventHandler::handleEvent(Event::Type event, int state)
     case Event::Fry:
       if(!myPauseFlag)
         myFryingFlag = bool(state);
+      return;
+
+    case Event::VolumeDecrease:
+    case Event::VolumeIncrease:
+      if(state && !myPauseFlag)
+        myOSystem->sound().adjustVolume(event == Event::VolumeIncrease ? 1 : -1);
       return;
 
     case Event::SaveState:
@@ -1266,34 +1272,55 @@ void EventHandler::addKeyMapping(Event::Type event, int key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setDefaultJoyMapping(Event::Type event, int stick, int button)
+{
+  if(stick >= 0 && stick < kNumJoysticks &&
+     button >= 0 && button < kNumJoyButtons &&
+     event >= 0 && event < Event::LastType)
+    myJoyTable[stick][button] = event;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 {
-  myJoyTable[stick][button] = event;
-  saveJoyMapping();
+  setDefaultJoyMapping(event, stick, button);
 
+  saveJoyMapping();
   setActionMappings();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setDefaultJoyAxisMapping(Event::Type event, int stick,
+                                            int axis, int value)
+{
+  if(stick >= 0 && stick < kNumJoysticks &&
+     axis >= 0 && axis < kNumJoyAxis &&
+     event >= 0 && event < Event::LastType)
+  {
+    // This confusing code is because each axis has two associated values,
+    // but analog events only affect one of the axis.
+    if(eventIsAnalog(event))
+      myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
+    else
+    {
+      // Otherwise, turn off the analog event(s) for this axis
+      if(eventIsAnalog(myJoyAxisTable[stick][axis][0]))
+        myJoyAxisTable[stick][axis][0] = Event::NoType;
+      if(eventIsAnalog(myJoyAxisTable[stick][axis][1]))
+        myJoyAxisTable[stick][axis][1] = Event::NoType;
+    
+      myJoyAxisTable[stick][axis][(value > 0)] = event;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
                                      int value)
 {
-  // This confusing code is because each axis has two associated values,
-  // but analog events only affect one of the axis.
-  if(eventIsAnalog(event))
-    myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
-  else
-  {
-    // Otherwise, turn off the analog event(s) for this axis
-    if(eventIsAnalog(myJoyAxisTable[stick][axis][0]))
-      myJoyAxisTable[stick][axis][0] = Event::NoType;
-    if(eventIsAnalog(myJoyAxisTable[stick][axis][1]))
-      myJoyAxisTable[stick][axis][1] = Event::NoType;
-    
-    myJoyAxisTable[stick][axis][(value > 0)] = event;
-  }
-  saveJoyAxisMapping();
+  setDefaultJoyAxisMapping(event, stick, axis, value);
 
+  saveJoyAxisMapping();
   setActionMappings();
 }
 
@@ -1424,31 +1451,7 @@ void EventHandler::setDefaultJoymap()
     for(int j = 0; j < kNumJoyButtons; ++j)
       myJoyTable[i][j] = Event::NoType;
 
-  // Left joystick (assume joystick zero, button zero)
-  myJoyTable[0][0]   = Event::JoystickZeroFire;
-
-  // Right joystick (assume joystick one, button zero)
-  myJoyTable[1][0]   = Event::JoystickOneFire;
-
-  // FIXME - add call to OSystem (or some other class) to set default
-  // joy button mapping for the specific platform
-#ifdef PSP
-  myJoyTable[0][0]  = Event::TakeSnapshot;      // Triangle
-  myJoyTable[0][1]  = Event::LoadState;         // Circle
-  myJoyTable[0][2]  = Event::JoystickZeroFire;  // Cross
-  myJoyTable[0][3]  = Event::SaveState;         // Square
-  myJoyTable[0][4]  = Event::MenuMode;          // Left trigger
-  myJoyTable[0][5]  = Event::CmdMenuMode;       // Right trigger
-  myJoyTable[0][6]  = Event::JoystickZeroDown;  // Down
-  myJoyTable[0][7]  = Event::JoystickZeroLeft;  // Left
-  myJoyTable[0][8]  = Event::JoystickZeroUp;    // Up
-  myJoyTable[0][9]  = Event::JoystickZeroRight; // Right
-  myJoyTable[0][10] = Event::ConsoleSelect;     // Select
-  myJoyTable[0][11] = Event::ConsoleReset;      // Start
-  myJoyTable[0][12] = Event::NoType;            // Home
-  myJoyTable[0][13] = Event::NoType;            // Hold
-#endif
-
+  myOSystem->setDefaultJoymap();
   saveJoyMapping();
 }
 
@@ -1461,22 +1464,7 @@ void EventHandler::setDefaultJoyAxisMap()
       for(int k = 0; k < 2; ++k)
         myJoyAxisTable[i][j][k] = Event::NoType;
 
-  // Left joystick left/right directions (assume joystick zero)
-  myJoyAxisTable[0][0][0] = Event::JoystickZeroLeft;
-  myJoyAxisTable[0][0][1] = Event::JoystickZeroRight;
-
-  // Left joystick up/down directions (assume joystick zero)
-  myJoyAxisTable[0][1][0] = Event::JoystickZeroUp;
-  myJoyAxisTable[0][1][1] = Event::JoystickZeroDown;
-
-  // Right joystick left/right directions (assume joystick one)
-  myJoyAxisTable[1][0][0] = Event::JoystickOneLeft;
-  myJoyAxisTable[1][0][1] = Event::JoystickOneRight;
-
-  // Right joystick left/right directions (assume joystick one)
-  myJoyAxisTable[1][1][0] = Event::JoystickOneUp;
-  myJoyAxisTable[1][1][1] = Event::JoystickOneDown;
-
+  myOSystem->setDefaultJoyAxisMap();
   saveJoyAxisMapping();
 }
 
@@ -2099,6 +2087,8 @@ ActionList EventHandler::ourActionList[kActionListSize] = {
   { Event::TakeSnapshot,                "Snapshot",                        "" },
   { Event::Pause,                       "Pause",                           "" },
   { Event::Fry,                         "Fry cartridge",                   "" },
+  { Event::VolumeDecrease,              "Decrease volume",                 "" },
+  { Event::VolumeIncrease,              "Increase volume",                 "" },
   { Event::MenuMode,                    "Toggle options menu mode",        "" },
   { Event::CmdMenuMode,                 "Toggle command menu mode",        "" },
   { Event::DebuggerMode,                "Toggle debugger mode",            "" },
