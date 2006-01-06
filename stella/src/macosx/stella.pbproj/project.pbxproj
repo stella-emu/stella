@@ -287,7 +287,7 @@
 	<key>CFBundleExecutable</key>
 	<string>StellaOSX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.0.1</string>
+	<string>2.1.0</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -295,17 +295,17 @@
 	<key>CFBundleIconFile</key>
 	<string>Stella</string>
 	<key>CFBundleIdentifier</key>
-	<string>StellaOSX2.0</string>
+	<string>StellaOSX2.1</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>StellaOSX 2.0.1</string>
+	<string>StellaOSX 2.1.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.1</string>
+	<string>2.1.0_cvs</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
@@ -373,13 +373,11 @@
 				2D11C9AC0667003F00724063,
 				2DDBEA110845709700812C11,
 				2DDBEAD7084578BF00812C11,
-				2DDBEAD8084578BF00812C11,
 				2DDBEADA084578BF00812C11,
 				2DDBEADC084578BF00812C11,
 				2DDBEADD084578BF00812C11,
 				2DDBEADF084578BF00812C11,
 				2DDBEAE1084578BF00812C11,
-				2DDBEAE3084578BF00812C11,
 				2DDBEAE6084578BF00812C11,
 				2DDBEAE8084578BF00812C11,
 				2DDBEAE9084578BF00812C11,
@@ -454,7 +452,6 @@
 				2DF9724E0892CEA400F64D23,
 				2DF972500892CEA400F64D23,
 				2D02208208A301F200B9C76B,
-				2DDA8D4008A43D5500881DB3,
 				2DEF21FD08BC033500B246B4,
 				2DEF21FF08BC033500B246B4,
 				2DDB4E1408BD52F8001BF554,
@@ -475,13 +472,14 @@
 				2D20FA1B08C603EC00A73076,
 				2D20FA1D08C603EC00A73076,
 				2D20FA1F08C603EC00A73076,
-				2DA15DEC08C69CA5000E496A,
-				2DA15DEE08C69CA5000E496A,
 				2D6CC10608C811A600B8F642,
 				2D6CC10808C811A600B8F642,
 				2DE7243008CE910900C889A8,
-				2D1DF99908ECE09E00BAEE4F,
 				2D2331920900B5EF00613B1F,
+				2D05FF53096E25F200A518FE,
+				2D05FF5D096E261E00A518FE,
+				2D05FF63096E269100A518FE,
+				2D05FF65096E269100A518FE,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -561,7 +559,6 @@
 				2DDBEADB084578BF00812C11,
 				2DDBEADE084578BF00812C11,
 				2DDBEAE0084578BF00812C11,
-				2DDBEAE2084578BF00812C11,
 				2DDBEAE5084578BF00812C11,
 				2DDBEAE7084578BF00812C11,
 				2DDBEAEB084578BF00812C11,
@@ -629,7 +626,6 @@
 				2DF9724D0892CEA400F64D23,
 				2DF9724F0892CEA400F64D23,
 				2D02208108A301F200B9C76B,
-				2DDA8D3F08A43D5500881DB3,
 				2DEF21FC08BC033500B246B4,
 				2DEF21FE08BC033500B246B4,
 				2D73959708C3EB4E0060BB99,
@@ -649,13 +645,14 @@
 				2D20FA1A08C603EC00A73076,
 				2D20FA1C08C603EC00A73076,
 				2D20FA1E08C603EC00A73076,
-				2DA15DEB08C69CA5000E496A,
-				2DA15DED08C69CA5000E496A,
 				2D6CC10508C811A600B8F642,
 				2D6CC10708C811A600B8F642,
 				2DE7242F08CE910900C889A8,
-				2D1DF99808ECE09E00BAEE4F,
 				2D2331910900B5EF00613B1F,
+				2D05FF52096E25F200A518FE,
+				2D05FF5C096E261E00A518FE,
+				2D05FF62096E269100A518FE,
+				2D05FF64096E269100A518FE,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -720,6 +717,126 @@
 			);
 			isa = PBXCopyFilesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2D05FF50096E25F200A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = EventStreamer.cxx;
+			path = ../emucore/EventStreamer.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF51096E25F200A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = EventStreamer.hxx;
+			path = ../emucore/EventStreamer.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF52096E25F200A518FE = {
+			fileRef = 2D05FF50096E25F200A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D05FF53096E25F200A518FE = {
+			fileRef = 2D05FF51096E25F200A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D05FF5A096E261E00A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = MediaFactory.cxx;
+			path = ../emucore/MediaFactory.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF5B096E261E00A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = MediaFactory.hxx;
+			path = ../emucore/MediaFactory.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF5C096E261E00A518FE = {
+			fileRef = 2D05FF5A096E261E00A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D05FF5D096E261E00A518FE = {
+			fileRef = 2D05FF5B096E261E00A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D05FF5E096E269100A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = EventMappingWidget.cxx;
+			path = ../gui/EventMappingWidget.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF5F096E269100A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = EventMappingWidget.hxx;
+			path = ../gui/EventMappingWidget.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF60096E269100A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = InputDialog.cxx;
+			path = ../gui/InputDialog.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF61096E269100A518FE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = InputDialog.hxx;
+			path = ../gui/InputDialog.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D05FF62096E269100A518FE = {
+			fileRef = 2D05FF5E096E269100A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D05FF63096E269100A518FE = {
+			fileRef = 2D05FF5F096E269100A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D05FF64096E269100A518FE = {
+			fileRef = 2D05FF60096E269100A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D05FF65096E269100A518FE = {
+			fileRef = 2D05FF61096E269100A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		2D113DFA0672BE0800317017 = {
 			fileRef = 2D4764C806683C5F00F63D87;
@@ -834,36 +951,6 @@
 		};
 		2D1A6CD908513610007CDBA8 = {
 			fileRef = 2D1A6CD808513610007CDBA8;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D1DF99608ECE09E00BAEE4F = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = BankRomCheat.cxx;
-			path = ../common/BankRomCheat.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D1DF99708ECE09E00BAEE4F = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = BankRomCheat.hxx;
-			path = ../common/BankRomCheat.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2D1DF99808ECE09E00BAEE4F = {
-			fileRef = 2D1DF99608ECE09E00BAEE4F;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2D1DF99908ECE09E00BAEE4F = {
-			fileRef = 2D1DF99708ECE09E00BAEE4F;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1625,12 +1712,6 @@
 		};
 		2D6050C5089876F300C6DE89 = {
 			children = (
-				2D1DF99608ECE09E00BAEE4F,
-				2D1DF99708ECE09E00BAEE4F,
-				2DA15DE708C69CA5000E496A,
-				2DA15DE808C69CA5000E496A,
-				2DA15DE908C69CA5000E496A,
-				2DA15DEA08C69CA5000E496A,
 				2D733D5D062893E7006265D9,
 				2D733D5E062893E7006265D9,
 				2D733D61062893E7006265D9,
@@ -1728,6 +1809,8 @@
 				2DE2DF410627AE07006BEC99,
 				2D733D6E062895B2006265D9,
 				2D733D6F062895B2006265D9,
+				2D05FF50096E25F200A518FE,
+				2D05FF51096E25F200A518FE,
 				2D733D70062895B2006265D9,
 				2D733D71062895B2006265D9,
 				2DDBEB7208457B7D00812C11,
@@ -1740,6 +1823,8 @@
 				2DE2DF7D0627AE33006BEC99,
 				2DE2DF7E0627AE33006BEC99,
 				2DE2DF7F0627AE34006BEC99,
+				2D05FF5A096E261E00A518FE,
+				2D05FF5B096E261E00A518FE,
 				2DE2DF800627AE34006BEC99,
 				2DE2DF810627AE34006BEC99,
 				2DDBEB7408457B7D00812C11,
@@ -1794,13 +1879,10 @@
 			children = (
 				2DDBEAA3084578BF00812C11,
 				2DDBEAA4084578BF00812C11,
-				2DDBEAA5084578BF00812C11,
 				2DDBEAA6084578BF00812C11,
 				2DDBEAA7084578BF00812C11,
 				2DDBEAA8084578BF00812C11,
 				2DDBEAA9084578BF00812C11,
-				2DDA8D3D08A43D5500881DB3,
-				2DDA8D3E08A43D5500881DB3,
 				2DEF21F808BC033500B246B4,
 				2DEF21F908BC033500B246B4,
 				2DDBEAAA084578BF00812C11,
@@ -1817,8 +1899,8 @@
 				2D403BA1086116D1001E31A1,
 				2D403BA4086116D1001E31A1,
 				2D403BA5086116D1001E31A1,
-				2DDBEAAF084578BF00812C11,
-				2DDBEAB0084578BF00812C11,
+				2D05FF5E096E269100A518FE,
+				2D05FF5F096E269100A518FE,
 				2D9217FB0857CC88001D664B,
 				2D9217FC0857CC88001D664B,
 				2DDBEAB2084578BF00812C11,
@@ -1829,6 +1911,8 @@
 				2DDBEAB7084578BF00812C11,
 				2DDBEAB8084578BF00812C11,
 				2DDBEAB9084578BF00812C11,
+				2D05FF60096E269100A518FE,
+				2D05FF61096E269100A518FE,
 				2D02207F08A301F200B9C76B,
 				2D02208008A301F200B9C76B,
 				2DDBEABA084578BF00812C11,
@@ -2504,66 +2588,6 @@
 			shellPath = /bin/sh;
 			shellScript = "m4 ../emucore/m6502/src/M6502Low.m4 ../emucore/m6502/src/M6502.m4 > M6502Low.ins\nm4 ../emucore/m6502/src/M6502Hi.m4 ../emucore/m6502/src/M6502.m4 > M6502Hi.ins\n";
 		};
-		2DA15DE708C69CA5000E496A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = Cheat.cxx;
-			path = ../common/Cheat.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DA15DE808C69CA5000E496A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = Cheat.hxx;
-			path = ../common/Cheat.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DA15DE908C69CA5000E496A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = CheetahCheat.cxx;
-			path = ../common/CheetahCheat.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DA15DEA08C69CA5000E496A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = CheetahCheat.hxx;
-			path = ../common/CheetahCheat.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DA15DEB08C69CA5000E496A = {
-			fileRef = 2DA15DE708C69CA5000E496A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DA15DEC08C69CA5000E496A = {
-			fileRef = 2DA15DE808C69CA5000E496A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DA15DED08C69CA5000E496A = {
-			fileRef = 2DA15DE908C69CA5000E496A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DA15DEE08C69CA5000E496A = {
-			fileRef = 2DA15DEA08C69CA5000E496A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		2DDA34020665817D00CDD299 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2590,36 +2614,6 @@
 		};
 		2DDA34050665817D00CDD299 = {
 			fileRef = 2DDA34030665817D00CDD299;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDA8D3D08A43D5500881DB3 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = CheatCodeDialog.cxx;
-			path = ../gui/CheatCodeDialog.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDA8D3E08A43D5500881DB3 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = CheatCodeDialog.hxx;
-			path = ../gui/CheatCodeDialog.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDA8D3F08A43D5500881DB3 = {
-			fileRef = 2DDA8D3D08A43D5500881DB3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDA8D4008A43D5500881DB3 = {
-			fileRef = 2DDA8D3E08A43D5500881DB3;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2714,15 +2708,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2DDBEAA5084578BF00812C11 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = Array.hxx;
-			path = ../gui/Array.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		2DDBEAA6084578BF00812C11 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2801,24 +2786,6 @@
 			lastKnownFileType = sourcecode.cpp.h;
 			name = DialogContainer.hxx;
 			path = ../gui/DialogContainer.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDBEAAF084578BF00812C11 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = EventMappingDialog.cxx;
-			path = ../gui/EventMappingDialog.cxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		2DDBEAB0084578BF00812C11 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = EventMappingDialog.hxx;
-			path = ../gui/EventMappingDialog.hxx;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -3140,12 +3107,6 @@
 			settings = {
 			};
 		};
-		2DDBEAD8084578BF00812C11 = {
-			fileRef = 2DDBEAA5084578BF00812C11;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		2DDBEAD9084578BF00812C11 = {
 			fileRef = 2DDBEAA6084578BF00812C11;
 			isa = PBXBuildFile;
@@ -3196,18 +3157,6 @@
 		};
 		2DDBEAE1084578BF00812C11 = {
 			fileRef = 2DDBEAAE084578BF00812C11;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDBEAE2084578BF00812C11 = {
-			fileRef = 2DDBEAAF084578BF00812C11;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2DDBEAE3084578BF00812C11 = {
-			fileRef = 2DDBEAB0084578BF00812C11;
 			isa = PBXBuildFile;
 			settings = {
 			};
