@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.27 2005-12-17 01:23:07 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.28 2006-01-06 00:31:55 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -30,21 +30,20 @@
 #include "Settings.hxx"
 #include "System.hxx"
 #include "OSystem.hxx"
-#include "TIASnd.hxx"
 
 #include "SoundSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::SoundSDL(OSystem* osystem)
-    : Sound(osystem),
-      myIsEnabled(osystem->settings().getBool("sound")),
-      myIsInitializedFlag(false),
-      myLastRegisterSetCycle(0),
-      myDisplayFrameRate(60),
-      myNumChannels(1),
-      myFragmentSizeLogBase2(0),
-      myIsMuted(false),
-      myVolume(100)
+  : Sound(osystem),
+    myIsEnabled(osystem->settings().getBool("sound")),
+    myIsInitializedFlag(false),
+    myLastRegisterSetCycle(0),
+    myDisplayFrameRate(60),
+    myNumChannels(1),
+    myFragmentSizeLogBase2(0),
+    myIsMuted(false),
+    myVolume(100)
 {
 }
 
@@ -93,10 +92,12 @@ void SoundSDL::initialize()
     else
     {
       uInt32 fragsize = myOSystem->settings().getInt("fragsize");
+      Int32 frequency = myOSystem->settings().getInt("freq");
+      Int32 tiafreq   = myOSystem->settings().getInt("tiafreq");
 
       SDL_AudioSpec desired;
 #ifndef PSP
-      desired.freq   = 31400;
+      desired.freq   = frequency;
       desired.format = AUDIO_U8;
 #else
       desired.freq   = 44100;
@@ -141,7 +142,11 @@ void SoundSDL::initialize()
 
       // Now initialize the TIASound object which will actually generate sound
       myTIASound.outputFrequency(myHardwareSpec.freq);
+      myTIASound.tiaFrequency(tiafreq);
       myTIASound.channels(myHardwareSpec.channels);
+
+      bool clipvol = myOSystem->settings().getBool("clipvol");
+      myTIASound.clipVolume(clipvol);
 
       // Adjust volume to that defined in settings
       myVolume = myOSystem->settings().getInt("volume");
@@ -149,10 +154,13 @@ void SoundSDL::initialize()
 
       // Show some info
       if(myOSystem->settings().getBool("showinfo"))
-        cout << "Sound enabled:" << endl
-             << "  Volume   : "  << myVolume << endl
-             << "  Frag size: "  << fragsize << endl
-             << "  Channels : "  << myNumChannels << endl << endl;
+        cout << "Sound enabled:"  << endl
+             << "  Volume     : " << myVolume << endl
+             << "  Frag size  : " << fragsize << endl
+             << "  Frequency  : " << myHardwareSpec.freq << endl
+             << "  TIA Freq.  : " << tiafreq << endl
+             << "  Channels   : " << myNumChannels << endl
+             << "  Clip volume: " << (int)clipvol << endl << endl;
     }
   }
 
@@ -497,11 +505,11 @@ bool SoundSDL::save(Serializer& out)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL::RegWriteQueue::RegWriteQueue(uInt32 capacity)
-    : myCapacity(capacity),
-      myBuffer(0),
-      mySize(0),
-      myHead(0),
-      myTail(0)
+  : myCapacity(capacity),
+    myBuffer(0),
+    mySize(0),
+    myHead(0),
+    myTail(0)
 {
   myBuffer = new RegWrite[myCapacity];
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.24 2006-01-05 18:53:23 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.25 2006-01-06 00:31:56 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -274,7 +274,20 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  if(activeDialog->wantsEvents())
+  // Some buttons act as directions.  In those cases, translate them
+  // to axis events instead of mouse button events
+  int up, down, left, right = -1;
+  int value = state > 0 ? 32767 : 0;
+  myOSystem->getJoyButtonDirections(up, down, left, right);
+  if(button == up)
+    handleJoyAxisEvent(stick, 1, -value);  // axis 1, -value ==> UP
+  else if(button == down)
+    handleJoyAxisEvent(stick, 1, value);   // axis 1, +value ==> DOWN
+  else if(button == left)
+    handleJoyAxisEvent(stick, 0, -value);  // axis 0, -value ==> LEFT
+  else if(button == right)
+    handleJoyAxisEvent(stick, 0, value);   // axis 0, +value ==> RIGHT
+  else if(activeDialog->wantsEvents())
   {
     if(state == 1)
       activeDialog->handleJoyDown(stick, button);
@@ -282,24 +295,8 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
       activeDialog->handleJoyUp(stick, button);
   }
   else
-  {
-    // Some buttons act as directions.  In those cases, translate them
-    // to axis events instead of mouse button events
-    int up, down, left, right = -1;
-    int value = state > 0 ? 32767 : 0;
-    myOSystem->getJoyButtonDirections(up, down, left, right);
-    if(button == up)
-      handleJoyAxisEvent(stick, 1, value);   // axis 1, +value ==> UP
-    else if(button == down)
-      handleJoyAxisEvent(stick, 1, -value);  // axis 1, -value ==> DOWN
-    else if(button == left)
-      handleJoyAxisEvent(stick, 0, value);   // axis 0, +value ==> LEFT
-    else if(button == right)
-      handleJoyAxisEvent(stick, 0, -value);  // axis 0, -value ==> RIGHT
-    else
       myOSystem->eventHandler().createMouseButtonEvent(
           ourJoyMouse.x, ourJoyMouse.y, state);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIASnd.hxx,v 1.3 2005-10-09 17:31:47 stephena Exp $
+// $Id: TIASnd.hxx,v 1.4 2006-01-06 00:31:56 stephena Exp $
 //============================================================================
 
 #ifndef TIASOUND_HXX
@@ -26,18 +26,16 @@
   hardware.
 
   @author  Bradford W. Mott
-  @version $Id: TIASnd.hxx,v 1.3 2005-10-09 17:31:47 stephena Exp $
+  @version $Id: TIASnd.hxx,v 1.4 2006-01-06 00:31:56 stephena Exp $
 */
 class TIASound
 {
   public:
-    static const int TIASoundFrequency;
-
-  public:
     /**
       Create a new TIA Sound object using the specified output frequency
     */
-    TIASound(Int32 outputFrequency = TIASoundFrequency, uInt32 channels = 1);
+    TIASound(Int32 outputFrequency = 31400, Int32 tiaFrequency = 31400,
+             uInt32 channels = 1);
 
     /**
       Destructor
@@ -53,12 +51,22 @@ class TIASound
     /**
       Set the frequency output samples should be generated at
     */
-    void outputFrequency(uInt32 freq);
+    void outputFrequency(Int32 freq);
+
+    /**
+      Set the frequency the of the TIA device
+    */
+    void tiaFrequency(Int32 freq);
 
     /**
       Selects the number of audio channels per sample (1 = mono, 2 = stereo)
     */
     void channels(uInt32 number);
+
+    /**
+      Set volume clipping (decrease volume range by half to eliminate popping)
+    */
+    void clipVolume(bool clip);
 
   public:
     /**
@@ -134,9 +142,11 @@ class TIASound
     uInt8 myP5[2];           // 5-bit register LFSR (lower 5 bits used)
 
     Int32  myOutputFrequency;
+    Int32  myTIAFrequency;
     uInt32 myChannels;
     Int32  myOutputCounter;
     uInt32 myVolumePercentage;
+    uInt8  myVolumeClip;
 };
 
 #endif

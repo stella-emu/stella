@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.69 2005-12-24 22:50:52 stephena Exp $
+// $Id: Settings.cxx,v 1.70 2006-01-06 00:31:56 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -54,7 +54,10 @@ Settings::Settings(OSystem* osystem)
 
   set("sound", "true");
   set("fragsize", "512");
+  set("freq", "31400");
+  set("tiafreq", "31400");
   set("volume", "100");
+  set("clipvol", "true");
 
   set("keymap", "");
   set("joymap", "");
@@ -228,6 +231,12 @@ void Settings::validate()
   i = getInt("volume");
   if(i < 0 || i > 100)
     set("volume", "100");
+  i = getInt("freq");
+  if(i < 0 || i > 48000)
+    set("freq", "31400");
+  i = getInt("tiafreq");
+  if(i < 0 || i > 48000)
+    set("tiafreq", "31400");
 #endif
 
   i = getInt("zoom");
@@ -284,7 +293,10 @@ void Settings::usage()
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -channels     <1|2>          Enable mono or stereo sound\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
+    << "  -freq         <number>       Set sound sample output frequency (0 - 48000)\n"
+    << "  -tiafreq      <number>       Set sound sample generation frequency (0 - 48000)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
+    << "  -clipvol      <1|0>          Enable volume clipping (eliminates popping)\n"
     << endl
   #endif
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
