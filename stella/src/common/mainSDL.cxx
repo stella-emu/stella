@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.60 2006-01-08 02:28:02 stephena Exp $
+// $Id: mainSDL.cxx,v 1.61 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -162,6 +162,10 @@ int main(int argc, char* argv[])
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
   theOSystem->settings().validate();
+
+  // Create the full OSystem after the settings, since settings are
+  // probably needed for defaults
+  theOSystem->create();
 
   // Create the event handler for the system
   EventHandler handler(theOSystem);

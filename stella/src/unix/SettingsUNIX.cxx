@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.14 2005-06-16 01:11:29 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.15 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsUNIX::SettingsUNIX(OSystem* osystem)
-    : Settings(osystem)
+  : Settings(osystem)
 {
   // This argument is only valid for Linux/UNIX, and will eventually be removed
   set("accurate", "false");

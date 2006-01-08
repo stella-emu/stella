@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.34 2006-01-08 02:28:03 stephena Exp $
+// $Id: OSystem.hxx,v 1.35 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.34 2006-01-08 02:28:03 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.35 2006-01-08 13:55:03 stephena Exp $
 */
 class OSystem
 {
@@ -58,6 +58,11 @@ class OSystem
       Destructor
     */
     virtual ~OSystem();
+
+    /**
+      Create all child objects which belong to this OSystem
+    */
+    virtual bool create();
 
   public:
     /**

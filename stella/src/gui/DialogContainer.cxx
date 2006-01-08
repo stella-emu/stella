@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.26 2006-01-08 02:28:03 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.27 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -35,6 +35,7 @@ DialogContainer::DialogContainer(OSystem* osystem)
   memset(&ourJoyMouse, 0, sizeof(JoyMouse));
   ourJoyMouse.delay_time = 25;
 
+  ourEnableJoyMouseFlag = myOSystem->settings().getBool("joymouse");
   reset();
 }
 
@@ -98,7 +99,8 @@ void DialogContainer::updateTime(uInt32 time)
   }
 
   // Update joy to mouse events
-  handleJoyMouse(time);
+  if(ourEnableJoyMouseFlag)
+    handleJoyMouse(time);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -496,6 +498,9 @@ void DialogContainer::reset()
   if(oldX != ourJoyMouse.x || oldY != ourJoyMouse.y)
     myOSystem->eventHandler().createMouseMotionEvent(ourJoyMouse.x, ourJoyMouse.y);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DialogContainer::ourEnableJoyMouseFlag;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JoyMouse DialogContainer::ourJoyMouse;

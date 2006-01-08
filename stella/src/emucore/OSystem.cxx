@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.53 2006-01-08 02:28:03 stephena Exp $
+// $Id: OSystem.cxx,v 1.54 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -63,6 +63,39 @@ OSystem::OSystem()
     myFont(NULL),
     myConsoleFont(NULL)
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+OSystem::~OSystem()
+{
+  delete myMenu;
+  delete myCommandMenu;
+  delete myLauncher;
+  delete myFont;
+  delete myConsoleFont;
+
+  // Remove any game console that is currently attached
+  delete myConsole;
+
+  // OSystem takes responsibility for framebuffer and sound,
+  // since it created them
+  delete myFrameBuffer;
+  delete mySound;
+
+  // These must be deleted after all the others
+  // This is a bit hacky, since it depends on ordering
+  // of d'tor calls
+#ifdef DEVELOPER_SUPPORT
+  delete myDebugger;
+#endif
+#ifdef CHEATCODE_SUPPORT
+  delete myCheatManager;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::create()
+{
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
   myCommandMenu = new CommandMenu(this);
@@ -96,34 +129,6 @@ OSystem::OSystem()
 #endif
 #ifdef CHEATCODE_SUPPORT
   myFeatures += "Cheats";
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystem::~OSystem()
-{
-  delete myMenu;
-  delete myCommandMenu;
-  delete myLauncher;
-  delete myFont;
-  delete myConsoleFont;
-
-  // Remove any game console that is currently attached
-  delete myConsole;
-
-  // OSystem takes responsibility for framebuffer and sound,
-  // since it created them
-  delete myFrameBuffer;
-  delete mySound;
-
-  // These must be deleted after all the others
-  // This is a bit hacky, since it depends on ordering
-  // of d'tor calls
-#ifdef DEVELOPER_SUPPORT
-  delete myDebugger;
-#endif
-#ifdef CHEATCODE_SUPPORT
-  delete myCheatManager;
 #endif
 }
 

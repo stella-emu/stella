@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.cxx,v 1.1 2006-01-08 02:28:03 stephena Exp $
+// $Id: SettingsGP2X.cxx,v 1.2 2006-01-08 13:55:03 stephena Exp $
 // Modified on 2006/01/04 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -35,6 +35,7 @@ SettingsGP2X::SettingsGP2X(OSystem* osystem)
   set("fragsize", "512");
   set("tiafreq", "22050");
   set("clipvol", "false");
+  set("joymouse", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

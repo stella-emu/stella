@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsPSP.cxx,v 1.3 2005-11-15 22:24:32 optixx Exp $
+// $Id: SettingsPSP.cxx,v 1.4 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -22,15 +22,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsPSP::SettingsPSP(OSystem* osystem)
-    : Settings(osystem)
+  : Settings(osystem)
 {
-    set("accurate", "false");
-    set("zoom", "1");
-    set("romdir", "ms0:/stella/roms/");
-    set("ssdir", "ms0:/stella/snapshots/");
-    set("sound", "true");
-    set("pspoverclock", "false");
-    set("joymouse","true");
+  set("accurate", "false");
+  set("zoom", "1");
+  set("romdir", "ms0:/stella/roms/");
+  set("ssdir", "ms0:/stella/snapshots/");
+  set("sound", "true");
+  set("pspoverclock", "false");
+  set("joymouse", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

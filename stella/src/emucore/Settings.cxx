@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.71 2006-01-08 02:28:03 stephena Exp $
+// $Id: Settings.cxx,v 1.72 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -65,7 +65,7 @@ Settings::Settings(OSystem* osystem)
   set("paddle", "0");
   set("sa1", "left");
   set("sa2", "right");
-  set("mspeed", "50");
+  set("joymouse", "false");
   set("p1speed", "50");
   set("p2speed", "50");
   set("p3speed", "50");
@@ -299,10 +299,15 @@ void Settings::usage()
     << "  -clipvol      <1|0>          Enable volume clipping (eliminates popping)\n"
     << endl
   #endif
-    << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
+    << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
+    << "  -joymouse     <1|0>          Enable mouse emulation using joystick in GUI\n"
+    << "  -p1speed      <number>       Speed of emulated mouse movement for paddle 1 (0-100)\n"
+    << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
+    << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
+    << "  -p4speed      <number>       Speed of emulated mouse movement for paddle 4 (0-100)\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #endif

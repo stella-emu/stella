@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.5 2005-12-18 18:37:01 stephena Exp $
+// $Id: CheatManager.cxx,v 1.6 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -265,6 +265,7 @@ void CheatManager::loadCheatDatabase()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::saveCheatDatabase()
 {
+cerr << "CheatManager::saveCheatDatabase(): " << myCheatMap.size() << endl;
   string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
   ofstream out(cheatfile.c_str(), ios::out);
   if(!out)
@@ -319,6 +320,8 @@ void CheatManager::saveCheats(const string& md5sum)
   // Add new entry only if there are any cheats defined
   if(cheats.str() != "")
     myCheatMap.insert(make_pair(md5sum, cheats.str()));
+
+cerr << "added " << myCheatList.size() << " cheats, map is " << myCheatMap.size() << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

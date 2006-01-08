@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.13 2006-01-04 01:24:17 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.14 2006-01-08 13:55:03 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.13 2006-01-04 01:24:17 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.14 2006-01-08 13:55:03 stephena Exp $
 */
 class DialogContainer
 {
@@ -140,6 +140,9 @@ class DialogContainer
       has been loaded, since in most cases the screen dimensions will have changed.
     */
     virtual void initialize() = 0;
+
+    // Whether to enable joymouse emulation
+    static bool ourEnableJoyMouseFlag;
 
     // Emulation of mouse using joystick axis events
     static JoyMouse ourJoyMouse;
