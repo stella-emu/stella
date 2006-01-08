@@ -2477,6 +2477,8 @@
 "Display.Format" "PAL"
 "Display.Height" "193"
 "Display.YStart" "64"
+"Cartridge.Note" "Console ports are swapped"
+"Console.SwapPorts" "Yes"
 ""
 
 "Cartridge.MD5" "1cf59fc7b11cdbcefe931e41641772f6"
@@ -12503,7 +12505,7 @@
 "Cartridge.Name" "Omega Race (1983) (CBS Electronics)"
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "4L-2737"
-"Cartridge.Note" "Uses Booster Grip Controller; set right difficulty to 'A' to use Booster-Grip in both ports"
+"Cartridge.Note" "Set right difficulty to 'A' for Booster-Grip in both ports"
 "Cartridge.Rarity" "Uncommon"
 "Console.RightDifficulty" "A"
 "Controller.Left" "Booster-Grip"
@@ -19865,6 +19867,8 @@
 "Cartridge.Type" "F8"
 "Display.Height" "192"
 "Display.YStart" "37"
+"Cartridge.Note" "Console ports are swapped"
+"Console.SwapPorts" "Yes"
 ""
 
 "Cartridge.MD5" "f7a138eed69665b5cd1bfa796a550b01"

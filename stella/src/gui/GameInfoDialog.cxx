@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.19 2005-10-15 22:30:29 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.20 2006-01-08 02:28:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -120,7 +120,7 @@ GameInfoDialog::GameInfoDialog(
   addToFocusList(wid, tabID);
 
 
-  // 2) Console/Controller properties
+  // 2) Console properties
   wid.clear();
   tabID = myTab->addTab("Console");
 
@@ -154,6 +154,16 @@ GameInfoDialog::GameInfoDialog(
   myTVType->appendEntry("Color", 1);
   myTVType->appendEntry("B & W", 2);
   wid.push_back(myTVType);
+
+  ypos += lineHeight + 3;
+  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+                       "Swap ports:", kTextAlignLeft);
+  mySwapPorts = new PopUpWidget(myTab, xpos+lwidth, ypos,
+                                font.getStringWidth("Yes") + 15, lineHeight,
+                                  "", 0, 0);
+  mySwapPorts->appendEntry("Yes", 1);
+  mySwapPorts->appendEntry("No", 2);
+  wid.push_back(mySwapPorts);
 
   // Add items for tab 1
   addToFocusList(wid, tabID);
@@ -335,6 +345,14 @@ void GameInfoDialog::loadConfig()
   else
     myTVType->setSelectedTag(0);
 
+  s = myGameProperties->get("Console.SwapPorts", true);
+  if(s == "YES")
+    mySwapPorts->setSelectedTag(1);
+  else if(s == "NO")
+    mySwapPorts->setSelectedTag(2);
+  else
+    mySwapPorts->setSelectedTag(0);
+
   // Controller properties
   s = myGameProperties->get("Controller.Left", true);
   for(i = 0; i < 5; ++i)
@@ -434,6 +452,10 @@ void GameInfoDialog::saveConfig()
   tag = myTVType->getSelectedTag();
   s = (tag == 1) ? "Color" : "BlackAndWhite";
   myGameProperties->set("Console.TelevisionType", s);
+
+  tag = mySwapPorts->getSelectedTag();
+  s = (tag == 1) ? "Yes" : "No";
+  myGameProperties->set("Console.SwapPorts", s);
 
   // Controller properties
   tag = myLeftController->getSelectedTag();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.6 2005-09-14 01:50:42 markgrebe Exp $
+// $Id: OSystemMACOSX.cxx,v 1.7 2006-01-08 02:28:04 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -36,7 +36,9 @@
 #endif
 
 extern "C" {
-void macOpenConsole(char *romname);
+  void macOpenConsole(char *romname);
+  uInt16 macOSXDisplayWidth(void);
+  uInt16 macOSXDisplayHeight(void);
 }
 
 // Pointer to the main parent osystem object or the null pointer
@@ -172,4 +174,11 @@ uInt32 OSystemMACOSX::getTicks()
 #else
   return (uInt32) SDL_GetTicks() * 1000;
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystemMACOSX::getScreenDimensions(int& width, int& height)
+{
+  width  = (int)macOSXDisplayWidth();
+  height = (int)macOSXDisplayHeight();
 }

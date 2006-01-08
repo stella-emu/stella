@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.hxx,v 1.2 2005-06-16 01:11:29 stephena Exp $
+// $Id: OSystemMACOSX.hxx,v 1.3 2006-01-08 02:28:04 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_MACOSX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Mark Grebe
-  @version $Id: OSystemMACOSX.hxx,v 1.2 2005-06-16 01:11:29 stephena Exp $
+  @version $Id: OSystemMACOSX.hxx,v 1.3 2006-01-08 02:28:04 stephena Exp $
 */
 class OSystemMACOSX : public OSystem
 {
@@ -56,6 +56,10 @@ class OSystemMACOSX : public OSystem
     */
     virtual uInt32 getTicks();
 	
+    /**
+      This method queries the dimensions of the screen for this hardware.
+    */
+    virtual void getScreenDimensions(int& width, int& height);
 };
 
 #endif

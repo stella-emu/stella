@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemPSP.cxx,v 1.4 2006-01-05 18:53:23 stephena Exp $
+// $Id: OSystemPSP.cxx,v 1.5 2006-01-08 02:28:04 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -141,12 +141,10 @@ uInt32 OSystemPSP::getTicks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemPSP::getJoyButtonDirections(int& up, int& down, int& left, int& right)
+void OSystemPSP::getScreenDimensions(int& width, int& height)
 {
-  up    = 8;
-  down  = 6;
-  left  = 7;
-  right = 9;
+  width  = 480;
+  height = 272;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

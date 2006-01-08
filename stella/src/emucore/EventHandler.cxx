@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.140 2006-01-05 18:53:23 stephena Exp $
+// $Id: EventHandler.cxx,v 1.141 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -643,15 +643,31 @@ void EventHandler::poll(uInt32 time)
             int button = event.jbutton.button;
             int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-            if(state && eventStateChange(myJoyTable[stick][button]))
-              return;
-
-            // Determine which mode we're in, then send the event to the appropriate place
-            if(myState == S_EMULATE)
-              handleEvent(myJoyTable[stick][button], state);
-            else if(myOverlay != NULL)
-              myOverlay->handleJoyEvent(stick, button, state);
-            break;  // Regular joystick button
+            // Account for buttons which represent diagonal movement
+            // We just generate two equivalent button events representing
+            // combined movement
+            switch(button)
+            {
+              case kJDirUpLeft:
+                handleJoyEvent(stick, kJDirUp, state);
+                handleJoyEvent(stick, kJDirLeft, state);
+                break;
+              case kJDirDownLeft:
+                handleJoyEvent(stick, kJDirDown, state);
+                handleJoyEvent(stick, kJDirLeft, state);
+                break;
+              case kJDirDownRight:
+                handleJoyEvent(stick, kJDirDown, state);
+                handleJoyEvent(stick, kJDirRight, state);
+                break;
+              case kJDirUpRight:
+                handleJoyEvent(stick, kJDirUp, state);
+                handleJoyEvent(stick, kJDirRight, state);
+                break;
+              default:
+                handleJoyEvent(stick, button, state);
+                break;
+            }
           }
 
           case JT_STELLADAPTOR_LEFT:
@@ -858,6 +874,19 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleJoyEvent(int stick, int button, int state)
+{
+  if(state && eventStateChange(myJoyTable[stick][button]))
+    return;
+
+  // Determine which mode we're in, then send the event to the appropriate place
+  if(myState == S_EMULATE)
+    handleEvent(myJoyTable[stick][button], state);
+  else if(myOverlay != NULL)
+    myOverlay->handleJoyEvent(stick, button, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 {
   // Every axis event has two associated values, negative and positive
@@ -923,8 +952,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
   switch((int)event)
   {
     ////////////////////////////////////////////////////////////////////////
-    // Make sure that simultaneous events that are impossible on a real
-    // Atari 2600 cannot happen.  Maybe this should be in the Event class??
+    // Preprocess joystick events, converting them to events from whichever
+    // controller is plugged into the corresponding virtual port.
+    // This duplicates z26 behaviour, whereby the joystick can be used
+    // for almost all types of input.
+    // Yes, this is messy, but it's also as fast as possible ...
     case Event::JoystickZeroUp:
       if(state) myEvent->set(Event::JoystickZeroDown, 0);
       break;
@@ -932,10 +964,50 @@ void EventHandler::handleEvent(Event::Type event, int state)
       if(state) myEvent->set(Event::JoystickZeroUp, 0);
       break;
     case Event::JoystickZeroLeft:
-      if(state) myEvent->set(Event::JoystickZeroRight, 0);
+      switch((int)myController[0])
+      {
+        case Controller::Joystick:
+        case Controller::BoosterGrip:
+          if(state) myEvent->set(Event::JoystickZeroRight, 0);
+          myEvent->set(Event::JoystickZeroLeft, state);
+          return;
+        case Controller::Paddles:
+          handleEvent(Event::PaddleZeroDecrease, state);
+          return;
+        case Controller::Driving:
+          myEvent->set(Event::DrivingZeroCounterClockwise, state);
+          return;
+      }
       break;
     case Event::JoystickZeroRight:
-      if(state) myEvent->set(Event::JoystickZeroLeft, 0);
+      switch((int)myController[0])
+      {
+        case Controller::Joystick:
+        case Controller::BoosterGrip:
+          if(state) myEvent->set(Event::JoystickZeroLeft, 0);
+          myEvent->set(Event::JoystickZeroRight, state);
+          return;
+        case Controller::Paddles:
+          handleEvent(Event::PaddleZeroIncrease, state);
+          return;
+        case Controller::Driving:
+          myEvent->set(Event::DrivingZeroClockwise, state);
+          return;
+      }
+      break;
+    case Event::JoystickZeroFire:
+      switch((int)myController[0])
+      {
+        case Controller::Joystick:
+          myEvent->set(Event::JoystickZeroFire, state);
+          return;
+        case Controller::Paddles:
+          myEvent->set(Event::PaddleZeroFire, state);
+          return;
+        case Controller::Driving:
+          myEvent->set(Event::DrivingZeroFire, state);
+          return;
+      }
       break;
     case Event::JoystickOneUp:
       if(state) myEvent->set(Event::JoystickOneDown, 0);
@@ -944,10 +1016,50 @@ void EventHandler::handleEvent(Event::Type event, int state)
       if(state) myEvent->set(Event::JoystickOneUp, 0);
       break;
     case Event::JoystickOneLeft:
-      if(state) myEvent->set(Event::JoystickOneRight, 0);
+      switch((int)myController[1])
+      {
+        case Controller::Joystick:
+        case Controller::BoosterGrip:
+          if(state) myEvent->set(Event::JoystickOneRight, 0);
+          myEvent->set(Event::JoystickOneLeft, state);
+          return;
+        case Controller::Paddles:
+          handleEvent(Event::PaddleOneDecrease, state);
+          return;
+        case Controller::Driving:
+          myEvent->set(Event::DrivingOneCounterClockwise, state);
+          return;
+      }
       break;
     case Event::JoystickOneRight:
-      if(state) myEvent->set(Event::JoystickOneLeft, 0);
+      switch((int)myController[1])
+      {
+        case Controller::Joystick:
+        case Controller::BoosterGrip:
+          if(state) myEvent->set(Event::JoystickOneLeft, 0);
+          myEvent->set(Event::JoystickOneRight, state);
+          return;
+        case Controller::Paddles:
+          handleEvent(Event::PaddleZeroIncrease, state);
+          return;
+        case Controller::Driving:
+          myEvent->set(Event::DrivingOneClockwise, state);
+          return;
+      }
+      break;
+    case Event::JoystickOneFire:
+      switch((int)myController[1])
+      {
+        case Controller::Joystick:
+          myEvent->set(Event::JoystickOneFire, state);
+          return;
+        case Controller::Paddles:
+          myEvent->set(Event::PaddleOneFire, state);
+          return;
+        case Controller::Driving:
+          myEvent->set(Event::DrivingOneFire, state);
+          return;
+      }
       break;
     ////////////////////////////////////////////////////////////////////////
 
@@ -2141,31 +2253,31 @@ ActionList EventHandler::ourActionList[kActionListSize] = {
   { Event::DrivingOneClockwise,         "P2 Driving Controller Right",     "" },
   { Event::DrivingOneFire,              "P2 Driving Controller Fire",      "" },
 
-  { Event::KeyboardZero1,               "P1 KeyPad 1",                     "" },
-  { Event::KeyboardZero2,               "P1 KeyPad 2",                     "" },
-  { Event::KeyboardZero3,               "P1 KeyPad 3",                     "" },
-  { Event::KeyboardZero4,               "P1 KeyPad 4",                     "" },
-  { Event::KeyboardZero5,               "P1 KeyPad 5",                     "" },
-  { Event::KeyboardZero6,               "P1 KeyPad 6",                     "" },
-  { Event::KeyboardZero7,               "P1 KeyPad 7",                     "" },
-  { Event::KeyboardZero8,               "P1 KeyPad 8",                     "" },
-  { Event::KeyboardZero9,               "P1 KeyPad 9",                     "" },
-  { Event::KeyboardZeroStar,            "P1 KeyPad *",                     "" },
-  { Event::KeyboardZero0,               "P1 KeyPad 0",                     "" },
-  { Event::KeyboardZeroPound,           "P1 KeyPad #",                     "" },
+  { Event::KeyboardZero1,               "P1 Keyboard 1",                   "" },
+  { Event::KeyboardZero2,               "P1 Keyboard 2",                   "" },
+  { Event::KeyboardZero3,               "P1 Keyboard 3",                   "" },
+  { Event::KeyboardZero4,               "P1 Keyboard 4",                   "" },
+  { Event::KeyboardZero5,               "P1 Keyboard 5",                   "" },
+  { Event::KeyboardZero6,               "P1 Keyboard 6",                   "" },
+  { Event::KeyboardZero7,               "P1 Keyboard 7",                   "" },
+  { Event::KeyboardZero8,               "P1 Keyboard 8",                   "" },
+  { Event::KeyboardZero9,               "P1 Keyboard 9",                   "" },
+  { Event::KeyboardZeroStar,            "P1 Keyboard *",                   "" },
+  { Event::KeyboardZero0,               "P1 Keyboard 0",                   "" },
+  { Event::KeyboardZeroPound,           "P1 Keyboard #",                   "" },
 
-  { Event::KeyboardOne1,                "P2 KeyPad 1",                     "" },
-  { Event::KeyboardOne2,                "P2 KeyPad 2",                     "" },
-  { Event::KeyboardOne3,                "P2 KeyPad 3",                     "" },
-  { Event::KeyboardOne4,                "P2 KeyPad 4",                     "" },
-  { Event::KeyboardOne5,                "P2 KeyPad 5",                     "" },
-  { Event::KeyboardOne6,                "P2 KeyPad 6",                     "" },
-  { Event::KeyboardOne7,                "P2 KeyPad 7",                     "" },
-  { Event::KeyboardOne8,                "P2 KeyPad 8",                     "" },
-  { Event::KeyboardOne9,                "P2 KeyPad 9",                     "" },
-  { Event::KeyboardOneStar,             "P2 KeyPad *",                     "" },
-  { Event::KeyboardOne0,                "P2 KeyPad 0",                     "" },
-  { Event::KeyboardOnePound,            "P2 KeyPad #",                     "" }
+  { Event::KeyboardOne1,                "P2 Keyboard 1",                   "" },
+  { Event::KeyboardOne2,                "P2 Keyboard 2",                   "" },
+  { Event::KeyboardOne3,                "P2 Keyboard 3",                   "" },
+  { Event::KeyboardOne4,                "P2 Keyboard 4",                   "" },
+  { Event::KeyboardOne5,                "P2 Keyboard 5",                   "" },
+  { Event::KeyboardOne6,                "P2 Keyboard 6",                   "" },
+  { Event::KeyboardOne7,                "P2 Keyboard 7",                   "" },
+  { Event::KeyboardOne8,                "P2 Keyboard 8",                   "" },
+  { Event::KeyboardOne9,                "P2 Keyboard 9",                   "" },
+  { Event::KeyboardOneStar,             "P2 Keyboard *",                   "" },
+  { Event::KeyboardOne0,                "P2 Keyboard 0",                   "" },
+  { Event::KeyboardOnePound,            "P2 Keyboard #",                   "" }
 };
 #else
 ActionList EventHandler::ourActionList[kActionListSize];

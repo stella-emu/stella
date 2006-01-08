@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.7 2005-12-24 22:50:53 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.8 2006-01-08 02:28:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -127,7 +127,7 @@ void EventMappingWidget::startRemapping()
 
   // Make sure that this widget receives all events,
   // and they aren't handled anywhere else
-  myActionsList->setFlags(WIDGET_WANTS_EVENTS);
+  myActionsList->setFlags(WIDGET_WANTS_EVENTS|WIDGET_WTALL_EVENTS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,7 +164,7 @@ void EventMappingWidget::stopRemapping()
   }
 
   // Widget is now free to process events normally
-  myActionsList->clearFlags(WIDGET_WANTS_EVENTS);
+  myActionsList->clearFlags(WIDGET_WANTS_EVENTS|WIDGET_WTALL_EVENTS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

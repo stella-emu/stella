@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.59 2005-10-18 18:49:46 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.60 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
 #define FRAMEBUFFER_HXX
 
 #include <SDL.h>
-#include <SDL_syswm.h>
 
 #include "bspf.hxx"
 #include "Event.hxx"
@@ -52,7 +51,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.59 2005-10-18 18:49:46 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.60 2006-01-08 02:28:03 stephena Exp $
 */
 class FrameBuffer
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.14 2005-10-19 00:59:51 stephena Exp $
+// $Id: PropsSet.cxx,v 1.15 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -222,6 +222,7 @@ const Properties& PropertiesSet::defaultProperties()
   ourDefaultProperties.set("Console.LeftDifficulty", "B");
   ourDefaultProperties.set("Console.RightDifficulty", "B");
   ourDefaultProperties.set("Console.TelevisionType", "Color");
+  ourDefaultProperties.set("Console.SwapPorts", "No");
 
   ourDefaultProperties.set("Controller.Left", "Joystick");
   ourDefaultProperties.set("Controller.Right", "Joystick");

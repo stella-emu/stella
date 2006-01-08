@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.cxx,v 1.4 2006-01-04 01:24:17 stephena Exp $
+// $Id: EventStreamer.cxx,v 1.5 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -47,7 +47,7 @@ EventStreamer::~EventStreamer()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventStreamer::reset()
 {
-cerr << "EventStreamer::reset()\n";
+//cerr << "EventStreamer::reset()\n";
   myEventWriteFlag = false;
   myEventReadFlag = false;
   myFrameCounter = -1;

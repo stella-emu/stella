@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.14 2005-12-17 01:26:58 stephena Exp $
+## $Id: Makefile,v 1.15 2006-01-08 02:28:01 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -231,5 +231,8 @@ psp-layout:
 	cp -v src/psp/data/stellarc.psp $(PSP-MOUNTPOINT)/stella/stellarc
 	umount $(PSP-MOUNTPOINT)
 
+# GP2X exec needs strip
+gp2x-strip: $(EXECUTABLE)
+	$(GP2X-STRIP) stella.gpe
 
 .PHONY: deb bundle test win32dist install uninstall

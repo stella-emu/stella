@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.24 2005-12-24 22:09:36 stephena Exp $
+// $Id: Dialog.hxx,v 1.25 2006-01-08 02:28:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.24 2005-12-24 22:09:36 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.25 2006-01-08 02:28:03 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -85,7 +85,11 @@ class Dialog : public GuiObject
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
     virtual void handleScreenChanged() {}
 
+    /** The dialog wants all events except those that have some special function */
     virtual bool wantsEvents();
+
+    /** The dialog wants all events, without exception */
+    virtual bool wantsAllEvents();
 	
     Widget* findWidget(int x, int y); // Find the widget at pos x,y if any
 

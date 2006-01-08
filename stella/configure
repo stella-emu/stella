@@ -384,6 +384,11 @@ psp)
 	_sdlpath=$(psp-config --pspdev-path)/psp/bin:$_sdlpath
 	PATH=$(psp-config --pspdev-path)/psp/bin:$(psp-config --pspdev-path)/bin:$PATH
 	;;
+gp2x)
+	_host_os=gp2x
+	_host_cpu=arm
+	_png=yes
+	;;
 *)
 	guessed_host=`$_srcdir/config.guess`
 	_host_cpu=`echo $guessed_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
@@ -404,6 +409,9 @@ arm-riscos-aof)
 	;;
 psp)
 	EXEEXT=".elf"
+	;;
+gp2x)
+	EXEEXT=".gpe"
 	;;
 *)
 	EXEEXT=""
@@ -437,6 +445,10 @@ CXX=
 if [ "$_host" = "psp" ] ; then
 	compilers="$CXX psp-g++ psp-c++"
 	CXX="psp-c++"
+fi
+if [ "$_host" = "gp2x" ] ; then
+	compilers="$CXX arm-linux-g++ arm-linux-c++"
+	CXX="arm-linux-c++"
 fi
 
 for compiler in $compilers; do
@@ -531,6 +543,11 @@ if test -n "$_host"; then
 			LDFLAGS="$LDFLAGS -newlib"
 			;;
 		psp)
+			;;
+		gp2x)
+			echo "Cross-compiling to $_host, forcing static build, and disabling openGL."
+			_build_static=yes
+			_build_gl=no
 			;;
 		*)
 			echo "Cross-compiling to unknown target, please add your target to configure."
@@ -803,6 +820,15 @@ case $_host_os in
 			INCLUDES="$INCLUDES -Isrc/psp  -I`psp-config --pspsdk-path`/include"
 			DEFINES="$DEFINES -Dmain=SDL_main -DPSP -DBSPF_PSP -DPSP_DEBUG"
 			;;
+		gp2x)
+			DEFINES="$DEFINES -DBSPF_GP2X -DGP2X -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
+			MODULES="$MODULES $SRC/gp2x"
+			INCLUDES="$INCLUDES -I$SRC/gp2x"
+			_ranlib="arm-linux-ranlib"
+			_ar="arm-linux-ar cru"
+			# GP2X ARM Linux Specific strip
+			GP2X_STRIP="arm-linux-strip"
+			;;
 		*)
 			echo "WARNING: host system not currenty supported"
 			exit
@@ -839,6 +865,13 @@ fi
 # No guarantee this will work for anyone other than me, and no
 # guarantee it's needed by anyone but me (and Steve)...
 if test "$_host_os" = unix ; then
+  if test "$_build_static" = yes ; then
+    LIBS="`echo \"$LIBS\" | sed 's/-lz -lpng/-lpng -lz/'`"
+  fi
+fi
+
+# Works for GP2X which needs a static build.
+if test "$_host_os" = gp2x ; then
   if test "$_build_static" = yes ; then
     LIBS="`echo \"$LIBS\" | sed 's/-lz -lpng/-lpng -lz/'`"
   fi
@@ -895,6 +928,12 @@ PSP-MOUNTPOINT  := $PSP_MOUNTPOINT
 EOF
 fi
 
+if test $_host_os = "gp2x" ; then
+cat >> config.mak << EOF
+
+GP2X-STRIP := $GP2X_STRIP
+EOF
+fi
 
 # This should be taken care of elsewhere, but I'm not sure where
 rm -f stella-conf*

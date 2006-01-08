@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.68 2005-11-19 22:26:13 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.69 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -36,11 +36,7 @@
   #include "Debugger.hxx"
 #endif
 
-#if defined(MAC_OSX)
-  #include "macOSXDisplay.h"
-#elif defined(PSP)
-  #include "DisplayPSP.hxx"
-#elif defined(OS2)
+#if defined(OS2) // FIXME - make proper OS/2 port
   #define INCL_WIN
   #include <os2emx.h>
 #endif
@@ -90,33 +86,14 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
     setWindowIcon();
   }
 
-  // Calculate the desktop size
+  // Query the desktop size
   // This is really the job of SDL
   myDesktopDim.w = myDesktopDim.h = 0;
-#if defined(UNIX) && !defined(OS2)
-  SDL_SysWMinfo myWMInfo;
-  SDL_VERSION(&myWMInfo.version);
-  if(SDL_GetWMInfo(&myWMInfo) > 0 && myWMInfo.subsystem == SDL_SYSWM_X11)
-  {
-    myWMInfo.info.x11.lock_func();
-    myDesktopDim.w = DisplayWidth(myWMInfo.info.x11.display,
-                     DefaultScreen(myWMInfo.info.x11.display));
-    myDesktopDim.h = DisplayHeight(myWMInfo.info.x11.display,
-                     DefaultScreen(myWMInfo.info.x11.display));
-    myWMInfo.info.x11.unlock_func();
-  }
-#elif defined(WIN32)
-  myDesktopDim.w = (uInt16) GetSystemMetrics(SM_CXSCREEN);
-  myDesktopDim.h = (uInt16) GetSystemMetrics(SM_CYSCREEN);
-#elif defined(MAC_OSX)
-  myDesktopDim.w = macOSXDisplayWidth();
-  myDesktopDim.h = macOSXDisplayHeight();
-#elif defined(PSP)
-  myDesktopDim.w = PSP_SCREEN_WIDTH;
-  myDesktopDim.h = PSP_SCREEN_HEIGHT;
-#elif defined(OS2)
+#if defined(OS2)  // FIXME - make proper OS/2 port
   myDesktopDim.w = WinQuerySysValue(HWND_DESKTOP, SV_CXSCREEN);
   myDesktopDim.h = WinQuerySysValue(HWND_DESKTOP, SV_CYSCREEN);
+#else
+  myOSystem->getScreenDimensions((int&)myDesktopDim.w, (int&)myDesktopDim.h);
 #endif
 
   // Set fullscreen flag

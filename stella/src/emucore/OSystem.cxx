@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.52 2006-01-05 18:53:23 stephena Exp $
+// $Id: OSystem.cxx,v 1.53 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -443,12 +443,6 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::getJoyButtonDirections(int& up, int& down, int& left, int& right)
-{
-  up = down = left = right = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

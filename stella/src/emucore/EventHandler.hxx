@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.71 2006-01-05 18:53:23 stephena Exp $
+// $Id: EventHandler.hxx,v 1.72 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -33,6 +33,32 @@ class OSystem;
 class DialogContainer;
 class EventMappingWidget;
 class EventStreamer;
+
+// Used for those platforms which implement joystick directions
+// as buttons instead of axis (which is a broken design IMHO)
+// These are defined as constants vs. using platform-specific methods
+// and variables for performance reasons
+// Buttons not implemented for specific hardware are represented by numbers < 0,
+// since no button can have those values (this isn't the cleanest code, but
+// it *is* the fastest)
+enum {
+ #if defined(GP2X)
+  kJDirUp    =  0,  kJDirUpLeft    =  1,
+  kJDirLeft  =  2,  kJDirDownLeft  =  3,
+  kJDirDown  =  4,  kJDirDownRight =  5,
+  kJDirRight =  6,  kJDirUpRight   =  7
+ #elif defined(PSP)
+  kJDirUp    =  8,  kJDirUpLeft    = -1,
+  kJDirLeft  =  7,  kJDirDownLeft  = -2,
+  kJDirDown  =  6,  kJDirDownRight = -3,
+  kJDirRight =  9,  kJDirUpRight   = -4
+ #else
+  kJDirUp    = -1,  kJDirUpLeft    = -2,
+  kJDirLeft  = -3,  kJDirDownLeft  = -4,
+  kJDirDown  = -5,  kJDirDownRight = -6,
+  kJDirRight = -7,  kJDirUpRight   = -8
+ #endif
+};
 
 enum MouseButton {
   EVENT_LBUTTONDOWN,
@@ -88,6 +114,7 @@ struct JoyMouse {
   unsigned int last_time, delay_time, x_down_time, y_down_time;
 };
 
+
 /**
   This class takes care of event remapping and dispatching for the
   Stella core, as well as keeping track of the current 'mode'.
@@ -101,7 +128,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.71 2006-01-05 18:53:23 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.72 2006-01-08 02:28:03 stephena Exp $
 */
 class EventHandler
 {
@@ -351,7 +378,16 @@ class EventHandler
     void handleMouseButtonEvent(SDL_Event& event, int state);
 
     /**
-      Send a joystick axis event to the handler (directions are encoded as buttons)
+      Send a joystick button event to the handler
+
+      @param stick  The joystick number
+      @param button The joystick button
+      @param state  The state of the button (pressed or released)
+    */
+    void handleJoyEvent(int stick, int button, int state);
+
+    /**
+      Send a joystick axis event to the handler
 
       @param stick  The joystick number
       @param axis   The joystick axis

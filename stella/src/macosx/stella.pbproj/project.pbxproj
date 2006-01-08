@@ -2618,14 +2618,6 @@
 			settings = {
 			};
 		};
-		2DDB4E1308BD52F8001BF554 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = macOSXDisplay.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		2DDB4E1408BD52F8001BF554 = {
 			fileRef = 2DDB4E1308BD52F8001BF554;
 			isa = PBXBuildFile;

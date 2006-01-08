@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.44 2006-01-04 01:24:17 stephena Exp $
+// $Id: Widget.hxx,v 1.45 2006-01-08 02:28:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,8 @@ enum {
   WIDGET_NODRAW_FOCUS = 1 << 8,
   WIDGET_STICKY_FOCUS = 1 << 9,
   WIDGET_WANTS_TAB    = 1 << 10,
-  WIDGET_WANTS_EVENTS = 1 << 11
+  WIDGET_WANTS_EVENTS = 1 << 11,
+  WIDGET_WTALL_EVENTS = 1 << 12
 };
 
 enum {
@@ -74,7 +75,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.44 2006-01-04 01:24:17 stephena Exp $
+  @version $Id: Widget.hxx,v 1.45 2006-01-08 02:28:03 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -118,6 +119,7 @@ class Widget : public GuiObject
     bool isVisible() const      { return !(_flags & WIDGET_INVISIBLE); }
     bool isSticky() const       { return _flags & WIDGET_STICKY_FOCUS; }
     bool wantsEvents() const    { return _flags & WIDGET_WANTS_EVENTS; }
+    bool wantsAllEvents() const { return _flags & WIDGET_WTALL_EVENTS; }
 
     void setID(int id)  { _id = id;   }
     int  getID()        { return _id; }

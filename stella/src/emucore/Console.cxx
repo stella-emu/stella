@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.78 2005-12-23 20:48:50 stephena Exp $
+// $Id: Console.cxx,v 1.79 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -92,48 +92,63 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   string left  = myProperties.get("Controller.Left", true);
   string right = myProperties.get("Controller.Right", true);
 
-  // Construct left controller
-  if(left == "BOOSTER-GRIP")
+  // Swap the ports if necessary
+  // Note that this doesn't swap the actual controllers,
+  // just the ports that they're attached to
+  Controller::Jack leftjack, rightjack;
+  if(myProperties.get("Console.SwapPorts", true) == "NO")
   {
-    myControllers[0] = new BoosterGrip(Controller::Left, *myEvent);
-  }
-  else if(left == "DRIVING")
-  {
-    myControllers[0] = new Driving(Controller::Left, *myEvent);
-  }
-  else if((left == "KEYBOARD") || (left == "KEYPAD"))
-  {
-    myControllers[0] = new Keyboard(Controller::Left, *myEvent);
-  }
-  else if(left == "PADDLES")
-  {
-    myControllers[0] = new Paddles(Controller::Left, *myEvent);
+    leftjack  = Controller::Left;
+    rightjack = Controller::Right;
   }
   else
   {
-    myControllers[0] = new Joystick(Controller::Left, *myEvent);
+    leftjack  = Controller::Right;
+    rightjack = Controller::Left;
+  }
+
+  // Construct left controller
+  if(left == "BOOSTER-GRIP")
+  {
+    myControllers[0] = new BoosterGrip(leftjack, *myEvent);
+  }
+  else if(left == "DRIVING")
+  {
+    myControllers[0] = new Driving(leftjack, *myEvent);
+  }
+  else if((left == "KEYBOARD") || (left == "KEYPAD"))
+  {
+    myControllers[0] = new Keyboard(leftjack, *myEvent);
+  }
+  else if(left == "PADDLES")
+  {
+    myControllers[0] = new Paddles(leftjack, *myEvent);
+  }
+  else
+  {
+    myControllers[0] = new Joystick(leftjack, *myEvent);
   }
   
   // Construct right controller
   if(right == "BOOSTER-GRIP")
   {
-    myControllers[1] = new BoosterGrip(Controller::Right, *myEvent);
+    myControllers[1] = new BoosterGrip(rightjack, *myEvent);
   }
   else if(right == "DRIVING")
   {
-    myControllers[1] = new Driving(Controller::Right, *myEvent);
+    myControllers[1] = new Driving(rightjack, *myEvent);
   }
   else if((right == "KEYBOARD") || (right == "KEYPAD"))
   {
-    myControllers[1] = new Keyboard(Controller::Right, *myEvent);
+    myControllers[1] = new Keyboard(rightjack, *myEvent);
   }
   else if(right == "PADDLES")
   {
-    myControllers[1] = new Paddles(Controller::Right, *myEvent);
+    myControllers[1] = new Paddles(rightjack, *myEvent);
   }
   else
   {
-    myControllers[1] = new Joystick(Controller::Right, *myEvent);
+    myControllers[1] = new Joystick(rightjack, *myEvent);
   }
 
   // Create switches for the console
@@ -614,6 +629,10 @@ void Console::setDeveloperProperties()
   s = settings.getString("tv");
   if(s != "")
     myProperties.set("Console.TelevisionType", s);
+
+  s = settings.getString("sp");
+  if(s != "")
+    myProperties.set("Console.SwapPorts", s);
 
   s = settings.getString("lc");
   if(s != "")

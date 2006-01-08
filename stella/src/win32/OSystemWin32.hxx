@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.4 2005-06-16 01:11:29 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.5 2006-01-08 02:28:04 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -21,12 +21,11 @@
 
 #include "bspf.hxx"
 
-
 /**
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.4 2005-06-16 01:11:29 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.5 2006-01-08 02:28:04 stephena Exp $
 */
 class OSystemWin32 : public OSystem
 {
@@ -55,6 +54,11 @@ class OSystemWin32 : public OSystem
       @return Current time in microseconds.
     */
     virtual uInt32 getTicks();
+
+    /**
+      This method queries the dimensions of the screen for this hardware.
+    */
+    virtual void getScreenDimensions(int& width, int& height);
 };
 
 #endif

@@ -13,33 +13,31 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.9 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.1 2006-01-08 02:28:03 stephena Exp $
+// Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
-#ifndef OSYSTEM_UNIX_HXX
-#define OSYSTEM_UNIX_HXX
+#ifndef OSYSTEM_GP2X_HXX
+#define OSYSTEM_GP2X_HXX
 
 #include "bspf.hxx"
 
 
 /**
-  This class defines UNIX-like OS's (Linux) system specific settings.
-
-  @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.9 2006-01-08 02:28:04 stephena Exp $
+  This class defines GP2X system specific settings.
 */
-class OSystemUNIX : public OSystem
+class OSystemGP2X : public OSystem
 {
   public:
     /**
-      Create a new UNIX-specific operating system object
+      Create a new GP2X-specific operating system object
     */
-    OSystemUNIX();
+    OSystemGP2X();
 
     /**
       Destructor
     */
-    virtual ~OSystemUNIX();
+    virtual ~OSystemGP2X();
 
   public:
     /**
@@ -58,9 +56,20 @@ class OSystemUNIX : public OSystem
 
     /**
       This method queries the dimensions of the screen for this hardware.
-      It is assumed that a UNIX SDL framebuffer is using X11.
     */
     virtual void getScreenDimensions(int& width, int& height);
+
+    /**
+      This method determines the default mapping of joystick buttons to
+      Stella events for the PSP device.
+    */
+    void setDefaultJoymap();
+
+    /**
+      This method determines the default mapping of joystick axis to
+      Stella events for for the PSP device.
+    */
+    void setDefaultJoyAxisMap();
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.12 2005-10-11 17:14:35 stephena Exp $
+// $Id: bspf.hxx,v 1.13 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.12 2005-10-11 17:14:35 stephena Exp $
+  @version $Id: bspf.hxx,v 1.13 2006-01-08 02:28:03 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -68,6 +68,8 @@ typedef unsigned int uInt32;
 #elif defined BSPF_MAC_OSX
   #define BSPF_PATH_SEPARATOR  "/"
 #elif defined BSPF_PSP
+    #define BSPF_PATH_SEPARATOR  "/"
+#elif defined BSPF_GP2X
     #define BSPF_PATH_SEPARATOR  "/"
 #endif
 

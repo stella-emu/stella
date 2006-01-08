@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.59 2005-12-23 20:48:50 stephena Exp $
+// $Id: mainSDL.cxx,v 1.60 2006-01-08 02:28:02 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -40,10 +40,12 @@
 #elif defined(MAC_OSX)
   #include "SettingsMACOSX.hxx"
   #include "OSystemMACOSX.hxx"
-
   extern "C" {
-  int stellaMain(int argc, char* argv[]);
+    int stellaMain(int argc, char* argv[]);
   }
+#elif defined(GP2X)
+  #include "SettingsGP2X.hxx"
+  #include "OSystemGP2X.hxx"
 #elif defined(PSP)
   #include "SettingsPSP.hxx"
   #include "OSystemPSP.hxx"
@@ -136,6 +138,9 @@ int main(int argc, char* argv[])
 #elif defined(MAC_OSX)
   theOSystem = new OSystemMACOSX();
   SettingsMACOSX settings(theOSystem);
+#elif defined(GP2X)
+  theOSystem = new OSystemGP2X();
+  SettingsGP2X settings(theOSystem);
 #elif defined(PSP)
   fprintf(stderr,"---------------- Stderr Begins ----------------\n");
   fprintf(stdout,"---------------- Stdout Begins ----------------\n");

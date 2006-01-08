@@ -13,11 +13,9 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.14 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.1 2006-01-08 02:28:03 stephena Exp $
+// Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
-
-#include <SDL.h>
-#include <SDL_syswm.h>
 
 #include <cstdlib>
 #include <sstream>
@@ -29,7 +27,7 @@
 
 #include "bspf.hxx"
 #include "OSystem.hxx"
-#include "OSystemUNIX.hxx"
+#include "OSystemGP2X.hxx"
 
 #ifdef HAVE_GETTIMEOFDAY
   #include <time.h>
@@ -54,19 +52,26 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemUNIX::OSystemUNIX()
+OSystemGP2X::OSystemGP2X()
 {
-  // First set variables that the OSystem needs
-  string basedir = string(getenv("HOME")) + "/.stella";
+  // GP2X needs all config files in exec directory
+  
+  char *currdir = getcwd(NULL, 0);
+  string basedir = currdir;
+  free(currdir);
   setBaseDir(basedir);
-
+  
   string statedir = basedir + "/state";
   setStateDir(statedir);
+  
+  setPropertiesDir(basedir, basedir);
 
-  setPropertiesDir(basedir, "/etc");
+  string userPropertiesFile   = basedir + "/user.pro";
+  string systemPropertiesFile = basedir + "/stella.pro";
+  setConfigFiles(userPropertiesFile, systemPropertiesFile);
 
   string userConfigFile   = basedir + "/stellarc";
-  string systemConfigFile = "/etc/stellarc";
+  string systemConfigFile = statedir + "/stellarc";
   setConfigFiles(userConfigFile, systemConfigFile);
 
   string cacheFile = basedir + "/stella.cache";
@@ -76,12 +81,12 @@ OSystemUNIX::OSystemUNIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemUNIX::~OSystemUNIX()
+OSystemGP2X::~OSystemGP2X()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemUNIX::mainLoop()
+void OSystemGP2X::mainLoop()
 {
   // These variables are common to both timing options
   // and are needed to calculate the overall frames per second.
@@ -170,7 +175,7 @@ void OSystemUNIX::mainLoop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 OSystemUNIX::getTicks()
+uInt32 OSystemGP2X::getTicks()
 {
 #ifdef HAVE_GETTIMEOFDAY
   timeval now;
@@ -183,17 +188,33 @@ uInt32 OSystemUNIX::getTicks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemUNIX::getScreenDimensions(int& width, int& height)
+void OSystemGP2X::getScreenDimensions(int& width, int& height)
 {
-  SDL_SysWMinfo myWMInfo;
-  SDL_VERSION(&myWMInfo.version);
-  if(SDL_GetWMInfo(&myWMInfo) > 0 && myWMInfo.subsystem == SDL_SYSWM_X11)
-  {
-    myWMInfo.info.x11.lock_func();
-    width  = DisplayWidth(myWMInfo.info.x11.display,
-               DefaultScreen(myWMInfo.info.x11.display));
-    height = DisplayHeight(myWMInfo.info.x11.display,
-               DefaultScreen(myWMInfo.info.x11.display));
-    myWMInfo.info.x11.unlock_func();
-  }
+  width  = 320;
+  height = 240;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystemGP2X::setDefaultJoymap()
+{
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroUp, 0, 0);    // Up
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroLeft, 0, 2);  // Left
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroDown, 0, 4);  // Down
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroRight, 0, 6); // Right
+  myEventHandler->setDefaultJoyMapping(Event::LauncherMode, 0, 8);      // Start
+  myEventHandler->setDefaultJoyMapping(Event::CmdMenuMode, 0, 9);       // Select
+  myEventHandler->setDefaultJoyMapping(Event::ConsoleReset, 0, 10);     // L
+  myEventHandler->setDefaultJoyMapping(Event::ConsoleSelect, 0, 11);    // R
+  myEventHandler->setDefaultJoyMapping(Event::TakeSnapshot, 0, 12);	    // A
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire, 0, 13); // B
+  myEventHandler->setDefaultJoyMapping(Event::Pause, 0, 14);            // X
+  myEventHandler->setDefaultJoyMapping(Event::MenuMode, 0, 15);         // Y
+  myEventHandler->setDefaultJoyMapping(Event::VolumeIncrease, 0, 16);   // Vol+
+  myEventHandler->setDefaultJoyMapping(Event::VolumeDecrease, 0, 17);   // Vol-
+  myEventHandler->setDefaultJoyMapping(Event::NoType, 0, 18);           // Click
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystemGP2X::setDefaultJoyAxisMap()
+{
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.70 2006-01-06 00:31:56 stephena Exp $
+// $Id: Settings.cxx,v 1.71 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -330,6 +330,7 @@ void Settings::usage()
     << "   -ld          <arg>          Sets the 'Console.LeftDifficulty' property\n"
     << "   -rd          <arg>          Sets the 'Console.RightDifficulty' property\n"
     << "   -tv          <arg>          Sets the 'Console.TelevisionType' property\n"
+    << "   -sp          <arg>          Sets the 'Console.SwapPorts' property\n"
     << "   -lc          <arg>          Sets the 'Controller.Left' property\n"
     << "   -rc          <arg>          Sets the 'Controller.Right' property\n"
     << "   -bc          <arg>          Same as using both -lc and -rc\n"

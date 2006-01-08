@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.33 2006-01-05 18:53:23 stephena Exp $
+// $Id: OSystem.hxx,v 1.34 2006-01-08 02:28:03 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.33 2006-01-05 18:53:23 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.34 2006-01-08 02:28:03 stephena Exp $
 */
 class OSystem
 {
@@ -313,22 +313,15 @@ class OSystem
     */
     virtual uInt32 getTicks() = 0;
 
+    /**
+      This method queries the dimensions of the screen for the given device.
+    */
+    virtual void getScreenDimensions(int& width, int& height) = 0;
+
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
     // derived classes.  Otherwise, the base methods will be used.
     //////////////////////////////////////////////////////////////////////
-    /**
-      This method gives joystick button numbers representing the 'up', 'down',
-      'left' and 'right' directions for use in the internal GUI.  A normal
-      joystick will use axes for this, but some hardware uses buttons instead.
-
-      @up     Button number to assign to the 'up' direction
-      @down   Button number to assign to the 'down' direction
-      @left   Button number to assign to the 'left' direction
-      @right  Button number to assign to the 'right' direction
-    */
-    virtual void getJoyButtonDirections(int& up, int& down, int& left, int& right);
-
     /**
       This method determines the default mapping of joystick buttons to
       Stella events for a specific system/platform.
