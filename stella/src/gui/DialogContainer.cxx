@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.27 2006-01-08 13:55:03 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.28 2006-01-08 20:55:53 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -73,7 +73,8 @@ void DialogContainer::updateTime(uInt32 time)
     myClickRepeatTime = myTime + kClickRepeatSustainDelay;
   }
 
-  if(myCurrentAxisDown.stick != -1 && myAxisRepeatTime < myTime)
+  if(ourEnableJoyMouseFlag && myCurrentAxisDown.stick != -1 &&
+     myAxisRepeatTime < myTime)
   {
     // The longer an axis event is enabled, the faster it should change
     // We do this by decreasing the amount of time between consecutive axis events
@@ -311,7 +312,7 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
     else
       activeDialog->handleJoyUp(stick, button);
   }
-  else
+  else if(ourEnableJoyMouseFlag)
     myOSystem->eventHandler().createMouseButtonEvent(
       ourJoyMouse.x, ourJoyMouse.y, state);
 }

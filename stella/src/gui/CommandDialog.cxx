@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.6 2006-01-04 01:24:17 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.7 2006-01-08 20:55:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -208,6 +208,9 @@ void CommandDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CommandDialog::handleJoyAxis(int stick, int axis, int value)
 {
+  if(!parent()->joymouse())
+    return;
+
   // We make the (hopefully) valid assumption that all joysticks
   // treat axis the same way.  Eventually, we may need to remap
   // these actions of this assumption is invalid.

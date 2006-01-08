@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.54 2006-01-08 13:55:03 stephena Exp $
+// $Id: OSystem.cxx,v 1.55 2006-01-08 20:55:53 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -130,6 +130,8 @@ bool OSystem::create()
 #ifdef CHEATCODE_SUPPORT
   myFeatures += "Cheats";
 #endif
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

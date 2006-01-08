@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.14 2006-01-08 13:55:03 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.15 2006-01-08 20:55:54 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.14 2006-01-08 13:55:03 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.15 2006-01-08 20:55:54 stephena Exp $
 */
 class DialogContainer
 {
@@ -141,11 +141,10 @@ class DialogContainer
     */
     virtual void initialize() = 0;
 
-    // Whether to enable joymouse emulation
-    static bool ourEnableJoyMouseFlag;
-
-    // Emulation of mouse using joystick axis events
-    static JoyMouse ourJoyMouse;
+    /**
+      Whether joymouse emulation is enabled
+    */
+    static bool joymouse() { return ourEnableJoyMouseFlag; }
 
   private:
     void handleJoyMouse(uInt32);
@@ -203,6 +202,12 @@ class DialogContainer
       uInt32 time;  // Time
       int count;    // How often was it already pressed?
     } myLastClick;
+
+    // Whether to enable joymouse emulation
+    static bool ourEnableJoyMouseFlag;
+
+    // Emulation of mouse using joystick axis events
+    static JoyMouse ourJoyMouse;
 };
 
 #endif

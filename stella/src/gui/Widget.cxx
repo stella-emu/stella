@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.40 2005-12-21 01:50:16 stephena Exp $
+// $Id: Widget.cxx,v 1.41 2006-01-08 20:55:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,14 +23,13 @@
 #include "FrameBuffer.hxx"
 #include "Font.hxx"
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "Command.hxx"
 #include "GuiObject.hxx"
 #include "bspf.hxx"
 #include "GuiUtils.hxx"
 #include "Widget.hxx"
 #include "EditableWidget.hxx"
-
-//static int COUNT = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
@@ -377,8 +376,9 @@ bool ButtonWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleJoyDown(int stick, int button)
 {
-  // Any button activates the button
-  handleMouseUp(0, 0, 1, 0);
+  // Any button activates the button, but only while in joymouse mode
+  if(DialogContainer::joymouse())
+    handleMouseUp(0, 0, 1, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
