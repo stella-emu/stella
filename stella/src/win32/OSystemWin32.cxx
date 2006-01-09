@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.8 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.9 2006-01-09 01:13:26 stephena Exp $
 //============================================================================
 
 #include <sstream>
 #include <fstream>
+#include <Windows.h>
 
 #include "bspf.hxx"
 #include "OSystem.hxx"

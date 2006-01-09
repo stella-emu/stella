@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.142 2006-01-09 00:42:11 stephena Exp $
+// $Id: EventHandler.cxx,v 1.143 2006-01-09 01:13:25 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -219,7 +219,7 @@ void EventHandler::setupJoysticks()
 
   // Initialize the joystick subsystem
   if(showinfo)
-    cerr << "Joystick devices found:" << endl;
+    cout << "Joystick devices found:" << endl;
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
     if(showinfo)
