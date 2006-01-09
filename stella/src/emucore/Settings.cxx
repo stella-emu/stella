@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.72 2006-01-08 13:55:03 stephena Exp $
+// $Id: Settings.cxx,v 1.73 2006-01-09 16:50:01 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -62,6 +62,7 @@ Settings::Settings(OSystem* osystem)
   set("keymap", "");
   set("joymap", "");
   set("joyaxismap", "");
+  set("joyhatmap", "");
   set("paddle", "0");
   set("sa1", "left");
   set("sa2", "right");

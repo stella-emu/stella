@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.35 2006-01-08 13:55:03 stephena Exp $
+// $Id: OSystem.hxx,v 1.36 2006-01-09 16:50:01 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.35 2006-01-08 13:55:03 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.36 2006-01-09 16:50:01 stephena Exp $
 */
 class OSystem
 {
@@ -338,6 +338,12 @@ class OSystem
       Stella events for a specific system/platform.
     */
     virtual void setDefaultJoyAxisMap();
+
+    /**
+      This method determines the default mapping of joystick hats to
+      Stella events for a specific system/platform.
+    */
+    virtual void setDefaultJoyHatMap();
 
   protected:
     /**

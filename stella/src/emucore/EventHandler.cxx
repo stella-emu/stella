@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.143 2006-01-09 01:13:25 stephena Exp $
+// $Id: EventHandler.cxx,v 1.144 2006-01-09 16:50:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -71,7 +71,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myUseLauncherFlag(false),
     myPaddleMode(0)
 {
-  int i, j;
+  int i, j, k;
 
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
@@ -99,6 +99,12 @@ EventHandler::EventHandler(OSystem* osystem)
     for(j = 0; j < kNumJoyAxis; ++j)
       myJoyAxisTable[i][j][0] = myJoyAxisTable[i][j][1] = Event::NoType;
 
+  // Erase the joystick hat mapping array
+  for(i = 0; i < kNumJoysticks; ++i)
+    for(j = 0; j < kNumJoyHats; ++j)
+      for(k = 0; k < 4; ++k)
+        myJoyHatTable[i][j][k] = Event::NoType;
+
   // Erase the Message array
   for(i = 0; i < Event::LastType; ++i)
     ourMessageTable[i] = "";
@@ -117,6 +123,7 @@ EventHandler::EventHandler(OSystem* osystem)
   setKeymap();
   setJoymap();
   setJoyAxisMap();
+  setJoyHatMap();
   setActionMappings();
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
@@ -263,9 +270,12 @@ void EventHandler::setupJoysticks()
       ourJoysticks[i].name = SDL_JoystickName(i);
 
       if(showinfo)
-        cout << "  " << i << ": " << ourJoysticks[i].name
-             << " with " << SDL_JoystickNumButtons(ourJoysticks[i].stick)
-             << " buttons" << endl;
+        cout << "  " << i << ": " << ourJoysticks[i].name << " with "
+             << SDL_JoystickNumAxes(ourJoysticks[i].stick) << " axes, "
+             << SDL_JoystickNumHats(ourJoysticks[i].stick) << " hats, "
+             << SDL_JoystickNumBalls(ourJoysticks[i].stick) << " balls, "
+             << SDL_JoystickNumButtons(ourJoysticks[i].stick) << " buttons"
+             << endl;
     }
   }
   if(showinfo)
@@ -631,7 +641,7 @@ void EventHandler::poll(uInt32 time)
         {
           case JT_REGULAR:
           {
-            if(event.jbutton.button >= kNumJoyButtons-4)
+            if(event.jbutton.button >= kNumJoyButtons)
               return;
 
             int stick  = event.jbutton.which;
@@ -712,7 +722,6 @@ void EventHandler::poll(uInt32 time)
             int axis  = event.jaxis.axis;
             int value = event.jaxis.value;
 
-            // Handle emulation of mouse using the joystick
             if(myState == S_EMULATE)
               handleJoyAxisEvent(stick, axis, value);
             else if(myOverlay != NULL)
@@ -763,6 +772,22 @@ void EventHandler::poll(uInt32 time)
           }
         }
         break;  // SDL_JOYAXISMOTION
+      }
+
+      case SDL_JOYHATMOTION:
+      {
+        int stick = event.jhat.which;
+        int hat   = event.jhat.hat;
+        int value = event.jhat.value;
+
+        if(stick >= kNumJoysticks || hat >= kNumJoyHats)
+          break;
+
+        if(myState == S_EMULATE)
+          handleJoyHatEvent(stick, hat, value);
+        else if(myOverlay != NULL)
+          myOverlay->handleJoyHatEvent(stick, hat, value);
+        break;  // SDL_JOYHATMOTION
       }
 #endif  // JOYSTICK_SUPPORT
     }
@@ -920,6 +945,12 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
         handleEvent(value < 0 ? eventAxisNeg : eventAxisPos, 1);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
+{
+cerr << "stick = " << stick << ", hat = " << hat << ", value = " << value << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1275,6 +1306,8 @@ void EventHandler::setActionMappings()
       }
     }
 
+// FIXME - add joy hat labeling
+
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
     if(event == Event::Quit)
@@ -1349,6 +1382,25 @@ void EventHandler::setJoyAxisMap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setJoyHatMap()
+{
+  string list = myOSystem->settings().getString("joyhatmap");
+  IntArray map;
+
+  if(isValidList(list, map, kNumJoysticks*kNumJoyHats*4))
+  {
+    // Fill the joyhatmap table with events
+    int idx = 0;
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyHats; ++j)
+        for(int k = 0; k < 4; ++k)
+          myJoyHatTable[i][j][k] = (Event::Type) map[idx++];
+  }
+  else
+    setDefaultJoyHatMap();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::addKeyMapping(Event::Type event, int key)
 {
   // These keys cannot be remapped.
@@ -1415,6 +1467,44 @@ void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setDefaultJoyHatMapping(Event::Type event, int stick,
+                                           int hat, int value)
+{
+  if(stick >= 0 && stick < kNumJoysticks &&
+     hat >= 0 && hat < kNumJoyHats &&
+     event >= 0 && event < Event::LastType)
+  {
+cerr << "add mapping for stick = " << stick << ", hat = " << hat << ", value = " << value << endl;
+/*
+    // This confusing code is because each axis has two associated values,
+    // but analog events only affect one of the axis.
+    if(eventIsAnalog(event))
+      myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
+    else
+    {
+      // Otherwise, turn off the analog event(s) for this axis
+      if(eventIsAnalog(myJoyAxisTable[stick][axis][0]))
+        myJoyAxisTable[stick][axis][0] = Event::NoType;
+      if(eventIsAnalog(myJoyAxisTable[stick][axis][1]))
+        myJoyAxisTable[stick][axis][1] = Event::NoType;
+    
+      myJoyAxisTable[stick][axis][(value > 0)] = event;
+    }
+*/
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::addJoyHatMapping(Event::Type event, int stick, int hat,
+                                    int value)
+{
+  setDefaultJoyHatMapping(event, stick, hat, value);
+
+  saveJoyHatMapping();
+  setActionMappings();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event)
 {
   int i, j, k;
@@ -1440,6 +1530,14 @@ void EventHandler::eraseMapping(Event::Type event)
           myJoyAxisTable[i][j][k] = Event::NoType;
   saveJoyAxisMapping();
 
+  // Erase the JoyHatEvent array
+  for(i = 0; i < kNumJoysticks; ++i)
+    for(j = 0; j < kNumJoyHats; ++j)
+      for(k = 0; k < 4; ++k)
+        if(myJoyHatTable[i][j][k] == event)
+          myJoyHatTable[i][j][k] = Event::NoType;
+  saveJoyHatMapping();
+
   setActionMappings();
 }
 
@@ -1449,6 +1547,7 @@ void EventHandler::setDefaultMapping()
   setDefaultKeymap();
   setDefaultJoymap();
   setDefaultJoyAxisMap();
+  setDefaultJoyHatMap();
 
   setActionMappings();
 }
@@ -1559,6 +1658,19 @@ void EventHandler::setDefaultJoyAxisMap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setDefaultJoyHatMap()
+{
+  // Erase all mappings
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyHats; ++j)
+      for(int k = 0; k < 4; ++k)
+        myJoyHatTable[i][j][k] = Event::NoType;
+
+  myOSystem->setDefaultJoyHatMap();
+  saveJoyHatMapping();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveKeyMapping()
 {
   // Iterate through the keymap table and create a colon-separated list
@@ -1598,6 +1710,21 @@ void EventHandler::saveJoyAxisMapping()
         buf << myJoyAxisTable[i][j][k] << ":";
 
   myOSystem->settings().setString("joyaxismap", buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveJoyHatMapping()
+{
+  // Iterate through the joyhatmap table and create a colon-separated list
+  // Prepend the event count, so we can check it on next load
+  ostringstream buf;
+  buf << Event::LastType << ":";
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyHats; ++j)
+      for(int k = 0; k < 4; ++k)
+        buf << myJoyHatTable[i][j][k] << ":";
+
+  myOSystem->settings().setString("joyhatmap", buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

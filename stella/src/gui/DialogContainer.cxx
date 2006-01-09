@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.28 2006-01-08 20:55:53 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.29 2006-01-09 16:50:01 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -384,6 +384,13 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
     myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
     myCurrentAxisDown.count = 0;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
+{
+cerr << "received hat event in dialogcontainer:" << endl
+     << "stick = " << stick << ", hat = " << hat << ", value = " << value << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.55 2006-01-08 20:55:53 stephena Exp $
+// $Id: OSystem.cxx,v 1.56 2006-01-09 16:50:01 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -480,6 +480,11 @@ void OSystem::setDefaultJoyAxisMap()
   // Right joystick left/right directions (assume joystick one)
   myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneUp, 1, 1, 0);
   myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneDown, 1, 1, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setDefaultJoyHatMap()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

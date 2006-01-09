@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.73 2006-01-09 00:42:12 stephena Exp $
+// $Id: EventHandler.hxx,v 1.74 2006-01-09 16:50:01 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -84,7 +84,8 @@ enum {
 enum {
   kNumJoysticks  = 8,
   kNumJoyButtons = 24,
-  kNumJoyAxis    = 16
+  kNumJoyAxis    = 16,
+  kNumJoyHats    = 16
 };
 
 enum JoyType {
@@ -122,7 +123,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.73 2006-01-09 00:42:12 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.74 2006-01-09 16:50:01 stephena Exp $
 */
 class EventHandler
 {
@@ -189,8 +190,17 @@ class EventHandler
       @param axis   The joystick axis
       @param value  The value on the given axis
     */
-    void setDefaultJoyAxisMapping(Event::Type event, int stick, int axis,
-                                  int value);
+    void setDefaultJoyAxisMapping(Event::Type event, int stick, int axis, int value);
+
+    /**
+      Set the default for a joystick hat to the given event
+
+      @param event  The event we are assigning
+      @param stick  The joystick number
+      @param axis   The joystick axis
+      @param value  The value on the given axis
+    */
+    void setDefaultJoyHatMapping(Event::Type event, int stick, int hat, int value);
 
     /**
       Returns the current state of the EventHandler
@@ -346,6 +356,17 @@ class EventHandler
     void addJoyAxisMapping(Event::Type event, int stick, int axis, int value);
 
     /**
+      Bind a joystick hat direction to an event/action and regenerate
+      the mapping array(s)
+
+      @param event  The event we are remapping
+      @param stick  The joystick number
+      @param axis   The joystick hat
+      @param value  The value on the given hat
+    */
+    void addJoyHatMapping(Event::Type event, int stick, int hat, int value);
+
+    /**
       Erase the specified mapping
 
       @event  The event for which we erase all mappings
@@ -390,6 +411,15 @@ class EventHandler
     void handleJoyAxisEvent(int stick, int axis, int value);
 
     /**
+      Send a joystick hat event to the handler
+
+      @param stick  The joystick number
+      @param axis   The joystick hat
+      @param value  The value on the given hat
+    */
+    void handleJoyHatEvent(int stick, int hat, int value);
+
+    /**
       Detects and changes the eventhandler state
 
       @param type  The event
@@ -405,12 +435,15 @@ class EventHandler
     void setKeymap();
     void setJoymap();
     void setJoyAxisMap();
+    void setJoyHatMap();
     void setDefaultKeymap();
     void setDefaultJoymap();
     void setDefaultJoyAxisMap();
+    void setDefaultJoyHatMap();
     void saveKeyMapping();
     void saveJoyMapping();
     void saveJoyAxisMapping();
+    void saveJoyHatMapping();
 
     /**
       Tests if a mapping list is valid, both by length and by event count.
@@ -458,6 +491,9 @@ class EventHandler
 
     // Array of joystick axis events
     Event::Type myJoyAxisTable[kNumJoysticks][kNumJoyAxis][2];
+
+    // Array of joystick hat events (we don't record diagonals)
+    Event::Type myJoyHatTable[kNumJoysticks][kNumJoyHats][4];
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];

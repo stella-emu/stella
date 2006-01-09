@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.15 2006-01-08 20:55:54 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.16 2006-01-09 16:50:01 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,7 +37,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.15 2006-01-08 20:55:54 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.16 2006-01-09 16:50:01 stephena Exp $
 */
 class DialogContainer
 {
@@ -109,6 +109,15 @@ class DialogContainer
       @param value  Value associated with given axis
     */
     void handleJoyAxisEvent(int stick, int axis, int value);
+
+    /**
+      Handle a joystick hat event.
+
+      @param stick  The joystick number
+      @param axis   The joystick hat
+      @param value  Value associated with given hat
+    */
+    void handleJoyHatEvent(int stick, int hat, int value);
 
     /**
       Draw the stack of menus.
