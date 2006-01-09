@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.141 2006-01-08 02:28:03 stephena Exp $
+// $Id: EventHandler.cxx,v 1.142 2006-01-09 00:42:11 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -94,15 +94,10 @@ EventHandler::EventHandler(OSystem* osystem)
     for(j = 0; j < kNumJoyButtons; ++j)
       myJoyTable[i][j] = Event::NoType;
 
-  // Erase the joystick axis mapping and type arrays
+  // Erase the joystick axis mapping array
   for(i = 0; i < kNumJoysticks; ++i)
-  {
     for(j = 0; j < kNumJoyAxis; ++j)
-    {
       myJoyAxisTable[i][j][0] = myJoyAxisTable[i][j][1] = Event::NoType;
-      myJoyAxisType[i][j] = JA_NONE;
-    }
-  }
 
   // Erase the Message array
   for(i = 0; i < Event::LastType; ++i)
@@ -893,55 +888,38 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
   Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
 
-  // Determine what type of axis we're dealing with
-  // Figure out the actual type if it's undefined
-  JoyAxisType type = myJoyAxisType[stick][axis];
-  if(type == JA_NONE)
+  // Check for analog events, which are handled differently
+  switch((int)eventAxisNeg)
   {
-    // TODO - will this always work??
-    if(value > 32767 - JOY_DEADZONE || value < -32767 + JOY_DEADZONE)
-      type = myJoyAxisType[stick][axis] = JA_DIGITAL;
-    else 
-      type = myJoyAxisType[stick][axis] = JA_ANALOG;
+    case Event::PaddleZeroAnalog:
+      myEvent->set(Event::PaddleZeroResistance,
+                    (int)(1000000.0 * (32767 - value) / 65534));
+      break;
+    case Event::PaddleOneAnalog:
+      myEvent->set(Event::PaddleOneResistance,
+                    (int)(1000000.0 * (32767 - value) / 65534));
+      break;
+    case Event::PaddleTwoAnalog:
+      myEvent->set(Event::PaddleTwoResistance,
+                    (int)(1000000.0 * (32767 - value) / 65534));
+      break;
+    case Event::PaddleThreeAnalog:
+      myEvent->set(Event::PaddleThreeResistance,
+                    (int)(1000000.0 * (32767 - value) / 65534));
+      break;
+    default:
+      // Otherwise, we know the event is digital
+      if(value > -JOY_DEADZONE && value < JOY_DEADZONE)
+      {
+        // Turn off both events, since we don't know exactly which one
+        // was previously activated.
+        handleEvent(eventAxisNeg, 0);
+        handleEvent(eventAxisPos, 0);
+      }
+      else
+        handleEvent(value < 0 ? eventAxisNeg : eventAxisPos, 1);
+      break;
   }
-
-  // Paddle emulation *REALLY* complicates this method
-  if(type == JA_ANALOG)
-  {
-    int idx = -1;
-    switch((int)eventAxisNeg)
-    {
-      case Event::PaddleZeroAnalog:
-        idx = 0;
-        break;
-      case Event::PaddleOneAnalog:
-        idx = 1;
-        break;
-      case Event::PaddleTwoAnalog:
-        idx = 2;
-        break;
-      case Event::PaddleThreeAnalog:
-        idx = 3;
-        break;
-    }
-    if(idx >= 0)
-    {
-      int resistance = (int)(1000000.0 * (32767 - value) / 65534);
-      myEvent->set(Paddle_Resistance[idx], resistance);
-      return;
-    }
-  }
-
-  // Otherwise, we know the event is digital
-  if(value == 0)
-  {
-    // Turn off both events, since we don't know exactly which one
-    // was previously activated.
-    handleEvent(eventAxisNeg, 0);
-    handleEvent(eventAxisPos, 0);
-  }
-  else
-    handleEvent(value < 0 ? eventAxisNeg : eventAxisPos, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1344,7 +1322,7 @@ void EventHandler::setJoymap()
     // Fill the joymap table with events
     int idx = 0;
     for(int i = 0; i < kNumJoysticks; ++i)
-      for(int j = 0; j < kNumJoyAxis; ++j)
+      for(int j = 0; j < kNumJoyButtons; ++j)
         myJoyTable[i][j] = (Event::Type) map[idx++];
   }
   else

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.72 2006-01-08 02:28:03 stephena Exp $
+// $Id: EventHandler.hxx,v 1.73 2006-01-09 00:42:12 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -94,12 +94,6 @@ enum JoyType {
   JT_STELLADAPTOR_RIGHT
 };
 
-enum JoyAxisType {
-  JA_NONE,
-  JA_DIGITAL,
-  JA_ANALOG
-};
-
 struct Stella_Joystick {
   SDL_Joystick* stick;
   JoyType       type;
@@ -128,7 +122,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.72 2006-01-08 02:28:03 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.73 2006-01-09 00:42:12 stephena Exp $
 */
 class EventHandler
 {
@@ -464,9 +458,6 @@ class EventHandler
 
     // Array of joystick axis events
     Event::Type myJoyAxisTable[kNumJoysticks][kNumJoyAxis][2];
-
-    // Array of joystick axis types (analog or digital)
-    JoyAxisType myJoyAxisType[kNumJoysticks][kNumJoyAxis];
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
