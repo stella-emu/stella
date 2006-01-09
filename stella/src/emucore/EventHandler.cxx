@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.144 2006-01-09 16:50:01 stephena Exp $
+// $Id: EventHandler.cxx,v 1.145 2006-01-09 19:30:04 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -673,6 +673,7 @@ void EventHandler::poll(uInt32 time)
                 handleJoyEvent(stick, button, state);
                 break;
             }
+            break;  // Regular button
           }
 
           case JT_STELLADAPTOR_LEFT:
@@ -783,10 +784,22 @@ void EventHandler::poll(uInt32 time)
         if(stick >= kNumJoysticks || hat >= kNumJoyHats)
           break;
 
-        if(myState == S_EMULATE)
-          handleJoyHatEvent(stick, hat, value);
-        else if(myOverlay != NULL)
-          myOverlay->handleJoyHatEvent(stick, hat, value);
+        // Preprocess all hat events, converting to Stella JoyHat type
+        // Generate two equivalent hat events representing combined direction
+        // when we get a diagonal hat event
+        if(value == SDL_HAT_CENTERED)
+          handleJoyHatEvent(stick, hat, kJHatCentered);
+        else
+        {
+          if(value & SDL_HAT_UP)
+            handleJoyHatEvent(stick, hat, kJHatUp);
+          if(value & SDL_HAT_RIGHT)
+            handleJoyHatEvent(stick, hat, kJHatRight); 
+          if(value & SDL_HAT_DOWN)
+            handleJoyHatEvent(stick, hat, kJHatDown);
+          if(value & SDL_HAT_LEFT)
+            handleJoyHatEvent(stick, hat, kJHatLeft);
+        }
         break;  // SDL_JOYHATMOTION
       }
 #endif  // JOYSTICK_SUPPORT
@@ -950,7 +963,72 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
 {
-cerr << "stick = " << stick << ", hat = " << hat << ", value = " << value << endl;
+  if(myState == S_EMULATE)
+  {
+    cerr << "stick = " << stick << ", hat = " << hat;
+switch(value) {
+case kJHatCentered: cerr << " centered\n"; break;
+case kJHatUp:       cerr << " up\n"; break;
+case kJHatDown:     cerr << " down\n"; break;
+case kJHatLeft:     cerr << " left\n"; break;
+case kJHatRight:    cerr << " right\n"; break;
+}
+
+    // Treat hats as pairs of directions, similar to joystick axes
+    // Every hat pair has two associated values, negative and positive
+    // Analog events are stored in the negative portion
+    Event::Type eventHatAnalog;
+    switch(value)
+    {
+      case kJHatUp:
+      case kJHatDown:
+        eventHatAnalog = myJoyHatTable[stick][hat][0];
+        break;
+      case kJHatLeft:
+      case kJHatRight:
+        eventHatAnalog = myJoyHatTable[stick][hat][2];
+        break;
+      default:
+        eventHatAnalog = Event::NoType;
+        break;
+    }
+    // Check for analog events, which are handled differently
+    switch((int)eventHatAnalog)
+    {
+      case Event::PaddleZeroAnalog:
+        myEvent->set(Event::PaddleZeroResistance,
+                      (int)(1000000.0 * (32767 - value) / 65534));
+        break;
+      case Event::PaddleOneAnalog:
+        myEvent->set(Event::PaddleOneResistance,
+                      (int)(1000000.0 * (32767 - value) / 65534));
+        break;
+      case Event::PaddleTwoAnalog:
+        myEvent->set(Event::PaddleTwoResistance,
+                      (int)(1000000.0 * (32767 - value) / 65534));
+        break;
+      case Event::PaddleThreeAnalog:
+        myEvent->set(Event::PaddleThreeResistance,
+                      (int)(1000000.0 * (32767 - value) / 65534));
+        break;
+      default:
+        // Otherwise, we know the event is digital
+        if(value == kJHatCentered)
+        {
+          // Turn off all associated events, since we don't know exactly
+          // which one was previously activated.
+          handleEvent(myJoyHatTable[stick][hat][0], 0);
+          handleEvent(myJoyHatTable[stick][hat][1], 0);
+          handleEvent(myJoyHatTable[stick][hat][2], 0);
+          handleEvent(myJoyHatTable[stick][hat][3], 0);
+        }
+        else
+          handleEvent(myJoyHatTable[stick][hat][value] , 1);
+        break;
+    }
+  }
+  else if(myOverlay != NULL)
+    myOverlay->handleJoyHatEvent(stick, hat, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1241,7 +1319,7 @@ void EventHandler::createMouseButtonEvent(int x, int y, int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setActionMappings()
 {
-  int i, j, stick, button, axis, dir;
+  int i, j, stick, button, axis, hat, dir;
   ostringstream buf;
 
   // Fill the ActionList with the current key and joystick mappings
@@ -1305,8 +1383,43 @@ void EventHandler::setActionMappings()
         }
       }
     }
-
-// FIXME - add joy hat labeling
+    // Joystick hat mapping/labeling
+    for(stick = 0; stick < kNumJoysticks; ++stick)
+    {
+      for(hat = 0; hat < kNumJoyHats; ++hat)
+      {
+        for(dir = 0; dir < 4; ++dir)
+        {
+          if(myJoyHatTable[stick][hat][dir] == event)
+          {
+            buf.str("");
+            buf << "J" << stick << " hat " << hat;
+            switch(dir)
+            {
+              case kJHatUp:    buf << " up"; break;
+              case kJHatDown:  buf << " down"; break;
+              case kJHatLeft:  buf << " left"; break;
+              case kJHatRight: buf << " right"; break;
+            }
+/* FIXME - figure out how to combine analog & hats
+            if(eventIsAnalog(event))
+            {
+              dir = 2;  // Immediately exit the inner loop after this iteration
+              buf << " abs";
+            }
+            else if(dir == 0)
+              buf << " neg";
+            else
+              buf << " pos";
+*/
+            if(key == "")
+              key = key + buf.str();
+            else
+              key = key + ", " + buf.str();
+          }
+        }
+      }
+    }
 
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
@@ -1474,8 +1587,17 @@ void EventHandler::setDefaultJoyHatMapping(Event::Type event, int stick,
      hat >= 0 && hat < kNumJoyHats &&
      event >= 0 && event < Event::LastType)
   {
-cerr << "add mapping for stick = " << stick << ", hat = " << hat << ", value = " << value << endl;
-/*
+    switch(value)
+    {
+      case kJHatUp:
+      case kJHatDown:
+      case kJHatLeft:
+      case kJHatRight:
+        myJoyHatTable[stick][hat][value] = event;
+        break;
+    }
+
+/*  FIXME - deal with assignment of analog events
     // This confusing code is because each axis has two associated values,
     // but analog events only affect one of the axis.
     if(eventIsAnalog(event))

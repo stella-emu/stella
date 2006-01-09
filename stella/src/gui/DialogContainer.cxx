@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.29 2006-01-09 16:50:01 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.30 2006-01-09 19:30:04 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -389,8 +389,44 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
 {
-cerr << "received hat event in dialogcontainer:" << endl
-     << "stick = " << stick << ", hat = " << hat << ", value = " << value << endl;
+  if(myDialogStack.empty())
+    return;
+
+  // Send the event to the dialog box on the top of the stack
+  Dialog* activeDialog = myDialogStack.top();
+
+  // Only preprocess hat events if the dialog absolutely doesn't want them
+  // Translate to axis events for movement
+  if(!activeDialog->wantsAllEvents())
+  {
+    bool handled = true;
+    switch(value)
+    {
+      case kJHatCentered:
+        handleJoyAxisEvent(stick, 0, 0);
+        handleJoyAxisEvent(stick, 1, 0);       // axis 0 & 1, 0  ==> OFF
+        break;
+      case kJHatUp:
+        handleJoyAxisEvent(stick, 1, -32767);  // axis 1, -value ==> UP
+        break;
+      case kJHatLeft:
+        handleJoyAxisEvent(stick, 0, -32767);  // axis 0, -value ==> LEFT
+        break;
+      case kJHatDown:
+        handleJoyAxisEvent(stick, 1, 32767);   // axis 1, +value ==> DOWN
+        break;
+      case kJHatRight:
+        handleJoyAxisEvent(stick, 0, 32767);   // axis 0, +value ==> RIGHT
+        break;
+      default:
+        handled = false;
+    }
+    if(handled)
+      return;
+  }
+
+  if(activeDialog->wantsEvents())
+    activeDialog->handleJoyHat(stick, hat, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

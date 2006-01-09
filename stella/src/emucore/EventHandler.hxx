@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.74 2006-01-09 16:50:01 stephena Exp $
+// $Id: EventHandler.hxx,v 1.75 2006-01-09 19:30:04 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -58,6 +58,16 @@ enum {
   kJDirDown  = -5,  kJDirDownRight = -6,
   kJDirRight = -7,  kJDirUpRight   = -8
  #endif
+};
+
+// A wrapper around SDL hat events, so we don't drag SDL
+// through all the child classes
+enum JoyHat {
+  kJHatUp,
+  kJHatDown,
+  kJHatLeft,
+  kJHatRight,
+  kJHatCentered
 };
 
 enum MouseButton {
@@ -123,7 +133,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.74 2006-01-09 16:50:01 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.75 2006-01-09 19:30:04 stephena Exp $
 */
 class EventHandler
 {

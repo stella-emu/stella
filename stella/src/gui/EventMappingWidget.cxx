@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.8 2006-01-08 02:28:03 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.9 2006-01-09 19:30:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -208,11 +208,24 @@ void EventMappingWidget::handleJoyDown(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
 {
-  // Remap joystick buttons in remap mode
+  // Remap joystick axes in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
     instance()->eventHandler().addJoyAxisMapping(event, stick, axis, value);
+
+    stopRemapping();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::handleJoyHat(int stick, int hat, int value)
+{
+  // Remap joystick hats in remap mode
+  if(myRemapStatus && myActionSelected >= 0)
+  {
+    Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
+    instance()->eventHandler().addJoyHatMapping(event, stick, hat, value);
 
     stopRemapping();
   }
