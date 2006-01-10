@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.70 2006-01-10 02:09:34 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.71 2006-01-10 20:37:00 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -50,6 +50,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     theZoomLevel(2),
     theMaxZoomLevel(2),
     theAspectRatio(1.0),
+    myUsePhosphor(false),
+    myPhosphorBlend(77),
     myFrameRate(0),
     myPauseStatus(false),
     myMessageTime(0),
@@ -120,8 +122,14 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   initSubsystem();
 
   // Set emulation palette if a console exists
+  // Used when entering/exiting debugger
+#ifdef DEVELOPER_SUPPORT
   if(&myOSystem->console())
+  {
+    enablePhosphor(myOSystem->console().properties().get("Display.Phosphor", true) == "YES");
     setPalette(myOSystem->console().mediaSource().palette());
+  }
+#endif
 
   // Enable unicode so we can see translated key events
   // (lowercase vs. uppercase characters)
@@ -269,22 +277,25 @@ void FrameBuffer::setPalette(const uInt32* palette)
   }
 
   // Set palette for phosphor effect
-  for(i = 0; i < 256; ++i)
+  if(myUsePhosphor)
   {
-    for(j = 0; j < 256; ++j)
+    for(i = 0; i < 256; ++i)
     {
-      uInt8 ri = (uInt8) ((palette[i] & 0x00ff0000) >> 16);
-      uInt8 gi = (uInt8) ((palette[i] & 0x0000ff00) >> 8);
-      uInt8 bi = (uInt8) (palette[i] & 0x000000ff);
-      uInt8 rj = (uInt8) ((palette[j] & 0x00ff0000) >> 16);
-      uInt8 gj = (uInt8) ((palette[j] & 0x0000ff00) >> 8);
-      uInt8 bj = (uInt8) (palette[j] & 0x000000ff);
+      for(j = 0; j < 256; ++j)
+      {
+        uInt8 ri = (uInt8) ((palette[i] & 0x00ff0000) >> 16);
+        uInt8 gi = (uInt8) ((palette[i] & 0x0000ff00) >> 8);
+        uInt8 bi = (uInt8) (palette[i] & 0x000000ff);
+        uInt8 rj = (uInt8) ((palette[j] & 0x00ff0000) >> 16);
+        uInt8 gj = (uInt8) ((palette[j] & 0x0000ff00) >> 8);
+        uInt8 bj = (uInt8) (palette[j] & 0x000000ff);
 
-      Uint8 r = (Uint8) getPhosphor(ri, rj);
-      Uint8 g = (Uint8) getPhosphor(gi, gj);
-      Uint8 b = (Uint8) getPhosphor(bi, bj);
+        Uint8 r = (Uint8) getPhosphor(ri, rj);
+        Uint8 g = (Uint8) getPhosphor(gi, gj);
+        Uint8 b = (Uint8) getPhosphor(bi, bj);
 
-      myAvgPalette[i][j] = mapRGB(r, g, b);
+        myAvgPalette[i][j] = mapRGB(r, g, b);
+      }
     }
   }
 
@@ -650,12 +661,10 @@ void FrameBuffer::drawString(const GUI::Font* font, const string& s,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
 {
-int PHOSPHOR = 77; // FIXME - make this configurable
-
   if(c2 > c1)
     SWAP(c1, c2);
 
-  return ((c1 - c2) * PHOSPHOR)/100 + c2;
+  return ((c1 - c2) * myPhosphorBlend)/100 + c2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.79 2006-01-08 02:28:03 stephena Exp $
+// $Id: Console.cxx,v 1.80 2006-01-10 20:37:00 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -385,6 +385,8 @@ void Console::initializeVideo()
   myOSystem->frameBuffer().initialize(title,
                                       myMediaSource->width() << 1,
                                       myMediaSource->height());
+  bool enable = myProperties.get("Display.Phosphor", true) == "YES";
+  myOSystem->frameBuffer().enablePhosphor(enable);
   setPalette();
 }
 
@@ -668,6 +670,10 @@ void Console::setDeveloperProperties()
   s = settings.getString("height");
   if(s != "")
     myProperties.set("Display.Height", s);
+
+  s = settings.getString("pp");
+  if(s != "")
+    myProperties.set("Display.Phosphor", s);
 
   s = settings.getString("hmove");
   if(s != "")

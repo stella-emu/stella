@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.15 2006-01-08 02:28:03 stephena Exp $
+// $Id: PropsSet.cxx,v 1.16 2006-01-10 20:37:00 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -232,8 +232,8 @@ const Properties& PropertiesSet::defaultProperties()
   ourDefaultProperties.set("Display.Width", "160");
   ourDefaultProperties.set("Display.YStart", "34");
   ourDefaultProperties.set("Display.Height", "210");
+  ourDefaultProperties.set("Display.Phosphor", "No");
 
-  ourDefaultProperties.set("Emulation.CPU", "Auto-detect");
   ourDefaultProperties.set("Emulation.HmoveBlanks", "Yes");
 
   return ourDefaultProperties;

@@ -13,10 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.45 2006-01-10 02:22:38 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.46 2006-01-10 20:37:00 stephena Exp $
 //============================================================================
-
-//#define USE_PHOSPHOR
 
 #ifdef DISPLAY_OPENGL
 
@@ -222,37 +220,60 @@ void FrameBufferGL::drawMediaSource()
   uInt32 height        = mediasrc.height();
   uInt16* buffer       = (uInt16*) myTexture->pixels;
 
-  register uInt32 y;
-  for(y = 0; y < height; ++y )
+  // TODO - is this fast enough?
+  register uInt32 x, y;
+  switch((int)myUsePhosphor) // use switch/case, since we'll eventually have filters
   {
-    const uInt32 bufofsY    = y * width;
-    const uInt32 screenofsY = y * myTexture->w;
-
-    register uInt32 x;
-    for(x = 0; x < width; ++x )
-    {
-      const uInt32 bufofs = bufofsY + x;
-      uInt8 v = currentFrame[bufofs];
-      uInt8 w = previousFrame[bufofs];
-
-#ifndef USE_PHOSPHOR
-      if(v != w || theRedrawTIAIndicator)
-#endif
+    case 0:
+      for(y = 0; y < height; ++y )
       {
-        // If we ever get to this point, we know the current and previous
-        // buffers differ.  In that case, make sure the changes are
-        // are drawn in postFrameUpdate()
-        theRedrawTIAIndicator = true;
+        const uInt32 bufofsY    = y * width;
+        const uInt32 screenofsY = y * myTexture->w;
 
-        // x << 1 is times 2 ( doubling width )
-        const uInt32 pos = screenofsY + (x << 1);
-#ifdef USE_PHOSPHOR
-        buffer[pos] = buffer[pos+1] = (uInt16) myAvgPalette[v][w];
-#else
-        buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
-#endif
+        for(x = 0; x < width; ++x )
+        {
+          const uInt32 bufofs = bufofsY + x;
+          uInt8 v = currentFrame[bufofs];
+          uInt8 w = previousFrame[bufofs];
+
+          if(v != w || theRedrawTIAIndicator)
+          {
+            // If we ever get to this point, we know the current and previous
+            // buffers differ.  In that case, make sure the changes are
+            // are drawn in postFrameUpdate()
+            theRedrawTIAIndicator = true;
+
+            // x << 1 is times 2 ( doubling width )
+            const uInt32 pos = screenofsY + (x << 1);
+            buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
+          }
+        }
       }
-    }
+      break;
+
+    case 1:  // TODO - profile this, maybe we can get rid of mult's?
+      for(y = 0; y < height; ++y )
+      {
+        const uInt32 bufofsY    = y * width;
+        const uInt32 screenofsY = y * myTexture->w;
+
+        for(x = 0; x < width; ++x )
+        {
+          const uInt32 bufofs = bufofsY + x;
+          uInt8 v = currentFrame[bufofs];
+          uInt8 w = previousFrame[bufofs];
+
+          // If we ever get to this point, we know the current and previous
+          // buffers differ.  In that case, make sure the changes are
+          // are drawn in postFrameUpdate()
+          theRedrawTIAIndicator = true;
+
+          // x << 1 is times 2 ( doubling width )
+          const uInt32 pos = screenofsY + (x << 1);
+          buffer[pos] = buffer[pos+1] = (uInt16) myAvgPalette[v][w];
+        }
+      }
+      break;
   }
 }
 
@@ -442,6 +463,18 @@ void FrameBufferGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   //    smaller dirty rects.  Then in postFrameUpdate(), change the
   //    coordinates to only update that portion of the texture.
   myDirtyFlag = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::enablePhosphor(bool enable)
+{
+  myUsePhosphor   = enable;
+  myPhosphorBlend = myOSystem->settings().getInt("ppblend");
+
+cerr << "phosphor effect: " <<  (myUsePhosphor ? "yes" : "no") << endl
+     << "phosphor amount: " << myPhosphorBlend << endl << endl;
+
+ // FIXME - change rendering method
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

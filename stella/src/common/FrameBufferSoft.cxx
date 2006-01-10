@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.39 2005-10-18 18:49:46 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.40 2006-01-10 20:37:00 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -481,6 +481,15 @@ void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 //  cerr << "addDirtyRect():  "
 //       << "x=" << temp.x << ", y=" << temp.y << ", w=" << temp.w << ", h=" << temp.h << endl;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::enablePhosphor(bool enable)
+{
+  // FIXME - implement for software mode
+//  myUsePhosphor = enable;
+//  myPhosphorBlend = blend;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RectList::RectList(Uint32 size)

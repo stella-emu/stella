@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.61 2006-01-10 02:09:34 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.62 2006-01-10 20:37:00 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -51,7 +51,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.61 2006-01-10 02:09:34 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.62 2006-01-10 20:37:00 stephena Exp $
 */
 class FrameBuffer
 {
@@ -393,6 +393,11 @@ class FrameBuffer
     */
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
 
+    /**
+      Enable/disable phosphor effect
+    */
+    virtual void enablePhosphor(bool enable) = 0;
+
   protected:
     // The parent system for the framebuffer
     OSystem* myOSystem;
@@ -438,6 +443,12 @@ class FrameBuffer
 
     // Use dirty updates (SDL_UpdateRects instead of SDL_UpdateRect)
     bool myUseDirtyRects;
+
+    // Use phosphor effect (aka no flicker on 30Hz screens)
+    bool myUsePhosphor;
+
+    // Amount to blend when using phosphor effect
+    int myPhosphorBlend;
 
     // Table of RGB values for GUI elements
     static const uInt8 ourGUIColors[kNumColors-256][3];

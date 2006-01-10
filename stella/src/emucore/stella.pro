@@ -177,7 +177,6 @@
 "Controller.Left" "Paddles"
 "Controller.Right" "Paddles"
 "Display.Height" "192"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "01297d9b450455dd716db9658efb2fae"
@@ -383,7 +382,6 @@
 "Cartridge.Rarity" "Rare"
 "Cartridge.Type" "AR"
 "Display.YStart" "30"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -808,7 +806,6 @@
 "Controller.Right" "Paddles"
 "Display.Format" "PAL"
 "Display.Height" "205"
-"Emulation.CPU" "High"
 "Display.YStart" "55"
 ""
 
@@ -1089,7 +1086,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "33"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "0b577e63b0c64f9779f315dca8967587"
@@ -1381,7 +1377,6 @@
 "Controller.Left" "Paddles"
 "Controller.Right" "Paddles"
 "Display.Format" "PAL"
-"Emulation.CPU" "High"
 "Display.YStart" "50"
 ""
 
@@ -1686,7 +1681,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
@@ -2595,7 +2589,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "35"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "1e1817d9cbcc3ba75043b7db4e6c228f"
@@ -2671,7 +2664,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -3320,7 +3312,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "56"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "26f4f8b098609164effef7809e0121e1"
@@ -3390,7 +3381,6 @@
 "Display.Format" "PAL"
 "Display.Height" "200"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -3813,7 +3803,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "2c9fadd510509cc7f28f1ccba931855f"
@@ -3873,7 +3862,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "2d9e5d8d083b6367eda880e80dfdfaeb"
@@ -3961,7 +3949,6 @@
 "Display.Height" "198"
 "Display.Width" "152"
 "Display.XStart" "8"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "2e82a1628ef6c735c0ab8fa92927e9b0"
@@ -4328,7 +4315,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Display.Height" "190"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "32ecb5a652eb73d287e883eea751d99c"
@@ -4512,7 +4498,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -4676,7 +4661,6 @@
 "Controller.Left" "Paddles"
 "Controller.Right" "Paddles"
 "Display.Height" "192"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "36edef446ab4c2395666efc672b92ed0"
@@ -4777,7 +4761,6 @@
 "Display.Width" "136"
 "Display.XStart" "8"
 "Display.YStart" "32"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "3856b9425cc0185ed770376a62af0282"
@@ -5884,7 +5867,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "468f2dec984f3d4114ea84f05edf82b6"
@@ -6285,7 +6267,6 @@
 "Cartridge.Type" "AR"
 "Display.Height" "200"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -6340,7 +6321,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Rarity" "Extremely Rare"
 "Cartridge.Type" "AR"
-"Emulation.CPU" "High"
 "Display.YStart" "25"
 ""
 
@@ -6371,7 +6351,6 @@
 "Cartridge.Rarity" "Rare"
 "Cartridge.Type" "AR"
 "Display.YStart" "30"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -6859,7 +6838,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "35"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "52b448757081fd9fabf859f4e2f91f6b"
@@ -7011,7 +6989,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "35"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "5494b9ee403d9757f0fd1f749e80214a"
@@ -7127,7 +7104,6 @@
 "Cartridge.Rarity" "Common"
 "Display.Height" "190"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "568371fbae6f5e5b936af80031cd8888"
@@ -7413,7 +7389,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "5b6f5bcbbde42fc77d0bdb3146693565"
@@ -7654,7 +7629,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "5eeb81292992e057b290a5cd196f155d"
@@ -7737,7 +7711,6 @@
 "Cartridge.Rarity" "Common"
 "Display.Height" "190"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "5f708ca39627697e859d1c53f8d8d7d2"
@@ -7794,7 +7767,6 @@
 "Display.Width" "152"
 "Display.XStart" "4"
 "Display.YStart" "32"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -8108,7 +8080,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -8364,7 +8335,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "66bc1bef269ea59033928bac2d1d81e6"
@@ -8380,7 +8350,6 @@
 "Display.Width" "136"
 "Display.XStart" "8"
 "Display.YStart" "32"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "66b92ede655b73b402ecd1f4d8cd9c50"
@@ -8465,7 +8434,6 @@
 "Display.Width" "136"
 "Display.XStart" "8"
 "Display.YStart" "32"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "67cf913d1df0bf2d7ae668060d0b6694"
@@ -8608,7 +8576,6 @@
 "Cartridge.Rarity" "Rare"
 "Cartridge.Type" "AR"
 "Display.YStart" "30"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -9024,7 +8991,6 @@
 "Cartridge.Type" "AR"
 "Controller.Left" "Paddles"
 "Controller.Right" "Paddles"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "6e7ed74082f39ad4166c823765a59909"
@@ -9229,7 +9195,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "71464c54da46adae9447926fdbfc1abe"
@@ -9361,7 +9326,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "56"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "724613effaf7743cbcd695fab469c2a8"
@@ -9551,7 +9515,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "56"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "74f623833429d35341b7a84bc09793c0"
@@ -9595,7 +9558,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "75511bb694662301c9e71df645f4b5a7"
@@ -9659,7 +9621,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "52"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "75b22fdf632d76e246433db1ebccd3c4"
@@ -9750,7 +9711,6 @@
 "Display.Format" "PAL"
 "Display.Height" "200"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -9828,7 +9788,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "77cd9a9dd810ce8042bdb9d40e256dfe"
@@ -10016,7 +9975,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -10045,7 +10003,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "7a64b5a6e90619c6aacf244cdd7502f8"
@@ -10173,7 +10130,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "64"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "7b79beb378d1b4471def90ceccf413de"
@@ -10330,7 +10286,6 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Cartridge.Type" "AR"
 "Display.Format" "PAL"
-"Emulation.CPU" "High"
 "Display.YStart" "50"
 ""
 
@@ -10350,7 +10305,6 @@
 "Cartridge.Type" "AR"
 "Display.Width" "144"
 "Display.XStart" "8"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "7e464186ba384069582d9f0c141f7491"
@@ -10591,7 +10545,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -11404,7 +11357,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "60"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "8c103a79b007a2fd5af602334937b4e1"
@@ -11812,7 +11764,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "90b1799dddb8bf748ee286d22e609480"
@@ -12584,7 +12535,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "a5b7f420ca6cc1384da0fed523920d8e"
@@ -12989,7 +12939,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -13213,7 +13162,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "a2eb84cfeed55acd7fece7fefdc83fbb"
@@ -13246,7 +13194,6 @@
 "Display.Width" "136"
 "Display.XStart" "8"
 "Display.YStart" "52"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "a3b9d2be822eab07e7f4b10593fb5eaa"
@@ -13293,7 +13240,6 @@
 "Cartridge.Type" "AR"
 "Display.Width" "144"
 "Display.XStart" "8"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "a47878a760f5fa3aa99f95c3fdc70a0b"
@@ -13453,7 +13399,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "53"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "a68a396ff1f3b311712f6bdf05dcefab"
@@ -13513,7 +13458,6 @@
 "Display.Height" "198"
 "Display.Width" "152"
 "Display.XStart" "8"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "a7cf2b9afdbb3a161bf418dbcf0321dc"
@@ -13766,7 +13710,6 @@
 "Controller.Left" "Paddles"
 "Controller.Right" "Paddles"
 "Display.Height" "192"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "aad91be0bf78d33d29758876d999848a"
@@ -14178,7 +14121,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "afe88aae81d99e0947c0cfb687b16251"
@@ -14481,7 +14423,6 @@
 "Cartridge.Type" "AR"
 "Display.Height" "200"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -14530,7 +14471,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "64"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "b59417d083b0be2d49a7d93769880a4b"
@@ -14548,7 +14488,6 @@
 "Display.Format" "PAL"
 "Display.Height" "190"
 "Display.YStart" "43"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "b6812eaf87127f043e78f91f2028f9f4"
@@ -14662,7 +14601,6 @@
 "Cartridge.Type" "AR"
 "Display.Format" "PAL"
 "Display.YStart" "40"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -15612,7 +15550,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "c47244f5557ae12c61e8e01c140e2173"
@@ -15843,7 +15780,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "33"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "c745487828a1a6a743488ecebc55ad44"
@@ -16263,7 +16199,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -16368,7 +16303,6 @@
 "Display.Height" "198"
 "Display.Width" "152"
 "Display.XStart" "8"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "cd6b3dff86a55a4a6d23007ee360ea0e"
@@ -16396,7 +16330,6 @@
 "Display.Width" "136"
 "Display.XStart" "8"
 "Display.YStart" "52"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "cd9fea12051e414a6dfe17052067da8e"
@@ -16741,7 +16674,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -17018,7 +16950,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "d536a84d4e1f170305e17f7078296a50"
@@ -17031,7 +16962,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "d4aa89e96d2902692f5c45f36903d336"
@@ -17712,7 +17642,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "ddd1efc1862cd3eb3baf4cba81ff5050"
@@ -18148,7 +18077,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "64"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "e2b682f6e6d76b35c180c7d847e93b4f"
@@ -18352,7 +18280,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "e505bd8e59e31aaed20718d47b15c61b"
@@ -18389,7 +18316,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "e556e07cc06c803f2955986f53ef63ed"
@@ -18646,7 +18572,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "33"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "e88340f5bd2f03e2e9ce5ecfa9c644f5"
@@ -18921,7 +18846,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "64"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "eb9f8b84c193d9d93a58fca112aa39ed"
@@ -19225,7 +19149,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -19360,7 +19283,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "f1127ade54037236e75a133b1dfc389d"
@@ -19373,7 +19295,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "f10e3f45fb01416c87e5835ab270b53a"
@@ -19734,7 +19655,6 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "33"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "f5a2f6efa33a3e5541bc680e9dc31d5b"
@@ -20339,7 +20259,6 @@
 "Display.Height" "198"
 "Display.Width" "152"
 "Display.XStart" "8"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "fb27afe896e7c928089307b32e5642ee"
@@ -20374,7 +20293,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "59"
-"Emulation.CPU" "High"
 ""
 
 "Cartridge.MD5" "fb91dfc36cddaa54b09924ae8fd96199"
@@ -20526,7 +20444,6 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
-"Emulation.CPU" "High"
 "Emulation.HmoveBlanks" "No"
 ""
 
@@ -20664,7 +20581,6 @@
 "Controller.Left" "Paddles"
 "Controller.Right" "Paddles"
 "Display.Format" "PAL"
-"Emulation.CPU" "High"
 "Display.YStart" "50"
 ""
 

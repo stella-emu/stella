@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.73 2006-01-09 16:50:01 stephena Exp $
+// $Id: Settings.cxx,v 1.74 2006-01-10 20:37:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -40,6 +40,7 @@ Settings::Settings(OSystem* osystem)
   // Now fill it with options that are common to all versions of Stella
   set("video", "soft");
   set("dirtyrects", "true");
+  set("ppblend", "77");
 
   set("gl_filter", "nearest");
   set("gl_aspect", "2.0");
@@ -252,6 +253,10 @@ void Settings::validate()
   if(s != "standard" && s != "original" && s != "z26")
     set("palette", "standard");
 
+  i = getInt("ppblend");
+  if(i < 0) set("ppblend", "0");
+  if(i > 100) set("ppblend", "100");
+
   s = getString("romname");
   if(s != "romname" && s != "md5sum")
     set("ssname", "romname");
@@ -289,6 +294,7 @@ void Settings::usage()
     << "                 standard|\n"
     << "                 z26>\n"
     << "  -framerate    <number>       Display the given number of frames per second\n"
+    << "  -ppblend      <number>       Set blending for phosphor effect, if enabled (0-100)\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
@@ -345,6 +351,7 @@ void Settings::usage()
     << "   -ystart      <arg>          Sets the 'Display.YStart' property\n"
     << "   -width       <arg>          Sets the 'Display.Width' property\n"
     << "   -height      <arg>          Sets the 'Display.Height' property\n"
+    << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -hmove       <arg>          Sets the 'Emulation.HmoveBlanks' property\n"
   #endif
     << endl;
