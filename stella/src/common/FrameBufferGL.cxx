@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.44 2006-01-10 02:09:33 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.45 2006-01-10 02:22:38 stephena Exp $
 //============================================================================
+
+//#define USE_PHOSPHOR
 
 #ifdef DISPLAY_OPENGL
 
@@ -233,7 +235,9 @@ void FrameBufferGL::drawMediaSource()
       uInt8 v = currentFrame[bufofs];
       uInt8 w = previousFrame[bufofs];
 
+#ifndef USE_PHOSPHOR
       if(v != w || theRedrawTIAIndicator)
+#endif
       {
         // If we ever get to this point, we know the current and previous
         // buffers differ.  In that case, make sure the changes are
@@ -242,8 +246,11 @@ void FrameBufferGL::drawMediaSource()
 
         // x << 1 is times 2 ( doubling width )
         const uInt32 pos = screenofsY + (x << 1);
+#ifdef USE_PHOSPHOR
+        buffer[pos] = buffer[pos+1] = (uInt16) myAvgPalette[v][w];
+#else
         buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
-//        buffer[pos] = buffer[pos+1] = (uInt16) myAvgPalette[v][w];
+#endif
       }
     }
   }
