@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.60 2006-01-08 02:28:03 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.61 2006-01-10 02:09:34 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -51,7 +51,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.60 2006-01-08 02:28:03 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.61 2006-01-10 02:09:34 stephena Exp $
 */
 class FrameBuffer
 {
@@ -191,7 +191,7 @@ class FrameBuffer
 
     /**
       Calculate the maximum window size that the current screen can hold.
-      Only works in X11/Win32 for now, otherwise always return 4.
+      If not supported by platform, always return 4.
     */
     uInt32 maxWindowSizeForScreen();
 
@@ -421,8 +421,11 @@ class FrameBuffer
     // SDL initialization flags
     uInt32 mySDLFlags;
 
-    // SDL palette
+    // SDL palette, with the first 256 colors representing normal fill
     Uint32 myPalette[kNumColors];
+
+    // SDL palette representing phosphor effect
+    Uint32 myAvgPalette[256][256];
 
     // Indicates the current zoom level of the SDL screen
     uInt32 theZoomLevel;
@@ -449,6 +452,16 @@ class FrameBuffer
       Set the icon for the main SDL window.
     */
     void drawMessage();
+
+    /**
+      Used to calculate an averaged color for the 'phosphor' effect.
+
+      @param c1  Color 1
+      @param c2  Color 2
+
+      @return  Averaged value of the two colors
+    */
+    uInt8 getPhosphor(uInt8 c1, uInt8 c2);
 
   private:
     // Indicates the current framerate of the system

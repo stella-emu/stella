@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.69 2006-01-08 02:28:03 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.70 2006-01-10 02:09:34 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -256,15 +256,36 @@ void FrameBuffer::pause(bool status)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setPalette(const uInt32* palette)
 {
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    Uint8 r, g, b;
+  int i, j;
 
-    r = (Uint8) ((palette[i] & 0x00ff0000) >> 16);
-    g = (Uint8) ((palette[i] & 0x0000ff00) >> 8);
-    b = (Uint8) (palette[i] & 0x000000ff);
+  // Set palette for normal fill
+  for(i = 0; i < 256; ++i)
+  {
+    Uint8 r = (Uint8) ((palette[i] & 0x00ff0000) >> 16);
+    Uint8 g = (Uint8) ((palette[i] & 0x0000ff00) >> 8);
+    Uint8 b = (Uint8) (palette[i] & 0x000000ff);
 
     myPalette[i] = mapRGB(r, g, b);
+  }
+
+  // Set palette for phosphor effect
+  for(i = 0; i < 256; ++i)
+  {
+    for(j = 0; j < 256; ++j)
+    {
+      uInt8 ri = (uInt8) ((palette[i] & 0x00ff0000) >> 16);
+      uInt8 gi = (uInt8) ((palette[i] & 0x0000ff00) >> 8);
+      uInt8 bi = (uInt8) (palette[i] & 0x000000ff);
+      uInt8 rj = (uInt8) ((palette[j] & 0x00ff0000) >> 16);
+      uInt8 gj = (uInt8) ((palette[j] & 0x0000ff00) >> 8);
+      uInt8 bj = (uInt8) (palette[j] & 0x000000ff);
+
+      Uint8 r = (Uint8) getPhosphor(ri, rj);
+      Uint8 g = (Uint8) getPhosphor(gi, gj);
+      Uint8 b = (Uint8) getPhosphor(bi, bj);
+
+      myAvgPalette[i][j] = mapRGB(r, g, b);
+    }
   }
 
   theRedrawTIAIndicator = true;
@@ -624,6 +645,17 @@ void FrameBuffer::drawString(const GUI::Font* font, const string& s,
 
     x += w;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
+{
+int PHOSPHOR = 77; // FIXME - make this configurable
+
+  if(c2 > c1)
+    SWAP(c1, c2);
+
+  return ((c1 - c2) * PHOSPHOR)/100 + c2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
