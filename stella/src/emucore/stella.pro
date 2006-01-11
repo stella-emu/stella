@@ -78,6 +78,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "007d18dedc1f0565f09c42aa61a6f585"
@@ -350,6 +352,7 @@
 "Cartridge.Rarity" "Rare"
 "Display.Height" "219"
 "Display.YStart" "35"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "043f165f384fbea3ea89393597951512"
@@ -523,6 +526,8 @@
 "Cartridge.Name" "Qb (2.06) (Retroactive) (PAL)"
 "Display.Format" "PAL"
 "Display.YStart" "60"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "05ebd183ea854c0a1b56c218246fbbae"
@@ -623,6 +628,8 @@
 "Cartridge.Manufacturer" "Sega"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "073cb76b006af034fd150be3f5e0e7e6"
@@ -835,6 +842,7 @@
 "Cartridge.MD5" "0906c6e0e4bda9c10cfa4c5fc64d2f4b"
 "Cartridge.Name" "Qb (V0.12) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "08f853e8e01e711919e734d85349220d"
@@ -926,6 +934,7 @@
 "Cartridge.MD5" "096649575e451508006b17e0353259a5"
 "Cartridge.Name" "Yar Vs. Yar (2002) (Justin J. Scott) (Yars' Revenge Hack)"
 "Display.Height" "200"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "09d19274c20768f842e8fae84b766abe"
@@ -948,6 +957,8 @@
 "Cartridge.Name" "Trick Shot (1982) (Imagic) (PAL) [a1][!]"
 "Display.Format" "PAL"
 "Display.YStart" "53"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "0abf64ca504a116adca80f77f85e00fb"
@@ -1062,6 +1073,7 @@
 "Cartridge.Rarity" "Rare"
 "Display.Height" "190"
 "Display.YStart" "39"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "0b4e793c9425175498f5a65a3e960086"
@@ -1104,6 +1116,7 @@
 "Display.Width" "136"
 "Display.XStart" "8"
 "Display.YStart" "37"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "0bfabf1e98bdb180643f35f2165995d0"
@@ -1420,6 +1433,7 @@
 "Cartridge.MD5" "0f2e09c71cc216f79d22a804152ba24b"
 "Cartridge.Name" "Scroller Demo (Bob Colbert) (PD)"
 "Cartridge.Manufacturer" "Bob Colbert"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "0f6676b05621f80c670966e2995b227a"
@@ -1733,6 +1747,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "135708b9a7dd20576c1b66ab2a41860d"
@@ -1866,6 +1881,8 @@
 "Cartridge.Manufacturer" "Sega"
 "Display.Format" "PAL"
 "Display.YStart" "49"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "143918368f4f4dfff90999188c0197c9"
@@ -1888,6 +1905,7 @@
 
 "Cartridge.MD5" "14d365bbfaac3d20c6119591f57acca4"
 "Cartridge.Name" "Video Life (CommaVid) [h1]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "157356f80c709ab675961d8b8b207e20"
@@ -1971,6 +1989,7 @@
 "Cartridge.MD5" "159e5cd6ccb968015f49aed5adbc91eb"
 "Cartridge.Name" "Yar's Defeat (2002) (Justin J. Scott) (Yars' Revenge Hack)"
 "Display.Height" "200"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "15dd21c2608e0d7d9f54c0d3f08cca1f"
@@ -2009,6 +2028,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "0"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "163e7e757e2dc44469123ff0e5daec5e"
@@ -2036,6 +2056,7 @@
 "Cartridge.Name" "Big - Move This Demo 2 (PD)"
 "Display.Height" "194"
 "Display.YStart" "35"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "16fbb36a6124567405a235821e8f69ee"
@@ -2098,6 +2119,7 @@
 "Cartridge.Name" "Qb (Release Candidate #1) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "17754da584db6f22838eea255e68b31e"
@@ -2268,6 +2290,7 @@
 
 "Cartridge.MD5" "18ed63e3ce5bc3dd2d8bd188b807f1a2"
 "Cartridge.Name" "Stell-A-Sketch (Bob Colbert) (PD) [a1]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "19098c46da0640f2b5763167dea6c716"
@@ -2334,6 +2357,7 @@
 "Cartridge.Manufacturer" "Mystique"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "1bb91bae919ddbd655fa25c54ea6f532"
@@ -2497,6 +2521,7 @@
 
 "Cartridge.MD5" "1cd90a0841ab9d62583e93f78fee8036"
 "Cartridge.Name" "Dark Mage Mod (AKA DM-FOOT) (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "26bc2bdf447a17376aea7ef187ff6e44"
@@ -2609,6 +2634,7 @@
 
 "Cartridge.MD5" "1e1290ea102e12d7ac52820961457e2b"
 "Cartridge.Name" "Star Wars - The Arcade Game (Parker Bros) (Prototype 121583)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "1f21666b8f78b65051b7a609f1d48608"
@@ -2780,6 +2806,7 @@
 "Cartridge.Manufacturer" "Imagic"
 "Cartridge.ModelNo" "O3207"
 "Cartridge.Rarity" "Uncommon"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "203049f4d8290bb4521cc4402415e737"
@@ -2801,6 +2828,7 @@
 "Display.Format" "PAL"
 "Display.Height" "224"
 "Display.YStart" "49"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "211f76dff0b7dad3f6fcac9d938ee61a"
@@ -3105,6 +3133,7 @@
 "Cartridge.MD5" "2447e17a4e18e6b609de498fe4ab52ba"
 "Cartridge.Name" "Super Futebol (Pussy Style) (CCE)"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "24385ba7f5109fbe76aadc0a375de573"
@@ -3197,6 +3226,7 @@
 "Cartridge.Rarity" "Rare"
 "Display.Height" "179"
 "Display.YStart" "44"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2516f4f4b811ede4ecf6fbeb5d54a299"
@@ -3362,6 +3392,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "60"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "282a77841cb3d33af5b56151acba770e"
@@ -3463,6 +3494,7 @@
 "Cartridge.MD5" "2808dc745ff4321dc5c8122abef6711f"
 "Cartridge.Name" "Qb (2.11) (Retroactive) (Stella)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2825f4d068feba6973e61c84649489fe"
@@ -3503,6 +3535,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "28d5df3ed036ed63d33a31d0d8b85c47"
@@ -3537,6 +3571,7 @@
 
 "Cartridge.MD5" "292a0bb975b2587f9ac784c960e1b453"
 "Cartridge.Name" "Qb (05-02-2001) (AD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "291cc37604bc899e8e065c30153fc4b9"
@@ -3743,6 +3778,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "36"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2bb9f4686f7e08c5fcc69ec1a1c66fe7"
@@ -3822,6 +3858,7 @@
 "Cartridge.MD5" "2c2aea31b01c6126c1a43e10cacbfd58"
 "Cartridge.Name" "Synthcart (2002) (Paul Slocum)"
 "Cartridge.Manufacturer" "Paul Slocum"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2c8835aed7f52a0da9ade5226ee5aa75"
@@ -3915,6 +3952,7 @@
 
 "Cartridge.MD5" "2d69a5f23784f1c2230143292a073b53"
 "Cartridge.Name" "Qb (Fixed background animation) (2001) (AD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2d2c5f0761e609e3c5228766f446f7f8"
@@ -3944,6 +3982,7 @@
 
 "Cartridge.MD5" "2e0aed5bb619edcefa3fafb4fbe7c551"
 "Cartridge.Name" "Qb (2.06) (Retroactive) (NTSC)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2dfec1615c49501fefc02165c81955e6"
@@ -4072,6 +4111,7 @@
 "Display.Height" "200"
 "Display.Width" "152"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2f273c423471d125d32d1d54d58f063a"
@@ -4179,6 +4219,8 @@
 "Cartridge.Name" "John K Harvey's Equalizer (PAL) (PD)"
 "Cartridge.Rarity" "New Release"
 "Display.Format" "PAL"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "30685b9b6ebd9ba71536dd7632a1e3b6"
@@ -4223,6 +4265,7 @@
 
 "Cartridge.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
 "Cartridge.Name" "Star Trek - Strategic Operations Simulator (1983) (Sega) (PAL) [!]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "319a142aab6260842ab616382848c204"
@@ -4277,6 +4320,7 @@
 "Cartridge.MD5" "318046ae3711c05fd16e479b298e5fcc"
 "Cartridge.Name" "Qb (V2.08) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "35be55426c1fec32dfb503b4f0651572"
@@ -4293,6 +4337,7 @@
 
 "Cartridge.MD5" "327468d6c19697e65ab702f06502c7ed"
 "Cartridge.Name" "Aster-Hawk (2002) (Charles Morgan) (Asteroids Hack)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "324cb4a749bcac4f3db9da842b85d2f7"
@@ -4435,6 +4480,7 @@
 "Display.Format" "PAL"
 "Display.Height" "229"
 "Display.YStart" "28"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "33d68c3cd74e5bc4cf0df3716c5848bc"
@@ -4510,6 +4556,8 @@
 "Cartridge.Manufacturer" "CBS Electronics"
 "Display.Format" "PAL"
 "Display.YStart" "55"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "348615ffa30fab3cec1441b5a76e9460"
@@ -4554,11 +4602,13 @@
 "Cartridge.Name" "Qb (2.15) (Retroactive) (Stella)"
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "35163b56f4a692a232ae96ad3e23310f"
 "Cartridge.Name" "Qb (2.12) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3577e19714921912685bb0e32ddf943c"
@@ -4599,6 +4649,7 @@
 "Cartridge.MD5" "35fa32256982774a4f134c3347882dff"
 "Cartridge.Name" "Qb (V0.05) (Macintosh) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "372bddf113d088bc572f94e98d8249f5"
@@ -4731,6 +4782,7 @@
 "Cartridge.MD5" "376944889dcfa96c73d3079f308e3d32"
 "Cartridge.Name" "Qb (0.11) (Retroactive) (Stella)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "37527966823ee9243d34c7da8302774f"
@@ -4987,6 +5039,7 @@
 "Cartridge.MD5" "3a51a6860848e36e6d06ffe01b71fb13"
 "Cartridge.Name" "Qb (2.07) (Retroactive) (NTSC)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3a35d7f1dc2a33565c8dca52baa86bc4"
@@ -4997,6 +5050,8 @@
 "Cartridge.Name" "Die Springteufel (Starsoft) (PAL) [!]"
 "Cartridge.Manufacturer" "Starsoft"
 "Display.Format" "PAL"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3b5751a8d20f7de41eb069f76fecd5d7"
@@ -5128,6 +5183,7 @@
 
 "Cartridge.MD5" "3c4a6f613ca8ba27ce9e43c6c92a3128"
 "Cartridge.Name" "Qb (V0.04) (Non-Lax Version) (2001) (Retroactive)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3c3a2bb776dec245c7d6678b5a56ac10"
@@ -5169,6 +5225,7 @@
 
 "Cartridge.MD5" "3cdd91e1c28d28e856c0063d602da166"
 "Cartridge.Name" "Stell-A-Sketch (03-11-1997) (Bob Colbert) (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3d6fc7a19be76d808aa233415cb583fc"
@@ -5273,6 +5330,7 @@
 "Cartridge.Manufacturer" "Dimax"
 "Cartridge.ModelNo" "SM8001"
 "Cartridge.Rarity" "Unbelievably Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3e1682ddaec486d8b6b90b527aaa0fc4"
@@ -5332,6 +5390,7 @@
 "Cartridge.Manufacturer" "Coleco"
 "Cartridge.ModelNo" "2457"
 "Cartridge.Rarity" "Common"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3eccf9f363f5c5de0c8b174a535dc83b"
@@ -5351,6 +5410,7 @@
 
 "Cartridge.MD5" "3f01bd6d059396f495a4cde7de0ab180"
 "Cartridge.Name" "Qb (Special Edition) (NTSC) (Retroactive)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3ef9573536730dcd6d9c20b6822dbdc4"
@@ -5659,6 +5719,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "60"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "42249ec8043a9a0203dde0b5bb46d8c4"
@@ -5905,6 +5967,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "468f2dec984f3d4114ea84f05edf82b6"
@@ -6018,6 +6081,7 @@
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "Driving"
 "Controller.Right" "Driving"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "490e3cc59d82f85fae817cdf767ea7a0"
@@ -6048,6 +6112,7 @@
 "Display.Format" "PAL"
 "Display.Height" "192"
 "Display.YStart" "64"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "47bb1c677fe7ba5f376372ae7358e790"
@@ -6224,6 +6289,7 @@
 "Cartridge.Name" "Video Life (CommaVid)"
 "Cartridge.Manufacturer" "CommaVid"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4a7eee19c2dfb6aeb4d9d0a01d37e127"
@@ -6318,6 +6384,7 @@
 "Cartridge.Rarity" "Uncommon"
 "Display.Format" "PAL"
 "Display.Height" "240"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4afe528a082f0d008e7319ebd481248d"
@@ -6379,6 +6446,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4c205f166157154df2f1ef60d87e552f"
@@ -6558,6 +6627,7 @@
 "Cartridge.MD5" "4dd6c7ab9ef77f2b4950d8fc7cd42ee1"
 "Cartridge.Name" "Qb (V2.04) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4dcc7e7c2ec0738e26c817b9383091af"
@@ -6615,6 +6685,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4e66c8e7c670532569c70d205f615dad"
@@ -6714,6 +6786,7 @@
 "Cartridge.MD5" "4fc1b85b8074b4b9436d097900e34f29"
 "Cartridge.Name" "John K Harvey's Equalizer (NTSC) (PD) [a1]"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4fbe0f10a6327a76f83f83958c3cbeff"
@@ -6858,6 +6931,7 @@
 "Cartridge.MD5" "52e1954dc01454c03a336b30c390fb8d"
 "Cartridge.Name" "Qb (2.14) (Retroactive) (Stella)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "52bae1726d2d7a531c9ca81e25377fc3"
@@ -7201,6 +7275,7 @@
 "Cartridge.MD5" "57a66b6db7efc5df17b0b0f2f2c2f078"
 "Cartridge.Name" "Qb (V2.08) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "5835a78a88f97acea38c964980b7dbc6"
@@ -7211,6 +7286,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "56"
 "Display.Height" "206"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "57fa2d09c9e361de7bd2aa3a9575a760"
@@ -7260,6 +7336,7 @@
 "Controller.Right" "Paddles"
 "Display.Height" "219"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "5ae73916fa1da8d38ceff674fa25a78a"
@@ -7359,6 +7436,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "59"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "5a93265095146458df2baf2162014889"
@@ -7797,6 +7876,7 @@
 "Cartridge.ModelNo" "CX2655 / 4975167"
 "Cartridge.Rarity" "Common"
 "Display.Height" "200"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "5f7ae9a7f8d79a3b37e8fc841f65643a"
@@ -8042,6 +8122,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "48"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "63166867f75869a3592b7a94ea62d147"
@@ -8070,6 +8151,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "63c5fef3208bb1424d26cf1ab984b40c"
@@ -8172,6 +8254,7 @@
 "Display.Format" "PAL"
 "Display.Height" "250"
 "Display.YStart" "64"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "63e9e612bbee31045f8d184a4e53f8ec"
@@ -8183,6 +8266,7 @@
 "Display.Format" "PAL"
 "Display.Height" "242"
 "Display.YStart" "42"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6468d744be9984f2a39ca9285443a2b2"
@@ -8316,6 +8400,7 @@
 "Cartridge.MD5" "659a20019de4a23c748ec2292ea5f221"
 "Cartridge.Name" "Qb (V2.05) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "65ba1a4c643d1ab44481bdddeb403827"
@@ -8350,6 +8435,7 @@
 
 "Cartridge.MD5" "6651e2791d38edc02c5a5fd7b47a1627"
 "Cartridge.Name" "Star Wars - The Arcade Game (Parker Bros) (Prototype 040584)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "663ef22eb399504d5204c543b8a86bcd"
@@ -8538,11 +8624,13 @@
 "Cartridge.ModelNo" "DA 1002"
 "Cartridge.Rarity" "Common"
 "Display.Height" "195"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "67ce6cdf788d324935fd317d064ed842"
 "Cartridge.Name" "Qb (V2.09) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6805734a0b7bcc8925d9305b071bf147"
@@ -8557,6 +8645,7 @@
 "Cartridge.MD5" "6803fa7c2c094b428b859a58dc1dd06a"
 "Cartridge.Name" "Qb (0.11) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "68449e4aaba677abcd7cde4264e02168"
@@ -8599,6 +8688,7 @@
 
 "Cartridge.MD5" "687c23224e26f81c56e431c24faea36d"
 "Cartridge.Name" "Qb (Simple Background Animation) (2001) (AD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "68878250e106eb6c7754bc2519d780a0"
@@ -8642,6 +8732,7 @@
 
 "Cartridge.MD5" "693137592a7f5ccc9baae2d1041b7a85"
 "Cartridge.Name" "Qb (V2.02) (Stella) (2001) (Retroactive) [a1]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "691d67910b08b63de8631901d1887c1f"
@@ -8717,6 +8808,7 @@
 "Display.Format" "PAL"
 "Display.Height" "249"
 "Display.YStart" "32"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6a82b8ecc663f371b19076d99f46c598"
@@ -8778,6 +8870,7 @@
 "Cartridge.ModelNo" "VC 2007 / VC 1007"
 "Cartridge.Note" "Released as Name That Game for a contest (winning name was Entombed)"
 "Cartridge.Rarity" "Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6b1fc959e28bd71aed7b89014574bdc2"
@@ -8918,6 +9011,7 @@
 "Cartridge.Manufacturer" "Greg Troutman"
 "Cartridge.Rarity" "New Release"
 "Display.YStart" "38"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6cbe945e16d9f827d0d295546ac11b22"
@@ -8958,6 +9052,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "59"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6f74ed915ffe73b524ef0f63819e2a1d"
@@ -9021,6 +9116,7 @@
 "Display.Format" "PAL"
 "Display.Height" "194"
 "Display.YStart" "58"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6de924c2297c8733524952448d54a33c"
@@ -9074,6 +9170,7 @@
 "Cartridge.MD5" "6e5d5ba193d2540aec2e847aafb2a5fb"
 "Cartridge.Name" "Qb (2.14) (Retroactive) (NTSC)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6e4521989a60a0ddf4ff1fc6e6e5fc3d"
@@ -9168,6 +9265,7 @@
 
 "Cartridge.MD5" "703d32062436e4c20c48313dff30e257"
 "Cartridge.Name" "Moving Maze Demo (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6ff4156d10b357f61f09820d03c0f852"
@@ -9269,6 +9367,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "71464c54da46adae9447926fdbfc1abe"
@@ -9320,12 +9419,14 @@
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 "Display.Height" "242"
 "Display.YStart" "20"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "718ae62c70af4e5fd8e932fee216948a"
 "Cartridge.Name" "Journey - Escape (1982) (Data Age) [!]"
 "Cartridge.ModelNo" "112-006"
 "Cartridge.Rarity" "Common"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7187118674ff3c0bb932e049d9dbb379"
@@ -9393,6 +9494,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "56"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "724613effaf7743cbcd695fab469c2a8"
@@ -9514,6 +9616,7 @@
 "Display.FrameRate" "60"
 "Display.Height" "212"
 "Display.YStart" "28"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "740b47df422372fbef700b42cea4e0bf"
@@ -9527,6 +9630,7 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Height" "228"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "73b4e8f8b04515d91937510e680214bc"
@@ -9625,6 +9729,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "75511bb694662301c9e71df645f4b5a7"
@@ -9788,6 +9893,7 @@
 "Display.FrameRate" "60"
 "Display.Height" "200"
 "Display.YStart" "33"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "77057d9d14b99e465ea9e29783af0ae3"
@@ -10126,6 +10232,7 @@
 
 "Cartridge.MD5" "7b33407b2b198af74906b936ce1eecbb"
 "Cartridge.Name" "Ghostbuster 2 (NTSC) (King Atari)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7ad782952e5147b88b65a25cadcdf9e0"
@@ -10140,6 +10247,7 @@
 "Display.Height" "200"
 "Display.Width" "152"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7af40c1485ce9f29b1a7b069a2eb04a7"
@@ -10235,6 +10343,7 @@
 "Cartridge.MD5" "7bc4fd254ec8c0a25a13f02fd3f762ff"
 "Cartridge.Name" "Qb (V1.00) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7c4a499d343fca0cef2d59dd16af621a"
@@ -10254,6 +10363,7 @@
 "Cartridge.Name" "Venture II (2001) (Tim Snider)"
 "Cartridge.Manufacturer" "Tim Snider"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7eaf009a892f03d90682dc1e67e85f07"
@@ -10343,6 +10453,7 @@
 "Cartridge.Manufacturer" "Imagic"
 "Cartridge.ModelNo" "O3207"
 "Cartridge.Rarity" "Uncommon"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7d9c96b215d1941e87b6fb412eb9204f"
@@ -10379,6 +10490,7 @@
 "Cartridge.Type" "AR"
 "Display.Width" "144"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7e464186ba384069582d9f0c141f7491"
@@ -10556,6 +10668,7 @@
 "Cartridge.Name" "Knight on the Town (1982) (Playaround)"
 "Cartridge.Manufacturer" "Playaround"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7f9fbe3e00a21ea06e6ae5e0e5db2143"
@@ -10738,6 +10851,7 @@
 "Cartridge.Rarity" "Uncommon"
 "Display.Height" "190"
 "Display.YStart" "42"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "81a010abdba1a640f7adf7f84e13d307"
@@ -10995,6 +11109,7 @@
 "Cartridge.Name" "Lady in Wading (1982) (Playaround) [b1]"
 "Cartridge.Manufacturer" "Playaround"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "855a42078b14714bcfd490d2cf57e68d"
@@ -11040,6 +11155,7 @@
 "Cartridge.Rarity" "Rare"
 "Display.Height" "219"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "86b4aa76bbeb70e1a4f9211a9880ba8e"
@@ -11075,6 +11191,7 @@
 "Cartridge.MD5" "8712cceec5644aacc2c21203d9ebe2ec"
 "Cartridge.Name" "Qb (V0.10) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "86f5e55ca9a9bde7338a157570828e79"
@@ -11107,6 +11224,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "874c76726f68c166fcfac48ce78eef95"
@@ -11290,6 +11409,7 @@
 
 "Cartridge.MD5" "896ec58f26e930e02f5e4f046602c3a1"
 "Cartridge.Name" "Synthcart (Beta) (2002) (Paul Slocum)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8933976f2029c0d8492ebd8f4eb21492"
@@ -11373,6 +11493,7 @@
 
 "Cartridge.MD5" "8b81af55cd2ef3c7444d6aec4e3a1c09"
 "Cartridge.Name" "Dark Mage [b1]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8b5b1e3a434ebbdc2c2a49dc68f46360"
@@ -11413,12 +11534,15 @@
 "Cartridge.MD5" "8b504b417c8626167a7e02f44229f0e7"
 "Cartridge.Name" "Qb (V1.00) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8b556c3d9ca8e5e6e665bd759b93ffae"
 "Cartridge.Name" "Synthcart (2002) (Paul Slocum) (PAL) [!]"
 "Display.Format" "PAL"
 "Display.YStart" "55"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8b7ca29a55432f886cee3d452fb00481"
@@ -11446,6 +11570,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "40"
 "Display.Height" "256"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8bbfd951c89cc09c148bfabdefa08bec"
@@ -11453,6 +11578,7 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Rarity" "Prototype"
 "Cartridge.Type" "UA"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8bd8f65377023bdb7c5fcf46ddda5d31"
@@ -11483,6 +11609,7 @@
 "Display.Format" "PAL"
 "Display.Height" "239"
 "Display.YStart" "51"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8c36ed2352801031516695d1eeefe617"
@@ -11516,6 +11643,7 @@
 "Display.Height" "220"
 "Display.YStart" "44"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -11532,10 +11660,12 @@
 "Cartridge.MD5" "8ccaa442d26b09139685f5b22bf189c4"
 "Cartridge.Name" "Qb (V1.01) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8ce9126066f2ddd5173e9f1f9ce1494e"
 "Cartridge.Name" "Missile Command (CX-22 Trackball) (NTSC) (2002) (TJ)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "93b9229fc0ea4fb959d604f83f8f603c"
@@ -11550,6 +11680,7 @@
 "Display.Height" "192"
 "Display.YStart" "37"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8d8b7d7b983f75debbdaac651e814768"
@@ -11559,6 +11690,7 @@
 
 "Cartridge.MD5" "8d1e2a6d2885966e6d86717180938f87"
 "Cartridge.Name" "Missile Command (Amiga Mouse) (NTSC) (2002) (TJ)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8d9a06101ebb0f147936356e645309b8"
@@ -11665,6 +11797,7 @@
 "Display.Format" "PAL"
 "Display.Height" "215"
 "Display.YStart" "64"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8f33bce5ba1053dcf4cea9c1c69981e4"
@@ -11757,6 +11890,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "61"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "8fbabaa87941cdf3a377c15e95bdb0f3"
@@ -11778,6 +11912,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "60"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "90578a63441de4520be5324e8f015352"
@@ -11878,6 +12014,7 @@
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "25"
 "Display.Height" "220"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "91fdb6541f70c40b16aabf8308123be8"
@@ -11901,6 +12038,8 @@
 "Cartridge.Rarity" "New Release"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "927d422d6335018da469a9a07cd80390"
@@ -11923,6 +12062,7 @@
 "Display.Format" "PAL"
 "Display.Height" "230"
 "Display.YStart" "42"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "931b91a8ea2d39fe4dca1a23832b591a"
@@ -11974,6 +12114,8 @@
 "Cartridge.Manufacturer" "Zimag"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Format" "PAL"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "937736d899337036de818391a87271e0"
@@ -11999,6 +12141,7 @@
 "Display.Format" "PAL"
 "Display.Height" "256"
 "Display.YStart" "43"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "936f555b4b1a2cd061b659ff63f4f5f2"
@@ -12031,6 +12174,7 @@
 "Display.Format" "PAL"
 "Display.Height" "186"
 "Display.YStart" "64"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "93c52141d3c4e1b5574d072f1afde6cd"
@@ -12112,6 +12256,7 @@
 "Display.Width" "136"
 "Display.XStart" "12"
 "Display.YStart" "39"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9526e3db3bdfbc27989a9cbfd0ee34bf"
@@ -12121,6 +12266,7 @@
 "Cartridge.MD5" "94e4c9b924286038527f49cdc20fda69"
 "Cartridge.Name" "Qb (V2.12) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "95351b46fa9c45471d852d28b9b4e00b"
@@ -12166,6 +12312,8 @@
 "Cartridge.Name" "Fathom (1983) (Imagic) (PAL) [a1][!]"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "95a69cf8c08ef1522b050529464f0bca"
@@ -12183,6 +12331,7 @@
 "Cartridge.Name" "Lady in Wading (1982) (Playaround)"
 "Cartridge.Manufacturer" "Playaround"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "95e1d834c57cdd525dd0bd6048a57f7b"
@@ -12275,6 +12424,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "40"
 "Display.Height" "256"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "96bcb3d97ce4ff7586326d183ac338a2"
@@ -12297,6 +12447,7 @@
 "Display.Height" "187"
 "Display.Width" "152"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "97842fe847e8eb71263d6f92f7e122bd"
@@ -12353,6 +12504,7 @@
 "Display.Format" "PAL"
 "Display.Height" "213"
 "Display.YStart" "58"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9853089672116117258097dbbdb939b7"
@@ -12372,6 +12524,7 @@
 "Cartridge.MD5" "98ccd15345b1aee6caf51e05955f0261"
 "Cartridge.Name" "Qb (V2.03) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9ad36e699ef6f45d9eb6c4cf90475c9f"
@@ -12719,6 +12872,7 @@
 "Cartridge.ModelNo" "CM-003"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9de0d45731f90a0a922ab09228510393"
@@ -12773,6 +12927,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "37"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9e792a59f8795664cbaaff1ba152d731"
@@ -12784,6 +12939,7 @@
 "Cartridge.Manufacturer" "Mystique"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "37"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9e6fa031ece07919c816fba5dc8de43e"
@@ -12794,6 +12950,7 @@
 "Cartridge.Name" "Tac Scan (1983) (Sega) [h1]"
 "Display.Width" "152"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9e2c7299c69b602443d327c7dad51cbf"
@@ -13312,6 +13469,7 @@
 "Cartridge.Type" "AR"
 "Display.Width" "144"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "a47878a760f5fa3aa99f95c3fdc70a0b"
@@ -13539,6 +13697,7 @@
 "Display.Height" "190"
 "Display.Width" "136"
 "Display.XStart" "12"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "a7b96a8150600b3e800a4689c3ec60a2"
@@ -13680,6 +13839,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "44"
 "Display.Height" "220"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "a9531c763077464307086ec9a1fd057d"
@@ -13868,12 +14028,15 @@
 
 "Cartridge.MD5" "abc64037ca5d5b04ae8a7eedbca3ed74"
 "Cartridge.Name" "Green and Yellow Number 1 Demo (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "abb740bea0a6842831b4f53112fb8145"
 "Cartridge.Name" "Qb (V1.01) (PAL) (2001) (Retroactive)"
 "Display.Format" "PAL"
 "Display.YStart" "50"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ab60ea7b707c58d356cad858eb18db43"
@@ -13934,6 +14097,7 @@
 "Cartridge.Name" "Qb (2.15) (Retroactive) (NTSC)"
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ac26d7d37248d1d8eac5eccacdbef8db"
@@ -14047,6 +14211,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "44"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "afe776db50e3378cd6f29c7cdd79104a"
@@ -14062,6 +14227,8 @@
 "Cartridge.Manufacturer" "Atari"
 "Display.Format" "PAL"
 "Display.YStart" "57"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "aea308e30cd92cc73dc0c7f53f69ec56"
@@ -14097,6 +14264,8 @@
 "Cartridge.Rarity" "New Release"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ae047e9468bda961d8e9e9d8ff52980f"
@@ -14112,6 +14281,7 @@
 
 "Cartridge.MD5" "ae2f1f69bb38355395c1c75c81acc644"
 "Cartridge.Name" "Star Wars - The Arcade Game (Parker Bros) (Prototype 122383)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ae83541cf4a4c0bce0adccd2c1bf6288"
@@ -14127,6 +14297,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "60"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ae97cf8ed21f4154b4360a3cf6c95c5e"
@@ -14203,6 +14375,7 @@
 "Cartridge.ModelNo" "AP 2006"
 "Cartridge.Rarity" "Uncommon"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b00e8217633e870bf39d948662a52aac"
@@ -14222,6 +14395,7 @@
 
 "Cartridge.MD5" "b06050f686c6b857d0df1b79fea47bb4"
 "Cartridge.Name" "Moonsweeper (1983) (Activision-PS2) [!]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b049fc8ac50be7c2f28418817979c637"
@@ -14255,6 +14429,7 @@
 "Display.Height" "192"
 "Display.YStart" "37"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b0c9cf89a6d4e612524f4fd48b5bb562"
@@ -14276,6 +14451,7 @@
 "Cartridge.Name" "Tetris 2600 (Colin Hughes)"
 "Cartridge.Manufacturer" "Colin Hughes"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b1b20536aef4eed9c79dc5804f077862"
@@ -14295,6 +14471,7 @@
 "Cartridge.MD5" "b15026b43c6758609667468434766dd8"
 "Cartridge.Name" "Qb (0.06) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b1a6c96e9093352106bc335e96caa154"
@@ -14426,6 +14603,7 @@
 
 "Cartridge.MD5" "b41fdd4a522e1d5a2721840028684ac2"
 "Cartridge.Name" "Green and Yellow Number 1 Demo 2 (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b311ab95e85bc0162308390728a7361d"
@@ -14435,6 +14613,7 @@
 "Cartridge.Rarity" "Rare"
 "Display.Height" "180"
 "Display.YStart" "47"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b2f0d7217147160b2f481954cedf814b"
@@ -14459,6 +14638,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b4030c38a720dd84b84178b6ce1fc749"
@@ -14512,6 +14693,7 @@
 "Cartridge.ModelNo" "O3205"
 "Cartridge.Rarity" "Rare"
 "Display.Height" "190"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b49331b237c8f11d5f36fe2054a7b92b"
@@ -14547,6 +14729,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "64"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b59417d083b0be2d49a7d93769880a4b"
@@ -14585,6 +14768,7 @@
 "Display.Format" "PAL"
 "Display.Height" "227"
 "Display.YStart" "43"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b5a1a189601a785bdb2f02a424080412"
@@ -14639,6 +14823,7 @@
 "Display.FrameRate" "60"
 "Display.Height" "200"
 "Display.YStart" "33"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b719ada17771a8d206c7976553825139"
@@ -14706,6 +14891,7 @@
 "Cartridge.Name" "Moonsweeper (1983) (Imagic) (PAL) [a1][!]"
 "Display.Format" "PAL"
 "Display.Height" "240"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b79087a8f2f54337d6a8fa56616dee1c"
@@ -14828,6 +15014,7 @@
 "Cartridge.ModelNo" "PB5110"
 "Cartridge.Type" "E0"
 "Cartridge.Rarity" "Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b9d1e3be30b131324482345959aed5e5"
@@ -15514,6 +15701,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "48"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c3ef5c4653212088eda54dc91d787870"
@@ -15541,6 +15729,7 @@
 "Display.Format" "PAL"
 "Display.Height" "242"
 "Display.YStart" "42"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c31a17942d162b80962cb1f7571cd1d5"
@@ -15608,11 +15797,13 @@
 
 "Cartridge.MD5" "c446288fe62c0c2737639fd788ae4a21"
 "Cartridge.Name" "Mark's Sound Demo (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c4060a31d61ba857e756430a0a15ed2e"
 "Cartridge.Name" "Pick 'n Pile (PAL Conversion) (2003) (TJ)"
 "Display.YStart" "26"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c469151655e333793472777052013f4f"
@@ -15692,6 +15883,7 @@
 "Cartridge.Name" "Qb (V2.02) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c4d888bcf532e7c9c5fdeafbb145266a"
@@ -15752,6 +15944,7 @@
 "Cartridge.ModelNo" "CX2655 / 4975167"
 "Cartridge.Rarity" "Common"
 "Display.Height" "200"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c5a76bafc4676edb76e0126fb9f0fb2d"
@@ -15814,6 +16007,7 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26145"
 "Cartridge.Rarity" "Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c6688781f4ab844852f4e3352772289b"
@@ -15824,6 +16018,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "26"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c6d48c6ae6461e0e82753540a985ac9e"
@@ -15955,6 +16150,7 @@
 "Cartridge.Name" "Qb (2.00) (Retroactive) (PAL)"
 "Cartridge.Manufacturer" "Retroactive"
 "Display.YStart" "6"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c830f6ae7ee58bcc2a6712fb33e92d55"
@@ -15996,6 +16192,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c9196e28367e46f8a55e04c27743148f"
@@ -16072,6 +16270,7 @@
 "Display.Height" "192"
 "Display.YStart" "37"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cb8afcbc4a779b588b0428ea7af211d5"
@@ -16119,6 +16318,7 @@
 "Display.Format" "PAL"
 "Display.Height" "220"
 "Display.YStart" "61"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ca54de69f7cdf4d7996e86f347129892"
@@ -16163,6 +16363,7 @@
 "Cartridge.Name" "Tetris 2600 (Colin Hughes) [o1]"
 "Cartridge.Manufacturer" "Colin Hughes"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cb4a7b507372c24f8b9390d22d54a918"
@@ -16301,6 +16502,7 @@
 "Cartridge.ModelNo" "ASC1001"
 "Cartridge.Rarity" "Unbelievably Rare"
 "Display.YStart" "32"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cca33ae30a58f39e3fc5d80f94dc0362"
@@ -16329,6 +16531,8 @@
 "Cartridge.Name" "Buck Rogers - Planet of Zoom (1983) (Sega) (PAL) [!]"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cd38ad19f51b1048d8e5e99c86a2a655"
@@ -16441,6 +16645,7 @@
 "Cartridge.MD5" "cdc1a5c61d7488eadc9aba36166b253d"
 "Cartridge.Name" "Qb (V0.12) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ce243747bf34a2de366f846b3f4ca772"
@@ -16480,6 +16685,7 @@
 "Cartridge.MD5" "ce64812eb83c95723b04fb56d816910b"
 "Cartridge.Name" "Qb (V2.04) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ce6c4270f605ad3ce5e82678b0fc71f8"
@@ -16497,6 +16703,7 @@
 "Cartridge.MD5" "cea9f72036dc6f7af5eff52459066290"
 "Cartridge.Name" "Qb (2.07) (Retroactive) (Stella)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cef01595000627ee50863d4290372c27"
@@ -16508,6 +16715,7 @@
 "Cartridge.MD5" "cf0c593c563c84fdaf0f741adb367445"
 "Cartridge.Name" "Qb (V0.05) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cef2287d5fd80216b2200fb2ef1adfa8"
@@ -16581,6 +16789,7 @@
 "Cartridge.ModelNo" "003-01"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cf9069f92a43f719974ee712c50cd932"
@@ -16679,6 +16888,7 @@
 "Cartridge.MD5" "d010e3dfe7366e47561c088079a59439"
 "Cartridge.Name" "Qb (V0.10) (Stella) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d0498baca989e792db4b8270a02b9624"
@@ -16692,12 +16902,14 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Height" "187"
 "Display.YStart" "37"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d090836f0a4ea8db9ac7abb7d6adf61e"
 "Cartridge.Name" "Yahtzee (Hozer Video Games)"
 "Cartridge.Manufacturer" "Hozer Video Games"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d09a7504ee8c8717ac3e24d263e7814d"
@@ -16728,6 +16940,7 @@
 
 "Cartridge.MD5" "d0b9f705aa5f61f47a748a66009ae2d2"
 "Cartridge.Name" "Synthcart (14-01-2002) (Paul Slocum)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d2c957dd7746521b51bb09fde25c5774"
@@ -16776,6 +16989,7 @@
 "Cartridge.MD5" "d0e9beb2347595c6c7d158e9d83d2da8"
 "Cartridge.Name" "Qb (2.00) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d100b11be34a1e5b7832b1b53f711497"
@@ -16905,6 +17119,7 @@
 "Cartridge.Name" "Fire Spinner (Emag) (PAL)"
 "Display.Height" "207"
 "Display.YStart" "28"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d339b95f273f8c3550dc4daa67a4aa94"
@@ -16948,6 +17163,7 @@
 "Cartridge.Type" "UA"
 "Display.Height" "213"
 "Display.YStart" "36"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d36308387241e98f813646f346e7f9f7"
@@ -16955,6 +17171,7 @@
 "Display.YStart" "42"
 "Display.Format" "PAL"
 "Display.Height" "230"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d34b933660e29c0a0a04004f15d7e160"
@@ -16977,6 +17194,7 @@
 "Cartridge.ModelNo" "50030"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d39e29b03af3c28641084dd1528aae05"
@@ -17000,6 +17218,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "44"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d47387658ed450db77c3f189b969cc00"
@@ -17225,6 +17444,7 @@
 "Cartridge.MD5" "d787ec6785b0ccfbd844c7866db9667d"
 "Cartridge.Name" "Qb (V0.04) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "d90205e29bb73a4cdf28ea7662ba0c3c"
@@ -17404,6 +17624,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "61"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "da4e3396aa2db3bd667f83a1cb9e4a36"
@@ -17436,6 +17657,8 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Height" "219"
 "Display.YStart" "58"
+"Display.Phosphor" "Yes"
+"Console.SwapPorts" "Yes"
 ""
 
 "Cartridge.MD5" "dac762e4d01d445bdef20b7771f6570e"
@@ -17468,6 +17691,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "48"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "daeb54957875c50198a7e616f9cc8144"
@@ -17510,6 +17734,7 @@
 
 "Cartridge.MD5" "dd7884b4f93cab423ac471aa1935e3df"
 "Cartridge.Name" "Asteroids (1979) (Atari) [!]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "dcec46a98f45b193f07239611eb878c2"
@@ -17532,6 +17757,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "48"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "db4eb44bc5d652d9192451383d3249fc"
@@ -17650,11 +17876,14 @@
 "Cartridge.Rarity" "Rare"
 "Display.Format" "PAL"
 "Display.YStart" "54"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "dcba0e33aa4aed67630a4b292386f405"
 "Cartridge.Name" "Qb (V2.08) (Half Speed Version) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "dd1ecb349691aa4805eb9835dc87c094"
@@ -17804,6 +18033,7 @@
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.ModelNo" "SA-204"
 "Cartridge.Rarity" "Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "de62f8a30298e2325249fe112ecb5c10"
@@ -17825,6 +18055,7 @@
 "Display.Height" "192"
 "Display.YStart" "37"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "dea0ade296f7093e71185e802b500db8"
@@ -17910,6 +18141,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "40"
 "Display.Height" "244"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "dff33523ccd2fdc8912e84cab8e0d982"
@@ -17966,6 +18198,7 @@
 
 "Cartridge.MD5" "e01e00504e6d4b88fa743c0bbe8a96e5"
 "Cartridge.Name" "Qb (Special Edition, some bugfixes) (Retroactive)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e020f612255e266a8a6a9795a4df0c0f"
@@ -18020,6 +18253,7 @@
 "Display.Height" "214"
 "Display.Width" "152"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e10bf1af6bf3b4a253c5bef6577fe923"
@@ -18058,6 +18292,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "50"
 "Display.Height" "217"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e14dc36b24fe22c04fa076e298f2e15f"
@@ -18140,6 +18375,7 @@
 "Cartridge.MD5" "e2389c0be5b5b84e0d3ca36ec7e67514"
 "Cartridge.Name" "Qb (V2.09) (NTSC) (2001) (Retroactive)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
@@ -18184,6 +18420,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "57"
 "Display.Height" "212"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e314b42761cd13c03def744b4afc7b1b"
@@ -18207,6 +18444,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "60"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e34c236630c945089fcdef088c4b6e06"
@@ -18354,6 +18592,7 @@
 "Display.Height" "194"
 "Display.Width" "144"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e4d41f2d59a56a9d917038682b8e0b8c"
@@ -18376,6 +18615,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "38"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e505bd8e59e31aaed20718d47b15c61b"
@@ -18399,6 +18639,7 @@
 "Cartridge.ModelNo" "PB5110"
 "Cartridge.Rarity" "Rare"
 "Cartridge.Type" "E0"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e51c23389e43ab328ccfb05be7d451da"
@@ -18456,11 +18697,13 @@
 "Cartridge.ModelNo" "CM-003"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e73838c43040bcbc83e4204a3e72eef4"
 "Cartridge.Name" "Apples and Dolls (CCE)"
 "Cartridge.Manufacturer" "CCE"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e643aaec9a9e1c8ab7fe1eae90bc77d7"
@@ -18475,6 +18718,7 @@
 
 "Cartridge.MD5" "e600f5e98a20fafa47676198efe6834d"
 "Cartridge.Name" "Gyruss (1984) (Parker Bros) (PAL) [!]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e609e8a007127b8fcff79ffc380da6b1"
@@ -18637,10 +18881,13 @@
 "Cartridge.Name" "CompuMate (Spectravideo & Universum) (PAL) [!]"
 "Cartridge.Manufacturer" "Spectravideo & Universum"
 "Display.Format" "PAL"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e800e4aec7c6c54c9cf3db0d1d030058"
 "Cartridge.Name" "Qb (2.06) (Retroactive) (Stella)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e8aa36e3d49e9bfa654c25dcc19c74e6"
@@ -18688,6 +18935,7 @@
 
 "Cartridge.MD5" "e8a3473bf786cf796d1336d2d03a0008"
 "Cartridge.Name" "Star Wars - The Arcade Game (Parker Bros) (Prototype 120583)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e8f7679359c4f532f5d5e93af7d8a985"
@@ -18709,6 +18957,7 @@
 "Display.Format" "PAL"
 "Display.Height" "230"
 "Display.YStart" "45"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "e932f44fad2a66b6d5faec9addec208e"
@@ -18865,6 +19114,7 @@
 "Cartridge.MD5" "eb4252faff7a4f2ba5284a98b8f78d1a"
 "Cartridge.Name" "John K Harvey's Equalizer (NTSC) (PD)"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "eb503cc64c3560cd78b7051188b7ba56"
@@ -18937,6 +19187,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "eb92193f06b645df0b2a15d077ce435f"
@@ -18950,6 +19202,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "64"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "eb9f8b84c193d9d93a58fca112aa39ed"
@@ -19314,6 +19567,7 @@
 "Cartridge.MD5" "f0631c6675033428238408885d7e4fde"
 "Cartridge.Name" "Test Cart (2002) (Paul Slocum)"
 "Cartridge.Manufacturer" "Paul Slocum"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f1a0a23e6464d954e3a9579c4ccd01c8"
@@ -19326,6 +19580,7 @@
 "Display.Width" "136"
 "Display.XStart" "12"
 "Display.YStart" "39"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f0cacae1d1b79ee92f0dc035f42e0560"
@@ -19432,6 +19687,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "37"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f14d5e96ec3380aef57a4b70132c6677"
@@ -19529,6 +19785,7 @@
 "Display.Height" "250"
 "Display.Width" "152"
 "Display.XStart" "8"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f21813aa050437f0dbc8479864acec6d"
@@ -19589,6 +19846,7 @@
 "Cartridge.MD5" "f33f1d0f7819c74148dacb48cbf1c597"
 "Cartridge.Name" "Qb (2.00) (Retroactive) (Stella)"
 "Cartridge.Manufacturer" "Retroactive"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f34dd3b8156aaf113cb621b2e51d90b8"
@@ -19682,6 +19940,8 @@
 "Cartridge.Name" "Dancing Plates (PAL) [p1][!]"
 "Display.Format" "PAL"
 "Display.YStart" "50"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f473f99e47d4026a7a571184922ebf04"
@@ -19715,10 +19975,13 @@
 "Cartridge.Name" "Qb (Special Edition) (PAL) (Retroactive)"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f4b8a47a95b61895e671c3ec86ffd461"
 "Cartridge.Name" "Star Wars - The Arcade Game (Parker Bros) (Prototype 010384)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f526d0c519f5001adb1fc7948bfbb3ce"
@@ -19809,6 +20072,7 @@
 "Cartridge.Manufacturer" "Zimag"
 "Cartridge.ModelNo" "GN-010 / 710-111"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f6a9ea814d15b85bffe980c927df606b"
@@ -19818,6 +20082,7 @@
 "Display.Format" "PAL"
 "Display.Height" "220"
 "Display.YStart" "55"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f6c13e816e58c8c62f82b2c8b91a2d67"
@@ -20060,6 +20325,7 @@
 "Cartridge.Manufacturer" "Answer"
 "Display.YStart" "32"
 "Display.Height" "220"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f91fb8da3223b79f1c9a07b77ebfa0b2"
@@ -20228,6 +20494,7 @@
 "Cartridge.Type" "E0"
 "Display.Height" "220"
 "Display.YStart" "26"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "fa3de71841c0841db6a741884a6b6b2f"
@@ -20293,6 +20560,8 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "fbe554aa8f759226d251ba6b64a9cce4"
@@ -20398,6 +20667,7 @@
 
 "Cartridge.MD5" "fb91dfc36cddaa54b09924ae8fd96199"
 "Cartridge.Name" "Frogger II - Threedeep! (1984) (Parker Bros) (PAL) [!]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "fb91da78455d9b1606913fbf8c859772"
