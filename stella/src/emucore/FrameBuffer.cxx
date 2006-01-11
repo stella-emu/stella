@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.71 2006-01-10 20:37:00 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.72 2006-01-11 13:25:20 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -46,10 +46,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem* osystem)
   : myOSystem(osystem),
-    theRedrawTIAIndicator(true),
+    myScreen(0),
     theZoomLevel(2),
     theMaxZoomLevel(2),
     theAspectRatio(1.0),
+    theRedrawTIAIndicator(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
     myFrameRate(0),
@@ -87,6 +88,10 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
     setWindowIcon();
   }
+
+  // Erase contents of previous screen
+  if(myScreen)
+    SDL_FillRect(myScreen, NULL, 0);
 
   // Query the desktop size
   // This is really the job of SDL

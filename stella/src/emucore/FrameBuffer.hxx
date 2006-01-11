@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.62 2006-01-10 20:37:00 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.63 2006-01-11 13:25:20 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -51,7 +51,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.62 2006-01-10 20:37:00 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.63 2006-01-11 13:25:20 stephena Exp $
 */
 class FrameBuffer
 {
@@ -417,9 +417,6 @@ class FrameBuffer
     // Dimensions of the desktop area
     SDL_Rect myDesktopDim;
 
-    // Indicates if the TIA area should be redrawn
-    bool theRedrawTIAIndicator;
-
     // The SDL video buffer
     SDL_Surface* myScreen;
 
@@ -440,6 +437,9 @@ class FrameBuffer
 
     // The aspect ratio of the window
     float theAspectRatio;
+
+    // Indicates if the TIA area should be redrawn
+    bool theRedrawTIAIndicator;
 
     // Use dirty updates (SDL_UpdateRects instead of SDL_UpdateRect)
     bool myUseDirtyRects;
