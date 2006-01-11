@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.40 2006-01-10 20:37:00 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.41 2006-01-11 20:28:06 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -33,7 +33,8 @@
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
     myRectList(NULL),
-    myOverlayRectList(NULL)
+    myOverlayRectList(NULL),
+    myRenderType(kSoftZoom)
 {
 }
 
@@ -116,22 +117,26 @@ void FrameBufferSoft::drawMediaSource()
   uInt32 width  = mediasrc.width();
   uInt32 height = mediasrc.height();
 
-  struct Rectangle
+  switch(myRenderType) // use switch/case, since we'll eventually have filters
   {
-    uInt8 color;
-    uInt16 x, y, width, height;
-  } rectangles[2][160];
+    case kSoftZoom:
+    {
+      struct Rectangle
+      {
+        uInt8 color;
+        uInt16 x, y, width, height;
+      } rectangles[2][160];
 
-  // This array represents the rectangles that need displaying
-  // on the current scanline we're processing
-  Rectangle* currentRectangles = rectangles[0];
+      // This array represents the rectangles that need displaying
+      // on the current scanline we're processing
+      Rectangle* currentRectangles = rectangles[0];
 
-  // This array represents the rectangles that are still active
-  // from the previous scanlines we have processed
-  Rectangle* activeRectangles = rectangles[1];
+      // This array represents the rectangles that are still active
+      // from the previous scanlines we have processed
+      Rectangle* activeRectangles = rectangles[1];
 
-  // Indicates the number of active rectangles
-  uInt16 activeCount = 0;
+      // Indicates the number of active rectangles
+      uInt16 activeCount = 0;
 
   // This update procedure requires theWidth to be a multiple of four.  
   // This is validated when the properties are loaded.
@@ -253,6 +258,69 @@ void FrameBufferSoft::drawMediaSource()
 
     myRectList->add(&temp);
     SDL_FillRect(myScreen, &temp, myPalette[active.color]);
+  }
+
+      break; // case 0
+    }
+
+    case kPhosphor2x_16:
+    {
+      // Since phosphor mode updates the whole screen,
+      // we might as well use SDL_Flip (see postFrameUpdate)
+      myUseDirtyRects = false;
+      SDL_Rect temp;
+      temp.x = temp.y = temp.w = temp.h = 0;
+      myRectList->add(&temp);
+
+      uInt16* buffer    = (uInt16*)myScreen->pixels;
+      int pixel;
+
+      for(uInt32 y = 0; y < height; ++y)
+      {
+        for(int i = 0; i < width>>2; ++i)
+        {
+          pixel = myAvgPalette[*currentFrame++][*previousFrame++];
+          *buffer++ = pixel;  *buffer++ = pixel;
+          *buffer++ = pixel;  *buffer++ = pixel;
+
+          pixel = myAvgPalette[*currentFrame++][*previousFrame++];
+          *buffer++ = pixel;  *buffer++ = pixel;
+          *buffer++ = pixel;  *buffer++ = pixel;
+
+          pixel = myAvgPalette[*currentFrame++][*previousFrame++];
+          *buffer++ = pixel;  *buffer++ = pixel;
+          *buffer++ = pixel;  *buffer++ = pixel;
+
+          pixel = myAvgPalette[*currentFrame++][*previousFrame++];
+          *buffer++ = pixel;  *buffer++ = pixel;
+          *buffer++ = pixel;  *buffer++ = pixel;
+        }
+buffer+=myScreen->pitch/2;
+      }
+/*
+      uInt32 bufofsY    = 0;//y * width;
+      uInt32 screenofsY = 0;//y * myScreen->pitch/2;
+      for(uInt32 y = 0; y < height; ++y )
+      {
+        for(uInt32 x = 0; x < width; ++x)
+        {
+          const uInt32 bufofs = bufofsY + x;
+          uInt8 v = currentFrame[bufofs];
+          uInt8 w = previousFrame[bufofs];
+
+          // x << 1 is times 2 ( doubling width )
+          int pos = screenofsY + (x << 2);
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
+        }
+        bufofsY += width;
+        screenofsY += myScreen->pitch/2;
+      }
+*/
+      break;
+    }
   }
 }
 
@@ -485,9 +553,16 @@ void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::enablePhosphor(bool enable)
 {
-  // FIXME - implement for software mode
-//  myUsePhosphor = enable;
-//  myPhosphorBlend = blend;
+  myUsePhosphor   = enable;
+  myPhosphorBlend = myOSystem->settings().getInt("ppblend");
+
+  if(myUsePhosphor)
+    myRenderType = kPhosphor2x_16;
+  else
+    myRenderType = kSoftZoom;
+
+cerr << "phosphor effect: " <<  (myUsePhosphor ? "yes" : "no") << endl
+     << "phosphor amount: " << myPhosphorBlend << endl << endl;
 }
 
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.72 2006-01-11 13:25:20 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.73 2006-01-11 20:28:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -159,16 +159,20 @@ void FrameBuffer::update()
   {
     case EventHandler::S_EMULATE:
     {
+      bool mediaSourceChanged = false;
+
       // Draw changes to the mediasource
       if(!myPauseStatus)
       {
         myOSystem->console().mediaSource().update();
         if(myOSystem->eventHandler().frying())
           myOSystem->console().fry();
+          mediaSourceChanged = true;  // mediasource changed, so force an update
       }
 
-      // We always draw the screen, even if the core is paused
-      drawMediaSource();
+      // Only update the screen if it's been invalidated
+      if(mediaSourceChanged || theRedrawTIAIndicator)
+        drawMediaSource();
 
       // Draw any pending messages
       if(myMessageTime > 0 && !myPauseStatus)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.46 2006-01-10 20:37:00 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.47 2006-01-11 20:28:06 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -241,7 +241,7 @@ void FrameBufferGL::drawMediaSource()
             // If we ever get to this point, we know the current and previous
             // buffers differ.  In that case, make sure the changes are
             // are drawn in postFrameUpdate()
-            theRedrawTIAIndicator = true;
+            myDirtyFlag = true;
 
             // x << 1 is times 2 ( doubling width )
             const uInt32 pos = screenofsY + (x << 1);
@@ -249,9 +249,8 @@ void FrameBufferGL::drawMediaSource()
           }
         }
       }
-      break;
 
-    case 1:  // TODO - profile this, maybe we can get rid of mult's?
+/*
       for(y = 0; y < height; ++y )
       {
         const uInt32 bufofsY    = y * width;
@@ -263,10 +262,36 @@ void FrameBufferGL::drawMediaSource()
           uInt8 v = currentFrame[bufofs];
           uInt8 w = previousFrame[bufofs];
 
-          // If we ever get to this point, we know the current and previous
-          // buffers differ.  In that case, make sure the changes are
-          // are drawn in postFrameUpdate()
-          theRedrawTIAIndicator = true;
+          if(v != w || theRedrawTIAIndicator)
+          {
+            // If we ever get to this point, we know the current and previous
+            // buffers differ.  In that case, make sure the changes are
+            // are drawn in postFrameUpdate()
+            myDirtyFlag = true;
+
+            // x << 1 is times 2 ( doubling width )
+            const uInt32 pos = screenofsY + (x << 1);
+            buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
+          }
+        }
+      }
+*/
+      break;
+
+    case 1:
+      // Phosphor mode always implies a dirty update,
+      // so we don't care about theRedrawTIAIndicator
+      myDirtyFlag = true;
+      for(y = 0; y < height; ++y )
+      {
+        const uInt32 bufofsY    = y * width;
+        const uInt32 screenofsY = y * myTexture->w;
+
+        for(x = 0; x < width; ++x )
+        {
+          const uInt32 bufofs = bufofsY + x;
+          uInt8 v = currentFrame[bufofs];
+          uInt8 w = previousFrame[bufofs];
 
           // x << 1 is times 2 ( doubling width )
           const uInt32 pos = screenofsY + (x << 1);
@@ -285,7 +310,7 @@ void FrameBufferGL::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
-  if(theRedrawTIAIndicator || myDirtyFlag)
+  if(myDirtyFlag)
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 
