@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.80 2006-01-10 20:37:00 stephena Exp $
+// $Id: Console.cxx,v 1.81 2006-01-11 14:13:19 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -346,6 +346,28 @@ void Console::togglePalette(const string& palette)
   myOSystem->settings().setString("palette", type);
   myOSystem->frameBuffer().showMessage(message);
 
+  setPalette();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::togglePhosphor()
+{
+  string phosphor = myProperties.get("Display.Phosphor", true);
+  bool enable;
+  if(phosphor == "YES")
+  {
+    myProperties.set("Display.Phosphor", "No");
+    enable = false;
+    myOSystem->frameBuffer().showMessage("Phosphor effect disabled");
+  }
+  else
+  {
+    myProperties.set("Display.Phosphor", "Yes");
+    enable = true;
+    myOSystem->frameBuffer().showMessage("Phosphor effect enabled");
+  }
+
+  myOSystem->frameBuffer().enablePhosphor(enable);
   setPalette();
 }
 

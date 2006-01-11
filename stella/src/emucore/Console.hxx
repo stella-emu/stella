@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.41 2005-12-23 20:48:50 stephena Exp $
+// $Id: Console.hxx,v 1.42 2006-01-11 14:13:19 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.41 2005-12-23 20:48:50 stephena Exp $
+  @version $Id: Console.hxx,v 1.42 2006-01-11 14:13:19 stephena Exp $
 */
 class Console
 {
@@ -149,6 +149,11 @@ class Console
                       if no palette is specified.
     */
     void togglePalette(const string& palette = "");
+
+    /**
+      Toggles phosphor effect.
+    */
+    void togglePhosphor();
 
     /**
       Save a copy of the current properties after any changes.

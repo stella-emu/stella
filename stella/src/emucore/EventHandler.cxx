@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.145 2006-01-09 19:30:04 stephena Exp $
+// $Id: EventHandler.cxx,v 1.146 2006-01-11 14:13:19 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -451,6 +451,10 @@ void EventHandler::poll(uInt32 time)
 
               case SDLK_s:  // Alt-s merges properties into user properties (user.pro)
                 saveProperties();
+                break;
+
+              case SDLK_p:  // Alt-p toggles phosphor effect
+                myOSystem->console().togglePhosphor();
                 break;
 
 // FIXME - these will be removed when a UI is added for event recording
