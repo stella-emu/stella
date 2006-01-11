@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.20 2006-01-08 02:28:03 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.21 2006-01-11 01:17:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -244,6 +244,16 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+                       "Use Phosphor:", kTextAlignLeft);
+  myPhosphor = new PopUpWidget(myTab, xpos+lwidth, ypos,
+                               font.getStringWidth("Yes") + 15, lineHeight,
+                               "", 0, 0);
+  myPhosphor->appendEntry("Yes", 1);
+  myPhosphor->appendEntry("No", 2);
+  wid.push_back(myPhosphor);
+
+  ypos += lineHeight + 3;
+  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
                        "Use HMBlanks:", kTextAlignLeft);
   myHmoveBlanks = new PopUpWidget(myTab, xpos+lwidth, ypos,
                                   font.getStringWidth("Yes") + 15, lineHeight,
@@ -393,6 +403,14 @@ void GameInfoDialog::loadConfig()
   s = myGameProperties->get("Display.Height");
   myHeight->setEditString(s);
 
+  s = myGameProperties->get("Display.Phosphor", true);
+  if(s == "YES")
+    myPhosphor->setSelectedTag(1);
+  else if(s == "NO")
+    myPhosphor->setSelectedTag(2);
+  else
+    myPhosphor->setSelectedTag(0);
+
   s = myGameProperties->get("Emulation.HmoveBlanks", true);
   if(s == "YES")
     myHmoveBlanks->setSelectedTag(1);
@@ -494,6 +512,10 @@ void GameInfoDialog::saveConfig()
 
   s = myHeight->getEditString();
   myGameProperties->set("Display.Height", s);
+
+  tag = myPhosphor->getSelectedTag();
+  s = (tag == 1) ? "Yes" : "No";
+  myGameProperties->set("Display.Phosphor", s);
 
   tag = myHmoveBlanks->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";

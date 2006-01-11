@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.13 2006-01-08 02:28:03 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.14 2006-01-11 01:17:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -82,6 +82,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget* myWidth;
     EditTextWidget* myYStart;
     EditTextWidget* myHeight;
+    PopUpWidget*    myPhosphor;
     PopUpWidget*    myHmoveBlanks;
 
     /** Game properties for currently loaded ROM */

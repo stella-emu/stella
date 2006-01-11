@@ -165,6 +165,7 @@
 "Cartridge.ModelNo" "2656"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "012b8e6ef3b5fd5aabc94075c527709d"
@@ -1205,6 +1206,7 @@
 "Display.Height" "185"
 "Display.YStart" "64"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "0d1b3abf681a2fc9a6aa31a9b0e8b445"
@@ -1292,6 +1294,7 @@
 "Display.Height" "188"
 "Display.Width" "136"
 "Display.XStart" "12"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "103f1756d9dc0dd2b16b53ad0f0f1859"
@@ -1450,8 +1453,8 @@
 "Cartridge.ModelNo" "CX2642 / 6699814"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 ""
 
 "Cartridge.MD5" "0fd72a13b3b6103fc825a692c71963b4"
@@ -1509,6 +1512,7 @@
 "Display.Height" "170"
 "Display.YStart" "48"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "106326c262dfd3e8eaeabd961d2a0519"
@@ -1809,6 +1813,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "40"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "14a56b493a8d9d10e94a3e100362e3a2"
@@ -2135,6 +2140,8 @@
 "Cartridge.Name" "Joust (1982) (Atari) (PAL) [a1][!]"
 "Display.YStart" "64"
 "Display.Format" "PAL"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "1802cc46b879b229272501998c5de04f"
@@ -2143,7 +2150,7 @@
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Keypad"
+"Controller.Left" "Keyboard"
 "Controller.Right" "None"
 "Display.YStart" "27"
 ""
@@ -2157,6 +2164,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "40"
 "Display.Height" "256"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "715dd9e0240638d441a3add49316c018"
@@ -2202,6 +2210,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "44"
 "Display.Height" "220"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "19a9d3f9fa1b1358fb53009444247aaf"
@@ -2307,8 +2316,8 @@
 "Cartridge.ModelNo" "CX2664 / 6699818"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.YStart" "38"
 ""
 
@@ -2412,6 +2421,7 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Format" "PAL"
 "Display.Height" "235"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "1c6eb740d3c485766cade566abab8208"
@@ -2450,6 +2460,7 @@
 "Cartridge.ModelNo" "1009"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "37"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "1c85c0fc480bbd69dc301591b6ecb422"
@@ -2481,6 +2492,7 @@
 "Cartridge.ModelNo" "005-01"
 "Cartridge.Rarity" "Uncommon"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "1cd90a0841ab9d62583e93f78fee8036"
@@ -2849,6 +2861,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "36"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "212d0b200ed8b45d8795ad899734d7d7"
@@ -2995,6 +3008,7 @@
 
 "Cartridge.MD5" "2365e1534d67f94d8670394ab99150ce"
 "Cartridge.Name" "Missile Command (CX-80 Trackball) (NTSC) (2002) (TJ)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "23d445ea19a18fb78d5035878d9fb649"
@@ -3005,6 +3019,7 @@
 "Display.Format" "PAL"
 "Display.Height" "195"
 "Display.YStart" "59"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2432f33fd278dea5fe6ae94073627fcc"
@@ -3014,6 +3029,8 @@
 "Cartridge.Rarity" "Uncommon"
 "Display.Format" "PAL"
 "Display.YStart" "52"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "240bfbac5163af4df5ae713985386f92"
@@ -3061,6 +3078,7 @@
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 "Display.Height" "249"
 "Display.YStart" "16"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "24ad538291eb5f5cac4b9998f3b851c3"
@@ -3299,6 +3317,7 @@
 "Controller.Right" "Paddles"
 "Display.Height" "219"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "271bfd5dc2673d382019f1fb6cab9332"
@@ -3404,6 +3423,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "40"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "27a3c5216b6c6e96e321634973b73784"
@@ -3420,6 +3440,13 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "61"
+""
+
+"Cartridge.MD5" "278f14887d601b5e5b620f1870bc09f6"
+"Cartridge.Name" "Swoops! (v0.96) (Thomas Jentzsch)"
+"Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
+"Controller.Right" "Paddles"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "27c8a76cf59a9fc6b667468ef1e3f9e9"
@@ -3485,6 +3512,7 @@
 "Cartridge.Rarity" "Rare"
 "Display.Format" "PAL"
 "Display.Height" "256"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "28a4cd87fb9de4ee91693a38611cb53c"
@@ -3607,6 +3635,8 @@
 "Cartridge.Manufacturer" "CommaVid"
 "Display.Format" "PAL"
 "Display.YStart" "57"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2a156728c0123034bd73e25bf8c70a88"
@@ -3678,6 +3708,7 @@
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 "Display.Height" "236"
 "Display.YStart" "43"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2ac3a08cfbf1942ba169c3e9e6c47e09"
@@ -3827,13 +3858,14 @@
 "Cartridge.MD5" "2dbdca3058035d2b40c734dcf06a86d9"
 "Cartridge.Name" "Asteroids DC+ by Thomas Jentzsch (Asteroids Hack)"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Note" "Uses the Joystick (left) or Steering (right) Controller, Hack of Asteroids (Atari)"
+"Cartridge.Note" "Uses the Joystick (left) or Steering (right) Controller"
 "Cartridge.Rarity" "New Release (Hack)"
 "Cartridge.Type" "F8"
 "Controller.Right" "Driving"
 "Display.Height" "192"
 "Display.YStart" "37"
 "Emulation.HmoveBlanks" "No"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "2d1cf85fbc732856bf76470cd4060f4a"
@@ -4049,6 +4081,13 @@
 "Cartridge.Rarity" "Rare"
 "Display.Height" "180"
 "Display.YStart" "47"
+"Display.Phosphor" "Yes"
+""
+
+"Cartridge.MD5" "2f16663b01591539624d0ef52934a17d"
+"Cartridge.Name" "Rocky and Bullwinkle"
+"Cartridge.Manufacturer" "M Network"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "3051b6071cb26377cd428af155e1bfc4"
@@ -4269,8 +4308,8 @@
 "Cartridge.ModelNo" "CX2642 / 6699814"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 ""
 
 "Cartridge.MD5" "31df1c50c4351e144c9a378adb8c10ba"
@@ -4351,6 +4390,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "39"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "327fe8cf94f3a45c35a840a453df1235"
@@ -4403,6 +4443,7 @@
 "Cartridge.ModelNo" "4L-2486"
 "Cartridge.Rarity" "Uncommon"
 "Display.YStart" "32"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3367eeba3269aa04720abe6169767502"
@@ -4528,6 +4569,7 @@
 "Display.Format" "PAL"
 "Display.Height" "237"
 "Display.YStart" "47"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "35b10a248a7e67493ec43aeb9743538c"
@@ -4576,6 +4618,8 @@
 "Cartridge.Manufacturer" "CommaVid"
 "Display.Format" "PAL"
 "Display.YStart" "57"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3624e5568368929fabb55d7f9df1022e"
@@ -4681,6 +4725,7 @@
 
 "Cartridge.MD5" "378a62af6e9c12a760795ff4fc939656"
 "Cartridge.Name" "Motorodeo (1990) (Atari) [!]"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "376944889dcfa96c73d3079f308e3d32"
@@ -4798,6 +4843,7 @@
 "Cartridge.Manufacturer" "Telesys"
 "Cartridge.ModelNo" "1002"
 "Cartridge.Rarity" "Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3a771876e4b61d42e3a3892ad885d889"
@@ -4865,6 +4911,7 @@
 "Controller.Left" "Paddles"
 "Controller.Right" "None"
 "Display.Height" "200"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "392d34c0498075dd58df0ce7cd491ea2"
@@ -4914,6 +4961,7 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2638 / 4975166"
 "Cartridge.Rarity" "Common"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "39c78d682516d79130b379fa9deb8d1c"
@@ -4972,6 +5020,7 @@
 
 "Cartridge.MD5" "3ab5d138e26d88c8190e7cc629a89493"
 "Cartridge.Name" "Phased Color Demo (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3ac6c50a8e62d4ce71595134cbd8035e"
@@ -5203,6 +5252,7 @@
 "Display.Format" "PAL"
 "Display.Height" "216"
 "Display.YStart" "42"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "3da7cc7049d73d34920bb73817bd05a9"
@@ -5431,6 +5481,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.Height" "200"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "46e9428848c9ea71a4d8f91ff81ac9cc"
@@ -5696,25 +5747,11 @@
 "Cartridge.Name" "Star Fire (17-02-2003) (MP)"
 ""
 
-"Cartridge.MD5"           "eafe8b40313a65792e88ff9f2fe2655c"
-"Cartridge.Name"          "Skeleton+ (NTSC)"
-"Cartridge.Manufacturer"  "Eric Ball"
-"Cartridge.ModelNo"       "ELB004"
-"Cartridge.Note"          "Stereo sound"
-"Cartridge.Rarity"        "Homebrew"
-"Cartridge.Type"          "4K"
-"Cartridge.Sound"         "Stereo"
-""
-
-"Cartridge.MD5"           "63c7395d412a3cd095ccdd9b5711f387"
-"Cartridge.Name"          "Skeleton+ (PAL)"
-"Cartridge.Manufacturer"  "Eric Ball"
-"Cartridge.ModelNo"       "ELB005"
-"Cartridge.Note"          "Stereo sound"
-"Cartridge.Rarity"        "Homebrew"
-"Cartridge.Type"          "4K"
-"Cartridge.Sound"         "Stereo"
-"Display.Format"          "PAL"
+"Cartridge.MD5" "43f8459d39fb4eddf9186d62722ff795"
+"Display.Format" "PAL"
+"Display.Height" "250"
+"Cartridge.Name" "Skeleton+ (17-04-2003) (Eric Ball) (PAL)"
+"Cartridge.Sound" "Stereo"
 ""
 
 "Cartridge.MD5" "458883f1d952cd772cf0057abca57497"
@@ -5764,6 +5801,7 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Height" "194"
 "Display.YStart" "35"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "448c2a175afc8df174d6ff4cce12c794"
@@ -5880,6 +5918,7 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "60"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4689081b7363721858756fe781cc7713"
@@ -5958,7 +5997,7 @@
 "Cartridge.ModelNo" "CX26101"
 "Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Keypad"
+"Controller.Left" "Keyboard"
 "Controller.Right" "None"
 "Display.Format" "PAL"
 "Display.Height" "227"
@@ -6075,6 +6114,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "48eb1fcde4caf6a2dce059c98bd2e375"
@@ -6200,6 +6240,7 @@
 "Display.Format" "PAL"
 "Display.Height" "187"
 "Display.YStart" "64"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4a45c6d75b1ba131f94a9c13194d8e46"
@@ -6234,7 +6275,7 @@
 "Cartridge.ModelNo" "CX26106"
 "Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "Keypad"
+"Controller.Left" "Keyboard"
 "Controller.Right" "None"
 "Display.Format" "PAL"
 "Display.YStart" "27"
@@ -6527,6 +6568,7 @@
 "Cartridge.Name" "Death Trap (1983) (Avalon Hill)"
 "Cartridge.ModelNo" "50010"
 "Cartridge.Rarity" "Unbelievably Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "4df9d7352a56a458abb7961bf10aba4e"
@@ -6644,6 +6686,7 @@
 
 "Cartridge.MD5" "4fae08027365d31c558e400b687adf21"
 "Cartridge.Name" "Qb (V2.17) (NTSC) (2001) (Retroactive)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "537ed1e0d80e6c9f752b33ea7acbe079"
@@ -7094,6 +7137,7 @@
 "Cartridge.Rarity" "Uncommon"
 "Display.Height" "195"
 "Display.YStart" "36"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "56606b4d9109e2db36dea47cf7c8cca6"
@@ -7115,8 +7159,8 @@
 "Cartridge.ModelNo" "CX2643 / 99815"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.YStart" "33"
 ""
 
@@ -7125,8 +7169,8 @@
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Height" "192"
 "Display.YStart" "35"
 ""
@@ -7402,6 +7446,13 @@
 "Display.XStart" "8"
 ""
 
+"Cartridge.MD5" "5b574faa56836da0866ba32ae32547f2"
+"Cartridge.Name" "Tomb Raider 2600 [REV 03] (Montezuma's Revenge Hack)"
+"Cartridge.Type" "E0"
+"Display.Height" "192"
+"Display.YStart" "38"
+""
+
 "Cartridge.MD5" "5b92a93b23523ff16e2789b820e2a4c5"
 "Cartridge.Name" "Kung Fu Master (1984) (Activision)"
 "Cartridge.Manufacturer" "Activision"
@@ -7415,8 +7466,15 @@
 "Display.YStart" "42"
 ""
 
-"Cartridge.MD5" "6c449db9bbbd90972ad1932d6af87330"
-"Cartridge.Name" "20 Sprites at Once Demo 3 (PD)"
+"Cartridge.MD5" "63c7395d412a3cd095ccdd9b5711f387"
+"Cartridge.Name" "Skeleton+ (PAL)"
+"Cartridge.Manufacturer" "Eric Ball"
+"Cartridge.ModelNo" "ELB005"
+"Cartridge.Note" "Stereo sound"
+"Cartridge.Rarity" "Homebrew"
+"Cartridge.Type" "4K"
+"Cartridge.Sound" "Stereo"
+"Display.Format" "PAL"
 ""
 
 "Cartridge.MD5" "5e99aa93d0acc741dcda8752c4e813ce"
@@ -7538,6 +7596,15 @@
 "Cartridge.Name" "Wavy Line Test 2 (PD)"
 "Display.Height" "211"
 "Display.YStart" "21"
+""
+
+"Cartridge.MD5" "5d8f1ab95362acdf3426d572a6301bf2"
+"Cartridge.Name" "Swoops! (v0.96) (Thomas Jentzsch) (PAL)"
+"Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
+"Controller.Right" "Paddles"
+"Display.Format" "PAL"
+"Display.YStart" "40"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "5dccf215fdb9bbf5d4a6d0139e5e8bcb"
@@ -7960,10 +8027,7 @@
 "Display.Format" "PAL"
 "Display.Height" "225"
 "Display.YStart" "22"
-""
-
-"Cartridge.MD5" "655c84e5b951258c9d20f0bf2b9d496d"
-"Cartridge.Name" "2600_2003 Demo (PD)"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "6354f9c7588a27109c66905b0405825b"
@@ -8062,6 +8126,14 @@
 "Cartridge.MD5" "639ded0c9e53bc3f91defb5dde930286"
 "Cartridge.Name" "SuperCharger - Escape from the Mindmaster (4 of 4) (1982) (Starpath) [a1]"
 "Cartridge.Manufacturer" "Starpath"
+""
+
+"Cartridge.MD5" "6c449db9bbbd90972ad1932d6af87330"
+"Cartridge.Name" "20 Sprites at Once Demo 3 (PD)"
+""
+
+"Cartridge.MD5" "655c84e5b951258c9d20f0bf2b9d496d"
+"Cartridge.Name" "2600_2003 Demo (PD)"
 ""
 
 "Cartridge.MD5" "64ca518905311d2d9aeb56273f6caa04"
@@ -8452,6 +8524,7 @@
 "Cartridge.ModelNo" "CM-004"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "67bd3d4dc5ac6a42a99950b4245bdc81"
@@ -8521,6 +8594,7 @@
 "Display.Format" "PAL"
 "Display.Height" "225"
 "Display.YStart" "44"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "687c23224e26f81c56e431c24faea36d"
@@ -8558,8 +8632,8 @@
 "Cartridge.ModelNo" "CX26131"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 ""
 
 "Cartridge.MD5" "68feb6d6ff63e80df1302d8547979aec"
@@ -9217,13 +9291,6 @@
 "Display.YStart" "49"
 ""
 
-"Cartridge.MD5" "7f525b07bc98080cc8950f7284e52ede"
-"Cartridge.Name" "128-in-1 Junior Console (Chip 4) (PAL) [!]"
-"Display.Format" "PAL"
-"Display.Width" "152"
-"Display.XStart" "8"
-""
-
 "Cartridge.MD5" "7732e4e4cc2644f163d6650ddcc9d9df"
 "Cartridge.Name" "2 Pak Black - Challenge, Surfing (HES) (PAL) [!]"
 "Cartridge.Manufacturer" "HES"
@@ -9731,18 +9798,6 @@
 "Display.YStart" "27"
 ""
 
-"Cartridge.MD5" "7f430c33044e0354815392b53a9a772d"
-"Cartridge.Name" "2 Pak Special Magenta - CaveBlast,City War (1992) (HES) (PAL) [!]"
-"Cartridge.Manufacturer" "HES"
-"Display.Format" "PAL"
-"Display.Height" "222"
-"Display.YStart" "49"
-""
-
-"Cartridge.MD5" "7a93d0c029eaa72236523eedc3f19645"
-"Cartridge.Name" "20 Sprites at Once Demo 2 (PD)"
-""
-
 "Cartridge.MD5" "777aece98d7373998ffb8bc0b5eff1a2"
 "Cartridge.Name" "2600 Collison Demo 2 (Piero Cavina) (PD)"
 "Display.Height" "195"
@@ -9758,24 +9813,6 @@
 "Display.Format" "PAL"
 "Display.FrameRate" "30"
 "Display.YStart" "60"
-""
-
-"Cartridge.MD5" "79ab4123a83dc11d468fb2108ea09e2e"
-"Cartridge.Name" "Beamrider (1983) (Activision) [!]"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AZ-037-04"
-"Cartridge.Rarity" "Rare"
-"Display.Height" "190"
-"Display.Width" "152"
-"Display.XStart" "8"
-"Display.YStart" "38"
-""
-
-"Cartridge.MD5" "798b8921276eec9e332dfcb47a2dbb17"
-"Cartridge.Name" "Cookie Monster Munch (1983) (Atari) (PAL) [a1][!]"
-"Display.Format" "PAL"
-"Display.YStart" "45"
-"Display.Height" "228"
 ""
 
 "Cartridge.MD5" "78b84cfb1c57b0488d674d2374e656e6"
@@ -9887,6 +9924,43 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 "Display.YStart" "43"
+""
+
+"Cartridge.MD5" "7f525b07bc98080cc8950f7284e52ede"
+"Cartridge.Name" "128-in-1 Junior Console (Chip 4) (PAL) [!]"
+"Display.Format" "PAL"
+"Display.Width" "152"
+"Display.XStart" "8"
+""
+
+"Cartridge.MD5" "7f430c33044e0354815392b53a9a772d"
+"Cartridge.Name" "2 Pak Special Magenta - CaveBlast,City War (1992) (HES) (PAL) [!]"
+"Cartridge.Manufacturer" "HES"
+"Display.Format" "PAL"
+"Display.Height" "222"
+"Display.YStart" "49"
+""
+
+"Cartridge.MD5" "7a93d0c029eaa72236523eedc3f19645"
+"Cartridge.Name" "20 Sprites at Once Demo 2 (PD)"
+""
+
+"Cartridge.MD5" "79ab4123a83dc11d468fb2108ea09e2e"
+"Cartridge.Name" "Beamrider (1983) (Activision) [!]"
+"Cartridge.Manufacturer" "Activision"
+"Cartridge.ModelNo" "AZ-037-04"
+"Cartridge.Rarity" "Rare"
+"Display.Height" "190"
+"Display.Width" "152"
+"Display.XStart" "8"
+"Display.YStart" "38"
+""
+
+"Cartridge.MD5" "798b8921276eec9e332dfcb47a2dbb17"
+"Cartridge.Name" "Cookie Monster Munch (1983) (Atari) (PAL) [a1][!]"
+"Display.Format" "PAL"
+"Display.YStart" "45"
+"Display.Height" "228"
 ""
 
 "Cartridge.MD5" "7972e5101fa548b952d852db24ad6060"
@@ -10321,9 +10395,10 @@
 "Cartridge.Rarity" "Rare"
 "Cartridge.Type" "FASC"
 "Display.Height" "186"
-"Display.Width" "128"
-"Display.XStart" "16"
+"Display.Width" "144"
+"Display.XStart" "8"
 "Display.YStart" "47"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "7e52a95074a66640fcfde124fffd491a"
@@ -10708,8 +10783,8 @@
 "Cartridge.ModelNo" "CX2643 / 99815"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.YStart" "33"
 ""
 
@@ -11417,36 +11492,6 @@
 "Display.YStart" "56"
 ""
 
-"Cartridge.MD5" "fd7464edaa8cc264b97ba0d13e7f0678"
-"Cartridge.Name" "2 Pak Special Black - Challenge,Surfing (HES) (PAL) [a1][!]"
-"Cartridge.Manufacturer" "HES"
-"Display.Format" "PAL"
-"Display.Height" "236"
-"Display.YStart" "49"
-""
-
-"Cartridge.MD5" "f8c1c4a41303bd40b0d6c81bfaf8573b"
-"Cartridge.Name" "2 Pak Special Blue - Dungeon Master,Creature Strike (1992) (PAL) [!]"
-"Display.Format" "PAL"
-"Display.YStart" "42"
-"Display.Height" "240"
-""
-
-"Cartridge.MD5" "ab434f4c942d6472e75d5490cc4dd128"
-"Cartridge.Name" "2 Pak Special Light Green - Hoppy,Alien Force (HES) (PAL) [!]"
-"Cartridge.Manufacturer" "HES"
-"Display.Format" "PAL"
-"Display.Height" "222"
-"Display.YStart" "49"
-""
-
-"Cartridge.MD5" "a94b8ca630f467b574b614808d813919"
-"Cartridge.Name" "2 Pak Special Orange - Space Voyage,Fire Alert (1992) (HES) (PAL) [!]"
-"Display.Format" "PAL"
-"Display.YStart" "48"
-"Display.Height" "230"
-""
-
 "Cartridge.MD5" "94e3fbc19107a169909e274187247a9d"
 "Cartridge.Name" "2-in-1 - Freeway and Tennis [p1]"
 "Cartridge.Type" "2K"
@@ -11740,6 +11785,7 @@
 "Cartridge.Manufacturer" "Bitcorp"
 "Display.Format" "PAL"
 "Display.Height" "256"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "9057694dce8449521e6164d263702185"
@@ -12048,14 +12094,6 @@
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "4L-2487"
 "Cartridge.Rarity" "Uncommon"
-""
-
-"Cartridge.MD5" "9c40bf810f761ffc9c1b69c4647a8b84"
-"Cartridge.Name" "2-in-1 - Frostbite and River Raid [p1]"
-""
-
-"Cartridge.MD5" "9be58a14e055b0e7581fc4d6c2f6b31d"
-"Cartridge.Name" "Adventure (Color Scrolling) [h1]"
 ""
 
 "Cartridge.MD5" "98e5e4d5c4dd9a986d30fd62bd2f75ae"
@@ -12499,6 +12537,39 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
+"Cartridge.MD5" "eafe8b40313a65792e88ff9f2fe2655c"
+"Cartridge.Name" "Skeleton+ (NTSC)"
+"Cartridge.Manufacturer" "Eric Ball"
+"Cartridge.ModelNo" "ELB004"
+"Cartridge.Note" "Stereo sound"
+"Cartridge.Rarity" "Homebrew"
+"Cartridge.Type" "4K"
+"Cartridge.Sound" "Stereo"
+""
+
+"Cartridge.MD5" "ab434f4c942d6472e75d5490cc4dd128"
+"Cartridge.Name" "2 Pak Special Light Green - Hoppy,Alien Force (HES) (PAL) [!]"
+"Cartridge.Manufacturer" "HES"
+"Display.Format" "PAL"
+"Display.Height" "222"
+"Display.YStart" "49"
+""
+
+"Cartridge.MD5" "a94b8ca630f467b574b614808d813919"
+"Cartridge.Name" "2 Pak Special Orange - Space Voyage,Fire Alert (1992) (HES) (PAL) [!]"
+"Display.Format" "PAL"
+"Display.YStart" "48"
+"Display.Height" "230"
+""
+
+"Cartridge.MD5" "9c40bf810f761ffc9c1b69c4647a8b84"
+"Cartridge.Name" "2-in-1 - Frostbite and River Raid [p1]"
+""
+
+"Cartridge.MD5" "9be58a14e055b0e7581fc4d6c2f6b31d"
+"Cartridge.Name" "Adventure (Color Scrolling) [h1]"
+""
+
 "Cartridge.MD5" "9b246683f44c963a50e41d6b485bee77"
 "Cartridge.Name" "Boring (PAL) (AD)"
 "Display.Format" "PAL"
@@ -12549,8 +12620,8 @@
 "Cartridge.ModelNo" "CX26103"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Height" "195"
 ""
 
@@ -12696,8 +12767,8 @@
 "Cartridge.ModelNo" "CX262"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Height" "221"
 "Display.Width" "152"
 "Display.XStart" "8"
@@ -12811,8 +12882,8 @@
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Format" "PAL"
 "Display.Height" "228"
 "Display.YStart" "45"
@@ -13078,6 +13149,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "40"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "a23ffc86804240ce77134a1c91926685"
@@ -13130,8 +13202,8 @@
 "Cartridge.ModelNo" "CX2643 / 99815"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Format" "PAL"
 "Display.YStart" "57"
 ""
@@ -13427,6 +13499,7 @@
 "Display.Format" "PAL"
 "Display.YStart" "47"
 "Display.Height" "230"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "a7523db9a33e9417637be0e71fa4377c"
@@ -13665,6 +13738,7 @@
 "Display.Format" "PAL"
 "Display.Height" "236"
 "Display.YStart" "35"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "aa2c4b32656bde9a75042a4d158583e1"
@@ -13966,8 +14040,8 @@
 "Cartridge.ModelNo" "CX2624"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Common"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Format" "PAL"
 "Display.Height" "230"
 "Display.Width" "152"
@@ -14270,6 +14344,8 @@
 "Cartridge.ModelNo" "CX26171"
 "Cartridge.Rarity" "Unbelievably Rare"
 "Display.Format" "PAL"
+"Display.Height" "250"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b1fd0b71de9f6eeb5143a97963674cb6"
@@ -14648,6 +14724,7 @@
 "Cartridge.ModelNo" "2695 / PB5820"
 "Cartridge.Rarity" "Extremely Rare"
 "Cartridge.Type" "E0"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "b7e459d5416eeb196aaa8e092db14463"
@@ -15057,6 +15134,13 @@
 "Cartridge.Name" "Image - Clown (Full Screen) (12-02-2003) (AD)"
 ""
 
+"Cartridge.MD5" "be2870a0120fd28d25284e9ccdcbdc99"
+"Cartridge.Name" "Tomb Raider 2600 [REV 01] (Montezuma's Revenge Hack)"
+"Cartridge.Type" "E0"
+"Display.Height" "192"
+"Display.YStart" "38"
+""
+
 "Cartridge.MD5" "be35d8b37bbc03848a5f020662a99909"
 "Cartridge.Name" "Tank Plus (1977) (Sears) [a1]"
 "Cartridge.ModelNo" "CX2601 / 6699801 / 4975124"
@@ -15329,7 +15413,7 @@
 "Cartridge.ModelNo" "CX2660 / 4975187"
 "Cartridge.Note" "Uses Joystick (left) and Keypad (right) Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Right" "Keypad"
+"Controller.Right" "Keyboard"
 "Display.Format" "PAL"
 "Display.Height" "220"
 "Display.YStart" "64"
@@ -15614,6 +15698,7 @@
 "Cartridge.Name" "Robot Fight (AKA Space Robot) (HomeVision) (PAL) [b1]"
 "Display.Format" "PAL"
 "Display.Height" "235"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c52d9bbdc5530e1ef8e8ba7be692b01e"
@@ -15621,8 +15706,8 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 ""
 
 "Cartridge.MD5" "c5301f549d0722049bb0add6b10d1e09"
@@ -15851,6 +15936,7 @@
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5370"
 "Cartridge.Rarity" "Common"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c7eab66576696e11e3c11ffff92e13cc"
@@ -15883,6 +15969,7 @@
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 "Display.Height" "245"
 "Display.YStart" "27"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "c8fa5d69d9e555eb16068ef87b1c9c45"
@@ -16098,8 +16185,8 @@
 "Cartridge.ModelNo" "CX2664 / 6699818"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.YStart" "38"
 ""
 
@@ -16142,6 +16229,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "40"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "cbb0ee17c1308148823cc6da85bff25c"
@@ -16164,7 +16252,7 @@
 "Cartridge.ModelNo" "CX2660 / 4975187"
 "Cartridge.Note" "Uses Joystick (left) and Keypad (right) Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Right" "Keypad"
+"Controller.Right" "Keyboard"
 ""
 
 "Cartridge.MD5" "cbe5a166550a8129a5e6d374901dffad"
@@ -17448,10 +17536,11 @@
 
 "Cartridge.MD5" "db4eb44bc5d652d9192451383d3249fc"
 "Cartridge.Name" "Mountain King (1983) (CBS Electronics) [!]"
-"Display.Width" "128"
-"Display.XStart" "16"
+"Display.Width" "144"
+"Display.XStart" "8"
 "Display.YStart" "47"
 "Display.Height" "186"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "db76f7a0819659d9e585f2cdde9175c7"
@@ -17900,6 +17989,13 @@
 "Cartridge.Rarity" "Uncommon"
 "Display.Format" "PAL"
 "Display.YStart" "53"
+""
+
+"Cartridge.MD5" "e0221c95aa657f5764eeeb64c8429258"
+"Cartridge.Name" "Tomb Raider 2600 [REV 02] (Montezuma's Revenge Hack)"
+"Cartridge.Type" "E0"
+"Display.Height" "192"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "e0b24c3f40a46cda52e29835ab7ad660"
@@ -18688,6 +18784,28 @@
 "Display.YStart" "43"
 ""
 
+"Cartridge.MD5" "eae0c06ee61c63b81cd016096fc901b0"
+"Cartridge.Name" "SCSIcide (v1.0) (2001) (Joe Grand)"
+"Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Rarity" "New Release"
+"Controller.Left" "Paddles"
+"Controller.Right" "Paddles"
+""
+
+"Cartridge.MD5" "eaf744185d5e8def899950ba7c6e7bb5"
+"Cartridge.Name" "Xenophobe (1990) (Atari) [a1]"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26172"
+"Cartridge.Rarity" "Extremely Rare"
+""
+
+"Cartridge.MD5" "f8c1c4a41303bd40b0d6c81bfaf8573b"
+"Cartridge.Name" "2 Pak Special Blue - Dungeon Master,Creature Strike (1992) (PAL) [!]"
+"Display.Format" "PAL"
+"Display.YStart" "42"
+"Display.Height" "240"
+""
+
 "Cartridge.MD5" "f6efa00ae99aaf33e427b674bcfd834d"
 "Cartridge.Name" "2600 Digital Clock (Demo 3) (PD)"
 ""
@@ -18732,21 +18850,6 @@
 
 "Cartridge.MD5" "eb3d680699f8762f71f38e28e321234d"
 "Cartridge.Name" "Fu Kung! (V0.01) (08-01-2003) (AD)"
-""
-
-"Cartridge.MD5" "eae0c06ee61c63b81cd016096fc901b0"
-"Cartridge.Name" "SCSIcide (v1.0) (2001) (Joe Grand)"
-"Cartridge.Manufacturer" "Joe Grand"
-"Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
-""
-
-"Cartridge.MD5" "eaf744185d5e8def899950ba7c6e7bb5"
-"Cartridge.Name" "Xenophobe (1990) (Atari) [a1]"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26172"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "eb46e99ec15858f8cd8c91cef384ce09"
@@ -18795,6 +18898,7 @@
 "Display.Width" "152"
 "Display.XStart" "8"
 "Display.YStart" "33"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "eddef10fdc0029301064115ae0cd41d4"
@@ -19354,8 +19458,8 @@
 "Cartridge.ModelNo" "CX26103"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Format" "PAL"
 "Display.Height" "246"
 ""
@@ -19366,7 +19470,7 @@
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Keypad"
+"Controller.Left" "Keyboard"
 "Controller.Right" "None"
 "Display.Format" "PAL"
 "Display.Height" "225"
@@ -19379,8 +19483,8 @@
 "Cartridge.ModelNo" "CX2664 / 6699818"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keypad"
-"Controller.Right" "Keypad"
+"Controller.Left" "Keyboard"
+"Controller.Right" "Keyboard"
 "Display.Format" "PAL"
 "Display.YStart" "38"
 ""
@@ -19596,6 +19700,7 @@
 "Controller.Left" "Paddles"
 "Controller.Right" "None"
 "Display.Height" "200"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "f53f81fae276d72dbdba7064786a8266"
@@ -20110,7 +20215,7 @@
 "Cartridge.ModelNo" "CX26101"
 "Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "Keypad"
+"Controller.Left" "Keyboard"
 "Controller.Right" "None"
 "Display.Height" "190"
 "Display.YStart" "38"
@@ -20188,10 +20293,6 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Display.Format" "PAL"
 "Display.YStart" "64"
-""
-
-"Cartridge.MD5" "fcea12625c071ddc49f4e409f4038c60"
-"Cartridge.Name" "Balls! (16-09-2002) (Fabrizio Zavagli)"
 ""
 
 "Cartridge.MD5" "fbe554aa8f759226d251ba6b64a9cce4"
@@ -20332,17 +20433,6 @@
 "Cartridge.Name" "Baubles 3 (Jake Patterson) (PD)"
 ""
 
-"Cartridge.MD5" "fca4a5be1251927027f2c24774a02160"
-"Cartridge.Name" "H.E.R.O. (1984) (Activision) [!]"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AZ-036-04"
-"Cartridge.Rarity" "Rare"
-"Cartridge.Type" "F8"
-"Display.Height" "190"
-"Display.YStart" "49"
-"Emulation.HmoveBlanks" "No"
-""
-
 "Cartridge.MD5" "fc92d74f073a44bc6e46a3b3fa8256a2"
 "Cartridge.Name" "Megademo (19xx) (PD)"
 ""
@@ -20390,6 +20480,29 @@
 "Cartridge.MD5" "fc668a2251dd79cbd903d4fa0e558f96"
 "Cartridge.Name" "Thrust (V1.1) (2000) (TJ) [a1]"
 "Display.Height" "201"
+""
+
+"Cartridge.MD5" "fd7464edaa8cc264b97ba0d13e7f0678"
+"Cartridge.Name" "2 Pak Special Black - Challenge,Surfing (HES) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "HES"
+"Display.Format" "PAL"
+"Display.Height" "236"
+"Display.YStart" "49"
+""
+
+"Cartridge.MD5" "fcea12625c071ddc49f4e409f4038c60"
+"Cartridge.Name" "Balls! (16-09-2002) (Fabrizio Zavagli)"
+""
+
+"Cartridge.MD5" "fca4a5be1251927027f2c24774a02160"
+"Cartridge.Name" "H.E.R.O. (1984) (Activision) [!]"
+"Cartridge.Manufacturer" "Activision"
+"Cartridge.ModelNo" "AZ-036-04"
+"Cartridge.Rarity" "Rare"
+"Cartridge.Type" "F8"
+"Display.Height" "190"
+"Display.YStart" "49"
+"Emulation.HmoveBlanks" "No"
 ""
 
 "Cartridge.MD5" "fcf8e306f6615f74feba5cb25550038c"
@@ -20543,6 +20656,7 @@
 "Controller.Right" "None"
 "Display.Format" "PAL"
 "Display.Height" "240"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "ff7627207e8aa03730c35c735a82c26c"
@@ -20614,52 +20728,3 @@
 "Display.XStart" "8"
 ""
 
-"Cartridge.MD5" "be2870a0120fd28d25284e9ccdcbdc99" 
-"Cartridge.Name" "Tomb Raider 2600 [REV 01] (Montezuma's Revenge Hack)" 
-"Cartridge.Type" "E0" 
-"Display.Height" "192" 
-"Display.YStart" "38" 
-""
-
-"Cartridge.MD5" "e0221c95aa657f5764eeeb64c8429258" 
-"Cartridge.Name" "Tomb Raider 2600 [REV 02] (Montezuma's Revenge Hack)" 
-"Cartridge.Type" "E0" 
-"Display.Height" "192" 
-"Display.YStart" "38" 
-""
-
-"Cartridge.MD5" "5b574faa56836da0866ba32ae32547f2" 
-"Cartridge.Name" "Tomb Raider 2600 [REV 03] (Montezuma's Revenge Hack)" 
-"Cartridge.Type" "E0" 
-"Display.Height" "192" 
-"Display.YStart" "38" 
-""
-
-"Cartridge.MD5" "43f8459d39fb4eddf9186d62722ff795"
-"Display.Format" "PAL"
-"Display.Height" "250"
-"Cartridge.Name" "Skeleton+ (17-04-2003) (Eric Ball) (PAL)"
-"Cartridge.Sound" "Stereo"
-""
-
-"Cartridge.MD5" "278f14887d601b5e5b620f1870bc09f6"
-"Cartridge.Name" "Swoops! (v0.96) (Thomas Jentzsch)"
-"Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
-"Controller.Right" "Paddles"
-"Display.YStart" "28"
-""
-
-"Cartridge.MD5" "5d8f1ab95362acdf3426d572a6301bf2"
-"Cartridge.Name" "Swoops! (v0.96) (Thomas Jentzsch) (PAL)"
-"Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
-"Controller.Right" "Paddles"
-"Display.Format" "PAL"
-"Display.YStart" "40"
-"Display.Height" "240"
-""
-
-"Cartridge.MD5" "2f16663b01591539624d0ef52934a17d"
-"Cartridge.Name" "Rocky and Bullwinkle"
-"Cartridge.Manufacturer" "M Network"
-"Cartridge.Rarity" "Prototype"
-""
