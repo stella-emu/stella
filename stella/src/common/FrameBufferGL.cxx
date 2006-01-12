@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.47 2006-01-11 20:28:06 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.48 2006-01-12 16:23:36 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -221,16 +221,16 @@ void FrameBufferGL::drawMediaSource()
   uInt16* buffer       = (uInt16*) myTexture->pixels;
 
   // TODO - is this fast enough?
-  register uInt32 x, y;
   switch((int)myUsePhosphor) // use switch/case, since we'll eventually have filters
   {
     case 0:
-      for(y = 0; y < height; ++y )
+    {
+      uInt32 bufofsY    = 0;
+      uInt32 screenofsY = 0;
+      for(uInt32 y = 0; y < height; ++y )
       {
-        const uInt32 bufofsY    = y * width;
-        const uInt32 screenofsY = y * myTexture->w;
-
-        for(x = 0; x < width; ++x )
+        uInt32 pos = screenofsY;
+        for(uInt32 x = 0; x < width; ++x )
         {
           const uInt32 bufofs = bufofsY + x;
           uInt8 v = currentFrame[bufofs];
@@ -243,62 +243,41 @@ void FrameBufferGL::drawMediaSource()
             // are drawn in postFrameUpdate()
             myDirtyFlag = true;
 
-            // x << 1 is times 2 ( doubling width )
-            const uInt32 pos = screenofsY + (x << 1);
             buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
           }
+          pos += 2;
         }
+        bufofsY    += width;
+        screenofsY += myTexture->w;
       }
-
-/*
-      for(y = 0; y < height; ++y )
-      {
-        const uInt32 bufofsY    = y * width;
-        const uInt32 screenofsY = y * myTexture->w;
-
-        for(x = 0; x < width; ++x )
-        {
-          const uInt32 bufofs = bufofsY + x;
-          uInt8 v = currentFrame[bufofs];
-          uInt8 w = previousFrame[bufofs];
-
-          if(v != w || theRedrawTIAIndicator)
-          {
-            // If we ever get to this point, we know the current and previous
-            // buffers differ.  In that case, make sure the changes are
-            // are drawn in postFrameUpdate()
-            myDirtyFlag = true;
-
-            // x << 1 is times 2 ( doubling width )
-            const uInt32 pos = screenofsY + (x << 1);
-            buffer[pos] = buffer[pos+1] = (uInt16) myPalette[v];
-          }
-        }
-      }
-*/
       break;
+    }
 
     case 1:
+    {
       // Phosphor mode always implies a dirty update,
       // so we don't care about theRedrawTIAIndicator
       myDirtyFlag = true;
-      for(y = 0; y < height; ++y )
-      {
-        const uInt32 bufofsY    = y * width;
-        const uInt32 screenofsY = y * myTexture->w;
 
-        for(x = 0; x < width; ++x )
+      uInt32 bufofsY    = 0;
+      uInt32 screenofsY = 0;
+      for(uInt32 y = 0; y < height; ++y )
+      {
+        uInt32 pos = screenofsY;
+        for(uInt32 x = 0; x < width; ++x )
         {
           const uInt32 bufofs = bufofsY + x;
           uInt8 v = currentFrame[bufofs];
           uInt8 w = previousFrame[bufofs];
 
-          // x << 1 is times 2 ( doubling width )
-          const uInt32 pos = screenofsY + (x << 1);
-          buffer[pos] = buffer[pos+1] = (uInt16) myAvgPalette[v][w];
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
         }
+        bufofsY    += width;
+        screenofsY += myTexture->w;
       }
       break;
+    }
   }
 }
 
@@ -495,11 +474,6 @@ void FrameBufferGL::enablePhosphor(bool enable)
 {
   myUsePhosphor   = enable;
   myPhosphorBlend = myOSystem->settings().getInt("ppblend");
-
-cerr << "phosphor effect: " <<  (myUsePhosphor ? "yes" : "no") << endl
-     << "phosphor amount: " << myPhosphorBlend << endl << endl;
-
- // FIXME - change rendering method
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
