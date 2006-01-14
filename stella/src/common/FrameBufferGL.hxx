@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.27 2006-01-14 21:36:29 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.28 2006-01-14 22:29:34 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.27 2006-01-14 21:36:29 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.28 2006-01-14 22:29:34 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -249,6 +249,9 @@ class FrameBufferGL : public FrameBuffer
 
     // TODO - will be removed when textured dirty rect support is added
     bool myDirtyFlag;
+
+    // Indicates if the OpenGL functions have been properly loaded
+    static bool myFuncsLoaded;
 };
 
 #endif  // DISPLAY_OPENGL

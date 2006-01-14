@@ -36,8 +36,8 @@
 				AdditionalOptions="SDL.lib
 SDLmain.lib
 libpng.lib
-opengl32.lib"
-				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib zdll.lib"
+"
+				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -87,8 +87,8 @@ opengl32.lib"
 				AdditionalOptions="SDL.lib
 SDLmain.lib
 libpng.lib
-opengl32.lib"
-				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib opengl32.lib zdll.lib"
+"
+				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
