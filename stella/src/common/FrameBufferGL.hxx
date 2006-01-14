@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.26 2006-01-10 20:37:00 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.27 2006-01-14 21:36:29 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.26 2006-01-10 20:37:00 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.27 2006-01-14 21:36:29 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -51,6 +51,15 @@ class FrameBufferGL : public FrameBuffer
       Destructor
     */
     virtual ~FrameBufferGL();
+
+    /**
+      Check if OpenGL is available on this system and dynamically load
+      all required GL functions.  If any errors occur, we shouldn't attempt
+      to instantiate a FrameBufferGL object.
+
+      @param library  The filename of the OpenGL library
+    */
+    static bool loadFuncs(const string& library);
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx

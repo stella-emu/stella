@@ -678,7 +678,7 @@ if test "$_build_gl" = "yes" ; then
 		echo_n "   OpenGL rendering enabled"
 		echo
 	else
-		echo_n "   OpenGL rendering disabled (missing OpenGL library)"
+		echo_n "   OpenGL rendering disabled (missing OpenGL headers)"
 		echo
 		_build_gl=no
 	fi
@@ -778,7 +778,7 @@ case $_host_os in
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then
 				DEFINES="$DEFINES -DDISPLAY_OPENGL"
-				LIBS="$LIBS -L$X_LIBS -lGL"
+#				LIBS="$LIBS -L$X_LIBS -lGL"
 			fi
 			;;
 		win32)

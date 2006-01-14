@@ -6645,6 +6645,7 @@
 "Cartridge.Name" "Traffic (RJPG) (PAL)"
 "Display.Height" "208"
 "Display.YStart" "35"
+"Console.SwapPorts" "Yes"
 ""
 
 "Cartridge.MD5" "4e02880beeb8dbd4da724a3f33f0971f"

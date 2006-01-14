@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.74 2006-01-10 20:37:00 stephena Exp $
+// $Id: Settings.cxx,v 1.75 2006-01-14 21:36:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -45,6 +45,7 @@ Settings::Settings(OSystem* osystem)
   set("gl_filter", "nearest");
   set("gl_aspect", "2.0");
   set("gl_fsmax", "false");
+  set("gl_lib", "");
 
   set("zoom", "2");
   set("fullscreen", "false");
@@ -284,6 +285,7 @@ void Settings::usage()
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
     << "  -gl_aspect    <number>       Scale the width by the given amount\n"
     << "  -gl_fsmax     <1|0>          Use the largest available screenmode in fullscreen OpenGL\n"
+    << "  -gl_lib       <filename>     Specify the OpenGL library\n"
     << endl
   #endif
     << "  -zoom         <size>         Makes window be 'size' times normal\n"

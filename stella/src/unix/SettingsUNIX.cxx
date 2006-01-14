@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.15 2006-01-08 13:55:03 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.16 2006-01-14 21:36:29 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -26,6 +26,7 @@ SettingsUNIX::SettingsUNIX(OSystem* osystem)
 {
   // This argument is only valid for Linux/UNIX, and will eventually be removed
   set("accurate", "false");
+  set("gl_lib", "libGL.so");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.73 2006-01-11 20:28:07 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.74 2006-01-14 21:36:29 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -90,8 +90,14 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   }
 
   // Erase contents of previous screen
+/*  cls();
   if(myScreen)
+  {
+cerr << "clear screen: w = " << myScreen->w << ", height = " << myScreen->h << endl;
     SDL_FillRect(myScreen, NULL, 0);
+    SDL_UpdateRect(myScreen, 0, 0, 0, 0);
+  }
+*/
 
   // Query the desktop size
   // This is really the job of SDL

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.48 2006-01-12 16:23:36 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.49 2006-01-14 21:36:29 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -30,6 +30,40 @@
 #include "OSystem.hxx"
 #include "Font.hxx"
 #include "GuiUtils.hxx"
+
+static void APIENTRY (*p_glClear)( GLbitfield );
+static void APIENTRY (*p_glEnable)( GLenum );
+static void APIENTRY (*p_glDisable)( GLenum );
+static void APIENTRY (*p_glPushAttrib)( GLbitfield );
+static const GLubyte* APIENTRY (*p_glGetString)( GLenum );
+static void APIENTRY (*p_glHint)( GLenum, GLenum );
+
+// Matrix
+static void APIENTRY (*p_glMatrixMode)( GLenum );
+static void APIENTRY (*p_glOrtho)( GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble );
+static void APIENTRY (*p_glViewport)( GLint, GLint, GLsizei, GLsizei );
+static void APIENTRY (*p_glPushMatrix)( void );
+static void APIENTRY (*p_glLoadIdentity)( void );
+
+// Drawing
+static void APIENTRY (*p_glBegin)( GLenum );
+static void APIENTRY (*p_glEnd)( void );
+static void APIENTRY (*p_glVertex2i)( GLint, GLint );
+static void APIENTRY (*p_glTexCoord2f)( GLfloat, GLfloat );
+
+// Raster funcs
+static void APIENTRY (*p_glReadPixels)( GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid* );
+static void APIENTRY (*p_glPixelStorei)( GLenum, GLint );
+
+// Texture mapping
+static void APIENTRY (*p_glTexEnvf)( GLenum, GLenum, GLfloat );
+static void APIENTRY (*p_glGenTextures)( GLsizei, GLuint* ); // 1.1
+static void APIENTRY (*p_glDeleteTextures)( GLsizei, const GLuint* ); // 1.1
+static void APIENTRY (*p_glBindTexture)( GLenum, GLuint );   // 1.1
+static void APIENTRY (*p_glTexImage2D)( GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid* );
+static void APIENTRY (*p_glTexSubImage2D)( GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid* ); // 1.1
+static void APIENTRY (*p_glTexParameteri)( GLenum, GLenum, GLint );
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
@@ -51,7 +85,76 @@ FrameBufferGL::~FrameBufferGL()
   if(myTexture)
     SDL_FreeSurface(myTexture);
 
-  glDeleteTextures(1, &myTextureID);
+  p_glDeleteTextures(1, &myTextureID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::loadFuncs(const string& library)
+{
+  if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
+    SDL_Init(SDL_INIT_VIDEO);
+
+  if(SDL_GL_LoadLibrary(library.c_str()) < 0)
+    return false;
+
+  // Otherwise, fill the function pointers for GL functions
+  // If anything fails, we'll know it immediately, and return false
+  // Yes, this syntax is ugly, but I can type it out faster than the time
+  // it takes to figure our macro magic to do it neatly
+  p_glClear = (void(*)(GLbitfield))
+      SDL_GL_GetProcAddress("glClear"); if(!p_glClear) return false;
+  p_glEnable = (void(*)(GLenum))
+      SDL_GL_GetProcAddress("glEnable"); if(!p_glEnable) return false;
+  p_glDisable = (void(*)(GLenum))
+      SDL_GL_GetProcAddress("glDisable"); if(!p_glDisable) return false;
+  p_glPushAttrib = (void(*)(GLbitfield))
+      SDL_GL_GetProcAddress("glPushAttrib"); if(!p_glPushAttrib) return false;
+  p_glGetString = (const GLubyte*(*)(GLenum))
+      SDL_GL_GetProcAddress("glGetString"); if(!p_glGetString) return false;
+  p_glHint = (void(*)(GLenum, GLenum))
+      SDL_GL_GetProcAddress("glHint"); if(!p_glHint) return false;
+
+  p_glMatrixMode = (void(*)(GLenum))
+      SDL_GL_GetProcAddress("glMatrixMode"); if(!p_glMatrixMode) return false;
+  p_glOrtho = (void(*)(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble))
+      SDL_GL_GetProcAddress("glOrtho"); if(!p_glOrtho) return false;
+  p_glViewport = (void(*)(GLint, GLint, GLsizei, GLsizei))
+      SDL_GL_GetProcAddress("glViewport"); if(!p_glViewport) return false;
+  p_glPushMatrix = (void(*)(void))
+      SDL_GL_GetProcAddress("glPushMatrix"); if(!p_glPushMatrix) return false;
+  p_glLoadIdentity = (void(*)(void))
+      SDL_GL_GetProcAddress("glLoadIdentity"); if(!p_glLoadIdentity) return false;
+
+  p_glBegin = (void(*)(GLenum))
+      SDL_GL_GetProcAddress("glBegin"); if(!p_glBegin) return false;
+  p_glEnd = (void(*)(void))
+      SDL_GL_GetProcAddress("glEnd"); if(!p_glEnd) return false;
+  p_glVertex2i = (void(*)(GLint, GLint))
+      SDL_GL_GetProcAddress("glVertex2i"); if(!p_glVertex2i) return false;
+  p_glTexCoord2f = (void(*)(GLfloat, GLfloat))
+      SDL_GL_GetProcAddress("glTexCoord2f"); if(!p_glTexCoord2f) return false;
+
+  p_glReadPixels = (void(*)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*))
+      SDL_GL_GetProcAddress("glReadPixels"); if(!p_glReadPixels) return false;
+  p_glPixelStorei = (void(*)(GLenum, GLint))
+      SDL_GL_GetProcAddress("glPixelStorei"); if(!p_glPixelStorei) return false;
+
+  p_glTexEnvf = (void(*)(GLenum, GLenum, GLfloat))
+      SDL_GL_GetProcAddress("glTexEnvf"); if(!p_glTexEnvf) return false;
+  p_glGenTextures = (void(*)(GLsizei, GLuint*))
+      SDL_GL_GetProcAddress("glGenTextures"); if(!p_glGenTextures) return false;
+  p_glDeleteTextures = (void(*)(GLsizei, const GLuint*))
+      SDL_GL_GetProcAddress("glDeleteTextures"); if(!p_glDeleteTextures) return false;
+  p_glBindTexture = (void(*)(GLenum, GLuint))
+      SDL_GL_GetProcAddress("glBindTexture"); if(!p_glBindTexture) return false;
+  p_glTexImage2D = (void(*)(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*))
+      SDL_GL_GetProcAddress("glTexImage2D"); if(!p_glTexImage2D) return false;
+  p_glTexSubImage2D = (void(*)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*))
+      SDL_GL_GetProcAddress("glTexSubImage2D"); if(!p_glTexSubImage2D) return false;
+  p_glTexParameteri = (void(*)(GLenum, GLenum, GLint))
+      SDL_GL_GetProcAddress("glTexParameteri"); if(!p_glTexParameteri) return false;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,9 +236,9 @@ bool FrameBufferGL::initSubsystem()
     colormode << "  Color   : " << myDepth << " bit, " << myRGB[0] << "-"
               << myRGB[1] << "-" << myRGB[2] << "-" << myRGB[3];
 
-    cout << "  Vendor  : " << glGetString(GL_VENDOR) << endl
-         << "  Renderer: " << glGetString(GL_RENDERER) << endl
-         << "  Version : " << glGetString(GL_VERSION) << endl
+    cout << "  Vendor  : " << p_glGetString(GL_VENDOR) << endl
+         << "  Renderer: " << p_glGetString(GL_RENDERER) << endl
+         << "  Version : " << p_glGetString(GL_VERSION) << endl
          << colormode.str() << endl
          << "  Filter  : " << myFilterParamName << endl
          << endl;
@@ -178,20 +281,20 @@ bool FrameBufferGL::createScreen()
     return false;
   }
 
-  glPushAttrib(GL_ENABLE_BIT);
+  p_glPushAttrib(GL_ENABLE_BIT);
 
   // Center the image horizontally and vertically
-  glViewport(myImageDim.x, myImageDim.y, myImageDim.w, myImageDim.h);
+  p_glViewport(myImageDim.x, myImageDim.y, myImageDim.w, myImageDim.h);
 
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
+  p_glMatrixMode(GL_PROJECTION);
+  p_glPushMatrix();
+  p_glLoadIdentity();
 
-  glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
+  p_glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
 
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
+  p_glMatrixMode(GL_MODELVIEW);
+  p_glPushMatrix();
+  p_glLoadIdentity();
 
 #ifdef TEXTURES_ARE_LOST
   createTextures();
@@ -199,9 +302,9 @@ bool FrameBufferGL::createScreen()
 
   // Make sure any old parts of the screen are erased
   // Do it for both buffers!
-  glClear(GL_COLOR_BUFFER_BIT);
+  p_glClear(GL_COLOR_BUFFER_BIT);
   SDL_GL_SwapBuffers();
-  glClear(GL_COLOR_BUFFER_BIT);
+  p_glClear(GL_COLOR_BUFFER_BIT);
 
   myOSystem->eventHandler().refreshDisplay();
 
@@ -295,15 +398,15 @@ void FrameBufferGL::postFrameUpdate()
     // and antialiasing 
     uInt32 w = myBaseDim.w, h = myBaseDim.h;
 
-    glBindTexture(GL_TEXTURE_2D, myTextureID);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
-                    GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
-    glBegin(GL_QUADS);
-      glTexCoord2f(myTexCoord[0], myTexCoord[1]); glVertex2i(0, 0);
-      glTexCoord2f(myTexCoord[2], myTexCoord[1]); glVertex2i(w, 0);
-      glTexCoord2f(myTexCoord[2], myTexCoord[3]); glVertex2i(w, h);
-      glTexCoord2f(myTexCoord[0], myTexCoord[3]); glVertex2i(0, h);
-    glEnd();
+    p_glBindTexture(GL_TEXTURE_2D, myTextureID);
+    p_glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
+                      GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
+    p_glBegin(GL_QUADS);
+      p_glTexCoord2f(myTexCoord[0], myTexCoord[1]); p_glVertex2i(0, 0);
+      p_glTexCoord2f(myTexCoord[2], myTexCoord[1]); p_glVertex2i(w, 0);
+      p_glTexCoord2f(myTexCoord[2], myTexCoord[3]); p_glVertex2i(w, h);
+      p_glTexCoord2f(myTexCoord[0], myTexCoord[3]); p_glVertex2i(0, h);
+    p_glEnd();
 
     // Now show all changes made to the texture
     SDL_GL_SwapBuffers();
@@ -319,8 +422,8 @@ void FrameBufferGL::scanline(uInt32 row, uInt8* data)
   // of the framebuffer
   row = myImageDim.h + myImageDim.y - row - 1;
 
-  glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  glReadPixels(myImageDim.x, row, myImageDim.w, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+  p_glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  p_glReadPixels(myImageDim.x, row, myImageDim.w, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,11 +442,11 @@ void FrameBufferGL::toggleFilter()
     showMessage("Filtering: GL_NEAREST");
   }
 
-  glBindTexture(GL_TEXTURE_2D, myTextureID);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
+  p_glBindTexture(GL_TEXTURE_2D, myTextureID);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
 
   // The filtering has changed, so redraw the entire screen
   theRedrawTIAIndicator = true;
@@ -482,7 +585,7 @@ bool FrameBufferGL::createTextures()
   if(myTexture)
     SDL_FreeSurface(myTexture);
 
-  glDeleteTextures(1, &myTextureID);
+  p_glDeleteTextures(1, &myTextureID);
 
   uInt32 w = power_of_two(myBaseDim.w);
   uInt32 h = power_of_two(myBaseDim.h);
@@ -511,21 +614,21 @@ bool FrameBufferGL::createTextures()
     myFilterParamName = "GL_NEAREST";
   }
 
-  glGenTextures(1, &myTextureID);
-  glBindTexture(GL_TEXTURE_2D, myTextureID);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
+  p_glGenTextures(1, &myTextureID);
+  p_glBindTexture(GL_TEXTURE_2D, myTextureID);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
+  p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
                myTexture->pixels);
 
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_CULL_FACE);
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  glEnable(GL_TEXTURE_2D);
+  p_glDisable(GL_DEPTH_TEST);
+  p_glDisable(GL_CULL_FACE);
+  p_glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+  p_glEnable(GL_TEXTURE_2D);
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+  p_glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
   return true;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.cxx,v 1.1 2005-12-18 18:37:03 stephena Exp $
+// $Id: MediaFactory.cxx,v 1.2 2006-01-14 21:36:29 stephena Exp $
 //============================================================================
 
 ////////////////////////////////////////////////////////////////////
@@ -21,6 +21,8 @@
 ////////////////////////////////////////////////////////////////////
 
 #include "MediaFactory.hxx"
+
+#include "OSystem.hxx"
 
 #include "FrameBuffer.hxx"
 #include "FrameBufferSoft.hxx"
@@ -59,7 +61,11 @@ FrameBuffer* MediaFactory::createVideo(const string& type, OSystem* parent)
 #endif
 #ifdef DISPLAY_OPENGL
   else if(type == "gl")
-    fb = new FrameBufferGL(parent);
+  {
+    const string& gl_lib = parent->settings().getString("gl_lib");
+    if(FrameBufferGL::loadFuncs(gl_lib))
+      fb = new FrameBufferGL(parent);
+  }
 #endif
 
   return fb;

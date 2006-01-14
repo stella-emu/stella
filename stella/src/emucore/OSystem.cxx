@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.56 2006-01-09 16:50:01 stephena Exp $
+// $Id: OSystem.cxx,v 1.57 2006-01-14 21:36:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -191,8 +191,9 @@ bool OSystem::createFrameBuffer(bool showmessage)
   string video = mySettings->getString("video");
   myFrameBuffer = MediaFactory::createVideo(video, this);
   if(!myFrameBuffer)
+{cerr << "FIXME - properly deal with video mode not existing\n";
     return false;
-
+}
   // Re-initialize the framebuffer to current settings
   switch(myEventHandler->state())
   {
