@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.74 2006-01-14 21:36:29 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.75 2006-01-14 23:55:23 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -85,9 +85,8 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
     if(SDL_Init(initflags) < 0)
       return;
-
-    setWindowIcon();
   }
+  setWindowIcon();
 
   // Erase contents of previous screen
 /*  cls();
