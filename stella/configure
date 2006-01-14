@@ -778,7 +778,6 @@ case $_host_os in
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then
 				DEFINES="$DEFINES -DDISPLAY_OPENGL"
-#				LIBS="$LIBS -L$X_LIBS -lGL"
 			fi
 			;;
 		win32)
@@ -790,7 +789,6 @@ case $_host_os in
 			# Add OpenGL stuff
 			if test "$_build_gl" = yes ; then
 				DEFINES="$DEFINES -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST"
-				LIBS="$LIBS -lopengl32"
 			fi
 			;;
 		psp)
