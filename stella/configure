@@ -641,6 +641,7 @@ if test "$_opengl" = auto ; then
 	cat > $TMPC << EOF
 #include <string.h>
 #include <GL/gl.h>
+#include <GL/glu.h>
 int main(void) { return 0; }
 EOF
 	cc_check $LDFLAGS $CXXFLAGS && _opengl=yes

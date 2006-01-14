@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.50 2006-01-14 22:29:34 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.51 2006-01-14 23:50:43 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -157,9 +157,6 @@ bool FrameBufferGL::loadFuncs(const string& library)
       SDL_GL_GetProcAddress("glTexSubImage2D"); if(!p_glTexSubImage2D) return false;
   p_glTexParameteri = (void(APIENTRY*)(GLenum, GLenum, GLint))
       SDL_GL_GetProcAddress("glTexParameteri"); if(!p_glTexParameteri) return false;
-
-  if(SDL_WasInit(SDL_INIT_VIDEO))
-    SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
   return myFuncsLoaded = true;
 }
