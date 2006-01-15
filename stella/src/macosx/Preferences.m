@@ -7,7 +7,7 @@
    TextEdit application.
 
 */
-/* $Id: Preferences.m,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $ */
+/* $Id: Preferences.m,v 1.2 2006-01-15 02:12:09 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "Preferences.h"
@@ -65,7 +65,7 @@ static Preferences *sharedInstance = nil;
 	if (theValue == nil)
 		value[0] = 0;
 	else {
-		[theValue getCString:value maxLength:1023];
+		[theValue getCString:value maxLength:1023 encoding:NSASCIIStringEncoding];
 		[theKey release];
 		}
 }
