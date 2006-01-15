@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.4 2005-10-06 17:28:55 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.5 2006-01-15 20:46:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -187,7 +187,6 @@ void ContextMenu::drawDialog()
   // by the ScummVM guys, so I'm not going to mess with it.
   if(_dirty)
   {
-//    cerr << "ContextMenu::drawDialog()" << endl;
     FrameBuffer& fb = instance()->frameBuffer();
 
     fb.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);

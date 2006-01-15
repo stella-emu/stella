@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.10 2005-12-20 19:05:15 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.11 2006-01-15 20:46:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -225,7 +225,6 @@ void DebuggerDialog::addRomArea()
 
   xpos = r.left + 10 + myCpu->getWidth() + 20;
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, xpos, 20);
-  ops->setEnabled(false);
 
   int buttonX = r.right - kButtonWidth - 5, buttonY = r.top + 5;
   addButton(buttonX, buttonY, "Step", kDDStepCmd, 0);

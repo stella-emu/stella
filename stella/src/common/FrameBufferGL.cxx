@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.52 2006-01-15 16:31:00 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.53 2006-01-15 20:46:19 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -573,7 +573,10 @@ void FrameBufferGL::cls()
 bool FrameBufferGL::createTextures()
 {
   if(myTexture)
+  {
     SDL_FreeSurface(myTexture);
+    myTexture = NULL;
+  }
 
   p_glDeleteTextures(1, &myTextureID);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.38 2006-01-04 01:24:17 stephena Exp $
+// $Id: ListWidget.cxx,v 1.39 2006-01-15 20:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -117,7 +117,7 @@ void ListWidget::scrollTo(int item)
   if (item < 0)
     item = 0;
 
-  if (_currentPos != item)
+  if(_currentPos != item)
   {
     _currentPos = item;
     scrollBarRecalc();
@@ -138,18 +138,16 @@ void ListWidget::recalc()
     _selectedItem = 0;
 
   _editMode = false;
-  scrollBarRecalc();
+
+  _scrollBar->_numEntries     = _list.size();
+  _scrollBar->_entriesPerPage = _rows;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollBarRecalc()
 {
-  _scrollBar->_numEntries     = _list.size();
-  _scrollBar->_entriesPerPage = _rows;
-  _scrollBar->_currentPos     = _currentPos;
+  _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
-
-  setDirty(); draw();
   sendCommand(kListScrolledCmd, _currentPos, _id);
 }
 

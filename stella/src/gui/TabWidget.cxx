@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.19 2005-12-21 01:50:16 stephena Exp $
+// $Id: TabWidget.cxx,v 1.20 2006-01-15 20:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -217,6 +217,7 @@ void TabWidget::loadConfig()
 void TabWidget::box(int x, int y, int width, int height,
                     OverlayColor colorA, OverlayColor colorB, bool omitBottom)
 {
+//cerr << "TabWidget::box\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   fb.hLine(x + 1, y, x + width - 2, colorA);
@@ -236,6 +237,7 @@ void TabWidget::box(int x, int y, int width, int height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::drawWidget(bool hilite)
 {
+//cerr << "TabWidget::drawWidget\n";
   // The tab widget is strange in that it acts as both a widget (obviously)
   // and a dialog (it contains other widgets).  Because of the latter,
   // it must assume responsibility for refreshing all its children.

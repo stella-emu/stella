@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.11 2005-08-10 12:23:42 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.12 2006-01-15 20:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -223,6 +223,7 @@ void ScrollBarWidget::handleMouseLeft(int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::recalc()
 {
+//cerr << "ScrollBarWidget::recalc()\n";
   if(_numEntries > _entriesPerPage)
   {
     _sliderHeight = (_h - 2 * UP_DOWN_BOX_HEIGHT) * _entriesPerPage / _numEntries;

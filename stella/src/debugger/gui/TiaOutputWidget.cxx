@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.7 2005-10-11 19:38:10 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.8 2006-01-15 20:46:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,7 +49,6 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, int x, int y, int w, int h)
   l.push_back("Set zoom position");
 
   myMenu->setList(l);
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

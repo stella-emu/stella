@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.15 2006-01-08 02:28:01 stephena Exp $
+## $Id: Makefile,v 1.16 2006-01-15 20:46:19 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -168,7 +168,7 @@ install: all
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons"
 	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons"
 	$(INSTALL) -d "$(DESTDIR)/etc"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/emucore/stella.pro" "$(DESTDIR)/etc"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/emucore/stella.pro" "$(DESTDIR)$(PROPDIR)"
 
 install-strip: install
 	strip stella$(EXEEXT)

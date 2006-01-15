@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.9 2006-01-09 19:30:04 stephena Exp $
+// $Id: InputDialog.cxx,v 1.10 2006-01-15 20:46:20 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -35,9 +35,8 @@ enum {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputDialog::InputDialog(
-      OSystem* osystem, DialogContainer* parent,
-      int x, int y, int w, int h)
+InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
+                         int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
   const int vBorder = 4;
@@ -180,6 +179,8 @@ void InputDialog::addVDeviceTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
+  myEventMapper->loadConfig();
+
   // Left & right ports
   const string& sa1 = instance()->settings().getString("sa1");
   int lport = sa1 == "right" ? 2 : 1;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.22 2005-10-02 22:09:12 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.23 2006-01-15 20:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,6 +68,7 @@ void PopUpDialog::drawDialog()
   {
     FrameBuffer& fb = instance()->frameBuffer();
 
+//cerr << "PopUpDialog::drawDialog()\n";
     // Draw the menu border
     fb.hLine(_x, _y, _x + _w - 1, kColor);
     fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
@@ -161,6 +162,7 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpDialog::drawMenuEntry(int entry, bool hilite)
 {
+//cerr << "PopUpDialog::drawMenuEntry\n";
   FrameBuffer& fb = instance()->frameBuffer();
 
   // Draw one entry of the popup menu, including selection
@@ -466,6 +468,7 @@ void PopUpWidget::setSelectedTag(int tag)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::drawWidget(bool hilite)
 {
+//cerr << "PopUpWidget::drawWidget\n";
   FrameBuffer& fb = instance()->frameBuffer();
 
   int x = _x + _labelWidth;

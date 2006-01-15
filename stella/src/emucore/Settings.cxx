@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.75 2006-01-14 21:36:29 stephena Exp $
+// $Id: Settings.cxx,v 1.76 2006-01-15 20:46:19 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -308,6 +308,7 @@ void Settings::usage()
     << "  -clipvol      <1|0>          Enable volume clipping (eliminates popping)\n"
     << endl
   #endif
+    << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
@@ -333,6 +334,7 @@ void Settings::usage()
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
     << endl
+    << "   -break        <address>     Set a breakpoint at 'address'\n"
     << "   -debugheight  <number>      Set height of debugger in lines of text (NOT pixels)\n"
     << "   -debug                      Start in debugger mode\n"
     << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"

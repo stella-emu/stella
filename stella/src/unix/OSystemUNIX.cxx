@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.14 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.15 2006-01-15 20:46:20 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -46,10 +46,6 @@
   setConfigFiles()
   setCacheFile()
 
-  And for initializing the following variables:
-
-  myDriverList (a StringList)
-
   See OSystem.hxx for a further explanation
 */
 
@@ -63,16 +59,15 @@ OSystemUNIX::OSystemUNIX()
   string statedir = basedir + "/state";
   setStateDir(statedir);
 
-  setPropertiesDir(basedir, "/etc");
+  string propdir = PROPDIR;  // Hopefully this is defined
+  setPropertiesDir(basedir, propdir);
 
   string userConfigFile   = basedir + "/stellarc";
-  string systemConfigFile = "/etc/stellarc";
+  string systemConfigFile = propdir + "/stellarc";
   setConfigFiles(userConfigFile, systemConfigFile);
 
   string cacheFile = basedir + "/stella.cache";
   setCacheFile(cacheFile);
-
-  // No drivers are specified for Unix
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

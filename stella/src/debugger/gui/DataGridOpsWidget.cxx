@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridOpsWidget.cxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: DataGridOpsWidget.cxx,v 1.2 2006-01-15 20:46:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -71,6 +71,16 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, int x, int y)
   // Calculate real dimensions
   _w = xpos + bwidth;
   _h = ypos + bheight;
+
+  // We don't enable the buttons until the DataGridWidget is attached
+  // Don't call setEnabled(false), since that does an immediate redraw
+  _zeroButton->clearFlags(WIDGET_ENABLED);
+  _invButton->clearFlags(WIDGET_ENABLED);
+  _negButton->clearFlags(WIDGET_ENABLED);
+  _incButton->clearFlags(WIDGET_ENABLED);
+  _decButton->clearFlags(WIDGET_ENABLED);
+  _shiftLeftButton->clearFlags(WIDGET_ENABLED);
+  _shiftRightButton->clearFlags(WIDGET_ENABLED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.hxx,v 1.5 2006-01-09 19:30:04 stephena Exp $
+// $Id: EventMappingWidget.hxx,v 1.6 2006-01-15 20:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -83,6 +83,8 @@ class EventMappingWidget : public Widget, public CommandSender
     // Indicates if we're currently in remap mode
     // In this mode, the next event received is remapped to some action
     bool myRemapStatus;
+
+    bool myFirstTime;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.9 2006-01-09 19:30:04 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.10 2006-01-15 20:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,7 +34,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, int x, int y, int w, int
   : Widget(boss, x, y, w, h),
     CommandSender(boss),
     myActionSelected(-1),
-    myRemapStatus(false)
+    myRemapStatus(false),
+    myFirstTime(true)
 {
   const GUI::Font& font = instance()->font();
   const int fontHeight = font.getFontHeight(),
@@ -81,7 +82,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, int x, int y, int w, int
     l.push_back(EventHandler::ourActionList[i].action);
 
   myActionsList->setList(l);
-  myActionsList->setSelected(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,6 +92,13 @@ EventMappingWidget::~EventMappingWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::loadConfig()
 {
+//cerr << "EventMappingWidget::loadConfig()\n";
+  if(myFirstTime)
+  {
+    myActionsList->setSelected(0);
+    myFirstTime = false;
+  }
+
   // Make sure remapping is turned off, just in case the user didn't properly
   // exit last time
   stopRemapping();

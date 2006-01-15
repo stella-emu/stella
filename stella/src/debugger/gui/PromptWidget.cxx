@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.5 2005-10-15 16:38:17 urchlay Exp $
+// $Id: PromptWidget.cxx,v 1.6 2006-01-15 20:46:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -822,6 +822,7 @@ void PromptWidget::print(const string& str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::drawCaret()
 {
+//cerr << "PromptWidget::drawCaret()\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
   int line = _currentPos / _lineWidth;

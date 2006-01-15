@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.17 2006-01-04 01:24:17 stephena Exp $
+// $Id: GuiObject.hxx,v 1.18 2006-01-15 20:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ enum {
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.17 2006-01-04 01:24:17 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.18 2006-01-15 20:46:20 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
@@ -62,7 +62,7 @@ class GuiObject : public CommandReceiver
         _y(y),
         _w(w),
         _h(h),
-        _dirty(true),
+        _dirty(false),
         _font((GUI::Font*)&(osystem->font())),
         _firstWidget(0) {}
 
