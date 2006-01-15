@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.7 2006-01-14 21:36:29 stephena Exp $
+// $Id: SettingsMACOSX.cxx,v 1.8 2006-01-15 23:43:40 markgrebe Exp $
 //============================================================================
 
 #include <cassert>
@@ -41,7 +41,7 @@ void prefsSave(void);
 SettingsMACOSX::SettingsMACOSX(OSystem* osystem)
   : Settings(osystem)
 {
-  set("video", "opengl");     // Use opengl mode by default
+  set("video", "gl");     // Use opengl mode by default
   set("gl_lib", "libGL.so");
 }
 
