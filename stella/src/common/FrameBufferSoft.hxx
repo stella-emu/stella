@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.29 2006-01-15 16:31:01 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.30 2006-01-15 22:43:21 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.29 2006-01-15 16:31:01 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.30 2006-01-15 22:43:21 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -204,6 +204,8 @@ class FrameBufferSoft : public FrameBuffer
     RectList* myOverlayRectList;
 
   private:
+    int myPitch;
+
     enum RenderType {
       kSoftZoom,
       kPhosphor_16,

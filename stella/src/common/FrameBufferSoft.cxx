@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.43 2006-01-15 16:31:01 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.44 2006-01-15 22:43:21 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -94,6 +94,18 @@ bool FrameBufferSoft::createScreen()
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
+  }
+  switch(myScreen->format->BitsPerPixel)
+  {
+    case 16:
+      myPitch = myScreen->pitch/2;
+      break;
+    case 24:
+      myPitch = myScreen->pitch/3;
+      break;
+    case 32:
+      myPitch = myScreen->pitch/4;
+      break;
   }
   myOSystem->eventHandler().refreshDisplay();
 
@@ -289,7 +301,7 @@ void FrameBufferSoft::drawMediaSource()
               buffer[pos++] = (uInt16) myAvgPalette[v][w];
             }
           }
-          screenofsY += myScreen->w;
+          screenofsY += myPitch;
         }
         bufofsY += width;
       }
@@ -330,7 +342,7 @@ void FrameBufferSoft::drawMediaSource()
               buffer[pos++] = (uInt16) myAvgPalette[v][w];
             }
           }
-          screenofsY += myScreen->w;
+          screenofsY += myPitch;
         }
         bufofsY += width;
       }
@@ -370,7 +382,7 @@ void FrameBufferSoft::drawMediaSource()
               buffer[pos++] = (uInt32) myAvgPalette[v][w];
             }
           }
-          screenofsY += myScreen->w;
+          screenofsY += myPitch;
         }
         bufofsY += width;
       }
@@ -616,12 +628,15 @@ void FrameBufferSoft::enablePhosphor(bool enable)
     switch(myScreen->format->BitsPerPixel)
     {
       case 16:
+        myPitch      = myScreen->pitch/2;
         myRenderType = kPhosphor_16;
         break;
       case 24:
+        myPitch      = myScreen->pitch/3;
         myRenderType = kPhosphor_24;
         break;
       case 32:
+        myPitch      = myScreen->pitch/4;
         myRenderType = kPhosphor_32;
         break;
       default:

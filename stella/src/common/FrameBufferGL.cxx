@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.53 2006-01-15 20:46:19 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.54 2006-01-15 22:43:21 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -564,9 +564,12 @@ void FrameBufferGL::enablePhosphor(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::cls()
 {
-  p_glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
-  p_glClear(GL_COLOR_BUFFER_BIT);
+  if(myFuncsLoaded)
+  {
+    p_glClear(GL_COLOR_BUFFER_BIT);
+    SDL_GL_SwapBuffers();
+    p_glClear(GL_COLOR_BUFFER_BIT);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
