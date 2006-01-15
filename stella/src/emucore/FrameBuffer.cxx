@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.75 2006-01-14 23:55:23 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.76 2006-01-15 16:31:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -87,16 +87,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
       return;
   }
   setWindowIcon();
-
-  // Erase contents of previous screen
-/*  cls();
-  if(myScreen)
-  {
-cerr << "clear screen: w = " << myScreen->w << ", height = " << myScreen->h << endl;
-    SDL_FillRect(myScreen, NULL, 0);
-    SDL_UpdateRect(myScreen, 0, 0, 0, 0);
-  }
-*/
+  cls();
 
   // Query the desktop size
   // This is really the job of SDL
@@ -130,6 +121,10 @@ cerr << "clear screen: w = " << myScreen->w << ", height = " << myScreen->h << e
 
   // Initialize video subsystem
   initSubsystem();
+
+  // Set palette for GUI
+  for(int i = 0; i < kNumColors-256; i++)
+    myPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
 
   // Set emulation palette if a console exists
   // Used when entering/exiting debugger

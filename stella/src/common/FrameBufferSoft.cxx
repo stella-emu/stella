@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.42 2006-01-12 16:23:36 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.43 2006-01-15 16:31:01 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -67,11 +67,6 @@ bool FrameBufferSoft::initSubsystem()
   // Show some info
   if(myOSystem->settings().getBool("showinfo"))
     cout << "Video rendering: Software mode" << endl << endl;
-
-  // Precompute the GUI palette
-  // We abuse the concept of 'enum' by referring directly to the integer values
-  for(uInt8 i = 0; i < kNumColors-256; i++)
-    myPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
 
   return true;
 }
@@ -638,6 +633,15 @@ void FrameBufferSoft::enablePhosphor(bool enable)
     myRenderType = kSoftZoom;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::cls()
+{
+  if(myScreen)
+  {
+    SDL_FillRect(myScreen, NULL, 0);
+    SDL_UpdateRect(myScreen, 0, 0, 0, 0);
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RectList::RectList(Uint32 size)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.63 2006-01-11 13:25:20 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.64 2006-01-15 16:31:01 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -51,7 +51,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.63 2006-01-11 13:25:20 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.64 2006-01-15 16:31:01 stephena Exp $
 */
 class FrameBuffer
 {
@@ -394,9 +394,14 @@ class FrameBuffer
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
 
     /**
-      Enable/disable phosphor effect
+      Enable/disable phosphor effect.
     */
     virtual void enablePhosphor(bool enable) = 0;
+
+    /**
+      Completely erase contents of the screen.
+    */
+    virtual void cls() = 0;
 
   protected:
     // The parent system for the framebuffer

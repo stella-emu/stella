@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.28 2006-01-12 16:23:36 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.29 2006-01-15 16:31:01 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.28 2006-01-12 16:23:36 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.29 2006-01-15 16:31:01 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -187,9 +187,14 @@ class FrameBufferSoft : public FrameBuffer
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
 
     /**
-      Enable/disable phosphor effect
+      Enable/disable phosphor effect.
     */
     virtual void enablePhosphor(bool enable);
+
+    /**
+      Completely erase contents of the screen.
+    */
+    virtual void cls();
 
   protected:
     // Used in the dirty update of the SDL surface

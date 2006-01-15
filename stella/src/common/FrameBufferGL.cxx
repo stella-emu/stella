@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.51 2006-01-14 23:50:43 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.52 2006-01-15 16:31:00 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -248,11 +248,6 @@ bool FrameBufferGL::initSubsystem()
          << endl;
   }
 
-  // Precompute the GUI palette
-  // We abuse the concept of 'enum' by referring directly to the integer values
-  for(uInt8 i = 0; i < kNumColors-256; i++)
-    myPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
-
   return true;
 }
 
@@ -306,9 +301,7 @@ bool FrameBufferGL::createScreen()
 
   // Make sure any old parts of the screen are erased
   // Do it for both buffers!
-  p_glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
-  p_glClear(GL_COLOR_BUFFER_BIT);
+  cls();
 
   myOSystem->eventHandler().refreshDisplay();
 
@@ -459,27 +452,20 @@ void FrameBufferGL::toggleFilter()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 {
-  SDL_Rect tmp;
-
-  // Horizontal line
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = x2 - x + 1;
-  tmp.h = 1;
-  SDL_FillRect(myTexture, &tmp, myPalette[color]);
+  uInt16* buffer = (uInt16*) myTexture->pixels + y * myTexture->w + x;
+  while(x++ <= x2)
+    *buffer++ = (uInt16) myPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
 {
-  SDL_Rect tmp;
-
-  // Vertical line
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = 1;
-  tmp.h = y2 - y + 1;
-  SDL_FillRect(myTexture, &tmp, myPalette[color]);
+  uInt16* buffer = (uInt16*) myTexture->pixels + y * myTexture->w + x;
+  while(y++ <= y2)
+  {
+    *buffer = (uInt16) myPalette[color];
+    buffer += myTexture->w;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -498,7 +484,7 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
-                             uInt32 xorig, uInt32 yorig, OverlayColor color)
+                             uInt32 tx, uInt32 ty, OverlayColor color)
 {
   GUI::Font* font = (GUI::Font*) FONT;
 
@@ -517,44 +503,36 @@ void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
   const uInt16* tmp = font->desc().bits + (font->desc().offset ?
                       font->desc().offset[chr] : (chr * h));
 
-  SDL_Rect rect;
-  for(int y = 0; y < h; y++)
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
+  for(int y = 0; y < h; ++y)
   {
-    const uInt16 buffer = *tmp++;
+    const uInt16 ptr = *tmp++;
     uInt16 mask = 0x8000;
 
-    for(int x = 0; x < w; x++, mask >>= 1)
+    for(int x = 0; x < w; ++x, mask >>= 1)
     {
-      if ((buffer & mask) != 0)
-      {
-        rect.x = x + xorig;
-        rect.y = y + yorig;
-        rect.w = rect.h = 1;
-        SDL_FillRect(myTexture, &rect, myPalette[color]);
-      }
+      if(ptr & mask)
+        buffer[x] = (uInt16) myPalette[color];
     }
+    buffer += myTexture->w;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
-                                 OverlayColor color, Int32 h)
+void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
+                               OverlayColor color, Int32 h)
 {
-  SDL_Rect rect;
-  for(int y = 0; y < h; y++)
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
+
+  for(int y = 0; y < h; ++y)
   {
     uInt32 mask = 0xF0000000;
-
-    for(int x = 0; x < 8; x++, mask >>= 4)
+    for(int x = 0; x < 8; ++x, mask >>= 4)
     {
       if(bitmap[y] & mask)
-      {
-        rect.x = x + xorig;
-        rect.y = y + yorig;
-        rect.w = rect.h = 1;
-        SDL_FillRect(myTexture, &rect, myPalette[color]);
-      }
+        buffer[x] = (uInt16) myPalette[color];
     }
+    buffer += myTexture->w;
   }
 }
 
@@ -581,6 +559,14 @@ void FrameBufferGL::enablePhosphor(bool enable)
 {
   myUsePhosphor   = enable;
   myPhosphorBlend = myOSystem->settings().getInt("ppblend");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::cls()
+{
+  p_glClear(GL_COLOR_BUFFER_BIT);
+  SDL_GL_SwapBuffers();
+  p_glClear(GL_COLOR_BUFFER_BIT);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

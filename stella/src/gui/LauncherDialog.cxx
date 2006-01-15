@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.37 2006-01-08 20:55:54 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.38 2006-01-15 16:31:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -381,6 +381,8 @@ void LauncherDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case ' ':  // Used to activate currently focused button
+    case '\n':
+    case '\r':
       Dialog::handleKeyDown(ascii, keycode, modifiers);
       break;
 
