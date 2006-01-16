@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.54 2006-01-15 22:43:21 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.55 2006-01-16 01:23:55 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -301,7 +301,9 @@ bool FrameBufferGL::createScreen()
 
   // Make sure any old parts of the screen are erased
   // Do it for both buffers!
-  cls();
+  p_glClear(GL_COLOR_BUFFER_BIT);
+  SDL_GL_SwapBuffers();
+  p_glClear(GL_COLOR_BUFFER_BIT);
 
   myOSystem->eventHandler().refreshDisplay();
 
@@ -564,12 +566,14 @@ void FrameBufferGL::enablePhosphor(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::cls()
 {
+/* FIXME - commented out until I figure out why it crashes in OSX
   if(myFuncsLoaded)
   {
     p_glClear(GL_COLOR_BUFFER_BIT);
     SDL_GL_SwapBuffers();
     p_glClear(GL_COLOR_BUFFER_BIT);
   }
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
