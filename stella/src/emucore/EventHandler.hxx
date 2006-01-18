@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.75 2006-01-09 19:30:04 stephena Exp $
+// $Id: EventHandler.hxx,v 1.76 2006-01-18 20:43:22 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -133,7 +133,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.75 2006-01-09 19:30:04 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.76 2006-01-18 20:43:22 stephena Exp $
 */
 class EventHandler
 {
@@ -342,7 +342,7 @@ class EventHandler
       @param event  The event we are remapping
       @param key    The key to bind to this event
     */
-    void addKeyMapping(Event::Type event, int key);
+    bool addKeyMapping(Event::Type event, int key);
 
     /**
       Bind a joystick button to an event/action and regenerate the
@@ -352,7 +352,7 @@ class EventHandler
       @param stick  The joystick number
       @param button The joystick button
     */
-    void addJoyMapping(Event::Type event, int stick, int button);
+    bool addJoyMapping(Event::Type event, int stick, int button);
 
     /**
       Bind a joystick axis direction to an event/action and regenerate
@@ -363,7 +363,7 @@ class EventHandler
       @param axis   The joystick axis
       @param value  The value on the given axis
     */
-    void addJoyAxisMapping(Event::Type event, int stick, int axis, int value);
+    bool addJoyAxisMapping(Event::Type event, int stick, int axis, int value);
 
     /**
       Bind a joystick hat direction to an event/action and regenerate
@@ -374,7 +374,7 @@ class EventHandler
       @param axis   The joystick hat
       @param value  The value on the given hat
     */
-    void addJoyHatMapping(Event::Type event, int stick, int hat, int value);
+    bool addJoyHatMapping(Event::Type event, int stick, int hat, int value);
 
     /**
       Erase the specified mapping

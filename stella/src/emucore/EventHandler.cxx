@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.146 2006-01-11 14:13:19 stephena Exp $
+// $Id: EventHandler.cxx,v 1.147 2006-01-18 20:43:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1405,17 +1405,6 @@ void EventHandler::setActionMappings()
               case kJHatLeft:  buf << " left"; break;
               case kJHatRight: buf << " right"; break;
             }
-/* FIXME - figure out how to combine analog & hats
-            if(eventIsAnalog(event))
-            {
-              dir = 2;  // Immediately exit the inner loop after this iteration
-              buf << " abs";
-            }
-            else if(dir == 0)
-              buf << " neg";
-            else
-              buf << " pos";
-*/
             if(key == "")
               key = key + buf.str();
             else
@@ -1518,16 +1507,19 @@ void EventHandler::setJoyHatMap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addKeyMapping(Event::Type event, int key)
+bool EventHandler::addKeyMapping(Event::Type event, int key)
 {
   // These keys cannot be remapped.
-  if(key == SDLK_TAB)
-    return;
+  if(key == SDLK_TAB || eventIsAnalog(event))
+    return false;
+  else
+  {
+    myKeyTable[key] = event;
+    saveKeyMapping();
 
-  myKeyTable[key] = event;
-  saveKeyMapping();
-
-  setActionMappings();
+    setActionMappings();
+    return true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1540,12 +1532,18 @@ void EventHandler::setDefaultJoyMapping(Event::Type event, int stick, int button
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addJoyMapping(Event::Type event, int stick, int button)
+bool EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 {
-  setDefaultJoyMapping(event, stick, button);
+  if(!eventIsAnalog(event))
+  {
+    setDefaultJoyMapping(event, stick, button);
 
-  saveJoyMapping();
-  setActionMappings();
+    saveJoyMapping();
+    setActionMappings();
+    return true;
+  }
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1574,13 +1572,15 @@ void EventHandler::setDefaultJoyAxisMapping(Event::Type event, int stick,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
+bool EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
                                      int value)
 {
   setDefaultJoyAxisMapping(event, stick, axis, value);
 
   saveJoyAxisMapping();
   setActionMappings();
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1600,34 +1600,23 @@ void EventHandler::setDefaultJoyHatMapping(Event::Type event, int stick,
         myJoyHatTable[stick][hat][value] = event;
         break;
     }
-
-/*  FIXME - deal with assignment of analog events
-    // This confusing code is because each axis has two associated values,
-    // but analog events only affect one of the axis.
-    if(eventIsAnalog(event))
-      myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
-    else
-    {
-      // Otherwise, turn off the analog event(s) for this axis
-      if(eventIsAnalog(myJoyAxisTable[stick][axis][0]))
-        myJoyAxisTable[stick][axis][0] = Event::NoType;
-      if(eventIsAnalog(myJoyAxisTable[stick][axis][1]))
-        myJoyAxisTable[stick][axis][1] = Event::NoType;
-    
-      myJoyAxisTable[stick][axis][(value > 0)] = event;
-    }
-*/
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addJoyHatMapping(Event::Type event, int stick, int hat,
+bool EventHandler::addJoyHatMapping(Event::Type event, int stick, int hat,
                                     int value)
 {
-  setDefaultJoyHatMapping(event, stick, hat, value);
+  if(!eventIsAnalog(event))
+  {
+    setDefaultJoyHatMapping(event, stick, hat, value);
 
-  saveJoyHatMapping();
-  setActionMappings();
+    saveJoyHatMapping();
+    setActionMappings();
+    return true;
+  }
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
