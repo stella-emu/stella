@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferPSP.hxx,v 1.1 2005-09-18 14:35:59 optixx Exp $
+// $Id: FrameBufferPSP.hxx,v 1.2 2006-01-19 00:45:13 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_PSP_HXX
@@ -31,7 +31,7 @@
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferPSP.hxx,v 1.1 2005-09-18 14:35:59 optixx Exp $
+  @version $Id: FrameBufferPSP.hxx,v 1.2 2006-01-19 00:45:13 stephena Exp $
 */
 class FrameBufferPSP : public FrameBufferSoft
 {
@@ -54,6 +54,11 @@ class FrameBufferPSP : public FrameBufferSoft
     Return false if any operation fails, otherwise return true.
      */
     virtual bool initSubsystem();
+
+    /**
+      This method is called to query the type of the FrameBuffer.
+    */
+    virtual BufferType type() { return kSoftBuffer; }
 
     /**
     This method is called whenever the screen needs to be recreated.

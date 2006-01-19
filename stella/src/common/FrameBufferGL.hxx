@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.29 2006-01-15 16:31:00 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.30 2006-01-19 00:45:12 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.29 2006-01-15 16:31:00 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.30 2006-01-19 00:45:12 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -69,6 +69,11 @@ class FrameBufferGL : public FrameBuffer
       Return false if any operation fails, otherwise return true.
     */
     virtual bool initSubsystem();
+
+    /**
+      This method is called to query the type of the FrameBuffer.
+    */
+    virtual BufferType type() { return kGLBuffer; }
 
     /**
       This method is called to set the aspect ratio of the screen.

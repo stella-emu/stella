@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.cxx,v 1.2 2006-01-14 21:36:29 stephena Exp $
+// $Id: MediaFactory.cxx,v 1.3 2006-01-19 00:45:12 stephena Exp $
 //============================================================================
 
 ////////////////////////////////////////////////////////////////////
@@ -47,43 +47,63 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer* MediaFactory::createVideo(const string& type, OSystem* parent)
+FrameBuffer* MediaFactory::createVideo(OSystem* osystem)
 {
   FrameBuffer* fb = (FrameBuffer*) NULL;
+  const string& type = osystem->settings().getString("video");
 
-  if(type == "soft")
-#if defined (PSP)
-    fb = new FrameBufferPSP(parent);
-#elif defined (_WIN32_WCE)
-    fb = new FrameBufferWinCE(parent);
-#else
-    fb = new FrameBufferSoft(parent);
-#endif
+  // OpenGL mode *may* fail, so we check for it first
 #ifdef DISPLAY_OPENGL
-  else if(type == "gl")
+  if(type == "gl")
   {
-    const string& gl_lib = parent->settings().getString("gl_lib");
+    const string& gl_lib = osystem->settings().getString("gl_lib");
     if(FrameBufferGL::loadFuncs(gl_lib))
-      fb = new FrameBufferGL(parent);
+      fb = new FrameBufferGL(osystem);
   }
 #endif
+
+  // If OpenGL failed, or if it wasn't requested, create the appropriate
+  // software framebuffer
+  if(!fb)
+  {
+   #if defined (PSP)
+    fb = new FrameBufferPSP(osystem);
+   #elif defined (_WIN32_WCE)
+    fb = new FrameBufferWinCE(osystem);
+   #else
+    fb = new FrameBufferSoft(osystem);
+   #endif
+  }
+
+  // This should never happen
+  assert(fb != NULL);
+  switch(fb->type())
+  {
+    case kSoftBuffer:
+      osystem->settings().setString("video", "soft");
+      break;
+
+    case kGLBuffer:
+      osystem->settings().setString("video", "gl");
+      break;
+  }
 
   return fb;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sound* MediaFactory::createAudio(const string& type, OSystem* parent)
+Sound* MediaFactory::createAudio(OSystem* osystem)
 {
   Sound* sound = (Sound*) NULL;
 
 #ifdef SOUND_SUPPORT
   #if defined (_WIN32_WCE)
-    sound = new SoundWinCE(parent);
+    sound = new SoundWinCE(osystem);
   #else
-    sound = new SoundSDL(parent);
+    sound = new SoundSDL(osystem);
   #endif
 #else
-  sound = new SoundNull(parent);
+  sound = new SoundNull(osystem);
 #endif
 
   return sound;

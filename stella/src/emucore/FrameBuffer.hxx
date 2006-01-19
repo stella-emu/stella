@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.64 2006-01-15 16:31:01 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.65 2006-01-19 00:45:12 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -43,6 +43,12 @@ enum FrameStyle {
   kDashLine
 };
 
+// Different types of framebuffer derived objects
+enum BufferType {
+  kSoftBuffer,
+  kGLBuffer
+};
+
 /**
   This class encapsulates the MediaSource and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
@@ -51,7 +57,7 @@ enum FrameStyle {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.64 2006-01-15 16:31:01 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.65 2006-01-19 00:45:12 stephena Exp $
 */
 class FrameBuffer
 {
@@ -193,7 +199,7 @@ class FrameBuffer
       Calculate the maximum window size that the current screen can hold.
       If not supported by platform, always return 4.
     */
-    uInt32 maxWindowSizeForScreen();
+    virtual uInt32 maxWindowSizeForScreen();
 
     /**
       Returns current zoomlevel of the framebuffer.
@@ -267,6 +273,11 @@ class FrameBuffer
       This method is called to initialize the subsystem-specific video mode.
     */
     virtual bool initSubsystem() = 0;
+
+    /**
+      This method is called to query the type of the FrameBuffer.
+    */
+    virtual BufferType type() = 0;
 
     /**
       This method is called to set the aspect ratio of the screen.

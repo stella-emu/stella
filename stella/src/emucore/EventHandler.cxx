@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.147 2006-01-18 20:43:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.148 2006-01-19 00:45:12 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -178,7 +178,7 @@ void EventHandler::reset(State state)
   setPaddleSpeed(2, myOSystem->settings().getInt("p3speed"));
   setPaddleSpeed(3, myOSystem->settings().getInt("p4speed"));
 
-  myEventStreamer->reset();
+//  myEventStreamer->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,9 +343,9 @@ void EventHandler::poll(uInt32 time)
 {
   // Check if we have an event from the eventstreamer
   // TODO - should we lock out input from the user while getting synthetic events?
-  int type, value;
-  while(myEventStreamer->pollEvent(type, value))
-    myEvent->set((Event::Type)type, value);
+//  int type, value;
+//  while(myEventStreamer->pollEvent(type, value))
+//    myEvent->set((Event::Type)type, value);
 
   // Check for an event
   SDL_Event event;
@@ -457,6 +457,7 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->console().togglePhosphor();
                 break;
 
+#if 0
 // FIXME - these will be removed when a UI is added for event recording
               case SDLK_e:  // Alt-e starts/stops event recording
                 if(myEventStreamer->isRecording())
@@ -484,6 +485,7 @@ void EventHandler::poll(uInt32 time)
                 return;
                 break;
 ////////////////////////////////////////////////////////////////////////
+#endif
             }
           }
         }
@@ -845,7 +847,7 @@ void EventHandler::poll(uInt32 time)
 
   // Tell the eventstreamer that another frame has finished
   // This is used for event recording
-  myEventStreamer->nextFrame();
+//  myEventStreamer->nextFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

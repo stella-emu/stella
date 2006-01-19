@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.10 2006-01-15 20:46:20 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.11 2006-01-19 00:45:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -192,9 +192,8 @@ bool EventMappingWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    instance()->eventHandler().addKeyMapping(event, keycode);
-
-    stopRemapping();
+    if(instance()->eventHandler().addKeyMapping(event, keycode))
+      stopRemapping();
   }
   return true;
 }
@@ -206,9 +205,8 @@ void EventMappingWidget::handleJoyDown(int stick, int button)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    instance()->eventHandler().addJoyMapping(event, stick, button);
-
-    stopRemapping();
+    if(instance()->eventHandler().addJoyMapping(event, stick, button))
+      stopRemapping();
   }
 }
 
@@ -219,9 +217,8 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    instance()->eventHandler().addJoyAxisMapping(event, stick, axis, value);
-
-    stopRemapping();
+    if(instance()->eventHandler().addJoyAxisMapping(event, stick, axis, value))
+      stopRemapping();
   }
 }
 
@@ -232,9 +229,8 @@ void EventMappingWidget::handleJoyHat(int stick, int hat, int value)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    instance()->eventHandler().addJoyHatMapping(event, stick, hat, value);
-
-    stopRemapping();
+    if(instance()->eventHandler().addJoyHatMapping(event, stick, hat, value))
+      stopRemapping();
   }
 }
 

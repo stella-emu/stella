@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.30 2006-01-15 22:43:21 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.31 2006-01-19 00:45:12 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.30 2006-01-15 22:43:21 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.31 2006-01-19 00:45:12 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -58,6 +58,11 @@ class FrameBufferSoft : public FrameBuffer
       Return false if any operation fails, otherwise return true.
     */
     virtual bool initSubsystem();
+
+    /**
+      This method is called to query the type of the FrameBuffer.
+    */
+    virtual BufferType type() { return kSoftBuffer; }
 
     /**
       This method is called to set the aspect ratio of the screen.

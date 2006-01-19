@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.57 2006-01-14 21:36:29 stephena Exp $
+// $Id: OSystem.cxx,v 1.58 2006-01-19 00:45:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -187,13 +187,9 @@ bool OSystem::createFrameBuffer(bool showmessage)
   // Delete the old framebuffer
   delete myFrameBuffer;  myFrameBuffer = NULL;
 
-  // And recreate a new one
-  string video = mySettings->getString("video");
-  myFrameBuffer = MediaFactory::createVideo(video, this);
-  if(!myFrameBuffer)
-{cerr << "FIXME - properly deal with video mode not existing\n";
-    return false;
-}
+  // And recreate a new one (we'll always get a valid pointer)
+  myFrameBuffer = MediaFactory::createVideo(this);
+
   // Re-initialize the framebuffer to current settings
   switch(myEventHandler->state())
   {
@@ -203,14 +199,15 @@ bool OSystem::createFrameBuffer(bool showmessage)
       myConsole->initializeVideo();
       if(showmessage)
       {
-        if(video == "soft")
-          myFrameBuffer->showMessage("Software mode");
-      #ifdef DISPLAY_OPENGL
-        else if(video == "gl")
-          myFrameBuffer->showMessage("OpenGL mode");
-      #endif
-        else   // a driver that doesn't exist was requested, so use software mode
-          myFrameBuffer->showMessage("Software mode");
+        switch(myFrameBuffer->type())
+        {
+          case kSoftBuffer:
+            myFrameBuffer->showMessage("Software mode");
+            break;
+          case kGLBuffer:
+            myFrameBuffer->showMessage("OpenGL mode");
+            break;
+        }
       }
       break;  // S_EMULATE, S_MENU, S_CMDMENU
 
@@ -234,6 +231,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::toggleFrameBuffer()
 {
+#ifdef DISPLAY_OPENGL
   // First figure out which mode to switch to
   string video = mySettings->getString("video");
   if(video == "soft")
@@ -246,6 +244,7 @@ void OSystem::toggleFrameBuffer()
   // Update the settings and create the framebuffer
   mySettings->setString("video", video);
   createFrameBuffer(true);  // show onscreen message
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -255,7 +254,7 @@ void OSystem::createSound()
   delete mySound;  mySound = NULL;
 
   // And recreate a new sound device
-  mySound = MediaFactory::createAudio("", this);
+  mySound = MediaFactory::createAudio(this);
 #ifndef SOUND_SUPPORT
   mySettings->setBool("sound", false);
 #endif

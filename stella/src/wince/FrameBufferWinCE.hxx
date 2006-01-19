@@ -32,6 +32,7 @@ class FrameBufferWinCE : public FrameBuffer
 	~FrameBufferWinCE();
 	virtual void setPalette(const uInt32* palette);
 	virtual bool initSubsystem();
+    virtual BufferType type() { return kSoftBuffer; }
     virtual void setAspectRatio() ;
     virtual bool createScreen();
     virtual void toggleFilter();

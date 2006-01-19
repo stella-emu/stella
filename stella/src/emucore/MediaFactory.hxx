@@ -13,13 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.hxx,v 1.1 2005-12-18 18:37:03 stephena Exp $
+// $Id: MediaFactory.hxx,v 1.2 2006-01-19 00:45:12 stephena Exp $
 //============================================================================
 
 #ifndef MEDIA_FACTORY_HXX
 #define MEDIA_FACTORY_HXX
-
-#include "bspf.hxx"
 
 class FrameBuffer;
 class Sound;
@@ -31,13 +29,13 @@ class OSystem;
   based on the specific port and restrictions on that port.
 
   @author  Stephen Anthony
-  @version $Id: MediaFactory.hxx,v 1.1 2005-12-18 18:37:03 stephena Exp $
+  @version $Id: MediaFactory.hxx,v 1.2 2006-01-19 00:45:12 stephena Exp $
 */
 class MediaFactory
 {
   public:
-    static FrameBuffer* createVideo(const string& type, OSystem* parent);
-    static Sound* createAudio(const string& type, OSystem* parent);
+    static FrameBuffer* createVideo(OSystem* osystem);
+    static Sound* createAudio(OSystem* osystem);
 };
 
 #endif
