@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.21 2006-01-11 01:17:11 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.22 2006-01-20 15:13:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,21 +72,21 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
                        "Manufacturer:", kTextAlignLeft);
   myManufacturer = new EditTextWidget(myTab, xpos+lwidth, ypos,
-                                      100, fontHeight, "");
+                                      fwidth, fontHeight, "");
   wid.push_back(myManufacturer);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
                        "Model:", kTextAlignLeft);
   myModelNo = new EditTextWidget(myTab, xpos+lwidth, ypos,
-                                 100, fontHeight, "");
+                                 fwidth, fontHeight, "");
   wid.push_back(myModelNo);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
                        "Rarity:", kTextAlignLeft);
   myRarity = new EditTextWidget(myTab, xpos+lwidth, ypos,
-                                100, fontHeight, "");
+                                fwidth, fontHeight, "");
   wid.push_back(myRarity);
 
   ypos += lineHeight + 3;

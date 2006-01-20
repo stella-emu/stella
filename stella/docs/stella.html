@@ -1731,10 +1731,76 @@
 	<a name="Cheats">10. Cheatcode Manager</a></h1>
 	<hr>
 
-	<p><b>FIXME</b>  Add snapshots and description for cheat manager.
+	<p>Stella 2.0 contains support for Bob Colbert's Cheetah cheat codes, as
+	well as an extended Stella-specific type of cheat code that works on
+	bankswitched ROMs.</p>
 
+	<p>To add/remove/edit a cheat code, enter the 'Cheat Code' dialog:<br><br>
+	<img src="graphics/cheat.png">
 
-	<br><br><br>
+	<p>Currently, there are three types of cheatcodes available, all of which
+	must be entered in hexidecimal format:
+	<ul>
+		<li><p>Per-frame RAM cheats:<br>
+			Evaluated each frame, and apply to RAM only.  Format as follows:
+	<pre>
+   4-digit code: c041
+   c0 = address
+   41 = data
+	</pre>
+		</li>
+
+		<li>Cheetah codes, which are explained in detail on
+			<a href="http://members.cox.net/rcolbert/">Bob Colbert's web page</a>,
+			along with a list of codes for various games.  Cheetah codes
+			don't support bankswitched ROMs, so they only work for 2K or 4K ROMs.
+			Format as follows:
+	<pre>
+   6-digit (cheetah) code: aaaddc
+   aaa = address - $f000
+   dd = data
+   c = count - 1
+	</pre>
+		</li>
+
+		<li>Stella extended cheats are similar to Cheetah codes, except that
+			they can be 7 or 8 digits long, with the extra digits used for the
+			bank number:
+	<pre>
+   7-digit (stella) code: baaaddc
+   b = bank (0 to $f)
+   aaa = address - $f000
+   dd = data
+   c = count - 1
+
+   8-digit (stella) code: bbaaaddc
+   bb = bank (0 to $ff)
+   aaa = address - $f000
+   dd = data
+   c = count - 1
+	</pre>
+		</li>
+	</ul>
+
+	<p>There's also the concept of <i>one shot</i> codes.  These codes work
+	exactly the same as above, except they aren't saved.  They are evaluated
+	once and immediately discarded.
+
+	<p>Here are a few cheat codes we've found:</p>
+	<pre>
+Pitfall (standard Cheetah codes):
+   5b0ea1 - infinite lives
+   723ea1 - infinite time
+   aa5??0 - set starting level, ?? = 01 to ff (d0 is kinda neat)
+
+Battlezone (Stella extended codes):
+   1236ea1 - infinite lives
+
+Ms Pac-Man (Stella extended codes):
+   108fea1 - infinite lives
+	</pre>
+
+	<br>
 	<p><h1>
 	<a name="Debugger">11. Integrated Debugger</a></h1>
 	<hr>
@@ -1762,8 +1828,8 @@
 	<p>
 	<h2><b>Linux/Unix</b></h2>
 	<p>The Linux and Unix versions of Stella looks for the system properties file
-	in <i>/etc/stella.pro</i> and your personal properties file in
-	<i>$HOME/.stella/user.pro</i>.
+	in <i>/usr/share/stella/stella.pro</i> and your personal properties
+	file in	<i>$HOME/.stella/user.pro</i>.
 
 	<p>
 	<h2><b>Macintosh</b></h2>
