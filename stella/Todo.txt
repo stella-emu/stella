@@ -22,8 +22,6 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * Find people to actually do the above ports, and try to more actively
     recruit people into the Stella project
 
-  * Improve cheatcode support, add GUI, etc
-
   * Either Support DASM as frontend or integrate a 6507 Assembler
 
   * Either Support Distella as frontend or integrate a 6507 Disassembler

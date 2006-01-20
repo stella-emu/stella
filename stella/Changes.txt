@@ -12,6 +12,77 @@
                                Release History
 ===============================================================================
 
+2.0.1 to 2.1: (January 29, 2006)
+
+  * Added phosphor effect, similar to z26.  Useful on ROMs which alternate
+    sprites from one frame to another, resulting in an annoying flicker.
+    When using phosphor mode, a pixels colour is mixed with its previous value,
+    resulting in a blended image that doesn't flicker, emulating the
+    phosphoresence effect on a real television.
+
+  * Added 'pp' developer commandline argument to set the "Display.Phosphor"
+    property, and 'ppblend' to set the amount to blend pixels in phosphor
+    mode.  Also added 'Alt p' key to enable/disable phosphor effect while
+    ROM is emulated. By default, phosphor mode is only used when necessary,
+    as specified in the stella.pro file.
+
+  * Renamed 'cheetah' commandline argument to 'cheat'.
+
+  * Added per-frame cheatcodes (4 characters long), which are evaluated
+    each frame.
+
+  * Added cheatcode GUI, where cheats can be named, edited, saved, etc.
+
+  * Cheat codes are now saved to stella.cht file and are automatically
+    reloaded when Stella starts.
+
+  * Improved 'joymouse' functionality.  While in GUI mode, any axis will
+    simulate mouse movement, and any button will simulate a mouse click.
+    So the GUI can be completely navigated without a mouse.
+
+  * Improved CommandDialog and LauncherDialog wrt joymouse functionality.
+    These dialogs are used more than any other on devices without a mouse,
+    so joystick axis movement switches between GUI objects, rather than
+    simulating the mouse.  This leads to much faster selection of objects.
+
+  * Added mapping of multiple SDL joystick axis to Event Mapping.
+
+  * Added joystick hat support, and mapping of multiple hats to Event Mapping.
+
+  * Added remapping of paddle emulation to the keyboard or joystick axis
+    (the mouse is still used by default for paddles).  Related to this,
+    use more precise analog values when analog axis are mapped to
+    analog-type events (such as paddles).
+
+  * Treat joystick events as other types of controllers based on the virtual
+    port entry in stella.pro.  This means that mappings for a joystick will
+    emulate other devices when necessary.
+
+  * Added 'sp' developer commandline argument, which sets the
+    "Console.SwapPorts" property and swaps the arrangement of the virtual
+    ports.  Useful for games like "Raiders of the Lost Ark", where the
+    joysticks are normally swapped.
+
+  * Added ability to set which Stelladaptor device emulates which virtual
+    joystick port ('sa1' and 'sa2' commandline arguments, which accept
+    'left' or 'right').
+
+  * Fixed issues with jittering joysticks/mice causing weird events when
+    starting Stella.
+
+  * Added 'freq', 'tiafreq' and 'clipvol' commandline arguments, which
+    affect the sound subsystem (see manual for further info).
+
+  * Made state files completely cross-platform, both in terms of endianness
+    as well as CPU size (32 vs. 64 bit).
+
+  * Fixed crash with using 'cheat' and 'break' from the commandline.
+
+  * Implemented dynamic loading of OpenGL library.
+
+Have fun!
+
+
 2.0 to 2.0.1: (October 24, 2005)
 
   * Added 'dirtyrects' support, which speeds up rendering for some Windows users.
@@ -49,7 +120,6 @@
   * For the OSX port, reverted window resize key combos back to 'Cmd =' and
    'Cmd -' to match the 1.4.2 release.
 
-Have fun!
 
 1.4.2 to 2.0: (October 16, 2005)
 
@@ -144,10 +214,12 @@ Have fun!
 
   * Updated the Stella manual with pictures of the new integrated GUI.
 
+
 1.4.2a to 1.4.2b: MacOSX version only (February 27, 2005)
 
   * Added fix to mute sound while user is loading a new cartridge, or using
     the Preferences window.
+
 
 1.4.2 to 1.4.2a: MacOSX version only (February 21, 2005)
 
@@ -156,6 +228,7 @@ Have fun!
 
   * Turned optimization on in compiler settings, which had somehow gotten
     turned off.
+
 
 1.4.1 to 1.4.2: (February 19, 2005)
 
@@ -187,6 +260,7 @@ Have fun!
     'directx'.
 
   * For the OSX port; added 'Cmd-R' key to reload the currently loaded ROM.
+
 
 1.4 to 1.4.1: (August 15, 2004)
 
@@ -221,6 +295,7 @@ Have fun!
 
   * For the OSX port; fixed an issue which would prevent the program from
     working with OSX 10.1.
+
 
 1.3 to 1.4: (July 17, 2004)
 
@@ -307,6 +382,7 @@ Have fun!
   * Removed all command line options relating to the X11 port
     (owncmap, display).
 
+
 1.2 to 1.3: (February 17, 2003)
 
   * Improved TIA sound system so that games with digitized audio work
@@ -386,19 +462,23 @@ Have fun!
   * In the DOS port the ROM image is searched for first using the
     specified path, then in $STELLA_HOME/ROMS, and finally in $STELLA_HOME
   
+
 Cyberstella 1.2.1 (May 16, 2002)
 
   * Removed the built-in games until some legal stuff is sorted out
 
+
 Cyberstella 1.2 (May 10, 2002)
 
   * Initial release of a new WIN 32 port of Stella
+
 
 DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
   * Fixed a bug with control keys being confused with the pause key
 
   * Fixed a bug with the pause key causing the application to lockup
+
 
 1.1 to 1.2: (April 21, 2002)
 
@@ -466,6 +546,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Added pause functionality to the core. Implemented in DOS, X11, and
     SDL versions for now.
 
+
 1.0 to 1.1: (February 26, 1999)
 
   * DOS and Linux versions support real Atari 2600 paddles using a 
@@ -490,6 +571,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
   * Improved TIA emulation to support the RESPx multi-sprite trick
 
+
 1.0b1 to 1.0: (October 7, 1998)
 
   * DOS version supports 320x200 and 320x240 graphics modes
@@ -501,6 +583,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * BSDI target included in makefile 
 
   * Improved Users Manual in several "popular" formats
+
 
 0.7 to 1.0b1: (July 25, 1998)
 
@@ -537,6 +620,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
   * Improved Supercharger emulation
 
+
 0.6 to 0.7: (June 7, 1997)
 
   * Improved emulation speed of TIA and 6507
@@ -562,6 +646,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Changed TIA peeking so lower nibble of byte read is the same
     as the TIA address being accessed (Warlords now works)
   
+
 0.5 to 0.6: (January 18, 1997)
 
   * Fixed collision detection problem (Freeway works)
@@ -579,6 +664,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Included Bob Colbert's "Okie Dokie" game
 
   * Uses version 1.1 of the TIA Sound library by Ron Fries
+
 
 0.4 to 0.5: (November 17, 1996)
 
@@ -602,6 +688,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Changed the X windows terminal update method to make it faster and
     easier to understand
 
+
 0.3 to 0.4 (August 28, 1996):
 
   * TIA code has been optimized some
@@ -613,6 +700,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Delta screen update supported
 
   * Better error handling added to the "core"
+
 
 0.2 to 0.3 (July 12, 1996):
 

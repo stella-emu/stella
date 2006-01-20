@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.0.1</b></h4></center>
+	<center><h4><b>Release 2.1</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -26,6 +26,7 @@
 		<li><a href="#Settings">Settings File</a></li>
 		<li><a href="#Keyboard">Keyboard Layout</a></li>
 		<li><a href="#Remapping">Event Remapping</a></li>
+		<li><a href="#Cheats">Cheatcode Manager</a></li>
 		<li><a href="#Debugger">Integrated Debugger</a></li>
 		<li><a href="#Properties">Game Properties</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
@@ -35,7 +36,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - October 2005</b></center>
+	<center><b>February 1999 - January 2006</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -214,44 +215,75 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.0.1</b></h2>
+	<h2><b>New in Release 2.1</b></h2>
 
 	<ul>
-		<li>Added 'dirtyrects' support, which speeds up rendering for some Windows
-			users.</li>
+		<li>Added <b>phosphor effect</b>, similar to z26.  Useful on ROMs which
+			alternate sprites from one frame to another, resulting in an
+			annoying flicker.  When using phosphor mode, a pixels colour is mixed
+			with its previous value, resulting in a blended image that doesn't
+			flicker, emulating the phosphoresence effect on a real television.</li>
 
-		<li>Fixed bug where taking snapshots would fail if the snapshot directory
-			wasn't specified.</li>
+		<li>Added 'pp' developer commandline argument to set the "Display.Phosphor"
+			property, and 'ppblend' to set the amount to blend pixels in
+			phosphor mode.  Also added 'Alt p' key to enable/disable phosphor
+			effect while ROM is emulated.  By default, phosphor mode is only used
+			when necessary, as specified in the stella.pro file.</li>
 
-		<li>Made ROM launcher case-insensitive, so upper and lowercase names are now
-			mixed in the correct order.</li>
+		<li>Renamed 'cheetah' commandline argument to 'cheat'.</li>
 
-		<li>Fixed ZIP ROM support to search the archive for ROMs ending with either
-			.bin or .a26 (case insensitive).</li>
+		<li>Added per-frame cheatcodes (4 characters long), which are evaluated
+			each frame.</li>
 
-		<li>ROMs which don't have an associated properties entry are no longer named
-			'Untitled' in the Stella window or when taking snapshots.  The actual
-			ROM name is now used.</li>
+		<li>Added cheatcode GUI, where cheats can be named, edited, saved, etc.</li>
 
-		<li>Changed minimum height of debugger to be 27 lines in the prompt, or approx.
-			700 pixels high.  This should make using the debugger easier for users
-			with lower resolution monitors.  Related to this, the RomWidget now uses
-			all possible vertical space when changing the debugger height.</li>
+		<li>Cheat codes are now saved to stella.cht file and are automatically
+			reloaded when Stella starts.</li>
 
-		<li>Fixed bug related to upgrading Stella and event mappings being incorrect.
-			Stella now detects this, and uses the default mappings.  So upgrading
-			to version 2.0.1 means your event mappings will be reset.</li>
+		<li>Improved 'joymouse' functionality.  While in GUI mode, any axis
+			will simulate mouse movement, and any button will simulate a mouse
+			click.  So the GUI can be completely navigated without a mouse.</li>
 
-		<li>Fixed bug in loading debugger symbol files generated on different
-			operating systems.</li>
+		<li>Improved CommandDialog and LauncherDialog wrt joymouse functionality.
+			These dialogs are used more than any other on devices without a mouse,
+			so joystick axis movement switches between GUI objects, rather than
+			simulating the mouse.  This leads to much faster selection of objects.</li>
 
-		<li>For the Windows port; added exe installer based on InnoSetup.</li>
+		<li>Added mapping of multiple SDL joystick axis to Event Mapping.</li>
 
-		<li>For the Windows port; compiled icon into Stella, so it now looks like
-			a real Win32 application.</li>
+		<li>Added joystick hat support, and mapping of multiple hats to Event
+			Mapping.</li>
 
-		<li>For the OSX port, reverted window resize key combos back to 'Cmd =' and
-			'Cmd -' to match the 1.4.2 release.</li>
+		<li>Added remapping of paddle emulation to the keyboard or joystick axis
+			(the mouse is still used by default for paddles).  Related to this,
+			use more precise analog values when analog axis are mapped to
+			analog-type events (such as paddles).</li>
+
+		<li>Treat joystick events as other types of controllers based on the
+			virtual port entry in stella.pro.  This means that mappings for a
+			joystick will emulate other devices when necessary.</li>
+
+		<li>Added 'sp' developer commandline argument, which sets the 
+			"Console.SwapPorts" property and swaps the arrangement of the
+			virtual ports.  Useful for games like "Raiders of the Lost Ark",
+			where the joysticks are normally swapped.</li>
+
+		<li>Added ability to set which Stelladaptor device emulates which virtual
+			joystick port ('sa1' and 'sa2' commandline arguments, which accept
+			'left' or 'right').</li>
+
+		<li>Fixed issues with jittering joysticks/mice causing weird events when
+			starting Stella.</li>
+
+		<li>Added 'freq', 'tiafreq' and 'clipvol' commandline arguments, which
+			affect the sound subsystem (see manual for further info).</li>
+
+		<li>Made state files completely cross-platform, both in terms of endianness
+			as well as CPU size (32 vs. 64 bit).</li>
+
+		<li>Fixed crash with using 'cheat' and 'break' from the commandline.</li>
+
+		<li>Implemented dynamic loading of OpenGL library.</li>
 	</ul>
 
 	<p>
@@ -436,7 +468,7 @@
 		</ol>
 		<li><b>Binary EXE installer</b> (stella-<i>release</i>-win32.exe)</li>
 		<ol>
-			<li>Double-click on the installer on follow the onscreen instructions</li>
+			<li>Double-click on the installer and follow the onscreen instructions</li>
 		</ol>
 	</ul>
 
@@ -526,7 +558,7 @@
 
 	<p>The ROM and snapshot settings may be changed by clicking the 'Options'
 	button:<br><br>
-	<img src="graphics/launcher_options_rom.png">
+	<img src="graphics/launcher_options_rom.png">&nbsp;&nbsp;
 	<img src="graphics/launcher_options_snap.png"></p>
 
 	<p>Selecting a new path for ROM or snapshots is done by clicking the 'Path'
@@ -584,6 +616,12 @@
 		</tr>
 
 		<tr>
+			<td><pre>-gl_lib &lt;filename&gt;</pre></td>
+			<td>OpenGL mode only. Specify the OpenGL library to use (only use
+				this if you know what you're doing).</td>
+		</tr>
+
+		<tr>
 			<td><pre>-zoom &lt;size&gt;</pre></td>
 			<td>Makes window be 'size' times normal.</td>
 		</tr>
@@ -616,6 +654,12 @@
 		</tr>
 
 		<tr>
+			<td><pre>-ppblend &lt;number&gt;</pre></td>
+			<td>Set blending for phosphor effect, if enabled (0-100).
+				Default is 77.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-sound &lt;1|0&gt;</pre></td>
 			<td>Enable or disable sound generation.</td>
 		</tr>
@@ -632,8 +676,35 @@
 		</tr>
 
 		<tr>
+			<td><pre>-freq &lt;number&gt;</pre></td>
+			<td>Set sound sample output frequency (0 - 48000).
+				Default is 31400.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-tiafreq &lt;number&gt;</pre></td>
+			<td>Set sound sample generation frequency (0 - 48000).
+				Default is 31400.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-volume &lt;number&gt;</pre></td>
 			<td>Set the volume (0 - 100).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-clipvol &lt;1|0&gt;</pre></td>
+			<td>Enable volume clipping (eliminates popping).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-cheat &lt;code&gt;</pre></td>
+			<td>Use the specified cheatcode (see Cheat section for description).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
+			<td>Shows some game info while Stella is running.</td>
 		</tr>
 
 		<tr>
@@ -642,13 +713,39 @@
 		</tr>
 
 		<tr>
-			<td><pre>-joymouse &lt;0|1&gt;</pre></td>
-			<td>Indicates whether the joystick emulates the mouse in GUI mode (defaults to off).</td>
+			<td><pre>-sa1 &lt;left|right&gt;</pre></td>
+			<td>Stelladaptor 1 emulates specified joystick port.</td>
 		</tr>
 
 		<tr>
-			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
-			<td>Shows some game info while Stella is running.</td>
+			<td><pre>-sa2 &lt;left|right&gt;</pre></td>
+			<td>Stelladaptor 2 emulates specified joystick port.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-joymouse &lt;0|1&gt;</pre></td>
+			<td>Indicates whether the joystick emulates the mouse in GUI mode
+				(defaults to off).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-p1speed &lt;number&gt;</pre></td>
+			<td>Speed of emulated mouse movement for paddle 1 (0-100).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-p2speed &lt;number&gt;</pre></td>
+			<td>Speed of emulated mouse movement for paddle 2 (0-100).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-p3speed &lt;number&gt;</pre></td>
+			<td>Speed of emulated mouse movement for paddle 3 (0-100).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-p4speed &lt;number&gt;</pre></td>
+			<td>Speed of emulated mouse movement for paddle 4 (0-100).</td>
 		</tr>
 
 		<tr>
@@ -696,6 +793,11 @@
 		<tr>
 			<th>Argument</th>
 			<th>Description</th>
+		</tr>
+
+		<tr>
+			<td><pre>-break &lt;address&gt;</pre></td>
+			<td>Set a breakpoint at specified address.</td>
 		</tr>
 
 		<tr>
@@ -793,6 +895,11 @@
 		</tr>
 
 		<tr>
+			<td><pre>-pp &lt;Yes|No&gt;</pre></td>
+			<td>Set "Display.Phosphor" property.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-hmove &lt;Yes|No&gt;</pre></td>
 			<td>Set "Emulation.HmoveBlanks" property.</td>
 		</tr>
@@ -872,7 +979,9 @@
 	<h2><b>Linux/UNIX</b></h2>
 	<p>The Linux and UNIX version of Stella searches for the <i>stellarc</i> file in
 	two places.  First, it will look for <i>stellarc</i> in your $HOME/.stella directory.
-	Then, it will look for <i>stellarc</i> in the <i>/etc</i> directory.</p>
+	Then, it will look for <i>stellarc</i> in the system-wide directory, which is
+	determined when Stella was built.  By default, this would be the
+	<i>/usr/share/stella</i> directory.</p>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
@@ -1015,12 +1124,6 @@
 			<td>Pause/resume emulation</td>
 			<td>Pause</td>
 			<td>Pause</td>
-		</tr>
-
-		<tr>
-			<td>Cheat code entry</td>
-			<td>Control + c</td>
-			<td>Cmd + c</td>
 		</tr>
 	</table>
 
@@ -1577,6 +1680,18 @@
 			<td>Backspace</td>
 			<td>Backspace</td>
 		</tr>
+
+		<tr>
+			<td>Toggle 'phosphor' effect</td>
+			<td>Alt + p</td>
+			<td>Shift-Cmd + p</td>
+		</tr>
+
+		<tr>
+			<td>Toggle palette</td>
+			<td>Control + p</td>
+			<td>Cmd + p</td>
+		</tr>
 	</table>
 
 	<br><br><br>
@@ -1593,10 +1708,13 @@
 	<ol>
 		<li>Start playing a game (ie, start the emulation).</li>
 		<li>Enter options mode be pressing <b>Tab</b>.</li>
-		<li>Click the 'Event Mapping' button.</li>
+		<li>Click the 'Input Settings' button.</li>
+		<li>Click the 'Event Mapping' tab.</li>
 		<li>Select event you want to remap and click the 'Map' button.</li>
 		<li>Press a key or a joystick button, and that key/button will be bound
-			to the selected event.</li>
+			to the selected event.  If nothing seems to happen, either Stella
+			can't see the input device, or the selected event doesn't support being
+			remapped to the input device.</li>
 		<li>Erase a mapping by clicking 'Erase', or cancel a remap in progress
 			by clicking 'Cancel'.</li>
 		<li>Reset default mappings by clicking 'Defaults'.</li>
@@ -1610,7 +1728,15 @@
 
 	<br><br><br>
 	<p><h1>
-	<a name="Debugger">10. Integrated Debugger</a></h1>
+	<a name="Cheats">10. Cheatcode Manager</a></h1>
+	<hr>
+
+	<p><b>FIXME</b>  Add snapshots and description for cheat manager.
+
+
+	<br><br><br>
+	<p><h1>
+	<a name="Debugger">11. Integrated Debugger</a></h1>
 	<hr>
 
 	<p>Have a look at <a href="debugger.html">this page</a> for integrated debugger
@@ -1618,7 +1744,7 @@
 
 	<br><br><br>
 	<p><h1>
-	<a name="Properties">11. Game Properties</a></h1>
+	<a name="Properties">12. Game Properties</a></h1>
 	<hr>
 
 	<p>Stella uses game properties to specify the "best" emulator settings for a
@@ -1764,6 +1890,14 @@
 		</tr>
 
 		<tr>
+			<td VALIGN="TOP"><i>Console.SwapPorts:</i></td>
+			<td>This property indicates that the left and right ports should be
+			swapped internally.  This is used for ROMs like 'Raiders' where the
+			Player 1 joystick is plugged into the right joystick port.
+			The value of this property must be Yes or No.</td>
+		</tr>
+
+		<tr>
 			<td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
 			<td>This property indicates the default television setting for the
 			game.  The value of this property must be Color or BlankAndWhite.</td>
@@ -1818,6 +1952,12 @@
 		</tr>
 
 		<tr>
+			<td VALIGN="TOP"><i>Display.Phosphor:</i></td>
+			<td>This property indicates whether the phosphor effect should be
+			emulated or not.  The value of this property must be Yes or No.</td>
+		</tr>
+
+		<tr>
 			<td VALIGN="TOP"><i>Emulation.HmoveBlanks:</i></td>
 			<td>This property indicates whether the TIA HMOVE blank bug should be
 			emulated or not.  The value of this property must be Yes or No.</td>
@@ -1826,7 +1966,7 @@
 
 	<br><br>
 	<p><h1>
-	<a name="Adaptor">12. Stelladaptor Support</a></h1>
+	<a name="Adaptor">13. Stelladaptor Support</a></h1>
 	<hr>
 
 	<p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
@@ -1849,11 +1989,14 @@
 		either the right joystick, paddles 3 & 4, or the right driving controller.</li>
 
 		<li>Any other Stelladaptors will be ignored.</li>
+
+		<li>The assignment ordering of Stelladaptor to port can be redefined with
+		'sa1' and 'sa2' (see description in 'Starting a Game').</li>
 	</ul>
 
 	<br><br>
 	<p><h1>
-	<a name="Acknowledgments">13. Acknowledgments</a></h1>
+	<a name="Acknowledgments">14. Acknowledgments</a></h1>
 	<hr>
 
 	<p>Bradford W. Mott started developing Stella during the fall of 1995 and since
@@ -2097,7 +2240,7 @@
 
 	<br><br>
 	<p><h1>
-	<a name="License">14. License and Disclaimer</a></h1>
+	<a name="License">15. License and Disclaimer</a></h1>
 	<hr>
 
 	<p>
