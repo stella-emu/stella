@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.44 2006-01-15 22:43:21 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.45 2006-01-20 20:07:25 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -101,7 +101,7 @@ bool FrameBufferSoft::createScreen()
       myPitch = myScreen->pitch/2;
       break;
     case 24:
-      myPitch = myScreen->pitch/3;
+      myPitch = myScreen->pitch;
       break;
     case 32:
       myPitch = myScreen->pitch/4;
@@ -310,8 +310,6 @@ void FrameBufferSoft::drawMediaSource()
 
     case kPhosphor_24:
     {
-// FIXME - implement 24 bit mode
-#if 0
       // Since phosphor mode updates the whole screen,
       // we might as well use SDL_Flip (see postFrameUpdate)
       myUseDirtyRects = false;
@@ -319,7 +317,7 @@ void FrameBufferSoft::drawMediaSource()
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
 
-      uInt16* buffer    = (uInt16*)myScreen->pixels;
+      uInt8* buffer     = (uInt8*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
       for(uInt32 y = 0; y < height; ++y )
@@ -335,18 +333,32 @@ void FrameBufferSoft::drawMediaSource()
 
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
+            uInt8 r, g, b;
+            if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            {
+              uInt32 pixel = myAvgPalette[v][w];
+              b = pixel & 0xff;
+              g = (pixel & 0xff00) >> 8;
+              r = (pixel & 0xff0000) >> 16;
+            }
+            else
+            {
+              uInt32 pixel = myAvgPalette[v][w];
+              r = pixel & 0xff;
+              g = (pixel & 0xff00) >> 8;
+              b = (pixel & 0xff0000) >> 16;
+            }
 
             while(xstride--)
             {
-              buffer[pos++] = (uInt16) myAvgPalette[v][w];
-              buffer[pos++] = (uInt16) myAvgPalette[v][w];
+              buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+              buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
             }
           }
           screenofsY += myPitch;
         }
         bufofsY += width;
       }
-#endif
       break;  // kPhosphor_24
     }
 
@@ -632,7 +644,7 @@ void FrameBufferSoft::enablePhosphor(bool enable)
         myRenderType = kPhosphor_16;
         break;
       case 24:
-        myPitch      = myScreen->pitch/3;
+        myPitch      = myScreen->pitch;
         myRenderType = kPhosphor_24;
         break;
       case 32:
