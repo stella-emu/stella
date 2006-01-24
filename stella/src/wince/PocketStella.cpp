@@ -75,8 +75,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	case WM_KEYDOWN:
 		if (wParam == VK_F3)
 		{
-			if (rotkeystate == 0)
-				KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
+			if (rotkeystate == 0 && theOSystem)
+				if (theOSystem->eventHandler().state() == 1)
+					KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
 			rotkeystate = 1;
 		}
 		else
@@ -237,6 +238,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	SettingsWinCE theSettings(theOSystem);
 	theOSystem->settings().loadConfig();
 	theOSystem->settings().validate();
+	theOSystem->create();
 	EventHandler theEventHandler(theOSystem);
 	PropertiesSet propertiesSet;
 	propertiesSet.load(theOSystem->systemProperties(), false);
@@ -254,6 +256,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 		CleanUp();
 		return 1;
 	}
+
 	theOSystem->createSound();
 
 	paddlespeed = theSettings.getInt("wce_smartphone_paddlespeed");
