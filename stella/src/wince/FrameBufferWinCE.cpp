@@ -26,18 +26,70 @@
 
 FrameBufferWinCE::FrameBufferWinCE(OSystem *osystem)
 : FrameBuffer(osystem), myDstScreen(NULL), SubsystemInited(false), displacement(0),
-  issmartphone(true), islandscape(false), displaymode(0)
+issmartphone(true), islandscape(false), displaymode(0), legacygapi(true), devres(SM_LOW)
 {
+	gxdp.cxWidth = gxdp.cyHeight = gxdp.cbxPitch = gxdp.cbyPitch = gxdp.cBPP = gxdp.ffFormat = 0;
 }
 
 FrameBufferWinCE::~FrameBufferWinCE()
 {
 }
 
+void FrameBufferWinCE::GetDeviceProperties(void)
+{
+	if (gxdp.cxWidth) return;
+
+	// screen access mode
+	gxdp = GXGetDisplayProperties();
+	legacygapi = true;
+	if (((unsigned int) GetSystemMetrics(SM_CXSCREEN) != gxdp.cxWidth) || ((unsigned int) GetSystemMetrics(SM_CYSCREEN) != gxdp.cyHeight))
+	{
+		// 2003SE+ and lying about the resolution. good luck.
+		legacygapi = false;
+
+		RawFrameBufferInfo rfbi;
+		HDC hdc = GetDC(NULL);
+		ExtEscape(hdc, GETRAWFRAMEBUFFER, 0, NULL, sizeof(RawFrameBufferInfo), (char *) &rfbi);
+		ReleaseDC(NULL, hdc);
+
+		if (rfbi.wFormat == FORMAT_565)
+			gxdp.ffFormat = kfDirect565;
+		else if (rfbi.wFormat == FORMAT_555)
+			gxdp.ffFormat = kfDirect555;
+		else
+			gxdp.ffFormat = 0;
+		gxdp.cBPP = rfbi.wBPP;
+		gxdp.cbxPitch = rfbi.cxStride;
+		gxdp.cbyPitch = rfbi.cyStride;
+		gxdp.cxWidth  = rfbi.cxPixels;
+		gxdp.cyHeight = rfbi.cyPixels;
+	}
+
+	// device detection (some redundancy here, but nevermind :)
+	TCHAR platform[100];
+	issmartphone = false;
+	if (gxdp.cxWidth == 176 && gxdp.cyHeight == 220)
+		issmartphone = true;
+	if (SystemParametersInfo(SPI_GETPLATFORMTYPE, 100, platform, 0))
+	{
+		if (wcsstr(platform, _T("mart")))
+			issmartphone = true;
+	}
+	else
+		issmartphone = true;	// most likely
+
+	if (gxdp.cxWidth == 176 && gxdp.cyHeight == 220)
+		devres = SM_LOW;
+	/*else if (gxdp.cxWidth == 480 && gxdp.cyHeight == 640)
+		devres = VGA;*/
+	else
+		devres = QVGA;
+}
+
 void FrameBufferWinCE::setPalette(const uInt32* palette)
 {
 	//setup palette
-	gxdp = GXGetDisplayProperties();
+	GetDeviceProperties();
 	for (uInt16 i=0; i<256; i++)
 	{
 		uInt8 r = (uInt8) ((palette[i] & 0xFF0000) >> 16);
@@ -55,7 +107,7 @@ void FrameBufferWinCE::setPalette(const uInt32* palette)
 
 bool FrameBufferWinCE::initSubsystem()
 {
-	gxdp = GXGetDisplayProperties();
+	GetDeviceProperties();
 	for (int i=0; i<kNumColors - 256; i++)
 	{
 		uInt8 r = (ourGUIColors[i][0] & 0xFF);
@@ -85,10 +137,10 @@ bool FrameBufferWinCE::initSubsystem()
 	scrpixelstep = gxdp.cbxPitch;
 	scrlinestep = gxdp.cbyPitch;
 
-	if (scrwidth == 176 && scrheight == 220)
-		issmartphone = true;
-	else
-		issmartphone = false;
+//	if (scrwidth == 176 && scrheight == 220)
+//		issmartphone = true;
+//	else
+//		issmartphone = false;
 
 	setmode(displaymode);
 	SubsystemInited = false;
@@ -143,18 +195,22 @@ void FrameBufferWinCE::lateinit(void)
 	myHeight = myOSystem->console().mediaSource().height();
 	myWidthdiv4 = myWidth >> 2;
 
-	if (issmartphone)
+	if (devres == SM_LOW)
 		if (!islandscape)
 			w = myWidth;
 		else
 			w = (int) ((float) myWidth * 11.0f / 8.0f + 0.5f);
-	else
+	else //if (devres == QVGA)
 		if (!islandscape)
 			w = (int) ((float) myWidth * 3.0f / 2.0f + 0.5f);
 		else
 			w = myWidth * 2;
-
-	if (issmartphone && islandscape)
+	/*else
+	{
+		// VGA
+	}
+	*/
+	if (devres == SM_LOW && islandscape)
 		h = (int) ((float) myHeight * 4.0f / 5.0f + 0.5f);
 	else
 		h = myHeight;
@@ -208,7 +264,18 @@ void FrameBufferWinCE::lateinit(void)
 
 void FrameBufferWinCE::preFrameUpdate()
 {
-	myDstScreen = (uInt8 *) GXBeginDraw();
+	static HDC hdc;
+	static RawFrameBufferInfo rfbi;
+
+	if (legacygapi)
+		myDstScreen = (uInt8 *) GXBeginDraw();
+	else
+	{
+		hdc = GetDC(NULL);
+		ExtEscape(hdc, GETRAWFRAMEBUFFER, 0, NULL, sizeof(RawFrameBufferInfo), (char *) &rfbi);
+		ReleaseDC(NULL, hdc);
+		myDstScreen = (uInt8 *) rfbi.pFramePointer;
+	}
 }
 
 void FrameBufferWinCE::drawMediaSource()
@@ -236,7 +303,7 @@ void FrameBufferWinCE::drawMediaSource()
 		theRedrawTIAIndicator = false;
 	}
 	
-	if (issmartphone && islandscape == 0)
+	if (devres == SM_LOW && !islandscape)
 	{
 		// straight
 		for (y=0; y<minydim; y++)
@@ -261,7 +328,7 @@ void FrameBufferWinCE::drawMediaSource()
 			pl = d;
 		}
 	}
-	else if (issmartphone && islandscape)
+	else if (devres == SM_LOW && islandscape)
 	{
 		for (y=0; y<minydim; y++)
 		{
@@ -378,7 +445,7 @@ void FrameBufferWinCE::drawMediaSource()
 			pl = d;
 		}
 	}
-	else if (issmartphone == 0 && islandscape == 0)
+	else if (devres == QVGA && !islandscape)
 	{
 		// 3/2
 		for (y=0; y<minydim; y++)
@@ -407,7 +474,7 @@ void FrameBufferWinCE::drawMediaSource()
 			pl = d;
 		}
 	}
-	else if (issmartphone == 0 && islandscape)
+	else if (devres == QVGA && islandscape)
 	{
 		// 2/1
 		for (y=0; y<minydim; y++)
@@ -444,8 +511,6 @@ void FrameBufferWinCE::drawMediaSource()
 
 void FrameBufferWinCE::wipescreen(void)
 {
-	uInt8 *d;
-
 	if (!SubsystemInited)
 		lateinit();
 
@@ -454,15 +519,17 @@ void FrameBufferWinCE::wipescreen(void)
 	s = myOSystem->console().mediaSource().previousFrameBuffer();
 	memset(s, 0, myWidth*myHeight-1);
 
-	if ( (d = (uInt8 *) GXBeginDraw()) == NULL )
-		return;
-	for (int i=0; i < scrwidth*scrheight; i++, *((uInt16 *)d) = 0, d += scrpixelstep);
-	GXEndDraw();
+	preFrameUpdate();
+	//uInt8 *d;
+	//d=myDstScreen;
+	//for (int i=0; i < scrwidth*scrheight; i++, *((uInt16 *)d) = 0, d += scrpixelstep);
+	memset(myDstScreen, 0, scrwidth*scrheight*2);
+	postFrameUpdate();
 }
 
 void FrameBufferWinCE::postFrameUpdate()
 {
-	GXEndDraw();
+	if (legacygapi) GXEndDraw();
 }
 
 void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, OverlayColor color)
@@ -488,7 +555,7 @@ void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32
 
   uInt8 *d;
   uInt32 stride;
-  if (issmartphone)
+  if (devres == SM_LOW)
   {
 	  d = myDstScreen + y * scrlinestep + ((x+1) >> 1) * scrpixelstep;
 	  stride = (scrwidth - w) * scrpixelstep;
@@ -506,7 +573,7 @@ void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32
   for(int y2 = 0; y2 < h; y2++)
   {
     const uInt16 buffer = *tmp++;
-	if (issmartphone)
+	if (devres == SM_LOW)
 	{
 		uInt16 mask = 0xC000;
 		for(int x2 = 0; x2 < w; x2++, mask >>= 2)
@@ -565,7 +632,7 @@ uInt32 FrameBufferWinCE::mapRGB(Uint8 r, Uint8 g, Uint8 b)
 
 void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 {
-	if (issmartphone)
+	if (devres == SM_LOW)
 	{
 		int kx = x >> 1; int ky = y; int kx2 = x2>> 1;
 		if (kx<0) kx=0; if (ky<0) ky=0; if (ky>scrheight-1) return; if (kx2>scrwidth-1) kx2=scrwidth-1;
@@ -589,10 +656,10 @@ void FrameBufferWinCE::PlothLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor col
 
 void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
 {
-	if (issmartphone)
+	if (devres == SM_LOW)
 	{
 		int kx = x >> 1; int ky = y; int ky2 = y2;
-		if (kx<0) kx=0; if (ky<0) ky=0; if (kx>scrwidth-1) return; if (ky2>scrheight-1) ky2=scrheight-1;
+		if (kx<0) kx=0; if (ky<0) ky=0; if (kx>scrwidth-1) return; if (ky>scrheight-1) ky=scrheight-1; if (ky2>scrheight-1) ky2=scrheight-1;
 		PlotvLine(kx, ky, ky2, color);
 	}
 	else
@@ -614,7 +681,7 @@ void FrameBufferWinCE::PlotvLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor col
 
 void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayColor color)
 {
-	if (issmartphone)
+	if (devres == SM_LOW)
 	{
 		int kx = x >> 1; int ky = y; int kw = (w >> 1); int kh = h;
 		if (ky>scrheight-1) return; if (kx>scrwidth-1) return;

@@ -32,6 +32,7 @@ class OSystemWinCE : public OSystem
     virtual void mainLoop();
 	virtual uInt32 getTicks(void);
     virtual void setFramerate(uInt32 framerate);
+	virtual void getScreenDimensions(int& width, int& height) { width = GetSystemMetrics(SM_CXSCREEN); height = GetSystemMetrics(SM_CYSCREEN); };
 	inline const GUI::Font& font() const;
 };
 

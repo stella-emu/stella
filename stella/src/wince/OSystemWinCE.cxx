@@ -74,7 +74,7 @@ void OSystemWinCE::mainLoop()
   // Main game loop
   MSG msg;
   int laststate = -1;
-  if (!((FrameBufferWinCE *)myFrameBuffer)->IsSmartphone())
+  if (!((FrameBufferWinCE *)myFrameBuffer)->IsSmartphoneLowRes())
   {
 	  lastkeyset = 0;
 	  KeySetMode(1);
@@ -113,7 +113,7 @@ void OSystemWinCE::mainLoop()
 		}
 		else
 		{
-			if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphone() )
+			if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphoneLowRes() )
 			{
 				KeySetMode(0);
 				((FrameBufferWinCE *)myFrameBuffer)->setmode(0);
@@ -165,7 +165,7 @@ uInt32 OSystemWinCE::getTicks(void)
 
 inline const GUI::Font& OSystemWinCE::font() const
 {
-	if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphone() )
+	if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphoneLowRes() )
 		return consoleFont();
 	else
 		return OSystem::font();
