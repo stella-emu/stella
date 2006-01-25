@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.148 2006-01-19 00:45:12 stephena Exp $
+// $Id: EventHandler.cxx,v 1.149 2006-01-25 01:42:46 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -89,6 +89,7 @@ EventHandler::EventHandler(OSystem* osystem)
     ourSDLMapping[i] = "";
   }
 
+#ifdef JOYSTICK_SUPPORT
   // Erase the joystick button mapping array
   for(i = 0; i < kNumJoysticks; ++i)
     for(j = 0; j < kNumJoyButtons; ++j)
@@ -104,6 +105,7 @@ EventHandler::EventHandler(OSystem* osystem)
     for(j = 0; j < kNumJoyHats; ++j)
       for(k = 0; k < 4; ++k)
         myJoyHatTable[i][j][k] = Event::NoType;
+#endif
 
   // Erase the Message array
   for(i = 0; i < Event::LastType; ++i)
@@ -915,6 +917,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyEvent(int stick, int button, int state)
 {
+#ifdef JOYSTICK_SUPPORT
   if(state && eventStateChange(myJoyTable[stick][button]))
     return;
 
@@ -923,11 +926,13 @@ void EventHandler::handleJoyEvent(int stick, int button, int state)
     handleEvent(myJoyTable[stick][button], state);
   else if(myOverlay != NULL)
     myOverlay->handleJoyEvent(stick, button, state);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 {
+#ifdef JOYSTICK_SUPPORT
   // Every axis event has two associated values, negative and positive
   Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
   Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
@@ -964,77 +969,30 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
         handleEvent(value < 0 ? eventAxisNeg : eventAxisPos, 1);
       break;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
 {
+#ifdef JOYSTICK_SUPPORT
   if(myState == S_EMULATE)
   {
-    cerr << "stick = " << stick << ", hat = " << hat;
-switch(value) {
-case kJHatCentered: cerr << " centered\n"; break;
-case kJHatUp:       cerr << " up\n"; break;
-case kJHatDown:     cerr << " down\n"; break;
-case kJHatLeft:     cerr << " left\n"; break;
-case kJHatRight:    cerr << " right\n"; break;
-}
-
-    // Treat hats as pairs of directions, similar to joystick axes
-    // Every hat pair has two associated values, negative and positive
-    // Analog events are stored in the negative portion
-    Event::Type eventHatAnalog;
-    switch(value)
+    if(value == kJHatCentered)
     {
-      case kJHatUp:
-      case kJHatDown:
-        eventHatAnalog = myJoyHatTable[stick][hat][0];
-        break;
-      case kJHatLeft:
-      case kJHatRight:
-        eventHatAnalog = myJoyHatTable[stick][hat][2];
-        break;
-      default:
-        eventHatAnalog = Event::NoType;
-        break;
+      // Turn off all associated events, since we don't know exactly
+      // which one was previously activated.
+      handleEvent(myJoyHatTable[stick][hat][0], 0);
+      handleEvent(myJoyHatTable[stick][hat][1], 0);
+      handleEvent(myJoyHatTable[stick][hat][2], 0);
+      handleEvent(myJoyHatTable[stick][hat][3], 0);
     }
-    // Check for analog events, which are handled differently
-    switch((int)eventHatAnalog)
-    {
-      case Event::PaddleZeroAnalog:
-        myEvent->set(Event::PaddleZeroResistance,
-                      (int)(1000000.0 * (32767 - value) / 65534));
-        break;
-      case Event::PaddleOneAnalog:
-        myEvent->set(Event::PaddleOneResistance,
-                      (int)(1000000.0 * (32767 - value) / 65534));
-        break;
-      case Event::PaddleTwoAnalog:
-        myEvent->set(Event::PaddleTwoResistance,
-                      (int)(1000000.0 * (32767 - value) / 65534));
-        break;
-      case Event::PaddleThreeAnalog:
-        myEvent->set(Event::PaddleThreeResistance,
-                      (int)(1000000.0 * (32767 - value) / 65534));
-        break;
-      default:
-        // Otherwise, we know the event is digital
-        if(value == kJHatCentered)
-        {
-          // Turn off all associated events, since we don't know exactly
-          // which one was previously activated.
-          handleEvent(myJoyHatTable[stick][hat][0], 0);
-          handleEvent(myJoyHatTable[stick][hat][1], 0);
-          handleEvent(myJoyHatTable[stick][hat][2], 0);
-          handleEvent(myJoyHatTable[stick][hat][3], 0);
-        }
-        else
-          handleEvent(myJoyHatTable[stick][hat][value] , 1);
-        break;
-    }
+    else
+      handleEvent(myJoyHatTable[stick][hat][value], 1);
   }
   else if(myOverlay != NULL)
     myOverlay->handleJoyHatEvent(stick, hat, value);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1344,6 +1302,7 @@ void EventHandler::setActionMappings()
           key = key + ", " + ourSDLMapping[j];
       }
     }
+#ifdef JOYSTICK_SUPPORT
     // Joystick button mapping/labeling
     for(stick = 0; stick < kNumJoysticks; ++stick)
     {
@@ -1415,6 +1374,7 @@ void EventHandler::setActionMappings()
         }
       }
     }
+#endif
 
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
@@ -1455,6 +1415,7 @@ void EventHandler::setKeymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setJoymap()
 {
+#ifdef JOYSTICK_SUPPORT
   string list = myOSystem->settings().getString("joymap");
   IntArray map;
 
@@ -1468,11 +1429,13 @@ void EventHandler::setJoymap()
   }
   else
     setDefaultJoymap();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setJoyAxisMap()
 {
+#ifdef JOYSTICK_SUPPORT
   string list = myOSystem->settings().getString("joyaxismap");
   IntArray map;
 
@@ -1487,11 +1450,13 @@ void EventHandler::setJoyAxisMap()
   }
   else
     setDefaultJoyAxisMap();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setJoyHatMap()
 {
+#ifdef JOYSTICK_SUPPORT
   string list = myOSystem->settings().getString("joyhatmap");
   IntArray map;
 
@@ -1506,6 +1471,7 @@ void EventHandler::setJoyHatMap()
   }
   else
     setDefaultJoyHatMap();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1632,6 +1598,7 @@ void EventHandler::eraseMapping(Event::Type event)
       myKeyTable[i] = Event::NoType;
   saveKeyMapping();
 
+#ifdef JOYSTICK_SUPPORT
   // Erase the JoyEvent array
   for(i = 0; i < kNumJoysticks; ++i)
     for(j = 0; j < kNumJoyButtons; ++j)
@@ -1654,6 +1621,7 @@ void EventHandler::eraseMapping(Event::Type event)
         if(myJoyHatTable[i][j][k] == event)
           myJoyHatTable[i][j][k] = Event::NoType;
   saveJoyHatMapping();
+#endif
 
   setActionMappings();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.81 2006-01-11 14:13:19 stephena Exp $
+// $Id: Console.cxx,v 1.82 2006-01-25 01:42:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -78,10 +78,8 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // Search for the properties based on MD5
   myOSystem->propSet().getMD5(md5, myProperties);
 
-#ifdef DEVELOPER_SUPPORT
   // A developer can override properties from the commandline
   setDeveloperProperties();
-#endif
 
   // Make sure height is set properly for PAL ROM
   if(myProperties.get("Display.Format", true) == "PAL")

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.17 2006-01-11 01:17:11 stephena Exp $
+// $Id: PropsSet.cxx,v 1.18 2006-01-25 01:42:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -209,6 +209,7 @@ bool PropertiesSet::merge(const Properties& properties, const string& filename)
 const Properties& PropertiesSet::defaultProperties()
 {
   // Make sure the <key,value> pairs are in the default properties object
+  ourDefaultProperties.set("Cartridge.Cheats", "");
   ourDefaultProperties.set("Cartridge.Filename", "");
   ourDefaultProperties.set("Cartridge.MD5", "");
   ourDefaultProperties.set("Cartridge.Manufacturer", "");
