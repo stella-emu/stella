@@ -1,5 +1,5 @@
 %define name    stella
-%define version 2.0.1
+%define version 2.1
 %define rel     1
 
 %define build_plf 0
@@ -9,6 +9,7 @@
 %define enable_developer 1
 %define enable_snapshot 1
 %define enable_joystick 1
+%define enable_cheats 1
 %define enable_static 0
 
 %if %build_plf
@@ -75,6 +76,11 @@ export CXXFLAGS=$RPM_OPT_FLAGS
 %else
 	--disable-joystick \
 %endif
+%if %enable_cheats
+	--enable-cheats \
+%else
+	--disable-cheats \
+%endif
 %if %enable_static
 	--enable-static \
 %else
@@ -120,6 +126,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 /etc/stella.pro
 
 %changelog
+* Sat Jan 28 2006 Stephen Anthony <stephena@zarb.org> 2.1-1
+- Version 2.1 release
+
 * Sun Oct 24 2005 Stephen Anthony <stephena@zarb.org> 2.0.1-1
 - Version 2.0.1 release, and plaform-agnostic SRPM (hopefully)
 
