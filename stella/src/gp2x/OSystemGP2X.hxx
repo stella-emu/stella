@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.1 2006-01-08 02:28:03 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.2 2006-01-30 01:01:44 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -45,19 +45,19 @@ class OSystemGP2X : public OSystem
       may use different timing methods and/or algorithms, this method has
       been abstracted to each platform.
     */
-    virtual void mainLoop();
+    void mainLoop();
 
     /**
       This method returns number of ticks in microseconds.
 
       @return Current time in microseconds.
     */
-    virtual uInt32 getTicks();
+    uInt32 getTicks();
 
     /**
       This method queries the dimensions of the screen for this hardware.
     */
-    virtual void getScreenDimensions(int& width, int& height);
+    void getScreenDimensions(int& width, int& height);
 
     /**
       This method determines the default mapping of joystick buttons to
@@ -70,6 +70,11 @@ class OSystemGP2X : public OSystem
       Stella events for for the PSP device.
     */
     void setDefaultJoyAxisMap();
+
+    /**
+      This method creates events from platform-specific hardware.
+    */
+    void pollEvent();
 };
 
 #endif

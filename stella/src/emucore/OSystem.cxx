@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.58 2006-01-19 00:45:12 stephena Exp $
+// $Id: OSystem.cxx,v 1.59 2006-01-30 01:01:44 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -484,6 +484,11 @@ void OSystem::setDefaultJoyAxisMap()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setDefaultJoyHatMap()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::pollEvent()
 {
 }
 

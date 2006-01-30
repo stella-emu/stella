@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.149 2006-01-25 01:42:46 stephena Exp $
+// $Id: EventHandler.cxx,v 1.150 2006-01-30 01:01:44 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -348,6 +348,9 @@ void EventHandler::poll(uInt32 time)
 //  int type, value;
 //  while(myEventStreamer->pollEvent(type, value))
 //    myEvent->set((Event::Type)type, value);
+
+  // Synthesize events for platform-specific hardware
+  myOSystem->pollEvent();
 
   // Check for an event
   SDL_Event event;

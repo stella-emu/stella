@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.cxx,v 1.3 2006-01-25 01:42:47 stephena Exp $
+// $Id: SettingsGP2X.cxx,v 1.4 2006-01-30 01:01:44 stephena Exp $
 // Modified on 2006/01/04 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -28,7 +28,6 @@ SettingsGP2X::SettingsGP2X(OSystem* osystem)
 {
   // Some of these settings might be redundant, but are crucial for GP2X
   set("center", "true");
-  set("accurate", "false");
   set("volume", "50");
   set("sound", "true");
   set("zoom", "1");

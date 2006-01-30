@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.36 2006-01-09 16:50:01 stephena Exp $
+// $Id: OSystem.hxx,v 1.37 2006-01-30 01:01:44 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.36 2006-01-09 16:50:01 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.37 2006-01-30 01:01:44 stephena Exp $
 */
 class OSystem
 {
@@ -344,6 +344,11 @@ class OSystem
       Stella events for a specific system/platform.
     */
     virtual void setDefaultJoyHatMap();
+
+    /**
+      This method creates events from platform-specific hardware.
+    */
+    virtual void pollEvent();
 
   protected:
     /**

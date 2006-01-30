@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.1 2006-01-08 02:28:03 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.2 2006-01-30 01:01:44 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -76,8 +76,6 @@ OSystemGP2X::OSystemGP2X()
 
   string cacheFile = basedir + "/stella.cache";
   setCacheFile(cacheFile);
-
-  // No drivers are specified for Unix
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,69 +90,32 @@ void OSystemGP2X::mainLoop()
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  if(mySettings->getBool("accurate"))   // normal, CPU-intensive timing
+  // Set up less accurate timing stuff
+  uInt32 startTime, virtualTime, currentTime;
+
+  // Set the base for the timers
+  virtualTime = getTicks();
+  frameTime = 0;
+
+  // Main game loop
+  for(;;)
   {
-    // Set up accurate timing stuff
-    uInt32 startTime, delta;
+    // Exit if the user wants to quit
+    if(myEventHandler->doQuit())
+      break;
 
-    // Set the base for the timers
-    frameTime = 0;
+    startTime = getTicks();
+    myEventHandler->poll(startTime);
+    myFrameBuffer->update();
 
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-      if(myEventHandler->doQuit())
-        break;
+    currentTime = getTicks();
+    virtualTime += myTimePerFrame;
+    if(currentTime < virtualTime)
+      SDL_Delay((virtualTime - currentTime)/1000);
 
-      startTime = getTicks();
-      myEventHandler->poll(startTime);
-      myFrameBuffer->update();
-
-      // Now, waste time if we need to so that we are at the desired frame rate
-      for(;;)
-      {
-        delta = getTicks() - startTime;
-
-        if(delta >= myTimePerFrame)
-          break;
-      }
-
-      frameTime += getTicks() - startTime;
-      ++numberOfFrames;
-    }
-  }
-  else    // less accurate, less CPU-intensive timing
-  {
-    // Set up less accurate timing stuff
-    uInt32 startTime, virtualTime, currentTime;
-
-    // Set the base for the timers
-    virtualTime = getTicks();
-    frameTime = 0;
-
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-      if(myEventHandler->doQuit())
-        break;
-
-      startTime = getTicks();
-      myEventHandler->poll(startTime);
-      myFrameBuffer->update();
-
-      currentTime = getTicks();
-      virtualTime += myTimePerFrame;
-      if(currentTime < virtualTime)
-      {
-        SDL_Delay((virtualTime - currentTime)/1000);
-      }
-
-      currentTime = getTicks() - startTime;
-      frameTime += currentTime;
-      ++numberOfFrames;
-    }
+    currentTime = getTicks() - startTime;
+    frameTime += currentTime;
+    ++numberOfFrames;
   }
 
   // Only print console information if a console was actually created
@@ -217,4 +178,11 @@ void OSystemGP2X::setDefaultJoymap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemGP2X::setDefaultJoyAxisMap()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystemGP2X::pollEvent()
+{
+  // TODO - add code to translate joystick directions into proper SDL HAT
+  // events, so that the core code will 'just work'
 }
