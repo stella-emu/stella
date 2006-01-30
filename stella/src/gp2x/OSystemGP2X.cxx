@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.2 2006-01-30 01:01:44 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.3 2006-01-30 16:20:41 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -76,6 +76,13 @@ OSystemGP2X::OSystemGP2X()
 
   string cacheFile = basedir + "/stella.cache";
   setCacheFile(cacheFile);
+
+  // Set hat event handler to a known state
+  for(int i = 0; i < 8; ++i)
+  {
+    myCurrentEvents[i] = myPreviousEvents[i] = 0;
+    myActiveEvents[i] = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,6 +190,86 @@ void OSystemGP2X::setDefaultJoyAxisMap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemGP2X::pollEvent()
 {
-  // TODO - add code to translate joystick directions into proper SDL HAT
-  // events, so that the core code will 'just work'
+  // Translate joystick button events that act as directions into proper
+  // SDL HAT events.  This method will use 'case 2', as discussed on the
+  // GP2X forums.  Technically, this code should be integrated directly
+  // into the GP2X SDL port.
+
+  // Swap event buffers
+  uInt8* tmp = myCurrentEvents;
+  myCurrentEvents = myPreviousEvents;
+  myPreviousEvents = tmp;
+
+  // Scan all the buttons, and detect if an event has occurred
+  bool changeDetected = false;
+  SDL_Joystick* stick = myEventHandler->getJoystick(0);
+  for(int i = 0; i < 8; ++i)
+  {
+    myCurrentEvents[i] = SDL_JoystickGetButton(stick, i);
+    if(myCurrentEvents[i] != myPreviousEvents[i])
+      changeDetected = myActiveEvent[i] = true;
+  }
+
+  // Create an appropriate SDL HAT event for the new state
+  uInt8 value = SDL_HAT_CENTERED;
+  if(changeDetected)
+  {
+    // Merge 'in-between' values to the proper direction
+    // For example, if both 'up' and 'upright' are on, turn 'upright' off
+    if(myActiveEvent[kJDirUp] && myCurrentEvents[kJDirUp])                // up
+    {
+      myActiveEvent[kJDirUpLeft] = myActiveEvent[kJDirUpRight] = false;
+      myCurrentEvents[kJDirUpLeft] = myCurrentEvents[kJDirUpRight] = 0;
+
+      value |= SDL_HAT_UP;
+    }
+    else if(myActiveEvent[kJDirDown] && myCurrentEvents[kJDirDown])       // down
+    {
+      myActiveEvent[kJDirDownLeft] = myActiveEvent[kJDirDownRight] = false;
+      myCurrentEvents[kJDirDownLeft] = myCurrentEvents[kJDirDownRight] = 0;
+
+      value |= SDL_HAT_DOWN;
+    }
+    else if(myActiveEvent[kJDirLeft] && myCurrentEvents[kJDirLeft])       // left
+    {
+      myActiveEvent[kJDirUpLeft] = myActiveEvent[kJDirDownLeft] = false;
+      myCurrentEvents[kJDirUpLeft] = myCurrentEvents[kJDirDownLeft] = 0;
+
+      value |= SDL_HAT_LEFT;
+    }
+    else if(myActiveEvent[kJDirRight] && myCurrentEvents[kJDirRight])     // right
+    {
+      myActiveEvent[kJDirUpRight] = myActiveEvent[kJDirDownRight] = false;
+      myCurrentEvents[kJDirUpRight] = myCurrentEvents[kJDirDownRight] = 0;
+
+      value |= SDL_HAT_RIGHT;
+    }
+
+    // Now consider diagonal positions
+    if(myActiveEvent[kJDirUpLeft] && myCurrentEvents[kJDirUpLeft])            // up-left
+    {
+      value |= SDL_HAT_UP | SDL_HAT_LEFT;
+    }
+    else if(myActiveEvent[kJDirUpRight] && myCurrentEvents[kJDirUpRight])     // up-right
+    {
+      value |= SDL_HAT_UP | SDL_HAT_RIGHT;
+    }
+    else if(myActiveEvent[kJDirDownLeft] && myCurrentEvents[kJDirDownLeft])   // down-left
+    {
+      value |= SDL_HAT_DOWN | SDL_HAT_LEFT;
+    }
+    else if(myActiveEvent[kJDirDownRight] && myCurrentEvents[kJDirDownRight]) // down-right
+    {
+      value |= SDL_HAT_DOWN | SDL_HAT_RIGHT;
+    }
+
+    // Finally, create the HAT event and pass it to SDL
+    SDL_JoyHatEvent event;
+    event.type  = SDL_JOYHATMOTION;
+    event.which = 0;
+    event.hat   = 0;
+    event.value = value;
+
+    SDL_PushEvent((SDL_Event*)&event);
+  }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.2 2006-01-30 01:01:44 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.3 2006-01-30 16:20:41 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -75,6 +75,19 @@ class OSystemGP2X : public OSystem
       This method creates events from platform-specific hardware.
     */
     void pollEvent();
+
+  private:
+    enum {
+      kJDirUp    =  0,  kJDirUpLeft    =  1,
+      kJDirLeft  =  2,  kJDirDownLeft  =  3,
+      kJDirDown  =  4,  kJDirDownRight =  5,
+      kJDirRight =  6,  kJDirUpRight   =  7
+    };
+
+    uInt8* myPreviousEvents[8];
+    uInt8* myCurrentEvents[8];
+    Int8*  myActiveEvents[8];
+
 };
 
 #endif
