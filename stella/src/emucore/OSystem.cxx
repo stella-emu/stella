@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.59 2006-01-30 01:01:44 stephena Exp $
+// $Id: OSystem.cxx,v 1.60 2006-01-31 14:02:08 urchlay Exp $
 //============================================================================
 
 #include <cassert>
@@ -156,7 +156,13 @@ void OSystem::setPropertiesDir(const string& userpath,
 {
   // Set up the input and output properties files
   myUserPropertiesFile   = userpath + BSPF_PATH_SEPARATOR + "user.pro";
+#ifdef NIGHTLY_BUILD
+  // snapshots look in current dir
+  mySystemPropertiesFile = "stella.pro";
+#else
+  // releases look in system dir
   mySystemPropertiesFile = systempath + BSPF_PATH_SEPARATOR + "stella.pro";
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
