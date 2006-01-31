@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.7 2005-06-16 00:56:00 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.8 2006-01-31 17:26:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -145,7 +145,6 @@ POSIXFilesystemNode::POSIXFilesystemNode(const POSIXFilesystemNode* node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSList POSIXFilesystemNode::listDir(ListMode mode) const
 {
-  assert(_isDirectory);
   DIR *dirp = opendir(_path.c_str());
   struct stat st;
 

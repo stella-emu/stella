@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.3 2006-01-30 16:20:41 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.4 2006-01-31 17:26:56 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -66,10 +66,10 @@ class OSystemGP2X : public OSystem
     void setDefaultJoymap();
 
     /**
-      This method determines the default mapping of joystick axis to
-      Stella events for for the PSP device.
+      This method determines the default mapping of joystick hats to
+      Stella events for a specific system/platform.
     */
-    void setDefaultJoyAxisMap();
+    void setDefaultJoyHatMap();
 
     /**
       This method creates events from platform-specific hardware.
@@ -84,10 +84,8 @@ class OSystemGP2X : public OSystem
       kJDirRight =  6,  kJDirUpRight   =  7
     };
 
-    uInt8* myPreviousEvents[8];
-    uInt8* myCurrentEvents[8];
-    Int8*  myActiveEvents[8];
-
+    uInt8* myPreviousEvents;
+    uInt8* myCurrentEvents;
 };
 
 #endif

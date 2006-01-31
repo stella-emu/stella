@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.77 2006-01-30 16:20:41 stephena Exp $
+// $Id: EventHandler.hxx,v 1.78 2006-01-31 17:26:56 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -133,7 +133,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.77 2006-01-30 16:20:41 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.78 2006-01-31 17:26:56 stephena Exp $
 */
 class EventHandler
 {
@@ -335,6 +335,8 @@ class EventHandler
     */
     void createMouseButtonEvent(int x, int y, int state);
 
+    inline SDL_Joystick* getJoystick(int i) { return ourJoysticks[i].stick; }
+
   private:
     /**
       Bind a key to an event/action and regenerate the mapping array(s)
@@ -479,8 +481,6 @@ class EventHandler
     void loadState();
     void takeSnapshot();
     void setEventState(State state);
-
-    inline SDL_Joystick* getJoystick(int i) { return ourJoysticks[i].stick; }
 
   private:
     // Global OSystem object

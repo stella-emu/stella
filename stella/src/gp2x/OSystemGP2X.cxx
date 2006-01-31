@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.3 2006-01-30 16:20:41 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.4 2006-01-31 17:26:56 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -78,16 +78,15 @@ OSystemGP2X::OSystemGP2X()
   setCacheFile(cacheFile);
 
   // Set hat event handler to a known state
-  for(int i = 0; i < 8; ++i)
-  {
-    myCurrentEvents[i] = myPreviousEvents[i] = 0;
-    myActiveEvents[i] = false;
-  }
+  myPreviousEvents = new uInt8[8];  memset(myPreviousEvents, 0, 8);
+  myCurrentEvents  = new uInt8[8];  memset(myCurrentEvents, 0, 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemGP2X::~OSystemGP2X()
 {
+  delete[] myPreviousEvents;
+  delete[] myCurrentEvents;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,10 +164,10 @@ void OSystemGP2X::getScreenDimensions(int& width, int& height)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemGP2X::setDefaultJoymap()
 {
-  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroUp, 0, 0);    // Up
-  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroLeft, 0, 2);  // Left
-  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroDown, 0, 4);  // Down
-  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroRight, 0, 6); // Right
+//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroUp, 0, 0);    // Up
+//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroLeft, 0, 2);  // Left
+//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroDown, 0, 4);  // Down
+//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroRight, 0, 6); // Right
   myEventHandler->setDefaultJoyMapping(Event::LauncherMode, 0, 8);      // Start
   myEventHandler->setDefaultJoyMapping(Event::CmdMenuMode, 0, 9);       // Select
   myEventHandler->setDefaultJoyMapping(Event::ConsoleReset, 0, 10);     // L
@@ -183,8 +182,12 @@ void OSystemGP2X::setDefaultJoymap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemGP2X::setDefaultJoyAxisMap()
+void OSystemGP2X::setDefaultJoyHatMap()
 {
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroUp, 0, 0, kJHatUp);
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroLeft, 0, 0, kJHatLeft);
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroDown, 0, 0, kJHatDown);
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroRight, 0, 0, kJHatRight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,7 +210,7 @@ void OSystemGP2X::pollEvent()
   {
     myCurrentEvents[i] = SDL_JoystickGetButton(stick, i);
     if(myCurrentEvents[i] != myPreviousEvents[i])
-      changeDetected = myActiveEvent[i] = true;
+      changeDetected = true;
   }
 
   // Create an appropriate SDL HAT event for the new state
@@ -216,49 +219,41 @@ void OSystemGP2X::pollEvent()
   {
     // Merge 'in-between' values to the proper direction
     // For example, if both 'up' and 'upright' are on, turn 'upright' off
-    if(myActiveEvent[kJDirUp] && myCurrentEvents[kJDirUp])                // up
+    if(myCurrentEvents[kJDirUp])              // up
     {
-      myActiveEvent[kJDirUpLeft] = myActiveEvent[kJDirUpRight] = false;
       myCurrentEvents[kJDirUpLeft] = myCurrentEvents[kJDirUpRight] = 0;
-
       value |= SDL_HAT_UP;
     }
-    else if(myActiveEvent[kJDirDown] && myCurrentEvents[kJDirDown])       // down
+    else if(myCurrentEvents[kJDirDown])       // down
     {
-      myActiveEvent[kJDirDownLeft] = myActiveEvent[kJDirDownRight] = false;
       myCurrentEvents[kJDirDownLeft] = myCurrentEvents[kJDirDownRight] = 0;
-
       value |= SDL_HAT_DOWN;
     }
-    else if(myActiveEvent[kJDirLeft] && myCurrentEvents[kJDirLeft])       // left
+    else if(myCurrentEvents[kJDirLeft])       // left
     {
-      myActiveEvent[kJDirUpLeft] = myActiveEvent[kJDirDownLeft] = false;
       myCurrentEvents[kJDirUpLeft] = myCurrentEvents[kJDirDownLeft] = 0;
-
       value |= SDL_HAT_LEFT;
     }
-    else if(myActiveEvent[kJDirRight] && myCurrentEvents[kJDirRight])     // right
+    else if(myCurrentEvents[kJDirRight])      // right
     {
-      myActiveEvent[kJDirUpRight] = myActiveEvent[kJDirDownRight] = false;
       myCurrentEvents[kJDirUpRight] = myCurrentEvents[kJDirDownRight] = 0;
-
       value |= SDL_HAT_RIGHT;
     }
 
     // Now consider diagonal positions
-    if(myActiveEvent[kJDirUpLeft] && myCurrentEvents[kJDirUpLeft])            // up-left
+    if(myCurrentEvents[kJDirUpLeft])          // up-left
     {
       value |= SDL_HAT_UP | SDL_HAT_LEFT;
     }
-    else if(myActiveEvent[kJDirUpRight] && myCurrentEvents[kJDirUpRight])     // up-right
+    else if(myCurrentEvents[kJDirUpRight])    // up-right
     {
       value |= SDL_HAT_UP | SDL_HAT_RIGHT;
     }
-    else if(myActiveEvent[kJDirDownLeft] && myCurrentEvents[kJDirDownLeft])   // down-left
+    else if(myCurrentEvents[kJDirDownLeft])   // down-left
     {
       value |= SDL_HAT_DOWN | SDL_HAT_LEFT;
     }
-    else if(myActiveEvent[kJDirDownRight] && myCurrentEvents[kJDirDownRight]) // down-right
+    else if(myCurrentEvents[kJDirDownRight])  // down-right
     {
       value |= SDL_HAT_DOWN | SDL_HAT_RIGHT;
     }
