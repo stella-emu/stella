@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.17 2006-01-15 21:02:22 stephena Exp $
+## $Id: Makefile,v 1.18 2006-02-01 13:53:25 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -30,6 +30,7 @@ LDFLAGS     :=
 INCLUDES    :=
 LIBS	    :=
 OBJS	    :=
+PROF        :=
 
 MODULES     :=
 MODULE_DIRS :=
@@ -47,7 +48,15 @@ ifdef CXXFLAGS
 else
   CXXFLAGS:= -O2
 endif
-CXXFLAGS+= -Wall -Wno-multichar -Wunused -fomit-frame-pointer -fno-rtti
+CXXFLAGS+= -Wall -Wno-multichar -Wunused -fno-rtti
+
+ifdef PROFILE
+  PROF:= -g -pg -fprofile-arcs -ftest-coverage
+  CXXFLAGS+= $(PROF)
+else
+  CXXFLAGS+= -fomit-frame-pointer
+endif
+
 # Even more warnings...
 #CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion
 #CXXFLAGS+= -Wshadow -Wimplicit -Wundef -Wnon-virtual-dtor
@@ -100,7 +109,7 @@ DEPFILES =
 
 # The build rule for the Stella executable
 $(EXECUTABLE):  $(OBJS)
-	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) -o $@
+	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
 
 distclean: clean
 	$(RM_REC) $(DEPDIRS)

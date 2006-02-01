@@ -26,6 +26,7 @@ _build_snapshot=yes
 _build_joystick=yes
 _build_cheats=yes
 _build_static=no
+_build_profile=no
 
 # more defaults
 _ranlib=ranlib
@@ -267,6 +268,8 @@ Optional Features:
   --enable-shared        build shared binary [enabled]
   --enable-static        build static binary (if possible) [disabled]
   --disable-static
+  --enable-profile       build binary with profiling info [disabled]
+  --disable-profile
 
 Optional Libraries:
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
@@ -318,6 +321,8 @@ for ac_option in $@; do
       --enable-shared)          _build_static=no     ;;
       --enable-static)          _build_static=yes    ;;
       --disable-static)         _build_static=no     ;;
+      --enable-profile)         _build_profile=yes   ;;
+      --disable-profile)        _build_profile=no    ;;
       --with-zlib-prefix=*)
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ZLIB_CFLAGS="-I$_prefix/include"
@@ -742,6 +747,14 @@ else
 	echo
 fi
 
+if test "$_build_profile" = yes ; then
+	echo_n "   Profiling enabled"
+	echo
+else
+	echo_n "   Profiling disabled"
+	echo
+fi
+
 
 #
 # Now, add the appropriate defines/libraries/headers
@@ -862,6 +875,9 @@ if test "$_build_cheats" = yes ; then
 	INCLUDES="$INCLUDES -I$CHEAT"
 fi
 
+if test "$_build_profile" = no ; then
+	_build_profile=
+fi
 
 # 20051003 bkw: fix static Linux build.
 # No guarantee this will work for anyone other than me, and no
@@ -909,6 +925,7 @@ PREFIX := $_prefix
 BINDIR := $_bindir
 DOCDIR := $_docdir
 DATADIR := $_datadir
+PROFILE := $_build_profile
 
 $_make_def_HAVE_GCC3
 #$_make_def_HAVE_NASM
