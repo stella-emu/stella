@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.4 2006-01-31 17:26:56 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.5 2006-02-01 16:58:33 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -181,13 +181,16 @@ void OSystemGP2X::setDefaultJoymap()
   myEventHandler->setDefaultJoyMapping(Event::NoType, 0, 18);           // Click
 }
 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemGP2X::setDefaultJoyHatMap()
 {
+#if 0
   myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroUp, 0, 0, kJHatUp);
   myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroLeft, 0, 0, kJHatLeft);
   myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroDown, 0, 0, kJHatDown);
   myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroRight, 0, 0, kJHatRight);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,6 +216,50 @@ void OSystemGP2X::pollEvent()
       changeDetected = true;
   }
 
+#if 1
+  if(changeDetected)
+  {
+    SDL_JoyAxisEvent eventA0, eventA1;
+    eventA0.type  = eventA1.type  = SDL_JOYAXISMOTION;
+    eventA0.which = eventA1.which = 0;
+    eventA0.value = 0;eventA1.value = 0;
+    eventA0.axis  = 0;
+    eventA1.axis  = 1;
+
+    if(myCurrentEvents[kJDirUp])         // up
+      eventA1.value = -32768;
+    if(myCurrentEvents[kJDirDown])       // down
+      eventA1.value =  32767;
+    if(myCurrentEvents[kJDirLeft])       // left
+      eventA0.value = -32768;
+    if(myCurrentEvents[kJDirRight])      // right
+      eventA0.value =  32767;
+
+    if(myCurrentEvents[kJDirUpLeft])     // up-left
+    {
+      eventA1.value = -16834;
+      eventA0.value = -16834;
+    }
+    if(myCurrentEvents[kJDirUpRight])    // up-right
+    {
+      eventA1.value = -16834;
+      eventA0.value =  16834;
+    }
+    if(myCurrentEvents[kJDirDownLeft])   // down-left
+    {
+      eventA1.value =  16834;
+      eventA0.value = -16834;
+    }
+    if(myCurrentEvents[kJDirDownRight])  // down-right
+    {
+      eventA1.value =  16834;
+      eventA0.value =  16834;
+    }
+
+    SDL_PushEvent((SDL_Event*)&eventA0);
+    SDL_PushEvent((SDL_Event*)&eventA1);
+  }
+#else
   // Create an appropriate SDL HAT event for the new state
   uInt8 value = SDL_HAT_CENTERED;
   if(changeDetected)
@@ -224,36 +271,36 @@ void OSystemGP2X::pollEvent()
       myCurrentEvents[kJDirUpLeft] = myCurrentEvents[kJDirUpRight] = 0;
       value |= SDL_HAT_UP;
     }
-    else if(myCurrentEvents[kJDirDown])       // down
+    if(myCurrentEvents[kJDirDown])       // down
     {
       myCurrentEvents[kJDirDownLeft] = myCurrentEvents[kJDirDownRight] = 0;
       value |= SDL_HAT_DOWN;
     }
-    else if(myCurrentEvents[kJDirLeft])       // left
+    if(myCurrentEvents[kJDirLeft])       // left
     {
       myCurrentEvents[kJDirUpLeft] = myCurrentEvents[kJDirDownLeft] = 0;
       value |= SDL_HAT_LEFT;
     }
-    else if(myCurrentEvents[kJDirRight])      // right
+    if(myCurrentEvents[kJDirRight])      // right
     {
       myCurrentEvents[kJDirUpRight] = myCurrentEvents[kJDirDownRight] = 0;
       value |= SDL_HAT_RIGHT;
     }
 
     // Now consider diagonal positions
-    if(myCurrentEvents[kJDirUpLeft])          // up-left
+    if(myCurrentEvents[kJDirUpLeft])     // up-left
     {
       value |= SDL_HAT_UP | SDL_HAT_LEFT;
     }
-    else if(myCurrentEvents[kJDirUpRight])    // up-right
+    if(myCurrentEvents[kJDirUpRight])    // up-right
     {
       value |= SDL_HAT_UP | SDL_HAT_RIGHT;
     }
-    else if(myCurrentEvents[kJDirDownLeft])   // down-left
+    if(myCurrentEvents[kJDirDownLeft])   // down-left
     {
       value |= SDL_HAT_DOWN | SDL_HAT_LEFT;
     }
-    else if(myCurrentEvents[kJDirDownRight])  // down-right
+    if(myCurrentEvents[kJDirDownRight])  // down-right
     {
       value |= SDL_HAT_DOWN | SDL_HAT_RIGHT;
     }
@@ -264,7 +311,7 @@ void OSystemGP2X::pollEvent()
     event.which = 0;
     event.hat   = 0;
     event.value = value;
-
     SDL_PushEvent((SDL_Event*)&event);
   }
+#endif
 }
