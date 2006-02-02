@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.4 2006-01-31 17:26:56 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.5 2006-02-02 01:04:09 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -66,12 +66,6 @@ class OSystemGP2X : public OSystem
     void setDefaultJoymap();
 
     /**
-      This method determines the default mapping of joystick hats to
-      Stella events for a specific system/platform.
-    */
-    void setDefaultJoyHatMap();
-
-    /**
       This method creates events from platform-specific hardware.
     */
     void pollEvent();
@@ -86,6 +80,7 @@ class OSystemGP2X : public OSystem
 
     uInt8* myPreviousEvents;
     uInt8* myCurrentEvents;
+    bool   myActiveEvents[8];
 };
 
 #endif
