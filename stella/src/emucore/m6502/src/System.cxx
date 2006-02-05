@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.16 2005-12-29 21:16:28 stephena Exp $
+// $Id: System.cxx,v 1.17 2006-02-05 02:49:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -318,8 +318,10 @@ uInt8 System::peek(uInt16 addr)
     result = access.device->peek(addr);
   }
 
+#ifdef DEVELOPER_SUPPORT
   if(!myDataBusLocked)
     myDataBusState = result;
+#endif
 
   return result;
 }
@@ -339,8 +341,10 @@ void System::poke(uInt16 addr, uInt8 value)
     access.device->poke(addr, value);
   }
 
+#ifdef DEVELOPER_SUPPORT
   if(!myDataBusLocked)
     myDataBusState = value;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -354,4 +358,3 @@ void System::unlockDataBus()
 {
   myDataBusLocked = false;
 }
-

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.82 2006-01-25 01:42:46 stephena Exp $
+// $Id: Console.cxx,v 1.83 2006-02-05 02:49:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -31,6 +31,7 @@
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
 #include "M6502Hi.hxx"
+#include "M6502Low.hxx"
 #include "M6532.hxx"
 #include "MediaSrc.hxx"
 #include "Paddles.hxx"
@@ -156,7 +157,10 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   mySystem = new System(13, 6);
 
   M6502* m6502;
-  m6502 = new M6502High(1);
+  if(myOSystem->settings().getString("cpu") == "low")
+    m6502 = new M6502Low(1);
+  else
+    m6502 = new M6502High(1);
 #ifdef DEVELOPER_SUPPORT
   m6502->attach(myOSystem->debugger());
 #endif
