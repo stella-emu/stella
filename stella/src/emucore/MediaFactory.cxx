@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.cxx,v 1.3 2006-01-19 00:45:12 stephena Exp $
+// $Id: MediaFactory.cxx,v 1.4 2006-02-05 19:59:22 stephena Exp $
 //============================================================================
 
 ////////////////////////////////////////////////////////////////////
@@ -50,11 +50,10 @@
 FrameBuffer* MediaFactory::createVideo(OSystem* osystem)
 {
   FrameBuffer* fb = (FrameBuffer*) NULL;
-  const string& type = osystem->settings().getString("video");
 
   // OpenGL mode *may* fail, so we check for it first
 #ifdef DISPLAY_OPENGL
-  if(type == "gl")
+  if(osystem->settings().getString("video") == "gl")
   {
     const string& gl_lib = osystem->settings().getString("gl_lib");
     if(FrameBufferGL::loadFuncs(gl_lib))

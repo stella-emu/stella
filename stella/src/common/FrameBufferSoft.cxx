@@ -13,11 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.45 2006-01-20 20:07:25 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.46 2006-02-05 19:59:22 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
-#include <SDL_syswm.h>
 #include <sstream>
 
 #include "Console.hxx"

@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.31 2006-01-19 00:45:12 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.32 2006-02-05 19:59:22 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
 #define FRAMEBUFFER_SOFT_HXX
 
 #include <SDL.h>
-#include <SDL_syswm.h>
 
 class OSystem;
 class GUI::Font;
@@ -35,7 +34,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.31 2006-01-19 00:45:12 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.32 2006-02-05 19:59:22 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
