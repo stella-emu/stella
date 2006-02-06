@@ -1,5 +1,5 @@
 ---------------------------------------
-Stella 2.1:
+Stella 2.1 (revision 1):
 Ported to GP2X by Alex Zaballa
 Contact: alex.zaballa@gmail.com
 Homepage: http://stella.sourceforge.net
@@ -8,6 +8,9 @@ Homepage: http://stella.sourceforge.net
 --------
 Changes:
 --------
+>From 2.1
+Joystick fixed
+Phosphor effect enabled
 >From 2.0.1:
 Stopped using the ROM Script (No more ROM limit. 'Single binary' zip support available.)
 Opened up the Native GUI for use through Joymouse Emulation
@@ -26,8 +29,6 @@ Known Bugs:
 Known GP2X Performance Issues:
 ------------------------------
 Pitfall 2 runs slow due to extra hardware emulation. (Steve foresees this being fixed in the future.)
-Phosphorus effect disabled at the moment due to dragging software video mode. (A version that writes
-	directly to hardware is in the works.)
 
 ---------------------
 Installation to GP2X:
