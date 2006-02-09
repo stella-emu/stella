@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.7 2005-12-28 22:56:36 stephena Exp $
+// $Id: Event.cxx,v 1.8 2006-02-09 15:10:17 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -44,9 +44,11 @@ void Event::set(Type type, Int32 value)
 {
   myValues[type] = value;
 
+/* FIXME - add full functionality at some point
   // Add to history if we're in recording mode
   if(myEventStreamer->isRecording())
     myEventStreamer->addEvent(type, value);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

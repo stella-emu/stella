@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.34 2006-02-05 02:49:47 stephena Exp $
+// $Id: TIA.hxx,v 1.35 2006-02-09 15:10:18 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.34 2006-02-05 02:49:47 stephena Exp $
+  @version $Id: TIA.hxx,v 1.35 2006-02-09 15:10:18 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -259,7 +259,7 @@ class TIA : public Device , public MediaSource
 
   private:
     // Update the current frame buffer up to one scanline
-    inline void updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos);
+    void updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos);
 
     // Update the current frame buffer to the specified color clock
     void updateFrame(Int32 clock);
@@ -274,10 +274,10 @@ class TIA : public Device , public MediaSource
     void clearBuffers();
 
     // Set up bookkeeping for the next frame
-    inline void startFrame();
+    void startFrame();
 
     // Update bookkeeping at end of frame
-    inline void endFrame();
+    void endFrame();
 
   private:
     // Console the TIA is associated with
