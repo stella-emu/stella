@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.13 2006-02-05 02:49:47 stephena Exp $
+// $Id: System.hxx,v 1.14 2006-02-10 13:14:20 stephena Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -47,7 +47,7 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.13 2006-02-05 02:49:47 stephena Exp $
+  @version $Id: System.hxx,v 1.14 2006-02-10 13:14:20 stephena Exp $
 */
 class System
 {
@@ -207,7 +207,7 @@ class System
 
       @return The number of system cycles which have passed
     */
-    inline uInt32 cycles() const 
+    uInt32 cycles() const 
     { 
       return myCycles; 
     }
@@ -217,7 +217,7 @@ class System
 
       @param amount The amount to add to the system cycles counter
     */
-    inline void incrementCycles(uInt32 amount) 
+    void incrementCycles(uInt32 amount) 
     { 
       myCycles += amount; 
     }
