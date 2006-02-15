@@ -1,13 +1,15 @@
 ---------------------------------------
 Stella 2.1 (revision 1):
 Ported to GP2X by Alex Zaballa
-Contact: alex.zaballa@gmail.com
+Contact: azaballa@users.sourceforge.net
 Homepage: http://stella.sourceforge.net
 ---------------------------------------
 
 --------
 Changes:
 --------
+>From 2.1-rv1
+Warlords graphics bug fixed
 >From 2.1
 Joystick fixed
 Phosphor effect enabled
@@ -22,8 +24,7 @@ Some button mapping (but still comfortably familiar)
 -----------
 Known Bugs:
 -----------
-2nd exit bug (yes, it's still there.... but, you can play many games before that second exit, lest we
-	forget save state. Fix coming soon.)
+Joy mouse skips menu items.
 
 ------------------------------
 Known GP2X Performance Issues:
@@ -33,7 +34,7 @@ Pitfall 2 runs slow due to extra hardware emulation. (Steve foresees this being 
 ---------------------
 Installation to GP2X:
 ---------------------
-Place files stella.gpe and stella.pro into a chosen directory. Upon first run, Stella will ask for your
+Place files stella, stella.gpe, and stella.pro into a chosen directory. Upon first run, Stella will ask for your
 ROM directory and snapshot directory. Remember that the path to the sd card is '/mnt/sd'.
 
 -----------
@@ -75,8 +76,8 @@ export PATH=<your arm-linux compiler path>:$PATH
 
 This is what my configure line looks like:
 ./configure --prefix=<your destination folder> --enable-zlib --disable-developer --host=gp2x --with-zlib-prefix=<your
-gp2x zlib path> --with-png-prefix=<your gp2x png path> --with-sdl-prefix=<your sdl config path> --x-libraries=<your X11
-libraries path>
+gp2x zlib path> --with-png-prefix=<your gp2x png path (configure appends '/include')> --with-sdl-prefix=<your sdl config
+ path> --x-libraries=<your X11 libraries path>
 
 Then:
 make
@@ -86,7 +87,10 @@ make gp2x-strip
 
 You should get an exec ~2mb in size. Much better than 7mb right?
 
-Place stella.gpe and stella.pro (available in ../src/emucore) into your destination directory on the GP2X and run.
+To gather all necessary files into directory './stella/gp2x' for easy access, type:
+make gp2x-organize
+
+Note: /gp2x directory created in the main stella source directory (next to configure, Makefile, etc.).
 
 ---------------
 Special Thanks:

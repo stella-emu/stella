@@ -416,7 +416,7 @@ psp)
 	EXEEXT=".elf"
 	;;
 gp2x)
-	EXEEXT=".gpe"
+	EXEEXT=""
 	;;
 *)
 	EXEEXT=""
@@ -839,9 +839,18 @@ case $_host_os in
 			CXXFLAGS="-O2 -finline-functions"
 			DEFINES="$DEFINES -DBSPF_GP2X -DGP2X -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/gp2x"
-			INCLUDES="$INCLUDES -I$SRC/gp2x"
+
+			#If PNG_CFLAGS is specified, include it.
+			#This saves the user the step of having to specify CXXFLAGS beforehand.
+			if [ -n $PNG_CFLAGS  ]; then
+				INCLUDES="$INCLUDES $PNG_CFLAGS -I$SRC/gp2x"
+			else
+				INCLUDES="$INCLUDES -I$SRC/gp2x"
+			fi
+
 			_ranlib="arm-linux-ranlib"
 			_ar="arm-linux-ar cru"
+
 			# GP2X ARM Linux Specific strip
 			GP2X_STRIP="arm-linux-strip"
 			;;
