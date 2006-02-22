@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.26 2005-10-24 18:18:30 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.27 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,34 +33,29 @@
 
 #include "bspf.hxx"
 
-enum {
-  kVideoRowHeight = 12,
-  kVideoWidth     = 200,
-  kVideoHeight    = 100
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
-                         int x, int y, int w, int h)
+                         const GUI::Font& font, int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
-  const GUI::Font& font = instance()->font();
-
-  int yoff = 10,
-      xoff = 5,
-      woff = 110,
-      labelWidth = 55;
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight();
+  int xpos, ypos;
+  int lwidth = font.getStringWidth("Dirty Rects: "),
+      pwidth = font.getStringWidth("Software");
 
   // Use dirty rectangle updates
-  myDirtyPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
-                                 "Dirty Rects: ", labelWidth);
+  xpos = 5;  ypos = 10;
+  myDirtyPopup = new PopUpWidget(this, font, xpos, ypos,
+                                 pwidth, lineHeight, "Dirty Rects: ", lwidth);
   myDirtyPopup->appendEntry("Yes", 1);
   myDirtyPopup->appendEntry("No", 2);
-  yoff += kVideoRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Video renderer
-  myRendererPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
-                                    "Renderer: ", labelWidth, kRendererChanged);
+  myRendererPopup = new PopUpWidget(this, font, xpos, ypos,
+                                    pwidth, lineHeight, "Renderer: ", lwidth,
+                                    kRendererChanged);
   myRendererPopup->appendEntry("Software", 1);
 #ifdef PSP
   myRendererPopup->appendEntry("Hardware", 2);
@@ -68,69 +63,75 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 #ifdef DISPLAY_OPENGL
   myRendererPopup->appendEntry("OpenGL", 3);
 #endif
-  yoff += kVideoRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Video filter
-  myFilterPopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
-                                  "GL Filter: ", labelWidth);
+  myFilterPopup = new PopUpWidget(this, font, xpos, ypos,
+                                  pwidth, lineHeight, "GL Filter: ", lwidth);
   myFilterPopup->appendEntry("Linear", 1);
   myFilterPopup->appendEntry("Nearest", 2);
-  yoff += kVideoRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Aspect ratio
-  myAspectRatioSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
-                                         "GL Aspect: ", labelWidth, kAspectRatioChanged);
+  myAspectRatioSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                         "GL Aspect: ", lwidth, kAspectRatioChanged);
   myAspectRatioSlider->setMinValue(1); myAspectRatioSlider->setMaxValue(100);
-  myAspectRatioLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 15, kLineHeight,
-                       "", kTextAlignLeft);
+  myAspectRatioLabel = new StaticTextWidget(this, font,
+                                            xpos + myAspectRatioSlider->getWidth() + 4,
+                                            ypos + 1,
+                                            15, fontHeight, "", kTextAlignLeft);
   myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
-  yoff += kVideoRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Palette
-  myPalettePopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight, "Palette: ", labelWidth);
+  myPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+                                   lineHeight, "Palette: ", lwidth);
   myPalettePopup->appendEntry("Standard", 1);
   myPalettePopup->appendEntry("Original", 2);
   myPalettePopup->appendEntry("Z26", 3);
-  yoff += kVideoRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Move over to the next column
-  yoff = 10;
-  xoff = xoff + 115;
+  xpos += 115;  ypos = 10;
 
   // Framerate
-  myFrameRateSlider = new SliderWidget(this, xoff, yoff, woff - 25, kLineHeight,
-                                       "Framerate: ", labelWidth, kFrameRateChanged);
+  myFrameRateSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
+                                       "Framerate: ", lwidth, kFrameRateChanged);
   myFrameRateSlider->setMinValue(1); myFrameRateSlider->setMaxValue(300);
-  myFrameRateLabel = new StaticTextWidget(this, xoff + woff - 22, yoff, 20, kLineHeight,
-                                          "", kTextAlignLeft);
+  myFrameRateLabel = new StaticTextWidget(this, font,
+                                          xpos + myFrameRateSlider->getWidth() + 4,
+                                          ypos + 1,
+                                          15, fontHeight, "", kTextAlignLeft);
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
-  yoff += kVideoRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Zoom level
-  myZoomSlider = new SliderWidget(this, xoff, yoff, woff - 25, kLineHeight,
-                                  "Zoom: ", labelWidth, kZoomChanged);
+  myZoomSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
+                                  "Zoom: ", lwidth, kZoomChanged);
   myZoomSlider->setMinValue(0); myZoomSlider->setMaxValue(50);
-  myZoomLabel = new StaticTextWidget(this, xoff + woff - 22, yoff, 20, kLineHeight,
-                                     "", kTextAlignLeft);
+  myZoomLabel = new StaticTextWidget(this, font,
+                                     xpos + myZoomSlider->getWidth() + 4,
+                                     ypos + 1,
+                                     15, fontHeight, "", kTextAlignLeft);
   myZoomLabel->setFlags(WIDGET_CLEARBG);
-  yoff += kVideoRowHeight + 10;
+  ypos += lineHeight + 10;
 
-  myFullscreenCheckbox = new CheckboxWidget(this, font, xoff + 5, yoff,
+  myFullscreenCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Fullscreen mode");
-  yoff += kVideoRowHeight + 4;
+  ypos += lineHeight + 4;
 
-  myUseDeskResCheckbox = new CheckboxWidget(this, font, xoff + 5, yoff,
+  myUseDeskResCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Desktop Res in FS");
-  yoff += kVideoRowHeight + 20;
+  ypos += lineHeight + 20;
 
   // Add Defaults, OK and Cancel buttons
-  addButton( 10, _h - 24, "Defaults", kDefaultsCmd, 0);
+  addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd, 0);
 #ifndef MAC_OSX
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 }
 

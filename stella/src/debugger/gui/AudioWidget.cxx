@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioWidget.cxx,v 1.1 2005-10-13 18:53:07 stephena Exp $
+// $Id: AudioWidget.cxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,22 +37,20 @@ enum {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioWidget::AudioWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
+                         int x, int y, int w, int h)
+  : Widget(boss, font, x, y, w, h),
     CommandSender(boss)
 {
-  const GUI::Font& font = instance()->consoleFont();
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
   int xpos = 10, ypos = 25, lwidth = font.getStringWidth("AUDW: ");
-  StaticTextWidget* t;
 
   // AudF registers
-  t = new StaticTextWidget(boss, xpos, ypos+2,
-                           lwidth, fontHeight,
-                           "AUDF:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos+2,
+                       lwidth, fontHeight,
+                       "AUDF:", kTextAlignLeft);
   xpos += lwidth;
   myAudF = new DataGridWidget(boss, font, xpos, ypos,
                               2, 1, 2, 5, kBASE_16);
@@ -63,20 +61,15 @@ AudioWidget::AudioWidget(GuiObject* boss, int x, int y, int w, int h)
 
   for(int col = 0; col < 2; ++col)
   {
-    t = new StaticTextWidget(boss, xpos + col*myAudF->colWidth() + 7,
-                             ypos - lineHeight,
-                             fontWidth, fontHeight,
-                             Debugger::to_hex_4(col),
-                             kTextAlignLeft);
-    t->setFont(font);
+    new StaticTextWidget(boss, font, xpos + col*myAudF->colWidth() + 7,
+                         ypos - lineHeight, fontWidth, fontHeight,
+                         Debugger::to_hex_4(col), kTextAlignLeft);
   }
 
   // AudC registers
   xpos = 10;  ypos += lineHeight + 5;
-  t = new StaticTextWidget(boss, xpos, ypos+2,
-                           lwidth, fontHeight,
-                           "AUDC:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth, fontHeight,
+                       "AUDC:", kTextAlignLeft);
   xpos += lwidth;
   myAudC = new DataGridWidget(boss, font, xpos, ypos,
                               2, 1, 2, 4, kBASE_16);
@@ -87,10 +80,8 @@ AudioWidget::AudioWidget(GuiObject* boss, int x, int y, int w, int h)
 
   // AudV registers
   xpos = 10;  ypos += lineHeight + 5;
-  t = new StaticTextWidget(boss, xpos, ypos+2,
-                           lwidth, fontHeight,
-                           "AUDV:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth, fontHeight,
+                       "AUDV:", kTextAlignLeft);
   xpos += lwidth;
   myAudV = new DataGridWidget(boss, font, xpos, ypos,
                               2, 1, 2, 4, kBASE_16);

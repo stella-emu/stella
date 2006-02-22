@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.13 2005-09-15 19:43:36 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.14 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,31 +30,33 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherOptionsDialog::LauncherOptionsDialog(
-      OSystem* osystem, DialogContainer* parent, GuiObject* boss,
+      OSystem* osystem, DialogContainer* parent,
+      const GUI::Font& font, GuiObject* boss,
       int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     CommandSender(boss),
     myBrowser(NULL)
 {
-  const GUI::Font& font = instance()->font();
-
   const int vBorder = 4;
-  int xpos, ypos;
+  int xpos, ypos, bwidth, bheight;
+
+  bwidth  = font.getStringWidth("Cancel") + 20;
+  bheight = font.getLineHeight() + 4;
 
   // The tab widget
   xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 2*bheight - ypos);
 
   // 1) The ROM locations tab
   myTab->addTab("ROM Settings");
 
   // ROM path
-  xpos = 15;
-  new ButtonWidget(myTab, xpos, ypos, kButtonWidth + 14, 16, "Path",
+  xpos = 15;  ypos += 5;
+  new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
                    kChooseRomDirCmd, 0);
-  xpos += kButtonWidth + 30;
-  myRomPath = new StaticTextWidget(myTab, xpos, ypos + 3,
-                                   _w - xpos - 10, kLineHeight,
+  xpos += bwidth + 20;
+  myRomPath = new StaticTextWidget(myTab, font, xpos, ypos + 3,
+                                   _w - xpos - 10, font.getLineHeight(),
                                    "", kTextAlignLeft);
 
   // 2) The snapshot settings tab
@@ -62,22 +64,25 @@ LauncherOptionsDialog::LauncherOptionsDialog(
 
   // Snapshot path
   xpos = 15;
-  new ButtonWidget(myTab, xpos, ypos, kButtonWidth + 14, 16, "Path",
+  new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
                    kChooseSnapDirCmd, 0);
-  xpos += kButtonWidth + 30;
-  mySnapPath = new StaticTextWidget(myTab, xpos, ypos + 3,
-                                   _w - xpos - 10, kLineHeight,
-                                   "", kTextAlignLeft);
+  xpos += bwidth + 20;
+  mySnapPath = new StaticTextWidget(myTab, font, xpos, ypos + 3,
+                                    _w - xpos - 10, font.getLineHeight(),
+                                    "", kTextAlignLeft);
 
   // Snapshot save name
-  xpos = 10; ypos += 22;
-  mySnapTypePopup = new PopUpWidget(myTab, xpos, ypos, 140, kLineHeight,
-                                    "Save snapshot as: ", 87, 0);
+  xpos = 10; ypos += mySnapPath->getHeight() + 8;
+  mySnapTypePopup = new PopUpWidget(myTab, font, xpos, ypos,
+                                    font.getStringWidth("romname"),
+                                    font.getLineHeight(),
+                                    "Save snapshot as: ",
+                                    font.getStringWidth("Save snapshot as: "), 0);
   mySnapTypePopup->appendEntry("romname", 1);
   mySnapTypePopup->appendEntry("md5sum", 2);
 
   // Snapshot single or multiple saves
-  xpos = 30;  ypos += 18;
+  xpos = 30;  ypos += mySnapTypePopup->getHeight() + 8;
   mySnapSingleCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                             "Multiple snapshots");
 
@@ -86,17 +91,25 @@ LauncherOptionsDialog::LauncherOptionsDialog(
 
   // Add OK & Cancel buttons
 #ifndef MAC_OSX
-  addButton(_w - 2 *(kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK",
+                   kOKCmd, 0);
+  xpos += bwidth + 10;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
+                   kCloseCmd, 0);
 #else
-  addButton(_w - 2 *(kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
+                   kCloseCmd, 0);
+  xpos += bwidth + 10;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK",
+                   kOKCmd, 0);
 #endif
 
   // Create file browser dialog
   int baseW = instance()->frameBuffer().baseWidth();
   int baseH = instance()->frameBuffer().baseHeight();
-  myBrowser = new BrowserDialog(this, 60, 20, baseW - 120, baseH - 40);
+  myBrowser = new BrowserDialog(this, font, 60, 20, baseW - 120, baseH - 40);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

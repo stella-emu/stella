@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.11 2005-12-09 01:16:14 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.12 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,7 +59,8 @@ class PopUpWidget : public Widget, public CommandSender
     int       _labelWidth;
 
   public:
-    PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
+    PopUpWidget(GuiObject* boss, const GUI::Font& font,
+                int x, int y, int w, int h,
                 const string& label, int labelWidth = 0, int cmd = 0);
     ~PopUpWidget();
 
@@ -86,6 +87,8 @@ class PopUpWidget : public Widget, public CommandSender
 
   private:
     PopUpDialog* myPopUpDialog;
+    int myArrowsY;
+    int myTextY;
 };
 
 //

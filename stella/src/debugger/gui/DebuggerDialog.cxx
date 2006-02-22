@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.11 2006-01-15 20:46:19 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.12 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -145,7 +145,8 @@ void DebuggerDialog::addTiaArea()
 {
   GUI::Rect r = instance()->debugger().getTiaBounds();
 
-  myTiaOutput = new TiaOutputWidget(this, r.left, r.top, r.width(), r.height());
+  myTiaOutput = new TiaOutputWidget(this, instance()->consoleFont(),
+                                    r.left, r.top, r.width(), r.height());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,30 +155,34 @@ void DebuggerDialog::addTabArea()
   GUI::Rect r = instance()->debugger().getTabBounds();
 
   const int vBorder = 4;
-  const int widWidth  = r.width() - vBorder;
-  const int widHeight = r.height() - 25; // FIXME - magic number/font height
-  int tabID;
 
   // The tab widget
-  myTab = new TabWidget(this, r.left, r.top + vBorder,
+  myTab = new TabWidget(this, instance()->consoleFont(), r.left, r.top + vBorder,
                         r.width(), r.height() - vBorder);
   addTabWidget(myTab);
 
+  const int widWidth  = r.width() - vBorder;
+  const int widHeight = r.height() - myTab->getTabHeight() - vBorder - 4;
+  int tabID;
+
   // The Prompt/console tab
   tabID = myTab->addTab("Prompt");
-  myPrompt = new PromptWidget(myTab, 2, 2, widWidth, widHeight);
+  myPrompt = new PromptWidget(myTab, instance()->consoleFont(),
+                              2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), tabID);
 
   // The TIA tab
   tabID = myTab->addTab("TIA");
-  TiaWidget* tia = new TiaWidget(myTab, 2, 2, widWidth, widHeight);
+  TiaWidget* tia = new TiaWidget(myTab, instance()->consoleFont(),
+                                 2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, tia);
   addToFocusList(tia->getFocusList(), tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
-  AudioWidget* aud = new AudioWidget(myTab, 2, 2, widWidth, widHeight);
+  AudioWidget* aud = new AudioWidget(myTab, instance()->consoleFont(),
+                                     2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, aud);
   addToFocusList(aud->getFocusList(), tabID);
 
@@ -195,16 +200,16 @@ void DebuggerDialog::addStatusArea()
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
-  myTiaInfo = new TiaInfoWidget(this, xpos+20, ypos);
+  myTiaInfo = new TiaInfoWidget(this, instance()->consoleFont(), xpos+20, ypos);
 
   ypos += myTiaInfo->getHeight() + 10;
-  myTiaZoom = new TiaZoomWidget(this, xpos+10, ypos);
+  myTiaZoom = new TiaZoomWidget(this, instance()->consoleFont(), xpos+10, ypos);
   addToFocusList(myTiaZoom->getFocusList());
 
   xpos += 10;  ypos += myTiaZoom->getHeight() + 20;
-  myMessageBox = new EditTextWidget(this, xpos, ypos, myTiaZoom->getWidth(),
+  myMessageBox = new EditTextWidget(this, instance()->consoleFont(),
+                                    xpos, ypos, myTiaZoom->getWidth(),
                                     font.getLineHeight(), "");
-  myMessageBox->setFont(font);
   myMessageBox->setEditable(false);
   myMessageBox->setColor(kTextColorEm);
 }
@@ -224,18 +229,19 @@ void DebuggerDialog::addRomArea()
   addToFocusList(myRam->getFocusList());
 
   xpos = r.left + 10 + myCpu->getWidth() + 20;
-  DataGridOpsWidget* ops = new DataGridOpsWidget(this, xpos, 20);
+  DataGridOpsWidget* ops = new DataGridOpsWidget(this, instance()->consoleFont(),
+                                                 xpos, 20);
 
   int buttonX = r.right - kButtonWidth - 5, buttonY = r.top + 5;
-  addButton(buttonX, buttonY, "Step", kDDStepCmd, 0);
+  addButton(instance()->consoleFont(), buttonX, buttonY, "Step", kDDStepCmd, 0);
   buttonY += 22;
-  addButton(buttonX, buttonY, "Trace", kDDTraceCmd, 0);
+  addButton(instance()->consoleFont(), buttonX, buttonY, "Trace", kDDTraceCmd, 0);
   buttonY += 22;
-  addButton(buttonX, buttonY, "Scan +1", kDDSAdvCmd, 0);
+  addButton(instance()->consoleFont(), buttonX, buttonY, "Scan +1", kDDSAdvCmd, 0);
   buttonY += 22;
-  addButton(buttonX, buttonY, "Frame +1", kDDAdvCmd, 0);
+  addButton(instance()->consoleFont(), buttonX, buttonY, "Frame +1", kDDAdvCmd, 0);
   buttonY += 22;
-  addButton(buttonX, buttonY, "Exit", kDDExitCmd, 0);
+  addButton(instance()->consoleFont(), buttonX, buttonY, "Exit", kDDExitCmd, 0);
 
   xpos = r.left + 10;  ypos += myRam->getHeight() + 5;
   myRom = new RomWidget(this, instance()->consoleFont(), xpos, ypos);

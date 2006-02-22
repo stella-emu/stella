@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.hxx,v 1.4 2005-12-18 18:37:01 stephena Exp $
+// $Id: CheatCodeDialog.hxx,v 1.5 2006-02-22 17:38:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,7 @@ class CheatCodeDialog : public Dialog
 {
   public:
     CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
-                   int x, int y, int w, int h);
+                   const GUI::Font& font, int x, int y, int w, int h);
     ~CheatCodeDialog();
 
   protected:

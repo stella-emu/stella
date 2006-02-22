@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TogglePixelWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: TogglePixelWidget.hxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,8 @@
 class TogglePixelWidget : public ToggleWidget
 {
   public:
-    TogglePixelWidget(GuiObject* boss, int x, int y, int cols, int rows);
+    TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
+                      int x, int y, int cols, int rows);
     virtual ~TogglePixelWidget();
 
     void setColor(OverlayColor color) { _pixelColor = color; }

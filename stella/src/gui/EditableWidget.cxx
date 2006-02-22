@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.15 2006-01-15 20:46:20 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.16 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,8 +23,9 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EditableWidget::EditableWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
+                               int x, int y, int w, int h)
+  : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     _editable(true)
 {

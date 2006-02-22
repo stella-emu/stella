@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioWidget.hxx,v 1.1 2005-10-13 18:53:07 stephena Exp $
+// $Id: AudioWidget.hxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,8 @@ class DataGridWidget;
 class AudioWidget : public Widget, public CommandSender
 {
   public:
-    AudioWidget(GuiObject* boss, int x, int y, int w, int h);
+    AudioWidget(GuiObject* boss, const GUI::Font& font,
+                int x, int y, int w, int h);
     virtual ~AudioWidget();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);

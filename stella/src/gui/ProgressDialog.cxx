@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.cxx,v 1.5 2005-08-04 22:59:54 stephena Exp $
+// $Id: ProgressDialog.cxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,12 +51,12 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   _y = (boss->getHeight() - _h) / 2;
 
   xpos = fontWidth; ypos = lineHeight;
-  myMessage = new StaticTextWidget(this, xpos, ypos, lwidth, fontHeight,
+  myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                                    message, kTextAlignCenter);
   myMessage->setColor(kTextColorEm);
 
   xpos = fontWidth; ypos += 2 * lineHeight;
-  mySlider = new SliderWidget(this, xpos, ypos, lwidth, lineHeight, "", 0, 0);
+  mySlider = new SliderWidget(this, font, xpos, ypos, lwidth, lineHeight, "", 0, 0);
   mySlider->setMinValue(100);
   mySlider->setMaxValue(200);
   mySlider->setValue(100);  // Prevents the slider from initially drawing

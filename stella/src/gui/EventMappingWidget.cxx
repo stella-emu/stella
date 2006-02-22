@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.11 2006-01-19 00:45:13 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.12 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,14 +30,15 @@
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMappingWidget::EventMappingWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
+                                       int x, int y, int w, int h)
+  : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     myActionSelected(-1),
     myRemapStatus(false),
     myFirstTime(true)
 {
-  const GUI::Font& font = instance()->font();
+// FIXME
   const int fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
   int xpos = 5, ypos = 5;
@@ -52,26 +53,26 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, int x, int y, int w, int
 
   // Add remap, erase, cancel and default buttons
   xpos += myActionsList->getWidth() + 15;  ypos += 5;
-  myMapButton = new ButtonWidget(boss, xpos, ypos, 50, 16,
+  myMapButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                  "Map", kStartMapCmd);
   myMapButton->setTarget(this);
   ypos += 20;
-  myEraseButton = new ButtonWidget(boss, xpos, ypos, 50, 16,
+  myEraseButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
   ypos += 20;
-  myCancelMapButton = new ButtonWidget(boss, xpos, ypos, 50, 16,
+  myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                        "Cancel", kStopMapCmd);
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(WIDGET_ENABLED);
   ypos += 30;
-  myDefaultsButton = new ButtonWidget(boss, xpos, ypos, 50, 16,
+  myDefaultsButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                       "Defaults", kDefaultsCmd);
   myDefaultsButton->setTarget(this);
 
   // Show message for currently selected event
   xpos = 10;  ypos = 5 + myActionsList->getHeight() + 3;
-  myKeyMapping  = new StaticTextWidget(boss, xpos, ypos, _w - 20, fontHeight,
+  myKeyMapping  = new StaticTextWidget(boss, font, xpos, ypos, _w - 20, fontHeight,
                                        "Action: ", kTextAlignLeft);
   myKeyMapping->setFlags(WIDGET_CLEARBG);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.14 2005-10-24 18:18:30 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.15 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,25 +29,26 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
-                       int x, int y, int w, int h)
+                       const GUI::Font& font, int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h),
       myPage(1),
       myNumPages(4)
 {
   // Add Previous, Next and Close buttons
-  myPrevButton = addButton(10, h - 24, "Previous", kPrevCmd, 'P');
-  myNextButton = addButton((kButtonWidth + 15), h - 24,
+  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd, 'P');
+  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
                            "Next", kNextCmd, 'N');
-  addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
+  addButton(font, w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
   myPrevButton->clearFlags(WIDGET_ENABLED);
 
-  myTitle = new StaticTextWidget(this, 5, 5, w-10, kFontHeight, "", kTextAlignCenter);
+  myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
+                                 "", kTextAlignCenter);
   for(uInt8 i = 0; i < LINES_PER_PAGE; i++)
   {
-    myKey[i]  = new StaticTextWidget(this, 10, 18 + (10 * i), 80, kFontHeight,
-                                     "", kTextAlignLeft);
-    myDesc[i] = new StaticTextWidget(this, 90, 18 + (10 * i), 160, kFontHeight,
-                                     "", kTextAlignLeft);
+    myKey[i]  = new StaticTextWidget(this, font, 10, 18 + (10 * i), 80,
+                                     font.getFontHeight(), "", kTextAlignLeft);
+    myDesc[i] = new StaticTextWidget(this, font, 90, 18 + (10 * i), 160,
+                                     font.getFontHeight(), "", kTextAlignLeft);
   }
 }
 

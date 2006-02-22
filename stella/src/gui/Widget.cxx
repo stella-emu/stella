@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.41 2006-01-08 20:55:54 stephena Exp $
+// $Id: Widget.cxx,v 1.42 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,10 +32,12 @@
 #include "EditableWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
+Widget::Widget(GuiObject* boss, const GUI::Font& font,
+               int x, int y, int w, int h)
   : GuiObject(boss->instance(), boss->parent(), x, y, w, h),
     _type(0),
     _boss(boss),
+    _font((GUI::Font*)&font),
     _id(-1),
     _flags(0),
     _hasFocus(false),
@@ -44,6 +46,9 @@ Widget::Widget(GuiObject* boss, int x, int y, int w, int h)
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;
   _boss->_firstWidget = this;
+
+  _fontWidth  = _font->getMaxCharWidth();
+  _fontHeight = _font->getLineHeight();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -294,9 +299,10 @@ void Widget::setDirtyInChain(Widget* start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject *boss, int x, int y, int w, int h,
+StaticTextWidget::StaticTextWidget(GuiObject *boss, const GUI::Font& font,
+                                   int x, int y, int w, int h,
                                    const string& text, TextAlignment align)
-    : Widget(boss, x, y, w, h),
+    : Widget(boss, font, x, y, w, h),
       _align(align)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
@@ -330,9 +336,10 @@ void StaticTextWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject *boss, int x, int y, int w, int h,
+ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
+                           int x, int y, int w, int h,
                            const string& label, int cmd, uInt8 hotkey)
-  : StaticTextWidget(boss, x, y, w, h, label, kTextAlignCenter),
+  : StaticTextWidget(boss, font, x, y, w, h, label, kTextAlignCenter),
     CommandSender(boss),
     _cmd(cmd),
     _editable(false),
@@ -411,7 +418,7 @@ void ButtonWidget::setEditable(bool editable)
 void ButtonWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
-  fb.drawString(_font, _label, _x, _y + (_h - kLineHeight)/2 + 1, _w,
+  fb.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
                 !isEnabled() ? kColor : hilite ? kTextColorHi : _color, _align);
 }
 
@@ -433,23 +440,32 @@ static unsigned int checked_img[8] =
 CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
                                int x, int y, const string& label,
                                int cmd)
-  : ButtonWidget(boss, x, y, 16, 16, label, cmd, 0),
+  : ButtonWidget(boss, font, x, y, 16, 16, label, cmd, 0),
     _state(false),
     _editable(true),
     _holdFocus(true),
     _fillRect(false),
     _drawBox(true),
-    _fillColor(kColor)
+    _fillColor(kColor),
+    _boxY(0),
+    _textY(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
   _type = kCheckboxWidget;
 
-  setFont(font);
   if(label == "")
     _w = 14;
   else
     _w = font.getStringWidth(label) + 20;
   _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
+
+
+  // Depending on font size, either the font or box will need to be 
+  // centered vertically
+  if(_h > 14)  // center box
+    _boxY = (_h - 14) / 2;
+  else         // center text
+    _textY = (14 - _font->getFontHeight()) / 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -512,40 +528,33 @@ void CheckboxWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
-  // Depending on font size, either the font or box will need to be 
-  // centered vertically
-  int box_yoff = 0, text_yoff = 0;
-  if(_h > 14)  // center box
-    box_yoff = (_h - 14) / 2;
-  else         // center text
-    text_yoff = (14 - _font->getFontHeight()) / 2;
-
   // Draw the box
   if(_drawBox)
-    fb.box(_x, _y + box_yoff, 14, 14, kColor, kShadowColor);
+    fb.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
 
   // If checked, draw cross inside the box
   if(_state)
   {
     if(_fillRect)
-      fb.fillRect(_x + 2, _y + box_yoff + 2, 10, 10,
+      fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10,
                   isEnabled() ? _color : kColor);
     else
-      fb.drawBitmap(checked_img, _x + 3, _y + box_yoff + 3,
+      fb.drawBitmap(checked_img, _x + 3, _y + _boxY + 3,
                     isEnabled() ? _color : kColor);
   }
   else
-    fb.fillRect(_x + 2, _y + box_yoff + 2, 10, 10, kBGColor);
+    fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, kBGColor);
 
   // Finally draw the label
-  fb.drawString(_font, _label, _x + 20, _y + text_yoff, _w,
+  fb.drawString(_font, _label, _x + 20, _y + _textY, _w,
                 isEnabled() ? _color : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SliderWidget::SliderWidget(GuiObject *boss, int x, int y, int w, int h,
+SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
+                           int x, int y, int w, int h,
                            const string& label, int labelWidth, int cmd, uInt8 hotkey)
-  : ButtonWidget(boss, x, y, w, h, label, cmd, hotkey),
+  : ButtonWidget(boss, font, x, y, w, h, label, cmd, hotkey),
     _value(0),
     _oldValue(0),
     _valueMin(0),
@@ -555,6 +564,11 @@ SliderWidget::SliderWidget(GuiObject *boss, int x, int y, int w, int h,
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
   _type = kSliderWidget;
+
+  if(!_label.empty() && _labelWidth == 0)
+    _labelWidth = _font->getStringWidth(_label);
+
+  _w = w + _labelWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

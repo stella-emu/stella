@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.38 2006-01-15 16:31:01 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.39 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,9 +39,6 @@
 
 #include "bspf.hxx"
 
-/////////////////////////////////////////
-// TODO - make this dialog font sensitive
-/////////////////////////////////////////
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
@@ -56,80 +53,98 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myProgressBar(NULL),
     mySelectedItem(0)
 {
-  const GUI::Font& font = instance()->font();
-  const int fontHeight = font.getFontHeight();
+  const GUI::Font& font = instance()->launcherFont();
+//  const GUI::Font& font = instance()->font();
+  const int fontHeight  = font.getFontHeight();
+  const int bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4;
+  const int bheight = font.getLineHeight() + 4;
+  int xpos = 0, ypos = 0, lwidth = 0;
   WidgetArray wid;
 
   // Show game name
-  new StaticTextWidget(this, 10, 8, 200, fontHeight,
+  lwidth = font.getStringWidth("Select a game from the list ...");
+  xpos += 10;  ypos += 8;
+  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "Select a game from the list ...", kTextAlignLeft);
 
-  myRomCount = new StaticTextWidget(this, _w - 100, 8, 90, fontHeight,
+  lwidth = font.getStringWidth("XXXX files found");
+  xpos = _w - lwidth - 10;
+  myRomCount = new StaticTextWidget(this, font, xpos, ypos,
+                                    lwidth, fontHeight,
                                     "", kTextAlignRight);
-
-  // Add four buttons at the bottom
-  const int border = 10;
-  const int space = 8;
-  const int buttons = 4;
-  const int width = (_w - 2 * border - space * (buttons - 1)) / buttons;
-  int xpos = border;
-
-#ifndef MAC_OSX
-  myStartButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Play", kStartCmd, 'S');
-  myStartButton->setEditable(true);
-  wid.push_back(myStartButton);
-    xpos += space + width;
-  myOptionsButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
-  myOptionsButton->setEditable(true);
-  wid.push_back(myOptionsButton);
-    xpos += space + width;
-  myReloadButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
-  myReloadButton->setEditable(true);
-  wid.push_back(myReloadButton);
-    xpos += space + width;
-  myQuitButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
-  myQuitButton->setEditable(true);
-  wid.push_back(myQuitButton);
-    xpos += space + width;
-  mySelectedItem = 0;  // Highlight 'Play' button
-#else
-  myQuitButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Quit", kQuitCmd, 'Q');
-  myQuitButton->setEditable(true);
-  wid.push_back(myQuitButton);
-    xpos += space + width;
-  myOptionsButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Options", kOptionsCmd, 'O');
-  myOptionsButton->setEditable(true);
-  wid.push_back(myOptionsButton);
-    xpos += space + width;
-  myReloadButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Reload", kReloadCmd, 'R');
-  myReloadButton->setEditable(true);
-  wid.push_back(myReloadButton);
-    xpos += space + width;
-  myStartButton = new ButtonWidget(this, xpos, _h - 24, width, 16, "Start", kStartCmd, 'Q');
-  myStartButton->setEditable(true);
-  wid.push_back(myStartButton);
-    xpos += space + width;
-  mySelectedItem = 3;  // Highlight 'Play' button
-#endif
 
   // Add list with game titles
   // The list isn't added to focus objects, but is instead made 'sticky'
   // This means it will act as if it were focused (wrt how it's drawn), but
   // won't actually be able to lose focus
-  myList = new StringListWidget(this, instance()->font(),
-                                10, 24, _w - 20, _h - 24 - 26 - 10 - 10);
+  xpos = 10;  ypos += fontHeight + 5;
+  myList = new StringListWidget(this, font, xpos, ypos,
+                                _w - 20, _h - 28 - bheight - 2*fontHeight);
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
   myList->setFlags(WIDGET_STICKY_FOCUS);
 
   // Add note textwidget to show any notes for the currently selected ROM
-  new StaticTextWidget(this, 20, _h - 43, 30, fontHeight, "Note:", kTextAlignLeft);
-  myNote = new StaticTextWidget(this, 50, _h - 43, w - 70, fontHeight,
+  xpos += 5;  ypos += myList->getHeight() + 4;
+  lwidth = font.getStringWidth("Note:");
+  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+                       "Note:", kTextAlignLeft);
+  xpos += lwidth + 5;
+  myNote = new StaticTextWidget(this, font, xpos, ypos,
+                                _w - xpos - 10, fontHeight,
                                 "", kTextAlignLeft);
+
+  // Add four buttons at the bottom
+  xpos = 10;  ypos += myNote->getHeight() + 4;
+#ifndef MAC_OSX
+  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                  "Play", kStartCmd, 'S');
+  myStartButton->setEditable(true);
+  wid.push_back(myStartButton);
+    xpos += bwidth + 8;
+  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                     "Options", kOptionsCmd, 'O');
+  myOptionsButton->setEditable(true);
+  wid.push_back(myOptionsButton);
+    xpos += bwidth + 8;
+  myReloadButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                    "Reload", kReloadCmd, 'R');
+  myReloadButton->setEditable(true);
+  wid.push_back(myReloadButton);
+    xpos += bwidth + 8;
+  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                  "Quit", kQuitCmd, 'Q');
+  myQuitButton->setEditable(true);
+  wid.push_back(myQuitButton);
+    xpos += bwidth + 8;
+  mySelectedItem = 0;  // Highlight 'Play' button
+#else
+  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                  "Quit", kQuitCmd, 'Q');
+  myQuitButton->setEditable(true);
+  wid.push_back(myQuitButton);
+    xpos += bwidth + 8;
+  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                     "Options", kOptionsCmd, 'O');
+  myOptionsButton->setEditable(true);
+  wid.push_back(myOptionsButton);
+    xpos += bwidth + 8;
+  myReloadButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                    "Reload", kReloadCmd, 'R');
+  myReloadButton->setEditable(true);
+  wid.push_back(myReloadButton);
+    xpos += bwidth + 8;
+  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                   "Start", kStartCmd, 'Q');
+  myStartButton->setEditable(true);
+  wid.push_back(myStartButton);
+    xpos += bwidth + 8;
+  mySelectedItem = 3;  // Highlight 'Play' button
+#endif
 
   // Create the launcher options dialog, where you can change ROM
   // and snapshot paths
-  myOptions = new LauncherOptionsDialog(osystem, parent, this,
+  myOptions = new LauncherOptionsDialog(osystem, parent, font, this,
                                         20, 60, _w - 40, _h - 120);
 
   // Create a game list, which contains all the information about a ROM that
@@ -253,7 +268,7 @@ void LauncherDialog::loadListFromDisk()
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
-  ProgressDialog progress(this, instance()->font(),
+  ProgressDialog progress(this, instance()->launcherFont(),
                           "Loading ROM's from disk ...");
   progress.setRange(0, files.size() - 1, 10);
 

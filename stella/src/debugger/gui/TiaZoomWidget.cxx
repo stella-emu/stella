@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.5 2005-09-23 23:35:02 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,8 +28,9 @@
 #include "TiaZoomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaZoomWidget::TiaZoomWidget(GuiObject* boss, int x, int y)
-  : Widget(boss, x, y, 16, 16),
+TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
+                             int x, int y)
+  : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     myMenu(NULL)
 {
@@ -50,7 +51,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, int x, int y)
   myYCenter = myNumRows >> 1;
 
   // Create context menu for zoom levels
-  myMenu = new ContextMenu(this, instance()->consoleFont());
+  myMenu = new ContextMenu(this, font);
 
   StringList l;
   l.push_back("2x zoom");

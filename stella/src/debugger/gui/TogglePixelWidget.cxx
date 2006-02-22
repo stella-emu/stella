@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TogglePixelWidget.cxx,v 1.2 2006-01-15 20:46:19 stephena Exp $
+// $Id: TogglePixelWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,12 +27,12 @@
 #include "TogglePixelWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TogglePixelWidget::TogglePixelWidget(GuiObject* boss, int x, int y,
-                                 int cols, int rows)
-  : ToggleWidget(boss, x, y, cols, rows),
+TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
+                                     int x, int y, int cols, int rows)
+  : ToggleWidget(boss, font, x, y, cols, rows),
     _pixelColor(kBGColor)
 {
-  _rowHeight = _font->getLineHeight();
+  _rowHeight = font.getLineHeight();
   _colWidth  = 15;
 
   // Calculate real dimensions

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.14 2006-01-11 01:17:11 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.15 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,7 +43,8 @@ struct PropType {
 class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
-    GameInfoDialog(OSystem* osystem, DialogContainer* parent, GuiObject* boss,
+    GameInfoDialog(OSystem* osystem, DialogContainer* parent,
+                   const GUI::Font& font, GuiObject* boss,
                    int x, int y, int w, int h);
     ~GameInfoDialog();
 

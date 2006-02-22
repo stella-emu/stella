@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.6 2006-01-15 20:46:19 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.7 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,8 +44,9 @@
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w - kScrollBarWidth, h),
+PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y, int w, int h)
+  : Widget(boss, font, x, y, w - kScrollBarWidth, h),
     CommandSender(boss),
     _makeDirty(false),
     _firstTime(true)
@@ -54,8 +55,8 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
            WIDGET_WANTS_TAB;
   _type = kPromptWidget;
 
-  _kConsoleCharWidth  = instance()->consoleFont().getMaxCharWidth();
-  _kConsoleCharHeight = instance()->consoleFont().getFontHeight();
+  _kConsoleCharWidth  = font.getMaxCharWidth();
+  _kConsoleCharHeight = font.getFontHeight();
   _kConsoleLineHeight = _kConsoleCharHeight + 2;
 
   // Calculate depending values
@@ -70,7 +71,7 @@ PromptWidget::PromptWidget(GuiObject* boss, int x, int y, int w, int h)
   _firstLineInBuffer = 0;
 
   // Add scrollbar
-  _scrollBar = new ScrollBarWidget(boss, _x + _w, _y, kScrollBarWidth, _h);
+  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
   _scrollBar->setTarget(this);
 
   // Init colors

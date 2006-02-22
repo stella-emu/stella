@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.22 2006-01-20 15:13:37 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.23 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,23 +31,22 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::GameInfoDialog(
-      OSystem* osystem, DialogContainer* parent, GuiObject* boss,
-      int x, int y, int w, int h)
+      OSystem* osystem, DialogContainer* parent, const GUI::Font& font,
+      GuiObject* boss, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     CommandSender(boss)
 {
-  const GUI::Font& font = instance()->font();
   const int fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
 
   const int vBorder = 4;
-  int xpos, ypos, lwidth, fwidth, tabID;
+  int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   unsigned int i;
   WidgetArray wid;
 
   // The tab widget
   xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
 
   // 1) Cartridge properties
   wid.clear();
@@ -56,62 +55,63 @@ GameInfoDialog::GameInfoDialog(
   xpos = 10;
   lwidth = font.getStringWidth("Manufacturer: ");
   fwidth = _w - xpos - lwidth - 10;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Name:", kTextAlignLeft);
-  myName = new EditTextWidget(myTab, xpos+lwidth, ypos, fwidth, fontHeight, "");
+  myName = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
+                              fwidth, fontHeight, "");
   wid.push_back(myName);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "MD5:", kTextAlignLeft);
-  myMD5 = new StaticTextWidget(myTab, xpos+lwidth, ypos,
+  myMD5 = new StaticTextWidget(myTab, font, xpos+lwidth, ypos,
                                fwidth, fontHeight,
                                "", kTextAlignLeft);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Manufacturer:", kTextAlignLeft);
-  myManufacturer = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myManufacturer = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                       fwidth, fontHeight, "");
   wid.push_back(myManufacturer);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Model:", kTextAlignLeft);
-  myModelNo = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myModelNo = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                  fwidth, fontHeight, "");
   wid.push_back(myModelNo);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Rarity:", kTextAlignLeft);
-  myRarity = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myRarity = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                 fwidth, fontHeight, "");
   wid.push_back(myRarity);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Note:", kTextAlignLeft);
-  myNote = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myNote = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                               fwidth, fontHeight, "");
   wid.push_back(myNote);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Sound:", kTextAlignLeft);
-  mySound = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                            font.getStringWidth("Stereo") + 15, lineHeight,
-                            "", 0, 0);
+  pwidth = font.getStringWidth("Stereo");
+  mySound = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                            pwidth, lineHeight, "", 0, 0);
   mySound->appendEntry("Mono", 1);
   mySound->appendEntry("Stereo", 2);
   wid.push_back(mySound);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Type:", kTextAlignLeft);
-  myType = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                           font.getStringWidth("CV (Commavid extra ram)") + 15,
-                           lineHeight, "", 0, 0);
+  pwidth = font.getStringWidth("CV (Commavid extra ram)");
+  myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                           pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 21; ++i)
     myType->appendEntry(ourCartridgeList[i].name, i+1);
   wid.push_back(myType);
@@ -126,41 +126,38 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 10; ypos = vBorder;
   lwidth = font.getStringWidth("Right Difficulty: ");
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  pwidth = font.getStringWidth("B & W");
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
-  myLeftDiff = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                               font.getStringWidth("   ") + 15, lineHeight,
-                               "", 0, 0);
+  myLeftDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                               pwidth, lineHeight, "", 0, 0);
   myLeftDiff->appendEntry("B", 1);
   myLeftDiff->appendEntry("A", 2);
   wid.push_back(myLeftDiff);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Right Difficulty:", kTextAlignLeft);
-  myRightDiff = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                                font.getStringWidth("   ") + 15, lineHeight,
-                                "", 0, 0);
+  myRightDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                pwidth, lineHeight, "", 0, 0);
   myRightDiff->appendEntry("B", 1);
   myRightDiff->appendEntry("A", 2);
   wid.push_back(myRightDiff);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "TV Type:", kTextAlignLeft);
-  myTVType = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                             font.getStringWidth("B & W") + 15, lineHeight,
-                             "", 0, 0);
+  myTVType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                             pwidth, lineHeight, "", 0, 0);
   myTVType->appendEntry("Color", 1);
   myTVType->appendEntry("B & W", 2);
   wid.push_back(myTVType);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Swap ports:", kTextAlignLeft);
-  mySwapPorts = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                                font.getStringWidth("Yes") + 15, lineHeight,
-                                  "", 0, 0);
+  mySwapPorts = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                pwidth, lineHeight, "", 0, 0);
   mySwapPorts->appendEntry("Yes", 1);
   mySwapPorts->appendEntry("No", 2);
   wid.push_back(mySwapPorts);
@@ -175,22 +172,20 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 10; ypos = vBorder;
   lwidth = font.getStringWidth("Right Controller: ");
-  fwidth = font.getStringWidth("Booster-Grip");
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  pwidth = font.getStringWidth("Booster-Grip");
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Controller:", kTextAlignLeft);
-  myLeftController = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                                     fwidth + 15, lineHeight,
-                                     "", 0, 0);
+  myLeftController = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                     pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 5; ++i)
     myLeftController->appendEntry(ourControllerList[i].name, i+1);
   wid.push_back(myLeftController);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Right Controller:", kTextAlignLeft);
-  myRightController = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                                      fwidth + 15, lineHeight,
-                                      "", 0, 0);
+  myRightController = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                      pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 5; ++i)
     myRightController->appendEntry(ourControllerList[i].name, i+1);
   wid.push_back(myRightController);
@@ -204,60 +199,59 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Display");
 
   xpos = 10; ypos = vBorder;
-  lwidth = font.getStringWidth("Use HMBlanks: ");
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  lwidth = font.getStringWidth("Use Phosphor: ");
+  pwidth = font.getStringWidth("NTSC");
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Format:", kTextAlignLeft);
-  myFormat = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                             font.getStringWidth("NTSC") + 15, lineHeight,
-                             "", 0, 0);
+  myFormat = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                             pwidth, lineHeight, "", 0, 0);
   myFormat->appendEntry("NTSC", 1);
   myFormat->appendEntry("PAL", 2);
   wid.push_back(myFormat);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "XStart:", kTextAlignLeft);
-  myXStart = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myXStart = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                 25, fontHeight, "");
   wid.push_back(myXStart);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Width:", kTextAlignLeft);
-  myWidth = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myWidth = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                25, fontHeight, "");
   wid.push_back(myWidth);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "YStart:", kTextAlignLeft);
-  myYStart = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myYStart = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                 25, fontHeight, "");
   wid.push_back(myYStart);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Height:", kTextAlignLeft);
-  myHeight = new EditTextWidget(myTab, xpos+lwidth, ypos,
+  myHeight = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                 25, fontHeight, "");
   wid.push_back(myHeight);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  pwidth = font.getStringWidth("Yes");
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use Phosphor:", kTextAlignLeft);
-  myPhosphor = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                               font.getStringWidth("Yes") + 15, lineHeight,
-                               "", 0, 0);
+  myPhosphor = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                               pwidth, lineHeight, "", 0, 0);
   myPhosphor->appendEntry("Yes", 1);
   myPhosphor->appendEntry("No", 2);
   wid.push_back(myPhosphor);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use HMBlanks:", kTextAlignLeft);
-  myHmoveBlanks = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                                  font.getStringWidth("Yes") + 15, lineHeight,
-                                  "", 0, 0);
+  myHmoveBlanks = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                  pwidth, lineHeight, "", 0, 0);
   myHmoveBlanks->appendEntry("Yes", 1);
   myHmoveBlanks->appendEntry("No", 2);
   wid.push_back(myHmoveBlanks);
@@ -270,16 +264,16 @@ GameInfoDialog::GameInfoDialog(
   myTab->setActiveTab(0);
 
   // Add message concerning usage
-  new StaticTextWidget(this, 10, _h - 20, 120, fontHeight,
+  new StaticTextWidget(this, font, 10, _h - 20, 120, fontHeight,
                        "(*) Requires a ROM reload", kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
 #ifndef MAC_OSX
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 }
 

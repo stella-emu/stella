@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.60 2006-01-31 14:02:08 urchlay Exp $
+// $Id: OSystem.cxx,v 1.61 2006-02-22 17:38:04 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -96,6 +96,11 @@ OSystem::~OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::create()
 {
+  // Create fonts to draw text
+  myFont         = new GUI::Font(GUI::stellaDesc);
+  myLauncherFont = new GUI::Font(GUI::stellaDesc);  // FIXME
+  myConsoleFont  = new GUI::Font(GUI::consoleDesc);
+
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
   myCommandMenu = new CommandMenu(this);
@@ -106,10 +111,6 @@ bool OSystem::create()
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = new CheatManager(this);
 #endif
-
-  // Create fonts to draw text
-  myFont        = new GUI::Font(GUI::stellaDesc);
-  myConsoleFont = new GUI::Font(GUI::consoleDesc);
 
   // Determine which features were conditionally compiled into Stella
 #ifdef DISPLAY_OPENGL

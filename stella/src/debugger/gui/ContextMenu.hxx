@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.hxx,v 1.2 2005-08-31 22:34:43 stephena Exp $
+// $Id: ContextMenu.hxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -76,6 +76,9 @@ class ContextMenu : public Dialog, public CommandSender
 
     int _selectedItem;
     int _rowHeight;
+
+  private:
+    const GUI::Font* _font;
 };
 
 #endif

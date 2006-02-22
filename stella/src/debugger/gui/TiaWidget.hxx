@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.hxx,v 1.2 2005-10-13 18:53:07 stephena Exp $
+// $Id: TiaWidget.hxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,7 +38,8 @@ class ColorWidget;
 class TiaWidget : public Widget, public CommandSender
 {
   public:
-    TiaWidget(GuiObject* boss, int x, int y, int w, int h);
+    TiaWidget(GuiObject* boss, const GUI::Font& font,
+              int x, int y, int w, int h);
     virtual ~TiaWidget();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);

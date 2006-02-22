@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: ColorWidget.hxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,14 +35,15 @@ class GuiObject;
   be expanded with a TIA palette table, to set the color visually.
   
   @author  Stephen Anthony
-  @version $Id: ColorWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+  @version $Id: ColorWidget.hxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
 */
 class ColorWidget : public Widget, public CommandSender
 {
   friend class ColorDialog;
 
   public:
-    ColorWidget(GuiObject* boss, int x, int y, int w, int h, int cmd = 0);
+    ColorWidget(GuiObject* boss, const GUI::Font& font,
+                int x, int y, int w, int h, int cmd = 0);
     ~ColorWidget();
 
     void setColor(int color);

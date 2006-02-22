@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.4 2005-09-07 18:34:52 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.5 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
     myMenu(NULL),
     myHighlightedItem(-1)
 {
-  setFont(font);
   myMenu = new ContextMenu(this, font);
 
   StringList l;
@@ -96,7 +95,7 @@ void RomListWidget::drawWidget(bool hilite)
     _checkList[i]->setDirty();
     _checkList[i]->draw();
 
-    const int y = _y + 2 + _rowHeight * i;
+    const int y = _y + 2 + _fontHeight * i;
 
     GUI::Rect l = getLineRect();
     GUI::Rect r = getEditRect();
@@ -104,8 +103,8 @@ void RomListWidget::drawWidget(bool hilite)
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
     {
-      fb.frameRect(_x + l.left - 3, _y + 1 + _rowHeight * i,
-                   _w - l.left, _rowHeight,
+      fb.frameRect(_x + l.left - 3, _y + 1 + _fontHeight * i,
+                   _w - l.left, _fontHeight,
                    kHiliteColor);
     }
 
@@ -113,12 +112,12 @@ void RomListWidget::drawWidget(bool hilite)
     if (_selectedItem == pos && _hasFocus)
     {
       if (!_editMode)
-        fb.fillRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
-                    r.width(), _rowHeight,
+        fb.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+                    r.width(), _fontHeight,
                     kTextColorHi);
       else
-        fb.frameRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
-                     r.width(), _rowHeight,
+        fb.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+                     r.width(), _fontHeight,
                      kTextColorHi);
     }
 
@@ -156,8 +155,8 @@ void RomListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect RomListWidget::getLineRect() const
 {
-  GUI::Rect r(2, 1, _w, _rowHeight);
-  const int yoffset = (_selectedItem - _currentPos) * _rowHeight,
+  GUI::Rect r(2, 1, _w, _fontHeight);
+  const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
             xoffset = CheckboxWidget::boxSize() + 10;
   r.top    += yoffset;
   r.bottom += yoffset;
@@ -170,8 +169,8 @@ GUI::Rect RomListWidget::getLineRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect RomListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w, _rowHeight);
-  const int yoffset = (_selectedItem - _currentPos) * _rowHeight,
+  GUI::Rect r(2, 1, _w, _fontHeight);
+  const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
             xoffset = CheckboxWidget::boxSize() + 10;
   r.top    += yoffset;
   r.bottom += yoffset;

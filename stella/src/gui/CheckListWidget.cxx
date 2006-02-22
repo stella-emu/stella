@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.9 2005-11-27 22:37:25 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.10 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,8 +31,8 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _rowHeight = MAX(_rowHeight, CheckboxWidget::boxSize());
-  _rows = h / _rowHeight;
+  _fontHeight = MAX(_fontHeight, CheckboxWidget::boxSize());
+  _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list
   CheckboxWidget* t;
@@ -42,7 +42,7 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
     t->setTarget(this);
     t->setID(i);
     t->holdFocus(false);
-    ypos += _rowHeight;
+    ypos += _fontHeight;
 
     _checkList.push_back(t);
   }
@@ -127,8 +127,7 @@ void CheckListWidget::drawWidget(bool hilite)
     _checkList[i]->setDirty();
     _checkList[i]->draw();
 
-    // FIXME - properly account for differing font heights
-    const int y = _y + 2 + _rowHeight * i + 2;
+    const int y = _y + 2 + _fontHeight * i + 2;
 
     GUI::Rect r(getEditRect());
 
@@ -136,12 +135,12 @@ void CheckListWidget::drawWidget(bool hilite)
     if (_selectedItem == pos)
     {
       if (_hasFocus && !_editMode)
-        fb.fillRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
-                    _w - r.left, _rowHeight,
+        fb.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+                    _w - r.left, _fontHeight,
                     kTextColorHi);
       else
-        fb.frameRect(_x + r.left - 3, _y + 1 + _rowHeight * i,
-                     _w - r.left, _rowHeight,
+        fb.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+                     _w - r.left, _fontHeight,
                      kTextColorHi);
     }
 
@@ -171,8 +170,8 @@ void CheckListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect CheckListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w, _rowHeight);
-  const int yoffset = (_selectedItem - _currentPos) * _rowHeight,
+  GUI::Rect r(2, 1, _w, _fontHeight);
+  const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
             xoffset = CheckboxWidget::boxSize() + 10;
   r.top    += yoffset;
   r.bottom += yoffset;

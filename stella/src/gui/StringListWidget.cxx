@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringListWidget.cxx,v 1.4 2006-01-15 20:46:20 stephena Exp $
+// $Id: StringListWidget.cxx,v 1.5 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -63,15 +63,15 @@ void StringListWidget::drawWidget(bool hilite)
   {
     const OverlayColor textColor = (_selectedItem == pos && _editMode)
                                     ? kColor : kTextColor;
-    const int y = _y + 2 + kLineHeight * i;
+    const int y = _y + 2 + _fontHeight * i;
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
     {
       if ((_hasFocus && !_editMode) || isSticky())
-        fb.fillRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
+        fb.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
       else
-        fb.frameRect(_x + 1, _y + 1 + kLineHeight * i, _w - 1, kLineHeight, kTextColorHi);
+        fb.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
     }
 
     // If in numbering mode, we first print a number prefix
@@ -110,8 +110,8 @@ void StringListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect StringListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w - 2 , kLineHeight);
-  const int offset = (_selectedItem - _currentPos) * kLineHeight;
+  GUI::Rect r(2, 1, _w - 2 , _fontHeight);
+  const int offset = (_selectedItem - _currentPos) * _fontHeight;
   r.top += offset;
   r.bottom += offset;
 

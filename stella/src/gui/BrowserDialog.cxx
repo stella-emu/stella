@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.13 2006-01-16 01:56:18 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.14 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,34 +43,56 @@ enum {
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BrowserDialog::BrowserDialog(GuiObject* boss, int x, int y, int w, int h)
+BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
+                             int x, int y, int w, int h)
   : Dialog(boss->instance(), boss->parent(), x, y, w, h),
     CommandSender(boss),
     _fileList(NULL),
     _currentPath(NULL)
 {
-  _title = new StaticTextWidget(this, 10, 8, _w - 2 * 10, kLineHeight, "", kTextAlignCenter);
+  const int lineHeight = font.getLineHeight(),
+            bwidth     = font.getStringWidth("Cancel") + 20,
+            bheight    = font.getLineHeight() + 4;
+  int xpos, ypos;
+
+  xpos = 10;  ypos = 4;
+  _title = new StaticTextWidget(this, font, xpos, ypos,
+                                _w - 2 * xpos, lineHeight,
+                                "", kTextAlignCenter);
 
   // Current path - TODO: handle long paths ?
-  _currentPath = new StaticTextWidget(this, 10, 20, _w - 2 * 10, kLineHeight,
+  ypos += lineHeight + 4;
+  _currentPath = new StaticTextWidget(this, font, xpos, ypos,
+                                       _w - 2 * xpos, lineHeight,
                                       "DUMMY", kTextAlignLeft);
 
   // Add file list
-  _fileList = new StringListWidget(this, instance()->font(),
-                                   10, 34, _w - 2 * 10, _h - 34 - 24 - 10);
+  ypos += lineHeight;
+  _fileList = new StringListWidget(this, font, xpos, ypos,
+                                   _w - 2 * xpos, _h - bheight - ypos - 15);
   _fileList->setNumberingMode(kListNumberingOff);
   _fileList->setEditable(false);
   _fileList->setFlags(WIDGET_NODRAW_FOCUS);
   addFocusWidget(_fileList);
 
   // Buttons
-  addButton(10, _h - 24, "Go up", kGoUpCmd, 0);
+  xpos = 10;  ypos = _h - bheight - 8;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Go up",
+                   kGoUpCmd, 0);
 #ifndef MAC_OSX
-  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Choose", kChooseCmd, 0);
-  addButton(_w - (kButtonWidth+10), _h - 24, "Cancel", kCloseCmd, 0);
+  xpos = _w - 2 *(bwidth + 10);  
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
+                   kChooseCmd, 0);
+  xpos += bwidth + 10;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
+                   kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth+10), _h - 24, "Choose", kChooseCmd, 0);
+  xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
+                   kCloseCmd, 0);
+  xpos += bwidth + 10;
+  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
+                   kChooseCmd, 0);
 #endif
 }
 

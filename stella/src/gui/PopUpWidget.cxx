@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.23 2006-01-15 20:46:20 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.24 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,8 +53,8 @@ PopUpDialog::PopUpDialog(PopUpWidget* boss, int clickX, int clickY)
 
 	// Calculate real popup dimensions
   _x = _popUpBoss->getAbsX() + _popUpBoss->_labelWidth;
-  _y = _popUpBoss->getAbsY() - _popUpBoss->_selectedItem * kLineHeight;
-  _w = _popUpBoss->_w - kLineHeight + 2 - _popUpBoss->_labelWidth;
+  _y = _popUpBoss->getAbsY() - _popUpBoss->_selectedItem * _popUpBoss->_fontHeight;
+  _w = _popUpBoss->_w - _popUpBoss->_labelWidth - 10;
   _h = 2;
 }
 
@@ -86,8 +86,8 @@ void PopUpDialog::drawDialog()
 
     // The last entry may be empty. Fill it with black.
     if(_twoColumns && (count & 1))
-      fb.fillRect(_x + 1 + _w / 2, _y + 1 + kLineHeight * (_entriesPerColumn - 1),
-                  _w / 2 - 1, kLineHeight, kBGColor);
+      fb.fillRect(_x + 1 + _w / 2, _y + 1 + _popUpBoss->_fontHeight * (_entriesPerColumn - 1),
+                  _w / 2 - 1, _popUpBoss->_fontHeight, kBGColor);
 
     _dirty = false;
     fb.addDirtyRect(_x, _y, _w, _h);
@@ -178,12 +178,12 @@ void PopUpDialog::drawMenuEntry(int entry, bool hilite)
     if (entry >= n)
     {
       x = _x + 1 + _w / 2;
-      y = _y + 1 + kLineHeight * (entry - n);
+      y = _y + 1 + _popUpBoss->_fontHeight * (entry - n);
     }
     else
     {
       x = _x + 1;
-      y = _y + 1 + kLineHeight * entry;
+      y = _y + 1 + _popUpBoss->_fontHeight * entry;
     }
 
     w = _w / 2 - 1;
@@ -191,18 +191,18 @@ void PopUpDialog::drawMenuEntry(int entry, bool hilite)
   else
   {
     x = _x + 1;
-    y = _y + 1 + kLineHeight * entry;
+    y = _y + 1 + _popUpBoss->_fontHeight * entry;
     w = _w - 2;
   }
 
   string& name = _popUpBoss->_entries[entry].name;
-  fb.fillRect(x, y, w, kLineHeight, hilite ? kTextColorHi : kBGColor);
+  fb.fillRect(x, y, w, _popUpBoss->_fontHeight, hilite ? kTextColorHi : kBGColor);
 
   if(name.size() == 0)
   {
     // Draw a separator
-    fb.hLine(x - 1, y + kLineHeight / 2, x + w, kShadowColor);
-    fb.hLine(x, y + 1 + kLineHeight / 2, x + w, kColor);
+    fb.hLine(x - 1, y + _popUpBoss->_fontHeight / 2, x + w, kShadowColor);
+    fb.hLine(x, y + 1 + _popUpBoss->_fontHeight / 2, x + w, kColor);
   }
   else
     fb.drawString(_popUpBoss->font(), name, x + 1, y + 2, w - 2,
@@ -215,7 +215,7 @@ void PopUpDialog::recalc()
   // Perform clipping / switch to scrolling mode if we don't fit on the screen
   const int height = instance()->frameBuffer().baseHeight();
 
-  _h = _popUpBoss->_entries.size() * kLineHeight + 2;
+  _h = _popUpBoss->_entries.size() * _popUpBoss->_fontHeight + 2;
 
   // HACK: For now, we do not do scrolling. Instead, we draw the dialog
   // in two columns if it's too tall.
@@ -229,13 +229,13 @@ void PopUpDialog::recalc()
     if(_popUpBoss->_entries.size() & 1)
       _entriesPerColumn++;
 
-    _h = _entriesPerColumn * kLineHeight + 2;
+    _h = _entriesPerColumn * _popUpBoss->_fontHeight + 2;
     _w = 0;
 
     // Find width of largest item
     for(unsigned int i = 0; i < _popUpBoss->_entries.size(); i++)
     {
-      int width = _font->getStringWidth(_popUpBoss->_entries[i].name);
+      int width = _popUpBoss->_font->getStringWidth(_popUpBoss->_entries[i].name);
 
       if(width > _w)
       _w = width;
@@ -249,7 +249,8 @@ void PopUpDialog::recalc()
     if(_popUpBoss->_selectedItem >= _entriesPerColumn)
     {
       _x -= _w / 2;
-      _y = _popUpBoss->getAbsY() - (_popUpBoss->_selectedItem - _entriesPerColumn) * kLineHeight;
+      _y = _popUpBoss->getAbsY() - (_popUpBoss->_selectedItem - _entriesPerColumn) *
+           _popUpBoss->_fontHeight;
     }
 
     if(_w >= width)
@@ -279,7 +280,7 @@ int PopUpDialog::findItem(int x, int y) const
   {
     if(_twoColumns)
     {
-      unsigned int entry = (y - 2) / kLineHeight;
+      unsigned int entry = (y - 2) / _popUpBoss->_fontHeight;
       if(x > _w / 2)
       {
         entry += _entriesPerColumn;
@@ -289,7 +290,7 @@ int PopUpDialog::findItem(int x, int y) const
       }
       return entry;
     }
-    return (y - 2) / kLineHeight;
+    return (y - 2) / _popUpBoss->_fontHeight;
   }
 
   return -1;
@@ -379,9 +380,10 @@ void PopUpDialog::moveDown()
 // PopUpWidget
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
+PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
+                         int x, int y, int w, int h,
                          const string& label, int labelWidth, int cmd)
-  : Widget(boss, x, y - 1, w, h + 2),
+  : Widget(boss, font, x, y - 1, w, h + 2),
     CommandSender(boss),
     _label(label),
     _labelWidth(labelWidth),
@@ -395,6 +397,12 @@ PopUpWidget::PopUpWidget(GuiObject* boss, int x, int y, int w, int h,
 
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font->getStringWidth(_label);
+
+  _w = w + _labelWidth + 15;
+
+  // vertically center the arrows and text
+  myTextY   = (_h - _font->getFontHeight()) / 2;
+  myArrowsY = (_h - 8) / 2;
 
   myPopUpDialog = new PopUpDialog(this, x + getAbsX(), y + getAbsY());
 }
@@ -476,7 +484,7 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if (_labelWidth > 0)
-    fb.drawString(_font, _label, _x, _y + 3, _labelWidth,
+    fb.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
                   isEnabled() ? kTextColor : kColor, kTextAlignRight);
 
   // Draw a thin frame around us.
@@ -486,7 +494,7 @@ void PopUpWidget::drawWidget(bool hilite)
   fb.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
 
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-  fb.drawBitmap(up_down_arrows, x+w - 10, _y+2,
+  fb.drawBitmap(up_down_arrows, x+w - 10, _y + myArrowsY,
                 !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);
 
   // Draw the selected entry, if any
@@ -494,7 +502,7 @@ void PopUpWidget::drawWidget(bool hilite)
   {
     TextAlignment align = (_font->getStringWidth(_entries[_selectedItem].name) > w-6) ?
                            kTextAlignRight : kTextAlignLeft;
-    fb.drawString(_font, _entries[_selectedItem].name, x+2, _y+3, w-6,
+    fb.drawString(_font, _entries[_selectedItem].name, x+2, _y+myTextY, w-6,
                   !isEnabled() ? kColor : kTextColor, align);
   }
 }

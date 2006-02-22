@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.11 2005-12-21 01:50:16 stephena Exp $
+// $Id: TabWidget.hxx,v 1.12 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,10 +28,6 @@
 #include "Array.hxx"
 #include "bspf.hxx"
 
-enum {
-  kTabHeight = 16
-};
-
 class TabWidget : public Widget, public CommandSender
 {
   struct Tab {
@@ -42,7 +38,7 @@ class TabWidget : public Widget, public CommandSender
   typedef Common::Array<Tab> TabList;
 
   public:
-    TabWidget(GuiObject* boss, int x, int y, int w, int h);
+    TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     ~TabWidget();
 
     virtual int getChildY() const;
@@ -64,6 +60,9 @@ class TabWidget : public Widget, public CommandSender
 // will be added to the active tab.
     void setParentWidget(int tabID, Widget* parent);
 
+    int getTabWidth()  { return _tabWidth;  }
+    int getTabHeight() { return _tabHeight; }
+
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
@@ -76,8 +75,15 @@ class TabWidget : public Widget, public CommandSender
   protected:
     TabList _tabs;
     int     _tabWidth;
+    int     _tabHeight;
     int     _activeTab;
     bool    _firstTime;
+
+    enum {
+      kTabLeftOffset = 4,
+      kTabSpacing = 2,
+      kTabPadding = 3
+    };
 
   private:
     void box(int x, int y, int width, int height,

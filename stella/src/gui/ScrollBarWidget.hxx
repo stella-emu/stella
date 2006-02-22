@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.hxx,v 1.5 2005-08-01 22:33:16 stephena Exp $
+// $Id: ScrollBarWidget.hxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,8 @@ class ScrollBarWidget : public Widget, public CommandSender
     } Part;
 
   public:
-    ScrollBarWidget(GuiObject* boss, int x, int y, int w, int h);
+    ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
+                    int x, int y, int w, int h);
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.5 2006-01-09 19:30:04 stephena Exp $
+// $Id: InputDialog.hxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -35,7 +35,7 @@ class InputDialog : public Dialog
 {
   public:
     InputDialog(OSystem* osystem, DialogContainer* parent,
-                int x, int y, int w, int h);
+                const GUI::Font& font, int x, int y, int w, int h);
     ~InputDialog();
 
   protected:
@@ -49,7 +49,7 @@ class InputDialog : public Dialog
     void saveConfig();
 
   private:
-    void addVDeviceTab();
+    void addVDeviceTab(const GUI::Font& font);
 
   private:
     TabWidget* myTab;

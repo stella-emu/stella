@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.37 2006-01-30 01:01:44 stephena Exp $
+// $Id: OSystem.hxx,v 1.38 2006-02-22 17:38:04 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.37 2006-01-30 01:01:44 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.38 2006-02-22 17:38:04 stephena Exp $
 */
 class OSystem
 {
@@ -173,6 +173,13 @@ class OSystem
       @return The font reference
     */
     inline const GUI::Font& font() const { return *myFont; }
+
+    /**
+      Get the launcher font object of the system
+
+      @return The font reference
+    */
+    inline const GUI::Font& launcherFont() const { return *myLauncherFont; }
 
     /**
       Get the console font object of the system
@@ -430,10 +437,13 @@ class OSystem
 
     string myFeatures;
 
-    // The normal GUI font object to use
+    // The font object to use for the normal in-game GUI
     GUI::Font* myFont;
 
-    // The console font object to use
+    // The font object to use for the ROM launcher
+    GUI::Font* myLauncherFont;
+
+    // The font object to use for the console/debugger 
     GUI::Font* myConsoleFont;
 
   private:

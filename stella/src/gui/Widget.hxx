@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.46 2006-01-09 16:50:01 stephena Exp $
+// $Id: Widget.hxx,v 1.47 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,6 +32,7 @@ class Dialog;
 #include "GuiUtils.hxx"
 #include "Array.hxx"
 #include "Rect.hxx"
+#include "Font.hxx"
 #include "bspf.hxx"
 
 enum {
@@ -75,14 +76,14 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.46 2006-01-09 16:50:01 stephena Exp $
+  @version $Id: Widget.hxx,v 1.47 2006-02-22 17:38:04 stephena Exp $
 */
 class Widget : public GuiObject
 {
   friend class Dialog;
 
   public:
-    Widget(GuiObject* boss, int x, int y, int w, int h);
+    Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     virtual ~Widget();
 
     virtual int getAbsX() const  { return _x + _boss->getChildX(); }
@@ -126,6 +127,7 @@ class Widget : public GuiObject
     int  getID()        { return _id; }
 
     void setColor(OverlayColor color)   { _color = color; }
+    virtual const GUI::Font* font() { return _font; }
 
     virtual void loadConfig() {}
 
@@ -146,11 +148,14 @@ class Widget : public GuiObject
   protected:
     int           _type;
     GuiObject*    _boss;
+    GUI::Font*    _font;
     Widget*       _next;
     int           _id;
     int           _flags;
     bool          _hasFocus;
     OverlayColor  _color;
+    int           _fontWidth;
+    int           _fontHeight;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -175,7 +180,7 @@ class Widget : public GuiObject
 class StaticTextWidget : public Widget
 {
   public:
-    StaticTextWidget(GuiObject* boss,
+    StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
                      const string& text, TextAlignment align);
     void setValue(int value);
@@ -198,7 +203,7 @@ class StaticTextWidget : public Widget
 class ButtonWidget : public StaticTextWidget, public CommandSender
 {
   public:
-    ButtonWidget(GuiObject* boss,
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
                  const string& label, int cmd = 0, uInt8 hotkey = 0);
 
@@ -260,6 +265,10 @@ class CheckboxWidget : public ButtonWidget
     bool _drawBox;
 
     OverlayColor _fillColor;
+
+  private:
+    int _boxY;
+    int _textY;
 };
 
 
@@ -267,7 +276,8 @@ class CheckboxWidget : public ButtonWidget
 class SliderWidget : public ButtonWidget
 {
   public:
-    SliderWidget(GuiObject *boss, int x, int y, int w, int h, const string& label = "",
+    SliderWidget(GuiObject *boss, const GUI::Font& font,
+                 int x, int y, int w, int h, const string& label = "",
                  int labelWidth = 0, int cmd = 0, uInt8 hotkey = 0);
 
     void setValue(int value);

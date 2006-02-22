@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.hxx,v 1.6 2005-09-06 19:42:35 stephena Exp $
+// $Id: AudioDialog.hxx,v 1.7 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,7 @@ class AudioDialog : public Dialog
 {
   public:
     AudioDialog(OSystem* osystem, DialogContainer* parent,
-                int x, int y, int w, int h);
+                const GUI::Font& font, int x, int y, int w, int h);
     ~AudioDialog();
 
   protected:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.hxx,v 1.6 2006-01-15 20:46:20 stephena Exp $
+// $Id: EventMappingWidget.hxx,v 1.7 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,8 @@ class EventMappingWidget : public Widget, public CommandSender
   friend class InputDialog;
 
   public:
-    EventMappingWidget(GuiObject* boss, int x, int y, int w, int h);
+    EventMappingWidget(GuiObject* boss, const GUI::Font& font,
+                       int x, int y, int w, int h);
     ~EventMappingWidget();
 
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);

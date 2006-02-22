@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.5 2006-01-15 20:46:19 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,7 +31,8 @@
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int cols, int rows,
                                int colchars, int bits, BaseFormat base)
-  : EditableWidget(boss, x, y, cols*(colchars * font.getMaxCharWidth() + 8) + 1,
+  : EditableWidget(boss, font, x, y,
+                   cols*(colchars * font.getMaxCharWidth() + 8) + 1,
                    font.getLineHeight()*rows + 1),
     _rows(rows),
     _cols(cols),
@@ -44,8 +45,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _selectedItem(0),
     _opsWidget(NULL)
 {
-  setFont(font);
-
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kDataGridWidget;
   _editMode = false;

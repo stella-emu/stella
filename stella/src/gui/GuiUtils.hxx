@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.21 2005-10-09 17:31:47 stephena Exp $
+// $Id: GuiUtils.hxx,v 1.22 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,11 +29,8 @@
   Probably not very neat, but at least it works ...
 
   @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.21 2005-10-09 17:31:47 stephena Exp $
+  @version $Id: GuiUtils.hxx,v 1.22 2006-02-22 17:38:04 stephena Exp $
 */
-
-#define kFontHeight   10
-#define kLineHeight   12
 
 #define kScrollBarWidth  9
 

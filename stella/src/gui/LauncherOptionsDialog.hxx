@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.7 2005-08-01 22:33:15 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.8 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,7 +38,7 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
 {
   public:
     LauncherOptionsDialog(OSystem* osystem, DialogContainer* parent,
-                          GuiObject* boss,
+                          const GUI::Font& font, GuiObject* boss,
                           int x, int y, int w, int h);
     ~LauncherOptionsDialog();
 

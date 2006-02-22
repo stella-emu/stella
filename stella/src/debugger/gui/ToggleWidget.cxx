@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleWidget.cxx,v 1.2 2005-09-23 23:35:02 stephena Exp $
+// $Id: ToggleWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,8 +24,9 @@
 #include "ToggleWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ToggleWidget::ToggleWidget(GuiObject* boss, int x, int y, int cols, int rows)
-  : Widget(boss, x, y, 16, 16),
+ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y, int cols, int rows)
+  : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     _rows(rows),
     _cols(cols),

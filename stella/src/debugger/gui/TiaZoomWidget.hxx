@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.hxx,v 1.3 2005-09-01 16:49:52 stephena Exp $
+// $Id: TiaZoomWidget.hxx,v 1.4 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@ class ContextMenu;
 class TiaZoomWidget : public Widget, public CommandSender
 {
   public:
-    TiaZoomWidget(GuiObject *boss, int x, int y);
+    TiaZoomWidget(GuiObject *boss, const GUI::Font& font, int x, int y);
     virtual ~TiaZoomWidget();
 
     void loadConfig();

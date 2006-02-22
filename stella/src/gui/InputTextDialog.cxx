@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.10 2005-12-20 19:05:16 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.11 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -66,16 +66,13 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   for(i = 0; i < labels.size(); ++i)
   {
     xpos = 10;
-    StaticTextWidget* t = 
-      new StaticTextWidget(this, xpos, ypos,
-                           lwidth, fontHeight,
-                           labels[i], kTextAlignLeft);
-    t->setFont(font);
+    new StaticTextWidget(this, font, xpos, ypos,
+                         lwidth, fontHeight,
+                         labels[i], kTextAlignLeft);
 
     xpos += lwidth + fontWidth;
-    EditTextWidget* w = new EditTextWidget(this, xpos, ypos,
+    EditTextWidget* w = new EditTextWidget(this, font, xpos, ypos,
                                            _w - xpos - 10, lineHeight, "");
-    w->setFont(font);
     wid.push_back(w);
 
     myInput.push_back(w);
@@ -84,16 +81,16 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   addToFocusList(wid);
 
   xpos = 10;
-  myTitle = new StaticTextWidget(this, xpos, ypos, _w - 2*xpos, fontHeight,
+  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 2*xpos, fontHeight,
                                  "", kTextAlignCenter);
   myTitle->setColor(kTextColorEm);
 
 #ifndef MAC_OSX
-  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "OK", kAcceptCmd, 0);
-  addButton(_w - (kButtonWidth+10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 10), _h - 24, "OK", kAcceptCmd, 0);
+  addButton(font, _w - (kButtonWidth+10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth+10), _h - 24, "OK", kAcceptCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - (kButtonWidth+10), _h - 24, "OK", kAcceptCmd, 0);
 #endif
 }
 

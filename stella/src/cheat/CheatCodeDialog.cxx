@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.7 2005-12-20 00:56:31 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.8 2006-02-22 17:38:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,10 +47,9 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
-                               int x, int y, int w, int h)
+                                 const GUI::Font& font, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
-  const GUI::Font& font = instance()->font();
   int xpos, ypos;
 
   // List of cheats, with checkboxes to enable/disable
@@ -63,10 +62,10 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   addFocusWidget(myCheatList);
 
   xpos += myCheatList->getWidth() + 15;  ypos = 15;
-  addButton(xpos, ypos, "Add", kAddCheatCmd, 0);
-  myEditButton = addButton(xpos, ypos+=20, "Edit", kEditCheatCmd, 0);
-  myRemoveButton = addButton(xpos, ypos+=20, "Remove", kRemCheatCmd, 0);
-  addButton(xpos, ypos+=30, "One shot", kAddOneShotCmd, 0);
+  addButton(font, xpos, ypos, "Add", kAddCheatCmd, 0);
+  myEditButton = addButton(font, xpos, ypos+=20, "Edit", kEditCheatCmd, 0);
+  myRemoveButton = addButton(font, xpos, ypos+=20, "Remove", kRemCheatCmd, 0);
+  addButton(font, xpos, ypos+=30, "One shot", kAddOneShotCmd, 0);
 
   // Inputbox which will pop up when adding/editing a cheat
   StringList labels;
@@ -75,15 +74,15 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   myCheatInput = new InputTextDialog(this, font, labels, _x+20, _y+20);
   myCheatInput->setTarget(this);
 
-  // Add OK and Cancel buttons
+  // Add OK and Cancel buttons  **** FIXME - coordinates
 #ifndef MAC_OSX
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  myCancelButton = addButton(_w - (kButtonWidth + 10), _h - 24,
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
+  myCancelButton = addButton(font, _w - (kButtonWidth + 10), _h - 24,
                              "Cancel", kCloseCmd, 0);
 #else
-  myCancelButton = addButton(_w - 2 * (kButtonWidth + 7), _h - 24,
+  myCancelButton = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24,
                              "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 }
 

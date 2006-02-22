@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.12 2006-01-15 20:46:20 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.13 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -63,8 +63,9 @@ static unsigned int down_arrow[8] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ScrollBarWidget::ScrollBarWidget(GuiObject* boss, int x, int y, int w, int h)
-    : Widget(boss, x, y, w, h), CommandSender(boss)
+ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
+                                 int x, int y, int w, int h)
+    : Widget(boss, font, x, y, w, h), CommandSender(boss)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
   _type = kScrollBarWidget;

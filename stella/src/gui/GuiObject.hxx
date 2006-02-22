@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.18 2006-01-15 20:46:20 stephena Exp $
+// $Id: GuiObject.hxx,v 1.19 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,7 +28,6 @@ class Widget;
 #include "Command.hxx"
 #include "OSystem.hxx"
 #include "Array.hxx"
-#include "Font.hxx"
 
 typedef Common::Array<Widget*> WidgetArray;
 
@@ -47,7 +46,7 @@ enum {
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.18 2006-01-15 20:46:20 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.19 2006-02-22 17:38:04 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
@@ -63,7 +62,6 @@ class GuiObject : public CommandReceiver
         _w(w),
         _h(h),
         _dirty(false),
-        _font((GUI::Font*)&(osystem->font())),
         _firstWidget(0) {}
 
     virtual ~GuiObject() {}
@@ -83,9 +81,6 @@ class GuiObject : public CommandReceiver
     virtual void setHeight(int h)     { _h = h; }
 
     virtual void setDirty()         { _dirty = true; }
-
-    virtual void setFont(const GUI::Font& font) { _font = (GUI::Font*) &font; }
-    virtual const GUI::Font* font() { return _font; }
 
     virtual bool isVisible() const = 0;
     virtual void draw() = 0;
@@ -109,8 +104,6 @@ class GuiObject : public CommandReceiver
     int _x, _y;
     int _w, _h;
     bool _dirty;
-
-    GUI::Font* _font;
 
     Widget* _firstWidget;
     WidgetArray _focusList;

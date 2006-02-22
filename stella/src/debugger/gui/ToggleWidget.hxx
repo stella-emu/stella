@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleWidget.hxx,v 1.1 2005-08-30 17:51:26 stephena Exp $
+// $Id: ToggleWidget.hxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,7 +37,8 @@ enum {
 class ToggleWidget : public Widget, public CommandSender
 {
   public:
-    ToggleWidget(GuiObject* boss, int x, int y, int cols, int rows);
+    ToggleWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int cols, int rows);
     virtual ~ToggleWidget();
 
     const BoolArray& getState()    { return _stateList; }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.15 2006-01-04 01:24:17 stephena Exp $
+// $Id: ListWidget.hxx,v 1.16 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -95,8 +95,6 @@ class ListWidget : public EditableWidget
   protected:
     int  _rows;
     int  _cols;
-    int  _rowHeight;
-    int  _colWidth;
     int  _currentPos;
     int  _selectedItem;
     int  _highlightedItem;

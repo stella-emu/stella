@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.5 2006-01-15 20:46:19 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,9 +30,9 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
     _selectedItem(-1),
-    _rowHeight(font.getLineHeight())
+    _rowHeight(font.getLineHeight()),
+    _font(&font)
 {
-  setFont(font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

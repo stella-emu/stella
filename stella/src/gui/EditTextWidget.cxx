@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.13 2006-01-15 20:46:20 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.14 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,9 +26,9 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EditTextWidget::EditTextWidget(GuiObject* boss, int x, int y, int w, int h,
-                               const string& text)
-  : EditableWidget(boss, x, y - 1, w, h + 2)
+EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
+                               int x, int y, int w, int h, const string& text)
+  : EditableWidget(boss, font, x, y - 1, w, h + 2)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kEditTextWidget;

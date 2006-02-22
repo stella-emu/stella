@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.cxx,v 1.2 2005-09-06 22:25:40 stephena Exp $
+// $Id: ColorWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,8 +28,9 @@
 #include "ColorWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ColorWidget::ColorWidget(GuiObject* boss, int x, int y, int w, int h, int cmd)
-  : Widget(boss, x, y, w, h),
+ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
+                         int x, int y, int w, int h, int cmd)
+  : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     _color(0),
     _cmd(cmd)

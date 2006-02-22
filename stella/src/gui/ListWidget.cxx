@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.39 2006-01-15 20:46:20 stephena Exp $
+// $Id: ListWidget.cxx,v 1.40 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,7 +33,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
                        int x, int y, int w, int h)
-  : EditableWidget(boss, x, y, 16, 16),
+  : EditableWidget(boss, font, x, y, 16, 16),
     _rows(0),
     _cols(0),
     _currentPos(0),
@@ -47,19 +47,15 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kListWidget;
 
-  setFont(font);
-
-  _colWidth  = font.getMaxCharWidth();
-  _rowHeight = font.getLineHeight();
-  _cols = w / _colWidth;
-  _rows = h / _rowHeight;
+  _cols = w / _fontWidth;
+  _rows = h / _fontHeight;
 
   // Set real dimensions
   _w = w - kScrollBarWidth;
   _h = h + 2;
 
   // Create scrollbar and attach to the list
-  _scrollBar = new ScrollBarWidget(boss, _x + _w, _y, kScrollBarWidth, _h);
+  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
   _scrollBar->setTarget(this);
 }
 
@@ -200,7 +196,7 @@ void ListWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ListWidget::findItem(int x, int y) const
 {
-  return (y - 1) / _rowHeight + _currentPos;
+  return (y - 1) / _fontHeight + _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

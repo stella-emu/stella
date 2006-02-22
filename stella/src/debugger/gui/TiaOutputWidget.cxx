@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.8 2006-01-15 20:46:19 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.9 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,14 +34,15 @@
 #include "TiaOutputWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaOutputWidget::TiaOutputWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
+                                 int x, int y, int w, int h)
+  : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     myMenu(NULL),
     myZoom(NULL)
 {
   // Create context menu for commands
-  myMenu = new ContextMenu(this, instance()->consoleFont());
+  myMenu = new ContextMenu(this, font);
 
   StringList l;
   l.push_back("Fill to scanline");

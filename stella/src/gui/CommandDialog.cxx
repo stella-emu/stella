@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.7 2006-01-08 20:55:53 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.8 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,7 +31,8 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
   : Dialog(osystem, parent, 0, 0, 16, 16),
     mySelectedItem(0)
 {
-  int lineHeight   = osystem->font().getLineHeight(),
+  const GUI::Font& font = osystem->font();
+  int lineHeight   = font.getLineHeight(),
       buttonWidth  = 60,
       buttonHeight = lineHeight + 2,
       xoffset = 5,
@@ -47,88 +48,88 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
   WidgetArray wid;
   ButtonWidget* b;
 
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Select", kSelectCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Reset", kResetCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Color TV", kColorCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "B/W TV", kBWCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
 
   xoffset = 5;  yoffset += buttonHeight + 5;
 
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Left Diff A", kLeftDiffACmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Left Diff B", kLeftDiffBCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Right Diff A", kRightDiffACmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Right Diff B", kRightDiffBCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
 
   xoffset = 5;  yoffset += buttonHeight + 5;
 
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Save State", kSaveStateCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "State Slot", kStateSlotCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Load State", kLoadStateCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Snapshot", kSnapshotCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
 
   xoffset = 5;  yoffset += buttonHeight + 5;
 
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "NTSC/PAL", kFormatCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Palette", kPaletteCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Reload ROM", kReloadRomCmd, 0);
   b->setEditable(true);
   wid.push_back(b);
   xoffset += lwidth;
-  b = new ButtonWidget(this, xoffset, yoffset, buttonWidth, buttonHeight,
+  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Exit Game", kExitCmd, 0);
   b->setEditable(true);
   wid.push_back(b);

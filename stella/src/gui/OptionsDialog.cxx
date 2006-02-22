@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.35 2005-12-18 18:37:03 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.36 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,7 +57,7 @@ enum {
 };
 
 #define addBigButton(label, cmd, hotkey) \
-	new ButtonWidget(this, xoffset, yoffset, kBigButtonWidth, 18, label, cmd, hotkey); yoffset += kRowHeight
+	new ButtonWidget(this, font, xoffset, yoffset, kBigButtonWidth, 18, label, cmd, hotkey); yoffset += kRowHeight
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
@@ -76,6 +76,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
 
   int yoffset = 7;
   const int xoffset = (_w - kBigButtonWidth) / 2;
+  const GUI::Font& font = instance()->font(); // FIXME - change reference to optionsFont()
   ButtonWidget* b = NULL;
 
   b = addBigButton("Video Settings", kVidCmd, 0);
@@ -105,33 +106,33 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   // Now create all the dialogs attached to each menu button
   w = 230; h = 130;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myVideoDialog = new VideoDialog(myOSystem, parent, x, y, w, h);
+  myVideoDialog = new VideoDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 200; h = 110;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myAudioDialog = new AudioDialog(myOSystem, parent, x, y, w, h);
+  myAudioDialog = new AudioDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 230; h = 170;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myInputDialog = new InputDialog(myOSystem, parent, x, y, w, h);
+  myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 255; h = 175;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myGameInfoDialog = new GameInfoDialog(myOSystem, parent, this, x, y, w, h);
+  myGameInfoDialog = new GameInfoDialog(myOSystem, parent, font, this, x, y, w, h);
 
 #ifdef CHEATCODE_SUPPORT
   w = 230; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, x, y, w, h);
+  myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, font, x, y, w, h);
 #endif
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myHelpDialog = new HelpDialog(myOSystem, parent, x, y, w, h);
+  myHelpDialog = new HelpDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
-  myAboutDialog = new AboutDialog(myOSystem, parent, x, y, w, h);
+  myAboutDialog = new AboutDialog(myOSystem, parent, font, x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

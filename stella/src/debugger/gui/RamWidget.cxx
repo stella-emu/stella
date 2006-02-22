@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.2 2005-11-27 22:37:24 stephena Exp $
+// $Id: RamWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,7 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
-  : Widget(boss, x, y, 16, 16),
+  : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     myUndoAddress(-1),
     myUndoValue(-1)
@@ -55,7 +55,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
             bwidth  = 44,
             bheight = 16;
   int xpos, ypos, lwidth;
-  StaticTextWidget* t;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
   xpos = x;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
@@ -66,27 +65,27 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create actions buttons to the left of the RAM grid
   xpos += lwidth + myRamGrid->getWidth() + 4;
-  myUndoButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+  myUndoButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                   "Undo", kUndoCmd, 0);
   myUndoButton->setTarget(this);
 
   ypos += bheight + bheight/2;
-  myRevertButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+  myRevertButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                     "Revert", kRevertCmd, 0);
   myRevertButton->setTarget(this);
 
   ypos += 2 * bheight + 2;
-  mySearchButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+  mySearchButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                     "Search", kSearchCmd, 0);
   mySearchButton->setTarget(this);
 
   ypos += bheight + bheight/2;
-  myCompareButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+  myCompareButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                      "Compare", kCmpCmd, 0);
   myCompareButton->setTarget(this);
 
   ypos += bheight + bheight/2;
-  myRestartButton = new ButtonWidget(boss, xpos, ypos, bwidth, bheight,
+  myRestartButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                      "Reset", kRestartCmd, 0);
   myRestartButton->setTarget(this);
 
@@ -94,50 +93,43 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   xpos = x;  ypos = y + lineHeight;
   for(int row = 0; row < 8; ++row)
   {
-    t = new StaticTextWidget(boss, xpos-2, ypos + row*lineHeight + 2,
-                             lwidth-2, fontHeight,
-                             Debugger::to_hex_8(row*16 + kRamStart) + string(":"),
-                             kTextAlignLeft);
-    t->setFont(font);
+    new StaticTextWidget(boss, font, xpos-2, ypos + row*lineHeight + 2,
+                         lwidth-2, fontHeight,
+                         Debugger::to_hex_8(row*16 + kRamStart) + string(":"),
+                         kTextAlignLeft);
   }
   for(int col = 0; col < 16; ++col)
   {
-    t = new StaticTextWidget(boss, xpos + col*myRamGrid->colWidth() + lwidth + 8,
-                             ypos - lineHeight,
-                             fontWidth, fontHeight,
-                             Debugger::to_hex_4(col),
-                             kTextAlignLeft);
-    t->setFont(font);
+    new StaticTextWidget(boss, font, xpos + col*myRamGrid->colWidth() + lwidth + 8,
+                         ypos - lineHeight,
+                         fontWidth, fontHeight,
+                         Debugger::to_hex_4(col),
+                         kTextAlignLeft);
   }
   
   xpos = x + 10;  ypos += 9 * lineHeight;
-  t = new StaticTextWidget(boss, xpos, ypos,
-                           6*fontWidth, fontHeight,
-                           "Label:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos,
+                       6*fontWidth, fontHeight,
+                       "Label:", kTextAlignLeft);
   xpos += 6*fontWidth + 5;
-  myLabel = new EditTextWidget(boss, xpos, ypos-2, 17*fontWidth, lineHeight, "");
-  myLabel->setFont(font);
+  myLabel = new EditTextWidget(boss, font, xpos, ypos-2, 17*fontWidth,
+                               lineHeight, "");
   myLabel->setEditable(false);
 
   xpos += 17*fontWidth + 20;
-  t = new StaticTextWidget(boss, xpos, ypos,
-                           4*fontWidth, fontHeight,
-                           "Dec:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                       "Dec:", kTextAlignLeft);
   xpos += 4*fontWidth + 5;
-  myDecValue = new EditTextWidget(boss, xpos, ypos-2, 4*fontWidth, lineHeight, "");
-  myDecValue->setFont(font);
+  myDecValue = new EditTextWidget(boss, font, xpos, ypos-2, 4*fontWidth,
+                                  lineHeight, "");
   myDecValue->setEditable(false);
 
   xpos += 4*fontWidth + 20;
-  t = new StaticTextWidget(boss, xpos, ypos,
-                           4*fontWidth, fontHeight,
-                           "Bin:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                       "Bin:", kTextAlignLeft);
   xpos += 4*fontWidth + 5;
-  myBinValue = new EditTextWidget(boss, xpos, ypos-2, 9*fontWidth, lineHeight, "");
-  myBinValue->setFont(font);
+  myBinValue = new EditTextWidget(boss, font, xpos, ypos-2, 9*fontWidth,
+                                  lineHeight, "");
   myBinValue->setEditable(false);
 
   // Calculate real dimensions

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.15 2005-11-27 22:37:24 stephena Exp $
+// $Id: RomWidget.cxx,v 1.16 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,7 +39,7 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
-  : Widget(boss, x, y, 16, 16),
+  : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     myListIsDirty(true),
     mySourceAvailable(false),
@@ -51,11 +51,10 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create bank editable area
   xpos = x + 40;  ypos = y + 7;
-  t = new StaticTextWidget(boss, xpos, ypos,
+  t = new StaticTextWidget(boss, font, xpos, ypos,
                            font.getStringWidth("Current bank: "),
                            font.getFontHeight(),
                            "Current bank:", kTextAlignLeft);
-  t->setFont(font);
 
   xpos += t->getWidth() + 10;
   myBank = new DataGridWidget(boss, font, xpos, ypos-2,
@@ -68,16 +67,14 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Show number of banks
   xpos += myBank->getWidth() + 45;
-  t = new StaticTextWidget(boss, xpos, ypos,
+  t = new StaticTextWidget(boss, font, xpos, ypos,
                            font.getStringWidth("Total banks: "),
                            font.getFontHeight(),
                            "Total banks:", kTextAlignLeft);
-  t->setFont(font);
 
   xpos += t->getWidth() + 10;
-  myBankCount = new EditTextWidget(boss, xpos, ypos-2,
+  myBankCount = new EditTextWidget(boss, font, xpos, ypos-2,
                                    20, font.getLineHeight(), "");
-  myBankCount->setFont(font);
   myBankCount->setEditable(false);
 
   // Create rom listing

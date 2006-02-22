@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.17 2005-09-23 23:35:02 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.18 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,60 +34,60 @@
 
 #include "bspf.hxx"
 
-enum {
-  kAudioRowHeight = 12,
-  kAudioWidth     = 200,
-  kAudioHeight    = 100
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
-                         int x, int y, int w, int h)
+                         const GUI::Font& font, int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
-  const GUI::Font& font = instance()->font();
-  int yoff = 10,
-      xoff = 30,
-      woff = _w - 80,
-      labelWidth = 80;
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight();
+  int xpos, ypos;
+  int lwidth = font.getStringWidth("Fragment Size: "),
+      pwidth = font.getStringWidth("4096");
 
   // Volume
-  myVolumeSlider = new SliderWidget(this, xoff, yoff, woff - 14, kLineHeight,
-                                    "Volume: ", labelWidth, kVolumeChanged);
+  xpos = (w - lwidth - pwidth - 40) / 2;  ypos = 10;
+
+  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
+                                    "Volume: ", lwidth, kVolumeChanged);
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
-  myVolumeLabel = new StaticTextWidget(this, xoff + woff - 11, yoff, 24, kLineHeight,
-                                       "", kTextAlignLeft);
+  myVolumeLabel = new StaticTextWidget(this, font,
+                                       xpos + myVolumeSlider->getWidth() + 4,
+                                       ypos + 1,
+                                       15, fontHeight, "", kTextAlignLeft);
+
   myVolumeLabel->setFlags(WIDGET_CLEARBG);
-  yoff += kAudioRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Fragment size
-  myFragsizePopup = new PopUpWidget(this, xoff, yoff, woff, kLineHeight,
-                                    "Fragment size: ", labelWidth);
+  myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
+                                    pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
+                                    "Fragment size: ", lwidth);
   myFragsizePopup->appendEntry("256",  1);
   myFragsizePopup->appendEntry("512",  2);
   myFragsizePopup->appendEntry("1024", 3);
   myFragsizePopup->appendEntry("2048", 4);
   myFragsizePopup->appendEntry("4096", 5);
-  yoff += kAudioRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Stereo sound
-  mySoundTypeCheckbox = new CheckboxWidget(this, font, xoff+28, yoff,
+  mySoundTypeCheckbox = new CheckboxWidget(this, font, xpos+28, ypos,
                                            "Stereo mode", 0);
-  yoff += kAudioRowHeight + 4;
+  ypos += lineHeight + 4;
 
   // Enable sound
-  mySoundEnableCheckbox = new CheckboxWidget(this, font, xoff+28, yoff,
+  mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos+28, ypos,
                                              "Enable sound", kSoundEnableChanged);
-  yoff += kAudioRowHeight + 12;
+  ypos += lineHeight + 12;
 
   // Add Defaults, OK and Cancel buttons
-  addButton( 10, _h - 24, "Defaults", kDefaultsCmd, 0);
+  addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd, 0);
 #ifndef MAC_OSX
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 }
 

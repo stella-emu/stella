@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.10 2006-01-15 20:46:20 stephena Exp $
+// $Id: InputDialog.cxx,v 1.11 2006-02-22 17:38:04 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -36,7 +36,7 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
-                         int x, int y, int w, int h)
+                         const GUI::Font& font, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
   const int vBorder = 4;
@@ -44,19 +44,19 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // The tab widget
   xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
   addTabWidget(myTab);
 
   // 1) Event mapper
   tabID = myTab->addTab("Event Mapping");
-  myEventMapper = new EventMappingWidget(myTab, 2, 2,
-                        myTab->getWidth(),
-                        myTab->getHeight() - ypos);
+  myEventMapper = new EventMappingWidget(myTab, font, 2, 2,
+                                         myTab->getWidth(),
+                                         myTab->getHeight() - ypos);
   myTab->setParentWidget(tabID, myEventMapper);
   addToFocusList(myEventMapper->getFocusList(), tabID);
 
   // 2) Virtual device support
-  addVDeviceTab();
+  addVDeviceTab(font);
 
   // Finalize the tabs, and activate the first tab
   myTab->activateTabs();
@@ -64,11 +64,11 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add OK and Cancel buttons
 #ifndef MAC_OSX
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
 #else
-  addButton(_w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(_w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
+  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
 #endif
 }
 
@@ -78,14 +78,11 @@ InputDialog::~InputDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::addVDeviceTab()
+void InputDialog::addVDeviceTab(const GUI::Font& font)
 {
-  const GUI::Font& font = instance()->font();
-  const int fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
-
+  const int lineHeight = font.getLineHeight();
+  int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
-  int xpos, ypos, lwidth, fwidth, tabID;
 
   // Virtual device/ports
   tabID = myTab->addTab("Virtual Devices");
@@ -93,20 +90,17 @@ void InputDialog::addVDeviceTab()
   // Stelladaptor mappings
   xpos = 5;  ypos = 5;
   lwidth = font.getStringWidth("Stelladaptor 2 is: ");
-  fwidth = _w - xpos - lwidth - 10;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
-                       "Stelladaptor 1 is:", kTextAlignLeft);
-  myLeftPort = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                               fwidth, lineHeight, "", 0, 0);
+  pwidth = font.getStringWidth("right virtual port");
+
+  myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                               "Stelladaptor 1 is: ", lwidth);
   myLeftPort->appendEntry("left virtual port", 1);
   myLeftPort->appendEntry("right virtual port", 2);
   wid.push_back(myLeftPort);
 
   ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, xpos, ypos+1, lwidth, fontHeight,
-                       "Stelladaptor 2 is:", kTextAlignLeft);
-  myRightPort = new PopUpWidget(myTab, xpos+lwidth, ypos,
-                                fwidth, lineHeight, "", 0, 0);
+  myRightPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                "Stelladaptor 2 is: ", lwidth);
   myRightPort->appendEntry("left virtual port", 1);
   myRightPort->appendEntry("right virtual port", 2);
   wid.push_back(myRightPort);
@@ -114,60 +108,60 @@ void InputDialog::addVDeviceTab()
   // Add 'mouse to paddle' mapping
   ypos += 2*lineHeight;
   lwidth = font.getStringWidth("Mouse is paddle: ");
-  myPaddleMode = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
-                                  "Mouse is paddle: ",
-                                  lwidth, kPaddleChanged);
+  pwidth = font.getMaxCharWidth() * 5;
+  myPaddleMode = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                  "Mouse is paddle: ", lwidth, kPaddleChanged);
   myPaddleMode->setMinValue(0); myPaddleMode->setMaxValue(3);
   xpos += myPaddleMode->getWidth() + 5;
-  myPaddleModeLabel = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+  myPaddleModeLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                            "", kTextAlignLeft);
   myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleMode);
 
   // Add paddle 0 speed
   xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[0] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+  myPaddleSpeed[0] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                       "Paddle 1 speed: ",
                                       lwidth, kP0SpeedID);
   myPaddleSpeed[0]->setMinValue(1); myPaddleSpeed[0]->setMaxValue(100);
   xpos += myPaddleSpeed[0]->getWidth() + 5;
-  myPaddleLabel[0] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+  myPaddleLabel[0] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                           "", kTextAlignLeft);
   myPaddleLabel[0]->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleSpeed[0]);
 
   // Add paddle 1 speed
   xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[1] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+  myPaddleSpeed[1] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                       "Paddle 2 speed: ",
                                       lwidth, kP1SpeedID);
   myPaddleSpeed[1]->setMinValue(1); myPaddleSpeed[1]->setMaxValue(100);
   xpos += myPaddleSpeed[1]->getWidth() + 5;
-  myPaddleLabel[1] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+  myPaddleLabel[1] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                           "", kTextAlignLeft);
   myPaddleLabel[1]->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleSpeed[1]);
 
   // Add paddle 2 speed
   xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[2] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+  myPaddleSpeed[2] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                       "Paddle 3 speed: ",
                                       lwidth, kP2SpeedID);
   myPaddleSpeed[2]->setMinValue(1); myPaddleSpeed[2]->setMaxValue(100);
   xpos += myPaddleSpeed[2]->getWidth() + 5;
-  myPaddleLabel[2] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+  myPaddleLabel[2] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", kTextAlignLeft);
   myPaddleLabel[2]->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleSpeed[2]);
 
   // Add paddle 3 speed
   xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[3] = new SliderWidget(myTab, xpos, ypos, lwidth + 30, lineHeight,
+  myPaddleSpeed[3] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                       "Paddle 4 speed: ",
                                       lwidth, kP3SpeedID);
   myPaddleSpeed[3]->setMinValue(1); myPaddleSpeed[3]->setMaxValue(100);
   xpos += myPaddleSpeed[3]->getWidth() + 5;
-  myPaddleLabel[3] = new StaticTextWidget(myTab, xpos, ypos+1, 24, lineHeight,
+  myPaddleLabel[3] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", kTextAlignLeft);
   myPaddleLabel[3]->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleSpeed[3]);

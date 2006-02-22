@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.3 2005-10-14 13:50:00 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.4 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -60,20 +60,18 @@ enum {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
-  : Widget(boss, x, y, 16, 16),
+  : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
   int xpos, ypos, lwidth;
-  StaticTextWidget* t;
 
   // Create a 1x1 grid with label for the PC register
   xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
-  t = new StaticTextWidget(boss, xpos, ypos+2, lwidth-2, fontHeight,
-                           "PC:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
+                       "PC:", kTextAlignLeft);
   myPCGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 1, 16, 16);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
@@ -81,8 +79,8 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create a read-only textbox containing the current PC label
   xpos += lwidth + myPCGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, xpos, ypos, fontWidth*15, lineHeight, "");
-  myPCLabel->setFont(font);
+  myPCLabel = new EditTextWidget(boss, font, xpos, ypos, fontWidth*15,
+                                 lineHeight, "");
   myPCLabel->setEditable(false);
 
   // Create a 1x4 grid with labels for the other CPU registers
@@ -95,17 +93,15 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   string labels[4] = { "SP:", "A:", "X:", "Y:" };
   for(int row = 0; row < 4; ++row)
   {
-    t = new StaticTextWidget(boss, xpos, ypos + row*lineHeight + 2,
-                             lwidth-2, fontHeight,
-                             labels[row], kTextAlignLeft);
-    t->setFont(font);
+    new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
+                         lwidth-2, fontHeight,
+                         labels[row], kTextAlignLeft);
   }
 
   // Create a bitfield widget for changing the processor status
   xpos = x;  ypos += 4*lineHeight + 2;
-  t = new StaticTextWidget(boss, xpos, ypos+2, lwidth-2, fontHeight,
-                           "PS:", kTextAlignLeft);
-  t->setFont(font);
+  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
+                       "PS:", kTextAlignLeft);
   myPSRegister = new ToggleBitWidget(boss, font, xpos+lwidth, ypos, 8, 1);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);

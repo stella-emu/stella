@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.20 2006-01-15 20:46:20 stephena Exp $
+// $Id: TabWidget.cxx,v 1.21 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,15 +28,10 @@
 #include "Dialog.hxx"
 #include "TabWidget.hxx"
 
-enum {
-  kTabLeftOffset = 4,
-  kTabSpacing = 2,
-  kTabPadding = 3
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TabWidget::TabWidget(GuiObject* boss, int x, int y, int w, int h)
-  : Widget(boss, x, y, w, h),
+TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
+                     int x, int y, int w, int h)
+  : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     _tabWidth(40),
     _activeTab(-1),
@@ -44,6 +39,8 @@ TabWidget::TabWidget(GuiObject* boss, int x, int y, int w, int h)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kTabWidget;
+
+  _tabHeight = font.getLineHeight() + 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,7 +58,7 @@ TabWidget::~TabWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TabWidget::getChildY() const
 {
-  return getAbsY() + kTabHeight;
+  return getAbsY() + _tabHeight;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -170,7 +167,7 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  assert(y < kTabHeight);
+  assert(y < _tabHeight);
 
   // Determine which tab was clicked
   int tabID = -1;
@@ -251,8 +248,8 @@ void TabWidget::drawWidget(bool hilite)
   const int right2 = _x + _w - 2;
 	
   // Draw horizontal line
-  fb.hLine(left1, _y + kTabHeight - 2, right1, kShadowColor);
-  fb.hLine(left2, _y + kTabHeight - 2, right2, kShadowColor);
+  fb.hLine(left1, _y + _tabHeight - 2, right1, kShadowColor);
+  fb.hLine(left2, _y + _tabHeight - 2, right2, kShadowColor);
 
   // Iterate over all tabs and draw them
   int i, x = _x + kTabLeftOffset;
@@ -260,26 +257,26 @@ void TabWidget::drawWidget(bool hilite)
   {
     OverlayColor color = (i == _activeTab) ? kColor : kShadowColor;
     int yOffset = (i == _activeTab) ? 0 : 2; 
-    box(x, _y + yOffset, _tabWidth, kTabHeight - yOffset, color, color, (i == _activeTab));
+    box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, color, color, (i == _activeTab));
     fb.drawString(_font, _tabs[i].title, x + kTabPadding,
-                  _y + yOffset / 2 + (kTabHeight - kLineHeight - 1),
+                  _y + yOffset / 2 + (_tabHeight - _fontHeight - 1),
                   _tabWidth - 2 * kTabPadding, kTextColor, kTextAlignCenter);
     x += _tabWidth + kTabSpacing;
   }
 
   // Draw a frame around the widget area (belows the tabs)
-  fb.hLine(left1, _y + kTabHeight - 1, right1, kColor);
-  fb.hLine(left2, _y + kTabHeight - 1, right2, kColor);
+  fb.hLine(left1, _y + _tabHeight - 1, right1, kColor);
+  fb.hLine(left2, _y + _tabHeight - 1, right2, kColor);
   fb.hLine(_x+1, _y + _h - 2, _x + _w - 2, kShadowColor);
   fb.hLine(_x+1, _y + _h - 1, _x + _w - 2, kColor);
-  fb.vLine(_x + _w - 2, _y + kTabHeight - 1, _y + _h - 2, kColor);
-  fb.vLine(_x + _w - 1, _y + kTabHeight - 1, _y + _h - 2, kShadowColor);
+  fb.vLine(_x + _w - 2, _y + _tabHeight - 1, _y + _h - 2, kColor);
+  fb.vLine(_x + _w - 1, _y + _tabHeight - 1, _y + _h - 2, kShadowColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget *TabWidget::findWidget(int x, int y)
 {
-  if (y < kTabHeight)
+  if (y < _tabHeight)
   {
     // Click was in the tab area
     return this;
@@ -287,6 +284,6 @@ Widget *TabWidget::findWidget(int x, int y)
   else
   {
     // Iterate over all child widgets and find the one which was clicked
-    return Widget::findWidgetInChain(_firstWidget, x, y - kTabHeight);
+    return Widget::findWidgetInChain(_firstWidget, x, y - _tabHeight);
   }
 }

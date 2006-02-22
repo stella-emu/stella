@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.41 2006-01-09 16:50:01 stephena Exp $
+// $Id: Dialog.cxx,v 1.42 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -450,8 +450,15 @@ Widget* Dialog::findWidget(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget* Dialog::addButton(int x, int y, const string& label,
-                                int cmd, char hotkey)
+ButtonWidget* Dialog::addButton(const GUI::Font& font, int x, int y,
+                                const string& label, int cmd, char hotkey)
 {
-  return new ButtonWidget(this, x, y, kButtonWidth, 16, label, cmd, hotkey);
+#if 0
+  const int w = 6 * font.getMaxCharWidth(),
+            h = font.getFontHeight() + 6;
+
+  return new ButtonWidget(this, font, x, y, w, h, label, cmd, hotkey);
+#else
+  return new ButtonWidget(this, font, x, y, kButtonWidth, 16, label, cmd, hotkey);
+#endif
 }

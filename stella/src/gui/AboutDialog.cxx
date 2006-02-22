@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.9 2005-11-26 21:23:35 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.10 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,25 +31,26 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
-                         int x, int y, int w, int h)
+                         const GUI::Font& font, int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h),
       myPage(1),
       myNumPages(6)
 {
   // Add Previous, Next and Close buttons
-  myPrevButton = addButton(10, h - 24, "Previous", kPrevCmd, 'P');
-  myNextButton = addButton((kButtonWidth + 15), h - 24,
+  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd, 'P');
+  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
                            "Next", kNextCmd, 'N');
-  addButton(w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
+  addButton(font, w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
   myPrevButton->clearFlags(WIDGET_ENABLED);
 
-  myTitle = new StaticTextWidget(this, 5, 5, w-10, kFontHeight, "", kTextAlignCenter);
+  myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
+                                 "", kTextAlignCenter);
   myTitle->setColor(kTextColorHi);
 
   for(int i = 0; i < LINES_PER_PAGE; i++)
   {
-    myDesc[i] = new StaticTextWidget(this, 10, 18 + (10 * i), w - 20,
-                                     kFontHeight, "", kTextAlignLeft);
+    myDesc[i] = new StaticTextWidget(this, font, 10, 18 + (10 * i), w - 20,
+                                     font.getFontHeight(), "", kTextAlignLeft);
   }
 }
 

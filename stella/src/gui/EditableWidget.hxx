@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.8 2005-10-09 20:41:56 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.9 2006-02-22 17:38:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,7 +38,8 @@ enum {
 class EditableWidget : public Widget, public CommandSender
 {
   public:
-    EditableWidget(GuiObject *boss, int x, int y, int w, int h);
+    EditableWidget(GuiObject *boss, const GUI::Font& font,
+                   int x, int y, int w, int h);
     virtual ~EditableWidget();
 
     virtual void setEditString(const string& str);
