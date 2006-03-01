@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.76 2006-01-15 20:46:19 stephena Exp $
+// $Id: Settings.cxx,v 1.77 2006-03-01 14:26:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -33,7 +33,7 @@ Settings::Settings(OSystem* osystem)
   myOSystem->attach(this);
 
   // First create the settings array
-  myCapacity = 30;
+  myCapacity = 40;
   mySettings = new Setting[myCapacity];
   mySize = 0;
 
