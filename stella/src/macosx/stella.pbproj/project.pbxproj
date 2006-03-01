@@ -479,6 +479,7 @@
 				2D05FF5D096E261E00A518FE,
 				2D05FF63096E269100A518FE,
 				2D05FF65096E269100A518FE,
+				2D10A7DE09B16F7A001F913C,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -652,6 +653,7 @@
 				2D05FF5C096E261E00A518FE,
 				2D05FF62096E269100A518FE,
 				2D05FF64096E269100A518FE,
+				2D10A7DD09B16F7A001F913C,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -833,6 +835,36 @@
 		};
 		2D05FF65096E269100A518FE = {
 			fileRef = 2D05FF61096E269100A518FE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D10A7DB09B16F7A001F913C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = M6502Low.cxx;
+			path = ../emucore/m6502/src/M6502Low.cxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D10A7DC09B16F7A001F913C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.h;
+			name = M6502Low.hxx;
+			path = ../emucore/m6502/src/M6502Low.hxx;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D10A7DD09B16F7A001F913C = {
+			fileRef = 2D10A7DB09B16F7A001F913C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2D10A7DE09B16F7A001F913C = {
+			fileRef = 2D10A7DC09B16F7A001F913C;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1861,6 +1893,8 @@
 				2DE2DFBF0627B1DF006BEC99,
 				2DE2DFC00627B1DF006BEC99,
 				2DE2DFC10627B1DF006BEC99,
+				2D10A7DB09B16F7A001F913C,
+				2D10A7DC09B16F7A001F913C,
 				2DE2DFC20627B1DF006BEC99,
 				2DE2DFC30627B1DF006BEC99,
 				2DE2DFC60627B1DF006BEC99,
