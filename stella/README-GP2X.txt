@@ -1,5 +1,5 @@
 ---------------------------------------
-Stella 2.1 (revision 1):
+Stella 2.1 (revision 3):
 Ported to GP2X by Alex Zaballa
 Contact: azaballa@users.sourceforge.net
 Homepage: http://stella.sourceforge.net
@@ -8,6 +8,8 @@ Homepage: http://stella.sourceforge.net
 --------
 Changes:
 --------
+>From 2.1-rv2
+Scroll bug fixed (finally)
 >From 2.1-rv1
 Warlords graphics bug fixed
 >From 2.1
@@ -100,4 +102,5 @@ Special Thanks:
 ... to Eckhard Stolberg for making me known to the Stella Team.
 ... to the Stella Team for the excellent emulator and the hospitality.
 ... to theoddbot for the excellent Open2X toolchain libs.
+... to TelcoLou for his hardwork, playtesting ad infinitum.
 ... to the community for all of the interest.
