@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.61 2006-02-22 17:38:04 stephena Exp $
+// $Id: OSystem.cxx,v 1.62 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -497,6 +497,14 @@ void OSystem::setDefaultJoyHatMap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::pollEvent()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::joyButtonHandled(int button)
+{
+  // Since we don't do any platform-specific event polling,
+  // no button is ever handled at this level
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

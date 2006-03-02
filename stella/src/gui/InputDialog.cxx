@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.11 2006-02-22 17:38:04 stephena Exp $
+// $Id: InputDialog.cxx,v 1.12 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -246,13 +246,13 @@ void InputDialog::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleJoyHat(int stick, int hat, int value)
+bool InputDialog::handleJoyHat(int stick, int hat, int value)
 {
   // Remap joystick hat in remap mode, otherwise pass to listwidget
   if(myEventMapper->remapMode())
-    myEventMapper->handleJoyHat(stick, hat, value);
+    return myEventMapper->handleJoyHat(stick, hat, value);
   else
-    Dialog::handleJoyHat(stick, hat, value);
+    return Dialog::handleJoyHat(stick, hat, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

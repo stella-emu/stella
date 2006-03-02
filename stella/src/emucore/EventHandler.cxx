@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.150 2006-01-30 01:01:44 stephena Exp $
+// $Id: EventHandler.cxx,v 1.151 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -659,31 +659,10 @@ void EventHandler::poll(uInt32 time)
             int button = event.jbutton.button;
             int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-            // Account for buttons which represent diagonal movement
-            // We just generate two equivalent button events representing
-            // combined movement
-            switch(button)
-            {
-              case kJDirUpLeft:
-                handleJoyEvent(stick, kJDirUp, state);
-                handleJoyEvent(stick, kJDirLeft, state);
-                break;
-              case kJDirDownLeft:
-                handleJoyEvent(stick, kJDirDown, state);
-                handleJoyEvent(stick, kJDirLeft, state);
-                break;
-              case kJDirDownRight:
-                handleJoyEvent(stick, kJDirDown, state);
-                handleJoyEvent(stick, kJDirRight, state);
-                break;
-              case kJDirUpRight:
-                handleJoyEvent(stick, kJDirUp, state);
-                handleJoyEvent(stick, kJDirRight, state);
-                break;
-              default:
-                handleJoyEvent(stick, button, state);
-                break;
-            }
+            // Filter out buttons handled by OSystem
+            if(!myOSystem->joyButtonHandled(button))
+              handleJoyEvent(stick, button, state);
+
             break;  // Regular button
           }
 

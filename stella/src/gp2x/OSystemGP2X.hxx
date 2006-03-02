@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.5 2006-02-02 01:04:09 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.6 2006-03-02 13:10:53 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -69,6 +69,13 @@ class OSystemGP2X : public OSystem
       This method creates events from platform-specific hardware.
     */
     void pollEvent();
+
+    /**
+      This method answers whether the given button as already been
+      handled by the pollEvent() method, and as such should be ignored
+      in the main event handler.
+    */
+    bool joyButtonHandled(int button);
 
   private:
     enum {

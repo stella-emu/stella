@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.78 2006-01-31 17:26:56 stephena Exp $
+// $Id: EventHandler.hxx,v 1.79 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -33,32 +33,6 @@ class OSystem;
 class DialogContainer;
 class EventMappingWidget;
 class EventStreamer;
-
-// Used for those platforms which implement joystick directions
-// as buttons instead of axis (which is a broken design IMHO)
-// These are defined as constants vs. using platform-specific methods
-// and variables for performance reasons
-// Buttons not implemented for specific hardware are represented by numbers < 0,
-// since no button can have those values (this isn't the cleanest code, but
-// it *is* the fastest)
-enum {
- #if defined(GP2X)
-  kJDirUp    =  0,  kJDirUpLeft    =  1,
-  kJDirLeft  =  2,  kJDirDownLeft  =  3,
-  kJDirDown  =  4,  kJDirDownRight =  5,
-  kJDirRight =  6,  kJDirUpRight   =  7
- #elif defined(PSP)
-  kJDirUp    =  8,  kJDirUpLeft    = -1,
-  kJDirLeft  =  7,  kJDirDownLeft  = -2,
-  kJDirDown  =  6,  kJDirDownRight = -3,
-  kJDirRight =  9,  kJDirUpRight   = -4
- #else
-  kJDirUp    = -1,  kJDirUpLeft    = -2,
-  kJDirLeft  = -3,  kJDirDownLeft  = -4,
-  kJDirDown  = -5,  kJDirDownRight = -6,
-  kJDirRight = -7,  kJDirUpRight   = -8
- #endif
-};
 
 // A wrapper around SDL hat events, so we don't drag SDL
 // through all the child classes
@@ -133,7 +107,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.78 2006-01-31 17:26:56 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.79 2006-03-02 13:10:53 stephena Exp $
 */
 class EventHandler
 {

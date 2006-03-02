@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.30 2006-01-09 19:30:04 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.31 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -277,34 +277,6 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  // Only preprocess button events if the dialog absolutely doesn't want them
-  if(!activeDialog->wantsAllEvents())
-  {
-    // Some buttons act as directions.  In those cases, translate them
-    // to axis events instead of mouse button events
-    int value = state > 0 ? 32767 : 0;
-    bool handled = true;
-    switch(button)
-    {
-      case kJDirUp:
-        handleJoyAxisEvent(stick, 1, -value);  // axis 1, -value ==> UP
-        break;
-      case kJDirLeft:
-        handleJoyAxisEvent(stick, 0, -value);  // axis 0, -value ==> LEFT
-        break;
-      case kJDirDown:
-        handleJoyAxisEvent(stick, 1, value);   // axis 1, +value ==> DOWN
-        break;
-      case kJDirRight:
-        handleJoyAxisEvent(stick, 0, value);   // axis 0, +value ==> RIGHT
-        break;
-      default:
-        handled = false;
-    }
-    if(handled)
-      return;
-  }
-
   if(activeDialog->wantsEvents())
   {
     if(state == 1)
@@ -395,9 +367,8 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  // Only preprocess hat events if the dialog absolutely doesn't want them
-  // Translate to axis events for movement
-  if(!activeDialog->wantsAllEvents())
+  if(!(activeDialog->wantsEvents() &&
+       activeDialog->handleJoyHat(stick, hat, value)))
   {
     bool handled = true;
     switch(value)
@@ -424,9 +395,6 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
     if(handled)
       return;
   }
-
-  if(activeDialog->wantsEvents())
-    activeDialog->handleJoyHat(stick, hat, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

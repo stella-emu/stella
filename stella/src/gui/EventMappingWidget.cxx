@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.12 2006-02-22 17:38:04 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.13 2006-03-02 13:10:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -135,7 +135,7 @@ void EventMappingWidget::startRemapping()
 
   // Make sure that this widget receives all events,
   // and they aren't handled anywhere else
-  myActionsList->setFlags(WIDGET_WANTS_EVENTS|WIDGET_WTALL_EVENTS);
+  myActionsList->setFlags(WIDGET_WANTS_EVENTS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,7 +172,7 @@ void EventMappingWidget::stopRemapping()
   }
 
   // Widget is now free to process events normally
-  myActionsList->clearFlags(WIDGET_WANTS_EVENTS|WIDGET_WTALL_EVENTS);
+  myActionsList->clearFlags(WIDGET_WANTS_EVENTS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -224,15 +224,22 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::handleJoyHat(int stick, int hat, int value)
+bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
 {
+  bool result = false;
+
   // Remap joystick hats in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
     if(instance()->eventHandler().addJoyHatMapping(event, stick, hat, value))
+    {
       stopRemapping();
+      result = true;
+    }
   }
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

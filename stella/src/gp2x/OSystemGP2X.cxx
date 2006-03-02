@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.6 2006-02-02 01:04:09 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.7 2006-03-02 13:10:53 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -164,10 +164,6 @@ void OSystemGP2X::getScreenDimensions(int& width, int& height)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemGP2X::setDefaultJoymap()
 {
-//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroUp, 0, 0);    // Up
-//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroLeft, 0, 2);  // Left
-//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroDown, 0, 4);  // Down
-//  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroRight, 0, 6); // Right
   myEventHandler->setDefaultJoyMapping(Event::LauncherMode, 0, 8);      // Start
   myEventHandler->setDefaultJoyMapping(Event::CmdMenuMode, 0, 9);       // Select
   myEventHandler->setDefaultJoyMapping(Event::ConsoleReset, 0, 10);     // L
@@ -213,7 +209,6 @@ void OSystemGP2X::pollEvent()
     eventA0.axis  = 0;
     eventA1.axis  = 1;
 
-#if 1
     bool axisZeroChanged = false, axisOneChanged = false;
 
     axisOneChanged = axisOneChanged || myActiveEvents[kJDirUp];
@@ -268,39 +263,11 @@ void OSystemGP2X::pollEvent()
 
     if(axisZeroChanged) SDL_PushEvent((SDL_Event*)&eventA0);
     if(axisOneChanged)  SDL_PushEvent((SDL_Event*)&eventA1);
-#else
-    if(myCurrentEvents[kJDirUp])         // up
-      eventA1.value = -32768;
-    if(myCurrentEvents[kJDirDown])       // down
-      eventA1.value =  32767;
-    if(myCurrentEvents[kJDirLeft])       // left
-      eventA0.value = -32768;
-    if(myCurrentEvents[kJDirRight])      // right
-      eventA0.value =  32767;
-
-    if(myCurrentEvents[kJDirUpLeft])     // up-left
-    {
-      eventA1.value = -16834;
-      eventA0.value = -16834;
-    }
-    if(myCurrentEvents[kJDirUpRight])    // up-right
-    {
-      eventA1.value = -16834;
-      eventA0.value =  16834;
-    }
-    if(myCurrentEvents[kJDirDownLeft])   // down-left
-    {
-      eventA1.value =  16834;
-      eventA0.value = -16834;
-    }
-    if(myCurrentEvents[kJDirDownRight])  // down-right
-    {
-      eventA1.value =  16834;
-      eventA0.value =  16834;
-    }
-
-    SDL_PushEvent((SDL_Event*)&eventA0);
-    SDL_PushEvent((SDL_Event*)&eventA1);
-#endif
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystemGP2X::joyButtonHandled(int button)
+{
+  return (button < 8);
 }

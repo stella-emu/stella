@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
+// $Id: InputDialog.hxx,v 1.7 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -42,7 +42,7 @@ class InputDialog : public Dialog
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);
-    virtual void handleJoyHat(int stick, int hat, int value);
+    virtual bool handleJoyHat(int stick, int hat, int value);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void loadConfig();

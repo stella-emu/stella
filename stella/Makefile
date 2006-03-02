@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.20 2006-03-02 04:55:55 azaballa Exp $
+## $Id: Makefile,v 1.21 2006-03-02 13:10:53 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -247,11 +247,11 @@ gp2x-strip: $(EXECUTABLE)
 # GP2X organize: groups necessary files into a gp2x folder for easy access.
 gp2x-organize:
 	mkdir -p "$(srcdir)/gp2x"
-        mkdir -p "$(srcdir)/gp2x/docs"
+	mkdir -p "$(srcdir)/gp2x/docs"
 	cp -v $(srcdir)/stella  $(srcdir)/gp2x
 	cp -v $(srcdir)/src/gp2x/stella.gpe $(srcdir)/gp2x
 	cp -v $(srcdir)/src/emucore/stella.pro $(srcdir)/gp2x
-        cp -v $(srcdir)/README-GP2X.txt $(srcdir)/gp2x
-        cp -v -r $(srcdir)/docs/* $(srcdir)/gp2x/docs
+	cp -v $(srcdir)/README-GP2X.txt $(srcdir)/gp2x
+	cp -v -r $(srcdir)/docs/* $(srcdir)/gp2x/docs
 	
 .PHONY: deb bundle test win32dist install uninstall

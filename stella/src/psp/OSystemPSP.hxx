@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemPSP.hxx,v 1.3 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemPSP.hxx,v 1.4 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_PSP_HXX
@@ -26,7 +26,7 @@
   This class defines PSP-specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemPSP.hxx,v 1.3 2006-01-08 02:28:04 stephena Exp $
+  @version $Id: OSystemPSP.hxx,v 1.4 2006-03-02 13:10:53 stephena Exp $
 */
 class OSystemPSP : public OSystem
 {
@@ -73,5 +73,14 @@ class OSystemPSP : public OSystem
     */
     virtual void getScreenDimensions(int& width, int& height);
 };
+
+// FIXME - this doesn't even compile any more ...
+
+/*
+  kJDirUp    =  8,  kJDirUpLeft    = -1,
+  kJDirLeft  =  7,  kJDirDownLeft  = -2,
+  kJDirDown  =  6,  kJDirDownRight = -3,
+  kJDirRight =  9,  kJDirUpRight   = -4
+*/
 
 #endif

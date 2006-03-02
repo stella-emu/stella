@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.hxx,v 1.7 2006-02-22 17:38:04 stephena Exp $
+// $Id: EventMappingWidget.hxx,v 1.8 2006-03-02 13:10:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,7 +48,7 @@ class EventMappingWidget : public Widget, public CommandSender
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);
-    virtual void handleJoyHat(int stick, int hat, int value);
+    virtual bool handleJoyHat(int stick, int hat, int value);
  
     bool remapMode() { return myRemapStatus; }
 

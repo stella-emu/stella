@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.38 2006-02-22 17:38:04 stephena Exp $
+// $Id: OSystem.hxx,v 1.39 2006-03-02 13:10:53 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.38 2006-02-22 17:38:04 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.39 2006-03-02 13:10:53 stephena Exp $
 */
 class OSystem
 {
@@ -356,6 +356,13 @@ class OSystem
       This method creates events from platform-specific hardware.
     */
     virtual void pollEvent();
+
+    /**
+      This method answers whether the given button as already been
+      handled by the pollEvent() method, and as such should be ignored
+      in the main event handler.
+    */
+    virtual bool joyButtonHandled(int button);
 
   protected:
     /**
