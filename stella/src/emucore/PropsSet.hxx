@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.10 2005-10-19 00:59:51 stephena Exp $
+// $Id: PropsSet.hxx,v 1.11 2006-03-03 19:58:35 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -24,6 +24,32 @@
 #include "bspf.hxx"
 
 class Properties;
+
+enum PropertyType {
+  Cartridge_Cheats,
+  Cartridge_Filename,
+  Cartridge_MD5,
+  Cartridge_Manufacturer,
+  Cartridge_ModelNo,
+  Cartridge_Name,
+  Cartridge_Note,
+  Cartridge_Rarity,
+  Cartridge_Sound,
+  Cartridge_Type,
+  Console_LeftDifficulty,
+  Console_RightDifficulty,
+  Console_TelevisionType,
+  Console_SwapPorts,
+  Controller_Left,
+  Controller_Right,
+  Display_Format,
+  Display_XStart,
+  Display_Width,
+  Display_YStart,
+  Display_Height,
+  Display_Phosphor,
+  Emulation_HmoveBlanks
+};
 
 /**
   This class maintains a sorted collection of properties.  The objects
@@ -116,6 +142,8 @@ class PropertiesSet
       TreeNode* right;
       bool save;
     };
+
+    void loadInternalDefaults();
 
     /**
       Insert a node in the bst, keeping the tree sorted.

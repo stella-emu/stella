@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.18 2006-01-25 01:42:47 stephena Exp $
+// $Id: PropsSet.cxx,v 1.19 2006-03-03 19:58:35 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -23,10 +23,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet()
-   : myRoot(NULL), 
-     mySize(0)
+  : myRoot(NULL),
+    mySize(0)
 {
   myDefaultProperties = &defaultProperties();
+  loadInternalDefaults();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,6 +204,11 @@ bool PropertiesSet::merge(const Properties& properties, const string& filename)
   }
   else
     return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::loadInternalDefaults()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
