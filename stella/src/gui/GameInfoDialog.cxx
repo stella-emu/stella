@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.23 2006-02-22 17:38:04 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.24 2006-03-05 01:18:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -113,7 +113,7 @@ GameInfoDialog::GameInfoDialog(
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 21; ++i)
-    myType->appendEntry(ourCartridgeList[i].name, i+1);
+    myType->appendEntry(ourCartridgeList[i][0], i+1);
   wid.push_back(myType);
 
   // Add items for tab 0
@@ -178,7 +178,7 @@ GameInfoDialog::GameInfoDialog(
   myLeftController = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                      pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 5; ++i)
-    myLeftController->appendEntry(ourControllerList[i].name, i+1);
+    myLeftController->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myLeftController);
 
   ypos += lineHeight + 3;
@@ -187,7 +187,7 @@ GameInfoDialog::GameInfoDialog(
   myRightController = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                       pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 5; ++i)
-    myRightController->appendEntry(ourControllerList[i].name, i+1);
+    myRightController->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myRightController);
 
   // Add items for tab 2
@@ -289,25 +289,25 @@ void GameInfoDialog::loadConfig()
   int i;
 
   // Cartridge properties
-  s = myGameProperties->get("Cartridge.Name");
+  s = myGameProperties->get(Cartridge_Name);
   myName->setEditString(s);
 
-  s = myGameProperties->get("Cartridge.MD5");
+  s = myGameProperties->get(Cartridge_MD5);
   myMD5->setLabel(s);
 
-  s = myGameProperties->get("Cartridge.Manufacturer");
+  s = myGameProperties->get(Cartridge_Manufacturer);
   myManufacturer->setEditString(s);
 
-  s = myGameProperties->get("Cartridge.ModelNo");
+  s = myGameProperties->get(Cartridge_ModelNo);
   myModelNo->setEditString(s);
 
-  s = myGameProperties->get("Cartridge.Rarity");
+  s = myGameProperties->get(Cartridge_Rarity);
   myRarity->setEditString(s);
 
-  s = myGameProperties->get("Cartridge.Note");
+  s = myGameProperties->get(Cartridge_Note);
   myNote->setEditString(s);
 
-  s = myGameProperties->get("Cartridge.Sound", true);
+  s = myGameProperties->get(Cartridge_Sound);
   if(s == "MONO")
     mySound->setSelectedTag(1);
   else if(s == "STEREO")
@@ -315,17 +315,17 @@ void GameInfoDialog::loadConfig()
   else
     mySound->setSelectedTag(0);
 
-  s = myGameProperties->get("Cartridge.Type", true);
+  s = myGameProperties->get(Cartridge_Type);
   for(i = 0; i < 21; ++i)
   {
-    if(s == ourCartridgeList[i].comparitor)
+    if(s == ourCartridgeList[i][1])
       break;
   }
   i = (i == 21) ? 0: i + 1;
   myType->setSelectedTag(i);
 
   // Console properties
-  s = myGameProperties->get("Console.LeftDifficulty", true);
+  s = myGameProperties->get(Console_LeftDifficulty);
   if(s == "B")
     myLeftDiff->setSelectedTag(1);
   else if(s == "A")
@@ -333,7 +333,7 @@ void GameInfoDialog::loadConfig()
   else
     myLeftDiff->setSelectedTag(0);
 
-  s = myGameProperties->get("Console.RightDifficulty", true);
+  s = myGameProperties->get(Console_RightDifficulty);
   if(s == "B")
     myRightDiff->setSelectedTag(1);
   else if(s == "A")
@@ -341,7 +341,7 @@ void GameInfoDialog::loadConfig()
   else
     myRightDiff->setSelectedTag(0);
 
-  s = myGameProperties->get("Console.TelevisionType", true);
+  s = myGameProperties->get(Console_TelevisionType);
   if(s == "COLOR")
     myTVType->setSelectedTag(1);
   else if(s == "BLACKANDWHITE")
@@ -349,7 +349,7 @@ void GameInfoDialog::loadConfig()
   else
     myTVType->setSelectedTag(0);
 
-  s = myGameProperties->get("Console.SwapPorts", true);
+  s = myGameProperties->get(Console_SwapPorts);
   if(s == "YES")
     mySwapPorts->setSelectedTag(1);
   else if(s == "NO")
@@ -358,26 +358,26 @@ void GameInfoDialog::loadConfig()
     mySwapPorts->setSelectedTag(0);
 
   // Controller properties
-  s = myGameProperties->get("Controller.Left", true);
+  s = myGameProperties->get(Controller_Left);
   for(i = 0; i < 5; ++i)
   {
-    if(s == ourControllerList[i].comparitor)
+    if(s == ourControllerList[i][1])
       break;
   }
   i = (i == 5) ? 0: i + 1;
   myLeftController->setSelectedTag(i);
 
-  s = myGameProperties->get("Controller.Right", true);
+  s = myGameProperties->get(Controller_Right);
   for(i = 0; i < 5; ++i)
   {
-    if(s == ourControllerList[i].comparitor)
+    if(s == ourControllerList[i][1])
       break;
   }
   i = (i == 5) ? 0: i + 1;
   myRightController->setSelectedTag(i);
 
   // Display properties
-  s = myGameProperties->get("Display.Format", true);
+  s = myGameProperties->get(Display_Format);
   if(s == "NTSC")
     myFormat->setSelectedTag(1);
   else if(s == "PAL")
@@ -385,19 +385,19 @@ void GameInfoDialog::loadConfig()
   else
     myFormat->setSelectedTag(0);
 
-  s = myGameProperties->get("Display.XStart");
+  s = myGameProperties->get(Display_XStart);
   myXStart->setEditString(s);
 
-  s = myGameProperties->get("Display.Width");
+  s = myGameProperties->get(Display_Width);
   myWidth->setEditString(s);
 
-  s = myGameProperties->get("Display.YStart");
+  s = myGameProperties->get(Display_YStart);
   myYStart->setEditString(s);
 
-  s = myGameProperties->get("Display.Height");
+  s = myGameProperties->get(Display_Height);
   myHeight->setEditString(s);
 
-  s = myGameProperties->get("Display.Phosphor", true);
+  s = myGameProperties->get(Display_Phosphor);
   if(s == "YES")
     myPhosphor->setSelectedTag(1);
   else if(s == "NO")
@@ -405,7 +405,7 @@ void GameInfoDialog::loadConfig()
   else
     myPhosphor->setSelectedTag(0);
 
-  s = myGameProperties->get("Emulation.HmoveBlanks", true);
+  s = myGameProperties->get(Emulation_HmoveBlanks);
   if(s == "YES")
     myHmoveBlanks->setSelectedTag(1);
   else if(s == "NO")
@@ -424,30 +424,30 @@ void GameInfoDialog::saveConfig()
 
   // Cartridge properties
   s = myName->getEditString();
-  myGameProperties->set("Cartridge.Name", s);
+  myGameProperties->set(Cartridge_Name, s);
 
   s = myManufacturer->getEditString();
-  myGameProperties->set("Cartridge.Manufacturer", s);
+  myGameProperties->set(Cartridge_Manufacturer, s);
 
   s = myModelNo->getEditString();
-  myGameProperties->set("Cartridge.ModelNo", s);
+  myGameProperties->set(Cartridge_ModelNo, s);
 
   s = myRarity->getEditString();
-  myGameProperties->set("Cartridge.Rarity", s);
+  myGameProperties->set(Cartridge_Rarity, s);
 
   s = myNote->getEditString();
-  myGameProperties->set("Cartridge.Note", s);
+  myGameProperties->set(Cartridge_Note, s);
 
   tag = mySound->getSelectedTag();
   s = (tag == 1) ? "Mono" : "Stereo";
-  myGameProperties->set("Cartridge.Sound", s);
+  myGameProperties->set(Cartridge_Sound, s);
 
   tag = myType->getSelectedTag();
   for(i = 0; i < 21; ++i)
   {
     if(i == tag-1)
     {
-      myGameProperties->set("Cartridge.Type", ourCartridgeList[i].comparitor);
+      myGameProperties->set(Cartridge_Type, ourCartridgeList[i][1]);
       break;
     }
   }
@@ -455,19 +455,19 @@ void GameInfoDialog::saveConfig()
   // Console properties
   tag = myLeftDiff->getSelectedTag();
   s = (tag == 1) ? "B" : "A";
-  myGameProperties->set("Console.LeftDifficulty", s);
+  myGameProperties->set(Console_LeftDifficulty, s);
 
   tag = myRightDiff->getSelectedTag();
   s = (tag == 1) ? "B" : "A";
-  myGameProperties->set("Console.RightDifficulty", s);
+  myGameProperties->set(Console_RightDifficulty, s);
 
   tag = myTVType->getSelectedTag();
   s = (tag == 1) ? "Color" : "BlackAndWhite";
-  myGameProperties->set("Console.TelevisionType", s);
+  myGameProperties->set(Console_TelevisionType, s);
 
   tag = mySwapPorts->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
-  myGameProperties->set("Console.SwapPorts", s);
+  myGameProperties->set(Console_SwapPorts, s);
 
   // Controller properties
   tag = myLeftController->getSelectedTag();
@@ -475,7 +475,7 @@ void GameInfoDialog::saveConfig()
   {
     if(i == tag-1)
     {
-      myGameProperties->set("Controller.Left", ourControllerList[i].name);
+      myGameProperties->set(Controller_Left, ourControllerList[i][0]);
       break;
     }
   }
@@ -485,7 +485,7 @@ void GameInfoDialog::saveConfig()
   {
     if(i == tag-1)
     {
-      myGameProperties->set("Controller.Right", ourControllerList[i].name);
+      myGameProperties->set(Controller_Right, ourControllerList[i][0]);
       break;
     }
   }
@@ -493,27 +493,27 @@ void GameInfoDialog::saveConfig()
   // Display properties
   tag = myFormat->getSelectedTag();
   s = (tag == 1) ? "NTSC" : "PAL";
-  myGameProperties->set("Display.Format", s);
+  myGameProperties->set(Display_Format, s);
 
   s = myXStart->getEditString();
-  myGameProperties->set("Display.XStart", s);
+  myGameProperties->set(Display_XStart, s);
 
   s = myWidth->getEditString();
-  myGameProperties->set("Display.Width", s);
+  myGameProperties->set(Display_Width, s);
 
   s = myYStart->getEditString();
-  myGameProperties->set("Display.YStart", s);
+  myGameProperties->set(Display_YStart, s);
 
   s = myHeight->getEditString();
-  myGameProperties->set("Display.Height", s);
+  myGameProperties->set(Display_Height, s);
 
   tag = myPhosphor->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
-  myGameProperties->set("Display.Phosphor", s);
+  myGameProperties->set(Display_Phosphor, s);
 
   tag = myHmoveBlanks->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
-  myGameProperties->set("Emulation.HmoveBlanks", s);
+  myGameProperties->set(Emulation_HmoveBlanks, s);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -534,24 +534,18 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
   }
 }
 
-// FIXME - the following should be handled in a better way
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#ifndef _WIN32_WCE
-const PropType GameInfoDialog::ourControllerList[5] = {
+const char* GameInfoDialog::ourControllerList[5][2] = {
   { "Booster-Grip", "BOOSTER-GRIP" },
   { "Driving",      "DRIVING"      },
   { "Keyboard",     "KEYBOARD"     },
   { "Paddles",      "PADDLES"      },
   { "Joystick",     "JOYSTICK"     }
 };
-#else
-const PropType GameInfoDialog::ourControllerList[5];
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#ifndef _WIN32_WCE
-const PropType GameInfoDialog::ourCartridgeList[21] = {
-  { "Auto-detect", "AUTO-DETECT" },
+const char* GameInfoDialog::ourCartridgeList[21][2] = {
+  { "Auto-detect",     "AUTO-DETECT"   },
   { "2K (2K Atari)",            "2K"   },
   { "3E (32K Tigervision)",     "3E"   },
   { "3F (512K Tigervision)",    "3F"   },
@@ -573,6 +567,3 @@ const PropType GameInfoDialog::ourCartridgeList[21] = {
   { "MC (C. Wilkson Megacart)", "MC"   },
   { "UA (8K UA Ltd.)",          "UA"   }
 };
-#else
-const PropType GameInfoDialog::ourCartridgeList[21];
-#endif

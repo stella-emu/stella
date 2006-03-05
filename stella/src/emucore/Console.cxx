@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.83 2006-02-05 02:49:47 stephena Exp $
+// $Id: Console.cxx,v 1.84 2006-03-05 01:18:41 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -83,19 +83,19 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   setDeveloperProperties();
 
   // Make sure height is set properly for PAL ROM
-  if(myProperties.get("Display.Format", true) == "PAL")
-    if(myProperties.get("Display.Height") == "210")
-      myProperties.set("Display.Height", "250");
+  if(myProperties.get(Display_Format) == "PAL")
+    if(myProperties.get(Display_Height) == "210")
+      myProperties.set(Display_Height, "250");
 
   // Setup the controllers based on properties
-  string left  = myProperties.get("Controller.Left", true);
-  string right = myProperties.get("Controller.Right", true);
+  string left  = myProperties.get(Controller_Left);
+  string right = myProperties.get(Controller_Right);
 
   // Swap the ports if necessary
   // Note that this doesn't swap the actual controllers,
   // just the ports that they're attached to
   Controller::Jack leftjack, rightjack;
-  if(myProperties.get("Console.SwapPorts", true) == "NO")
+  if(myProperties.get(Console_SwapPorts) == "NO")
   {
     leftjack  = Controller::Left;
     rightjack = Controller::Right;
@@ -192,7 +192,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   uInt32 framerate = myOSystem->settings().getInt("framerate");
   if(framerate == 0)
   {
-    string s = myProperties.get("Display.Format", true);
+    const string& s = myProperties.get(Display_Format);
     if(s == "NTSC")
       framerate = 60;
     else if(s == "PAL")
@@ -210,7 +210,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
   uInt32 channels;
-  string s = myProperties.get("Cartridge.Sound", true);
+  const string& s = myProperties.get(Cartridge_Sound);
   if(s == "STEREO")
     channels = 2;
   else if(s == "MONO")
@@ -252,7 +252,7 @@ Console::Console(const Console& console)
 Console::~Console()
 {
 #ifdef CHEATCODE_SUPPORT
-  myOSystem->cheat().saveCheats(myProperties.get("Cartridge.MD5"));
+  myOSystem->cheat().saveCheats(myProperties.get(Cartridge_MD5));
 #endif
 
   delete mySystem;
@@ -279,19 +279,19 @@ Console& Console::operator = (const Console&)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
-  string format = myProperties.get("Display.Format", true);
+  const string& format = myProperties.get(Display_Format);
   uInt32 framerate = 60;
 
   if(format == "NTSC")
   {
-    myProperties.set("Display.Format", "PAL");
+    myProperties.set(Display_Format, "PAL");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("PAL Mode");
     framerate = 50;
   }
   else if(format == "PAL")
   {
-    myProperties.set("Display.Format", "NTSC");
+    myProperties.set(Display_Format, "NTSC");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("NTSC Mode");
     framerate = 60;
@@ -354,17 +354,17 @@ void Console::togglePalette(const string& palette)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor()
 {
-  string phosphor = myProperties.get("Display.Phosphor", true);
+  const string& phosphor = myProperties.get(Display_Phosphor);
   bool enable;
   if(phosphor == "YES")
   {
-    myProperties.set("Display.Phosphor", "No");
+    myProperties.set(Display_Phosphor, "No");
     enable = false;
     myOSystem->frameBuffer().showMessage("Phosphor effect disabled");
   }
   else
   {
-    myProperties.set("Display.Phosphor", "Yes");
+    myProperties.set(Display_Phosphor, "Yes");
     enable = true;
     myOSystem->frameBuffer().showMessage("Phosphor effect enabled");
   }
@@ -405,11 +405,11 @@ void Console::saveProperties(string filename, bool merge)
 void Console::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION +
-                 ": \"" + myProperties.get("Cartridge.Name") + "\"";
+                 ": \"" + myProperties.get(Cartridge_Name) + "\"";
   myOSystem->frameBuffer().initialize(title,
                                       myMediaSource->width() << 1,
                                       myMediaSource->height());
-  bool enable = myProperties.get("Display.Phosphor", true) == "YES";
+  bool enable = myProperties.get(Display_Phosphor) == "YES";
   myOSystem->frameBuffer().enablePhosphor(enable);
   setPalette();
 }
@@ -433,7 +433,7 @@ void Console::setChannels(int channels)
 
   // Save to properties
   string sound = channels == 2 ? "Stereo" : "Mono";
-  myProperties.set("Cartridge.Sound", sound);
+  myProperties.set(Cartridge_Sound, sound);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -465,8 +465,8 @@ void Console::fry()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeXStart(const uInt32 direction)
 {
-  Int32 xstart = atoi(myProperties.get("Display.XStart").c_str());
-  uInt32 width = atoi(myProperties.get("Display.Width").c_str());
+  Int32 xstart = atoi(myProperties.get(Display_XStart).c_str());
+  uInt32 width = atoi(myProperties.get(Display_Width).c_str());
   ostringstream strval;
   string message;
 
@@ -495,7 +495,7 @@ void Console::changeXStart(const uInt32 direction)
   }
 
   strval << xstart;
-  myProperties.set("Display.XStart", strval.str());
+  myProperties.set(Display_XStart, strval.str());
   mySystem->reset();
   initializeVideo();
 
@@ -507,7 +507,7 @@ void Console::changeXStart(const uInt32 direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeYStart(const uInt32 direction)
 {
-  Int32 ystart = atoi(myProperties.get("Display.YStart").c_str());
+  Int32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   ostringstream strval;
   string message;
 
@@ -531,7 +531,7 @@ void Console::changeYStart(const uInt32 direction)
   }
 
   strval << ystart;
-  myProperties.set("Display.YStart", strval.str());
+  myProperties.set(Display_YStart, strval.str());
   mySystem->reset();
   initializeVideo();
 
@@ -543,8 +543,8 @@ void Console::changeYStart(const uInt32 direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeWidth(const uInt32 direction)
 {
-  uInt32 xstart = atoi(myProperties.get("Display.XStart").c_str());
-  Int32 width   = atoi(myProperties.get("Display.Width").c_str());
+  uInt32 xstart = atoi(myProperties.get(Display_XStart).c_str());
+  Int32 width   = atoi(myProperties.get(Display_Width).c_str());
   ostringstream strval;
   string message;
 
@@ -573,7 +573,7 @@ void Console::changeWidth(const uInt32 direction)
   }
 
   strval << width;
-  myProperties.set("Display.Width", strval.str());
+  myProperties.set(Display_Width, strval.str());
   mySystem->reset();
   initializeVideo();
 
@@ -585,7 +585,7 @@ void Console::changeWidth(const uInt32 direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeHeight(const uInt32 direction)
 {
-  Int32 height = atoi(myProperties.get("Display.Height").c_str());
+  Int32 height = atoi(myProperties.get(Display_Height).c_str());
   ostringstream strval;
   string message;
 
@@ -609,7 +609,7 @@ void Console::changeHeight(const uInt32 direction)
   }
 
   strval << height;
-  myProperties.set("Display.Height", strval.str());
+  myProperties.set(Display_Height, strval.str());
   mySystem->reset();
   initializeVideo();
 
@@ -642,64 +642,64 @@ void Console::setDeveloperProperties()
 
   s = settings.getString("type");
   if(s != "")
-    myProperties.set("Cartridge.Type", s);
+    myProperties.set(Cartridge_Type, s);
 
   s = settings.getString("ld");
   if(s != "")
-    myProperties.set("Console.LeftDifficulty", s);
+    myProperties.set(Console_LeftDifficulty, s);
 
   s = settings.getString("rd");
   if(s != "")
-    myProperties.set("Console.RightDifficulty", s);
+    myProperties.set(Console_RightDifficulty, s);
 
   s = settings.getString("tv");
   if(s != "")
-    myProperties.set("Console.TelevisionType", s);
+    myProperties.set(Console_TelevisionType, s);
 
   s = settings.getString("sp");
   if(s != "")
-    myProperties.set("Console.SwapPorts", s);
+    myProperties.set(Console_SwapPorts, s);
 
   s = settings.getString("lc");
   if(s != "")
-    myProperties.set("Controller.Left", s);
+    myProperties.set(Controller_Left, s);
 
   s = settings.getString("rc");
   if(s != "")
-    myProperties.set("Controller.Right", s);
+    myProperties.set(Controller_Right, s);
 
   s = settings.getString("bc");
   if(s != "")
   {
-    myProperties.set("Controller.Left", s);
-    myProperties.set("Controller.Right", s);
+    myProperties.set(Controller_Left, s);
+    myProperties.set(Controller_Right, s);
   }
 
   s = settings.getString("format");
   if(s != "")
-    myProperties.set("Display.Format", s);
+    myProperties.set(Display_Format, s);
 
   s = settings.getString("xstart");
   if(s != "")
-    myProperties.set("Display.XStart", s);
+    myProperties.set(Display_XStart, s);
 
   s = settings.getString("ystart");
   if(s != "")
-    myProperties.set("Display.YStart", s);
+    myProperties.set(Display_YStart, s);
 
   s = settings.getString("width");
   if(s != "")
-    myProperties.set("Display.Width", s);
+    myProperties.set(Display_Width, s);
 
   s = settings.getString("height");
   if(s != "")
-    myProperties.set("Display.Height", s);
+    myProperties.set(Display_Height, s);
 
   s = settings.getString("pp");
   if(s != "")
-    myProperties.set("Display.Phosphor", s);
+    myProperties.set(Display_Phosphor, s);
 
   s = settings.getString("hmove");
   if(s != "")
-    myProperties.set("Emulation.HmoveBlanks", s);
+    myProperties.set(Emulation_HmoveBlanks, s);
 }

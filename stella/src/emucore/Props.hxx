@@ -13,13 +13,38 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.6 2005-09-22 22:10:57 stephena Exp $
+// $Id: Props.hxx,v 1.7 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
 #define PROPERTIES_HXX
 
 #include "bspf.hxx"
+
+enum PropertyType {
+  Cartridge_MD5,
+  Cartridge_Manufacturer,
+  Cartridge_ModelNo,
+  Cartridge_Name,
+  Cartridge_Note,
+  Cartridge_Rarity,
+  Cartridge_Sound,
+  Cartridge_Type,
+  Console_LeftDifficulty,
+  Console_RightDifficulty,
+  Console_TelevisionType,
+  Console_SwapPorts,
+  Controller_Left,
+  Controller_Right,
+  Display_Format,
+  Display_XStart,
+  Display_Width,
+  Display_YStart,
+  Display_Height,
+  Display_Phosphor,
+  Emulation_HmoveBlanks,
+  LastPropType
+};
 
 /**
   This class represents objects which maintain a collection of 
@@ -30,7 +55,7 @@
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.6 2005-09-22 22:10:57 stephena Exp $
+  @version $Id: Props.hxx,v 1.7 2006-03-05 01:18:42 stephena Exp $
 */
 class Properties
 {
@@ -38,10 +63,8 @@ class Properties
     /**
       Creates an empty properties object with the specified defaults.  The 
       new properties object does not claim ownership of the defaults.
-
-      @param defaults The defaults
     */
-    Properties(const Properties* defaults = 0);
+    Properties();
 
     /**
       Creates a properties list by copying another one
@@ -60,22 +83,19 @@ class Properties
       Get the value assigned to the specified key.  If the key does
       not exist then the empty string is returned.
 
-      @param key          The key of the property to lookup
-      @param useUppercase Convert the property to uppercase
-
-      @return The value of the property 
+      @param key  The key of the property to lookup
+      @return     The value of the property 
     */
-    string get(const string& key, bool useUppercase = false) const;
+    const string& get(PropertyType key) const;
 
     /**
       Set the value associated with key to the given value.
 
-      @param key The key of the property to set
-      @param value The value to assign to the property
+      @param key      The key of the property to set
+      @param value    The value to assign to the property
     */
-    void set(const string& key, const string& value);
+    void set(PropertyType key, const string& value);
 
-  public:
     /**
       Load properties from the specified input stream
 
@@ -95,24 +115,10 @@ class Properties
     */
     void print();
 
-  public:
     /**
-      Read the next quoted string from the specified input stream
-      and returns it.
-
-      @param in The input stream to use
-      @return The string inside the quotes
-    */ 
-    static string readQuotedString(istream& in);
-     
-    /**
-      Write the specified string to the given output stream as a 
-      quoted string.
-
-      @param out The output stream to use
-      @param s The string to output
-    */ 
-    static void writeQuotedString(ostream& out, const string& s);
+      Resets all properties to their defaults
+    */
+    void setDefaults();
 
   public:
     /**
@@ -133,24 +139,40 @@ class Properties
     */
     void copy(const Properties& properties);
 
+    /**
+      Read the next quoted string from the specified input stream
+      and returns it.
+
+      @param in The input stream to use
+      @return The string inside the quotes
+    */ 
+    static string readQuotedString(istream& in);
+     
+    /**
+      Write the specified string to the given output stream as a 
+      quoted string.
+
+      @param out The output stream to use
+      @param s The string to output
+    */ 
+    static void writeQuotedString(ostream& out, const string& s);
+
+    /**
+      Get the property type associated with the named property
+
+      @param name  The PropertyType key associated with the given string
+    */ 
+    static PropertyType getPropertyType(const string& name);
+
   private:
-    // Structure used for storing properties
-    struct Property 
-    {
-      string key;
-      string value;
-    };
+    // The array of properties
+    string myProperties[LastPropType];
 
-    // Pointer to properties object to use for defaults or the null pointer
-    const Properties* myDefaults;
+    // List of default properties to use when none have been provided
+    static const char* ourDefaultProperties[LastPropType];
 
-    // Pointer to a dynamically allocated array of properties
-    Property* myProperties;
-
-    // Current capacity of the properties array
-    unsigned int myCapacity;
-
-    // Size of the properties array (i.e. the number of <key,value> pairs)
-    unsigned int mySize;
+    // The text strings associated with each property type
+    static const char* ourPropertyNames[LastPropType];
 };
+
 #endif

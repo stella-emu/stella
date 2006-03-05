@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.79 2006-03-02 13:10:53 stephena Exp $
+// $Id: EventHandler.hxx,v 1.80 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -56,8 +56,8 @@ enum MouseButton {
 // Structure used for action menu items
 struct ActionList {
   Event::Type event;
-  string action;
-  string key;
+  const char* action;
+  char* key;
 };
 
 enum {
@@ -107,7 +107,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.79 2006-03-02 13:10:53 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.80 2006-03-05 01:18:42 stephena Exp $
 */
 class EventHandler
 {

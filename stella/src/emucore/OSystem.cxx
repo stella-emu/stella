@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.62 2006-03-02 13:10:53 stephena Exp $
+// $Id: OSystem.cxx,v 1.63 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -442,7 +442,7 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   Properties props;
   myPropSet->getMD5(md5, props);
 
-  string name = props.get("Cartridge.Name");
+  string name = props.get(Cartridge_Name);
   if(name == "Untitled")
   {
     // Get the filename from the rom pathname
@@ -450,8 +450,8 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
     if(pos+1 != string::npos)
     {
       name = rom.substr(pos+1);
-      props.set("Cartridge.MD5", md5);
-      props.set("Cartridge.Name", name);
+      props.set(Cartridge_MD5, md5);
+      props.set(Cartridge_Name, name);
       myPropSet->insert(props);
     }
   }

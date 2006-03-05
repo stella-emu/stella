@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.77 2006-03-01 14:26:40 stephena Exp $
+// $Id: Settings.cxx,v 1.78 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -27,7 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings(OSystem* osystem)
-    : myOSystem(osystem)
+  : myOSystem(osystem)
 {
   // Add this settings object to the OSystem
   myOSystem->attach(this);

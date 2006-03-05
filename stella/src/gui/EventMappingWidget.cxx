@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.13 2006-03-02 13:10:53 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.14 2006-03-05 01:18:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <sstream>
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
@@ -127,11 +129,12 @@ void EventMappingWidget::startRemapping()
   myCancelMapButton->setEnabled(true);
 
   // And show a message indicating which key is being remapped
-  string buf = "Select action for '" +
-               EventHandler::ourActionList[ myActionSelected ].action +
-               "' event";	 	
+  ostringstream buf;
+  buf << "Select action for '"
+      << EventHandler::ourActionList[ myActionSelected ].action
+      << "' event";	 	
   myKeyMapping->setColor(kTextColorEm);
-  myKeyMapping->setLabel(buf);
+  myKeyMapping->setLabel(buf.str());
 
   // Make sure that this widget receives all events,
   // and they aren't handled anywhere else
@@ -180,9 +183,10 @@ void EventMappingWidget::drawKeyMapping()
 {
   if(myActionSelected >= 0)
   {
-    string buf = "Action: " + EventHandler::ourActionList[ myActionSelected ].key;
+    ostringstream buf;
+    buf << "Action: " << EventHandler::ourActionList[ myActionSelected ].key;
     myKeyMapping->setColor(kTextColor);
-    myKeyMapping->setLabel(buf);
+    myKeyMapping->setLabel(buf.str());
   }
 }
 

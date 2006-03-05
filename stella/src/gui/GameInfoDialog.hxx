@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.15 2006-02-22 17:38:04 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.16 2006-03-05 01:18:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,12 +33,6 @@ class Properties;
 #include "Array.hxx"
 #include "Dialog.hxx"
 #include "Command.hxx"
-
-// Structure used for cartridge and controller types
-struct PropType {
-  string name;
-  string comparitor;
-};
 
 class GameInfoDialog : public Dialog, public CommandSender
 {
@@ -86,14 +80,20 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*    myPhosphor;
     PopUpWidget*    myHmoveBlanks;
 
+    // Structure used for cartridge and controller types
+    struct PropType {
+      const char* name;
+      const char* comparitor;
+    };
+
     /** Game properties for currently loaded ROM */
     Properties* myGameProperties;
 
     /** Holds static strings for Cartridge type */
-    static const PropType ourCartridgeList[21];
+    static const char* ourCartridgeList[21][2];
 
     /** Holds static strings for Controller type */
-    static const PropType ourControllerList[5];
+    static const char* ourControllerList[5][2];
 };
 
 #endif

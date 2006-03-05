@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.15 2006-01-15 20:46:20 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.16 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -157,9 +157,9 @@ void OSystemUNIX::mainLoop()
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
     cout << endl;
-    cout << "Cartridge Name: " << myConsole->properties().get("Cartridge.Name");
+    cout << "Cartridge Name: " << myConsole->properties().get(Cartridge_Name);
     cout << endl;
-    cout << "Cartridge MD5:  " << myConsole->properties().get("Cartridge.MD5");
+    cout << "Cartridge MD5:  " << myConsole->properties().get(Cartridge_MD5);
     cout << endl << endl;
   }
 }

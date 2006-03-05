@@ -786,6 +786,7 @@
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5340"
 "Cartridge.Rarity" "Uncommon"
+"Cartridge.Type" "E0"
 ""
 
 "Cartridge.MD5" "0890a5b089191f45d0f08dd1e3235687"
@@ -9080,6 +9081,7 @@
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AB-035-04"
 "Cartridge.Rarity" "Rare"
+"Cartridge.Type" "DPC"
 "Display.Height" "192"
 "Display.Width" "152"
 "Display.XStart" "8"
@@ -12650,6 +12652,7 @@
 "Cartridge.ModelNo" "4L-2737"
 "Cartridge.Note" "Set right difficulty to 'A' for Booster-Grip in both ports"
 "Cartridge.Rarity" "Uncommon"
+"Cartridge.Type" "FASC"
 "Console.RightDifficulty" "A"
 "Controller.Left" "Booster-Grip"
 "Controller.Right" "Booster-Grip"
@@ -14612,6 +14615,7 @@
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5080"
 "Cartridge.Rarity" "Rare"
+"Cartridge.Type" "E0"
 "Display.Height" "180"
 "Display.YStart" "47"
 "Display.Phosphor" "Yes"
@@ -15688,6 +15692,7 @@
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5320"
 "Cartridge.Rarity" "Uncommon"
+"Cartridge.Type" "E0"
 "Display.Height" "206"
 "Display.YStart" "37"
 ""
@@ -16132,6 +16137,7 @@
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5370"
 "Cartridge.Rarity" "Common"
+"Cartridge.Type" "E0"
 "Display.Phosphor" "Yes"
 ""
 
@@ -18115,7 +18121,7 @@
 
 "Cartridge.MD5" "df5cc5cccdc140eb7107f5b8adfacda1"
 "Cartridge.Name" "Lumberman by Cracker Jack Productions (Pac-Man Hack)"
-"Cartidge.Note" "Hack of Pac-Man (1981) (Atari)"
+"Cartridge.Note" "Hack of Pac-Man (1981) (Atari)"
 "Cartridge.Manufacturer" "Cracker Jack Productions"
 "Cartridge.Rarity" "New Release (Hack)"
 "Cartridge.Type" "4K"
@@ -20998,4 +21004,3 @@
 "Display.Width" "144"
 "Display.XStart" "8"
 ""
-

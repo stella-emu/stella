@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.cxx,v 1.5 2006-01-08 02:28:03 stephena Exp $
+// $Id: EventStreamer.cxx,v 1.6 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -62,7 +62,7 @@ bool EventStreamer::startRecording()
     return false;
 
   // And save the current state to it
-  string md5 = myOSystem->console().properties().get("Cartridge.MD5");
+  string md5 = myOSystem->console().properties().get(Cartridge_MD5);
   if(!myOSystem->console().system().saveState(md5, myStreamWriter))
     return false;
   myEventHistory.clear();
@@ -111,7 +111,7 @@ cerr << "EventStreamer::loadRecording()\n";
     return false;
 
   // Load ROM state
-  string md5 = myOSystem->console().properties().get("Cartridge.MD5");
+  string md5 = myOSystem->console().properties().get(Cartridge_MD5);
   if(!myOSystem->console().system().loadState(md5, myStreamReader))
     return false;
 

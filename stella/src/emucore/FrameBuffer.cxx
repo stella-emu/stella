@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.77 2006-01-20 13:45:45 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.78 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -132,7 +132,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 #ifdef DEVELOPER_SUPPORT
   if(&myOSystem->console())
   {
-    enablePhosphor(myOSystem->console().properties().get("Display.Phosphor", true) == "YES");
+    enablePhosphor(myOSystem->console().properties().get(Display_Phosphor) == "YES");
     setPalette(myOSystem->console().mediaSource().palette());
   }
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.65 2005-12-17 01:23:07 stephena Exp $
+// $Id: TIA.cxx,v 1.66 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -137,8 +137,8 @@ void TIA::reset()
   // Reset pixel pointer and drawing flag
   myFramePointer = myCurrentFrameBuffer;
 
-  myYStart = atoi(myConsole.properties().get("Display.YStart").c_str());
-  myHeight = atoi(myConsole.properties().get("Display.Height").c_str());
+  myYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
+  myHeight = atoi(myConsole.properties().get(Display_Height).c_str());
 
   // Calculate color clock offsets for starting and stoping frame drawing
   myStartDisplayOffset = 228 * myYStart;
@@ -218,12 +218,12 @@ void TIA::reset()
   myDumpDisabledCycle = 0;
 
   myAllowHMOVEBlanks = 
-      (myConsole.properties().get("Emulation.HmoveBlanks", true) == "YES");
+      (myConsole.properties().get(Emulation_HmoveBlanks) == "YES");
 
-  myFrameXStart = atoi(myConsole.properties().get("Display.XStart").c_str());
-  myFrameWidth = atoi(myConsole.properties().get("Display.Width").c_str());
-  myFrameYStart = atoi(myConsole.properties().get("Display.YStart").c_str());
-  myFrameHeight = atoi(myConsole.properties().get("Display.Height").c_str());
+  myFrameXStart = atoi(myConsole.properties().get(Display_XStart).c_str());
+  myFrameWidth  = atoi(myConsole.properties().get(Display_Width).c_str());
+  myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
+  myFrameHeight = atoi(myConsole.properties().get(Display_Height).c_str());
 
   // Make sure frameHeight is no less than 190 pixels
   // This is a hack for the onscreen menus
@@ -237,7 +237,7 @@ void TIA::reset()
     myFrameWidth = 160;
   }
 
-  if(myConsole.properties().get("Display.Format", true) == "PAL")
+  if(myConsole.properties().get(Display_Format) == "PAL")
   {
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;
@@ -688,8 +688,8 @@ void TIA::updateScanlineByTrace(int target)
 const uInt32* TIA::palette() const
 {
   // See which palette we should be using
-  string type   = mySettings.getString("palette");
-  string format = myConsole.properties().get("Display.Format", true);
+  const string& type   = mySettings.getString("palette");
+  const string& format = myConsole.properties().get(Display_Format);
 
   if(type == "standard")
     return (format == "PAL") ? ourPALPalette : ourNTSCPalette;

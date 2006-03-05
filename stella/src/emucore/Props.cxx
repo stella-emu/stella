@@ -13,21 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.11 2005-09-22 22:10:57 stephena Exp $
+// $Id: Props.cxx,v 1.12 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include <cctype>
 #include <algorithm>
 
+#include "GuiUtils.hxx"
 #include "Props.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Properties::Properties(const Properties* defaults)
+Properties::Properties()
 {
-  myDefaults = defaults;
-  myCapacity = 16;
-  myProperties = new Property[myCapacity];
-  mySize = 0;
+  setDefaults();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,85 +37,53 @@ Properties::Properties(const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Properties::~Properties()
 {
-  // Free the properties array
-  delete[] myProperties;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Properties::get(const string& key, bool useUppercase) const
+const string& Properties::get(PropertyType key) const
 {
-  string s;
-
-  // Try to find the named property and answer its value
-  for(uInt32 i = 0; i < mySize; ++i)
-  {
-    if(key == myProperties[i].key)
-    {
-      s = myProperties[i].value;
-      if(useUppercase)
-        transform(s.begin(), s.end(), s.begin(), (int(*)(int)) toupper);
-      return s;
-    }
-  }
-
-  // Oops, property wasn't found so ask defaults if we have one
-  if(myDefaults != 0)
-  {
-    // Ask the default properties object to find the key
-    s = myDefaults->get(key);
-    if(useUppercase)
-      transform(s.begin(), s.end(), s.begin(), (int(*)(int)) toupper);
-    return s;
-  } 
+  if(key >= 0 && key < LastPropType)
+    return myProperties[key];
   else
-  {
-    // No default properties object so just return the empty string
-    return "";
-  }
+    return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::set(const string& key, const string& value)
+void Properties::set(PropertyType key, const string& value)
 {
-  // See if the property already exists
-  for(uInt32 i = 0; i < mySize; ++i)
+  if(key >= 0 && key < LastPropType)
   {
-    if(key == myProperties[i].key)
+    myProperties[key] = value;
+
+    switch(key)
     {
-      myProperties[i].value = value;
-      return;
+      case Cartridge_Sound:
+      case Cartridge_Type:
+      case Console_LeftDifficulty:
+      case Console_RightDifficulty:
+      case Console_TelevisionType:
+      case Console_SwapPorts:
+      case Controller_Left:
+      case Controller_Right:
+      case Display_Format:
+      case Display_Phosphor:
+      case Emulation_HmoveBlanks:
+      {
+        transform(myProperties[key].begin(), myProperties[key].end(),
+                  myProperties[key].begin(), (int(*)(int)) toupper);
+        break;
+      }
+
+      default:
+        break;
     }
   }
-
-  // See if the array needs to be resized
-  if(mySize == myCapacity)
-  {
-    // Yes, so we'll make the array twice as large
-    Property* newProperties = new Property[myCapacity * 2];
-
-    for(uInt32 i = 0; i < mySize; ++i)
-    {
-      newProperties[i] = myProperties[i];
-    }
-
-    delete[] myProperties;
-
-    myProperties = newProperties;
-    myCapacity *= 2;
-  } 
-
-  // Add new property to the array
-  myProperties[mySize].key = key;
-  myProperties[mySize].value = value;
-
-  ++mySize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::load(istream& in)
 {
-  // Empty my property array
-  mySize = 0;
+  setDefaults();
 
   string line, key, value;
   string::size_type one, two, three, four, garbage;
@@ -152,7 +118,8 @@ void Properties::load(istream& in)
     value = line.substr(three + 1, four - three - 1);
 
     // Set the property 
-    set(key, value);
+    PropertyType type = getPropertyType(key);
+    set(type, value);
   }
 }
 
@@ -160,14 +127,14 @@ void Properties::load(istream& in)
 void Properties::save(ostream& out)
 {
   // Write out each of the key and value pairs
-  for(uInt32 i = 0; i < mySize; ++i)
+  for(int i = 0; i < LastPropType; ++i)
   {
     // Try to save some space by only saving the items that differ from default
-    if(myProperties[i].value !=  myDefaults->get(myProperties[i].key))
+    if(myProperties[i] != ourDefaultProperties[i])
     {
-      writeQuotedString(out, myProperties[i].key);
+      writeQuotedString(out, ourPropertyNames[i]);
       out.put(' ');
-      writeQuotedString(out, myProperties[i].value);
+      writeQuotedString(out, myProperties[i]);
       out.put('\n');
     }
   }
@@ -249,9 +216,6 @@ Properties& Properties::operator = (const Properties& properties)
   // Do the assignment only if this isn't a self assignment
   if(this != &properties)
   {
-    // Free the properties array
-    delete[] myProperties;
-
     // Now, make myself a copy of the given object
     copy(properties);
   }
@@ -262,28 +226,86 @@ Properties& Properties::operator = (const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::copy(const Properties& properties)
 {
-  // Remember the defaults to use
-  myDefaults = properties.myDefaults;
-
-  // Create an array of the same size as properties
-  myCapacity = properties.myCapacity;
-  myProperties = new Property[myCapacity];
-
   // Now, copy each property from properties
-  mySize = properties.mySize;
-  for(uInt32 i = 0; i < mySize; ++i)
-  {
+  for(int i = 0; i < LastPropType; ++i)
     myProperties[i] = properties.myProperties[i];
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::print()
 {
-  cout << get("Cartridge.MD5") << "|"
-       << get("Cartridge.Name") << "|"
-       << get("Cartridge.Rarity") << "|"
-       << get("Cartridge.Manufacturer") << "|"
-       << get("Cartridge.Note")
+  cout << get(Cartridge_MD5) << "|"
+       << get(Cartridge_Name) << "|"
+       << get(Cartridge_Rarity) << "|"
+       << get(Cartridge_Manufacturer) << "|"
+       << get(Cartridge_Note)
        << endl;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::setDefaults()
+{
+  for(int i = 0; i < LastPropType; ++i)
+    myProperties[i] = ourDefaultProperties[i];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PropertyType Properties::getPropertyType(const string& name)
+{
+  for(int i = 0; i < LastPropType; ++i)
+    if(ourPropertyNames[i] == name)
+      return (PropertyType)i;
+
+  // Otherwise, indicate that the item wasn't found
+  return LastPropType;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* Properties::ourDefaultProperties[LastPropType] = {
+  "",            // Cartridge.MD5
+  "",            // Cartridge.Manufacturer
+  "",            // Cartridge.ModelNo
+  "Untitled",    // Cartridge.Name
+  "",            // Cartridge.Note
+  "",            // Cartridge.Rarity
+  "MONO",        // Cartridge.Sound
+  "AUTO-DETECT", // Cartridge.Type
+  "B",           // Console.LeftDifficulty
+  "B",           // Console.RightDifficulty
+  "COLOR",       // Console.TelevisionType
+  "NO",          // Console.SwapPorts
+  "JOYSTICK",    // Controller.Left
+  "JOYSTICK",    // Controller.Right
+  "NTSC",        // Display.Format
+  "0",           // Display.XStart
+  "160",         // Display.Width
+  "34",          // Display.YStart
+  "210",         // Display.Height
+  "NO",          // Display.Phosphor
+  "YES"          // Emulation.HmoveBlanks
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* Properties::ourPropertyNames[LastPropType] = {
+  "Cartridge.MD5",
+  "Cartridge.Manufacturer",
+  "Cartridge.ModelNo",
+  "Cartridge.Name",
+  "Cartridge.Note",
+  "Cartridge.Rarity",
+  "Cartridge.Sound",
+  "Cartridge.Type",
+  "Console.LeftDifficulty",
+  "Console.RightDifficulty",
+  "Console.TelevisionType",
+  "Console.SwapPorts",
+  "Controller.Left",
+  "Controller.Right",
+  "Display.Format",
+  "Display.XStart",
+  "Display.Width",
+  "Display.YStart",
+  "Display.Height",
+  "Display.Phosphor",
+  "Emulation.HmoveBlanks"
+};

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.18 2005-12-23 20:48:50 stephena Exp $
+// $Id: Cart.cxx,v 1.19 2006-03-05 01:18:41 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -50,7 +50,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   Cartridge* cartridge = 0;
 
   // Get the type of the cartridge we're creating
-  string type = properties.get("Cartridge.Type", true);
+  string type = properties.get(Cartridge_Type);
 
   // See if we should try to auto-detect the cartridge type
   if(type == "AUTO-DETECT")
@@ -117,120 +117,70 @@ Cartridge::~Cartridge()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge::autodetectType(const uInt8* image, uInt32 size)
 {
-  // The following is a simple table mapping games to type's using MD5 values
-  struct MD5ToType
-  {
-    const char* md5;
-    const char* type;
-  };
-
-  static MD5ToType table[] = {
-    {"5336f86f6b982cc925532f2e80aa1e17", "E0"},    // Death Star
-    {"b311ab95e85bc0162308390728a7361d", "E0"},    // Gyruss
-    {"c29f8db680990cb45ef7fef6ab57a2c2", "E0"},    // Super Cobra
-    {"085322bae40d904f53bdcc56df0593fc", "E0"},    // Tutankamn
-    {"c7f13ef38f61ee2367ada94fdcc6d206", "E0"},    // Popeye
-    {"6339d28c9a7f92054e70029eb0375837", "E0"},    // Star Wars, Arcade
-    {"27c6a2ca16ad7d814626ceea62fa8fb4", "E0"},    // Frogger II
-    {"3347a6dd59049b15a38394aa2dafa585", "E0"},    // Montezuma's Revenge
-    {"6dda84fb8e442ecf34241ac0d1d91d69", "F6SC"},  // Dig Dug
-    {"57fa2d09c9e361de7bd2aa3a9575a760", "F8SC"},  // Stargate
-    {"3a771876e4b61d42e3a3892ad885d889", "F8SC"},  // Defender ][
-    {"efefc02bbc5258815457f7a5b8d8750a", "FASC"},  // Tunnel runner
-    {"7e51a58de2c0db7d33715f518893b0db", "FASC"},  // Mountain King
-    {"9947f1ebabb56fd075a96c6d37351efa", "FASC"},  // Omega Race
-    {"0443cfa9872cdb49069186413275fa21", "E7"},    // Burger Timer
-    {"76f53abbbf39a0063f24036d6ee0968a", "E7"},    // Bump-N-Jump
-    {"3b76242691730b2dd22ec0ceab351bc6", "E7"},    // He-Man
-    {"ac7c2260378975614192ca2bc3d20e0b", "FE"},    // Decathlon
-    {"4f618c2429138e0280969193ed6c107e", "FE"},    // Robot Tank
-    {"6d842c96d5a01967be9680080dd5be54", "DPC"},   // Pitfall II
-    {"d3bb42228a6cd452c111c1932503cc03", "UA"},    // Funky Fish
-    {"8bbfd951c89cc09c148bfabdefa08bec", "UA"},    // Pleiades
-    {(char*)0,                           (char*)0}
-  };
-
-  // Get the MD5 message-digest for the ROM image
-  string md5 = MD5(image, size);
-
-  // Take a closer look at the ROM image and try to figure out its type
+  // Guess type based on size
   const char* type = 0;
 
-  // First we'll see if it's type is listed in the table above
-  for(MD5ToType* entry = table; (entry->md5 != 0); ++entry)
+  if((size % 8448) == 0)
   {
-    if(entry->md5 == md5)
-    {
-      type = entry->type;
-      break;
-    }
+    type = "AR";
   }
-
-  // If we didn't find the type in the table then guess it based on size
-  if(type == 0)
+  else if((size == 2048) || (memcmp(image, image + 2048, 2048) == 0))
   {
-    if((size % 8448) == 0)
-    {
-      type = "AR";
-    }
-    else if((size == 2048) || (memcmp(image, image + 2048, 2048) == 0))
-    {
-      type = "2K";
-    }
-    else if((size == 4096) || (memcmp(image, image + 4096, 4096) == 0))
-    {
-      type = "4K";
-    }
-    else if((size == 8192) || (memcmp(image, image + 8192, 8192) == 0))
-    {
-      type = isProbably3F(image, size) ? "3F" : "F8";
-    }
-    else if((size == 10495) || (size == 10240))
-    {
-      type = "DPC";
-    }
-    else if(size == 12288)
-    {
-      type = "FASC";
-    }
-    else if(size == 32768)
-    {
-      // Assume this is a 32K super-cart then check to see if it is
-      type = "F4SC";
+    type = "2K";
+  }
+  else if((size == 4096) || (memcmp(image, image + 4096, 4096) == 0))
+  {
+    type = "4K";
+  }
+  else if((size == 8192) || (memcmp(image, image + 8192, 8192) == 0))
+  {
+    type = isProbably3F(image, size) ? "3F" : "F8";
+  }
+  else if((size == 10495) || (size == 10240))
+  {
+    type = "DPC";
+  }
+  else if(size == 12288)
+  {
+    type = "FASC";
+  }
+  else if(size == 32768)
+  {
+    // Assume this is a 32K super-cart then check to see if it is
+    type = "F4SC";
 
-      uInt8 first = image[0];
-      for(uInt32 i = 0; i < 256; ++i)
+    uInt8 first = image[0];
+    for(uInt32 i = 0; i < 256; ++i)
+    {
+      if(image[i] != first)
       {
-        if(image[i] != first)
-        {
-          // It's not a super cart (probably)
-          type = isProbably3F(image, size) ? "3F" : "F4";
-          break;
-        }
+        // It's not a super cart (probably)
+        type = isProbably3F(image, size) ? "3F" : "F4";
+        break;
       }
     }
-    else if(size == 65536)
-    {
-      type = isProbably3F(image, size) ? "3F" : "MB";
-    }
-    else if(size == 131072)
-    {
-      type = isProbably3F(image, size) ? "3F" : "MC";
-    }
-    else
-    {
-      // Assume this is a 16K super-cart then check to see if it is
-      type = "F6SC";
+  }
+  else if(size == 65536)
+  {
+    type = isProbably3F(image, size) ? "3F" : "MB";
+  }
+  else if(size == 131072)
+  {
+    type = isProbably3F(image, size) ? "3F" : "MC";
+  }
+  else
+  {
+    // Assume this is a 16K super-cart then check to see if it is
+    type = "F6SC";
 
-      uInt8 first = image[0];
-      for(uInt32 i = 0; i < 256; ++i)
+    uInt8 first = image[0];
+    for(uInt32 i = 0; i < 256; ++i)
+    {
+      if(image[i] != first)
       {
-        if(image[i] != first)
-        {
-          // It's not a super cart (probably)
-          type = isProbably3F(image, size) ? "3F" : "F6";
-          break;
-        }
+        // It's not a super cart (probably)
+        type = isProbably3F(image, size) ? "3F" : "F6";
+        break;
       }
     }
   }
@@ -289,31 +239,37 @@ Cartridge& Cartridge::operator = (const Cartridge&)
 // doesn't support bankswitching at all.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::bank(uInt16 b) {
+void Cartridge::bank(uInt16 b)
+{
   // do nothing.
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge::bank() {
+int Cartridge::bank()
+{
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge::bankCount() {
+int Cartridge::bankCount()
+{
   return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::patch(uInt16 address, uInt8 value) {
+bool Cartridge::patch(uInt16 address, uInt8 value)
+{
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::save(ofstream& out) {
+bool Cartridge::save(ofstream& out)
+{
   int size = -1;
 
   uInt8* image = getImage(size);
-  if(image == 0 || size <= 0) {
+  if(image == 0 || size <= 0)
+  {
     cerr << "save not supported" << endl;
     return false;
   }
@@ -325,8 +281,8 @@ bool Cartridge::save(ofstream& out) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge::getImage(int& size) {
+uInt8* Cartridge::getImage(int& size)
+{
   size = 0;
   return 0;
 }
-

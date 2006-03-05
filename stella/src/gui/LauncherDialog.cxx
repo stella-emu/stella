@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.39 2006-02-22 17:38:04 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.40 2006-03-05 01:18:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -283,8 +283,8 @@ void LauncherDialog::loadListFromDisk()
     // from the PropertiesSet (stella.pro)
     md5 = MD5FromFile(rom);
     instance()->propSet().getMD5(md5, props);
-    name = props.get("Cartridge.Name");
-    note = props.get("Cartridge.Note");
+    name = props.get(Cartridge_Name);
+    note = props.get(Cartridge_Note);
 
     // Indicate that this ROM doesn't have a properties entry
     myGameList->appendGame(rom, name, note);

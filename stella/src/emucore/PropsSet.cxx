@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.19 2006-03-03 19:58:35 stephena Exp $
+// $Id: PropsSet.cxx,v 1.20 2006-03-05 01:18:42 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 
+#include "GuiUtils.hxx"
+#include "DefProps.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 
@@ -26,8 +28,6 @@ PropertiesSet::PropertiesSet()
   : myRoot(NULL),
     mySize(0)
 {
-  myDefaultProperties = &defaultProperties();
-  loadInternalDefaults();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,40 +39,59 @@ PropertiesSet::~PropertiesSet()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::getMD5(const string& md5, Properties &properties)
 {
+  properties.setDefaults();
   bool found = false;
 
-  // Make sure tree isn't empty
-  if(myRoot == 0)
+  // First check our dynamic BST for the object
+  if(myRoot != 0)
   {
-	properties = myDefaultProperties;
-	return;
+    bool found = false;
+    TreeNode* current = myRoot;
+
+    while(current)
+    {
+      string currentMd5 = current->props->get(Cartridge_MD5);
+
+      if(currentMd5 == md5)
+      {
+        found = true;
+        break;
+      }
+      else
+      {
+        if(md5 < currentMd5)
+          current = current->left;
+        else 
+          current = current->right;
+      }
+    }
+
+    if(found)
+      properties = *(current->props);
   }
 
-  // Else, do a BST search for the node with the given md5
-  TreeNode* current = myRoot;
-
-  while(current)
+  // Otherwise, search the internal BST array
+  if(!found)
   {
-	string currentMd5 = current->props->get("Cartridge.MD5");
+    int i = 0;
+    while(i < ARRAYSIZE(DefProps))
+    {
+      int cmp = strncmp(md5.c_str(), DefProps[i][Cartridge_MD5], 32);
+      if(cmp == 0)
+      {
+        for(int p = 0; p < LastPropType; ++p)
+          if(DefProps[i][p] != "")
+            properties.set((PropertyType)p, DefProps[i][p]);
 
-	if(currentMd5 == md5)
-	{
-	  found = true;
-	  break;
-	}
-	else
-	{
-	  if(md5 < currentMd5)
-		current = current->left;
-	  else 
-		 current = current->right;
-	}
+        found = true;
+        break;
+      }
+      else if(cmp < 0)
+        i = 2*i + 1;   // left child
+      else
+        i = 2*i + 2;   // right child
+    }
   }
-
-  if(found)
-	properties = *(current->props);
-  else
-	properties = myDefaultProperties;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,8 +106,8 @@ void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties,
 {
   if(t)
   {
-    string md5 = properties.get("Cartridge.MD5");
-    string currentMd5 = t->props->get("Cartridge.MD5");
+    string md5 = properties.get(Cartridge_MD5);
+    string currentMd5 = t->props->get(Cartridge_MD5);
 
     if(md5 < currentMd5)
       insertNode(t->left, properties, save);
@@ -138,12 +157,12 @@ void PropertiesSet::load(const string& filename, bool save)
       break;
 
     // Get the property list associated with this profile
-    Properties properties(myDefaultProperties);
-    properties.load(in);
+    Properties prop;
+    prop.load(in);
 
     // If the stream is still good then insert the properties
     if(in)
-      insert(properties, save);
+      insert(prop, save);
   }
   if(in)
     in.close();
@@ -205,46 +224,3 @@ bool PropertiesSet::merge(const Properties& properties, const string& filename)
   else
     return false;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::loadInternalDefaults()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Properties& PropertiesSet::defaultProperties()
-{
-  // Make sure the <key,value> pairs are in the default properties object
-  ourDefaultProperties.set("Cartridge.Cheats", "");
-  ourDefaultProperties.set("Cartridge.Filename", "");
-  ourDefaultProperties.set("Cartridge.MD5", "");
-  ourDefaultProperties.set("Cartridge.Manufacturer", "");
-  ourDefaultProperties.set("Cartridge.ModelNo", "");
-  ourDefaultProperties.set("Cartridge.Name", "Untitled");
-  ourDefaultProperties.set("Cartridge.Note", "");
-  ourDefaultProperties.set("Cartridge.Rarity", "");
-  ourDefaultProperties.set("Cartridge.Sound", "Mono");
-  ourDefaultProperties.set("Cartridge.Type", "AUTO-DETECT");
-
-  ourDefaultProperties.set("Console.LeftDifficulty", "B");
-  ourDefaultProperties.set("Console.RightDifficulty", "B");
-  ourDefaultProperties.set("Console.TelevisionType", "Color");
-  ourDefaultProperties.set("Console.SwapPorts", "No");
-
-  ourDefaultProperties.set("Controller.Left", "Joystick");
-  ourDefaultProperties.set("Controller.Right", "Joystick");
-
-  ourDefaultProperties.set("Display.Format", "NTSC");
-  ourDefaultProperties.set("Display.XStart", "0");
-  ourDefaultProperties.set("Display.Width", "160");
-  ourDefaultProperties.set("Display.YStart", "34");
-  ourDefaultProperties.set("Display.Height", "210");
-  ourDefaultProperties.set("Display.Phosphor", "No");
-
-  ourDefaultProperties.set("Emulation.HmoveBlanks", "Yes");
-
-  return ourDefaultProperties;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Properties PropertiesSet::ourDefaultProperties;
