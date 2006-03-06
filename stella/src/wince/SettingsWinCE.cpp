@@ -26,7 +26,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsWinCE::SettingsWinCE(OSystem* osystem) : Settings(osystem) 
 {
-  set("romdir", (string) getcwd() + '\\');
+  setInternal("romdir", (string) getcwd() + '\\');
   setInt("wce_smartphone_paddlespeed", 3000);
 }
 

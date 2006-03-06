@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.10 2006-01-14 00:31:03 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.11 2006-03-06 21:41:58 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -117,9 +117,9 @@ void OSystemWin32::mainLoop()
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
     cout << endl;
-    cout << "Cartridge Name: " << myConsole->properties().get("Cartridge.Name");
+    cout << "Cartridge Name: " << myConsole->properties().get(Cartridge_Name);
     cout << endl;
-    cout << "Cartridge MD5:  " << myConsole->properties().get("Cartridge.MD5");
+    cout << "Cartridge MD5:  " << myConsole->properties().get(Cartridge_MD5);
     cout << endl << endl;
   }
 }
