@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.7 2006-03-02 13:10:53 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.8 2006-03-06 14:06:07 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -134,9 +134,9 @@ void OSystemGP2X::mainLoop()
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
     cout << endl;
-    cout << "Cartridge Name: " << myConsole->properties().get("Cartridge.Name");
+    cout << "Cartridge Name: " << myConsole->properties().get(Cartridge_Name);
     cout << endl;
-    cout << "Cartridge MD5:  " << myConsole->properties().get("Cartridge.MD5");
+    cout << "Cartridge MD5:  " << myConsole->properties().get(Cartridge_MD5);
     cout << endl << endl;
   }
 }

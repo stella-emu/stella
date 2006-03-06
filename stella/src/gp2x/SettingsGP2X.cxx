@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.cxx,v 1.6 2006-02-06 01:38:50 azaballa Exp $
+// $Id: SettingsGP2X.cxx,v 1.7 2006-03-06 14:06:07 stephena Exp $
 // Modified on 2006/02/05 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -27,14 +27,14 @@ SettingsGP2X::SettingsGP2X(OSystem* osystem)
   : Settings(osystem)
 {
   // Some of these settings might be redundant, but are crucial for GP2X
-  set("center", "true");
-  set("volume", "50");
-  set("sound", "true");
-  set("zoom", "1");
-  set("fragsize", "512");
-  set("tiafreq", "22050");
-  set("clipvol", "false");
-  set("joymouse", "true");
+  setInternal("center", "true");
+  setInternal("volume", "50");
+  setInternal("sound", "true");
+  setInternal("zoom", "1");
+  setInternal("fragsize", "512");
+  setInternal("tiafreq", "22050");
+  setInternal("clipvol", "false");
+  setInternal("joymouse", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
