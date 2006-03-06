@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.61 2006-01-08 13:55:03 stephena Exp $
+// $Id: mainSDL.cxx,v 1.62 2006-03-06 03:22:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
     {
       int bp = dbg.stringToValue(initBreak);
       dbg.setBreakPoint(bp, true);
-      theOSystem->settings().setString("break", "", false);
+      theOSystem->settings().setString("break", "");
     }
 
     if(theOSystem->settings().getBool("debug"))
