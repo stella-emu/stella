@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.9 2006-03-06 02:26:16 stephena Exp $
+// $Id: SettingsMACOSX.cxx,v 1.10 2006-03-06 15:42:27 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -57,14 +57,12 @@ void SettingsMACOSX::loadConfig()
   char cvalue[1024];
   
   // Write out each of the key and value pairs
-  for(uInt32 i = 0; i < mySize; ++i)
+  const SettingsArray& settings = getInternalSettings();
+  for(unsigned int i = 0; i < settings.size(); ++i)
   {
-    prefsGetString((char *) mySettings[i].key.c_str(), cvalue);
+    prefsGetString((char *) settings[i].key.c_str(), cvalue);
     if(cvalue[0] != 0)
-    {
-      mySettings[i].value.assign(cvalue);
-      mySettings[i].save = true;
-    }
+      setInternal(settings[i].key, cvalue, i, true);
   }
 }
 
@@ -72,13 +70,11 @@ void SettingsMACOSX::loadConfig()
 void SettingsMACOSX::saveConfig()
 {
   // Write out each of the key and value pairs
-  for(uInt32 i = 0; i < mySize; ++i)
+  const SettingsArray& settings = getInternalSettings();
+  for(unsigned int i = 0; i < settings.size(); ++i)
   {
-    if(mySettings[i].save)
-    {
-      prefsSetString((char *) mySettings[i].key.c_str(), 
-                     (char *) mySettings[i].value.c_str());
-    }
+    prefsSetString((char *) settings[i].key.c_str(),
+                   (char *) settings[i].value.c_str());
   }
   prefsSave();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.78 2006-03-05 01:18:42 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.79 2006-03-06 15:42:26 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -40,8 +40,6 @@
   #define INCL_WIN
   #include <os2emx.h>
 #endif
-
-#include "stella.xpm"   // The Stella icon
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem* osystem)
@@ -461,6 +459,8 @@ void FrameBuffer::setWindowTitle(const string& title)
 void FrameBuffer::setWindowIcon()
 {
 #ifndef MAC_OSX
+  #include "stella.xpm"   // The Stella icon
+
   // Set the window icon
   uInt32 w, h, ncols, nbytes;
   uInt32 rgba[256], icon[32 * 32];
