@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.8 2006-01-15 23:43:40 markgrebe Exp $
+// $Id: SettingsMACOSX.cxx,v 1.9 2006-03-06 02:26:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -32,17 +32,17 @@
 #include "SettingsMACOSX.hxx"
 
 extern "C" {
-void prefsSetString(char *key, char *value);
-void prefsGetString(char *key, char *value);
-void prefsSave(void);
+  void prefsSetString(char *key, char *value);
+  void prefsGetString(char *key, char *value);
+  void prefsSave(void);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsMACOSX::SettingsMACOSX(OSystem* osystem)
   : Settings(osystem)
 {
-  set("video", "gl");     // Use opengl mode by default
-  set("gl_lib", "libGL.so");
+  setInternal("video", "gl");        // Use opengl mode by default
+  setInternal("gl_lib", "libGL.so");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,11 +58,14 @@ void SettingsMACOSX::loadConfig()
   
   // Write out each of the key and value pairs
   for(uInt32 i = 0; i < mySize; ++i)
-	{
-	prefsGetString((char *) mySettings[i].key.c_str(),cvalue);
-	if (cvalue[0] != 0)
-		mySettings[i].value.assign(cvalue);
-	}
+  {
+    prefsGetString((char *) mySettings[i].key.c_str(), cvalue);
+    if(cvalue[0] != 0)
+    {
+      mySettings[i].value.assign(cvalue);
+      mySettings[i].save = true;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,11 +73,12 @@ void SettingsMACOSX::saveConfig()
 {
   // Write out each of the key and value pairs
   for(uInt32 i = 0; i < mySize; ++i)
+  {
     if(mySettings[i].save)
-		{
-		prefsSetString((char *) mySettings[i].key.c_str(), 
-					   (char *) mySettings[i].value.c_str());
-		}
-   prefsSave();
+    {
+      prefsSetString((char *) mySettings[i].key.c_str(), 
+                     (char *) mySettings[i].value.c_str());
+    }
+  }
+  prefsSave();
 }
-

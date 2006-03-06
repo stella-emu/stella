@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.78 2006-03-05 01:18:42 stephena Exp $
+// $Id: Settings.cxx,v 1.79 2006-03-06 02:26:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -32,64 +32,59 @@ Settings::Settings(OSystem* osystem)
   // Add this settings object to the OSystem
   myOSystem->attach(this);
 
-  // First create the settings array
-  myCapacity = 40;
-  mySettings = new Setting[myCapacity];
-  mySize = 0;
+  // Add options that are common to all versions of Stella
+  setInternal("video", "soft");
+  setInternal("dirtyrects", "true");
+  setInternal("ppblend", "77");
 
-  // Now fill it with options that are common to all versions of Stella
-  set("video", "soft");
-  set("dirtyrects", "true");
-  set("ppblend", "77");
+  setInternal("gl_filter", "nearest");
+  setInternal("gl_aspect", "2.0");
+  setInternal("gl_fsmax", "false");
+  setInternal("gl_lib", "");
 
-  set("gl_filter", "nearest");
-  set("gl_aspect", "2.0");
-  set("gl_fsmax", "false");
-  set("gl_lib", "");
+  setInternal("zoom", "2");
+  setInternal("fullscreen", "false");
+  setInternal("center", "true");
+  setInternal("grabmouse", "false");
+  setInternal("palette", "standard");
+  setInternal("debugheight", "0");
 
-  set("zoom", "2");
-  set("fullscreen", "false");
-  set("center", "true");
-  set("grabmouse", "false");
-  set("palette", "standard");
-  set("debugheight", "0");
+  setInternal("sound", "true");
+  setInternal("fragsize", "512");
+  setInternal("freq", "31400");
+  setInternal("tiafreq", "31400");
+  setInternal("volume", "100");
+  setInternal("clipvol", "true");
 
-  set("sound", "true");
-  set("fragsize", "512");
-  set("freq", "31400");
-  set("tiafreq", "31400");
-  set("volume", "100");
-  set("clipvol", "true");
+  setInternal("keymap", "");
+  setInternal("joymap", "");
+  setInternal("joyaxismap", "");
+  setInternal("joyhatmap", "");
+  setInternal("paddle", "0");
+  setInternal("sa1", "left");
+  setInternal("sa2", "right");
+  setInternal("joymouse", "false");
+  setInternal("p1speed", "50");
+  setInternal("p2speed", "50");
+  setInternal("p3speed", "50");
+  setInternal("p4speed", "50");
 
-  set("keymap", "");
-  set("joymap", "");
-  set("joyaxismap", "");
-  set("joyhatmap", "");
-  set("paddle", "0");
-  set("sa1", "left");
-  set("sa2", "right");
-  set("joymouse", "false");
-  set("p1speed", "50");
-  set("p2speed", "50");
-  set("p3speed", "50");
-  set("p4speed", "50");
+  setInternal("showinfo", "false");
 
-  set("showinfo", "false");
+  setInternal("ssdir", "");
+  setInternal("ssname", "romname");
+  setInternal("sssingle", "false");
 
-  set("ssdir", "");
-  set("ssname", "romname");
-  set("sssingle", "false");
-
-  set("romdir", "");
-  set("lastrom", "");
-  set("modtime", "");  // romdir last modification time
+  setInternal("romdir", "");
+  setInternal("lastrom", "");
+  setInternal("modtime", "");  // romdir last modification time
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::~Settings()
 {
-  // Free the settings array
-  delete[] mySettings;
+  myInternalSettings.clear();
+  myExternalSettings.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,8 +130,8 @@ void Settings::loadConfig()
       continue;
 
     // Only settings which have been previously set are valid
-    if(contains(key))
-      set(key, value);
+    if(int idx = getInternalPos(key) != -1)
+      setInternal(key, value, idx, true);
   }
 
   in.close();
@@ -163,27 +158,27 @@ bool Settings::loadCommandLine(int argc, char** argv)
     }
     else if(key == "listrominfo")
     {
-      set(key, "true", false);  // this confusing line means set 'listrominfo'
-      return true;              // to true, but don't save to the settings file
+      setExternal(key, "true");
+      return true;
     }
     else if(key == "debug") // this doesn't make Stella exit
     {
-      set(key, "true", false); // don't save this to the config file either
+      setExternal(key, "true");
       return true;
     }
     else if(key == "holdreset") // this doesn't make Stella exit
     {
-      set(key, "true", false); // don't save this to the config file either
+      setExternal(key, "true");
       return true;
     }
     else if(key == "holdselect") // this doesn't make Stella exit
     {
-      set(key, "true", false); // don't save this to the config file either
+      setExternal(key, "true");
       return true;
     }
     else if(key == "holdbutton0") // this doesn't make Stella exit
     {
-      set(key, "true", false); // don't save this to the config file either
+      setExternal(key, "true");
       return true;
     }
 
@@ -196,7 +191,10 @@ bool Settings::loadCommandLine(int argc, char** argv)
 
     // Settings read from the commandline must not be saved to 
     // the rc-file, unless they were previously set
-    set(key, value, false);
+    if(int idx = getInternalPos(key) != -1)
+      setInternal(key, value, idx, true);
+    else
+      setExternal(key, value);
   }
 
   return true;
@@ -210,57 +208,57 @@ void Settings::validate()
 
   s = getString("video");
   if(s != "soft" && s != "gl")
-    set("video", "soft");
+    setInternal("video", "soft");
 
 #ifdef DISPLAY_OPENGL
   s = getString("gl_filter");
   if(s != "linear" && s != "nearest")
-    set("gl_filter", "nearest");
+    setInternal("gl_filter", "nearest");
 
   float f = getFloat("gl_aspect");
   if(f < 1.1 || f > 2.0)
-    set("gl_aspect", "2.0");
+    setInternal("gl_aspect", "2.0");
 #endif
 
 #ifdef SOUND_SUPPORT
   i = getInt("fragsize");
   if(i != 256 && i != 512 && i != 1024 && i != 2048 && i != 4096)
   #ifdef WIN32
-    set("fragsize", "2048");
+    setInternal("fragsize", "2048");
   #else
-    set("fragsize", "512");
+    setInternal("fragsize", "512");
   #endif
 
   i = getInt("volume");
   if(i < 0 || i > 100)
-    set("volume", "100");
+    setInternal("volume", "100");
   i = getInt("freq");
   if(i < 0 || i > 48000)
-    set("freq", "31400");
+    setInternal("freq", "31400");
   i = getInt("tiafreq");
   if(i < 0 || i > 48000)
-    set("tiafreq", "31400");
+    setInternal("tiafreq", "31400");
 #endif
 
   i = getInt("zoom");
   if(i < 1 || i > 6)
-    set("zoom", "2");
+    setInternal("zoom", "2");
 
   i = getInt("paddle");
   if(i < 0 || i > 3)
-    set("paddle", "0");
+    setInternal("paddle", "0");
 
   s = getString("palette");
   if(s != "standard" && s != "original" && s != "z26")
-    set("palette", "standard");
+    setInternal("palette", "standard");
 
   i = getInt("ppblend");
-  if(i < 0) set("ppblend", "0");
-  if(i > 100) set("ppblend", "100");
+  if(i < 0) setInternal("ppblend", "0");
+  if(i > 100) setInternal("ppblend", "100");
 
   s = getString("romname");
   if(s != "romname" && s != "md5sum")
-    set("ssname", "romname");
+    setInternal("ssname", "romname");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,6 +363,22 @@ void Settings::usage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
+
+  // Do a quick scan of the internal settings to see if any have
+  // changed.  If not, we don't need to save them at all.
+  bool settingsChanged = false;
+  for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
+  {
+    if(myInternalSettings[i].value != myInternalSettings[i].initialValue)
+    {
+      settingsChanged = true;
+      break;
+    }
+  }
+
+  if(!settingsChanged)
+    return;
+
   ofstream out(myOSystem->configOutputFilename().c_str());
   if(!out || !out.is_open())
   {
@@ -388,153 +402,254 @@ void Settings::saveConfig()
       << ";" << endl;
 
   // Write out each of the key and value pairs
-  for(unsigned int i = 0; i < mySize; ++i)
-    if(mySettings[i].save)
-      out << mySettings[i].key << " = " << mySettings[i].value << endl;
+  for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
+  {
+    out << myInternalSettings[i].key << " = " <<
+           myInternalSettings[i].value << endl;
+  }
 
   out.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::set(const string& key, const string& value, bool save)
-{
-  // See if the setting already exists
-  for(unsigned int i = 0; i < mySize; ++i)
-  {
-    // If a key is already present in the array, then we assume
-    // that it was set by the emulation core and must be saved
-    // to the rc-file.
-    if(key == mySettings[i].key)
-    {
-      mySettings[i].value = value;
-      mySettings[i].save  = true;
-      return;
-    }
-  }
-
-  // See if the array needs to be resized
-  if(mySize == myCapacity)
-  {
-    // Yes, so we'll make the array twice as large
-    Setting* newSettings = new Setting[myCapacity * 2];
-
-    for(unsigned int i = 0; i < mySize; ++i)
-    {
-      newSettings[i] = mySettings[i];
-    }
-
-    delete[] mySettings;
-
-    mySettings = newSettings;
-    myCapacity *= 2;
-  } 
-
-  // Add new property to the array
-  mySettings[mySize].key   = key;
-  mySettings[mySize].value = value;
-  mySettings[mySize].save  = save;
-
-  ++mySize;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setInt(const string& key, const int value, bool save)
+void Settings::setInt(const string& key, const int value)
 {
   ostringstream stream;
   stream << value;
 
-  set(key, stream.str(), save);
+  if(int idx = getInternalPos(key) != -1)
+    setInternal(key, stream.str(), idx);
+  else
+    setExternal(key, stream.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setFloat(const string& key, const float value, bool save)
+void Settings::setFloat(const string& key, const float value)
 {
   ostringstream stream;
   stream << value;
 
-  set(key, stream.str(), save);
+  if(int idx = getInternalPos(key) != -1)
+    setInternal(key, stream.str(), idx);
+  else
+    setExternal(key, stream.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setBool(const string& key, const bool value, bool save)
+void Settings::setBool(const string& key, const bool value)
 {
   ostringstream stream;
   stream << value;
 
-  set(key, stream.str(), save);
+  if(int idx = getInternalPos(key) != -1)
+    setInternal(key, stream.str(), idx);
+  else
+    setExternal(key, stream.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setString(const string& key, const string& value, bool save)
+void Settings::setString(const string& key, const string& value)
 {
-  ostringstream stream;
-  stream << value;
-
-  set(key, stream.str(), save);
+  if(int idx = getInternalPos(key) != -1)
+    setInternal(key, value, idx);
+  else
+    setExternal(key, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Settings::getInt(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(unsigned int i = 0; i < mySize; ++i)
-    if(key == mySettings[i].key)
-      return (int) atoi(mySettings[i].value.c_str());
-
-  return 0;
+  int idx = -1;
+  if((idx = getInternalPos(key)) != -1)
+    return (int) atoi(myInternalSettings[idx].value.c_str());
+  else if((idx = getExternalPos(key)) != -1)
+    return (int) atoi(myExternalSettings[idx].value.c_str());
+  else
+    return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float Settings::getFloat(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(unsigned int i = 0; i < mySize; ++i)
-    if(key == mySettings[i].key)
-      return (float) atof(mySettings[i].value.c_str());
-
-  return -1.0;
+  int idx = -1;
+  if((idx = getInternalPos(key)) != -1)
+    return (float) atof(myInternalSettings[idx].value.c_str());
+  else if((idx = getExternalPos(key)) != -1)
+    return (float) atof(myExternalSettings[idx].value.c_str());
+  else
+    return -1.0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Settings::getBool(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(unsigned int i = 0; i < mySize; ++i)
+  int idx = -1;
+  if((idx = getInternalPos(key)) != -1)
   {
-    if(key == mySettings[i].key)
-    {
-      if(mySettings[i].value == "1" || mySettings[i].value == "true")
-        return true;
-      else if(mySettings[i].value == "0" || mySettings[i].value == "false")
-        return false;
-      else
-        return false;
-    }
+    if(myInternalSettings[idx].value == "1" ||
+       myInternalSettings[idx].value == "true")
+      return true;
+    else if(myInternalSettings[idx].value == "0" ||
+            myInternalSettings[idx].value == "false")
+      return false;
+    else
+      return false;
   }
-
-  return false;
+  else if((idx = getExternalPos(key)) != -1)
+  {
+    if(myInternalSettings[idx].value == "1" ||
+       myInternalSettings[idx].value == "true")
+      return true;
+    else if(myInternalSettings[idx].value == "0" ||
+            myInternalSettings[idx].value == "false")
+      return false;
+    else
+      return false;
+  }
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Settings::getString(const string& key) const
 {
   // Try to find the named setting and answer its value
-  for(unsigned int i = 0; i < mySize; ++i)
-    if(key == mySettings[i].key)
-      return mySettings[i].value;
-
-  return EmptyString;
+  int idx = -1;
+  if((idx = getInternalPos(key)) != -1)
+    return myInternalSettings[idx].value;
+  else if((idx = getExternalPos(key)) != -1)
+    return myExternalSettings[idx].value;
+  else
+    return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Settings::contains(const string& key)
+int Settings::getInternalPos(const string& key) const
 {
-  // Try to find the named setting
-  for(unsigned int i = 0; i < mySize; ++i)
-    if(key == mySettings[i].key)
-      return true;
+  for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
+    if(myInternalSettings[i].key == key)
+      return i;
 
-  return false;
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Settings::getExternalPos(const string& key) const
+{
+  for(unsigned int i = 0; i < myExternalSettings.size(); ++i)
+    if(myExternalSettings[i].key == key)
+      return i;
+
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Settings::setInternal(const string& key, const string& value,
+                          int pos, bool useAsInitial)
+{
+  int idx = -1;
+
+  if(pos != -1 && pos >= 0 && pos < (int)myInternalSettings.size() &&
+     myInternalSettings[pos].key == key)
+  {
+    idx = pos;
+  }
+  else
+  {
+    for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
+    {
+      if(myInternalSettings[i].key == key)
+      {
+        idx = i;
+        break;
+      }
+    }
+  }
+
+  if(idx != -1)
+  {
+    myInternalSettings[idx].key   = key;
+    myInternalSettings[idx].value = value;
+    if(useAsInitial) myInternalSettings[idx].initialValue = value;
+
+    /*cerr << "modify internal: key = " << key
+         << ", value = " << value
+         << " @ index = " << idx
+         << endl;*/
+  }
+  else
+  {
+    Setting setting;
+    setting.key   = key;
+    setting.value = value;
+    if(useAsInitial) setting.initialValue = value;
+
+    myInternalSettings.push_back(setting);
+    idx = myInternalSettings.size() - 1;
+
+    /*cerr << "insert internal: key = " << key
+         << ", value = " << value
+         << " @ index = " << idx
+         << endl;*/
+  }
+
+  return idx;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Settings::setExternal(const string& key, const string& value,
+                          int pos, bool useAsInitial)
+{
+  int idx = -1;
+
+  if(pos != -1 && pos >= 0 && pos < (int)myExternalSettings.size() &&
+     myExternalSettings[pos].key == key)
+  {
+    idx = pos;
+  }
+  else
+  {
+    for(unsigned int i = 0; i < myExternalSettings.size(); ++i)
+    {
+      if(myExternalSettings[i].key == key)
+      {
+        idx = i;
+        break;
+      }
+    }
+  }
+
+  if(idx != -1)
+  {
+    myExternalSettings[idx].key   = key;
+    myExternalSettings[idx].value = value;
+    if(useAsInitial) myExternalSettings[idx].initialValue = value;
+
+    /*cerr << "modify external: key = " << key
+         << ", value = " << value
+         << " @ index = " << idx
+         << endl;*/
+  }
+  else
+  {
+    Setting setting;
+    setting.key   = key;
+    setting.value = value;
+    if(useAsInitial) setting.initialValue = value;
+
+    myExternalSettings.push_back(setting);
+    idx = myExternalSettings.size() - 1;
+
+    /*cerr << "insert external: key = " << key
+         << ", value = " << value
+         << " @ index = " << idx
+         << endl;*/
+  }
+
+  return idx;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

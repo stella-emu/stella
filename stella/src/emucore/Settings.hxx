@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.26 2005-11-19 22:26:13 stephena Exp $
+// $Id: Settings.hxx,v 1.27 2006-03-06 02:26:16 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -21,6 +21,7 @@
 
 class OSystem;
 
+#include "Array.hxx"
 #include "bspf.hxx"
 
 
@@ -28,7 +29,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.26 2005-11-19 22:26:13 stephena Exp $
+  @version $Id: Settings.hxx,v 1.27 2006-03-06 02:26:16 stephena Exp $
 */
 class Settings
 {
@@ -113,59 +114,32 @@ class Settings
 
       @param key   The key of the setting
       @param value The value to assign to the setting
-      @param save  Whether this setting should be saved to the rc-file.
     */
-    void setInt(const string& key, const int value, bool save = true);
+    void setInt(const string& key, const int value);
 
     /**
       Set the value associated with key to the given value.
 
       @param key   The key of the setting
       @param value The value to assign to the setting
-      @param save  Whether this setting should be saved to the rc-file.
     */
-    void setFloat(const string& key, const float value, bool save = true);
+    void setFloat(const string& key, const float value);
 
     /**
       Set the value associated with key to the given value.
 
       @param key   The key of the setting
       @param value The value to assign to the setting
-      @param save  Whether this setting should be saved to the rc-file.
     */
-    void setBool(const string& key, const bool value, bool save = true);
+    void setBool(const string& key, const bool value);
 
     /**
       Set the value associated with key to the given value.
 
       @param key   The key of the setting
       @param value The value to assign to the setting
-      @param save  Whether this setting should be saved to the rc-file.
     */
-    void setString(const string& key, const string& value, bool save = true);
-
-  protected:
-    void set(const string& key, const string& value, bool save = true);
-
-    // The parent OSystem object
-    OSystem* myOSystem;
-
-    // Structure used for storing settings
-    struct Setting
-    {
-      string key;
-      string value;
-      bool save;
-    };
-
-    // Pointer to a dynamically allocated array of settings
-    Setting* mySettings;
-
-    // Size of the settings array (i.e. the number of <key,value> pairs)
-    unsigned int mySize;
-	
-    // Test whether the given setting is present in the array
-    bool contains(const string& key);
+    void setString(const string& key, const string& value);
 
   private:
     // Copy constructor isn't supported by this class so make it private
@@ -175,15 +149,49 @@ class Settings
     Settings& operator = (const Settings&);
 
     // Trim leading and following whitespace from a string
-    string trim(string& str)
+    static string trim(string& str)
     {
       string::size_type first = str.find_first_not_of(' ');
       return (first == string::npos) ? string() :
               str.substr(first, str.find_last_not_of(' ')-first+1);
     }
 
-    // Current capacity of the settings array
-    unsigned int myCapacity;
+  protected:
+    // The parent OSystem object
+    OSystem* myOSystem;
+
+    // Structure used for storing settings
+    struct Setting
+    {
+      string key;
+      string value;
+      string initialValue;
+    };
+    typedef Common::Array<Setting> SettingsArray;
+
+    const SettingsArray& getInternalSettings() const
+      { return myInternalSettings; }
+    const SettingsArray& getExternalSettings() const
+      { return myExternalSettings; }
+
+    /** Get position in specified array of 'key' */
+    int getInternalPos(const string& key) const;
+    int getExternalPos(const string& key) const;
+
+    /** Add key,value pair to specified array at specified position */
+    int setInternal(const string& key, const string& value,
+                    int pos = -1, bool useAsInitial = false);
+    int setExternal(const string& key, const string& value,
+                    int pos = -1, bool useAsInitial = false);
+
+  private:
+    // Holds key,value pairs that are necessary for Stella to
+    // function and must be saved on each program exit.
+    SettingsArray myInternalSettings;
+
+    // Holds auxiliary key,value pairs that shouldn't be saved on
+    // program exit.
+    SettingsArray myExternalSettings;
 };
 
 #endif

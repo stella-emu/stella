@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.7 2006-01-11 01:17:08 stephena Exp $
+// $Id: CheatManager.cxx,v 1.8 2006-03-06 02:26:15 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -288,7 +288,7 @@ void CheatManager::loadCheats(const string& md5sum)
   // (and remove the key from the settings, so they won't get set again)
   string cheats = myOSystem->settings().getString("cheat");
   if(cheats != "")
-    myOSystem->settings().setString("cheat", "", false);
+    myOSystem->settings().setString("cheat", "");
 
   CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
   if(iter == myCheatMap.end() && cheats == "")

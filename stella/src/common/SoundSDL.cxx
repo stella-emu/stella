@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.28 2006-01-06 00:31:55 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.29 2006-03-06 02:26:16 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -272,7 +272,7 @@ void SoundSDL::setChannels(uInt32 channels)
   if(channels == 1 || channels == 2)
   {
     myNumChannels = channels;
-    myOSystem->settings().setInt("channels", myNumChannels, false);
+    myOSystem->settings().setInt("channels", myNumChannels);
   }
 }
 

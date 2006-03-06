@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.40 2006-03-05 01:18:42 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.41 2006-03-06 02:26:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,7 +54,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     mySelectedItem(0)
 {
   const GUI::Font& font = instance()->launcherFont();
-//  const GUI::Font& font = instance()->font();
+
   const int fontHeight  = font.getFontHeight();
   const int bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4;
   const int bheight = font.getLineHeight() + 4;
