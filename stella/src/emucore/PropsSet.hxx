@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.12 2006-03-05 01:18:42 stephena Exp $
+// $Id: PropsSet.hxx,v 1.13 2006-03-06 21:38:09 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -155,9 +155,6 @@ class PropertiesSet
 
     // The size of the properties bst (i.e. the number of properties in it)
     uInt32 mySize;
-
-    // The default properties set
-    Properties myCurrentProperties;
 };
 
 #endif
