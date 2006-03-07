@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.41 2006-03-06 02:26:16 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.42 2006-03-07 18:56:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -457,7 +457,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         // Make sure the console creation actually succeeded
         if(instance()->createConsole(myGameList->rom(item)))
         {
+#if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
           instance()->settings().setString("lastrom", s);
+#endif
           close();
         }
       }
