@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.hxx,v 1.7 2005-12-09 01:16:13 stephena Exp $
+// $Id: GameList.hxx,v 1.8 2006-03-08 20:03:03 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -35,6 +35,7 @@ class GameList
       string _rom;
       string _name;
       string _note;
+      bool   _isdir;
     };
 
     typedef Common::Array<Entry> EntryList;
@@ -47,10 +48,12 @@ class GameList
     inline const string& rom(int i)  { return myArray[i]._rom; }
     inline const string& name(int i) { return myArray[i]._name; }
     inline const string& note(int i) { return myArray[i]._note; }
+    inline const bool isDir(int i)   { return myArray[i]._isdir; }
     inline int size() { return myArray.size(); }
 
     void clear() { myArray.clear(); }
-    void appendGame(const string& rom, const string& name, const string& note);
+    void appendGame(const string& rom, const string& name, const string& note,
+                    bool isDir = false);
     void sortByName();
 };
 

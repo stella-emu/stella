@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.14 2006-01-04 01:24:17 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.15 2006-03-08 20:03:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,6 +75,7 @@ class LauncherDialog : public Dialog
 
   private:
     void enableButtons(bool enable);
+    void loadDirListing(const string& path);
     void loadListFromDisk();
     void loadListFromCache();
     void createListCache();
@@ -82,6 +83,8 @@ class LauncherDialog : public Dialog
 
   private:
     int mySelectedItem;
+    bool myBrowseModeFlag; 
+    string myCurrentDir;
 
     enum {
       kStartCmd   = 'STRT',

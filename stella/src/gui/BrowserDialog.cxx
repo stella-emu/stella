@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.14 2006-02-22 17:38:04 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.15 2006-03-08 20:03:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -168,7 +168,12 @@ void BrowserDialog::updateListing()
   StringList list;
   int size = _nodeContent.size();
   for (int i = 0; i < size; i++)
-    list.push_back(_nodeContent[i].displayName());
+  {
+    if(_nodeContent[i].isDirectory())
+      list.push_back(" [" + _nodeContent[i].displayName() + "]");
+    else
+      list.push_back(_nodeContent[i].displayName());
+  }
 
   _fileList->setList(list);
   if(size > 0)

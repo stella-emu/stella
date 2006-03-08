@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.42 2006-03-07 18:56:36 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.43 2006-03-08 20:03:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,7 +51,9 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myList(NULL),
     myGameList(NULL),
     myProgressBar(NULL),
-    mySelectedItem(0)
+    mySelectedItem(0),
+    myBrowseModeFlag(false),
+    myCurrentDir("")
 {
   const GUI::Font& font = instance()->launcherFont();
 
@@ -135,7 +137,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myReloadButton);
     xpos += bwidth + 8;
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                   "Start", kStartCmd, 'Q');
+                                   "Play", kStartCmd, 'Q');
   myStartButton->setEditable(true);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
@@ -203,22 +205,30 @@ void LauncherDialog::updateListing(bool fullReload)
     return;
   }
 
-  // Figure out if the ROM dir has changed since we last accessed it.
-  // If so, we do a full reload from disk (takes quite some time).
-  // Otherwise, we can use the cache file (which is much faster).
-  string currentModTime = FilesystemNode::modTime(romdir);
-  string oldModTime = instance()->settings().getString("modtime");
-/*
-cerr << "old:     \'" << oldModTime     << "\'\n"
-     << "current: \'" << currentModTime << "\'\n"
-     << endl;
-*/
-  if(currentModTime != oldModTime)  // romdir has changed
-    loadListFromDisk();
-  else if(FilesystemNode::fileExists(cacheFile) && !fullReload)
-    loadListFromCache();
-  else  // we have no other choice
-    loadListFromDisk();
+  // If in ROM browse mode, just load the current directory and
+  // don't translate by md5sum at all
+  if(myBrowseModeFlag)
+  {
+    if(myCurrentDir == "")
+      myCurrentDir = romdir;
+
+    loadDirListing(myCurrentDir);
+  }
+  else
+  {
+    // Figure out if the ROM dir has changed since we last accessed it.
+    // If so, we do a full reload from disk (takes quite some time).
+    // Otherwise, we can use the cache file (which is much faster).
+    string currentModTime = FilesystemNode::modTime(romdir);
+    string oldModTime = instance()->settings().getString("modtime");
+
+    if(currentModTime != oldModTime)  // romdir has changed
+      loadListFromDisk();
+    else if(FilesystemNode::fileExists(cacheFile) && !fullReload)
+      loadListFromCache();
+    else  // we have no other choice
+      loadListFromDisk();
+  }
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
@@ -237,26 +247,53 @@ cerr << "old:     \'" << oldModTime     << "\'\n"
   // Restore last selection
   if(!myList->getList().isEmpty())
   {
-    string lastrom = instance()->settings().getString("lastrom");
-    if(lastrom == "")
+    if(myBrowseModeFlag)
       myList->setSelected(0);
     else
     {
-      unsigned int itemToSelect = 0;
-      StringList::const_iterator iter;
-      for (iter = myList->getList().begin(); iter != myList->getList().end();
-           ++iter, ++itemToSelect)
-      {
-        if (lastrom == *iter)
-        {
-          myList->setSelected(itemToSelect);
-          break;
-        }
-      }
-      if(itemToSelect > myList->getList().size())
+      string lastrom = instance()->settings().getString("lastrom");
+      if(lastrom == "")
         myList->setSelected(0);
+      else
+      {
+        unsigned int itemToSelect = 0;
+        StringList::const_iterator iter;
+        for (iter = myList->getList().begin(); iter != myList->getList().end();
+             ++iter, ++itemToSelect)
+        {
+          if (lastrom == *iter)
+          {
+            myList->setSelected(itemToSelect);
+            break;
+          }
+        }
+        if(itemToSelect > myList->getList().size())
+          myList->setSelected(0);
+      }
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::loadDirListing(const string& path)
+{
+cerr << "browse path = " << path << endl;
+
+  FilesystemNode dir(path);
+  FSList files = dir.listDir(FilesystemNode::kListAll);
+
+  for(unsigned int idx = 0; idx < files.size(); idx++)
+  {
+    string name = files[idx].displayName();
+    bool isDir = files[idx].isDirectory();
+    if(isDir)
+      name = " [" + name + "]";
+
+    myGameList->appendGame(files[idx].path(), name, "", isDir);
+  }
+
+  // Sort the list by rom name (since that's what we see in the listview)
+  myGameList->sortByName();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -264,7 +301,7 @@ void LauncherDialog::loadListFromDisk()
 {
   string romdir = instance()->settings().getString("romdir");
   FilesystemNode dir(romdir);
-  FSList files = dir.listDir(FilesystemNode::kListAll);
+  FSList files = dir.listDir(FilesystemNode::kListFilesOnly);
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
@@ -452,13 +489,17 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       item = myList->getSelected();
       if(item >= 0)
       {
-        string s = myList->getSelectedString();
-
-        // Make sure the console creation actually succeeded
-        if(instance()->createConsole(myGameList->rom(item)))
+        // Directory's should be selected (ie, enter them and redisplay)
+        if(myBrowseModeFlag && myGameList->isDir(item))
+        {
+          cerr << "enter \'" << myGameList->rom(item) << "\' directory\n";
+        }
+        else if(instance()->createConsole(myGameList->rom(item)))
         {
 #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
-          instance()->settings().setString("lastrom", s);
+          // Make sure the console creation actually succeeded
+          string selected = myList->getSelectedString();
+          instance()->settings().setString("lastrom", selected);
 #endif
           close();
         }

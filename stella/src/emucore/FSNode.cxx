@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.cxx,v 1.3 2005-06-16 00:55:58 stephena Exp $
+// $Id: FSNode.cxx,v 1.4 2006-03-08 20:03:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,10 +31,12 @@ void FSList::sort()
   {
     Int32 min = i;
     for (Int32 j = i+1; j < _size; j++)
+    {
       if (_data[j] < _data[min])
         min = j;
-      if (min != i)
-        SWAP(_data[min], _data[i]);
+    }
+    if (min != i)
+      SWAP(_data[min], _data[i]);
   }
 }
 

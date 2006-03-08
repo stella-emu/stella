@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cxx,v 1.6 2005-10-18 18:49:46 stephena Exp $
+// $Id: GameList.cxx,v 1.7 2006-03-08 20:03:03 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -38,12 +38,13 @@ GameList::~GameList()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameList::appendGame(const string& rom, const string& name,
-                          const string& note)
+                          const string& note, bool isDir)
 {
   Entry g;
-  g._rom  = rom;
-  g._name = name;
-  g._note = note;
+  g._rom   = rom;
+  g._name  = name;
+  g._note  = note;
+  g._isdir = isDir;
 
   myArray.push_back(g);
 }
@@ -55,7 +56,7 @@ void GameList::sortByName()
     return;
 
   // Simple selection sort
-  for(unsigned int i = 0; i < myArray.size()-1; i++)
+  for (unsigned int i = 0; i < myArray.size()-1; i++)
   {
     unsigned int min = i;
     for (unsigned int j = i+1; j < myArray.size(); j++)
@@ -68,8 +69,8 @@ void GameList::sortByName()
 
       if (atJ < atMin)
         min = j;
-      if (min != i)
-        SWAP(myArray[min], myArray[i]);
     }
+    if (min != i)
+      SWAP(myArray[min], myArray[i]);
   }
 }
