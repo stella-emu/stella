@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.10 2006-03-06 15:42:27 stephena Exp $
+// $Id: SettingsMACOSX.cxx,v 1.11 2006-03-09 03:16:30 markgrebe Exp $
 //============================================================================
 
 #include <cassert>
@@ -54,7 +54,7 @@ SettingsMACOSX::~SettingsMACOSX()
 void SettingsMACOSX::loadConfig()
 {
   string key, value;
-  char cvalue[1024];
+  char cvalue[2048];
   
   // Write out each of the key and value pairs
   const SettingsArray& settings = getInternalSettings();
