@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cxx,v 1.7 2006-03-08 20:03:03 stephena Exp $
+// $Id: GameList.cxx,v 1.8 2006-03-09 00:29:52 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -37,12 +37,12 @@ GameList::~GameList()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameList::appendGame(const string& rom, const string& name,
+void GameList::appendGame(const string& name, const string& path,
                           const string& note, bool isDir)
 {
   Entry g;
-  g._rom   = rom;
   g._name  = name;
+  g._path  = path;
   g._note  = note;
   g._isdir = isDir;
 

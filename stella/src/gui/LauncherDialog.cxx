@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.43 2006-03-08 20:03:03 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.44 2006-03-09 00:29:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -191,12 +191,10 @@ void LauncherDialog::updateListing(bool fullReload)
   // Start with empty list
   myGameList->clear();
 
-  string romdir = instance()->settings().getString("romdir");
-  string cacheFile = instance()->cacheFile();
-
   // If this is the first time using Stella, the romdir won't be set.
   // In that case, display the options dialog, and don't let Stella proceed
   // until the options are set.
+  string romdir = instance()->settings().getString("romdir");
   if(romdir == "")
   {
     myOptionsButton->setEnabled(true);
@@ -212,7 +210,7 @@ void LauncherDialog::updateListing(bool fullReload)
     if(myCurrentDir == "")
       myCurrentDir = romdir;
 
-    loadDirListing(myCurrentDir);
+    loadDirListing();
   }
   else
   {
@@ -224,7 +222,7 @@ void LauncherDialog::updateListing(bool fullReload)
 
     if(currentModTime != oldModTime)  // romdir has changed
       loadListFromDisk();
-    else if(FilesystemNode::fileExists(cacheFile) && !fullReload)
+    else if(FilesystemNode::fileExists(instance()->cacheFile()) && !fullReload)
       loadListFromCache();
     else  // we have no other choice
       loadListFromDisk();
@@ -275,11 +273,11 @@ void LauncherDialog::updateListing(bool fullReload)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::loadDirListing(const string& path)
+void LauncherDialog::loadDirListing()
 {
-cerr << "browse path = " << path << endl;
+cerr << "browse path = " << myCurrentDir << endl;
 
-  FilesystemNode dir(path);
+  FilesystemNode dir(myCurrentDir);
   FSList files = dir.listDir(FilesystemNode::kListAll);
 
   for(unsigned int idx = 0; idx < files.size(); idx++)
@@ -289,7 +287,7 @@ cerr << "browse path = " << path << endl;
     if(isDir)
       name = " [" + name + "]";
 
-    myGameList->appendGame(files[idx].path(), name, "", isDir);
+    myGameList->appendGame(name, files[idx].path(), "", isDir);
   }
 
   // Sort the list by rom name (since that's what we see in the listview)
@@ -306,25 +304,23 @@ void LauncherDialog::loadListFromDisk()
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
   ProgressDialog progress(this, instance()->launcherFont(),
-                          "Loading ROM's from disk ...");
+                          "Loading ROM info from disk ...");
   progress.setRange(0, files.size() - 1, 10);
 
   // Create a entry for the GameList for each file
   Properties props;
-  string path = dir.path(), rom, md5, name, note;
+  string md5, name, note;
   for (unsigned int idx = 0; idx < files.size(); idx++)
   {
-    rom = path + files[idx].displayName();
-
     // Calculate the MD5 so we can get the rest of the info
     // from the PropertiesSet (stella.pro)
-    md5 = MD5FromFile(rom);
+    md5 = MD5FromFile(files[idx].path());
     instance()->propSet().getMD5(md5, props);
     name = props.get(Cartridge_Name);
     note = props.get(Cartridge_Note);
 
     // Indicate that this ROM doesn't have a properties entry
-    myGameList->appendGame(rom, name, note);
+    myGameList->appendGame(name, files[idx].path(), note);
 
     // Update the progress bar, indicating one more ROM has been processed
     progress.setProgress(idx);
@@ -358,7 +354,7 @@ void LauncherDialog::loadListFromCache()
   // It seems terribly ugly that we need to use char arrays
   // instead of strings.  Or maybe I don't know the correct way ??
   char buf[2048];
-  string line, rom, name, note;
+  string line, name, path, note;
   string::size_type pos1, pos2;  // The locations of the two '|' characters
 
   // Keep reading until all lines have been inspected
@@ -373,13 +369,13 @@ void LauncherDialog::loadListFromCache()
     pos2 = line.find("|", pos1+1);
     if(pos2 == string::npos) continue;
 
-    rom  = line.substr(0, pos1);
+    path = line.substr(0, pos1);
     name = line.substr(pos1+1, pos2-pos1-1);
     note = line.substr(pos2+1);
 
     // Add this game to the list
     // We don't do sorting, since it's assumed to be done by loadListFromDisk()
-    myGameList->appendGame(rom, name, note);
+    myGameList->appendGame(name, path, note);
   }    
 }
 
@@ -392,7 +388,7 @@ void LauncherDialog::createListCache()
   // Write the gamelist to the cachefile (sorting is already done)
   for (int i = 0; i < (int) myGameList->size(); ++i)
   {
-    out << myGameList->rom(i)  << "|"
+    out << myGameList->path(i)  << "|"
         << myGameList->name(i) << "|"
         << myGameList->note(i)
         << endl;
@@ -489,17 +485,20 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       item = myList->getSelected();
       if(item >= 0)
       {
+        string entry = myGameList->path(item);
+
         // Directory's should be selected (ie, enter them and redisplay)
         if(myBrowseModeFlag && myGameList->isDir(item))
         {
-          cerr << "enter \'" << myGameList->rom(item) << "\' directory\n";
+          myCurrentDir = entry;
+          updateListing();
         }
-        else if(instance()->createConsole(myGameList->rom(item)))
+        else if(instance()->createConsole(entry))
         {
 #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
           // Make sure the console creation actually succeeded
-          string selected = myList->getSelectedString();
-          instance()->settings().setString("lastrom", selected);
+          instance()->settings().setString("lastrom",
+              myList->getSelectedString());
 #endif
           close();
         }
