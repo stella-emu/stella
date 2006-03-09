@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.8 2006-02-22 17:38:04 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.9 2006-03-09 17:04:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,6 +53,7 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
 
     // Rom path controls
     StaticTextWidget* myRomPath;
+    CheckboxWidget*   myBrowseCheckbox;
 
     // Snapshot controls
     StaticTextWidget* mySnapPath;

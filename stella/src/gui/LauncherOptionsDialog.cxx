@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.14 2006-02-22 17:38:04 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.15 2006-03-09 17:04:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,11 +59,16 @@ LauncherOptionsDialog::LauncherOptionsDialog(
                                    _w - xpos - 10, font.getLineHeight(),
                                    "", kTextAlignLeft);
 
+  // Use ROM browse mode
+  xpos = 30;  ypos += myRomPath->getHeight() + 8;
+  myBrowseCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                        "Browse folders");
+
   // 2) The snapshot settings tab
   myTab->addTab(" Snapshot Settings ");
 
   // Snapshot path
-  xpos = 15;
+  xpos = 15;  ypos = vBorder + 5;
   new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
                    kChooseSnapDirCmd, 0);
   xpos += bwidth + 20;
@@ -82,7 +87,7 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   mySnapTypePopup->appendEntry("md5sum", 2);
 
   // Snapshot single or multiple saves
-  xpos = 30;  ypos += mySnapTypePopup->getHeight() + 8;
+  xpos = 30;  ypos += mySnapTypePopup->getHeight() + 5;
   mySnapSingleCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                             "Multiple snapshots");
 
@@ -127,6 +132,9 @@ void LauncherOptionsDialog::loadConfig()
   s = instance()->settings().getString("romdir");
   myRomPath->setLabel(s);
 
+  b = instance()->settings().getBool("rombrowse");
+  myBrowseCheckbox->setState(b);
+
   s = instance()->settings().getString("ssdir");
   mySnapPath->setLabel(s);
 
@@ -152,6 +160,9 @@ void LauncherOptionsDialog::saveConfig()
 
   s  = myRomPath->getLabel();
   instance()->settings().setString("romdir", s);
+
+  b = myBrowseCheckbox->getState();
+  instance()->settings().setBool("rombrowse", b);
 
   s = mySnapPath->getLabel();
   instance()->settings().setString("ssdir", s);
@@ -195,6 +206,7 @@ void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd,
     case kOKCmd:
       saveConfig();
       close();
+      sendCommand(kBrowseChangedCmd, 0, 0); // Call this before refreshing ROMs
       sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
       break;
 

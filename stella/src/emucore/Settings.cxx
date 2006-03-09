@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.79 2006-03-06 02:26:16 stephena Exp $
+// $Id: Settings.cxx,v 1.80 2006-03-09 17:04:01 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -76,6 +76,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("sssingle", "false");
 
   setInternal("romdir", "");
+  setInternal("rombrowse", "false");
   setInternal("lastrom", "");
   setInternal("modtime", "");  // romdir last modification time
 }

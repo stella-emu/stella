@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.44 2006-03-09 00:29:52 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.45 2006-03-09 17:04:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,8 +45,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     myStartButton(NULL),
+    myRelPrevButton(NULL),
     myOptionsButton(NULL),
-    myReloadButton(NULL),
     myQuitButton(NULL),
     myList(NULL),
     myGameList(NULL),
@@ -100,44 +100,44 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 10;  ypos += myNote->getHeight() + 4;
 #ifndef MAC_OSX
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Play", kStartCmd, 'S');
+                                  "Play", kStartCmd, 0);
   myStartButton->setEditable(true);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
+  myRelPrevButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                      "", kRelPrevCmd, 0);
+  myRelPrevButton->setEditable(true);
+  wid.push_back(myRelPrevButton);
+    xpos += bwidth + 8;
   myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd, 'O');
+                                     "Options", kOptionsCmd, 0);
   myOptionsButton->setEditable(true);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
-  myReloadButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                    "Reload", kReloadCmd, 'R');
-  myReloadButton->setEditable(true);
-  wid.push_back(myReloadButton);
-    xpos += bwidth + 8;
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Quit", kQuitCmd, 'Q');
+                                  "Quit", kQuitCmd, 0);
   myQuitButton->setEditable(true);
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
   mySelectedItem = 0;  // Highlight 'Play' button
 #else
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Quit", kQuitCmd, 'Q');
+                                  "Quit", kQuitCmd, 0);
   myQuitButton->setEditable(true);
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
   myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd, 'O');
+                                     "Options", kOptionsCmd, 0);
   myOptionsButton->setEditable(true);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
-  myReloadButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                    "Reload", kReloadCmd, 'R');
-  myReloadButton->setEditable(true);
-  wid.push_back(myReloadButton);
+  myRel_PrevButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                      "", kRelPrevCmd, 0);
+  myRel_PrevButton->setEditable(true);
+  wid.push_back(myRel_PrevButton);
     xpos += bwidth + 8;
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                   "Play", kStartCmd, 'Q');
+                                   "Play", kStartCmd, 0);
   myStartButton->setEditable(true);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
@@ -154,6 +154,10 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myGameList = new GameList();
 
   addToFocusList(wid);
+
+  // (De)activate browse mode
+  myBrowseModeFlag = instance()->settings().getBool("rombrowse");
+  myRelPrevButton->setLabel(myBrowseModeFlag ? "Go Up" : "Reload");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,8 +182,8 @@ void LauncherDialog::loadConfig()
 void LauncherDialog::enableButtons(bool enable)
 {
   myStartButton->setEnabled(enable);
+  myRelPrevButton->setEnabled(enable);
   myOptionsButton->setEnabled(enable);
-  myReloadButton->setEnabled(enable);
   myQuitButton->setEnabled(enable);
 }
 
@@ -509,9 +513,13 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       parent()->addDialog(myOptions);
       break;
 
-    case kReloadCmd:
-      updateListing(true);  // force a reload from disk
+    case kRelPrevCmd:
+    {
+      FilesystemNode dir(myCurrentDir);
+      myCurrentDir = dir.getParent().path();
+      updateListing(!myBrowseModeFlag);  // Force full update in non-browse mode
       break;
+    }
 
     case kListSelectionChangedCmd:
       item = myList->getSelected();
@@ -525,7 +533,13 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kRomDirChosenCmd:
+      myCurrentDir = instance()->settings().getString("romdir");
       updateListing();
+      break;
+
+    case kBrowseChangedCmd:
+      myBrowseModeFlag = instance()->settings().getBool("rombrowse");
+      myRelPrevButton->setLabel(myBrowseModeFlag ? "Go Up" : "Reload");
       break;
 
     default:

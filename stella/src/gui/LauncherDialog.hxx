@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.16 2006-03-09 00:29:52 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.17 2006-03-09 17:04:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,7 +39,8 @@ enum {
   kChooseRomDirCmd  = 'roms',  // rom select
   kChooseSnapDirCmd = 'snps',  // snap select
   kRomDirChosenCmd  = 'romc',  // rom chosen
-  kSnapDirChosenCmd = 'snpc'   // snap chosen
+  kSnapDirChosenCmd = 'snpc',  // snap chosen
+  kBrowseChangedCmd = 'broc'   // browse mode toggled
 };
 
 class LauncherDialog : public Dialog
@@ -61,8 +62,8 @@ class LauncherDialog : public Dialog
 
   protected:
     ButtonWidget* myStartButton;
+    ButtonWidget* myRelPrevButton;
     ButtonWidget* myOptionsButton;
-    ButtonWidget* myReloadButton;
     ButtonWidget* myQuitButton;
 
     StringListWidget* myList;
@@ -88,8 +89,8 @@ class LauncherDialog : public Dialog
 
     enum {
       kStartCmd   = 'STRT',
+      kRelPrevCmd = 'REPV',
       kOptionsCmd = 'OPTI',
-      kReloadCmd  = 'RELO',
       kQuitCmd    = 'QUIT'
     };
 };
