@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>bin</string>
+				<string>BIN</string>
+				<string>rom</string>
+				<string>ROM</string>
+				<string>zip</string>
+				<string>ZIP</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Atari 2600 Cartridge File</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>Cart</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>StellaOSX</string>
+	<key>CFBundleGetInfoString</key>
+	<string>2.1.0a</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>docs</string>
+	<key>CFBundleHelpBookName</key>
+	<string>docs</string>
+	<key>CFBundleIconFile</key>
+	<string>Stella</string>
+	<key>CFBundleIdentifier</key>
+	<string>StellaOSX2.1</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>StellaOSX 2.1.0a</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>StLa</string>
+	<key>CFBundleVersion</key>
+	<string>2.1.0a</string>
+	<key>NSMainNibFile</key>
+	<string>SDLMain.nib</string>
+	<key>NSPrincipalClass</key>
+	<string>SDLApplication</string>
+	<key>«PROJECTNAMEASXML»</key>
+	<string>SDL Cocoa App</string>
+</dict>
+</plist>
