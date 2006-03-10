@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.46 2006-03-10 00:29:46 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.47 2006-03-10 01:20:04 markgrebe Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -131,10 +131,10 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myOptionsButton->setEditable(true);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
-  myRel_PrevButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+  myRelPrevButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                       "", kRelPrevCmd, 0);
-  myRel_PrevButton->setEditable(true);
-  wid.push_back(myRel_PrevButton);
+  myRelPrevButton->setEditable(true);
+  wid.push_back(myRelPrevButton);
     xpos += bwidth + 8;
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                    "Play", kStartCmd, 0);
