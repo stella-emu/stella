@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.hxx,v 1.9 2006-03-09 00:29:52 stephena Exp $
+// $Id: GameList.hxx,v 1.10 2006-03-10 00:29:46 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -38,24 +38,32 @@ class GameList
       bool   _isdir;
     };
 
-    typedef Common::Array<Entry> EntryList;
+    typedef Common::Array<Entry*> EntryList;
     EntryList myArray;
 
   public:
     GameList();
     ~GameList();
 
-    inline const string& name(int i) { return myArray[i]._name; }
-    inline const string& path(int i) { return myArray[i]._path; }
-    inline const string& note(int i) { return myArray[i]._note; }
-    inline const bool isDir(int i)   { return myArray[i]._isdir; }
+    inline const string& name(int i)
+    { return i < (int)myArray.size() ? myArray[i]->_name : EmptyString; }
+    inline const string& path(int i)
+    { return i < (int)myArray.size() ? myArray[i]->_path : EmptyString; }
+    inline const string& note(int i)
+    { return i < (int)myArray.size() ? myArray[i]->_note : EmptyString; }
+    inline const bool isDir(int i)
+    { return i < (int)myArray.size() ? myArray[i]->_isdir: false; }
 
     inline int size() { return myArray.size(); }
+    void clear();
 
-    void clear() { myArray.clear(); }
     void appendGame(const string& name, const string& path, const string& note,
                     bool isDir = false);
     void sortByName();
+
+  private:
+    static void QuickSort(EntryList& list, int l, int r);
+    inline static int compare(const string& s1, const string& s2);
 };
 
 #endif

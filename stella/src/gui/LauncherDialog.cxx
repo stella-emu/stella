@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.45 2006-03-09 17:04:01 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.46 2006-03-10 00:29:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -279,8 +279,6 @@ void LauncherDialog::updateListing(bool fullReload)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadDirListing()
 {
-cerr << "browse path = " << myCurrentDir << endl;
-
   FilesystemNode dir(myCurrentDir);
   FSList files = dir.listDir(FilesystemNode::kListAll);
 
