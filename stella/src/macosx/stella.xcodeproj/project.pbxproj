@@ -1745,6 +1745,7 @@
 					../../../../debugger,
 					./gui,
 					../gui,
+					./libpng,
 					.,
 				);
 				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
@@ -1807,6 +1808,7 @@
 					../../../../debugger,
 					./gui,
 					../gui,
+					./libpng,
 					.,
 				);
 				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
