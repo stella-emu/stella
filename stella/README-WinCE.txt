@@ -11,9 +11,8 @@ Installing and Running:
 First create a directory for PocketStella, and copy the executable in it.
 Get the zlib for Windows CE (use the link at the bottom of this file).
 You should extract zlibce.dll (ARM targets) into the same directory.
-You also need the stella.pro file. Also create a subdirectory called 
-"Roms" (without the quotes, of course). You should place your rom files
-there. You can run Stella now.
+Also create a subdirectory called "Roms" (without the quotes, of course).
+You should place your rom files there. You can run Stella now.
 A Heads up ; PocketStella scans the rom files the first time it's run.
 Depending on the number of rom files, this may take from a few seconds
 to half an hour. Be patient. You can transfer the stella.cache file
