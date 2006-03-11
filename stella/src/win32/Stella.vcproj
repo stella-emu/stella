@@ -416,6 +416,9 @@ libpng.lib
 				RelativePath="..\emucore\m6502\src\M6502Hi.cxx">
 			</File>
 			<File
+				RelativePath="..\emucore\m6502\src\M6502Low.cxx">
+			</File>
+			<File
 				RelativePath="..\emucore\M6532.cxx">
 			</File>
 			<File
@@ -766,6 +769,9 @@ libpng.lib
 				RelativePath="..\debugger\DebuggerParser.hxx">
 			</File>
 			<File
+				RelativePath="..\emucore\DefProps.hxx">
+			</File>
+			<File
 				RelativePath="..\emucore\Deserializer.hxx">
 			</File>
 			<File
@@ -908,6 +914,9 @@ libpng.lib
 			</File>
 			<File
 				RelativePath="..\emucore\m6502\src\M6502Hi.hxx">
+			</File>
+			<File
+				RelativePath="..\emucore\m6502\src\M6502Low.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\M6532.hxx">
