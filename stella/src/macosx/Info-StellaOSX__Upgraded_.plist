@@ -16,6 +16,8 @@
 				<string>zip</string>
 				<string>ZIP</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Cart</string>
 			<key>CFBundleTypeName</key>
 			<string>Atari 2600 Cartridge File</string>
 			<key>CFBundleTypeOSTypes</key>

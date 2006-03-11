@@ -334,6 +334,7 @@
 		2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D17D98E08BC398400E47F69 /* ApplicationServices.framework */; };
 		2D91751409BA90380026E9FF /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D4764C806683C5F00F63D87 /* SDL.framework */; };
 		2D91753809BA91BC0026E9FF /* StellaOSX.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 2D91753709BA91BC0026E9FF /* StellaOSX.xcconfig */; };
+		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -664,6 +665,7 @@
 		2DEF21F908BC033500B246B4 /* CheckListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheckListWidget.hxx; path = ../gui/CheckListWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StringListWidget.cxx; path = ../gui/StringListWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StringListWidget.hxx; path = ../gui/StringListWidget.hxx; sourceTree = SOURCE_ROOT; };
+		2DEFB40B09C3386F00754289 /* Cart.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Cart.icns; sourceTree = SOURCE_ROOT; };
 		2DF971C70892CEA400F64D23 /* BinAndExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BinAndExpression.cxx; path = ../debugger/BinAndExpression.cxx; sourceTree = SOURCE_ROOT; };
 		2DF971C80892CEA400F64D23 /* BinAndExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BinAndExpression.hxx; path = ../debugger/BinAndExpression.hxx; sourceTree = SOURCE_ROOT; };
 		2DF971C90892CEA400F64D23 /* BinNotExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BinNotExpression.cxx; path = ../debugger/BinNotExpression.cxx; sourceTree = SOURCE_ROOT; };
@@ -825,6 +827,7 @@
 			children = (
 				2D113E090672BF2100317017 /* ../../docs */,
 				2D16A8E106324136005DF364 /* Stella.icns */,
+				2DEFB40B09C3386F00754289 /* Cart.icns */,
 				2D7B4F6C063B513200579B93 /* Credits.html */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				B2F367C504C7ADC700A80002 /* SDLMain.nib */,
@@ -1498,6 +1501,7 @@
 				2D91747109BA90380026E9FF /* ../../docs in Resources */,
 				2D91747209BA90380026E9FF /* AboutBox.nib in Resources */,
 				2D91753809BA91BC0026E9FF /* StellaOSX.xcconfig in Resources */,
+				2DEFB40C09C3386F00754289 /* Cart.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
