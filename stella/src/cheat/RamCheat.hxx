@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamCheat.hxx,v 1.1 2005-11-11 21:44:18 stephena Exp $
+// $Id: RamCheat.hxx,v 1.2 2006-03-11 21:22:47 stephena Exp $
 //============================================================================
 
 #ifndef RAM_CHEAT_HXX
@@ -25,7 +25,7 @@ class RamCheat : public Cheat
 {
   public:
     RamCheat(OSystem* os, const string& name, const string& code);
-    ~RamCheat();
+    virtual ~RamCheat();
 
     virtual bool enable();
     virtual bool disable();

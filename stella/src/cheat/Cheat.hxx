@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cheat.hxx,v 1.3 2005-12-18 18:37:01 stephena Exp $
+// $Id: Cheat.hxx,v 1.4 2006-03-11 21:22:47 stephena Exp $
 //============================================================================
 
 #ifndef CHEAT_HXX
@@ -35,7 +35,7 @@ class Cheat
       if(name == "") myName = code;
       myName = StringList::removePattern(myName, "\":");
     }
-    virtual ~Cheat()     { }
+    virtual ~Cheat() { }
 
     bool enabled() const { return myEnabled; }
     const string& name() const { return myName; }

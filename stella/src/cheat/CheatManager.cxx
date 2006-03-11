@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.8 2006-03-06 02:26:15 stephena Exp $
+// $Id: CheatManager.cxx,v 1.9 2006-03-11 21:22:47 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -126,8 +126,8 @@ void CheatManager::addOneShot(const string& name, const string& code)
   if(!cheat)
     return;
 
-  // Enable this cheat once, and then immediately delete it
-  cheat->enable();
+  // Evaluate this cheat once, and then immediately delete it
+  cheat->evaluate();
   delete cheat;
 }
 
