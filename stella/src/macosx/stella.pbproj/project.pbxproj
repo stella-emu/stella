@@ -238,11 +238,11 @@
 				DEBUGGING_SYMBOLS = NO;
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" .";
 				GCC_VERSION = 3.3;
-				HEADER_SEARCH_PATHS = "./SDL.framework/Headers ../emucore ../emucore/m6502/src/bspf/src ../emucore/m6502/src ../ui/sound ../common ../debugger ../debugger/gui ../yacc ../../../../debugger ./gui ../gui .";
+				HEADER_SEARCH_PATHS = "./SDL.framework/Headers ../emucore ../emucore/m6502/src/bspf/src ../emucore/m6502/src ../common ../debugger ../debugger/gui ../cheat ../yacc ../gui .";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = .;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-DMAC_OSX -DJOYSTICK_SUPPORT -DSOUND_SUPPORT -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST -DDEVELOPER_SUPPORT -DHAVE_GETTIMEOFDAY -DSNAPSHOT_SUPPORT -DBSPF_MAC_OSX -DHAVE_INTTYPES ";
+				OTHER_CFLAGS = "-DMAC_OSX -DJOYSTICK_SUPPORT -DSOUND_SUPPORT -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST -DDEVELOPER_SUPPORT -DCHEATCODE_SUPPORT -DHAVE_GETTIMEOFDAY -DSNAPSHOT_SUPPORT -DBSPF_MAC_OSX -DHAVE_INTTYPES ";
 				OTHER_LDFLAGS = "-framework SDL -lz -lpng";
 				PRODUCT_NAME = StellaOSX;
 				SECTORDER_FLAGS = "";
@@ -1517,7 +1517,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ../../docs/stella.html build/StellaOSX.app/Contents/Resources/docs/index.html;\n";
+			shellScript = "";
 		};
 		2D30F8750868A4DB00938B9D = {
 			fileEncoding = 30;

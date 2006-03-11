@@ -15,6 +15,8 @@
 				<string>ROM</string>
 				<string>zip</string>
 				<string>ZIP</string>
+				<string>a26</string>
+				<string>A26</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>Cart</string>

@@ -335,6 +335,17 @@
 		2D91751409BA90380026E9FF /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D4764C806683C5F00F63D87 /* SDL.framework */; };
 		2D91753809BA91BC0026E9FF /* StellaOSX.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 2D91753709BA91BC0026E9FF /* StellaOSX.xcconfig */; };
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
+		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
+		DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */; };
+		DC47455709C34BFA00EDDA3A /* Cheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47454C09C34BFA00EDDA3A /* Cheat.hxx */; };
+		DC47455809C34BFA00EDDA3A /* CheatCodeDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454D09C34BFA00EDDA3A /* CheatCodeDialog.cxx */; };
+		DC47455909C34BFA00EDDA3A /* CheatCodeDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47454E09C34BFA00EDDA3A /* CheatCodeDialog.hxx */; };
+		DC47455A09C34BFA00EDDA3A /* CheatManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454F09C34BFA00EDDA3A /* CheatManager.cxx */; };
+		DC47455B09C34BFA00EDDA3A /* CheatManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455009C34BFA00EDDA3A /* CheatManager.hxx */; };
+		DC47455C09C34BFA00EDDA3A /* CheetahCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47455109C34BFA00EDDA3A /* CheetahCheat.cxx */; };
+		DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */; };
+		DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47455309C34BFA00EDDA3A /* RamCheat.cxx */; };
+		DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455409C34BFA00EDDA3A /* RamCheat.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -397,6 +408,15 @@
 			dstSubfolderSpec = 10;
 			files = (
 				2D91751409BA90380026E9FF /* SDL.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCCC0C9609C354660088BFF1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -732,6 +752,17 @@
 		2DF9720A0892CEA400F64D23 /* WordDerefExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = WordDerefExpression.cxx; path = ../debugger/WordDerefExpression.cxx; sourceTree = SOURCE_ROOT; };
 		2DF9720B0892CEA400F64D23 /* WordDerefExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = WordDerefExpression.hxx; path = ../debugger/WordDerefExpression.hxx; sourceTree = SOURCE_ROOT; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
+		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
+		DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BankRomCheat.hxx; path = ../cheat/BankRomCheat.hxx; sourceTree = SOURCE_ROOT; };
+		DC47454C09C34BFA00EDDA3A /* Cheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cheat.hxx; path = ../cheat/Cheat.hxx; sourceTree = SOURCE_ROOT; };
+		DC47454D09C34BFA00EDDA3A /* CheatCodeDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CheatCodeDialog.cxx; path = ../cheat/CheatCodeDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DC47454E09C34BFA00EDDA3A /* CheatCodeDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheatCodeDialog.hxx; path = ../cheat/CheatCodeDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC47454F09C34BFA00EDDA3A /* CheatManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CheatManager.cxx; path = ../cheat/CheatManager.cxx; sourceTree = SOURCE_ROOT; };
+		DC47455009C34BFA00EDDA3A /* CheatManager.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheatManager.hxx; path = ../cheat/CheatManager.hxx; sourceTree = SOURCE_ROOT; };
+		DC47455109C34BFA00EDDA3A /* CheetahCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CheetahCheat.cxx; path = ../cheat/CheetahCheat.cxx; sourceTree = SOURCE_ROOT; };
+		DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheetahCheat.hxx; path = ../cheat/CheetahCheat.hxx; sourceTree = SOURCE_ROOT; };
+		DC47455309C34BFA00EDDA3A /* RamCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RamCheat.cxx; path = ../cheat/RamCheat.cxx; sourceTree = SOURCE_ROOT; };
+		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamCheat.hxx; path = ../cheat/RamCheat.hxx; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -811,6 +842,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				DCCC0C9109C3541E0088BFF1 /* cheat */,
 				2D6050C5089876F300C6DE89 /* common */,
 				2D605130089879BA00C6DE89 /* debugger */,
 				2D6050CC0898776500C6DE89 /* emucore */,
@@ -1217,6 +1249,24 @@
 			name = yacc;
 			sourceTree = "<group>";
 		};
+		DCCC0C9109C3541E0088BFF1 /* cheat */ = {
+			isa = PBXGroup;
+			children = (
+				DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */,
+				DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */,
+				DC47454C09C34BFA00EDDA3A /* Cheat.hxx */,
+				DC47454D09C34BFA00EDDA3A /* CheatCodeDialog.cxx */,
+				DC47454E09C34BFA00EDDA3A /* CheatCodeDialog.hxx */,
+				DC47454F09C34BFA00EDDA3A /* CheatManager.cxx */,
+				DC47455009C34BFA00EDDA3A /* CheatManager.hxx */,
+				DC47455109C34BFA00EDDA3A /* CheetahCheat.cxx */,
+				DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */,
+				DC47455309C34BFA00EDDA3A /* RamCheat.cxx */,
+				DC47455409C34BFA00EDDA3A /* RamCheat.hxx */,
+			);
+			name = cheat;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1385,6 +1435,12 @@
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
 				2D91746B09BA90380026E9FF /* M6502Low.hxx in Headers */,
+				DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */,
+				DC47455709C34BFA00EDDA3A /* Cheat.hxx in Headers */,
+				DC47455909C34BFA00EDDA3A /* CheatCodeDialog.hxx in Headers */,
+				DC47455B09C34BFA00EDDA3A /* CheatManager.hxx in Headers */,
+				DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */,
+				DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1402,6 +1458,7 @@
 				2D91750E09BA90380026E9FF /* Frameworks */,
 				2D91751309BA90380026E9FF /* CopyFiles */,
 				2D91751509BA90380026E9FF /* ShellScript */,
+				DCCC0C9609C354660088BFF1 /* CopyFiles */,
 			);
 			buildRules = (
 				2D91751B09BA90380026E9FF /* PBXBuildRule */,
@@ -1440,6 +1497,7 @@
 					"-DDISPLAY_OPENGL",
 					"-DTEXTURES_ARE_LOST",
 					"-DDEVELOPER_SUPPORT",
+					"-DCHEATCODE_SUPPORT",
 					"-DHAVE_GETTIMEOFDAY",
 					"-DSNAPSHOT_SUPPORT",
 					"-DBSPF_MAC_OSX",
@@ -1532,7 +1590,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ../../docs/stella.html build/StellaOSX.app/Contents/Resources/docs/index.html;\n";
+			shellScript = "";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1695,6 +1753,11 @@
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
 				2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */,
 				2D91750D09BA90380026E9FF /* M6502Low.cxx in Sources */,
+				DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */,
+				DC47455809C34BFA00EDDA3A /* CheatCodeDialog.cxx in Sources */,
+				DC47455A09C34BFA00EDDA3A /* CheatManager.cxx in Sources */,
+				DC47455C09C34BFA00EDDA3A /* CheetahCheat.cxx in Sources */,
+				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1730,6 +1793,7 @@
 					SOUND_SUPPORT,
 					DISPLAY_OPENGL,
 					TEXTURES_ARE_LOST,
+					CHEATCODE_SUPPORT,
 					DEVELOPER_SUPPORT,
 					HAVE_GETTIMEOFDAY,
 					SNAPSHOT_SUPPORT,
@@ -1793,6 +1857,7 @@
 					SOUND_SUPPORT,
 					DISPLAY_OPENGL,
 					TEXTURES_ARE_LOST,
+					CHEATCODE_SUPPORT,
 					DEVELOPER_SUPPORT,
 					HAVE_GETTIMEOFDAY,
 					SNAPSHOT_SUPPORT,
@@ -1854,6 +1919,7 @@
 					SOUND_SUPPORT,
 					DISPLAY_OPENGL,
 					TEXTURES_ARE_LOST,
+					CHEATCODE_SUPPORT,
 					DEVELOPER_SUPPORT,
 					HAVE_GETTIMEOFDAY,
 					SNAPSHOT_SUPPORT,
