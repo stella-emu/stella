@@ -1590,7 +1590,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ../../docs/stella.html build/Deployment/StellaOSX.app/Contents/Resources/docs/index.html;\n";
+			shellScript = "cp ../../docs/index.html build/Deployment/StellaOSX.app/Contents/Resources/docs/index.html;\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
