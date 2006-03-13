@@ -27,7 +27,8 @@ Some button mapping (but still comfortably familiar)
 -----------
 Known Bugs:
 -----------
-Joy mouse skips menu items.
+None reported.
+Please report all bugs to me at azaballa@users.sourceforge.net.
 
 ------------------------------
 Known GP2X Performance Issues:
