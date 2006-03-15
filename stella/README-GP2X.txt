@@ -33,12 +33,8 @@ Please report all bugs to me at azaballa@users.sourceforge.net.
 ------------------------------
 Known GP2X Performance Issues:
 ------------------------------
-Pitfall 2 runs slow due to extra hardware emulation. (Steve foresees this
-	being fixed in the future.)
-Stella will crash when trying to run a PAL ROM. This is a limitation of the
-	GP2X as it cannot support resolutions higher than 320x240. We hope
-	this will change with future kernel updates.
-
+Pitfall2 runs slow due to extra hardware emulation. (Steve foresees this
+being fixed in the future.)
 
 ---------------------
 Installation to GP2X:
