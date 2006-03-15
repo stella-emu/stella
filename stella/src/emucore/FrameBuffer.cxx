@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.79 2006-03-06 15:42:26 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.80 2006-03-15 23:14:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -176,6 +176,7 @@ void FrameBuffer::update()
       // Draw any pending messages
       if(myMessageTime > 0 && !myPauseStatus)
         drawMessage();
+
       break;  // S_EMULATE
     }
 
@@ -206,6 +207,11 @@ void FrameBuffer::update()
     case EventHandler::S_LAUNCHER:
     {
       myOSystem->launcher().draw();
+
+      // Draw any pending messages
+      if(myMessageTime > 0)
+        drawMessage();
+
       break;  // S_LAUNCHER
     }
 
@@ -232,7 +238,6 @@ void FrameBuffer::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refresh(bool now)
 {
-//  cerr << "refreshTIA() " << myNumRedraws++ << endl;
   theRedrawTIAIndicator = true;
   if(now)
   {
@@ -248,7 +253,7 @@ void FrameBuffer::showMessage(const string& message)
   if(myMessageTime > 0)
   {
     theRedrawTIAIndicator = true;
-    drawMediaSource();
+    myOSystem->eventHandler().refreshDisplay();
   }
 
   myMessageText = message;
@@ -260,7 +265,7 @@ void FrameBuffer::hideMessage()
 {
   // Erase old messages on the screen
   if(myMessageTime > 0)
-    refresh(true);
+    myOSystem->eventHandler().refreshDisplay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,10 +538,7 @@ inline void FrameBuffer::drawMessage()
   // Either erase the entire message (when time is reached),
   // or show again this frame
   if(myMessageTime == 0)
-  {
-	theRedrawTIAIndicator = true;
-	drawMediaSource();
-  }
+    myOSystem->eventHandler().refreshDisplay();
   else
 	addDirtyRect(x, y, w, h);
 }

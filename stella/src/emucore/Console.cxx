@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.84 2006-03-05 01:18:41 stephena Exp $
+// $Id: Console.cxx,v 1.85 2006-03-15 23:14:01 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -86,6 +86,17 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   if(myProperties.get(Display_Format) == "PAL")
     if(myProperties.get(Display_Height) == "210")
       myProperties.set(Display_Height, "250");
+
+  // Make sure this ROM can fit in the screen dimensions
+  int sWidth, sHeight, iWidth, iHeight;
+  myOSystem->getScreenDimensions(sWidth, sHeight);
+  iWidth  = atoi(myProperties.get(Display_Width).c_str()) << 1;
+  iHeight = atoi(myProperties.get(Display_Height).c_str());
+  if(iWidth > sWidth || iHeight > sHeight)
+  {
+    myOSystem->frameBuffer().showMessage("ROM image dimensions larger than screen");
+    return;
+  }
 
   // Setup the controllers based on properties
   string left  = myProperties.get(Controller_Left);

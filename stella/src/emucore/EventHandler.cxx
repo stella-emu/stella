@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.152 2006-03-05 01:18:42 stephena Exp $
+// $Id: EventHandler.cxx,v 1.153 2006-03-15 23:14:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -194,7 +194,7 @@ void EventHandler::refreshDisplay()
   switch(myState)
   {
     case S_EMULATE:
-      myOSystem->frameBuffer().refresh();
+      myOSystem->frameBuffer().refresh(true);
       break;
 
     case S_MENU:
@@ -208,6 +208,8 @@ void EventHandler::refreshDisplay()
     default:
       break;
   }
+
+//  cerr << "  ==> State change = " << myState << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
