@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.85 2006-03-15 23:14:01 stephena Exp $
+// $Id: Console.cxx,v 1.86 2006-03-16 16:10:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -94,7 +94,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   iHeight = atoi(myProperties.get(Display_Height).c_str());
   if(iWidth > sWidth || iHeight > sHeight)
   {
-    myOSystem->frameBuffer().showMessage("ROM image dimensions larger than screen");
+    myOSystem->frameBuffer().showMessage("PAL ROMS not supported, screen too small");
     return;
   }
 

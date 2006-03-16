@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.80 2006-03-15 23:14:01 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.81 2006-03-16 16:10:47 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -686,6 +686,10 @@ const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
   {  64,  64,  64 },  // kShadowColor
   { 200, 200, 255 },  // kHiliteColor
   {  32, 160,  32 },  // kTextColor
+#if !defined(GP2X)  // Quick GP2X hack to change colours, until an in-game GUI is added
   {   0, 255,   0 },  // kTextColorHi
+#else
+  {   0,   0, 255 },  // kTextColorHi
+#endif
   { 200,   0,   0 }   // kTextColorEm
 };

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.55 2006-01-16 01:23:55 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.56 2006-03-16 16:10:47 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -305,7 +305,7 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SwapBuffers();
   p_glClear(GL_COLOR_BUFFER_BIT);
 
-  myOSystem->eventHandler().refreshDisplay();
+  cls();
 
   return true;
 }
