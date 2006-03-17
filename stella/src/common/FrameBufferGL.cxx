@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.56 2006-03-16 16:10:47 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.57 2006-03-17 23:06:28 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -305,7 +305,8 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SwapBuffers();
   p_glClear(GL_COLOR_BUFFER_BIT);
 
-  cls();
+  // FIXME - figure out why this is causing a segfault
+  //myOSystem->eventHandler().refreshDisplay();
 
   return true;
 }

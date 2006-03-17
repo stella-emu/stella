@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.17 2006-03-17 19:44:19 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.18 2006-03-17 23:06:28 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -174,6 +174,12 @@ uInt32 OSystemUNIX::getTicks()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemUNIX::getScreenDimensions(int& width, int& height)
 {
+  // We might need to temporarily enable VIDEO support to check
+  // screen dimensions
+  bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO) > 0;
+  if(!isAlreadyInitialized)
+    SDL_Init(SDL_INIT_VIDEO);
+
   SDL_SysWMinfo myWMInfo;
   SDL_VERSION(&myWMInfo.version);
   if(SDL_GetWMInfo(&myWMInfo) > 0 && myWMInfo.subsystem == SDL_SYSWM_X11)
@@ -185,4 +191,7 @@ void OSystemUNIX::getScreenDimensions(int& width, int& height)
                DefaultScreen(myWMInfo.info.x11.display));
     myWMInfo.info.x11.unlock_func();
   }
+
+  if(!isAlreadyInitialized)
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
 }
