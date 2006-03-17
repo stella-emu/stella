@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.80 2006-03-09 17:04:01 stephena Exp $
+// $Id: Settings.cxx,v 1.81 2006-03-17 19:44:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -94,12 +94,7 @@ void Settings::loadConfig()
   string line, key, value;
   string::size_type equalPos, garbage;
 
-  // FIXME - add infrastructure to print output
-#ifdef PSP_DEBUG
-  fprintf(stdout,"Settings::loadConfig '%s'\n",myOSystem->configInputFilename().c_str());
-#endif
-
-  ifstream in(myOSystem->configInputFilename().c_str());
+  ifstream in(myOSystem->configFile().c_str());
   if(!in || !in.is_open())
   {
     cout << "Error: Couldn't load settings file\n";
@@ -380,7 +375,7 @@ void Settings::saveConfig()
   if(!settingsChanged)
     return;
 
-  ofstream out(myOSystem->configOutputFilename().c_str());
+  ofstream out(myOSystem->configFile().c_str());
   if(!out || !out.is_open())
   {
     cout << "Error: Couldn't save settings file\n";

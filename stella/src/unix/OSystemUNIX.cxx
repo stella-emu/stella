@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.16 2006-03-05 01:18:42 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.17 2006-03-17 19:44:19 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -43,7 +43,7 @@
   setBaseDir()
   setStateDir()
   setPropertiesDir()
-  setConfigFiles()
+  setConfigFile()
   setCacheFile()
 
   See OSystem.hxx for a further explanation
@@ -56,18 +56,12 @@ OSystemUNIX::OSystemUNIX()
   string basedir = string(getenv("HOME")) + "/.stella";
   setBaseDir(basedir);
 
-  string statedir = basedir + "/state";
-  setStateDir(statedir);
+  setStateDir(basedir + "/state");
 
-  string propdir = PROPDIR;  // Hopefully this is defined
-  setPropertiesDir(basedir, propdir);
+  setPropertiesDir(basedir);
+  setConfigFile(basedir + "/stellarc");
 
-  string userConfigFile   = basedir + "/stellarc";
-  string systemConfigFile = propdir + "/stellarc";
-  setConfigFiles(userConfigFile, systemConfigFile);
-
-  string cacheFile = basedir + "/stella.cache";
-  setCacheFile(cacheFile);
+  setCacheFile(basedir + "/stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

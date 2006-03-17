@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.153 2006-03-15 23:14:01 stephena Exp $
+// $Id: EventHandler.cxx,v 1.154 2006-03-17 19:44:18 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2122,7 +2122,7 @@ void EventHandler::setEventState(State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveProperties()
 {
-  myOSystem->console().saveProperties(myOSystem->userProperties(), true);
+  myOSystem->console().saveProperties(myOSystem->propertiesFile(), true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

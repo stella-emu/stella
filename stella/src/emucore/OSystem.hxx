@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.39 2006-03-02 13:10:53 stephena Exp $
+// $Id: OSystem.hxx,v 1.40 2006-03-17 19:44:18 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.39 2006-03-02 13:10:53 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.40 2006-03-17 19:44:18 stephena Exp $
 */
 class OSystem
 {
@@ -201,57 +201,48 @@ class OSystem
 
       @return  The video framerate currently in use
     */
-    uInt32 frameRate() { return myDisplayFrameRate; }
+    uInt32 frameRate() const { return myDisplayFrameRate; }
 
     /**
       Return the default directory for storing data.
     */
-    const string& baseDir() { return myBaseDir; }
+    const string& baseDir() const { return myBaseDir; }
 
     /**
       Return the directory for storing state files.
     */
-    const string& stateDir() { return myStateDir; }
+    const string& stateDir() const { return myStateDir; }
 
     /**
-      This method should be called to get the filename of the
-      system-wide properties file (stella.pro).
-
-      @return String representing the full path of the properties filename.
-    */
-    const string& systemProperties() { return mySystemPropertiesFile; }
-
-    /**
-      This method should be called to get the filename of the
-      user-specific properties file (user.pro).
-
-      @return String representing the full path of the properties filename.
-    */
-    const string& userProperties() { return myUserPropertiesFile; }
-
-    /**
-      This method should be called to get the filename of the config file
-      for the purpose of loading.
+      This method should be called to get the full path of the config file.
 
       @return String representing the full path of the config filename.
     */
-    const string& configInputFilename() { return myConfigInputFile; }
+    const string& configFile() const { return myConfigFile; }
 
     /**
-      This method should be called to get the filename of the config file
-      for the purpose of saving.
+      This method should be called to get the full path of the
+      properties file (stella.pro).
 
-      @return String representing the full path of the config filename.
+      @return String representing the full path of the properties filename.
     */
-    const string& configOutputFilename() { return myConfigOutputFile; }
+    const string& propertiesFile() const { return myPropertiesFile; }
 
     /**
-      This method should be called to get the filename of the gamelist
+      This method should be called to get the full path of the gamelist
       cache file (used by the Launcher to show a listing of available games).
 
       @return String representing the full path of the gamelist cache file.
     */
-    const string& cacheFile() { return myGameListCacheFile; }
+    const string& cacheFile() const { return myGameListCacheFile; }
+
+    /**
+      This method should be called to get the full path of the currently
+      loaded ROM.
+
+      @return String representing the full path of the ROM file.
+    */
+    const string& romFile() const { return myRomFile; }
 
     /**
       Creates the various framebuffers/renderers available in this system
@@ -290,7 +281,7 @@ class OSystem
 
       @return  The supported features
     */
-    const string& features() { return myFeatures; }
+    const string& features() const { return myFeatures; }
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -303,8 +294,6 @@ class OSystem
       @return  False on any errors, else true
     */
     bool openROM(const string& rom, string& md5, uInt8** image, int* size);
-
-    const string& romFile() { return myRomFile; }
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -376,14 +365,14 @@ class OSystem
     void setStateDir(const string& statedir);
 
     /**
-      Set the locations of game properties files
+      Set the locations of game properties file
     */
-    void setPropertiesDir(const string& userpath, const string& systempath);
+    void setPropertiesDir(const string& path);
 
     /**
-      Set the locations of config files
+      Set the locations of config file
     */
-    void setConfigFiles(const string& userconfig, const string& systemconfig);
+    void setConfigFile(const string& file);
 
     /**
       Set the location of the gamelist cache file
@@ -434,10 +423,8 @@ class OSystem
     string myBaseDir;
     string myStateDir;
 
-    string mySystemPropertiesFile;
-    string myUserPropertiesFile;
-    string myConfigInputFile;
-    string myConfigOutputFile;
+    string myConfigFile;
+    string myPropertiesFile;
 
     string myGameListCacheFile;
     string myRomFile;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.7 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.8 2006-03-17 19:44:19 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -59,7 +59,7 @@ void macOpenConsole(char *romname)
   setBaseDir()
   setStateDir()
   setPropertiesFiles()
-  setConfigFiles()
+  setConfigFile()
   setCacheFile()
 
   See OSystem.hxx for a further explanation
@@ -72,19 +72,12 @@ OSystemMACOSX::OSystemMACOSX()
   string basedir = string(getenv("HOME")) + "/.stella";
   setBaseDir(basedir);
 
-  string statedir = basedir + "/state";
-  setStateDir(statedir);
+  setStateDir(basedir + "/state");
 
-  strcat(parentdir,"/../../..");
-  string systemPropertiesDir = parentdir;
-  setPropertiesDir(basedir, systemPropertiesDir);
+  setPropertiesDir(basedir);
+  setConfigFile(basedir + "/stellarc");
 
-  string userConfigFile   = basedir + "/stellarc";
-  string systemConfigFile = "/etc/stellarc";
-  setConfigFiles(userConfigFile, systemConfigFile);
-
-  string cacheFile = basedir + "/stella.cache";
-  setCacheFile(cacheFile);
+  setCacheFile(basedir + "/stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

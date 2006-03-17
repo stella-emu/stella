@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.8 2006-03-06 14:06:07 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.9 2006-03-17 19:44:18 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -41,12 +41,8 @@
   setBaseDir()
   setStateDir()
   setPropertiesDir()
-  setConfigFiles()
+  setConfigFile()
   setCacheFile()
-
-  And for initializing the following variables:
-
-  myDriverList (a StringList)
 
   See OSystem.hxx for a further explanation
 */
@@ -61,23 +57,14 @@ OSystemGP2X::OSystemGP2X()
   free(currdir);
   setBaseDir(basedir);
   
-  string statedir = basedir + "/state";
-  setStateDir(statedir);
+  setStateDir(basedir + "/state");
   
-  setPropertiesDir(basedir, basedir);
+  setPropertiesDir(basedir);
+  setConfigFile(basedir + "/stellarc");
 
-  string userPropertiesFile   = basedir + "/user.pro";
-  string systemPropertiesFile = basedir + "/stella.pro";
-  setConfigFiles(userPropertiesFile, systemPropertiesFile);
+  setCacheFile(basedir + "/stella.cache");
 
-  string userConfigFile   = basedir + "/stellarc";
-  string systemConfigFile = statedir + "/stellarc";
-  setConfigFiles(userConfigFile, systemConfigFile);
-
-  string cacheFile = basedir + "/stella.cache";
-  setCacheFile(cacheFile);
-
-  // Set hat event handler to a known state
+  // Set event arrays to a known state
   myPreviousEvents = new uInt8[8];  memset(myPreviousEvents, 0, 8);
   myCurrentEvents  = new uInt8[8];  memset(myCurrentEvents, 0, 8);
 }
@@ -123,22 +110,6 @@ void OSystemGP2X::mainLoop()
     frameTime += currentTime;
     ++numberOfFrames;
   }
-
-  // Only print console information if a console was actually created
-  if(mySettings->getBool("showinfo") && myConsole)
-  {
-    double executionTime = (double) frameTime / 1000000.0;
-    double framesPerSecond = (double) numberOfFrames / executionTime;
-
-    cout << endl;
-    cout << numberOfFrames << " total frames drawn\n";
-    cout << framesPerSecond << " frames/second\n";
-    cout << endl;
-    cout << "Cartridge Name: " << myConsole->properties().get(Cartridge_Name);
-    cout << endl;
-    cout << "Cartridge MD5:  " << myConsole->properties().get(Cartridge_MD5);
-    cout << endl << endl;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,7 +152,7 @@ void OSystemGP2X::setDefaultJoymap()
 void OSystemGP2X::pollEvent()
 {
   // Translate joystick button events that act as directions into proper
-  // SDL HAT events.  This method will use 'case 2', as discussed on the
+  // SDL axis events.  This method will use 'case 2', as discussed on the
   // GP2X forums.  Technically, this code should be integrated directly
   // into the GP2X SDL port.
 

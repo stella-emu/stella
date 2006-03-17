@@ -36,16 +36,12 @@ OSystemWinCE::OSystemWinCE()
   string basedir = ((string) getcwd()) + '\\';
   setBaseDir(basedir);
 
-  string stateDir = basedir;
-  setStateDir(stateDir);
+  setStateDir(basedir);
 
-  setPropertiesDir(basedir, basedir);
+  setPropertiesDir(basedir);
+  setConfigFile(basedir + "stella.ini");
 
-  string configFile = basedir + "stella.ini";
-  setConfigFiles(configFile, configFile);  // Input and output are the same
-
-  string cacheFile = basedir + "stella.cache";
-  setCacheFile(cacheFile);
+  setCacheFile(basedir + "stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

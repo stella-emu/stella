@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.62 2006-03-06 03:22:32 stephena Exp $
+// $Id: mainSDL.cxx,v 1.63 2006-03-17 19:44:16 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -68,7 +68,7 @@ static void SetupProperties(PropertiesSet& set);
 static void Cleanup();
 
 // Pointer to the main parent osystem object or the null pointer
-OSystem* theOSystem = (OSystem*) NULL;
+static OSystem* theOSystem = (OSystem*) NULL;
 
 
 /**
@@ -88,17 +88,14 @@ void SetupProperties(PropertiesSet& set)
   string altpro = theOSystem->settings().getString("pro");
   if(altpro != "")
   {
-    buf << "Game properties: \'" << altpro << "\'\n";
-    set.load(altpro, false);  // don't save alternate properties to userPro
+    buf << "User game properties: \'" << altpro << "\'\n";
+    set.load(altpro, false);  // don't save alternate properties
   }
   else
   {
-    const string& sysPro  = theOSystem->systemProperties();
-    const string& userPro = theOSystem->userProperties();
-    buf << "Game properties: \'" << sysPro << "\', \'" << userPro << "\'\n";
-
-    set.load(sysPro, false);  // don't save system-wide properties
-    set.load(userPro, true);
+    const string& props = theOSystem->propertiesFile();
+    buf << "User game properties: \'" << props << "\'\n";
+    set.load(props, true);    // do save these properties
   }
 
   if(theOSystem->settings().getBool("showinfo"))

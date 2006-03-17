@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.63 2006-03-05 01:18:42 stephena Exp $
+// $Id: OSystem.cxx,v 1.64 2006-03-17 19:44:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -152,33 +152,15 @@ void OSystem::setStateDir(const string& statedir)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setPropertiesDir(const string& userpath,
-                               const string& systempath)
+void OSystem::setPropertiesDir(const string& path)
 {
-  // Set up the input and output properties files
-  myUserPropertiesFile   = userpath + BSPF_PATH_SEPARATOR + "user.pro";
-#ifdef NIGHTLY_BUILD
-  // snapshots look in current dir
-  mySystemPropertiesFile = "stella.pro";
-#else
-  // releases look in system dir
-  mySystemPropertiesFile = systempath + BSPF_PATH_SEPARATOR + "stella.pro";
-#endif
+  myPropertiesFile  = path + BSPF_PATH_SEPARATOR + "stella.pro";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setConfigFiles(const string& userconfig,
-                             const string& systemconfig)
+void OSystem::setConfigFile(const string& file)
 {
-  // Set up the names of the input and output config files
-  myConfigOutputFile = userconfig;
-
-  if(FilesystemNode::fileExists(userconfig))
-    myConfigInputFile = userconfig;
-  else if(FilesystemNode::fileExists(systemconfig))
-    myConfigInputFile = systemconfig;
-  else
-    myConfigInputFile = "";
+  myConfigFile = file;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

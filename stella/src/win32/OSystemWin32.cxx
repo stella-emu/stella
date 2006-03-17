@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.11 2006-03-06 21:41:58 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.12 2006-03-17 19:44:19 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -31,12 +31,8 @@
   setBaseDir()
   setStateDir()
   setPropertiesDir()
-  setConfigFiles()
+  setConfigFile()
   setCacheFile()
-
-  And for initializing the following variables:
-
-  myDriverList (a StringList)
 
   See OSystem.hxx for a further explanation
 */
@@ -53,16 +49,12 @@ OSystemWin32::OSystemWin32()
   string basedir = ".\\";
   setBaseDir(basedir);
 
-  string stateDir = basedir + "state\\";
-  setStateDir(stateDir);
+  setStateDir(basedir + "state\\");
 
-  setPropertiesDir(basedir, basedir);
+  setPropertiesDir(basedir);
+  setConfigFile(basedir + "stella.ini");
 
-  string configFile = basedir + "stella.ini";
-  setConfigFiles(configFile, configFile);  // Input and output are the same
-
-  string cacheFile = basedir + "stella.cache";
-  setCacheFile(cacheFile);
+  setCacheFile(basedir + "stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
