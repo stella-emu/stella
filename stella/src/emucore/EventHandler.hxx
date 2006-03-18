@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.80 2006-03-05 01:18:42 stephena Exp $
+// $Id: EventHandler.hxx,v 1.81 2006-03-18 00:00:30 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -107,7 +107,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.80 2006-03-05 01:18:42 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.81 2006-03-18 00:00:30 stephena Exp $
 */
 class EventHandler
 {
@@ -208,8 +208,11 @@ class EventHandler
 
     /**
       Refresh display according to the current state
+
+      @param forceUpdate  Do a framebuffer update right away, instead
+                          of waiting for the next frame
     */
-    void refreshDisplay();
+    void refreshDisplay(bool forceUpdate = false);
 
     /**
       This method indicates whether a pause event has been received.

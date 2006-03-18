@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.154 2006-03-17 19:44:18 stephena Exp $
+// $Id: EventHandler.cxx,v 1.155 2006-03-18 00:00:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -184,7 +184,7 @@ void EventHandler::reset(State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::refreshDisplay()
+void EventHandler::refreshDisplay(bool forceUpdate)
 {
   // These are reset each time the display changes size
   DialogContainer::ourJoyMouse.x_max = myOSystem->frameBuffer().imageWidth();
@@ -194,7 +194,7 @@ void EventHandler::refreshDisplay()
   switch(myState)
   {
     case S_EMULATE:
-      myOSystem->frameBuffer().refresh(true);
+      myOSystem->frameBuffer().refresh();
       break;
 
     case S_MENU:
@@ -206,8 +206,12 @@ void EventHandler::refreshDisplay()
       break;
 
     default:
+      return;
       break;
   }
+
+  if(forceUpdate)
+    myOSystem->frameBuffer().update();
 
 //  cerr << "  ==> State change = " << myState << endl;
 }
@@ -1966,7 +1970,7 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a Snapshot object and save the PNG
-  myOSystem->frameBuffer().refresh(true);
+  myOSystem->eventHandler().refreshDisplay(true);  // force an immediate update
   Snapshot snapshot(myOSystem->frameBuffer());
   string result  = snapshot.savePNG(filename);
   myOSystem->frameBuffer().showMessage(result);

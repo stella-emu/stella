@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.81 2006-03-16 16:10:47 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.82 2006-03-18 00:00:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -120,6 +120,9 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   // Initialize video subsystem
   initSubsystem();
+
+  // And refresh the display
+  myOSystem->eventHandler().refreshDisplay();
 
   // Set palette for GUI
   for(int i = 0; i < kNumColors-256; i++)
@@ -236,17 +239,6 @@ void FrameBuffer::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::refresh(bool now)
-{
-  theRedrawTIAIndicator = true;
-  if(now)
-  {
-    myMessageTime = 0;
-    update();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message)
 {
   // Erase old messages on the screen
@@ -266,6 +258,31 @@ void FrameBuffer::hideMessage()
   // Erase old messages on the screen
   if(myMessageTime > 0)
     myOSystem->eventHandler().refreshDisplay();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void FrameBuffer::drawMessage()
+{
+  int w = myOSystem->font().getStringWidth(myMessageText) + 10;
+  int h = myOSystem->font().getFontHeight() + 8;
+  int x = (myBaseDim.w >> 1) - (w >> 1);
+  int y = myBaseDim.h - h - 10/2;
+
+  // Draw the bounded box and text
+  fillRect(x+1, y+2, w-2, h-4, kBGColor);
+  box(x, y+1, w, h-2, kColor, kColor);
+  drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
+  myMessageTime--;
+
+  // Either erase the entire message (when time is reached),
+  // or show again this frame
+  if(myMessageTime == 0)
+  {
+    // Force an immediate update
+    myOSystem->eventHandler().refreshDisplay(true);
+  }
+  else
+	addDirtyRect(x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -335,6 +352,8 @@ void FrameBuffer::setFullscreen(bool enable)
   if(!createScreen())
     return;
 
+  myOSystem->eventHandler().refreshDisplay();
+
   setCursorState();
 }
 
@@ -377,6 +396,8 @@ void FrameBuffer::resize(Size size, Int8 zoom)
 
   if(!createScreen())
     return;
+
+  myOSystem->eventHandler().refreshDisplay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -519,28 +540,6 @@ void FrameBuffer::setWindowIcon()
   SDL_WM_SetIcon(surface, (unsigned char *) mask);
   SDL_FreeSurface(surface);
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void FrameBuffer::drawMessage()
-{
-  int w = myOSystem->font().getStringWidth(myMessageText) + 10;
-  int h = myOSystem->font().getFontHeight() + 8;
-  int x = (myBaseDim.w >> 1) - (w >> 1);
-  int y = myBaseDim.h - h - 10/2;
-
-  // Draw the bounded box and text
-  fillRect(x+1, y+2, w-2, h-4, kBGColor);
-  box(x, y+1, w, h-2, kColor, kColor);
-  drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
-  myMessageTime--;
-
-  // Either erase the entire message (when time is reached),
-  // or show again this frame
-  if(myMessageTime == 0)
-    myOSystem->eventHandler().refreshDisplay();
-  else
-	addDirtyRect(x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
