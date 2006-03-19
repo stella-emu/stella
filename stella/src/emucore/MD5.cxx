@@ -16,10 +16,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MD5.cxx,v 1.4 2006-03-19 18:17:48 stephena Exp $
+// $Id: MD5.cxx,v 1.5 2006-03-19 18:18:32 stephena Exp $
 //============================================================================
-
-#include <fstream>
 
 #include "MD5.hxx"
 
