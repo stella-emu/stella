@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.66 2006-03-18 00:00:30 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.67 2006-03-19 18:17:48 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -49,6 +49,19 @@ enum BufferType {
   kGLBuffer
 };
 
+// Positions for onscreen/overlaid messages
+enum MessagePosition {
+  kTopLeft,
+  kTopCenter,
+  kTopRight,
+  kMiddleLeft,
+  kMiddleCenter,
+  kMiddleRight,
+  kBottomLeft,
+  kBottomCenter,
+  kBottomRight
+};
+
 /**
   This class encapsulates the MediaSource and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
@@ -57,7 +70,7 @@ enum BufferType {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.66 2006-03-18 00:00:30 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.67 2006-03-19 18:17:48 stephena Exp $
 */
 class FrameBuffer
 {
@@ -94,8 +107,12 @@ class FrameBuffer
       Shows a message onscreen.
 
       @param message  The message to be shown
+      @param position Onscreen position for the message
+      @param color    Color of text in the message
     */
-    void showMessage(const string& message);
+    void showMessage(const string& message,
+                     MessagePosition position = kBottomCenter,
+                     OverlayColor color = kTextColor);
 
     /**
       Hides any onscreen messages.
@@ -144,7 +161,7 @@ class FrameBuffer
       Indicates that the TIA area is dirty, and certain areas need
       to be redrawn.
     */
-    void refresh() { theRedrawTIAIndicator = true; myMessageTime = 0; }
+    void refresh() { theRedrawTIAIndicator = true; }
 
     /**
       Toggles between fullscreen and window mode.
@@ -494,15 +511,14 @@ class FrameBuffer
     // Indicates the current pause status
     bool myPauseStatus;
 
-    // Message timer
-    Int32 myMessageTime;
-
-    // Message text
-    string myMessageText;
-
-    // Indicates how many times the framebuffer has been redrawn
-    // Used only for debugging purposes
-    uInt32 myNumRedraws;
+    // Used for onscreen messages
+    struct Message {
+      string text;
+      int counter;
+      int x, y, w, h;
+      OverlayColor color;
+    };
+    Message myMessage;
 };
 
 #endif

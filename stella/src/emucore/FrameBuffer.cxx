@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.82 2006-03-18 00:00:30 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.83 2006-03-19 18:17:48 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -52,10 +52,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myUsePhosphor(false),
     myPhosphorBlend(77),
     myFrameRate(0),
-    myPauseStatus(false),
-    myMessageTime(0),
-    myMessageText(""),
-    myNumRedraws(0)
+    myPauseStatus(false)
 {
   myBaseDim.x = myBaseDim.y = myBaseDim.w = myBaseDim.h = 0;
   myImageDim = myScreenDim = myDesktopDim = myBaseDim;
@@ -143,7 +140,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   SDL_EnableUNICODE(1);
 
   // Erase any messages from a previous run
-  myMessageTime = 0;
+  myMessage.counter = 0;
 
   myUseDirtyRects = myOSystem->settings().getBool("dirtyrects");
 }
@@ -177,7 +174,7 @@ void FrameBuffer::update()
         drawMediaSource();
 
       // Draw any pending messages
-      if(myMessageTime > 0 && !myPauseStatus)
+      if(myMessage.counter > 0 && !myPauseStatus)
         drawMessage();
 
       break;  // S_EMULATE
@@ -202,7 +199,7 @@ void FrameBuffer::update()
       myOSystem->commandMenu().draw();
 
       // Draw any pending messages
-      if(myMessageTime > 0 && !myPauseStatus)
+      if(myMessage.counter > 0 && !myPauseStatus)
         drawMessage();
       break;  // S_CMDMENU
     }
@@ -212,7 +209,7 @@ void FrameBuffer::update()
       myOSystem->launcher().draw();
 
       // Draw any pending messages
-      if(myMessageTime > 0)
+      if(myMessage.counter > 0)
         drawMessage();
 
       break;  // S_LAUNCHER
@@ -239,50 +236,100 @@ void FrameBuffer::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showMessage(const string& message)
+void FrameBuffer::showMessage(const string& message, MessagePosition position,
+                              OverlayColor color)
 {
   // Erase old messages on the screen
-  if(myMessageTime > 0)
+  if(myMessage.counter > 0)
   {
     theRedrawTIAIndicator = true;
     myOSystem->eventHandler().refreshDisplay();
   }
 
-  myMessageText = message;
-  myMessageTime = myFrameRate << 1;   // Show message for 2 seconds
+  // Precompute the message coordinates
+  myMessage.text    = message;
+  myMessage.counter = myFrameRate << 1;   // Show message for 2 seconds
+  myMessage.color   = color;
+
+  myMessage.w = myOSystem->font().getStringWidth(myMessage.text) + 10;
+  myMessage.h = myOSystem->font().getFontHeight() + 8;
+
+  switch(position)
+  {
+    case kTopLeft:
+      myMessage.x = 5;
+      myMessage.y = 5;
+      break;
+
+    case kTopCenter:
+      myMessage.x = (myBaseDim.w >> 1) - (myMessage.w >> 1);
+      myMessage.y = 5;
+      break;
+
+    case kTopRight:
+      myMessage.x = myBaseDim.w - myMessage.w - 5;
+      myMessage.y = 5;
+      break;
+
+    case kMiddleLeft:
+      myMessage.x = 5;
+      myMessage.y = (myBaseDim.h >> 1) - (myMessage.h >> 1);
+      break;
+
+    case kMiddleCenter:
+      myMessage.x = (myBaseDim.w >> 1) - (myMessage.w >> 1);
+      myMessage.y = (myBaseDim.h >> 1) - (myMessage.h >> 1);
+      break;
+
+    case kMiddleRight:
+      myMessage.x = myBaseDim.w - myMessage.w - 5;
+      myMessage.y = (myBaseDim.h >> 1) - (myMessage.h >> 1);
+      break;
+
+    case kBottomLeft:
+      myMessage.x = 5;//(myMessage.w >> 1);
+      myMessage.y = myBaseDim.h - myMessage.h - 5;
+      break;
+
+    case kBottomCenter:
+      myMessage.x = (myBaseDim.w >> 1) - (myMessage.w >> 1);
+      myMessage.y = myBaseDim.h - myMessage.h - 5;
+      break;
+
+    case kBottomRight:
+      myMessage.x = myBaseDim.w - myMessage.w - 5;
+      myMessage.y = myBaseDim.h - myMessage.h - 5;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::hideMessage()
 {
   // Erase old messages on the screen
-  if(myMessageTime > 0)
+  if(myMessage.counter > 0)
     myOSystem->eventHandler().refreshDisplay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void FrameBuffer::drawMessage()
 {
-  int w = myOSystem->font().getStringWidth(myMessageText) + 10;
-  int h = myOSystem->font().getFontHeight() + 8;
-  int x = (myBaseDim.w >> 1) - (w >> 1);
-  int y = myBaseDim.h - h - 10/2;
-
   // Draw the bounded box and text
-  fillRect(x+1, y+2, w-2, h-4, kBGColor);
-  box(x, y+1, w, h-2, kColor, kColor);
-  drawString(&myOSystem->font(), myMessageText, x+1, y+4, w, kTextColor, kTextAlignCenter);
-  myMessageTime--;
+  fillRect(myMessage.x+1, myMessage.y+2, myMessage.w-2, myMessage.h-4, kBGColor);
+  box(myMessage.x, myMessage.y+1, myMessage.w, myMessage.h-2, kColor, kColor);
+  drawString(&myOSystem->font(), myMessage.text, myMessage.x+1, myMessage.y+4,
+             myMessage.w, myMessage.color, kTextAlignCenter);
+  myMessage.counter--;
 
   // Either erase the entire message (when time is reached),
   // or show again this frame
-  if(myMessageTime == 0)
+  if(myMessage.counter == 0)
   {
     // Force an immediate update
     myOSystem->eventHandler().refreshDisplay(true);
   }
   else
-	addDirtyRect(x, y, w, h);
+	addDirtyRect(myMessage.x, myMessage.y, myMessage.w, myMessage.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

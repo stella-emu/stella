@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.47 2006-03-10 01:20:04 markgrebe Exp $
+// $Id: LauncherDialog.cxx,v 1.48 2006-03-19 18:17:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,12 +64,12 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   WidgetArray wid;
 
   // Show game name
-  lwidth = font.getStringWidth("Select a game from the list ...");
+  lwidth = font.getStringWidth("Select an item from the list ...");
   xpos += 10;  ypos += 8;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                       "Select a game from the list ...", kTextAlignLeft);
+                       "Select an item from the list ...", kTextAlignLeft);
 
-  lwidth = font.getStringWidth("XXXX files found");
+  lwidth = font.getStringWidth("XXXX items found");
   xpos = _w - lwidth - 10;
   myRomCount = new StaticTextWidget(this, font, xpos, ypos,
                                     lwidth, fontHeight,
@@ -89,8 +89,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   // Add note textwidget to show any notes for the currently selected ROM
   xpos += 5;  ypos += myList->getHeight() + 4;
   lwidth = font.getStringWidth("Note:");
-  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                       "Note:", kTextAlignLeft);
+  myNoteLabel = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+                                     "Note:", kTextAlignLeft);
   xpos += lwidth + 5;
   myNote = new StaticTextWidget(this, font, xpos, ypos,
                                 _w - xpos - 10, fontHeight,
@@ -100,7 +100,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 10;  ypos += myNote->getHeight() + 4;
 #ifndef MAC_OSX
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Play", kStartCmd, 0);
+                                  "Select", kStartCmd, 0);
   myStartButton->setEditable(true);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
@@ -119,7 +119,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myQuitButton->setEditable(true);
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
-  mySelectedItem = 0;  // Highlight 'Play' button
+  mySelectedItem = 0;  // Highlight 'Select' button
 #else
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                   "Quit", kQuitCmd, 0);
@@ -137,11 +137,11 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myRelPrevButton);
     xpos += bwidth + 8;
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                   "Play", kStartCmd, 0);
+                                   "Select", kStartCmd, 0);
   myStartButton->setEditable(true);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
-  mySelectedItem = 3;  // Highlight 'Play' button
+  mySelectedItem = 3;  // Highlight 'Select' button
 #endif
 
   // Create the launcher options dialog, where you can change ROM
@@ -158,6 +158,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   // (De)activate browse mode
   myBrowseModeFlag = instance()->settings().getBool("rombrowse");
   myRelPrevButton->setLabel(myBrowseModeFlag ? "Go Up" : "Reload");
+  myNoteLabel->setEnabled(!myBrowseModeFlag);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,7 +242,7 @@ void LauncherDialog::updateListing(bool fullReload)
 
   // Indicate how many files were found
   ostringstream buf;
-  buf << myGameList->size() << " files found";
+  buf << myGameList->size() << " items found";
   myRomCount->setLabel(buf.str());
 
   enableButtons(true);
@@ -538,6 +539,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kBrowseChangedCmd:
       myBrowseModeFlag = instance()->settings().getBool("rombrowse");
       myRelPrevButton->setLabel(myBrowseModeFlag ? "Go Up" : "Reload");
+      myNoteLabel->setEnabled(!myBrowseModeFlag);
       break;
 
     default:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.17 2006-03-09 17:04:01 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.18 2006-03-19 18:17:48 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,6 +67,7 @@ class LauncherDialog : public Dialog
     ButtonWidget* myQuitButton;
 
     StringListWidget* myList;
+    StaticTextWidget* myNoteLabel;
     StaticTextWidget* myNote;
     StaticTextWidget* myRomCount;
     GameList*         myGameList;
