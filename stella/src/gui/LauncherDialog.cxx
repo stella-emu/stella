@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.48 2006-03-19 18:17:48 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.49 2006-03-19 20:57:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     myStartButton(NULL),
-    myRelPrevButton(NULL),
+    myPrevDirButton(NULL),
     myOptionsButton(NULL),
     myQuitButton(NULL),
     myList(NULL),
@@ -104,10 +104,10 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myStartButton->setEditable(true);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
-  myRelPrevButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "", kRelPrevCmd, 0);
-  myRelPrevButton->setEditable(true);
-  wid.push_back(myRelPrevButton);
+  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                      "Go Up", kPrevDirCmd, 0);
+  myPrevDirButton->setEditable(true);
+  wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
   myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                      "Options", kOptionsCmd, 0);
@@ -131,10 +131,10 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myOptionsButton->setEditable(true);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
-  myRelPrevButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "", kRelPrevCmd, 0);
-  myRelPrevButton->setEditable(true);
-  wid.push_back(myRelPrevButton);
+  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                      "Go Up", kPrevDirCmd, 0);
+  myPrevDirButton->setEditable(true);
+  wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                    "Select", kStartCmd, 0);
@@ -157,7 +157,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // (De)activate browse mode
   myBrowseModeFlag = instance()->settings().getBool("rombrowse");
-  myRelPrevButton->setLabel(myBrowseModeFlag ? "Go Up" : "Reload");
+  myPrevDirButton->setEnabled(myBrowseModeFlag);
   myNoteLabel->setEnabled(!myBrowseModeFlag);
 }
 
@@ -183,7 +183,7 @@ void LauncherDialog::loadConfig()
 void LauncherDialog::enableButtons(bool enable)
 {
   myStartButton->setEnabled(enable);
-  myRelPrevButton->setEnabled(enable);
+  myPrevDirButton->setEnabled(enable && myBrowseModeFlag);
   myOptionsButton->setEnabled(enable);
   myQuitButton->setEnabled(enable);
 }
@@ -512,7 +512,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       parent()->addDialog(myOptions);
       break;
 
-    case kRelPrevCmd:
+    case kPrevDirCmd:
     {
       FilesystemNode dir(myCurrentDir);
       myCurrentDir = dir.getParent().path();
@@ -536,10 +536,18 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       updateListing();
       break;
 
+    case kSnapDirChosenCmd:
+      // Stub just in case we need it
+      break;
+
     case kBrowseChangedCmd:
       myBrowseModeFlag = instance()->settings().getBool("rombrowse");
-      myRelPrevButton->setLabel(myBrowseModeFlag ? "Go Up" : "Reload");
+      myPrevDirButton->setEnabled(myBrowseModeFlag);
       myNoteLabel->setEnabled(!myBrowseModeFlag);
+      break;
+
+    case kReloadRomDirCmd:
+      updateListing(true);
       break;
 
     default:

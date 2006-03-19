@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.9 2006-03-09 17:04:01 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.10 2006-03-19 20:57:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,6 +54,7 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
     // Rom path controls
     StaticTextWidget* myRomPath;
     CheckboxWidget*   myBrowseCheckbox;
+    ButtonWidget*     myReloadButton;
 
     // Snapshot controls
     StaticTextWidget* mySnapPath;
@@ -61,6 +62,12 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
     CheckboxWidget*   mySnapSingleCheckbox;
 
   private:
+    enum {
+      kChooseRomDirCmd  = 'LOrm', // rom select
+      kChooseSnapDirCmd = 'LOsn', // snap select
+      kBrowseDirCmd     = 'LObd'  // browse mode
+    };
+
     void openRomBrowser();
     void openSnapBrowser();
 };

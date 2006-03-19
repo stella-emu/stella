@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.18 2006-03-19 18:17:48 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.19 2006-03-19 20:57:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,12 +35,12 @@ class OSystem;
 #include "GameList.hxx"
 #include "bspf.hxx"
 
+// These must be accessible from LauncherOptionsDialog
 enum {
-  kChooseRomDirCmd  = 'roms',  // rom select
-  kChooseSnapDirCmd = 'snps',  // snap select
   kRomDirChosenCmd  = 'romc',  // rom chosen
   kSnapDirChosenCmd = 'snpc',  // snap chosen
-  kBrowseChangedCmd = 'broc'   // browse mode toggled
+  kBrowseChangedCmd = 'broc',  // browse mode toggled
+  kReloadRomDirCmd  = 'rdrl'   // reload the current listing
 };
 
 class LauncherDialog : public Dialog
@@ -62,7 +62,7 @@ class LauncherDialog : public Dialog
 
   protected:
     ButtonWidget* myStartButton;
-    ButtonWidget* myRelPrevButton;
+    ButtonWidget* myPrevDirButton;
     ButtonWidget* myOptionsButton;
     ButtonWidget* myQuitButton;
 
@@ -90,7 +90,7 @@ class LauncherDialog : public Dialog
 
     enum {
       kStartCmd   = 'STRT',
-      kRelPrevCmd = 'REPV',
+      kPrevDirCmd = 'PRVD',
       kOptionsCmd = 'OPTI',
       kQuitCmd    = 'QUIT'
     };

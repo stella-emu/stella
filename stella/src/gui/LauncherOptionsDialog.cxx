@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.15 2006-03-09 17:04:01 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.16 2006-03-19 20:57:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,7 +62,15 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   // Use ROM browse mode
   xpos = 30;  ypos += myRomPath->getHeight() + 8;
   myBrowseCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                        "Browse folders");
+                                        "Browse folders", kBrowseDirCmd);
+
+  // Reload current ROM listing
+  xpos += myBrowseCheckbox->getWidth() + 20;
+  myReloadButton = new ButtonWidget(myTab, font, xpos, ypos-2,
+                                    font.getStringWidth("Reload ROM Listing") + 20,
+                                    bheight,
+                                    "Reload ROM Listing", kReloadRomDirCmd, 0);
+  
 
   // 2) The snapshot settings tab
   myTab->addTab(" Snapshot Settings ");
@@ -134,6 +142,7 @@ void LauncherOptionsDialog::loadConfig()
 
   b = instance()->settings().getBool("rombrowse");
   myBrowseCheckbox->setState(b);
+  myReloadButton->setEnabled(!b);
 
   s = instance()->settings().getString("ssdir");
   mySnapPath->setLabel(s);
@@ -218,6 +227,12 @@ void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd,
       openSnapBrowser();
       break;
 
+/*
+    case kBrowseDirCmd:
+      myReloadButton->setEnabled(!myBrowseCheckbox->getState());
+      break;
+*/
+
     case kRomDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
@@ -229,6 +244,12 @@ void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd,
     {
       FilesystemNode dir(myBrowser->getResult());
       mySnapPath->setLabel(dir.path());
+      break;
+    }
+
+    case kReloadRomDirCmd:
+    {
+      sendCommand(kReloadRomDirCmd, 0, 0);
       break;
     }
 

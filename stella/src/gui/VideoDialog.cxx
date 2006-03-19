@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.27 2006-02-22 17:38:04 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.28 2006-03-19 20:57:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -122,6 +122,11 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   myUseDeskResCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Desktop Res in FS");
+  ypos += lineHeight + 4;
+
+  myTiaDefaultsCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+                                             "Use TIA defaults");
+
   ypos += lineHeight + 20;
 
   // Add Defaults, OK and Cancel buttons
@@ -209,6 +214,10 @@ void VideoDialog::loadConfig()
   // Use desktop resolution in fullscreen mode
   b = instance()->settings().getBool("gl_fsmax");
   myUseDeskResCheckbox->setState(b);
+
+  // Use TIA defaults instead of tweaked values
+  b = instance()->settings().getBool("tiadefaults");
+  myTiaDefaultsCheckbox->setState(b);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   i = myRendererPopup->getSelectedTag() - 1;
@@ -299,6 +308,12 @@ void VideoDialog::saveConfig()
     restart = true;
   }
 
+  // Use TIA defaults instead of tweaked values
+  b = myTiaDefaultsCheckbox->getState();
+  instance()->settings().setBool("tiadefaults", b);
+
+  myTiaDefaultsCheckbox->setState(b);
+
   // Finally, issue a complete framebuffer re-initialization
   // Not all options may require a full re-initialization, so we only
   // do it when necessary
@@ -325,6 +340,7 @@ void VideoDialog::setDefaults()
 
   myFullscreenCheckbox->setState(false);
   myUseDeskResCheckbox->setState(true);
+  myTiaDefaultsCheckbox->setState(false);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleRendererChange(0);  // 0 indicates software mode

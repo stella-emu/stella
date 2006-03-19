@@ -793,9 +793,6 @@ case $_host_os in
 			if test "$_build_gl" = yes ; then
 				DEFINES="$DEFINES -DDISPLAY_OPENGL"
 			fi
-			# Add properties directory
-			PROPDIR="$_datadir/stella"
-			DEFINES="$DEFINES -DPROPDIR=\"\\\"$PROPDIR\\\"\""
 			;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WIN32 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"

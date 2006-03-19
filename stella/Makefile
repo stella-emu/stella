@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.22 2006-03-11 21:34:37 stephena Exp $
+## $Id: Makefile,v 1.23 2006-03-19 20:57:54 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -171,14 +171,12 @@ install: all
 	$(INSTALL) -d "$(DESTDIR)$(BINDIR)"
 	$(INSTALL) -c -s -m 755 "$(srcdir)/stella$(EXEEXT)" "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
 	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)"
-	$(INSTALL) -c -m 644 "$(srcdir)/Announce.txt" "$(srcdir)/Changes.txt" "$(srcdir)/Copyright.txt" "$(srcdir)/License.txt" "$(srcdir)/README-PSP.txt" "$(srcdir)/README-SDL.txt" "$(srcdir)/Readme.txt" "$(srcdir)/Todo.txt" "$(srcdir)/docs/stella.html" "$(srcdir)/docs/debugger.html" "$(DESTDIR)$(DOCDIR)/"
+	$(INSTALL) -c -m 644 "$(srcdir)/Announce.txt" "$(srcdir)/Changes.txt" "$(srcdir)/Copyright.txt" "$(srcdir)/License.txt" "$(srcdir)/README-SDL.txt" "$(srcdir)/Readme.txt" "$(srcdir)/Todo.txt" "$(srcdir)/docs/index.html" "$(srcdir)/docs/debugger.html" "$(DESTDIR)$(DOCDIR)/"
 	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -c -m 644 "$(srcdir)/docs/graphics/chucky_cheese.png" "$(srcdir)/docs/graphics/circuit.png" "$(srcdir)/docs/graphics/console.png" "$(srcdir)/docs/graphics/eventmapping.png" "$(srcdir)/docs/graphics/eventmapping_remap.png" "$(srcdir)/docs/graphics/jr_pacman.png" "$(srcdir)/docs/graphics/launcher_options_rom.png" "$(srcdir)/docs/graphics/launcher_options_snap.png" "$(srcdir)/docs/graphics/launcher.png" "$(srcdir)/docs/graphics/options_about.png" "$(srcdir)/docs/graphics/options_audio.png" "$(srcdir)/docs/graphics/options_gameinfo.png" "$(srcdir)/docs/graphics/options_help.png" "$(srcdir)/docs/graphics/options_video.png" "$(srcdir)/docs/graphics/pacman.png" "$(srcdir)/docs/graphics/rom_browser.png" "$(srcdir)/docs/graphics/secret_quest.png" "$(srcdir)/docs/graphics/space_invaders.png" "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons"
 	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons"
-	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/stella"
-#	$(INSTALL) -c -m 644 "$(srcdir)/src/emucore/stella.pro" "$(DESTDIR)$(DATADIR)/stella"
-	@echo $(PROPDIR)
+
 install-strip: install
 	strip stella$(EXEEXT)
 
@@ -186,7 +184,6 @@ uninstall:
 	rm -f  "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
 	rm -rf "$(DESTDIR)$(DOCDIR)/"
 	rm -f  "$(DESTDIR)$(DATADIR)/icons/stella.xpm"
-	rm -rf "$(DESTDIR)$(DATADIR)/stella"
 
 # Special rule for Win32 icon stuff (there's probably a better way to do this ...)
 src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc
@@ -197,8 +194,7 @@ win32dist: stella$(EXEEXT)
 	rm -rf $(DISTNAME)
 	mkdir -p $(DISTNAME)/docs/graphics
 	strip stella$(EXEEXT) -o $(DISTNAME)/stella$(EXEEXT)
-#	cp src/emucore/stella.pro $(DISTNAME)
-	cp Announce.txt Changes.txt Copyright.txt License.txt README-PSP.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
+	cp Announce.txt Changes.txt Copyright.txt License.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
 	cp -r docs/*.html $(DISTNAME)/docs
 	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
 	cp /usr/bin/SDL.dll /mingw/bin/libpng12.dll /mingw/bin/zlib1.dll $(DISTNAME)
@@ -250,7 +246,6 @@ gp2x-organize:
 	mkdir -p "$(srcdir)/gp2x/docs"
 	cp -v $(srcdir)/stella  $(srcdir)/gp2x
 	cp -v $(srcdir)/src/gp2x/stella.gpe $(srcdir)/gp2x
-#	cp -v $(srcdir)/src/emucore/stella.pro $(srcdir)/gp2x
 	cp -v $(srcdir)/README-GP2X.txt $(srcdir)/gp2x
 	cp -v -r $(srcdir)/docs/* $(srcdir)/gp2x/docs
 	

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.36 2006-02-22 17:38:04 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.37 2006-03-19 20:57:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -104,7 +104,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   int x, y, w, h;
 
   // Now create all the dialogs attached to each menu button
-  w = 230; h = 130;
+  w = 230; h = 135;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myVideoDialog = new VideoDialog(myOSystem, parent, font, x, y, w, h);
 
