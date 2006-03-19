@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.16 2006-02-22 17:38:04 stephena Exp $
+// $Id: ListWidget.hxx,v 1.17 2006-03-19 22:06:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,7 +52,7 @@ class ListWidget : public EditableWidget
     int currentPos() const  { return _currentPos; }
 
     int getSelected() const        { return _selectedItem; }
-    void setSelected(int item);
+    void setSelected(int item);  // Use '-1' to indicate a redraw of an empty list
 
     int getHighlighted() const     { return _highlightedItem; }
     void setHighlighted(int item);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.cxx,v 1.4 2006-03-08 20:03:03 stephena Exp $
+// $Id: FSNode.cxx,v 1.5 2006-03-19 22:06:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,4 +111,10 @@ FilesystemNode FilesystemNode::getParent() const
     return *this;
   else
     return AbstractFilesystemNode::wrap(node);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::hasParent() const
+{
+  return _realNode->parent() != 0;
 }

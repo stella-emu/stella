@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.40 2006-02-22 17:38:04 stephena Exp $
+// $Id: ListWidget.cxx,v 1.41 2006-03-19 22:06:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,7 +67,7 @@ ListWidget::~ListWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setSelected(int item)
 {
-  assert(item >= -1 && item < (int)_list.size());
+  assert(item >= -2 && item < (int)_list.size());
 
   if(isEnabled())
   {

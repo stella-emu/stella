@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.15 2006-03-08 20:03:03 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.16 2006-03-19 22:06:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,11 +29,6 @@
 #include "BrowserDialog.hxx"
 
 #include "bspf.hxx"
-
-enum {
-  kChooseCmd = 'CHOS',
-  kGoUpCmd   = 'GOUP'
-};
 
 /* We want to use this as a general directory selector at some point... possible uses
  * - to select the data dir for a game
@@ -77,8 +72,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
   // Buttons
   xpos = 10;  ypos = _h - bheight - 8;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Go up",
-                   kGoUpCmd, 0);
+  _goUpButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                 "Go up", kGoUpCmd, 0);
 #ifndef MAC_OSX
   xpos = _w - 2 *(bwidth + 10);  
   new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
@@ -178,6 +173,9 @@ void BrowserDialog::updateListing()
   _fileList->setList(list);
   if(size > 0)
     _fileList->setSelected(0);
+
+  // Only hilite the 'up' button if there's a parent directory
+  _goUpButton->setEnabled(_node.hasParent());
 
   // Finally, redraw
   setDirty(); draw();

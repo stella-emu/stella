@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.hxx,v 1.7 2006-02-22 17:38:04 stephena Exp $
+// $Id: BrowserDialog.hxx,v 1.8 2006-03-19 22:06:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -23,6 +23,7 @@
 #define BROWSER_DIALOG_HXX
 
 class GuiObject;
+class ButtonWidget;
 class StaticTextWidget;
 class StringListWidget;
 
@@ -51,12 +52,19 @@ class BrowserDialog : public Dialog, public CommandSender
     StringListWidget* _fileList;
     StaticTextWidget* _currentPath;
     StaticTextWidget* _title;
+    ButtonWidget*     _goUpButton;
+
     FilesystemNode    _node;
     FSList            _nodeContent;
     FilesystemNode    _choice;
 
   private:
     int	_cmd;
+
+    enum {
+      kChooseCmd = 'CHOS',
+      kGoUpCmd   = 'GOUP'
+    };
 };
 
 #endif

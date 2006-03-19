@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.49 2006-03-19 20:57:55 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.50 2006-03-19 22:06:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -191,8 +191,6 @@ void LauncherDialog::enableButtons(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateListing(bool fullReload)
 {
-  enableButtons(false);
-
   // Start with empty list
   myGameList->clear();
 
@@ -216,9 +214,16 @@ void LauncherDialog::updateListing(bool fullReload)
       myCurrentDir = romdir;
 
     loadDirListing();
+
+    // Only hilite the 'up' button if there's a parent directory
+    FilesystemNode dir(myCurrentDir);
+    myPrevDirButton->setEnabled(dir.hasParent());
   }
   else
   {
+    // Disable buttons, pending a reload from disk
+    enableButtons(false);
+
     // Figure out if the ROM dir has changed since we last accessed it.
     // If so, we do a full reload from disk (takes quite some time).
     // Otherwise, we can use the cache file (which is much faster).
@@ -231,6 +236,9 @@ void LauncherDialog::updateListing(bool fullReload)
       loadListFromCache();
     else  // we have no other choice
       loadListFromDisk();
+
+    // Re-enable buttons
+    enableButtons(true);
   }
 
   // Now fill the list widget with the contents of the GameList
@@ -244,8 +252,6 @@ void LauncherDialog::updateListing(bool fullReload)
   ostringstream buf;
   buf << myGameList->size() << " items found";
   myRomCount->setLabel(buf.str());
-
-  enableButtons(true);
 
   // Restore last selection
   if(!myList->getList().isEmpty())
@@ -275,6 +281,8 @@ void LauncherDialog::updateListing(bool fullReload)
       }
     }
   }
+  else
+    myList->setSelected(-1);  // redraw the empty list
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

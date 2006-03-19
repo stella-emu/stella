@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.8 2005-12-09 01:16:13 stephena Exp $
+// $Id: FSNode.hxx,v 1.9 2006-03-19 22:06:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -184,6 +184,7 @@ class FilesystemNode : public AbstractFilesystemNode
     FilesystemNode &operator  =(const FilesystemNode &node);
 
     FilesystemNode getParent() const;
+    bool hasParent() const;
 
     virtual string displayName() const { return _realNode->displayName(); }
     virtual bool isValid() const { return _realNode->isValid(); }
