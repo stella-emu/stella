@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.81 2006-03-17 19:44:18 stephena Exp $
+// $Id: Settings.cxx,v 1.82 2006-03-19 00:46:04 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -79,6 +79,8 @@ Settings::Settings(OSystem* osystem)
   setInternal("rombrowse", "false");
   setInternal("lastrom", "");
   setInternal("modtime", "");  // romdir last modification time
+
+  setInternal("tiadefaults", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,7 +190,7 @@ bool Settings::loadCommandLine(int argc, char** argv)
     // Settings read from the commandline must not be saved to 
     // the rc-file, unless they were previously set
     if(int idx = getInternalPos(key) != -1)
-      setInternal(key, value, idx, true);
+      setInternal(key, value, idx);   // don't set initialValue here
     else
       setExternal(key, value);
   }
@@ -312,6 +314,7 @@ void Settings::usage()
     << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
     << "  -p4speed      <number>       Speed of emulated mouse movement for paddle 4 (0-100)\n"
+    << "  -tiadefaults  <1|0>          Use TIA positioning defaults instead of enhanced values\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #endif
@@ -359,7 +362,6 @@ void Settings::usage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
-
   // Do a quick scan of the internal settings to see if any have
   // changed.  If not, we don't need to save them at all.
   bool settingsChanged = false;
@@ -485,22 +487,20 @@ bool Settings::getBool(const string& key) const
   int idx = -1;
   if((idx = getInternalPos(key)) != -1)
   {
-    if(myInternalSettings[idx].value == "1" ||
-       myInternalSettings[idx].value == "true")
+    const string& value = myInternalSettings[idx].value;
+    if(value == "1" || value == "true")
       return true;
-    else if(myInternalSettings[idx].value == "0" ||
-            myInternalSettings[idx].value == "false")
+    else if(value == "0" || value == "false")
       return false;
     else
       return false;
   }
   else if((idx = getExternalPos(key)) != -1)
   {
-    if(myInternalSettings[idx].value == "1" ||
-       myInternalSettings[idx].value == "true")
+    const string& value = myExternalSettings[idx].value;
+    if(value == "1" || value == "true")
       return true;
-    else if(myInternalSettings[idx].value == "0" ||
-            myInternalSettings[idx].value == "false")
+    else if(value == "0" || value == "false")
       return false;
     else
       return false;
@@ -572,7 +572,8 @@ int Settings::setInternal(const string& key, const string& value,
     if(useAsInitial) myInternalSettings[idx].initialValue = value;
 
     /*cerr << "modify internal: key = " << key
-         << ", value = " << value
+         << ", value  = " << value
+         << ", ivalue = " << myInternalSettings[idx].initialValue
          << " @ index = " << idx
          << endl;*/
   }
@@ -587,7 +588,8 @@ int Settings::setInternal(const string& key, const string& value,
     idx = myInternalSettings.size() - 1;
 
     /*cerr << "insert internal: key = " << key
-         << ", value = " << value
+         << ", value  = " << value
+         << ", ivalue = " << setting.initialValue
          << " @ index = " << idx
          << endl;*/
   }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.13 2006-03-06 21:38:09 stephena Exp $
+// $Id: PropsSet.hxx,v 1.14 2006-03-19 00:46:04 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -23,6 +23,7 @@
 
 #include "bspf.hxx"
 
+class OSystem;
 class Properties;
 
 /**
@@ -42,7 +43,7 @@ class PropertiesSet
       Create an empty properties set object using the md5 as the
       key to the BST.
     */
-    PropertiesSet();
+    PropertiesSet(OSystem* osystem);
 
     /**
       Destructor
@@ -150,6 +151,9 @@ class PropertiesSet
     void printNode(TreeNode *node);
 
   private:
+    // The parent system for this object
+    OSystem* myOSystem;
+
     // The root of the BST
     TreeNode* myRoot;
 

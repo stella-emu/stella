@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.63 2006-03-17 19:44:16 stephena Exp $
+// $Id: mainSDL.cxx,v 1.64 2006-03-19 00:46:02 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
   EventHandler handler(theOSystem);
 
   // Create a properties set for us to use and set it up
-  PropertiesSet propertiesSet;
+  PropertiesSet propertiesSet(theOSystem);
   SetupProperties(propertiesSet);
   theOSystem->attach(&propertiesSet);
 

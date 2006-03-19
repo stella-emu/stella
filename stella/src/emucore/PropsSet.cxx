@@ -13,19 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.20 2006-03-05 01:18:42 stephena Exp $
+// $Id: PropsSet.cxx,v 1.21 2006-03-19 00:46:04 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-
+#include "OSystem.hxx"
 #include "GuiUtils.hxx"
 #include "DefProps.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet::PropertiesSet()
-  : myRoot(NULL),
+PropertiesSet::PropertiesSet(OSystem* osystem)
+  : myOSystem(osystem),
+    myRoot(NULL),
     mySize(0)
 {
 }
@@ -80,7 +80,7 @@ void PropertiesSet::getMD5(const string& md5, Properties &properties)
       if(cmp == 0)
       {
         for(int p = 0; p < LastPropType; ++p)
-          if(DefProps[i][p] != "")
+          if(DefProps[i][p][0] != 0)
             properties.set((PropertyType)p, DefProps[i][p]);
 
         found = true;
@@ -91,6 +91,15 @@ void PropertiesSet::getMD5(const string& md5, Properties &properties)
       else
         i = 2*i + 2;   // right child
     }
+  }
+
+  // Reset TIA positioning to defaults if option is enabled
+  if(myOSystem->settings().getBool("tiadefaults"))
+  {
+    properties.set(Display_XStart, Properties::ourDefaultProperties[Display_XStart]);
+    properties.set(Display_Width,  Properties::ourDefaultProperties[Display_Width]);
+    properties.set(Display_YStart, Properties::ourDefaultProperties[Display_YStart]);
+    properties.set(Display_Height, Properties::ourDefaultProperties[Display_Height]);
   }
 }
 
@@ -178,7 +187,7 @@ void PropertiesSet::save(ostream& out)
 void PropertiesSet::print()
 {
   cout << size() << endl;
-  printNode(myRoot);
+  printNode(myRoot);  // FIXME - print out internal properties as well
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

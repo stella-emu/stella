@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.7 2006-03-05 01:18:42 stephena Exp $
+// $Id: Props.hxx,v 1.8 2006-03-19 00:46:04 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -55,10 +55,12 @@ enum PropertyType {
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.7 2006-03-05 01:18:42 stephena Exp $
+  @version $Id: Props.hxx,v 1.8 2006-03-19 00:46:04 stephena Exp $
 */
 class Properties
 {
+  friend class PropertiesSet;
+
   public:
     /**
       Creates an empty properties object with the specified defaults.  The 
