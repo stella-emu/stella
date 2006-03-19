@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.50 2006-03-19 22:06:20 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.51 2006-03-19 23:11:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,8 +52,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myGameList(NULL),
     myProgressBar(NULL),
     mySelectedItem(0),
-    myBrowseModeFlag(false),
-    myCurrentDir("")
+    myBrowseModeFlag(false)
 {
   const GUI::Font& font = instance()->launcherFont();
 
@@ -159,6 +158,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myBrowseModeFlag = instance()->settings().getBool("rombrowse");
   myPrevDirButton->setEnabled(myBrowseModeFlag);
   myNoteLabel->setEnabled(!myBrowseModeFlag);
+
+  myCurrentNode = FilesystemNode(instance()->settings().getString("romdir"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -210,14 +211,10 @@ void LauncherDialog::updateListing(bool fullReload)
   // don't translate by md5sum at all
   if(myBrowseModeFlag)
   {
-    if(myCurrentDir == "")
-      myCurrentDir = romdir;
-
     loadDirListing();
 
     // Only hilite the 'up' button if there's a parent directory
-    FilesystemNode dir(myCurrentDir);
-    myPrevDirButton->setEnabled(dir.hasParent());
+    myPrevDirButton->setEnabled(myCurrentNode.hasParent());
   }
   else
   {
@@ -288,8 +285,7 @@ void LauncherDialog::updateListing(bool fullReload)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadDirListing()
 {
-  FilesystemNode dir(myCurrentDir);
-  FSList files = dir.listDir(FilesystemNode::kListAll);
+  FSList files = myCurrentNode.listDir(FilesystemNode::kListAll);
 
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
@@ -501,7 +497,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         // Directory's should be selected (ie, enter them and redisplay)
         if(myBrowseModeFlag && myGameList->isDir(item))
         {
-          myCurrentDir = entry;
+          myCurrentNode = entry;//FilesystemNodemyCurrentNode[item];//  _nodeContent[data];
           updateListing();
         }
         else if(instance()->createConsole(entry))
@@ -522,8 +518,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPrevDirCmd:
     {
-      FilesystemNode dir(myCurrentDir);
-      myCurrentDir = dir.getParent().path();
+      myCurrentNode = myCurrentNode.getParent();
       updateListing(!myBrowseModeFlag);  // Force full update in non-browse mode
       break;
     }
@@ -540,7 +535,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kRomDirChosenCmd:
-      myCurrentDir = instance()->settings().getString("romdir");
+      myCurrentNode = instance()->settings().getString("romdir");
       updateListing();
       break;
 
@@ -549,6 +544,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kBrowseChangedCmd:
+      myCurrentNode = instance()->settings().getString("romdir");
       myBrowseModeFlag = instance()->settings().getBool("rombrowse");
       myPrevDirButton->setEnabled(myBrowseModeFlag);
       myNoteLabel->setEnabled(!myBrowseModeFlag);

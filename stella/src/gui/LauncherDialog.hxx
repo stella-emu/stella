@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.19 2006-03-19 20:57:55 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.20 2006-03-19 23:11:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,6 +32,7 @@ class ButtonWidget;
 class OSystem;
 
 #include "Dialog.hxx"
+#include "FSNode.hxx"
 #include "GameList.hxx"
 #include "bspf.hxx"
 
@@ -86,7 +87,7 @@ class LauncherDialog : public Dialog
   private:
     int mySelectedItem;
     bool myBrowseModeFlag; 
-    string myCurrentDir;
+    FilesystemNode myCurrentNode;
 
     enum {
       kStartCmd   = 'STRT',

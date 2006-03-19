@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.16 2006-03-19 22:06:20 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.17 2006-03-19 23:11:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -152,6 +152,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::updateListing()
 {
+cerr << "node path = " << _node.path() << endl;
   // Update the path display
   _currentPath->setLabel(_node.path());
 
