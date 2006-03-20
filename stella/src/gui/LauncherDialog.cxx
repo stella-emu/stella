@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.51 2006-03-19 23:11:31 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.52 2006-03-20 13:23:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -159,7 +159,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myPrevDirButton->setEnabled(myBrowseModeFlag);
   myNoteLabel->setEnabled(!myBrowseModeFlag);
 
-  myCurrentNode = FilesystemNode(instance()->settings().getString("romdir"));
+  myCurrentNode = instance()->settings().getString("romdir");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -497,7 +497,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         // Directory's should be selected (ie, enter them and redisplay)
         if(myBrowseModeFlag && myGameList->isDir(item))
         {
-          myCurrentNode = entry;//FilesystemNodemyCurrentNode[item];//  _nodeContent[data];
+          myCurrentNode = entry;
           updateListing();
         }
         else if(instance()->createConsole(entry))
