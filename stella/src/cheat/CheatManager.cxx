@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.9 2006-03-11 21:22:47 stephena Exp $
+// $Id: CheatManager.cxx,v 1.10 2006-03-22 15:12:02 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -28,7 +28,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::CheatManager(OSystem* osystem)
-  : myOSystem(osystem)
+  : myOSystem(osystem),
+    myCurrentCheat(""),
+    myListIsDirty(false)
 {
 }
 
@@ -260,11 +262,15 @@ void CheatManager::loadCheatDatabase()
   }
 
   in.close();
+  myListIsDirty = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::saveCheatDatabase()
 {
+  if(!myListIsDirty)
+    return;
+
   string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
   ofstream out(cheatfile.c_str(), ios::out);
   if(!out)
@@ -283,6 +289,7 @@ void CheatManager::saveCheatDatabase()
 void CheatManager::loadCheats(const string& md5sum)
 {
   clear();
+  myCurrentCheat = "";
 
   // Set up any cheatcodes that was on the command line
   // (and remove the key from the settings, so they won't get set again)
@@ -294,6 +301,10 @@ void CheatManager::loadCheats(const string& md5sum)
   if(iter == myCheatMap.end() && cheats == "")
     return;
 
+  // Remember the cheats for this ROM
+  myCurrentCheat = iter->second;
+
+  // Parse the cheat list, constructing cheats and adding them to the manager
   parse(iter->second + cheats);
 }
 
@@ -310,15 +321,24 @@ void CheatManager::saveCheats(const string& md5sum)
       cheats << ",";
   }
 
-  CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
+  bool changed = cheats.str() != myCurrentCheat;
 
-  // Erase old entry
-  if(iter != myCheatMap.end())
-    myCheatMap.erase(iter);
+  // Only update the list if absolutely necessary
+  if(changed)
+  {
+    CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
 
-  // Add new entry only if there are any cheats defined
-  if(cheats.str() != "")
-    myCheatMap.insert(make_pair(md5sum, cheats.str()));
+    // Erase old entry and add a new one only if it's changed
+    if(iter != myCheatMap.end())
+      myCheatMap.erase(iter);
+
+    // Add new entry only if there are any cheats defined
+    if(cheats.str() != "")
+      myCheatMap.insert(make_pair(md5sum, cheats.str()));
+  }
+
+  // Update the dirty flag
+  myListIsDirty = myListIsDirty || changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

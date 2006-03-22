@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.64 2006-03-17 19:44:18 stephena Exp $
+// $Id: OSystem.cxx,v 1.65 2006-03-22 15:12:02 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -266,6 +266,9 @@ void OSystem::createSound()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createConsole(const string& romfile)
 {
+  // Delete any lingering console object
+  delete myConsole;  myConsole = NULL;
+
   bool retval = false, showmessage = false;
 
   // If a blank ROM has been given, we reload the current one (assuming one exists)
@@ -287,8 +290,6 @@ bool OSystem::createConsole(const string& romfile)
   string md5;
   if(openROM(myRomFile, md5, &image, &size))
   {
-    delete myConsole;  myConsole = NULL;
-
     // Create an instance of the 2600 game console
     // The Console c'tor takes care of updating the eventhandler state
     myConsole = new Console(image, size, md5, this);
