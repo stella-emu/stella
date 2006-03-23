@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.12 2006-02-22 17:38:04 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.13 2006-03-23 16:16:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -200,7 +200,7 @@ void DebuggerDialog::addStatusArea()
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
-  myTiaInfo = new TiaInfoWidget(this, instance()->consoleFont(), xpos+20, ypos);
+  myTiaInfo = new TiaInfoWidget(this, instance()->consoleFont(), xpos, ypos);
 
   ypos += myTiaInfo->getHeight() + 10;
   myTiaZoom = new TiaZoomWidget(this, instance()->consoleFont(), xpos+10, ypos);
@@ -232,16 +232,25 @@ void DebuggerDialog::addRomArea()
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, instance()->consoleFont(),
                                                  xpos, 20);
 
-  int buttonX = r.right - kButtonWidth - 5, buttonY = r.top + 5;
-  addButton(instance()->consoleFont(), buttonX, buttonY, "Step", kDDStepCmd, 0);
-  buttonY += 22;
-  addButton(instance()->consoleFont(), buttonX, buttonY, "Trace", kDDTraceCmd, 0);
-  buttonY += 22;
-  addButton(instance()->consoleFont(), buttonX, buttonY, "Scan +1", kDDSAdvCmd, 0);
-  buttonY += 22;
-  addButton(instance()->consoleFont(), buttonX, buttonY, "Frame +1", kDDAdvCmd, 0);
-  buttonY += 22;
-  addButton(instance()->consoleFont(), buttonX, buttonY, "Exit", kDDExitCmd, 0);
+  const int bwidth  = instance()->consoleFont().getStringWidth("Frame +1 "),
+            bheight = instance()->consoleFont().getLineHeight() + 2;
+  int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
+
+  new ButtonWidget(this, instance()->consoleFont(), buttonX, buttonY,
+                   bwidth, bheight, "Step", kDDStepCmd);
+  buttonY += bheight + 4;
+  new ButtonWidget(this, instance()->consoleFont(), buttonX, buttonY,
+                   bwidth, bheight, "Trace", kDDTraceCmd);
+  buttonY += bheight + 4;
+  new ButtonWidget(this, instance()->consoleFont(), buttonX, buttonY,
+                   bwidth, bheight, "Scan +1", kDDSAdvCmd);
+  buttonY += bheight + 4;
+  new ButtonWidget(this, instance()->consoleFont(), buttonX, buttonY,
+                   bwidth, bheight, "Frame +1", kDDAdvCmd);
+  buttonY += bheight + 4;
+  new ButtonWidget(this, instance()->consoleFont(), buttonX, buttonY,
+                   bwidth, bheight, "Exit", kDDExitCmd);
+  buttonY += bheight + 4;
 
   xpos = r.left + 10;  ypos += myRam->getHeight() + 5;
   myRom = new RomWidget(this, instance()->consoleFont(), xpos, ypos);

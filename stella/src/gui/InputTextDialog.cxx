@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.11 2006-02-22 17:38:04 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.12 2006-03-23 16:16:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,9 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+            lineHeight = font.getLineHeight(),
+            bwidth  = font.getStringWidth(" Cancel "),
+            bheight = font.getLineHeight() + 2;
   unsigned int xpos, ypos, i, lwidth = 0, maxIdx = 0;
 
   // Calculate real dimensions
@@ -86,11 +88,15 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   myTitle->setColor(kTextColorEm);
 
 #ifndef MAC_OSX
-  addButton(font, _w - 2 * (kButtonWidth + 10), _h - 24, "OK", kAcceptCmd, 0);
-  addButton(font, _w - (kButtonWidth+10), _h - 24, "Cancel", kCloseCmd, 0);
+  new ButtonWidget(this, font, _w - 2 * (bwidth + 10), _h - bheight - 10,
+                   bwidth, bheight, "OK", kAcceptCmd, 0);
+  new ButtonWidget(this, font, _w - (bwidth + 10), _h - bheight - 10,
+                   bwidth, bheight, "Cancel", kCloseCmd, 0);
 #else
-  addButton(font, _w - 2 * (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(font, _w - (kButtonWidth+10), _h - 24, "OK", kAcceptCmd, 0);
+  new ButtonWidget(this, font, _w - 2 * (bwidth + 10), _h - bheight - 10,
+                   bwidth, bheight, "Cancel", kCloseCmd, 0);
+  new ButtonWidget(this, font, _w - (bwidth + 10), _h - bheight - 10,
+                   bwidth, bheight, "OK", kAcceptCmd, 0);
 #endif
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
+// $Id: RamWidget.cxx,v 1.4 2006-03-23 16:16:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,8 +52,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bwidth  = 44,
-            bheight = 16;
+            bwidth  = 44,//font.getStringWidth("Undo  "),
+            bheight = lineHeight + 2;
   int xpos, ypos, lwidth;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
@@ -69,24 +69,24 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
                                   "Undo", kUndoCmd, 0);
   myUndoButton->setTarget(this);
 
-  ypos += bheight + bheight/2;
+  ypos += bheight + 4;
   myRevertButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Revert", kRevertCmd, 0);
+                                    "Rev", kRevertCmd, 0);
   myRevertButton->setTarget(this);
 
   ypos += 2 * bheight + 2;
   mySearchButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Search", kSearchCmd, 0);
+                                    "Srch", kSearchCmd, 0);
   mySearchButton->setTarget(this);
 
-  ypos += bheight + bheight/2;
+  ypos += bheight + 4;
   myCompareButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Compare", kCmpCmd, 0);
+                                     "Cmp", kCmpCmd, 0);
   myCompareButton->setTarget(this);
 
-  ypos += bheight + bheight/2;
+  ypos += bheight + 4;
   myRestartButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Reset", kRestartCmd, 0);
+                                     "Rset", kRestartCmd, 0);
   myRestartButton->setTarget(this);
 
   // Labels for RAM grid
