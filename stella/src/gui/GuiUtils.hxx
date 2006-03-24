@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiUtils.hxx,v 1.22 2006-02-22 17:38:04 stephena Exp $
+// $Id: GuiUtils.hxx,v 1.23 2006-03-24 19:59:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,14 +29,14 @@
   Probably not very neat, but at least it works ...
 
   @author  Stephen Anthony
-  @version $Id: GuiUtils.hxx,v 1.22 2006-02-22 17:38:04 stephena Exp $
+  @version $Id: GuiUtils.hxx,v 1.23 2006-03-24 19:59:52 stephena Exp $
 */
 
 #define kScrollBarWidth  9
 
 // Colors indices to use for the various GUI elements
 enum OverlayColor {
-  kColor = 256,    // The rest of the enumerations will continue from 256
+  kColor,
   kBGColor,
   kShadowColor,
   kHiliteColor,

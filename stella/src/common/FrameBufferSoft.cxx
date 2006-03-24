@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.50 2006-03-18 00:00:30 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.51 2006-03-24 19:59:52 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -220,7 +220,7 @@ void FrameBufferSoft::drawMediaSource()
             temp.h = active.height * screenMultiple;
 
             myRectList->add(&temp);
-            SDL_FillRect(myScreen, &temp, myPalette[active.color]);
+            SDL_FillRect(myScreen, &temp, myDefTIAPalette[active.color]);
 
             ++activeIndex;
           }
@@ -238,7 +238,7 @@ void FrameBufferSoft::drawMediaSource()
           temp.h = active.height * screenMultiple;
 
           myRectList->add(&temp);
-          SDL_FillRect(myScreen, &temp, myPalette[active.color]);
+          SDL_FillRect(myScreen, &temp, myDefTIAPalette[active.color]);
         }
 
         // We can now make the current rectangles into the active rectangles
@@ -263,7 +263,7 @@ void FrameBufferSoft::drawMediaSource()
         temp.h = active.height * screenMultiple;
 
         myRectList->add(&temp);
-        SDL_FillRect(myScreen, &temp, myPalette[active.color]);
+        SDL_FillRect(myScreen, &temp, myDefTIAPalette[active.color]);
       }
       break; // case 0
     }
@@ -296,8 +296,8 @@ void FrameBufferSoft::drawMediaSource()
 
             while(xstride--)
             {
-              buffer[pos++] = (uInt16) myAvgPalette[v][w];
-              buffer[pos++] = (uInt16) myAvgPalette[v][w];
+              buffer[pos++] = (uInt16) myAvgTIAPalette[v][w];
+              buffer[pos++] = (uInt16) myAvgTIAPalette[v][w];
             }
           }
           screenofsY += myPitch;
@@ -335,14 +335,14 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 r, g, b;
             if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
             {
-              uInt32 pixel = myAvgPalette[v][w];
+              uInt32 pixel = myAvgTIAPalette[v][w];
               b = pixel & 0xff;
               g = (pixel & 0xff00) >> 8;
               r = (pixel & 0xff0000) >> 16;
             }
             else
             {
-              uInt32 pixel = myAvgPalette[v][w];
+              uInt32 pixel = myAvgTIAPalette[v][w];
               r = pixel & 0xff;
               g = (pixel & 0xff00) >> 8;
               b = (pixel & 0xff0000) >> 16;
@@ -389,8 +389,8 @@ void FrameBufferSoft::drawMediaSource()
 
             while(xstride--)
             {
-              buffer[pos++] = (uInt32) myAvgPalette[v][w];
-              buffer[pos++] = (uInt32) myAvgPalette[v][w];
+              buffer[pos++] = (uInt32) myAvgTIAPalette[v][w];
+              buffer[pos++] = (uInt32) myAvgTIAPalette[v][w];
             }
           }
           screenofsY += myPitch;
@@ -496,7 +496,7 @@ void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
   tmp.y = y * theZoomLevel;
   tmp.w = (x2 - x + 1) * theZoomLevel;
   tmp.h = theZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myPalette[color]);
+  SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -509,7 +509,7 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
   tmp.y = y * theZoomLevel;
   tmp.w = theZoomLevel;
   tmp.h = (y2 - y + 1) * theZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myPalette[color]);
+  SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -523,7 +523,7 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   tmp.y = y * theZoomLevel;
   tmp.w = w * theZoomLevel;
   tmp.h = h * theZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myPalette[color]);
+  SDL_FillRect(myScreen, &tmp, myGUIPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -559,7 +559,7 @@ void FrameBufferSoft::drawChar(const GUI::Font* FONT, uInt8 chr,
         rect.x = (x + xorig) * theZoomLevel;
         rect.y = (y + yorig) * theZoomLevel;
         rect.w = rect.h = theZoomLevel;
-        SDL_FillRect(myScreen, &rect, myPalette[color]);
+        SDL_FillRect(myScreen, &rect, myGUIPalette[color]);
       }
     }
   }
@@ -581,7 +581,7 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
         rect.x = (x + xorig) * theZoomLevel;
         rect.y = (y + yorig) * theZoomLevel;
         rect.w = rect.h = theZoomLevel;
-        SDL_FillRect(myScreen, &rect, myPalette[color]);
+        SDL_FillRect(myScreen, &rect, myGUIPalette[color]);
       }
     }
   }

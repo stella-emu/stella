@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.65 2006-03-22 15:12:02 stephena Exp $
+// $Id: OSystem.cxx,v 1.66 2006-03-24 19:59:52 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -229,6 +229,8 @@ void OSystem::toggleFrameBuffer()
     video = "soft";
   else   // a driver that doesn't exist was requested, so use software mode
     video = "soft";
+
+  myEventHandler->handleEvent(Event::Pause, 0);
 
   // Update the settings and create the framebuffer
   mySettings->setString("video", video);

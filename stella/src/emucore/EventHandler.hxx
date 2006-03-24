@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.81 2006-03-18 00:00:30 stephena Exp $
+// $Id: EventHandler.hxx,v 1.82 2006-03-24 19:59:52 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -107,7 +107,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.81 2006-03-18 00:00:30 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.82 2006-03-24 19:59:52 stephena Exp $
 */
 class EventHandler
 {
@@ -215,19 +215,24 @@ class EventHandler
     void refreshDisplay(bool forceUpdate = false);
 
     /**
-      This method indicates whether a pause event has been received.
+      This method pauses the entire emulator.
     */
-    inline bool doPause() { return myPauseFlag; }
+    void pause(bool status);
 
     /**
-      This method indicates whether a quit event has been received.
+      This method indicates whether a pause event has been received.
     */
-    inline bool doQuit() { return myQuitFlag; }
+    inline bool isPaused() { return myPauseFlag; }
 
     /**
       This method indicates that the system should terminate.
     */
-    inline void quit() { handleEvent(Event::Quit, 1); }
+    void quit() { handleEvent(Event::Quit, 1); }
+
+    /**
+      This method indicates whether a quit event has been received.
+    */
+    inline bool isQuit() { return myQuitFlag; }
 
     /**
       Save state to explicit state number (debugger uses this)

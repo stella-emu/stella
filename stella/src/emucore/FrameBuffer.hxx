@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.67 2006-03-19 18:17:48 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.68 2006-03-24 19:59:52 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -70,7 +70,7 @@ enum MessagePosition {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.67 2006-03-19 18:17:48 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.68 2006-03-24 19:59:52 stephena Exp $
 */
 class FrameBuffer
 {
@@ -150,12 +150,11 @@ class FrameBuffer
     inline const uInt32 imageHeight() { return myImageDim.h; }
 
      /**
-      Sets the pause status.  While pause is selected, the
-      MediaSource will not be updated.
+      Handle the pause event; currently this updates the palette.
 
-      @param status  Toggle pause based on status
+      @param status  Whether pause has been enabled or disabled
     */
-    void pause(bool status);
+    void handlePause(bool status);
 
     /**
       Indicates that the TIA area is dirty, and certain areas need
@@ -453,11 +452,12 @@ class FrameBuffer
     // SDL initialization flags
     uInt32 mySDLFlags;
 
-    // SDL palette, with the first 256 colors representing normal fill
-    Uint32 myPalette[kNumColors];
+    // TIA palettes for normal and phosphor modes
+    Uint32 myDefTIAPalette[256];
+    Uint32 myAvgTIAPalette[256][256];
 
-    // SDL palette representing phosphor effect
-    Uint32 myAvgPalette[256][256];
+    // GUI palette, derived from 'ourGUIColors'
+    Uint32 myGUIPalette[kNumColors];
 
     // Indicates the current zoom level of the SDL screen
     uInt32 theZoomLevel;
@@ -481,7 +481,7 @@ class FrameBuffer
     int myPhosphorBlend;
 
     // Table of RGB values for GUI elements
-    static const uInt8 ourGUIColors[kNumColors-256][3];
+    static const uInt8 ourGUIColors[kNumColors][3];
 
   private:
     /**

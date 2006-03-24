@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.155 2006-03-18 00:00:30 stephena Exp $
+// $Id: EventHandler.cxx,v 1.156 2006-03-24 19:59:52 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -162,8 +162,7 @@ void EventHandler::reset(State state)
   myPauseFlag = false;
   myQuitFlag = false;
 
-  myOSystem->frameBuffer().pause(myPauseFlag);
-  myOSystem->sound().mute(myPauseFlag);
+  pause(false);
   myEvent->clear();
 
   if(myState == S_LAUNCHER)
@@ -214,6 +213,16 @@ void EventHandler::refreshDisplay(bool forceUpdate)
     myOSystem->frameBuffer().update();
 
 //  cerr << "  ==> State change = " << myState << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::pause(bool status)
+{
+cerr << "EventHandler::pause(): " << status << endl;
+  myPauseFlag = status;
+
+  myOSystem->frameBuffer().handlePause(myPauseFlag);
+  myOSystem->sound().mute(myPauseFlag);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1167,11 +1176,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
 
     case Event::Pause:
       if(state)
-      {
-        myPauseFlag = !myPauseFlag;
-        myOSystem->frameBuffer().pause(myPauseFlag);
-        myOSystem->sound().mute(myPauseFlag);
-      }
+        pause(!myPauseFlag);
       return;
 
     case Event::LauncherMode:

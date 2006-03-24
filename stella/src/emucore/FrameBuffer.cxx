@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.83 2006-03-19 18:17:48 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.84 2006-03-24 19:59:52 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -122,8 +122,8 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   myOSystem->eventHandler().refreshDisplay();
 
   // Set palette for GUI
-  for(int i = 0; i < kNumColors-256; i++)
-    myPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
+  for(int i = 0; i < kNumColors; i++)
+    myGUIPalette[i] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
 
   // Set emulation palette if a console exists
   // Used when entering/exiting debugger
@@ -333,46 +333,53 @@ inline void FrameBuffer::drawMessage()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::pause(bool status)
+void FrameBuffer::handlePause(bool status)
 {
+cerr << "FrameBuffer::handlePause(): " << status << endl;
   myPauseStatus = status;
+
+  // Enable the paused palette
+  if(&myOSystem->console())
+  {
+    enablePhosphor(myOSystem->console().properties().get(Display_Phosphor) == "YES");
+    setPalette(myOSystem->console().mediaSource().palette());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setPalette(const uInt32* palette)
 {
+  // Account for pause mode
+  float shade = myPauseStatus ? 0.65 : 1.0;
   int i, j;
 
   // Set palette for normal fill
   for(i = 0; i < 256; ++i)
   {
-    Uint8 r = (Uint8) ((palette[i] & 0x00ff0000) >> 16);
-    Uint8 g = (Uint8) ((palette[i] & 0x0000ff00) >> 8);
-    Uint8 b = (Uint8) (palette[i] & 0x000000ff);
+    Uint8 r = (Uint8) (((palette[i] & 0x00ff0000) >> 16) * shade);
+    Uint8 g = (Uint8) (((palette[i] & 0x0000ff00) >> 8) * shade);
+    Uint8 b = (Uint8) ((palette[i] & 0x000000ff) * shade);
 
-    myPalette[i] = mapRGB(r, g, b);
+    myDefTIAPalette[i] = mapRGB(r, g, b);
   }
 
   // Set palette for phosphor effect
-  if(myUsePhosphor)
+  for(i = 0; i < 256; ++i)
   {
-    for(i = 0; i < 256; ++i)
+    for(j = 0; j < 256; ++j)
     {
-      for(j = 0; j < 256; ++j)
-      {
-        uInt8 ri = (uInt8) ((palette[i] & 0x00ff0000) >> 16);
-        uInt8 gi = (uInt8) ((palette[i] & 0x0000ff00) >> 8);
-        uInt8 bi = (uInt8) (palette[i] & 0x000000ff);
-        uInt8 rj = (uInt8) ((palette[j] & 0x00ff0000) >> 16);
-        uInt8 gj = (uInt8) ((palette[j] & 0x0000ff00) >> 8);
-        uInt8 bj = (uInt8) (palette[j] & 0x000000ff);
+      uInt8 ri = (uInt8) ((palette[i] & 0x00ff0000) >> 16);
+      uInt8 gi = (uInt8) ((palette[i] & 0x0000ff00) >> 8);
+      uInt8 bi = (uInt8) (palette[i] & 0x000000ff);
+      uInt8 rj = (uInt8) ((palette[j] & 0x00ff0000) >> 16);
+      uInt8 gj = (uInt8) ((palette[j] & 0x0000ff00) >> 8);
+      uInt8 bj = (uInt8) (palette[j] & 0x000000ff);
 
-        Uint8 r = (Uint8) getPhosphor(ri, rj);
-        Uint8 g = (Uint8) getPhosphor(gi, gj);
-        Uint8 b = (Uint8) getPhosphor(bi, bj);
+      Uint8 r = (Uint8) (getPhosphor(ri, rj) * shade);
+      Uint8 g = (Uint8) (getPhosphor(gi, gj) * shade);
+      Uint8 b = (Uint8) (getPhosphor(bi, bj) * shade);
 
-        myAvgPalette[i][j] = mapRGB(r, g, b);
-      }
+      myAvgTIAPalette[i][j] = mapRGB(r, g, b);
     }
   }
 
@@ -726,7 +733,7 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
+const uInt8 FrameBuffer::ourGUIColors[kNumColors][3] = {
   { 104, 104, 104 },  // kColor
   {   0,   0,   0 },  // kBGColor
   {  64,  64,  64 },  // kShadowColor

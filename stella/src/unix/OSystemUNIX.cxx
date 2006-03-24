@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.18 2006-03-17 23:06:28 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.19 2006-03-24 19:59:52 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -88,7 +88,7 @@ void OSystemUNIX::mainLoop()
     for(;;)
     {
       // Exit if the user wants to quit
-      if(myEventHandler->doQuit())
+      if(myEventHandler->isQuit())
         break;
 
       startTime = getTicks();
@@ -121,7 +121,7 @@ void OSystemUNIX::mainLoop()
     for(;;)
     {
       // Exit if the user wants to quit
-      if(myEventHandler->doQuit())
+      if(myEventHandler->isQuit())
         break;
 
       startTime = getTicks();
