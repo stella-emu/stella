@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.68 2006-03-24 19:59:52 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.69 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -62,6 +62,18 @@ enum MessagePosition {
   kBottomRight
 };
 
+// Colors indices to use for the various GUI elements
+enum {
+  kColor = 256,
+  kBGColor,
+  kShadowColor,
+  kHiliteColor,
+  kTextColor,
+  kTextColorHi,
+  kTextColorEm,
+  kNumColors
+};
+
 /**
   This class encapsulates the MediaSource and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
@@ -70,7 +82,7 @@ enum MessagePosition {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.68 2006-03-24 19:59:52 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.69 2006-03-25 00:34:17 stephena Exp $
 */
 class FrameBuffer
 {
@@ -112,7 +124,7 @@ class FrameBuffer
     */
     void showMessage(const string& message,
                      MessagePosition position = kBottomCenter,
-                     OverlayColor color = kTextColor);
+                     int color = kTextColor);
 
     /**
       Hides any onscreen messages.
@@ -154,7 +166,7 @@ class FrameBuffer
 
       @param status  Whether pause has been enabled or disabled
     */
-    void handlePause(bool status);
+    void pause(bool status);
 
     /**
       Indicates that the TIA area is dirty, and certain areas need
@@ -178,14 +190,14 @@ class FrameBuffer
 
     /**
       This method is called when the user wants to resize the window.
-      Size = 'PreviousSize' means window should decrease in size
-      Size = 'NextSize' means window should increase in size
-      Size = 'GivenSize' means window should be resized to quantity given in 'zoom'
+      Size = -1 means window should decrease in size
+      Size =  0 means window should be resized to quantity given in 'zoom'
+      Size = +1 means window should increase in size
 
       @param size  Described above
       @param zoom  The zoom level to use if size is set to 'sGiven'
     */
-    void resize(Size size, Int8 zoom = 0);
+    void resize(int size, Int8 zoom = 0);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -243,7 +255,7 @@ class FrameBuffer
       @param colorB Darker color for inside line.
     */
     void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-             OverlayColor colorA, OverlayColor colorB);
+             int colorA, int colorB);
 
     /**
       This method should be called to draw a framed rectangle.
@@ -256,7 +268,7 @@ class FrameBuffer
       @param color  The color of the surrounding frame
     */
     void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                   OverlayColor color, FrameStyle style = kSolidLine);
+                   int color, FrameStyle style = kSolidLine);
 
     /**
       This method should be called to draw the specified string.
@@ -273,7 +285,7 @@ class FrameBuffer
       @param useEllipsis  Whether to use '...' when the string is too long
     */
     void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
-                    OverlayColor color, TextAlignment align = kTextAlignLeft,
+                    int color, TextAlignment align = kTextAlignLeft,
                     int deltax = 0, bool useEllipsis = true);
 
 
@@ -349,7 +361,7 @@ class FrameBuffer
       @param x2    The second x coordinate
       @param color The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color) = 0;
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color) = 0;
 
     /**
       This method should be called to draw a vertical line.
@@ -359,7 +371,7 @@ class FrameBuffer
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color) = 0;
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color) = 0;
 
     /**
       This method should be called to draw a filled rectangle.
@@ -371,7 +383,7 @@ class FrameBuffer
       @param color  The color of the area
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          OverlayColor color) = 0;
+                          int color) = 0;
 
     /**
       This method should be called to draw the specified character.
@@ -383,7 +395,7 @@ class FrameBuffer
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
-                          OverlayColor color) = 0;
+                          int color) = 0;
 
     /**
       This method should be called to draw the bitmap image.
@@ -394,7 +406,7 @@ class FrameBuffer
       @param color  The color of the character
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
+    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
                             Int32 h = 8) = 0;
 
     /**
@@ -453,11 +465,8 @@ class FrameBuffer
     uInt32 mySDLFlags;
 
     // TIA palettes for normal and phosphor modes
-    Uint32 myDefTIAPalette[256];
-    Uint32 myAvgTIAPalette[256][256];
-
-    // GUI palette, derived from 'ourGUIColors'
-    Uint32 myGUIPalette[kNumColors];
+    Uint32 myDefPalette[256+kNumColors];
+    Uint32 myAvgPalette[256][256];
 
     // Indicates the current zoom level of the SDL screen
     uInt32 theZoomLevel;
@@ -481,7 +490,7 @@ class FrameBuffer
     int myPhosphorBlend;
 
     // Table of RGB values for GUI elements
-    static const uInt8 ourGUIColors[kNumColors][3];
+    static const uInt8 ourGUIColors[kNumColors-256][3];
 
   private:
     /**
@@ -508,15 +517,12 @@ class FrameBuffer
     // Indicates the current framerate of the system
     uInt32 myFrameRate;
 
-    // Indicates the current pause status
-    bool myPauseStatus;
-
     // Used for onscreen messages
     struct Message {
       string text;
       int counter;
       int x, y, w, h;
-      OverlayColor color;
+      uInt32 color;
     };
     Message myMessage;
 };

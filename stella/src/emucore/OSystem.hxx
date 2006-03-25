@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.40 2006-03-17 19:44:18 stephena Exp $
+// $Id: OSystem.hxx,v 1.41 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.40 2006-03-17 19:44:18 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.41 2006-03-25 00:34:17 stephena Exp $
 */
 class OSystem
 {
@@ -91,63 +91,63 @@ class OSystem
 
       @return The event handler
     */
-    EventHandler& eventHandler() const { return *myEventHandler; }
+    inline EventHandler& eventHandler() const { return *myEventHandler; }
 
     /**
       Get the frame buffer of the system
 
       @return The frame buffer
     */
-    FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
+    inline FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
 
     /**
       Get the sound object of the system
 
       @return The sound object
     */
-    Sound& sound() const { return *mySound; }
+    inline Sound& sound() const { return *mySound; }
 
     /**
       Get the settings object of the system
 
       @return The settings object
     */
-    Settings& settings() const { return *mySettings; }
+    inline Settings& settings() const { return *mySettings; }
 
     /**
       Get the set of game properties for the system
 
       @return The properties set object
     */
-    PropertiesSet& propSet() const { return *myPropSet; }
+    inline PropertiesSet& propSet() const { return *myPropSet; }
 
     /**
       Get the console of the system.
 
       @return The console object
     */
-    Console& console(void) const { return *myConsole; }
+    inline Console& console(void) const { return *myConsole; }
 
     /**
       Get the settings menu of the system.
 
       @return The settings menu object
     */
-    Menu& menu(void) const { return *myMenu; }
+    inline Menu& menu(void) const { return *myMenu; }
 
     /**
       Get the command menu of the system.
 
       @return The command menu object
     */
-    CommandMenu& commandMenu(void) const { return *myCommandMenu; }
+    inline CommandMenu& commandMenu(void) const { return *myCommandMenu; }
 
     /**
       Get the ROM launcher of the system.
 
       @return The launcher object
     */
-    Launcher& launcher(void) const { return *myLauncher; }
+    inline Launcher& launcher(void) const { return *myLauncher; }
 
 #ifdef DEVELOPER_SUPPORT
     /**
@@ -155,7 +155,7 @@ class OSystem
 
       @return The debugger object
     */
-    Debugger& debugger(void) const { return *myDebugger; }
+    inline Debugger& debugger(void) const { return *myDebugger; }
 #endif
 
 #ifdef CHEATCODE_SUPPORT
@@ -164,7 +164,7 @@ class OSystem
 
       @return The cheatmanager object
     */
-    CheatManager& cheat(void) const { return *myCheatManager; }
+    inline CheatManager& cheat(void) const { return *myCheatManager; }
 #endif
 
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.7 2006-02-22 17:38:04 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.8 2006-03-25 00:34:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -102,7 +102,7 @@ PromptWidget::~PromptWidget()
 void PromptWidget::drawWidget(bool hilite)
 {
 //cerr << "PromptWidget::drawWidget\n";
-  OverlayColor fgcolor, bgcolor;
+  int fgcolor, bgcolor;
 
   FrameBuffer& fb = _boss->instance()->frameBuffer();
 
@@ -118,10 +118,10 @@ void PromptWidget::drawWidget(bool hilite)
 
       if(c & (1 << 17)) { // inverse video flag
         fgcolor = bgColor;
-        bgcolor = (OverlayColor)((c & 0x1ffff) >> 8);
+        bgcolor = (c & 0x1ffff) >> 8;
         fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
       } else {
-        fgcolor = (OverlayColor)(c >> 8);
+        fgcolor = c >> 8;
         bgcolor = bgColor;
       }
       fb.drawChar(&instance()->consoleFont(), c & 0x7f, x, y, fgcolor);
@@ -792,10 +792,10 @@ void PromptWidget::putcharIntern(int c)
                       // don't print or advance cursor
                       // there are only 128 TIA colors, but
                       // OverlayColor contains 256 of them
-    textColor = (OverlayColor) ((c & 0x7f) << 1);
+    textColor = (c & 0x7f) << 1;
   }
   else if(c < ' ') { // More colors (the regular GUI ones)
-    textColor = (OverlayColor) (c + 0x100);
+    textColor = c + 0x100;
   }
   else if(c == 0x7f) { // toggle inverse video (DEL char)
     _inverse = !_inverse;

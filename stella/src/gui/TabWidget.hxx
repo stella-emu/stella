@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.12 2006-02-22 17:38:04 stephena Exp $
+// $Id: TabWidget.hxx,v 1.13 2006-03-25 00:34:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -87,7 +87,7 @@ class TabWidget : public Widget, public CommandSender
 
   private:
     void box(int x, int y, int width, int height,
-             OverlayColor colorA, OverlayColor colorB, bool omitBottom);
+             int colorA, int colorB, bool omitBottom);
 
     void updateActiveTab();
 };

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.30 2006-01-19 00:45:12 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.31 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.30 2006-01-19 00:45:12 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.31 2006-03-25 00:34:17 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -134,7 +134,7 @@ class FrameBufferGL : public FrameBuffer
       @param x2    The second x coordinate
       @param color The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color);
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
 
     /**
       This method is called to draw a vertical line.
@@ -144,7 +144,7 @@ class FrameBufferGL : public FrameBuffer
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
 
     /**
       This method is called to draw a filled rectangle.
@@ -156,7 +156,7 @@ class FrameBufferGL : public FrameBuffer
       @param color  The color of the area
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          OverlayColor color);
+                          int color);
 
     /**
       This method is called to draw the specified character.
@@ -168,7 +168,7 @@ class FrameBufferGL : public FrameBuffer
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
-                          OverlayColor color);
+                          int color);
 
     /**
       This method is called to draw the bitmap image.
@@ -179,7 +179,7 @@ class FrameBufferGL : public FrameBuffer
       @param color  The color of the character
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
+    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
                             Int32 h = 8);
 
     /**

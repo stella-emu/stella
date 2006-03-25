@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.87 2006-03-19 18:17:48 stephena Exp $
+// $Id: Console.cxx,v 1.88 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -475,14 +475,14 @@ void Console::fry()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeXStart(const uInt32 direction)
+void Console::changeXStart(int direction)
 {
   Int32 xstart = atoi(myProperties.get(Display_XStart).c_str());
   uInt32 width = atoi(myProperties.get(Display_Width).c_str());
   ostringstream strval;
   string message;
 
-  if(direction == 1)    // increase XStart
+  if(direction == +1)    // increase XStart
   {
     xstart += 4;
     if(xstart > 80)
@@ -496,7 +496,7 @@ void Console::changeXStart(const uInt32 direction)
       return;
     }
   }
-  else if(direction == 0)  // decrease XStart
+  else if(direction == -1)  // decrease XStart
   {
     xstart -= 4;
     if(xstart < 0)
@@ -505,6 +505,8 @@ void Console::changeXStart(const uInt32 direction)
       return;
     }
   }
+  else
+    return;
 
   strval << xstart;
   myProperties.set(Display_XStart, strval.str());
@@ -517,13 +519,13 @@ void Console::changeXStart(const uInt32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeYStart(const uInt32 direction)
+void Console::changeYStart(int direction)
 {
   Int32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   ostringstream strval;
   string message;
 
-  if(direction == 1)    // increase YStart
+  if(direction == +1)    // increase YStart
   {
     ystart++;
     if(ystart > 64)
@@ -532,7 +534,7 @@ void Console::changeYStart(const uInt32 direction)
       return;
     }
   }
-  else if(direction == 0)  // decrease YStart
+  else if(direction == -1)  // decrease YStart
   {
     ystart--;
     if(ystart < 0)
@@ -541,6 +543,8 @@ void Console::changeYStart(const uInt32 direction)
       return;
     }
   }
+  else
+    return;
 
   strval << ystart;
   myProperties.set(Display_YStart, strval.str());
@@ -553,14 +557,14 @@ void Console::changeYStart(const uInt32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeWidth(const uInt32 direction)
+void Console::changeWidth(int direction)
 {
   uInt32 xstart = atoi(myProperties.get(Display_XStart).c_str());
   Int32 width   = atoi(myProperties.get(Display_Width).c_str());
   ostringstream strval;
   string message;
 
-  if(direction == 1)    // increase Width
+  if(direction == +1)    // increase Width
   {
     width += 4;
     if((width > 160) || ((width % 4) != 0))
@@ -574,7 +578,7 @@ void Console::changeWidth(const uInt32 direction)
       return;
     }
   }
-  else if(direction == 0)  // decrease Width
+  else if(direction == -1)  // decrease Width
   {
     width -= 4;
     if(width < 80)
@@ -583,6 +587,8 @@ void Console::changeWidth(const uInt32 direction)
       return;
     }
   }
+  else
+    return;
 
   strval << width;
   myProperties.set(Display_Width, strval.str());
@@ -595,13 +601,13 @@ void Console::changeWidth(const uInt32 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeHeight(const uInt32 direction)
+void Console::changeHeight(int direction)
 {
   Int32 height = atoi(myProperties.get(Display_Height).c_str());
   ostringstream strval;
   string message;
 
-  if(direction == 1)    // increase Height
+  if(direction == +1)    // increase Height
   {
     height++;
     if(height > 256)
@@ -610,7 +616,7 @@ void Console::changeHeight(const uInt32 direction)
       return;
     }
   }
-  else if(direction == 0)  // decrease Height
+  else if(direction == -1)  // decrease Height
   {
     height--;
     if(height < 100)
@@ -619,6 +625,8 @@ void Console::changeHeight(const uInt32 direction)
       return;
     }
   }
+  else
+    return;
 
   strval << height;
   myProperties.set(Display_Height, strval.str());

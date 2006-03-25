@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.59 2006-03-24 19:59:52 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.60 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -343,7 +343,7 @@ void FrameBufferGL::drawMediaSource()
             // are drawn in postFrameUpdate()
             myDirtyFlag = true;
 
-            buffer[pos] = buffer[pos+1] = (uInt16) myDefTIAPalette[v];
+            buffer[pos] = buffer[pos+1] = (uInt16) myDefPalette[v];
           }
           pos += 2;
         }
@@ -370,8 +370,8 @@ void FrameBufferGL::drawMediaSource()
           uInt8 v = currentFrame[bufofs];
           uInt8 w = previousFrame[bufofs];
 
-          buffer[pos++] = (uInt16) myAvgTIAPalette[v][w];
-          buffer[pos++] = (uInt16) myAvgTIAPalette[v][w];
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
+          buffer[pos++] = (uInt16) myAvgPalette[v][w];
         }
         bufofsY    += width;
         screenofsY += myTexture->w;
@@ -450,27 +450,27 @@ void FrameBufferGL::toggleFilter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
+void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + y * myTexture->w + x;
   while(x++ <= x2)
-    *buffer++ = (uInt16) myGUIPalette[color];
+    *buffer++ = (uInt16) myDefPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
+void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + y * myTexture->w + x;
   while(y++ <= y2)
   {
-    *buffer = (uInt16) myGUIPalette[color];
+    *buffer = (uInt16) myDefPalette[color];
     buffer += myTexture->w;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                             OverlayColor color)
+                             int color)
 {
   SDL_Rect tmp;
 
@@ -479,12 +479,12 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   tmp.y = y;
   tmp.w = w;
   tmp.h = h;
-  SDL_FillRect(myTexture, &tmp, myGUIPalette[color]);
+  SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
-                             uInt32 tx, uInt32 ty, OverlayColor color)
+                             uInt32 tx, uInt32 ty, int color)
 {
   GUI::Font* font = (GUI::Font*) FONT;
 
@@ -512,7 +512,7 @@ void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
     for(int x = 0; x < w; ++x, mask >>= 1)
     {
       if(ptr & mask)
-        buffer[x] = (uInt16) myGUIPalette[color];
+        buffer[x] = (uInt16) myDefPalette[color];
     }
     buffer += myTexture->w;
   }
@@ -520,7 +520,7 @@ void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
-                               OverlayColor color, Int32 h)
+                               int color, Int32 h)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
 
@@ -530,7 +530,7 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
     for(int x = 0; x < 8; ++x, mask >>= 4)
     {
       if(bitmap[y] & mask)
-        buffer[x] = (uInt16) myGUIPalette[color];
+        buffer[x] = (uInt16) myDefPalette[color];
     }
     buffer += myTexture->w;
   }

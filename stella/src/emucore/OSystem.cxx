@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.66 2006-03-24 19:59:52 stephena Exp $
+// $Id: OSystem.cxx,v 1.67 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -232,9 +232,15 @@ void OSystem::toggleFrameBuffer()
 
   myEventHandler->handleEvent(Event::Pause, 0);
 
+  // Remember the pause state
+  bool pause = myEventHandler->isPaused();
+
   // Update the settings and create the framebuffer
   mySettings->setString("video", video);
   createFrameBuffer(true);  // show onscreen message
+
+  // And re-pause the system
+  myEventHandler->pause(pause);
 #endif
 }
 

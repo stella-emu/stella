@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.156 2006-03-24 19:59:52 stephena Exp $
+// $Id: EventHandler.cxx,v 1.157 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -218,10 +218,9 @@ void EventHandler::refreshDisplay(bool forceUpdate)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::pause(bool status)
 {
-cerr << "EventHandler::pause(): " << status << endl;
   myPauseFlag = status;
 
-  myOSystem->frameBuffer().handlePause(myPauseFlag);
+  myOSystem->frameBuffer().pause(myPauseFlag);
   myOSystem->sound().mute(myPauseFlag);
 }
 
@@ -392,11 +391,11 @@ void EventHandler::poll(uInt32 time)
           {
     #ifndef MAC_OSX
             case SDLK_EQUALS:
-              myOSystem->frameBuffer().resize(NextSize);
+              myOSystem->frameBuffer().resize(+1);
               break;
 
             case SDLK_MINUS:
-              myOSystem->frameBuffer().resize(PreviousSize);
+              myOSystem->frameBuffer().resize(-1);
               break;
 
             case SDLK_RETURN:
@@ -422,19 +421,19 @@ void EventHandler::poll(uInt32 time)
                 break;
 
               case SDLK_END:       // Alt-End increases XStart
-                myOSystem->console().changeXStart(1);
+                myOSystem->console().changeXStart(+1);
                 break;
 
               case SDLK_HOME:      // Alt-Home decreases XStart
-                myOSystem->console().changeXStart(0);
+                myOSystem->console().changeXStart(-1);
                 break;
 
               case SDLK_PAGEUP:    // Alt-PageUp increases YStart
-                myOSystem->console().changeYStart(1);
+                myOSystem->console().changeYStart(+1);
                 break;
 
               case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
-                myOSystem->console().changeYStart(0);
+                myOSystem->console().changeYStart(-1);
                 break;
 
               case SDLK_z:
@@ -526,11 +525,11 @@ void EventHandler::poll(uInt32 time)
               break;
 
             case SDLK_EQUALS:
-              myOSystem->frameBuffer().resize(NextSize);
+              myOSystem->frameBuffer().resize(+1);
               break;
 
             case SDLK_MINUS:
-              myOSystem->frameBuffer().resize(PreviousSize);
+              myOSystem->frameBuffer().resize(-1);
               break;
 
             case SDLK_RETURN:
@@ -582,19 +581,19 @@ void EventHandler::poll(uInt32 time)
                 break;
 
               case SDLK_END:       // Ctrl-End increases Width
-                myOSystem->console().changeWidth(1);
+                myOSystem->console().changeWidth(+1);
                 break;
 
               case SDLK_HOME:      // Ctrl-Home decreases Width
-                myOSystem->console().changeWidth(0);
+                myOSystem->console().changeWidth(-1);
                 break;
 
               case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
-                myOSystem->console().changeHeight(1);
+                myOSystem->console().changeHeight(+1);
                 break;
 
               case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-                myOSystem->console().changeHeight(0);
+                myOSystem->console().changeHeight(-1);
                 break;
 
               case SDLK_s:         // Ctrl-s saves properties to a file

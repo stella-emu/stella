@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.82 2006-03-24 19:59:52 stephena Exp $
+// $Id: EventHandler.hxx,v 1.83 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -107,7 +107,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.82 2006-03-24 19:59:52 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.83 2006-03-25 00:34:17 stephena Exp $
 */
 class EventHandler
 {
@@ -232,7 +232,7 @@ class EventHandler
     /**
       This method indicates whether a quit event has been received.
     */
-    inline bool isQuit() { return myQuitFlag; }
+    inline bool doQuit() { return myQuitFlag; }
 
     /**
       Save state to explicit state number (debugger uses this)

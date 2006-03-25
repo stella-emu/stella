@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.3 2006-03-25 00:34:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -980,7 +980,7 @@ void TiaWidget::fillGrid()
   // P0 register info
   ////////////////////////////
   // grP0
-  myGRP0->setColor((OverlayColor)state.coluRegs[0]);
+  myGRP0->setColor(state.coluRegs[0]);
   myGRP0->setIntState(state.gr[P0], false);
 
   // posP0
@@ -1001,7 +1001,7 @@ void TiaWidget::fillGrid()
   // P1 register info
   ////////////////////////////
   // grP1
-  myGRP1->setColor((OverlayColor)state.coluRegs[1]);
+  myGRP1->setColor(state.coluRegs[1]);
   myGRP1->setIntState(state.gr[P1], false);
 
   // posP1
@@ -1076,15 +1076,15 @@ void TiaWidget::fillGrid()
   // PF register info
   ////////////////////////////
   // PF0
-  myPF[0]->setColor((OverlayColor)state.coluRegs[2]);
+  myPF[0]->setColor(state.coluRegs[2]);
   myPF[0]->setIntState(state.pf[0], true);  // reverse bit order
 
   // PF1
-  myPF[1]->setColor((OverlayColor)state.coluRegs[2]);
+  myPF[1]->setColor(state.coluRegs[2]);
   myPF[1]->setIntState(state.pf[1], false);
 
   // PF2
-  myPF[2]->setColor((OverlayColor)state.coluRegs[2]);
+  myPF[2]->setColor(state.coluRegs[2]);
   myPF[2]->setIntState(state.pf[2], true);  // reverse bit order
 
   // Reflect

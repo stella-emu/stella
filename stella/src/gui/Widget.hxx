@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.48 2006-03-02 13:10:53 stephena Exp $
+// $Id: Widget.hxx,v 1.49 2006-03-25 00:34:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,7 +75,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.48 2006-03-02 13:10:53 stephena Exp $
+  @version $Id: Widget.hxx,v 1.49 2006-03-25 00:34:17 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -124,7 +124,7 @@ class Widget : public GuiObject
     void setID(int id)  { _id = id;   }
     int  getID()        { return _id; }
 
-    void setColor(OverlayColor color)   { _color = color; }
+    void setColor(int color)        { _color = color; }
     virtual const GUI::Font* font() { return _font; }
 
     virtual void loadConfig() {}
@@ -144,16 +144,16 @@ class Widget : public GuiObject
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
   protected:
-    int           _type;
-    GuiObject*    _boss;
-    GUI::Font*    _font;
-    Widget*       _next;
-    int           _id;
-    int           _flags;
-    bool          _hasFocus;
-    OverlayColor  _color;
-    int           _fontWidth;
-    int           _fontHeight;
+    int        _type;
+    GuiObject* _boss;
+    GUI::Font* _font;
+    Widget*    _next;
+    int        _id;
+    int        _flags;
+    bool       _hasFocus;
+    int        _color;
+    int        _fontWidth;
+    int        _fontHeight;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -262,7 +262,7 @@ class CheckboxWidget : public ButtonWidget
     bool _fillRect;
     bool _drawBox;
 
-    OverlayColor _fillColor;
+    int _fillColor;
 
   private:
     int _boxY;

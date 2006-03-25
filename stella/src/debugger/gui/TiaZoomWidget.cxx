@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.6 2006-02-22 17:38:04 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.7 2006-03-25 00:34:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -209,7 +209,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   // Draw the zoomed image
   // This probably isn't as efficient as it can be, but it's a small area
   // and I don't have time to make it faster :)
-  uInt8* currentFrame = instance()->console().mediaSource().currentFrameBuffer();
+  uInt8* currentFrame  = instance()->console().mediaSource().currentFrameBuffer();
   const int pitch  = instance()->console().mediaSource().width(),
             width  = myZoomLevel << 1,
             height = myZoomLevel;
@@ -219,15 +219,8 @@ void TiaZoomWidget::drawWidget(bool hilite)
   {
     for(x = myXoff, col = 0; x < myNumCols+myXoff; ++x, col += width)
     {
-      SDL_Rect temp;
-
-      temp.x = _x + col;
-      temp.y = _y + row;
-      temp.w = width;
-      temp.h = height;
-
       fb.fillRect(_x + col + 2, _y + row + 2, width, height,
-                  (OverlayColor)currentFrame[y*pitch + x]);
+                  currentFrame[y*pitch + x]);
     }
   }
 }

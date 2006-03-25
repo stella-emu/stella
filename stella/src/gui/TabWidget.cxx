@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.21 2006-02-22 17:38:04 stephena Exp $
+// $Id: TabWidget.cxx,v 1.22 2006-03-25 00:34:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -212,7 +212,7 @@ void TabWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::box(int x, int y, int width, int height,
-                    OverlayColor colorA, OverlayColor colorB, bool omitBottom)
+                    int colorA, int colorB, bool omitBottom)
 {
 //cerr << "TabWidget::box\n";
   FrameBuffer& fb = _boss->instance()->frameBuffer();
@@ -255,7 +255,7 @@ void TabWidget::drawWidget(bool hilite)
   int i, x = _x + kTabLeftOffset;
   for (i = 0; i < (int)_tabs.size(); ++i)
   {
-    OverlayColor color = (i == _activeTab) ? kColor : kShadowColor;
+    int color = (i == _activeTab) ? kColor : kShadowColor;
     int yOffset = (i == _activeTab) ? 0 : 2; 
     box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, color, color, (i == _activeTab));
     fb.drawString(_font, _tabs[i].title, x + kTabPadding,

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.84 2006-03-24 19:59:52 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.85 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -51,8 +51,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     theRedrawTIAIndicator(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
-    myFrameRate(0),
-    myPauseStatus(false)
+    myFrameRate(0)
 {
   myBaseDim.x = myBaseDim.y = myBaseDim.w = myBaseDim.h = 0;
   myImageDim = myScreenDim = myDesktopDim = myBaseDim;
@@ -122,18 +121,8 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   myOSystem->eventHandler().refreshDisplay();
 
   // Set palette for GUI
-  for(int i = 0; i < kNumColors; i++)
-    myGUIPalette[i] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
-
-  // Set emulation palette if a console exists
-  // Used when entering/exiting debugger
-#ifdef DEVELOPER_SUPPORT
-  if(&myOSystem->console())
-  {
-    enablePhosphor(myOSystem->console().properties().get(Display_Phosphor) == "YES");
-    setPalette(myOSystem->console().mediaSource().palette());
-  }
-#endif
+  for(int i = 0; i < kNumColors-256; i++)
+    myDefPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
 
   // Enable unicode so we can see translated key events
   // (lowercase vs. uppercase characters)
@@ -161,7 +150,7 @@ void FrameBuffer::update()
       bool mediaSourceChanged = false;
 
       // Draw changes to the mediasource
-      if(!myPauseStatus)
+      if(!myOSystem->eventHandler().isPaused())
       {
         myOSystem->console().mediaSource().update();
         if(myOSystem->eventHandler().frying())
@@ -174,7 +163,7 @@ void FrameBuffer::update()
         drawMediaSource();
 
       // Draw any pending messages
-      if(myMessage.counter > 0 && !myPauseStatus)
+      if(myMessage.counter > 0 && !myOSystem->eventHandler().isPaused())
         drawMessage();
 
       break;  // S_EMULATE
@@ -199,7 +188,7 @@ void FrameBuffer::update()
       myOSystem->commandMenu().draw();
 
       // Draw any pending messages
-      if(myMessage.counter > 0 && !myPauseStatus)
+      if(myMessage.counter > 0 && !myOSystem->eventHandler().isPaused())
         drawMessage();
       break;  // S_CMDMENU
     }
@@ -237,7 +226,7 @@ void FrameBuffer::update()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message, MessagePosition position,
-                              OverlayColor color)
+                              int color)
 {
   // Erase old messages on the screen
   if(myMessage.counter > 0)
@@ -333,12 +322,8 @@ inline void FrameBuffer::drawMessage()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::handlePause(bool status)
+void FrameBuffer::pause(bool status)
 {
-cerr << "FrameBuffer::handlePause(): " << status << endl;
-  myPauseStatus = status;
-
-  // Enable the paused palette
   if(&myOSystem->console())
   {
     enablePhosphor(myOSystem->console().properties().get(Display_Phosphor) == "YES");
@@ -349,18 +334,16 @@ cerr << "FrameBuffer::handlePause(): " << status << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setPalette(const uInt32* palette)
 {
-  // Account for pause mode
-  float shade = myPauseStatus ? 0.65 : 1.0;
   int i, j;
 
   // Set palette for normal fill
   for(i = 0; i < 256; ++i)
   {
-    Uint8 r = (Uint8) (((palette[i] & 0x00ff0000) >> 16) * shade);
-    Uint8 g = (Uint8) (((palette[i] & 0x0000ff00) >> 8) * shade);
-    Uint8 b = (Uint8) ((palette[i] & 0x000000ff) * shade);
+    Uint8 r = (Uint8) ((palette[i] & 0x00ff0000) >> 16);
+    Uint8 g = (Uint8) ((palette[i] & 0x0000ff00) >> 8);
+    Uint8 b = (Uint8) (palette[i] & 0x000000ff);
 
-    myDefTIAPalette[i] = mapRGB(r, g, b);
+    myDefPalette[i] = mapRGB(r, g, b);
   }
 
   // Set palette for phosphor effect
@@ -375,11 +358,11 @@ void FrameBuffer::setPalette(const uInt32* palette)
       uInt8 gj = (uInt8) ((palette[j] & 0x0000ff00) >> 8);
       uInt8 bj = (uInt8) (palette[j] & 0x000000ff);
 
-      Uint8 r = (Uint8) (getPhosphor(ri, rj) * shade);
-      Uint8 g = (Uint8) (getPhosphor(gi, gj) * shade);
-      Uint8 b = (Uint8) (getPhosphor(bi, bj) * shade);
+      Uint8 r = (Uint8) getPhosphor(ri, rj);
+      Uint8 g = (Uint8) getPhosphor(gi, gj);
+      Uint8 b = (Uint8) getPhosphor(bi, bj);
 
-      myAvgTIAPalette[i][j] = mapRGB(r, g, b);
+      myAvgPalette[i][j] = mapRGB(r, g, b);
     }
   }
 
@@ -412,11 +395,11 @@ void FrameBuffer::setFullscreen(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::resize(Size size, Int8 zoom)
+void FrameBuffer::resize(int size, Int8 zoom)
 {
   switch(size)
   {
-    case PreviousSize:   // decrease size
+    case -1:   // decrease size
       if(myOSystem->settings().getBool("fullscreen"))
         return;
       if(theZoomLevel == 1)
@@ -425,7 +408,7 @@ void FrameBuffer::resize(Size size, Int8 zoom)
         theZoomLevel--;
       break;
 
-    case NextSize:       // increase size
+    case +1:       // increase size
       if(myOSystem->settings().getBool("fullscreen"))
         return;
       if(theZoomLevel == theMaxZoomLevel)
@@ -434,7 +417,7 @@ void FrameBuffer::resize(Size size, Int8 zoom)
         theZoomLevel++;
       break;
 
-    case GivenSize:      // use 'zoom' quantity
+    case 0:      // use 'zoom' quantity
       if(zoom < 1)
         theZoomLevel = 1;
       else if((uInt32)zoom > theMaxZoomLevel)
@@ -598,7 +581,7 @@ void FrameBuffer::setWindowIcon()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                      OverlayColor colorA, OverlayColor colorB)
+                      int colorA, int colorB)
 {
   hLine(x + 1, y,     x + w - 2, colorA);
   hLine(x,     y + 1, x + w - 1, colorA);
@@ -613,7 +596,7 @@ void FrameBuffer::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                            OverlayColor color, FrameStyle style)
+                            int color, FrameStyle style)
 {
   switch(style)
   {
@@ -650,7 +633,7 @@ void FrameBuffer::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::drawString(const GUI::Font* font, const string& s,
                              int x, int y, int w,
-                             OverlayColor color, TextAlignment align,
+                             int color, TextAlignment align,
                              int deltax, bool useEllipsis)
 {
   const int leftX = x, rightX = x + w;
@@ -733,7 +716,7 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 FrameBuffer::ourGUIColors[kNumColors][3] = {
+const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
   { 104, 104, 104 },  // kColor
   {   0,   0,   0 },  // kBGColor
   {  64,  64,  64 },  // kShadowColor

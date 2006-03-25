@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.42 2006-01-11 14:13:19 stephena Exp $
+// $Id: Console.hxx,v 1.43 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -37,7 +37,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.42 2006-01-11 14:13:19 stephena Exp $
+  @version $Id: Console.hxx,v 1.43 2006-03-25 00:34:17 stephena Exp $
 */
 class Console
 {
@@ -196,33 +196,33 @@ class Console
       Change the "Display.XStart" variable.  Currently, a system reset is issued
       after the change.  GUI's may need to resize their viewports.
 
-      @param direction A 1 indicates increase, 0 indicates decrease.
+      @param direction +1 indicates increase, -1 indicates decrease.
     */
-    void changeXStart(const uInt32 direction);
+    void changeXStart(int direction);
 
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
       after the change.  GUI's may need to resize their viewports.
 
-      @param direction A 1 indicates increase, 0 indicates decrease.
+      @param direction +1 indicates increase, -1 indicates decrease.
     */
-    void changeYStart(const uInt32 direction);
+    void changeYStart(int direction);
 
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
       after the change.  GUI's may need to resize their viewports.
 
-      @param direction A 1 indicates increase, 0 indicates decrease.
+      @param direction +1 indicates increase, -1 indicates decrease.
     */
-    void changeWidth(const uInt32 direction);
+    void changeWidth(int direction);
 
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
       after the change.  GUI's may need to resize their viewports.
 
-      @param direction A 1 indicates increase, 0 indicates decrease.
+      @param direction +1 indicates increase, -1 indicates decrease.
     */
-    void changeHeight(const uInt32 direction);
+    void changeHeight(int direction);
 
     /**
       Toggles the TIA bit specified in the method name.

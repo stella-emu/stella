@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.33 2006-02-15 03:22:34 azaballa Exp $
+// $Id: FrameBufferSoft.hxx,v 1.34 2006-03-25 00:34:17 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.33 2006-02-15 03:22:34 azaballa Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.34 2006-03-25 00:34:17 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -123,7 +123,7 @@ class FrameBufferSoft : public FrameBuffer
       @param x2    The second x coordinate
       @param color The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color);
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
 
     /**
       This method is called to draw a vertical line.
@@ -133,7 +133,7 @@ class FrameBufferSoft : public FrameBuffer
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color);
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
 
     /**
       This method is called to draw a filled rectangle.
@@ -145,7 +145,7 @@ class FrameBufferSoft : public FrameBuffer
       @param color  The color of the area
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          OverlayColor color);
+                          int color);
 
     /**
       This method is called to draw the specified character.
@@ -157,7 +157,7 @@ class FrameBufferSoft : public FrameBuffer
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
-                          OverlayColor color);
+                          int color);
 
     /**
       This method is called to draw the bitmap image.
@@ -168,7 +168,7 @@ class FrameBufferSoft : public FrameBuffer
       @param color  The color of the character
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color,
+    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
                             Int32 h = 8);
 
     /**
