@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.8 2006-03-17 19:44:19 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.9 2006-03-27 16:00:37 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -174,4 +174,39 @@ void OSystemMACOSX::getScreenDimensions(int& width, int& height)
 {
   width  = (int)macOSXDisplayWidth();
   height = (int)macOSXDisplayHeight();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystemMACOSX::stateChanged(EventHandler::State state)
+{
+  switch(state)
+  {
+    case EventHandler::S_EMULATE:
+      cerr << "emulation mode\n";
+      break;
+
+    case EventHandler::S_LAUNCHER:
+      cerr << "launcher mode\n";
+      break;
+
+    case EventHandler::S_MENU:
+      cerr << "options menu mode\n";
+      break;
+
+    case EventHandler::S_CMDMENU:
+      cerr << "command menu mode\n";
+      break;
+
+    case EventHandler::S_DEBUGGER:
+      cerr << "debugger mode\n";
+      break;
+
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystemMACOSX::pauseChanged(bool status)
+{
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.hxx,v 1.3 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemMACOSX.hxx,v 1.4 2006-03-27 16:00:37 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_MACOSX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Mark Grebe
-  @version $Id: OSystemMACOSX.hxx,v 1.3 2006-01-08 02:28:04 stephena Exp $
+  @version $Id: OSystemMACOSX.hxx,v 1.4 2006-03-27 16:00:37 stephena Exp $
 */
 class OSystemMACOSX : public OSystem
 {
@@ -60,6 +60,16 @@ class OSystemMACOSX : public OSystem
       This method queries the dimensions of the screen for this hardware.
     */
     virtual void getScreenDimensions(int& width, int& height);
+    
+    /**
+      Informs the OSystem of a change in EventHandler state.
+    */
+    virtual void stateChanged(EventHandler::State state);
+
+    /**
+      Informs the OSystem of a change in pause status.
+    */
+    virtual void pauseChanged(bool status);
 };
 
 #endif
