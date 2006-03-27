@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.83 2006-03-25 00:34:17 stephena Exp $
+// $Id: EventHandler.hxx,v 1.84 2006-03-27 21:06:44 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -91,8 +91,8 @@ struct JoyMouse {
   int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
       x_down_count, y_down_count;
   unsigned int last_time, delay_time, x_down_time, y_down_time;
+  int joy_val, old_joy_val;
 };
-
 
 /**
   This class takes care of event remapping and dispatching for the
@@ -107,7 +107,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.83 2006-03-25 00:34:17 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.84 2006-03-27 21:06:44 stephena Exp $
 */
 class EventHandler
 {
@@ -458,6 +458,16 @@ class EventHandler
     */
     inline bool eventIsAnalog(Event::Type event);
 
+    /**
+      Tests if the given paddle value is displaying a rapid left/right
+      motion, which is also known as jitter.
+
+      @param paddle The paddle to test
+      @param value  The value assigned to the paddle
+      @return       True if jittering, else false
+    */
+    inline bool isJitter(int paddle, int value);
+
     void saveState();
     void changeState();
     void loadState();
@@ -524,6 +534,9 @@ class EventHandler
 
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;
+
+    // Indicates the amount by which we consider a paddle to be jittering
+    int myPaddleThreshold;
 
     // Used for paddle emulation by keyboard or joystick
     JoyMouse myPaddle[4];

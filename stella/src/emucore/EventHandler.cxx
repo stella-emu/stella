@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.158 2006-03-27 12:52:19 stephena Exp $
+// $Id: EventHandler.cxx,v 1.159 2006-03-27 21:06:44 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -69,7 +69,8 @@ EventHandler::EventHandler(OSystem* osystem)
     myQuitFlag(false),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
-    myPaddleMode(0)
+    myPaddleMode(0),
+    myPaddleThreshold(0)
 {
   int i, j, k;
 
@@ -133,6 +134,8 @@ EventHandler::EventHandler(OSystem* osystem)
   setPaddleMode(myOSystem->settings().getInt("paddle"), false);
 
   myFryingFlag = false;
+
+  myPaddleThreshold = myOSystem->settings().getInt("pthresh");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -757,6 +760,11 @@ void EventHandler::poll(uInt32 time)
               // Send axis events for the paddles
               case Controller::Paddles:
               {
+                // Determine which paddle we're emulating and see if
+                // we're getting rapid movement (aka jittering)
+                if(isJitter(((type-2) << 1) + axis, value))
+                  break;
+
                 int resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
                 myEvent->set(SA_Axis[type-2][axis][2], resistance);
                 break;
@@ -1847,6 +1855,25 @@ inline bool EventHandler::eventIsAnalog(Event::Type event)
     default:
       return false;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline bool EventHandler::isJitter(int paddle, int value)
+{
+  bool jitter = false;
+  bool leftMotion = myPaddle[paddle].joy_val - myPaddle[paddle].old_joy_val > 0;
+  int distance = value - myPaddle[paddle].joy_val;
+
+  // Filter out jitter by not allowing rapid direction changes
+  if(distance > 0 && !leftMotion)     // movement switched from left to right
+    jitter = distance < myPaddleThreshold;
+  else if(distance < 0 && leftMotion) // movement switched from right to left
+    jitter = distance > -myPaddleThreshold;
+
+  myPaddle[paddle].old_joy_val = myPaddle[paddle].joy_val;
+  myPaddle[paddle].joy_val = value;
+
+  return jitter;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

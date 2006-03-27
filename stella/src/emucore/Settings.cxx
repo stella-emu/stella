@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.82 2006-03-19 00:46:04 stephena Exp $
+// $Id: Settings.cxx,v 1.83 2006-03-27 21:06:44 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -68,6 +68,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("p2speed", "50");
   setInternal("p3speed", "50");
   setInternal("p4speed", "50");
+  setInternal("pthresh", "600");
 
   setInternal("showinfo", "false");
 
@@ -314,6 +315,7 @@ void Settings::usage()
     << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
     << "  -p4speed      <number>       Speed of emulated mouse movement for paddle 4 (0-100)\n"
+    << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
     << "  -tiadefaults  <1|0>          Use TIA positioning defaults instead of enhanced values\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
