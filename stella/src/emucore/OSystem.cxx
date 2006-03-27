@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.67 2006-03-25 00:34:17 stephena Exp $
+// $Id: OSystem.cxx,v 1.68 2006-03-27 12:52:19 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -496,6 +496,16 @@ bool OSystem::joyButtonHandled(int button)
   // Since we don't do any platform-specific event polling,
   // no button is ever handled at this level
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::stateChanged(EventHandler::State state)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::pauseChanged(bool status)
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

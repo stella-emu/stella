@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.41 2006-03-25 00:34:17 stephena Exp $
+// $Id: OSystem.hxx,v 1.42 2006-03-27 12:52:19 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -44,7 +44,7 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.41 2006-03-25 00:34:17 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.42 2006-03-27 12:52:19 stephena Exp $
 */
 class OSystem
 {
@@ -352,6 +352,16 @@ class OSystem
       in the main event handler.
     */
     virtual bool joyButtonHandled(int button);
+
+    /**
+      Informs the OSystem of a change in EventHandler state.
+    */
+    virtual void stateChanged(EventHandler::State state);
+
+    /**
+      Informs the OSystem of a change in pause status.
+    */
+    virtual void pauseChanged(bool status);
 
   protected:
     /**

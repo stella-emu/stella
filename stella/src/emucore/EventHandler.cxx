@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.157 2006-03-25 00:34:17 stephena Exp $
+// $Id: EventHandler.cxx,v 1.158 2006-03-27 12:52:19 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -222,6 +222,9 @@ void EventHandler::pause(bool status)
 
   myOSystem->frameBuffer().pause(myPauseFlag);
   myOSystem->sound().mute(myPauseFlag);
+
+  // Inform the OSystem of the change in pause
+  myOSystem->pauseChanged(myPauseFlag);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2125,6 +2128,9 @@ void EventHandler::setEventState(State state)
       myOverlay = NULL;
       break;
   }
+
+  // Inform the OSystem about the new state
+  myOSystem->stateChanged(myState);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
