@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.4 2006-03-23 16:16:32 stephena Exp $
+// $Id: RamWidget.cxx,v 1.5 2006-03-29 13:53:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -368,7 +368,7 @@ const string RamWidget::doCompare(const string& str)
 
   // Now, search all memory locations specified in mySearchArray for this value
   RamDebug& dbg = instance()->debugger().ramDebug();
-  IntArray tempList;
+  IntArray tempAddrList, tempValueList;
   for(unsigned int i = 0; i < mySearchAddr.size(); ++i)
   {
     if(comparitiveSearch)
@@ -380,11 +380,15 @@ const string RamWidget::doCompare(const string& str)
 
     int addr = mySearchAddr[i];
     if(dbg.read(addr) == searchVal)
-      tempList.push_back(addr);
+    {
+      tempAddrList.push_back(addr);
+      tempValueList.push_back(searchVal);
+    }
   }
 
-  // Update the searchArray to the new results
-  mySearchAddr = tempList;
+  // Update the searchArray for the new addresses and data
+  mySearchAddr = tempAddrList;
+  mySearchValue = tempValueList;
 
   // If we have some hits, enable the comparison methods
   if(mySearchAddr.size() > 0)
