@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.8 2006-03-29 04:02:47 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.9 2006-03-29 04:45:10 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
@@ -62,5 +62,10 @@
 - (IBAction)volumeMinus:(id)sender;
 - (IBAction)saveProps:(id)sender;
 - (IBAction)mergeProps:(id)sender;
+- (void)setEmulationMenus;
+- (void)setLauncherMenus;
+- (void)setOptionsMenus;
+- (void)setCommandMenus;
+- (void)setDebuggerMenus;
 
 @end

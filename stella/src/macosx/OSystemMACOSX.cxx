@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.9 2006-03-27 16:00:37 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.10 2006-03-29 04:45:10 markgrebe Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -39,6 +39,11 @@ extern "C" {
   void macOpenConsole(char *romname);
   uInt16 macOSXDisplayWidth(void);
   uInt16 macOSXDisplayHeight(void);
+  void setEmulationMenus(void);
+  void setLauncherMenus(void);
+  void setOptionsMenus(void);
+  void setCommandMenus(void);
+  void setDebuggerMenus(void);
 }
 
 // Pointer to the main parent osystem object or the null pointer
@@ -182,23 +187,23 @@ void OSystemMACOSX::stateChanged(EventHandler::State state)
   switch(state)
   {
     case EventHandler::S_EMULATE:
-      cerr << "emulation mode\n";
+      setEmulationMenus();
       break;
 
     case EventHandler::S_LAUNCHER:
-      cerr << "launcher mode\n";
+      setLauncherMenus();
       break;
 
     case EventHandler::S_MENU:
-      cerr << "options menu mode\n";
+      setOptionsMenus();
       break;
 
     case EventHandler::S_CMDMENU:
-      cerr << "command menu mode\n";
+      setCommandMenus();
       break;
 
     case EventHandler::S_DEBUGGER:
-      cerr << "debugger mode\n";
+      setDebuggerMenus();
       break;
 
     default:
