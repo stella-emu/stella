@@ -4,11 +4,37 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.7 2005-10-15 19:02:15 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.8 2006-03-29 04:02:47 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
 @interface Menus : NSObject {
+    IBOutlet id preferencesMenuItem;
+    IBOutlet id openMenuItem;
+    IBOutlet id restartMenuItem;
+    IBOutlet id savePropsMenuItem;
+    IBOutlet id mergePropsMenuItem;
+    IBOutlet id screenBiggerMenuItem;
+    IBOutlet id screenSmallerMenuItem;
+    IBOutlet id fullScreenMenuItem;
+    IBOutlet id pauseMenuItem;
+    IBOutlet id togglePalletteMenuItem;
+    IBOutlet id ntscPalMenuItem;
+    IBOutlet id increaseXStartMenuItem;
+    IBOutlet id decreaseXStartMenuItem;
+    IBOutlet id increaseYStartMenuItem;
+    IBOutlet id decreaseYStartMenuItem;
+    IBOutlet id increaseWidthMenuItem;
+    IBOutlet id decreaseWidthMenuItem;
+    IBOutlet id increaseHeightMenuItem;
+    IBOutlet id decreaseHeightMenuItem;
+    IBOutlet id mousePaddle0MenuItem;
+    IBOutlet id mousePaddle1MenuItem;
+    IBOutlet id mousePaddle2MenuItem;
+    IBOutlet id mousePaddle3MenuItem;
+    IBOutlet id grabMouseMenuItem;
+    IBOutlet id increaseVolumeMenuItem;
+    IBOutlet id decreaseVolumeMenuItem;
 }
 
 + (Menus *)sharedInstance;

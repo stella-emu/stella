@@ -24,8 +24,6 @@
                 restartGame = id; 
                 saveProps = id; 
                 smallerScreen = id; 
-                speedLimit = id; 
-                toggleGlFilter = id; 
                 togglePallette = id; 
                 volumeMinus = id; 
                 volumePlus = id; 
@@ -38,6 +36,34 @@
             }; 
             CLASS = Menus; 
             LANGUAGE = ObjC; 
+            OUTLETS = {
+                decreaseHeightMenuItem = id; 
+                decreaseVolumeMenuItem = id; 
+                decreaseWidthMenuItem = id; 
+                decreaseXStartMenuItem = id; 
+                decreaseYStartMenuItem = id; 
+                fullScreenMenuItem = id; 
+                grabMouseMenuItem = id; 
+                increaseHeightMenuItem = id; 
+                increaseVolumeMenuItem = id; 
+                increaseWidthMenuItem = id; 
+                increaseXStartMenuItem = id; 
+                increaseYStartMenuItem = id; 
+                mergePropsMenuItem = id; 
+                mousePaddle0MenuItem = id; 
+                mousePaddle1MenuItem = id; 
+                mousePaddle2MenuItem = id; 
+                mousePaddle3MenuItem = id; 
+                ntscPalMenuItem = id; 
+                openMenuItem = id; 
+                pauseMenuItem = id; 
+                preferencesMenuItem = id; 
+                restartMenuItem = id; 
+                savePropsMenuItem = id; 
+                screenBiggerMenuItem = id; 
+                screenSmallerMenuItem = id; 
+                togglePalletteMenuItem = id; 
+            }; 
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = Preferences; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
