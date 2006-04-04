@@ -1,21 +1,3 @@
-//============================================================================
-//
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
-//   SSSS    tt   ee  ee  ll   ll      aa
-//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
-//  SS  SS   tt   ee      ll   ll  aa  aa
-//   SSSS     ttt  eeeee llll llll  aaaaa
-//
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
-//
-// See the file "license" for information on usage and redistribution of
-// this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id: DefProps.hxx,v 1.3 2006-03-05 01:18:41 stephena Exp $
-//============================================================================
-
 #ifndef DEF_PROPS_HXX
 #define DEF_PROPS_HXX
 
@@ -1293,7 +1275,7 @@ static const char* DefProps[][21] = {
   { "3b097a7ed5bd2a84dc3d3ed361e9c31c", "", "", "Interleaved ChronoColour Demo (PAL) (05-03-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "PAL", "", "", "", "", "", "" }, 
   { "3b2c32fcd331664d037952bcaa62df94", "", "", "Super Kung-Fu (1983) (Xonox) (PAL) [a1][!]", "", "", "", "", "", "", "", "", "", "", "PAL", "", "", "59", "195", "", "" }, 
   { "3b5751a8d20f7de41eb069f76fecd5d7", "", "", "Eckhard Stolberg's Scrolling Text Demo 4 (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "38", "191", "", "" }, 
-  { "3b76242691730b2dd22ec0ceab351bc6", "Mattel", "MT4318", "Masters of the Universe - The Power of He-Man (1983) (Mattel)", "", "Rare", "", "E7", "", "", "", "", "", "", "", "", "", "38", "185", "", "" }, 
+  { "3b76242691730b2dd22ec0ceab351bc6", "Mattel", "MT4318", "Masters of the Universe - The Power of He-Man (1983) (Mattel)", "", "Rare", "", "E7", "A", "", "", "", "", "", "", "", "", "38", "185", "", "" }, 
   { "3b91c347d8e6427edbe942a7a405290d", "Parker Bros", "PB5350", "Sky Skipper (1983) (Parker Bros)", "", "Rare", "", "", "", "", "", "", "", "", "", "", "", "40", "200", "", "" }, 
   { "3c3a2bb776dec245c7d6678b5a56ac10", "", "", "Unknown Title (bin00003) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "3c57748c8286cf9e821ecd064f21aaa9", "Atari", "CX26118", "Millipede (1984) (Atari)", "", "Rare", "", "F6SC", "", "", "", "", "", "", "", "8", "144", "39", "192", "", "" }, 
@@ -2153,7 +2135,7 @@ static const char* DefProps[][21] = {
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "0a1b98937911d621b004b1617446d124", "", "", "Hangman Pac-Man Biglist1 (Hangman Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "0aa208060d7c140f20571e3341f5a3f8", "US Games", "VC 1009", "Towering Inferno (1982) (US Games) [!]", "Uses the Joystick Controllers (swapped)", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "32", "219", "", "" }, 
+  { "0aa208060d7c140f20571e3341f5a3f8", "US Games", "VC 1009", "Towering Inferno (1982) (US Games) [!]", "Uses the Joystick Controllers (swapped)", "Uncommon", "", "", "", "", "", "Yes", "", "", "", "", "", "32", "219", "", "" }, 
   { "0ac0d491763153fac75f5337ce32a9d6", "", "", "SPAM Image Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "0ad9a358e361256b94f3fb4f2fa5a3b1", "Atari", "CX2608 / 4975165", "Super Breakout (1978) (Atari) [!]", "Uses the Paddle Controllers (left only)", "Common", "", "4K", "", "", "", "", "Paddles", "None", "", "8", "136", "35", "180", "", "" }, 
@@ -2889,7 +2871,7 @@ static const char* DefProps[][21] = {
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "65c6406f5af934590097c8c032ebb482", "", "", "Three Hugger (Pave Demo) (20-12-2002) (Billy Eno)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "663ef22eb399504d5204c543b8a86bcd", "CBS Electronics", "M8774", "Wizard of Wor (1982) (CBS Electronics) (PAL) [!]", "Uses the Joystick Controllers (swapped)", "Rare", "", "", "", "", "", "", "", "", "PAL", "", "", "64", "", "", "" }, 
+  { "663ef22eb399504d5204c543b8a86bcd", "CBS Electronics", "M8774", "Wizard of Wor (1982) (CBS Electronics) (PAL) [!]", "Uses the Joystick Controllers (swapped)", "Rare", "", "", "", "", "", "Yes", "", "", "PAL", "", "", "64", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3087,7 +3069,7 @@ static const char* DefProps[][21] = {
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "7e51a58de2c0db7d33715f518893b0db", "CBS Electronics", "4L-2738", "Mountain King (1983) (CBS Electronics) [a1][!]", "", "Rare", "", "FASC", "", "", "", "", "", "", "", "8", "144", "47", "186", "Yes", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "7e8aa18bc9502eb57daaf5e7c1e94da7", "CBS Electronics", "M8774", "Wizard of Wor (1982) (CBS Electronics)", "Uses the Joystick Controllers (swapped)", "Rare", "", "", "", "", "", "", "", "", "", "", "", "27", "", "", "" }, 
+  { "7e8aa18bc9502eb57daaf5e7c1e94da7", "CBS Electronics", "M8774", "Wizard of Wor (1982) (CBS Electronics)", "Uses the Joystick Controllers (swapped)", "Rare", "", "", "", "", "", "Yes", "", "", "", "", "", "27", "", "", "" }, 
   { "7ead257e8b5a44cac538f5f54c7a0023", "Xonox", "99006", "Sir Lancelot (1983) (Xonox)", "", "Extremely Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "7eba20c2291a982214cc7cbe8d0b47cd", "Imagic", "O3211", "Quick Step! (1983) (Imagic)", "", "Rare", "", "", "", "", "", "", "", "", "", "", "", "42", "195", "", "" }, 
@@ -3591,7 +3573,7 @@ static const char* DefProps[][21] = {
   { "c3bbc673acf2701b5275e85d9372facf", "Atari", "", "Stunt Cycle (Atari) (Prototype)", "Uses the Paddle Controllers", "Prototype", "", "", "", "", "", "", "Paddles", "Paddles", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "c4060a31d61ba857e756430a0a15ed2e", "", "", "Pick 'n Pile (PAL Conversion) (2003) (TJ)", "", "", "", "", "", "", "", "", "", "", "", "", "", "26", "", "Yes", "" }, 
+  { "c4060a31d61ba857e756430a0a15ed2e", "", "", "Pick 'n Pile (PAL Conversion) (2003) (TJ)", "", "", "", "", "", "", "", "Yes", "", "", "", "", "", "26", "", "Yes", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "c469151655e333793472777052013f4f", "Bomb", "13", "Z-Tack (Bomb)", "", "Extremely Rare", "", "", "", "", "", "", "", "", "", "", "", "30", "205", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

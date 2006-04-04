@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.83 2006-03-27 21:06:44 stephena Exp $
+// $Id: Settings.cxx,v 1.84 2006-04-04 23:15:43 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -255,7 +255,7 @@ void Settings::validate()
   if(i < 0) setInternal("ppblend", "0");
   if(i > 100) setInternal("ppblend", "100");
 
-  s = getString("romname");
+  s = getString("ssname");
   if(s != "romname" && s != "md5sum")
     setInternal("ssname", "romname");
 }

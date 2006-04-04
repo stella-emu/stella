@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.88 2006-03-25 00:34:17 stephena Exp $
+// $Id: Console.cxx,v 1.89 2006-04-04 23:15:42 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -161,6 +161,15 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   {
     myControllers[1] = new Joystick(rightjack, *myEvent);
   }
+
+#if 0 // this isn't production ready yet
+  // Make a guess at which paddle the mouse should emulate,
+  // by using the 'first' paddle in the pair
+  if(myControllers[0]->type() == Controller::Paddles)
+    myOSystem->eventHandler().setPaddleMode(0);
+  else if(myControllers[1]->type() == Controller::Paddles)
+    myOSystem->eventHandler().setPaddleMode(2);
+#endif
 
   // Create switches for the console
   mySwitches = new Switches(*myEvent, myProperties);
