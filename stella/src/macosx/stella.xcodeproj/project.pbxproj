@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D28DDE509DC2D9F00A17585 /* MenusEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D28DDE409DC2D9F00A17585 /* MenusEvents.h */; };
 		2D9173CB09BA90380026E9FF /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A47A9D01A0482F01D3D55B /* SDLMain.h */; };
 		2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF110627AE07006BEC99 /* Booster.hxx */; };
 		2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF130627AE07006BEC99 /* Cart.hxx */; };
@@ -479,6 +480,7 @@
 		2D20FA0108C603EC00A73076 /* ToggleWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ToggleWidget.hxx; path = ../debugger/gui/ToggleWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2D23318F0900B5EF00613B1F /* AudioWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AudioWidget.cxx; path = ../debugger/gui/AudioWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2D2331900900B5EF00613B1F /* AudioWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = AudioWidget.hxx; path = ../debugger/gui/AudioWidget.hxx; sourceTree = SOURCE_ROOT; };
+		2D28DDE409DC2D9F00A17585 /* MenusEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenusEvents.h; sourceTree = "<group>"; };
 		2D30F8750868A4DB00938B9D /* TIADebug.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TIADebug.cxx; path = ../debugger/TIADebug.cxx; sourceTree = SOURCE_ROOT; };
 		2D30F8760868A4DB00938B9D /* TIADebug.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TIADebug.hxx; path = ../debugger/TIADebug.hxx; sourceTree = SOURCE_ROOT; };
 		2D313F0A0879C4C0005BD3E5 /* YaccParser.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = YaccParser.cxx; path = ../yacc/YaccParser.cxx; sourceTree = SOURCE_ROOT; };
@@ -939,6 +941,7 @@
 				2D94486C0629124700DD9879 /* SettingsMACOSX.hxx */,
 				2D11C9A90667003F00724063 /* Snapshot.cxx */,
 				2D11C9AA0667003F00724063 /* Snapshot.hxx */,
+				2D28DDE409DC2D9F00A17585 /* MenusEvents.h */,
 			);
 			name = macosx;
 			sourceTree = "<group>";
@@ -1441,6 +1444,7 @@
 				DC47455B09C34BFA00EDDA3A /* CheatManager.hxx in Headers */,
 				DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */,
 				DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */,
+				2D28DDE509DC2D9F00A17585 /* MenusEvents.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,7 +33,7 @@
 	<key>CFBundleExecutable</key>
 	<string>StellaOSX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>2.1.1 Beta</string>
+	<string>StellaOSX 2.2</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -41,17 +41,17 @@
 	<key>CFBundleIconFile</key>
 	<string>Stella</string>
 	<key>CFBundleIdentifier</key>
-	<string>StellaOSX2.1</string>
+	<string>StellaOSX</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>StellaOSX 2.1.1 Beta</string>
+	<string>StellaOSX 2.2</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>2.1.1 Beta</string>
+	<string>StellaOSX 2.2</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
