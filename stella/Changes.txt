@@ -12,6 +12,76 @@
                                Release History
 ===============================================================================
 
+2.1 to 2.2: (April 7, 2006)
+
+  * Added new ROM browser option which works like a normal filesystem
+    browser, allowing navigation throughout the filesystem.
+    The old mode of browsing is still present, and can be toggled at
+    runtime.  Related to this, fixed bug whereby sorting in the ROM
+    launcher sometimes didn't work.
+
+  * Integrated stella.pro properties into the application, resulting in
+    faster startup time.  Now Stella can be redistributed as a single
+    binary; no external files are needed, but they will still be used
+    if present.
+
+  * Reworked ROM properties files once again.  The 'user.pro' file has
+    been removed, and all user-defined properties are stored in
+    'stella.pro' instead.  You should delete all properties files when
+    upgrading to this version, to take advantage of the speed increases.
+
+  * Reworked settings files once again.  Removed all references to a
+    global settings file.  Each user now gets a user-specific settings
+    file only.  If that file doesn't exist, the built-in defaults are
+    used.
+
+  * Added 'conditional saving' of the cheatcode and settings files, so
+    that these files are only written to disk when absolutely
+    necessary.  This doesn't really affect desktop systems, but is very
+    useful for systems with flashram-based storage (GP2X, WinCE, etc).
+
+  * Reworked Settings class, hopefully fixing a bug whereby settings
+    weren't being saved in certain cases (most evident in the OSX port).
+
+  * Added 'tiadefaults' commandline option, which can also be toggled
+    from within the GUI.  This option disables all TIA positioning
+    'tweaks' that typically make a game look better, and present the
+    image exactly as it would appear on a real 2600.
+
+  * Added jitter-detection code for the paddle emulation, which should
+    eliminate an annoying 'jittering' effect when using paddles with
+    a Stelladaptor.
+
+  * Related to jitter-detection, added '-pthresh' commandline option
+    and GUI entry, which sets a bound below which the emulation detects
+    jitter.
+
+  * Fixed crash when adding one-shot cheats.
+
+  * Fixed bug in RAM comparitive searches in the debugger.
+
+  * Fixed bug with setting snapshot naming type from the GUI (it was
+    always being set to 'romname').
+
+  * Re-added low compatibility CPU emulation mode, since it benefits
+    some slower systems.  This is activated with the commandline argument
+    '-cpu low'.
+
+  * For the OSX port, added Universal binary support.
+
+  * For the OSX port, reworked the menu handling, so that certain menu
+    options are only enabled when it makes sense to do so.
+
+  * For the GP2X port, fixed joystick deadzone issues and scroll bug in
+    ROM launcher.
+
+  * For the GP2X port, fixed issue with PAL ROMs causing a crash because of
+    screen size.  A message is now shown indicating that PAL ROMs are not
+    yet supported.
+
+Have fun!
+
+
 2.0.1 to 2.1: (January 29, 2006)
 
   * Added phosphor effect, similar to z26.  Useful on ROMs which alternate
@@ -79,8 +149,6 @@
   * Fixed crash with using 'cheat' and 'break' from the commandline.
 
   * Implemented dynamic loading of OpenGL library.
-
-Have fun!
 
 
 2.0 to 2.0.1: (October 24, 2005)

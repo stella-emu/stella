@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.1</b></h4></center>
+	<center><h4><b>Release 2.2</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -36,7 +36,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - January 2006</b></center>
+	<center><b>February 1999 - April 2006</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -215,75 +215,73 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.1</b></h2>
+	<h2><b>New in Release 2.2</b></h2>
 
 	<ul>
-		<li>Added <b>phosphor effect</b>, similar to z26.  Useful on ROMs which
-			alternate sprites from one frame to another, resulting in an
-			annoying flicker.  When using phosphor mode, a pixels colour is mixed
-			with its previous value, resulting in a blended image that doesn't
-			flicker, emulating the phosphoresence effect on a real television.</li>
+<li>Added new ROM browser option which works like a normal filesystem
+    browser, allowing navigation throughout the filesystem.
+    The old mode of browsing is still present, and can be toggled at
+    runtime.  Related to this, fixed bug whereby sorting in the ROM
+    launcher sometimes didn't work.</li>
 
-		<li>Added 'pp' developer commandline argument to set the "Display.Phosphor"
-			property, and 'ppblend' to set the amount to blend pixels in
-			phosphor mode.  Also added 'Alt p' key to enable/disable phosphor
-			effect while ROM is emulated.  By default, phosphor mode is only used
-			when necessary, as specified in the stella.pro file.</li>
+<li>Integrated stella.pro properties into the application, resulting in
+    faster startup time.  Now Stella can be redistributed as a single
+    binary; no external files are needed, but they will still be used
+    if present.</li>
 
-		<li>Renamed 'cheetah' commandline argument to 'cheat'.</li>
+<li>Reworked ROM properties files once again.  The 'user.pro' file has
+    been removed, and all user-defined properties are stored in
+    'stella.pro' instead.  You should delete all properties files when
+    upgrading to this version, to take advantage of the speed increases.</li>
 
-		<li>Added per-frame cheatcodes (4 characters long), which are evaluated
-			each frame.</li>
+<li>Reworked settings files once again.  Removed all references to a
+    global settings file.  Each user now gets a user-specific settings
+    file only.  If that file doesn't exist, the built-in defaults are
+    used.</li>
 
-		<li>Added cheatcode GUI, where cheats can be named, edited, saved, etc.</li>
+<li>Added 'conditional saving' of the cheatcode and settings files, so
+    that these files are only written to disk when absolutely
+    necessary.  This doesn't really affect desktop systems, but is very
+    useful for systems with flashram-based storage (GP2X, WinCE, etc).</li>
 
-		<li>Cheat codes are now saved to stella.cht file and are automatically
-			reloaded when Stella starts.</li>
+<li>Reworked Settings class, hopefully fixing a bug whereby settings
+    weren't being saved in certain cases (most evident in the OSX port).</li>
 
-		<li>Improved 'joymouse' functionality.  While in GUI mode, any axis
-			will simulate mouse movement, and any button will simulate a mouse
-			click.  So the GUI can be completely navigated without a mouse.</li>
+<li>Added 'tiadefaults' commandline option, which can also be toggled
+    from within the GUI.  This option disables all TIA positioning
+    'tweaks' that typically make a game look better, and present the
+    image exactly as it would appear on a real 2600.</li>
 
-		<li>Improved CommandDialog and LauncherDialog wrt joymouse functionality.
-			These dialogs are used more than any other on devices without a mouse,
-			so joystick axis movement switches between GUI objects, rather than
-			simulating the mouse.  This leads to much faster selection of objects.</li>
+<li>Added jitter-detection code for the paddle emulation, which should
+    eliminate an annoying 'jittering' effect when using paddles with
+    a Stelladaptor.</li>
 
-		<li>Added mapping of multiple SDL joystick axis to Event Mapping.</li>
+<li>Related to jitter-detection, added '-pthresh' commandline option
+    and GUI entry, which sets a bound below which the emulation detects
+    jitter.</li>
 
-		<li>Added joystick hat support, and mapping of multiple hats to Event
-			Mapping.</li>
+<li>Fixed crash when adding one-shot cheats.</li>
 
-		<li>Added remapping of paddle emulation to the keyboard or joystick axis
-			(the mouse is still used by default for paddles).  Related to this,
-			use more precise analog values when analog axis are mapped to
-			analog-type events (such as paddles).</li>
+<li>Fixed bug in RAM comparitive searches in the debugger.</li>
 
-		<li>Treat joystick events as other types of controllers based on the
-			virtual port entry in stella.pro.  This means that mappings for a
-			joystick will emulate other devices when necessary.</li>
+<li>Fixed bug with setting snapshot naming type from the GUI (it was
+    always being set to 'romname').</li>
 
-		<li>Added 'sp' developer commandline argument, which sets the 
-			"Console.SwapPorts" property and swaps the arrangement of the
-			virtual ports.  Useful for games like "Raiders of the Lost Ark",
-			where the joysticks are normally swapped.</li>
+<li>Re-added low compatibility CPU emulation mode, since it benefits
+    some slower systems.  This is activated with the commandline argument
+    '-cpu low'.</li>
 
-		<li>Added ability to set which Stelladaptor device emulates which virtual
-			joystick port ('sa1' and 'sa2' commandline arguments, which accept
-			'left' or 'right').</li>
+<li>For the OSX port, added Universal binary support.</li>
 
-		<li>Fixed issues with jittering joysticks/mice causing weird events when
-			starting Stella.</li>
+<li>For the OSX port, reworked the menu handling, so that certain menu
+    options are only enabled when it makes sense to do so.</li>
 
-		<li>Added 'freq', 'tiafreq' and 'clipvol' commandline arguments, which
-			affect the sound subsystem (see manual for further info).</li>
+<li>For the GP2X port, fixed joystick deadzone issues and scroll bug in
+    ROM launcher.</li>
 
-		<li>Made state files completely cross-platform, both in terms of endianness
-			as well as CPU size (32 vs. 64 bit).</li>
-
-		<li>Fixed crash with using 'cheat' and 'break' from the commandline.</li>
-
-		<li>Implemented dynamic loading of OpenGL library.</li>
+<li>For the GP2X port, fixed issue with PAL ROMs causing a crash because of
+    screen size.  A message is now shown indicating that PAL ROMs are not
+    yet supported.</li>
 	</ul>
 
 	<p>
@@ -369,7 +367,7 @@
 	the following:</p>
 	<ul>
 		<li>Mac OSX 10.1 or Above</li>
-		<li>500 MHz G4 PPC processor or above (Stella <b>may</b> work with a G3
+		<li>500 MHz G4 PPC/Intel processor or above (Stella <b>may</b> work with a G3
 			processor, but this is still a work-in-progress)</li>
 		<li>OpenGL capable video card.  Software rendering mode is still available,
 			but as of OSX 10.4 is substandard compared to OpenGL.</li>
@@ -749,7 +747,19 @@
 		</tr>
 
 		<tr>
-			<td><pre>-accurate &lt;0|1&gt;</pre></td>
+			<td><pre>-pthresh &lt;number&gt;</pre></td>
+			<td>Set threshold for eliminating paddle jitter.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-tiadefaults &lt;1|0&gt;</pre></td>
+			<td>Use TIA positioning defaults instead of enhanced values.  The
+				default values result in the image appearing as it does on
+				a real 2600 system (in most cases).</td>
+		</tr>
+
+		<tr>
+			<td><pre>-accurate &lt;1|0&gt;</pre></td>
 			<td>Linux only, may be removed in future versions.  Use this when 
 				running under the Linux 2.4 kernel.  Otherwise, this should probably
 				not be used.</td>
@@ -978,10 +988,7 @@
 	<p>
 	<h2><b>Linux/UNIX</b></h2>
 	<p>The Linux and UNIX version of Stella searches for the <i>stellarc</i> file in
-	two places.  First, it will look for <i>stellarc</i> in your $HOME/.stella directory.
-	Then, it will look for <i>stellarc</i> in the system-wide directory, which is
-	determined when Stella was built.  By default, this would be the
-	<i>/usr/share/stella</i> directory.</p>
+	your $HOME/.stella directory.</p>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
@@ -1814,31 +1821,25 @@ Ms Pac-Man (Stella extended codes):
 	<hr>
 
 	<p>Stella uses game properties to specify the "best" emulator settings for a
-	game. As of Version 1.2 of Stella, there are no longer any properties built-in.
-	You must use the included <b>stella.pro</b> file.  Otherwise, the emulator
-	will try to guess the best settings for the game.</p>
-
-	<p>As of Stella 2.0, the properties file handling has changed.  Stella now uses
-	two properties files; a system-wide <b>stella.pro</b> and a per-user <b>user.pro</b>.
-	The system-wide file will not be modified by Stella, and is used as a default
-	database of properties.  The per-user file will contain all properties 'merged' by
-	the user (by pressing Alt-s while a game is running).  So this means that when
-	you upgrade Stella and stella.pro, your personal profile settings are preserved.</p>
+	game. As of version 2.2 of Stella, a default database of properties are
+	built-in, but you may modify these through the use of a <b>stella.pro</b> file.
+	This per-user file will contain all properties 'merged' by the user
+	(by pressing Alt-s while a game is running).  So this means that when you
+	upgrade Stella, your personal properties settings are preserved.</p>
 
 	<p>
 	<h2><b>Linux/Unix</b></h2>
-	<p>The Linux and Unix versions of Stella looks for the system properties file
-	in <i>/usr/share/stella/stella.pro</i> and your personal properties
-	file in	<i>$HOME/.stella/user.pro</i>.
+	<p>The Linux and Unix versions of Stella looks for your personal properties
+	file in	<i>$HOME/.stella/stella.pro</i>.
 
 	<p>
 	<h2><b>Macintosh</b></h2>
-	<p>The Mac version of Stella looks for the properties file(s) in the
-	directory containing the application.</p>
+	<p>The Mac version of Stella looks for your personal properties	file in
+	<i>$HOME/.stella/stella.pro</i>.
 
 	<p>
 	<h2><b>Windows</b></h2>
-	<p>The Windows version of Stella looks for the properties file(s) in the directory
+	<p>The Windows version of Stella looks for the properties file in the directory
 	containing the application.  Future versions of Stella for Windows may look in
 	user-specific locations	(C:\Documents and Settings\...).</p>
 
@@ -1879,15 +1880,6 @@ Ms Pac-Man (Stella extended codes):
 
 	<table CELLSPACING="10">
 		<tr>
-			<td VALIGN="TOP"><i>Cartridge.Filename:</i></td>
-			<td>This property indicates the name of the file containing the ROM image.
-			<!--In general this property is not needed, however, if present Stella uses it
-			while attempting to match a game with its block of properties.  If the
-			value of the property matches the filename of the ROM image then Stella
-			uses that block of properties for the game.--></td>
-		</tr>
-
-		<tr>
 			<td VALIGN="TOP"><i>Cartridge.MD5:</i></td>
 			<td>This property indicates the MD5 checksum of the ROM image as a
 			string of hexadecimal digits.  Stella uses this property while
@@ -1914,16 +1906,18 @@ Ms Pac-Man (Stella extended codes):
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Name:</i></td>
-			<td>This property indicates the actual name of the game.  It is very
-			important that this property's value be unique from all other cartridge
-			names in the property file.</td>
+			<td>This property indicates the actual name of the game.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Note:</i></td>
-			<td>This property contains any special notes about playing the game.
-			Currently this property is not being used, however, future versions of
-			Stella will probably allow the user to view this information.</td>
+			<td>This property contains any special notes about playing the game.</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP"><i>Cartridge.Rarity:</i></td>
+			<td>This property indicates how rare a cartridge is, based on the scale
+				described on AtariAge.</td>
 		</tr>
 
 		<tr>
@@ -2300,6 +2294,11 @@ Ms Pac-Man (Stella extended codes):
 		<tr>
 			<td VALIGN="TOP">Jeff&nbsp;Wisnia</td>
 			<td>Provided technical data sheet for the 6532 RIOT chip</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">Alex&nbsp;Zaballa</td>
+			<td>Maintainer of the GP2X version of Stella starting with the 2.1 release</td>
 		</tr>
 
 	</table>

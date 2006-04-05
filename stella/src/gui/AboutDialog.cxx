@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.11 2006-03-25 00:34:17 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.12 2006-04-05 16:06:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -104,8 +104,6 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
 
     case 3:
       title = "The Stella team";
-      ADD_ATEXT("\\L\\c0""  Erik \"Voch\" Kovach");
-      ADD_ATEXT("\\L\\c2""    Maintainer of the 'stella.pro' game properties file");
       ADD_ATEXT("\\L\\c0""  Joe D'Andrea");
       ADD_ATEXT("\\L\\c2""    Maintainer for Solaris port");
       ADD_ATEXT("\\L\\c0""  Darrell Spice Jr. & Doodle");
@@ -114,6 +112,8 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       ADD_ATEXT("\\L\\c2""    Maintainer for PSP port");
       ADD_ATEXT("\\L\\c0""  Kostas Nakos");
       ADD_ATEXT("\\L\\c2""    Author/maintainer for WinCE port");
+      ADD_ATEXT("\\L\\c0""  Alex Zaballa");
+      ADD_ATEXT("\\L\\c2""    Maintainer for GP2X port");
       break;
 
     case 4:
@@ -124,17 +124,17 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       ADD_ATEXT("\\L\\c0""  Dan Boris, Piero Cavina, Bob Colbert");
       ADD_ATEXT("\\L\\c0""  Renato Ferreira, Ron Fries, Aaron Giles");
       ADD_ATEXT("\\L\\c0""  Mark Hahn, Kevin Horton, Thomas Jentzsch");
-      ADD_ATEXT("\\L\\c0""  Daniel Marks, James Mcclain, David McEwen");
-      ADD_ATEXT("\\L\\c0""  Jeff Miller, Dan Mowczan, Jack Nutting");
-      ADD_ATEXT("\\L\\c0""  Manuel Polik, Jim Pragit, John Saeger");
-      ADD_ATEXT("\\L\\c0""  Chris Salomon, Jason Scott, David Shaw");
+      ADD_ATEXT("\\L\\c0""  Erik \"Voch\" Kovach, Daniel Marks, James Mcclain");
+      ADD_ATEXT("\\L\\c0""  David McEwen, Jeff Miller, Dan Mowczan");
+      ADD_ATEXT("\\L\\c0""  Jack Nutting, Manuel Polik, Jim Pragit");
+      ADD_ATEXT("\\L\\c0""  John Saeger, Chris Salomon, Jason Scott");
       break;
 
     case 5:
       title = "Retired members / Contributors";
       ADD_ATEXT("\\L\\c0""See Stella manual for contribution details");
       ADD_ALINE;
-      ADD_ATEXT("\\L\\c0""  Raul Silva, Chris Snell, John Stiles");
+      ADD_ATEXT("\\L\\c0""  David Shaw, Raul Silva, Chris Snell, John Stiles");
       ADD_ATEXT("\\L\\c0""  Matthew Stroup, Joel Sutton, Greg Troutman");
       ADD_ATEXT("\\L\\c0""  Curt Vendel, Keith Wilkins, Jeff Wisnia");
       ADD_ALINE;
