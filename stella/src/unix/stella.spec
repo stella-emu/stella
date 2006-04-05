@@ -1,5 +1,5 @@
 %define name    stella
-%define version 2.1
+%define version 2.2
 %define rel     1
 
 %define build_plf 0
@@ -126,6 +126,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/stella/*
 
 %changelog
+* Thu Apr 06 2006 Stephen Anthony <stephena@zarb.org> 2.2-1
+- Version 2.2 release
+
 * Sat Jan 28 2006 Stephen Anthony <stephena@zarb.org> 2.1-1
 - Version 2.1 release
 
