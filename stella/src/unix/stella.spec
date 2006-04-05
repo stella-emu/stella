@@ -123,7 +123,6 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %{_menudir}/%{name}
 %_docdir/stella-%{version}/*
 %_datadir/icons/*
-%_datadir/stella/*
 
 %changelog
 * Thu Apr 06 2006 Stephen Anthony <stephena@zarb.org> 2.2-1
