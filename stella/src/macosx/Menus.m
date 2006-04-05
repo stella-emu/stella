@@ -4,16 +4,19 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.12 2006-03-29 04:45:10 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.13 2006-04-05 02:18:58 markgrebe Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "SDL.h"
 #import "Menus.h"
+#import "MenusEvents.h"
 
 #define QZ_m			0x2E
 #define QZ_o			0x1F
 #define QZ_h			0x04
 #define QZ_SLASH		0x2C
+
+extern void macOSXSendMenuEvent(int event);
 
 /*------------------------------------------------------------------------------
 *  releaseCmdKeys - This method fixes an issue when modal windows are used with
@@ -164,6 +167,10 @@ static Menus *sharedInstance = nil;
 - (IBAction)openCart:(id)sender
 {
 	[self pushKeyEvent:SDLK_ESCAPE:NO:NO];
+//  Fixme - This should work like the other keys, but instead
+//   if you send the LauncherOpen event, it crashes SDL in
+//    the poll loop.    
+//    macOSXSendMenuEvent(MENU_OPEN);
 }
 
 - (IBAction)restartGame:(id)sender
@@ -173,7 +180,7 @@ static Menus *sharedInstance = nil;
 
 - (IBAction)pauseGame:(id)sender
 {
-	[self pushKeyEvent:SDLK_PAUSE:NO:NO];
+    macOSXSendMenuEvent(MENU_PAUSE);
 }
 
 - (IBAction)ntscPalMode:(id)sender
@@ -238,12 +245,12 @@ static Menus *sharedInstance = nil;
 
 - (IBAction)volumePlus:(id)sender
 {
-	[self pushKeyEvent:SDLK_RIGHTBRACKET:YES:YES];
+    macOSXSendMenuEvent(MENU_VOLUME_INCREASE);
 }
 
 - (IBAction)volumeMinus:(id)sender
 {
-	[self pushKeyEvent:SDLK_LEFTBRACKET:YES:YES];
+    macOSXSendMenuEvent(MENU_VOLUME_DECREASE);
 }
 
 - (IBAction)saveProps:(id)sender

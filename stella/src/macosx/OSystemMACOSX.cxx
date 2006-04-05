@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.10 2006-03-29 04:45:10 markgrebe Exp $
+// $Id: OSystemMACOSX.cxx,v 1.11 2006-04-05 02:18:58 markgrebe Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -29,6 +29,7 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "OSystemMACOSX.hxx"
+#include "MenusEvents.h"
 
 #ifdef HAVE_GETTIMEOFDAY
   #include <time.h>
@@ -44,6 +45,7 @@ extern "C" {
   void setOptionsMenus(void);
   void setCommandMenus(void);
   void setDebuggerMenus(void);
+  void macOSXSendMenuEvent(int event);
 }
 
 // Pointer to the main parent osystem object or the null pointer
@@ -55,6 +57,26 @@ extern char parentdir[MAXPATHLEN];
 void macOpenConsole(char *romname)
 {
 	theOSystem->createConsole(romname);
+}
+
+// Allow the Menus Objective-C object to pass event sends into the 
+//  application.
+void macOSXSendMenuEvent(int event)
+{
+    switch(event) {
+        case MENU_PAUSE:
+            theOSystem->eventHandler().handleEvent(Event::Pause, 1);
+            break;
+        case MENU_OPEN:
+            theOSystem->eventHandler().handleEvent(Event::LauncherMode, 1);
+            break;
+        case MENU_VOLUME_INCREASE:
+            theOSystem->eventHandler().handleEvent(Event::VolumeIncrease, 1);
+            break;
+        case MENU_VOLUME_DECREASE:
+            theOSystem->eventHandler().handleEvent(Event::VolumeDecrease, 1);
+            break;
+    }
 }
 
 /**
