@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.84 2006-03-27 21:06:44 stephena Exp $
+// $Id: EventHandler.hxx,v 1.85 2006-04-05 12:28:37 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -107,7 +107,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.84 2006-03-27 21:06:44 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.85 2006-04-05 12:28:37 stephena Exp $
 */
 class EventHandler
 {
@@ -259,6 +259,15 @@ class EventHandler
       @param speed  The speed of paddle movement for the given paddle
     */
     void setPaddleSpeed(int num, int speed);
+
+    /**
+      Sets the amount by which paddle jitter is detected.  Quick movements
+      of less than this amount constitute jitter, and do not generate
+      paddle events.
+
+      @param thresh  The threshold to use for jitter detection
+    */
+    void setPaddleThreshold(int thresh);
 
     inline bool kbdAlt(int mod)
     {

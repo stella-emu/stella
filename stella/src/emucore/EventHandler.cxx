@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.159 2006-03-27 21:06:44 stephena Exp $
+// $Id: EventHandler.cxx,v 1.160 2006-04-05 12:28:37 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -132,10 +132,9 @@ EventHandler::EventHandler(OSystem* osystem)
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
 
   setPaddleMode(myOSystem->settings().getInt("paddle"), false);
+  setPaddleThreshold(myOSystem->settings().getInt("pthresh"));
 
   myFryingFlag = false;
-
-  myPaddleThreshold = myOSystem->settings().getInt("pthresh");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2041,6 +2040,14 @@ void EventHandler::setPaddleSpeed(int num, int speed)
   ostringstream buf;
   buf << "p" << num+1 << "speed";
   myOSystem->settings().setInt(buf.str(), speed);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setPaddleThreshold(int thresh)
+{
+  myPaddleThreshold = thresh;
+  myOSystem->settings().setInt("pthresh", thresh);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

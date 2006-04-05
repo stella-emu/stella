@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.12 2006-03-02 13:10:53 stephena Exp $
+// $Id: InputDialog.cxx,v 1.13 2006-04-05 12:28:39 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -27,7 +27,8 @@
 #include "bspf.hxx"
 
 enum {
-  kPaddleChanged  = 'PDch',
+  kPaddleChanged       = 'PDch',
+  kPaddleThreshChanged = 'PDth',
   kP0SpeedID = 100,
   kP1SpeedID = 101,
   kP2SpeedID = 102,
@@ -107,7 +108,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
 
   // Add 'mouse to paddle' mapping
   ypos += 2*lineHeight;
-  lwidth = font.getStringWidth("Mouse is paddle: ");
+  lwidth = font.getStringWidth("Paddle threshold: ");
   pwidth = font.getMaxCharWidth() * 5;
   myPaddleMode = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                   "Mouse is paddle: ", lwidth, kPaddleChanged);
@@ -117,6 +118,19 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
                                            "", kTextAlignLeft);
   myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleMode);
+
+  // Add 'paddle threshhold' setting
+  xpos = 5;  ypos += lineHeight + 3;
+  myPaddleThreshold = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                       "Paddle threshold: ",
+                                       lwidth, kPaddleThreshChanged);
+  myPaddleThreshold->setMinValue(400); myPaddleThreshold->setMaxValue(800);
+  xpos += myPaddleThreshold->getWidth() + 5;
+  myPaddleThresholdLabel = new StaticTextWidget(myTab, font, xpos, ypos+1,
+                                                24, lineHeight,
+                                                "", kTextAlignLeft);
+  myPaddleThresholdLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleThreshold);
 
   // Add paddle 0 speed
   xpos = 5;  ypos += lineHeight + 3;
@@ -187,6 +201,10 @@ void InputDialog::loadConfig()
   myPaddleMode->setValue(instance()->settings().getInt("paddle"));
   myPaddleModeLabel->setLabel(instance()->settings().getString("paddle"));
 
+  // Paddle threshold
+  myPaddleThreshold->setValue(instance()->settings().getInt("pthresh"));
+  myPaddleThresholdLabel->setLabel(instance()->settings().getString("pthresh"));
+
   // Paddle speed settings
   myPaddleSpeed[0]->setValue(instance()->settings().getInt("p1speed"));
   myPaddleLabel[0]->setLabel(instance()->settings().getString("p1speed"));
@@ -209,6 +227,10 @@ void InputDialog::saveConfig()
   // Paddle mode
   int mode = myPaddleMode->getValue();
   instance()->eventHandler().setPaddleMode(mode);
+
+  // Paddle threshold
+  int threshold = myPaddleThreshold->getValue();
+  instance()->eventHandler().setPaddleThreshold(threshold);
 
   // Paddle speed settings
   for(int i = 0; i < 4; ++i)
@@ -273,6 +295,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPaddleChanged:
       myPaddleModeLabel->setValue(myPaddleMode->getValue());
+      break;
+
+    case kPaddleThreshChanged:
+      myPaddleThresholdLabel->setValue(myPaddleThreshold->getValue());
       break;
 
     case kP0SpeedID:

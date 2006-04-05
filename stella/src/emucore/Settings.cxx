@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.84 2006-04-04 23:15:43 stephena Exp $
+// $Id: Settings.cxx,v 1.85 2006-04-05 12:28:37 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -246,6 +246,12 @@ void Settings::validate()
   i = getInt("paddle");
   if(i < 0 || i > 3)
     setInternal("paddle", "0");
+
+  i = getInt("pthresh");
+  if(i < 400)
+    setInternal("pthresh", "400");
+  else if(i > 800)
+    setInternal("pthresh", "800");
 
   s = getString("palette");
   if(s != "standard" && s != "original" && s != "z26")

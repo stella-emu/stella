@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.7 2006-03-02 13:10:53 stephena Exp $
+// $Id: InputDialog.hxx,v 1.8 2006-04-05 12:28:39 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -61,6 +61,8 @@ class InputDialog : public Dialog
 
     SliderWidget*     myPaddleMode;
     StaticTextWidget* myPaddleModeLabel;
+    SliderWidget*     myPaddleThreshold;
+    StaticTextWidget* myPaddleThresholdLabel;
     SliderWidget*     myPaddleSpeed[4];
     StaticTextWidget* myPaddleLabel[4];
 

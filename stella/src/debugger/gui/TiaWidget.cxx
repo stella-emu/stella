@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.3 2006-03-25 00:34:17 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.4 2006-04-05 12:28:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -476,7 +476,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   // M1 register info
   ////////////////////////////
   // enaM1
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += lineHeight + 6;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, 3*fontWidth, fontHeight,
                            "M1:", kTextAlignLeft);
   xpos += 3*fontWidth + 8;
@@ -531,7 +531,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   // BL register info
   ////////////////////////////
   // enaBL
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += lineHeight + 6;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, 3*fontWidth, fontHeight,
                            "BL:", kTextAlignLeft);
   xpos += 3*fontWidth + 8;
@@ -586,7 +586,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   // PF 0/1/2 registers
   ////////////////////////////
   // PF0
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += lineHeight + 6;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, 4*fontWidth, fontHeight,
                            "PF:", kTextAlignLeft);
   xpos += 4*fontWidth;
@@ -610,7 +610,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myPF[2]);
 
   // PF reflect, score, priority
-  xpos = 10 + 4*fontWidth;  ypos += lineHeight + 2;
+  xpos = 10 + 4*fontWidth;  ypos += lineHeight + 6;
   myRefPF = new CheckboxWidget(boss, font, xpos, ypos+1,
                                "Reflect", kCheckActionCmd);
   myRefPF->setTarget(this);
