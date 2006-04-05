@@ -1,5 +1,5 @@
 ---------------------------------------
-Stella 2.1 (revision 3):
+Stella 2.2:
 Ported to GP2X by Alex Zaballa
 Contact: azaballa@users.sourceforge.net
 Homepage: http://stella.sourceforge.net
@@ -8,6 +8,8 @@ Homepage: http://stella.sourceforge.net
 --------
 Changes:
 --------
+>From 2.1-rv3
+Added Rom Browser mode and enabled it by default
 >From 2.1-rv2
 Scroll bug fixed (finally)
 >From 2.1-rv1
