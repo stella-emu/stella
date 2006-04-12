@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.52 2006-03-20 13:23:13 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.53 2006-04-12 13:32:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -84,6 +84,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
   myList->setFlags(WIDGET_STICKY_FOCUS);
+//wid.push_back(myList);
 
   // Add note textwidget to show any notes for the currently selected ROM
   xpos += 5;  ypos += myList->getHeight() + 4;

@@ -13,13 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Version.hxx,v 1.15 2006-04-05 16:06:59 stephena Exp $
+// $Id: Version.hxx,v 1.16 2006-04-12 13:32:06 stephena Exp $
 //============================================================================
 
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-#define STELLA_BASE_VERSION "2.2"
+#define STELLA_BASE_VERSION "2.2.1_cvs"
 
 #ifdef NIGHTLY_BUILD
 #define STELLA_VERSION STELLA_BASE_VERSION "pre-" NIGHTLY_BUILD

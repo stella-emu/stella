@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.hxx,v 1.10 2006-03-10 00:29:46 stephena Exp $
+// $Id: GameList.hxx,v 1.11 2006-04-12 13:32:06 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -22,7 +22,7 @@
 #ifndef GAME_LIST_HXX
 #define GAME_LIST_HXX
 
-#include "Array.hxx"
+#include <vector>
 #include "bspf.hxx"
 
 /**
@@ -30,40 +30,37 @@
 */
 class GameList
 {
-  private:
-    struct Entry {
-      string _name;
-      string _path;
-      string _note;
-      bool   _isdir;
-    };
-
-    typedef Common::Array<Entry*> EntryList;
-    EntryList myArray;
-
   public:
     GameList();
     ~GameList();
 
     inline const string& name(int i)
-    { return i < (int)myArray.size() ? myArray[i]->_name : EmptyString; }
+    { return i < (int)myArray.size() ? myArray[i]._name : EmptyString; }
     inline const string& path(int i)
-    { return i < (int)myArray.size() ? myArray[i]->_path : EmptyString; }
+    { return i < (int)myArray.size() ? myArray[i]._path : EmptyString; }
     inline const string& note(int i)
-    { return i < (int)myArray.size() ? myArray[i]->_note : EmptyString; }
+    { return i < (int)myArray.size() ? myArray[i]._note : EmptyString; }
     inline const bool isDir(int i)
-    { return i < (int)myArray.size() ? myArray[i]->_isdir: false; }
+    { return i < (int)myArray.size() ? myArray[i]._isdir: false; }
 
     inline int size() { return myArray.size(); }
-    void clear();
+    inline void clear() { myArray.clear(); }
 
     void appendGame(const string& name, const string& path, const string& note,
                     bool isDir = false);
     void sortByName();
 
   private:
-    static void QuickSort(EntryList& list, int l, int r);
-    inline static int compare(const string& s1, const string& s2);
+    class Entry {
+      public:
+        string _name;
+        string _path;
+        string _note;
+        bool   _isdir;
+
+        bool operator < (const Entry& a) const;
+    };
+    vector<Entry> myArray;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.60 2006-03-25 00:34:17 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.61 2006-04-12 13:32:06 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -399,6 +399,12 @@ void FrameBufferGL::postFrameUpdate()
     p_glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
                       GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
     p_glBegin(GL_QUADS);
+/* Upside down !
+      p_glTexCoord2f(myTexCoord[2], myTexCoord[3]); p_glVertex2i(0, 0);
+      p_glTexCoord2f(myTexCoord[0], myTexCoord[3]); p_glVertex2i(w, 0);
+      p_glTexCoord2f(myTexCoord[0], myTexCoord[1]); p_glVertex2i(w, h);
+      p_glTexCoord2f(myTexCoord[2], myTexCoord[1]); p_glVertex2i(0, h);
+*/
       p_glTexCoord2f(myTexCoord[0], myTexCoord[1]); p_glVertex2i(0, 0);
       p_glTexCoord2f(myTexCoord[2], myTexCoord[1]); p_glVertex2i(w, 0);
       p_glTexCoord2f(myTexCoord[2], myTexCoord[3]); p_glVertex2i(w, h);
