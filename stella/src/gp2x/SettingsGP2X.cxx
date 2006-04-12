@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.cxx,v 1.9 2006-04-12 22:50:18 azaballa Exp $
+// $Id: SettingsGP2X.cxx,v 1.10 2006-04-12 23:07:16 azaballa Exp $
 // Modified on 2006/02/05 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -32,7 +32,8 @@ SettingsGP2X::SettingsGP2X(OSystem* osystem)
   setInternal("sound", "true");
   setInternal("zoom", "1");
   setInternal("fragsize", "512");
-  setInternal("tiafreq", "11025");
+  setInternal("freq", "15700");
+  setInternal("tiafreq", "15700");
   setInternal("clipvol", "true");
   setInternal("joymouse", "true");
   setInternal("rombrowse", "true");
