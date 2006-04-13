@@ -1,5 +1,5 @@
 ---------------------------------------
-Stella 2.2:
+Stella 2.2 (revision 1):
 Ported to GP2X by Alex Zaballa
 Contact: azaballa@users.sourceforge.net
 Homepage: http://stella.sourceforge.net
@@ -8,6 +8,8 @@ Homepage: http://stella.sourceforge.net
 --------
 Changes:
 --------
+>From 2.2
+Ms. Pacman sound issue resolved
 >From 2.1-rv3
 Added Rom Browser mode and enabled it by default
 >From 2.1-rv2
