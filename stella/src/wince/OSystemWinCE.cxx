@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -159,7 +159,7 @@ uInt32 OSystemWinCE::getTicks(void)
 	return GetTickCount();
 }
 
-inline const GUI::Font& OSystemWinCE::font() const
+inline const GUI::Font& OSystemWinCE::launcherFont() const
 {
 	if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphoneLowRes() )
 		return consoleFont();
