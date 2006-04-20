@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -32,8 +32,10 @@ class OSystemWinCE : public OSystem
     virtual void mainLoop();
 	virtual uInt32 getTicks(void);
     virtual void setFramerate(uInt32 framerate);
-	virtual void getScreenDimensions(int& width, int& height) { width = GetSystemMetrics(SM_CXSCREEN); height = GetSystemMetrics(SM_CYSCREEN); };
-	inline const GUI::Font& font() const;
+	// ok, we lie a bit to Stephen here, but it's for a good purpose :)
+	// we can always display these resolutions anyway
+	virtual void getScreenDimensions(int& width, int& height) { width = 320; height = 240; };
+	inline const GUI::Font& launcherFont() const;
 };
 
 #endif
