@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -43,7 +43,7 @@ HWND hWnd;
 uInt16 rotkeystate = 0;
 int paddlespeed;
 
-DWORD REG_bat, REG_ac, REG_disp;
+DWORD REG_bat, REG_ac, REG_disp, bat_timeout;
 
 
 void KeyCheck(void)
@@ -122,9 +122,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	case WM_ACTIVATE:
 		if (theOSystem)
 		{
-			if (theOSystem->eventHandler().doPause())
+			if (theOSystem->eventHandler().isPaused())
 				theOSystem->eventHandler().handleEvent(Event::Pause, theOSystem->eventHandler().state());
-			theOSystem->frameBuffer().refresh(false);
+			theOSystem->frameBuffer().refresh();
 		}
 		GXResume();
 		return 0;
@@ -132,7 +132,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	case WM_KILLFOCUS:
 	case WM_HIBERNATE:
 		if (theOSystem)
-			if (!theOSystem->eventHandler().doPause())
+			if (!theOSystem->eventHandler().isPaused())
 				theOSystem->eventHandler().handleEvent(Event::Pause, theOSystem->eventHandler().state());
 		GXSuspend();
 		return 0;
@@ -195,6 +195,7 @@ void CleanUp(void)
 	GXCloseDisplay();
 	GXCloseInput();
 	backlight_xchg();
+	SystemParametersInfo(SPI_SETBATTERYIDLETIMEOUT, bat_timeout, NULL, SPIF_SENDCHANGE);
 }
 
 
@@ -212,6 +213,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	/* backlight */
 	REG_bat = REG_ac = REG_disp = 2 * 60 * 60 * 1000; /* 2hrs should do it */
 	backlight_xchg();
+	SystemParametersInfo(SPI_GETBATTERYIDLETIMEOUT, 0, (void *) &bat_timeout, 0);
+	SystemParametersInfo(SPI_SETBATTERYIDLETIMEOUT, 60 * 60 * 2, NULL, SPIF_SENDCHANGE);
 	
 	// pump the messages to get the window up
 	MSG msg;
@@ -240,8 +243,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	theOSystem->settings().validate();
 	theOSystem->create();
 	EventHandler theEventHandler(theOSystem);
-	PropertiesSet propertiesSet;
-	propertiesSet.load(theOSystem->systemProperties(), false);
+	PropertiesSet propertiesSet(theOSystem);
 	theOSystem->attach(&propertiesSet);
 
 	if ( !GXOpenDisplay(hWnd, GX_FULLSCREEN) || !GXOpenInput() )
