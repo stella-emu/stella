@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -80,8 +80,8 @@ void FrameBufferWinCE::GetDeviceProperties(void)
 
 	if (gxdp.cxWidth == 176 && gxdp.cyHeight == 220)
 		devres = SM_LOW;
-	/*else if (gxdp.cxWidth == 480 && gxdp.cyHeight == 640)
-		devres = VGA;*/
+	else if (gxdp.cxWidth == 480 && gxdp.cyHeight == 640)
+		devres = VGA;
 	else
 		devres = QVGA;
 }
@@ -101,6 +101,7 @@ void FrameBufferWinCE::setPalette(const uInt32* palette)
 			pal[i] = (uInt16) ( ((r & 0xF8) << 7) | ((g & 0xF8) << 3) | ((b & 0xF8) >> 3) );
 		else
 			return;
+		paldouble[i] = pal[i] | (pal[i] << 16);
 	}
 	SubsystemInited = false;
 }
@@ -114,11 +115,12 @@ bool FrameBufferWinCE::initSubsystem()
 		uInt8 g = (ourGUIColors[i][1] & 0xFF);
 		uInt8 b = (ourGUIColors[i][2] & 0xFF);
 		if(gxdp.ffFormat & kfDirect565)
-			guipal[i] = (uInt16) ( ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3) );
+			pal[i+256] = (uInt16) ( ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3) );
 		else if(gxdp.ffFormat & kfDirect555)
-			guipal[i] = (uInt16) ( ((r & 0xF8) << 7) | ((g & 0xF8) << 3) | ((b & 0xF8) >> 3) );
+			pal[i+256] = (uInt16) ( ((r & 0xF8) << 7) | ((g & 0xF8) << 3) | ((b & 0xF8) >> 3) );
 		else
 			return false;
+		paldouble[i+256] = pal[i+256] | (pal[i+256] << 16);
 	}
 	// screen extents
 	if(gxdp.ffFormat & kfDirect565)
@@ -136,11 +138,6 @@ bool FrameBufferWinCE::initSubsystem()
 	scrheight = gxdp.cyHeight;
 	scrpixelstep = gxdp.cbxPitch;
 	scrlinestep = gxdp.cbyPitch;
-
-//	if (scrwidth == 176 && scrheight == 220)
-//		issmartphone = true;
-//	else
-//		issmartphone = false;
 
 	setmode(displaymode);
 	SubsystemInited = false;
@@ -174,8 +171,13 @@ void FrameBufferWinCE::setmode(uInt8 mode)
 			break;
 	}
 
+	pixelstepdouble = pixelstep << 1;
+	linestepdouble = linestep << 1;
 	pixelsteptimes5 = pixelstep * 5;
 	pixelsteptimes6 = pixelstep * 6;
+	pixelsteptimes8 = pixelstep * 8;
+	pixelsteptimes12 = pixelstep * 12;
+	pixelsteptimes16 = pixelstep * 16;
 	SubsystemInited = false;
 }
 
@@ -189,7 +191,7 @@ uInt8 FrameBufferWinCE::rotatedisplay(void)
 
 void FrameBufferWinCE::lateinit(void)
 {
-	int w,h;
+	int w, h;
 
 	myWidth = myOSystem->console().mediaSource().width();
 	myHeight = myOSystem->console().mediaSource().height();
@@ -200,18 +202,23 @@ void FrameBufferWinCE::lateinit(void)
 			w = myWidth;
 		else
 			w = (int) ((float) myWidth * 11.0f / 8.0f + 0.5f);
-	else //if (devres == QVGA)
+	else if (devres == QVGA)
 		if (!islandscape)
 			w = (int) ((float) myWidth * 3.0f / 2.0f + 0.5f);
 		else
 			w = myWidth * 2;
-	/*else
+	else
 	{
-		// VGA
+		if (!islandscape)
+			w = (int) ((float) myWidth * 3.0f + 0.5f);
+		else
+			w = myWidth * 4;
 	}
-	*/
+
 	if (devres == SM_LOW && islandscape)
 		h = (int) ((float) myHeight * 4.0f / 5.0f + 0.5f);
+	else if (devres == VGA)
+		h = myHeight * 2;
 	else
 		h = myHeight;
 
@@ -259,6 +266,12 @@ void FrameBufferWinCE::lateinit(void)
 
 	}
 
+	if (devres == VGA)
+	{
+		minydim >>= 1;
+		displacement &= ~3;		// ensure longword alignment
+	}
+
 	SubsystemInited = true;
 }
 
@@ -281,8 +294,9 @@ void FrameBufferWinCE::preFrameUpdate()
 void FrameBufferWinCE::drawMediaSource()
 {
 	static uInt8 *sc, *sp, *sc_n, *sp_n;
-	static uInt8 *d, *pl, *p;
+	static uInt8 *d, *pl, *p, *nl;
 	static uInt16 pix1, pix2, pix3, x, y;
+	uInt32 pix1d, pix2d, pix3d;
 
 	if (!SubsystemInited)
 		lateinit();
@@ -498,11 +512,93 @@ void FrameBufferWinCE::drawMediaSource()
 				else
 				{
 					sc += 4;
-					d += (pixelstep << 3);
+					d += pixelsteptimes8;
 				}
 				sp += 4;
 			}
 			d = pl + linestep;
+			pl = d;
+		}
+	}
+	else if (devres == VGA && !islandscape)
+	{
+		for (y=0; y<minydim; y++)
+		{
+			// 2/1
+			for (x=0; x<myWidthdiv4; x++)
+			{
+				// 3/1
+				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
+				{
+					nl = d + linestep;
+					pix1d = paldouble[*sc++]; pix2d = paldouble[*sc++];
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					pix3d = ((uInt16) pix1d) | (((uInt16) pix2d) << 16);
+					*((uInt32 *)d) = pix3d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix3d; nl += pixelstepdouble;
+					*((uInt32 *)d) = pix2d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix2d; nl += pixelstepdouble;
+					pix1d = paldouble[*sc++]; pix2d = paldouble[*sc++];
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					pix3d = ((uInt16) pix1d) | (((uInt16) pix2d) << 16);
+					*((uInt32 *)d) = pix3d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix3d; nl += pixelstepdouble;
+					*((uInt32 *)d) = pix2d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix2d;
+				}
+				else
+				{
+					sc += 4;
+					d += pixelsteptimes12;
+				}
+				sp += 4;
+			}
+			d = pl + linestepdouble;
+			pl = d;
+		}
+	}
+	else if (devres == VGA && islandscape)
+	{
+		for (y=0; y<minydim; y++)
+		{
+			// 2/1
+			for (x=0; x<myWidthdiv4; x++)
+			{
+				// 4/1
+				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
+				{
+					nl = d + scrlinestep;
+					pix1d = paldouble[*sc++];
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					pix1d = paldouble[*sc++];
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					pix1d = paldouble[*sc++];
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					pix1d = paldouble[*sc++];
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
+					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
+					*((uInt32 *)nl) = pix1d;
+				}
+				else
+				{
+					sc += 4;
+					d += pixelsteptimes16;
+				}
+				sp += 4;
+			}
+			d = pl + linestepdouble;
 			pl = d;
 		}
 	}
@@ -520,9 +616,6 @@ void FrameBufferWinCE::wipescreen(void)
 	memset(s, 0, myWidth*myHeight-1);
 
 	preFrameUpdate();
-	//uInt8 *d;
-	//d=myDstScreen;
-	//for (int i=0; i < scrwidth*scrheight; i++, *((uInt16 *)d) = 0, d += scrpixelstep);
 	memset(myDstScreen, 0, scrwidth*scrheight*2);
 	postFrameUpdate();
 }
@@ -532,7 +625,7 @@ void FrameBufferWinCE::postFrameUpdate()
 	if (legacygapi) GXEndDraw();
 }
 
-void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, OverlayColor color)
+void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color)
 {
   GUI::Font* myfont = (GUI::Font*)font;
   const FontDesc& desc = myfont->desc();
@@ -560,15 +653,23 @@ void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32
 	  d = myDstScreen + y * scrlinestep + ((x+1) >> 1) * scrpixelstep;
 	  stride = (scrwidth - w) * scrpixelstep;
   }
-  else
+  else if (devres == QVGA)
   {
 	  if (displaymode != 2)
 		d = myDstScreen + (scrheight-x-1) * scrlinestep + (y-1) * scrpixelstep;
 	  else
 		d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
   }
+  else
+  {
+	  if (displaymode != 2)
+		d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + (y-1) * (scrpixelstep << 1);
+	  else
+		d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
+  }
 
-  uInt16 col = guipal[((int) color) - 256];
+  uInt16 col = pal[color];
+  uInt32 cold = paldouble[color];
 
   for(int y2 = 0; y2 < h; y2++)
   {
@@ -584,7 +685,7 @@ void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32
 		}
 		d += stride;
 	}
-	else
+	else if (devres == QVGA)
 	{
 		uInt16 mask = 0x8000;
 		uInt8 *tmp = d;
@@ -602,6 +703,28 @@ void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32
 		else
 			d = tmp - scrpixelstep;
 	}
+	else
+	{
+		uInt16 mask = 0x8000;
+		uInt8 *tmp = d;
+		for(int x2 = 0; x2 < w; x2++, mask >>= 1)
+		{
+		  if (buffer & mask)
+		  {
+			  *((uInt32 *)d) = cold;
+			  *((uInt32 *)(d+scrlinestep)) = cold;
+		  }
+		  if (displaymode != 2)
+			d -= (scrlinestep<<1);
+		  else
+			d += (scrlinestep<<1);
+		}
+		if (displaymode != 2)
+			d = tmp + (scrpixelstep<<1);
+		else
+			d = tmp - (scrpixelstep<<1);
+	}
+
   }
 }
 
@@ -630,7 +753,7 @@ uInt32 FrameBufferWinCE::mapRGB(Uint8 r, Uint8 g, Uint8 b)
 	return 0xFFFFFFFF;
 }
 
-void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
+void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
 	if (devres == SM_LOW)
 	{
@@ -638,23 +761,34 @@ void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
 		if (kx<0) kx=0; if (ky<0) ky=0; if (ky>scrheight-1) return; if (kx2>scrwidth-1) kx2=scrwidth-1;
 		PlothLine(kx, ky, kx2, color);
 	}
-	else
+	else if (devres == QVGA)
 		if (displaymode != 2)
 			PlotvLine(y, scrheight-x, scrheight-x2-1, color);
 		else
 			PlotvLine(scrwidth-y-1, x, x2+1, color);
+	else
+		if (displaymode != 2)
+		{
+			PlotvLine((y<<1), ((scrheight>>1)-x)<<1, ((scrheight>>1)-x2-1)<<1, color);
+			PlotvLine((y<<1)+1, ((scrheight>>1)-x)<<1, ((scrheight>>1)-x2-1)<<1, color);
+		}
+		else
+		{
+			PlotvLine(((scrwidth>>1)-y-1)<<1, x<<1, (x2+1)<<1, color);
+			PlotvLine((((scrwidth>>1)-y-1)<<1)+1, x<<1, (x2+1)<<1, color);
+		}
 }
 
-void FrameBufferWinCE::PlothLine(uInt32 x, uInt32 y, uInt32 x2, OverlayColor color)
+void FrameBufferWinCE::PlothLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
 	if (!myDstScreen) return;
 	if (x>x2) { x2 ^= x; x ^= x2; x2 ^= x;} //lazy swap
 	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
-	uInt16 col = guipal[((int) color) - 256];
+	uInt16 col = pal[color];
 	for (;x < x2; x++, *((uInt16 *)d) = col, d += scrpixelstep);
 }
 
-void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
+void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
 	if (devres == SM_LOW)
 	{
@@ -662,25 +796,36 @@ void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
 		if (kx<0) kx=0; if (ky<0) ky=0; if (kx>scrwidth-1) return; if (ky>scrheight-1) ky=scrheight-1; if (ky2>scrheight-1) ky2=scrheight-1;
 		PlotvLine(kx, ky, ky2, color);
 	}
-	else
+	else if (devres == QVGA)
 		if (displaymode != 2)
 			PlothLine(y, scrheight-x-1, y2, color);
 		else
 			PlothLine(scrwidth-y, x, scrwidth-y2, color);
-
+	else
+		if (displaymode != 2)
+		{
+			PlothLine(y<<1, ((scrheight>>1)-x-1)<<1, y2<<1, color);
+			PlothLine(y<<1, (((scrheight>>1)-x-1)<<1)+1, y2<<1, color);
+		}
+		else
+		{
+			PlothLine(((scrwidth>>1)-y)<<1, x<<1, ((scrwidth>>1)-y2)<<1, color);
+			PlothLine(((scrwidth>>1)-y)<<1, (x<<1)+1, ((scrwidth>>1)-y2)<<1, color);
+		}
 }
 
-void FrameBufferWinCE::PlotvLine(uInt32 x, uInt32 y, uInt32 y2, OverlayColor color)
+void FrameBufferWinCE::PlotvLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
 	if (y>y2) { y2 ^= y; y ^= y2; y2 ^= y;} //lazy swap
 	if (!myDstScreen) return;
 	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
-	uInt16 col = guipal[((int) color) - 256];
+	uInt16 col = pal[color];
 	for (;y < y2; y++, *((uInt16 *)d) = col, d += scrlinestep);
 }
 
-void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayColor color)
+void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 {
+	if (w==0 || h==0) return;
 	if (devres == SM_LOW)
 	{
 		int kx = x >> 1; int ky = y; int kw = (w >> 1); int kh = h;
@@ -689,7 +834,7 @@ void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayC
 		if (kx+kw>scrwidth-1) kw=scrwidth-kx-1; if (ky+kh>scrheight-1) kh=scrheight-ky-1;
 		PlotfillRect(kx, ky, kw, kh, color);
 	}
-	else
+	else if (devres == QVGA)
 	{
 		if (x>scrheight) return; if (y>scrwidth) return;
 		if (x+w>scrheight) w=scrheight-x; if (y+h>scrwidth) h=scrwidth-y;
@@ -698,22 +843,96 @@ void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayC
 		else
 			PlotfillRect(scrwidth-y-h, x, h-1, w-1, color);
 	}
+	else
+	{
+		if ((int)x>(scrheight>>1)) return; if ((int)y>(scrwidth>>1)) return;
+		if ((int)(x+w)>(scrheight>>1)) w=(scrheight>>1)-x; if ((int)(y+h)>(scrwidth>>1)) h=(scrwidth>>1)-y;
+		if (displaymode != 2)
+			PlotfillRect(y<<1, ((scrheight>>1)-x-w)<<1, (h-1)<<1, (w-1)<<1, color);
+		else
+			PlotfillRect(((scrwidth>>1)-y-h)<<1, x<<1, (h-1)<<1, (w-1)<<1, color);
+	}
 
 }
 
-void FrameBufferWinCE::PlotfillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, OverlayColor color)
+void FrameBufferWinCE::PlotfillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 {
 	if (!myDstScreen) return;
 	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
-	uInt16 col = guipal[((int) color) - 256];
+	uInt16 col = pal[color];
 	uInt32 stride = (scrwidth - w - 1) * scrpixelstep;
 	for (h++; h != 0; h--, d += stride)
 		for (int w2=w; w2>=0; w2--, *((uInt16 *)d) = col, d += scrpixelstep);
 }
 
-void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, OverlayColor color, Int32 h)
+void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h)
 {
-	return;
+  uInt8 *d;
+  uInt16 col;
+  uInt32 cold;
+
+  if (!myDstScreen) return;
+  if (devres == SM_LOW)
+	  return;
+  else if (devres == QVGA)
+	  if (displaymode != 2)
+		d = myDstScreen + (scrheight-x-1) * scrlinestep + y * scrpixelstep;
+	  else
+		d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
+  else
+	  if (displaymode != 2)
+		d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + y * (scrpixelstep<<1);
+	  else
+		d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
+
+  col = pal[color];
+  cold = paldouble[color];
+  for(int i = 0; i < h; i++)
+  {
+    uInt32 mask = 0xF0000000;
+	uInt8 *tmp = d;
+    for(int j = 0; j < 8; j++, mask >>= 4)
+    {
+      if(bitmap[i] & mask)
+      {
+		  if (devres == QVGA)
+			  *((uInt16 *)d) = col;
+		  else
+		  {
+			  *((uInt32 *)d) = cold;
+			  *((uInt32 *)(d+scrlinestep)) = cold;
+		  }
+      }
+	  if (devres == QVGA)
+	  {
+	    if (displaymode != 2)
+		  d -= scrlinestep;
+		else
+		  d += scrlinestep;
+	  }
+	  else
+	  {
+	    if (displaymode != 2)
+		  d -= (scrlinestep<<1);
+		else
+		  d += (scrlinestep<<1);
+	  }
+    }
+    if (devres == QVGA)
+	{
+	  if (displaymode != 2)
+		d = tmp + scrpixelstep;
+	  else
+		d = tmp - scrpixelstep;
+	}
+	else
+	{
+	  if (displaymode != 2)
+		d = tmp + (scrpixelstep<<1);
+	  else
+		d = tmp - (scrpixelstep<<1);
+	}
+  }
 }
 
 void FrameBufferWinCE::translateCoords(Int32* x, Int32* y)
@@ -731,6 +950,11 @@ void FrameBufferWinCE::translateCoords(Int32* x, Int32* y)
 			Int32 x2 = *x;
 			*x = *y;
 			*y = scrwidth - x2;
+		}
+		if (devres == VGA)
+		{
+			*x >>= 1;
+			*y >>= 1;
 		}
 	}
 	return;
