@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -142,6 +142,7 @@ DECLSPEC void SDLCALL SDL_WarpMouse(Uint16 x, Uint16 y) { return; }
 DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 {
 	static int paddleres = 300000;
+	static int cs = ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->IsVGA() ? 2 : 1; 
 
 	for (int i=0; i<MAX_KEYS+NUM_MOUSEKEYS; i++)
 	{
@@ -180,19 +181,19 @@ DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 					event->motion.y = HIWORD(keycodes[0][M_BUT].state & 0x7FFFFFFF);
 					event->button.button = SDL_BUTTON_LEFT;
 
-					if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x>220 && event->motion.y>300 && EventHandlerState!=2)
+					if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x>220*cs && event->motion.y>300*cs && EventHandlerState==1)
 					{
 						// bottom right corner for rotate
 						KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
 						event->type = SDL_NOEVENT;
 					}
-					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20 && event->motion.y>300 && EventHandlerState!=2)
+					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20*cs && event->motion.y>300*cs && EventHandlerState==1)
 					{
 						// bottom left corner for launcher
 						keycodes[0][K_QUIT].state = 1;
 						event->type = SDL_NOEVENT;
 					}
-					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20 && event->motion.y<20 && EventHandlerState!=2 && EventHandlerState!=3)
+					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20*cs && event->motion.y<20*cs && EventHandlerState==1)
 					{
 						// top left for menu
 						theOSystem->eventHandler().enterMenuMode((enum EventHandler::State)3); //S_MENU
