@@ -569,7 +569,7 @@ void FrameBufferWinCE::drawMediaSource()
 				// 4/1
 				if ( *((uInt32 *) sc) != *((uInt32 *) sp) )
 				{
-					nl = d + scrlinestep;
+					nl = d + pixelstep;
 					pix1d = paldouble[*sc++];
 					*((uInt32 *)d) = pix1d; d += pixelstepdouble;
 					*((uInt32 *)nl) = pix1d; nl += pixelstepdouble;
