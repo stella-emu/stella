@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.15 2006-02-22 17:38:04 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.16 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,12 +34,20 @@ HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
       myPage(1),
       myNumPages(4)
 {
+  WidgetArray wid;
+
   // Add Previous, Next and Close buttons
-  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd, 'P');
-  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
-                           "Next", kNextCmd, 'N');
-  addButton(font, w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
+  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd);
   myPrevButton->clearFlags(WIDGET_ENABLED);
+  wid.push_back(myPrevButton);
+
+  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
+                           "Next", kNextCmd);
+  wid.push_back(myNextButton);
+
+  ButtonWidget* b = addButton(font, w - (kButtonWidth + 10), h - 24,
+                              "Close", kCloseCmd);
+  wid.push_back(b);
 
   myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
                                  "", kTextAlignCenter);
@@ -50,6 +58,8 @@ HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
     myDesc[i] = new StaticTextWidget(this, font, 90, 18 + (10 * i), 160,
                                      font.getFontHeight(), "", kTextAlignLeft);
   }
+
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

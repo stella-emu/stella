@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridOpsWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
+// $Id: DataGridOpsWidget.cxx,v 1.4 2006-05-04 17:45:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,32 +42,32 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
   // Create operations buttons
   xpos = x;  ypos = y;
   _zeroButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                 "0", kDGZeroCmd, 0);
+                                 "0", kDGZeroCmd);
 
   ypos += bheight + space;
   _invButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                "Inv", kDGInvertCmd, 0);
+                                "Inv", kDGInvertCmd);
 
   ypos += bheight + space;
   _incButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                "++", kDGIncCmd, 0);
+                                "++", kDGIncCmd);
 
   ypos += bheight + space;
   _shiftLeftButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                      "<<", kDGShiftLCmd, 0);
+                                      "<<", kDGShiftLCmd);
 
   // Move to next column, skip a row
   xpos = x + bwidth + space;  ypos = y + bheight + space;
   _negButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                "Neg", kDGNegateCmd, 0);
+                                "Neg", kDGNegateCmd);
 
   ypos += bheight + space;
   _decButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                "--", kDGDecCmd, 0);
+                                "--", kDGDecCmd);
 
   ypos += bheight + space;
   _shiftRightButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                       ">>", kDGShiftRCmd, 0);
+                                       ">>", kDGShiftRCmd);
 
   // Calculate real dimensions
   _w = xpos + bwidth;

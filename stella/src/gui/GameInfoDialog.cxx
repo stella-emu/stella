@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.24 2006-03-05 01:18:42 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.25 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,6 +47,7 @@ GameInfoDialog::GameInfoDialog(
   // The tab widget
   xpos = 2; ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
+  addTabWidget(myTab);
 
   // 1) Cartridge properties
   wid.clear();
@@ -268,13 +269,20 @@ GameInfoDialog::GameInfoDialog(
                        "(*) Requires a ROM reload", kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
+  ButtonWidget* b;
+  wid.clear();
 #ifndef MAC_OSX
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
 #else
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
 #endif
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

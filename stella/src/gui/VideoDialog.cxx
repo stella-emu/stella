@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.29 2006-03-25 00:34:17 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.30 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,13 +36,14 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                          const GUI::Font& font, int x, int y, int w, int h)
-    : Dialog(osystem, parent, x, y, w, h)
+  : Dialog(osystem, parent, x, y, w, h)
 {
   const int lineHeight = font.getLineHeight(),
             fontHeight = font.getFontHeight();
   int xpos, ypos;
   int lwidth = font.getStringWidth("Dirty Rects: "),
       pwidth = font.getStringWidth("Software");
+  WidgetArray wid;
 
   // Use dirty rectangle updates
   xpos = 5;  ypos = 10;
@@ -50,6 +51,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                                  pwidth, lineHeight, "Dirty Rects: ", lwidth);
   myDirtyPopup->appendEntry("Yes", 1);
   myDirtyPopup->appendEntry("No", 2);
+  wid.push_back(myDirtyPopup);
   ypos += lineHeight + 4;
 
   // Video renderer
@@ -63,6 +65,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 #ifdef DISPLAY_OPENGL
   myRendererPopup->appendEntry("OpenGL", 3);
 #endif
+  wid.push_back(myRendererPopup);
   ypos += lineHeight + 4;
 
   // Video filter
@@ -70,12 +73,14 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                                   pwidth, lineHeight, "GL Filter: ", lwidth);
   myFilterPopup->appendEntry("Linear", 1);
   myFilterPopup->appendEntry("Nearest", 2);
+  wid.push_back(myFilterPopup);
   ypos += lineHeight + 4;
 
   // Aspect ratio
   myAspectRatioSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
                                          "GL Aspect: ", lwidth, kAspectRatioChanged);
   myAspectRatioSlider->setMinValue(1); myAspectRatioSlider->setMaxValue(100);
+  wid.push_back(myAspectRatioSlider);
   myAspectRatioLabel = new StaticTextWidget(this, font,
                                             xpos + myAspectRatioSlider->getWidth() + 4,
                                             ypos + 1,
@@ -89,6 +94,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPalettePopup->appendEntry("Standard", 1);
   myPalettePopup->appendEntry("Original", 2);
   myPalettePopup->appendEntry("Z26", 3);
+  wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
   // Move over to the next column
@@ -98,6 +104,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFrameRateSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
                                        "Framerate: ", lwidth, kFrameRateChanged);
   myFrameRateSlider->setMinValue(1); myFrameRateSlider->setMaxValue(300);
+  wid.push_back(myFrameRateSlider);
   myFrameRateLabel = new StaticTextWidget(this, font,
                                           xpos + myFrameRateSlider->getWidth() + 4,
                                           ypos + 1,
@@ -109,6 +116,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myZoomSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
                                   "Zoom: ", lwidth, kZoomChanged);
   myZoomSlider->setMinValue(0); myZoomSlider->setMaxValue(50);
+  wid.push_back(myZoomSlider);
   myZoomLabel = new StaticTextWidget(this, font,
                                      xpos + myZoomSlider->getWidth() + 4,
                                      ypos + 1,
@@ -118,26 +126,36 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   myFullscreenCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Fullscreen mode");
+  wid.push_back(myFullscreenCheckbox);
   ypos += lineHeight + 4;
 
   myUseDeskResCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Desktop Res in FS");
+  wid.push_back(myUseDeskResCheckbox);
   ypos += lineHeight + 4;
 
   myTiaDefaultsCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                              "Use TIA defaults");
-
+  wid.push_back(myTiaDefaultsCheckbox);
   ypos += lineHeight + 20;
 
   // Add Defaults, OK and Cancel buttons
-  addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd, 0);
+  ButtonWidget* b;
+  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  wid.push_back(b);
 #ifndef MAC_OSX
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
 #else
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
 #endif
+
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.18 2006-02-22 17:38:04 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.19 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,6 +44,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   int xpos, ypos;
   int lwidth = font.getStringWidth("Fragment Size: "),
       pwidth = font.getStringWidth("4096");
+  WidgetArray wid;
 
   // Volume
   xpos = (w - lwidth - pwidth - 40) / 2;  ypos = 10;
@@ -51,6 +52,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
                                     "Volume: ", lwidth, kVolumeChanged);
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
+  wid.push_back(myVolumeSlider);
   myVolumeLabel = new StaticTextWidget(this, font,
                                        xpos + myVolumeSlider->getWidth() + 4,
                                        ypos + 1,
@@ -68,27 +70,38 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   myFragsizePopup->appendEntry("1024", 3);
   myFragsizePopup->appendEntry("2048", 4);
   myFragsizePopup->appendEntry("4096", 5);
+  wid.push_back(myFragsizePopup);
   ypos += lineHeight + 4;
 
   // Stereo sound
   mySoundTypeCheckbox = new CheckboxWidget(this, font, xpos+28, ypos,
                                            "Stereo mode", 0);
+  wid.push_back(mySoundTypeCheckbox);
   ypos += lineHeight + 4;
 
   // Enable sound
   mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos+28, ypos,
                                              "Enable sound", kSoundEnableChanged);
+  wid.push_back(mySoundEnableCheckbox);
   ypos += lineHeight + 12;
 
   // Add Defaults, OK and Cancel buttons
-  addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd, 0);
+  ButtonWidget* b;
+  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  wid.push_back(b);
 #ifndef MAC_OSX
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
 #else
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
 #endif
+
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

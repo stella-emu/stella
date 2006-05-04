@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.85 2006-03-25 00:34:17 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.86 2006-05-04 17:45:24 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -608,7 +608,7 @@ void FrameBuffer::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
       break;
 
     case kDashLine:
-      unsigned int i, skip, lwidth = 1;
+      unsigned int i, skip, lwidth = 0;
 
       for(i = x, skip = 1; i < x+w-1; i=i+lwidth+1, ++skip)
       {

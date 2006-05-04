@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.9 2006-02-22 17:38:04 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.10 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,8 +45,8 @@ class EditableWidget : public Widget, public CommandSender
     virtual void setEditString(const string& str);
     virtual const string& getEditString() const { return _editString; }
 
-    bool isEditable() const	         { return _editable; }
-    void setEditable(bool editable)  { _editable = editable; }
+    bool isEditable() const	 { return _editable; }
+    void setEditable(bool editable);
 
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
 
@@ -54,9 +54,9 @@ class EditableWidget : public Widget, public CommandSender
     virtual bool wantsFocus() { return _editable; }
 
   protected:
-    virtual void startEditMode() = 0;
-    virtual void endEditMode() = 0;
-    virtual void abortEditMode() = 0;
+    virtual void startEditMode() { setFlags(WIDGET_WANTS_RAWDATA);   }
+    virtual void endEditMode()   { clearFlags(WIDGET_WANTS_RAWDATA); }
+    virtual void abortEditMode() { clearFlags(WIDGET_WANTS_RAWDATA); }
 
     virtual GUI::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.5 2006-03-29 13:53:00 stephena Exp $
+// $Id: RamWidget.cxx,v 1.6 2006-05-04 17:45:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -66,27 +66,27 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Create actions buttons to the left of the RAM grid
   xpos += lwidth + myRamGrid->getWidth() + 4;
   myUndoButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                  "Undo", kUndoCmd, 0);
+                                  "Undo", kUndoCmd);
   myUndoButton->setTarget(this);
 
   ypos += bheight + 4;
   myRevertButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Rev", kRevertCmd, 0);
+                                    "Rev", kRevertCmd);
   myRevertButton->setTarget(this);
 
   ypos += 2 * bheight + 2;
   mySearchButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Srch", kSearchCmd, 0);
+                                    "Srch", kSearchCmd);
   mySearchButton->setTarget(this);
 
   ypos += bheight + 4;
   myCompareButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Cmp", kCmpCmd, 0);
+                                     "Cmp", kCmpCmd);
   myCompareButton->setTarget(this);
 
   ypos += bheight + 4;
   myRestartButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Rset", kRestartCmd, 0);
+                                     "Rset", kRestartCmd);
   myRestartButton->setTarget(this);
 
   // Labels for RAM grid

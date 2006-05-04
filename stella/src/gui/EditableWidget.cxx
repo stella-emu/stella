@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.17 2006-03-25 00:34:17 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.18 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,6 +57,15 @@ void EditableWidget::setEditString(const string& str)
 
   // Make sure the new string is seen onscreen
   setDirty(); draw();
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::setEditable(bool editable)
+{
+  _editable = editable;
+  if(_editable)
+    setFlags(WIDGET_WANTS_RAWDATA|WIDGET_RETAIN_FOCUS);
+  else
+    clearFlags(WIDGET_WANTS_RAWDATA|WIDGET_RETAIN_FOCUS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

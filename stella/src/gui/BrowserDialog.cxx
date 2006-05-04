@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.18 2006-03-20 13:23:13 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.19 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,6 +49,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
             bwidth     = font.getStringWidth("Cancel") + 20,
             bheight    = font.getLineHeight() + 4;
   int xpos, ypos;
+  ButtonWidget* b;
 
   xpos = 10;  ypos = 4;
   _title = new StaticTextWidget(this, font, xpos, ypos,
@@ -67,28 +68,33 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                                    _w - 2 * xpos, _h - bheight - ypos - 15);
   _fileList->setNumberingMode(kListNumberingOff);
   _fileList->setEditable(false);
-  _fileList->setFlags(WIDGET_NODRAW_FOCUS);
-  addFocusWidget(_fileList);
 
   // Buttons
   xpos = 10;  ypos = _h - bheight - 8;
-  _goUpButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                 "Go up", kGoUpCmd, 0);
+  b = _goUpButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                     "Go up", kGoUpCmd);
+  addFocusWidget(b);
 #ifndef MAC_OSX
   xpos = _w - 2 *(bwidth + 10);  
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
-                   kChooseCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
+                       kChooseCmd);
+  addFocusWidget(b);
   xpos += bwidth + 10;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
-                   kCloseCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
+                       kCloseCmd);
+  addFocusWidget(b);
 #else
   xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
-                   kCloseCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
+                       kCloseCmd);
+  addFocusWidget(b);
   xpos += bwidth + 10;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
-                   kChooseCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
+                       kChooseCmd);
+  addFocusWidget(b);
 #endif
+
+  addFocusWidget(_fileList);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

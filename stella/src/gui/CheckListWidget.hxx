@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.hxx,v 1.8 2005-12-09 01:16:13 stephena Exp $
+// $Id: CheckListWidget.hxx,v 1.9 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,6 +54,7 @@ class CheckListWidget : public ListWidget
     bool getState(int line);
     bool getSelectedState() { return getState(_selectedItem); }
 
+    bool handleEvent(Event::Type e);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   protected:

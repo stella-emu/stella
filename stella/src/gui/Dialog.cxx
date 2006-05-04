@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.43 2006-03-02 13:10:53 stephena Exp $
+// $Id: Dialog.cxx,v 1.44 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -98,6 +98,10 @@ void Dialog::releaseFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addFocusWidget(Widget* w)
 {
+  // All focusable widgets should retain focus
+  if(w)
+    w->setFlags(WIDGET_RETAIN_FOCUS);
+
   if(_ourFocusList.size() == 0)
   {
 	Focus f;
@@ -111,6 +115,10 @@ void Dialog::addFocusWidget(Widget* w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addToFocusList(WidgetArray& list, int id)
 {
+  // All focusable widgets should retain focus
+  for(unsigned int i = 0; i < list.size(); ++i)
+    list[i]->setFlags(WIDGET_RETAIN_FOCUS);
+
   id++;  // Arrays start at 0, not -1.
 
   // Make sure the array is large enough
@@ -125,7 +133,7 @@ void Dialog::addToFocusList(WidgetArray& list, int id)
   if(id == 0 && _ourFocusList.size() > 0)
     _focusList = _ourFocusList[0].focusList;
 
-  if(list.size() > 0 && !(list[0]->getFlags() & WIDGET_NODRAW_FOCUS))
+  if(list.size() > 0)
     _ourFocusList[id].focusedWidget = list[0];
 }
 
@@ -184,12 +192,6 @@ void Dialog::redrawFocus()
 {
   if(_focusedWidget)
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(), _focusedWidget, 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::wantsEvents()
-{
-  return _focusedWidget && _focusedWidget->wantsEvents();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,41 +292,79 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Shift-left/shift-right cursor selects next tab
   // Tab sets next widget in current tab
   // Shift-Tab sets previous widget in current tab
-  //
-  // Widgets are only cycled if currently focused key hasn't claimed
-  // the TAB key
-  // TODO - figure out workaround for this
-  if(_ourTab && instance()->eventHandler().kbdShift(modifiers))
-  {
-    // these key-combos are never passed to the child widget
-    if(ascii == 256 + 20)      // left arrow
-    {
-      _ourTab->cycleTab(-1);
-      return;
-    }
-    else if(ascii == 256 + 19) // right arrow
-    {
-      _ourTab->cycleTab(+1);
-      return;
-    }
-  }
+  Event::Type e = Event::NoType;
 
-  if(keycode == 9)  // tab key
+  // Detect selection of previous and next tab headers and objects
+  // For some strange reason, 'tab' needs to be interpreted as keycode,
+  // not ascii??
+  if(instance()->eventHandler().kbdShift(modifiers))
   {
-    if(_focusedWidget && !(_focusedWidget->getFlags() & WIDGET_WANTS_TAB))
-    {
-      if(instance()->eventHandler().kbdShift(modifiers))
+    if(ascii == 256+20)       // left arrow
+      e = Event::UITabPrev;
+    else if(ascii == 256+19)  // right arrow
+      e = Event::UITabNext;
+    else if(keycode == 9)     // tab
+      e = Event::UINavPrev;
+  }
+  else if(keycode == 9)       // tab
+    e = Event::UINavNext;
+
+  // Check the keytable now, since we might get one of the above events,
+  // which must always be processed before any widget sees it.
+  bool handled = false;
+  if(e == Event::NoType)
+    e = instance()->eventHandler().eventForKey(ascii, kMenuOverlay);
+
+  switch(e)
+  {
+    case Event::UITabPrev:
+      if(_ourTab)
+      {
+        _ourTab->cycleTab(-1);
+        handled = true;
+      }
+      break;
+
+    case Event::UITabNext:
+      if(_ourTab)
+      {
+        _ourTab->cycleTab(+1);
+        handled = true;
+      }
+      break;
+
+    case Event::UINavPrev:
+      if(_focusedWidget && !_focusedWidget->wantsTab())
+      {
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
                                                   _focusedWidget, -1);
-      else
+        handled = true;
+      }
+      break;
+
+    case Event::UINavNext:
+      if(_focusedWidget && !_focusedWidget->wantsTab())
+      {
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
                                                   _focusedWidget, +1);
-      return;  // this key-combo is never passed to the child widget
-    }
+        handled = true;
+      }
+      break;
+
+    default:
+      handled = false;
+      break;
   }
 
-  if (_focusedWidget)
-    _focusedWidget->handleKeyDown(ascii, keycode, modifiers);
+  // Unless a widget has claimed all responsibility for data, we assume
+  // that if an event exists for the given data, it should have priority.
+  if(!handled && _focusedWidget)
+  {
+    if(_focusedWidget->wantsRaw() || e == Event::NoType)
+      _focusedWidget->handleKeyDown(ascii, keycode, modifiers);
+    else
+      _focusedWidget->handleEvent(e);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -388,9 +428,18 @@ void Dialog::handleMouseMoved(int x, int y, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyDown(int stick, int button)
 {
-  // Focused widget receives joystick events
-  if(_focusedWidget)
-    _focusedWidget->handleJoyDown(stick, button);
+  Event::Type e = Event::NoType; // FIXME - do a lookup
+  bool handled = false; // isNavigation(e);
+
+  // Unless a widget has claimed all responsibility for data, we assume
+  // that if an event exists for the given data, it should have priority.
+  if(!handled && _focusedWidget)
+  {
+    if(_focusedWidget->wantsRaw() || e == Event::NoType)
+      _focusedWidget->handleJoyDown(stick, button);
+    else
+      _focusedWidget->handleEvent(e);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -404,16 +453,36 @@ void Dialog::handleJoyUp(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyAxis(int stick, int axis, int value)
 {
-  // Focused widget receives joystick events
-  if(_focusedWidget)
-    _focusedWidget->handleJoyAxis(stick, axis, value);
+  Event::Type e = Event::NoType; // FIXME - do a lookup
+  bool handled = false; // isNavigation(e);
+
+  // Unless a widget has claimed all responsibility for data, we assume
+  // that if an event exists for the given data, it should have priority.
+  if(!handled && _focusedWidget)
+  {
+    if(_focusedWidget->wantsRaw() || e == Event::NoType)
+      _focusedWidget->handleJoyAxis(stick, axis, value);
+    else
+      _focusedWidget->handleEvent(e);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::handleJoyHat(int stick, int hat, int value)
 {
-  // Focused widget receives joystick events
-  return (_focusedWidget && _focusedWidget->handleJoyHat(stick, hat, value));
+  Event::Type e = Event::NoType; // FIXME - do a lookup
+  bool handled = false; // isNavigation(e);
+
+  // Unless a widget has claimed all responsibility for data, we assume
+  // that if an event exists for the given data, it should have priority.
+  if(!handled && _focusedWidget)
+  {
+    if(_focusedWidget->wantsRaw() || e == Event::NoType)
+      return _focusedWidget->handleJoyHat(stick, hat, value);
+    else
+      return _focusedWidget->handleEvent(e);
+  }
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -444,14 +513,14 @@ Widget* Dialog::findWidget(int x, int y)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget* Dialog::addButton(const GUI::Font& font, int x, int y,
-                                const string& label, int cmd, char hotkey)
+                                const string& label, int cmd)
 {
 #if 0
   const int w = 6 * font.getMaxCharWidth(),
             h = font.getFontHeight() + 6;
 
-  return new ButtonWidget(this, font, x, y, w, h, label, cmd, hotkey);
+  return new ButtonWidget(this, font, x, y, w, h, label, cmd);
 #else
-  return new ButtonWidget(this, font, x, y, kButtonWidth, 16, label, cmd, hotkey);
+  return new ButtonWidget(this, font, x, y, kButtonWidth, 16, label, cmd);
 #endif
 }

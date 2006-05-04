@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.24 2006-02-22 17:38:04 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.25 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -137,24 +137,42 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 
   switch (ascii)
   {
-    case '\n':      // enter/return
-    case '\r':
-      sendSelection();
-      break;
     case 27:        // escape
       cancelSelection();
       break;
-    case 256+17:    // up arrow
+    default:
+    {
+      Event::Type e = instance()->eventHandler().eventForKey(ascii,
+        kMenuOverlay);
+      handleEvent(e);
+      break;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpDialog::handleEvent(Event::Type e)
+{
+  switch(e)
+  {
+    case Event::UISelect:
+      sendSelection();
+      break;
+    case Event::UIUp:
+    case Event::UILeft:
       moveUp();
       break;
-    case 256+18:    // down arrow
+    case Event::UIDown:
+    case Event::UIRight:
       moveDown();
       break;
-    case 256+22:    // home
+    case Event::UIHome:
       setSelection(0);
       break;
-    case 256+23:    // end
+    case Event::UIEnd:
       setSelection(_popUpBoss->_entries.size()-1);
+      break;
+    default:
       break;
   }
 }
@@ -389,8 +407,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth(labelWidth),
     _cmd(cmd)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_NODRAW_FOCUS;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kPopUpWidget;
 
   _selectedItem = -1;
@@ -421,6 +438,19 @@ void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
   {
     myPopUpDialog->_oldSelection = _selectedItem;
     parent()->addDialog(myPopUpDialog);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PopUpWidget::handleEvent(Event::Type e)
+{
+  switch(e)
+  {
+    case Event::UISelect:
+      handleMouseDown(0, 0, 1, 0);
+      return true;
+    default:
+      return false;
   }
 }
 

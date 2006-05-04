@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.41 2006-03-19 22:06:20 stephena Exp $
+// $Id: ListWidget.cxx,v 1.42 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -137,6 +137,9 @@ void ListWidget::recalc()
 
   _scrollBar->_numEntries     = _list.size();
   _scrollBar->_entriesPerPage = _rows;
+
+  // Reset to normal data entry
+  abortEditMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,48 +272,6 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case '\n':  // enter/return
-      case '\r':
-        if (_selectedItem >= 0)
-        {
-          // override continuous enter keydown
-          if (_editable && (_currentKeyDown != '\n' && _currentKeyDown != '\r'))
-            startEditMode();
-          else
-            sendCommand(kListItemActivatedCmd, _selectedItem, _id);
-        }
-        break;
-
-      case kCursorUp:
-        if (_selectedItem > 0)
-          _selectedItem--;
-        break;
-
-      case kCursorDown:
-        if (_selectedItem < (int)_list.size() - 1)
-          _selectedItem++;
-        break;
-
-      case kCursorPgUp:
-        _selectedItem -= _rows - 1;
-        if (_selectedItem < 0)
-          _selectedItem = 0;
-        break;
-
-      case kCursorPgDn:
-        _selectedItem += _rows - 1;
-        if (_selectedItem >= (int)_list.size() )
-          _selectedItem = _list.size() - 1;
-        break;
-
-      case kCursorHome:
-        _selectedItem = 0;
-        break;
-
-      case kCursorEnd:
-        _selectedItem = _list.size() - 1;
-        break;
-
       default:
         handled = false;
     }
@@ -337,9 +298,78 @@ bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ListWidget::handleEvent(Event::Type e)
+{
+  if(_editMode)
+    return false;
+
+  bool handled = true;
+  int oldSelectedItem = _selectedItem;
+
+  switch(e)
+  {
+    case Event::UISelect:
+      if (_selectedItem >= 0)
+      {
+        if (_editable)
+          startEditMode();
+        else
+          sendCommand(kListItemActivatedCmd, _selectedItem, _id);
+      }
+      break;
+
+    case Event::UIUp:
+      if (_selectedItem > 0)
+        _selectedItem--;
+      break;
+
+    case Event::UIDown:
+      if (_selectedItem < (int)_list.size() - 1)
+        _selectedItem++;
+      break;
+
+    case Event::UIPgUp:
+      _selectedItem -= _rows - 1;
+      if (_selectedItem < 0)
+        _selectedItem = 0;
+      break;
+
+    case Event::UIPgDown:
+      _selectedItem += _rows - 1;
+      if (_selectedItem >= (int)_list.size() )
+        _selectedItem = _list.size() - 1;
+      break;
+
+    case Event::UIHome:
+      _selectedItem = 0;
+      break;
+
+    case Event::UIEnd:
+      _selectedItem = _list.size() - 1;
+      break;
+
+    default:
+      handled = false;
+  }
+
+  if (_selectedItem != oldSelectedItem)
+  {
+    _scrollBar->draw();
+    scrollToSelected();
+
+    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+  }
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::lostFocusWidget()
 {
   _editMode = false;
+
+  // Reset to normal data entry
+  abortEditMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -408,6 +438,9 @@ void ListWidget::startEditMode()
   {
     _editMode = true;
     setEditString(_list[_selectedItem]);
+
+    // Widget gets raw data while editing
+    EditableWidget::startEditMode();
   }
 }
 
@@ -417,16 +450,22 @@ void ListWidget::endEditMode()
   if (!_editMode)
     return;
 
-  // send a message that editing finished with a return/enter key press
+  // Send a message that editing finished with a return/enter key press
   _editMode = false;
   _list[_selectedItem] = _editString;
   sendCommand(kListItemDataChangedCmd, _selectedItem, _id);
+
+  // Reset to normal data entry
+  EditableWidget::endEditMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::abortEditMode()
 {
-  // undo any changes made
+  // Undo any changes made
   assert(_selectedItem >= 0);
   _editMode = false;
+
+  // Reset to normal data entry
+  EditableWidget::abortEditMode();
 }

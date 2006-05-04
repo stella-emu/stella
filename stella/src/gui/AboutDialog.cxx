@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.12 2006-04-05 16:06:59 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.13 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,12 +36,20 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
       myPage(1),
       myNumPages(6)
 {
+  WidgetArray wid;
+
   // Add Previous, Next and Close buttons
-  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd, 'P');
-  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
-                           "Next", kNextCmd, 'N');
-  addButton(font, w - (kButtonWidth + 10), h - 24, "Close", kCloseCmd, 'C');
+  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd);
   myPrevButton->clearFlags(WIDGET_ENABLED);
+  wid.push_back(myPrevButton);
+
+  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
+                           "Next", kNextCmd);
+  wid.push_back(myNextButton);
+
+  ButtonWidget* b = addButton(font, w - (kButtonWidth + 10), h - 24,
+                              "Close", kCloseCmd);
+  wid.push_back(b);
 
   myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
                                  "", kTextAlignCenter);
@@ -52,6 +60,8 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
     myDesc[i] = new StaticTextWidget(this, font, 10, 18 + (10 * i), w - 20,
                                      font.getFontHeight(), "", kTextAlignLeft);
   }
+
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

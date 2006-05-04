@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.8 2006-03-25 00:34:17 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.9 2006-05-04 17:45:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,7 +52,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
     _firstTime(true)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_WANTS_TAB;
+           WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
   _type = kPromptWidget;
 
   _kConsoleCharWidth  = font.getMaxCharWidth();

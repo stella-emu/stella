@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.5 2006-02-22 17:38:04 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.6 2006-05-04 17:45:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,6 +69,12 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   }
 
   ListWidget::handleMouseDown(x, y, button, clickCount);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomListWidget::handleEvent(Event::Type e)
+{
+  return ListWidget::handleEvent(e); // override CheckListWidget::handleEvent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

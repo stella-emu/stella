@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.16 2006-03-19 20:57:55 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.17 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,6 +39,9 @@ LauncherOptionsDialog::LauncherOptionsDialog(
 {
   const int vBorder = 4;
   int xpos, ypos, bwidth, bheight;
+  WidgetArray wid;
+  ButtonWidget* b;
+  int tabID;
 
   bwidth  = font.getStringWidth("Cancel") + 20;
   bheight = font.getLineHeight() + 4;
@@ -46,14 +49,17 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   // The tab widget
   xpos = 2; ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 2*bheight - ypos);
+  addTabWidget(myTab);
 
   // 1) The ROM locations tab
-  myTab->addTab("ROM Settings");
+  wid.clear();
+  tabID = myTab->addTab("ROM Settings");
 
   // ROM path
   xpos = 15;  ypos += 5;
-  new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
-                   kChooseRomDirCmd, 0);
+  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
+                       kChooseRomDirCmd);
+  wid.push_back(b);
   xpos += bwidth + 20;
   myRomPath = new StaticTextWidget(myTab, font, xpos, ypos + 3,
                                    _w - xpos - 10, font.getLineHeight(),
@@ -63,22 +69,29 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   xpos = 30;  ypos += myRomPath->getHeight() + 8;
   myBrowseCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                         "Browse folders", kBrowseDirCmd);
+  wid.push_back(myBrowseCheckbox);
 
   // Reload current ROM listing
   xpos += myBrowseCheckbox->getWidth() + 20;
   myReloadButton = new ButtonWidget(myTab, font, xpos, ypos-2,
                                     font.getStringWidth("Reload ROM Listing") + 20,
                                     bheight,
-                                    "Reload ROM Listing", kReloadRomDirCmd, 0);
-  
+                                    "Reload ROM Listing", kReloadRomDirCmd);
+//  myReloadButton->setEditable(true);
+  wid.push_back(myReloadButton); 
+
+  // Add focus widgets for ROM tab
+  addToFocusList(wid, tabID);
 
   // 2) The snapshot settings tab
-  myTab->addTab(" Snapshot Settings ");
+  wid.clear();
+  tabID = myTab->addTab(" Snapshot Settings ");
 
   // Snapshot path
   xpos = 15;  ypos = vBorder + 5;
-  new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
-                   kChooseSnapDirCmd, 0);
+  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
+                       kChooseSnapDirCmd);
+  wid.push_back(b);
   xpos += bwidth + 20;
   mySnapPath = new StaticTextWidget(myTab, font, xpos, ypos + 3,
                                     _w - xpos - 10, font.getLineHeight(),
@@ -93,31 +106,39 @@ LauncherOptionsDialog::LauncherOptionsDialog(
                                     font.getStringWidth("Save snapshot as: "), 0);
   mySnapTypePopup->appendEntry("romname", 1);
   mySnapTypePopup->appendEntry("md5sum", 2);
+  wid.push_back(mySnapTypePopup);
 
   // Snapshot single or multiple saves
   xpos = 30;  ypos += mySnapTypePopup->getHeight() + 5;
   mySnapSingleCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                             "Multiple snapshots");
+  wid.push_back(mySnapSingleCheckbox);
+
+  // Add focus widgets for Snapshot tab
+  addToFocusList(wid, tabID);
 
   // Activate the first tab
   myTab->setActiveTab(0);
 
   // Add OK & Cancel buttons
+  wid.clear();
 #ifndef MAC_OSX
   xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK",
-                   kOKCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK", kOKCmd);
+  wid.push_back(b);
   xpos += bwidth + 10;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
-                   kCloseCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel", kCloseCmd);
+  wid.push_back(b);
 #else
   xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
-                   kCloseCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel", kCloseCmd);
+  wid.push_back(b);
   xpos += bwidth + 10;
-  new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK",
-                   kOKCmd, 0);
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK", kOKCmd);
+  wid.push_back(b);
 #endif
+  // Add focus widgets for OK/Cancel buttons
+  addToFocusList(wid);
 
   // Create file browser dialog
   int baseW = instance()->frameBuffer().baseWidth();

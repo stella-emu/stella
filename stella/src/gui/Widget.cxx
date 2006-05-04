@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.43 2006-03-25 00:34:17 stephena Exp $
+// $Id: Widget.cxx,v 1.44 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -239,8 +239,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     if(tmp->_hasFocus)
     {
       tmp->lostFocus();
-      if(!(tmp->_flags & WIDGET_NODRAW_FOCUS))
-        fb.frameRect(x, y, w, h, kBGColor);
+      fb.frameRect(x, y, w, h, kBGColor);
 
       tmp->setDirty(); tmp->draw();
       fb.addDirtyRect(x, y, w, h);
@@ -279,8 +278,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       w = rect.width(), h = rect.height();
 
   tmp->receivedFocus();
-  if(!(tmp->_flags & WIDGET_NODRAW_FOCUS))
-    fb.frameRect(x, y, w, h, kTextColorEm, kDashLine);
+  fb.frameRect(x, y, w, h, kTextColorEm, kDashLine);
 
   tmp->setDirty(); tmp->draw();
   fb.addDirtyRect(x, y, w, h);
@@ -338,12 +336,11 @@ void StaticTextWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           const string& label, int cmd, uInt8 hotkey)
+                           const string& label, int cmd)
   : StaticTextWidget(boss, font, x, y, w, h, label, kTextAlignCenter),
     CommandSender(boss),
     _cmd(cmd),
-    _editable(false),
-    _hotkey(hotkey)
+    _editable(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _type = kButtonWidget;
@@ -364,28 +361,17 @@ void ButtonWidget::handleMouseLeft(int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ButtonWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool ButtonWidget::handleEvent(Event::Type e)
 {
-  // (De)activate with space or return
-  switch(ascii)
+  switch(e)
   {
-    case '\n':  // enter/return
-    case '\r':
-    case ' ' :  // space
+    case Event::UISelect:
       // Simulate mouse event
       handleMouseUp(0, 0, 1, 0);
       return true;
     default:
       return false;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleJoyDown(int stick, int button)
-{
-  // Any button activates the button, but only while in joymouse mode
-  if(DialogContainer::joymouse())
-    handleMouseUp(0, 0, 1, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,22 +382,6 @@ void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
     clearFlags(WIDGET_HILITED);
     sendCommand(_cmd, 0, _id);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ButtonWidget::wantsFocus()
-{
-  return _editable;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::setEditable(bool editable)
-{
-  _editable = editable;
-  if(_editable)
-    setFlags(WIDGET_RETAIN_FOCUS);
-  else
-    clearFlags(WIDGET_RETAIN_FOCUS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -440,7 +410,7 @@ static unsigned int checked_img[8] =
 CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
                                int x, int y, const string& label,
                                int cmd)
-  : ButtonWidget(boss, font, x, y, 16, 16, label, cmd, 0),
+  : ButtonWidget(boss, font, x, y, 16, 16, label, cmd),
     _state(false),
     _editable(true),
     _holdFocus(true),
@@ -450,7 +420,7 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
     _boxY(0),
     _textY(0)
 {
-  _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
+  _flags = WIDGET_ENABLED;
   _type = kCheckboxWidget;
 
   if(label == "")
@@ -481,35 +451,9 @@ void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheckboxWidget::handleKeyDown(int ascii, int keycode, int modifiers)
-{
-  // (De)activate with space or return
-  switch(ascii)
-  {
-    case '\n':  // enter/return
-    case '\r':
-    case ' ' :  // space
-      // Simulate mouse event
-      handleMouseUp(0, 0, 1, 0);
-      return true;
-    default:
-      return false;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheckboxWidget::wantsFocus()
-{
-  if(!_holdFocus)
-    return false;
-  else
-    return _editable;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setEditable(bool editable)
 {
-  _holdFocus = _editable = editable;
+  _editable = editable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -553,10 +497,10 @@ void CheckboxWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           const string& label, int labelWidth, int cmd, uInt8 hotkey)
-  : ButtonWidget(boss, font, x, y, w, h, label, cmd, hotkey),
+                           const string& label, int labelWidth, int cmd)
+  : ButtonWidget(boss, font, x, y, w, h, label, cmd),
     _value(0),
-    _oldValue(0),
+    _stepValue(5),
     _valueMin(0),
     _valueMax(100),
     _isDragging(false),
@@ -574,8 +518,35 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setValue(int value)
 {
-  _value = value;
-  setDirty(); draw();
+/*cerr << "SliderWidget::setValue: " << value
+     << ", max = " << _valueMax
+     << ", min = " << _valueMin
+     << endl;*/
+  if(value < _valueMin)
+    value = _valueMin;
+  else if(value > _valueMax)
+    value = _valueMax;
+
+  if(value != _value)
+  {
+    _value = value; 
+    setDirty(); draw();
+    sendCommand(_cmd, _value, _id);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setMinValue(int value)
+{
+  _valueMin = value;
+  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setMaxValue(int value)
+{
+  _valueMax = value;
+  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,21 +555,7 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
   if(isEnabled() && _isDragging && x >= (int)_labelWidth)
-  {
-    int newValue = posToValue(x - _labelWidth);
-
-    if(newValue < _valueMin)
-      newValue = _valueMin;
-    else if (newValue > _valueMax)
-      newValue = _valueMax;
-
-    if(newValue != _value)
-    {
-      _value = newValue; 
-      setDirty(); draw();
-      sendCommand(_cmd, _value, _id);
-    }
-  }
+    setValue(posToValue(x - _labelWidth));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -618,6 +575,38 @@ void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
     sendCommand(_cmd, _value, _id);
 
   _isDragging = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SliderWidget::handleEvent(Event::Type e)
+{
+  switch(e)
+  {
+    case Event::UILeft:
+    case Event::UIDown:
+    case Event::UIPgDown:
+      setValue(_value - _stepValue);
+      break;
+  
+    case Event::UIRight:
+    case Event::UIUp:
+    case Event::UIPgUp:
+      setValue(_value + _stepValue);
+      break;
+
+    case Event::UIHome:
+      setValue(_valueMin);
+      break;
+
+    case Event::UIEnd:
+      setValue(_valueMax);
+      break;
+
+    default:
+      return false;
+      break;
+  }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

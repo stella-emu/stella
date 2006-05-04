@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.38 2006-04-05 12:28:39 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.39 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,8 +56,8 @@ enum {
   kMainMenuHeight = 8 * kRowHeight + 10,
 };
 
-#define addBigButton(label, cmd, hotkey) \
-	new ButtonWidget(this, font, xoffset, yoffset, kBigButtonWidth, 18, label, cmd, hotkey); yoffset += kRowHeight
+#define addBigButton(label, cmd) \
+	new ButtonWidget(this, font, xoffset, yoffset, kBigButtonWidth, 18, label, cmd); yoffset += kRowHeight
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
@@ -77,26 +77,38 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   int yoffset = 7;
   const int xoffset = (_w - kBigButtonWidth) / 2;
   const GUI::Font& font = instance()->font(); // FIXME - change reference to optionsFont()
+  WidgetArray wid;
   ButtonWidget* b = NULL;
 
-  b = addBigButton("Video Settings", kVidCmd, 0);
-#ifdef SOUND_SUPPORT
-  addBigButton("Audio Settings", kAudCmd, 0);
-#else
-  b = addBigButton("Audio Settings", kAudCmd, 0);
+  b = addBigButton("Video Settings", kVidCmd);
+  wid.push_back(b);
+
+  b = addBigButton("Audio Settings", kAudCmd);
+#ifndef SOUND_SUPPORT
   b->clearFlags(WIDGET_ENABLED);
 #endif
-  addBigButton("Input Settings", kInptCmd, 0);
-  addBigButton("Game Properties", kInfoCmd, 0);
-#ifdef CHEATCODE_SUPPORT
-  addBigButton("Cheat Code", kCheatCmd, 0);
-#else
-  b = addBigButton("Cheat Code", kCheatCmd, 0);
+  wid.push_back(b);
+
+  b = addBigButton("Input Settings", kInptCmd);
+  wid.push_back(b);
+
+  b = addBigButton("Game Properties", kInfoCmd);
+  wid.push_back(b);
+
+  b = addBigButton("Cheat Code", kCheatCmd);
+#ifndef CHEATCODE_SUPPORT
   b->clearFlags(WIDGET_ENABLED);
 #endif
-  addBigButton("Help", kHelpCmd, 0);
-  addBigButton("About", kAboutCmd, 0);
-  addBigButton("Exit Menu", kExitCmd, 0);
+  wid.push_back(b);
+
+  b = addBigButton("Help", kHelpCmd);
+  wid.push_back(b);
+
+  b = addBigButton("About", kAboutCmd);
+  wid.push_back(b);
+
+  b = addBigButton("Exit Menu", kExitCmd);
+  wid.push_back(b);
 
   // Set some sane values for the dialog boxes
   int fbWidth  = osystem->frameBuffer().baseWidth();
@@ -133,6 +145,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   w = 255; h = 150;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myAboutDialog = new AboutDialog(myOSystem, parent, font, x, y, w, h);
+
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

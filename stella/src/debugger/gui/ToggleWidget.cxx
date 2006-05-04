@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
+// $Id: ToggleWidget.cxx,v 1.4 2006-05-04 17:45:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,7 +34,8 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
     _currentCol(0),
     _selectedItem(0)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
+           WIDGET_WANTS_RAWDATA;
   _type = kToggleWidget;
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.14 2006-03-05 01:18:42 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.15 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myActionsList->setTarget(this);
   myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
-  myActionsList->setFlags(WIDGET_NODRAW_FOCUS);
   addFocusWidget(myActionsList);
 
   // Add remap, erase, cancel and default buttons
@@ -58,19 +57,23 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myMapButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                  "Map", kStartMapCmd);
   myMapButton->setTarget(this);
+  addFocusWidget(myMapButton);
   ypos += 20;
   myEraseButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
+  addFocusWidget(myEraseButton);
   ypos += 20;
   myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                        "Cancel", kStopMapCmd);
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(WIDGET_ENABLED);
+  addFocusWidget(myCancelMapButton);
   ypos += 30;
   myDefaultsButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
                                       "Defaults", kDefaultsCmd);
   myDefaultsButton->setTarget(this);
+  addFocusWidget(myDefaultsButton);
 
   // Show message for currently selected event
   xpos = 10;  ypos = 5 + myActionsList->getHeight() + 3;
@@ -136,9 +139,9 @@ void EventMappingWidget::startRemapping()
   myKeyMapping->setColor(kTextColorEm);
   myKeyMapping->setLabel(buf.str());
 
-  // Make sure that this widget receives all events,
-  // and they aren't handled anywhere else
-  myActionsList->setFlags(WIDGET_WANTS_EVENTS);
+  // Make sure that this widget receives all raw data, before any
+  // pre-processing occurs
+  myActionsList->setFlags(WIDGET_WANTS_RAWDATA);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,7 +178,7 @@ void EventMappingWidget::stopRemapping()
   }
 
   // Widget is now free to process events normally
-  myActionsList->clearFlags(WIDGET_WANTS_EVENTS);
+  myActionsList->clearFlags(WIDGET_WANTS_RAWDATA);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.160 2006-04-05 12:28:37 stephena Exp $
+// $Id: EventHandler.cxx,v 1.161 2006-05-04 17:45:24 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -187,11 +187,6 @@ void EventHandler::reset(State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::refreshDisplay(bool forceUpdate)
 {
-  // These are reset each time the display changes size
-  DialogContainer::ourJoyMouse.x_max = myOSystem->frameBuffer().imageWidth();
-  DialogContainer::ourJoyMouse.y_max = myOSystem->frameBuffer().imageHeight();
-  DialogContainer::ourJoyMouse.amt = myOSystem->frameBuffer().zoomLevel() * 3;
-
   switch(myState)
   {
     case S_EMULATE:
@@ -863,9 +858,6 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 {
   // Take window zooming into account
   int x = event.motion.x, y = event.motion.y;
-  DialogContainer::ourJoyMouse.x = x;
-  DialogContainer::ourJoyMouse.y = y;
-
   myOSystem->frameBuffer().translateCoords(&x, &y);
 
   // Determine which mode we're in, then send the event to the appropriate place
@@ -1223,8 +1215,8 @@ bool EventHandler::eventStateChange(Event::Type type)
       {
         if(myState == S_EMULATE)
           enterMenuMode(S_MENU);
-        else if(myState == S_MENU)
-          leaveMenuMode();
+//        else if(myState == S_MENU)  // FIXME - maybe 'tab' should only enter, not exit
+//          leaveMenuMode();
         else
           handled = false;
       }
@@ -1854,6 +1846,79 @@ inline bool EventHandler::eventIsAnalog(Event::Type event)
     default:
       return false;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::eventForKey(int key, EventMode mode)
+{
+  // FIXME - eventually make this a one-line inliner in the header
+
+  Event::Type e = Event::NoType;
+
+  // FIXME - eventually this will return the mapped events for
+  // keys either for emulation mode or UI mode.  For now, it always
+  // assumes UI mode, and generates the key statically.
+  if(key < 0 || key >= SDLK_LAST)
+    return e;
+
+  switch(key)
+  {
+    case '\n':  // enter/return
+    case '\r':
+      e = Event::UISelect;
+      break;
+    case 256+17: // cursor up
+      e = Event::UIUp;
+      break;
+    case 256+18: // cursor down
+      e = Event::UIDown;
+      break;
+    case 256+20: // cursor left
+      e = Event::UILeft;
+      break;
+    case 256+19: // cursor right
+      e = Event::UIRight;
+      break;
+    case 256+24: // Page Up:
+      e = Event::UIPgUp;
+      break;
+    case 256+25: // Page Down
+      e = Event::UIPgDown;
+      break;
+    case 256+22: // Home
+      e = Event::UIHome;
+      break;
+    case 256+23: // End
+      e = Event::UIEnd;
+      break;
+    default:
+      break;
+  }
+  return e; // ... myKeyTable[key];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::eventForJoyButton(int stick, int button,
+                                            EventMode mode)
+{
+  // FIXME - do a lookup
+  return Event::NoType;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::eventForJoyAxis(int stick, int axis, int value,
+                                          EventMode mode)
+{
+  // FIXME - do a lookup
+  return Event::NoType;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::eventForJoyHat(int stick, int hat, int value,
+                                         EventMode mode)
+{
+  // FIXME - do a lookup
+  return Event::NoType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

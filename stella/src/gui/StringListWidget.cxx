@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringListWidget.cxx,v 1.6 2006-03-25 00:34:17 stephena Exp $
+// $Id: StringListWidget.cxx,v 1.7 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,7 @@ void StringListWidget::drawWidget(bool hilite)
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
     {
-      if ((_hasFocus && !_editMode) || isSticky())
+      if (_hasFocus && !_editMode)
         fb.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
       else
         fb.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);

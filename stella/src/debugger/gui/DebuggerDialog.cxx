@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.13 2006-03-23 16:16:32 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.14 2006-05-04 17:45:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -211,6 +211,7 @@ void DebuggerDialog::addStatusArea()
                                     xpos, ypos, myTiaZoom->getWidth(),
                                     font.getLineHeight(), "");
   myMessageBox->setEditable(false);
+  myMessageBox->clearFlags(WIDGET_RETAIN_FOCUS);
   myMessageBox->setColor(kTextColorEm);
 }
 

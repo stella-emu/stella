@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.14 2006-02-22 17:38:04 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.15 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,7 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
   _type = kEditTextWidget;
 
   _editable = true;
+  startEditMode();  // We're always in edit mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,15 +106,18 @@ void EditTextWidget::lostFocusWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::startEditMode()
 {
+  EditableWidget::startEditMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::endEditMode()
 {
+  EditableWidget::endEditMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::abortEditMode()
 {
   setEditString(_backupString);
+  EditableWidget::abortEditMode();
 }

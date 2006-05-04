@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.6 2005-12-20 00:56:31 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.7 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,6 +56,10 @@ class InputTextDialog : public Dialog, public CommandSender
 
     bool myErrorFlag;
     int	 myCmd;
+
+    enum {
+      kAcceptCmd = 'ACPT'
+    };
 };
 
 #endif

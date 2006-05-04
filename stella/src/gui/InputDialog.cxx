@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.13 2006-04-05 12:28:39 stephena Exp $
+// $Id: InputDialog.cxx,v 1.14 2006-05-04 17:45:25 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -42,6 +42,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 {
   const int vBorder = 4;
   int xpos, ypos, tabID;
+  WidgetArray wid;
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -64,13 +65,19 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   myTab->setActiveTab(0);
 
   // Add OK and Cancel buttons
+  ButtonWidget* b;
 #ifndef MAC_OSX
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
 #else
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(b);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
 #endif
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

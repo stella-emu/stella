@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.10 2006-02-22 17:38:04 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.11 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,6 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
     t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
     t->setTarget(this);
     t->setID(i);
-    t->holdFocus(false);
     ypos += _fontHeight;
 
     _checkList.push_back(t);
@@ -191,6 +190,23 @@ bool CheckListWidget::getState(int line)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CheckListWidget::handleEvent(Event::Type e)
+{
+  switch(e)
+  {
+    case Event::UISelect:
+      // Simulate a mouse button click
+      _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, 1, 0);
+      return true;
+      break;
+
+    default:
+      return ListWidget::handleEvent(e);
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
                                     int data, int id)
 {
@@ -209,5 +225,6 @@ void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
 
     default:
       ListWidget::handleCommand(sender, cmd, data, id);
+      break;
   }
 }

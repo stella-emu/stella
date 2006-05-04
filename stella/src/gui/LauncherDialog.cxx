@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.53 2006-04-12 13:32:06 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.54 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -83,8 +83,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                 _w - 20, _h - 28 - bheight - 2*fontHeight);
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
-  myList->setFlags(WIDGET_STICKY_FOCUS);
-//wid.push_back(myList);
+  wid.push_back(myList);
 
   // Add note textwidget to show any notes for the currently selected ROM
   xpos += 5;  ypos += myList->getHeight() + 4;
@@ -100,45 +99,37 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 10;  ypos += myNote->getHeight() + 4;
 #ifndef MAC_OSX
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Select", kStartCmd, 0);
-  myStartButton->setEditable(true);
+                                  "Select", kStartCmd);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
   myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "Go Up", kPrevDirCmd, 0);
-  myPrevDirButton->setEditable(true);
+                                      "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
   myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd, 0);
-  myOptionsButton->setEditable(true);
+                                     "Options", kOptionsCmd);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Quit", kQuitCmd, 0);
-  myQuitButton->setEditable(true);
+                                  "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
   mySelectedItem = 0;  // Highlight 'Select' button
 #else
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Quit", kQuitCmd, 0);
-  myQuitButton->setEditable(true);
+                                  "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
   myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd, 0);
-  myOptionsButton->setEditable(true);
+                                     "Options", kOptionsCmd);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
   myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "Go Up", kPrevDirCmd, 0);
-  myPrevDirButton->setEditable(true);
+                                      "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                   "Select", kStartCmd, 0);
-  myStartButton->setEditable(true);
+                                   "Select", kStartCmd);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
   mySelectedItem = 3;  // Highlight 'Select' button
@@ -416,67 +407,6 @@ string LauncherDialog::MD5FromFile(const string& path)
       delete[] image;
 
   return md5;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleKeyDown(int ascii, int keycode, int modifiers)
-{
-  // Only detect the cursor keys, otherwise pass to base class
-  switch(ascii)
-  {
-    case kCursorLeft:
-      mySelectedItem--;
-      if(mySelectedItem < 0) mySelectedItem = 3;
-      Dialog::setFocus(getFocusList()[mySelectedItem]);
-      break;
-
-    case kCursorRight:
-      mySelectedItem++;
-      if(mySelectedItem > 3) mySelectedItem = 0;
-      Dialog::setFocus(getFocusList()[mySelectedItem]);
-      break;
-
-    case ' ':  // Used to activate currently focused button
-    case '\n':
-    case '\r':
-      Dialog::handleKeyDown(ascii, keycode, modifiers);
-      break;
-
-    default:
-      if(!myList->handleKeyDown(ascii, keycode, modifiers))
-        Dialog::handleKeyDown(ascii, keycode, modifiers);
-      break;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleJoyAxis(int stick, int axis, int value)
-{
-  if(!parent()->joymouse())
-    return;
-
-  // We make the (hopefully) valid assumption that all joysticks
-  // treat axis the same way.  Eventually, we may need to remap
-  // these actions of this assumption is invalid.
-  // TODO - make this work better with analog axes ...
-  int key = -1;
-  if(axis % 2 == 0)  // x-direction
-  {
-    if(value < 0)
-      key = kCursorLeft;
-    else if(value > 0)
-      key = kCursorRight;
-  }
-  else   // y-direction
-  {
-    if(value < 0)
-      key = kCursorUp;
-    else if(value > 0)
-      key = kCursorDown;
-  }
-
-  if(key != -1)
-    handleKeyDown(key, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

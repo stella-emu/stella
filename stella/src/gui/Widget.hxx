@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.49 2006-03-25 00:34:17 stephena Exp $
+// $Id: Widget.hxx,v 1.50 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@ class Dialog;
 
 #include <assert.h>
 
+#include "Event.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
@@ -36,18 +37,16 @@ class Dialog;
 #include "bspf.hxx"
 
 enum {
-  WIDGET_ENABLED      = 1 << 0,
-  WIDGET_INVISIBLE    = 1 << 1,
-  WIDGET_HILITED      = 1 << 2,
-  WIDGET_BORDER       = 1 << 3,
-  WIDGET_INV_BORDER   = 1 << 4,
-  WIDGET_CLEARBG      = 1 << 5,
-  WIDGET_TRACK_MOUSE  = 1 << 6,
-  WIDGET_RETAIN_FOCUS = 1 << 7,
-  WIDGET_NODRAW_FOCUS = 1 << 8,
-  WIDGET_STICKY_FOCUS = 1 << 9,
-  WIDGET_WANTS_TAB    = 1 << 10,
-  WIDGET_WANTS_EVENTS = 1 << 11
+  WIDGET_ENABLED       = 1 << 0,
+  WIDGET_INVISIBLE     = 1 << 1,
+  WIDGET_HILITED       = 1 << 2,
+  WIDGET_BORDER        = 1 << 3,
+  WIDGET_INV_BORDER    = 1 << 4,
+  WIDGET_CLEARBG       = 1 << 5,
+  WIDGET_TRACK_MOUSE   = 1 << 6,
+  WIDGET_RETAIN_FOCUS  = 1 << 7,
+  WIDGET_WANTS_TAB     = 1 << 8,
+  WIDGET_WANTS_RAWDATA = 1 << 9
 };
 
 enum {
@@ -75,7 +74,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.49 2006-03-25 00:34:17 stephena Exp $
+  @version $Id: Widget.hxx,v 1.50 2006-05-04 17:45:25 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -100,6 +99,7 @@ class Widget : public GuiObject
     virtual void handleJoyUp(int stick, int button) {}
     virtual void handleJoyAxis(int stick, int axis, int value) {}
     virtual bool handleJoyHat(int stick, int hat, int value) { return false; }
+    virtual bool handleEvent(Event::Type event) { return false; }
 
     void draw();
     void receivedFocus();
@@ -107,7 +107,6 @@ class Widget : public GuiObject
     void addFocusWidget(Widget* w) { _focusList.push_back(w); }
 
     virtual GUI::Rect getRect() const;
-    virtual bool wantsFocus()  { return false; }
 
     /** Set/clear WIDGET_ENABLED flag and immediately redraw */
     void setEnabled(bool e);
@@ -116,10 +115,11 @@ class Widget : public GuiObject
     void clearFlags(int flags)  { _flags &= ~flags; }
     int  getFlags() const       { return _flags;    }
 
-    bool isEnabled() const   { return _flags & WIDGET_ENABLED;      }
-    bool isVisible() const   { return !(_flags & WIDGET_INVISIBLE); }
-    bool isSticky() const    { return _flags & WIDGET_STICKY_FOCUS; }
-    bool wantsEvents() const { return _flags & WIDGET_WANTS_EVENTS; }
+    bool isEnabled() const   { return _flags & WIDGET_ENABLED;       }
+    bool isVisible() const   { return !(_flags & WIDGET_INVISIBLE);  }
+    bool wantsFocus() const  { return _flags & WIDGET_RETAIN_FOCUS;  }
+    bool wantsTab() const    { return _flags & WIDGET_WANTS_TAB;     }
+    bool wantsRaw() const    { return _flags & WIDGET_WANTS_RAWDATA; }
 
     void setID(int id)  { _id = id;   }
     int  getID()        { return _id; }
@@ -185,7 +185,6 @@ class StaticTextWidget : public Widget
     void setLabel(const string& label);
     void setAlign(TextAlignment align)  { _align = align; }
     const string& getLabel() const      { return _label; }
-    void setEditable(bool editable);
 
   protected:
     void drawWidget(bool hilite);
@@ -203,19 +202,15 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
   public:
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
-                 const string& label, int cmd = 0, uInt8 hotkey = 0);
+                 const string& label, int cmd = 0);
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
 
-    void handleMouseUp(int x, int y, int button, int clickCount);
-    void handleMouseEntered(int button);
-    void handleMouseLeft(int button);
-    bool handleKeyDown(int ascii, int keycode, int modifiers);
-    void handleJoyDown(int stick, int button);
-
-    bool wantsFocus();
-    void setEditable(bool editable);
+    virtual void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual void handleMouseEntered(int button);
+    virtual void handleMouseLeft(int button);
+    virtual bool handleEvent(Event::Type event);
 
   protected:
     void drawWidget(bool hilite);
@@ -223,7 +218,6 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
   protected:
     int    _cmd;
     bool   _editable;
-    uInt8  _hotkey;
 };
 
 
@@ -237,10 +231,6 @@ class CheckboxWidget : public ButtonWidget
     void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseEntered(int button)	{}
     virtual void handleMouseLeft(int button)	{}
-    virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
-
-    bool wantsFocus();
-    void holdFocus(bool status) { _holdFocus = status; }
 
     void setEditable(bool editable);
     void setFill(bool fill) { _fillRect = fill; }
@@ -276,19 +266,20 @@ class SliderWidget : public ButtonWidget
   public:
     SliderWidget(GuiObject *boss, const GUI::Font& font,
                  int x, int y, int w, int h, const string& label = "",
-                 int labelWidth = 0, int cmd = 0, uInt8 hotkey = 0);
+                 int labelWidth = 0, int cmd = 0);
 
     void setValue(int value);
     int getValue() const      { return _value; }
 
-    void  setMinValue(int value) { _valueMin = value; }
+    void  setMinValue(int value);
     int getMinValue() const      { return _valueMin; }
-    void  setMaxValue(int value) { _valueMax = value; }
+    void  setMaxValue(int value);
     int getMaxValue() const      { return _valueMax; }
 
-    void handleMouseMoved(int x, int y, int button);
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual void handleMouseMoved(int x, int y, int button);
+    virtual void handleMouseDown(int x, int y, int button, int clickCount);
+    virtual void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual bool handleEvent(Event::Type event);
 
   protected:
     void drawWidget(bool hilite);
@@ -297,7 +288,7 @@ class SliderWidget : public ButtonWidget
     int posToValue(int pos);
 
   protected:
-    int  _value, _oldValue;
+    int  _value, _stepValue;
     int  _valueMin, _valueMax;
     bool _isDragging;
     int  _labelWidth;

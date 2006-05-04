@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.17 2006-03-19 22:06:20 stephena Exp $
+// $Id: ListWidget.hxx,v 1.18 2006-05-04 17:45:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,10 +67,10 @@ class ListWidget : public EditableWidget
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
+    virtual bool handleEvent(Event::Type e);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     virtual GUI::Rect getRect() const;
-    virtual bool wantsFocus() { return !isSticky(); }
 
     void startEditMode();
     void endEditMode();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.31 2006-03-02 13:10:53 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.32 2006-05-04 17:45:25 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -32,10 +32,6 @@ DialogContainer::DialogContainer(OSystem* osystem)
     myTime(0),
     myRefreshFlag(false)
 {
-  memset(&ourJoyMouse, 0, sizeof(JoyMouse));
-  ourJoyMouse.delay_time = 25;
-
-  ourEnableJoyMouseFlag = myOSystem->settings().getBool("joymouse");
   reset();
 }
 
@@ -73,6 +69,7 @@ void DialogContainer::updateTime(uInt32 time)
     myClickRepeatTime = myTime + kClickRepeatSustainDelay;
   }
 
+/* FIXME - make this similar to the key-repeat code above
   if(ourEnableJoyMouseFlag && myCurrentAxisDown.stick != -1 &&
      myAxisRepeatTime < myTime)
   {
@@ -98,10 +95,7 @@ void DialogContainer::updateTime(uInt32 time)
       myAxisRepeatTime = myTime + kAxisRepeatSustainDelay / interval;
     }
   }
-
-  // Update joy to mouse events
-  if(ourEnableJoyMouseFlag)
-    handleJoyMouse(time);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,16 +271,10 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  if(activeDialog->wantsEvents())
-  {
-    if(state == 1)
-      activeDialog->handleJoyDown(stick, button);
-    else
-      activeDialog->handleJoyUp(stick, button);
-  }
-  else if(ourEnableJoyMouseFlag)
-    myOSystem->eventHandler().createMouseButtonEvent(
-      ourJoyMouse.x, ourJoyMouse.y, state);
+  if(state == 1)
+    activeDialog->handleJoyDown(stick, button);
+  else
+    activeDialog->handleJoyUp(stick, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -305,57 +293,21 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
   else
     value = 0;
 
-  if(activeDialog->wantsEvents())
+  // Only stop firing events if it's the current stick
+  if(myCurrentAxisDown.stick == stick && value == 0)
   {
-    // Only stop firing events if it's the current key
-    if(myCurrentAxisDown.stick == stick && value == 0)
-    {
-      myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
-      myCurrentAxisDown.count = 0;
-    }
-    else
-    {
-      // Now account for repeated axis events (press and hold)
-      myCurrentAxisDown.stick = stick;
-      myCurrentAxisDown.axis  = axis;
-      myCurrentAxisDown.value = value;
-      myAxisRepeatTime = myTime + kAxisRepeatInitialDelay;
-    }
-    activeDialog->handleJoyAxis(stick, axis, value);
-  }
-  else
-  {
-    if(axis % 2 == 0)  // x-direction
-    {
-      if(value != 0)
-      {
-        ourJoyMouse.x_vel = (value > 0) ? 1 : -1;
-        ourJoyMouse.x_down_count = 1;
-      }
-      else
-      {
-        ourJoyMouse.x_vel = 0;
-        ourJoyMouse.x_down_count = 0;
-      }
-    }
-    else   // y-direction
-    {
-      value = -value;
-
-      if(value != 0)
-      {
-        ourJoyMouse.y_vel = (-value > 0) ? 1 : -1;
-        ourJoyMouse.y_down_count = 1;
-      }
-      else
-      {
-        ourJoyMouse.y_vel = 0;
-        ourJoyMouse.y_down_count = 0;
-      }
-    }
     myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
     myCurrentAxisDown.count = 0;
   }
+  else
+  {
+    // Now account for repeated axis events (press and hold)
+    myCurrentAxisDown.stick = stick;
+    myCurrentAxisDown.axis  = axis;
+    myCurrentAxisDown.value = value;
+    myAxisRepeatTime = myTime + kAxisRepeatInitialDelay;
+  }
+  activeDialog->handleJoyAxis(stick, axis, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -367,126 +319,8 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  if(!(activeDialog->wantsEvents() &&
-       activeDialog->handleJoyHat(stick, hat, value)))
-  {
-    bool handled = true;
-    switch(value)
-    {
-      case kJHatCentered:
-        handleJoyAxisEvent(stick, 0, 0);
-        handleJoyAxisEvent(stick, 1, 0);       // axis 0 & 1, 0  ==> OFF
-        break;
-      case kJHatUp:
-        handleJoyAxisEvent(stick, 1, -32767);  // axis 1, -value ==> UP
-        break;
-      case kJHatLeft:
-        handleJoyAxisEvent(stick, 0, -32767);  // axis 0, -value ==> LEFT
-        break;
-      case kJHatDown:
-        handleJoyAxisEvent(stick, 1, 32767);   // axis 1, +value ==> DOWN
-        break;
-      case kJHatRight:
-        handleJoyAxisEvent(stick, 0, 32767);   // axis 0, +value ==> RIGHT
-        break;
-      default:
-        handled = false;
-    }
-    if(handled)
-      return;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyMouse(uInt32 time)
-{
-  bool mouseAccel = true;//false;  // TODO - make this a commandline option
-  int oldX = ourJoyMouse.x, oldY = ourJoyMouse.y;
-
-  if(time >= ourJoyMouse.last_time + ourJoyMouse.delay_time)
-  {
-    ourJoyMouse.last_time = time;
-    if(ourJoyMouse.x_down_count == 1)
-    {
-      ourJoyMouse.x_down_time = time;
-      ourJoyMouse.x_down_count = 2;
-    }
-    if(ourJoyMouse.y_down_count == 1)
-    {
-      ourJoyMouse.y_down_time = time;
-      ourJoyMouse.y_down_count = 2;
-    }
-
-    if(ourJoyMouse.x_vel || ourJoyMouse.y_vel)
-    {
-      if(ourJoyMouse.x_down_count)
-      {
-        if(mouseAccel && time > ourJoyMouse.x_down_time + ourJoyMouse.delay_time * 12)
-        {
-          if(ourJoyMouse.x_vel > 0)
-            ourJoyMouse.x_vel++;
-          else
-            ourJoyMouse.x_vel--;
-        }
-        else if(time > ourJoyMouse.x_down_time + ourJoyMouse.delay_time * 8)
-        {
-          if(ourJoyMouse.x_vel > 0)
-            ourJoyMouse.x_vel = ourJoyMouse.amt;
-          else
-            ourJoyMouse.x_vel = -ourJoyMouse.amt;
-        }
-      }
-      if(ourJoyMouse.y_down_count)
-      {
-        if(mouseAccel && time > ourJoyMouse.y_down_time + ourJoyMouse.delay_time * 12)
-        {
-          if(ourJoyMouse.y_vel > 0)
-            ourJoyMouse.y_vel++;
-          else
-            ourJoyMouse.y_vel--;
-        }
-        else if(time > ourJoyMouse.y_down_time + ourJoyMouse.delay_time * 8)
-        {
-          if(ourJoyMouse.y_vel > 0)
-            ourJoyMouse.y_vel = ourJoyMouse.amt;
-          else
-            ourJoyMouse.y_vel = -ourJoyMouse.amt;
-        }
-      }
-
-      ourJoyMouse.x += ourJoyMouse.x_vel;
-      ourJoyMouse.y += ourJoyMouse.y_vel;
-
-      if(ourJoyMouse.x < 0)
-      {
-        ourJoyMouse.x = 0;
-        ourJoyMouse.x_vel = -1;
-        ourJoyMouse.x_down_count = 1;
-      }
-      else if(ourJoyMouse.x > ourJoyMouse.x_max)
-      {
-        ourJoyMouse.x = ourJoyMouse.x_max;
-        ourJoyMouse.x_vel = 1;
-        ourJoyMouse.x_down_count = 1;
-      }
-
-      if(ourJoyMouse.y < 0)
-      {
-        ourJoyMouse.y = 0;
-        ourJoyMouse.y_vel = -1;
-        ourJoyMouse.y_down_count = 1;
-      }
-      else if(ourJoyMouse.y > ourJoyMouse.y_max)
-      {
-        ourJoyMouse.y = ourJoyMouse.y_max;
-        ourJoyMouse.y_vel = 1;
-        ourJoyMouse.y_down_count = 1;
-      }
-
-      if(oldX != ourJoyMouse.x || oldY != ourJoyMouse.y)
-        myOSystem->eventHandler().createMouseMotionEvent(ourJoyMouse.x, ourJoyMouse.y);
-    }
-  }
+  // FIXME - add speedup processing, similar to axis events
+  activeDialog->handleJoyHat(stick, hat, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -500,19 +334,4 @@ void DialogContainer::reset()
 
   myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
   myCurrentAxisDown.count = 0;
-
-  int oldX = ourJoyMouse.x, oldY = ourJoyMouse.y;
-  if(ourJoyMouse.x > ourJoyMouse.x_max)
-    ourJoyMouse.x = ourJoyMouse.x_max;
-  if(ourJoyMouse.y > ourJoyMouse.y_max)
-    ourJoyMouse.y = ourJoyMouse.y_max;
-
-  if(oldX != ourJoyMouse.x || oldY != ourJoyMouse.y)
-    myOSystem->eventHandler().createMouseMotionEvent(ourJoyMouse.x, ourJoyMouse.y);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DialogContainer::ourEnableJoyMouseFlag;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoyMouse DialogContainer::ourJoyMouse;

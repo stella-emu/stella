@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.9 2006-03-23 16:16:32 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.10 2006-05-04 17:45:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,15 +35,6 @@
 
 #include "bspf.hxx"
 
-enum {
-  kAddCheatCmd       = 'CHTa',
-  kEditCheatCmd      = 'CHTe',
-  kAddOneShotCmd     = 'CHTo',
-  kCheatAdded        = 'CHad',
-  kCheatEdited       = 'CHed',
-  kOneShotCheatAdded = 'CHoa',
-  kRemCheatCmd       = 'CHTr'
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
@@ -51,6 +42,8 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   : Dialog(osystem, parent, x, y, w, h)
 {
   int xpos, ypos;
+  WidgetArray wid;
+  ButtonWidget* b;
 
   // List of cheats, with checkboxes to enable/disable
   xpos = 10;  ypos = 10;
@@ -58,14 +51,17 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
                                     _w - 25 - kButtonWidth, _h - 50);
   myCheatList->setStyle(kXFill);
   myCheatList->setEditable(false);
-  myCheatList->setFlags(WIDGET_NODRAW_FOCUS);
-  addFocusWidget(myCheatList);
+  wid.push_back(myCheatList);
 
   xpos += myCheatList->getWidth() + 15;  ypos = 15;
-  addButton(font, xpos, ypos, "Add", kAddCheatCmd, 0);
-  myEditButton = addButton(font, xpos, ypos+=20, "Edit", kEditCheatCmd, 0);
-  myRemoveButton = addButton(font, xpos, ypos+=20, "Remove", kRemCheatCmd, 0);
-  addButton(font, xpos, ypos+=30, "One shot", kAddOneShotCmd, 0);
+  b = addButton(font, xpos, ypos, "Add", kAddCheatCmd);
+  wid.push_back(b);
+  myEditButton = addButton(font, xpos, ypos+=20, "Edit", kEditCheatCmd);
+  wid.push_back(myEditButton);
+  myRemoveButton = addButton(font, xpos, ypos+=20, "Remove", kRemCheatCmd);
+  wid.push_back(myRemoveButton);
+  b = addButton(font, xpos, ypos+=30, "One shot", kAddOneShotCmd);
+  wid.push_back(b);
 
   // Inputbox which will pop up when adding/editing a cheat
   StringList labels;
@@ -76,14 +72,20 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add OK and Cancel buttons  **** FIXME - coordinates
 #ifndef MAC_OSX
-  addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd, 0);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
   myCancelButton = addButton(font, _w - (kButtonWidth + 10), _h - 24,
-                             "Cancel", kCloseCmd, 0);
+                             "Cancel", kCloseCmd);
+  wid.push_back(myCancelButton);
 #else
   myCancelButton = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24,
-                             "Cancel", kCloseCmd, 0);
-  addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd, 0);
+                             "Cancel", kCloseCmd);
+  wid.push_back(myCancelButton);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
+  wid.push_back(b);
 #endif
+
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,6 +156,7 @@ void CheatCodeDialog::editCheat()
 
   myCheatInput->setEditString(name, 0);
   myCheatInput->setEditString(code, 1);
+  myCheatInput->setTitle("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kCheatEdited);
   parent()->addDialog(myCheatInput);

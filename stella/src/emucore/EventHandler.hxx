@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.85 2006-04-05 12:28:37 stephena Exp $
+// $Id: EventHandler.hxx,v 1.86 2006-05-04 17:45:24 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -64,6 +64,11 @@ enum {
   kActionListSize = 81
 };
 
+enum EventMode {
+  kEmulation,
+  kMenuOverlay
+};
+
 // Joystick related items
 enum {
   kNumJoysticks  = 8,
@@ -107,7 +112,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.85 2006-04-05 12:28:37 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.86 2006-05-04 17:45:24 stephena Exp $
 */
 class EventHandler
 {
@@ -327,6 +332,11 @@ class EventHandler
     void createMouseButtonEvent(int x, int y, int state);
 
     inline SDL_Joystick* getJoystick(int i) { return ourJoysticks[i].stick; }
+
+    Event::Type eventForKey(int key, EventMode mode);
+    Event::Type eventForJoyButton(int stick, int button, EventMode mode);
+    Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode);
+    Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode);
 
   private:
     /**
