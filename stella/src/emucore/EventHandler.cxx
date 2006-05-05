@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.161 2006-05-04 17:45:24 stephena Exp $
+// $Id: EventHandler.cxx,v 1.162 2006-05-05 18:00:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1846,6 +1846,28 @@ inline bool EventHandler::eventIsAnalog(Event::Type event)
     default:
       return false;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList EventHandler::getEmulationActions()
+{
+  StringList l;
+
+  for(int i = 0; i < kActionListSize; ++i)
+    l.push_back(EventHandler::ourActionList[i].action);
+
+  return l;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList EventHandler::getMenuActions()
+{
+  StringList l;  // FIXME
+
+//  for(int i = 0; i < kActionListSize; ++i)
+//    l.push_back(EventHandler::ourActionList[i].action);
+
+  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.15 2006-05-04 17:45:25 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.16 2006-05-05 18:00:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,9 +33,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
-                                       int x, int y, int w, int h)
+                                       int x, int y, int w, int h,
+                                       const StringList& actions, EventMode mode)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
+    myEventMode(mode),
     myActionSelected(-1),
     myRemapStatus(false),
     myFirstTime(true)
@@ -50,6 +52,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myActionsList->setTarget(this);
   myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
+  myActionsList->setList(actions);
   addFocusWidget(myActionsList);
 
   // Add remap, erase, cancel and default buttons
@@ -80,14 +83,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myKeyMapping  = new StaticTextWidget(boss, font, xpos, ypos, _w - 20, fontHeight,
                                        "Action: ", kTextAlignLeft);
   myKeyMapping->setFlags(WIDGET_CLEARBG);
-
-  // Get actions names
-  StringList l;
-
-  for(int i = 0; i < kActionListSize; ++i)
-    l.push_back(EventHandler::ourActionList[i].action);
-
-  myActionsList->setList(l);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,7 +93,7 @@ EventMappingWidget::~EventMappingWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::loadConfig()
 {
-//cerr << "EventMappingWidget::loadConfig()\n";
+cerr << "EventMappingWidget::loadConfig() for " << myEventMode << endl;
   if(myFirstTime)
   {
     myActionsList->setSelected(0);

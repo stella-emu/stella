@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.8 2006-04-05 12:28:39 stephena Exp $
+// $Id: InputDialog.hxx,v 1.9 2006-05-05 18:00:51 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -54,7 +54,8 @@ class InputDialog : public Dialog
   private:
     TabWidget* myTab;
 
-    EventMappingWidget* myEventMapper;
+    EventMappingWidget* myEmulEventMapper;
+    EventMappingWidget* myMenuEventMapper;
 
     PopUpWidget* myLeftPort;
     PopUpWidget* myRightPort;
@@ -65,8 +66,6 @@ class InputDialog : public Dialog
     StaticTextWidget* myPaddleThresholdLabel;
     SliderWidget*     myPaddleSpeed[4];
     StaticTextWidget* myPaddleLabel[4];
-
-    CheckBoxWidget* myJoyMouse;
 };
 
 #endif

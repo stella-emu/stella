@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.hxx,v 1.9 2006-05-04 17:45:25 stephena Exp $
+// $Id: EventMappingWidget.hxx,v 1.10 2006-05-05 18:00:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,8 @@ class EventMappingWidget : public Widget, public CommandSender
 
   public:
     EventMappingWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h);
+                       int x, int y, int w, int h,
+                       const StringList& actions, EventMode mode);
     ~EventMappingWidget();
 
     bool handleKeyDown(int ascii, int keycode, int modifiers);
@@ -78,6 +79,10 @@ class EventMappingWidget : public Widget, public CommandSender
     void drawKeyMapping();
 
   private:
+    // Since this widget can be used for different collections of events,
+    // we need to specify exactly which group of events we are remapping
+    EventMode myEventMode;
+
     // Indicates the event that is currently selected
     int myActionSelected;
 

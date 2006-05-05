@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.44 2006-05-04 17:45:25 stephena Exp $
+// $Id: Dialog.cxx,v 1.45 2006-05-05 18:00:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -313,7 +313,7 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // which must always be processed before any widget sees it.
   bool handled = false;
   if(e == Event::NoType)
-    e = instance()->eventHandler().eventForKey(ascii, kMenuOverlay);
+    e = instance()->eventHandler().eventForKey(ascii, kMenuMode);
 
   switch(e)
   {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.42 2006-05-04 17:45:25 stephena Exp $
+// $Id: ListWidget.cxx,v 1.43 2006-05-05 18:00:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,7 +67,8 @@ ListWidget::~ListWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setSelected(int item)
 {
-  assert(item >= -2 && item < (int)_list.size());
+  if(item < -1 || item >= (int)_list.size())
+    return;
 
   if(isEnabled())
   {
@@ -85,7 +86,8 @@ void ListWidget::setSelected(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setHighlighted(int item)
 {
-  assert(item >= -1 && item < (int)_list.size());
+  if(item < -1 || item >= (int)_list.size())
+    return;
 
   if(isEnabled())
   {
@@ -463,7 +465,6 @@ void ListWidget::endEditMode()
 void ListWidget::abortEditMode()
 {
   // Undo any changes made
-  assert(_selectedItem >= 0);
   _editMode = false;
 
   // Reset to normal data entry

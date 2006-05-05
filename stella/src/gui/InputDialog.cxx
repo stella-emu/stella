@@ -13,8 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.14 2006-05-04 17:45:25 stephena Exp $
+// $Id: InputDialog.cxx,v 1.15 2006-05-05 18:00:51 stephena Exp $
 //============================================================================
+
+// FIXME - this whole dialog should be a dialog of buttons instead of
+//         a tabwidget.  It would make things sooo much easier.
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
@@ -49,15 +52,27 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
   addTabWidget(myTab);
 
-  // 1) Event mapper
-  tabID = myTab->addTab("Event Mapping");
-  myEventMapper = new EventMappingWidget(myTab, font, 2, 2,
-                                         myTab->getWidth(),
-                                         myTab->getHeight() - ypos);
-  myTab->setParentWidget(tabID, myEventMapper);
-  addToFocusList(myEventMapper->getFocusList(), tabID);
+  // 1) Event mapper for emulation actions
+  tabID = myTab->addTab("Emul. Events");
+  const StringList& eactions = instance()->eventHandler().getEmulationActions();
+  myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
+                                             myTab->getWidth(),
+                                             myTab->getHeight() - ypos,
+                                             eactions, kEmulationMode);
+  myTab->setParentWidget(tabID, myEmulEventMapper);
+  addToFocusList(myEmulEventMapper->getFocusList(), tabID);
 
-  // 2) Virtual device support
+  // 2) Event mapper for menu actions
+  tabID = myTab->addTab("Menu Events");
+  const StringList& mactions = instance()->eventHandler().getMenuActions();
+  myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
+                                             myTab->getWidth(),
+                                             myTab->getHeight() - ypos,
+                                             mactions, kMenuMode);
+  myTab->setParentWidget(tabID, myMenuEventMapper);
+  addToFocusList(myMenuEventMapper->getFocusList(), tabID);
+
+  // 3) Virtual device support
   addVDeviceTab(font);
 
   // Finalize the tabs, and activate the first tab
@@ -93,7 +108,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   WidgetArray wid;
 
   // Virtual device/ports
-  tabID = myTab->addTab("Virtual Devices");
+  tabID = myTab->addTab("Virtual Devs");
 
   // Stelladaptor mappings
   xpos = 5;  ypos = 5;
@@ -194,7 +209,8 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
-  myEventMapper->loadConfig();
+  myEmulEventMapper->loadConfig();
+  myMenuEventMapper->loadConfig();
 
   // Left & right ports
   const string& sa1 = instance()->settings().getString("sa1");
@@ -247,9 +263,11 @@ void InputDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
-  // Remap key events in remap mode, otherwise pass to listwidget
-  if(myEventMapper->remapMode())
-    myEventMapper->handleKeyDown(ascii, keycode, modifiers);
+  // Remap key events in remap mode, otherwise pass to parent dialog
+  if(myEmulEventMapper->remapMode())
+    myEmulEventMapper->handleKeyDown(ascii, keycode, modifiers);
+  else if(myMenuEventMapper->remapMode())
+    myMenuEventMapper->handleKeyDown(ascii, keycode, modifiers);
   else
     Dialog::handleKeyDown(ascii, keycode, modifiers);
 }
@@ -257,9 +275,11 @@ void InputDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleJoyDown(int stick, int button)
 {
-  // Remap joystick buttons in remap mode, otherwise pass to listwidget
-  if(myEventMapper->remapMode())
-    myEventMapper->handleJoyDown(stick, button);
+  // Remap joystick buttons in remap mode, otherwise pass to parent dialog
+  if(myEmulEventMapper->remapMode())
+    myEmulEventMapper->handleJoyDown(stick, button);
+  else if(myMenuEventMapper->remapMode())
+    myMenuEventMapper->handleJoyDown(stick, button);
   else
     Dialog::handleJoyDown(stick, button);
 }
@@ -267,9 +287,11 @@ void InputDialog::handleJoyDown(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleJoyAxis(int stick, int axis, int value)
 {
-  // Remap joystick axis in remap mode, otherwise pass to listwidget
-  if(myEventMapper->remapMode())
-    myEventMapper->handleJoyAxis(stick, axis, value);
+  // Remap joystick axis in remap mode, otherwise pass to parent dialog
+  if(myEmulEventMapper->remapMode())
+    myEmulEventMapper->handleJoyAxis(stick, axis, value);
+  else if(myMenuEventMapper->remapMode())
+    myMenuEventMapper->handleJoyAxis(stick, axis, value);
   else
     Dialog::handleJoyAxis(stick, axis, value);
 }
@@ -277,9 +299,11 @@ void InputDialog::handleJoyAxis(int stick, int axis, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool InputDialog::handleJoyHat(int stick, int hat, int value)
 {
-  // Remap joystick hat in remap mode, otherwise pass to listwidget
-  if(myEventMapper->remapMode())
-    return myEventMapper->handleJoyHat(stick, hat, value);
+  // Remap joystick hat in remap mode, otherwise pass to parent dialog
+  if(myEmulEventMapper->remapMode())
+    return myEmulEventMapper->handleJoyHat(stick, hat, value);
+  else if(myMenuEventMapper->remapMode())
+    return myMenuEventMapper->handleJoyHat(stick, hat, value);
   else
     return Dialog::handleJoyHat(stick, hat, value);
 }

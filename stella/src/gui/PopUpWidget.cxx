@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.25 2006-05-04 17:45:25 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.26 2006-05-05 18:00:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -141,12 +141,8 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       cancelSelection();
       break;
     default:
-    {
-      Event::Type e = instance()->eventHandler().eventForKey(ascii,
-        kMenuOverlay);
-      handleEvent(e);
+      handleEvent(instance()->eventHandler().eventForKey(ascii, kMenuMode));
       break;
-    }
   }
 }
 

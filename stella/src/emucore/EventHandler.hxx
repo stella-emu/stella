@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.86 2006-05-04 17:45:24 stephena Exp $
+// $Id: EventHandler.hxx,v 1.87 2006-05-05 18:00:51 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -65,8 +65,8 @@ enum {
 };
 
 enum EventMode {
-  kEmulation,
-  kMenuOverlay
+  kEmulationMode,
+  kMenuMode
 };
 
 // Joystick related items
@@ -91,7 +91,7 @@ struct Stella_Joystick {
 };
 
 // Used for joystick to mouse emulation
-struct JoyMouse {	
+struct JoyMouse {
   bool active;
   int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
       x_down_count, y_down_count;
@@ -112,7 +112,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.86 2006-05-04 17:45:24 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.87 2006-05-05 18:00:51 stephena Exp $
 */
 class EventHandler
 {
@@ -332,6 +332,9 @@ class EventHandler
     void createMouseButtonEvent(int x, int y, int state);
 
     inline SDL_Joystick* getJoystick(int i) { return ourJoysticks[i].stick; }
+
+    StringList getEmulationActions();
+    StringList getMenuActions();
 
     Event::Type eventForKey(int key, EventMode mode);
     Event::Type eventForJoyButton(int stick, int button, EventMode mode);
