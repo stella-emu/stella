@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.69 2006-03-25 00:34:17 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.70 2006-05-15 12:24:09 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -82,7 +82,7 @@ enum {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.69 2006-03-25 00:34:17 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.70 2006-05-15 12:24:09 stephena Exp $
 */
 class FrameBuffer
 {
@@ -172,7 +172,7 @@ class FrameBuffer
       Indicates that the TIA area is dirty, and certain areas need
       to be redrawn.
     */
-    void refresh() { theRedrawTIAIndicator = true; }
+    void refresh();
 
     /**
       Toggles between fullscreen and window mode.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.16 2006-05-05 18:00:51 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.17 2006-05-15 12:24:09 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myRemapStatus(false),
     myFirstTime(true)
 {
-// FIXME
   const int fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
   int xpos = 5, ypos = 5;
@@ -93,7 +92,6 @@ EventMappingWidget::~EventMappingWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::loadConfig()
 {
-cerr << "EventMappingWidget::loadConfig() for " << myEventMode << endl;
   if(myFirstTime)
   {
     myActionsList->setSelected(0);
@@ -129,7 +127,7 @@ void EventMappingWidget::startRemapping()
   // And show a message indicating which key is being remapped
   ostringstream buf;
   buf << "Select action for '"
-      << EventHandler::ourActionList[ myActionSelected ].action
+      << instance()->eventHandler().actionAtIndex(myActionSelected, myEventMode)
       << "' event";	 	
   myKeyMapping->setColor(kTextColorEm);
   myKeyMapping->setLabel(buf.str());
@@ -145,8 +143,9 @@ void EventMappingWidget::eraseRemapping()
   if(myActionSelected < 0)
     return;
 
-  Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-  instance()->eventHandler().eraseMapping(event);
+  Event::Type event =
+    instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
+  instance()->eventHandler().eraseMapping(event, myEventMode);
 
   drawKeyMapping();
 }
@@ -182,7 +181,8 @@ void EventMappingWidget::drawKeyMapping()
   if(myActionSelected >= 0)
   {
     ostringstream buf;
-    buf << "Action: " << EventHandler::ourActionList[ myActionSelected ].key;
+    buf << "Action: "
+        << instance()->eventHandler().keyAtIndex(myActionSelected, myEventMode);
     myKeyMapping->setColor(kTextColor);
     myKeyMapping->setLabel(buf.str());
   }
@@ -194,8 +194,9 @@ bool EventMappingWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   // Remap keys in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
-    Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    if(instance()->eventHandler().addKeyMapping(event, keycode))
+    Event::Type event =
+      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance()->eventHandler().addKeyMapping(event, myEventMode, keycode))
       stopRemapping();
   }
   return true;
@@ -207,8 +208,9 @@ void EventMappingWidget::handleJoyDown(int stick, int button)
   // Remap joystick buttons in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
-    Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    if(instance()->eventHandler().addJoyMapping(event, stick, button))
+    Event::Type event =
+      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance()->eventHandler().addJoyMapping(event, myEventMode, stick, button))
       stopRemapping();
   }
 }
@@ -219,8 +221,10 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
   // Remap joystick axes in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
-    Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    if(instance()->eventHandler().addJoyAxisMapping(event, stick, axis, value))
+    Event::Type event =
+      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance()->eventHandler().addJoyAxisMapping(event, myEventMode,
+                                                    stick, axis, value))
       stopRemapping();
   }
 }
@@ -233,8 +237,10 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
   // Remap joystick hats in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
-    Event::Type event = EventHandler::ourActionList[ myActionSelected ].event;
-    if(instance()->eventHandler().addJoyHatMapping(event, stick, hat, value))
+    Event::Type event =
+      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance()->eventHandler().addJoyHatMapping(event, myEventMode,
+                                                   stick, hat, value))
     {
       stopRemapping();
       result = true;
@@ -284,7 +290,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDefaultsCmd:
-      instance()->eventHandler().setDefaultMapping();
+      instance()->eventHandler().setDefaultMapping(myEventMode);
       drawKeyMapping();
       break;
   }

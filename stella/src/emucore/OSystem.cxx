@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.68 2006-03-27 12:52:19 stephena Exp $
+// $Id: OSystem.cxx,v 1.69 2006-05-15 12:24:09 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -453,36 +453,42 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setDefaultJoymap()
 {
-  // Left joystick (assume joystick zero, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire, 0, 0);
+  EventMode mode;
 
+  mode = kEmulationMode;  // Default emulation events
+  // Left joystick (assume joystick zero, button zero)
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire, mode, 0, 0);
   // Right joystick (assume joystick one, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::JoystickOneFire, 1, 0);
+  myEventHandler->setDefaultJoyMapping(Event::JoystickOneFire, mode, 1, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setDefaultJoyAxisMap()
 {
+  EventMode mode;
+
+  mode = kEmulationMode;  // Default emulation events
   // Left joystick left/right directions (assume joystick zero)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroLeft, 0, 0, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroRight, 0, 0, 1);
-
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroLeft, mode, 0, 0, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroRight, mode, 0, 0, 1);
   // Left joystick up/down directions (assume joystick zero)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroUp, 0, 1, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroDown, 0, 1, 1);
-
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroUp, mode, 0, 1, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroDown, mode, 0, 1, 1);
   // Right joystick left/right directions (assume joystick one)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneLeft, 1, 0, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneRight, 1, 0, 1);
-
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneLeft, mode, 1, 0, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneRight, mode, 1, 0, 1);
   // Right joystick left/right directions (assume joystick one)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneUp, 1, 1, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneDown, 1, 1, 1);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneUp, mode, 1, 1, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneDown, mode, 1, 1, 1);
+
+  mode = kMenuMode;  // Default menu/UI events
+// FIXME - add UI events
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setDefaultJoyHatMap()
 {
+// FIXME - add emul and UI events
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

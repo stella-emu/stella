@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.162 2006-05-05 18:00:50 stephena Exp $
+// $Id: EventHandler.cxx,v 1.163 2006-05-15 12:24:09 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -72,7 +72,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myPaddleMode(0),
     myPaddleThreshold(0)
 {
-  int i, j, k;
+  int i, j, k, m;
 
   // Add this eventhandler object to the OSystem
   myOSystem->attach(this);
@@ -86,26 +86,30 @@ EventHandler::EventHandler(OSystem* osystem)
   // Erase the key mapping array
   for(i = 0; i < SDLK_LAST; ++i)
   {
-    myKeyTable[i] = Event::NoType;
     ourSDLMapping[i] = "";
+    for(m = 0; m < kNumModes; ++m)
+      myKeyTable[i][m] = Event::NoType;
   }
 
 #ifdef JOYSTICK_SUPPORT
   // Erase the joystick button mapping array
-  for(i = 0; i < kNumJoysticks; ++i)
-    for(j = 0; j < kNumJoyButtons; ++j)
-      myJoyTable[i][j] = Event::NoType;
+  for(m = 0; m < kNumModes; ++m)
+    for(i = 0; i < kNumJoysticks; ++i)
+      for(j = 0; j < kNumJoyButtons; ++j)
+        myJoyTable[i][j][m] = Event::NoType;
 
   // Erase the joystick axis mapping array
-  for(i = 0; i < kNumJoysticks; ++i)
-    for(j = 0; j < kNumJoyAxis; ++j)
-      myJoyAxisTable[i][j][0] = myJoyAxisTable[i][j][1] = Event::NoType;
+  for(m = 0; m < kNumModes; ++m)
+    for(i = 0; i < kNumJoysticks; ++i)
+      for(j = 0; j < kNumJoyAxis; ++j)
+        myJoyAxisTable[i][j][0][m] = myJoyAxisTable[i][j][1][m] = Event::NoType;
 
   // Erase the joystick hat mapping array
-  for(i = 0; i < kNumJoysticks; ++i)
-    for(j = 0; j < kNumJoyHats; ++j)
-      for(k = 0; k < 4; ++k)
-        myJoyHatTable[i][j][k] = Event::NoType;
+  for(m = 0; m < kNumModes; ++m)
+    for(i = 0; i < kNumJoysticks; ++i)
+      for(j = 0; j < kNumJoyHats; ++j)
+        for(k = 0; k < 4; ++k)
+          myJoyHatTable[i][j][k][m] = Event::NoType;
 #endif
 
   // Erase the Message array
@@ -127,7 +131,8 @@ EventHandler::EventHandler(OSystem* osystem)
   setJoymap();
   setJoyAxisMap();
   setJoyHatMap();
-  setActionMappings();
+  setActionMappings(kEmulationMode);
+  setActionMappings(kMenuMode);
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
 
@@ -208,8 +213,6 @@ void EventHandler::refreshDisplay(bool forceUpdate)
 
   if(forceUpdate)
     myOSystem->frameBuffer().update();
-
-//  cerr << "  ==> State change = " << myState << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -608,12 +611,12 @@ void EventHandler::poll(uInt32 time)
         // Handle keys which switch eventhandler state
         // Arrange the logic to take advantage of short-circuit evaluation
         if(!(kbdControl(mod) || kbdShift(mod) || kbdAlt(mod)) &&
-            state && eventStateChange(myKeyTable[key]))
+            state && eventStateChange(myKeyTable[key][kEmulationMode]))
           return;
 
         // Otherwise, let the event handler deal with it
         if(myState == S_EMULATE)
-          handleEvent(myKeyTable[key], state);
+          handleEvent(myKeyTable[key][kEmulationMode], state);
         else if(myOverlay != NULL)
         {
           // Make sure the unicode field is valid
@@ -916,12 +919,12 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 void EventHandler::handleJoyEvent(int stick, int button, int state)
 {
 #ifdef JOYSTICK_SUPPORT
-  if(state && eventStateChange(myJoyTable[stick][button]))
+  if(state && eventStateChange(myJoyTable[stick][button][kEmulationMode]))
     return;
 
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == S_EMULATE)
-    handleEvent(myJoyTable[stick][button], state);
+    handleEvent(myJoyTable[stick][button][kEmulationMode], state);
   else if(myOverlay != NULL)
     myOverlay->handleJoyEvent(stick, button, state);
 #endif
@@ -932,8 +935,8 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 {
 #ifdef JOYSTICK_SUPPORT
   // Every axis event has two associated values, negative and positive
-  Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0];
-  Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1];
+  Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0][kEmulationMode];
+  Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1][kEmulationMode];
 
   // Check for analog events, which are handled differently
   switch((int)eventAxisNeg)
@@ -980,13 +983,13 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
     {
       // Turn off all associated events, since we don't know exactly
       // which one was previously activated.
-      handleEvent(myJoyHatTable[stick][hat][0], 0);
-      handleEvent(myJoyHatTable[stick][hat][1], 0);
-      handleEvent(myJoyHatTable[stick][hat][2], 0);
-      handleEvent(myJoyHatTable[stick][hat][3], 0);
+      handleEvent(myJoyHatTable[stick][hat][0][kEmulationMode], 0);
+      handleEvent(myJoyHatTable[stick][hat][1][kEmulationMode], 0);
+      handleEvent(myJoyHatTable[stick][hat][2][kEmulationMode], 0);
+      handleEvent(myJoyHatTable[stick][hat][3][kEmulationMode], 0);
     }
     else
-      handleEvent(myJoyHatTable[stick][hat][value], 1);
+      handleEvent(myJoyHatTable[stick][hat][value][kEmulationMode], 1);
   }
   else if(myOverlay != NULL)
     myOverlay->handleJoyHatEvent(stick, hat, value);
@@ -1215,8 +1218,6 @@ bool EventHandler::eventStateChange(Event::Type type)
       {
         if(myState == S_EMULATE)
           enterMenuMode(S_MENU);
-//        else if(myState == S_MENU)  // FIXME - maybe 'tab' should only enter, not exit
-//          leaveMenuMode();
         else
           handled = false;
       }
@@ -1275,22 +1276,40 @@ void EventHandler::createMouseButtonEvent(int x, int y, int state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setActionMappings()
+void EventHandler::setActionMappings(EventMode mode)
 {
+  int listsize = 0;
+  ActionList* list = NULL;
+
+  switch(mode)
+  {
+    case kEmulationMode:
+      listsize = kEmulActionListSize;
+      list     = ourEmulActionList;
+      break;
+    case kMenuMode:
+      listsize = kMenuActionListSize;
+      list     = ourMenuActionList;
+      break;
+    default:
+      return;
+      break;
+  }
+
   int i, j, stick, button, axis, hat, dir;
   ostringstream buf;
 
   // Fill the ActionList with the current key and joystick mappings
-  for(i = 0; i < kActionListSize; ++i)
+  for(i = 0; i < listsize; ++i)
   {
-    Event::Type event = ourActionList[i].event;
-    if(ourActionList[i].key)
-      free(ourActionList[i].key);
-    ourActionList[i].key = strdup("None");
+    Event::Type event = list[i].event;
+    if(list[i].key)
+      free(list[i].key);
+    list[i].key = strdup("None");
     string key = "";
     for(j = 0; j < SDLK_LAST; ++j)   // key mapping
     {
-      if(myKeyTable[j] == event)
+      if(myKeyTable[j][mode] == event)
       {
         if(key == "")
           key = key + ourSDLMapping[j];
@@ -1304,7 +1323,7 @@ void EventHandler::setActionMappings()
     {
       for(button = 0; button < kNumJoyButtons; ++button)
       {
-        if(myJoyTable[stick][button] == event)
+        if(myJoyTable[stick][button][mode] == event)
         {
           buf.str("");
           buf << "J" << stick << " B" << button;
@@ -1322,7 +1341,7 @@ void EventHandler::setActionMappings()
       {
         for(dir = 0; dir < 2; ++dir)
         {
-          if(myJoyAxisTable[stick][axis][dir] == event)
+          if(myJoyAxisTable[stick][axis][dir][mode] == event)
           {
             buf.str("");
             buf << "J" << stick << " axis " << axis;
@@ -1351,7 +1370,7 @@ void EventHandler::setActionMappings()
       {
         for(dir = 0; dir < 4; ++dir)
         {
-          if(myJoyHatTable[stick][hat][dir] == event)
+          if(myJoyHatTable[stick][hat][dir][mode] == event)
           {
             buf.str("");
             buf << "J" << stick << " hat " << hat;
@@ -1389,9 +1408,9 @@ void EventHandler::setActionMappings()
 
     if(key != "")
     {
-      if(ourActionList[i].key)
-        free(ourActionList[i].key);
-      ourActionList[i].key = strdup(key.c_str());
+      if(list[i].key)
+        free(list[i].key);
+      list[i].key = strdup(key.c_str());
     }
   }
 }
@@ -1402,14 +1421,19 @@ void EventHandler::setKeymap()
   string list = myOSystem->settings().getString("keymap");
   IntArray map;
 
-  if(isValidList(list, map, SDLK_LAST))
+  if(isValidList(list, map, SDLK_LAST * kNumModes))
   {
     // Fill the keymap table with events
-    for(Int32 i = 0; i < SDLK_LAST; ++i)
-      myKeyTable[i] = (Event::Type) map[i];
+    IntArray::const_iterator event = map.begin();
+    for(int mode = 0; mode < kNumModes; ++mode)
+      for(int i = 0; i < SDLK_LAST; ++i)
+        myKeyTable[i][mode] = (Event::Type) *event++;
   }
   else
-    setDefaultKeymap();
+  {
+    setDefaultKeymap(kEmulationMode);
+    setDefaultKeymap(kMenuMode);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1419,16 +1443,20 @@ void EventHandler::setJoymap()
   string list = myOSystem->settings().getString("joymap");
   IntArray map;
 
-  if(isValidList(list, map, kNumJoysticks*kNumJoyButtons))
+  if(isValidList(list, map, kNumJoysticks*kNumJoyButtons*kNumModes))
   {
     // Fill the joymap table with events
-    int idx = 0;
-    for(int i = 0; i < kNumJoysticks; ++i)
-      for(int j = 0; j < kNumJoyButtons; ++j)
-        myJoyTable[i][j] = (Event::Type) map[idx++];
+    IntArray::const_iterator event = map.begin();
+    for(int mode = 0; mode < kNumModes; ++mode)
+      for(int i = 0; i < kNumJoysticks; ++i)
+        for(int j = 0; j < kNumJoyButtons; ++j)
+          myJoyTable[i][j][mode] = (Event::Type) *event++;
   }
   else
-    setDefaultJoymap();
+  {
+    setDefaultJoymap(kEmulationMode);
+    setDefaultJoymap(kMenuMode);
+  }
 #endif
 }
 
@@ -1439,17 +1467,21 @@ void EventHandler::setJoyAxisMap()
   string list = myOSystem->settings().getString("joyaxismap");
   IntArray map;
 
-  if(isValidList(list, map, kNumJoysticks*kNumJoyAxis*2))
+  if(isValidList(list, map, kNumJoysticks*kNumJoyAxis*2*kNumModes))
   {
     // Fill the joyaxismap table with events
-    int idx = 0;
-    for(int i = 0; i < kNumJoysticks; ++i)
-      for(int j = 0; j < kNumJoyAxis; ++j)
-        for(int k = 0; k < 2; ++k)
-          myJoyAxisTable[i][j][k] = (Event::Type) map[idx++];
+    IntArray::const_iterator event = map.begin();
+    for(int mode = 0; mode < kNumModes; ++mode)
+      for(int i = 0; i < kNumJoysticks; ++i)
+        for(int j = 0; j < kNumJoyAxis; ++j)
+          for(int k = 0; k < 2; ++k)
+            myJoyAxisTable[i][j][k][mode] = (Event::Type) *event++;
   }
   else
-    setDefaultJoyAxisMap();
+  {
+    setDefaultJoyAxisMap(kEmulationMode);
+    setDefaultJoyAxisMap(kMenuMode);
+  }
 #endif
 }
 
@@ -1460,54 +1492,60 @@ void EventHandler::setJoyHatMap()
   string list = myOSystem->settings().getString("joyhatmap");
   IntArray map;
 
-  if(isValidList(list, map, kNumJoysticks*kNumJoyHats*4))
+  if(isValidList(list, map, kNumJoysticks*kNumJoyHats*4*kNumModes))
   {
     // Fill the joyhatmap table with events
-    int idx = 0;
-    for(int i = 0; i < kNumJoysticks; ++i)
-      for(int j = 0; j < kNumJoyHats; ++j)
-        for(int k = 0; k < 4; ++k)
-          myJoyHatTable[i][j][k] = (Event::Type) map[idx++];
+    IntArray::const_iterator event = map.begin();
+    for(int mode = 0; mode < kNumModes; ++mode)
+      for(int i = 0; i < kNumJoysticks; ++i)
+        for(int j = 0; j < kNumJoyHats; ++j)
+          for(int k = 0; k < 4; ++k)
+            myJoyHatTable[i][j][k][mode] = (Event::Type) *event++;
   }
   else
-    setDefaultJoyHatMap();
+  {
+    setDefaultJoyHatMap(kEmulationMode);
+    setDefaultJoyHatMap(kMenuMode);
+  }
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addKeyMapping(Event::Type event, int key)
+bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, int key)
 {
   // These keys cannot be remapped.
   if(key == SDLK_TAB || eventIsAnalog(event))
     return false;
   else
   {
-    myKeyTable[key] = event;
+    myKeyTable[key][mode] = event;
     saveKeyMapping();
 
-    setActionMappings();
+    setActionMappings(mode);
     return true;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyMapping(Event::Type event, int stick, int button)
+void EventHandler::setDefaultJoyMapping(Event::Type event, EventMode mode,
+                                        int stick, int button)
 {
   if(stick >= 0 && stick < kNumJoysticks &&
      button >= 0 && button < kNumJoyButtons &&
      event >= 0 && event < Event::LastType)
-    myJoyTable[stick][button] = event;
+    myJoyTable[stick][button][mode] = event;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addJoyMapping(Event::Type event, int stick, int button)
+bool EventHandler::addJoyMapping(Event::Type event, EventMode mode,
+                                 int stick, int button)
 {
   if(!eventIsAnalog(event))
   {
-    setDefaultJoyMapping(event, stick, button);
+    setDefaultJoyMapping(event, mode, stick, button);
 
     saveJoyMapping();
-    setActionMappings();
+    setActionMappings(mode);
     return true;
   }
   else
@@ -1515,8 +1553,8 @@ bool EventHandler::addJoyMapping(Event::Type event, int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyAxisMapping(Event::Type event, int stick,
-                                            int axis, int value)
+void EventHandler::setDefaultJoyAxisMapping(Event::Type event, EventMode mode,
+                                            int stick, int axis, int value)
 {
   if(stick >= 0 && stick < kNumJoysticks &&
      axis >= 0 && axis < kNumJoyAxis &&
@@ -1525,35 +1563,36 @@ void EventHandler::setDefaultJoyAxisMapping(Event::Type event, int stick,
     // This confusing code is because each axis has two associated values,
     // but analog events only affect one of the axis.
     if(eventIsAnalog(event))
-      myJoyAxisTable[stick][axis][0] = myJoyAxisTable[stick][axis][1] = event;
+      myJoyAxisTable[stick][axis][0][mode] =
+        myJoyAxisTable[stick][axis][1][mode] = event;
     else
     {
       // Otherwise, turn off the analog event(s) for this axis
-      if(eventIsAnalog(myJoyAxisTable[stick][axis][0]))
-        myJoyAxisTable[stick][axis][0] = Event::NoType;
-      if(eventIsAnalog(myJoyAxisTable[stick][axis][1]))
-        myJoyAxisTable[stick][axis][1] = Event::NoType;
+      if(eventIsAnalog(myJoyAxisTable[stick][axis][0][mode]))
+        myJoyAxisTable[stick][axis][0][mode] = Event::NoType;
+      if(eventIsAnalog(myJoyAxisTable[stick][axis][1][mode]))
+        myJoyAxisTable[stick][axis][1][mode] = Event::NoType;
     
-      myJoyAxisTable[stick][axis][(value > 0)] = event;
+      myJoyAxisTable[stick][axis][(value > 0)][mode] = event;
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addJoyAxisMapping(Event::Type event, int stick, int axis,
-                                     int value)
+bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
+                                     int stick, int axis, int value)
 {
-  setDefaultJoyAxisMapping(event, stick, axis, value);
+  setDefaultJoyAxisMapping(event, mode, stick, axis, value);
 
   saveJoyAxisMapping();
-  setActionMappings();
+  setActionMappings(mode);
 
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyHatMapping(Event::Type event, int stick,
-                                           int hat, int value)
+void EventHandler::setDefaultJoyHatMapping(Event::Type event, EventMode mode,
+                                           int stick, int hat, int value)
 {
   if(stick >= 0 && stick < kNumJoysticks &&
      hat >= 0 && hat < kNumJoyHats &&
@@ -1565,22 +1604,22 @@ void EventHandler::setDefaultJoyHatMapping(Event::Type event, int stick,
       case kJHatDown:
       case kJHatLeft:
       case kJHatRight:
-        myJoyHatTable[stick][hat][value] = event;
+        myJoyHatTable[stick][hat][value][mode] = event;
         break;
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addJoyHatMapping(Event::Type event, int stick, int hat,
-                                    int value)
+bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
+                                    int stick, int hat, int value)
 {
   if(!eventIsAnalog(event))
   {
-    setDefaultJoyHatMapping(event, stick, hat, value);
+    setDefaultJoyHatMapping(event, mode, stick, hat, value);
 
     saveJoyHatMapping();
-    setActionMappings();
+    setActionMappings(mode);
     return true;
   }
   else
@@ -1588,168 +1627,192 @@ bool EventHandler::addJoyHatMapping(Event::Type event, int stick, int hat,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::eraseMapping(Event::Type event)
+void EventHandler::eraseMapping(Event::Type event, EventMode mode)
 {
   int i, j, k;
 
   // Erase the KeyEvent arrays
   for(i = 0; i < SDLK_LAST; ++i)
-    if(myKeyTable[i] == event && i != SDLK_TAB)
-      myKeyTable[i] = Event::NoType;
+    if(myKeyTable[i][mode] == event && i != SDLK_TAB)
+      myKeyTable[i][mode] = Event::NoType;
   saveKeyMapping();
 
 #ifdef JOYSTICK_SUPPORT
   // Erase the JoyEvent array
   for(i = 0; i < kNumJoysticks; ++i)
     for(j = 0; j < kNumJoyButtons; ++j)
-      if(myJoyTable[i][j] == event)
-        myJoyTable[i][j] = Event::NoType;
+      if(myJoyTable[i][j][mode] == event)
+        myJoyTable[i][j][mode] = Event::NoType;
   saveJoyMapping();
 
   // Erase the JoyAxisEvent array
   for(i = 0; i < kNumJoysticks; ++i)
     for(j = 0; j < kNumJoyAxis; ++j)
       for(k = 0; k < 2; ++k)
-        if(myJoyAxisTable[i][j][k] == event)
-          myJoyAxisTable[i][j][k] = Event::NoType;
+        if(myJoyAxisTable[i][j][k][mode] == event)
+          myJoyAxisTable[i][j][k][mode] = Event::NoType;
   saveJoyAxisMapping();
 
   // Erase the JoyHatEvent array
   for(i = 0; i < kNumJoysticks; ++i)
     for(j = 0; j < kNumJoyHats; ++j)
       for(k = 0; k < 4; ++k)
-        if(myJoyHatTable[i][j][k] == event)
-          myJoyHatTable[i][j][k] = Event::NoType;
+        if(myJoyHatTable[i][j][k][mode] == event)
+          myJoyHatTable[i][j][k][mode] = Event::NoType;
   saveJoyHatMapping();
 #endif
 
-  setActionMappings();
+  setActionMappings(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultMapping()
+void EventHandler::setDefaultMapping(EventMode mode)
 {
-  setDefaultKeymap();
-  setDefaultJoymap();
-  setDefaultJoyAxisMap();
-  setDefaultJoyHatMap();
+  setDefaultKeymap(mode);
+  setDefaultJoymap(mode);
+  setDefaultJoyAxisMap(mode);
+  setDefaultJoyHatMap(mode);
 
-  setActionMappings();
+  setActionMappings(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultKeymap()
+void EventHandler::setDefaultKeymap(EventMode mode)
 {
-  // Erase all mappings
-  for(Int32 i = 0; i < SDLK_LAST; ++i)
-    myKeyTable[i] = Event::NoType;
+  switch(mode)
+  {
+    case kEmulationMode:
+      // Erase all mappings
+      for(int i = 0; i < SDLK_LAST; ++i)
+        myKeyTable[i][mode] = Event::NoType;
 
-  myKeyTable[ SDLK_1 ]         = Event::KeyboardZero1;
-  myKeyTable[ SDLK_2 ]         = Event::KeyboardZero2;
-  myKeyTable[ SDLK_3 ]         = Event::KeyboardZero3;
-  myKeyTable[ SDLK_q ]         = Event::KeyboardZero4;
-  myKeyTable[ SDLK_w ]         = Event::KeyboardZero5;
-  myKeyTable[ SDLK_e ]         = Event::KeyboardZero6;
-  myKeyTable[ SDLK_a ]         = Event::KeyboardZero7;
-  myKeyTable[ SDLK_s ]         = Event::KeyboardZero8;
-  myKeyTable[ SDLK_d ]         = Event::KeyboardZero9;
-  myKeyTable[ SDLK_z ]         = Event::KeyboardZeroStar;
-  myKeyTable[ SDLK_x ]         = Event::KeyboardZero0;
-  myKeyTable[ SDLK_c ]         = Event::KeyboardZeroPound;
+      myKeyTable[ SDLK_1 ][mode]         = Event::KeyboardZero1;
+      myKeyTable[ SDLK_2 ][mode]         = Event::KeyboardZero2;
+      myKeyTable[ SDLK_3 ][mode]         = Event::KeyboardZero3;
+      myKeyTable[ SDLK_q ][mode]         = Event::KeyboardZero4;
+      myKeyTable[ SDLK_w ][mode]         = Event::KeyboardZero5;
+      myKeyTable[ SDLK_e ][mode]         = Event::KeyboardZero6;
+      myKeyTable[ SDLK_a ][mode]         = Event::KeyboardZero7;
+      myKeyTable[ SDLK_s ][mode]         = Event::KeyboardZero8;
+      myKeyTable[ SDLK_d ][mode]         = Event::KeyboardZero9;
+      myKeyTable[ SDLK_z ][mode]         = Event::KeyboardZeroStar;
+      myKeyTable[ SDLK_x ][mode]         = Event::KeyboardZero0;
+      myKeyTable[ SDLK_c ][mode]         = Event::KeyboardZeroPound;
 
-  myKeyTable[ SDLK_8 ]         = Event::KeyboardOne1;
-  myKeyTable[ SDLK_9 ]         = Event::KeyboardOne2;
-  myKeyTable[ SDLK_0 ]         = Event::KeyboardOne3;
-  myKeyTable[ SDLK_i ]         = Event::KeyboardOne4;
-  myKeyTable[ SDLK_o ]         = Event::KeyboardOne5;
-  myKeyTable[ SDLK_p ]         = Event::KeyboardOne6;
-  myKeyTable[ SDLK_k ]         = Event::KeyboardOne7;
-  myKeyTable[ SDLK_l ]         = Event::KeyboardOne8;
-  myKeyTable[ SDLK_SEMICOLON ] = Event::KeyboardOne9;
-  myKeyTable[ SDLK_COMMA ]     = Event::KeyboardOneStar;
-  myKeyTable[ SDLK_PERIOD ]    = Event::KeyboardOne0;
-  myKeyTable[ SDLK_SLASH ]     = Event::KeyboardOnePound;
+      myKeyTable[ SDLK_8 ][mode]         = Event::KeyboardOne1;
+      myKeyTable[ SDLK_9 ][mode]         = Event::KeyboardOne2;
+      myKeyTable[ SDLK_0 ][mode]         = Event::KeyboardOne3;
+      myKeyTable[ SDLK_i ][mode]         = Event::KeyboardOne4;
+      myKeyTable[ SDLK_o ][mode]         = Event::KeyboardOne5;
+      myKeyTable[ SDLK_p ][mode]         = Event::KeyboardOne6;
+      myKeyTable[ SDLK_k ][mode]         = Event::KeyboardOne7;
+      myKeyTable[ SDLK_l ][mode]         = Event::KeyboardOne8;
+      myKeyTable[ SDLK_SEMICOLON ][mode] = Event::KeyboardOne9;
+      myKeyTable[ SDLK_COMMA ][mode]     = Event::KeyboardOneStar;
+      myKeyTable[ SDLK_PERIOD ][mode]    = Event::KeyboardOne0;
+      myKeyTable[ SDLK_SLASH ][mode]     = Event::KeyboardOnePound;
 
-  myKeyTable[ SDLK_UP ]        = Event::JoystickZeroUp;
-  myKeyTable[ SDLK_DOWN ]      = Event::JoystickZeroDown;
-  myKeyTable[ SDLK_LEFT ]      = Event::JoystickZeroLeft;
-  myKeyTable[ SDLK_RIGHT ]     = Event::JoystickZeroRight;
-  myKeyTable[ SDLK_SPACE ]     = Event::JoystickZeroFire;
-  myKeyTable[ SDLK_LCTRL ]     = Event::JoystickZeroFire;
-  myKeyTable[ SDLK_4 ]         = Event::BoosterGripZeroTrigger;
-  myKeyTable[ SDLK_5 ]         = Event::BoosterGripZeroBooster;
+      myKeyTable[ SDLK_UP ][mode]        = Event::JoystickZeroUp;
+      myKeyTable[ SDLK_DOWN ][mode]      = Event::JoystickZeroDown;
+      myKeyTable[ SDLK_LEFT ][mode]      = Event::JoystickZeroLeft;
+      myKeyTable[ SDLK_RIGHT ][mode]     = Event::JoystickZeroRight;
+      myKeyTable[ SDLK_SPACE ][mode]     = Event::JoystickZeroFire;
+      myKeyTable[ SDLK_LCTRL ][mode]     = Event::JoystickZeroFire;
+      myKeyTable[ SDLK_4 ][mode]         = Event::BoosterGripZeroTrigger;
+      myKeyTable[ SDLK_5 ][mode]         = Event::BoosterGripZeroBooster;
 
-  myKeyTable[ SDLK_y ]         = Event::JoystickOneUp;
-  myKeyTable[ SDLK_h ]         = Event::JoystickOneDown;
-  myKeyTable[ SDLK_g ]         = Event::JoystickOneLeft;
-  myKeyTable[ SDLK_j ]         = Event::JoystickOneRight;
-  myKeyTable[ SDLK_f ]         = Event::JoystickOneFire;
-  myKeyTable[ SDLK_6 ]         = Event::BoosterGripOneTrigger;
-  myKeyTable[ SDLK_7 ]         = Event::BoosterGripOneBooster;
+      myKeyTable[ SDLK_y ][mode]         = Event::JoystickOneUp;
+      myKeyTable[ SDLK_h ][mode]         = Event::JoystickOneDown;
+      myKeyTable[ SDLK_g ][mode]         = Event::JoystickOneLeft;
+      myKeyTable[ SDLK_j ][mode]         = Event::JoystickOneRight;
+      myKeyTable[ SDLK_f ][mode]         = Event::JoystickOneFire;
+      myKeyTable[ SDLK_6 ][mode]         = Event::BoosterGripOneTrigger;
+      myKeyTable[ SDLK_7 ][mode]         = Event::BoosterGripOneBooster;
 
-  myKeyTable[ SDLK_INSERT ]    = Event::DrivingZeroCounterClockwise;
-  myKeyTable[ SDLK_PAGEUP ]    = Event::DrivingZeroClockwise;
-  myKeyTable[ SDLK_HOME ]      = Event::DrivingZeroFire;
+      myKeyTable[ SDLK_INSERT ][mode]    = Event::DrivingZeroCounterClockwise;
+      myKeyTable[ SDLK_PAGEUP ][mode]    = Event::DrivingZeroClockwise;
+      myKeyTable[ SDLK_HOME ][mode]      = Event::DrivingZeroFire;
 
-  myKeyTable[ SDLK_DELETE ]    = Event::DrivingOneCounterClockwise;
-  myKeyTable[ SDLK_PAGEDOWN ]  = Event::DrivingOneClockwise;
-  myKeyTable[ SDLK_END ]       = Event::DrivingOneFire;
+      myKeyTable[ SDLK_DELETE ][mode]    = Event::DrivingOneCounterClockwise;
+      myKeyTable[ SDLK_PAGEDOWN ][mode]  = Event::DrivingOneClockwise;
+      myKeyTable[ SDLK_END ][mode]       = Event::DrivingOneFire;
 
-  myKeyTable[ SDLK_F1 ]        = Event::ConsoleSelect;
-  myKeyTable[ SDLK_F2 ]        = Event::ConsoleReset;
-  myKeyTable[ SDLK_F3 ]        = Event::ConsoleColor;
-  myKeyTable[ SDLK_F4 ]        = Event::ConsoleBlackWhite;
-  myKeyTable[ SDLK_F5 ]        = Event::ConsoleLeftDifficultyA;
-  myKeyTable[ SDLK_F6 ]        = Event::ConsoleLeftDifficultyB;
-  myKeyTable[ SDLK_F7 ]        = Event::ConsoleRightDifficultyA;
-  myKeyTable[ SDLK_F8 ]        = Event::ConsoleRightDifficultyB;
-  myKeyTable[ SDLK_F9 ]        = Event::SaveState;
-  myKeyTable[ SDLK_F10 ]       = Event::ChangeState;
-  myKeyTable[ SDLK_F11 ]       = Event::LoadState;
-  myKeyTable[ SDLK_F12 ]       = Event::TakeSnapshot;
-  myKeyTable[ SDLK_PAUSE ]     = Event::Pause;
-  myKeyTable[ SDLK_BACKSPACE ] = Event::Fry;
-  myKeyTable[ SDLK_TAB ]       = Event::MenuMode;
-  myKeyTable[ SDLK_BACKSLASH ] = Event::CmdMenuMode;
-  myKeyTable[ SDLK_BACKQUOTE ] = Event::DebuggerMode;
-  myKeyTable[ SDLK_ESCAPE ]    = Event::LauncherMode;
+      myKeyTable[ SDLK_F1 ][mode]        = Event::ConsoleSelect;
+      myKeyTable[ SDLK_F2 ][mode]        = Event::ConsoleReset;
+      myKeyTable[ SDLK_F3 ][mode]        = Event::ConsoleColor;
+      myKeyTable[ SDLK_F4 ][mode]        = Event::ConsoleBlackWhite;
+      myKeyTable[ SDLK_F5 ][mode]        = Event::ConsoleLeftDifficultyA;
+      myKeyTable[ SDLK_F6 ][mode]        = Event::ConsoleLeftDifficultyB;
+      myKeyTable[ SDLK_F7 ][mode]        = Event::ConsoleRightDifficultyA;
+      myKeyTable[ SDLK_F8 ][mode]        = Event::ConsoleRightDifficultyB;
+      myKeyTable[ SDLK_F9 ][mode]        = Event::SaveState;
+      myKeyTable[ SDLK_F10 ][mode]       = Event::ChangeState;
+      myKeyTable[ SDLK_F11 ][mode]       = Event::LoadState;
+      myKeyTable[ SDLK_F12 ][mode]       = Event::TakeSnapshot;
+      myKeyTable[ SDLK_PAUSE ][mode]     = Event::Pause;
+      myKeyTable[ SDLK_BACKSPACE ][mode] = Event::Fry;
+      myKeyTable[ SDLK_TAB ][mode]       = Event::MenuMode;
+      myKeyTable[ SDLK_BACKSLASH ][mode] = Event::CmdMenuMode;
+      myKeyTable[ SDLK_BACKQUOTE ][mode] = Event::DebuggerMode;
+      myKeyTable[ SDLK_ESCAPE ][mode]    = Event::LauncherMode;
+      break;
+
+    case kMenuMode:
+      myKeyTable[ SDLK_UP ][mode]        = Event::UIUp;
+      myKeyTable[ SDLK_DOWN ][mode]      = Event::UIDown;
+      myKeyTable[ SDLK_LEFT ][mode]      = Event::UILeft;
+      myKeyTable[ SDLK_RIGHT ][mode]     = Event::UIRight;
+
+      myKeyTable[ SDLK_HOME ][mode]      = Event::UIHome;
+      myKeyTable[ SDLK_END ][mode]       = Event::UIEnd;
+      myKeyTable[ SDLK_PAGEUP ][mode]    = Event::UIPgUp;
+      myKeyTable[ SDLK_PAGEDOWN ][mode]  = Event::UIPgDown;
+
+      myKeyTable[ SDLK_RETURN ][mode]    = Event::UISelect;
+      myKeyTable[ SDLK_BACKSPACE ][mode] = Event::UIPrevDir;
+      break;
+
+    default:
+      return;
+      break;
+  }
 
   saveKeyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoymap()
+void EventHandler::setDefaultJoymap(EventMode mode)
 {
   // Erase all mappings
   for(int i = 0; i < kNumJoysticks; ++i)
     for(int j = 0; j < kNumJoyButtons; ++j)
-      myJoyTable[i][j] = Event::NoType;
+      myJoyTable[i][j][mode] = Event::NoType;
 
   myOSystem->setDefaultJoymap();
   saveJoyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyAxisMap()
+void EventHandler::setDefaultJoyAxisMap(EventMode mode)
 {
   // Erase all mappings
   for(int i = 0; i < kNumJoysticks; ++i)
     for(int j = 0; j < kNumJoyAxis; ++j)
       for(int k = 0; k < 2; ++k)
-        myJoyAxisTable[i][j][k] = Event::NoType;
+        myJoyAxisTable[i][j][k][mode] = Event::NoType;
 
   myOSystem->setDefaultJoyAxisMap();
   saveJoyAxisMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyHatMap()
+void EventHandler::setDefaultJoyHatMap(EventMode mode)
 {
   // Erase all mappings
   for(int i = 0; i < kNumJoysticks; ++i)
     for(int j = 0; j < kNumJoyHats; ++j)
       for(int k = 0; k < 4; ++k)
-        myJoyHatTable[i][j][k] = Event::NoType;
+        myJoyHatTable[i][j][k][mode] = Event::NoType;
 
   myOSystem->setDefaultJoyHatMap();
   saveJoyHatMapping();
@@ -1762,8 +1825,9 @@ void EventHandler::saveKeyMapping()
   // Prepend the event count, so we can check it on next load
   ostringstream keybuf;
   keybuf << Event::LastType << ":";
-  for(uInt32 i = 0; i < SDLK_LAST; ++i)
-    keybuf << myKeyTable[i] << ":";
+  for(int mode = 0; mode < kNumModes; ++mode)
+    for(int i = 0; i < SDLK_LAST; ++i)
+      keybuf << myKeyTable[i][mode] << ":";
 
   myOSystem->settings().setString("keymap", keybuf.str());
 }
@@ -1775,9 +1839,10 @@ void EventHandler::saveJoyMapping()
   // Prepend the event count, so we can check it on next load
   ostringstream buf;
   buf << Event::LastType << ":";
-  for(int i = 0; i < kNumJoysticks; ++i)
-    for(int j = 0; j < kNumJoyButtons; ++j)
-      buf << myJoyTable[i][j] << ":";
+  for(int mode = 0; mode < kNumModes; ++mode)
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyButtons; ++j)
+        buf << myJoyTable[i][j][mode] << ":";
 
   myOSystem->settings().setString("joymap", buf.str());
 }
@@ -1789,10 +1854,11 @@ void EventHandler::saveJoyAxisMapping()
   // Prepend the event count, so we can check it on next load
   ostringstream buf;
   buf << Event::LastType << ":";
-  for(int i = 0; i < kNumJoysticks; ++i)
-    for(int j = 0; j < kNumJoyAxis; ++j)
-      for(int k = 0; k < 2; ++k)
-        buf << myJoyAxisTable[i][j][k] << ":";
+  for(int mode = 0; mode < kNumModes; ++mode)
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyAxis; ++j)
+        for(int k = 0; k < 2; ++k)
+          buf << myJoyAxisTable[i][j][k][mode] << ":";
 
   myOSystem->settings().setString("joyaxismap", buf.str());
 }
@@ -1804,10 +1870,11 @@ void EventHandler::saveJoyHatMapping()
   // Prepend the event count, so we can check it on next load
   ostringstream buf;
   buf << Event::LastType << ":";
-  for(int i = 0; i < kNumJoysticks; ++i)
-    for(int j = 0; j < kNumJoyHats; ++j)
-      for(int k = 0; k < 4; ++k)
-        buf << myJoyHatTable[i][j][k] << ":";
+  for(int mode = 0; mode < kNumModes; ++mode)
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyHats; ++j)
+        for(int k = 0; k < 4; ++k)
+          buf << myJoyHatTable[i][j][k][mode] << ":";
 
   myOSystem->settings().setString("joyhatmap", buf.str());
 }
@@ -1849,98 +1916,94 @@ inline bool EventHandler::eventIsAnalog(Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getEmulationActions()
+StringList EventHandler::getActionList(EventMode mode)
 {
   StringList l;
 
-  for(int i = 0; i < kActionListSize; ++i)
-    l.push_back(EventHandler::ourActionList[i].action);
-
-  return l;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getMenuActions()
-{
-  StringList l;  // FIXME
-
-//  for(int i = 0; i < kActionListSize; ++i)
-//    l.push_back(EventHandler::ourActionList[i].action);
-
-  return l;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::eventForKey(int key, EventMode mode)
-{
-  // FIXME - eventually make this a one-line inliner in the header
-
-  Event::Type e = Event::NoType;
-
-  // FIXME - eventually this will return the mapped events for
-  // keys either for emulation mode or UI mode.  For now, it always
-  // assumes UI mode, and generates the key statically.
-  if(key < 0 || key >= SDLK_LAST)
-    return e;
-
-  switch(key)
+  switch(mode)
   {
-    case '\n':  // enter/return
-    case '\r':
-      e = Event::UISelect;
+    case kEmulationMode:
+      for(int i = 0; i < kEmulActionListSize; ++i)
+        l.push_back(EventHandler::ourEmulActionList[i].action);
       break;
-    case 256+17: // cursor up
-      e = Event::UIUp;
-      break;
-    case 256+18: // cursor down
-      e = Event::UIDown;
-      break;
-    case 256+20: // cursor left
-      e = Event::UILeft;
-      break;
-    case 256+19: // cursor right
-      e = Event::UIRight;
-      break;
-    case 256+24: // Page Up:
-      e = Event::UIPgUp;
-      break;
-    case 256+25: // Page Down
-      e = Event::UIPgDown;
-      break;
-    case 256+22: // Home
-      e = Event::UIHome;
-      break;
-    case 256+23: // End
-      e = Event::UIEnd;
+    case kMenuMode:
+      for(int i = 0; i < kMenuActionListSize; ++i)
+        l.push_back(EventHandler::ourMenuActionList[i].action);
       break;
     default:
       break;
   }
-  return e; // ... myKeyTable[key];
+
+  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::eventForJoyButton(int stick, int button,
-                                            EventMode mode)
+Event::Type EventHandler::eventAtIndex(int idx, EventMode mode)
 {
-  // FIXME - do a lookup
-  return Event::NoType;
+  switch(mode)
+  {
+    case kEmulationMode:
+      if(idx < 0 || idx >= kEmulActionListSize)
+        return Event::NoType;
+      else
+        return ourEmulActionList[idx].event;
+      break;
+    case kMenuMode:
+      if(idx < 0 || idx >= kMenuActionListSize)
+        return Event::NoType;
+      else
+        return ourMenuActionList[idx].event;
+      break;
+    default:
+      return Event::NoType;
+      break;
+  }
+}  
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EventHandler::actionAtIndex(int idx, EventMode mode)
+{
+  switch(mode)
+  {
+    case kEmulationMode:
+      if(idx < 0 || idx >= kEmulActionListSize)
+        return EmptyString;
+      else
+        return ourEmulActionList[idx].action;
+      break;
+    case kMenuMode:
+      if(idx < 0 || idx >= kMenuActionListSize)
+        return EmptyString;
+      else
+        return ourMenuActionList[idx].action;
+      break;
+    default:
+      return EmptyString;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::eventForJoyAxis(int stick, int axis, int value,
-                                          EventMode mode)
+string EventHandler::keyAtIndex(int idx, EventMode mode)
 {
-  // FIXME - do a lookup
-  return Event::NoType;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::eventForJoyHat(int stick, int hat, int value,
-                                         EventMode mode)
-{
-  // FIXME - do a lookup
-  return Event::NoType;
+  switch(mode)
+  {
+    case kEmulationMode:
+      if(idx < 0 || idx >= kEmulActionListSize)
+        return EmptyString;
+      else
+        return ourEmulActionList[idx].key;
+      break;
+    case kMenuMode:
+      if(idx < 0 || idx >= kMenuActionListSize)
+        return EmptyString;
+      else
+        return ourMenuActionList[idx].key;
+      break;
+    default:
+      return EmptyString;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2090,9 +2153,9 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a Snapshot object and save the PNG
-  myOSystem->eventHandler().refreshDisplay(true);  // force an immediate update
+  refreshDisplay(true);  // force an immediate update
   Snapshot snapshot(myOSystem->frameBuffer());
-  string result  = snapshot.savePNG(filename);
+  string result = snapshot.savePNG(filename);
   myOSystem->frameBuffer().showMessage(result);
 #else
   myOSystem->frameBuffer().showMessage("Snapshots unsupported");
@@ -2497,7 +2560,7 @@ void EventHandler::setSDLMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ActionList EventHandler::ourActionList[kActionListSize] = {
+ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
   { Event::ConsoleSelect,               "Select",                          0 },
   { Event::ConsoleReset,                "Reset",                           0 },
   { Event::ConsoleColor,                "Color TV",                        0 },
@@ -2591,6 +2654,27 @@ ActionList EventHandler::ourActionList[kActionListSize] = {
   { Event::KeyboardOneStar,             "P2 Keyboard *",                   0 },
   { Event::KeyboardOne0,                "P2 Keyboard 0",                   0 },
   { Event::KeyboardOnePound,            "P2 Keyboard #",                   0 }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = {
+  { Event::UIUp,        "Move Up",              0 },
+  { Event::UIDown,      "Move Down",            0 },
+  { Event::UILeft,      "Move Left",            0 },
+  { Event::UIRight,     "Move Right",           0 },
+
+  { Event::UIHome,      "Home",                 0 },
+  { Event::UIEnd,       "End",                  0 },
+  { Event::UIPgUp,      "Page Up",              0 },
+  { Event::UIPgDown,    "Page Down",            0 },
+
+  { Event::UISelect,    "Select item",          0 },
+  { Event::UIPrevDir,   "Previous Directory",   0 },
+
+  { Event::UINavPrev,   "Previous object",      0 },
+  { Event::UINavNext,   "Next object",          0 },
+  { Event::UITabPrev,   "Previous tabgroup",    0 },
+  { Event::UITabNext,   "Next tabgroup",        0 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

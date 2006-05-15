@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.15 2006-05-05 18:00:51 stephena Exp $
+// $Id: InputDialog.cxx,v 1.16 2006-05-15 12:24:09 stephena Exp $
 //============================================================================
 
 // FIXME - this whole dialog should be a dialog of buttons instead of
@@ -54,7 +54,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab("Emul. Events");
-  const StringList& eactions = instance()->eventHandler().getEmulationActions();
+  const StringList& eactions = instance()->eventHandler().getActionList(kEmulationMode);
   myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - ypos,
@@ -64,7 +64,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // 2) Event mapper for menu actions
   tabID = myTab->addTab("Menu Events");
-  const StringList& mactions = instance()->eventHandler().getMenuActions();
+  const StringList& mactions = instance()->eventHandler().getActionList(kMenuMode);
   myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - ypos,
@@ -209,9 +209,6 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
-  myEmulEventMapper->loadConfig();
-  myMenuEventMapper->loadConfig();
-
   // Left & right ports
   const string& sa1 = instance()->settings().getString("sa1");
   int lport = sa1 == "right" ? 2 : 1;
@@ -237,6 +234,8 @@ void InputDialog::loadConfig()
   myPaddleLabel[2]->setLabel(instance()->settings().getString("p3speed"));
   myPaddleSpeed[3]->setValue(instance()->settings().getInt("p4speed"));
   myPaddleLabel[3]->setLabel(instance()->settings().getString("p4speed"));
+
+  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

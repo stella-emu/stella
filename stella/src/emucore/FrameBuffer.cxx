@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.86 2006-05-04 17:45:24 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.87 2006-05-15 12:24:09 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -329,6 +329,13 @@ void FrameBuffer::pause(bool status)
     enablePhosphor(myOSystem->console().properties().get(Display_Phosphor) == "YES");
     setPalette(myOSystem->console().mediaSource().palette());
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::refresh()
+{
+  theRedrawTIAIndicator = true;
+  myMessage.counter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
