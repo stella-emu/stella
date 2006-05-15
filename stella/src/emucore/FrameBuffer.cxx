@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.87 2006-05-15 12:24:09 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.88 2006-05-15 16:21:27 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -34,11 +34,6 @@
 
 #ifdef DEVELOPER_SUPPORT
   #include "Debugger.hxx"
-#endif
-
-#if defined(OS2) // FIXME - make proper OS/2 port
-  #define INCL_WIN
-  #include <os2emx.h>
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,13 +81,8 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   // Query the desktop size
   // This is really the job of SDL
   int dwidth = 0, dheight = 0;
-#if defined(OS2)  // FIXME - make proper OS/2 port
-  myDesktopDim.w = WinQuerySysValue(HWND_DESKTOP, SV_CXSCREEN);
-  myDesktopDim.h = WinQuerySysValue(HWND_DESKTOP, SV_CYSCREEN);
-#else
   myOSystem->getScreenDimensions(dwidth, dheight);
   myDesktopDim.w = dwidth;  myDesktopDim.h = dheight;
-#endif
 
   // Set fullscreen flag
   mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.45 2006-05-05 18:00:51 stephena Exp $
+// $Id: Dialog.cxx,v 1.46 2006-05-15 16:21:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -311,54 +311,12 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
 
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
-  bool handled = false;
   if(e == Event::NoType)
     e = instance()->eventHandler().eventForKey(ascii, kMenuMode);
 
-  switch(e)
-  {
-    case Event::UITabPrev:
-      if(_ourTab)
-      {
-        _ourTab->cycleTab(-1);
-        handled = true;
-      }
-      break;
-
-    case Event::UITabNext:
-      if(_ourTab)
-      {
-        _ourTab->cycleTab(+1);
-        handled = true;
-      }
-      break;
-
-    case Event::UINavPrev:
-      if(_focusedWidget && !_focusedWidget->wantsTab())
-      {
-        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
-                                                  _focusedWidget, -1);
-        handled = true;
-      }
-      break;
-
-    case Event::UINavNext:
-      if(_focusedWidget && !_focusedWidget->wantsTab())
-      {
-        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
-                                                  _focusedWidget, +1);
-        handled = true;
-      }
-      break;
-
-    default:
-      handled = false;
-      break;
-  }
-
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
-  if(!handled && _focusedWidget)
+  if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       _focusedWidget->handleKeyDown(ascii, keycode, modifiers);
@@ -428,12 +386,12 @@ void Dialog::handleMouseMoved(int x, int y, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyDown(int stick, int button)
 {
-  Event::Type e = Event::NoType; // FIXME - do a lookup
-  bool handled = false; // isNavigation(e);
+  Event::Type e =
+    instance()->eventHandler().eventForJoyButton(stick, button, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
-  if(!handled && _focusedWidget)
+  if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       _focusedWidget->handleJoyDown(stick, button);
@@ -453,12 +411,12 @@ void Dialog::handleJoyUp(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyAxis(int stick, int axis, int value)
 {
-  Event::Type e = Event::NoType; // FIXME - do a lookup
-  bool handled = false; // isNavigation(e);
+  Event::Type e =
+    instance()->eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
-  if(!handled && _focusedWidget)
+  if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       _focusedWidget->handleJoyAxis(stick, axis, value);
@@ -470,19 +428,65 @@ void Dialog::handleJoyAxis(int stick, int axis, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::handleJoyHat(int stick, int hat, int value)
 {
-  Event::Type e = Event::NoType; // FIXME - do a lookup
-  bool handled = false; // isNavigation(e);
+  Event::Type e =
+    instance()->eventHandler().eventForJoyHat(stick, hat, value, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
-  if(!handled && _focusedWidget)
+  if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       return _focusedWidget->handleJoyHat(stick, hat, value);
     else
       return _focusedWidget->handleEvent(e);
   }
-  return handled;
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::handleNavEvent(Event::Type e)
+{
+  switch(e)
+  {
+    case Event::UITabPrev:
+      if(_ourTab)
+      {
+        _ourTab->cycleTab(-1);
+        return true;
+      }
+      break;
+
+    case Event::UITabNext:
+      if(_ourTab)
+      {
+        _ourTab->cycleTab(+1);
+        return true;
+      }
+      break;
+
+    case Event::UINavPrev:
+      if(_focusedWidget && !_focusedWidget->wantsTab())
+      {
+        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+                                                  _focusedWidget, -1);
+        return true;
+      }
+      break;
+
+    case Event::UINavNext:
+      if(_focusedWidget && !_focusedWidget->wantsTab())
+      {
+        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+                                                  _focusedWidget, +1);
+        return true;
+      }
+      break;
+
+    default:
+      return false;
+      break;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
