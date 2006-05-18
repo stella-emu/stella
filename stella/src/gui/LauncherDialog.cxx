@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.54 2006-05-04 17:45:25 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.55 2006-05-18 12:20:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,9 +75,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                     "", kTextAlignRight);
 
   // Add list with game titles
-  // The list isn't added to focus objects, but is instead made 'sticky'
-  // This means it will act as if it were focused (wrt how it's drawn), but
-  // won't actually be able to lose focus
   xpos = 10;  ypos += fontHeight + 5;
   myList = new StringListWidget(this, font, xpos, ypos,
                                 _w - 20, _h - 28 - bheight - 2*fontHeight);
@@ -149,7 +146,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   // (De)activate browse mode
   myBrowseModeFlag = instance()->settings().getBool("rombrowse");
   myPrevDirButton->setEnabled(myBrowseModeFlag);
-  myNoteLabel->setEnabled(!myBrowseModeFlag);
+  myNoteLabel->setLabel(myBrowseModeFlag ? "Dir:" : "Note:");
 
   myCurrentNode = instance()->settings().getString("romdir");
 }
@@ -186,6 +183,7 @@ void LauncherDialog::updateListing(bool fullReload)
 {
   // Start with empty list
   myGameList->clear();
+  myNote->setLabel("");
 
   // If this is the first time using Stella, the romdir won't be set.
   // In that case, display the options dialog, and don't let Stella proceed
@@ -207,6 +205,9 @@ void LauncherDialog::updateListing(bool fullReload)
 
     // Only hilite the 'up' button if there's a parent directory
     myPrevDirButton->setEnabled(myCurrentNode.hasParent());
+
+    // Show current directory
+    myNote->setLabel(myCurrentNode.path());
   }
   else
   {
@@ -243,7 +244,7 @@ void LauncherDialog::updateListing(bool fullReload)
   myRomCount->setLabel(buf.str());
 
   // Restore last selection
-  if(!myList->getList().isEmpty())
+  if(!(myList->getList().isEmpty() || myBrowseModeFlag))
   {
     if(myBrowseModeFlag)
       myList->setSelected(0);
@@ -309,7 +310,7 @@ void LauncherDialog::loadListFromDisk()
   // Create a entry for the GameList for each file
   Properties props;
   string md5, name, note;
-  for (unsigned int idx = 0; idx < files.size(); idx++)
+  for(unsigned int idx = 0; idx < files.size(); idx++)
   {
     // Calculate the MD5 so we can get the rest of the info
     // from the PropertiesSet (stella.pro)
@@ -455,9 +456,12 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kListSelectionChangedCmd:
-      item = myList->getSelected();
-      if(item >= 0)
-        myNote->setLabel(myGameList->note(item));
+      if(!myBrowseModeFlag)
+      {
+        item = myList->getSelected();
+        if(item >= 0)
+          myNote->setLabel(myGameList->note(item));
+      }
       break;
 
     case kQuitCmd:
@@ -478,7 +482,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       myCurrentNode = instance()->settings().getString("romdir");
       myBrowseModeFlag = instance()->settings().getBool("rombrowse");
       myPrevDirButton->setEnabled(myBrowseModeFlag);
-      myNoteLabel->setEnabled(!myBrowseModeFlag);
+      myNoteLabel->setLabel(myBrowseModeFlag ? "Dir:" : "Note:");
       break;
 
     case kReloadRomDirCmd:
