@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.163 2006-05-15 12:24:09 stephena Exp $
+// $Id: EventHandler.cxx,v 1.164 2006-05-24 17:37:33 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2108,10 +2108,6 @@ void EventHandler::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::takeSnapshot()
 {
-#ifdef PSP_DEBUG
-  fprintf(stdout,"EventHandler::takeSnapshot\n");
-#endif
-
 #ifdef SNAPSHOT_SUPPORT
   // Figure out the correct snapshot name
   string filename;
@@ -2140,9 +2136,6 @@ void EventHandler::takeSnapshot()
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-#ifdef PSP_DEBUG
-        fprintf(stdout,"EventHandler::takeSnapshot '%s'\n",buf.str().c_str());
-#endif
         if(!FilesystemNode::fileExists(buf.str()))
           break;
       }
@@ -2153,7 +2146,6 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a Snapshot object and save the PNG
-  refreshDisplay(true);  // force an immediate update
   Snapshot snapshot(myOSystem->frameBuffer());
   string result = snapshot.savePNG(filename);
   myOSystem->frameBuffer().showMessage(result);

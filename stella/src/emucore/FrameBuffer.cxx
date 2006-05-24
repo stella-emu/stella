@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.88 2006-05-15 16:21:27 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.89 2006-05-24 17:37:33 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -287,7 +287,10 @@ void FrameBuffer::hideMessage()
 {
   // Erase old messages on the screen
   if(myMessage.counter > 0)
-    myOSystem->eventHandler().refreshDisplay();
+  {
+    myMessage.counter = 0;
+    myOSystem->eventHandler().refreshDisplay(true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,7 +328,6 @@ void FrameBuffer::pause(bool status)
 void FrameBuffer::refresh()
 {
   theRedrawTIAIndicator = true;
-  myMessage.counter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
