@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.17 2006-05-04 17:45:25 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.18 2006-05-25 22:23:39 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -26,7 +26,6 @@ class OSystem;
 #include "Stack.hxx"
 #include "bspf.hxx"
 
-typedef FixedStack<Dialog *> DialogStack;
 
 /**
   The base class for groups of dialog boxes.  Each dialog box has a
@@ -37,7 +36,7 @@ typedef FixedStack<Dialog *> DialogStack;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.17 2006-05-04 17:45:25 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.18 2006-05-25 22:23:39 stephena Exp $
 */
 class DialogContainer
 {
@@ -156,54 +155,65 @@ class DialogContainer
   protected:
     OSystem* myOSystem;
     Dialog*  myBaseDialog;
-    DialogStack myDialogStack;
+    FixedStack<Dialog *> myDialogStack;
 
+  private:
     enum {
-      kDoubleClickDelay        = 500,
-      kKeyRepeatInitialDelay   = 400,
-      kKeyRepeatSustainDelay   = 50,
-      kClickRepeatInitialDelay = kKeyRepeatInitialDelay,
-      kClickRepeatSustainDelay = kKeyRepeatSustainDelay,
-      kAxisRepeatInitialDelay  = kKeyRepeatInitialDelay,
-      kAxisRepeatSustainDelay  = kKeyRepeatSustainDelay
+      kDoubleClickDelay   = 500,
+      kRepeatInitialDelay = 400,
+      kRepeatSustainDelay = 50
     };
 
     // Indicates the most current time (in milliseconds) as set by updateTime()
-    uInt32 myTime;
+    int myTime;
 
     // Indicates a full refresh of all dialogs is required
     bool myRefreshFlag;
 
-    // For continuous events (keyDown)
+    // For continuous 'key down' events
     struct {
       int ascii;
       int keycode;
-      uInt8 flags;
+      int flags;
     } myCurrentKeyDown;
-    uInt32 myKeyRepeatTime;
+    int myKeyRepeatTime;
 
-    // For continuous events (mouseDown)
+    // For continuous 'mouse down' events
     struct {
       int x;
       int y;
       int button;
     } myCurrentMouseDown;
-    uInt32 myClickRepeatTime;
+    int myClickRepeatTime;
 	
-    // For continuous events (joyaxisDown)
+    // For continuous 'joy button down' events
+    struct {
+      int stick;
+      int button;
+    } myCurrentButtonDown;
+    int myButtonRepeatTime;
+
+    // For continuous 'joy axis down' events
     struct {
       int stick;
       int axis;
       int value;
-      int count;
     } myCurrentAxisDown;
-    uInt32 myAxisRepeatTime;
+    int myAxisRepeatTime;
+
+    // For continuous 'joy hat' events
+    struct {
+      int stick;
+      int hat;
+      int value;
+    } myCurrentHatDown;
+    int myHatRepeatTime;
 
     // Position and time of last mouse click (used to detect double clicks)
     struct {
-      int x, y;     // Position of mouse when the click occured
-      uInt32 time;  // Time
-      int count;    // How often was it already pressed?
+      int x, y;   // Position of mouse when the click occured
+      int time;   // Time
+      int count;  // How often was it already pressed?
     } myLastClick;
 };
 
