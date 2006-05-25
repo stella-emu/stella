@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.46 2006-05-15 16:21:27 stephena Exp $
+// $Id: Dialog.cxx,v 1.47 2006-05-25 19:03:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -420,7 +420,7 @@ void Dialog::handleJoyAxis(int stick, int axis, int value)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       _focusedWidget->handleJoyAxis(stick, axis, value);
-    else
+    else if(value != 0)
       _focusedWidget->handleEvent(e);
   }
 }
