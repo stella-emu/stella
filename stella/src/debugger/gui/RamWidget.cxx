@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.6 2006-05-04 17:45:24 stephena Exp $
+// $Id: RamWidget.cxx,v 1.7 2006-06-09 02:45:11 urchlay Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -183,7 +183,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
-      buf = instance()->debugger().equates()->getLabel(addr+kRamStart).c_str();
+      buf = instance()->debugger().equates()->getLabel(
+				addr+kRamStart, EQF_RAM).c_str();
       if(*buf) myLabel->setEditString(buf);
       else    myLabel->setEditString("");
 

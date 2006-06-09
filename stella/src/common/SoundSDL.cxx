@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.29 2006-03-06 02:26:16 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.30 2006-06-09 02:45:11 urchlay Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -131,14 +131,14 @@ void SoundSDL::initialize()
       myIsMuted = false;
       myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
 
-/*
+		/*
         cerr << "Freq: " << (int)myHardwareSpec.freq << endl;
         cerr << "Format: " << (int)myHardwareSpec.format << endl;
         cerr << "Channels: " << (int)myHardwareSpec.channels << endl;
         cerr << "Silence: " << (int)myHardwareSpec.silence << endl;
         cerr << "Samples: " << (int)myHardwareSpec.samples << endl;
         cerr << "Size: " << (int)myHardwareSpec.size << endl;
-*/
+		  */
 
       // Now initialize the TIASound object which will actually generate sound
       myTIASound.outputFrequency(myHardwareSpec.freq);

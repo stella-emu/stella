@@ -1,6 +1,7 @@
 MODULE := src/emucore
 
 MODULE_OBJS := \
+	src/emucore/AtariVox.o \
 	src/emucore/Booster.o \
 	src/emucore/Cart2K.o \
 	src/emucore/Cart3F.o \

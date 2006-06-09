@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.12 2005-12-09 01:16:13 stephena Exp $
+// $Id: EquateList.hxx,v 1.13 2006-06-09 02:45:11 urchlay Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
@@ -27,8 +27,8 @@
 
 using namespace std;
 
-typedef map<int, string> addrToLabel;
-typedef map<string, int> labelToAddr;
+typedef map<int, Equate> addrToLabel;
+typedef map<string, Equate> labelToAddr;
 
 typedef Common::Array<Equate> Equates;
 
@@ -37,9 +37,13 @@ class EquateList {
 		EquateList();
 		~EquateList();
 		const string& getLabel(int addr);
+		const string& getLabel(int addr, int flags);
 		const char *getFormatted(int addr, int places);
+		const char *getFormatted(int addr, int places, const int flags);
 		int getAddress(const string& label);
+		int getAddress(const string& label, const int flags);
 		void addEquate(string label, int address);
+		// void addEquate(string label, int address, const int flags);
 		bool saveFile(string file);
 		string loadFile(string file);
 		bool undefine(string& label);

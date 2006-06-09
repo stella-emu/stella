@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.23 2006-03-19 20:57:54 stephena Exp $
+## $Id: Makefile,v 1.24 2006-06-09 02:45:11 urchlay Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,7 @@ endif
 
 EXECUTABLE  := stella$(EXEEXT)
 
-all: $(EXECUTABLE)
+all: tags $(EXECUTABLE)
 
 
 ######################################################################
@@ -250,3 +250,8 @@ gp2x-organize:
 	cp -v -r $(srcdir)/docs/* $(srcdir)/gp2x/docs
 	
 .PHONY: deb bundle test win32dist install uninstall
+
+# Use Exuberant ctags (the one from Slackware's vim package, for instance),
+# not the one from emacs!
+tags:
+	ctags `find . -name '*.[ch]xx' -o -name '*.c' -o -name '*.y'` || true

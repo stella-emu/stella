@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
+// $Id: Control.hxx,v 1.5 2006-06-09 02:45:11 urchlay Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -55,7 +55,7 @@ class Event;
   of the controller from the prespective of the controller's jack.  
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
+  @version $Id: Control.hxx,v 1.5 2006-06-09 02:45:11 urchlay Exp $
 */
 class Controller
 {
@@ -73,7 +73,7 @@ class Controller
     */
     enum Type
     {
-      BoosterGrip, Driving, Keyboard, Paddles, Joystick
+      BoosterGrip, Driving, Keyboard, Paddles, Joystick, AtariVox
     };
 
   public:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.89 2006-04-04 23:15:42 stephena Exp $
+// $Id: Console.cxx,v 1.90 2006-06-09 02:45:11 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -21,6 +21,7 @@
 #include <sstream>
 #include <fstream>
 
+#include "AtariVox.hxx"
 #include "Booster.hxx"
 #include "Cart.hxx"
 #include "Console.hxx"
@@ -156,6 +157,10 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   else if(right == "PADDLES")
   {
     myControllers[1] = new Paddles(rightjack, *myEvent);
+  }
+  else if(right == "ATARIVOX")
+  {
+    myControllers[1] = new AtariVox(rightjack, *myEvent);
   }
   else
   {

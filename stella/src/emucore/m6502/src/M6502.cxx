@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.15 2005-09-20 19:09:10 stephena Exp $
+// $Id: M6502.cxx,v 1.16 2006-06-09 02:45:11 urchlay Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -350,6 +350,60 @@ const char* M6502::ourInstructionMnemonicTable[256] = {
 };
 
 #ifdef DEVELOPER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// This needs to be a list of all 256 opcodes and the type of memory
+// access they do (read, write, read/modify/write, or none). The
+// disassemble() method will use this to figure out what kind of label
+// to use in the disassembly.
+//// const char* M6502::ourLabelTypeTable[256] = {
+//// };
+//// 
+//// // disassemble() will use isXXX methods to determine what type of
+//// // label to show to the user (e.g. isTIA == true means to show a
+//// // non-user label; isRAM == true means to show a user r/w label, etc)
+//// 
+//// // These methods were based on (and checked against) Kroko's
+//// // 2600 memory map, found at
+//// // http://www.qotile.net/minidig/docs/2600_mem_map.txt
+//// 
+//// // is the address in RIOT RAM?
+//// bool isRAM(int addr) {
+//// 	int y = addr & 0xf00;
+//// 	int z = addr & 0xff;
+//// 
+//// 	return !isROM(addr)
+//// 		&&
+//// 		z >= 0x80
+//// 		&&
+//// 		(y == 0     || y == 0x100 || y == 0x400 || y == 0x500 ||
+//// 		 y == 0x800 || y == 0x900 || y == 0xc00 || y == 0xd00);
+//// }
+//// 
+//// // is the address one of the non-RAM RIOT areas?
+//// bool isRIOT(int addr) {
+//// 	int y = addr & 0xf00;
+//// 	int z = addr & 0xff;
+//// 
+//// 	return !isROM(addr)
+//// 		&&
+//// 		z >= 0x80
+//// 		&&
+//// 		(y == 0x200 || y == 0x300 || y == 0x600 || y == 0x700 ||
+//// 		 y == 0xa00 || y == 0xb00 || y == 0xe00 || y == 0xf00);
+//// }
+//// 
+//// // is the address in one of the TIA mirrors?
+//// bool isTIA(int addr) {
+//// 	int z = addr & 0xff;
+//// 	return !isROM(addr) && (z < 0x80);
+//// }
+//// 
+//// // is the address in ROM?
+//// bool isROM(int addr) {
+//// 	// ROM addresses are $xnnn where x is odd
+//// 	return addr % 8192 > 4095;
+//// }
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::attach(Debugger& debugger)
 {
