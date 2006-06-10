@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.69 2006-05-15 12:24:09 stephena Exp $
+// $Id: OSystem.cxx,v 1.70 2006-06-10 13:27:23 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -482,7 +482,10 @@ void OSystem::setDefaultJoyAxisMap()
   myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneDown, mode, 1, 1, 1);
 
   mode = kMenuMode;  // Default menu/UI events
-// FIXME - add UI events
+  myEventHandler->setDefaultJoyAxisMapping(Event::UILeft, mode, 0, 0, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::UIRight, mode, 0, 0, 1);
+  myEventHandler->setDefaultJoyAxisMapping(Event::UIUp, mode, 0, 1, 0);
+  myEventHandler->setDefaultJoyAxisMapping(Event::UIDown, mode, 0, 1, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
