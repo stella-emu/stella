@@ -17,7 +17,7 @@
     MA 02111-1307, USA
 
 */
-/* $Id: darray.h,v 1.1 2006-06-11 07:13:23 urchlay Exp $
+/* $Id: darray.h,v 1.2 2006-06-11 21:49:07 stephena Exp $
 */
 #if !defined(DARRAY_H)
 #define DARRAY_H
@@ -26,7 +26,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 typedef struct
  {char     *data;          /* the items */
@@ -97,7 +96,4 @@ extern int darray_fget(FILE * f, darray_ptr p);
 }
 #endif
 
-
 #endif /* DARRAY_H */
-
-

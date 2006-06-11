@@ -8,13 +8,13 @@
 #define HAVE_ALSA_ASOUNDLIB_H 1
 
 /* Define to 1 if you have the <audio/audiolib.h> header file. */
-/* #undef HAVE_AUDIO_AUDIOLIB_H */
+#define HAVE_AUDIO_AUDIOLIB_H 1
 
 /* Define to 1 if you have the `chsize' function. */
 /* #undef HAVE_CHSIZE */
 
 /* Define to 1 if you have the <db.h> header file. */
-#define HAVE_DB_H 1
+/* #undef HAVE_DB_H */
 
 /* Found /dev/audio */
 /* #undef HAVE_DEV_AUDIO */
@@ -35,7 +35,7 @@
 #define HAVE_FTRUNCATE 1
 
 /* Define to 1 if you have the <gdbm.h> header file. */
-#define HAVE_GDBM_H 1
+/* #undef HAVE_GDBM_H */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -50,10 +50,10 @@
 /* #undef HAVE_LIBC_H */
 
 /* Define to 1 if you have the `db' library (-ldb). */
-#define HAVE_LIBDB 1
+/* #undef HAVE_LIBDB */
 
 /* Define to 1 if you have the `gdbm' library (-lgdbm). */
-#define HAVE_LIBGDBM 1
+/* #undef HAVE_LIBGDBM */
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
@@ -80,7 +80,7 @@
 #define HAVE_MEMORY_H 1
 
 /* Found NAS -laudio */
-/* #undef HAVE_NAS */
+#define HAVE_NAS 1
 
 /* Sun hack */
 /* #undef HAVE_NONSTDARITH */

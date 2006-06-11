@@ -1,3 +1,6 @@
+#ifndef __PHFEAT_H
+#define __PHFEAT_H
+
 #define unr 0x00000000
 #define rnd 0x00000001
 #define low 0x00000002
@@ -31,3 +34,5 @@
 #define gld 0x20000000
 #define lbv 0x40000000
 #define pal 0x80000000
+
+#endif

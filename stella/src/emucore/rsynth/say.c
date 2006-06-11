@@ -19,8 +19,17 @@
 */
 #include "config.h"
 /*  jms: deutsch */
-/* $Id: say.c,v 1.1 2006-06-11 07:13:27 urchlay Exp $
+/* $Id: say.c,v 1.2 2006-06-11 21:49:09 stephena Exp $
    $Log: not supported by cvs2svn $
+   Revision 1.1  2006/06/11 07:13:27  urchlay
+
+   Forgive the gigantic commit; I'm importing "rsynth". It's not really such
+   a big library, and it's not commonly installed anywhere, and it's GPL.
+
+   Actually, a good chunk of rsynth can be removed (all the stuff related
+   to perl modules and text-to-speech, which we won't need for Stella). I'll
+   prune it when I figure out exactly what I can keep...
+
  * Revision 1.13  1994/11/08  13:30:50  a904209
  * 2.0 release
  *
@@ -58,7 +67,11 @@
  * Add IDs and merge Jon's klatt sources - incomplete
  *
  */
-char *say_id = "$Id: say.c,v 1.1 2006-06-11 07:13:27 urchlay Exp $";
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+char *say_id = "$Id: say.c,v 1.2 2006-06-11 21:49:09 stephena Exp $";
 extern char *Revision;
 #include <stdio.h>
 #include <ctype.h>
@@ -82,7 +95,6 @@ extern char *Revision;
 #include "english.h"
 #include "deutsch.h"
 #include "say.h"
-
 
 unsigned
 spell_out(char *word, int n, darray_ptr phone)
@@ -348,3 +360,6 @@ say_file(rsynth_t * rsynth, FILE * f)
     darray_free(&line);
 }
 
+#ifdef __cplusplus
+}
+#endif

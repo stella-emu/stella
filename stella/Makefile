@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.25 2006-06-11 07:13:19 urchlay Exp $
+## $Id: Makefile,v 1.26 2006-06-11 21:49:04 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -28,7 +28,7 @@ srcdir      ?= .
 DEFINES     :=
 LDFLAGS     :=
 INCLUDES    :=
-LIBS	    := -Lsrc/emucore -lrsynth
+LIBS	    :=
 OBJS	    :=
 PROF        :=
 
@@ -67,7 +67,6 @@ endif
 #######################################################################
 
 EXECUTABLE  := stella$(EXEEXT)
-RSYNTH = src/emucore/librsynth.a
 
 all: tags $(EXECUTABLE)
 
@@ -93,10 +92,6 @@ MODULES += \
 	src/gui \
 	src/common
 
-$(RSYNTH): $(RSYNTH_OBJS)
-	( cd src/emucore/rsynth && ./configure && make Rsynth/librsynth.a ) && \
-	cp src/emucore/rsynth/Rsynth/librsynth.a src/emucore
-
 ######################################################################
 # The build rules follow - normally you should have no need to
 # touch whatever comes after here.
@@ -113,7 +108,7 @@ DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULE_DIRS))
 DEPFILES = 
 
 # The build rule for the Stella executable
-$(EXECUTABLE):  $(OBJS) $(RSYNTH)
+$(EXECUTABLE):  $(OBJS)
 	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
 
 distclean: clean

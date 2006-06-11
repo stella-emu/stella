@@ -20,14 +20,12 @@
 #ifndef RSYNTH_H
 #define RSYNTH_H
 
-
-#include "darray.h"
-#include "trie.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include "darray.h"
+#include "trie.h"
 
 typedef struct
  {float stdy;	    /* steady state value of paramter */
@@ -72,7 +70,7 @@ typedef struct Elm_s
   char rk;  	    	    /* Rank of element (obsolete) */
   char du;                  /* Normal duration */
   char ud;                  /* Unstressed duration */
-  unsigned char *unicode;   /* UTF-8 for phonetic symbols */
+  char *unicode;   /* UTF-8 for phonetic symbols */
   char  *sampa;             /* SAMPA string for phonetic symbol */
   long  feat;               /* features of the phone */
   interp_t p[nEparm];       /* Table of parameter values */

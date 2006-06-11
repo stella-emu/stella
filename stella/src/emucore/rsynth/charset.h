@@ -1,5 +1,6 @@
 #ifndef CHARSET_H
 #define CHARSET_H
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -15,4 +16,5 @@ extern int accent(int a, int c);
 #ifdef __cplusplus
 }
 #endif
+
 #endif /* CHARSET_H */

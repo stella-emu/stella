@@ -17,11 +17,23 @@
     MA 02111-1307, USA
 
 */
-/* $Id: hplay.h,v 1.1 2006-06-11 07:13:25 urchlay Exp $
+/* $Id: hplay.h,v 1.2 2006-06-11 21:49:08 stephena Exp $
 */
+#ifndef __HPLAY_H
+#define __HPLAY_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern char *program;
 extern long samp_rate;
 extern int audio_init(int argc, char *argv[]);
 extern void audio_term(void);
 extern void audio_play(int n, short *data);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif

@@ -1,2 +1,0 @@
-#!/bin/sh
-/home/nick/speech/festival/bin/festival --tts "$@"

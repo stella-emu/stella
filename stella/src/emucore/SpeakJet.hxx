@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.1 2006-06-11 07:13:19 urchlay Exp $
+// $Id: SpeakJet.hxx,v 1.2 2006-06-11 21:49:04 stephena Exp $
 //============================================================================
 
 #ifndef SPEAKJET_HXX
@@ -75,16 +75,14 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.1 2006-06-11 07:13:19 urchlay Exp $
+  @version $Id: SpeakJet.hxx,v 1.2 2006-06-11 21:49:04 stephena Exp $
 */
 
 #include "bspf.hxx"
 
-extern "C" {
 #include <SDL.h>
 #include <SDL_thread.h>
 #include "rsynth/rsynth.h"
-}
 
 class SpeakJet
 {

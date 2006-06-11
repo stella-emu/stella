@@ -1,5 +1,0 @@
-#!/usr/local/bin/perl -w
-use strict;
-use Rsynth::Elements;
-read_elements();
-write_features(\*STDOUT);

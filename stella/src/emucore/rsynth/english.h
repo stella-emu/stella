@@ -1,2 +1,12 @@
+#ifndef __ENGLISH_H
+#define __ENGLISH_H
+
 #include "lang.h"
-extern lang_t English;
+
+#ifdef __cplusplus
+extern "C" {
+  extern lang_t English;
+}
+#endif
+
+#endif

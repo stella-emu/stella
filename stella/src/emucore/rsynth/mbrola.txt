@@ -1,5 +1,0 @@
-Mbrola was developed by Thierry Dutoit.
-It is a speech synthesizer based on the concatenation of diphones.
-It takes a list of phonemes as input, together with prosodic 
-information, and produces speech at the sampling frequency of the
-diphone database.

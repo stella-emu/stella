@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.cxx,v 1.1 2006-06-11 07:13:19 urchlay Exp $
+// $Id: SpeakJet.cxx,v 1.2 2006-06-11 21:49:04 stephena Exp $
 //============================================================================
 
 #include "SpeakJet.hxx"
@@ -160,4 +160,3 @@ const char *SpeakJet::ourPhonemeTable[] = {
   "p",    // 198 PE   People, Computer
   "p"     // 199 PO   Paw, Copy ???
 };
-
