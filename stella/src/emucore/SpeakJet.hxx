@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.2 2006-06-11 21:49:04 stephena Exp $
+// $Id: SpeakJet.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
 //============================================================================
 
 #ifndef SPEAKJET_HXX
@@ -75,7 +75,7 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.2 2006-06-11 21:49:04 stephena Exp $
+  @version $Id: SpeakJet.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
 */
 
 #include "bspf.hxx"
@@ -83,6 +83,22 @@
 #include <SDL.h>
 #include <SDL_thread.h>
 #include "rsynth/rsynth.h"
+
+class SpeechBuffer;
+
+
+enum { INPUT_BUFFER_SIZE = 128 };
+enum { OUTPUT_BUFFER_SIZE = 128 };
+enum { SPEECH_BUFFERS = 1024 };
+static SDL_sem *ourInputSemaphore;
+static rsynth_t *rsynth;
+static darray_t rsynthSamples;
+// phonemeBuffer holds *translated* phonemes (e.g. rsynth phonemes,
+// not SpeakJet phonemes).
+static char phonemeBuffer[INPUT_BUFFER_SIZE];
+// How many bytes are in the input buffer?
+static uInt16 ourInputCount;
+
 
 class SpeakJet
 {
@@ -126,27 +142,42 @@ class SpeakJet
     */
     bool chipReady();
 
+  private:
     // function that spawns the rsynth thread
     void spawnThread();
 
     // function that the rsynth thread runs...
+    // ...and it has to be a *function*, not a method, because SDL's
+    // written in C. Dammit.
     static int thread(void *data);
 
   private:
-    enum { INPUT_BUFFER_SIZE = 128 };
-    uInt16 myBufferSize;
+    // These functions are called from the rsynth thread context only
+
+    // speak() is our locking wrapper for rsynth_phones()
+    static void speak();
+
+    static void *save_sample(void *user_data,
+                             float sample,
+                             unsigned nsamp,
+                             rsynth_t *rsynth);
+
+    static void *flush_samples(void *user_data,
+                               unsigned nsamp,
+                               rsynth_t *rsynth);
+
+    static short clip(long *clip_max, float input, float *peak);
+
+  private:
 
     // True if last code was 20 thru 29
     bool needParameter;
 
-    // phonemeBuffer holds *translated* phonemes (e.g. rsynth phonemes,
-    // not SpeakJet phonemes).
-    char phonemeBuffer[INPUT_BUFFER_SIZE];
-    uInt8 phonemeCount; // number of phonemes in the phonemeBuffer
-
     static const char *ourPhonemeTable[];
 
     SDL_Thread *ourThread;
+
+    SpeechBuffer *myCurrentOutputBuffer;
 
     // We use this semaphore like so:
     // Main thread locks it initially
@@ -158,7 +189,10 @@ class SpeakJet
     // When the rsynth thread unblocks, it quickly copies the buffer to
     // a private buffer, then unlocks the semaphore so the main thread
     // can re-use the buffer.
-    SDL_sem *ourInputSemaphore;
+
+    // Note to self: locking decrements the semaphore; unlocking increments
+    // To lock (blocking): SDL_SemWait()
+    // To unlock: SDL_SemPost()
 
     // Each output buffer also needs its own locking semaphore:
     // rsynth thread locks each buffer as it fills it, then unlocks it
@@ -180,6 +214,22 @@ class SpeakJet
     // Convert a SpeakJet phoneme into one or more rsynth phonemes.
     // Input range is 0 to 255, but not all codes are supported yet.
     static const char *xlatePhoneme(uInt8 code);
+
 };
+
+// Where our output samples go.
+struct SpeechBuffer
+{
+    SDL_sem *lock;
+    SpeechBuffer *next;
+    int items;
+    uInt8 contents[OUTPUT_BUFFER_SIZE];
+};
+
+// For now, just a static array of them
+static SpeechBuffer outputBuffers[SPEECH_BUFFERS];
+
+static SpeechBuffer *ourCurrentWriteBuffer;
+static uInt8 ourCurrentWritePosition;
 
 #endif

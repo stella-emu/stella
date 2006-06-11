@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.91 2006-06-11 07:13:19 urchlay Exp $
+// $Id: Console.cxx,v 1.92 2006-06-11 22:43:55 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -141,7 +141,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     myControllers[0] = new Joystick(leftjack, *myEvent);
   }
   
-  AtariVox *vox = 0;
+  vox = 0;
 
   // Construct right controller
   if(right == "BOOSTER-GRIP")

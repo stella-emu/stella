@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.2 2006-06-11 07:13:19 urchlay Exp $
+// $Id: AtariVox.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
 //============================================================================
 
 #ifndef ATARIVOX_HXX
@@ -33,7 +33,7 @@
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.2 2006-06-11 07:13:19 urchlay Exp $
+  @version $Id: AtariVox.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
 */
 class AtariVox : public Controller
 {
@@ -82,6 +82,8 @@ class AtariVox : public Controller
     virtual void write(DigitalPin pin, bool value);
 
 	 void setSystem(System *system);
+
+    SpeakJet* getSpeakJet() { return mySpeakJet; }
 
   private:
 	 void clockDataIn(bool value);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.cxx,v 1.2 2006-06-11 21:49:04 stephena Exp $
+// $Id: SpeakJet.cxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
 //============================================================================
 
 #include "SpeakJet.hxx"
@@ -21,6 +21,36 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SpeakJet::SpeakJet()
 {
+
+  // Initialize output buffers. Each one points to the next element,
+  // except the last, which points back to the first.
+  SpeechBuffer *first = &outputBuffers[0];
+  SpeechBuffer *last = 0;
+  for(int i=0; i<SPEECH_BUFFERS; i++) {
+    SpeechBuffer *sb = &outputBuffers[i];
+    sb->items = 0;
+    sb->lock = SDL_CreateSemaphore(1);
+    if(last) {
+       last->next = sb;
+    }
+    last = sb;
+  }
+  last->next = first;
+
+  myCurrentOutputBuffer = ourCurrentWriteBuffer = first;
+  ourCurrentWritePosition = 0;
+
+  // Init rsynth library
+  darray_init(&rsynthSamples, sizeof(short), 2048);
+
+/*
+  rsynth = rsynth_init(samp_rate, mSec_per_frame,
+                       rsynth_speaker(F0Hz, gain, Elements),
+                       save_sample, flush_samples, &samples);
+*/
+  rsynth = rsynth_init(31400, 10.0,
+                       rsynth_speaker(133.0, 57, Elements),
+                       save_sample, flush_samples, &rsynthSamples);
   spawnThread();
 }
 
@@ -32,21 +62,86 @@ SpeakJet::~SpeakJet()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SpeakJet::spawnThread()
 {
+  ourInputSemaphore = SDL_CreateSemaphore(1); // 1==unlocked
+  uInt32 sem = SDL_SemValue(ourInputSemaphore);
+  cerr << "before SDL_CreateThread(), sem==" << sem << endl;
   ourThread = SDL_CreateThread(thread, 0);
-  ourInputSemaphore = SDL_CreateSemaphore(1);
+  sem = SDL_SemValue(ourInputSemaphore);
+  cerr << "after SDL_CreateThread(), sem==" << sem << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int SpeakJet::thread(void *data) {
   cerr << "rsynth thread spawned" << endl;
+  while(1) {
+    speak();
+    usleep(10);
+  }
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SpeakJet::write(uInt8 code)
 {
+  // TODO: clean up this mess.
   const char *rsynthPhones = xlatePhoneme(code);
   cerr << "rsynth: \"" << rsynthPhones << "\"" << endl;
+  int len = strlen(rsynthPhones);
+
+  if(ourInputCount + len + 1 >= INPUT_BUFFER_SIZE) {
+    cerr << "phonemeBuffer is full, dropping" << endl;
+    return;
+  }
+
+  uInt32 sem = SDL_SemValue(ourInputSemaphore);
+  cerr << "write() waiting on semaphore (value " << sem << ")" << endl;
+  SDL_SemWait(ourInputSemaphore);
+  cerr << "write() got semaphore" << endl;
+  for(int i=0; i<len; i++)
+    phonemeBuffer[ourInputCount++] = rsynthPhones[i];
+  phonemeBuffer[ourInputCount] = '\0';
+  cerr << "phonemeBuffer contains \"" << phonemeBuffer << "\"" << endl;
+  cerr << "write() releasing semaphore" << endl;
+  SDL_SemPost(ourInputSemaphore);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SpeakJet::speak()
+{
+  // TODO: clean up this mess.
+  static char myInput[INPUT_BUFFER_SIZE];
+
+  if(!ourInputCount)
+    return;
+
+  uInt32 sem = SDL_SemValue(ourInputSemaphore);
+  cerr << "speak() waiting on semaphore (value " << sem << ")" << endl;
+  SDL_SemWait(ourInputSemaphore);
+  cerr << "speak() got semaphore" << endl;
+
+  // begin locked section
+
+  bool foundSpace = false;
+  for(int i=0; i<ourInputCount; i++)
+    if( (myInput[i] = phonemeBuffer[i]) == ' ')
+      foundSpace = true;
+
+  if(ourInputCount >= INPUT_BUFFER_SIZE - 5)
+    foundSpace = true;
+
+  if(foundSpace)
+    ourInputCount = 0;
+
+  // end locked section
+  cerr << "speak() releasing semaphore" << endl;
+  SDL_SemPost(ourInputSemaphore);
+
+  if(foundSpace)
+  {
+    // Lock current buffer. save_sample will unlock it when it gets full.
+    SDL_SemWait(ourCurrentWriteBuffer->lock);
+    rsynth_phones(rsynth, myInput, strlen(myInput));
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,8 +158,16 @@ const char *SpeakJet::xlatePhoneme(uInt8 code)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 *SpeakJet::getSamples(int *count) {
-  *count = 0;
-  return 0;
+  static uInt8 contents[OUTPUT_BUFFER_SIZE];
+  SDL_sem *lock = myCurrentOutputBuffer->lock;
+  SDL_SemWait(lock);
+  *count = myCurrentOutputBuffer->items;
+  for(int i=0; i<*count; i++)
+    contents[i] = myCurrentOutputBuffer->contents[i];
+  myCurrentOutputBuffer->items = 0;
+  myCurrentOutputBuffer = myCurrentOutputBuffer->next;
+  SDL_SemPost(lock);
+  return contents;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,6 +175,82 @@ bool SpeakJet::chipReady()
 {
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void *SpeakJet::save_sample(void *user_data,
+                            float sample,
+                            unsigned nsamp,
+                            rsynth_t *rsynth)
+{
+  static long clip_max;
+  static float peak;
+  short shortSamp;
+  uInt8 output;
+
+  darray_t *buf = (darray_t *) user_data;
+  shortSamp = clip(&clip_max, sample, &peak);
+  darray_short(buf, shortSamp);
+
+  // Convert to 8-bit
+  // output = (uInt8)( (((float)shortSamp) + 32768.0) / 256.0 );
+  double d = shortSamp + 32768.0;
+  output = (uInt8)(d/256.0);
+  cerr << "Output sample: " << ((int)(output)) << endl;
+
+  // Put in buffer
+  ourCurrentWriteBuffer->contents[ourCurrentWritePosition++] = output;
+  ourCurrentWriteBuffer->items = ourCurrentWritePosition;
+
+  // If buffer is full, unlock it and use the next one.
+  if(ourCurrentWritePosition == OUTPUT_BUFFER_SIZE)
+  {
+    SDL_SemWait(ourCurrentWriteBuffer->next->lock);
+    SDL_SemPost(ourCurrentWriteBuffer->lock);
+    ourCurrentWriteBuffer = ourCurrentWriteBuffer->next;
+    ourCurrentWriteBuffer->items = ourCurrentWritePosition = 0;
+  }
+  return (void *) buf;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void *SpeakJet::flush_samples(void *user_data,
+                           unsigned nsamp,
+                           rsynth_t *rsynth)
+{
+  darray_t *buf = (darray_t *) user_data;
+  buf->items = 0;
+  for (;ourCurrentWritePosition < OUTPUT_BUFFER_SIZE; ourCurrentWritePosition++)
+    ourCurrentWriteBuffer->contents[ourCurrentWritePosition] = 0;
+  ourCurrentWritePosition = 0;
+  SDL_SemPost(ourCurrentWriteBuffer->lock);
+  ourCurrentWriteBuffer = ourCurrentWriteBuffer->next; // NOT locked
+  return (void *) buf;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+short SpeakJet::clip(long *clip_max, float input, float *peak)
+{
+  long temp = (long) input;
+  float isq = input * input;
+#ifdef PEAK
+  if (isq > *peak)
+    *peak = isq;
+#else
+  *peak += isq;
+#endif 
+  if (-temp > *clip_max)
+    *clip_max = -temp;
+  if (temp > *clip_max)
+    *clip_max = temp;
+  if (temp < -32767) {
+    temp = -32767;
+  }
+  else if (temp > 32767) {
+    temp = 32767;
+  }
+  return (temp);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

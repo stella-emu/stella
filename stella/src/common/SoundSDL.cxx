@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.30 2006-06-09 02:45:11 urchlay Exp $
+// $Id: SoundSDL.cxx,v 1.31 2006-06-11 22:43:55 urchlay Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -158,6 +158,7 @@ void SoundSDL::initialize()
              << "  Volume     : " << myVolume << endl
              << "  Frag size  : " << fragsize << endl
              << "  Frequency  : " << myHardwareSpec.freq << endl
+             << "  Format     : " << myHardwareSpec.format << endl
              << "  TIA Freq.  : " << tiafreq << endl
              << "  Channels   : " << myNumChannels << endl
              << "  Clip volume: " << (int)clipvol << endl << endl;
@@ -407,6 +408,24 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
   sound->processFragment(stream, (Int32)len);
+  cerr << "SoundSDL::callback(): len==" << len << endl;
+
+  // See if we need sound from the AtariVox
+  AtariVox *vox = sound->myOSystem->console().atariVox();
+  if(vox)
+  {
+    // If so, mix 'em together (this is a crappy way to mix audio streams...)
+    uInt8 *s = stream;
+    for(int i=0; i<len/OUTPUT_BUFFER_SIZE; i++)
+    {
+      int count;
+      uInt8 *voxSamples = vox->getSpeakJet()->getSamples(&count);
+      if(!count)
+        break;
+      SDL_MixAudio(s, voxSamples, OUTPUT_BUFFER_SIZE, SDL_MIX_MAXVOLUME);
+      s += OUTPUT_BUFFER_SIZE;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
