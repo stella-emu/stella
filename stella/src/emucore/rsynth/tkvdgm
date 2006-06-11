@@ -1,0 +1,187 @@
+#!/usr/local/bin/perl -w
+
+use Tk;
+use Tk::Font;
+use Rsynth::Elements;
+
+%vowels = (
+
+'0Cardinal' =>  {
+'i' => [   240, 2400  ],
+'e' => [   390, 2300  ],
+'E' => [   610, 1900  ],
+'a' => [   850, 1610  ],
+'A' => [   740,  940  ],
+'V' => [   600, 1170  ],
+'7' => [   460, 1310  ],
+'M' => [   300, 1390  ],
+},
+
+'1Rounded' =>  {
+'y' => [   235, 2100  ],
+'2' => [   370, 1900  ],
+'9' => [   585, 1710  ],
+'&' => [   820, 1530  ],
+'Q' => [   700,  760  ],
+'O' => [   500,  700  ],
+'o' => [   360,  640  ],
+'u' => [   250,  595  ],
+},
+
+'rp camenc' =>  {
+'i' => [ 300, 2300 ],    # seat    head
+'I' => [ 360, 2100 ],    # sit     hid
+'e' => [ 570, 1970 ],    # set     head
+'{' => [ 750, 1750 ],    # sat     had
+'A' => [ 680, 1100 ],    # cart    hard
+'Q' => [ 600,  900 ],    # cot     hod
+'O' => [ 450,  740 ],    # caught  hoard
+'U' => [ 380,  950 ],    # full    hood
+'u' => [ 300,  940 ],    # fool    who
+'V' => [ 720, 1240 ],    # cut     hub
+'3' => [ 580, 1380 ],    # curt    herb
+},
+
+'rp Gimson/Wells' => {
+'i' => [ 280, 2620, 3380  ],    # seat    head
+'I' => [ 360, 2220, 2960  ],    # sit     hid
+'e' => [ 600, 2060, 2840  ],    # set     head
+'{' => [ 800, 1760, 2500  ],    # sat     had
+'V' => [ 760, 1320, 2500  ],    # cut     hub
+'A' => [ 740, 1180, 2640  ],    # cart    hard
+'Q' => [ 560,  920, 2560  ],    # cot     hod
+'O' => [ 480,  760, 2620  ],    # caught  hoard
+'U' => [ 380,  940, 2300  ],    # full    hood
+'u' => [ 320,  920, 2200  ],    # fool    who
+'3' => [ 560, 1480, 2520  ],    # curt    herb
+},
+
+'am Ladefoged' => {
+'i' => [ 280, 2250, 2890  ],    # seat    head
+'I' => [ 400, 1920, 2560  ],    # sit     hid
+'E' => [ 550, 1770, 2490  ],    # curt    herb
+'{' => [ 690, 1660, 2490  ],    # sat     had
+'A' => [ 710, 1100, 2540  ],    # cart    hard
+'O' => [ 590,  880, 2540  ],    # caught  hoard
+'U' => [ 450, 1030, 2380  ],    # full    hood
+'u' => [ 310,  870, 2250  ],    # fool    who
+},
+
+
+'rsynth' => {
+'@' => [490,1480,2500],
+'a' => [790,1330,2500],
+'A' => [790,990,2500],
+'Q' => [610,880,2500],
+'2' => [400,1960,2200],
+'3' => [580,1420,2500],
+'u' => [250,880,2200],
+'U' => [370,1000,2500],
+'e' => [640,2020,2500],
+'V' => [700,1360,2500],
+'y' => [250,2100,2700],
+'i' => [250,2320,3200],
+'I' => [400,2080,2560],
+'{' => [790,1780,2500],
+'O' => [490,820,2500],
+'o' => [370,700,2200],
+},
+);
+
+=for jill
+
+'jill' => {
+'i' => [253, 2692, 3806],
+'y' => [397, 2219, 2888],
+'M' => [416, 1478, 2911],
+'u' => [286,  618, 2274],
+'A' => [698,  980, 3082],
+'Q' => [651,  896, 3040],
+'a' => [1240, 1535, 2989],
+'&' => [740, 1371, 3006],
+'E' => [945, 1675, 2448],
+'e' => [395, 2698, 3052],
+'{' => [879, 1473, 3414],
+},
+
+=for john
+
+'john' => {
+'i' => [269, 2095, 3782],
+'y' => [228, 1826, 2188],
+'M' => [280, 1126, 2082],
+'u' => [220,  530, 2080],
+'A' => [524,  909, 2664],
+'Q' => [553,  875, 2572],
+'a' => [659, 1315, 2509], #[daIk
+'&' => [715, 1293, 1778],
+'E' => [727, 1671, 2314],
+'e' => [425, 2070, 2701],
+'{' => [961, 1703, 2395],
+},
+
+=cut
+
+read_elements();
+delete $vowels{'rsynth'};
+
+foreach my $e (values %elem)
+ {
+  if ($e->{features}{vwl})
+   {
+    my $ch = $e->{unicode};
+    utf8::decode($ch);
+    $vowels{'rsynth'}{$ch} = [$e->{f1}[0],$e->{f2}[0]];
+   }
+  else
+   {
+    warn "Skip ".$e->{sampa}.' '.join('|',keys %{$e->{features}})."\n";
+   }
+ }
+
+my $mw = MainWindow->new;
+$mw->menu;
+
+my $IPA = $mw->Font(family => 'Gentium',
+                    point => 140, slant => 'r',
+                    weight => 'medium');
+
+my $t = $mw->Text(-width => 15)->pack(-side => 'right');
+
+my $c  = $mw->Scrolled('Canvas')->pack(-expand => 1, -fill => 'both');
+
+my @colours = qw(black #008080 green orange red blue #800080 brown);
+my $i = 0;
+
+foreach $name (sort keys %vowels)
+ {
+  my $hash = $vowels{$name};
+  my $colour = $colours[$i++];
+  $t->tagConfigure($colour,-foreground => $colour);
+  $t->insert('end',"$name\n",[$colour]);
+  foreach $v (sort keys %$hash)
+   {
+    my ($f1,$f2) = @{$hash->{$v}};
+    my $x = (3000-($f2-$f1))/6;
+    my $y = ($f1)/3;
+#    my $x = -log($f2-$f1)*100;
+#    my $y = log($f1)*100;
+
+    $c->createText($x, $y,
+                   # -anchor => 'center', -justify => 'center',
+                   -font => $IPA,
+                   -fill => $colour, -text => $v);
+   }
+ }
+
+print join(',',$c->bbox('all')),"\n";
+
+my ($minx,$miny,$maxx,$maxy) = $c->bbox('all');
+$c->configure(-width => $maxx - $minx, -height => $maxy-$miny);
+
+$c->configure(-scrollregion => [$c->bbox('all')]);
+
+MainLoop;
+
+
+

@@ -1,0 +1,15 @@
+#!/bin/sh
+date +' %H %M %p %A %d %B %Y' | say
+
+
+
+
+
+
+
+
+
+
+
+
+

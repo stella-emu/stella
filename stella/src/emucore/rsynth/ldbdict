@@ -1,0 +1,24 @@
+#!/usr/local/bin/new/perl -w
+
+use DB_File;
+use Fcntl;
+use strict;
+
+my $dict = shift;
+
+die "No $dict" unless -r $dict;
+
+my %dict;
+
+my $h = tie %dict, 'DB_File', $dict, O_RDONLY, 0644, $DB_BTREE;
+$h = tie %dict, 'DB_File', $dict, O_RDONLY, 0644, $DB_HASH unless $h;
+
+die "Cannot tie $dict:$!" unless $h;
+
+
+while (my ($key,$val) = each %dict)
+ {
+  print "$key\n";
+ }
+
+untie %dict;

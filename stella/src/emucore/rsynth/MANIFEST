@@ -1,0 +1,114 @@
+COPYING			GPL
+COPYING.LIB		LGPL
+Change.log		What has happened
+Elements.def		Definition of elements
+INSTALL			How to install
+MANIFEST		This file
+MANIFEST.SKIP		Things that don't get included here
+Makefile.in		Pre configure Makefile
+OldChanges		Changes from RCS days
+PORTING			Outline of audio driver needs
+kmap			Phone mappings
+README			Please do ;-)
+Revision.c		Clunky way of setting revision
+Rsynth/Audio.pm		Perl API to this
+Rsynth/Audio.xs		Perl C bindings
+Rsynth/Elements.pm	Perl access to Elements
+Rsynth/Makefile.PL	Perl API build
+Rsynth/t/elem.t		Test low level Perl API
+Rsynth/t/phones.t	Test data
+Rsynth/phtoelm.def	Phone to element data
+Rsynth/typemap		Perl/C type conversion
+Sampa.pm		Perl code to read sampa.htm
+aufile.c		Sun .au file writer
+aufile.h		Sun .au file writer
+charset.c		Locale and charcter set choices
+charset.h	
+config.guess		configure support
+config.h.in		configure support
+config.sub		configure support
+config/NeXTplay.c	
+config/config.win32	
+config/dummyplay.c	
+config/freebsdplay.c	
+config/hpuxplay.c	
+config/alsaplay.c	New ALSA Audio driver
+config/ossplay.c	OSS Audio driver
+config/make_dist	
+config/mmsystem.h	
+config/naplay.c		NAS Audio Driver
+config/pipeplay.c	
+config/sgiplay.c	
+config/sunplay.c	
+config/sunplay_mm.c	
+config/win32play.c	
+configure		Generated build script
+configure.in		configure support
+darray.c		Dynamic array C code
+darray.h		
+dat2au			Perl script for something ...
+dbif.h			DB/GDBM abstraction for dictionary
+deutsch.c		Some support for german
+deutsch.h		Some support for german
+dict.c			Dictionary code
+dict.h	
+dlookup.c		Dictionary lookup command line application
+efix	
+elements.c		Element code
+elmdgm			Vowel parameter display/edit tool
+english.c		Letter to Sound rules
+english.h	
+euler.pho		MBrola style pho file ( say -f euler.pho )
+euler.txt		Plain text of above ( say < euler.txt )
+festival/.festivalrc	Copy to ~/.festivalrc to enable rsynth as a voice for festival
+festival/lib/rsynth.scm	Festival Hackery
+festival/lib/voices/english/rsynth_br_f/festvox/rsynth_br_f.scm	
+festival/lib/voices/english/rsynth_br_f/mrpa-sampa	
+festival/lib/voices/english/rsynth_br_m/festvox/rsynth_br_m.scm	
+festival/lib/voices/english/rsynth_br_m/mrpa-sampa	
+fmtelem			Re-format Elements.def
+fmtfeat			Re-format phfeat.h
+fsay			Use via festival
+getarg.c		Command line parser
+getargs.h	
+getrev			Build assist script
+guess.c			Command line tool to test letter to sound rules
+holmes.c		Element parameter interpolation
+hplay.h			Audio driver API
+hpuxcc.doc	
+iam.txt			Test data
+install.sh		configure support
+l2u.c			uLaw conversion tables
+l2u.h	
+lang.h	
+ldbdict			perl dump of DB dictionary
+ldict			perl dump of GDBM dictionary
+mbrola.txt		Test data
+mkdictdb.c		Build DB/GDBM dictionary from CMU style file
+naplay.c		NAS audio driver
+opsynth.c		Core synth
+phfeat.h		Phoneme features
+phones.c		Phoneme table
+phones.def		Guts of phoneme table
+phones.h	
+phrases.txt		Test data
+phtoelm.c		Phoneme to element layer
+phtoelm.h	
+plotparm.h	
+prune_elm		Perl script that for Elements.def
+rsynth.h		Main header
+sampa.htm		SAMPA IPA tables as UTF-8 HTML
+sample			Test data
+say.c			Algrorithmic conversion of numbers etc.
+say.h	
+saydate			Demo
+saymain.c		main() of ./say application
+showphone		perl/Tk app to display phones.def
+text			test data
+text.c			Letter to sound driver
+text.h	
+tkvdgm			Old perl/Tk app to show vowel diagram from formants
+tracks			gnuplot dumpped interpollated parameters
+trie.c			Trie lookup code
+trie.h	
+useconfig.h		configure support

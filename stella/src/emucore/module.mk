@@ -45,6 +45,7 @@ MODULE_OBJS := \
 	src/emucore/Random.o \
 	src/emucore/Serializer.o \
 	src/emucore/Settings.o \
+	src/emucore/SpeakJet.o \
 	src/emucore/Switches.o \
 	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \

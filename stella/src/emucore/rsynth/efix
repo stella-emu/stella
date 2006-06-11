@@ -1,0 +1,83 @@
+#!/tools/local/perl -w
+use strict;
+use Rsynth::Elements;
+read_elements();
+my $vv;
+my $nv = 0;
+my $tv = 0;
+foreach my $e (@eNames)
+ {
+  if ($elem{$e}{features}{vwl})
+   {
+    $nv++;
+    my $av = $elem{$e}{'av'}[0];
+    $vv = $av unless defined $vv;
+    $tv = $tv+$av;
+    if ($vv != $av)
+     {
+      warn "$e has av=$av not $vv\n";
+     }
+   }
+ }
+$vv = int($tv/$nv+0.5);
+warn "Vowels are av=$vv\n";
+foreach my $e (@eNames)
+ {
+
+  my $f = $elem{$e}{features};
+  if ($elem{$e}{'f2'}[0] - $elem{$e}{'f1'}[0] < 200)
+   {
+    warn sprintf("$e : f2 %d too close to f1 %d\n", $elem{$e}{'f2'}[0], $elem{$e}{'f1'}[0]);
+    set($elem{$e}{'f2'},$elem{$e}{'f1'}[0]+200);
+   }
+  if ($elem{$e}{'f3'}[0] - $elem{$e}{'f2'}[0] < 200)
+   {
+    warn sprintf("$e : f3 %d too close to f2 %d\n", $elem{$e}{'f3'}[0], $elem{$e}{'f2'}[0]);
+   }
+  if (!$f->{vwl})
+   {
+    my $av = $elem{$e}{'av'}[0];
+
+    if ($av >= $vv)
+     {
+      warn "$e ".join(',',keys %{$elem{$e}{features}})." has av=$av\n";
+      if ($f->{apr} || $f->{nas} || $f->{lat})
+       {
+        set($elem{$e}{'av'},$vv-10);
+       }
+      elsif ($f->{frc} || $f->{stp})
+       {
+        set($elem{$e}{'av'},$vv-13);
+       }
+     }
+    if ($av > 0)
+     {
+      my $av = $elem{$e}{'avc'}[0];
+
+      if ($av >= $vv)
+       {
+        warn "$e ".join(',',keys %{$elem{$e}{features}})." has avc=$av\n";
+        if ($f->{apr} || $f->{nas} || $f->{lat})
+         {
+          set($elem{$e}{'avc'},$vv-10);
+         }
+        elsif ($f->{frc} || $f->{stp})
+         {
+          set($elem{$e}{'avc'},$vv-13);
+         }
+       }
+
+     }
+
+   }
+ }
+write_elements("Elements.def");
+
+sub set
+{
+ my ($a,$v) = @_;
+ warn "Setting to $v\n";
+ my $p = $a->[2]/100;
+ $a->[0] = $v;
+ $a->[1] = $v * (1-$p);
+}

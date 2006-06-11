@@ -1,0 +1,1067 @@
+From nik@eng.cam.ac.uk Mon Nov  7 14:14:13 1994
+Return-Path: <nik@eng.cam.ac.uk>
+From: nik@eng.cam.ac.uk
+          by spanner.eng.cam.ac.uk with SMTP id OAA16645
+          for <nik@tiuk.ti.com>; Mon, 7 Nov 1994 14:13:16 GMT
+Received: from spud.eng.cam.ac.uk by dsl.eng.cam.ac.uk; Mon, 7 Nov 94 14:13:06 GMT
+Date: Mon, 7 Nov 1994 14:13:04 GMT
+Message-Id: <17323.9411071413@spud.eng.cam.ac.uk>
+Apparently-To: nik@eng.cam.ac.uk
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+ NNNNAAAAMMMMEEEE
+      cc, c89 - C compiler
+
+ SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+      cccccccc [_o_p_t_i_o_n_s] _f_i_l_e_s
+      cccc88889999 [_o_p_t_i_o_n_s] _f_i_l_e_s
+
+ DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+      cccccccc is the HP-UX C compiler.  cccc88889999 is the HP-UX POSIX-conformant C
+      compiler.  Both accept several types of arguments as _f_i_l_e_s:
+
+           o+  Arguments whose names end with ....cccc are understood to be C
+              source files.  Each is compiled and the resulting object file
+              is left in a file having the corresponding basename, but
+              suffixed with ....oooo instead of ....cccc.  However, if a single C file
+              is compiled and linked, all in one step, the ....oooo file is
+              deleted.
+
+           o+  Similarly, arguments whose names end with ....ssss are understood to
+              be assembly source files and are assembled, producing a ....oooo
+              file for each ....ssss file.
+
+           o+  Arguments whose names end with ....iiii are assumed to be the output
+              of ccccpppppppp (see the ----PPPP option below).  They are compiled without
+              again invoking ccccpppppppp (see _c_p_p(1)).  Each object file is left in
+              a file having the corresponding basename, but suffixed ....oooo
+              instead of ....iiii.
+
+           o+  Arguments of the form ----llll_x cause the linker to search the
+              library lllliiiibbbb_x....ssssllll or lllliiiibbbb_x....aaaa in an attempt to resolve currently
+              unresolved external references.  Because a library is searched
+              when its name is encountered, placement of a ----llll is
+              significant.  If a file contains an unresolved external
+              reference, the library containing the definition must be
+              placed _a_f_t_e_r the file on the command line.  See _l_d(1) for
+              further details.
+
+           o+  All other arguments, such as those whose names end with ....oooo or
+              ....aaaa, are taken to be relocatable object files that are to be
+              included in the link operation.
+
+      Arguments and options can be passed to the compiler through the CCCCCCCCOOOOPPPPTTTTSSSS
+      environment variable as well as on the command line.  The compiler
+      reads the value of CCCCCCCCOOOOPPPPTTTTSSSS and divides these options into two sets;
+      those options which appear before a vertical bar (||||), and those
+      options which appear after the vertical bar.  The first set of options
+      are placed before any of the command-line parameters to cccccccc; the second
+      set of options are placed after the command-line parameters to cccccccc.  If
+      the vertical bar is not present, all options are placed before the
+      command-line parameters.  For example (in _s_h(1) notation),
+
+
+
+
+                                    - 1 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+           CCCCCCCCOOOOPPPPTTTTSSSS====""""----vvvv |||| ----llllmmmmaaaalllllllloooocccc""""
+           eeeexxxxppppoooorrrrtttt CCCCCCCCOOOOPPPPTTTTSSSS
+           cccccccc ----gggg pppprrrroooogggg....cccc
+
+      is equivalent to
+
+           cccccccc ----vvvv ----gggg pppprrrroooogggg....cccc ----llllmmmmaaaalllllllloooocccc
+
+      When set, the TMPDIR environment variable specifies a directory to be
+      used by the compiler for temporary files, overriding the default
+      directories ////ttttmmmmpppp and ////uuuussssrrrr////ttttmmmmpppp.
+
+    OOOOppppttttiiiioooonnnnssss
+      Note that in the following list, the cccccccc and cccc88889999 options ----CCCC ,,,, ----DDDD ,,,, ----EEEE ,,,,
+      ----IIII ,,,, ----LLLL ,,,, ----PPPP ,,,, ----SSSS ,,,, ----UUUU ,,,, ----WWWW ,,,, ----cccc ,,,, ----llll ,,,, ----oooo ,,,, ----ssss ,,,, ----tttt ,,,, ----vvvv ,,,, and ----wwww are
+      the only options supported by the C compiler provided as part of the
+      standard HP-UX operating system.  They are supported by the C compiler
+      sold as an optional separate product.
+
+      The following option is recognized only by cccccccc:
+
+      ----AAAA_m_o_d_e         Specify the compilation standard to be used by the
+                     compiler.  _m_o_d_e can be one of the following letters:
+
+                        cccc    Compile in a mode compatible with HP-UX
+                             releases prior to 7.0.  (See _T_h_e _C _P_r_o_g_r_a_m_m_i_n_g
+                             _L_a_n_g_u_a_g_e, First Edition by Kernighan and
+                             Ritchie).  This option is currently the
+                             default.  The default may change in future
+                             releases.
+
+                        aaaa    Compile under ANSI mode (ANSI programming
+                             language C standard ANS X3.159-1989).  When
+                             compiling under ANSI mode, header files define
+                             only those names specified by the standard.  To
+                             get the same name space as in compatibility
+                             mode (----AAAAcccc), define the symbol _HPUX_SOURCE.
+
+      The following options are recognized by both cccccccc and cccc88889999:
+
+      ----cccc             Suppress the link edit phase of the compilation, and
+                     force an object (....oooo) file to be produced for each ....cccc
+                     file even if only one program is compiled.  Object
+                     files produced from C programs must be linked before
+                     being executed.
+
+      ----CCCC             Prevent the preprocessor from stripping C-style
+                     comments (see _c_p_p(1) for details).
+
+      ----DDDD_n_a_m_e=_d_e_f
+
+
+
+
+                                    - 2 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+      ----DDDD_n_a_m_e         Define _n_a_m_e to the preprocessor, as if by '#define'.
+                     See _c_p_p(1) for details.
+
+      ----EEEE             Run only ccccpppppppp on the named C or assembly files, and send
+                     the result to the standard output.
+
+      ----gggg             Cause the compiler to generate additional information
+                     needed by the symbolic debugger.  This option is
+                     incompatible with optimization.
+
+      ----GGGG             Prepare object files for profiling with ggggpppprrrrooooffff (see
+                     _g_p_r_o_f(1)).
+
+      ----IIII_d_i_r          Change the algorithm used by the preprocessor for
+                     finding include files to also search in directory _d_i_r.
+                     See _c_p_p(1) for details.
+
+      ----llll_x            Refer to the fourth bullet item at the beginning of the
+                     DESCRIPTION section.
+
+      ----LLLL _d_i_r         Change the algorithm used by the linker to search for
+                     lllliiiibbbb_x....ssssllll or lllliiiibbbb_x....aaaa.  The ----LLLL option causes cccccccc to search
+                     in _d_i_r before searching in the default locations.  See
+                     _l_d(1) for details.
+
+      ----nnnn             Cause the output file from the linker to be marked as
+                     shareable.  For details and system defaults, see _l_d(1).
+
+      ----NNNN             Cause the output file from the linker to be marked as
+                     unshareable.  For details and system defaults, see
+                     _l_d(1).
+
+      ----oooo_o_u_t_f_i_l_e      Name the output file from the linker _o_u_t_f_i_l_e.  The
+                     default name is aaaa....oooouuuutttt.
+
+      ----OOOO             Invoke the optimizer with level 2 optimization.
+                     Equivalent to +O2.
+
+      ----pppp             Arrange for the compiler to produce code that counts
+                     the number of times each routine is called.  Also, if
+                     link editing takes place, replace the standard startoff
+                     routine by one that automatically calls mmmmoooonnnniiiittttoooorrrr(((()))) at
+                     the start (see _m_o_n_i_t_o_r(3C)) and arranges to write out a
+                     mmmmoooonnnn....oooouuuutttt file at normal termination of execution of the
+                     object program.  pppprrrrooooffff can then be used to generate an
+                     execution profile (see _p_r_o_f(1)).
+
+      ----PPPP             Run only ccccpppppppp on the named C files and leave the result
+                     on corresponding files suffixed ....iiii.  The ----PPPP option is
+                     also passed along to ccccpppppppp.
+
+
+
+
+                                    - 3 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+      ----qqqq             Cause the output file from the linker to be marked as
+                     demand loadable.  For details and system defaults, see
+                     _l_d(1).
+
+      ----QQQQ             Cause the output file from the linker to be marked as
+                     not demand loadable.  For details and system defaults,
+                     see _l_d(1).
+
+      ----ssss             Cause the output of the linker to be stripped of symbol
+                     table information.  See _s_t_r_i_p(1) for more details.  The
+                     use of this option prevents the use of a symbolic
+                     debugger on the resulting program.  See _l_d(1) for more
+                     details.
+
+      ----SSSS             Compile the named C files, and leave the assembly
+                     language output on corresponding files suffixed ....ssss.
+
+      ----tttt_x,,,,_n_a_m_e       Substitute subprocess _x with _n_a_m_e where _x is one or
+                     more of a set of identifiers indicating the
+                     subprocess(es).  This option works in two modes:  1) if
+                     _x is a single identifier, _n_a_m_e represents the full path
+                     name of the new subprocess; 2) if _x is a set of
+                     identifiers, _n_a_m_e represents a prefix to which the
+                     standard suffixes are concatenated to construct the
+                     full path names of the new subprocesses.
+
+                     The _x can take one or more of the values:
+
+                        pppp    Preprocessor (standard suffix is ccccpppppppp)
+                        cccc    Compiler (standard suffix is ccccccccoooommmm)
+                        0000    Same as cccc
+                        aaaa    Assembler (standard suffix is aaaassss)
+                        llll    Linker (standard suffix is lllldddd)
+
+      ----UUUU_n_a_m_e         Remove any initial definition of _n_a_m_e in the
+                     preprocessor.  See _c_p_p(1) for details.
+
+      ----vvvv             Enable verbose mode, which produces a step-by-step
+                     description of the compilation process on the standard
+                     error.
+
+      ----wwww             Suppress warning messages.
+
+      ----WWWW_x,,,,_a_r_g_1[,,,,_a_r_g_2...]
+                     Pass the argument[s] _a_r_g_i to subprocess _x, where _x can
+                     assume one of the values listed under the ----tttt option as
+                     well as dddd (driver program).  The ----WWWW option
+                     specification allows additional, implementation-
+                     specific options to be recognized by the compiler
+                     driver.  For example,
+
+
+
+
+                                    - 4 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+                          ----WWWWllll,,,,----aaaa,,,,aaaarrrrcccchhhhiiiivvvveeee
+
+                     causes the linker to link with archive libraries
+                     instead of with shared libraries.  See _l_d(1) for
+                     details.  For some options, a shorthand notation for
+                     this mechanism can be used by placing ++++ in front of the
+                     option name as in
+
+                          ++++LLLL
+
+                     which is equivalent to
+
+                          ----WWWWcccc,,,,----LLLL
+
+                     ++++LLLL is the Series 700/800 option that causes the
+                     compiler to produce a source listing.  Options that can
+                     be abbreviated using ++++ are implementation dependent,
+                     and are listed under DEPENDENCIES.
+
+      ----yyyy             Generate additional information needed by static
+                     analysis tools, and ensure that the program is linked
+                     as required for static analysis.  This option is
+                     incompatible with optimization.
+
+      ----YYYY             Enable support of 16-bit characters inside string
+                     literals and comments.  Note that 8-bit parsing is
+                     always supported.  See _h_p_n_l_s(5) for more details on
+                     International Support.
+
+      ----zzzz             Do not bind anything to address zero.  This option
+                     allows runtime detection of null pointers.  See the
+                     note on _p_o_i_n_t_e_r_s below.
+
+      ----ZZZZ             Allow dereferencing of null pointers.  See the note on
+                     _p_o_i_n_t_e_r_s below.  The ----zzzz and ----ZZZZ are linker options.  See
+                     _l_d(1) for more details.
+
+      ++++zzzz,,,,++++ZZZZ          Both of these options cause the compiler to generate
+                     position independent code (PIC) for use in building
+                     shared libraries.  The ----GGGG and ----pppp options are ignored if
+                     ++++zzzz or ++++ZZZZ is used.  Normally, ++++zzzz should be used to
+                     generate PIC; however, when certain limits are
+                     exceeded, ++++ZZZZ is required to generate PIC.  The lllldddd
+                     linker issues the error indicating when ++++ZZZZ is required.
+                     If both ++++zzzz and ++++ZZZZ are specified, only the last one
+                     encountered applies.  For a more complete discussion
+                     regarding PIC and these options, see the manual
+                     _P_r_o_g_r_a_m_m_i_n_g _o_n _H_P-_U_X.
+
+      Any other options encountered generate a warning to standard error.
+
+
+
+
+                                    - 5 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+      Other arguments are assumed to be C-compatible object programs,
+      typically produced by an earlier cccccccc run, or perhaps libraries of C-
+      compatible routines.  These programs, together with the results of any
+      compilations specified, are linked (in the order given) to produce an
+      executable program with the name aaaa....oooouuuutttt.
+
+      The first edition of _T_h_e _C _P_r_o_g_r_a_m_m_i_n_g _L_a_n_g_u_a_g_e by Kernighan and
+      Ritchie and the various addenda to it are intentionally ambiguous in
+      some areas.  HP-UX specifies some of these below for compatibility
+      mode (----AAAAcccc) compilations.
+
+      cccchhhhaaaarrrr           The cccchhhhaaaarrrr type is treated as signed by default.  It can
+                     be declared uuuunnnnssssiiiiggggnnnneeeedddd.
+
+      pointers       Accessing the object of a NULL (zero) pointer is
+                     technically illegal (see Kernighan and Ritchie), but
+                     many systems have permitted it in the past.  The
+                     following is provided to maximize portability of code.
+                     If the hardware is able to return zero for reads of
+                     location zero (when accessing at least 8- and 16-bit
+                     quantities), it must do so unless the ----zzzz flag is
+                     present.  The ----zzzz flag requests that SSSSIIIIGGGGSSSSEEEEGGGGVVVV be
+                     generated if an access to location zero is attempted.
+                     Writes of location zero may be detected as errors even
+                     if reads are not.  If the hardware cannot assure that
+                     location zero acts as if it was initialized to zero or
+                     is locked at zero, the hardware should act as if the ----zzzz
+                     flag is always set.
+
+      identifiers    Identifiers are significant up to 255 characters.
+
+      types          Certain programs require that a type be a specific
+                     number of bits wide.  It can be assumed that an iiiinnnntttt can
+                     hold at least as much information as a sssshhhhoooorrrrtttt, and that
+                     a lllloooonnnngggg can hold at least as much information as an iiiinnnntttt.
+                     Additionally, either an iiiinnnntttt or a lllloooonnnngggg can hold a
+                     pointer.
+
+ EEEEXXXXTTTTEEEERRRRNNNNAAAALLLL IIIINNNNFFFFLLLLUUUUEEEENNNNCCCCEEEESSSS
+    EEEEnnnnvvvviiiirrrroooonnnnmmmmeeeennnntttt VVVVaaaarrrriiiiaaaabbbblllleeeessss
+      When the ----YYYY option is invoked, LLLLCCCC____CCCCTTTTYYYYPPPPEEEE determines the interpretation
+      of string literals and comments as single and/or multi-byte
+      characters.
+
+      LLLLAAAANNNNGGGG determines the language in which messages are displayed.
+
+      If LLLLCCCC____CCCCTTTTYYYYPPPPEEEE is not specified in the environment or is set to the empty
+      string, the value of LLLLAAAANNNNGGGG is used as a default for each unspecified or
+      empty variable.  If LLLLAAAANNNNGGGG is not specified or is set to the empty
+      string, a default of "C" (see _l_a_n_g(5)) is used instead of LLLLAAAANNNNGGGG.... If any
+      internationalization variable contains an invalid setting, cccccccc behaves
+
+
+
+                                    - 6 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+      as if all internationalization variables are set to "C".  See
+      _e_n_v_i_r_o_n(5).
+
+    IIIInnnntttteeeerrrrnnnnaaaattttiiiioooonnnnaaaallll CCCCooooddddeeee SSSSeeeetttt SSSSuuuuppppppppoooorrrrtttt
+      Single- and multi-byte character code sets are supported.
+
+ DDDDIIIIAAAAGGGGNNNNOOOOSSSSTTTTIIIICCCCSSSS
+      The diagnostics produced by C itself are intended to be self-
+      explanatory.  Occasionally, messages may be produced by the
+      preprocessor, assembler or the link editor.
+
+      If any errors occur before cccccccc is completed, a non-zero value is
+      returned.  Otherwise, zero is returned.
+
+ EEEEXXXXAAAAMMMMPPPPLLLLEEEESSSS
+      The following compiles the C file pppprrrroooogggg....cccc to create a pppprrrroooogggg....oooo file, then
+      invokes the lllldddd link editor to link pppprrrroooogggg....oooo and pppprrrroooocccceeeedddduuuurrrreeee....oooo with all the
+      C startup routines in ////lllliiiibbbb////ccccrrrrtttt0000....oooo and library routines from the C
+      library lllliiiibbbbcccc....ssssllll or lllliiiibbbbcccc....aaaa.  The resulting executable program is placed
+      in file pppprrrroooogggg:
+
+           cccccccc pppprrrroooogggg....cccc pppprrrroooocccceeeedddduuuurrrreeee....oooo ----oooo pppprrrroooogggg
+
+ WWWWAAAARRRRNNNNIIIINNNNGGGGSSSS
+      Options not recognized by cccccccc are not passed on to the link editor.
+      The option ----WWWW llll,,,,_a_r_g can be used to pass any such option to the link
+      editor.
+
+      By default, the return value from a C program is completely random.
+      The only two guaranteed ways to return a specific value are to
+      explicitly call eeeexxxxiiiitttt(((()))) (see _e_x_i_t(2)) or leave the function mmmmaaaaiiiinnnn(((()))) with
+      a rrrreeeettttuuuurrrrnnnn _e_x_p_r_e_s_s_i_o_n;;;; construct.
+
+ DDDDEEEEPPPPEEEENNNNDDDDEEEENNNNCCCCIIIIEEEESSSS
+    SSSSeeeerrrriiiieeeessss 777700000000////888800000000
+      Note that in the following list of Series 700-and-800-specific cccccccc and
+      cccc88889999 options, ----AAAAeeee, ++++ddddffff, ++++eeee, ++++ffff, ++++EEEESSSS, ++++IIII, ++++mmmm, ++++OOOO, ++++PPPP, ++++ppppggggmmmm, and ++++yyyy are
+      not supported by the C compiler provided as part of the standard HP-UX
+      operating system.  They are supported by the C compiler sold as an
+      optional separate product.
+
+      The default is to allow null pointer dereferencing, hence using ----ZZZZ has
+      no effect.
+
+      The ----gggg option is incompatible with optimization. If both debug and
+      optimization are specified, only the first option encountered takes
+      effect.
+
+      The ----yyyy option is incompatible with optimization.  If both static
+      analysis and optimization are specified, only the first option
+      encountered takes effect.
+
+
+
+                                    - 7 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+      The ----ssss option is incompatible with the ----gggg, ----GGGG, ----pppp, and ----yyyy options.  If
+      ----ssss is specified along with any of the above options, the ----ssss option is
+      ignored, regardless of the order in which the options were specified.
+
+      Nonsharable, executable files generated with the ----NNNN option cannot be
+      executed via eeeexxxxeeeecccc(((()))) (see _e_x_e_c(2)).  For details and system defaults,
+      see _l_d(1).
+
+      The compiler supports the following additional options.  The ++++_o_p_t_1
+      notation can be used as a shorthand notation for some ----WWWW cccc options.
+
+           ----WWWWdddd,,,,----aaaa            When processing files which have been written
+                             in assembly language, does not assemble with
+                             the prefix file which sets up the space and
+                             subspace structure required by the linker.
+                             Files assembled with this option cannot be
+                             linked unless they contain the equivalent
+                             information.
+
+           ----AAAAeeee               Extended ANSI mode.  Same as ----DDDD____HHHHPPPPUUUUXXXX____SSSSOOOOUUUURRRRCCCCEEEE and
+                             ----AAAAaaaa and allows the following extensions: $$$$
+                             characters can appear in identifier names, and
+                             enum declarations can include integral type
+                             specifiers.  Additional extensions may be added
+                             to this option in the future.
+
+           ++++DDDDAAAA_a_r_c_h_i_t_e_c_t_u_r_e   Generate code for the _a_r_c_h_i_t_e_c_t_u_r_e specified.
+                             _a_r_c_h_i_t_e_c_t_u_r_e is required.  The default code
+                             generated for the Series 800 is PPPPAAAA____RRRRIIIISSSSCCCC____1111....0000....
+                             The default code generated for the Series 700
+                             is PPPPAAAA____RRRRIIIISSSSCCCC____1111....1111....  The default code generation
+                             can be overridden using the CCCCCCCCOOOOPPPPTTTTSSSS environment
+                             variable or the command line option ++++DDDDAAAA.
+                             _a_r_c_h_i_t_e_c_t_u_r_e can be either a model number
+                             (e.g., 777755550000 for the HP 9000/750 or 888877770000 for the
+                             HP 9000/870) or one of the following generic
+                             specifications:
+
+                                  1111....0000  Precision Architecture RISC, version
+                                       1.0 or higher.  This is the default
+                                       for all Series 800 models.
+                                  1111....1111  Precision Architecture RISC, version
+                                       1.1.  This is the default for all
+                                       Series 700 models.
+
+                             The compiler determines the target architecture
+                             using the following precedence:
+
+                                  1. Command line specification of ++++DDDDAAAA.
+                                  2. Specification of ++++DDDDAAAA in the CCCCCCCCOOOOPPPPTTTTSSSS
+                                     environment variable.
+
+
+
+                                    - 8 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+                                  3. The default as mentioned above.
+
+           ++++DDDDSSSS_a_r_c_h_i_t_e_c_t_u_r_e   Use the instruction scheduler tuned to the
+                             _a_r_c_h_i_t_e_c_t_u_r_e specified.  _a_r_c_h_i_t_e_c_t_u_r_e is
+                             required.  If this option is not used, the
+                             compiler uses the instruction scheduler for the
+                             architecture on which the program is compiled.
+                             The architecture is determined by uuuunnnnaaaammmmeeee(((()))) (see
+                             _u_n_a_m_e(2)).  _a_r_c_h_i_t_e_c_t_u_r_e can be a model number
+                             (e.g, 777755550000 for the HP 9000/750 or 888877770000 for the HP
+                             9000/870).
+
+           ++++ddddffff_n_a_m_e           Specify profile database file _n_a_m_e for profile
+                             based optimizations.  The default is fffflllloooowwww....ddddaaaattttaaaa
+                             if _n_a_m_e is not specified.  No white space is
+                             permitted between ++++ddddffff and _n_a_m_e.  Data for more
+                             that one application can be kept in the same
+                             file.  ++++ddddffff requires the specification of either
+                             ++++IIII or ++++PPPP.  See _l_d(_1), ++++PPPP, ++++IIII, and ++++ppppggggmmmm for more
+                             details.
+
+           ++++eeee                Enables HP value-added features while compiling
+                             in ANSI C mode, ----AAAAaaaa.  This option is ignored
+                             with ----AAAAcccc because these features are already
+                             provided.  Features enabled:
+
+                                  o+  Long pointers
+                                  o+  Integral type specifiers can appear in
+                                     enum declarations.
+                                  o+  The $$$$ character can appear in
+                                     identifier names.
+                                  o+  Missing parameters on intrinsic calls
+
+           ++++EEEESSSSlllliiiitttt            Place string literals and ccccoooonnnnsssstttt-qualified data
+                             into read-only memory.  This may save space in
+                             the resulting executable by coalescing
+                             identical string literals, and can promote data
+                             sharing in a multi-user application.
+
+           ++++EEEESSSSssssffffcccc            Replace millicode calls with in-line code when
+                             performing function pointer comparisons.  Care
+                             should be taken when using this option and
+                             pointers to shared library routines are being
+                             compared.
+
+           ++++ffff                Inhibit the automatic promotion of float to
+                             double when evaluating expressions.  This
+                             differs from ++++rrrr (see below) in that parameters
+                             and function return values _a_r_e promoted.  This
+                             option is ignored and a warning is produced if
+                             ANSI mode is in effect.
+
+
+
+                                    - 9 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+           ++++FFFFPPPP_s_t_r_i_n_g         Specifies how the run time behavior for
+                             floating-point operations should be initialized
+                             at program start-up.  The default is that all
+                             behaviors are disabled.  See _l_d(1) for specific
+                             values of _s_t_r_i_n_g.  To dynamically change these
+                             settings at run time, refer to _f_p_g_e_t_r_o_u_n_d(3M).
+
+           ++++IIII                Instrument the application for profile based
+                             optimization.  See _l_d(1), ++++PPPP, ++++ddddffff, and ++++ppppggggmmmm for
+                             more details.  This option is incompatible with
+                             ----GGGG,,,, ----gggg,,,, ++++mmmm,,,, ++++oooo,,,, ----pppp,,,, ----SSSS,,,, and ----yyyy.
+
+           ++++LLLL                Enable the listing facility and any listing
+                             pragmas.  A straight listing prints:
+
+                                  o+  A header on the top of each page
+                                  o+  Line numbers
+                                  o+  The nesting level of each statement
+                                  o+  The postprocessed source file with
+                                     expanded macros, included files, and no
+                                     user comments (unless the ----CCCC option is
+                                     used).
+
+                             If the ----AAAAaaaa option is used to compile under ANSI
+                             C, the listing shows the original source file
+                             rather than the postprocessed source file.
+
+           ++++LLLLpppp               Print a listing as described above, but show
+                             the postprocessed source file even if one of
+                             the ANSI compilation levels is selected.  This
+                             option is ineffective if the ----yyyy option is used.
+
+           ++++mmmm                Cause the identifier maps to be printed.
+                             First, locals by function are listed, then all
+                             global identifiers are listed.  All other
+                             identifiers are then listed by function at the
+                             end of the listing.  For struct and union
+                             members, the address column contains _B@@@@_b, where
+                             _B is the byte offset and _b is the bit offset.
+                             Both _B and _b are in hexadecimal.  This option
+                             is incompatible with ++++IIII and ++++PPPP.
+
+           ++++oooo                Cause the code offsets to be printed in
+                             hexadecimal; they are grouped by function at
+                             the end of the listing.  This option is
+                             incompatible with ++++IIII and ++++PPPP.
+
+           ++++OOOO_l_e_v_e_l           Invoke optimizations selected by _l_e_v_e_l.
+                             Defined values for _l_e_v_e_l are:
+
+
+
+
+
+                                   - 10 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+                                  0000    Perform no optimizations.  This is
+                                       the default.
+                                  1111    Perform optimizations within basic
+                                       blocks only.
+                                  2222    Perform level 1 and global
+                                       optimizations.  Same as ----OOOO.
+                                  3333    Perform level 2 as well as
+                                       interprocedural global optimizations.
+                                  4444    Perform level 3 as well as doing link
+                                       time optimizations.  Also sends ----OOOO to
+                                       the linker (see _l_d(1)).
+
+           ++++PPPP                Optimize the application based on profile data
+                             found in the database file fffflllloooowwww....ddddaaaattttaaaa, produced
+                             by compilation with ++++IIII.  See _l_d(1), ++++IIII, ++++ddddffff,
+                             and ++++ppppggggmmmm for more details.  This option is
+                             incompatible with ----GGGG, ----gggg, ++++mmmm, ++++oooo, ----pppp, ----SSSS, and
+                             ----yyyy.
+
+           ++++ppppggggmmmm_n_a_m_e          Specify a profile database lookup name within
+                             the database file _n_a_m_e.  No white space is
+                             permitted between ++++ppppggggmmmm and _n_a_m_e.  ++++ppppggggmmmm requires
+                             that either ++++IIII or ++++PPPP be specified.  See also
+                             _l_d(_1), ++++PPPP, ++++IIII, and ++++ddddffff for more details.
+
+           ++++rrrr                Inhibits the automatic promotion of float to
+                             double when evaluating expressions and passing
+                             arguments.  This option is ignored and a
+                             warning produced if the ANSI mode is in effect
+                             (see also ++++ffff).
+
+           ++++RRRR_n_u_m             Allow only the first _n_u_m rrrreeeeggggiiiisssstttteeeerrrr variables to
+                             actually have the rrrreeeeggggiiiisssstttteeeerrrr class.  Use this
+                             option when the register allocator issues an
+                             oooouuuutttt ooooffff ggggeeeennnneeeerrrraaaallll rrrreeeeggggiiiisssstttteeeerrrrssss message.
+
+           ++++uuuu_n_u_m             Allow pointers to access non-natively aligned
+                             data.  This option alters the way that the
+                             compiler accesses dereferenced data.  Use of
+                             this option may reduce the efficiency of
+                             generated code.
+
+                                  1111    Assume single byte alignment.
+                                       Dereferences are performed with a
+                                       series of single-byte loads and
+                                       stores.
+
+                                  2222    Dereferences are performed with a
+                                       series of two-byte loads and stores.
+                                       This is the default.
+
+
+
+
+                                   - 11 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+                                  4444    Dereferences are performed with a
+                                       series of four-byte loads and stores.
+
+           ++++wwww_n               Specify the level of the warning messages.  The
+                             value of _n can be one of the following values:
+
+                                  1111    All warnings are issued.
+                                  2222    Only warnings indicating that code
+                                       generation might be affected are
+                                       issued.  Equivalent to the compiler
+                                       default without any wwww opts.
+                                  3333    No warnings are issued.  Equivalent
+                                       to the ----wwww option.
+
+           ++++yyyy                Generate static analysis information for all
+                             global identifiers not seen in the original
+                             source file.  This option only has effect if
+                             used in conjunction with the ----yyyy option.
+
+      The following additional optimization options allow the user to enable
+      or disable specific optimization techniques:
+
+           ++++OOOO[[[[nnnnoooo]]]]eeeennnnttttrrrryyyysssscccchhhheeeedddd
+                          Perform [do not perform] instruction scheduling on
+                          a subprogram's entry and exit code sequences.
+                          This optimization can occur at optimization levels
+                          1, 2, 3, and 4.  The default is ++++OOOOnnnnooooeeeennnnttttrrrryyyysssscccchhhheeeedddd.
+
+           ++++OOOO[[[[nnnnoooo]]]]ffffaaaassssttttaaaacccccccceeeessssssss
+                          Enable [disable] fast access to global data.  This
+                          optimization can occur at optimization levels 2,
+                          3, and 4.  The default is ++++OOOOnnnnooooffffaaaassssttttaaaacccccccceeeessssssss at
+                          optimization levels 2 and 3, and ++++OOOOffffaaaassssttttaaaacccccccceeeessssssss at
+                          optimization level 4.
+
+           ++++OOOO[[[[nnnnoooo]]]]ffffllllttttaaaacccccccc   Disable [enable] optimizations that cause
+                          imprecise floating-point results.  This
+                          optimization can occur at optimization levels 2,
+                          3, and 4.  The default is ++++OOOOffffllllttttaaaacccccccc.
+
+           ++++OOOO[[[[nnnnoooo]]]]iiiinnnniiiittttcccchhhheeeecccckkkk
+                          Enable [disable] initialization of any local,
+                          scalar, non-static variable that is uninitialized
+                          with respect to at least one path leading to its
+                          use.  This optimization can occur at optimization
+                          levels 2, 3, and 4.  The default is to enable
+                          initialization if the variable is uninitialized
+                          with respect to every path leading to its use.
+
+           ++++OOOO[[[[nnnnoooo]]]]iiiinnnnlllliiiinnnneeee[[[[====_n_a_m_e_1, _n_a_m_e_2, ... _n_a_m_e_N]]]]
+                          Request [disable] inlining for the specified
+
+
+
+                                   - 12 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+                          procedures.  This optimization can occur at
+                          optimization levels 3 and 4.  The default is
+                          ++++OOOOiiiinnnnlllliiiinnnneeee.
+
+           ++++OOOO[[[[nnnnoooo]]]]lllliiiibbbbccccaaaallllllllssss Invoke [do not invoke] low call-overhead versions
+                          of select library routines.  This optimization can
+                          occur at optimization levels 0, 1, 2, 3, and 4.
+                          The default is ++++OOOOnnnnoooolllliiiibbbbccccaaaallllllllssss.
+
+           ++++OOOO[[[[nnnnoooo]]]]mmmmoooovvvveeeeffffllllooooppppssss
+                          Enable [disable] moving conditional floating point
+                          instructions out of loops.  This optimization can
+                          occur at optimization levels 2, 3, and 4.  The
+                          default is ++++OOOOmmmmoooovvvveeeeffffllllooooppppssss.
+
+           ++++OOOO[[[[nnnnoooo]]]]ppppaaaarrrrmmmmssssoooovvvveeeerrrrllllaaaapppp
+                          Optimize with the assumption that that subprogram
+                          arguments do [do not] refer to the same memory.
+                          This optimization can occur at optimization levels
+                          2, 3, and 4.  The default is ++++OOOOppppaaaarrrrmmmmssssoooovvvveeeerrrrllllaaaapppp.
+
+           ++++OOOO[[[[nnnnoooo]]]]ppppiiiippppeeeelllliiiinnnneeee Enable [disable] software-pipelining.  This
+                          optimization can occur at optimization levels 2,
+                          3, and 4.  The default is ++++OOOOppppiiiippppeeeelllliiiinnnneeee.
+
+           ++++OOOO[[[[nnnnoooo]]]]rrrreeeeggggiiiioooonnnnsssscccchhhheeeedddd
+                          Apply [do not apply] aggressive scheduling
+                          techniques to move instructions across branches.
+                          This optimization can occur at optimization levels
+                          2, 3, and 4.  The default is ++++OOOOnnnnoooorrrreeeeggggiiiioooonnnnsssscccchhhheeeedddd.
+
+           ++++OOOO[[[[nnnnoooo]]]]rrrreeeeggggrrrreeeeaaaassssssssoooocccc
+                          Enable [disable] register reassociation.  This
+                          optimization can occur at optimization levels 2,
+                          3, and 4.  The default is ++++OOOOrrrreeeeggggrrrreeeeaaaassssssssoooocccc.
+
+           ++++OOOO[[[[nnnnoooo]]]]ssssiiiiddddeeeeeeeeffffffffeeeeccccttttssss====_n_a_m_e_1, _n_a_m_e_2,...,_n_a_m_e_N
+                          Optimize with the assumption that the specified
+                          subprograms do [do not] modify global variables
+                          and are therefore ineligible for inlining.  This
+                          optimization can occur at optimization levels 2,
+                          3, and 4.  The default is to assume that all
+                          subprograms have side-effects unless the optimizer
+                          can determine that there are none.
+
+           ++++OOOO[[[[nnnnoooo]]]]ssssiiiiggggnnnneeeeddddppppooooiiiinnnntttteeeerrrrssss
+                          Enable [disable] the treating of pointers as
+                          signed quanities.  This optimization can occur at
+                          optimization levels 0, 1, 2, 3, and 4.  The
+                          default is ++++OOOOnnnnoooossssiiiiggggnnnneeeeddddppppooooiiiinnnntttteeeerrrrssss.
+
+
+
+
+                                   - 13 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+           ++++OOOO[[[[nnnnoooo]]]]vvvvoooollllaaaattttiiiilllleeee Enable [disable] the treating of all global
+                          variables as volatile quantities.  This
+                          optimization can occur at optimization levels 1,
+                          2, 3, and 4.  The default is ++++OOOOnnnnoooovvvvoooollllaaaattttiiiilllleeee.
+
+      The following "pre-packaged" optimization options allow the user to
+      enable or disable groups of optimization techniques:
+
+           ++++OOOO[[[[nnnnoooo]]]]aaaaggggggggrrrreeeessssssssiiiivvvveeee
+                Apply [do not apply] aggressive optimizations; that is, new
+                optimizations and the optimizations invoked by the following
+                option settings:
+
+                ++++OOOOeeeennnnttttrrrryyyysssscccchhhheeeedddd
+                ++++OOOOlllliiiibbbbccccaaaallllllllssss
+                ++++OOOOnnnnooooiiiinnnniiiittttcccchhhheeeecccckkkk
+                ++++OOOOnnnnooooppppaaaarrrrmmmmssssoooovvvveeeerrrrllllaaaapppp
+                ++++OOOOnnnnoooorrrreeeeggggiiiioooonnnnsssscccchhhheeeedddd
+
+                These optimizations can occur at levels 2, 3, and 4.  The
+                default is ++++OOOOnnnnooooaaaaggggggggrrrreeeessssssssiiiivvvveeee.
+
+           ++++OOOO[[[[nnnnoooo]]]]aaaallllllll
+                Apply [do no apply] all optimizations enabled by the
+                ++++OOOOaaaaggggggggrrrreeeessssssssiiiivvvveeee and ++++OOOOlllliiiimmmmiiiitttt options.  These optimizations can
+                occur at levels 2, 3, and 4.  The default is ++++OOOOnnnnooooaaaallllllll.
+
+           ++++OOOO[[[[nnnnoooo]]]]ccccoooonnnnsssseeeerrrrvvvvaaaattttiiiivvvveeee
+                Make [do not make] conservative assumptions about the
+                program when optimizing.  These optimizations can occur at
+                levels 2, 3, and 4.  The default is ++++OOOOnnnnooooccccoooonnnnsssseeeerrrrvvvvaaaattttiiiivvvveeee.
+
+           ++++OOOO[[[[nnnnoooo]]]]lllliiiimmmmiiiitttt
+                Suppress [do not suppress] optimizations that significantly
+                increase compile-time or consume enormous amounts of memory.
+                These optimizations can occur at levels 2, 3, and 4.  The
+                default is ++++OOOOlllliiiimmmmiiiitttt.
+
+           ++++OOOO[[[[nnnnoooo]]]]ssssiiiizzzzeeee
+                Suppress [do not suppress] optimizations that significantly
+                increase code size.  These optimizations can occur at levels
+                2, 3, and 4.  The default is ++++OOOOnnnnoooossssiiiizzzzeeee.
+
+ FFFFIIIILLLLEEEESSSS
+      ffffiiiilllleeee....cccc                        input file
+      ffffiiiilllleeee....oooo                        object file
+      aaaa....oooouuuutttt                         linked output
+      ////ttttmmmmpppp////ccccttttmmmm****                     default temporary files
+      ////uuuussssrrrr////ttttmmmmpppp////ccccttttmmmm****                 default temporary files
+      ////lllliiiibbbb////ccccccccoooommmm                     C compiler
+
+
+
+
+                                   - 14 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+      ////lllliiiibbbb////ccccpppppppp                      preprocessor
+      ////lllliiiibbbb////ccccpppppppp....aaaannnnssssiiii                 preprocessor for ANSI C
+      ////bbbbiiiinnnn////aaaassss                       assembler (see _a_s(1))
+      ////bbbbiiiinnnn////lllldddd                       link editor (see _l_d(1))
+      ////lllliiiibbbb////ccccrrrrtttt0000....oooo                   runtime startoff
+      ////lllliiiibbbb////mmmmccccrrrrtttt0000....oooo                  startoff for profiling via _p_r_o_f(1)
+      ////lllliiiibbbb////ggggccccrrrrtttt0000....oooo                  startoff for profiling via _g_p_r_o_f(1)
+      ////lllliiiibbbb////lllliiiibbbbcccc....aaaa                   standard C library (archive version),
+                                    see _H_P-_U_X _R_e_f_e_r_e_n_c_e Section (3).
+      ////lllliiiibbbb////lllliiiibbbbcccc....ssssllll                  standard C library (shared version), see
+                                    _H_P-_U_X _R_e_f_e_r_e_n_c_e Section (3).
+      ////lllliiiibbbb////lllliiiibbbbpppp////lllliiiibbbbcccc....aaaa              C library for profiled programs (archive
+                                    version)
+      ////uuuussssrrrr////iiiinnnncccclllluuuuddddeeee                  standard directory for ####iiiinnnncccclllluuuuddddeeee files
+    SSSSeeeerrrriiiieeeessss 777700000000////888800000000
+      ////lllliiiibbbb////iiiiccccrrrrtttt0000....oooo                  Startoff for Instrumentation via ++++IIII
+      ////uuuussssrrrr////lllliiiibbbb////nnnnllllssss////$$$$LLLLAAAANNNNGGGG////cccccccc....ccccaaaatttt     C Compiler message catalog
+      ////uuuussssrrrr////lllliiiibbbb////uuuuccccccccoooommmm                Stand-alone code generator
+      ////uuuussssrrrr////lllliiiibbbb////sssscccchhhheeeedddd....mmmmooooddddeeeellllssss         processor implementation file
+
+ SSSSEEEEEEEE AAAALLLLSSSSOOOO
+    OOOOnnnnlllliiiinnnneeee hhhheeeellllpppp ((((777700000000////888800000000 oooonnnnllllyyyy))))::::
+      _h_e_l_p_v_i_e_w(_1_X)      HP Vue online help system for C.  Select the "?"
+                        icon on the HP Vue front panel, or type the command
+                        helpview,  which  is  in either /usr/vue/bin or
+                        /usr/vhelp/bin.
+
+    PPPPrrrrooooggggrrrraaaammmm mmmmaaaannnnaaaaggggeeeemmmmeeeennnntttt aaaannnndddd aaaannnnaaaallllyyyyssssiiiissss ttttoooooooollllssss::::
+      _l_i_n_t(_1)           C program checker/verifier
+      _c_b(_1)             C program beautifier, formatter
+      _c_x_r_e_f(_1)          generate C program cross-reference
+
+    PPPPrrrrooooffffiiiilllliiiinnnngggg aaaannnndddd ddddeeeebbbbuuuuggggggggiiiinnnngggg ttttoooooooollllssss::::
+      _g_p_r_o_f(_1)          display call graph profile data
+      _p_r_o_f(_1)           display profile data
+      _m_o_n_i_t_o_r(_3_C)       prepare execution profile
+      _x_d_b(_1)            C, C++, FORTRAN, and Pascal symbolic debugger
+      _c_d_b(_1)            C, C++, FORTRAN, and Pascal symbolic debugger
+      _a_d_b(_1)            absolute debugger
+
+    SSSSyyyysssstttteeeemmmm ttttoooooooollllssss::::
+      _a_s(_1)             translate assembly code to machine code
+      _c_p_p(_1)            invoke the the C language preprocessor
+      _l_d(_1)             invoke the link editor
+
+    MMMMiiiisssscccceeeellllllllaaaannnneeeeoooouuuussss::::
+      _m_a_t_h_e_r_r(_3_M)       trap math errors
+      _f_p_g_e_t_r_o_u_n_d(_3_M)    floating-point mode-control functions
+      _s_t_r_i_p(_1)          strip symbol and line number information from an
+                        object file
+
+
+
+
+                                   - 15 -          Formatted:  July 23, 1994
+
+
+
+
+
+
+ cccccccc((((1111))))                                                                 cccccccc((((1111))))
+
+
+
+
+      _c_r_t_0(_3)           execution startup routine
+      _e_n_d(_3_C)           symbol of the last locations in program
+      _e_x_i_t(_2)           termination of a process
+
+    TTTTuuuuttttoooorrrriiiiaaaallllssss aaaannnndddd SSSSttttaaaannnnddddaaaarrrrddddssss DDDDooooccccuuuummmmeeeennnnttttssss::::
+      B. W. Kernighan and D. M. Ritchie, _T_h_e _C _P_r_o_g_r_a_m_m_i_n_g _L_a_n_g_u_a_g_e,
+      Prentice-Hall, 1978.
+
+      _A_m_e_r_i_c_a_n _N_a_t_i_o_n_a_l _S_t_a_n_d_a_r_d _f_o_r _I_n_f_o_r_m_a_t_i_o_n _S_y_s_t_e_m_s - _P_r_o_g_r_a_m_m_i_n_g
+      _l_a_n_g_u_a_g_e _C, ANS X3.159-1989
+
+ SSSSTTTTAAAANNNNDDDDAAAARRRRDDDDSSSS CCCCOOOONNNNFFFFOOOORRRRMMMMAAAANNNNCCCCEEEE
+      cccccccc: SVID2, XPG2, XPG3
+
+      cccc88889999: POSIX.2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   - 16 -          Formatted:  July 23, 1994
+
+
+
+
+

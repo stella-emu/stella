@@ -1,0 +1,14 @@
+#!/usr/local/bin/perl -w
+
+use GDBM_File;
+
+$dict = shift;
+
+tie( %dict, 'GDBM_File', $dict, &GDBM_READER, 0644) || die "Cannot tie $dict:$!";
+
+while (($key,$val) = each %dict)
+ {
+  print "$key\n";
+ }
+
+untie %dict;

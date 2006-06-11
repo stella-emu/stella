@@ -1,0 +1,21 @@
+# This bit of Makefile only works if GNU make is available
+# The classic make version would have `$(SRCDIR)/getrev $(SRCDIR)`
+# which does not work as it gets evaluated by 'sh' once we have cd'ed
+# elsewhere. GNU make scheme uses := and $(shell...) to evaluate
+# REVISION once at Makefile parse time
+# It is really only needed by developer
+
+REVISION  := $(shell $(SRCDIR)/getrev $(SRCDIR))
+
+distribution: 
+	rm -rf /tmp/rsynth-$(REVISION)
+	mkdir /tmp/rsynth-$(REVISION)
+	(cd $(SRCDIR); tar cf - `cat MANIFEST` ) | (cd /tmp/rsynth-$(REVISION); tar xf - )
+	(cd /tmp; tar cvf - rsynth-$(REVISION) ) | gzip -c > $(SRCDIR)/../rsynth-$(REVISION).tar.gz
+
+disttest : 
+	rm -rf /tmp/rsynth-$(REVISION)
+	mkdir /tmp/rsynth-$(REVISION)
+	(cd $(SRCDIR); tar cf - `cat MANIFEST` ) | (cd /tmp/rsynth-$(REVISION); tar xf - )
+	(cd /tmp/rsynth-$(REVISION); CC=$(CC) configure ; make CC=$(CC) -k check)
+

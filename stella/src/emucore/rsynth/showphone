@@ -1,0 +1,39 @@
+#!/usr/local/bin/perl -w
+use strict;
+use blib "../Encode-sampa";
+use blib "../Tkutf8";
+use Encode;
+use Encode::Sampa;
+use Tk;
+
+my $fixed = '-misc-fixed-medium-r-normal--15-140-75-75-c-0-iso10646-1';
+my $face = (@ARGV) ? shift : ['arial unicode ms',14];
+
+
+my $enc = find_encoding("sampa");
+#print "$enc\n";
+
+my $mw = MainWindow->new;
+my $t  = $mw->Scrolled('Text',
+                        -font => $fixed)->pack;
+
+sub PHONE
+{
+ my ($e,$nm,$br,$am,$ex) = @_;
+ 
+#print join(',',@_),"\n"; 
+ warn "$e vs $nm" if $e ne $nm;
+ my $ubr = $enc->decode($br); 
+ my $uam = $enc->decode($am); 
+ $uam =~ s/\x{259}`/\x{25a}/g;
+ $uam =~ s/\x{25C}`/\x{25d}/g;
+ $t->insert('end',"$nm\t$ubr\t$uam\t$ex\n");
+}
+
+our @U = '@U';
+
+{
+ do "./phones.def";
+}
+
+MainLoop;

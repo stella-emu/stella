@@ -1,0 +1,8 @@
+#!/bin/sh 
+if test $# -gt 0; then
+ dir=$1;
+else
+ dir=.
+fi 
+grep 'Revision:' ${dir}/Revision.c | sed 's/^.*Revision: *\([0-9.]*\).*$/\1/'
+

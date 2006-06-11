@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.90 2006-06-09 02:45:11 urchlay Exp $
+// $Id: Console.cxx,v 1.91 2006-06-11 07:13:19 urchlay Exp $
 //============================================================================
 
 #include <assert.h>
@@ -141,6 +141,8 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     myControllers[0] = new Joystick(leftjack, *myEvent);
   }
   
+  AtariVox *vox = 0;
+
   // Construct right controller
   if(right == "BOOSTER-GRIP")
   {
@@ -160,7 +162,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   }
   else if(right == "ATARIVOX")
   {
-    myControllers[1] = new AtariVox(rightjack, *myEvent);
+    myControllers[1] = vox = new AtariVox(rightjack, *myEvent);
   }
   else
   {
@@ -181,6 +183,11 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
 
   // Now, we can construct the system and components
   mySystem = new System(13, 6);
+
+  // AtariVox is a smart peripheral; it needs access to the system
+  // cycles counter, so it needs a reference to the System
+  if(vox)
+    vox->setSystem(mySystem);
 
   M6502* m6502;
   if(myOSystem->settings().getString("cpu") == "low")

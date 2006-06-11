@@ -1,0 +1,55 @@
+#!/usr/local/bin/perl -w 
+use Audio::Data;
+use Audio::Play;
+
+my $f = shift;
+my $n = shift(@ARGV) + 0;
+
+my @data;
+while (<>)
+ {
+  s/#.*$//;
+  next if /^\s*$/;
+  s/^\s+//;
+  my @f = split(/\s+/,$_);
+  my $v = 0+$f[$n];
+  push(@data,$v);
+ }
+ 
+my $au = Audio::Data->new(rate => 11025);
+
+$au->data(@data); 
+
+$au /= 32768;
+
+
+my ($max,$min) = $au->bounds;
+my $dur = $au->duration;
+warn "Original $max - $min ${dur}s\n";
+
+if ($max > 1 || $min < -1)
+ {
+  my $dc = ($max+$min)/2;
+  $au -= $dc;
+  my $size = ($max-$min)/2;
+  $au /= $size;
+  ($max,$min) = $au->bounds;
+  $dur = $au->duration;
+  warn "Normaized $max - $min ${dur}s\n";
+  
+ }
+ 
+open(my $fh,">$f") || die "Cannot open $f:$!";
+$au->Save($fh,"");
+close($fh); 
+
+# Audio::Play->new->play($au);
+
+open($fh,"$f") || die "Cannot open $f:$!";
+my $rb = Audio::Data->new(Load => $fh);
+close($fh); 
+
+($max,$min) = $rb->bounds;
+$dur = $rb->duration;
+warn "Duration $max - $min ${dur}s\n";
+

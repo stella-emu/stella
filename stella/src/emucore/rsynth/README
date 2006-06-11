@@ -1,0 +1,233 @@
+
+This is a text to speech system produced by integrating various pieces
+of code and tables of data, which are all (I believe) suitable
+for use in OpenSource projects.
+
+The files in this distribution are either under GPL or LGPL.
+
+For best quality it is highly desirable to use one of the dictionaries
+suggested below.
+
+The uses GNU autoconf to build a configure script.
+The generic install instructions are in INSTALL, but basically
+it works like this :
+
+configure
+make
+make check
+say --help
+say Something of your choice
+make -n install  # see what it is going to do
+make install     # copy program(s) to /usr/local/bin
+
+configure --help and INSTALL file explain configure options
+which may help.
+
+To allow the package to be built when installer cannot install the
+GNU gdbm package in the "normal" place you can specify a pathname
+to the gdbm source directory as follows :
+
+configure --with-gdbm=<path-to-gdbm>
+
+e.g.
+
+configure --with-gdbm=$HOME/gdbm
+
+Currently there are the following drivers that are actively
+maintained by me:
+
+1. Linux - ALSA or OSS
+   OSS driver will probably work on netbsd/freebsd etc.
+   configure should sort this out.
+
+2. Windows - I will be supporting it, but it may not work
+   in this version.
+
+3. Any machine for which a nas/netaudio port exists.
+   And for which configure can find the include files and libraries.
+   (Nas "net audio server" does for audio what X11 does for graphics.)
+
+There are also drivers from the really old rsynth code
+which are still there:
+
+*  Sun SPARCStations - written & tested by me (when at TI)
+   on SunOS4.1.3 and Solaris2.3
+*  NeXT
+*  SGI - this built on "mips-sgi-irix4.0.5H"
+*  HPUX
+
+
+Dictionaries:
+
+      Dictionaries convert words in "text" to phonemes in "arpabet"
+      symbols. The arpabet symbols are then "expanded" into an ASCII
+      representation of the IPA.
+      The IPA representation is SAMPA, as defined by J C Wells at UCL see:
+
+      http://www.phon.ucl.ac.uk/home/sampa/home.htm
+
+      Dictionary databases can be built from either of two ftp'able
+      sources:
+
+      1. The Carnegie Mellon Pronouncing Dictionary [cmudict.0.1] is Copyright
+         1993 by Carnegie Mellon University. Use of this dictionary, for any
+         research or commercial purpose, is completely unrestricted.  If you
+         make use of or redistribute this material, we would appreciate
+         acknowlegement of its origin.
+
+         ftp://ftp.cs.cmu.edu/project/fgdata/dict
+              Latest seems to be cmudict.0.6.gz
+
+      2. "beep" from
+         ftp://svr-ftp.eng.cam.ac.uk/pub/comp.speech/dictionaries
+              Latest seems to be beep-1.0.tar.gz
+
+         This is a direct desendant of CUVOLAD (british pronounciation)
+         (as used by previous releases of rsynth), and so
+         has a more restrictive copyright than CMU dictionary.
+
+      dict.c looks for bDict.db by default. b is for british e.g. beep
+      I use aDict.db for CMU (american) dictionary.
+      You can then :
+
+      say -d a schedule  # sked...
+      say -d b schedule  # shed...
+
+      It is simplest to obtain dictionaries prior to configuring the
+      package and tell it where the source are at configure time:
+
+
+      configure --with-aDict=../dict/cmudict.0.6 --with-bDict=../dict/beep-1.0
+
+      If you have already built/installed the package you can
+      gdbm from it as follows:
+
+      mkdictdb main-dictionary-file bDict.db
+      mv bDict.db /usr/local/lib
+
+      Expect a few messages from mkdictdb about words it does not like
+      in either dictionary.
+
+It should not be too hard to port it to other hardware.  For a discussion of
+these issues see PORTING.
+
+Use say --help to get a list of command line options.
+
+There is an experimental hook to allow you to "say" .pho files intended
+for MBrola diphone synth. This is used to provide a hacky back-end
+for Festival.
+
+Projects:
+  Plan is to pre-analyze the dictionaries and produce better letter
+  to sound rules and smaller exception dictionaries.
+
+  Add more of IPA repertiore so that synth can attempt more languages.
+
+  Improve quality.
+
+The components (top down ) :
+
+   saymain.c
+      C main() function.
+      Initializes lower layers and then converts words from
+      command line or "stdin" to phonemes.
+
+   say.c / say.h
+      Some "normalization" of the text is performed, in particular
+      numbers can be represented as sequences of digits.
+
+
+   dict.c / dict.h
+
+      As of this release uses a GNU "gdbm" database which has been
+      pre-loaded with a pronounciation dictionary.
+
+
+   text.c / english.c / text.h
+
+      An implementation of US Naval Research Laboratory rules
+      for converting english (american?) text to phonemes.
+
+      Based on the version on the comp.speech archives, main changes
+      were in the encoding of the phonemes from the so called "arpabet"
+      to a more concise form used in the above dictionary.
+      This form (which is nmemonic if  you know the International Phonetic
+      Alphabet), is described in the dictionary documentation. It is
+      also very close to that described in the postings by Evan Kirshenbaum
+      (evan@hplerk.hpl.hp.com)  to sci.lang and alt.usage.english. (The
+      differences are in the vowels and are probably due to the differences
+      between Britsh and American english).
+
+
+   saynum.c
+
+      Code for "saying" numbers derived from same source as above.
+      It has been modified to call the higher level routines recursively
+      rather producing phonemes directly. This will allow any systematic
+      changes (e.g. British vs American switch) to affect numbers without
+      having to change this module.
+
+
+   holmes.c / holmes.h / elements.c / elements.def
+
+      My implementation of a phoneme to "vocal tract parameters" system
+      described by Holmes et. al. [1]
+
+      The original used an Analogue Hardware synthesizer.
+
+   opsynth.c / rsynth.h
+
+      My re-implementation of the "Klatt" synthesizer, described
+      in Klatt [2].
+
+    hplay.c / hplay.h
+
+      hplay.h describes a common interface.
+      hplay.c is a link to play/xxxplay.c
+
+
+Acknowledgements :
+
+Particular thanks to
+     Tony Robinson     ajr@eng.cam.ac.uk
+
+     for providing FTP site for alpha testing, and telnet access to a
+     variety of machines.
+
+   Many thanks to
+
+     Axel Belinfante   Axel.Belinfante@cs.utwente.nl  (World Wide Web)
+
+     Jon Iles          J.P.Iles@cs.bham.ac.uk
+
+     Rob Hooft         hooft@EMBL-Heidelberg.de       (linux stuff)
+
+     Thierry Excoffier exco@ligiahp3.univ-lyon1.fr    (playpipe for hpux)
+     Markus Gyger      mgyger@itr.ch                  (HPUX port)
+
+     Ben Stuyts        ben@stuyts.nl                  (NeXT port)
+
+     Stephen Hocking <sysseh@devetir.qld.gov.au>      (Preliminary Netaudio port)
+     Greg Renda      <greg@ncd.com>                   (Netaudio cleanup)
+     Tracey Bernath  <bernath@bnr.ca>                 (Netaudio testing)
+
+     "Tom Benoist"   <ben@ifx.com>                    (SGI Port)
+     Andrew Anselmo  <anselmo@ERXSG.rl.plh.af.mil>    (SGI testing)
+     Mark Hanning-Lee <markhl@iris-355.jpl.nasa.gov>  (SGI testing)
+
+     Cornelis van der Laan <nils@ims.uni-stuttgart.de> (freebsd)
+
+   for assisting me in puting this package together.
+
+
+References :
+
+   [1] Holmes J. N., Mattingly I, and Shearme J. (1964)
+       "Speech Synthesis by Rule" , Language Speech 7, 127-143
+
+   [2] Dennis H. Klatt  (1980)
+       "Software for a Cascade/Parallel Formant Synthesizer",
+       J. Acoust. Soc. Am. 67(3), March 1980.
+
+
+
