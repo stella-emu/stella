@@ -18,9 +18,9 @@
 
 */
 #include "config.h"
-/* $Id: holmes.c,v 1.1 2006-06-11 07:13:25 urchlay Exp $
+/* $Id: holmes.c,v 1.2 2006-06-12 14:12:52 stephena Exp $
  */
-char *holmes_id = "$Id: holmes.c,v 1.1 2006-06-11 07:13:25 urchlay Exp $";
+char *holmes_id = "$Id: holmes.c,v 1.2 2006-06-12 14:12:52 stephena Exp $";
 #include <stdio.h>
 #include <ctype.h>
 #include <assert.h>
@@ -28,9 +28,6 @@ char *holmes_id = "$Id: holmes.c,v 1.1 2006-06-11 07:13:25 urchlay Exp $";
 #include <math.h>
 #include "rsynth.h"
 #include "darray.h"
-#include "getargs.h"
-#include "plotparm.h"
-#include "hplay.h"
 
 typedef struct {
     float v;			/* boundary value */

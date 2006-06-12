@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.19 2006-03-05 01:18:41 stephena Exp $
+// $Id: Cart.cxx,v 1.20 2006-06-12 14:12:51 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -23,6 +23,7 @@
 #include "Cart2K.hxx"
 #include "Cart3E.hxx"
 #include "Cart3F.hxx"
+#include "Cart4A50.hxx"
 #include "Cart4K.hxx"
 #include "CartAR.hxx"
 #include "CartDPC.hxx"
@@ -63,6 +64,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new Cartridge3E(image, size);
   else if(type == "3F")
     cartridge = new Cartridge3F(image, size);
+  else if(type == "4A50")
+    cartridge = new Cartridge4A50(image);
   else if(type == "4K")
     cartridge = new Cartridge4K(image);
   else if(type == "AR")
@@ -187,7 +190,6 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
 
   /* The above logic was written long before 3E support existed. It will
      detect a 3E cart as 3F. Let's remedy that situation: */
-
   if(type == "3F" && isProbably3E(image, size))
     type = "3E";
 

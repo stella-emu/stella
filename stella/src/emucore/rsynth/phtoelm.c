@@ -19,9 +19,9 @@
 */
 #include "config.h"
 
-/* $Id: phtoelm.c,v 1.1 2006-06-11 07:13:26 urchlay Exp $
+/* $Id: phtoelm.c,v 1.2 2006-06-12 14:12:52 stephena Exp $
  */
-char *phtoelm_id = "$Id: phtoelm.c,v 1.1 2006-06-11 07:13:26 urchlay Exp $";
+char *phtoelm_id = "$Id: phtoelm.c,v 1.2 2006-06-12 14:12:52 stephena Exp $";
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -30,8 +30,6 @@ char *phtoelm_id = "$Id: phtoelm.c,v 1.1 2006-06-11 07:13:26 urchlay Exp $";
 #include "useconfig.h"
 #include "rsynth.h"
 #include "trie.h"
-#include "hplay.h"
-// #include "aufile.h"
 #include "phfeat.h"
 
 
@@ -80,7 +78,7 @@ enter(char *p, ...)
 static void
 enter_phonemes(void)
 {
-#include "Rsynth/phtoelm.def"
+#include "phtoelm.def"
 }
 
 trie_ptr
