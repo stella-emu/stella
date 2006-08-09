@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.92 2006-06-11 22:43:55 urchlay Exp $
+// $Id: Console.cxx,v 1.93 2006-08-09 02:38:03 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -140,8 +140,10 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   {
     myControllers[0] = new Joystick(leftjack, *myEvent);
   }
-  
+ 
+#ifdef ATARIVOX_SUPPORT 
   vox = 0;
+#endif
 
   // Construct right controller
   if(right == "BOOSTER-GRIP")
@@ -160,10 +162,12 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   {
     myControllers[1] = new Paddles(rightjack, *myEvent);
   }
+#ifdef ATARIVOX_SUPPORT 
   else if(right == "ATARIVOX")
   {
     myControllers[1] = vox = new AtariVox(rightjack, *myEvent);
   }
+#endif
   else
   {
     myControllers[1] = new Joystick(rightjack, *myEvent);
@@ -186,8 +190,10 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
 
   // AtariVox is a smart peripheral; it needs access to the system
   // cycles counter, so it needs a reference to the System
+#ifdef ATARIVOX_SUPPORT 
   if(vox)
     vox->setSystem(mySystem);
+#endif
 
   M6502* m6502;
   if(myOSystem->settings().getString("cpu") == "low")

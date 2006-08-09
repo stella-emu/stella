@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.31 2006-06-11 22:43:55 urchlay Exp $
+// $Id: SoundSDL.cxx,v 1.32 2006-08-09 02:38:03 bwmott Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -408,6 +408,7 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
   sound->processFragment(stream, (Int32)len);
+#ifdef ATARIVOX_SUPPORT
   cerr << "SoundSDL::callback(): len==" << len << endl;
 
   // See if we need sound from the AtariVox
@@ -426,6 +427,7 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
       s += OUTPUT_BUFFER_SIZE;
     }
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

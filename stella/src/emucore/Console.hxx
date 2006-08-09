@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.44 2006-06-11 22:43:55 urchlay Exp $
+// $Id: Console.hxx,v 1.45 2006-08-09 02:38:03 bwmott Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.44 2006-06-11 22:43:55 urchlay Exp $
+  @version $Id: Console.hxx,v 1.45 2006-08-09 02:38:03 bwmott Exp $
 */
 class Console
 {
@@ -236,7 +236,9 @@ class Console
     void togglePFBit() { toggleTIABit(TIA::PF, "PF"); }
     void enableBits(bool enable);
 
+#ifdef ATARIVOX_SUPPORT
     AtariVox *atariVox() { return vox; }
+#endif
 
   private:
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true);
@@ -271,7 +273,9 @@ class Console
     // A RIOT of my own! (...with apologies to The Clash...)
     M6532 *myRiot;
 
+#ifdef ATARIVOX_SUPPORT
     AtariVox *vox;
+#endif
 
     // Indicates whether the console was correctly initialized
     // We don't really care why it wasn't initialized ...

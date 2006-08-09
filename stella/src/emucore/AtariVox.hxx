@@ -14,8 +14,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
+// $Id: AtariVox.hxx,v 1.4 2006-08-09 02:38:03 bwmott Exp $
 //============================================================================
+
+#ifdef ATARIVOX_SUPPORT
 
 #ifndef ATARIVOX_HXX
 #define ATARIVOX_HXX
@@ -33,7 +35,7 @@
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
+  @version $Id: AtariVox.hxx,v 1.4 2006-08-09 02:38:03 bwmott Exp $
 */
 class AtariVox : public Controller
 {
@@ -128,4 +130,5 @@ class AtariVox : public Controller
     uInt32 myLastDataWriteCycle;
 };
 
+#endif
 #endif

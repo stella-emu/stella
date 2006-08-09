@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
+// $Id: SpeakJet.hxx,v 1.4 2006-08-09 02:38:03 bwmott Exp $
 //============================================================================
 
 #ifndef SPEAKJET_HXX
@@ -75,7 +75,7 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
+  @version $Id: SpeakJet.hxx,v 1.4 2006-08-09 02:38:03 bwmott Exp $
 */
 
 #include "bspf.hxx"
@@ -84,7 +84,7 @@
 #include <SDL_thread.h>
 #include "rsynth/rsynth.h"
 
-class SpeechBuffer;
+struct SpeechBuffer;
 
 
 enum { INPUT_BUFFER_SIZE = 128 };
