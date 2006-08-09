@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.66 2006-03-05 01:18:42 stephena Exp $
+// $Id: TIA.cxx,v 1.67 2006-08-09 02:19:49 bwmott Exp $
 //============================================================================
 
 #include <cassert>
@@ -85,7 +85,7 @@ TIA::TIA(const Console& console, Settings& settings)
         if((enabled & myPFBit) != 0)
           color = (enabled & ScoreBit) ? ((x == 0) ? 2 : 3) : 1;
         if((enabled & (myP1Bit | myM1Bit)) != 0)
-          color = 3;
+          color = (color != 2) ? 3 : 2;
         if((enabled & (myP0Bit | myM0Bit)) != 0)
           color = 2;
 
