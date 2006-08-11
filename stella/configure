@@ -27,7 +27,7 @@ _build_joystick=yes
 _build_cheats=yes
 _build_static=no
 _build_profile=no
-_build_atarivox=yes
+_build_atarivox=no
 
 # more defaults
 _ranlib=ranlib

@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.cxx,v 1.3 2006-06-11 22:43:55 urchlay Exp $
+// $Id: SpeakJet.cxx,v 1.4 2006-08-11 12:50:22 stephena Exp $
 //============================================================================
+
+#ifdef ATARIVOX_SUPPORT
 
 #include "SpeakJet.hxx"
 
@@ -339,3 +341,5 @@ const char *SpeakJet::ourPhonemeTable[] = {
   "p",    // 198 PE   People, Computer
   "p"     // 199 PO   Paw, Copy ???
 };
+
+#endif

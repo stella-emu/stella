@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.2 2006-06-11 07:13:19 urchlay Exp $
+// $Id: AtariVox.cxx,v 1.3 2006-08-11 12:50:22 stephena Exp $
 //============================================================================
+
+#ifdef ATARIVOX_SUPPORT
 
 #include "Event.hxx"
 #include "AtariVox.hxx"
@@ -174,3 +176,5 @@ void AtariVox::write(DigitalPin pin, bool value)
       break;
   } 
 }
+
+#endif

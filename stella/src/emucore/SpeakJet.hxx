@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.4 2006-08-09 02:38:03 bwmott Exp $
+// $Id: SpeakJet.hxx,v 1.5 2006-08-11 12:50:22 stephena Exp $
 //============================================================================
+
+#ifdef ATARIVOX_SUPPORT
 
 #ifndef SPEAKJET_HXX
 #define SPEAKJET_HXX
@@ -75,7 +77,7 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.4 2006-08-09 02:38:03 bwmott Exp $
+  @version $Id: SpeakJet.hxx,v 1.5 2006-08-11 12:50:22 stephena Exp $
 */
 
 #include "bspf.hxx"
@@ -231,5 +233,7 @@ static SpeechBuffer outputBuffers[SPEECH_BUFFERS];
 
 static SpeechBuffer *ourCurrentWriteBuffer;
 static uInt8 ourCurrentWritePosition;
+
+#endif
 
 #endif

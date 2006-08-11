@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.89 2006-05-24 17:37:33 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.90 2006-08-11 12:50:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -311,7 +311,7 @@ inline void FrameBuffer::drawMessage()
     myOSystem->eventHandler().refreshDisplay(true);
   }
   else
-	addDirtyRect(myMessage.x, myMessage.y, myMessage.w, myMessage.h);
+    addDirtyRect(myMessage.x, myMessage.y, myMessage.w, myMessage.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
