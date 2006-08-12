@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.67 2006-08-09 02:19:49 bwmott Exp $
+// $Id: TIA.cxx,v 1.68 2006-08-12 02:42:09 bwmott Exp $
 //============================================================================
 
 #include <cassert>
@@ -2921,7 +2921,7 @@ uInt8 TIA::ourDisabledMaskTable[640];
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int16 TIA::ourPokeDelayTable[64] = {
    0,  1,  0,  0,  8,  8,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
-   0,  0,  8,  8,  8,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
+   0,  0,  8,  8,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 };
