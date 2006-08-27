@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4SC.cxx,v 1.10 2005-12-17 01:23:07 stephena Exp $
+// $Id: CartF4SC.cxx,v 1.11 2006-08-27 02:38:50 bwmott Exp $
 //============================================================================
 
 #include <assert.h>
@@ -55,8 +55,8 @@ const char* CartridgeF4SC::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4SC::reset()
 {
-  // Upon reset we switch to bank 7
-  bank(7);
+  // Upon reset we switch to bank 0
+  bank(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,8 +97,8 @@ void CartridgeF4SC::install(System& system)
     mySystem->setPageAccess(k >> shift, access);
   }
 
-  // Install pages for bank 7
-  bank(7);
+  // Install pages for bank 0
+  bank(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
