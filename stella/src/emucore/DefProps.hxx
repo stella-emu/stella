@@ -3364,7 +3364,7 @@ static const char* DefProps[][21] = {
   { "a7523db9a33e9417637be0e71fa4377c", "Ariola", "", "Gangster (Ariola) (PAL) [!]", "", "", "", "", "", "", "", "", "", "", "PAL", "", "", "64", "", "", "" }, 
   { "a779b9fa02c62d00d7c31ed51268f18a", "Starpath", "AR-4104", "Rabbit Transit (1982) (Starpath) [a1]", "", "Extremely Rare", "", "AR", "", "", "", "", "", "", "", "8", "152", "", "198", "", "" }, 
   { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "a7c1fb4bb81f4a3317734aa6843fe029", "Champ Games", "", "Lady Bug", "", "Homebrew", "", "", "", "A", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "a7ed7dc5cbc901388afa59030fb11d26", "Atari", "CX2606", "Slot Racers (1978) (Atari) (PAL) [!]", "", "Uncommon", "", "", "", "", "", "", "", "", "PAL", "", "", "63", "", "", "" }, 
   { "a8101cb667e50a46165c6fb48c608b6b", "", "", "Kung Fu Sprite Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "a81b29177f258494b499fbac69789cef", "Greg Thompson", "", "Console Wars (PD)", "Hack of Space Jockey (US Games)", "New Release (Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
