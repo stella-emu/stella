@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.16 2006-06-09 02:45:11 urchlay Exp $
+// $Id: M6502.cxx,v 1.17 2006-08-31 02:31:29 bwmott Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -79,6 +79,9 @@ void M6502::reset()
   A = X = Y = 0;
   SP = 0xff;
   PS(0x20);
+
+  // Reset access flag
+  myLastAccessWasRead = true;
 
   // Load PC from the reset vector
   PC = (uInt16)mySystem->peek(0xfffc) | ((uInt16)mySystem->peek(0xfffd) << 8);

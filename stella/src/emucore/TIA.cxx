@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.68 2006-08-12 02:42:09 bwmott Exp $
+// $Id: TIA.cxx,v 1.69 2006-08-31 02:31:28 bwmott Exp $
 //============================================================================
 
 #include <cassert>
@@ -2211,8 +2211,18 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case 0x02:    // Wait for leading edge of HBLANK
     {
-      // Tell the cpu to waste the necessary amount of time
-      waitHorizontalSync();
+      // It appears that the 6507 only halts during a read cycle so
+      // we test here for follow-on writes which should be ignored as
+      // far as halting the processor is concerned.
+      //
+      // TODO - 08-30-2006: This halting isn't correct since it's 
+      // still halting on the original write.  The 6507 emulation
+      // should be expanded to include a READY line.
+      if(mySystem->m6502().lastAccessWasRead())
+      {
+        // Tell the cpu to waste the necessary amount of time
+        waitHorizontalSync();
+      }
       break;
     }
 

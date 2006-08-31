@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.16 2005-12-09 01:16:13 stephena Exp $
+// $Id: M6502.hxx,v 1.17 2006-08-31 02:31:29 bwmott Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef Common::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.16 2005-12-09 01:16:13 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.17 2006-08-31 02:31:29 bwmott Exp $ 
 */
 class M6502
 {
@@ -171,6 +171,13 @@ class M6502
     */
     uInt16 getPC() const { return PC; }
 
+    /**
+      Answer true iff the last memory access was a read.
+
+      @return true iff last access was a read.
+    */ 
+    bool lastAccessWasRead() const { return myLastAccessWasRead; }
+
   public:
     /**
       Overload the ostream output operator for addressing modes.
@@ -278,6 +285,9 @@ class M6502
 
     /// Table of system cycles for each instruction
     uInt32 myInstructionSystemCycleTable[256]; 
+
+    /// Indicates if the last memory access was a read or not
+    bool myLastAccessWasRead;
 
   protected:
     /// Addressing mode for each of the 256 opcodes

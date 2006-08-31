@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Low.cxx,v 1.8 2006-02-05 02:49:47 stephena Exp $
+// $Id: M6502Low.cxx,v 1.9 2006-08-31 02:31:29 bwmott Exp $
 //============================================================================
 
 #include "M6502Low.hxx"
@@ -52,7 +52,9 @@ inline uInt8 M6502Low::peek(uInt16 address)
   }
 #endif
 
-  return mySystem->peek(address);
+  uInt8 result = mySystem->peek(address);
+  myLastAccessWasRead = true;
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,6 +70,7 @@ inline void M6502Low::poke(uInt16 address, uInt8 value)
 #endif
 
   mySystem->poke(address, value);
+  myLastAccessWasRead = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

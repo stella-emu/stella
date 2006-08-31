@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.15 2005-12-17 01:23:07 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.16 2006-08-31 02:31:29 bwmott Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -62,7 +62,10 @@ inline uInt8 M6502High::peek(uInt16 address)
   }
 #endif
 
-  return mySystem->peek(address);
+
+  uInt8 result = mySystem->peek(address);
+  myLastAccessWasRead = true;
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,6 +88,7 @@ inline void M6502High::poke(uInt16 address, uInt8 value)
 #endif
 
   mySystem->poke(address, value);
+  myLastAccessWasRead = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
