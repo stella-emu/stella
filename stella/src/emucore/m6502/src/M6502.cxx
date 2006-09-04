@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.17 2006-08-31 02:31:29 bwmott Exp $
+// $Id: M6502.cxx,v 1.18 2006-09-04 00:11:38 bwmott Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -139,7 +139,7 @@ void M6502::PS(uInt8 ps)
 {
   N = ps & 0x80;
   V = ps & 0x40;
-  B = ps & 0x10;
+  B = true;        // B = ps & 0x10;  The 6507's B flag always true
   D = ps & 0x08;
   I = ps & 0x04;
   notZ = !(ps & 0x02);
