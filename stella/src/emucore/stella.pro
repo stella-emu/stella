@@ -1,8 +1,3 @@
-"Cartridge.MD5" "fc9c1652fe3a2cade6188f4d3692481f"
-"Cartridge.Name" "Andrew Davies early notBoulderDash demo (NTSC)"
-"Cartridge.Type" "3E"
-""
-
 "Cartridge.MD5" "9b150a42fc788960fbb4cbe250259ee2"
 "Cartridge.Name" "3E Bankswitch Test (TIA @ $40)"
 "Cartridge.Manufacturer" "Kroko"
@@ -20892,5 +20887,17 @@
 "Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
 "Display.Format" "PAL"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "4c606235f4ec5d2a4b89139093a69437"
+"Cartridge.Name" "Andrew Davies early notBoulderDash demo (PAL)"
+"Cartridge.Name" "notBoulderDashPAL.bin"
+"Display.Format" "PAL"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "fc9c1652fe3a2cade6188f4d3692481f"
+"Cartridge.Name" "Andrew Davies early notBoulderDash demo (NTSC)"
 "Display.Phosphor" "YES"
 ""
