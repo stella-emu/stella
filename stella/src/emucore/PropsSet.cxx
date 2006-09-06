@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.21 2006-03-19 00:46:04 stephena Exp $
+// $Id: PropsSet.cxx,v 1.22 2006-09-06 21:51:15 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -45,7 +45,6 @@ void PropertiesSet::getMD5(const string& md5, Properties &properties)
   // First check our dynamic BST for the object
   if(myRoot != 0)
   {
-    bool found = false;
     TreeNode* current = myRoot;
 
     while(current)
