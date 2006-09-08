@@ -13,10 +13,10 @@
 %define enable_static 0
 
 %if %build_plf
-  %define release %mkrel %{rel}
+  %define release %mkrel %rel
   %define distsuffix plf
 %else
-  %define release %{rel}
+  %define release %rel
 %endif
 
 Summary:        An Atari 2600 Video Computer System emulator
@@ -29,7 +29,7 @@ URL:            http://stella.sourceforge.net
 Source:         %{name}-%{version}.tar.bz2
 BuildRoot:      %_tmppath/%name-%version-%release-root
 BuildRequires:  SDL-devel
-BuildRequires:	MesaGLU-devel
+BuildRequires:  MesaGLU-devel
 BuildRequires:  zlib-devel
 %if %enable_snapshot
 BuildRequires:  libpng-devel
@@ -50,52 +50,51 @@ This package is in PLF as Mandriva Linux policy forbids emulators in contribs.
 
 %build
 export CXXFLAGS=$RPM_OPT_FLAGS
-./configure \
+%configure \
 %if %enable_gl
-	--enable-gl \
+  --enable-gl \
 %else
-	--disable-gl \
+  --disable-gl \
 %endif
 %if %enable_sound
-	--enable-sound \
+  --enable-sound \
 %else
-	--disable-sound \
+  --disable-sound \
 %endif
 %if %enable_developer
-	--enable-developer \
+  --enable-developer \
 %else
-	--disable-developer \
+  --disable-developer \
 %endif
 %if %enable_snapshot
-	--enable-snapshot \
+  --enable-snapshot \
 %else
-	--disable-snapshot \
+   --disable-snapshot \
 %endif
 %if %enable_joystick
-	--enable-joystick \
+  --enable-joystick \
 %else
-	--disable-joystick \
+  --disable-joystick \
 %endif
 %if %enable_cheats
-	--enable-cheats \
+  --enable-cheats \
 %else
-	--disable-cheats \
+  --disable-cheats \
 %endif
 %if %enable_static
-	--enable-static \
+  --enable-static \
 %else
-	--enable-shared \
+  --enable-shared \
 %endif
-	--prefix=%{_prefix} \
-	--bindir=%{_bindir} \
-	--docdir=%{_docdir}/stella-%{version} \
-	--datadir=%{_datadir} \
-	--x-libraries=%{_prefix}/X11R6/%{_lib}
+  --docdir=%{_docdir}/stella \
+  --x-libraries=%{_prefix}/X11R6/%{_lib}
+
 %make
 
 %install
-make install-strip DESTDIR=%{buildroot}
+rm -rf $RPM_BUILD_ROOT
 
+make install-strip DESTDIR=%{buildroot}
 # Mandriva menu entries
 install -d -m0755 %{buildroot}%{_menudir}
 cat > %{buildroot}%{_menudir}/%{name} << EOF
@@ -104,8 +103,26 @@ icon="stella.xpm" \
 needs="x11" \
 title="Stella" \
 longtitle="A multi-platform Atari 2600 emulator" \
-section="Applications/Emulators"
+section="More Applications/Emulators" \
+xdg="true"
 EOF
+# Todo - make this part of the main package
+install -d -m0755 %{buildroot}%{_datadir}/applications
+cat > %{buildroot}%{_datadir}/applications/%{name}.desktop << EOF
+[Desktop Entry]
+Encoding=UTF-8
+Name=Stella
+Comment=A multi-platform Atari 2600 emulator
+Exec=%{_bindir}/%{name}
+Icon=stella.xpm
+Terminal=false
+Type=Application
+Categories=Application;Emulator;
+EOF
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 
 %post
 %update_menus
@@ -113,23 +130,26 @@ EOF
 %postun
 %clean_menus
 
-%clean
-rm -rf %buildroot
-rm -rf $RPM_BUILD_DIR/%{name}-%{version}
-
 %files
 %defattr(-,root,root,-)
 %_bindir/*
 %{_menudir}/%{name}
-%_docdir/stella-%{version}/*
-%_datadir/icons/*
+%{_datadir}/applications/%{name}.desktop
+%_docdir/stella/*
+%_datadir/icons/%{name}.xpm
+%_datadir/icons/mini/%{name}.xpm
+%_datadir/icons/large/%{name}.xpm
 
 %changelog
-* Thu Apr 06 2006 Stephen Anthony <stephena@zarb.org> 2.2-1
-- Version 2.2 release
+* Fri Sep 08 2006 Stephen Anthony <stephena@zarb.org> 2.2-1plf2007.0
+- Packaged 2.2 release for PLF
+- Added XDG menu
 
-* Sat Jan 28 2006 Stephen Anthony <stephena@zarb.org> 2.1-1
-- Version 2.1 release
+* Sat Oct 29 2005 Stephen Anthony <stephena@zarb.org> 2.0.1-3plf
+- Fix for x86_64 compilation
+
+* Wed Oct 26 2005 Stephen Anthony <stephena@zarb.org> 2.0.1-2plf
+- Fix for improper PLF upload
 
 * Sun Oct 24 2005 Stephen Anthony <stephena@zarb.org> 2.0.1-1
 - Version 2.0.1 release, and plaform-agnostic SRPM (hopefully)

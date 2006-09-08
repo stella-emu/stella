@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.27 2006-09-08 00:44:19 stephena Exp $
+## $Id: Makefile,v 1.28 2006-09-08 14:35:20 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -175,7 +175,11 @@ install: all
 	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -c -m 644 "$(srcdir)/docs/graphics/chucky_cheese.png" "$(srcdir)/docs/graphics/circuit.png" "$(srcdir)/docs/graphics/console.png" "$(srcdir)/docs/graphics/eventmapping.png" "$(srcdir)/docs/graphics/eventmapping_remap.png" "$(srcdir)/docs/graphics/jr_pacman.png" "$(srcdir)/docs/graphics/launcher_options_rom.png" "$(srcdir)/docs/graphics/launcher_options_snap.png" "$(srcdir)/docs/graphics/launcher.png" "$(srcdir)/docs/graphics/options_about.png" "$(srcdir)/docs/graphics/options_audio.png" "$(srcdir)/docs/graphics/options_gameinfo.png" "$(srcdir)/docs/graphics/options_help.png" "$(srcdir)/docs/graphics/options_video.png" "$(srcdir)/docs/graphics/pacman.png" "$(srcdir)/docs/graphics/rom_browser.png" "$(srcdir)/docs/graphics/secret_quest.png" "$(srcdir)/docs/graphics/space_invaders.png" "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/mini"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/large"
 	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons/mini"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons/large"
 
 install-strip: install
 	strip stella$(EXEEXT)
