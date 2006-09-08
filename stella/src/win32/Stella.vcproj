@@ -173,6 +173,9 @@ libpng.lib
 				RelativePath="..\emucore\Cart3F.cxx">
 			</File>
 			<File
+				RelativePath="..\emucore\Cart4A50.cxx">
+			</File>
+			<File
 				RelativePath="..\emucore\Cart4K.cxx">
 			</File>
 			<File
@@ -650,6 +653,9 @@ libpng.lib
 			</File>
 			<File
 				RelativePath="..\emucore\Cart3F.hxx">
+			</File>
+			<File
+				RelativePath="..\emucore\Cart4A50.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Cart4K.hxx">
