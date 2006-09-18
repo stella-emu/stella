@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.cxx,v 1.11 2006-04-12 23:11:01 azaballa Exp $
+// $Id: SettingsGP2X.cxx,v 1.12 2006-09-18 01:32:45 azaballa Exp $
 // Modified on 2006/02/05 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -37,6 +37,8 @@ SettingsGP2X::SettingsGP2X(OSystem* osystem)
   setInternal("clipvol", "false");
   setInternal("joymouse", "true");
   setInternal("rombrowse", "true");
+  setInternal("romdir", "/mnt/sd/");
+  setInternal("ssdir", "/mnt/sd/");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

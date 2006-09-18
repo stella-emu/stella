@@ -8,25 +8,30 @@ Homepage: http://stella.sourceforge.net
 --------
 Changes:
 --------
+>From 2.2-rv1
+Moved away from using a joymouse which was tripping up many users
+to a more effective GUI button control scheme.
+Made '/mnt/sd/' the default ROM and Snapshot directory this way
+Stella doesn't look anywhere it shouldn't.
 >From 2.2
-Ms. Pacman sound issue resolved
+Ms. Pacman sound issue resolved.
 >From 2.1-rv3
-Added Rom Browser mode and enabled it by default
+Added Rom Browser mode and enabled it by default.
 >From 2.1-rv2
-Scroll bug fixed (finally)
+Scroll bug fixed (finally).
 >From 2.1-rv1
-Warlords graphics bug fixed
+Warlords graphics bug fixed.
 >From 2.1
-Joystick fixed
-Phosphor effect enabled
+Joystick fixed.
+Phosphor effect enabled.
 >From 2.0.1:
 Stopped using the ROM Script (No more ROM limit. 'Single binary' zip
-support available.)
-Opened up the Native GUI for use through Joymouse Emulation
+support available.).
+Opened up the Native GUI for use through Joymouse Emulation.
 SOUND!
-Diagonals
-Snapshots
-Some button mapping (but still comfortably familiar)
+Diagonals.
+Snapshots.
+Some button mapping (but still comfortably familiar).
 
 -----------
 Known Bugs:
@@ -37,27 +42,39 @@ Please report all bugs to me at azaballa@users.sourceforge.net.
 ------------------------------
 Known GP2X Performance Issues:
 ------------------------------
-Pitfall2 runs slow due to extra hardware emulation. (Steve foresees this
-being fixed in the future.)
+Pitfall 2 runs slow due to extra hardware emulation. Steve foresees this
+being fixed in the future.
+
+The GP2X port of Stella, due to the current state of GP2X kernel/driver 
+development, cannot play PAL ROMs as the GP2X cannot handle video modes
+greater than 320x240. When this changes, we'll follow suit.
 
 ---------------------
 Installation to GP2X:
 ---------------------
-Place files stella and stella.gpe into a chosen directory. Upon first run,
-Stella will ask for your ROM directory and snapshot directory. Remember that
-the path to the sd card is '/mnt/sd'.
+Place files 'stella' and 'stella.gpe' into a directory of your choice.
+Stella defaults to '/mnt/sd/' for the ROM and Snapshot directory.
+If you are having issues with getting Stella to run after an older
+install, try deleting the stellarc file then the state directory
+located in your Stella install folder.
 
 -----------
 Navigation:
 -----------
-The joystick moves the mouse cursor in all menus except the ROM Launcher,
-with any button acting as a click. In the ROM Launcher, up/down scrolls through
-the ROM list and left/right selects options across the bottom, with any
-button serving as a click.
+The joystick selects item by item. The buttons listed below allow selection
+of various menu elements.
 
 -------------
 GP2X Mapping:
 -------------
+Navigating Menus:
+  A      = Move Between Tabs
+  B      = Press GUI Button
+  X      = Go Back to Previous Directory
+  Y      = Goto Next GUI Button
+  L      = Page Up
+  R      = Page Down
+During Emulation:
   A      = Snapshot
   B      = Fire
   X      = Pause
@@ -67,15 +84,12 @@ GP2X Mapping:
   START  = Launcher Menu
   SELECT = Command Menu
 
-Note: Nothing has been taken away by changing this mapping. Save, Change, and
-Load State are all available through the Command Menu (SELECT).
-
 Caution: Changing video and audio settings could lead to a non-working Stella
 setup. If you do feel the need to change the settings (as we all do) and happen
 to cause a crash or hang, delete the 'stellarc' file and that should clear up
 the problem. If anyone finds any settings that give better performance in
 sound and gameplay, let me know and I might incorporate them into the next
-build. Happy tinkering.
+version. Happy tinkering.
 
 -------------
 Compile Info:
