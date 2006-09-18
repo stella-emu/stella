@@ -555,7 +555,7 @@ if test -n "$_host"; then
 		psp)
 			;;
 		gp2x)
-			echo "Cross-compiling to $_host, forcing static build, and disabling openGL."
+			echo "Cross-compiling to $_host, forcing static build, and disabling OpenGL."
 			_build_static=yes
 			_build_gl=no
 			;;
@@ -847,12 +847,13 @@ case $_host_os in
 			DEFINES="$DEFINES -Dmain=SDL_main -DPSP -DBSPF_PSP -DPSP_DEBUG"
 			;;
 		gp2x)
-			CXXFLAGS="-O2 -finline-functions"
+			# -O3 hangs the GP2X, do not use.
+			CXXFLAGS="-O2 -finline-functions -mtune=arm940t"
 			DEFINES="$DEFINES -DBSPF_GP2X -DGP2X -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/gp2x"
 
 			#If PNG_CFLAGS is specified, include it.
-			#This saves the user the step of having to specify CXXFLAGS beforehand.
+			#This saves the user a step of having to specify CXXFLAGS beforehand.
 			if [ -n $PNG_CFLAGS  ]; then
 				INCLUDES="$INCLUDES $PNG_CFLAGS -I$SRC/gp2x"
 			else
