@@ -13,17 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeGP2X.cxx,v 1.1 2006-01-08 02:28:03 stephena Exp $
+// $Id: FSNodeGP2X.cxx,v 1.2 2006-09-18 00:44:43 azaballa Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "FSNode.hxx"
-
-#ifdef MACOSX
-  #include <sys/types.h>
-#endif
 
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -145,7 +141,6 @@ POSIXFilesystemNode::POSIXFilesystemNode(const POSIXFilesystemNode* node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSList POSIXFilesystemNode::listDir(ListMode mode) const
 {
-  assert(_isDirectory);
   DIR *dirp = opendir(_path.c_str());
   struct stat st;
 
