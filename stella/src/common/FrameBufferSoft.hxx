@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.34 2006-03-25 00:34:17 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.35 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.34 2006-03-25 00:34:17 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.35 2006-10-14 20:08:29 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -68,6 +68,13 @@ class FrameBufferSoft : public FrameBuffer
       This method is called to set the aspect ratio of the screen.
     */
     virtual void setAspectRatio();
+
+    /**
+      This method is called to change to the given scaler type.
+
+      @param scaler  The scaler to use for rendering the mediasource
+    */
+    virtual void setScaler(Scaler scaler);
 
     /**
       This method is called whenever the screen needs to be recreated.
@@ -201,14 +208,8 @@ class FrameBufferSoft : public FrameBuffer
     */
     virtual void cls();
 
-  protected:
-    // Used in the dirty update of the SDL surface
-    RectList* myRectList;
-
-    // Used in the dirty update of the overlay surface
-    RectList* myOverlayRectList;
-
   private:
+    int myZoomLevel;
     int myPitch;
 
     enum RenderType {
@@ -218,6 +219,12 @@ class FrameBufferSoft : public FrameBuffer
       kPhosphor_32
     };
     RenderType myRenderType;
+
+    // Used in the dirty update of the SDL surface
+    RectList* myRectList;
+
+    // Used in the dirty update of the overlay surface
+    RectList* myOverlayRectList;
 };
 
 class RectList

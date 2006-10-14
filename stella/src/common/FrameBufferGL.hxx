@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.31 2006-03-25 00:34:17 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.32 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -37,7 +37,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.31 2006-03-25 00:34:17 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.32 2006-10-14 20:08:29 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -79,6 +79,13 @@ class FrameBufferGL : public FrameBuffer
       This method is called to set the aspect ratio of the screen.
     */
     virtual void setAspectRatio();
+
+    /**
+      This method is called to change to the given scaler type.
+
+      @param scaler  The scaler to use for rendering the mediasource
+    */
+    virtual void setScaler(Scaler scaler);
 
     /**
       This method is called whenever the screen needs to be recreated.
@@ -252,6 +259,9 @@ class FrameBufferGL : public FrameBuffer
 
     // The name of the texture filtering to use
     string myFilterParamName;
+
+    // FIXME - used for zooming, still work todo here
+    uInt32 myZoomLevel;
 
     // The scaling to use in fullscreen mode
     // This is separate from both zoomlevel and aspect ratio

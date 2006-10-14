@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.164 2006-05-24 17:37:33 stephena Exp $
+// $Id: EventHandler.cxx,v 1.165 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -394,11 +394,11 @@ void EventHandler::poll(uInt32 time)
           {
     #ifndef MAC_OSX
             case SDLK_EQUALS:
-              myOSystem->frameBuffer().resize(+1);
+              myOSystem->frameBuffer().scale(+1);
               break;
 
             case SDLK_MINUS:
-              myOSystem->frameBuffer().resize(-1);
+              myOSystem->frameBuffer().scale(-1);
               break;
 
             case SDLK_RETURN:
@@ -528,11 +528,11 @@ void EventHandler::poll(uInt32 time)
               break;
 
             case SDLK_EQUALS:
-              myOSystem->frameBuffer().resize(+1);
+              myOSystem->frameBuffer().scale(+1);
               break;
 
             case SDLK_MINUS:
-              myOSystem->frameBuffer().resize(-1);
+              myOSystem->frameBuffer().scale(-1);
               break;
 
             case SDLK_RETURN:

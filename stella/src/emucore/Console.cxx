@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.93 2006-08-09 02:38:03 bwmott Exp $
+// $Id: Console.cxx,v 1.94 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -240,10 +240,6 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
       framerate = 60;
   }
   myOSystem->setFramerate(framerate);
-
-  // Initialize the framebuffer interface.
-  // This must be done *after* a reset, since it needs updated values.
-  initializeVideo();
 
   // Initialize the sound interface.
   // The # of channels can be overridden in the AudioDialog box or on

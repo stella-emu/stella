@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.90 2006-08-11 12:50:22 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.91 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -40,8 +40,6 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
   : myOSystem(osystem),
     myScreen(0),
-    theZoomLevel(2),
-    theMaxZoomLevel(2),
     theAspectRatio(1.0),
     theRedrawTIAIndicator(true),
     myUsePhosphor(false),
@@ -95,16 +93,14 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   if(useAspect)
     setAspectRatio();
 
-  // Get the maximum size of a window for the current desktop
-  theMaxZoomLevel = maxWindowSizeForScreen();
-
-  // Check to see if window size will fit in the screen
-  if((uInt32)myOSystem->settings().getInt("zoom") > theMaxZoomLevel)
-    theZoomLevel = theMaxZoomLevel;
-  else
-    theZoomLevel = myOSystem->settings().getInt("zoom");
+  // Set the available scalers for this framebuffer, based on current eventhandler
+  // state and the maximum size of a window for the current desktop
+  setAvailableScalers();
 
   // Initialize video subsystem
+  Scaler scaler;
+  getScaler(scaler, 0, currentScalerName());
+  setScaler(scaler);
   initSubsystem();
 
   // And refresh the display
@@ -389,51 +385,37 @@ void FrameBuffer::setFullscreen(bool enable)
     return;
 
   myOSystem->eventHandler().refreshDisplay();
-
   setCursorState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::resize(int size, Int8 zoom)
+bool FrameBuffer::scale(int direction, const string& type)
 {
-  switch(size)
+  Scaler newScaler;
+  const string& currentScaler = (direction == 0 ? type : currentScalerName());
+  getScaler(newScaler, direction, currentScaler);
+
+  // Only update the scaler if it's changed from the old one
+  if(currentScaler != newScaler.name)
   {
-    case -1:   // decrease size
-      if(myOSystem->settings().getBool("fullscreen"))
-        return;
-      if(theZoomLevel == 1)
-        theZoomLevel = theMaxZoomLevel;
-      else
-        theZoomLevel--;
-      break;
+    setScaler(newScaler);
+    if(!createScreen())
+      return false;
 
-    case +1:       // increase size
-      if(myOSystem->settings().getBool("fullscreen"))
-        return;
-      if(theZoomLevel == theMaxZoomLevel)
-        theZoomLevel = 1;
-      else
-        theZoomLevel++;
-      break;
+    myOSystem->eventHandler().refreshDisplay();
+    showMessage(newScaler.name);
 
-    case 0:      // use 'zoom' quantity
-      if(zoom < 1)
-        theZoomLevel = 1;
-      else if((uInt32)zoom > theMaxZoomLevel)
-        theZoomLevel = theMaxZoomLevel;
-      else
-        theZoomLevel = zoom;
-      break;
+    EventHandler::State state = myOSystem->eventHandler().state();
+    bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                      state == EventHandler::S_MENU    ||
+                      state == EventHandler::S_CMDMENU);
 
-    default:   // should never happen
-      return;
-      break;
+    if(inTIAMode)
+      myOSystem->settings().setString("scale_tia", newScaler.name);
+    else
+      myOSystem->settings().setString("scale_ui", newScaler.name);
   }
-
-  if(!createScreen())
-    return;
-
-  myOSystem->eventHandler().refreshDisplay();
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -479,36 +461,6 @@ void FrameBuffer::grabMouse(bool grab)
 bool FrameBuffer::fullScreen()
 {
   return myOSystem->settings().getBool("fullscreen");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::maxWindowSizeForScreen()
-{
-  uInt32 sWidth     = myDesktopDim.w;
-  uInt32 sHeight    = myDesktopDim.h;
-  uInt32 multiplier = 10;
-
-  // If screenwidth or height could not be found, use default zoom value
-  if(sWidth == 0 || sHeight == 0)
-    return 4;
-
-  bool found = false;
-  while(!found && (multiplier > 0))
-  {
-    // Figure out the desired size of the window
-    uInt32 width  = (uInt32) (myBaseDim.w * multiplier * theAspectRatio);
-    uInt32 height = myBaseDim.h * multiplier;
-
-    if((width < sWidth) && (height < sHeight))
-      found = true;
-    else
-      multiplier--;
-  }
-
-  if(found)
-    return multiplier;
-  else
-    return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -715,6 +667,224 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int FrameBuffer::maxWindowSizeForScreen()
+{
+  uInt32 sWidth     = myDesktopDim.w;
+  uInt32 sHeight    = myDesktopDim.h;
+  uInt32 multiplier = 10;
+
+  // If screenwidth or height could not be found, use default zoom value
+  if(sWidth == 0 || sHeight == 0)
+    return 4;
+
+  bool found = false;
+  while(!found && (multiplier > 0))
+  {
+    // Figure out the desired size of the window
+    uInt32 width  = (uInt32) (myBaseDim.w * multiplier * theAspectRatio);
+    uInt32 height = myBaseDim.h * multiplier;
+
+    if((width < sWidth) && (height < sHeight))
+      found = true;
+    else
+      multiplier--;
+  }
+
+  if(found)
+    return multiplier;
+  else
+    return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setAvailableScalers()
+{
+  /** Different emulation modes support different scalers, and the size
+      of the current desktop also determines how much a window can be
+      zoomed.  For now, there are two separate scaler lists; one for
+      normal emulation mode (and modes that have the TIA in the background),
+      and one for standard GUI modes (modes that bypass drawMediaSource).
+      For reasons of efficiency, only zooming is supported in GUI mode.  Also,
+      it doesn't really make sense to use high quality scalers on text-only
+      windows. */
+
+  EventHandler::State state = myOSystem->eventHandler().state();
+  int maxsize = maxWindowSizeForScreen();
+
+  // First we disable all scalers
+  for(int i = 0; i < kUIScalerListSize; ++i)
+    ourUIScalers[i].available = false;
+  for(int i = 0; i < kTIAScalerListSize; ++i)
+    ourTIAScalers[i].available = false;
+
+  bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                    state == EventHandler::S_MENU    ||
+                    state == EventHandler::S_CMDMENU);
+
+/*
+  cerr << "TIA mode: " << (inTIAMode ? "yes" : "no") << ", state: " << state << endl
+       << "maxsize:  " << maxsize << endl
+       << "type:     " << (type() == kSoftBuffer ? "soft buffer" : "GL buffer") << endl
+       << endl;
+*/
+
+  // Next, determine which mode we're in and update the appropriate scaler list
+  if(type() == kSoftBuffer)
+  {
+    if(inTIAMode)
+    {
+      for(int i = 0; i < kTIAScalerListSize; ++i)
+        if(ourTIAScalers[i].scale == 1 && ourTIAScalers[i].zoom <= maxsize)
+          ourTIAScalers[i].available = true;
+    }
+    else  // UI mode
+    {
+      for(int i = 0; i < kUIScalerListSize; ++i)
+        if(ourUIScalers[i].scale == 1 && ourUIScalers[i].zoom <= maxsize)
+          ourUIScalers[i].available = true;
+    }
+  }
+  else if(type() == kGLBuffer)
+  {
+    if(inTIAMode)
+    {
+      for(int i = 0; i < kTIAScalerListSize; ++i)
+        if(ourTIAScalers[i].scale <= maxsize && ourTIAScalers[i].zoom <= maxsize)
+          ourTIAScalers[i].available = true;
+    }
+    else  // UI mode
+    {
+      for(int i = 0; i < kUIScalerListSize; ++i)
+        if(ourUIScalers[i].scale == 1 && ourUIScalers[i].zoom <= maxsize)
+          ourUIScalers[i].available = true;
+    }
+  }
+/*
+  cerr << "UI Scalers available:\n";
+  for(int i = 0; i < 6; ++i)
+    if(ourUIScalers[i].available)
+      cerr << ourUIScalers[i].name << endl;
+  for(int i = 0; i < kNumScalers; ++i)
+    if(ourTIAScalers[i].available)
+      cerr << ourTIAScalers[i].name << endl;
+  cerr << endl << endl;
+*/
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
+{
+  EventHandler::State state = myOSystem->eventHandler().state();
+  bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                    state == EventHandler::S_MENU    ||
+                    state == EventHandler::S_CMDMENU);
+
+  Scaler* list = (inTIAMode ? ourTIAScalers : ourUIScalers);
+  int size = (inTIAMode ? kTIAScalerListSize : kUIScalerListSize);
+
+  bool found = false;
+  switch(direction)
+  {
+    case 0:  // search for the actual scaler specified in 'name'
+      for(int i = 0; i < size; ++i)
+      {
+        if(list[i].name == name)
+        {
+          scaler = list[i];
+          found = true;
+          break;
+        }
+      }
+      break;
+
+    case -1:   // search for the previous scaler from one specified in 'name'
+    {
+      int i, pos = -1;
+
+      // First find the current scaler
+      for(i = 0; i < size; ++i)
+      {
+        if(list[i].name == name)
+        {
+          pos = i;
+          break;
+        }
+      }
+      // If we found it, then search for the previous one
+      if(pos != -1)
+      {
+        i = size;
+        while(i > 0 && !found)
+        {
+          pos--;
+          if(pos < 0) pos = size - 1;
+
+          if(list[pos].available)
+          {
+            scaler = list[pos];
+            found = true;
+            break;
+          }
+          --i;
+        }
+      }
+      break;
+    }
+
+    case +1:   // search for the next scaler from one specified in 'name'
+    {
+      int i, pos = -1;
+
+      // First find the current scaler
+      for(i = 0; i < size; ++i)
+      {
+        if(list[i].name == name)
+        {
+          pos = i;
+          break;
+        }
+      }
+      // If we found it, then search for the next one
+      if(pos != -1)
+      {
+        i = size;
+        while(i > 0 && !found)
+        {
+          pos++;
+          if(pos >= size) pos = 0;
+
+          if(list[pos].available)
+          {
+            scaler = list[pos];
+            found = true;
+            break;
+          }
+          --i;
+        }
+      }
+      break;
+    }
+  }
+
+  // Default to 'Zoom1x' if we didn't find a valid scaler
+  if(!found)
+    scaler = list[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& FrameBuffer::currentScalerName()
+{
+  EventHandler::State state = myOSystem->eventHandler().state();
+  bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                    state == EventHandler::S_MENU    ||
+                    state == EventHandler::S_CMDMENU);
+
+  return (inTIAMode ?
+     myOSystem->settings().getString("scale_tia") :
+     myOSystem->settings().getString("scale_ui") );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
   { 104, 104, 104 },  // kColor
   {   0,   0,   0 },  // kBGColor
@@ -727,4 +897,32 @@ const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
   {   0,   0, 255 },  // kTextColorHi
 #endif
   { 200,   0,   0 }   // kTextColorEm
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Scaler FrameBuffer::ourUIScalers[kUIScalerListSize] = {
+  { "Zoom1x",  1, 1, false },
+  { "Zoom2x",  2, 1, false },
+  { "Zoom3x",  3, 1, false },
+  { "Zoom4x",  4, 1, false },
+  { "Zoom5x",  5, 1, false },
+  { "Zoom6x",  6, 1, false }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Scaler FrameBuffer::ourTIAScalers[kTIAScalerListSize] = {
+  { "Zoom1x",  1, 1, false },
+  { "Zoom2x",  2, 1, false },
+  { "Zoom3x",  3, 1, false },
+  { "Zoom4x",  4, 1, false },
+  { "Zoom5x",  5, 1, false },
+  { "Zoom6x",  6, 1, false },
+
+  { "Scale2x", 1, 2, false },
+  { "Scale3x", 1, 3, false },
+  { "Scale4x", 1, 4, false },
+
+  { "HQ2x",    1, 2, false },
+  { "HQ3x",    1, 3, false },
+  { "HQ4x",    1, 4, false }
 };

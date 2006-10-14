@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.62 2006-09-08 14:35:20 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.63 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -75,6 +75,7 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
     myTextureID(0),
     myFilterParam(GL_NEAREST),
     myFilterParamName("GL_NEAREST"),
+    myZoomLevel(1), // FIXME
     myFSScaleFactor(1.0),
     myDirtyFlag(true)
 {
@@ -257,6 +258,14 @@ void FrameBufferGL::setAspectRatio()
   theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
   if(theAspectRatio <= 0.0)
     theAspectRatio = 1.0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::setScaler(Scaler scaler)
+{
+  // TODO - have this inspect 'scaler' and set the appropriate state
+  cerr << "FrameBufferGL::setScaler: zoom = " << scaler.zoom << endl;
+  myZoomLevel = scaler.zoom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -548,8 +557,8 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 void FrameBufferGL::translateCoords(Int32* x, Int32* y)
 {
   // Wow, what a mess :)
-  *x = (Int32) (((*x - myImageDim.x) / (theZoomLevel * myFSScaleFactor * theAspectRatio)));
-  *y = (Int32) (((*y - myImageDim.y) / (theZoomLevel * myFSScaleFactor)));
+  *x = (Int32) (((*x - myImageDim.x) / (myZoomLevel * myFSScaleFactor * theAspectRatio)));
+  *y = (Int32) (((*y - myImageDim.y) / (myZoomLevel * myFSScaleFactor)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -627,7 +636,7 @@ bool FrameBufferGL::createTextures()
   p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
   p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
   p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
-               myTexture->pixels);
+                 myTexture->pixels);
 
   p_glDisable(GL_DEPTH_TEST);
   p_glDisable(GL_CULL_FACE);
@@ -646,8 +655,8 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
   // We have to determine final image dimensions as well as screen dimensions
   myImageDim.x = 0;
   myImageDim.y = 0;
-  myImageDim.w = (Uint16) (myBaseDim.w * theZoomLevel * theAspectRatio);
-  myImageDim.h = (Uint16) (myBaseDim.h * theZoomLevel);
+  myImageDim.w = (Uint16) (myBaseDim.w * myZoomLevel * theAspectRatio);
+  myImageDim.h = (Uint16) (myBaseDim.h * myZoomLevel);
   myScreenDim  = myImageDim;
 
   myFSScaleFactor = 1.0f;
@@ -719,13 +728,13 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
     myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
     myImageDim.y = (myScreenDim.h - myImageDim.h) / 2;
 
-    *orthoWidth  = (GLdouble) (myImageDim.w / (theZoomLevel * theAspectRatio * myFSScaleFactor));
-    *orthoHeight = (GLdouble) (myImageDim.h / (theZoomLevel * myFSScaleFactor));
+    *orthoWidth  = (GLdouble) (myImageDim.w / (myZoomLevel * theAspectRatio * myFSScaleFactor));
+    *orthoHeight = (GLdouble) (myImageDim.h / (myZoomLevel * myFSScaleFactor));
   }
   else
   {
-    *orthoWidth  = (GLdouble) (myImageDim.w / (theZoomLevel * theAspectRatio));
-    *orthoHeight = (GLdouble) (myImageDim.h / theZoomLevel);
+    *orthoWidth  = (GLdouble) (myImageDim.w / (myZoomLevel * theAspectRatio));
+    *orthoHeight = (GLdouble) (myImageDim.h / myZoomLevel);
   }
 /*
   cerr << "myImageDim.x = " << myImageDim.x << ", myImageDim.y = " << myImageDim.y << endl;

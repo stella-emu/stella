@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.70 2006-05-15 12:24:09 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.71 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -74,6 +74,14 @@ enum {
   kNumColors
 };
 
+// Different types of scalers available
+struct Scaler {
+  string name;
+  int zoom;
+  int scale;
+  bool available;
+};
+
 /**
   This class encapsulates the MediaSource and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
@@ -82,7 +90,7 @@ enum {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.70 2006-05-15 12:24:09 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.71 2006-10-14 20:08:29 stephena Exp $
 */
 class FrameBuffer
 {
@@ -189,15 +197,16 @@ class FrameBuffer
     void setFullscreen(bool enable);
 
     /**
-      This method is called when the user wants to resize the window.
-      Size = -1 means window should decrease in size
-      Size =  0 means window should be resized to quantity given in 'zoom'
-      Size = +1 means window should increase in size
+      This method is called when the user wants to scale the window, in effect
+      changing to another scaler.
+      direction = -1 means window should go to the next lower scaler
+      direction =  0 means window should be created with the given scaler
+      direction = +1 means window should go to the next higher scaler
 
-      @param size  Described above
-      @param zoom  The zoom level to use if size is set to 'sGiven'
+      @param direction  Described above
+      @param type       The scaler to use if direction is set to 0
     */
-    void resize(int size, Int8 zoom = 0);
+    bool scale(int direction, const string& type = "Zoom1x");
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -219,17 +228,6 @@ class FrameBuffer
       Answers if the display is currently in fullscreen mode.
     */
     bool fullScreen();
-
-    /**
-      Calculate the maximum window size that the current screen can hold.
-      If not supported by platform, always return 4.
-    */
-    virtual uInt32 maxWindowSizeForScreen();
-
-    /**
-      Returns current zoomlevel of the framebuffer.
-    */
-    uInt32 zoomLevel() { return theZoomLevel; }
 
     /**
       Set the title for the main SDL window.
@@ -288,14 +286,14 @@ class FrameBuffer
                     int color, TextAlignment align = kTextAlignLeft,
                     int deltax = 0, bool useEllipsis = true);
 
-
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
     /**
-      This method is called to initialize the subsystem-specific video mode.
+      This method is called to initialize the subsystem-specific video mode
+      with the given scaler.
     */
     virtual bool initSubsystem() = 0;
 
@@ -308,6 +306,13 @@ class FrameBuffer
       This method is called to set the aspect ratio of the screen.
     */
     virtual void setAspectRatio() = 0;
+
+    /**
+      This method is called to change to the given scaler type.
+
+      @param scaler  The scaler to use for rendering the mediasource
+    */
+    virtual void setScaler(Scaler scaler) = 0;
 
     /**
       This method is called whenever the screen needs to be recreated.
@@ -443,7 +448,7 @@ class FrameBuffer
     // The parent system for the framebuffer
     OSystem* myOSystem;
 
-    // Dimensions of the base image, before zooming.
+    // Dimensions of the base image, before scaling.
     // All external GUI items should refer to these dimensions,
     //  since this is the *real* size of the image.
     // The other sizes are simply scaled versions of these dimensions.
@@ -467,12 +472,6 @@ class FrameBuffer
     // TIA palettes for normal and phosphor modes
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
-
-    // Indicates the current zoom level of the SDL screen
-    uInt32 theZoomLevel;
-
-    // Indicates the maximum zoom of the SDL screen
-    uInt32 theMaxZoomLevel;
 
     // The aspect ratio of the window
     float theAspectRatio;
@@ -513,6 +512,36 @@ class FrameBuffer
     */
     uInt8 getPhosphor(uInt8 c1, uInt8 c2);
 
+    /**
+      Calculate the maximum window size that the current screen can hold.
+      If not supported by platform, always return 4.
+    */
+    int maxWindowSizeForScreen();
+
+    /**
+      Set the scalers available for this framebuffer based on current emulation
+      state and maximum window size.
+    */
+    void setAvailableScalers();
+
+    /**
+      Returns a scaler based on the current eventhandler mode and the value of direction.
+      If there's any error, default to 'Zoom1x'.
+      direction = -1 means previous scaler based on value in 'name'
+      direction =  0 means actual scaler based on value in 'name'
+      direction = +1 means next scaler based on value in 'name'
+
+      @param scaler     The reference to store the scaler we're looking for
+      @param direction  Described above
+      @param name       The name of the scaler
+    */
+    void getScaler(Scaler& scaler, int direction, const string& name);
+
+    /**
+      Get the current scaler based on the eventhandler mode.
+    */
+    const string& currentScalerName();
+
   private:
     // Indicates the current framerate of the system
     uInt32 myFrameRate;
@@ -525,6 +554,16 @@ class FrameBuffer
       uInt32 color;
     };
     Message myMessage;
+
+    // The various scalers available in TIA vs. non-TIA mode
+    // For the foreseeable future, the UI scalers will be restricted
+    // from using the more advanced scalers
+    enum {
+      kUIScalerListSize = 6,
+      kTIAScalerListSize = 12
+    };
+    static Scaler ourUIScalers[kUIScalerListSize];
+    static Scaler ourTIAScalers[kTIAScalerListSize];
 };
 
 #endif

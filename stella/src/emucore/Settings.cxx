@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.85 2006-04-05 12:28:37 stephena Exp $
+// $Id: Settings.cxx,v 1.86 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -42,7 +42,8 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_fsmax", "false");
   setInternal("gl_lib", "");
 
-  setInternal("zoom", "2");
+  setInternal("scale_ui", "Zoom1x");
+  setInternal("scale_tia", "Zoom1x");
   setInternal("fullscreen", "false");
   setInternal("center", "true");
   setInternal("grabmouse", "false");
@@ -239,9 +240,17 @@ void Settings::validate()
     setInternal("tiafreq", "31400");
 #endif
 
-  i = getInt("zoom");
-  if(i < 1 || i > 6)
-    setInternal("zoom", "2");
+  s = getString("scale_ui");
+  if(s != "Zoom1x" && s != "Zoom2x" && s != "Zoom3x" &&
+     s != "Zoom4x" && s != "Zoom5x" && s != "Zoom6x")
+    setInternal("scale_ui", "Zoom1x");
+
+  s = getString("scale_tia");
+  if(s != "Zoom1x" && s != "Zoom2x" && s != "Zoom3x" &&
+     s != "Zoom4x" && s != "Zoom5x" && s != "Zoom6x" &&
+     s != "Scale2x" && s != "Scale3x" && s != "Scale4x" &&
+     s != "HQ2x" && s != "HQ3x" && s != "HQ4x")
+    setInternal("scale_tia", "Zoom1x");
 
   i = getInt("paddle");
   if(i < 0 || i > 3)

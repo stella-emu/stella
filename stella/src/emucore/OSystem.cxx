@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.70 2006-06-10 13:27:23 stephena Exp $
+// $Id: OSystem.cxx,v 1.71 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -312,6 +312,7 @@ bool OSystem::createConsole(const string& romfile)
         cout << "Game console created: " << myRomFile << endl;
 
       myEventHandler->reset(EventHandler::S_EMULATE);
+      createFrameBuffer(false);
       myFrameBuffer->setCursorState();
       retval = true;
     }
@@ -340,9 +341,7 @@ void OSystem::createLauncher()
   mySound->close();
   setFramerate(60);
   myEventHandler->reset(EventHandler::S_LAUNCHER);
-
-  // Create the window
-  myLauncher->initializeVideo();
+  createFrameBuffer(false);
 
   // And start the base dialog
   myLauncher->initialize();

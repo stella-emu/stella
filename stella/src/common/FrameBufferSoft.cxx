@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.52 2006-03-25 00:34:17 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.53 2006-10-14 20:08:29 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -32,6 +32,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
+    myZoomLevel(1),
     myRectList(NULL),
     myOverlayRectList(NULL),
     myRenderType(kSoftZoom)
@@ -79,12 +80,19 @@ void FrameBufferSoft::setAspectRatio()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::setScaler(Scaler scaler)
+{
+  // Software framebuffer doesn't handle the fancy scaling modes
+  myZoomLevel = scaler.zoom;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSoft::createScreen()
 {
   myScreenDim.x = myScreenDim.y = 0;
 
-  myScreenDim.w = myBaseDim.w * theZoomLevel;
-  myScreenDim.h = myBaseDim.h * theZoomLevel;
+  myScreenDim.w = myBaseDim.w * myZoomLevel;
+  myScreenDim.h = myBaseDim.h * myZoomLevel;
 
   // In software mode, the image and screen dimensions are always the same
   myImageDim = myScreenDim;
@@ -118,7 +126,7 @@ void FrameBufferSoft::drawMediaSource()
 
   uInt8* currentFrame   = mediasrc.currentFrameBuffer();
   uInt8* previousFrame  = mediasrc.previousFrameBuffer();
-  uInt16 screenMultiple = (uInt16) theZoomLevel;
+  uInt16 screenMultiple = (uInt16) myZoomLevel;
 
   uInt32 width  = mediasrc.width();
   uInt32 height = mediasrc.height();
@@ -282,14 +290,14 @@ void FrameBufferSoft::drawMediaSource()
       uInt32 screenofsY = 0;
       for(uInt32 y = 0; y < height; ++y )
       {
-        uInt32 ystride = theZoomLevel;
+        uInt32 ystride = myZoomLevel;
         while(ystride--)
         {
           uInt32 pos = screenofsY;
           for(uInt32 x = 0; x < width; ++x )
           {
             const uInt32 bufofs = bufofsY + x;
-            uInt32 xstride = theZoomLevel;
+            uInt32 xstride = myZoomLevel;
 
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
@@ -321,14 +329,14 @@ void FrameBufferSoft::drawMediaSource()
       uInt32 screenofsY = 0;
       for(uInt32 y = 0; y < height; ++y )
       {
-        uInt32 ystride = theZoomLevel;
+        uInt32 ystride = myZoomLevel;
         while(ystride--)
         {
           uInt32 pos = screenofsY;
           for(uInt32 x = 0; x < width; ++x )
           {
             const uInt32 bufofs = bufofsY + x;
-            uInt32 xstride = theZoomLevel;
+            uInt32 xstride = myZoomLevel;
 
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
@@ -375,14 +383,14 @@ void FrameBufferSoft::drawMediaSource()
       uInt32 screenofsY = 0;
       for(uInt32 y = 0; y < height; ++y )
       {
-        uInt32 ystride = theZoomLevel;
+        uInt32 ystride = myZoomLevel;
         while(ystride--)
         {
           uInt32 pos = screenofsY;
           for(uInt32 x = 0; x < width; ++x )
           {
             const uInt32 bufofs = bufofsY + x;
-            uInt32 xstride = theZoomLevel;
+            uInt32 xstride = myZoomLevel;
 
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
@@ -492,10 +500,10 @@ void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
   SDL_Rect tmp;
 
   // Horizontal line
-  tmp.x = x * theZoomLevel;
-  tmp.y = y * theZoomLevel;
-  tmp.w = (x2 - x + 1) * theZoomLevel;
-  tmp.h = theZoomLevel;
+  tmp.x = x * myZoomLevel;
+  tmp.y = y * myZoomLevel;
+  tmp.w = (x2 - x + 1) * myZoomLevel;
+  tmp.h = myZoomLevel;
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
 }
 
@@ -505,10 +513,10 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
   SDL_Rect tmp;
 
   // Vertical line
-  tmp.x = x * theZoomLevel;
-  tmp.y = y * theZoomLevel;
-  tmp.w = theZoomLevel;
-  tmp.h = (y2 - y + 1) * theZoomLevel;
+  tmp.x = x * myZoomLevel;
+  tmp.y = y * myZoomLevel;
+  tmp.w = myZoomLevel;
+  tmp.h = (y2 - y + 1) * myZoomLevel;
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
 }
 
@@ -519,10 +527,10 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   SDL_Rect tmp;
 
   // Fill the rectangle
-  tmp.x = x * theZoomLevel;
-  tmp.y = y * theZoomLevel;
-  tmp.w = w * theZoomLevel;
-  tmp.h = h * theZoomLevel;
+  tmp.x = x * myZoomLevel;
+  tmp.y = y * myZoomLevel;
+  tmp.w = w * myZoomLevel;
+  tmp.h = h * myZoomLevel;
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
 }
 
@@ -556,9 +564,9 @@ void FrameBufferSoft::drawChar(const GUI::Font* FONT, uInt8 chr,
     {
       if ((buffer & mask) != 0)
       {
-        rect.x = (x + xorig) * theZoomLevel;
-        rect.y = (y + yorig) * theZoomLevel;
-        rect.w = rect.h = theZoomLevel;
+        rect.x = (x + xorig) * myZoomLevel;
+        rect.y = (y + yorig) * myZoomLevel;
+        rect.w = rect.h = myZoomLevel;
         SDL_FillRect(myScreen, &rect, myDefPalette[color]);
       }
     }
@@ -578,9 +586,9 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
     {
       if(bitmap[y] & mask)
       {
-        rect.x = (x + xorig) * theZoomLevel;
-        rect.y = (y + yorig) * theZoomLevel;
-        rect.w = rect.h = theZoomLevel;
+        rect.x = (x + xorig) * myZoomLevel;
+        rect.y = (y + yorig) * myZoomLevel;
+        rect.w = rect.h = myZoomLevel;
         SDL_FillRect(myScreen, &rect, myDefPalette[color]);
       }
     }
@@ -592,17 +600,17 @@ void FrameBufferSoft::translateCoords(Int32* x, Int32* y)
 {
   // We don't bother checking offsets or aspect ratios, since
   // they're not yet supported in software mode.
-  *x /= theZoomLevel;
-  *y /= theZoomLevel;
+  *x /= myZoomLevel;
+  *y /= myZoomLevel;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
-  x *= theZoomLevel;
-  y *= theZoomLevel;
-  w *= theZoomLevel;
-  h *= theZoomLevel;
+  x *= myZoomLevel;
+  y *= myZoomLevel;
+  w *= myZoomLevel;
+  h *= myZoomLevel;
 
   // Check if rect is in screen area
   // This is probably a bug, since the GUI code shouldn't be setting
