@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.53 2006-10-14 20:08:29 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.54 2006-10-14 22:17:26 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -33,9 +33,9 @@
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
     myZoomLevel(1),
+    myRenderType(kSoftZoom),
     myRectList(NULL),
-    myOverlayRectList(NULL),
-    myRenderType(kSoftZoom)
+    myOverlayRectList(NULL)
 {
 }
 

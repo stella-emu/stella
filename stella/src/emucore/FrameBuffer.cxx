@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.91 2006-10-14 20:08:29 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.92 2006-10-14 22:17:27 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -306,8 +306,13 @@ inline void FrameBuffer::drawMessage()
     // Force an immediate update
     myOSystem->eventHandler().refreshDisplay(true);
   }
+/*  FIXME ?? - this sometimes causes a crash when switching from
+               bigger to smaller launcher windows and showing a message
+               I'm sure there's a bug somewhere, but this code no longer
+               seems to be needed, so I may just delete it at some point ...
   else
     addDirtyRect(myMessage.x, myMessage.y, myMessage.w, myMessage.h);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -402,13 +407,13 @@ bool FrameBuffer::scale(int direction, const string& type)
     if(!createScreen())
       return false;
 
-    myOSystem->eventHandler().refreshDisplay();
-    showMessage(newScaler.name);
-
     EventHandler::State state = myOSystem->eventHandler().state();
     bool inTIAMode = (state == EventHandler::S_EMULATE ||
                       state == EventHandler::S_MENU    ||
                       state == EventHandler::S_CMDMENU);
+
+    myOSystem->eventHandler().refreshDisplay();
+    showMessage(newScaler.name);
 
     if(inTIAMode)
       myOSystem->settings().setString("scale_tia", newScaler.name);
@@ -721,12 +726,11 @@ void FrameBuffer::setAvailableScalers()
                     state == EventHandler::S_MENU    ||
                     state == EventHandler::S_CMDMENU);
 
-/*
-  cerr << "TIA mode: " << (inTIAMode ? "yes" : "no") << ", state: " << state << endl
+  cerr << " ====> setAvailableScalers() <====" << endl << endl
+       << "TIA mode: " << (inTIAMode ? "yes" : "no") << ", state: " << state << endl
        << "maxsize:  " << maxsize << endl
        << "type:     " << (type() == kSoftBuffer ? "soft buffer" : "GL buffer") << endl
        << endl;
-*/
 
   // Next, determine which mode we're in and update the appropriate scaler list
   if(type() == kSoftBuffer)
@@ -759,16 +763,15 @@ void FrameBuffer::setAvailableScalers()
           ourUIScalers[i].available = true;
     }
   }
-/*
+
   cerr << "UI Scalers available:\n";
-  for(int i = 0; i < 6; ++i)
+  for(int i = 0; i < kUIScalerListSize; ++i)
     if(ourUIScalers[i].available)
       cerr << ourUIScalers[i].name << endl;
-  for(int i = 0; i < kNumScalers; ++i)
+  for(int i = 0; i < kTIAScalerListSize; ++i)
     if(ourTIAScalers[i].available)
       cerr << ourTIAScalers[i].name << endl;
-  cerr << endl << endl;
-*/
+  cerr << " =================================" << endl << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -786,9 +789,10 @@ void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
   switch(direction)
   {
     case 0:  // search for the actual scaler specified in 'name'
+cerr << "get scaler = " << name << endl;
       for(int i = 0; i < size; ++i)
       {
-        if(list[i].name == name)
+        if(list[i].name == name && list[i].available)
         {
           scaler = list[i];
           found = true;
@@ -804,7 +808,7 @@ void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
       // First find the current scaler
       for(i = 0; i < size; ++i)
       {
-        if(list[i].name == name)
+        if(list[i].name == name && list[i].available)
         {
           pos = i;
           break;
@@ -838,7 +842,7 @@ void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
       // First find the current scaler
       for(i = 0; i < size; ++i)
       {
-        if(list[i].name == name)
+        if(list[i].name == name && list[i].available)
         {
           pos = i;
           break;
