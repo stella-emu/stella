@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.39 2006-05-04 17:45:25 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.40 2006-10-16 01:09:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -70,15 +70,17 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
     myHelpDialog(NULL),
     myAboutDialog(NULL)
 {
-  // Set actual dialog dimensions
-  _x = (osystem->frameBuffer().baseWidth() - kMainMenuWidth) / 2;
-  _y = (osystem->frameBuffer().baseHeight() - kMainMenuHeight) / 2;
-
   int yoffset = 7;
   const int xoffset = (_w - kBigButtonWidth) / 2;
+  const int fbWidth  = osystem->frameBuffer().baseWidth(),
+            fbHeight = osystem->frameBuffer().baseHeight();
   const GUI::Font& font = instance()->font(); // FIXME - change reference to optionsFont()
   WidgetArray wid;
   ButtonWidget* b = NULL;
+
+  // Set actual dialog dimensions
+  _x = (fbWidth - kMainMenuWidth) / 2;
+  _y = (fbHeight - kMainMenuHeight) / 2;
 
   b = addBigButton("Video Settings", kVidCmd);
   wid.push_back(b);
@@ -111,8 +113,6 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   wid.push_back(b);
 
   // Set some sane values for the dialog boxes
-  int fbWidth  = osystem->frameBuffer().baseWidth();
-  int fbHeight = osystem->frameBuffer().baseHeight();
   int x, y, w, h;
 
   // Now create all the dialogs attached to each menu button

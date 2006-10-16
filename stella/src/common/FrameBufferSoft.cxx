@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.54 2006-10-14 22:17:26 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.55 2006-10-16 01:08:59 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -82,8 +82,21 @@ void FrameBufferSoft::setAspectRatio()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::setScaler(Scaler scaler)
 {
-  // Software framebuffer doesn't handle the fancy scaling modes
-  myZoomLevel = scaler.zoom;
+  switch(scaler.type)
+  {
+    case kZOOM1X:
+    case kZOOM2X:
+    case kZOOM3X:
+    case kZOOM4X:
+    case kZOOM5X:
+    case kZOOM6X:
+      // Software framebuffer doesn't handle the fancy scaling modes
+      myZoomLevel = scaler.zoom;
+      break;
+
+    default:
+      break;  // should never get here
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.71 2006-10-14 20:08:29 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.72 2006-10-16 01:08:59 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -75,7 +75,13 @@ enum {
 };
 
 // Different types of scalers available
+enum ScalerType {
+  kZOOM1X, kZOOM2X, kZOOM3X, kZOOM4X, kZOOM5X, kZOOM6X,
+  kSCALE2X, kSCALE3X, kSCALE4X,
+  kHQ2X, kHQ3X, kHQ4X
+};
 struct Scaler {
+  ScalerType type;
   string name;
   int zoom;
   int scale;
@@ -90,7 +96,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.71 2006-10-14 20:08:29 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.72 2006-10-16 01:08:59 stephena Exp $
 */
 class FrameBuffer
 {

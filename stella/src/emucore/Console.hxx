@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.45 2006-08-09 02:38:03 bwmott Exp $
+// $Id: Console.hxx,v 1.46 2006-10-16 01:08:59 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.45 2006-08-09 02:38:03 bwmott Exp $
+  @version $Id: Console.hxx,v 1.46 2006-10-16 01:08:59 stephena Exp $
 */
 class Console
 {
@@ -120,11 +120,6 @@ class Console
     */
     M6532& riot() const { return *myRiot; }
 
-    /**
-      Determine whether the console was successfully created
-    */
-    bool isInitialized() { return myIsInitializedFlag; }
-
   public:
     /**
       Overloaded assignment operator
@@ -164,6 +159,14 @@ class Console
                    main properties file.
     */
     void saveProperties(string filename, bool merge = false);
+
+    /**
+      Initialize the basic properties of the console.
+      TODO - This is a workaround for a bug in the TIA rendering, whereby
+      XStart/YStart values cause incorrect coordinates to be passed to the
+      in-game GUI rendering.
+    */
+    void initialize();
 
     /**
       Initialize the video subsystem wrt this class.
@@ -276,10 +279,6 @@ class Console
 #ifdef ATARIVOX_SUPPORT
     AtariVox *vox;
 #endif
-
-    // Indicates whether the console was correctly initialized
-    // We don't really care why it wasn't initialized ...
-    bool myIsInitializedFlag;
 };
 
 #endif

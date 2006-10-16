@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.71 2006-10-14 20:08:29 stephena Exp $
+// $Id: OSystem.cxx,v 1.72 2006-10-16 01:09:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -301,7 +301,7 @@ bool OSystem::createConsole(const string& romfile)
     // Create an instance of the 2600 game console
     // The Console c'tor takes care of updating the eventhandler state
     myConsole = new Console(image, size, md5, this);
-    if(myConsole->isInitialized())
+    if(myConsole)
     {
     #ifdef CHEATCODE_SUPPORT
       myCheatManager->loadCheats(md5);
@@ -314,6 +314,7 @@ bool OSystem::createConsole(const string& romfile)
       myEventHandler->reset(EventHandler::S_EMULATE);
       createFrameBuffer(false);
       myFrameBuffer->setCursorState();
+      myConsole->initialize();  // Must be done *after* the framebuffer is created
       retval = true;
     }
     else

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.92 2006-10-14 22:17:27 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.93 2006-10-16 01:08:59 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -905,28 +905,28 @@ const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Scaler FrameBuffer::ourUIScalers[kUIScalerListSize] = {
-  { "Zoom1x",  1, 1, false },
-  { "Zoom2x",  2, 1, false },
-  { "Zoom3x",  3, 1, false },
-  { "Zoom4x",  4, 1, false },
-  { "Zoom5x",  5, 1, false },
-  { "Zoom6x",  6, 1, false }
+  { kZOOM1X, "Zoom1x",  1, 1, false },
+  { kZOOM2X, "Zoom2x",  2, 1, false },
+  { kZOOM3X, "Zoom3x",  3, 1, false },
+  { kZOOM4X, "Zoom4x",  4, 1, false },
+  { kZOOM5X, "Zoom5x",  5, 1, false },
+  { kZOOM6X, "Zoom6x",  6, 1, false }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Scaler FrameBuffer::ourTIAScalers[kTIAScalerListSize] = {
-  { "Zoom1x",  1, 1, false },
-  { "Zoom2x",  2, 1, false },
-  { "Zoom3x",  3, 1, false },
-  { "Zoom4x",  4, 1, false },
-  { "Zoom5x",  5, 1, false },
-  { "Zoom6x",  6, 1, false },
+  { kZOOM1X,  "Zoom1x",  1, 1, false },
+  { kZOOM2X,  "Zoom2x",  2, 1, false },
+  { kZOOM3X,  "Zoom3x",  3, 1, false },
+  { kZOOM4X,  "Zoom4x",  4, 1, false },
+  { kZOOM5X,  "Zoom5x",  5, 1, false },
+  { kZOOM6X,  "Zoom6x",  6, 1, false },
 
-  { "Scale2x", 1, 2, false },
-  { "Scale3x", 1, 3, false },
-  { "Scale4x", 1, 4, false },
+  { kSCALE2X, "Scale2x", 1, 2, false },
+  { kSCALE3X, "Scale3x", 1, 3, false },
+  { kSCALE4X, "Scale4x", 1, 4, false },
 
-  { "HQ2x",    1, 2, false },
-  { "HQ3x",    1, 3, false },
-  { "HQ4x",    1, 4, false }
+  { kHQ2X,    "HQ2x",    1, 2, false },
+  { kHQ3X,    "HQ3x",    1, 3, false },
+  { kHQ4X,    "HQ4x",    1, 4, false }
 };

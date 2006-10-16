@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.63 2006-10-14 20:08:29 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.64 2006-10-16 01:08:59 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -69,13 +69,16 @@ static void (APIENTRY* p_glTexParameteri)( GLenum, GLenum, GLint );
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
-    myTexture(NULL),
+    myBaseTexture(NULL),
+    myScaledTexture(NULL),
+    myCurrentTexture(NULL),
     myScreenmode(0),
     myScreenmodeCount(0),
     myTextureID(0),
     myFilterParam(GL_NEAREST),
     myFilterParamName("GL_NEAREST"),
-    myZoomLevel(1), // FIXME
+    myZoomLevel(1),
+    myScaleLevel(1),
     myFSScaleFactor(1.0),
     myDirtyFlag(true)
 {
@@ -84,8 +87,10 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::~FrameBufferGL()
 {
-  if(myTexture)
-    SDL_FreeSurface(myTexture);
+  if(myBaseTexture)
+    SDL_FreeSurface(myBaseTexture);
+  if(myScaledTexture)
+    SDL_FreeSurface(myScaledTexture);
 
   p_glDeleteTextures(1, &myTextureID);
 }
@@ -172,40 +177,20 @@ bool FrameBufferGL::initSubsystem()
   switch(myDepth)
   {
     case 8:
-      myRGB[0] = 3;
-      myRGB[1] = 3;
-      myRGB[2] = 2;
-      myRGB[3] = 0;
+      myRGB[0] = 3; myRGB[1] = 3; myRGB[2] = 2; myRGB[3] = 0;
       break;
-
     case 15:
-      myRGB[0] = 5;
-      myRGB[1] = 5;
-      myRGB[2] = 5;
-      myRGB[3] = 0;
+      myRGB[0] = 5; myRGB[1] = 5; myRGB[2] = 5; myRGB[3] = 0;
       break;
-
     case 16:
-      myRGB[0] = 5;
-      myRGB[1] = 6;
-      myRGB[2] = 5;
-      myRGB[3] = 0;
+      myRGB[0] = 5; myRGB[1] = 6; myRGB[2] = 5; myRGB[3] = 0;
       break;
-
     case 24:
-      myRGB[0] = 8;
-      myRGB[1] = 8;
-      myRGB[2] = 8;
-      myRGB[3] = 0;
+      myRGB[0] = 8; myRGB[1] = 8; myRGB[2] = 8; myRGB[3] = 0;
       break;
-
     case 32:
-      myRGB[0] = 8;
-      myRGB[1] = 8;
-      myRGB[2] = 8;
-      myRGB[3] = 8;
+      myRGB[0] = 8; myRGB[1] = 8; myRGB[2] = 8; myRGB[3] = 8;
       break;
-
     default:  // This should never happen
       break;
   }
@@ -226,11 +211,6 @@ bool FrameBufferGL::initSubsystem()
   SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, (int*)&myRGB[1] );
   SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, (int*)&myRGB[2] );
   SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, (int*)&myRGB[3] );
-
-#ifndef TEXTURES_ARE_LOST
-  // Create the texture surface
-  createTextures();
-#endif
 
   // Show some OpenGL info
   if(myOSystem->settings().getBool("showinfo"))
@@ -263,9 +243,54 @@ void FrameBufferGL::setAspectRatio()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::setScaler(Scaler scaler)
 {
-  // TODO - have this inspect 'scaler' and set the appropriate state
-  cerr << "FrameBufferGL::setScaler: zoom = " << scaler.zoom << endl;
-  myZoomLevel = scaler.zoom;
+  myScalerType = scaler.type;
+  myZoomLevel  = scaler.zoom;
+  myScaleLevel = scaler.scale;
+
+  switch(scaler.type)
+  {
+    case kZOOM1X:
+    case kZOOM2X:
+    case kZOOM3X:
+    case kZOOM4X:
+    case kZOOM5X:
+    case kZOOM6X:
+      myQuadRect.w = myBaseDim.w;
+      myQuadRect.h = myBaseDim.h;
+      break;
+
+    case kSCALE2X:
+      myQuadRect.w = myBaseDim.w * 2;
+      myQuadRect.h = myBaseDim.h * 2;
+      cerr << "scaler: " << scaler.name << endl;
+      break;
+    case kSCALE3X:
+      myQuadRect.w = myBaseDim.w * 3;
+      myQuadRect.h = myBaseDim.h * 3;
+      cerr << "scaler: " << scaler.name << endl;
+      break;
+    case kSCALE4X:
+      myQuadRect.w = myBaseDim.w * 4;
+      myQuadRect.h = myBaseDim.h * 4;
+      cerr << "scaler: " << scaler.name << endl;
+      break;
+
+    case kHQ2X:
+      myQuadRect.w = myBaseDim.w * 2;
+      myQuadRect.h = myBaseDim.h * 2;
+      cerr << "scaler: " << scaler.name << endl;
+      break;
+    case kHQ3X:
+      myQuadRect.w = myBaseDim.w * 3;
+      myQuadRect.h = myBaseDim.h * 3;
+      cerr << "scaler: " << scaler.name << endl;
+      break;
+    case kHQ4X:
+      myQuadRect.w = myBaseDim.w * 4;
+      myQuadRect.h = myBaseDim.h * 4;
+      cerr << "scaler: " << scaler.name << endl;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -306,9 +331,7 @@ bool FrameBufferGL::createScreen()
   p_glPushMatrix();
   p_glLoadIdentity();
 
-#ifdef TEXTURES_ARE_LOST
   createTextures();
-#endif
 
   // Make sure any old parts of the screen are erased
   // Do it for both buffers!
@@ -329,67 +352,71 @@ void FrameBufferGL::drawMediaSource()
   uInt8* previousFrame = mediasrc.previousFrameBuffer();
   uInt32 width         = mediasrc.width();
   uInt32 height        = mediasrc.height();
-  uInt16* buffer       = (uInt16*) myTexture->pixels;
+  uInt16* buffer       = (uInt16*) myBaseTexture->pixels;
 
   // TODO - is this fast enough?
-  switch((int)myUsePhosphor) // use switch/case, since we'll eventually have filters
+  if(!myUsePhosphor)
   {
-    case 0:
+    uInt32 bufofsY    = 0;
+    uInt32 screenofsY = 0;
+    for(uInt32 y = 0; y < height; ++y )
     {
-      uInt32 bufofsY    = 0;
-      uInt32 screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y )
+      uInt32 pos = screenofsY;
+      for(uInt32 x = 0; x < width; ++x )
       {
-        uInt32 pos = screenofsY;
-        for(uInt32 x = 0; x < width; ++x )
+        const uInt32 bufofs = bufofsY + x;
+        uInt8 v = currentFrame[bufofs];
+        uInt8 w = previousFrame[bufofs];
+
+        if(v != w || theRedrawTIAIndicator)
         {
-          const uInt32 bufofs = bufofsY + x;
-          uInt8 v = currentFrame[bufofs];
-          uInt8 w = previousFrame[bufofs];
+          // If we ever get to this point, we know the current and previous
+          // buffers differ.  In that case, make sure the changes are
+          // are drawn in postFrameUpdate()
+          myDirtyFlag = true;
 
-          if(v != w || theRedrawTIAIndicator)
-          {
-            // If we ever get to this point, we know the current and previous
-            // buffers differ.  In that case, make sure the changes are
-            // are drawn in postFrameUpdate()
-            myDirtyFlag = true;
-
-            buffer[pos] = buffer[pos+1] = (uInt16) myDefPalette[v];
-          }
-          pos += 2;
+          buffer[pos] = buffer[pos+1] = (uInt16) myDefPalette[v];
         }
-        bufofsY    += width;
-        screenofsY += myTexture->w;
+        pos += 2;
       }
-      break;
-    }
-
-    case 1:
-    {
-      // Phosphor mode always implies a dirty update,
-      // so we don't care about theRedrawTIAIndicator
-      myDirtyFlag = true;
-
-      uInt32 bufofsY    = 0;
-      uInt32 screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y )
-      {
-        uInt32 pos = screenofsY;
-        for(uInt32 x = 0; x < width; ++x )
-        {
-          const uInt32 bufofs = bufofsY + x;
-          uInt8 v = currentFrame[bufofs];
-          uInt8 w = previousFrame[bufofs];
-
-          buffer[pos++] = (uInt16) myAvgPalette[v][w];
-          buffer[pos++] = (uInt16) myAvgPalette[v][w];
-        }
-        bufofsY    += width;
-        screenofsY += myTexture->w;
-      }
-      break;
+      bufofsY    += width;
+      screenofsY += myBaseTexture->w;
     }
   }
+  else
+  {
+    // Phosphor mode always implies a dirty update,
+    // so we don't care about theRedrawTIAIndicator
+    myDirtyFlag = true;
+
+    uInt32 bufofsY    = 0;
+    uInt32 screenofsY = 0;
+    for(uInt32 y = 0; y < height; ++y )
+    {
+      uInt32 pos = screenofsY;
+      for(uInt32 x = 0; x < width; ++x )
+      {
+        const uInt32 bufofs = bufofsY + x;
+        uInt8 v = currentFrame[bufofs];
+        uInt8 w = previousFrame[bufofs];
+
+        buffer[pos++] = (uInt16) myAvgPalette[v][w];
+        buffer[pos++] = (uInt16) myAvgPalette[v][w];
+      }
+      bufofsY    += width;
+      screenofsY += myBaseTexture->w;
+    }
+  }
+
+  // At this point, myBaseTexture will be filled with a valid TIA image
+  // Now we check if post-processing scalers should be applied
+  // In any event, myCurrentTexture will point to the valid data to be
+  // rendered to the screen
+/*
+  switch(myScalerType)
+  {
+    case 
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -404,11 +431,12 @@ void FrameBufferGL::postFrameUpdate()
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 
-    uInt32 w = myBaseDim.w, h = myBaseDim.h;
+    uInt32 w = myQuadRect.w, h = myQuadRect.h;
 
     p_glBindTexture(GL_TEXTURE_2D, myTextureID);
-    p_glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexture->w, myTexture->h,
-                      GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myTexture->pixels);
+    p_glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+                      myCurrentTexture->w, myCurrentTexture->h,
+                      GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myCurrentTexture->pixels);
     p_glBegin(GL_QUADS);
 /* Upside down !
       p_glTexCoord2f(myTexCoord[2], myTexCoord[3]); p_glVertex2i(0, 0);
@@ -469,20 +497,41 @@ void FrameBufferGL::toggleFilter()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
-  uInt16* buffer = (uInt16*) myTexture->pixels + y * myTexture->w + x;
+/*
+  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + y * myCurrentTexture->w + x;
   while(x++ <= x2)
     *buffer++ = (uInt16) myDefPalette[color];
+*/
+  SDL_Rect tmp;
+
+  // Horizontal line
+  tmp.x = x * myScaleLevel;
+  tmp.y = y * myScaleLevel;
+  tmp.w = (x2 - x + 1) * myScaleLevel;
+  tmp.h = myScaleLevel;
+  SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
-  uInt16* buffer = (uInt16*) myTexture->pixels + y * myTexture->w + x;
+/*
+  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + y * myCurrentTexture->w + x;
   while(y++ <= y2)
   {
     *buffer = (uInt16) myDefPalette[color];
-    buffer += myTexture->w;
+    buffer += myCurrentTexture->w;
   }
+*/
+  SDL_Rect tmp;
+
+  // Vertical line
+  tmp.x = x * myScaleLevel;
+  tmp.y = y * myScaleLevel;
+  tmp.w = myScaleLevel;
+  tmp.h = (y2 - y + 1) * myScaleLevel;
+  SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -492,11 +541,19 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   SDL_Rect tmp;
 
   // Fill the rectangle
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = w;
-  tmp.h = h;
-  SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
+  tmp.x = x * myScaleLevel;
+  tmp.y = y * myScaleLevel;
+  tmp.w = w * myScaleLevel;
+  tmp.h = h * myScaleLevel;
+  SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
+/*
+cerr << "FrameBufferGL::fillRect:" << endl
+     << "x = " << tmp.x << endl
+     << "y = " << tmp.y << endl
+     << "w = " << tmp.w << endl
+     << "h = " << tmp.h << endl
+     << endl;
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -520,7 +577,7 @@ void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
   const uInt16* tmp = font->desc().bits + (font->desc().offset ?
                       font->desc().offset[chr] : (chr * h));
 
-  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
+  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + ty * myCurrentTexture->w + tx;
   for(int y = 0; y < h; ++y)
   {
     const uInt16 ptr = *tmp++;
@@ -531,7 +588,7 @@ void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
       if(ptr & mask)
         buffer[x] = (uInt16) myDefPalette[color];
     }
-    buffer += myTexture->w;
+    buffer += myCurrentTexture->w;
   }
 }
 
@@ -539,7 +596,7 @@ void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
 void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
                                int color, Int32 h)
 {
-  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
+  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + ty * myCurrentTexture->w + tx;
 
   for(int y = 0; y < h; ++y)
   {
@@ -549,7 +606,7 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
       if(bitmap[y] & mask)
         buffer[x] = (uInt16) myDefPalette[color];
     }
-    buffer += myTexture->w;
+    buffer += myCurrentTexture->w;
   }
 }
 
@@ -557,17 +614,13 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 void FrameBufferGL::translateCoords(Int32* x, Int32* y)
 {
   // Wow, what a mess :)
-  *x = (Int32) (((*x - myImageDim.x) / (myZoomLevel * myFSScaleFactor * theAspectRatio)));
-  *y = (Int32) (((*y - myImageDim.y) / (myZoomLevel * myFSScaleFactor)));
+  *x = (Int32) (((*x - myImageDim.x) / (myZoomLevel * myScaleLevel * myFSScaleFactor * theAspectRatio)));
+  *y = (Int32) (((*y - myImageDim.y) / (myZoomLevel * myScaleLevel * myFSScaleFactor)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
-  // TODO
-  //    Add logic to create one large dirty-rect that encompasses all
-  //    smaller dirty rects.  Then in postFrameUpdate(), change the
-  //    coordinates to only update that portion of the texture.
   myDirtyFlag = true;
 }
 
@@ -594,27 +647,62 @@ void FrameBufferGL::cls()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createTextures()
 {
-  if(myTexture)
+cerr << "FrameBufferGL::createTextures()\n";
+  if(myBaseTexture)
   {
-    SDL_FreeSurface(myTexture);
-    myTexture = NULL;
+    SDL_FreeSurface(myBaseTexture);
+    myBaseTexture = NULL;
   }
-
+  if(myScaledTexture)
+  {
+    SDL_FreeSurface(myScaledTexture);
+    myScaledTexture = NULL;
+  }
+  myCurrentTexture = NULL;
   p_glDeleteTextures(1, &myTextureID);
 
-  uInt32 w = power_of_two(myBaseDim.w);
-  uInt32 h = power_of_two(myBaseDim.h);
+cerr << "texture dimensions (before power of 2 scaling):" << endl
+     << "myBaseTexture->w = " << myBaseDim.w << endl
+     << "myBaseTexture->h = " << myBaseDim.h << endl
+     << "myScaledTexture->w = " << myQuadRect.w << endl
+     << "myScaledTexture->h = " << myQuadRect.h << endl
+     << endl;
+
+  uInt32 w1 = power_of_two(myBaseDim.w);
+  uInt32 h1 = power_of_two(myBaseDim.h);
+  uInt32 w2 = power_of_two(myQuadRect.w);
+  uInt32 h2 = power_of_two(myQuadRect.h);
 
   myTexCoord[0] = 0.0f;
   myTexCoord[1] = 0.0f;
-  myTexCoord[2] = (GLfloat) myBaseDim.w / w;
-  myTexCoord[3] = (GLfloat) myBaseDim.h / h;
+  myTexCoord[2] = (GLfloat) myQuadRect.w / w1;
+  myTexCoord[3] = (GLfloat) myQuadRect.h / h1;
 
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 16,
+  myBaseTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, w1, h1, 16,
     0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
-
-  if(myTexture == NULL)
+  if(myBaseTexture == NULL)
     return false;
+
+  myScaledTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, w2, h2, 16,
+    0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
+  if(myScaledTexture == NULL)
+    return false;
+
+  // Set current texture pointer
+  switch(myScalerType)
+  {
+    case kZOOM1X:
+    case kZOOM2X:
+    case kZOOM3X:
+    case kZOOM4X:
+    case kZOOM5X:
+    case kZOOM6X:
+      myCurrentTexture = myBaseTexture;
+      break;
+    default:
+      myCurrentTexture = myScaledTexture;
+      break;
+  }
 
   // Create an OpenGL texture from the SDL texture
   string filter = myOSystem->settings().getString("gl_filter");
@@ -635,8 +723,9 @@ bool FrameBufferGL::createTextures()
   p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
   p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
-  p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
-                 myTexture->pixels);
+  p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                 myCurrentTexture->w, myCurrentTexture->h, 0,
+                 GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL);
 
   p_glDisable(GL_DEPTH_TEST);
   p_glDisable(GL_CULL_FACE);
@@ -651,12 +740,13 @@ bool FrameBufferGL::createTextures()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
 {
+cerr << "FrameBufferGL::setDimensions()\n";
   // We always know the initial image width and height
   // We have to determine final image dimensions as well as screen dimensions
   myImageDim.x = 0;
   myImageDim.y = 0;
-  myImageDim.w = (Uint16) (myBaseDim.w * myZoomLevel * theAspectRatio);
-  myImageDim.h = (Uint16) (myBaseDim.h * myZoomLevel);
+  myImageDim.w = (Uint16) (myBaseDim.w * myZoomLevel * myScaleLevel * theAspectRatio);
+  myImageDim.h = (Uint16) (myBaseDim.h * myZoomLevel * myScaleLevel);
   myScreenDim  = myImageDim;
 
   myFSScaleFactor = 1.0f;

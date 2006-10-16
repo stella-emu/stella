@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.94 2006-10-14 20:08:29 stephena Exp $
+// $Id: Console.cxx,v 1.95 2006-10-16 01:08:59 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -64,8 +64,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const string& md5,
                  OSystem* osystem)
-  : myOSystem(osystem),
-    myIsInitializedFlag(false)
+  : myOSystem(osystem)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -223,56 +222,6 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
 
   // Reset, the system to its power-on state
   mySystem->reset();
-
-  // Set the correct framerate based on the format of the ROM
-  // This can be overridden by changing the framerate in the
-  // VideoDialog box or on the commandline, but it can't be saved
-  // (ie, framerate is now solely determined based on ROM format).
-  uInt32 framerate = myOSystem->settings().getInt("framerate");
-  if(framerate == 0)
-  {
-    const string& s = myProperties.get(Display_Format);
-    if(s == "NTSC")
-      framerate = 60;
-    else if(s == "PAL")
-      framerate = 50;
-    else
-      framerate = 60;
-  }
-  myOSystem->setFramerate(framerate);
-
-  // Initialize the sound interface.
-  // The # of channels can be overridden in the AudioDialog box or on
-  // the commandline, but it can't be saved.
-  uInt32 channels;
-  const string& s = myProperties.get(Cartridge_Sound);
-  if(s == "STEREO")
-    channels = 2;
-  else if(s == "MONO")
-    channels = 1;
-  else
-    channels = 1;
-
-  myOSystem->sound().close();
-  myOSystem->sound().setChannels(channels);
-  myOSystem->sound().setFrameRate(framerate);
-  myOSystem->sound().initialize();
-
-  // Initialize the options menu system with updated values from the framebuffer
-  myOSystem->menu().initialize();
-  myOSystem->menu().setGameProfile(myProperties);
-
-  // Initialize the command menu system with updated values from the framebuffer
-  myOSystem->commandMenu().initialize();
-
-#ifdef DEVELOPER_SUPPORT
-  // Finally, initialize the debugging system, since it depends on the current ROM
-  myOSystem->debugger().setConsole(this);
-  myOSystem->debugger().initialize();
-#endif
-
-  // If we get this far, the console must be valid
-  myIsInitializedFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -437,8 +386,62 @@ void Console::saveProperties(string filename, bool merge)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::initialize()
+{
+  // Set the correct framerate based on the format of the ROM
+  // This can be overridden by changing the framerate in the
+  // VideoDialog box or on the commandline, but it can't be saved
+  // (ie, framerate is now solely determined based on ROM format).
+  uInt32 framerate = myOSystem->settings().getInt("framerate");
+  if(framerate == 0)
+  {
+    const string& s = myProperties.get(Display_Format);
+    if(s == "NTSC")
+      framerate = 60;
+    else if(s == "PAL")
+      framerate = 50;
+    else
+      framerate = 60;
+  }
+  myOSystem->setFramerate(framerate);
+
+  // Initialize the sound interface.
+  // The # of channels can be overridden in the AudioDialog box or on
+  // the commandline, but it can't be saved.
+  uInt32 channels;
+  const string& s = myProperties.get(Cartridge_Sound);
+  if(s == "STEREO")
+    channels = 2;
+  else if(s == "MONO")
+    channels = 1;
+  else
+    channels = 1;
+
+  myOSystem->sound().close();
+  myOSystem->sound().setChannels(channels);
+  myOSystem->sound().setFrameRate(framerate);
+  myOSystem->sound().initialize();
+
+  // Initialize the options menu system with updated values from the framebuffer
+  myOSystem->menu().initialize();
+  myOSystem->menu().setGameProfile(myProperties);
+
+  // Initialize the command menu system with updated values from the framebuffer
+  myOSystem->commandMenu().initialize();
+
+#ifdef DEVELOPER_SUPPORT
+  // Finally, initialize the debugging system, since it depends on the current ROM
+  myOSystem->debugger().setConsole(this);
+  myOSystem->debugger().initialize();
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeVideo()
 {
+cerr << " ==> Console::initializeVideo(): w = " << (myMediaSource->width() << 1)
+     << ", h = " << myMediaSource->height() << endl;
+
   string title = string("Stella ") + STELLA_VERSION +
                  ": \"" + myProperties.get(Cartridge_Name) + "\"";
   myOSystem->frameBuffer().initialize(title,
