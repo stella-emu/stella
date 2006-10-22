@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.95 2006-10-16 01:08:59 stephena Exp $
+// $Id: Console.cxx,v 1.96 2006-10-22 18:58:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -64,7 +64,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const uInt8* image, uInt32 size, const string& md5,
                  OSystem* osystem)
-  : myOSystem(osystem)
+  : myOSystem(osystem),
+    myIsInitializedFlag(false)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
@@ -434,14 +435,13 @@ void Console::initialize()
   myOSystem->debugger().setConsole(this);
   myOSystem->debugger().initialize();
 #endif
+
+  myIsInitializedFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeVideo()
 {
-cerr << " ==> Console::initializeVideo(): w = " << (myMediaSource->width() << 1)
-     << ", h = " << myMediaSource->height() << endl;
-
   string title = string("Stella ") + STELLA_VERSION +
                  ": \"" + myProperties.get(Cartridge_Name) + "\"";
   myOSystem->frameBuffer().initialize(title,

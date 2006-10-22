@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.55 2006-10-16 01:08:59 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.56 2006-10-22 18:58:45 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -128,6 +128,11 @@ bool FrameBufferSoft::createScreen()
       myPitch = myScreen->pitch/4;
       break;
   }
+
+  // Erase old rects, since they've probably been scaled for
+  // a different sized screen
+  myRectList->start();
+  myOverlayRectList->start();
 
   return true;
 }
@@ -443,7 +448,9 @@ void FrameBufferSoft::postFrameUpdate()
   // on the Win32 code.  It seems that SDL_UpdateRects() is very
   // expensive in Windows, so we force a full screen update instead.
   if(myUseDirtyRects)
+  {
     SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
+  }
   else if(myRectList->numRects() > 0)
   {
     SDL_Flip(myScreen);
@@ -620,28 +627,14 @@ void FrameBufferSoft::translateCoords(Int32* x, Int32* y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
-  x *= myZoomLevel;
-  y *= myZoomLevel;
-  w *= myZoomLevel;
-  h *= myZoomLevel;
-
-  // Check if rect is in screen area
-  // This is probably a bug, since the GUI code shouldn't be setting
-  // a dirty rect larger than the screen
-  int x1 = x, y1 = y, x2 = x + w, y2 = y + h;
-  int sx1 = myScreenDim.x, sy1 = myScreenDim.y,
-      sx2 = myScreenDim.x + myScreenDim.w, sy2 = myScreenDim.y + myScreenDim.h;
-  if(x1 < sx1 || y1 < sy1 || x2 > sx2 || y2 > sy2)
-    return;
-
   // Add a dirty rect to the overlay rectangle list
   // They will actually be added to the main rectlist in preFrameUpdate()
   // TODO - intelligent merging of rectangles, to avoid overlap
   SDL_Rect temp;
-  temp.x = x;
-  temp.y = y;
-  temp.w = w;
-  temp.h = h;
+  temp.x = x * myZoomLevel;
+  temp.y = y * myZoomLevel;
+  temp.w = w * myZoomLevel;
+  temp.h = h * myZoomLevel;
 
   myOverlayRectList->add(&temp);
 
@@ -719,9 +712,6 @@ void RectList::add(SDL_Rect* newRect)
     delete[] rectArray;
     rectArray = temp;
   }
-
-//cerr << "RectList::add():  "
-//     << "x=" << newRect->x << ", y=" << newRect->y << ", w=" << newRect->w << ", h=" << newRect->h << endl;
 
   rectArray[currentRect].x = newRect->x;
   rectArray[currentRect].y = newRect->y;

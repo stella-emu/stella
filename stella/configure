@@ -283,8 +283,8 @@ Optional Libraries:
 
   --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
 
-#  --with-nasm-prefix=DIR   Prefix where nasm executable is installed (optional)
-#  --disable-nasm           disable assembly language optimizations [autodetect]
+  --with-nasm-prefix=DIR   Prefix where nasm executable is installed (optional)
+  --disable-nasm           disable assembly language optimizations [autodetect]
 
   --x-libraries            Path to X11 libraries [${X_LIBS}]
 
@@ -613,6 +613,26 @@ else
 fi
 
 #
+# Check whether we can use x86 asm routines
+#
+echo_n "Running on x86... "
+case $_host_cpu in
+	i386|i486|i586|i686)
+		_have_x86=yes
+		;;
+	*)
+		_have_x86=no
+		;;
+esac
+
+if test "$_have_x86" = yes ; then
+	_def_x86='#define HAVE_X86'
+else
+	_def_x86='#undef HAVE_X86'
+fi
+echo "$_have_x86"
+
+#
 # Check for ZLib
 #
 echocheck "zlib"
@@ -661,17 +681,18 @@ echo "$_opengl"
 #
 # Check for nasm
 #
-#if test "$_have_x86" = yes ; then
-#    CheckNASM
-#fi
-#
-#if test "$_nasm" = yes ; then
-#	_def_nasm='#define USE_NASM'
-#	_make_def_HAVE_NASM='HAVE_NASM = 1'
-#else
-#	_def_nasm='#undef USE_NASM'
-#	_make_def_HAVE_NASM='# HAVE_NASM = 1'
-#fi
+if test "$_have_x86" = yes ; then
+    CheckNASM
+fi
+
+if test "$_nasm" = yes ; then
+	DEFINES="$DEFINES -DUSE_NASM"
+	_def_nasm='#define USE_NASM'
+	_make_def_HAVE_NASM='HAVE_NASM = 1'
+else
+	_def_nasm='#undef USE_NASM'
+	_make_def_HAVE_NASM='# HAVE_NASM = 1'
+fi
 
 #
 # figure out installation directories
@@ -784,6 +805,7 @@ DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
 ATARIVOX="$SRC/emucore/rsynth"
+SCALER="$SRC/common/scaler"
 
 INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
 
@@ -802,22 +824,12 @@ case $_host_os in
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/unix"
 			INCLUDES="$INCLUDES -I$SRC/unix"
-
-			# Add OpenGL stuff
-			if test "$_build_gl" = yes ; then
-				DEFINES="$DEFINES -DDISPLAY_OPENGL"
-			fi
 			;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WIN32 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/win32"
 			INCLUDES="$INCLUDES -I$SRC/win32"
 			LIBS="$LIBS -lmingw32 -lwinmm"
-
-			# Add OpenGL stuff
-			if test "$_build_gl" = yes ; then
-				DEFINES="$DEFINES -DDISPLAY_OPENGL -DTEXTURES_ARE_LOST"
-			fi
 			;;
 		psp)
 			# -O3 is need for speed
@@ -872,6 +884,10 @@ case $_host_os in
 			;;
 esac
 
+if test "$_build_gl" = yes ; then
+	DEFINES="$DEFINES -DDISPLAY_OPENGL"
+fi
+
 if test "$_build_sound" = yes ; then
 	DEFINES="$DEFINES -DSOUND_SUPPORT"
 fi
@@ -903,9 +919,19 @@ if test "$_build_atarivox" = yes ; then
 	INCLUDES="$INCLUDES -I$ATARIVOX"
 fi
 
+# For now, always include scalers, but only when in OpenGL mode
+_build_scalers="no"
+if test "$_build_scalers" = yes ; then
+	if test "$_build_gl" = yes ; then
+		MODULES="$MODULES $SCALER"
+		INCLUDES="$INCLUDES -I$SCALER"
+	fi
+fi
+
 if test "$_build_profile" = no ; then
 	_build_profile=
 fi
+
 
 # 20051003 bkw: fix static Linux build.
 # No guarantee this will work for anyone other than me, and no
@@ -956,7 +982,7 @@ DATADIR := $_datadir
 PROFILE := $_build_profile
 
 $_make_def_HAVE_GCC3
-#$_make_def_HAVE_NASM
+$_make_def_HAVE_NASM
 
 INCLUDES += $INCLUDES
 OBJS += $OBJS

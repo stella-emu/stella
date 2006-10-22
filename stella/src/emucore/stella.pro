@@ -11524,7 +11524,6 @@
 "Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox)"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.Rarity" "Rare"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "8c136e97c0a4af66da4a249561ed17db"
@@ -18607,7 +18606,10 @@
 
 "Cartridge.MD5" "e600f5e98a20fafa47676198efe6834d"
 "Cartridge.Name" "Gyruss (1984) (Parker Bros) (PAL) [!]"
-"Display.Phosphor" "Yes"
+"Cartridge.Type" "E0"
+"Display.Format" "PAL"
+"Display.Height" "250"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "e609e8a007127b8fcff79ffc380da6b1"

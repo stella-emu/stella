@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.33 2006-10-16 01:08:59 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.34 2006-10-22 18:58:45 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -32,12 +32,15 @@ class GUI::Font;
 #include "GuiUtils.hxx"
 #include "FrameBuffer.hxx"
 
+#ifdef SCALER_SUPPORT
+  #include "scaler.hxx"
+#endif
 
 /**
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.33 2006-10-16 01:08:59 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.34 2006-10-22 18:58:45 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -237,7 +240,8 @@ class FrameBufferGL : public FrameBuffer
     SDL_Surface* myBaseTexture;
     SDL_Surface* myScaledTexture;
 
-    // Points to the current texture data, which is one of myBaseTexture or myScaledTexture
+    // Points to the current texture data, which is one of
+    // myBaseTexture or myScaledTexture
     SDL_Surface* myCurrentTexture;
 
     SDL_Rect myQuadRect;
@@ -281,6 +285,10 @@ class FrameBufferGL : public FrameBuffer
 
     // Indicates if the OpenGL functions have been properly loaded
     static bool myFuncsLoaded;
+
+  #ifdef SCALER_SUPPORT
+    ScalerProc *myScalerProc;
+  #endif
 };
 
 #endif  // DISPLAY_OPENGL

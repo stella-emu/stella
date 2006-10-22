@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.42 2006-03-27 12:52:19 stephena Exp $
+// $Id: OSystem.hxx,v 1.43 2006-10-22 18:58:46 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -26,6 +26,7 @@ class CommandMenu;
 class Launcher;
 class Debugger;
 class CheatManager;
+class VideoDialog;
 
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
@@ -44,10 +45,13 @@ class CheatManager;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.42 2006-03-27 12:52:19 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.43 2006-10-22 18:58:46 stephena Exp $
 */
 class OSystem
 {
+  friend class EventHandler;
+  friend class VideoDialog;
+
   public:
     /**
       Create a new OSystem abstract class
@@ -66,25 +70,11 @@ class OSystem
 
   public:
     /**
-      Adds the specified eventhandler to the system.
-
-      @param eventhandler The eventhandler to add 
-    */
-    void attach(EventHandler* eventhandler) { myEventHandler = eventhandler; }
-
-    /**
       Adds the specified settings object to the system.
 
       @param settings The settings object to add 
     */
     void attach(Settings* settings) { mySettings = settings; }
-
-    /**
-      Adds the specified game properties set to the system.
-
-      @param propset The properties set to add 
-    */
-    void attach(PropertiesSet* propset) { myPropSet = propset; }
 
     /**
       Get the event handler of the system
@@ -201,7 +191,7 @@ class OSystem
 
       @return  The video framerate currently in use
     */
-    uInt32 frameRate() const { return myDisplayFrameRate; }
+    inline uInt32 frameRate() const { return myDisplayFrameRate; }
 
     /**
       Return the default directory for storing data.
@@ -245,23 +235,9 @@ class OSystem
     const string& romFile() const { return myRomFile; }
 
     /**
-      Creates the various framebuffers/renderers available in this system
-      (for now, that means either 'software' or 'opengl').
-
-      @return Success or failure of the framebuffer creation
-    */
-    bool createFrameBuffer(bool showmessage = false);
-
-    /**
       Switches between software and OpenGL framebuffer modes.
     */
     void toggleFrameBuffer();
-
-    /**
-      Creates the various sound devices available in this system
-      (for now, that means either 'SDL' or 'Null').
-    */
-    void createSound();
 
     /**
       Creates a new game console from the specified romfile.
@@ -451,6 +427,20 @@ class OSystem
     GUI::Font* myConsoleFont;
 
   private:
+    /**
+      Creates the various framebuffers/renderers available in this system
+      (for now, that means either 'software' or 'opengl').
+
+      @return Success or failure of the framebuffer creation
+    */
+    bool createFrameBuffer(bool showmessage = false);
+
+    /**
+      Creates the various sound devices available in this system
+      (for now, that means either 'SDL' or 'Null').
+    */
+    void createSound();
+
     // Copy constructor isn't supported by this class so make it private
     OSystem(const OSystem&);
 

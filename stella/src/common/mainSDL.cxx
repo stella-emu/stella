@@ -13,10 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.65 2006-03-22 21:13:36 stephena Exp $
+// $Id: mainSDL.cxx,v 1.66 2006-10-22 18:58:45 stephena Exp $
 //============================================================================
-
-#include <sstream>
 
 #include <SDL.h>
 
@@ -64,48 +62,10 @@
   #include "CheatManager.hxx"
 #endif
 
-static void SetupProperties(PropertiesSet& set);
-static void Cleanup();
-
 // Pointer to the main parent osystem object or the null pointer
 OSystem* theOSystem = (OSystem*) NULL;
 
-
-/**
-  Setup the properties set by first checking for a user file,
-  then a system-wide file.
-*/
-void SetupProperties(PropertiesSet& set)
-{
-  // Several properties files can exist, so we attempt to load from
-  // all of them.  If the user has specified a properties file, use
-  // that one.  Otherwise, load both the system and user properties
-  // files, and have the user file override all entries from the
-  // system file.
-
-  ostringstream buf;
-
-  string altpro = theOSystem->settings().getString("pro");
-  if(altpro != "")
-  {
-    buf << "User game properties: \'" << altpro << "\'\n";
-    set.load(altpro, false);  // don't save alternate properties
-  }
-  else
-  {
-    const string& props = theOSystem->propertiesFile();
-    buf << "User game properties: \'" << props << "\'\n";
-    set.load(props, true);    // do save these properties
-  }
-
-  if(theOSystem->settings().getBool("showinfo"))
-    cout << buf.str() << endl;
-}
-
-
-/**
-  Does general Cleanup in case any operation failed (or at end of program).
-*/
+// Does general Cleanup in case any operation failed (or at end of program)
 void Cleanup()
 {
   if(theOSystem)
@@ -164,45 +124,19 @@ int main(int argc, char* argv[])
   // probably needed for defaults
   theOSystem->create();
 
-  // Create the event handler for the system
-  EventHandler handler(theOSystem);
-
-  // Create a properties set for us to use and set it up
-  PropertiesSet propertiesSet(theOSystem);
-  SetupProperties(propertiesSet);
-  theOSystem->attach(&propertiesSet);
-
   // Check to see if the 'listroms' argument was given
   // If so, list the roms and immediately exit
   if(theOSystem->settings().getBool("listrominfo"))
   {
-    propertiesSet.print();
+    theOSystem->propSet().print();
     Cleanup();
     return 0;
   }
 
   // Request that the SDL window be centered, if possible
+  // At some point, this should be properly integrated into the UI
   if(theOSystem->settings().getBool("center"))
     putenv("SDL_VIDEO_CENTERED=1");
-
-  // Create the framebuffer(s)
-  if(!theOSystem->createFrameBuffer())
-  {
-    cerr << "ERROR: Couldn't set up display.\n";
-    Cleanup();
-    return 0;
-  }
-
-  // Create the sound object
-  theOSystem->createSound();
-
-  // Setup the SDL joysticks (must be done after FrameBuffer is created)
-  theOSystem->eventHandler().setupJoysticks();
-
-#ifdef CHEATCODE_SUPPORT
-    // Create internal cheat database for all ROMs
-    theOSystem->cheat().loadCheatDatabase();
-#endif
 
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if
@@ -237,7 +171,7 @@ int main(int argc, char* argv[])
     }
 
     if(theOSystem->settings().getBool("debug"))
-      handler.enterDebugMode();
+      theOSystem->eventHandler().enterDebugMode();
 #endif
   }
   else

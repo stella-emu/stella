@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.165 2006-10-14 20:08:29 stephena Exp $
+// $Id: EventHandler.cxx,v 1.166 2006-10-22 18:58:46 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -73,9 +73,6 @@ EventHandler::EventHandler(OSystem* osystem)
     myPaddleThreshold(0)
 {
   int i, j, k, m;
-
-  // Add this eventhandler object to the OSystem
-  myOSystem->attach(this);
 
   // Create the streamer used for accessing eventstreams/recordings
   myEventStreamer = new EventStreamer(myOSystem);
@@ -220,8 +217,10 @@ void EventHandler::pause(bool status)
 {
   myPauseFlag = status;
 
-  myOSystem->frameBuffer().pause(myPauseFlag);
-  myOSystem->sound().mute(myPauseFlag);
+  if(&myOSystem->frameBuffer())
+    myOSystem->frameBuffer().pause(myPauseFlag);
+  if(&myOSystem->sound())
+    myOSystem->sound().mute(myPauseFlag);
 
   // Inform the OSystem of the change in pause
   myOSystem->pauseChanged(myPauseFlag);
@@ -234,16 +233,19 @@ void EventHandler::setupJoysticks()
 
 #ifdef JOYSTICK_SUPPORT
   // Keep track of how many Stelladaptors we've found
-  uInt8 saCount = 0;
+  int saCount = 0;
 
-  // First clear the joystick array
-  for(uInt32 i = 0; i < kNumJoysticks; i++)
+  // First clear the joystick array, closing previously opened sticks
+  for(int i = 0; i < kNumJoysticks; i++)
   {
+    if(ourJoysticks[i].stick && SDL_JoystickOpened(i))
+      SDL_JoystickClose(ourJoysticks[i].stick);
+
     ourJoysticks[i].stick = (SDL_Joystick*) NULL;
     ourJoysticks[i].type  = JT_NONE;
   }
 
-  // Initialize the joystick subsystem
+  // (Re)-Initialize the joystick subsystem
   if(showinfo)
     cout << "Joystick devices found:" << endl;
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))

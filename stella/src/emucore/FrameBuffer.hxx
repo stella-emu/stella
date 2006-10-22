@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.72 2006-10-16 01:08:59 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.73 2006-10-22 18:58:46 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -96,7 +96,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.72 2006-10-16 01:08:59 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.73 2006-10-22 18:58:46 stephena Exp $
 */
 class FrameBuffer
 {
@@ -138,7 +138,7 @@ class FrameBuffer
     */
     void showMessage(const string& message,
                      MessagePosition position = kBottomCenter,
-                     int color = kTextColor);
+                     int color = kTextColorHi);
 
     /**
       Hides any onscreen messages.
@@ -566,7 +566,7 @@ class FrameBuffer
     // from using the more advanced scalers
     enum {
       kUIScalerListSize = 6,
-      kTIAScalerListSize = 12
+      kTIAScalerListSize = 10
     };
     static Scaler ourUIScalers[kUIScalerListSize];
     static Scaler ourTIAScalers[kTIAScalerListSize];

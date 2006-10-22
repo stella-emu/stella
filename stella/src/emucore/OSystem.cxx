@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.72 2006-10-16 01:09:00 stephena Exp $
+// $Id: OSystem.cxx,v 1.73 2006-10-22 18:58:46 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -91,6 +91,9 @@ OSystem::~OSystem()
 #ifdef CHEATCODE_SUPPORT
   delete myCheatManager;
 #endif
+
+  delete myPropSet;
+  delete myEventHandler;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,7 +113,19 @@ bool OSystem::create()
 #endif
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = new CheatManager(this);
+  myCheatManager->loadCheatDatabase();
 #endif
+
+  // Create the event handler for the system
+  myEventHandler = new EventHandler(this);
+
+  // Create a properties set for us to use and set it up
+  myPropSet = new PropertiesSet(this);
+
+  // Create the sound object; the sound subsystem isn't actually
+  // opened until needed, so this is non-blocking (on those systems
+  // that only have a single sound device (no hardware mixing)
+  createSound();
 
   // Determine which features were conditionally compiled into Stella
 #ifdef DISPLAY_OPENGL
@@ -214,6 +229,9 @@ bool OSystem::createFrameBuffer(bool showmessage)
       break;
   }
 
+  // Setup the SDL joysticks (must be done after FrameBuffer is created)
+  myEventHandler->setupJoysticks();
+
   return true;
 }
 
@@ -306,15 +324,17 @@ bool OSystem::createConsole(const string& romfile)
     #ifdef CHEATCODE_SUPPORT
       myCheatManager->loadCheats(md5);
     #endif
+      setFramerate(60);  // We need to set framerate to see messages
+      myEventHandler->reset(EventHandler::S_EMULATE);
+      createFrameBuffer(false);
+      myFrameBuffer->setCursorState();
+      myConsole->initialize();  // Must be done *after* the framebuffer is created
+
       if(showmessage)
         myFrameBuffer->showMessage("New console created");
       if(mySettings->getBool("showinfo"))
         cout << "Game console created: " << myRomFile << endl;
 
-      myEventHandler->reset(EventHandler::S_EMULATE);
-      createFrameBuffer(false);
-      myFrameBuffer->setCursorState();
-      myConsole->initialize();  // Must be done *after* the framebuffer is created
       retval = true;
     }
     else

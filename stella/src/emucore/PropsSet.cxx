@@ -13,14 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.22 2006-09-06 21:51:15 stephena Exp $
+// $Id: PropsSet.cxx,v 1.23 2006-10-22 18:58:46 stephena Exp $
 //============================================================================
+
+#include <sstream>
 
 #include "OSystem.hxx"
 #include "GuiUtils.hxx"
 #include "DefProps.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet(OSystem* osystem)
@@ -28,6 +31,28 @@ PropertiesSet::PropertiesSet(OSystem* osystem)
     myRoot(NULL),
     mySize(0)
 {
+  // Several properties files can exist, so we attempt to load from
+  // all of them.  If the user has specified a properties file, use
+  // that one.  Otherwise, load both the system and user properties
+  // files, and have the user file override all entries from the
+  // system file.
+  ostringstream buf;
+
+  string altpro = myOSystem->settings().getString("pro");
+  if(altpro != "")
+  {
+    buf << "User game properties: \'" << altpro << "\'\n";
+    load(altpro, false);  // don't save alternate properties
+  }
+  else
+  {
+    const string& props = myOSystem->propertiesFile();
+    buf << "User game properties: \'" << props << "\'\n";
+    load(props, true);    // do save these properties
+  }
+
+  if(myOSystem->settings().getBool("showinfo"))
+    cout << buf.str() << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

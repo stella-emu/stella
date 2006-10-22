@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.64 2006-10-16 01:08:59 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.65 2006-10-22 18:58:45 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -30,6 +30,10 @@
 #include "OSystem.hxx"
 #include "Font.hxx"
 #include "GuiUtils.hxx"
+
+#ifdef SCALER_SUPPORT
+  #include "scaler.hxx"
+#endif
 
 // Maybe this code could be cleaner ...
 static void (APIENTRY* p_glClear)( GLbitfield );
@@ -82,6 +86,10 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
     myFSScaleFactor(1.0),
     myDirtyFlag(true)
 {
+#ifdef SCALER_SUPPORT
+  myScalerProc = 0;
+  InitScalers();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,6 +101,10 @@ FrameBufferGL::~FrameBufferGL()
     SDL_FreeSurface(myScaledTexture);
 
   p_glDeleteTextures(1, &myTextureID);
+
+#ifdef SCALER_SUPPORT
+  FreeScalers();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,16 +270,18 @@ void FrameBufferGL::setScaler(Scaler scaler)
       myQuadRect.w = myBaseDim.w;
       myQuadRect.h = myBaseDim.h;
       break;
-
+#ifdef SCALER_SUPPORT
     case kSCALE2X:
       myQuadRect.w = myBaseDim.w * 2;
       myQuadRect.h = myBaseDim.h * 2;
       cerr << "scaler: " << scaler.name << endl;
+      myScalerProc = AdvMame2x;
       break;
     case kSCALE3X:
       myQuadRect.w = myBaseDim.w * 3;
       myQuadRect.h = myBaseDim.h * 3;
       cerr << "scaler: " << scaler.name << endl;
+      myScalerProc = AdvMame3x;
       break;
     case kSCALE4X:
       myQuadRect.w = myBaseDim.w * 4;
@@ -279,16 +293,21 @@ void FrameBufferGL::setScaler(Scaler scaler)
       myQuadRect.w = myBaseDim.w * 2;
       myQuadRect.h = myBaseDim.h * 2;
       cerr << "scaler: " << scaler.name << endl;
+      myScalerProc = HQ2x;
       break;
     case kHQ3X:
       myQuadRect.w = myBaseDim.w * 3;
       myQuadRect.h = myBaseDim.h * 3;
       cerr << "scaler: " << scaler.name << endl;
+      myScalerProc = HQ3x;
       break;
     case kHQ4X:
       myQuadRect.w = myBaseDim.w * 4;
       myQuadRect.h = myBaseDim.h * 4;
       cerr << "scaler: " << scaler.name << endl;
+      break;
+#endif
+    default:
       break;
   }
 }
@@ -408,15 +427,18 @@ void FrameBufferGL::drawMediaSource()
     }
   }
 
+#ifdef SCALER_SUPPORT
   // At this point, myBaseTexture will be filled with a valid TIA image
   // Now we check if post-processing scalers should be applied
   // In any event, myCurrentTexture will point to the valid data to be
   // rendered to the screen
-/*
-  switch(myScalerType)
+  if(myDirtyFlag && myScalerProc)
   {
-    case 
-*/
+    myScalerProc((uInt8*) myBaseTexture->pixels,   myBaseTexture->pitch,
+                 (uInt8*) myScaledTexture->pixels, myScaledTexture->pitch,
+                 myBaseTexture->w, myBaseTexture->h);
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -497,11 +519,11 @@ void FrameBufferGL::toggleFilter()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
-/*
+#ifndef SCALER_SUPPORT
   uInt16* buffer = (uInt16*) myCurrentTexture->pixels + y * myCurrentTexture->w + x;
   while(x++ <= x2)
     *buffer++ = (uInt16) myDefPalette[color];
-*/
+#else
   SDL_Rect tmp;
 
   // Horizontal line
@@ -510,19 +532,20 @@ void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
   tmp.w = (x2 - x + 1) * myScaleLevel;
   tmp.h = myScaleLevel;
   SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
-/*
+#ifndef SCALER_SUPPORT
   uInt16* buffer = (uInt16*) myCurrentTexture->pixels + y * myCurrentTexture->w + x;
   while(y++ <= y2)
   {
     *buffer = (uInt16) myDefPalette[color];
     buffer += myCurrentTexture->w;
   }
-*/
+#else
   SDL_Rect tmp;
 
   // Vertical line
@@ -531,7 +554,7 @@ void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
   tmp.w = myScaleLevel;
   tmp.h = (y2 - y + 1) * myScaleLevel;
   SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
-
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -546,14 +569,6 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   tmp.w = w * myScaleLevel;
   tmp.h = h * myScaleLevel;
   SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
-/*
-cerr << "FrameBufferGL::fillRect:" << endl
-     << "x = " << tmp.x << endl
-     << "y = " << tmp.y << endl
-     << "w = " << tmp.w << endl
-     << "h = " << tmp.h << endl
-     << endl;
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -647,7 +662,6 @@ void FrameBufferGL::cls()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createTextures()
 {
-cerr << "FrameBufferGL::createTextures()\n";
   if(myBaseTexture)
   {
     SDL_FreeSurface(myBaseTexture);
@@ -661,12 +675,14 @@ cerr << "FrameBufferGL::createTextures()\n";
   myCurrentTexture = NULL;
   p_glDeleteTextures(1, &myTextureID);
 
+/*
 cerr << "texture dimensions (before power of 2 scaling):" << endl
      << "myBaseTexture->w = " << myBaseDim.w << endl
      << "myBaseTexture->h = " << myBaseDim.h << endl
      << "myScaledTexture->w = " << myQuadRect.w << endl
      << "myScaledTexture->h = " << myQuadRect.h << endl
      << endl;
+*/
 
   uInt32 w1 = power_of_two(myBaseDim.w);
   uInt32 h1 = power_of_two(myBaseDim.h);
@@ -740,7 +756,6 @@ cerr << "texture dimensions (before power of 2 scaling):" << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
 {
-cerr << "FrameBufferGL::setDimensions()\n";
   // We always know the initial image width and height
   // We have to determine final image dimensions as well as screen dimensions
   myImageDim.x = 0;
