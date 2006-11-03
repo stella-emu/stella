@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.66 2006-11-03 16:50:16 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.67 2006-11-03 16:55:44 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -320,8 +320,8 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
   SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-  SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
-  SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 1 );
+//  SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+//  SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 1 );
 
   // Set the screen coordinates
   GLdouble orthoWidth  = 0.0;
