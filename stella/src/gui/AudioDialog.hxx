@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.hxx,v 1.7 2006-02-22 17:38:04 stephena Exp $
+// $Id: AudioDialog.hxx,v 1.8 2006-11-03 16:50:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,7 +49,10 @@ class AudioDialog : public Dialog
     SliderWidget*     myVolumeSlider;
     StaticTextWidget* myVolumeLabel;
     PopUpWidget*      myFragsizePopup;
+    PopUpWidget*      myFreqPopup;
+    PopUpWidget*      myTiaFreqPopup;
     CheckboxWidget*   mySoundTypeCheckbox;
+    CheckboxWidget*   myClipVolumeCheckbox;
     CheckboxWidget*   mySoundEnableCheckbox;
 
   private:

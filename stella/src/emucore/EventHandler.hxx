@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.88 2006-05-15 12:24:09 stephena Exp $
+// $Id: EventHandler.hxx,v 1.89 2006-11-03 16:50:17 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -114,7 +114,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.88 2006-05-15 12:24:09 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.89 2006-11-03 16:50:17 stephena Exp $
 */
 class EventHandler
 {
@@ -138,6 +138,11 @@ class EventHandler
       @return The event object
     */
     Event* event() { return myEvent; }
+
+    /**
+      Initialize state of this eventhandler.
+    */
+    void initialize();
 
     /**
       Set up any joysticks on the system.  This must be called *after* the

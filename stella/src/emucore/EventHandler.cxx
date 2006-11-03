@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.166 2006-10-22 18:58:46 stephena Exp $
+// $Id: EventHandler.cxx,v 1.167 2006-11-03 16:50:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -69,6 +69,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myQuitFlag(false),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
+    myFryingFlag(false),
     myPaddleMode(0),
     myPaddleThreshold(0)
 {
@@ -120,23 +121,6 @@ EventHandler::EventHandler(OSystem* osystem)
   ourMessageTable[Event::ConsoleLeftDifficultyB]  = "Left Difficulty B";
   ourMessageTable[Event::ConsoleRightDifficultyA] = "Right Difficulty A";
   ourMessageTable[Event::ConsoleRightDifficultyB] = "Right Difficulty B";
-
-  // Make sure the event/action mappings are correctly set,
-  // and fill the ActionList structure with valid values
-  setSDLMappings();
-  setKeymap();
-  setJoymap();
-  setJoyAxisMap();
-  setJoyHatMap();
-  setActionMappings(kEmulationMode);
-  setActionMappings(kMenuMode);
-
-  myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
-
-  setPaddleMode(myOSystem->settings().getInt("paddle"), false);
-  setPaddleThreshold(myOSystem->settings().getInt("pthresh"));
-
-  myFryingFlag = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,6 +139,25 @@ EventHandler::~EventHandler()
     }
   }
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::initialize()
+{
+  // Make sure the event/action mappings are correctly set,
+  // and fill the ActionList structure with valid values
+  setSDLMappings();
+  setKeymap();
+  setJoymap();
+  setJoyAxisMap();
+  setJoyHatMap();
+  setActionMappings(kEmulationMode);
+  setActionMappings(kMenuMode);
+
+  myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
+
+  setPaddleMode(myOSystem->settings().getInt("paddle"), false);
+  setPaddleThreshold(myOSystem->settings().getInt("pthresh"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

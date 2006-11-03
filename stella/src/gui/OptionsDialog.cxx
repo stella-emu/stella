@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.40 2006-10-16 01:09:00 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.41 2006-11-03 16:50:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -120,7 +120,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myVideoDialog = new VideoDialog(myOSystem, parent, font, x, y, w, h);
 
-  w = 200; h = 110;
+  w = 200; h = 140;
   checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myAudioDialog = new AudioDialog(myOSystem, parent, font, x, y, w, h);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.73 2006-10-22 18:58:46 stephena Exp $
+// $Id: OSystem.cxx,v 1.74 2006-11-03 16:50:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -118,6 +118,7 @@ bool OSystem::create()
 
   // Create the event handler for the system
   myEventHandler = new EventHandler(this);
+  myEventHandler->initialize();
 
   // Create a properties set for us to use and set it up
   myPropSet = new PropertiesSet(this);

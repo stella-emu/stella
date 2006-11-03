@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: scaler.cxx,v 1.1 2006-10-22 18:58:46 stephena Exp $
+// $Id: scaler.cxx,v 1.2 2006-11-03 16:50:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2001-2006 The ScummVM project
 //============================================================================
 
+#include <assert.h>
 #include "intern.hxx"
 #include "scalebit.hxx"
 #include "scaler.hxx"
