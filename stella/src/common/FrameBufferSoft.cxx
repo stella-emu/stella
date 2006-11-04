@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.56 2006-10-22 18:58:45 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.57 2006-11-04 19:38:24 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -643,10 +643,10 @@ void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::enablePhosphor(bool enable)
+void FrameBufferSoft::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor   = enable;
-  myPhosphorBlend = myOSystem->settings().getInt("ppblend");
+  myPhosphorBlend = blend;
 
   if(myUsePhosphor)
   {

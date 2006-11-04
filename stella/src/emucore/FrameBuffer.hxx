@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.73 2006-10-22 18:58:46 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.74 2006-11-04 19:38:24 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -96,7 +96,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.73 2006-10-22 18:58:46 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.74 2006-11-04 19:38:24 stephena Exp $
 */
 class FrameBuffer
 {
@@ -443,7 +443,7 @@ class FrameBuffer
     /**
       Enable/disable phosphor effect.
     */
-    virtual void enablePhosphor(bool enable) = 0;
+    virtual void enablePhosphor(bool enable, int blend) = 0;
 
     /**
       Completely erase contents of the screen.

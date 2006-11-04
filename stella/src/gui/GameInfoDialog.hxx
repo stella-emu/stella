@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.16 2006-03-05 01:18:42 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.17 2006-11-04 19:38:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@ class PopUpWidget;
 class StaticTextWidget;
 class TabWidget;
 class Properties;
+class SliderWidget;
 
 #include "Array.hxx"
 #include "Dialog.hxx"
@@ -72,18 +73,25 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget* myRightController;
 
     // Display properties
-    PopUpWidget*    myFormat;
-    EditTextWidget* myXStart;
-    EditTextWidget* myWidth;
-    EditTextWidget* myYStart;
-    EditTextWidget* myHeight;
-    PopUpWidget*    myPhosphor;
-    PopUpWidget*    myHmoveBlanks;
+    PopUpWidget*      myFormat;
+    EditTextWidget*   myXStart;
+    EditTextWidget*   myWidth;
+    EditTextWidget*   myYStart;
+    EditTextWidget*   myHeight;
+    PopUpWidget*      myPhosphor;
+    SliderWidget*     myPPBlend;
+    StaticTextWidget* myPPBlendLabel;
+    PopUpWidget*      myHmoveBlanks;
 
     // Structure used for cartridge and controller types
     struct PropType {
       const char* name;
       const char* comparitor;
+    };
+
+    enum {
+      kPhosphorChanged = 'PPch',
+      kPPBlendChanged  = 'PBch'
     };
 
     /** Game properties for currently loaded ROM */

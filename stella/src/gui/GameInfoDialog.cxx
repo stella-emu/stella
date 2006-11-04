@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.25 2006-05-04 17:45:25 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.26 2006-11-04 19:38:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -243,10 +243,23 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use Phosphor:", kTextAlignLeft);
   myPhosphor = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                               pwidth, lineHeight, "", 0, 0);
+                               pwidth, lineHeight, "", 0, kPhosphorChanged);
   myPhosphor->appendEntry("Yes", 1);
   myPhosphor->appendEntry("No", 2);
   wid.push_back(myPhosphor);
+
+  myPPBlend = new SliderWidget(myTab, font, xpos + lwidth + myPhosphor->getWidth() + 10,
+                               ypos, 30, lineHeight, "Blend: ",
+                               font.getStringWidth("Blend: "),
+                               kPPBlendChanged);
+  myPPBlend->setMinValue(1); myPPBlend->setMaxValue(100);
+  wid.push_back(myPPBlend);
+
+  myPPBlendLabel = new StaticTextWidget(myTab, font,
+                                        xpos + lwidth + myPhosphor->getWidth() + 10 + \
+                                        myPPBlend->getWidth() + 4, ypos+1,
+                                        15, fontHeight, "", kTextAlignLeft);
+  myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
@@ -405,13 +418,23 @@ void GameInfoDialog::loadConfig()
   s = myGameProperties->get(Display_Height);
   myHeight->setEditString(s);
 
+  myPPBlend->setEnabled(false);
+  myPPBlendLabel->setEnabled(false);
   s = myGameProperties->get(Display_Phosphor);
   if(s == "YES")
+  {
     myPhosphor->setSelectedTag(1);
+    myPPBlend->setEnabled(true);
+    myPPBlendLabel->setEnabled(true);
+  }
   else if(s == "NO")
     myPhosphor->setSelectedTag(2);
   else
     myPhosphor->setSelectedTag(0);
+
+  s = myGameProperties->get(Display_PPBlend);
+  myPPBlend->setValue(atoi(s.c_str()));
+  myPPBlendLabel->setLabel(s);
 
   s = myGameProperties->get(Emulation_HmoveBlanks);
   if(s == "YES")
@@ -519,6 +542,9 @@ void GameInfoDialog::saveConfig()
   s = (tag == 1) ? "Yes" : "No";
   myGameProperties->set(Display_Phosphor, s);
 
+  s = myPPBlendLabel->getLabel();
+  myGameProperties->set(Display_PPBlend, s);
+
   tag = myHmoveBlanks->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
   myGameProperties->set(Emulation_HmoveBlanks, s);
@@ -534,6 +560,18 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
       instance()->eventHandler().saveProperties();
       close();
+      break;
+
+    case kPhosphorChanged:
+    {
+      bool status = myPhosphor->getSelectedTag() == 1 ? true : false;
+      myPPBlend->setEnabled(status);
+      myPPBlendLabel->setEnabled(status);
+      break;
+    }
+
+    case kPPBlendChanged:
+      myPPBlendLabel->setValue(myPPBlend->getValue());
       break;
 
     default:

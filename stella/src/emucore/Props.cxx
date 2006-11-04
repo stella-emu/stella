@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.12 2006-03-05 01:18:42 stephena Exp $
+// $Id: Props.cxx,v 1.13 2006-11-04 19:38:24 stephena Exp $
 //============================================================================
 
 #include <cctype>
 #include <algorithm>
+#include <sstream>
 
 #include "GuiUtils.hxx"
 #include "Props.hxx"
@@ -71,6 +72,16 @@ void Properties::set(PropertyType key, const string& value)
       {
         transform(myProperties[key].begin(), myProperties[key].end(),
                   myProperties[key].begin(), (int(*)(int)) toupper);
+        break;
+      }
+
+      case Display_PPBlend:
+      {
+        int blend = atoi(myProperties[key].c_str());
+        if(blend < 0 || blend > 100) blend = 77;
+        ostringstream buf;
+        buf << blend;
+        myProperties[key] = buf.str();
         break;
       }
 
@@ -282,6 +293,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "34",          // Display.YStart
   "210",         // Display.Height
   "NO",          // Display.Phosphor
+  "77",          // Display.PPBlend
   "YES"          // Emulation.HmoveBlanks
 };
 
@@ -307,5 +319,6 @@ const char* Properties::ourPropertyNames[LastPropType] = {
   "Display.YStart",
   "Display.Height",
   "Display.Phosphor",
+  "Display.PPBlend",
   "Emulation.HmoveBlanks"
 };

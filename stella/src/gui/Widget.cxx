@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.44 2006-05-04 17:45:25 stephena Exp $
+// $Id: Widget.cxx,v 1.45 2006-11-04 19:38:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -363,6 +363,9 @@ void ButtonWidget::handleMouseLeft(int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ButtonWidget::handleEvent(Event::Type e)
 {
+  if(!isEnabled())
+    return false;
+
   switch(e)
   {
     case Event::UISelect:
@@ -580,6 +583,9 @@ void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SliderWidget::handleEvent(Event::Type e)
 {
+  if(!isEnabled())
+    return false;
+
   switch(e)
   {
     case Event::UILeft:

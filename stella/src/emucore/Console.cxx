@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.96 2006-10-22 18:58:46 stephena Exp $
+// $Id: Console.cxx,v 1.97 2006-11-04 19:38:24 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -340,6 +340,7 @@ void Console::togglePalette(const string& palette)
 void Console::togglePhosphor()
 {
   const string& phosphor = myProperties.get(Display_Phosphor);
+  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
   bool enable;
   if(phosphor == "YES")
   {
@@ -354,7 +355,7 @@ void Console::togglePhosphor()
     myOSystem->frameBuffer().showMessage("Phosphor effect enabled");
   }
 
-  myOSystem->frameBuffer().enablePhosphor(enable);
+  myOSystem->frameBuffer().enablePhosphor(enable, blend);
   setPalette();
 }
 
@@ -448,7 +449,8 @@ void Console::initializeVideo()
                                       myMediaSource->width() << 1,
                                       myMediaSource->height());
   bool enable = myProperties.get(Display_Phosphor) == "YES";
-  myOSystem->frameBuffer().enablePhosphor(enable);
+  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
+  myOSystem->frameBuffer().enablePhosphor(enable, blend);
   setPalette();
 }
 
@@ -744,6 +746,10 @@ void Console::setDeveloperProperties()
   s = settings.getString("pp");
   if(s != "")
     myProperties.set(Display_Phosphor, s);
+
+  s = settings.getString("ppblend");
+  if(s != "")
+    myProperties.set(Display_PPBlend, s);
 
   s = settings.getString("hmove");
   if(s != "")

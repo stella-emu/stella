@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.35 2006-11-03 16:50:16 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.36 2006-11-04 19:38:24 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -40,7 +40,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.35 2006-11-03 16:50:16 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.36 2006-11-04 19:38:24 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -215,7 +215,7 @@ class FrameBufferGL : public FrameBuffer
     /**
       Enable/disable phosphor effect.
     */
-    virtual void enablePhosphor(bool enable);
+    virtual void enablePhosphor(bool enable, int blend);
 
     /**
       Completely erase contents of the screen.

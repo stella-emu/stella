@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.12 2006-03-19 20:57:55 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.13 2006-11-04 19:38:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,13 +32,6 @@ class CheckboxWidget;
 #include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "bspf.hxx"
-
-enum {
-  kRendererChanged    = 'VDrd',
-  kAspectRatioChanged = 'VDar',
-  kFrameRateChanged   = 'VDfr',
-  kZoomChanged        = 'VDzm'
-};
 
 class VideoDialog : public Dialog
 {
@@ -61,6 +54,13 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myFullscreenCheckbox;
     CheckboxWidget*   myUseDeskResCheckbox;
     CheckboxWidget*   myTiaDefaultsCheckbox;
+
+    enum {
+      kRendererChanged    = 'VDrd',
+      kAspectRatioChanged = 'VDar',
+      kFrameRateChanged   = 'VDfr',
+      kZoomChanged        = 'VDzm'
+    };
 
   private:
     void loadConfig();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.67 2006-11-03 16:55:44 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.68 2006-11-04 19:38:24 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -640,10 +640,10 @@ void FrameBufferGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::enablePhosphor(bool enable)
+void FrameBufferGL::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor   = enable;
-  myPhosphorBlend = myOSystem->settings().getInt("ppblend");
+  myPhosphorBlend = blend;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

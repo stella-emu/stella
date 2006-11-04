@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.8 2006-03-19 00:46:04 stephena Exp $
+// $Id: Props.hxx,v 1.9 2006-11-04 19:38:24 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -42,6 +42,7 @@ enum PropertyType {
   Display_YStart,
   Display_Height,
   Display_Phosphor,
+  Display_PPBlend,
   Emulation_HmoveBlanks,
   LastPropType
 };
@@ -55,7 +56,7 @@ enum PropertyType {
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.8 2006-03-19 00:46:04 stephena Exp $
+  @version $Id: Props.hxx,v 1.9 2006-11-04 19:38:24 stephena Exp $
 */
 class Properties
 {

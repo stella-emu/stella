@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.43 2006-05-05 18:00:51 stephena Exp $
+// $Id: ListWidget.cxx,v 1.44 2006-11-04 19:38:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -302,7 +302,7 @@ bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ListWidget::handleEvent(Event::Type e)
 {
-  if(_editMode)
+  if(!isEnabled() || _editMode)
     return false;
 
   bool handled = true;

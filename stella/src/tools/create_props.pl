@@ -27,7 +27,8 @@ my %proptype = (
 "Display.YStart"          => 17,
 "Display.Height"          => 18,
 "Display.Phosphor"        => 19,
-"Emulation.HmoveBlanks"   => 20
+"Display.PPBlend"         => 20,
+"Emulation.HmoveBlanks"   => 21
 );
 
 my @prop_defaults = (
@@ -51,6 +52,7 @@ my @prop_defaults = (
   "34",
   "210",
   "NO",
+  "77",
   "YES"
 );
 

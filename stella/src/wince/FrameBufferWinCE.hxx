@@ -68,7 +68,7 @@ class FrameBufferWinCE : public FrameBuffer
     virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
     virtual void translateCoords(Int32* x, Int32* y);
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-	virtual void enablePhosphor(bool enable)  { return; };
+	virtual void enablePhosphor(bool enable, int blend)  { return; };
     virtual uInt32 lineDim();
 	void wipescreen(void);
 	virtual void cls() { return; };
