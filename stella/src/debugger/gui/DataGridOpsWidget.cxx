@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridOpsWidget.cxx,v 1.4 2006-05-04 17:45:23 stephena Exp $
+// $Id: DataGridOpsWidget.cxx,v 1.5 2006-11-06 00:52:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,8 +34,10 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
     _shiftLeftButton(NULL),
     _shiftRightButton(NULL)
 {
-  const int bwidth  = _font->getMaxCharWidth() * 3,
-            bheight = _font->getFontHeight() + 2,
+  _type = kDataGridOpsWidget;
+
+  const int bwidth  = _font->getMaxCharWidth() * 4,
+            bheight = _font->getFontHeight() + 3,
             space = 6;
   int xpos, ypos;
 
@@ -70,8 +72,8 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
                                        ">>", kDGShiftRCmd);
 
   // Calculate real dimensions
-  _w = xpos + bwidth;
-  _h = ypos + bheight;
+  _w = 2 * (bwidth+space);
+  _h = 4 * (bheight+space);
 
   // We don't enable the buttons until the DataGridWidget is attached
   // Don't call setEnabled(false), since that does an immediate redraw

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.7 2006-06-09 02:45:11 urchlay Exp $
+// $Id: RamWidget.cxx,v 1.8 2006-11-06 00:52:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,6 +49,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     myUndoAddress(-1),
     myUndoValue(-1)
 {
+  _type = kRamWidget;
+
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),

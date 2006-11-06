@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.87 2006-11-04 19:38:24 stephena Exp $
+// $Id: Settings.cxx,v 1.88 2006-11-06 00:52:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -82,6 +82,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("modtime", "");  // romdir last modification time
 
   setInternal("tiadefaults", "false");
+  setInternal("autoslot", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

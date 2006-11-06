@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.89 2006-11-03 16:50:17 stephena Exp $
+// $Id: EventHandler.hxx,v 1.90 2006-11-06 00:52:03 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -114,7 +114,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.89 2006-11-03 16:50:17 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.90 2006-11-06 00:52:03 stephena Exp $
 */
 class EventHandler
 {
@@ -518,7 +518,7 @@ class EventHandler
     inline bool isJitter(int paddle, int value);
 
     void saveState();
-    void changeState();
+    void changeState(bool show = true);
     void loadState();
     void takeSnapshot();
     void setEventState(State state);

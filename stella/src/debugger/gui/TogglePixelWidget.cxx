@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TogglePixelWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
+// $Id: TogglePixelWidget.cxx,v 1.4 2006-11-06 00:52:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,6 +32,8 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   : ToggleWidget(boss, font, x, y, cols, rows),
     _pixelColor(kBGColor)
 {
+  _type = kTogglePixelWidget;
+
   _rowHeight = font.getLineHeight();
   _colWidth  = 15;
 

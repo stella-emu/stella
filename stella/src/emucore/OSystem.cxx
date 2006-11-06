@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.74 2006-11-03 16:50:18 stephena Exp $
+// $Id: OSystem.cxx,v 1.75 2006-11-06 00:52:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -44,6 +44,7 @@
 #include "ConsoleFont.hxx"
 #include "bspf.hxx"
 #include "OSystem.hxx"
+#include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
@@ -63,6 +64,36 @@ OSystem::OSystem()
     myFont(NULL),
     myConsoleFont(NULL)
 {
+#if 0
+  // Debugging info for the GUI widgets
+  cerr << "  kStaticTextWidget   = " << kStaticTextWidget   << endl;
+  cerr << "  kEditTextWidget     = " << kEditTextWidget     << endl;
+  cerr << "  kButtonWidget       = " << kButtonWidget       << endl;
+  cerr << "  kCheckboxWidget     = " << kCheckboxWidget     << endl;
+  cerr << "  kSliderWidget       = " << kSliderWidget       << endl;
+  cerr << "  kListWidget         = " << kListWidget         << endl;
+  cerr << "  kScrollBarWidget    = " << kScrollBarWidget    << endl;
+  cerr << "  kPopUpWidget        = " << kPopUpWidget        << endl;
+  cerr << "  kTabWidget          = " << kTabWidget	        << endl;
+  cerr << "  kEventMappingWidget = " << kEventMappingWidget << endl;
+  cerr << "  kEditableWidget     = " << kEditableWidget     << endl;
+  cerr << "  kAudioWidget        = " << kAudioWidget        << endl;
+  cerr << "  kColorWidget        = " << kColorWidget        << endl;
+  cerr << "  kCpuWidget          = " << kCpuWidget          << endl;
+  cerr << "  kDataGridOpsWidget  = " << kDataGridOpsWidget  << endl;
+  cerr << "  kDataGridWidget     = " << kDataGridWidget     << endl;
+  cerr << "  kPromptWidget       = " << kPromptWidget       << endl;
+  cerr << "  kRamWidget          = " << kRamWidget          << endl;
+  cerr << "  kRomListWidget      = " << kRomListWidget      << endl;
+  cerr << "  kRomWidget          = " << kRomWidget          << endl;
+  cerr << "  kTiaInfoWidget      = " << kTiaInfoWidget      << endl;
+  cerr << "  kTiaOutputWidget    = " << kTiaOutputWidget    << endl;
+  cerr << "  kTiaWidget          = " << kTiaWidget          << endl;
+  cerr << "  kTiaZoomWidget      = " << kTiaZoomWidget      << endl;
+  cerr << "  kToggleBitWidget    = " << kToggleBitWidget    << endl;
+  cerr << "  kTogglePixelWidget  = " << kTogglePixelWidget  << endl;
+  cerr << "  kToggleWidget       = " << kToggleWidget       << endl;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

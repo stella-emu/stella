@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.3 2006-02-22 17:38:04 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.4 2006-11-06 00:52:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,6 +32,8 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int cols, int rows, int colchars)
   : ToggleWidget(boss, font, x, y, cols, rows)
 {
+  _type = kToggleBitWidget;
+
   _rowHeight = font.getLineHeight();
   _colWidth  = colchars * font.getMaxCharWidth() + 8;
 

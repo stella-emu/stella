@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.167 2006-11-03 16:50:17 stephena Exp $
+// $Id: EventHandler.cxx,v 1.168 2006-11-06 00:52:03 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2048,7 +2048,14 @@ void EventHandler::saveState()
   // Do a state save using the System
   buf.str("");
   if(myOSystem->console().system().saveState(md5, out))
+  {
     buf << "State " << myLSState << " saved";
+    if(myOSystem->settings().getBool("autoslot"))
+    {
+      buf << ", switching to slot " << (myLSState+1) % 10;
+      changeState(false);  // don't show a message for state change
+    }
+  }
   else
     buf << "Error saving state " << myLSState;
 
@@ -2064,15 +2071,17 @@ void EventHandler::saveState(int state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::changeState()
+void EventHandler::changeState(bool show)
 {
   myLSState = (myLSState + 1) % 10;
 
   // Print appropriate message
-  ostringstream buf;
-  buf << "Changed to slot " << myLSState;
-
-  myOSystem->frameBuffer().showMessage(buf.str());
+  if(show)
+  {
+    ostringstream buf;
+    buf << "Changed to slot " << myLSState;
+    myOSystem->frameBuffer().showMessage(buf.str());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

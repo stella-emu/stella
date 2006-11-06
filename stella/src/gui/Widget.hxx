@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.50 2006-05-04 17:45:25 stephena Exp $
+// $Id: Widget.hxx,v 1.51 2006-11-06 00:52:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,19 +50,33 @@ enum {
 };
 
 enum {
-  kStaticTextWidget = 'TEXT',
-  kEditTextWidget   = 'EDIT',
-  kButtonWidget     = 'BTTN',
-  kCheckboxWidget   = 'CHKB',
-  kSliderWidget     = 'SLDE',
-  kListWidget       = 'LIST',
-  kScrollBarWidget  = 'SCRB',
-  kPopUpWidget      = 'POPU',
-  kTabWidget        = 'TABW',
-  kPromptWidget     = 'PROM',
-  kDataGridWidget   = 'BGRI',
-  kToggleWidget     = 'TOGL',
-  kColorWidget      = 'COLR'
+  kStaticTextWidget   = 'TEXT',
+  kEditTextWidget     = 'EDIT',
+  kButtonWidget       = 'BTTN',
+  kCheckboxWidget     = 'CHKB',
+  kSliderWidget       = 'SLDE',
+  kListWidget         = 'LIST',
+  kScrollBarWidget    = 'SCRB',
+  kPopUpWidget        = 'POPU',
+  kTabWidget          = 'TABW',
+  kEventMappingWidget = 'EVMP',
+  kEditableWidget     = 'EDLE',
+  kAudioWidget        = 'AUDW',
+  kColorWidget        = 'COLR',
+  kCpuWidget          = 'CPUW',
+  kDataGridOpsWidget  = 'BGRO',
+  kDataGridWidget     = 'BGRI',
+  kPromptWidget       = 'PROM',
+  kRamWidget          = 'RAMW',
+  kRomListWidget      = 'ROML',
+  kRomWidget          = 'ROMW',
+  kTiaInfoWidget      = 'TIAI',
+  kTiaOutputWidget    = 'TIAO',
+  kTiaWidget          = 'TIAW',
+  kTiaZoomWidget      = 'TIAZ',
+  kToggleBitWidget    = 'TGLB',
+  kTogglePixelWidget  = 'TGLP',
+  kToggleWidget       = 'TOGL'
 };
 
 enum {
@@ -74,7 +88,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.50 2006-05-04 17:45:25 stephena Exp $
+  @version $Id: Widget.hxx,v 1.51 2006-11-06 00:52:04 stephena Exp $
 */
 class Widget : public GuiObject
 {

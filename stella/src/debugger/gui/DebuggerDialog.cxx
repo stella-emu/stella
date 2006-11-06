@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.15 2006-05-29 22:31:20 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.16 2006-11-06 00:52:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -232,7 +232,7 @@ void DebuggerDialog::addRomArea()
   myRam = new RamWidget(this, instance()->consoleFont(), xpos, ypos);
   addToFocusList(myRam->getFocusList());
 
-  xpos = r.left + 10 + myCpu->getWidth() + 20;
+  xpos = r.left + 10 + myCpu->getWidth() + 5;
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, instance()->consoleFont(),
                                                  xpos, 20);
 

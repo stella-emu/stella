@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.10 2006-03-05 01:18:41 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.11 2006-11-06 00:52:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,6 +41,8 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
     myMenu(NULL),
     myZoom(NULL)
 {
+  _type = kTiaOutputWidget;
+
   // Create context menu for commands
   myMenu = new ContextMenu(this, font);
 

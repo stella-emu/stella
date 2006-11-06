@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.6 2006-05-04 17:45:24 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.7 2006-11-06 00:52:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
     myMenu(NULL),
     myHighlightedItem(-1)
 {
+  _type = kRomListWidget;
+
   myMenu = new ContextMenu(this, font);
 
   StringList l;

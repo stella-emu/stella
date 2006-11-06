@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.16 2006-02-22 17:38:04 stephena Exp $
+// $Id: RomWidget.cxx,v 1.17 2006-11-06 00:52:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,6 +45,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     mySourceAvailable(false),
     myCurrentBank(-1)
 {
+  _type = kRomWidget;
+
   int w = 58 * font.getMaxCharWidth(),
       h = 0, xpos, ypos;
   StaticTextWidget* t;

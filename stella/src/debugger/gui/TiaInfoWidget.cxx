@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaInfoWidget.cxx,v 1.5 2006-03-23 16:16:32 stephena Exp $
+// $Id: TiaInfoWidget.cxx,v 1.6 2006-11-06 00:52:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,6 +35,8 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
+  _type = kTiaInfoWidget;
+
   x += 5;
   const int lineHeight = font.getLineHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("F. Cyc:");
