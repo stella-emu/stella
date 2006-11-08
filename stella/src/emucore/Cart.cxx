@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.20 2006-06-12 14:12:51 stephena Exp $
+// $Id: Cart.cxx,v 1.21 2006-11-08 00:09:53 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -43,10 +43,11 @@
 #include "CartUA.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
+#include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
-    const Properties& properties)
+    const Properties& properties, const Settings& settings)
 {
   Cartridge* cartridge = 0;
 
@@ -69,7 +70,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   else if(type == "4K")
     cartridge = new Cartridge4K(image);
   else if(type == "AR")
-    cartridge = new CartridgeAR(image, size);
+    cartridge = new CartridgeAR(image, size, settings.getBool("fastscbios"));
   else if(type == "DPC")
     cartridge = new CartridgeDPC(image, size);
   else if(type == "E0")

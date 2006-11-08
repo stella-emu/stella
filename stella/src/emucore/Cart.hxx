@@ -13,15 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
+// $Id: Cart.hxx,v 1.10 2006-11-08 00:09:53 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
 #define CARTRIDGE_HXX
 
 class Cartridge;
-class Properties;
 class System;
+class Properties;
+class Settings;
 
 #include <fstream>
 #include "bspf.hxx"
@@ -32,7 +33,7 @@ class System;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.9 2005-10-12 03:32:28 urchlay Exp $
+  @version $Id: Cart.hxx,v 1.10 2006-11-08 00:09:53 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -41,13 +42,14 @@ class Cartridge : public Device
       Create a new cartridge object allocated on the heap.  The
       type of cartridge created depends on the properties object.
 
-      @param image A pointer to the ROM image
-      @param size The size of the ROM image 
-      @param properties The properties associated with the game
-      @return Pointer to the new cartridge object allocated on the heap
+      @param image    A pointer to the ROM image
+      @param size     The size of the ROM image 
+      @param props    The properties associated with the game
+      @param settings The settings associated with the system
+      @return   Pointer to the new cartridge object allocated on the heap
     */
     static Cartridge* create(const uInt8* image, uInt32 size, 
-        const Properties& properties);
+        const Properties& props, const Settings& settings);
 
   public:
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.14 2005-12-23 20:48:50 stephena Exp $
+// $Id: CartAR.cxx,v 1.15 2006-11-08 00:09:53 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -27,7 +27,7 @@
 #include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size)
+CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size, bool fastbios)
     : my6502(0)
 {
   uInt32 i;
@@ -45,7 +45,7 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size)
   }
 
   // Initialize SC BIOS ROM
-  initializeROM();
+  initializeROM(fastbios);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -319,7 +319,7 @@ int CartridgeAR::bankCount()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::initializeROM()
+void CartridgeAR::initializeROM(bool fastbios)
 {
   static uInt8 dummyROMCode[] = {
     0xa5, 0xfa, 0x85, 0x80, 0x4c, 0x18, 0xf8, 0xff, 
@@ -360,6 +360,11 @@ void CartridgeAR::initializeROM()
     0x0, 0x9a, 0x4c, 0xfa, 0x0, 0xcd, 0xf8, 0xff, 
     0x4c
   };
+
+  // If fastbios is enabled, set the wait time between vertical bars
+  // to 0 (default is 8), which is stored at address 189 of the bios
+  if(fastbios)
+    dummyROMCode[189] = 0x0;
 
   uInt32 size = sizeof(dummyROMCode);
 

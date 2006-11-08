@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.hxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
+// $Id: CartAR.hxx,v 1.9 2006-11-08 00:09:53 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEAR_HXX
@@ -37,7 +37,7 @@ class Deserializer;
   and one bank of ROM.  All 6K of the RAM can be read and written.
 
   @author  Bradford W. Mott
-  @version $Id: CartAR.hxx,v 1.8 2005-07-30 16:58:22 urchlay Exp $
+  @version $Id: CartAR.hxx,v 1.9 2006-11-08 00:09:53 stephena Exp $
 */
 class CartridgeAR : public Cartridge
 {
@@ -45,10 +45,11 @@ class CartridgeAR : public Cartridge
     /**
       Create a new cartridge using the specified image and size
 
-      @param image Pointer to the ROM image
-      @param size The size of the ROM image
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
+      @param fastbios  Whether or not to quickly execute the BIOS code
     */
-    CartridgeAR(const uInt8* image, uInt32 size);
+    CartridgeAR(const uInt8* image, uInt32 size, bool fastbios);
 
     /**
       Destructor
@@ -140,7 +141,7 @@ class CartridgeAR : public Cartridge
     void loadIntoRAM(uInt8 load);
 
     // Sets up a "dummy" BIOS ROM in the ROM bank of the cartridge
-    void initializeROM();
+    void initializeROM(bool fastbios);
 
   private:
     // Pointer to the 6502 processor in the system

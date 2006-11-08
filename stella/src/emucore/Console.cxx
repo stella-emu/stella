@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.97 2006-11-04 19:38:24 stephena Exp $
+// $Id: Console.cxx,v 1.98 2006-11-08 00:09:53 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -207,7 +207,8 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   M6532* m6532 = new M6532(*this);
   TIA *tia = new TIA(*this, myOSystem->settings());
   tia->setSound(myOSystem->sound());
-  Cartridge* cartridge = Cartridge::create(image, size, myProperties);
+  Cartridge* cartridge = Cartridge::create(image, size, myProperties,
+                                           myOSystem->settings());
   if(!cartridge)
     return;
 

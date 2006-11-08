@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.88 2006-11-06 00:52:03 stephena Exp $
+// $Id: Settings.cxx,v 1.89 2006-11-08 00:09:53 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -83,6 +83,7 @@ Settings::Settings(OSystem* osystem)
 
   setInternal("tiadefaults", "false");
   setInternal("autoslot", "false");
+  setInternal("fastscbios", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
