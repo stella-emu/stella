@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Stella
+Comment=A multi-platform Atari 2600 emulator
+Exec=stella
+Icon=stella.xpm
+Terminal=false
+Type=Application
+Categories=Application;Emulator;Game;

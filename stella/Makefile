@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.28 2006-09-08 14:35:20 stephena Exp $
+## $Id: Makefile,v 1.29 2006-11-09 03:06:42 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -174,6 +174,8 @@ install: all
 	$(INSTALL) -c -m 644 "$(srcdir)/Announce.txt" "$(srcdir)/Changes.txt" "$(srcdir)/Copyright.txt" "$(srcdir)/License.txt" "$(srcdir)/README-SDL.txt" "$(srcdir)/Readme.txt" "$(srcdir)/Todo.txt" "$(srcdir)/docs/index.html" "$(srcdir)/docs/debugger.html" "$(DESTDIR)$(DOCDIR)/"
 	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -c -m 644 "$(srcdir)/docs/graphics/chucky_cheese.png" "$(srcdir)/docs/graphics/circuit.png" "$(srcdir)/docs/graphics/console.png" "$(srcdir)/docs/graphics/eventmapping.png" "$(srcdir)/docs/graphics/eventmapping_remap.png" "$(srcdir)/docs/graphics/jr_pacman.png" "$(srcdir)/docs/graphics/launcher_options_rom.png" "$(srcdir)/docs/graphics/launcher_options_snap.png" "$(srcdir)/docs/graphics/launcher.png" "$(srcdir)/docs/graphics/options_about.png" "$(srcdir)/docs/graphics/options_audio.png" "$(srcdir)/docs/graphics/options_gameinfo.png" "$(srcdir)/docs/graphics/options_help.png" "$(srcdir)/docs/graphics/options_video.png" "$(srcdir)/docs/graphics/pacman.png" "$(srcdir)/docs/graphics/rom_browser.png" "$(srcdir)/docs/graphics/secret_quest.png" "$(srcdir)/docs/graphics/space_invaders.png" "$(DESTDIR)$(DOCDIR)/graphics"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/applications"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/unix/stella.desktop" "$(DESTDIR)$(DATADIR)/applications"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/mini"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/large"
@@ -187,7 +189,10 @@ install-strip: install
 uninstall:
 	rm -f  "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
 	rm -rf "$(DESTDIR)$(DOCDIR)/"
+	rm -f  "$(DESTDIR)$(DATADIR)/applications/stella.desktop"
 	rm -f  "$(DESTDIR)$(DATADIR)/icons/stella.xpm"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/mini/stella.xpm"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/large/stella.xpm"
 
 # Special rule for Win32 icon stuff (there's probably a better way to do this ...)
 src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc
@@ -201,7 +206,7 @@ win32dist: stella$(EXEEXT)
 	cp Announce.txt Changes.txt Copyright.txt License.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
 	cp -r docs/*.html $(DISTNAME)/docs
 	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
-	cp /mingw/bin/SDL.dll /mingw/bin/libpng-3.dll $(DISTNAME)
+	cp /mingw/bin/SDL.dll $(DISTNAME)
 #	u2d $(DISTNAME)/*.txt
 #	zip $(DISTNAME)-win32.zip $(DISTNAME)
 

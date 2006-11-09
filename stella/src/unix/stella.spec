@@ -31,9 +31,6 @@ BuildRoot:      %_tmppath/%name-%version-%release-root
 BuildRequires:  SDL-devel
 BuildRequires:  MesaGLU-devel
 BuildRequires:  zlib-devel
-%if %enable_snapshot
-BuildRequires:  libpng-devel
-%endif
 
 %description
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most
@@ -105,19 +102,6 @@ title="Stella" \
 longtitle="A multi-platform Atari 2600 emulator" \
 section="More Applications/Emulators" \
 xdg="true"
-EOF
-# Todo - make this part of the main package
-install -d -m0755 %{buildroot}%{_datadir}/applications
-cat > %{buildroot}%{_datadir}/applications/%{name}.desktop << EOF
-[Desktop Entry]
-Encoding=UTF-8
-Name=Stella
-Comment=A multi-platform Atari 2600 emulator
-Exec=%{_bindir}/%{name}
-Icon=stella.xpm
-Terminal=false
-Type=Application
-Categories=Application;Emulator;
 EOF
 
 %clean

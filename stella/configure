@@ -16,7 +16,6 @@ CXXFLAGS="$CXXFLAGS $CPPFLAGS"
 # default lib behaviour yes/no/auto
 _opengl=auto
 _zlib=auto
-_png=auto
 
 # default option behaviour yes/no
 _build_gl=yes
@@ -281,9 +280,6 @@ Optional Libraries:
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
   --disable-zlib           disable zlib (compression) support [autodetect]
 
-  --with-png-prefix=DIR    Prefix where png is installed (optional)
-  --disable-png            disable png support [autodetect]
-
   --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
 
   --with-nasm-prefix=DIR   Prefix where nasm executable is installed (optional)
@@ -324,8 +320,6 @@ for ac_option in $@; do
       --disable-scalers)        _build_scalers=no    ;;
       --enable-zlib)            _zlib=yes            ;;
       --disable-zlib)           _zlib=no             ;;
-      --enable-png)             _png=yes             ;;
-      --disable-png)            _png=no              ;;
       --enable-nasm)            _nasm=yes            ;;
       --disable-nasm)           _nasm=no             ;;
       --enable-shared)          _build_static=no     ;;
@@ -337,11 +331,6 @@ for ac_option in $@; do
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ZLIB_CFLAGS="-I$_prefix/include"
         ZLIB_LIBS="-L$_prefix/lib"
-        ;;
-      --with-png-prefix=*)
-        _prefix=`echo $ac_option | cut -d '=' -f 2`
-        PNG_CFLAGS="-I$_prefix/include"
-        PNG_LIBS="-L$_prefix/lib"
         ;;
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
@@ -394,7 +383,6 @@ ppc-amigaos)
 psp)
 	_host_os=psp
 	_host_cpu=mips
-	_png=yes
 	# force psp sdl path 
 	_sdlpath=$(psp-config --pspdev-path)/psp/bin:$_sdlpath
 	PATH=$(psp-config --pspdev-path)/psp/bin:$(psp-config --pspdev-path)/bin:$PATH
@@ -402,7 +390,6 @@ psp)
 gp2x)
 	_host_os=gp2x
 	_host_cpu=arm
-	_png=yes
 	;;
 *)
 	guessed_host=`$_srcdir/config.guess`
@@ -653,21 +640,6 @@ fi
 echo "$_zlib"
 
 #
-# Check for PNG
-#
-echocheck "png"
-if test "$_png" = auto ; then
-	_png=no
-	cat > $TMPC << EOF
-#include <string.h>
-#include <png.h>
-int main(void) { return 0; }
-EOF
-	cc_check $LDFLAGS $CXXFLAGS && _png=yes
-fi
-echo "$_png"
-
-#
 # Check for GL
 #
 echocheck "opengl"
@@ -741,14 +713,8 @@ else
 fi
 
 if test "$_build_snapshot" = "yes" ; then
-	if test "$_png" = "yes" ; then
-		echo_n "   Snapshot support enabled"
-		echo
-	else
-		echo_n "   Snapshot support disabled (missing PNG library)"
-		echo
-		_build_snapshot=no
-	fi
+	echo_n "   Snapshot support enabled"
+	echo
 else
 	echo_n "   Snapshot support disabled"
 	echo
@@ -864,7 +830,7 @@ case $_host_os in
 			CXXFLAGS="-G0 -O2  -fno-rtti"
 			# 2 times -lc to avoid link problems. psp-gcc seems to to forget the first -lc wiile stdc++ linking
 			LIBS="-L `psp-config  --pspsdk-path`/lib -L`psp-config  --pspsdk-path`/../lib  "
-			LIBS="$LIBS -lSDLmain -lSDL -lGL -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpsprtc -lpspaudio -lc -lpspuser -lpspkernel -lpsppower -lpng -lz -lm -lg -lstdc++ -lc -lpsputility"
+			LIBS="$LIBS -lSDLmain -lSDL -lGL -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpsprtc -lpspaudio -lc -lpspuser -lpspkernel -lpsppower -lz -lm -lg -lstdc++ -lc -lpsputility"
 			# psp compiler
 			CC="psp-gcc"
 			LD="psp-gcc"
@@ -927,7 +893,6 @@ fi
 
 if test "$_build_snapshot" = yes ; then
 	DEFINES="$DEFINES -DSNAPSHOT_SUPPORT"
-	LIBS="$LIBS -lpng"
 fi
 
 if test "$_build_joystick" = yes ; then
@@ -956,22 +921,6 @@ if test "$_build_profile" = no ; then
 	_build_profile=
 fi
 
-
-# 20051003 bkw: fix static Linux build.
-# No guarantee this will work for anyone other than me, and no
-# guarantee it's needed by anyone but me (and Steve)...
-if test "$_host_os" = unix ; then
-  if test "$_build_static" = yes ; then
-    LIBS="`echo \"$LIBS\" | sed 's/-lz -lpng/-lpng -lz/'`"
-  fi
-fi
-
-# Works for GP2X which needs a static build.
-if test "$_host_os" = gp2x ; then
-  if test "$_build_static" = yes ; then
-    LIBS="`echo \"$LIBS\" | sed 's/-lz -lpng/-lpng -lz/'`"
-  fi
-fi
 
 echo "Creating config.mak"
 cat > config.mak << EOF

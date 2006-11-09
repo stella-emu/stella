@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.5 2005-06-28 23:18:15 stephena Exp $
+// $Id: Snapshot.hxx,v 1.6 2006-11-09 03:06:42 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
@@ -23,7 +23,7 @@
 
 class FrameBuffer;
 
-#include <png.h>
+#include <fstream>
 #include "bspf.hxx"
 
 class Snapshot
@@ -37,27 +37,15 @@ class Snapshot
     Snapshot(FrameBuffer& framebuffer);
 
     /**
-      The destructor.
-    */
-    ~Snapshot();
-
-    /**
-      This routine saves the current frame buffer to a PNG file.
+      Save the current frame buffer to a PNG file.
 
       @param filename  The filename of the PNG file
-
-      @string  The resulting string to print to the framebuffer
+      @return          The resulting string to print to the framebuffer
     */
     string savePNG(string filename);
 
   private:
-    static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
-
-    static void png_io_flush(png_structp ctx);
-
-    static void png_user_warn(png_structp ctx, png_const_charp str);
-
-    static void png_user_error(png_structp ctx, png_const_charp str);
+    static void writePNGChunk(ofstream& out, char* type, uInt8* data, int size);
 
   private:
     // The Framebuffer for the system

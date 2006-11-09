@@ -35,9 +35,8 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib
 SDLmain.lib
-libpng.lib
 "
-				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib zdll.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -86,9 +85,8 @@ libpng.lib
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib
 SDLmain.lib
-libpng.lib
 "
-				AdditionalDependencies="sdl.lib sdlmain.lib libpng.lib zdll.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
