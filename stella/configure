@@ -593,7 +593,7 @@ else
 			;;
 		os2*)
 			DEFINES="$DEFINES -DUNIX -DOS2"
-			LIBS="$LIBS -lpng -lz"
+			LIBS="$LIBS -lz"
 			_host_os=unix
 			;;
 		# given this is a shell script assume some type of unix
@@ -856,15 +856,8 @@ case $_host_os in
 			CXXFLAGS="-O2 -finline-functions -mtune=arm940t"
 			DEFINES="$DEFINES -DBSPF_GP2X -DGP2X -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/gp2x"
-
-			#If PNG_CFLAGS is specified, include it.
-			#This saves the user a step of having to specify CXXFLAGS beforehand.
-			if [ -n $PNG_CFLAGS  ]; then
-				INCLUDES="$INCLUDES $PNG_CFLAGS -I$SRC/gp2x"
-			else
-				INCLUDES="$INCLUDES -I$SRC/gp2x"
-			fi
-
+			INCLUDES="$INCLUDES -I$SRC/gp2x"
+			
 			_ranlib="arm-linux-ranlib"
 			_ar="arm-linux-ar cru"
 
