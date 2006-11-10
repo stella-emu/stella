@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.168 2006-11-06 00:52:03 stephena Exp $
+// $Id: EventHandler.cxx,v 1.169 2006-11-10 06:14:14 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2159,10 +2159,8 @@ void EventHandler::takeSnapshot()
   else
     filename = sspath + ".png";
 
-  // Now create a Snapshot object and save the PNG
-  Snapshot snapshot(myOSystem->frameBuffer());
-  string result = snapshot.savePNG(filename);
-  myOSystem->frameBuffer().showMessage(result);
+  // Now create a PNG snapshot
+  Snapshot::savePNG(myOSystem->frameBuffer(), filename);
 #else
   myOSystem->frameBuffer().showMessage("Snapshots unsupported");
 #endif

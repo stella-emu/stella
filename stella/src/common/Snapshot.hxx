@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.6 2006-11-09 03:06:42 stephena Exp $
+// $Id: Snapshot.hxx,v 1.7 2006-11-10 06:14:14 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
@@ -30,26 +30,15 @@ class Snapshot
 {
   public:
     /**
-      Create a new shapshot class for taking snapshots in PNG format.
-
-      @param framebuffer The SDL framebuffer containing the image data
-    */
-    Snapshot(FrameBuffer& framebuffer);
-
-    /**
       Save the current frame buffer to a PNG file.
 
-      @param filename  The filename of the PNG file
-      @return          The resulting string to print to the framebuffer
+      @param framebuffer The framebuffer containing the image data
+      @param filename    The filename of the PNG file
     */
-    string savePNG(string filename);
+    static void savePNG(FrameBuffer& framebuffer, const string& filename);
 
   private:
     static void writePNGChunk(ofstream& out, char* type, uInt8* data, int size);
-
-  private:
-    // The Framebuffer for the system
-    FrameBuffer& myFrameBuffer;
 };
 
 #endif  // SNAPSHOT_SUPPORT

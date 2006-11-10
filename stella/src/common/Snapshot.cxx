@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.11 2006-11-09 03:06:42 stephena Exp $
+// $Id: Snapshot.cxx,v 1.12 2006-11-10 06:14:14 stephena Exp $
 //============================================================================
 
 #ifdef SNAPSHOT_SUPPORT
@@ -26,15 +26,7 @@
 #include "Snapshot.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Snapshot::Snapshot(FrameBuffer& framebuffer)
-  : myFrameBuffer(framebuffer)
-{
-  // Make sure we have a 'clean' image, with no onscreen messages
-  myFrameBuffer.hideMessage();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Snapshot::savePNG(string filename)
+void Snapshot::savePNG(FrameBuffer& framebuffer, const string& filename)
 {
   uInt8* buffer  = (uInt8*) NULL;
   uInt8* compmem = (uInt8*) NULL;
@@ -42,10 +34,13 @@ string Snapshot::savePNG(string filename)
 
   try
   {
+    // Make sure we have a 'clean' image, with no onscreen messages
+    framebuffer.hideMessage();
+
     // Get actual image dimensions. which are not always the same
     // as the framebuffer dimensions
-    int width  = myFrameBuffer.imageWidth();
-    int height = myFrameBuffer.imageHeight();
+    int width  = framebuffer.imageWidth();
+    int height = framebuffer.imageHeight();
 
     out.open(filename.c_str(), ios_base::binary);
     if(!out)
@@ -78,9 +73,9 @@ string Snapshot::savePNG(string filename)
     uInt8* buf_ptr = buffer;
     for(int row = 0; row < height; row++)
     {
-      *buf_ptr++ = 0;                        // first byte of row is filter type
-      myFrameBuffer.scanline(row, buf_ptr);  // get another scanline
-      buf_ptr += rowbytes;                   // add pitch
+      *buf_ptr++ = 0;                      // first byte of row is filter type
+      framebuffer.scanline(row, buf_ptr);  // get another scanline
+      buf_ptr += rowbytes;                 // add pitch
     }
 
     // Compress the data with zlib
@@ -101,21 +96,14 @@ string Snapshot::savePNG(string filename)
     if(compmem) delete[] compmem;
     out.close();
 
-    return "Snapshot saved";
+    framebuffer.showMessage("Snapshot saved");
   }
   catch(const char *msg)
   {
     if(buffer)  delete[] buffer;
     if(compmem) delete[] compmem;
     out.close();
-    return msg;
-  }
-  catch(...)
-  {
-    if(buffer)  delete[] buffer;
-    if(compmem) delete[] compmem;
-    out.close();
-    return "Couldn't create snapshot file";
+    framebuffer.showMessage(msg);
   }
 }
 
