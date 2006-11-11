@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.95 2006-11-04 19:38:24 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.96 2006-11-11 20:20:16 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -285,7 +285,8 @@ void FrameBuffer::hideMessage()
   if(myMessage.counter > 0)
   {
     myMessage.counter = 0;
-    myOSystem->eventHandler().refreshDisplay(true);
+    myOSystem->eventHandler().refreshDisplay(true);  // Do this twice for
+    myOSystem->eventHandler().refreshDisplay(true);  // double-buffered modes
   }
 }
 

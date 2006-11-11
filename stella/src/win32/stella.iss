@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Stella
-AppVerName=Stella 2.2
+AppVerName=Stella 2.3
 AppPublisher=Bradford W. Mott and the Stella team
 AppPublisherURL=http://stella.sourceforge.net
 AppSupportURL=http://stella.sourceforge.net
 AppUpdatesURL=http://stella.sourceforge.net
 DefaultDirName={pf}\Stella
 DefaultGroupName=Stella
-OutputBaseFilename=stella-2.2-win32
+OutputBaseFilename=stella-2.3-win32
 Compression=lzma
 SolidCompression=yes
 
@@ -23,7 +23,6 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "H:\windows\src\stella\stella.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "H:\windows\src\stella\stella-2.2\zlib1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.2\libpng12.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "H:\windows\src\stella\stella-2.2\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "H:\windows\src\stella\stella-2.2\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
@@ -31,7 +30,7 @@ Source: "H:\windows\src\stella\stella-2.2\docs\*"; DestDir: "{app}\docs"; Flags:
 [Icons]
 Name: "{group}\Stella"; Filename: "{app}\stella.exe"; WorkingDir: "{app}"
 Name: "{userdesktop}\Stella"; Filename: "{app}\stella.exe"; WorkingDir: "{app}"; Tasks: desktopicon
-Name: "{group}\Documentation"; Filename: "{app}\docs\stella.html"
+Name: "{group}\Documentation"; Filename: "{app}\docs\index.html"
 Name: "{group}\Uninstall Stella"; Filename: "{uninstallexe}"
 
 ;[Run]
