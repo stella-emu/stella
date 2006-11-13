@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemPSP.hxx,v 1.4 2006-03-02 13:10:53 stephena Exp $
+// $Id: OSystemPSP.hxx,v 1.5 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_PSP_HXX
@@ -26,7 +26,7 @@
   This class defines PSP-specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemPSP.hxx,v 1.4 2006-03-02 13:10:53 stephena Exp $
+  @version $Id: OSystemPSP.hxx,v 1.5 2006-11-13 00:21:41 stephena Exp $
 */
 class OSystemPSP : public OSystem
 {
@@ -34,7 +34,7 @@ class OSystemPSP : public OSystem
     /**
       Create a new PSP-specific operating system object
     */
-    OSystemPSP();
+    OSystemPSP(const string& path);
 
     /**
       Destructor

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.10 2006-09-17 21:44:22 azaballa Exp $
+// $Id: OSystemGP2X.cxx,v 1.11 2006-11-13 00:21:41 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -48,7 +48,7 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemGP2X::OSystemGP2X()
+OSystemGP2X::OSystemGP2X(const string& path) : OSystem()
 {
   // GP2X needs all config files in exec directory
   

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.hxx,v 1.4 2006-03-27 16:00:37 stephena Exp $
+// $Id: OSystemMACOSX.hxx,v 1.5 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_MACOSX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Mark Grebe
-  @version $Id: OSystemMACOSX.hxx,v 1.4 2006-03-27 16:00:37 stephena Exp $
+  @version $Id: OSystemMACOSX.hxx,v 1.5 2006-11-13 00:21:41 stephena Exp $
 */
 class OSystemMACOSX : public OSystem
 {
@@ -34,7 +34,7 @@ class OSystemMACOSX : public OSystem
     /**
       Create a new UNIX-specific operating system object
     */
-    OSystemMACOSX();
+    OSystemMACOSX(const string& path);
 
     /**
       Destructor

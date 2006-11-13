@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.10 2006-03-19 20:57:55 stephena Exp $
+// $Id: LauncherOptionsDialog.hxx,v 1.11 2006-11-13 00:21:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,17 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
 
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-  protected:
+  private:
+    void openRomBrowser();
+    void openSnapBrowser();
+
+  private:
+    enum {
+      kChooseRomDirCmd  = 'LOrm', // rom select
+      kChooseSnapDirCmd = 'LOsn', // snap select
+      kBrowseDirCmd     = 'LObd'  // browse mode
+    };
+
     BrowserDialog* myBrowser;
     TabWidget* myTab;
 
@@ -58,18 +68,7 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
 
     // Snapshot controls
     StaticTextWidget* mySnapPath;
-    PopUpWidget*      mySnapTypePopup;
     CheckboxWidget*   mySnapSingleCheckbox;
-
-  private:
-    enum {
-      kChooseRomDirCmd  = 'LOrm', // rom select
-      kChooseSnapDirCmd = 'LOsn', // snap select
-      kBrowseDirCmd     = 'LObd'  // browse mode
-    };
-
-    void openRomBrowser();
-    void openSnapBrowser();
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.89 2006-11-08 00:09:53 stephena Exp $
+// $Id: Settings.cxx,v 1.90 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -73,7 +73,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("showinfo", "false");
 
   setInternal("ssdir", "");
-  setInternal("ssname", "romname");
   setInternal("sssingle", "false");
 
   setInternal("romdir", "");
@@ -266,10 +265,6 @@ void Settings::validate()
   s = getString("palette");
   if(s != "standard" && s != "original" && s != "z26")
     setInternal("palette", "standard");
-
-  s = getString("ssname");
-  if(s != "romname" && s != "md5sum")
-    setInternal("ssname", "romname");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -333,7 +328,6 @@ void Settings::usage()
   #endif
   #ifdef SNAPSHOT_SUPPORT
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
-    << "  -ssname       <name>         How to name the snapshot (romname or md5sum)\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << endl
   #endif

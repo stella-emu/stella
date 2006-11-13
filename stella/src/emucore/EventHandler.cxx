@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.169 2006-11-10 06:14:14 stephena Exp $
+// $Id: EventHandler.cxx,v 1.170 2006-11-13 00:21:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2033,9 +2033,12 @@ inline bool EventHandler::isJitter(int paddle, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveState()
 {
-  string md5 = myOSystem->console().properties().get(Cartridge_MD5);
+  const string& name = myOSystem->console().properties().get(Cartridge_Name);
+  const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
+
   ostringstream buf;
-  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR << md5 << ".st" << myLSState;
+  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
+      << name << ".st" << myLSState;
 
   // Make sure the file can be opened for writing
   Serializer out;
@@ -2052,8 +2055,8 @@ void EventHandler::saveState()
     buf << "State " << myLSState << " saved";
     if(myOSystem->settings().getBool("autoslot"))
     {
-      buf << ", switching to slot " << (myLSState+1) % 10;
       changeState(false);  // don't show a message for state change
+      buf << ", switching to slot " << myLSState;
     }
   }
   else
@@ -2087,9 +2090,12 @@ void EventHandler::changeState(bool show)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::loadState()
 {
-  string md5 = myOSystem->console().properties().get(Cartridge_MD5);
+  const string& name = myOSystem->console().properties().get(Cartridge_Name);
+  const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
+
   ostringstream buf;
-  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR << md5 << ".st" << myLSState;
+  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
+      << name << ".st" << myLSState;
 
   // Make sure the file can be opened for reading
   Deserializer in;
@@ -2126,16 +2132,11 @@ void EventHandler::takeSnapshot()
   // Figure out the correct snapshot name
   string filename;
   string sspath = myOSystem->settings().getString("ssdir");
-  string ssname = myOSystem->settings().getString("ssname");
 
   if(sspath.length() > 0)
     if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
       sspath += BSPF_PATH_SEPARATOR;
-
-  if(ssname == "romname")
-    sspath += myOSystem->console().properties().get(Cartridge_Name);
-  else if(ssname == "md5sum")
-    sspath += myOSystem->console().properties().get(Cartridge_MD5);
+  sspath += myOSystem->console().properties().get(Cartridge_Name);
 
   // Check whether we want multiple snapshots created
   if(!myOSystem->settings().getBool("sssingle"))

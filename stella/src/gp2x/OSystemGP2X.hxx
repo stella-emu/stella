@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.6 2006-03-02 13:10:53 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.7 2006-11-13 00:21:41 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -32,7 +32,7 @@ class OSystemGP2X : public OSystem
     /**
       Create a new GP2X-specific operating system object
     */
-    OSystemGP2X();
+    OSystemGP2X(const string& path);
 
     /**
       Destructor

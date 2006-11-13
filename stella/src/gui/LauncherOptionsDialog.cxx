@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.17 2006-05-04 17:45:25 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.18 2006-11-13 00:21:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -97,19 +97,8 @@ LauncherOptionsDialog::LauncherOptionsDialog(
                                     _w - xpos - 10, font.getLineHeight(),
                                     "", kTextAlignLeft);
 
-  // Snapshot save name
-  xpos = 10; ypos += mySnapPath->getHeight() + 8;
-  mySnapTypePopup = new PopUpWidget(myTab, font, xpos, ypos,
-                                    font.getStringWidth("romname"),
-                                    font.getLineHeight(),
-                                    "Save snapshot as: ",
-                                    font.getStringWidth("Save snapshot as: "), 0);
-  mySnapTypePopup->appendEntry("romname", 1);
-  mySnapTypePopup->appendEntry("md5sum", 2);
-  wid.push_back(mySnapTypePopup);
-
   // Snapshot single or multiple saves
-  xpos = 30;  ypos += mySnapTypePopup->getHeight() + 5;
+  xpos = 30;  ypos += mySnapPath->getHeight() + 8;
   mySnapSingleCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                             "Multiple snapshots");
   wid.push_back(mySnapSingleCheckbox);
@@ -168,14 +157,6 @@ void LauncherOptionsDialog::loadConfig()
   s = instance()->settings().getString("ssdir");
   mySnapPath->setLabel(s);
 
-  s = instance()->settings().getString("ssname");
-  if(s == "romname")
-    mySnapTypePopup->setSelectedTag(1);
-  else if(s == "md5sum")
-    mySnapTypePopup->setSelectedTag(2);
-  else
-    mySnapTypePopup->setSelectedTag(0);
-
   b = instance()->settings().getBool("sssingle");
   mySnapSingleCheckbox->setState(!b);
 
@@ -196,9 +177,6 @@ void LauncherOptionsDialog::saveConfig()
 
   s = mySnapPath->getLabel();
   instance()->settings().setString("ssdir", s);
-
-  s = mySnapTypePopup->getSelectedString();
-  instance()->settings().setString("ssname", s);
 
   b = mySnapSingleCheckbox->getState();
   instance()->settings().setBool("sssingle", !b);

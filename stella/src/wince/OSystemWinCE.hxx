@@ -25,7 +25,7 @@
 class OSystemWinCE : public OSystem
 {
   public:
-    OSystemWinCE();
+    OSystemWinCE(const string& path);
     virtual ~OSystemWinCE();
 
   public:

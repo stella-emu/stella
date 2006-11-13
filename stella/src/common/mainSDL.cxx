@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.66 2006-10-22 18:58:45 stephena Exp $
+// $Id: mainSDL.cxx,v 1.67 2006-11-13 00:21:40 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -85,23 +85,29 @@ int SDL_main(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {
+  // Get the base directory for storing all Stella settings/statefiles/etc
+  // This can't be stored in the actual settings file for obvious reasons,
+  // so we get it from an environment var (if it exists)
+  const char* bd_ptr = SDL_getenv("STELLA_BASEDIR");
+  const string& basedir = bd_ptr ? string(bd_ptr) : "";
+
   // Create the parent OSystem object and settings
 #if defined(UNIX)
-  theOSystem = new OSystemUNIX();
+  theOSystem = new OSystemUNIX(basedir);
   SettingsUNIX settings(theOSystem);
 #elif defined(WIN32)
-  theOSystem = new OSystemWin32();
+  theOSystem = new OSystemWin32(basedir);
   SettingsWin32 settings(theOSystem);
 #elif defined(MAC_OSX)
-  theOSystem = new OSystemMACOSX();
+  theOSystem = new OSystemMACOSX(basedir);
   SettingsMACOSX settings(theOSystem);
 #elif defined(GP2X)
-  theOSystem = new OSystemGP2X();
+  theOSystem = new OSystemGP2X(basedir);
   SettingsGP2X settings(theOSystem);
 #elif defined(PSP)
   fprintf(stderr,"---------------- Stderr Begins ----------------\n");
   fprintf(stdout,"---------------- Stdout Begins ----------------\n");
-  theOSystem = new OSystemPSP();
+  theOSystem = new OSystemPSP(basedir);
   SettingsPSP settings(theOSystem);
 #else
   #error Unsupported platform!
@@ -136,7 +142,7 @@ int main(int argc, char* argv[])
   // Request that the SDL window be centered, if possible
   // At some point, this should be properly integrated into the UI
   if(theOSystem->settings().getBool("center"))
-    putenv("SDL_VIDEO_CENTERED=1");
+    SDL_putenv("SDL_VIDEO_CENTERED=1");
 
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if
@@ -162,7 +168,7 @@ int main(int argc, char* argv[])
 
     // Set up any breakpoint that was on the command line
     // (and remove the key from the settings, so they won't get set again)
-    string initBreak = theOSystem->settings().getString("break");
+    const string& initBreak = theOSystem->settings().getString("break");
     if(initBreak != "")
     {
       int bp = dbg.stringToValue(initBreak);

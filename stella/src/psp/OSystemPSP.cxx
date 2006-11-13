@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemPSP.cxx,v 1.5 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemPSP.cxx,v 1.6 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -55,7 +55,7 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemPSP::OSystemPSP()
+OSystemPSP::OSystemPSP(const string& path) : OSystem()
 {
   // First set variables that the OSystem needs
   string basedir = string("ms0:/stella");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.10 2006-01-31 17:26:56 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.11 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.10 2006-01-31 17:26:56 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.11 2006-11-13 00:21:41 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {
@@ -34,7 +34,7 @@ class OSystemUNIX : public OSystem
     /**
       Create a new UNIX-specific operating system object
     */
-    OSystemUNIX();
+    OSystemUNIX(const string& path);
 
     /**
       Destructor

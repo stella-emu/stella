@@ -31,7 +31,7 @@ extern void KeySetMode(int);
 extern bool RequestRefresh;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemWinCE::OSystemWinCE()
+OSystemWinCE::OSystemWinCE(const string& path) : OSystem()
 {
   string basedir = ((string) getcwd()) + '\\';
   setBaseDir(basedir);

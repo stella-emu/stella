@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.20 2006-03-25 00:34:17 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.21 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -50,10 +50,10 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemUNIX::OSystemUNIX()
+OSystemUNIX::OSystemUNIX(const string& path) : OSystem()
 {
-  // First set variables that the OSystem needs
-  string basedir = string(getenv("HOME")) + "/.stella";
+  const string& basedir = (path.length() > 0) ? path :
+                           string(getenv("HOME")) + "/.stella";
   setBaseDir(basedir);
 
   setStateDir(basedir + "/state");

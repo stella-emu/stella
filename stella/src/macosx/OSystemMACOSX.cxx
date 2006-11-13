@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.11 2006-04-05 02:18:58 markgrebe Exp $
+// $Id: OSystemMACOSX.cxx,v 1.12 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -93,10 +93,10 @@ void macOSXSendMenuEvent(int event)
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemMACOSX::OSystemMACOSX()
+OSystemMACOSX::OSystemMACOSX(const string& path) : OSystem()
 {
-  // First set variables that the OSystem needs
-  string basedir = string(getenv("HOME")) + "/.stella";
+  const string& basedir = (path.length() > 0) ? path :
+                           string(getenv("HOME")) + "/.stella";
   setBaseDir(basedir);
 
   setStateDir(basedir + "/state");

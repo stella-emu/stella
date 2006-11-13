@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.5 2006-01-08 02:28:04 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.6 2006-11-13 00:21:41 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -25,7 +25,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.5 2006-01-08 02:28:04 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.6 2006-11-13 00:21:41 stephena Exp $
 */
 class OSystemWin32 : public OSystem
 {
@@ -33,7 +33,7 @@ class OSystemWin32 : public OSystem
     /**
       Create a new Win32 operating system object
     */
-    OSystemWin32();
+    OSystemWin32(const string& path);
 
     /**
       Destructor
