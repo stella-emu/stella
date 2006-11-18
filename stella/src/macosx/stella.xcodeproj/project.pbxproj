@@ -1511,7 +1511,6 @@
 					"-framework",
 					SDL,
 					"-lz",
-					"-lpng",
 				);
 				PRODUCT_NAME = StellaOSX;
 				SECTORDER_FLAGS = "";
@@ -1817,21 +1816,18 @@
 					../../../../debugger,
 					./gui,
 					../gui,
-					./libpng,
 					.,
 				);
 				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(LIBRARY_SEARCH_PATHS)",
-					./libpng/build/release,
 				);
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
 					SDL,
 					"-lz",
-					"-lpng",
 				);
 				PRODUCT_NAME = StellaOSX;
 				SECTORDER_FLAGS = "";
@@ -1881,21 +1877,18 @@
 					../../../../debugger,
 					./gui,
 					../gui,
-					./libpng,
 					.,
 				);
 				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(LIBRARY_SEARCH_PATHS)",
-					./libpng/build/release,
 				);
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
 					SDL,
 					"-lz",
-					"-lpng",
 				);
 				PRODUCT_NAME = StellaOSX;
 				SECTORDER_FLAGS = "";
@@ -1953,7 +1946,6 @@
 					"-framework",
 					SDL,
 					"-lz",
-					"-lpng",
 				);
 				PRODUCT_NAME = StellaOSX;
 				SECTORDER_FLAGS = "";
