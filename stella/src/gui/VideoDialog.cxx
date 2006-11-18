@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.31 2006-10-14 20:08:29 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.32 2006-11-18 13:29:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -100,6 +100,25 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Move over to the next column
   xpos += 115;  ypos = 10;
 
+  // Available scalers
+  myScalerPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+                                  lineHeight, "Scaler: ",
+                                  font.getStringWidth("Scaler: "));
+  myScalerPopup->appendEntry("Zoom1x", 1);
+  myScalerPopup->appendEntry("Zoom2x", 2);
+  myScalerPopup->appendEntry("Zoom3x", 3);
+  myScalerPopup->appendEntry("Zoom4x", 4);
+  myScalerPopup->appendEntry("Zoom5x", 5);
+  myScalerPopup->appendEntry("Zoom6x", 6);
+#ifdef SCALER_SUPPORT
+  myScalerPopup->appendEntry("Scale2x", 7);
+  myScalerPopup->appendEntry("Scale3x", 8);
+  myScalerPopup->appendEntry("HQ2x",    9);
+  myScalerPopup->appendEntry("HQ3x",   10);
+#endif
+  wid.push_back(myScalerPopup);
+  ypos += lineHeight + 4;
+
   // Framerate
   myFrameRateSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
                                        "Framerate: ", lwidth, kFrameRateChanged);
@@ -112,28 +131,19 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
-  // Zoom level
-  myZoomSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
-                                  "Zoom: ", lwidth, kZoomChanged);
-  myZoomSlider->setMinValue(0); myZoomSlider->setMaxValue(50);
-  wid.push_back(myZoomSlider);
-  myZoomLabel = new StaticTextWidget(this, font,
-                                     xpos + myZoomSlider->getWidth() + 4,
-                                     ypos + 1,
-                                     15, fontHeight, "", kTextAlignLeft);
-  myZoomLabel->setFlags(WIDGET_CLEARBG);
-  ypos += lineHeight + 10;
-
+  // Fullscreen
   myFullscreenCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Fullscreen mode");
   wid.push_back(myFullscreenCheckbox);
   ypos += lineHeight + 4;
 
+  // Use desktop res in OpenGL
   myUseDeskResCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Desktop Res in FS");
   wid.push_back(myUseDeskResCheckbox);
   ypos += lineHeight + 4;
 
+  // TIA defaults
   myTiaDefaultsCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                              "Use TIA defaults");
   wid.push_back(myTiaDefaultsCheckbox);
@@ -211,6 +221,33 @@ void VideoDialog::loadConfig()
   myAspectRatioSlider->setValue(i);
   myAspectRatioLabel->setLabel(s);
 
+  // Scaler
+  s = instance()->settings().getString("scale_tia");
+  if(s == "Zoom1x")
+    myScalerPopup->setSelectedTag(1);
+  else if(s == "Zoom2x")
+    myScalerPopup->setSelectedTag(2);
+  else if(s == "Zoom3x")
+    myScalerPopup->setSelectedTag(3);
+  else if(s == "Zoom4x")
+    myScalerPopup->setSelectedTag(4);
+  else if(s == "Zoom5x")
+    myScalerPopup->setSelectedTag(5);
+  else if(s == "Zoom6x")
+    myScalerPopup->setSelectedTag(6);
+#ifdef SCALER_SUPPORT
+  else if(s == "Scale2x")
+    myScalerPopup->setSelectedTag(7);
+  else if(s == "Scale3x")
+    myScalerPopup->setSelectedTag(8);
+  else if(s == "HQ2x")
+    myScalerPopup->setSelectedTag(9);
+  else if(s == "HQ3x")
+    myScalerPopup->setSelectedTag(10);
+#endif
+  else
+    myScalerPopup->setSelectedTag(0);
+
   // Palette
   s = instance()->settings().getString("palette");
   if(s == "standard")
@@ -219,11 +256,6 @@ void VideoDialog::loadConfig()
     myPalettePopup->setSelectedTag(2);
   else if(s == "z26")
     myPalettePopup->setSelectedTag(3);
-
-  // Zoom
-  i = (instance()->settings().getInt("zoom") - 1) * 10;
-  myZoomSlider->setValue(i);
-  myZoomLabel->setLabel(instance()->settings().getString("zoom"));
 
   // Fullscreen
   b = instance()->settings().getBool("fullscreen");
@@ -304,17 +336,18 @@ void VideoDialog::saveConfig()
   instance()->settings().setString("palette", s);
   instance()->console().togglePalette(s);
 
+  // Scaler
+  s = myScalerPopup->getSelectedString();
+  if(s != instance()->settings().getString("scale_tia"))
+  {
+    instance()->settings().setString("scale_tia", s);
+    restart = true;
+  }
+
   // Framerate
   i = myFrameRateSlider->getValue();
   if(i > 0)
     instance()->setFramerate(i);
-
-/* FIXME - this has to be changed to scaler - zoom will disappear
-  // Zoom
-  i = (myZoomSlider->getValue() / 10) + 1;
-  instance()->settings().setInt("zoom", i);
-  instance()->frameBuffer().resize(0, i);
-*/
 
   // Fullscreen (the setFullscreen method takes care of updating settings)
   b = myFullscreenCheckbox->getState();
@@ -348,13 +381,12 @@ void VideoDialog::setDefaults()
   myRendererPopup->setSelectedTag(1);
   myFilterPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(1);
+  myScalerPopup->setSelectedTag(1);
   myFrameRateSlider->setValue(0);
   myFrameRateLabel->setLabel("0");
 
   // For some unknown reason (ie, a bug), slider widgets can only
   // take certain ranges of numbers.  So we have to fudge things ...
-  myZoomSlider->setValue(10);
-  myZoomLabel->setLabel("2");
   myAspectRatioSlider->setValue(100);
   myAspectRatioLabel->setLabel("2.0");
 
@@ -415,10 +447,6 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kFrameRateChanged:
       myFrameRateLabel->setValue(myFrameRateSlider->getValue());
-      break;
-
-    case kZoomChanged:
-      myZoomLabel->setValue((myZoomSlider->getValue() + 10) / 10);
       break;
 
     default:

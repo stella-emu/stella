@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.74 2006-11-04 19:38:24 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.75 2006-11-18 13:29:11 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -22,6 +22,7 @@
 #include <SDL.h>
 
 #include "bspf.hxx"
+#include "Array.hxx"
 #include "Event.hxx"
 #include "MediaSrc.hxx"
 #include "Font.hxx"
@@ -85,7 +86,6 @@ struct Scaler {
   string name;
   int zoom;
   int scale;
-  bool available;
 };
 
 /**
@@ -96,7 +96,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.74 2006-11-04 19:38:24 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.75 2006-11-18 13:29:11 stephena Exp $
 */
 class FrameBuffer
 {
@@ -570,6 +570,9 @@ class FrameBuffer
     };
     static Scaler ourUIScalers[kUIScalerListSize];
     static Scaler ourTIAScalers[kTIAScalerListSize];
+
+    // The list of scalers available in the current mode
+    Common::Array<Scaler*> myScalerList;
 };
 
 #endif

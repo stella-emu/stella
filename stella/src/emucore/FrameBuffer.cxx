@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.96 2006-11-11 20:20:16 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.97 2006-11-18 13:29:11 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -710,12 +710,7 @@ void FrameBuffer::setAvailableScalers()
 
   EventHandler::State state = myOSystem->eventHandler().state();
   int maxsize = maxWindowSizeForScreen();
-
-  // First we disable all scalers
-  for(int i = 0; i < kUIScalerListSize; ++i)
-    ourUIScalers[i].available = false;
-  for(int i = 0; i < kTIAScalerListSize; ++i)
-    ourTIAScalers[i].available = false;
+  myScalerList.clear();
 
   bool inTIAMode = (state == EventHandler::S_EMULATE ||
                     state == EventHandler::S_MENU    ||
@@ -728,13 +723,13 @@ void FrameBuffer::setAvailableScalers()
     {
       for(int i = 0; i < kTIAScalerListSize; ++i)
         if(ourTIAScalers[i].scale == 1 && ourTIAScalers[i].zoom <= maxsize)
-          ourTIAScalers[i].available = true;
+          myScalerList.push_back(&ourTIAScalers[i]);
     }
     else  // UI mode
     {
       for(int i = 0; i < kUIScalerListSize; ++i)
         if(ourUIScalers[i].scale == 1 && ourUIScalers[i].zoom <= maxsize)
-          ourUIScalers[i].available = true;
+          myScalerList.push_back(&ourTIAScalers[i]);
     }
   }
   else if(type() == kGLBuffer)
@@ -744,18 +739,18 @@ void FrameBuffer::setAvailableScalers()
 #ifdef SCALER_SUPPORT
       for(int i = 0; i < kTIAScalerListSize; ++i)
         if(ourTIAScalers[i].scale <= maxsize && ourTIAScalers[i].zoom <= maxsize)
-          ourTIAScalers[i].available = true;
+          myScalerList.push_back(&ourTIAScalers[i]);
 #else
       for(int i = 0; i < kTIAScalerListSize; ++i)
         if(ourTIAScalers[i].scale == 1 && ourTIAScalers[i].zoom <= maxsize)
-          ourTIAScalers[i].available = true;
+          myScalerList.push_back(&ourTIAScalers[i]);
 #endif
     }
     else  // UI mode
     {
       for(int i = 0; i < kUIScalerListSize; ++i)
         if(ourUIScalers[i].scale == 1 && ourUIScalers[i].zoom <= maxsize)
-          ourUIScalers[i].available = true;
+          myScalerList.push_back(&ourTIAScalers[i]);
     }
   }
 }
@@ -763,101 +758,41 @@ void FrameBuffer::setAvailableScalers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
 {
-  EventHandler::State state = myOSystem->eventHandler().state();
-  bool inTIAMode = (state == EventHandler::S_EMULATE ||
-                    state == EventHandler::S_MENU    ||
-                    state == EventHandler::S_CMDMENU);
-
-  Scaler* list = (inTIAMode ? ourTIAScalers : ourUIScalers);
-  int size = (inTIAMode ? kTIAScalerListSize : kUIScalerListSize);
-
-  bool found = false;
-  switch(direction)
+  // First search for the scaler specified by name
+  int pos = -1;
+  for(unsigned int i = 0; i < myScalerList.size(); ++i)
   {
-    case 0:  // search for the actual scaler specified in 'name'
-      for(int i = 0; i < size; ++i)
-      {
-        if(list[i].name == name && list[i].available)
-        {
-          scaler = list[i];
-          found = true;
-          break;
-        }
-      }
-      break;
-
-    case -1:   // search for the previous scaler from one specified in 'name'
+    if(myScalerList[i]->name == name)
     {
-      int i, pos = -1;
-
-      // First find the current scaler
-      for(i = 0; i < size; ++i)
-      {
-        if(list[i].name == name && list[i].available)
-        {
-          pos = i;
-          break;
-        }
-      }
-      // If we found it, then search for the previous one
-      if(pos != -1)
-      {
-        i = size;
-        while(i > 0 && !found)
-        {
-          pos--;
-          if(pos < 0) pos = size - 1;
-
-          if(list[pos].available)
-          {
-            scaler = list[pos];
-            found = true;
-            break;
-          }
-          --i;
-        }
-      }
-      break;
-    }
-
-    case +1:   // search for the next scaler from one specified in 'name'
-    {
-      int i, pos = -1;
-
-      // First find the current scaler
-      for(i = 0; i < size; ++i)
-      {
-        if(list[i].name == name && list[i].available)
-        {
-          pos = i;
-          break;
-        }
-      }
-      // If we found it, then search for the next one
-      if(pos != -1)
-      {
-        i = size;
-        while(i > 0 && !found)
-        {
-          pos++;
-          if(pos >= size) pos = 0;
-
-          if(list[pos].available)
-          {
-            scaler = list[pos];
-            found = true;
-            break;
-          }
-          --i;
-        }
-      }
+      pos = i;
       break;
     }
   }
 
-  // Default to 'Zoom1x' if we didn't find a valid scaler
-  if(!found)
-    scaler = list[0];
+  // If we found a scaler, look at direction
+  if(pos >= 0)
+  {
+    switch(direction)
+    {
+      case 0:   // actual scaler specified in 'name'
+        // pos is already set from above
+        break;
+      case -1:  // previous scaler from one specified in 'name'
+        pos--;
+        if(pos < 0) pos = myScalerList.size() - 1;
+        break;
+      case +1:  // next scaler from one specified in 'name'
+        pos = (pos + 1) % myScalerList.size();
+        break;
+    }
+    scaler = *(myScalerList[pos]);
+  }
+  else
+  {
+    // Otherwise, get the largest scaler that's available
+    // FIXME - this needs to be fixed for high-quality scalers
+    scaler = *(myScalerList[myScalerList.size()-1]);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -890,26 +825,26 @@ const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Scaler FrameBuffer::ourUIScalers[kUIScalerListSize] = {
-  { kZOOM1X, "Zoom1x",  1, 1, false },
-  { kZOOM2X, "Zoom2x",  2, 1, false },
-  { kZOOM3X, "Zoom3x",  3, 1, false },
-  { kZOOM4X, "Zoom4x",  4, 1, false },
-  { kZOOM5X, "Zoom5x",  5, 1, false },
-  { kZOOM6X, "Zoom6x",  6, 1, false }
+  { kZOOM1X, "Zoom1x",  1, 1 },
+  { kZOOM2X, "Zoom2x",  2, 1 },
+  { kZOOM3X, "Zoom3x",  3, 1 },
+  { kZOOM4X, "Zoom4x",  4, 1 },
+  { kZOOM5X, "Zoom5x",  5, 1 },
+  { kZOOM6X, "Zoom6x",  6, 1 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Scaler FrameBuffer::ourTIAScalers[kTIAScalerListSize] = {
-  { kZOOM1X,  "Zoom1x",  1, 1, false },
-  { kZOOM2X,  "Zoom2x",  2, 1, false },
-  { kZOOM3X,  "Zoom3x",  3, 1, false },
-  { kZOOM4X,  "Zoom4x",  4, 1, false },
-  { kZOOM5X,  "Zoom5x",  5, 1, false },
-  { kZOOM6X,  "Zoom6x",  6, 1, false },
+  { kZOOM1X,  "Zoom1x",  1, 1 },
+  { kZOOM2X,  "Zoom2x",  2, 1 },
+  { kZOOM3X,  "Zoom3x",  3, 1 },
+  { kZOOM4X,  "Zoom4x",  4, 1 },
+  { kZOOM5X,  "Zoom5x",  5, 1 },
+  { kZOOM6X,  "Zoom6x",  6, 1 },
 
-  { kSCALE2X, "Scale2x", 1, 2, false },
-  { kSCALE3X, "Scale3x", 1, 3, false },
+  { kSCALE2X, "Scale2x", 1, 2 },
+  { kSCALE3X, "Scale3x", 1, 3 },
 
-  { kHQ2X,    "HQ2x",    1, 2, false },
-  { kHQ3X,    "HQ3x",    1, 3, false },
+  { kHQ2X,    "HQ2x",    1, 2 },
+  { kHQ3X,    "HQ3x",    1, 3 },
 };

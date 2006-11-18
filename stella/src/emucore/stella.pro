@@ -2121,6 +2121,7 @@
 "Cartridge.Manufacturer" "US Games"
 "Cartridge.ModelNo" "VC 2004"
 "Cartridge.Rarity" "Extremely Rare"
+"Controller.Left" "PADDLES"
 "Display.Height" "196"
 ""
 
@@ -16223,6 +16224,7 @@
 "Cartridge.Name" "Philly Flasher (1982) (Playaround)"
 "Cartridge.Manufacturer" "Playaround"
 "Cartridge.Rarity" "Extremely Rare"
+"Controller.Left" "PADDLES"
 "Display.Height" "213"
 "Display.YStart" "27"
 ""

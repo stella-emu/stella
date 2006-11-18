@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.13 2006-11-04 19:38:25 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.14 2006-11-18 13:29:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,7 +40,15 @@ class VideoDialog : public Dialog
                 const GUI::Font& font, int x, int y, int w, int h);
     ~VideoDialog();
 
-  protected:
+  private:
+    void loadConfig();
+    void saveConfig();
+    void setDefaults();
+
+    void handleRendererChange(int item);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+
+  private:
     PopUpWidget*      myDirtyPopup;
     PopUpWidget*      myRendererPopup;
     PopUpWidget*      myFilterPopup;
@@ -49,8 +57,7 @@ class VideoDialog : public Dialog
     PopUpWidget*      myPalettePopup;
     SliderWidget*     myFrameRateSlider;
     StaticTextWidget* myFrameRateLabel;
-    SliderWidget*     myZoomSlider;
-    StaticTextWidget* myZoomLabel;
+    PopUpWidget*      myScalerPopup;
     CheckboxWidget*   myFullscreenCheckbox;
     CheckboxWidget*   myUseDeskResCheckbox;
     CheckboxWidget*   myTiaDefaultsCheckbox;
@@ -58,17 +65,8 @@ class VideoDialog : public Dialog
     enum {
       kRendererChanged    = 'VDrd',
       kAspectRatioChanged = 'VDar',
-      kFrameRateChanged   = 'VDfr',
-      kZoomChanged        = 'VDzm'
+      kFrameRateChanged   = 'VDfr'
     };
-
-  private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
-
-    void handleRendererChange(int item);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 };
 
 #endif

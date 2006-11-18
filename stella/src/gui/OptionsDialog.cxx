@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.41 2006-11-03 16:50:19 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.42 2006-11-18 13:29:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -156,9 +156,7 @@ OptionsDialog::~OptionsDialog()
   delete myAudioDialog;
   delete myInputDialog;
   delete myGameInfoDialog;
-#ifdef CHEATCODE_SUPPORT
   delete myCheatCodeDialog;
-#endif
   delete myHelpDialog;
   delete myAboutDialog;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteDerefExpression.cxx,v 1.1 2005-07-15 01:20:11 urchlay Exp $
+// $Id: ByteDerefExpression.cxx,v 1.2 2006-11-18 13:29:11 stephena Exp $
 //============================================================================
 
 #include "Expression.hxx"
@@ -24,4 +24,3 @@ ByteDerefExpression::ByteDerefExpression(Expression *left)
   : Expression(left, 0)
 {
 }
-
