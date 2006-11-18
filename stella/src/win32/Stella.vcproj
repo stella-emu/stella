@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;DISPLAY_OPENGL;TEXTURES_ARE_LOST;SNAPSHOT_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEVELOPER_SUPPORT;DISPLAY_OPENGL;SNAPSHOT_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
