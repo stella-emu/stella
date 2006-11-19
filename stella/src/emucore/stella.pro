@@ -1,3 +1,17 @@
+"Cartridge.MD5" "00f7985c20b8bdf3c557fac4d3f26775"
+"Cartridge.Manufacturer" "Aaron Curtis"
+"Cartridge.Name" "AStar (NTSC)"
+"Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "a3fee8ce15525ea00d45a06f04c215d1"
+"Cartridge.Manufacturer" "Aaron Curtis"
+"Cartridge.Name" "AStar (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+"Display.Height" "250"
+""
+
 "Cartridge.MD5" "9b150a42fc788960fbb4cbe250259ee2"
 "Cartridge.Name" "3E Bankswitch Test (TIA @ $40)"
 "Cartridge.Manufacturer" "Kroko"
@@ -20913,7 +20927,7 @@
 "Cartridge.Name" "Lady Bug (PAL60)"
 "Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
-"Display.Format" "PAL"
+"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -20927,4 +20941,11 @@
 "Cartridge.MD5" "fc9c1652fe3a2cade6188f4d3692481f"
 "Cartridge.Name" "Andrew Davies early notBoulderDash demo (NTSC)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "3fd1f9d66a418c9f787fc5799174ddb7"
+"Cartridge.Manufacturer" "Aaron Curtis"
+"Cartridge.Name" "AStar (PAL)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL"
 ""

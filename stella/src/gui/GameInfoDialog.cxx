@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.26 2006-11-04 19:38:25 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.27 2006-11-19 20:59:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -201,13 +201,14 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 10; ypos = vBorder;
   lwidth = font.getStringWidth("Use Phosphor: ");
-  pwidth = font.getStringWidth("NTSC");
+  pwidth = font.getStringWidth("PAL60");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Format:", kTextAlignLeft);
   myFormat = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, "", 0, 0);
   myFormat->appendEntry("NTSC", 1);
   myFormat->appendEntry("PAL", 2);
+  myFormat->appendEntry("PAL60", 3);
   wid.push_back(myFormat);
 
   ypos += lineHeight + 3;
@@ -403,6 +404,8 @@ void GameInfoDialog::loadConfig()
     myFormat->setSelectedTag(1);
   else if(s == "PAL")
     myFormat->setSelectedTag(2);
+  else if(s == "PAL60")
+    myFormat->setSelectedTag(3);
   else
     myFormat->setSelectedTag(0);
 
@@ -523,7 +526,7 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   tag = myFormat->getSelectedTag();
-  s = (tag == 1) ? "NTSC" : "PAL";
+  s = (tag == 3) ? "PAL60" : (tag == 2) ? "PAL" : "NTSC";
   myGameProperties->set(Display_Format, s);
 
   s = myXStart->getEditString();

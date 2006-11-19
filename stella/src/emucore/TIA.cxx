@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.69 2006-08-31 02:31:28 bwmott Exp $
+// $Id: TIA.cxx,v 1.70 2006-11-19 20:59:30 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -237,12 +237,12 @@ void TIA::reset()
     myFrameWidth = 160;
   }
 
-  if(myConsole.properties().get(Display_Format) == "PAL")
+  if(myConsole.properties().get(Display_Format).compare(0, 3, "PAL") == 0)
   {
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;
   }
-  else
+  else  // NTSC
   {
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
@@ -692,13 +692,13 @@ const uInt32* TIA::palette() const
   const string& format = myConsole.properties().get(Display_Format);
 
   if(type == "standard")
-    return (format == "PAL") ? ourPALPalette : ourNTSCPalette;
+    return (format.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
   else if(type == "original")
-    return (format == "PAL") ? ourPALPalette11 : ourNTSCPalette11;
+    return (format.compare(0, 3, "PAL") == 0) ? ourPALPalette11 : ourNTSCPalette11;
   else if(type == "z26")
-    return (format == "PAL") ? ourPALPaletteZ26 : ourNTSCPaletteZ26;
+    return (format.compare(0, 3, "PAL") == 0) ? ourPALPaletteZ26 : ourNTSCPaletteZ26;
   else  // return normal palette by default
-    return (format == "PAL") ? ourPALPalette : ourNTSCPalette;
+    return (format.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

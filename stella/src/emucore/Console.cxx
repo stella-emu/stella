@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.99 2006-11-19 00:48:55 stephena Exp $
+// $Id: Console.cxx,v 1.100 2006-11-19 20:59:29 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -84,7 +84,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   setDeveloperProperties();
 
   // Make sure height is set properly for PAL ROM
-  if(myProperties.get(Display_Format) == "PAL")
+  if(myProperties.get(Display_Format).compare(0, 3, "PAL") == 0)
     if(myProperties.get(Display_Height) == "210")
       myProperties.set(Display_Height, "250");
 
@@ -278,6 +278,13 @@ void Console::toggleFormat()
   }
   else if(format == "PAL")
   {
+    myProperties.set(Display_Format, "PAL60");
+    mySystem->reset();
+    myOSystem->frameBuffer().showMessage("PAL60 Mode");
+    framerate = 60;
+  }
+  else if(format == "PAL60")
+  {
     myProperties.set(Display_Format, "NTSC");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("NTSC Mode");
@@ -396,13 +403,13 @@ void Console::initialize()
   // This can be overridden by changing the framerate in the
   // VideoDialog box or on the commandline, but it can't be saved
   // (ie, framerate is now solely determined based on ROM format).
-  uInt32 framerate = myOSystem->settings().getInt("framerate");
+  const string& format = myProperties.get(Display_Format);
+  int framerate = myOSystem->settings().getInt("framerate");
   if(framerate == -1)
   {
-    const string& s = myProperties.get(Display_Format);
-    if(s == "NTSC")
+    if(format == "NTSC" || format == "PAL60")
       framerate = 60;
-    else if(s == "PAL")
+    else if(format == "PAL")
       framerate = 50;
     else
       framerate = 60;
@@ -413,10 +420,10 @@ void Console::initialize()
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
   uInt32 channels;
-  const string& s = myProperties.get(Cartridge_Sound);
-  if(s == "STEREO")
+  const string& sound = myProperties.get(Cartridge_Sound);
+  if(sound == "STEREO")
     channels = 2;
-  else if(s == "MONO")
+  else if(sound == "MONO")
     channels = 1;
   else
     channels = 1;
