@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.13 2006-11-04 19:38:24 stephena Exp $
+// $Id: Props.cxx,v 1.14 2006-11-19 00:48:55 stephena Exp $
 //============================================================================
 
 #include <cctype>
@@ -287,6 +287,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "NO",          // Console.SwapPorts
   "JOYSTICK",    // Controller.Left
   "JOYSTICK",    // Controller.Right
+  "0",           // Controller.PaddleNo
   "NTSC",        // Display.Format
   "0",           // Display.XStart
   "160",         // Display.Width
@@ -313,6 +314,7 @@ const char* Properties::ourPropertyNames[LastPropType] = {
   "Console.SwapPorts",
   "Controller.Left",
   "Controller.Right",
+  "Controller.PaddleNo",
   "Display.Format",
   "Display.XStart",
   "Display.Width",

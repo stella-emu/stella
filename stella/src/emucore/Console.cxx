@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.98 2006-11-08 00:09:53 stephena Exp $
+// $Id: Console.cxx,v 1.99 2006-11-19 00:48:55 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -173,14 +173,15 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     myControllers[1] = new Joystick(rightjack, *myEvent);
   }
 
-#if 0 // this isn't production ready yet
-  // Make a guess at which paddle the mouse should emulate,
-  // by using the 'first' paddle in the pair
-  if(myControllers[0]->type() == Controller::Paddles)
-    myOSystem->eventHandler().setPaddleMode(0);
-  else if(myControllers[1]->type() == Controller::Paddles)
-    myOSystem->eventHandler().setPaddleMode(2);
-#endif
+  // Set the paddle number which the mouse will emulate
+  if(myControllers[0]->type() == Controller::Paddles || 
+     myControllers[1]->type() == Controller::Paddles)
+  {
+    int paddle = myOSystem->settings().getInt("paddle");
+    if(paddle == -1)  // not set on commandline
+      paddle = atoi(myProperties.get(Controller_PaddleNo).c_str());
+    myOSystem->eventHandler().setPaddleMode(paddle);
+  }
 
   // Create switches for the console
   mySwitches = new Switches(*myEvent, myProperties);
@@ -396,7 +397,7 @@ void Console::initialize()
   // VideoDialog box or on the commandline, but it can't be saved
   // (ie, framerate is now solely determined based on ROM format).
   uInt32 framerate = myOSystem->settings().getInt("framerate");
-  if(framerate == 0)
+  if(framerate == -1)
   {
     const string& s = myProperties.get(Display_Format);
     if(s == "NTSC")

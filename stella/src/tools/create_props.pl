@@ -21,14 +21,15 @@ my %proptype = (
 "Console.SwapPorts"       => 11,
 "Controller.Left"         => 12,
 "Controller.Right"        => 13,
-"Display.Format"          => 14,
-"Display.XStart"          => 15,
-"Display.Width"           => 16,
-"Display.YStart"          => 17,
-"Display.Height"          => 18,
-"Display.Phosphor"        => 19,
-"Display.PPBlend"         => 20,
-"Emulation.HmoveBlanks"   => 21
+"Controller.PaddleNo"     => 14,
+"Display.Format"          => 15,
+"Display.XStart"          => 16,
+"Display.Width"           => 17,
+"Display.YStart"          => 18,
+"Display.Height"          => 19,
+"Display.Phosphor"        => 20,
+"Display.PPBlend"         => 21,
+"Emulation.HmoveBlanks"   => 22
 );
 
 my @prop_defaults = (
@@ -46,6 +47,7 @@ my @prop_defaults = (
   "NO",
   "JOYSTICK",
   "JOYSTICK",
+  "0",
   "NTSC",
   "0",
   "160",

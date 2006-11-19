@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.16 2006-05-15 12:24:09 stephena Exp $
+// $Id: InputDialog.cxx,v 1.17 2006-11-19 00:48:55 stephena Exp $
 //============================================================================
 
 // FIXME - this whole dialog should be a dialog of buttons instead of
@@ -28,15 +28,6 @@
 #include "PopUpWidget.hxx"
 
 #include "bspf.hxx"
-
-enum {
-  kPaddleChanged       = 'PDch',
-  kPaddleThreshChanged = 'PDth',
-  kP0SpeedID = 100,
-  kP1SpeedID = 101,
-  kP2SpeedID = 102,
-  kP3SpeedID = 103
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
@@ -121,28 +112,18 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   myLeftPort->appendEntry("right virtual port", 2);
   wid.push_back(myLeftPort);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   myRightPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                 "Stelladaptor 2 is: ", lwidth);
   myRightPort->appendEntry("left virtual port", 1);
   myRightPort->appendEntry("right virtual port", 2);
   wid.push_back(myRightPort);
 
-  // Add 'mouse to paddle' mapping
-  ypos += 2*lineHeight;
-  lwidth = font.getStringWidth("Paddle threshold: ");
-  pwidth = font.getMaxCharWidth() * 5;
-  myPaddleMode = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                  "Mouse is paddle: ", lwidth, kPaddleChanged);
-  myPaddleMode->setMinValue(0); myPaddleMode->setMaxValue(3);
-  xpos += myPaddleMode->getWidth() + 5;
-  myPaddleModeLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                           "", kTextAlignLeft);
-  myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleMode);
 
   // Add 'paddle threshhold' setting
-  xpos = 5;  ypos += lineHeight + 3;
+  lwidth = font.getStringWidth("Paddle threshold: ");
+  pwidth = font.getMaxCharWidth() * 5;
+  xpos = 5;  ypos += 2*lineHeight + 3;
   myPaddleThreshold = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                        "Paddle threshold: ",
                                        lwidth, kPaddleThreshChanged);
@@ -217,23 +198,19 @@ void InputDialog::loadConfig()
   int rport = sa2 == "right" ? 2 : 1;
   myRightPort->setSelectedTag(rport);
 
-  // Paddle mode
-  myPaddleMode->setValue(instance()->settings().getInt("paddle"));
-  myPaddleModeLabel->setLabel(instance()->settings().getString("paddle"));
-
   // Paddle threshold
   myPaddleThreshold->setValue(instance()->settings().getInt("pthresh"));
   myPaddleThresholdLabel->setLabel(instance()->settings().getString("pthresh"));
 
   // Paddle speed settings
-  myPaddleSpeed[0]->setValue(instance()->settings().getInt("p1speed"));
-  myPaddleLabel[0]->setLabel(instance()->settings().getString("p1speed"));
-  myPaddleSpeed[1]->setValue(instance()->settings().getInt("p2speed"));
-  myPaddleLabel[1]->setLabel(instance()->settings().getString("p2speed"));
-  myPaddleSpeed[2]->setValue(instance()->settings().getInt("p3speed"));
-  myPaddleLabel[2]->setLabel(instance()->settings().getString("p3speed"));
-  myPaddleSpeed[3]->setValue(instance()->settings().getInt("p4speed"));
-  myPaddleLabel[3]->setLabel(instance()->settings().getString("p4speed"));
+  myPaddleSpeed[0]->setValue(instance()->settings().getInt("p0speed"));
+  myPaddleLabel[0]->setLabel(instance()->settings().getString("p0speed"));
+  myPaddleSpeed[1]->setValue(instance()->settings().getInt("p1speed"));
+  myPaddleLabel[1]->setLabel(instance()->settings().getString("p1speed"));
+  myPaddleSpeed[2]->setValue(instance()->settings().getInt("p2speed"));
+  myPaddleLabel[2]->setLabel(instance()->settings().getString("p2speed"));
+  myPaddleSpeed[3]->setValue(instance()->settings().getInt("p3speed"));
+  myPaddleLabel[3]->setLabel(instance()->settings().getString("p3speed"));
 
   myTab->loadConfig();
 }
@@ -245,10 +222,6 @@ void InputDialog::saveConfig()
   string sa1 = myLeftPort->getSelectedTag() == 2 ? "right" : "left";
   string sa2 = myRightPort->getSelectedTag() == 2 ? "right" : "left";
   instance()->eventHandler().mapStelladaptors(sa1, sa2);
-
-  // Paddle mode
-  int mode = myPaddleMode->getValue();
-  instance()->eventHandler().setPaddleMode(mode);
 
   // Paddle threshold
   int threshold = myPaddleThreshold->getValue();
@@ -321,10 +294,6 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloseCmd:
       // Revert changes made to event mapping
       close();
-      break;
-
-    case kPaddleChanged:
-      myPaddleModeLabel->setValue(myPaddleMode->getValue());
       break;
 
     case kPaddleThreshChanged:

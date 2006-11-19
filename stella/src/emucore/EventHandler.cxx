@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.170 2006-11-13 00:21:40 stephena Exp $
+// $Id: EventHandler.cxx,v 1.171 2006-11-19 00:48:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -155,8 +155,6 @@ void EventHandler::initialize()
   setActionMappings(kMenuMode);
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
-
-  setPaddleMode(myOSystem->settings().getInt("paddle"), false);
   setPaddleThreshold(myOSystem->settings().getInt("pthresh"));
 }
 
@@ -181,10 +179,10 @@ void EventHandler::reset(State state)
     memset(&myPaddle[i], 0, sizeof(JoyMouse));
     myEvent->set(Paddle_Resistance[i], 1000000);
   }
-  setPaddleSpeed(0, myOSystem->settings().getInt("p1speed"));
-  setPaddleSpeed(1, myOSystem->settings().getInt("p2speed"));
-  setPaddleSpeed(2, myOSystem->settings().getInt("p3speed"));
-  setPaddleSpeed(3, myOSystem->settings().getInt("p4speed"));
+  setPaddleSpeed(0, myOSystem->settings().getInt("p0speed"));
+  setPaddleSpeed(1, myOSystem->settings().getInt("p1speed"));
+  setPaddleSpeed(2, myOSystem->settings().getInt("p2speed"));
+  setPaddleSpeed(3, myOSystem->settings().getInt("p3speed"));
 
 //  myEventStreamer->reset();
 }
@@ -2181,8 +2179,6 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
     buf << "Mouse is paddle " << num;
     myOSystem->frameBuffer().showMessage(buf.str());
   }
-
-  myOSystem->settings().setInt("paddle", myPaddleMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

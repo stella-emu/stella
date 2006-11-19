@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.90 2006-11-13 00:21:41 stephena Exp $
+// $Id: Settings.cxx,v 1.91 2006-11-19 00:48:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -60,14 +60,13 @@ Settings::Settings(OSystem* osystem)
   setInternal("joymap", "");
   setInternal("joyaxismap", "");
   setInternal("joyhatmap", "");
-  setInternal("paddle", "0");
   setInternal("sa1", "left");
   setInternal("sa2", "right");
   setInternal("joymouse", "false");
+  setInternal("p0speed", "50");
   setInternal("p1speed", "50");
   setInternal("p2speed", "50");
   setInternal("p3speed", "50");
-  setInternal("p4speed", "50");
   setInternal("pthresh", "600");
 
   setInternal("showinfo", "false");
@@ -252,10 +251,6 @@ void Settings::validate()
      s != "HQ2x" && s != "HQ3x" && s != "HQ4x")
     setInternal("scale_tia", "Zoom1x");
 
-  i = getInt("paddle");
-  if(i < 0 || i > 3)
-    setInternal("paddle", "0");
-
   i = getInt("pthresh");
   if(i < 400)
     setInternal("pthresh", "400");
@@ -316,11 +311,10 @@ void Settings::usage()
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
-    << "  -joymouse     <1|0>          Enable mouse emulation using joystick in GUI\n"
+    << "  -p0speed      <number>       Speed of emulated mouse movement for paddle 0 (0-100)\n"
     << "  -p1speed      <number>       Speed of emulated mouse movement for paddle 1 (0-100)\n"
     << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
-    << "  -p4speed      <number>       Speed of emulated mouse movement for paddle 4 (0-100)\n"
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
     << "  -tiadefaults  <1|0>          Use TIA positioning defaults instead of enhanced values\n"
   #ifdef UNIX
@@ -472,7 +466,7 @@ int Settings::getInt(const string& key) const
   else if((idx = getExternalPos(key)) != -1)
     return (int) atoi(myExternalSettings[idx].value.c_str());
   else
-    return 0;
+    return -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.9 2006-05-05 18:00:51 stephena Exp $
+// $Id: InputDialog.hxx,v 1.10 2006-11-19 00:48:55 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -52,6 +52,14 @@ class InputDialog : public Dialog
     void addVDeviceTab(const GUI::Font& font);
 
   private:
+    enum {
+      kPaddleThreshChanged = 'PDth',
+      kP0SpeedID = 100,
+      kP1SpeedID = 101,
+      kP2SpeedID = 102,
+      kP3SpeedID = 103
+    };
+
     TabWidget* myTab;
 
     EventMappingWidget* myEmulEventMapper;
@@ -60,8 +68,6 @@ class InputDialog : public Dialog
     PopUpWidget* myLeftPort;
     PopUpWidget* myRightPort;
 
-    SliderWidget*     myPaddleMode;
-    StaticTextWidget* myPaddleModeLabel;
     SliderWidget*     myPaddleThreshold;
     StaticTextWidget* myPaddleThresholdLabel;
     SliderWidget*     myPaddleSpeed[4];
