@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.47 2006-10-22 18:58:46 stephena Exp $
+// $Id: Console.hxx,v 1.48 2006-11-25 01:34:35 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.47 2006-10-22 18:58:46 stephena Exp $
+  @version $Id: Console.hxx,v 1.48 2006-11-25 01:34:35 stephena Exp $
 */
 class Console
 {
@@ -130,21 +130,22 @@ class Console
     Console& operator = (const Console& console);
 
   public:
-
     /**
-      Toggle between NTSC and PAL mode.  The frontends will need to
-      reload their palette.
+      Toggle between NTSC and PAL mode.
     */
     void toggleFormat();
 
     /**
-      Toggle between the available palettes.  The frontends will need to
-      reload their palette.
-
-      @param palette  The palette to switch to, or just switch in order
-                      if no palette is specified.
+      Toggle between the available palettes.
     */
-    void togglePalette(const string& palette = "");
+    void togglePalette();
+
+    /**
+      Sets the palette according to the given palette name.
+
+      @param palette  The palette to switch to.
+    */
+    void setPalette(const string& palette);
 
     /**
       Toggles phosphor effect.
@@ -182,11 +183,6 @@ class Console
       Initialize the audio subsystem wrt this class.
     */
     void initializeAudio();
-
-    /**
-      Sets the palette to that specified in the mediasource
-    */
-    void setPalette();
 
     /**
       Sets the number of sound channels
@@ -252,6 +248,18 @@ class Console
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true);
     void setDeveloperProperties();
 
+    /**
+      Loads a user-defined palette file from 'stella.pal', filling the
+      appropriate user-defined palette arrays.
+    */
+    void loadUserPalette();
+
+    /**
+      Returns a pointer to the palette data for the palette currently defined
+      by the ROM properties.
+    */
+    const uInt32* getPalette(int direction) const;
+
   private:
     // Pointer to the osystem object
     OSystem* myOSystem;
@@ -288,6 +296,34 @@ class Console
     // Indicates whether the console was correctly initialized
     // We don't really care why it wasn't initialized ...
     bool myIsInitializedFlag;
+
+    // Indicates whether an external palette was found and
+    // successfully loaded
+    bool myUserPaletteDefined;
+
+    // User-defined NTSC and PAL RGB values
+    uInt32* ourUserNTSCPalette;
+    uInt32* ourUserPALPalette;
+
+    // Table of RGB values for NTSC
+    static const uInt32 ourNTSCPalette[256];
+
+    // Table of RGB values for PAL.  NOTE: The odd numbered entries in
+    // this array are always shades of grey.  This is used to implement
+    // the PAL color loss effect.
+    static const uInt32 ourPALPalette[256];
+
+    // Table of RGB values for NTSC - Stella 1.1 version
+    static const uInt32 ourNTSCPalette11[256];
+
+    // Table of RGB values for PAL - Stella 1.1 version
+    static const uInt32 ourPALPalette11[256];
+
+    // Table of RGB values for NTSC - Z26 version
+    static const uInt32 ourNTSCPaletteZ26[256];
+
+    // Table of RGB values for PAL - Z26 version
+    static const uInt32 ourPALPaletteZ26[256];
 };
 
 #endif

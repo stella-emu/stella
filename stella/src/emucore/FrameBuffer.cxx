@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.97 2006-11-18 13:29:11 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.98 2006-11-25 01:34:35 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -311,13 +311,6 @@ inline void FrameBuffer::drawMessage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::pause(bool status)
 {
-  if(&myOSystem->console() && myOSystem->console().isInitialized())
-  {
-    bool enable = myOSystem->console().properties().get(Display_Phosphor) == "YES";
-    int blend = atoi(myOSystem->console().properties().get(Display_PPBlend).c_str());
-    enablePhosphor(enable, blend);
-    setPalette(myOSystem->console().mediaSource().palette());
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

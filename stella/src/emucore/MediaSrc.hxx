@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.13 2005-10-11 19:38:10 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.14 2006-11-25 01:34:35 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -30,7 +30,7 @@ class Sound;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.13 2005-10-11 19:38:10 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.14 2006-11-25 01:34:35 stephena Exp $
 */
 class MediaSource
 {
@@ -92,13 +92,6 @@ class MediaSource
 #endif
 
   public:
-    /**
-      Get the palette which maps frame data to RGB values.
-
-      @return Array of integers which represent the palette (RGB)
-    */
-    virtual const uInt32* palette() const = 0;
-
     /**
       Answers the height of the frame buffer
 

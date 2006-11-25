@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.35 2006-02-09 15:10:18 stephena Exp $
+// $Id: TIA.hxx,v 1.36 2006-11-25 01:34:35 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.35 2006-02-09 15:10:18 stephena Exp $
+  @version $Id: TIA.hxx,v 1.36 2006-11-25 01:34:35 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -142,13 +142,6 @@ class TIA : public Device , public MediaSource
       @return Pointer to the previous frame buffer
     */
     uInt8* previousFrameBuffer() const { return myPreviousFrameBuffer; }
-
-    /**
-      Get the palette which maps frame data to RGB values.
-
-      @return Array of integers which represent the palette (RGB)
-    */
-    virtual const uInt32* palette() const;
 
     /**
       Answers the height of the frame buffer
@@ -545,26 +538,6 @@ class TIA : public Device , public MediaSource
 
     // Playfield mask table for reflected and non-reflected playfields
     static uInt32 ourPlayfieldTable[2][160];
-
-    // Table of RGB values for NTSC
-    static const uInt32 ourNTSCPalette[256];
-
-    // Table of RGB values for PAL.  NOTE: The odd numbered entries in
-    // this array are always shades of grey.  This is used to implement
-    // the PAL color loss effect.
-    static const uInt32 ourPALPalette[256];
-
-    // Table of RGB values for NTSC - Stella 1.1 version
-    static const uInt32 ourNTSCPalette11[256];
-
-    // Table of RGB values for PAL - Stella 1.1 version
-    static const uInt32 ourPALPalette11[256];
-
-    // Table of RGB values for NTSC - Z26 version
-    static const uInt32 ourNTSCPaletteZ26[256];
-
-    // Table of RGB values for PAL - Z26 version
-    static const uInt32 ourPALPaletteZ26[256];
 
   private:
     // Copy constructor isn't supported by this class so make it private

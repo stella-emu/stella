@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.32 2006-11-18 13:29:11 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.33 2006-11-25 01:34:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -94,6 +94,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPalettePopup->appendEntry("Standard", 1);
   myPalettePopup->appendEntry("Original", 2);
   myPalettePopup->appendEntry("Z26", 3);
+  myPalettePopup->appendEntry("User", 4);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
@@ -256,6 +257,8 @@ void VideoDialog::loadConfig()
     myPalettePopup->setSelectedTag(2);
   else if(s == "z26")
     myPalettePopup->setSelectedTag(3);
+  else if(s == "user")
+    myPalettePopup->setSelectedTag(4);
 
   // Fullscreen
   b = instance()->settings().getBool("fullscreen");
@@ -327,14 +330,15 @@ void VideoDialog::saveConfig()
   // Palette
   i = myPalettePopup->getSelectedTag();
   if(i == 1)
-    instance()->settings().setString("palette", "standard");
+    s = "standard";
   else if(i == 2)
-    instance()->settings().setString("palette", "original");
+    s = "original";
   else if(i == 3)
-    instance()->settings().setString("palette", "z26");
-  s = myPalettePopup->getSelectedString();
+    s = "z26";
+  else if(i == 4)
+    s = "user";
   instance()->settings().setString("palette", s);
-  instance()->console().togglePalette(s);
+  instance()->console().setPalette(s);
 
   // Scaler
   s = myScalerPopup->getSelectedString();

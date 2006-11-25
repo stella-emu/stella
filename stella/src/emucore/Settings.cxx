@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.91 2006-11-19 00:48:55 stephena Exp $
+// $Id: Settings.cxx,v 1.92 2006-11-25 01:34:35 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -258,7 +258,7 @@ void Settings::validate()
     setInternal("pthresh", "800");
 
   s = getString("palette");
-  if(s != "standard" && s != "original" && s != "z26")
+  if(s != "standard" && s != "original" && s != "z26" && s != "user")
     setInternal("palette", "standard");
 }
 
@@ -293,7 +293,8 @@ void Settings::usage()
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -palette      <original|     Use the specified color palette\n"
     << "                 standard|\n"
-    << "                 z26>\n"
+    << "                 z26|\n"
+    << "                 user>\n"
     << "  -framerate    <number>       Display the given number of frames per second\n"
     << endl
   #ifdef SOUND_SUPPORT
