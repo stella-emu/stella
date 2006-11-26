@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.7 2006-11-10 06:14:14 stephena Exp $
+// $Id: Snapshot.hxx,v 1.8 2006-11-26 16:58:21 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
@@ -21,6 +21,7 @@
 
 #ifdef SNAPSHOT_SUPPORT
 
+class Properties;
 class FrameBuffer;
 
 #include <fstream>
@@ -33,12 +34,15 @@ class Snapshot
       Save the current frame buffer to a PNG file.
 
       @param framebuffer The framebuffer containing the image data
+      @param props       The properties object containing info about the ROM
       @param filename    The filename of the PNG file
     */
-    static void savePNG(FrameBuffer& framebuffer, const string& filename);
+    static void savePNG(FrameBuffer& framebuffer, const Properties& props,
+                        const string& filename);
 
   private:
     static void writePNGChunk(ofstream& out, char* type, uInt8* data, int size);
+    static void writePNGText(ofstream& out, const string& key, const string& text);
 };
 
 #endif  // SNAPSHOT_SUPPORT

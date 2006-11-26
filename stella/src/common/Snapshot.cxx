@@ -13,20 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.12 2006-11-10 06:14:14 stephena Exp $
+// $Id: Snapshot.cxx,v 1.13 2006-11-26 16:58:21 stephena Exp $
 //============================================================================
 
 #ifdef SNAPSHOT_SUPPORT
 
 #include <zlib.h>
 #include <fstream>
+#include <cstring>
+#include <sstream>
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
+#include "Props.hxx"
+#include "Version.hxx"
 #include "Snapshot.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Snapshot::savePNG(FrameBuffer& framebuffer, const string& filename)
+void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
+                       const string& filename)
 {
   uInt8* buffer  = (uInt8*) NULL;
   uInt8* compmem = (uInt8*) NULL;
@@ -88,6 +93,12 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const string& filename)
     // Write the compressed framebuffer data
     writePNGChunk(out, "IDAT", compmem, compmemsize);
 
+    // Add some info about this snapshot
+    writePNGText(out, "Software", string("Stella ") + STELLA_VERSION);
+    writePNGText(out, "ROM Name", props.get(Cartridge_Name));
+    writePNGText(out, "ROM MD5", props.get(Cartridge_MD5));
+    writePNGText(out, "Display Format", props.get(Display_Format));
+
     // Finish up
     writePNGChunk(out, "IEND", 0, 0);
 
@@ -138,6 +149,20 @@ void Snapshot::writePNGChunk(ofstream& out, char* type, uInt8* data, int size)
   temp[2] = crc >> 8;
   temp[3] = crc;
   out.write((const char*)temp, 4);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Snapshot::writePNGText(ofstream& out, const string& key, const string& text)
+{
+  int length = key.length() + 1 + text.length() + 1;
+  uInt8* data = new uInt8[length];
+
+  strcpy((char*)data, key.c_str());
+  strcpy((char*)data + key.length() + 1, text.c_str());
+
+  writePNGChunk(out, "tEXt", data, length-1);
+
+  delete[] data;
 }
 
 #endif  // SNAPSHOT_SUPPORT
