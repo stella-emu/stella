@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.67 2006-11-13 00:21:40 stephena Exp $
+// $Id: mainSDL.cxx,v 1.68 2006-11-27 02:18:46 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
+#include <cstdlib>
 
 #include "bspf.hxx"
 #include "Console.hxx"
@@ -88,7 +89,7 @@ int main(int argc, char* argv[])
   // Get the base directory for storing all Stella settings/statefiles/etc
   // This can't be stored in the actual settings file for obvious reasons,
   // so we get it from an environment var (if it exists)
-  const char* bd_ptr = SDL_getenv("STELLA_BASEDIR");
+  const char* bd_ptr = getenv("STELLA_BASEDIR");
   const string& basedir = bd_ptr ? string(bd_ptr) : "";
 
   // Create the parent OSystem object and settings
@@ -142,7 +143,7 @@ int main(int argc, char* argv[])
   // Request that the SDL window be centered, if possible
   // At some point, this should be properly integrated into the UI
   if(theOSystem->settings().getBool("center"))
-    SDL_putenv("SDL_VIDEO_CENTERED=1");
+    putenv("SDL_VIDEO_CENTERED=1");
 
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if

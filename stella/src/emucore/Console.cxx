@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.101 2006-11-25 01:34:34 stephena Exp $
+// $Id: Console.cxx,v 1.102 2006-11-27 02:18:47 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -297,12 +297,12 @@ void Console::togglePalette()
   if(palette == "standard")       // switch to original
   {
     palette = "original";
-    message = "Original Stella colors";
+    message = "Original Stella palette";
   }
   else if(palette == "original")  // switch to z26
   {
     palette = "z26";
-    message = "Z26 colors";
+    message = "Z26 palette";
   }
   else if(palette == "z26")       // switch to user or standard
   {
@@ -311,23 +311,23 @@ void Console::togglePalette()
     if(myUserPaletteDefined)
     {
       palette = "user";
-      message = "User-defined Stella colors";
+      message = "User-defined palette";
     }
     else
     {
       palette = "standard";
-      message = "Standard Stella colors";
+      message = "Standard Stella palette";
     }
   }
   else if(palette == "user")  // switch to standard
   {
     palette = "standard";
-    message = "Standard Stella colors";
+    message = "Standard Stella palette";
   }
   else  // switch to standard mode if we get this far
   {
     palette = "standard";
-    message = "Standard Stella colors";
+    message = "Standard Stella palette";
   }
 
   myOSystem->settings().setString("palette", palette);
@@ -379,7 +379,6 @@ void Console::togglePhosphor()
   }
 
   myOSystem->frameBuffer().enablePhosphor(enable, blend);
-//  setPalette();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -798,7 +797,7 @@ void Console::loadUserPalette()
   // Now that we have valid data, create the user-defined buffers
   ourUserNTSCPalette = new uInt32[256];
   ourUserPALPalette  = new uInt32[256];
-  uInt8 pixbuf[3];  // Temporary buffer for a palette
+  uInt8 pixbuf[3];  // Temporary buffer for one 24-bit pixel
 
   for(int i = 0; i < 128; i++)  // NTSC palette
   {
