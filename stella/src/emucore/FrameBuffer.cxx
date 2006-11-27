@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.98 2006-11-25 01:34:35 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.99 2006-11-27 21:02:45 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -74,7 +74,6 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
       return;
   }
   setWindowIcon();
-  cls();
 
   // Query the desktop size
   // This is really the job of SDL
@@ -102,6 +101,9 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   getScaler(scaler, 0, currentScalerName());
   setScaler(scaler);
   initSubsystem();
+
+  // Erase old contents
+  cls();
 
   // And refresh the display
   myOSystem->eventHandler().refreshDisplay();
