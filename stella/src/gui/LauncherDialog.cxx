@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.55 2006-05-18 12:20:06 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.56 2006-11-27 14:52:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -244,7 +244,7 @@ void LauncherDialog::updateListing(bool fullReload)
   myRomCount->setLabel(buf.str());
 
   // Restore last selection
-  if(!(myList->getList().isEmpty() || myBrowseModeFlag))
+  if(!myList->getList().isEmpty())
   {
     if(myBrowseModeFlag)
       myList->setSelected(0);
