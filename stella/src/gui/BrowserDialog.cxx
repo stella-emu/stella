@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.19 2006-05-04 17:45:25 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.20 2006-11-28 21:48:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -79,19 +79,23 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
                        kChooseCmd);
   addFocusWidget(b);
+  addOKWidget(b);
   xpos += bwidth + 10;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
                        kCloseCmd);
   addFocusWidget(b);
+  addCancelWidget(b);
 #else
   xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
                        kCloseCmd);
   addFocusWidget(b);
+  addCancelWidget(b);
   xpos += bwidth + 10;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
                        kChooseCmd);
   addFocusWidget(b);
+  addOKWidget(b);
 #endif
 
   addFocusWidget(_fileList);

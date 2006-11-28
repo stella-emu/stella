@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.173 2006-11-27 22:57:09 stephena Exp $
+// $Id: EventHandler.cxx,v 1.174 2006-11-28 21:48:56 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1772,7 +1772,7 @@ void EventHandler::setDefaultKeymap(EventMode mode)
       myKeyTable[ SDLK_PAGEDOWN ][mode]  = Event::UIPgDown;
 
       myKeyTable[ SDLK_RETURN ][mode]    = Event::UISelect;
-      myKeyTable[ SDLK_BACKSPACE ][mode] = Event::UIPrevDir;
+      myKeyTable[ SDLK_ESCAPE ][mode]    = Event::UICancel;
       break;
 
     default:
@@ -2671,8 +2671,9 @@ ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = {
   { Event::UIPgUp,      "Page Up",              0 },
   { Event::UIPgDown,    "Page Down",            0 },
 
+  { Event::UIOK,        "OK",                   0 },
+  { Event::UICancel,    "Cancel",               0 },
   { Event::UISelect,    "Select item",          0 },
-  { Event::UIPrevDir,   "Previous Directory",   0 },
 
   { Event::UINavPrev,   "Previous object",      0 },
   { Event::UINavNext,   "Next object",          0 },

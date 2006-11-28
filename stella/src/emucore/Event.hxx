@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.21 2006-05-15 12:24:09 stephena Exp $
+// $Id: Event.hxx,v 1.22 2006-11-28 21:48:56 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -26,7 +26,7 @@ class EventStreamer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.21 2006-05-15 12:24:09 stephena Exp $
+  @version $Id: Event.hxx,v 1.22 2006-11-28 21:48:56 stephena Exp $
 */
 class Event
 {
@@ -81,7 +81,7 @@ class Event
       VolumeDecrease, VolumeIncrease,
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
-      UISelect, UIPrevDir, UINavPrev, UINavNext, UITabPrev, UITabNext,
+      UISelect, UINavPrev, UINavNext, UITabPrev, UITabNext, UIOK, UICancel,
 
       LastType
     };

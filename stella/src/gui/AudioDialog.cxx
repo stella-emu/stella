@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.20 2006-11-03 16:50:18 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.21 2006-11-28 21:48:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -122,13 +122,17 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 #ifndef MAC_OSX
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
 #else
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
 #endif
 
   addToFocusList(wid);

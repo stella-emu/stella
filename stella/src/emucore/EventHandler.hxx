@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.90 2006-11-06 00:52:03 stephena Exp $
+// $Id: EventHandler.hxx,v 1.91 2006-11-28 21:48:56 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ struct ActionList {
 
 enum {
   kEmulActionListSize = 81,
-  kMenuActionListSize = 14
+  kMenuActionListSize = 15
 };
 
 enum EventMode {
@@ -114,7 +114,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.90 2006-11-06 00:52:03 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.91 2006-11-28 21:48:56 stephena Exp $
 */
 class EventHandler
 {

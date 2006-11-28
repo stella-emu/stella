@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.56 2006-11-27 14:52:51 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.57 2006-11-28 21:48:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -280,6 +280,14 @@ void LauncherDialog::loadDirListing()
 {
   FSList files = myCurrentNode.listDir(FilesystemNode::kListAll);
 
+  // Add '[..]' to indicate previous folder
+  if(myCurrentNode.hasParent())
+  {
+    const string& parent = myCurrentNode.getParent().path();
+    myGameList->appendGame(" [..]", parent, "", true);
+  }
+
+  // Now add the directory entries
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
     string name = files[idx].displayName();

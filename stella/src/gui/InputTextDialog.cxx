@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.13 2006-05-04 17:45:25 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.14 2006-11-28 21:48:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -87,16 +87,20 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   b = new ButtonWidget(this, font, _w - 2 * (bwidth + 10), _h - bheight - 10,
                    bwidth, bheight, "OK", kAcceptCmd);
   wid.push_back(b);
+  addOKWidget(b);
   b = new ButtonWidget(this, font, _w - (bwidth + 10), _h - bheight - 10,
                    bwidth, bheight, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
 #else
   b = new ButtonWidget(this, font, _w - 2 * (bwidth + 10), _h - bheight - 10,
                    bwidth, bheight, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
   b = new ButtonWidget(this, font, _w - (bwidth + 10), _h - bheight - 10,
                    bwidth, bheight, "OK", kAcceptCmd);
   wid.push_back(b);
+  addOKWidget(b);
 #endif
 
   addToFocusList(wid);

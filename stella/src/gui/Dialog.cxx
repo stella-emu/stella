@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.47 2006-05-25 19:03:57 stephena Exp $
+// $Id: Dialog.cxx,v 1.48 2006-11-28 21:48:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,6 +43,8 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _mouseWidget(0),
     _focusedWidget(0),
     _dragWidget(0),
+    _okWidget(0),
+    _cancelWidget(0),
     _visible(true),
     _ourTab(NULL),
     _focusID(0)
@@ -478,6 +480,24 @@ bool Dialog::handleNavEvent(Event::Type e)
       {
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
                                                   _focusedWidget, +1);
+        return true;
+      }
+      break;
+
+    case Event::UIOK:
+      if(_okWidget)
+      {
+        // Receiving 'OK' is the same as getting the 'Select' event
+        _okWidget->handleEvent(Event::UISelect);
+        return true;
+      }
+      break;
+
+    case Event::UICancel:
+      if(_cancelWidget)
+      {
+        // Receiving 'Cancel' is the same as getting the 'Select' event
+        _cancelWidget->handleEvent(Event::UISelect);
         return true;
       }
       break;

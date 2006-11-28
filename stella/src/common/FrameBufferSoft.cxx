@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.57 2006-11-04 19:38:24 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.58 2006-11-28 21:48:55 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -44,6 +44,7 @@ FrameBufferSoft::~FrameBufferSoft()
 {
   delete myRectList;
   delete myOverlayRectList;
+  cls();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

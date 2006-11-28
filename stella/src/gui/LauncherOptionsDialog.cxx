@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.18 2006-11-13 00:21:41 stephena Exp $
+// $Id: LauncherOptionsDialog.cxx,v 1.19 2006-11-28 21:48:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -115,16 +115,20 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
   xpos += bwidth + 10;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
 #else
   xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
   xpos += bwidth + 10;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
 #endif
   // Add focus widgets for OK/Cancel buttons
   addToFocusList(wid);
