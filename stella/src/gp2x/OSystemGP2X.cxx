@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.12 2006-11-28 21:48:56 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.13 2006-11-29 00:24:57 azaballa Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -136,10 +136,10 @@ void OSystemGP2X::getScreenDimensions(int& width, int& height)
 void OSystemGP2X::setDefaultJoymap()
 {
   myEventHandler->setDefaultJoyMapping(Event::LauncherMode, kEmulationMode, 0, 8);	// Start
-  myEventHandler->setDefaultJoyMapping(Event::CmdMenuMode, kEmulationMode, 0, 9);	// Select
+  myEventHandler->setDefaultJoyMapping(Event::TakeSnapshot, kEmulationMode, 0, 9);	// Select
   myEventHandler->setDefaultJoyMapping(Event::ConsoleReset, kEmulationMode, 0, 10);	// L
   myEventHandler->setDefaultJoyMapping(Event::ConsoleSelect, kEmulationMode, 0, 11);	// R
-  myEventHandler->setDefaultJoyMapping(Event::TakeSnapshot, kEmulationMode, 0, 12);	// A
+  myEventHandler->setDefaultJoyMapping(Event::CmdMenuMode, kEmulationMode, 0, 12);	// A
   myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire, kEmulationMode, 0, 13);	// B
   myEventHandler->setDefaultJoyMapping(Event::Pause, kEmulationMode, 0, 14);		// X
   myEventHandler->setDefaultJoyMapping(Event::MenuMode, kEmulationMode, 0, 15);		// Y
@@ -147,15 +147,16 @@ void OSystemGP2X::setDefaultJoymap()
   myEventHandler->setDefaultJoyMapping(Event::VolumeDecrease, kEmulationMode, 0, 17);	// Vol-
   myEventHandler->setDefaultJoyMapping(Event::NoType, kEmulationMode, 0, 18);		// Click
   //Begin Menu Navigation Mapping
-  myEventHandler->setDefaultJoyMapping(Event::NoType, kMenuMode, 0, 8);			// Start
-  myEventHandler->setDefaultJoyMapping(Event::NoType, kMenuMode, 0, 9);			// Select
+  myEventHandler->setDefaultJoyMapping(Event::UICancel, kMenuMode, 0, 8);		// Start
+  myEventHandler->setDefaultJoyMapping(Event::UIOK, kMenuMode, 0, 9);			// Select
   myEventHandler->setDefaultJoyMapping(Event::UIPgUp, kMenuMode, 0, 10);		// L
   myEventHandler->setDefaultJoyMapping(Event::UIPgDown, kMenuMode, 0, 11);		// R
   myEventHandler->setDefaultJoyMapping(Event::UITabNext, kMenuMode, 0, 12);		// A
   myEventHandler->setDefaultJoyMapping(Event::UISelect, kMenuMode, 0, 13);		// B
-  myEventHandler->setDefaultJoyMapping(Event::UINavNext, kMenuMode, 0, 15);		// Y
-  myEventHandler->setDefaultJoyMapping(Event::NoType, kMenuMode, 0, 16);		// Vol+
-  myEventHandler->setDefaultJoyMapping(Event::NoType, kMenuMode, 0, 17);		// Vol-
+  myEventHandler->setDefaultJoyMapping(Event::UITabPrev, kMenuMode, 0, 14);             // X
+  myEventHandler->setDefaultJoyMapping(Event::UICancel, kMenuMode, 0, 15);		// Y
+  myEventHandler->setDefaultJoyMapping(Event::UINavNext, kMenuMode, 0, 16);		// Vol+
+  myEventHandler->setDefaultJoyMapping(Event::UINavPrev, kMenuMode, 0, 17);		// Vol-
   myEventHandler->setDefaultJoyMapping(Event::NoType, kMenuMode, 0, 18);		// Click
 }
 

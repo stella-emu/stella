@@ -853,10 +853,10 @@ case $_host_os in
 			;;
 		gp2x)
 			# -O3 hangs the GP2X, do not use.
-			CXXFLAGS="-O2 -finline-functions -mtune=arm940t"
+			CXXFLAGS="-O2 -finline-functions -mtune=arm920t"
 			DEFINES="$DEFINES -DBSPF_GP2X -DGP2X -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/gp2x"
-			INCLUDES="$INCLUDES -I$SRC/gp2x"
+			INCLUDES="$INCLUDES -I$SRC/gp2x $ZLIB_CFLAGS"
 			
 			_ranlib="arm-linux-ranlib"
 			_ar="arm-linux-ar cru"
