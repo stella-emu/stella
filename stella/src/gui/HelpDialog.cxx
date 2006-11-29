@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.17 2006-11-28 21:48:56 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.18 2006-11-29 18:22:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,7 +48,7 @@ HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
   ButtonWidget* b = addButton(font, w - (kButtonWidth + 10), h - 24,
                               "Close", kCloseCmd);
   wid.push_back(b);
-  addCancelWidget(b);
+  addOKWidget(b);  addCancelWidget(b);
 
   myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
                                  "", kTextAlignCenter);

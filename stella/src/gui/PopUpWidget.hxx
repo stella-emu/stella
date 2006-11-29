@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.13 2006-05-04 17:45:25 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.14 2006-11-29 18:22:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,9 +64,6 @@ class PopUpWidget : public Widget, public CommandSender
                 const string& label, int labelWidth = 0, int cmd = 0);
     ~PopUpWidget();
 
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    bool handleEvent(Event::Type e);
-
     bool wantsFocus()  { return true; }
 
     void appendEntry(const string& entry, int tag = (int)-1);
@@ -86,6 +83,8 @@ class PopUpWidget : public Widget, public CommandSender
       { return (_selectedItem >= 0) ? _entries[_selectedItem].name : EmptyString; }
 
   protected:
+    void handleMouseDown(int x, int y, int button, int clickCount);
+    bool handleEvent(Event::Type e);
     void drawWidget(bool hilite);
 
   protected:
@@ -109,12 +108,16 @@ class PopUpDialog : public Dialog
 	
     void drawDialog();
 
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction); // Scroll through entries with scroll wheel
-    void handleMouseMoved(int x, int y, int button);    // Redraw selections depending on mouse position
-    void handleKeyDown(int ascii, int keycode, int modifiers);  // Scroll through entries with arrow keys etc
-
   protected:
+    void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseWheel(int x, int y, int direction);
+    void handleMouseMoved(int x, int y, int button);
+    void handleKeyDown(int ascii, int keycode, int modifiers);  // Scroll through entries with arrow keys etc
+    void handleJoyDown(int stick, int button);
+    void handleJoyAxis(int stick, int axis, int value);
+    bool handleJoyHat(int stick, int hat, int value);
+    void handleEvent(Event::Type e);
+
     void drawMenuEntry(int entry, bool hilite);
 
     void recalc();
@@ -128,7 +131,6 @@ class PopUpDialog : public Dialog
   private:
     void sendSelection();
     void cancelSelection();
-    void handleEvent(Event::Type e);
 
   protected:
     PopUpWidget* _popUpBoss;

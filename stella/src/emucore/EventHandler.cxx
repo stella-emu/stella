@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.174 2006-11-28 21:48:56 stephena Exp $
+// $Id: EventHandler.cxx,v 1.175 2006-11-29 18:22:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -623,9 +623,7 @@ void EventHandler::poll(uInt32 time)
         else if(myOverlay != NULL)
         {
           // Make sure the unicode field is valid
-          if (key == SDLK_BACKSPACE || key == SDLK_DELETE ||
-             (key >= SDLK_UP && key <= SDLK_PAGEDOWN))
-            unicode = key;
+          if(!unicode) unicode = key;
 
           myOverlay->handleKeyEvent(unicode, key, mod, state);
         }
@@ -1682,13 +1680,13 @@ void EventHandler::setDefaultMapping(EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultKeymap(EventMode mode)
 {
+  // Erase all mappings
+  for(int i = 0; i < SDLK_LAST; ++i)
+    myKeyTable[i][mode] = Event::NoType;
+
   switch(mode)
   {
     case kEmulationMode:
-      // Erase all mappings
-      for(int i = 0; i < SDLK_LAST; ++i)
-        myKeyTable[i][mode] = Event::NoType;
-
       myKeyTable[ SDLK_1 ][mode]         = Event::KeyboardZero1;
       myKeyTable[ SDLK_2 ][mode]         = Event::KeyboardZero2;
       myKeyTable[ SDLK_3 ][mode]         = Event::KeyboardZero3;

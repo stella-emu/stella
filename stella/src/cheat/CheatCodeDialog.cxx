@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.10 2006-05-04 17:45:20 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.11 2006-11-29 18:22:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -74,15 +74,19 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
 #ifndef MAC_OSX
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
   myCancelButton = addButton(font, _w - (kButtonWidth + 10), _h - 24,
                              "Cancel", kCloseCmd);
   wid.push_back(myCancelButton);
+  addCancelWidget(myCancelButton);
 #else
   myCancelButton = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24,
                              "Cancel", kCloseCmd);
   wid.push_back(myCancelButton);
+  addCancelWidget(myCancelButton);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
 #endif
 
   addToFocusList(wid);

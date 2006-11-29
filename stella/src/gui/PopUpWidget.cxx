@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.27 2006-11-04 19:38:25 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.28 2006-11-29 18:22:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -135,15 +135,36 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   if(isMouseDown())
     return;
 
-  switch (ascii)
+  Event::Type e = instance()->eventHandler().eventForKey(ascii, kMenuMode);
+  handleEvent(e);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpDialog::handleJoyDown(int stick, int button)
+{
+  Event::Type e =
+    instance()->eventHandler().eventForJoyButton(stick, button, kMenuMode);
+  handleEvent(e);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpDialog::handleJoyAxis(int stick, int axis, int value)
+{
+  if(value != 0)  // we don't care about 'axis up' events
   {
-    case 27:        // escape
-      cancelSelection();
-      break;
-    default:
-      handleEvent(instance()->eventHandler().eventForKey(ascii, kMenuMode));
-      break;
+    Event::Type e =
+      instance()->eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
+    handleEvent(e);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PopUpDialog::handleJoyHat(int stick, int hat, int value)
+{
+  Event::Type e =
+    instance()->eventHandler().eventForJoyHat(stick, hat, value, kMenuMode);
+  handleEvent(e);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,6 +188,9 @@ void PopUpDialog::handleEvent(Event::Type e)
       break;
     case Event::UIEnd:
       setSelection(_popUpBoss->_entries.size()-1);
+      break;
+    case Event::UICancel:
+      cancelSelection();
       break;
     default:
       break;
