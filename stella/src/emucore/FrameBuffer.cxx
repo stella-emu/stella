@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.99 2006-11-27 21:02:45 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.100 2006-11-29 20:01:56 azaballa Exp $
 //============================================================================
 
 #include <sstream>
@@ -430,7 +430,11 @@ void FrameBuffer::setCursorState()
       break;
 
     default:
+    #if !defined(GP2X)
       showCursor(true);
+    #else
+      showCursor(false);
+    #endif
   }
 }
 
