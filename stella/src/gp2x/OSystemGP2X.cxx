@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.13 2006-11-29 00:24:57 azaballa Exp $
+// $Id: OSystemGP2X.cxx,v 1.14 2006-11-29 01:29:28 azaballa Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -153,7 +153,7 @@ void OSystemGP2X::setDefaultJoymap()
   myEventHandler->setDefaultJoyMapping(Event::UIPgDown, kMenuMode, 0, 11);		// R
   myEventHandler->setDefaultJoyMapping(Event::UITabNext, kMenuMode, 0, 12);		// A
   myEventHandler->setDefaultJoyMapping(Event::UISelect, kMenuMode, 0, 13);		// B
-  myEventHandler->setDefaultJoyMapping(Event::UITabPrev, kMenuMode, 0, 14);             // X
+  myEventHandler->setDefaultJoyMapping(Event::UITabPrev, kMenuMode, 0, 14);		// X
   myEventHandler->setDefaultJoyMapping(Event::UICancel, kMenuMode, 0, 15);		// Y
   myEventHandler->setDefaultJoyMapping(Event::UINavNext, kMenuMode, 0, 16);		// Vol+
   myEventHandler->setDefaultJoyMapping(Event::UINavPrev, kMenuMode, 0, 17);		// Vol-
