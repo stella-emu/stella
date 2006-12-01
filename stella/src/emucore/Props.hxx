@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.10 2006-11-19 00:48:55 stephena Exp $
+// $Id: Props.hxx,v 1.11 2006-12-01 18:30:18 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -57,7 +57,7 @@ enum PropertyType {
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.10 2006-11-19 00:48:55 stephena Exp $
+  @version $Id: Props.hxx,v 1.11 2006-12-01 18:30:18 stephena Exp $
 */
 class Properties
 {
@@ -112,12 +112,12 @@ class Properties
 
       @param out The output stream to use
     */
-    void save(ostream& out);
+    void save(ostream& out) const;
 
     /**
       Print the attributes of this properties object
     */
-    void print();
+    void print() const;
 
     /**
       Resets all properties to their defaults

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.28 2006-11-28 21:48:56 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.29 2006-12-01 18:30:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #include "GuiUtils.hxx"
 #include "OSystem.hxx"
 #include "Props.hxx"
+#include "PropsSet.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "EditTextWidget.hxx"
@@ -34,7 +35,8 @@ GameInfoDialog::GameInfoDialog(
       OSystem* osystem, DialogContainer* parent, const GUI::Font& font,
       GuiObject* boss, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
-    CommandSender(boss)
+    CommandSender(boss),
+    myDefaultsSelected(false)
 {
   const int fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
@@ -46,7 +48,7 @@ GameInfoDialog::GameInfoDialog(
 
   // The tab widget
   xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos - 15);
   addTabWidget(myTab);
 
   // 1) Cartridge properties
@@ -279,23 +281,29 @@ GameInfoDialog::GameInfoDialog(
   myTab->setActiveTab(0);
 
   // Add message concerning usage
-  new StaticTextWidget(this, font, 10, _h - 20, 120, fontHeight,
-                       "(*) Requires a ROM reload", kTextAlignLeft);
+  lwidth = font.getStringWidth("(*) Changes to properties require a ROM reload");
+  new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
+                       "(*) Changes to properties require a ROM reload",
+                       kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
   wid.clear();
+  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  wid.push_back(b);
 #ifndef MAC_OSX
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
+  myCancelButton =
+      addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(myCancelButton);
+  addCancelWidget(myCancelButton);
 #else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
+  myCancelButton =
+      addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
+  wid.push_back(myCancelButton);
+  addCancelWidgetmyCancelButton);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
@@ -311,29 +319,37 @@ GameInfoDialog::~GameInfoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
+  myDefaultsSelected = false;
+  myGameProperties = myOSystem->console().properties();
+  loadView();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::loadView()
+{
   string s;
   int i;
 
   // Cartridge properties
-  s = myGameProperties->get(Cartridge_Name);
+  s = myGameProperties.get(Cartridge_Name);
   myName->setEditString(s);
 
-  s = myGameProperties->get(Cartridge_MD5);
+  s = myGameProperties.get(Cartridge_MD5);
   myMD5->setLabel(s);
 
-  s = myGameProperties->get(Cartridge_Manufacturer);
+  s = myGameProperties.get(Cartridge_Manufacturer);
   myManufacturer->setEditString(s);
 
-  s = myGameProperties->get(Cartridge_ModelNo);
+  s = myGameProperties.get(Cartridge_ModelNo);
   myModelNo->setEditString(s);
 
-  s = myGameProperties->get(Cartridge_Rarity);
+  s = myGameProperties.get(Cartridge_Rarity);
   myRarity->setEditString(s);
 
-  s = myGameProperties->get(Cartridge_Note);
+  s = myGameProperties.get(Cartridge_Note);
   myNote->setEditString(s);
 
-  s = myGameProperties->get(Cartridge_Sound);
+  s = myGameProperties.get(Cartridge_Sound);
   if(s == "MONO")
     mySound->setSelectedTag(1);
   else if(s == "STEREO")
@@ -341,7 +357,7 @@ void GameInfoDialog::loadConfig()
   else
     mySound->setSelectedTag(0);
 
-  s = myGameProperties->get(Cartridge_Type);
+  s = myGameProperties.get(Cartridge_Type);
   for(i = 0; i < 21; ++i)
   {
     if(s == ourCartridgeList[i][1])
@@ -351,7 +367,7 @@ void GameInfoDialog::loadConfig()
   myType->setSelectedTag(i);
 
   // Console properties
-  s = myGameProperties->get(Console_LeftDifficulty);
+  s = myGameProperties.get(Console_LeftDifficulty);
   if(s == "B")
     myLeftDiff->setSelectedTag(1);
   else if(s == "A")
@@ -359,7 +375,7 @@ void GameInfoDialog::loadConfig()
   else
     myLeftDiff->setSelectedTag(0);
 
-  s = myGameProperties->get(Console_RightDifficulty);
+  s = myGameProperties.get(Console_RightDifficulty);
   if(s == "B")
     myRightDiff->setSelectedTag(1);
   else if(s == "A")
@@ -367,7 +383,7 @@ void GameInfoDialog::loadConfig()
   else
     myRightDiff->setSelectedTag(0);
 
-  s = myGameProperties->get(Console_TelevisionType);
+  s = myGameProperties.get(Console_TelevisionType);
   if(s == "COLOR")
     myTVType->setSelectedTag(1);
   else if(s == "BLACKANDWHITE")
@@ -375,7 +391,7 @@ void GameInfoDialog::loadConfig()
   else
     myTVType->setSelectedTag(0);
 
-  s = myGameProperties->get(Console_SwapPorts);
+  s = myGameProperties.get(Console_SwapPorts);
   if(s == "YES")
     mySwapPorts->setSelectedTag(1);
   else if(s == "NO")
@@ -384,7 +400,7 @@ void GameInfoDialog::loadConfig()
     mySwapPorts->setSelectedTag(0);
 
   // Controller properties
-  s = myGameProperties->get(Controller_Left);
+  s = myGameProperties.get(Controller_Left);
   for(i = 0; i < 5; ++i)
   {
     if(s == ourControllerList[i][1])
@@ -393,7 +409,7 @@ void GameInfoDialog::loadConfig()
   i = (i == 5) ? 0: i + 1;
   myLeftController->setSelectedTag(i);
 
-  s = myGameProperties->get(Controller_Right);
+  s = myGameProperties.get(Controller_Right);
   for(i = 0; i < 5; ++i)
   {
     if(s == ourControllerList[i][1])
@@ -403,7 +419,7 @@ void GameInfoDialog::loadConfig()
   myRightController->setSelectedTag(i);
 
   // Display properties
-  s = myGameProperties->get(Display_Format);
+  s = myGameProperties.get(Display_Format);
   if(s == "NTSC")
     myFormat->setSelectedTag(1);
   else if(s == "PAL")
@@ -413,21 +429,21 @@ void GameInfoDialog::loadConfig()
   else
     myFormat->setSelectedTag(0);
 
-  s = myGameProperties->get(Display_XStart);
+  s = myGameProperties.get(Display_XStart);
   myXStart->setEditString(s);
 
-  s = myGameProperties->get(Display_Width);
+  s = myGameProperties.get(Display_Width);
   myWidth->setEditString(s);
 
-  s = myGameProperties->get(Display_YStart);
+  s = myGameProperties.get(Display_YStart);
   myYStart->setEditString(s);
 
-  s = myGameProperties->get(Display_Height);
+  s = myGameProperties.get(Display_Height);
   myHeight->setEditString(s);
 
   myPPBlend->setEnabled(false);
   myPPBlendLabel->setEnabled(false);
-  s = myGameProperties->get(Display_Phosphor);
+  s = myGameProperties.get(Display_Phosphor);
   if(s == "YES")
   {
     myPhosphor->setSelectedTag(1);
@@ -439,11 +455,11 @@ void GameInfoDialog::loadConfig()
   else
     myPhosphor->setSelectedTag(0);
 
-  s = myGameProperties->get(Display_PPBlend);
+  s = myGameProperties.get(Display_PPBlend);
   myPPBlend->setValue(atoi(s.c_str()));
   myPPBlendLabel->setLabel(s);
 
-  s = myGameProperties->get(Emulation_HmoveBlanks);
+  s = myGameProperties.get(Emulation_HmoveBlanks);
   if(s == "YES")
     myHmoveBlanks->setSelectedTag(1);
   else if(s == "NO")
@@ -462,30 +478,30 @@ void GameInfoDialog::saveConfig()
 
   // Cartridge properties
   s = myName->getEditString();
-  myGameProperties->set(Cartridge_Name, s);
+  myGameProperties.set(Cartridge_Name, s);
 
   s = myManufacturer->getEditString();
-  myGameProperties->set(Cartridge_Manufacturer, s);
+  myGameProperties.set(Cartridge_Manufacturer, s);
 
   s = myModelNo->getEditString();
-  myGameProperties->set(Cartridge_ModelNo, s);
+  myGameProperties.set(Cartridge_ModelNo, s);
 
   s = myRarity->getEditString();
-  myGameProperties->set(Cartridge_Rarity, s);
+  myGameProperties.set(Cartridge_Rarity, s);
 
   s = myNote->getEditString();
-  myGameProperties->set(Cartridge_Note, s);
+  myGameProperties.set(Cartridge_Note, s);
 
   tag = mySound->getSelectedTag();
   s = (tag == 1) ? "Mono" : "Stereo";
-  myGameProperties->set(Cartridge_Sound, s);
+  myGameProperties.set(Cartridge_Sound, s);
 
   tag = myType->getSelectedTag();
   for(i = 0; i < 21; ++i)
   {
     if(i == tag-1)
     {
-      myGameProperties->set(Cartridge_Type, ourCartridgeList[i][1]);
+      myGameProperties.set(Cartridge_Type, ourCartridgeList[i][1]);
       break;
     }
   }
@@ -493,19 +509,19 @@ void GameInfoDialog::saveConfig()
   // Console properties
   tag = myLeftDiff->getSelectedTag();
   s = (tag == 1) ? "B" : "A";
-  myGameProperties->set(Console_LeftDifficulty, s);
+  myGameProperties.set(Console_LeftDifficulty, s);
 
   tag = myRightDiff->getSelectedTag();
   s = (tag == 1) ? "B" : "A";
-  myGameProperties->set(Console_RightDifficulty, s);
+  myGameProperties.set(Console_RightDifficulty, s);
 
   tag = myTVType->getSelectedTag();
   s = (tag == 1) ? "Color" : "BlackAndWhite";
-  myGameProperties->set(Console_TelevisionType, s);
+  myGameProperties.set(Console_TelevisionType, s);
 
   tag = mySwapPorts->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
-  myGameProperties->set(Console_SwapPorts, s);
+  myGameProperties.set(Console_SwapPorts, s);
 
   // Controller properties
   tag = myLeftController->getSelectedTag();
@@ -513,7 +529,7 @@ void GameInfoDialog::saveConfig()
   {
     if(i == tag-1)
     {
-      myGameProperties->set(Controller_Left, ourControllerList[i][0]);
+      myGameProperties.set(Controller_Left, ourControllerList[i][0]);
       break;
     }
   }
@@ -523,7 +539,7 @@ void GameInfoDialog::saveConfig()
   {
     if(i == tag-1)
     {
-      myGameProperties->set(Controller_Right, ourControllerList[i][0]);
+      myGameProperties.set(Controller_Right, ourControllerList[i][0]);
       break;
     }
   }
@@ -531,30 +547,52 @@ void GameInfoDialog::saveConfig()
   // Display properties
   tag = myFormat->getSelectedTag();
   s = (tag == 3) ? "PAL60" : (tag == 2) ? "PAL" : "NTSC";
-  myGameProperties->set(Display_Format, s);
+  myGameProperties.set(Display_Format, s);
 
   s = myXStart->getEditString();
-  myGameProperties->set(Display_XStart, s);
+  myGameProperties.set(Display_XStart, s);
 
   s = myWidth->getEditString();
-  myGameProperties->set(Display_Width, s);
+  myGameProperties.set(Display_Width, s);
 
   s = myYStart->getEditString();
-  myGameProperties->set(Display_YStart, s);
+  myGameProperties.set(Display_YStart, s);
 
   s = myHeight->getEditString();
-  myGameProperties->set(Display_Height, s);
+  myGameProperties.set(Display_Height, s);
 
   tag = myPhosphor->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
-  myGameProperties->set(Display_Phosphor, s);
+  myGameProperties.set(Display_Phosphor, s);
 
   s = myPPBlendLabel->getLabel();
-  myGameProperties->set(Display_PPBlend, s);
+  myGameProperties.set(Display_PPBlend, s);
 
   tag = myHmoveBlanks->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
-  myGameProperties->set(Emulation_HmoveBlanks, s);
+  myGameProperties.set(Emulation_HmoveBlanks, s);
+
+  // Determine whether to add or remove an entry from the properties set
+  if(myDefaultsSelected)
+    instance()->propSet().removeMD5(myGameProperties.get(Cartridge_MD5));
+  else
+    instance()->propSet().insert(myGameProperties, true);
+
+  // In any event, inform the Console and save the properties
+  instance()->console().setProperties(myGameProperties);
+  instance()->propSet().save(myOSystem->propertiesFile());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::setDefaults()
+{
+  // Load the default properties
+  string md5 = myGameProperties.get(Cartridge_MD5);
+  instance()->propSet().getMD5(md5, myGameProperties, true);
+
+  // Reload the current dialog
+  loadView();
+  myDefaultsSelected = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -565,8 +603,11 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
   {
     case kOKCmd:
       saveConfig();
-      instance()->eventHandler().saveProperties();
       close();
+      break;
+
+    case kDefaultsCmd:
+      setDefaults();
       break;
 
     case kPhosphorChanged:

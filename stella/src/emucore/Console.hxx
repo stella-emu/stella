@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.48 2006-11-25 01:34:35 stephena Exp $
+// $Id: Console.hxx,v 1.49 2006-12-01 18:30:16 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.48 2006-11-25 01:34:35 stephena Exp $
+  @version $Id: Console.hxx,v 1.49 2006-12-01 18:30:16 stephena Exp $
 */
 class Console
 {
@@ -120,6 +120,13 @@ class Console
     */
     M6532& riot() const { return *myRiot; }
 
+    /**
+      Set the properties to those given
+
+      @param The properties to use for the current game
+    */
+    void setProperties(const Properties& props);
+
   public:
     /**
       Overloaded assignment operator
@@ -151,15 +158,6 @@ class Console
       Toggles phosphor effect.
     */
     void togglePhosphor();
-
-    /**
-      Save a copy of the current properties after any changes.
-
-      @param filename Filename to save the properties into.
-      @param merge Whether or not to merge the changes into the
-                   main properties file.
-    */
-    void saveProperties(string filename, bool merge = false);
 
     /**
       Initialize the basic properties of the console.

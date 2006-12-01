@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.102 2006-11-27 02:18:47 stephena Exp $
+// $Id: Console.cxx,v 1.103 2006-12-01 18:30:16 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -382,31 +382,9 @@ void Console::togglePhosphor()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::saveProperties(string filename, bool merge)
+void Console::setProperties(const Properties& props)
 {
-  // Merge the current properties into the PropertiesSet file
-  if(merge)
-  {
-    if(myOSystem->propSet().merge(myProperties, filename))
-      myOSystem->frameBuffer().showMessage("Properties merged");
-    else
-      myOSystem->frameBuffer().showMessage("Error merging properties");
-  }
-  else  // Save to the specified file directly
-  {
-    ofstream out(filename.c_str(), ios::out);
-
-    if(out && out.is_open())
-    {
-      myProperties.save(out);
-      out.close();
-      myOSystem->frameBuffer().showMessage("Properties saved");
-    }
-    else
-    {
-      myOSystem->frameBuffer().showMessage("Error saving properties");
-    }
-  }
+  myProperties = props;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -448,7 +426,6 @@ void Console::initialize()
 
   // Initialize the options menu system with updated values from the framebuffer
   myOSystem->menu().initialize();
-  myOSystem->menu().setGameProfile(myProperties);
 
   // Initialize the command menu system with updated values from the framebuffer
   myOSystem->commandMenu().initialize();
@@ -794,7 +771,7 @@ void Console::loadUserPalette()
     return;
   }
 
-  // Now that we have valid data, create the user-defined buffers
+  // Now that we have valid data, create the user-defined palettes
   ourUserNTSCPalette = new uInt32[256];
   ourUserPALPalette  = new uInt32[256];
   uInt8 pixbuf[3];  // Temporary buffer for one 24-bit pixel

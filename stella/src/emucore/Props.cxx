@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.14 2006-11-19 00:48:55 stephena Exp $
+// $Id: Props.cxx,v 1.15 2006-12-01 18:30:18 stephena Exp $
 //============================================================================
 
 #include <cctype>
@@ -135,9 +135,10 @@ void Properties::load(istream& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::save(ostream& out)
+void Properties::save(ostream& out) const
 {
   // Write out each of the key and value pairs
+  bool changed = false;
   for(int i = 0; i < LastPropType; ++i)
   {
     // Try to save some space by only saving the items that differ from default
@@ -147,13 +148,17 @@ void Properties::save(ostream& out)
       out.put(' ');
       writeQuotedString(out, myProperties[i]);
       out.put('\n');
+      changed = true;
     }
   }
 
-  // Put a trailing null string so we know when to stop reading
-  writeQuotedString(out, "");
-  out.put('\n');
-  out.put('\n');
+  if(changed)
+  {
+    // Put a trailing null string so we know when to stop reading
+    writeQuotedString(out, "");
+    out.put('\n');
+    out.put('\n');
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,7 +248,7 @@ void Properties::copy(const Properties& properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::print()
+void Properties::print() const
 {
   cout << get(Cartridge_MD5) << "|"
        << get(Cartridge_Name) << "|"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.18 2006-11-18 13:29:11 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.19 2006-12-01 18:30:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,7 +22,6 @@
 #ifndef OPTIONS_DIALOG_HXX
 #define OPTIONS_DIALOG_HXX
 
-class Properties;
 class CommandSender;
 class DialogContainer;
 class AudioDialog;
@@ -42,8 +41,6 @@ class OptionsDialog : public Dialog
   public:
     OptionsDialog(OSystem* osystem, DialogContainer* parent);
     virtual ~OptionsDialog();
-
-    void setGameProfile(Properties& props) { myGameInfoDialog->setGameProfile(props); }
 
   private:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);

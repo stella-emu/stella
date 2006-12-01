@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.48 2006-11-28 21:48:56 stephena Exp $
+// $Id: Dialog.cxx,v 1.49 2006-12-01 18:30:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -485,7 +485,7 @@ bool Dialog::handleNavEvent(Event::Type e)
       break;
 
     case Event::UIOK:
-      if(_okWidget)
+      if(_okWidget && _okWidget->isEnabled())
       {
         // Receiving 'OK' is the same as getting the 'Select' event
         _okWidget->handleEvent(Event::UISelect);
@@ -494,7 +494,7 @@ bool Dialog::handleNavEvent(Event::Type e)
       break;
 
     case Event::UICancel:
-      if(_cancelWidget)
+      if(_cancelWidget && _cancelWidget->isEnabled())
       {
         // Receiving 'Cancel' is the same as getting the 'Select' event
         _cancelWidget->handleEvent(Event::UISelect);

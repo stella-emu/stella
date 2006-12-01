@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.23 2006-10-22 18:58:46 stephena Exp $
+// $Id: PropsSet.cxx,v 1.24 2006-12-01 18:30:18 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -62,32 +62,33 @@ PropertiesSet::~PropertiesSet()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::getMD5(const string& md5, Properties &properties)
+void PropertiesSet::getMD5(const string& md5, Properties& properties,
+                           bool useDefaults) const
 {
   properties.setDefaults();
   bool found = false;
 
   // First check our dynamic BST for the object
-  if(myRoot != 0)
+  if(!useDefaults && myRoot != 0)
   {
     TreeNode* current = myRoot;
-
     while(current)
     {
-      string currentMd5 = current->props->get(Cartridge_MD5);
-
+      const string& currentMd5 = current->props->get(Cartridge_MD5);
       if(currentMd5 == md5)
       {
-        found = true;
+        // We only report a node as found if it's to be saved.
+        // Nodes in the BST that are marked as 'do not save' are
+        // essentially treated as if they're not present.
+        // What really should happen is the node should be removed,
+        // and the tree rebalanced ...
+        found = current->save;
         break;
       }
-      else
-      {
-        if(md5 < currentMd5)
-          current = current->left;
-        else 
-          current = current->right;
-      }
+      else if(md5 < currentMd5)
+        current = current->left;
+      else 
+        current = current->right;
     }
 
     if(found)
@@ -131,6 +132,29 @@ void PropertiesSet::getMD5(const string& md5, Properties &properties)
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
   insertNode(myRoot, properties, save);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::removeMD5(const string& md5)
+{
+  // We only remove from the dynamic BST
+  if(myRoot != 0)
+  {
+    TreeNode* current = myRoot;
+    while(current)
+    {
+      const string& currentMd5 = current->props->get(Cartridge_MD5);
+      if(currentMd5 == md5)
+      {
+        current->save = false;  // make sure this node isn't saved
+        break;
+      }
+      else if(md5 < currentMd5)
+        current = current->left;
+      else 
+        current = current->right;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,20 +226,26 @@ void PropertiesSet::load(const string& filename, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::save(ostream& out)
+bool PropertiesSet::save(const string& filename) const
 {
+  ofstream out(filename.c_str(), ios::out);
+  if(!out)
+    return false;
+
   saveNode(out, myRoot);
+  out.close();
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::print()
+void PropertiesSet::print() const
 {
   cout << size() << endl;
   printNode(myRoot);  // FIXME - print out internal properties as well
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::saveNode(ostream& out, TreeNode *node)
+void PropertiesSet::saveNode(ostream& out, TreeNode *node) const
 {
   if(node)
   {
@@ -227,11 +257,12 @@ void PropertiesSet::saveNode(ostream& out, TreeNode *node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::printNode(TreeNode *node)
+void PropertiesSet::printNode(TreeNode *node) const
 {
   if(node)
   {
-    node->props->print();
+    if(node->save)
+      node->props->print();
     printNode(node->left);
     printNode(node->right);
   }
@@ -241,19 +272,4 @@ void PropertiesSet::printNode(TreeNode *node)
 uInt32 PropertiesSet::size() const
 {
   return mySize;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PropertiesSet::merge(const Properties& properties, const string& filename)
-{
-  ofstream out(filename.c_str());
-  if(out.is_open())
-  {
-    insert(properties, true);  // always save merged properties
-    save(out);
-    out.close();
-    return true;
-  }
-  else
-    return false;
 }

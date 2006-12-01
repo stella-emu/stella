@@ -20949,3 +20949,11 @@
 "Cartridge.Rarity" "Homebrew"
 "Display.Format" "PAL"
 ""
+
+"Cartridge.MD5" "807a8ff6216b00d52aba2dfea5d8d860"
+"Cartridge.Manufacturer" "John Payson"
+"Cartridge.Name" "Strat-O-Gems Deluxe"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL"
+"Display.Height" "250"
+""

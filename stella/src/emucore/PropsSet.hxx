@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.14 2006-03-19 00:46:04 stephena Exp $
+// $Id: PropsSet.hxx,v 1.15 2006-12-01 18:30:18 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -57,8 +57,10 @@ class PropertiesSet
       @param md5         The md5 of the property to get
       @param properties  The property with the given MD5, or the default
                          properties if not found
+      @param defaults    Use the built-in defaults, ignoring any external properties
     */
-    void getMD5(const string& md5, Properties& properties);
+    void getMD5(const string& md5, Properties& properties,
+                bool useDefaults = false) const;
 
     /** 
       Load properties from the specified file.  Use the given 
@@ -71,11 +73,31 @@ class PropertiesSet
     void load(const string& filename, bool save);
 
     /**
-      Save properties to the specified output stream 
+      Save properties to the specified file.
 
-      @param out  The output stream to use
+      @param filename  Full pathname of output file to use
+
+      @return  True on success, false on failure
+               Failure occurs if file couldn't be opened for writing
     */
-    void save(ostream& out);
+    bool save(const string& filename) const;
+
+    /**
+      Insert the properties into the set.  If a duplicate is inserted
+      the old properties are overwritten with the new ones.
+
+      @param properties  The collection of properties
+      @param save        Indicates whether to set the 'save' tag for
+                         this property
+    */
+    void insert(const Properties& properties, bool save = true);
+
+    /**
+      Marks the property with the given MD5 as being removed.
+
+      @param md5  The md5 of the property to remove
+    */
+    void removeMD5(const string& md5);
 
     /**
       Get the number of properties in the collection.
@@ -87,28 +109,7 @@ class PropertiesSet
     /**
       Prints the contents of the PropertiesSet as a flat file.
     */
-    void print();
-
-    /**
-      Merge the given properties into the collection.
-
-      @param properties  The properties to merge
-      @param filename    Full pathname of properties file to save
-
-      @return  True on success, false on failure
-               Failure occurs if file couldn't be opened for writing
-    */
-    bool merge(const Properties& properties, const string& filename);
-
-    /**
-      Insert the properties into the set.  If a duplicate is inserted 
-      the old properties are overwritten with the new ones.
-
-      @param properties  The collection of properties
-      @param save        Indicates whether to set the 'save' tag for
-                         this property
-    */
-    void insert(const Properties& properties, bool save = true);
+    void print() const;
 
   private:
     struct TreeNode {
@@ -141,14 +142,14 @@ class PropertiesSet
       @param out   The output stream to use
       @param node  The current subroot of the tree
     */
-    void saveNode(ostream& out, TreeNode *node);
+    void saveNode(ostream& out, TreeNode* node) const;
 
     /**
       Prints the current node properties
 
       @param node  The current subroot of the tree
     */
-    void printNode(TreeNode *node);
+    void printNode(TreeNode* node) const;
 
   private:
     // The parent system for this object

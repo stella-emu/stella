@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.17 2006-11-04 19:38:25 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.18 2006-12-01 18:30:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,16 +41,20 @@ class GameInfoDialog : public Dialog, public CommandSender
     GameInfoDialog(OSystem* osystem, DialogContainer* parent,
                    const GUI::Font& font, GuiObject* boss,
                    int x, int y, int w, int h);
-    ~GameInfoDialog();
+    virtual ~GameInfoDialog();
 
-    void setGameProfile(Properties& props) { myGameProperties = &props; }
-
+  protected:
     void loadConfig();
     void saveConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    void setDefaults();
+    void loadView();
+
+  private:
     TabWidget* myTab;
+    ButtonWidget* myCancelButton;
 
     // Cartridge properties
     EditTextWidget*   myName;
@@ -95,7 +99,10 @@ class GameInfoDialog : public Dialog, public CommandSender
     };
 
     /** Game properties for currently loaded ROM */
-    Properties* myGameProperties;
+    Properties myGameProperties;
+
+    /** Indicates that the default properties have been loaded */
+    bool myDefaultsSelected;
 
     /** Holds static strings for Cartridge type */
     static const char* ourCartridgeList[21][2];

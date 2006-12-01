@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.175 2006-11-29 18:22:55 stephena Exp $
+// $Id: EventHandler.cxx,v 1.176 2006-12-01 18:30:18 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -35,6 +35,7 @@
 #include "GuiUtils.hxx"
 #include "Deserializer.hxx"
 #include "Serializer.hxx"
+#include "PropsSet.hxx"
 #include "bspf.hxx"
 
 #ifdef DEVELOPER_SUPPORT
@@ -474,10 +475,6 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->console().enableBits(true);
                 break;
 
-              case SDLK_s:  // Alt-s merges properties into user properties (user.pro)
-                saveProperties();
-                break;
-
               case SDLK_p:  // Alt-p toggles phosphor effect
                 myOSystem->console().togglePhosphor();
                 break;
@@ -603,10 +600,20 @@ void EventHandler::poll(uInt32 time)
                 break;
 
               case SDLK_s:         // Ctrl-s saves properties to a file
-                string newPropertiesFile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+              {
+                string filename = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
                   myOSystem->console().properties().get(Cartridge_Name) + ".pro";
-                myOSystem->console().saveProperties(newPropertiesFile);
+                ofstream out(filename.c_str(), ios::out);
+                if(out)
+                {
+                  myOSystem->console().properties().save(out);
+                  out.close();
+                  myOSystem->frameBuffer().showMessage("Properties saved");
+                }
+                else
+                  myOSystem->frameBuffer().showMessage("Error saving properties");
                 break;
+              }
             }
           }
         }
@@ -622,9 +629,11 @@ void EventHandler::poll(uInt32 time)
           handleEvent(myKeyTable[key][kEmulationMode], state);
         else if(myOverlay != NULL)
         {
-          // Make sure the unicode field is valid
+          // Assign unicode field if it doesn't exist
+          // Make sure 'state change' keys (Shift, Ctrl, etc) are excluded
           if(!unicode) unicode = key;
-
+          if(key > SDLK_F15 && key < SDLK_HELP)
+            unicode = 0;
           myOverlay->handleKeyEvent(unicode, key, mod, state);
         }
 
@@ -2316,12 +2325,6 @@ void EventHandler::setEventState(State state)
 
   // Inform the OSystem about the new state
   myOSystem->stateChanged(myState);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::saveProperties()
-{
-  myOSystem->console().saveProperties(myOSystem->propertiesFile(), true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

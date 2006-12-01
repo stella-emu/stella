@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.91 2006-11-28 21:48:56 stephena Exp $
+// $Id: EventHandler.hxx,v 1.92 2006-12-01 18:30:18 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -114,7 +114,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.91 2006-11-28 21:48:56 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.92 2006-12-01 18:30:18 stephena Exp $
 */
 class EventHandler
 {
@@ -312,7 +312,6 @@ class EventHandler
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
-    void saveProperties();
 
     /**
       Send an event directly to the event handler.
