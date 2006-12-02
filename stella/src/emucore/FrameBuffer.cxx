@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.100 2006-11-29 20:01:56 azaballa Exp $
+// $Id: FrameBuffer.cxx,v 1.101 2006-12-02 00:43:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -46,8 +46,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myPhosphorBlend(77),
     myFrameRate(0)
 {
-  myBaseDim.x = myBaseDim.y = myBaseDim.w = myBaseDim.h = 0;
-  myImageDim = myScreenDim = myDesktopDim = myBaseDim;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,6 +73,9 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   }
   setWindowIcon();
 
+  // Erase old contents
+  cls();
+
   // Query the desktop size
   // This is really the job of SDL
   int dwidth = 0, dheight = 0;
@@ -101,9 +102,6 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   getScaler(scaler, 0, currentScalerName());
   setScaler(scaler);
   initSubsystem();
-
-  // Erase old contents
-  cls();
 
   // And refresh the display
   myOSystem->eventHandler().refreshDisplay();

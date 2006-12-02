@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.176 2006-12-01 18:30:18 stephena Exp $
+// $Id: EventHandler.cxx,v 1.177 2006-12-02 00:43:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2243,7 +2243,6 @@ bool EventHandler::enterDebugMode()
 
   setEventState(S_DEBUGGER);
   myOSystem->createFrameBuffer();
-  myOSystem->console().setPalette(myOSystem->settings().getString("palette"));
   myOverlay->reStack();
   myOSystem->frameBuffer().setCursorState();
   myEvent->clear();

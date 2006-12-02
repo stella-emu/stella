@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.75 2006-11-06 00:52:03 stephena Exp $
+// $Id: OSystem.cxx,v 1.76 2006-12-02 00:43:50 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -220,11 +220,22 @@ void OSystem::setFramerate(uInt32 framerate)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createFrameBuffer(bool showmessage)
 {
-  // Delete the old framebuffer
-  delete myFrameBuffer;  myFrameBuffer = NULL;
-
-  // And recreate a new one (we'll always get a valid pointer)
-  myFrameBuffer = MediaFactory::createVideo(this);
+  // Check if we can re-use the current framebuffer
+  bool changeBuffer = (myFrameBuffer == NULL);
+  if(!changeBuffer)
+  {
+    if((mySettings->getString("video") == "soft" &&
+        myFrameBuffer->type() != kSoftBuffer) ||
+       (mySettings->getString("video") == "gl" &&
+        myFrameBuffer->type() != kGLBuffer))
+      changeBuffer = true;
+  }
+  // Now we only create when absolutely necessary
+  if(changeBuffer)
+  {
+    delete myFrameBuffer;
+    myFrameBuffer = MediaFactory::createVideo(this);
+  }
 
   // Re-initialize the framebuffer to current settings
   switch(myEventHandler->state())
@@ -262,7 +273,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
   }
 
   // Setup the SDL joysticks (must be done after FrameBuffer is created)
-  myEventHandler->setupJoysticks();
+  if(changeBuffer) myEventHandler->setupJoysticks();
 
   return true;
 }
@@ -291,6 +302,17 @@ void OSystem::toggleFrameBuffer()
 
   // And re-pause the system
   myEventHandler->pause(pause);
+
+  // The palette and phosphor info for the framebuffer will be lost
+  // when a new framebuffer is created; we must restore it
+  if(myConsole)
+  {
+    const Properties& props = myConsole->properties();
+    bool enable = props.get(Display_Phosphor) == "YES";
+    int blend = atoi(props.get(Display_PPBlend).c_str());
+    myFrameBuffer->enablePhosphor(enable, blend);
+    myConsole->setPalette(mySettings->getString("palette"));
+  }
 #endif
 }
 
