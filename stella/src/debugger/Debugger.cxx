@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.104 2005-10-27 19:15:14 stephena Exp $
+// $Id: Debugger.cxx,v 1.105 2006-12-02 23:25:53 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -332,6 +332,12 @@ void Debugger::autoExec() {
 const string Debugger::run(const string& command)
 {
   return myParser->run(command);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::cancel()
+{
+  myParser->cancel();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

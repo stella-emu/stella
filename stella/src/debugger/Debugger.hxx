@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.82 2005-10-22 15:43:16 stephena Exp $
+// $Id: Debugger.hxx,v 1.83 2006-12-02 23:25:53 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -79,7 +79,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.82 2005-10-22 15:43:16 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.83 2006-12-02 23:25:53 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -170,6 +170,11 @@ class Debugger : public DialogContainer
     const string run(const string& command);
 
     /**
+      Cancel the currently running debugger command.
+    */
+    void cancel();
+
+    /**
       Give the contents of the CPU registers and disassembly of
       next instruction.
     */
@@ -211,45 +216,48 @@ class Debugger : public DialogContainer
         { return myParser->decipher_arg(stringval); }
     const string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
 
-    /** Convenience methods to convert to hexidecimal values */
-    static char *to_hex_4(int i)
+    /** Convenience methods to convert to/from base values */
+    static char* to_hex_4(int i)
     {
       static char out[2];
       sprintf(out, "%1x", i);
       return out;
     }
-    static char *to_hex_8(int i)
+    static char* to_hex_8(int i)
     {
       static char out[3];
       sprintf(out, "%02x", i);
       return out;
     }
-    static char *to_hex_16(int i)
+    static char* to_hex_16(int i)
     {
       static char out[5];
       sprintf(out, "%04x", i);
       return out;
     }
-    static char *to_bin(int dec, int places, char *buf) {
+    static char* to_bin(int dec, int places, char *buf) {
       int bit = 1;
       buf[places] = '\0';
       while(--places >= 0) {
-        if(dec & bit)
-          buf[places] = '1';
-        else
-          buf[places] = '0';
-
+        if(dec & bit) buf[places] = '1';
+        else          buf[places] = '0';
         bit <<= 1;
       }
       return buf;
     }
-    static char *to_bin_8(int dec) {
+    static char* to_bin_8(int dec) {
       static char buf[9];
       return to_bin(dec, 8, buf);
     }
-    static char *to_bin_16(int dec) {
+    static char* to_bin_16(int dec) {
       static char buf[17];
       return to_bin(dec, 16, buf);
+    }
+    static int conv_hex_digit(char d) {
+      if(d >= '0' && d <= '9')      return d - '0';
+      else if(d >= 'a' && d <= 'f') return d - 'a' + 10;
+      else if(d >= 'A' && d <= 'F') return d - 'A' + 10;
+      else                          return -1;
     }
 
     /**

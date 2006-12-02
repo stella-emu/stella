@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.75 2006-11-18 13:29:11 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.76 2006-12-02 23:25:54 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -96,7 +96,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.75 2006-11-18 13:29:11 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.76 2006-12-02 23:25:54 stephena Exp $
 */
 class FrameBuffer
 {
@@ -223,7 +223,7 @@ class FrameBuffer
     /**
       Shows or hides the cursor based on the given boolean value.
     */
-    void showCursor(bool show);
+    virtual void showCursor(bool show);
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.

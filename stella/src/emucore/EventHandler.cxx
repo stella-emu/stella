@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.177 2006-12-02 00:43:50 stephena Exp $
+// $Id: EventHandler.cxx,v 1.178 2006-12-02 23:25:53 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1523,8 +1523,9 @@ void EventHandler::setJoyHatMap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, int key)
 {
-  // These keys cannot be remapped.
-  if(key == SDLK_TAB || eventIsAnalog(event))
+  // These keys cannot be remapped
+  if(key == SDLK_TAB || (key > SDLK_F15 && key < SDLK_HELP) ||
+     eventIsAnalog(event))
     return false;
   else
   {

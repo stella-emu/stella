@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.43 2005-11-11 21:44:19 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.44 2006-12-02 23:25:53 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -39,76 +39,116 @@ class DebuggerParser
     DebuggerParser(Debugger* debugger);
     ~DebuggerParser();
 
+    /** Run the given command, and return the result */
     string run(const string& command);
-    int decipher_arg(const string &str);
 
-    void setBase(BaseFormat base) { defaultBase = base; }
-    BaseFormat base()             { return defaultBase; }
+    /** Cancel the currently running command, if any */
+    void cancel();
 
-    string showWatches();
-    string addWatch(string watch);
-    string delWatch(int which);
-    void delAllWatches();
+    /** Execute parser commands given in 'file' */
+    string exec(const string& file, bool verbose = true);
 
+    /** Given a substring, determine matching substrings from the list
+        of available commands.  Used in the debugger prompt for tab-completion */  
     int countCompletions(const char *in);
     const char *getCompletions();
     const char *getCompletionPrefix();
-    string exec(const string& cmd, bool verbose=true);
 
-    static inline string red(string msg ="")
+    /** Evaluate the given expression using operators, current base, etc */
+    int decipher_arg(const string &str);
+
+    /** String representation of all watches currently defined */
+    string showWatches();
+
+    /** Get/set the number base when parsing numeric values */
+    void setBase(BaseFormat base) { defaultBase = base; }
+    BaseFormat base()             { return defaultBase; }
+
+    static inline string red(const string& msg = "")
     {
       // This is TIA color 0x34. The octal value is 0x80+(0x34>>1).
       return "\232" + msg;
     }
-
-    static inline string inverse(string msg ="")
+    static inline string inverse(const string& msg = "")
     {
       // ASCII DEL char, decimal 127
       return "\177" + msg;
     }
 
   private:
-    bool getArgs(const string& command);
+    bool getArgs(const string& command, string& verb);
     bool validateArgs(int cmd);
-    int conv_hex_digit(char d);
-    bool subStringMatch(const string& needle, const string& haystack);
-    string disasm();
-    string listBreaks();
-    string listTraps();
     string eval();
-    string dump();
     string trapStatus(int addr);
+    bool saveScriptFile(string file);
 
   private:
+    enum {
+      kNumCommands = 59,
+      kMAX_ARG_TYPES = 10 // TODO: put in separate header file Command.hxx
+    };
+
+    // Constants for argument processing
+    enum {
+      kIN_COMMAND,
+      kIN_SPACE,
+      kIN_BRACE,
+      kIN_ARG
+    };
+
+    typedef enum {
+      kARG_WORD,        // single 16-bit value
+      kARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
+      kARG_BYTE,        // single 8-bit value
+      kARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
+      kARG_BOOL,        // 0 or 1 only
+      kARG_LABEL,       // label (need not be defined, treated as string)
+      kARG_FILE,        // filename
+      kARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
+      kARG_END_ARGS     // sentinel, occurs at end of list
+    } parameters;
+
+    // Pointer to DebuggerParser instance method, no args, returns void.
+    typedef void (DebuggerParser::*METHOD)();
+
+    struct Command {
+      string cmdString;
+      string description;
+      bool parmsRequired;
+      bool refreshRequired;
+      parameters parms[kMAX_ARG_TYPES];
+      METHOD executor;
+    };
+
+    // Pointer to our debugger object
     Debugger* debugger;
 
-    bool done;
+    // Flag indicating whether a currently running command should be cancelled
+    bool cancelCommand;
 
-    string verb;
+    // The results of the currently running command
     string commandResult;
 
+    // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;
     StringList argStrings;
     int argCount;
 
     BaseFormat defaultBase;
     StringList watches;
-    static Command commands[];
 
+    // Used in 'tab-completion', holds list of commands related to a substring
     string completions;
     string compPrefix;
 
-    bool saveScriptFile(string file);
-
+    // List of available command methods
     void executeA();
     void executeBank();
     void executeBase();
     void executeBreak();
     void executeBreakif();
     void executeC();
-#ifdef CHEATCODE_SUPPORT
     void executeCheat();
-#endif
     void executeClearbreaks();
     void executeCleartraps();
     void executeClearwatches();
@@ -129,12 +169,12 @@ class DebuggerParser
     void executeListtraps();
     void executeListwatches();
     void executeLoadlist();
-    void executeLoadsym();
     void executeLoadstate();
+    void executeLoadsym();
     void executeN();
     void executePc();
     void executePrint();
-    void executeRam();
+    void executeRam();  // also implements 'poke' command
     void executeReload();
     void executeReset();
     void executeRiot();
@@ -160,38 +200,9 @@ class DebuggerParser
     void executeX();
     void executeY();
     void executeZ();
-};
 
-// TODO: put in separate header file Command.hxx
-#define kMAX_ARG_TYPES 10
-
-// These next two deserve English explanations:
-
-// pointer to DebuggerParser instance method, no args, returns void.
-typedef void (DebuggerParser::*METHOD)();
-
-// call the pointed-to method on the this object. Whew.
-#define CALL_METHOD(method) ( (this->*method)() )
-
-typedef enum {
-  kARG_WORD,        // single 16-bit value
-  kARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
-  kARG_BYTE,        // single 8-bit value
-  kARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
-  kARG_BOOL,        // 0 or 1 only
-  kARG_LABEL,       // label (need not be defined, treated as string)
-  kARG_FILE,        // filename
-  kARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
-  kARG_END_ARGS     // sentinel, occurs at end of list
-} parameters;
-
-struct Command {
-  string cmdString;
-  string description;
-  bool parmsRequired;
-  bool refreshRequired;
-  parameters parms[kMAX_ARG_TYPES];
-  METHOD executor;
+    // List of commands available
+    static Command commands[kNumCommands];
 };
 
 #endif

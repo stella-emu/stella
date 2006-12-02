@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.9 2006-05-04 17:45:24 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.10 2006-12-02 23:25:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -529,6 +529,11 @@ void PromptWidget::specialKeys(int keycode)
       handled = true;
       break;
 
+    case 'c':
+      cancelLastCommand();
+      handled = true;
+      break;
+
     case 'd':
       killChar(+1);
       handled = true;
@@ -636,6 +641,12 @@ void PromptWidget::killLastWord()
 
   buffer(_promptEndPos) = ' ';
   _promptEndPos -= cnt;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::cancelLastCommand()
+{
+  instance()->debugger().cancel();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
