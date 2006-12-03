@@ -13,21 +13,18 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.2 2006-12-03 01:13:45 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.3 2006-12-03 17:57:54 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
-#include <SDL_syswm.h>
-#include <sstream>
 
 #include "Console.hxx"
-#include "FrameBuffer.hxx"
-#include "FrameBufferGP2X.hxx"
 #include "MediaSrc.hxx"
-#include "Settings.hxx"
 #include "OSystem.hxx"
 #include "Font.hxx"
 #include "GuiUtils.hxx"
+#include "RectList.hxx"
+#include "FrameBufferGP2X.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGP2X::FrameBufferGP2X(OSystem* osystem)
@@ -494,60 +491,4 @@ void FrameBufferGP2X::showCursor(bool show)
 {
   // Never show the cursor
   SDL_ShowCursor(SDL_DISABLE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RectList::RectList(Uint32 size)
-{
-  currentSize = size;
-  currentRect = 0;
-
-  rectArray = new SDL_Rect[currentSize];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RectList::~RectList()
-{
-  delete[] rectArray;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RectList::add(SDL_Rect* newRect)
-{
-  if(currentRect >= currentSize)
-  {
-    currentSize = currentSize * 2;
-    SDL_Rect *temp = new SDL_Rect[currentSize];
-
-    for(Uint32 i = 0; i < currentRect; ++i)
-      temp[i] = rectArray[i];
-
-    delete[] rectArray;
-    rectArray = temp;
-  }
-
-  rectArray[currentRect].x = newRect->x;
-  rectArray[currentRect].y = newRect->y;
-  rectArray[currentRect].w = newRect->w;
-  rectArray[currentRect].h = newRect->h;
-
-  ++currentRect;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SDL_Rect* RectList::rects()
-{
-  return rectArray;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Uint32 RectList::numRects()
-{
-  return currentRect;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RectList::start()
-{
-  currentRect = 0;
 }

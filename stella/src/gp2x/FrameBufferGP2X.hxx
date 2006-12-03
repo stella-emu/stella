@@ -13,29 +13,27 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.2 2006-12-03 01:13:45 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.3 2006-12-03 17:57:54 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
 #define FRAMEBUFFER_GP2X_HXX
 
 #include <SDL.h>
-#include <SDL_syswm.h>
 
 class OSystem;
 class GUI::Font;
 class RectList;
 
 #include "bspf.hxx"
-#include "GuiUtils.hxx"
 #include "FrameBuffer.hxx"
 
 
 /**
-  This class implements an SDL hardware framebuffer.
+  This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.2 2006-12-03 01:13:45 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.3 2006-12-03 17:57:54 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -221,24 +219,6 @@ class FrameBufferGP2X : public FrameBuffer
 
     // Used in the dirty update of the overlay surface
     RectList* myOverlayRectList;
-};
-
-class RectList
-{
-  public:
-    RectList(Uint32 size = 512);
-    ~RectList();
-
-    void add(SDL_Rect* rect);
-
-    SDL_Rect* rects();
-    Uint32 numRects();
-    void start();
-
-  private:
-    Uint32 currentSize, currentRect;
-
-    SDL_Rect* rectArray;
 };
 
 #endif

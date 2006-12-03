@@ -13,21 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.59 2006-12-02 00:43:49 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.60 2006-12-03 17:57:54 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
-#include <SDL_syswm.h>
-#include <sstream>
 
 #include "Console.hxx"
-#include "FrameBuffer.hxx"
-#include "FrameBufferSoft.hxx"
 #include "MediaSrc.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"
 #include "Font.hxx"
 #include "GuiUtils.hxx"
+#include "RectList.hxx"
+#include "FrameBufferSoft.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
@@ -93,9 +91,9 @@ void FrameBufferSoft::setScaler(Scaler scaler)
       // Software framebuffer doesn't handle the fancy scaling modes
       myZoomLevel = scaler.zoom;
       break;
-
-    default:
-      break;  // should never get here
+    default:  // should never get here
+      myZoomLevel = 1;
+      break;
   }
 }
 
@@ -681,60 +679,4 @@ void FrameBufferSoft::cls()
     SDL_FillRect(myScreen, NULL, 0);
     SDL_UpdateRect(myScreen, 0, 0, 0, 0);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RectList::RectList(Uint32 size)
-{
-  currentSize = size;
-  currentRect = 0;
-
-  rectArray = new SDL_Rect[currentSize];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RectList::~RectList()
-{
-  delete[] rectArray;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RectList::add(SDL_Rect* newRect)
-{
-  if(currentRect >= currentSize)
-  {
-    currentSize = currentSize * 2;
-    SDL_Rect *temp = new SDL_Rect[currentSize];
-
-    for(Uint32 i = 0; i < currentRect; ++i)
-      temp[i] = rectArray[i];
-
-    delete[] rectArray;
-    rectArray = temp;
-  }
-
-  rectArray[currentRect].x = newRect->x;
-  rectArray[currentRect].y = newRect->y;
-  rectArray[currentRect].w = newRect->w;
-  rectArray[currentRect].h = newRect->h;
-
-  ++currentRect;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SDL_Rect* RectList::rects()
-{
-  return rectArray;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Uint32 RectList::numRects()
-{
-  return currentRect;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RectList::start()
-{
-  currentRect = 0;
 }
