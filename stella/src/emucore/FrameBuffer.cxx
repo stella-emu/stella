@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.102 2006-12-02 23:25:54 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.103 2006-12-03 01:13:45 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -64,34 +64,34 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   myFrameRate = myOSystem->frameRate();
 
   // Now (re)initialize the SDL video system
+  // These things only have to be done one per FrameBuffer creation
   if(!isAlreadyInitialized)
   {
     Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
 
     if(SDL_Init(initflags) < 0)
       return;
+
+    // Set window title and icon
+    setWindowTitle(title);
+    setWindowIcon();
+
+    // Query the desktop size
+    // This is really the job of SDL
+    int dwidth = 0, dheight = 0;
+    myOSystem->getScreenDimensions(dwidth, dheight);
+    myDesktopDim.w = dwidth;  myDesktopDim.h = dheight;
+
+    // Set fullscreen flag
+    mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
+
+    // Get the aspect ratio for the display if it's been enabled
+    theAspectRatio = 1.0;
+    if(useAspect) setAspectRatio();
   }
-  setWindowIcon();
 
   // Erase old contents
   cls();
-
-  // Query the desktop size
-  // This is really the job of SDL
-  int dwidth = 0, dheight = 0;
-  myOSystem->getScreenDimensions(dwidth, dheight);
-  myDesktopDim.w = dwidth;  myDesktopDim.h = dheight;
-
-  // Set fullscreen flag
-  mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
-
-  // Set window title
-  setWindowTitle(title);
-
-  // Get the aspect ratio for the display if it's been enabled
-  theAspectRatio = 1.0;
-  if(useAspect)
-    setAspectRatio();
 
   // Set the available scalers for this framebuffer, based on current eventhandler
   // state and the maximum size of a window for the current desktop
@@ -106,13 +106,13 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   // And refresh the display
   myOSystem->eventHandler().refreshDisplay();
 
-  // Set palette for GUI
-  for(int i = 0; i < kNumColors-256; i++)
-    myDefPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
-
   // Enable unicode so we can see translated key events
   // (lowercase vs. uppercase characters)
   SDL_EnableUNICODE(1);
+
+  // Set palette for GUI
+  for(int i = 0; i < kNumColors-256; i++)
+    myDefPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
 
   // Erase any messages from a previous run
   myMessage.counter = 0;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.1 2006-12-02 23:25:55 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.2 2006-12-03 01:13:45 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL hardware framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.1 2006-12-02 23:25:55 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.2 2006-12-03 01:13:45 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -185,7 +185,7 @@ class FrameBufferGP2X : public FrameBuffer
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    inline virtual void translateCoords(Int32* x, Int32* y);
+    virtual void translateCoords(Int32* x, Int32* y);
 
     /**
       This method adds a dirty rectangle

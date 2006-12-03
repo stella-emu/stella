@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.36 2006-11-04 19:38:24 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.37 2006-12-03 01:13:44 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -35,7 +35,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.36 2006-11-04 19:38:24 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.37 2006-12-03 01:13:44 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -185,7 +185,7 @@ class FrameBufferSoft : public FrameBuffer
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    inline virtual void translateCoords(Int32* x, Int32* y);
+    virtual void translateCoords(Int32* x, Int32* y);
 
     /**
       This method adds a dirty rectangle
