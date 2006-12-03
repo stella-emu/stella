@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.103 2006-12-03 01:13:45 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.104 2006-12-03 01:24:34 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -71,27 +71,23 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
     if(SDL_Init(initflags) < 0)
       return;
-
-    // Set window title and icon
-    setWindowTitle(title);
-    setWindowIcon();
-
-    // Query the desktop size
-    // This is really the job of SDL
-    int dwidth = 0, dheight = 0;
-    myOSystem->getScreenDimensions(dwidth, dheight);
-    myDesktopDim.w = dwidth;  myDesktopDim.h = dheight;
-
-    // Set fullscreen flag
-    mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
-
-    // Get the aspect ratio for the display if it's been enabled
-    theAspectRatio = 1.0;
-    if(useAspect) setAspectRatio();
   }
 
   // Erase old contents
   cls();
+
+  // Query the desktop size
+  // This is really the job of SDL
+  int dwidth = 0, dheight = 0;
+  myOSystem->getScreenDimensions(dwidth, dheight);
+  myDesktopDim.w = dwidth;  myDesktopDim.h = dheight;
+
+  // Get the aspect ratio for the display if it's been enabled
+  theAspectRatio = 1.0;
+  if(useAspect) setAspectRatio();
+
+  // Set fullscreen flag
+  mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
 
   // Set the available scalers for this framebuffer, based on current eventhandler
   // state and the maximum size of a window for the current desktop
@@ -102,6 +98,10 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   getScaler(scaler, 0, currentScalerName());
   setScaler(scaler);
   initSubsystem();
+
+  // Set window title and icon
+  setWindowTitle(title);
+  setWindowIcon();
 
   // And refresh the display
   myOSystem->eventHandler().refreshDisplay();

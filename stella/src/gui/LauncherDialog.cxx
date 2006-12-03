@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.58 2006-12-02 23:25:55 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.59 2006-12-03 01:24:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -154,7 +154,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::~LauncherDialog()
 {
-cerr << "LauncherDialog::~LauncherDialog()\n";
   delete myOptions;
   delete myGameList;
 }
