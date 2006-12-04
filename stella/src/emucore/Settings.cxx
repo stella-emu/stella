@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.92 2006-11-25 01:34:35 stephena Exp $
+// $Id: Settings.cxx,v 1.93 2006-12-04 18:54:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -40,6 +40,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_aspect", "2.0");
   setInternal("gl_fsmax", "false");
   setInternal("gl_lib", "");
+  setInternal("gl_vsync", "true");
 
   setInternal("scale_ui", "Zoom1x");
   setInternal("scale_tia", "Zoom1x");
@@ -81,7 +82,7 @@ Settings::Settings(OSystem* osystem)
 
   setInternal("tiadefaults", "false");
   setInternal("autoslot", "false");
-  setInternal("fastscbios", "false");
+  setInternal("fastscbios", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -279,12 +280,13 @@ void Settings::usage()
   #ifdef DISPLAY_OPENGL
     << "                 gl              SDL OpenGL mode\n"
     << endl
+    << "  -gl_lib       <filename>     Specify the OpenGL library\n"
     << "  -gl_filter    <type>         Type is one of the following:\n"
     << "                 nearest         Normal scaling (GL_NEAREST)\n"
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
     << "  -gl_aspect    <number>       Scale the width by the given amount\n"
     << "  -gl_fsmax     <1|0>          Use the largest available screenmode in fullscreen OpenGL\n"
-    << "  -gl_lib       <filename>     Specify the OpenGL library\n"
+    << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << endl
   #endif
     << "  -zoom         <size>         Makes window be 'size' times normal\n"

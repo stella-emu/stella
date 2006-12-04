@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.34 2006-11-28 21:48:56 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.35 2006-12-04 18:54:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -98,13 +98,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
-  // Move over to the next column
-  xpos += 115;  ypos = 10;
-
   // Available scalers
   myScalerPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
-                                  lineHeight, "Scaler: ",
-                                  font.getStringWidth("Scaler: "));
+                                  lineHeight, "Scaler: ", lwidth);
   myScalerPopup->appendEntry("Zoom1x", 1);
   myScalerPopup->appendEntry("Zoom2x", 2);
   myScalerPopup->appendEntry("Zoom3x", 3);
@@ -118,7 +114,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myScalerPopup->appendEntry("HQ3x",   10);
 #endif
   wid.push_back(myScalerPopup);
-  ypos += lineHeight + 4;
+
+  // Move over to the next column
+  xpos += 115;  ypos = 10;
 
   // Framerate
   myFrameRateSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
@@ -138,16 +136,22 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myFullscreenCheckbox);
   ypos += lineHeight + 4;
 
+  // TIA defaults
+  myTiaDefaultsCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+                                             "Use TIA defaults");
+  wid.push_back(myTiaDefaultsCheckbox);
+  ypos += lineHeight + 4;
+
   // Use desktop res in OpenGL
   myUseDeskResCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Desktop Res in FS");
   wid.push_back(myUseDeskResCheckbox);
   ypos += lineHeight + 4;
 
-  // TIA defaults
-  myTiaDefaultsCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
-                                             "Use TIA defaults");
-  wid.push_back(myTiaDefaultsCheckbox);
+  // Use sync to vblank in OpenGL
+  myUseVSyncCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+                                          "Enable VSync");
+  wid.push_back(myUseVSyncCheckbox);
   ypos += lineHeight + 20;
 
   // Add Defaults, OK and Cancel buttons
@@ -226,6 +230,17 @@ void VideoDialog::loadConfig()
   myAspectRatioSlider->setValue(i);
   myAspectRatioLabel->setLabel(s);
 
+  // Palette
+  s = instance()->settings().getString("palette");
+  if(s == "standard")
+    myPalettePopup->setSelectedTag(1);
+  else if(s == "original")
+    myPalettePopup->setSelectedTag(2);
+  else if(s == "z26")
+    myPalettePopup->setSelectedTag(3);
+  else if(s == "user")
+    myPalettePopup->setSelectedTag(4);
+
   // Scaler
   s = instance()->settings().getString("scale_tia");
   if(s == "Zoom1x")
@@ -253,28 +268,21 @@ void VideoDialog::loadConfig()
   else
     myScalerPopup->setSelectedTag(0);
 
-  // Palette
-  s = instance()->settings().getString("palette");
-  if(s == "standard")
-    myPalettePopup->setSelectedTag(1);
-  else if(s == "original")
-    myPalettePopup->setSelectedTag(2);
-  else if(s == "z26")
-    myPalettePopup->setSelectedTag(3);
-  else if(s == "user")
-    myPalettePopup->setSelectedTag(4);
-
   // Fullscreen
   b = instance()->settings().getBool("fullscreen");
   myFullscreenCheckbox->setState(b);
+
+  // Use TIA defaults instead of tweaked values
+  b = instance()->settings().getBool("tiadefaults");
+  myTiaDefaultsCheckbox->setState(b);
 
   // Use desktop resolution in fullscreen mode
   b = instance()->settings().getBool("gl_fsmax");
   myUseDeskResCheckbox->setState(b);
 
-  // Use TIA defaults instead of tweaked values
-  b = instance()->settings().getBool("tiadefaults");
-  myTiaDefaultsCheckbox->setState(b);
+  // Use sync to vertical blank
+  b = instance()->settings().getBool("gl_vsync");
+  myUseVSyncCheckbox->setState(b);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   i = myRendererPopup->getSelectedTag() - 1;
@@ -361,6 +369,11 @@ void VideoDialog::saveConfig()
   b = myFullscreenCheckbox->getState();
   instance()->frameBuffer().setFullscreen(b);
 
+  // Use TIA defaults instead of tweaked values
+  b = myTiaDefaultsCheckbox->getState();
+  instance()->settings().setBool("tiadefaults", b);
+  myTiaDefaultsCheckbox->setState(b);
+
   // Use desktop resolution in fullscreen mode
   b = myUseDeskResCheckbox->getState();
   if(b != instance()->settings().getBool("gl_fsmax"))
@@ -369,11 +382,13 @@ void VideoDialog::saveConfig()
     restart = true;
   }
 
-  // Use TIA defaults instead of tweaked values
-  b = myTiaDefaultsCheckbox->getState();
-  instance()->settings().setBool("tiadefaults", b);
-
-  myTiaDefaultsCheckbox->setState(b);
+  // Use sync to vertical blank
+  b = myUseVSyncCheckbox->getState();
+  if(b != instance()->settings().getBool("gl_vsync"))
+  {
+    instance()->settings().setBool("gl_vsync", b);
+    restart = true;
+  }
 
   // Finally, issue a complete framebuffer re-initialization
   // Not all options may require a full re-initialization, so we only
@@ -399,8 +414,9 @@ void VideoDialog::setDefaults()
   myAspectRatioLabel->setLabel("2.0");
 
   myFullscreenCheckbox->setState(false);
-  myUseDeskResCheckbox->setState(true);
   myTiaDefaultsCheckbox->setState(false);
+  myUseDeskResCheckbox->setState(true);
+  myUseVSyncCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleRendererChange(0);  // 0 indicates software mode
@@ -416,6 +432,7 @@ void VideoDialog::handleRendererChange(int item)
   myAspectRatioSlider->setEnabled(active);
   myAspectRatioLabel->setEnabled(active);
   myUseDeskResCheckbox->setEnabled(active);
+  myUseVSyncCheckbox->setEnabled(active);
 
   // Also, in OpenGL mode, certain software related items are disabled
   myDirtyPopup->setEnabled(!active);

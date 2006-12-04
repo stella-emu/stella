@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.68 2006-11-04 19:38:24 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.69 2006-12-04 18:54:51 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -33,6 +33,16 @@
 
 #ifdef SCALER_SUPPORT
   #include "scaler.hxx"
+#endif
+
+// There's probably a cleaner way of doing this
+// These values come from SDL_video.c
+// If they change, this code will break horribly
+#ifndef SDL_GL_ACCELERATED_VISUAL
+  #define SDL_GL_ACCELERATED_VISUAL SDL_GLattr(15)
+#endif
+#ifndef SDL_GL_SWAP_CONTROL
+  #define SDL_GL_SWAP_CONTROL SDL_GLattr(16)
 #endif
 
 // Maybe this code could be cleaner ...
@@ -116,7 +126,9 @@ bool FrameBufferGL::loadFuncs(const string& library)
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     SDL_Init(SDL_INIT_VIDEO);
 
-  if(SDL_GL_LoadLibrary(library.c_str()) < 0)
+  if(library == "" && SDL_GL_LoadLibrary(0) < 0)  // Let SDL choose the GL library
+    return false;
+  else if(SDL_GL_LoadLibrary(library.c_str()) < 0)
     return false;
 
   // Otherwise, fill the function pointers for GL functions
@@ -320,8 +332,14 @@ bool FrameBufferGL::createScreen()
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
   SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-//  SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
-//  SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 1 );
+  SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+
+  // There's no guarantee this is supported on all hardware
+  // We leave it to the user to test and decide
+  if(myOSystem->settings().getBool("gl_vsync"))
+    SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 1 );
+  else
+    SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 0 );
 
   // Set the screen coordinates
   GLdouble orthoWidth  = 0.0;
