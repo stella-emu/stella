@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.69 2006-12-04 18:54:51 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.70 2006-12-04 19:01:39 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -336,10 +336,8 @@ bool FrameBufferGL::createScreen()
 
   // There's no guarantee this is supported on all hardware
   // We leave it to the user to test and decide
-  if(myOSystem->settings().getBool("gl_vsync"))
-    SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 1 );
-  else
-    SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 0 );
+  int vsync = myOSystem->settings().getBool("gl_vsync") ? 1 : 0;
+  SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, vsync );
 
   // Set the screen coordinates
   GLdouble orthoWidth  = 0.0;
