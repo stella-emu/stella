@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.3 2006-12-03 17:57:54 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.4 2006-12-04 19:43:26 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -26,9 +26,14 @@
 #include "RectList.hxx"
 #include "FrameBufferGP2X.hxx"
 
+// Comment out entire line to test new rendering code
+#define DIRTY_RECTS 1
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGP2X::FrameBufferGP2X(OSystem* osystem)
   : FrameBuffer(osystem),
+    myDirtyFlag(true),
     myRectList(NULL),
     myOverlayRectList(NULL)
 {
@@ -97,6 +102,7 @@ bool FrameBufferGP2X::createScreen()
   myRectList->start();
   myOverlayRectList->start();
 
+  myDirtyFlag = true;
   return true;
 }
 
@@ -107,13 +113,17 @@ void FrameBufferGP2X::drawMediaSource()
 
   uInt8* currentFrame   = mediasrc.currentFrameBuffer();
   uInt8* previousFrame  = mediasrc.previousFrameBuffer();
+  uInt32 width          = mediasrc.width();
+  uInt32 height         = mediasrc.height();
+  uInt16* buffer        = (uInt16*) myScreen->pixels;
   uInt16 screenMultiple = 1;  // remove this, and everything that refers to it
 
-  uInt32 width  = mediasrc.width();
-  uInt32 height = mediasrc.height();
+  uInt32 bufofsY    = 0;
+  uInt32 screenofsY = 0;
 
   if(!myUsePhosphor)
   {
+#ifdef DIRTY_RECTS
     struct Rectangle
     {
       uInt8 color;
@@ -249,42 +259,51 @@ void FrameBufferGP2X::drawMediaSource()
       myRectList->add(&temp);
       SDL_FillRect(myScreen, &temp, myDefPalette[active.color]);
     }
+#else
+    for(uInt32 y = 0; y < height; ++y )
+    {
+      uInt32 pos = screenofsY;
+      for(uInt32 x = 0; x < width; ++x )
+      {
+        const uInt32 bufofs = bufofsY + x;
+        uInt8 v = currentFrame[bufofs];
+        uInt8 w = previousFrame[bufofs];
+
+        if(v != w || theRedrawTIAIndicator)
+        {
+          // If we ever get to this point, we know the current and previous
+          // buffers differ.  In that case, make sure the changes are
+          // are drawn in postFrameUpdate()
+          myDirtyFlag = true;
+          buffer[pos] = buffer[pos+1] = (uInt16) myDefPalette[v];
+        }
+        pos += 2;
+      }
+      bufofsY    += width;
+      screenofsY += myBaseTexture->w;
+    }
+#endif
   }
   else
   {
-    // Since phosphor mode updates the whole screen,
-    // we might as well use SDL_Flip (see postFrameUpdate)
-    myUseDirtyRects = false;
-    SDL_Rect temp;
-    temp.x = temp.y = temp.w = temp.h = 0;
-    myRectList->add(&temp);
+    // Phosphor mode always implies a dirty update,
+    // so we don't care about theRedrawTIAIndicator
+    myDirtyFlag = true;
 
-    uInt16* buffer    = (uInt16*)myScreen->pixels;
-    uInt32 bufofsY    = 0;
-    uInt32 screenofsY = 0;
     for(uInt32 y = 0; y < height; ++y )
     {
-      uInt32 ystride = 1;  // optimize this away
-      while(ystride--)
+      uInt32 pos = screenofsY;
+      for(uInt32 x = 0; x < width; ++x )
       {
-        uInt32 pos = screenofsY;
-        for(uInt32 x = 0; x < width; ++x )
-        {
-          const uInt32 bufofs = bufofsY + x;
-          uInt32 xstride = 1;  // optimize this away
+        const uInt32 bufofs = bufofsY + x;
+        uInt8 v = currentFrame[bufofs];
+        uInt8 w = previousFrame[bufofs];
 
-          uInt8 v = currentFrame[bufofs];
-          uInt8 w = previousFrame[bufofs];
-
-          while(xstride--)
-          {
-            buffer[pos++] = (uInt16) myAvgPalette[v][w];
-            buffer[pos++] = (uInt16) myAvgPalette[v][w];
-          }
-        }
-        screenofsY += myPitch;
+        buffer[pos++] = (uInt16) myAvgPalette[v][w];
+        buffer[pos++] = (uInt16) myAvgPalette[v][w];
       }
-      bufofsY += width;
+      bufofsY    += width;
+      screenofsY += myPitch;
     }
   }
 }
@@ -305,8 +324,12 @@ void FrameBufferGP2X::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGP2X::postFrameUpdate()
 {
-  SDL_Flip(myScreen);
-  myRectList->start();
+  if(myDirtyFlag)
+  {
+    SDL_Flip(myScreen);
+    myRectList->start();
+    myDirtyFlag = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -454,6 +477,10 @@ void FrameBufferGP2X::translateCoords(Int32* x, Int32* y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGP2X::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
+  // We may entirely remove the RectList, since it might be faster to just
+  // flip the screen (since it's a hardware buffer)
+  myDirtyFlag = true;
+
   // Add a dirty rect to the overlay rectangle list
   // They will actually be added to the main rectlist in preFrameUpdate()
   // TODO - intelligent merging of rectangles, to avoid overlap
@@ -464,9 +491,6 @@ void FrameBufferGP2X::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   temp.h = h;
 
   myOverlayRectList->add(&temp);
-
-//  cerr << "addDirtyRect():  "
-//       << "x=" << temp.x << ", y=" << temp.y << ", w=" << temp.w << ", h=" << temp.h << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

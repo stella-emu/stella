@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.3 2006-12-03 17:57:54 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.4 2006-12-04 19:43:26 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.3 2006-12-03 17:57:54 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.4 2006-12-04 19:43:26 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -212,6 +212,7 @@ class FrameBufferGP2X : public FrameBuffer
     virtual void showCursor(bool show);
 
   private:
+    bool myDirtyFlag;
     int myPitch;
 
     // Used in the dirty update of the SDL surface
