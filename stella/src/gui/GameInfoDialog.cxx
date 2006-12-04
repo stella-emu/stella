@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.29 2006-12-01 18:30:20 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.30 2006-12-04 16:15:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -303,7 +303,7 @@ GameInfoDialog::GameInfoDialog(
   myCancelButton =
       addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
   wid.push_back(myCancelButton);
-  addCancelWidgetmyCancelButton);
+  addCancelWidget(myCancelButton);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
   addOKWidget(b);

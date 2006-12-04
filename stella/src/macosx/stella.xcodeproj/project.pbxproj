@@ -347,6 +347,10 @@
 		DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */; };
 		DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47455309C34BFA00EDDA3A /* RamCheat.cxx */; };
 		DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455409C34BFA00EDDA3A /* RamCheat.hxx */; };
+		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
+		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
+		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
+		DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D3B0B247DB40092F9F8 /* RectList.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -375,31 +379,6 @@
 			);
 		};
 /* End PBXBuildRule section */
-
-/* Begin PBXBuildStyle section */
-		4A9504CCFFE6A4B311CA0CBA /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		4A9504CDFFE6A4B311CA0CBA /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		2D91751309BA90380026E9FF /* CopyFiles */ = {
@@ -765,6 +744,10 @@
 		DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheetahCheat.hxx; path = ../cheat/CheetahCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC47455309C34BFA00EDDA3A /* RamCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RamCheat.cxx; path = ../cheat/RamCheat.cxx; sourceTree = SOURCE_ROOT; };
 		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamCheat.hxx; path = ../cheat/RamCheat.hxx; sourceTree = SOURCE_ROOT; };
+		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/emucore/Cart4A50.cxx; sourceTree = "<absolute>"; };
+		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/emucore/Cart4A50.hxx; sourceTree = "<absolute>"; };
+		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/common/RectList.cxx; sourceTree = "<absolute>"; };
+		DCD56D3B0B247DB40092F9F8 /* RectList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RectList.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/common/RectList.hxx; sourceTree = "<absolute>"; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -921,6 +904,8 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
+				DCD56D3B0B247DB40092F9F8 /* RectList.hxx */,
 				2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */,
 				2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */,
 				2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */,
@@ -957,6 +942,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCD56D360B247D920092F9F8 /* Cart4A50.cxx */,
+				DCD56D370B247D920092F9F8 /* Cart4A50.hxx */,
 				2DE2DF100627AE07006BEC99 /* Booster.cxx */,
 				2DE2DF110627AE07006BEC99 /* Booster.hxx */,
 				2DE2DF120627AE07006BEC99 /* Cart.cxx */,
@@ -1445,6 +1432,8 @@
 				DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */,
 				DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */,
 				2D28DDE509DC2D9F00A17585 /* MenusEvents.h in Headers */,
+				DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */,
+				DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1469,57 +1458,6 @@
 				2D91751C09BA90380026E9FF /* PBXBuildRule */,
 				2D91751D09BA90390026E9FF /* PBXBuildRule */,
 			);
-			buildSettings = {
-				DEBUGGING_SYMBOLS = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					.,
-				);
-				GCC_VERSION = 3.3;
-				HEADER_SEARCH_PATHS = (
-					./SDL.framework/Headers,
-					../emucore,
-					../emucore/m6502/src/bspf/src,
-					../emucore/m6502/src,
-					../ui/sound,
-					../common,
-					../debugger,
-					../debugger/gui,
-					../yacc,
-					../../../../debugger,
-					./gui,
-					../gui,
-					.,
-				);
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = .;
-				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = (
-					"-DMAC_OSX",
-					"-DJOYSTICK_SUPPORT",
-					"-DSOUND_SUPPORT",
-					"-DDISPLAY_OPENGL",
-					"-DDEVELOPER_SUPPORT",
-					"-DCHEATCODE_SUPPORT",
-					"-DHAVE_GETTIMEOFDAY",
-					"-DSNAPSHOT_SUPPORT",
-					"-DBSPF_MAC_OSX",
-					"-DHAVE_INTTYPES",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					SDL,
-					"-lz",
-				);
-				PRODUCT_NAME = StellaOSX;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = StellaOSX;
@@ -1534,12 +1472,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				4A9504CCFFE6A4B311CA0CBA /* Development */,
-				4A9504CDFFE6A4B311CA0CBA /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */;
 			projectDirPath = "";
@@ -1760,6 +1692,8 @@
 				DC47455A09C34BFA00EDDA3A /* CheatManager.cxx in Sources */,
 				DC47455C09C34BFA00EDDA3A /* CheetahCheat.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
+				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
+				DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1818,9 +1752,7 @@
 				);
 				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1878,9 +1810,7 @@
 				);
 				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
