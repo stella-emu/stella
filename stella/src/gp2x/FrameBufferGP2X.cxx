@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.5 2006-12-05 03:01:49 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.6 2006-12-05 03:04:14 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -111,11 +111,11 @@ void FrameBufferGP2X::drawMediaSource()
 {
   MediaSource& mediasrc = myOSystem->console().mediaSource();
 
-  uInt8* currentFrame   = mediasrc.currentFrameBuffer();
-  uInt8* previousFrame  = mediasrc.previousFrameBuffer();
-  uInt32 width          = mediasrc.width();
-  uInt32 height         = mediasrc.height();
-  uInt16* buffer        = (uInt16*) myScreen->pixels;
+  uInt8* currentFrame  = mediasrc.currentFrameBuffer();
+  uInt8* previousFrame = mediasrc.previousFrameBuffer();
+  uInt32 width         = mediasrc.width();
+  uInt32 height        = mediasrc.height();
+  uInt16* buffer       = (uInt16*) myScreen->pixels;
 
   uInt32 bufofsY    = 0;
   uInt32 screenofsY = 0;
@@ -123,6 +123,7 @@ void FrameBufferGP2X::drawMediaSource()
   if(!myUsePhosphor)
   {
 #ifdef DIRTY_RECTS
+    uInt16 screenMultiple = 1;  // remove this, and everything that refers to it
     struct Rectangle
     {
       uInt8 color;
