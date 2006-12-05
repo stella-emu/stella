@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.6 2006-12-05 03:04:14 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.7 2006-12-05 14:53:26 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -123,7 +123,6 @@ void FrameBufferGP2X::drawMediaSource()
   if(!myUsePhosphor)
   {
 #ifdef DIRTY_RECTS
-    uInt16 screenMultiple = 1;  // remove this, and everything that refers to it
     struct Rectangle
     {
       uInt8 color;
@@ -210,10 +209,10 @@ void FrameBufferGP2X::drawMediaSource()
           // Flush the active rectangle
           SDL_Rect temp;
 
-          temp.x = active.x * screenMultiple << 1;
-          temp.y = active.y * screenMultiple;
-          temp.w = active.width  * screenMultiple << 1;
-          temp.h = active.height * screenMultiple;
+          temp.x = active.x << 1;
+          temp.y = active.y;
+          temp.w = active.width << 1;
+          temp.h = active.height;
 
           myRectList->add(&temp);
           SDL_FillRect(myScreen, &temp, myDefPalette[active.color]);
@@ -227,10 +226,10 @@ void FrameBufferGP2X::drawMediaSource()
       {
         Rectangle& active = activeRectangles[s];
         SDL_Rect temp;
-        temp.x = active.x * screenMultiple << 1;
-        temp.y = active.y * screenMultiple;
-        temp.w = active.width  * screenMultiple << 1;
-        temp.h = active.height * screenMultiple;
+        temp.x = active.x << 1;
+        temp.y = active.y;
+        temp.w = active.width << 1;
+        temp.h = active.height;
 
         myRectList->add(&temp);
         SDL_FillRect(myScreen, &temp, myDefPalette[active.color]);
@@ -251,10 +250,10 @@ void FrameBufferGP2X::drawMediaSource()
     {
       Rectangle& active = activeRectangles[t];
       SDL_Rect temp;
-      temp.x = active.x * screenMultiple << 1;
-      temp.y = active.y * screenMultiple;
-      temp.w = active.width  * screenMultiple << 1;
-      temp.h = active.height * screenMultiple;
+      temp.x = active.x << 1;
+      temp.y = active.y;
+      temp.w = active.width << 1;
+      temp.h = active.height;
 
       myRectList->add(&temp);
       SDL_FillRect(myScreen, &temp, myDefPalette[active.color]);
