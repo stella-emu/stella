@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.4 2006-12-04 19:43:26 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.5 2006-12-05 03:01:49 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -116,7 +116,6 @@ void FrameBufferGP2X::drawMediaSource()
   uInt32 width          = mediasrc.width();
   uInt32 height         = mediasrc.height();
   uInt16* buffer        = (uInt16*) myScreen->pixels;
-  uInt16 screenMultiple = 1;  // remove this, and everything that refers to it
 
   uInt32 bufofsY    = 0;
   uInt32 screenofsY = 0;
@@ -280,7 +279,7 @@ void FrameBufferGP2X::drawMediaSource()
         pos += 2;
       }
       bufofsY    += width;
-      screenofsY += myBaseTexture->w;
+      screenofsY += myPitch;
     }
 #endif
   }
