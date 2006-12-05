@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.8 2006-12-05 21:55:15 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.9 2006-12-05 23:49:43 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -255,22 +255,16 @@ void FrameBufferGP2X::drawChar(const GUI::Font* FONT, uInt8 chr,
   chr -= desc.firstchar;
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
-  SDL_Rect rect;
-  for(int y = 0; y < h; y++)
+  uInt16* buffer = (uInt16*) myScreen->pixels + yorig * myScreen->w + xorig;
+  for(int y = 0; y < h; ++y)
   {
-    const uInt16 buffer = *tmp++;
+    const uInt16 ptr = *tmp++;
     uInt16 mask = 0x8000;
+    for(int x = 0; x < w; ++x, mask >>= 1)
+      if(ptr & mask)
+        buffer[x] = (uInt16) myDefPalette[color];
 
-    for(int x = 0; x < w; x++, mask >>= 1)
-    {
-      if ((buffer & mask) != 0)
-      {
-        rect.x = x + xorig;
-        rect.y = y + yorig;
-        rect.w = rect.h = 1;
-        SDL_FillRect(myScreen, &rect, myDefPalette[color]);
-      }
-    }
+    buffer += myScreen->w;
   }
 }
 
@@ -278,21 +272,15 @@ void FrameBufferGP2X::drawChar(const GUI::Font* FONT, uInt8 chr,
 void FrameBufferGP2X::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
                                  int color, Int32 h)
 {
-  SDL_Rect rect;
-  for(int y = 0; y < h; y++)
+  uInt16* buffer = (uInt16*) myScreen->pixels + yorig * myScreen->w + xorig;
+  for(int y = 0; y < h; ++y)
   {
     uInt32 mask = 0xF0000000;
-
-    for(int x = 0; x < 8; x++, mask >>= 4)
-    {
+    for(int x = 0; x < 8; ++x, mask >>= 4)
       if(bitmap[y] & mask)
-      {
-        rect.x = x + xorig;
-        rect.y = y + yorig;
-        rect.w = rect.h = 1;
-        SDL_FillRect(myScreen, &rect, myDefPalette[color]);
-      }
-    }
+        buffer[x] = (uInt16) myDefPalette[color];
+
+    buffer += myScreen->w;
   }
 }
 
