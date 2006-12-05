@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.90 2006-12-02 23:25:53 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.91 2006-12-05 22:05:33 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -40,9 +40,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerParser::DebuggerParser(Debugger* d)
-  : debugger(d)
+  : debugger(d),
+    myRunningFlag(false),
+    myCancelFlag(false)
 {
-  cancelCommand = false;
   defaultBase = kBASE_16;
 }
 
@@ -100,14 +101,16 @@ string DebuggerParser::run(const string& command)
   cerr << "Expression count: " << refCount << endl;
 #endif
   commandResult = "";
-  cancelCommand = false;
+  myCancelFlag = false;
 
   for(int i = 0; i < kNumCommands; ++i)
   {
     if(verb == commands[i].cmdString)
     {
+      myRunningFlag = true;
       if(validateArgs(i))
         CALL_METHOD(commands[i].executor);
+      myRunningFlag = false;
 
       if(commands[i].refreshRequired)
         debugger->myBaseDialog->loadConfig();
@@ -123,10 +126,8 @@ string DebuggerParser::run(const string& command)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::cancel()
 {
-cerr << "DebuggerParser::cancel()\n";
-  // Let the running command know it should stop
-  // Hopefully, it's actually checking this variable!
-  cancelCommand = true;
+  // Indicate to any blocking commands that it's time to quit
+  myCancelFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -364,61 +365,71 @@ string DebuggerParser::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::getArgs(const string& command, string& verb)
 {
-  int state = kIN_COMMAND;
+  int state = kIN_COMMAND, i = 0, length = command.length();
   string curArg = "";
   verb = "";
-  const char *c = command.c_str();
 
   argStrings.clear();
   args.clear();
 
-  // cerr << "Parsing \"" << command << "\"" << endl;
+  // cerr << "Parsing \"" << command << "\"" << ", length = " << command.length() << endl;
 
   // First, pick apart string into space-separated tokens.
   // The first token is the command verb, the rest go in an array
-  do {
-    // cerr << "State " << state << ", *c '" << *c << "'" << endl;
-    switch(state) {
+  do
+  {
+    char c = command[i++];
+    switch(state)
+    {
       case kIN_COMMAND:
-        if(*c == ' ')
+        if(c == ' ')
           state = kIN_SPACE;
         else
-          verb += *c;
+          verb += c;
         break;
-
       case kIN_SPACE:
-        if(*c == '{')
+        if(c == '{')
           state = kIN_BRACE;
-        else if(*c != ' ') {
+        else if(c != ' ') {
           state = kIN_ARG;
-          curArg += *c;
+          curArg += c;
         }
         break;
-
       case kIN_BRACE:
-        if(*c == '}' || *c == '\0') {
+        if(c == '}') {
           state = kIN_SPACE;
           argStrings.push_back(curArg);
           //  cerr << "{" << curArg << "}" << endl;
           curArg = "";
         } else {
-          curArg += *c;
+          curArg += c;
         }
         break;
-
       case kIN_ARG:
-        if(*c == ' ' || *c == '\0') {
+        if(c == ' ') {
           state = kIN_SPACE;
           argStrings.push_back(curArg);
           curArg = "";
         } else {
-          curArg += *c;
+          curArg += c;
         }
         break;
-    } // switch(state)
-  } while(*c++ != '\0');
+    }  // switch(state)
+  }
+  while(i < length);
+
+  // Take care of the last argument, if there is one
+  if(curArg != "")
+    argStrings.push_back(curArg);
 
   argCount = argStrings.size();
+
+  /*
+  cerr << "verb = " << verb << endl;
+  cerr << "arguments (" << argCount << "):\n";
+  for(int x = 0; x < argCount; x++)
+    cerr << "command " << x << ": " << argStrings[x] << endl;
+  */
 
   /*
   // Now decipher each argument, in turn.
@@ -429,12 +440,12 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   }
   */
 
-  for(int i=0; i<argCount; i++) {
+  for(int i = 0; i < argCount; i++) {
     int err = YaccParser::parse(argStrings[i].c_str());
     if(err) {
       args.push_back(-1);
     } else {
-      Expression *e = YaccParser::getResult();
+      Expression* e = YaccParser::getResult();
       args.push_back( e->evaluate() );
       delete e;
     }
@@ -1167,19 +1178,20 @@ void DebuggerParser::executeRunTo()
   int cycles = 0, count = 0;
 
   do {
+    if(myCancelFlag) break;
+
     cycles += debugger->step();
-    if(++count % 100 == 0)
+
+    // This command can potentially block forever
+    // We should yield to the system, and check for cancellation
+    if(++count % 10000 == 0)
     {
       debugger->prompt()->putchar('.');
-      // This command can potentially block forever
-      // We should check if the user cancelled it
-cerr << "checking for break command ...\n";
-      if(cancelCommand) break;
+      debugger->getOSystem()->run();
     }
 
     string next = debugger->disassemble(debugger->cpuDebug().pc(), 1);
     done = (next.find(argStrings[0]) != string::npos);
-
   } while(!done);
 
   commandResult = "executed ";

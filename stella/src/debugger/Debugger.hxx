@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.83 2006-12-02 23:25:53 stephena Exp $
+// $Id: Debugger.hxx,v 1.84 2006-12-05 22:05:33 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -44,18 +44,8 @@ class Expression;
 #include "Rect.hxx"
 #include "bspf.hxx"
 
-typedef multimap<string,string> ListFile;
-typedef ListFile::const_iterator ListIter;
-
 typedef map<string,Expression*> FunctionMap;
 typedef map<string,string> FunctionDefMap;
-
-enum {
-  kDebuggerWidth  = 1023,
-  kDebuggerHeight = 700,
-  kDebuggerLineHeight = 15,   // based on the height of the console font
-  kDebuggerLines = 27,
-};
 
 // Constants for RAM area
 enum {
@@ -79,7 +69,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.83 2006-12-02 23:25:53 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.84 2006-12-05 22:05:33 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -170,9 +160,10 @@ class Debugger : public DialogContainer
     const string run(const string& command);
 
     /**
-      Cancel the currently running debugger command.
+      Indicate if the debugger is currently running a command
+      (it shouldn't be exited in this case)
     */
-    void cancel();
+    bool isBlocked() { return myParser->commandRunning(); }
 
     /**
       Give the contents of the CPU registers and disassembly of
@@ -364,7 +355,17 @@ class Debugger : public DialogContainer
 
     const string invIfChanged(int reg, int oldReg);
 
-  protected:
+  private:
+    enum {
+      kDebuggerWidth  = 1023,
+      kDebuggerHeight = 700,
+      kDebuggerLineHeight = 15,   // based on the height of the console font
+      kDebuggerLines = 27,
+    };
+
+    typedef multimap<string,string> ListFile;
+    typedef ListFile::const_iterator ListIter;
+
     Console* myConsole;
     System* mySystem;
 

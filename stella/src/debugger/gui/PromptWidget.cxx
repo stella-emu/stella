@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.10 2006-12-02 23:25:53 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.11 2006-12-05 22:05:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -179,23 +179,16 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
       if (len > 0)
       {
-        // We have to allocate the string buffer with new, since VC++ sadly does not
-        // comply to the C++ standard, so we can't use a dynamic sized stack array.
-        char *str = new char[len + 1];
-
-        // Copy the user input to str
+        // Copy the user input to command
+        string command;
         for (i = 0; i < len; i++)
-          str[i] = buffer(_promptStartPos + i) & 0x7f;
-        str[len] = '\0';
+          command += buffer(_promptStartPos + i) & 0x7f;
 
         // Add the input to the history
-        addToHistory(str);
+        addToHistory(command.c_str());
 
         // Pass the command to the debugger, and print the result
-        print( instance()->debugger().run(str) + "\n");
-
-        // Get rid of the string buffer
-        delete [] str;
+        print( instance()->debugger().run(command) + "\n");
       }
 
       printPrompt();
@@ -528,32 +521,26 @@ void PromptWidget::specialKeys(int keycode)
       _currentPos = _promptStartPos;
       handled = true;
       break;
-
     case 'c':
-      cancelLastCommand();
+      instance()->debugger().parser()->cancel();
       handled = true;
       break;
-
     case 'd':
       killChar(+1);
       handled = true;
       break;
-
     case 'e':
       _currentPos = _promptEndPos;
       handled = true;
       break;
-
     case 'k':
       killLine(+1);
       handled = true;
       break;
-
     case 'u':
       killLine(-1);
       handled = true;
       break;
-
     case 'w':
       killLastWord();
       handled = true;
@@ -641,12 +628,6 @@ void PromptWidget::killLastWord()
 
   buffer(_promptEndPos) = ' ';
   _promptEndPos -= cnt;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::cancelLastCommand()
-{
-  instance()->debugger().cancel();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

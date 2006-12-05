@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.92 2006-12-01 18:30:18 stephena Exp $
+// $Id: EventHandler.hxx,v 1.93 2006-12-05 22:05:35 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -34,16 +34,6 @@ class DialogContainer;
 class EventMappingWidget;
 class EventStreamer;
 
-// A wrapper around SDL hat events, so we don't drag SDL
-// through all the child classes
-enum JoyHat {
-  kJHatUp,
-  kJHatDown,
-  kJHatLeft,
-  kJHatRight,
-  kJHatCentered
-};
-
 enum MouseButton {
   EVENT_LBUTTONDOWN,
   EVENT_LBUTTONUP,
@@ -53,52 +43,10 @@ enum MouseButton {
   EVENT_WHEELUP
 };
 
-// Structure used for action menu items
-struct ActionList {
-  Event::Type event;
-  const char* action;
-  char* key;
-};
-
-enum {
-  kEmulActionListSize = 81,
-  kMenuActionListSize = 15
-};
-
 enum EventMode {
   kEmulationMode = 0,  // make sure these are set correctly,
   kMenuMode      = 1,  // since they'll be used as array indices
   kNumModes      = 2
-};
-
-// Joystick related items
-enum {
-  kNumJoysticks  = 8,
-  kNumJoyButtons = 24,
-  kNumJoyAxis    = 16,
-  kNumJoyHats    = 16
-};
-
-enum JoyType {
-  JT_NONE,
-  JT_REGULAR,
-  JT_STELLADAPTOR_LEFT,
-  JT_STELLADAPTOR_RIGHT
-};
-
-struct Stella_Joystick {
-  SDL_Joystick* stick;
-  JoyType       type;
-  string        name;
-};
-
-// Used for joystick to mouse emulation
-struct JoyMouse {
-  bool active;
-  int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
-      x_down_count, y_down_count;
-  unsigned int last_time, delay_time, x_down_time, y_down_time;
-  int joy_val, old_joy_val;
 };
 
 /**
@@ -114,7 +62,7 @@ struct JoyMouse {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.92 2006-12-01 18:30:18 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.93 2006-12-05 22:05:35 stephena Exp $
 */
 class EventHandler
 {
@@ -460,7 +408,7 @@ class EventHandler
       @param value  The value on the given hat
     */
     void handleJoyHatEvent(int stick, int hat, int value);
-
+	
     /**
       Detects and changes the eventhandler state
 
@@ -523,6 +471,51 @@ class EventHandler
     void setEventState(State state);
 
   private:
+    enum {
+      kEmulActionListSize = 81,
+      kMenuActionListSize = 15
+    };
+
+    // Structure used for action menu items
+    struct ActionList {
+      Event::Type event;
+      const char* action;
+      char* key;
+    };
+
+    // Joystick related items
+    enum {
+      kNumJoysticks  = 8,
+      kNumJoyButtons = 24,
+      kNumJoyAxis    = 16,
+      kNumJoyHats    = 16
+    };
+    enum JoyType {
+      JT_NONE,
+      JT_REGULAR,
+      JT_STELLADAPTOR_LEFT,
+      JT_STELLADAPTOR_RIGHT
+    };
+    struct Stella_Joystick {
+      SDL_Joystick* stick;
+      JoyType       type;
+      string        name;
+    };
+    enum JoyHat {
+      kJHatUp,
+      kJHatDown,
+      kJHatLeft,
+      kJHatRight,
+      kJHatCentered
+    };
+    struct JoyMouse {   // Used for joystick to mouse emulation
+      bool active;
+      int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
+          x_down_count, y_down_count;
+      unsigned int last_time, delay_time, x_down_time, y_down_time;
+      int joy_val, old_joy_val;
+    };
+
     // Global OSystem object
     OSystem* myOSystem;
 

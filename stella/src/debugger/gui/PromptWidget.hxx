@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.6 2006-12-02 23:25:53 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.7 2006-12-05 22:05:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -70,7 +70,6 @@ class PromptWidget : public Widget, public CommandSender
     void killChar(int direction);
     void killLine(int direction);
     void killLastWord();
-    void cancelLastCommand();
 
     // History
     void addToHistory(const char *str);

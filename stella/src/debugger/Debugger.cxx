@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.105 2006-12-02 23:25:53 stephena Exp $
+// $Id: Debugger.cxx,v 1.106 2006-12-05 22:05:33 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -332,12 +332,6 @@ void Debugger::autoExec() {
 const string Debugger::run(const string& command)
 {
   return myParser->run(command);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::cancel()
-{
-  myParser->cancel();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -841,10 +835,10 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 void Debugger::nextScanline(int lines)
 {
   saveOldState();
-  //	mySystem->unlockDataBus();
+  // mySystem->unlockDataBus();
   unlockState();
   myTiaOutput->advanceScanline(lines);
-  //	mySystem->lockDataBus();
+  // mySystem->lockDataBus();
   lockState();
 }
 

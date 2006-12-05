@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.178 2006-12-02 23:25:53 stephena Exp $
+// $Id: EventHandler.cxx,v 1.179 2006-12-05 22:05:34 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2272,6 +2272,10 @@ void EventHandler::leaveDebugMode()
   if(myState != S_DEBUGGER)
     return;
 
+  // If for any reason a command is currently running, we can't exit the debugger
+  if(myOSystem->debugger().isBlocked())
+    return;
+
   // Make sure debugger quits in a consistent state
   myOSystem->debugger().setQuitState();
 
@@ -2564,7 +2568,7 @@ void EventHandler::setSDLMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
+EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
   { Event::ConsoleSelect,               "Select",                          0 },
   { Event::ConsoleReset,                "Reset",                           0 },
   { Event::ConsoleColor,                "Color TV",                        0 },
@@ -2661,7 +2665,7 @@ ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = {
+EventHandler::ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = {
   { Event::UIUp,        "Move Up",              0 },
   { Event::UIDown,      "Move Down",            0 },
   { Event::UILeft,      "Move Left",            0 },

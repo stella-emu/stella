@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.43 2006-10-22 18:58:46 stephena Exp $
+// $Id: OSystem.hxx,v 1.44 2006-12-05 22:05:35 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -45,7 +45,7 @@ class VideoDialog;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.43 2006-10-22 18:58:46 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.44 2006-12-05 22:05:35 stephena Exp $
 */
 class OSystem
 {
@@ -270,6 +270,16 @@ class OSystem
       @return  False on any errors, else true
     */
     bool openROM(const string& rom, string& md5, uInt8** image, int* size);
+
+    /**
+      Runs through one iteration of the OSystem loop, which consists of
+      checking for events, rendering the framebuffer, etc.
+      This method isn't meant to be used from mainLoop(), but instead is
+      used as a sort of 'yield' function, whereby other parts of the code
+      may block for a time, and we need to check for cancellation (used
+      to emulate a poor man's threading system).
+    */
+    void run() const;
 
   public:
     //////////////////////////////////////////////////////////////////////
