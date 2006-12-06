@@ -9,29 +9,38 @@ Homepage: http://stella.sourceforge.net
 Changes:
 --------
 >From 2.2-rv1
-Moved away from using a joymouse which was tripping up many users
-to a more effective GUI button control scheme.
-Made '/mnt/sd/' the default ROM and Snapshot directory this way
-Stella doesn't look anywhere it shouldn't.
+* Moved away from using a joymouse which was tripping up many users
+	to a more effective GUI button control scheme.
+* Made '/mnt/sd' the default ROM and Snapshot directory this way
+	Stella doesn't look anywhere it shouldn't.
+* PAL ROMs are now playable due to Paeryn's scaling libs. ;)
+* Changed button mapping.
+* Various performance tweaks.
+
 >From 2.2
-Ms. Pacman sound issue resolved.
+* Ms. Pacman sound issue resolved.
+
 >From 2.1-rv3
-Added Rom Browser mode and enabled it by default.
+* Added Rom Browser mode and enabled it by default.
+
 >From 2.1-rv2
-Scroll bug fixed (finally).
+* Scroll bug fixed (finally).
+
 >From 2.1-rv1
-Warlords graphics bug fixed.
+* Warlords graphics bug fixed.
+
 >From 2.1
-Joystick fixed.
-Phosphor effect enabled.
+* Joystick fixed.
+* Phosphor effect enabled.
+
 >From 2.0.1:
-Stopped using the ROM Script (No more ROM limit. 'Single binary' zip
-support available.).
-Opened up the Native GUI for use through Joymouse Emulation.
-SOUND!
-Diagonals.
-Snapshots.
-Some button mapping (but still comfortably familiar).
+* Stopped using the ROM Script (No more ROM limit. 'Single binary' zip
+	support available.).
+* Opened up the Native GUI for use through Joymouse Emulation.
+* SOUND!
+* Diagonals.
+* Snapshots.
+* Some button mapping (but still comfortably familiar).
 
 -----------
 Known Bugs:
@@ -42,18 +51,14 @@ Please report all bugs to me at azaballa@users.sourceforge.net.
 ------------------------------
 Known GP2X Performance Issues:
 ------------------------------
-Pitfall 2 runs slow due to extra hardware emulation. Steve foresees this
-being fixed in the future.
-
-The GP2X port of Stella, due to the current state of GP2X kernel/driver 
-development, cannot play PAL ROMs as the GP2X cannot handle video modes
-greater than 320x240. When this changes, we'll follow suit.
+Pitfall 2 runs slow due to the need for extra hardware emulation.
+Steve foresees this being fixed in the future.
 
 ---------------------
 Installation to GP2X:
 ---------------------
 Place files 'stella' and 'stella.gpe' into a directory of your choice.
-Stella defaults to '/mnt/sd/' for the ROM and Snapshot directory.
+Stella defaults to '/mnt/sd' for the ROM and Snapshot directory.
 If you are having issues with getting Stella to run after an older
 install, try deleting the stellarc file then the state directory
 located in your Stella install folder.
@@ -68,21 +73,25 @@ of various menu elements.
 GP2X Mapping:
 -------------
 Navigating Menus:
-  A      = Move Between Tabs
-  B      = Press GUI Button
-  X      = Go Back to Previous Directory
-  Y      = Goto Next GUI Button
+  A      = Previous Tab
+  B      = Select GUI Item
+  X      = Menu Cancel
+  Y      = Next Tab
   L      = Page Up
-  R      = Page Down
+  R	 = Page Down
+  START  = Menu Cancel
+  SELECT = Menu OK
+  VOL+	 = Navigate to Next GUI Button
+  VOL-	 = Navigate to Previous GUI Button
 During Emulation:
-  A      = Snapshot
-  B      = Fire
-  X      = Pause
-  Y      = Settings Menu
-  L      = Console Reset
-  R      = Console Select
-  START  = Launcher Menu
-  SELECT = Command Menu
+  A	 = Command Menu
+  B	 = Fire
+  X	 = Pause
+  Y	 = Settings Menu
+  L	 = Console Reset
+  R	 = Console Select
+  START	 = Launcher Menu
+  SELECT = Snapshot
 
 Caution: Changing video and audio settings could lead to a non-working Stella
 setup. If you do feel the need to change the settings (as we all do) and happen
@@ -110,7 +119,6 @@ This is what my configure line looks like:
   --disable-developer
   --host=gp2x
   --with-zlib-prefix=<your gp2x zlib path>
-  --with-png-prefix=<your gp2x png path (configure appends '/include')>
   --with-sdl-prefix=<your sdl config path>
   --x-libraries=<your X11 libraries path>
 
@@ -126,7 +134,7 @@ To gather all necessary files into directory './stella/gp2x' for easy
 access, type:
 make gp2x-organize
 
-Note: /gp2x directory created in the main stella source directory
+Note: stella/gp2x directory created in the main stella source directory
 (next to configure, Makefile, etc.).
 
 ---------------
@@ -137,6 +145,6 @@ Special Thanks:
     mention patience? ;-)
 ... to Eckhard Stolberg for making me known to the Stella Team.
 ... to the Stella Team for the excellent emulator and the hospitality.
-... to theoddbot for the excellent Open2X toolchain libs.
+... to theoddbot and paeryn for the excellent Open2X toolchain libs.
 ... to TelcoLou for his hardwork, playtesting ad infinitum.
 ... to the community for all of the interest.
