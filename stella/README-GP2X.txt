@@ -82,8 +82,8 @@ Navigating Menus:
   R	 = Page Down
   START  = Menu Cancel
   SELECT = Menu OK
-  VOL+	 = Navigate to Next GUI Button (or other GUI elements)
-  VOL-	 = Navigate to Previous GUI Button (or other GUI elements)
+  VOL+	 = Navigate to Next GUI Button (or other GUI element)
+  VOL-	 = Navigate to Previous GUI Button (or other GUI element)
 During Emulation:
   A	 = Command Menu
   B	 = Fire
