@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.16 2006-12-06 07:02:50 azaballa Exp $
+// $Id: OSystemGP2X.cxx,v 1.17 2006-12-08 09:03:27 azaballa Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -128,8 +128,8 @@ uInt32 OSystemGP2X::getTicks()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemGP2X::getScreenDimensions(int& width, int& height)
 {
-  width  = 640;
-  height = 480;
+  width  = 400;
+  height = 300;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
