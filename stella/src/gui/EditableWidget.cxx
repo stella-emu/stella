@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.19 2006-12-08 16:49:33 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.20 2006-12-08 20:19:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -92,7 +92,7 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool handled = true;
   bool dirty = false;
 
-  switch (ascii)
+  switch (keycode)
   {
     case '\n':  // enter/return
     case '\r':

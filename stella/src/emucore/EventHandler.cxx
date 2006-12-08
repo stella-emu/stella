@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.180 2006-12-08 16:49:25 stephena Exp $
+// $Id: EventHandler.cxx,v 1.181 2006-12-08 20:19:58 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -631,9 +631,9 @@ void EventHandler::poll(uInt32 time)
         {
           // Assign ascii field if it doesn't exist
           // Make sure 'state change' keys (Shift, Ctrl, etc) are excluded
-          if(key > SDLK_F15 && key < SDLK_HELP) return;
           if(!ascii || ascii >= SDLK_LAST ||
-              ascii == SDLK_BACKSPACE || ascii == SDLK_DELETE) ascii = key;
+              key == SDLK_BACKSPACE || key == SDLK_DELETE) ascii = key;
+          if(key > SDLK_F15 && key < SDLK_HELP) ascii = 0;
 
           myOverlay->handleKeyEvent(ascii, key, mod, state);
         }
@@ -1525,8 +1525,7 @@ void EventHandler::setJoyHatMap()
 bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, int key)
 {
   // These keys cannot be remapped
-  if(key == SDLK_TAB || (key > SDLK_F15 && key < SDLK_HELP) ||
-     eventIsAnalog(event))
+  if(key == SDLK_TAB || eventIsAnalog(event))
     return false;
   else
   {

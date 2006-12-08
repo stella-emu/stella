@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.50 2006-12-08 16:49:33 stephena Exp $
+// $Id: Dialog.cxx,v 1.51 2006-12-08 20:19:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -314,7 +314,7 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
   if(e == Event::NoType)
-    e = instance()->eventHandler().eventForKey(ascii, kMenuMode);
+    e = instance()->eventHandler().eventForKey(keycode, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.29 2006-12-08 16:49:36 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.30 2006-12-08 20:19:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -135,7 +135,7 @@ void PopUpDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   if(isMouseDown())
     return;
 
-  Event::Type e = instance()->eventHandler().eventForKey(ascii, kMenuMode);
+  Event::Type e = instance()->eventHandler().eventForKey(keycode, kMenuMode);
   handleEvent(e);
 }
 
