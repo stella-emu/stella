@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.10 2005-12-29 21:16:26 stephena Exp $
+// $Id: Deserializer.cxx,v 1.11 2006-12-08 16:49:24 stephena Exp $
 //============================================================================
 
 #include "Deserializer.hxx"

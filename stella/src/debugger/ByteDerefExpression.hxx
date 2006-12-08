@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ByteDerefExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
+// $Id: ByteDerefExpression.hxx,v 1.3 2006-12-08 16:48:58 stephena Exp $
 //============================================================================
 
 #ifndef BYTEDEREF_EXPRESSION_HXX
@@ -25,7 +25,7 @@
 
 /**
   @author  B. Watson
-  @version $Id: ByteDerefExpression.hxx,v 1.2 2005-07-27 01:36:50 urchlay Exp $
+  @version $Id: ByteDerefExpression.hxx,v 1.3 2006-12-08 16:48:58 stephena Exp $
 */
 class ByteDerefExpression : public Expression
 {

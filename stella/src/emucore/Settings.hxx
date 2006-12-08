@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.27 2006-03-06 02:26:16 stephena Exp $
+// $Id: Settings.hxx,v 1.28 2006-12-08 16:49:28 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -29,7 +29,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.27 2006-03-06 02:26:16 stephena Exp $
+  @version $Id: Settings.hxx,v 1.28 2006-12-08 16:49:28 stephena Exp $
 */
 class Settings
 {

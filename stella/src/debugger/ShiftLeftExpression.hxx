@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ShiftLeftExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
+// $Id: ShiftLeftExpression.hxx,v 1.3 2006-12-08 16:49:05 stephena Exp $
 //============================================================================
 
 #ifndef SHIFTLEFT_EXPRESSION_HXX
@@ -24,7 +24,7 @@
 
 /**
   @author  B. Watson
-  @version $Id: ShiftLeftExpression.hxx,v 1.2 2005-07-27 01:36:51 urchlay Exp $
+  @version $Id: ShiftLeftExpression.hxx,v 1.3 2006-12-08 16:49:05 stephena Exp $
 */
 class ShiftLeftExpression : public Expression
 {

@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.2</b></h4></center>
+	<center><h4><b>Release 2.3</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -36,7 +36,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - April 2006</b></center>
+	<center><b>February 1999 - December 2006</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -215,73 +215,88 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.2</b></h2>
+	<h2><b>New in Release 2.3</b></h2>
 
 	<ul>
-<li>Added new ROM browser option which works like a normal filesystem
-    browser, allowing navigation throughout the filesystem.
-    The old mode of browsing is still present, and can be toggled at
-    runtime.  Related to this, fixed bug whereby sorting in the ROM
-    launcher sometimes didn't work.</li>
+<li>For UI navigation, changed from using 'joymouse' to the more familiar
+'tabbing' functionality, where you move from object to object by use of
+some tab key.  As a result, completely removed the 'joymouse' commandline
+argument and all associated functionality.</li>
 
-<li>Integrated stella.pro properties into the application, resulting in
-    faster startup time.  Now Stella can be redistributed as a single
-    binary; no external files are needed, but they will still be used
-    if present.</li>
+<li>Added event remapping for UI events, separate from events while in emulation
+mode.</li>
 
-<li>Reworked ROM properties files once again.  The 'user.pro' file has
-    been removed, and all user-defined properties are stored in
-    'stella.pro' instead.  You should delete all properties files when
-    upgrading to this version, to take advantage of the speed increases.</li>
+<li>Changed naming of snapshots and state files.  These files are now
+named based on the names given in the properties database, and no longer
+use the 'md5sum' name.  As a result, state files from previous versions
+will no longer work unless they're manually renamed.  Related to this,
+removed the '-ssname' commandline argument.</li>
 
-<li>Reworked settings files once again.  Removed all references to a
-    global settings file.  Each user now gets a user-specific settings
-    file only.  If that file doesn't exist, the built-in defaults are
-    used.</li>
+<li>Added support for PAL60 ROMs, which use the PAL palette and resolution
+but run at NTSC timing (60Hz).  Added ROM property for this, and updated
+the internal properties database for many PAL60 ROMs.</li>
 
-<li>Added 'conditional saving' of the cheatcode and settings files, so
-    that these files are only written to disk when absolutely
-    necessary.  This doesn't really affect desktop systems, but is very
-    useful for systems with flashram-based storage (GP2X, WinCE, etc).</li>
+<li>Added support for user-definable palettes.  For now, only one extra palette
+is supported, but in the future we may have them specified per-ROM.</li>
 
-<li>Reworked Settings class, hopefully fixing a bug whereby settings
-    weren't being saved in certain cases (most evident in the OSX port).</li>
+<li>Fixed bug in PAL colour-loss emulation, which wasn't actually being done
+for the original Stella and z26 palettes.</li>
 
-<li>Added 'tiadefaults' commandline option, which can also be toggled
-    from within the GUI.  This option disables all TIA positioning
-    'tweaks' that typically make a game look better, and present the
-    image exactly as it would appear on a real 2600.</li>
+<li>Fixed bug where 'Snapshot saved' appeared when taking snapshots in
+succession.</li>
 
-<li>Added jitter-detection code for the paddle emulation, which should
-    eliminate an annoying 'jittering' effect when using paddles with
-    a Stelladaptor.</li>
+<li>Fixed several TIA-related emulation bugs as reported on AtariAge.  More
+fixes will come with the TIA rewrite, due in the next release.</li>
 
-<li>Related to jitter-detection, added '-pthresh' commandline option
-    and GUI entry, which sets a bound below which the emulation detects
-    jitter.</li>
+<li>Added '-gl_vsync' commandline argument and associated UI elements, which
+uses synchronization to vertical blank interrupt in OpenGL on supported
+systems.  This eliminates tearing in OpenGL rendering.</li>
 
-<li>Fixed crash when adding one-shot cheats.</li>
+<li>Added a 'Previous directory' entry to the top of each listing while
+in ROM Browse mode, which is equivalent to the 'Go Up' button.  This makes
+it easier to navigate the filesystem, since you never have to 'tab out'
+of the ROM listing.</li>
 
-<li>Fixed bug in RAM comparitive searches in the debugger.</li>
+<li>Added new scaler infrastructure, replacing the '-zoom' commandline argument
+with '-scale_ui' and '-scale_tia'.  This means the UI and emulation can now
+be scaled independently.  In the future, support will be added for advanced
+scalers in TIA mode, such as Scale2x, Scale3x, HQ2x, HQ3x, etc.</li>
 
-<li>Fixed bug with setting snapshot naming type from the GUI (it was
-    always being set to 'romname').</li>
+<li>Added all sound related commandline options to the UI, so you no
+longer have to use the commandline to set those options.</li>
 
-<li>Re-added low compatibility CPU emulation mode, since it benefits
-    some slower systems.  This is activated with the commandline argument
-    '-cpu low'.</li>
+<li>Added new property to ROM properties specifying which paddle the mouse
+should emulate.  This eliminates the need to manually set the paddle mode
+for those ROMs that don't use paddle zero by default.  Related to this,
+made the '-paddle' option not save to the settings file, and only exist
+as long as a ROM is running.</li>
 
-<li>For the OSX port, added Universal binary support.</li>
+<li>Added a 'Defaults' button to the Game Properties dialog, which resets
+the ROM properties to the internal defaults, deleting that ROMs properties
+from the external properties file.</li>
 
-<li>For the OSX port, reworked the menu handling, so that certain menu
-    options are only enabled when it makes sense to do so.</li>
+<li>Made 'phosphor' and 'phosphor blend' a ROM property, meaning it can be
+set per-ROM.</li>
 
-<li>For the GP2X port, fixed joystick deadzone issues and scroll bug in
-    ROM launcher.</li>
+<li>Added support for relocating the base Stella directory, by setting the
+environment variable 'STELLA_BASEDIR'.  This must be done each time before
+Stella starts.</li>
 
-<li>For the GP2X port, fixed issue with PAL ROMs causing a crash because of
-    screen size.  A message is now shown indicating that PAL ROMs are not
-    yet supported.</li>
+<li>Added '-fastscbios' commandline argument, which speeds up loading of 
+vertical bars in Supercharger ROMs, and made it the default.</li>
+
+<li>Added '-autoslot' commandline argument, which automatically switches
+to the next available slot after saving a state.  This defaults to off,
+and must be set from the commandline.</li>
+
+<li>Updated configure/build toolchain so patching is no longer required for Debian
+packages.</li>
+
+<li>Removed dependency on PNG library (PNG snapshots are still present, but the
+actual library is no longer required).</li>
+
+<li>For the GP2X port, added support for PAL ROMs, and updated SDL to use hardware
+scaling.</li>
 	</ul>
 
 	<p>
@@ -317,7 +332,7 @@
 		<li>Supports Supercharger single-load and multi-load games</li>
 		<li>Supports property file for setting the properties associated with games</li>
 		<li>Supports user specified frame rate</li>
-		<li>Supports the NTSC and PAL television palettes</li>
+		<li>Supports the NTSC, PAL and PAL60 television standards</li>
 		<li>Supports several "undocumented features" of the TIA graphics chip used by
 			some games</li>
 		<li>TIA emulation supports full collision checking</li>
@@ -332,16 +347,17 @@
 	Stella under various operating systems.
 	</p>
 
-	<p>Note that for this version of Stella, you are <b>required</b> to have a
-	stella.pro file.  It is no longer optional as it was for past versions.</p>
+	<p>Note that for this version of Stella, you are <b>not required</b> to have a
+	stella.pro file.  ROM properties are built in, and defaults will be used
+	whenever necessary.</p>
 
 	<p>
 	<h2><b>General (required for all versions of Stella)</b></h2>
 	<ul>
 		<li>Enough RAM for the OS + 16MB RAM for the emulation; 32MB highly recommended</li>
 		<li>15 bit color minimum; 16 bit color graphics card highly recommended</li>
-		<li>SDL version 1.2.0 or greater</li>
-		<li>Latest versions of the libpng and zlib libraries</li>
+		<li>SDL version 1.2.0 or greater, version 1.2.11 highly recommended</li>
+		<li>Latest version of the zlib library</li>
 		<li>Joysticks or gamepads are highly recommended</li>
 		<li>Mouse or Stelladaptor with real paddles required for paddle emulation</li>
 		<li>Some ROM images (no, we won't tell you where to find them)</li>
@@ -366,7 +382,7 @@
 	<p>The Mac version of Stella is designed to work on a Power Macintosh with
 	the following:</p>
 	<ul>
-		<li>Mac OSX 10.1 or Above</li>
+		<li>Mac OSX 10.2 or Above</li>
 		<li>500 MHz G4 PPC/Intel processor or above (Stella <b>may</b> work with a G3
 			processor, but this is still a work-in-progress)</li>
 		<li>OpenGL capable video card.  Software rendering mode is still available,

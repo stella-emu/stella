@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott
+// Copyright (c) 1995-2006 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIASnd.hxx,v 1.4 2006-01-06 00:31:56 stephena Exp $
+// $Id: TIASnd.hxx,v 1.5 2006-12-08 16:49:29 stephena Exp $
 //============================================================================
 
 #ifndef TIASOUND_HXX
@@ -26,7 +26,7 @@
   hardware.
 
   @author  Bradford W. Mott
-  @version $Id: TIASnd.hxx,v 1.4 2006-01-06 00:31:56 stephena Exp $
+  @version $Id: TIASnd.hxx,v 1.5 2006-12-08 16:49:29 stephena Exp $
 */
 class TIASound
 {

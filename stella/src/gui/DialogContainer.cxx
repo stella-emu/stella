@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.33 2006-05-25 22:23:39 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.34 2006-12-08 16:49:33 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -144,7 +144,7 @@ void DialogContainer::reStack()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleKeyEvent(int unicode, int key, int mod, uInt8 state)
+void DialogContainer::handleKeyEvent(int ascii, int key, int mod, uInt8 state)
 {
   if(myDialogStack.empty())
     return;
@@ -153,16 +153,16 @@ void DialogContainer::handleKeyEvent(int unicode, int key, int mod, uInt8 state)
   Dialog* activeDialog = myDialogStack.top();
   if(state == 1)
   {
-    myCurrentKeyDown.ascii   = unicode;
+    myCurrentKeyDown.ascii   = ascii;
     myCurrentKeyDown.keycode = key;
     myCurrentKeyDown.flags   = mod;
     myKeyRepeatTime = myTime + kRepeatInitialDelay;
 
-    activeDialog->handleKeyDown(unicode, key, mod);
+    activeDialog->handleKeyDown(ascii, key, mod);
   }
   else
   {
-    activeDialog->handleKeyUp(unicode, key, mod);
+    activeDialog->handleKeyUp(ascii, key, mod);
 
     // Only stop firing events if it's the current key
     if (key == myCurrentKeyDown.keycode)

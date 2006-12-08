@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
+// $Id: Paddles.hxx,v 1.5 2006-12-08 16:49:27 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -26,7 +26,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.4 2005-11-12 22:59:20 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.5 2006-12-08 16:49:27 stephena Exp $
 */
 class Paddles : public Controller
 {

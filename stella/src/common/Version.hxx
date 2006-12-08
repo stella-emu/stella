@@ -8,18 +8,18 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Version.hxx,v 1.16 2006-04-12 13:32:06 stephena Exp $
+// $Id: Version.hxx,v 1.17 2006-12-08 16:48:56 stephena Exp $
 //============================================================================
 
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-#define STELLA_BASE_VERSION "2.2.1_cvs"
+#define STELLA_BASE_VERSION "2.3_alpha"
 
 #ifdef NIGHTLY_BUILD
 #define STELLA_VERSION STELLA_BASE_VERSION "pre-" NIGHTLY_BUILD

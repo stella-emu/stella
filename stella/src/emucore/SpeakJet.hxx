@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.5 2006-08-11 12:50:22 stephena Exp $
+// $Id: SpeakJet.hxx,v 1.6 2006-12-08 16:49:28 stephena Exp $
 //============================================================================
 
 #ifdef ATARIVOX_SUPPORT
@@ -77,7 +77,7 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.5 2006-08-11 12:50:22 stephena Exp $
+  @version $Id: SpeakJet.hxx,v 1.6 2006-12-08 16:49:28 stephena Exp $
 */
 
 #include "bspf.hxx"

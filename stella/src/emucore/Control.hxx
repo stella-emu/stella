@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.5 2006-06-09 02:45:11 urchlay Exp $
+// $Id: Control.hxx,v 1.6 2006-12-08 16:49:23 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -55,7 +55,7 @@ class Event;
   of the controller from the prespective of the controller's jack.  
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.5 2006-06-09 02:45:11 urchlay Exp $
+  @version $Id: Control.hxx,v 1.6 2006-12-08 16:49:23 stephena Exp $
 */
 class Controller
 {

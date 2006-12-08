@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.hxx,v 1.7 2005-07-30 16:58:22 urchlay Exp $
+// $Id: Cart3F.hxx,v 1.8 2006-12-08 16:49:20 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3F_HXX
@@ -37,7 +37,7 @@ class Deserializer;
   only used 8K this bankswitching scheme supports up to 512K.
    
   @author  Bradford W. Mott
-  @version $Id: Cart3F.hxx,v 1.7 2005-07-30 16:58:22 urchlay Exp $
+  @version $Id: Cart3F.hxx,v 1.8 2006-12-08 16:49:20 stephena Exp $
 */
 class Cartridge3F : public Cartridge
 {

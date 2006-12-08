@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.11 2006-12-01 18:30:18 stephena Exp $
+// $Id: Props.hxx,v 1.12 2006-12-08 16:49:27 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -57,7 +57,7 @@ enum PropertyType {
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.11 2006-12-01 18:30:18 stephena Exp $
+  @version $Id: Props.hxx,v 1.12 2006-12-08 16:49:27 stephena Exp $
 */
 class Properties
 {

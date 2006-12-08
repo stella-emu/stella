@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.hxx,v 1.4 2006-03-06 02:26:16 stephena Exp $
+// $Id: SettingsMACOSX.hxx,v 1.5 2006-12-08 16:49:37 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_MAC_OSX_HXX
@@ -25,7 +25,7 @@ class OSystem;
   This class defines Macintosh OSX system specific settings.
 
   @author  Mark Grebe
-  @version $Id: SettingsMACOSX.hxx,v 1.4 2006-03-06 02:26:16 stephena Exp $
+  @version $Id: SettingsMACOSX.hxx,v 1.5 2006-12-08 16:49:37 stephena Exp $
 */
 class SettingsMACOSX : public Settings
 {

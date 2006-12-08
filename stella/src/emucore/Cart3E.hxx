@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.hxx,v 1.2 2005-07-30 16:58:22 urchlay Exp $
+// $Id: Cart3E.hxx,v 1.3 2006-12-08 16:49:19 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3E_HXX
@@ -59,7 +59,7 @@ class Deserializer;
   any problems. (Famous last words...)
 
   @author  B. Watson
-  @version $Id: Cart3E.hxx,v 1.2 2005-07-30 16:58:22 urchlay Exp $
+  @version $Id: Cart3E.hxx,v 1.3 2006-12-08 16:49:19 stephena Exp $
 */
 
 class Cartridge3E : public Cartridge

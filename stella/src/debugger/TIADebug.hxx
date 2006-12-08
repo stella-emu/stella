@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.19 2005-10-13 18:53:07 stephena Exp $
+// $Id: TIADebug.hxx,v 1.20 2006-12-08 16:49:07 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX

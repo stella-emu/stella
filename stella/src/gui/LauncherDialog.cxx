@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.59 2006-12-03 01:24:34 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.60 2006-12-08 16:49:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,7 +111,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                   "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
-  mySelectedItem = 0;  // Highlight 'Select' button
 #else
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                   "Quit", kQuitCmd);
@@ -129,8 +128,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                    "Select", kStartCmd);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
-  mySelectedItem = 3;  // Highlight 'Select' button
 #endif
+  mySelectedItem = 0;  // Highlight 'Rom Listing'
 
   // Create the launcher options dialog, where you can change ROM
   // and snapshot paths

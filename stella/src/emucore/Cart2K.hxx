@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.hxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
+// $Id: Cart2K.hxx,v 1.7 2006-12-08 16:49:19 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE2K_HXX
@@ -33,7 +33,7 @@ class Deserializer;
   2600's 4K cartridge addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: Cart2K.hxx,v 1.6 2005-07-30 16:58:22 urchlay Exp $
+  @version $Id: Cart2K.hxx,v 1.7 2006-12-08 16:49:19 stephena Exp $
 */
 class Cartridge2K : public Cartridge
 {

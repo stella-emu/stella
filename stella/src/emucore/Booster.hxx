@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.hxx,v 1.5 2005-11-12 22:59:20 stephena Exp $
+// $Id: Booster.hxx,v 1.6 2006-12-08 16:49:19 stephena Exp $
 //============================================================================
 
 #ifndef BOOSTERGRIP_HXX
@@ -28,7 +28,7 @@
   on it (a booster and a trigger).
 
   @author  Bradford W. Mott
-  @version $Id: Booster.hxx,v 1.5 2005-11-12 22:59:20 stephena Exp $
+  @version $Id: Booster.hxx,v 1.6 2006-12-08 16:49:19 stephena Exp $
 */
 class BoosterGrip : public Controller
 {

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.7 2006-11-13 00:21:41 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.8 2006-12-08 16:49:31 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 

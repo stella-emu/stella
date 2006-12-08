@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DivExpression.hxx,v 1.4 2005-09-15 19:43:36 stephena Exp $
+// $Id: DivExpression.hxx,v 1.5 2006-12-08 16:49:00 stephena Exp $
 //============================================================================
 
 #ifndef DIV_EXPRESSION_HXX
@@ -24,7 +24,7 @@
 
 /**
   @author  B. Watson
-  @version $Id: DivExpression.hxx,v 1.4 2005-09-15 19:43:36 stephena Exp $
+  @version $Id: DivExpression.hxx,v 1.5 2006-12-08 16:49:00 stephena Exp $
 */
 class DivExpression : public Expression
 {

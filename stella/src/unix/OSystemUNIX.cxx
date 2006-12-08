@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.21 2006-11-13 00:21:41 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.22 2006-12-08 16:49:39 stephena Exp $
 //============================================================================
 
 #include <SDL.h>

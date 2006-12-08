@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.10 2006-11-08 00:09:53 stephena Exp $
+// $Id: Cart.hxx,v 1.11 2006-12-08 16:49:19 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -33,7 +33,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.10 2006-11-08 00:09:53 stephena Exp $
+  @version $Id: Cart.hxx,v 1.11 2006-12-08 16:49:19 stephena Exp $
 */
 class Cartridge : public Device
 {

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.22 2006-11-28 21:48:56 stephena Exp $
+// $Id: Event.hxx,v 1.23 2006-12-08 16:49:25 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -26,7 +26,7 @@ class EventStreamer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.22 2006-11-28 21:48:56 stephena Exp $
+  @version $Id: Event.hxx,v 1.23 2006-12-08 16:49:25 stephena Exp $
 */
 class Event
 {

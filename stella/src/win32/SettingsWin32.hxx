@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.hxx,v 1.6 2005-06-16 01:11:29 stephena Exp $
+// $Id: SettingsWin32.hxx,v 1.7 2006-12-08 16:49:41 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_WIN32_HXX

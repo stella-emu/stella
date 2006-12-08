@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.hxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
+// $Id: ColorWidget.hxx,v 1.3 2006-12-08 16:49:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class GuiObject;
   be expanded with a TIA palette table, to set the color visually.
   
   @author  Stephen Anthony
-  @version $Id: ColorWidget.hxx,v 1.2 2006-02-22 17:38:04 stephena Exp $
+  @version $Id: ColorWidget.hxx,v 1.3 2006-12-08 16:49:10 stephena Exp $
 */
 class ColorWidget : public Widget, public CommandSender
 {

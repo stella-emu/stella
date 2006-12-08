@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.179 2006-12-05 22:05:34 stephena Exp $
+// $Id: EventHandler.cxx,v 1.180 2006-12-08 16:49:25 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -383,7 +383,7 @@ void EventHandler::poll(uInt32 time)
       case SDL_KEYUP:
       case SDL_KEYDOWN:
       {
-        int unicode = event.key.keysym.unicode;
+        int ascii   = event.key.keysym.unicode;
         SDLKey key  = event.key.keysym.sym;
         SDLMod mod  = event.key.keysym.mod;
         uInt8 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
@@ -629,12 +629,13 @@ void EventHandler::poll(uInt32 time)
           handleEvent(myKeyTable[key][kEmulationMode], state);
         else if(myOverlay != NULL)
         {
-          // Assign unicode field if it doesn't exist
+          // Assign ascii field if it doesn't exist
           // Make sure 'state change' keys (Shift, Ctrl, etc) are excluded
-          if(!unicode) unicode = key;
-          if(key > SDLK_F15 && key < SDLK_HELP)
-            unicode = 0;
-          myOverlay->handleKeyEvent(unicode, key, mod, state);
+          if(key > SDLK_F15 && key < SDLK_HELP) return;
+          if(!ascii || ascii >= SDLK_LAST ||
+              ascii == SDLK_BACKSPACE || ascii == SDLK_DELETE) ascii = key;
+
+          myOverlay->handleKeyEvent(ascii, key, mod, state);
         }
 
         break;  // SDL_KEYUP, SDL_KEYDOWN

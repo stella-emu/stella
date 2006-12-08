@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.32 2006-08-09 02:38:03 bwmott Exp $
+// $Id: SoundSDL.cxx,v 1.33 2006-12-08 16:48:56 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT

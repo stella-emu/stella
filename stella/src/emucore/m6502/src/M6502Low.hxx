@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Low.hxx,v 1.5 2006-02-05 02:49:47 stephena Exp $
+// $Id: M6502Low.hxx,v 1.6 2006-12-08 16:49:30 stephena Exp $
 //============================================================================
 
 #ifndef M6502LOW_HXX
@@ -41,7 +41,7 @@ class Deserializer;
   better compatibility is neccessary use one of the other 6502 classes.
   
   @author  Bradford W. Mott
-  @version $Id: M6502Low.hxx,v 1.5 2006-02-05 02:49:47 stephena Exp $
+  @version $Id: M6502Low.hxx,v 1.6 2006-12-08 16:49:30 stephena Exp $
 */
 class M6502Low : public M6502
 {

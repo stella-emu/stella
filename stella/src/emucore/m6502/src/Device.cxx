@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Device.cxx,v 1.2 2005-06-16 01:11:28 stephena Exp $
+// $Id: Device.cxx,v 1.3 2006-12-08 16:49:29 stephena Exp $
 //============================================================================
 
 #include "Device.hxx"

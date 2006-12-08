@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.13 2006-12-01 18:30:20 stephena Exp $
+// $Id: Menu.cxx,v 1.14 2006-12-08 16:49:36 stephena Exp $
 //============================================================================
 
 #include "Dialog.hxx"
