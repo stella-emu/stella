@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.12 2006-12-08 16:49:27 stephena Exp $
+// $Id: Props.hxx,v 1.13 2006-12-09 00:25:20 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -36,7 +36,7 @@ enum PropertyType {
   Console_SwapPorts,
   Controller_Left,
   Controller_Right,
-  Controller_PaddleNo,
+  Controller_SwapPaddles,
   Display_Format,
   Display_XStart,
   Display_Width,
@@ -57,7 +57,7 @@ enum PropertyType {
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.12 2006-12-08 16:49:27 stephena Exp $
+  @version $Id: Props.hxx,v 1.13 2006-12-09 00:25:20 stephena Exp $
 */
 class Properties
 {

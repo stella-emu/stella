@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.19 2006-12-08 16:49:34 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.20 2006-12-09 00:25:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,6 +75,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // Controller properties
     PopUpWidget* myLeftController;
     PopUpWidget* myRightController;
+    PopUpWidget* mySwapPaddles;
 
     // Display properties
     PopUpWidget*      myFormat;

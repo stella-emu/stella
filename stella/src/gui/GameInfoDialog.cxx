@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.31 2006-12-08 16:49:34 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.32 2006-12-09 00:25:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -138,7 +138,7 @@ GameInfoDialog::GameInfoDialog(
   myLeftDiff->appendEntry("A", 2);
   wid.push_back(myLeftDiff);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Right Difficulty:", kTextAlignLeft);
   myRightDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -147,7 +147,7 @@ GameInfoDialog::GameInfoDialog(
   myRightDiff->appendEntry("A", 2);
   wid.push_back(myRightDiff);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "TV Type:", kTextAlignLeft);
   myTVType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -156,7 +156,7 @@ GameInfoDialog::GameInfoDialog(
   myTVType->appendEntry("B & W", 2);
   wid.push_back(myTVType);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Swap ports:", kTextAlignLeft);
   mySwapPorts = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -184,7 +184,7 @@ GameInfoDialog::GameInfoDialog(
     myLeftController->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myLeftController);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Right Controller:", kTextAlignLeft);
   myRightController = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -192,6 +192,17 @@ GameInfoDialog::GameInfoDialog(
   for(i = 0; i < 5; ++i)
     myRightController->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myRightController);
+
+  ypos += lineHeight + 5;
+  pwidth = font.getStringWidth("Yes");
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
+                       "Swap Paddles:", kTextAlignLeft);
+  mySwapPaddles = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                  pwidth, lineHeight, "", 0, 0);
+  mySwapPaddles->appendEntry("Yes", 1);
+  mySwapPaddles->appendEntry("No", 2);
+  wid.push_back(mySwapPaddles);
+
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
@@ -418,6 +429,14 @@ void GameInfoDialog::loadView()
   i = (i == 5) ? 0: i + 1;
   myRightController->setSelectedTag(i);
 
+  s = myGameProperties.get(Controller_SwapPaddles);
+  if(s == "YES")
+    mySwapPaddles->setSelectedTag(1);
+  else if(s == "NO")
+    mySwapPaddles->setSelectedTag(2);
+  else
+    mySwapPaddles->setSelectedTag(0);
+
   // Display properties
   s = myGameProperties.get(Display_Format);
   if(s == "NTSC")
@@ -543,6 +562,10 @@ void GameInfoDialog::saveConfig()
       break;
     }
   }
+
+  tag = mySwapPaddles->getSelectedTag();
+  s = (tag == 1) ? "Yes" : "No";
+  myGameProperties.set(Controller_SwapPaddles, s);
 
   // Display properties
   tag = myFormat->getSelectedTag();

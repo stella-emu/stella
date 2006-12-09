@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.16 2006-12-08 16:49:27 stephena Exp $
+// $Id: Props.cxx,v 1.17 2006-12-09 00:25:20 stephena Exp $
 //============================================================================
 
 #include <cctype>
@@ -66,6 +66,7 @@ void Properties::set(PropertyType key, const string& value)
       case Console_SwapPorts:
       case Controller_Left:
       case Controller_Right:
+      case Controller_SwapPaddles:
       case Display_Format:
       case Display_Phosphor:
       case Emulation_HmoveBlanks:
@@ -292,7 +293,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "NO",          // Console.SwapPorts
   "JOYSTICK",    // Controller.Left
   "JOYSTICK",    // Controller.Right
-  "0",           // Controller.PaddleNo
+  "NO",          // Controller.SwapPaddles
   "NTSC",        // Display.Format
   "0",           // Display.XStart
   "160",         // Display.Width
@@ -319,7 +320,7 @@ const char* Properties::ourPropertyNames[LastPropType] = {
   "Console.SwapPorts",
   "Controller.Left",
   "Controller.Right",
-  "Controller.PaddleNo",
+  "Controller.SwapPaddles",
   "Display.Format",
   "Display.XStart",
   "Display.Width",

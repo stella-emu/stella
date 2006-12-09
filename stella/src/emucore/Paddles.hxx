@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.5 2006-12-08 16:49:27 stephena Exp $
+// $Id: Paddles.hxx,v 1.6 2006-12-09 00:25:20 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -26,7 +26,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.5 2006-12-08 16:49:27 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.6 2006-12-09 00:25:20 stephena Exp $
 */
 class Paddles : public Controller
 {
@@ -34,10 +34,11 @@ class Paddles : public Controller
     /**
       Create a new pair of paddle controllers plugged into the specified jack
 
-      @param jack The jack the controller is plugged into
+      @param jack  The jack the controller is plugged into
       @param event The event object to use for events
+      @param swap  Whether to swap the paddles plugged into this jack
     */
-    Paddles(Jack jack, const Event& event);
+    Paddles(Jack jack, const Event& event, bool swap);
 
     /**
       Destructor
@@ -71,6 +72,11 @@ class Paddles : public Controller
       @param value The value to write to the pin
     */
     virtual void write(DigitalPin pin, bool value);
+
+  private:
+    // Used to implement paddle swapping efficiently, and eliminate
+    // testing at runtime
+    Event::Type myPinEvents[4][2];
 };
 
 #endif

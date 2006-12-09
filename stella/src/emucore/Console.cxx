@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.104 2006-12-08 16:49:23 stephena Exp $
+// $Id: Console.cxx,v 1.105 2006-12-09 00:25:19 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -125,6 +125,9 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     rightjack = Controller::Left;
   }
 
+  // Also check if we should swap the paddles plugged into a jack
+  bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
+
   // Construct left controller
   if(left == "BOOSTER-GRIP")
   {
@@ -140,7 +143,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   }
   else if(left == "PADDLES")
   {
-    myControllers[0] = new Paddles(leftjack, *myEvent);
+    myControllers[0] = new Paddles(leftjack, *myEvent, swapPaddles);
   }
   else
   {
@@ -166,7 +169,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   }
   else if(right == "PADDLES")
   {
-    myControllers[1] = new Paddles(rightjack, *myEvent);
+    myControllers[1] = new Paddles(rightjack, *myEvent, swapPaddles);
   }
 #ifdef ATARIVOX_SUPPORT 
   else if(right == "ATARIVOX")
@@ -177,16 +180,6 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   else
   {
     myControllers[1] = new Joystick(rightjack, *myEvent);
-  }
-
-  // Set the paddle number which the mouse will emulate
-  if(myControllers[0]->type() == Controller::Paddles || 
-     myControllers[1]->type() == Controller::Paddles)
-  {
-    int paddle = myOSystem->settings().getInt("paddle");
-    if(paddle == -1)  // not set on commandline
-      paddle = atoi(myProperties.get(Controller_PaddleNo).c_str());
-    myOSystem->eventHandler().setPaddleMode(paddle);
   }
 
   // Create switches for the console

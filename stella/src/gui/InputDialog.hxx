@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.11 2006-12-08 16:49:35 stephena Exp $
+// $Id: InputDialog.hxx,v 1.12 2006-12-09 00:25:20 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -53,6 +53,7 @@ class InputDialog : public Dialog
 
   private:
     enum {
+      kPaddleChanged       = 'PDch',
       kPaddleThreshChanged = 'PDth',
       kP0SpeedID = 100,
       kP1SpeedID = 101,
@@ -68,6 +69,8 @@ class InputDialog : public Dialog
     PopUpWidget* myLeftPort;
     PopUpWidget* myRightPort;
 
+    SliderWidget*     myPaddleMode;
+    StaticTextWidget* myPaddleModeLabel;
     SliderWidget*     myPaddleThreshold;
     StaticTextWidget* myPaddleThresholdLabel;
     SliderWidget*     myPaddleSpeed[4];

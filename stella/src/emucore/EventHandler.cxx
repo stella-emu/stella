@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.181 2006-12-08 20:19:58 stephena Exp $
+// $Id: EventHandler.cxx,v 1.182 2006-12-09 00:25:19 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -156,6 +156,7 @@ void EventHandler::initialize()
   setActionMappings(kMenuMode);
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
+  setPaddleMode(myOSystem->settings().getInt("paddle"), false);
   setPaddleThreshold(myOSystem->settings().getInt("pthresh"));
 }
 
@@ -2188,6 +2189,8 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
     buf << "Mouse is paddle " << num;
     myOSystem->frameBuffer().showMessage(buf.str());
   }
+
+  myOSystem->settings().setInt("paddle", myPaddleMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

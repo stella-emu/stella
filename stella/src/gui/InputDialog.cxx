@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.18 2006-12-08 16:49:35 stephena Exp $
+// $Id: InputDialog.cxx,v 1.19 2006-12-09 00:25:20 stephena Exp $
 //============================================================================
 
 // FIXME - this whole dialog should be a dialog of buttons instead of
@@ -119,11 +119,21 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   myRightPort->appendEntry("right virtual port", 2);
   wid.push_back(myRightPort);
 
-
-  // Add 'paddle threshhold' setting
+  // Add 'mouse to paddle' mapping
+  ypos += 2*lineHeight;
   lwidth = font.getStringWidth("Paddle threshold: ");
   pwidth = font.getMaxCharWidth() * 5;
-  xpos = 5;  ypos += 2*lineHeight + 3;
+  myPaddleMode = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                  "Mouse is paddle: ", lwidth, kPaddleChanged);
+  myPaddleMode->setMinValue(0); myPaddleMode->setMaxValue(3);
+  xpos += myPaddleMode->getWidth() + 5;
+  myPaddleModeLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                           "", kTextAlignLeft);
+  myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleMode);
+
+  // Add 'paddle threshhold' setting
+  xpos = 5;  ypos += lineHeight + 3;
   myPaddleThreshold = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                        "Paddle threshold: ",
                                        lwidth, kPaddleThreshChanged);
@@ -198,6 +208,10 @@ void InputDialog::loadConfig()
   int rport = sa2 == "right" ? 2 : 1;
   myRightPort->setSelectedTag(rport);
 
+  // Paddle mode
+  myPaddleMode->setValue(instance()->settings().getInt("paddle"));
+  myPaddleModeLabel->setLabel(instance()->settings().getString("paddle"));
+
   // Paddle threshold
   myPaddleThreshold->setValue(instance()->settings().getInt("pthresh"));
   myPaddleThresholdLabel->setLabel(instance()->settings().getString("pthresh"));
@@ -222,6 +236,10 @@ void InputDialog::saveConfig()
   string sa1 = myLeftPort->getSelectedTag() == 2 ? "right" : "left";
   string sa2 = myRightPort->getSelectedTag() == 2 ? "right" : "left";
   instance()->eventHandler().mapStelladaptors(sa1, sa2);
+
+  // Paddle mode
+  int mode = myPaddleMode->getValue();
+  instance()->eventHandler().setPaddleMode(mode);
 
   // Paddle threshold
   int threshold = myPaddleThreshold->getValue();
@@ -294,6 +312,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloseCmd:
       // Revert changes made to event mapping
       close();
+      break;
+
+    case kPaddleChanged:
+      myPaddleModeLabel->setValue(myPaddleMode->getValue());
       break;
 
     case kPaddleThreshChanged:
