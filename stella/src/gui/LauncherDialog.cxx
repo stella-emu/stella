@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.60 2006-12-08 16:49:35 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.61 2006-12-09 04:02:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -239,7 +239,8 @@ void LauncherDialog::updateListing(bool fullReload)
 
   // Indicate how many files were found
   ostringstream buf;
-  buf << myGameList->size() << " items found";
+  buf << (myBrowseModeFlag ? myGameList->size() -1 : myGameList->size())
+      << " items found";
   myRomCount->setLabel(buf.str());
 
   // Restore last selection
@@ -277,6 +278,9 @@ void LauncherDialog::updateListing(bool fullReload)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadDirListing()
 {
+  if(!myCurrentNode.isDirectory())
+    return;
+
   FSList files = myCurrentNode.listDir(FilesystemNode::kListAll);
 
   // Add '[..]' to indicate previous folder
