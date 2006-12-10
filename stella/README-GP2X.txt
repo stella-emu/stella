@@ -9,11 +9,11 @@ Homepage: http://stella.sourceforge.net
 Changes:
 --------
 >From 2.2-rv1
-* Moved away from using joymouse emulation which was tripping up
-	many users to a more effective GUI button control scheme.
+* Moved away from using joymouse emulation, which was frustrating
+	many users, to a more effective GUI button control scheme.
 * Made '/mnt/sd' the default ROM and Snapshot directory this way
 	Stella doesn't look anywhere it shouldn't.
-* PAL ROMs are now playable due to Paeryn's scaling libs. ;)
+* PAL ROMs are now playable thanks to Paeryn's scaling libs. ;)
 * Changed button mapping.
 * Various performance tweaks.
 
@@ -34,8 +34,8 @@ Changes:
 * Phosphor effect enabled.
 
 >From 2.0.1:
-* Stopped using the ROM Script (No more ROM limit. 'Single binary' zip
-	support available.).
+* Stopped using the ROM Script (No more ROM limit. 'Single binary'
+	zip support available.).
 * Opened up the Native GUI for use through Joymouse Emulation.
 * SOUND!
 * Diagonals.
@@ -57,18 +57,23 @@ Steve foresees this being fixed in the future.
 ---------------------
 Installation to GP2X:
 ---------------------
-Place files 'stella' and 'stella.gpe' into a directory of your choice.
+Note: Stella for the GP2X does not need external SDL libraries.
+
+Place files 'stella' and 'stella.gpe' into its own directory.
 Stella defaults to '/mnt/sd' for the ROM and Snapshot directory.
-This can be changed by using the Options button in the Launcher menu.
-If you are having issues with getting Stella to run after an older
-install, try deleting the stellarc file then the state directory
-located in your Stella install folder.
+This can be changed by using the 'Options' button in the Launcher
+menu. If you are having issues with getting Stella to run after
+an older install, delete the 'stellarc' file located in the root
+Stella install folder.
 
 -----------
 Navigation:
 -----------
-The joystick selects item by item. The buttons listed below allow selection
-of various menu elements.
+The joystick selects item by item in a list. In menu mode, VOL+ and
+VOL- highlight the next and previous GUI elements respectively.
+Pressing B activates the highlighted GUI element. Pressing START
+or X is equivalent to clicking Cancel or Close. Pressing SELECT is
+equivalent to clicking OK. For complete button mapping, check below.
 
 -------------
 GP2X Mapping:
@@ -107,7 +112,7 @@ Compile Info:
 Since the GP2X branch was so graciously added to Stella, GP2X compilation is
 now built in. If you plan on doing a compile yourself, you need the GP2X devkit
 pro and SDL Open2X libs with zlib support. I recommend theoddbot's Open2X
-libraries which work very nicely for this. Paeryn's are a must too (combine
+libraries which work very nicely for this. Paeryn's are also a must (combine
 them with theoddbot's). Any questions, email me.
 
 Make sure your path includes your arm-linux compilers and tools:
