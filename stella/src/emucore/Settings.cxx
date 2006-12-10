@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.95 2006-12-09 00:25:20 stephena Exp $
+// $Id: Settings.cxx,v 1.96 2006-12-10 17:04:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -34,7 +34,7 @@ Settings::Settings(OSystem* osystem)
 
   // Add options that are common to all versions of Stella
   setInternal("video", "soft");
-  setInternal("dirtyrects", "true");
+  setInternal("dirtyrects", "false"); // This only becomes useful at high resolutions
 
   setInternal("gl_filter", "nearest");
   setInternal("gl_aspect", "2.0");

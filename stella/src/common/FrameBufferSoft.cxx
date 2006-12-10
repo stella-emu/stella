@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.61 2006-12-08 16:48:56 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.62 2006-12-10 17:04:33 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -31,7 +31,8 @@
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
     myZoomLevel(1),
-    myRenderType(kSoftZoom),
+    myRenderType(kDirtyRect),
+    myUseDirtyRects(true),
     myRectList(NULL),
     myOverlayRectList(NULL)
 {
@@ -114,18 +115,9 @@ bool FrameBufferSoft::createScreen()
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
-  switch(myScreen->format->BitsPerPixel)
-  {
-    case 16:
-      myPitch = myScreen->pitch/2;
-      break;
-    case 24:
-      myPitch = myScreen->pitch;
-      break;
-    case 32:
-      myPitch = myScreen->pitch/4;
-      break;
-  }
+
+  // Make sure drawMediaSource() knows which renderer to use
+  stateChanged(myOSystem->eventHandler().state());
 
   // Erase old rects, since they've probably been scaled for
   // a different sized screen
@@ -147,9 +139,9 @@ void FrameBufferSoft::drawMediaSource()
   uInt32 width  = mediasrc.width();
   uInt32 height = mediasrc.height();
 
-  switch((int)myRenderType) // use switch/case, since we'll eventually have filters
+  switch(myRenderType) // use switch/case, since we'll eventually have filters
   {
-    case kSoftZoom:
+    case kDirtyRect:
     {
       struct Rectangle
       {
@@ -289,7 +281,94 @@ void FrameBufferSoft::drawMediaSource()
         myRectList->add(&temp);
         SDL_FillRect(myScreen, &temp, myDefPalette[active.color]);
       }
-      break; // case 0
+      break;  // kDirtyRect
+    }
+
+    case kSoftZoom_16:
+    {
+      SDL_Rect temp;
+      temp.x = temp.y = temp.w = temp.h = 0;
+      myRectList->add(&temp);
+
+      uInt16* buffer    = (uInt16*)myScreen->pixels;
+      uInt32 bufofsY    = 0;
+      uInt32 screenofsY = 0;
+      for(uInt32 y = 0; y < height; ++y)
+      {
+        uInt32 ystride = myZoomLevel;
+        while(ystride--)
+        {
+          uInt32 pos = screenofsY;
+          for(uInt32 x = 0; x < width; ++x)
+          {
+            const uInt32 bufofs = bufofsY + x;
+            uInt32 xstride = myZoomLevel;
+
+            uInt8 v = currentFrame[bufofs];
+            uInt8 w = previousFrame[bufofs];
+
+            if(v != w || theRedrawTIAIndicator)
+            {
+              while(xstride--)
+              {
+                buffer[pos++] = (uInt16) myDefPalette[v];
+                buffer[pos++] = (uInt16) myDefPalette[v];
+              }
+            }
+            else
+              pos += xstride + xstride;
+          }
+          screenofsY += myPitch;
+        }
+        bufofsY += width;
+      }
+      break;  // kSoftZoom_16
+    }
+
+    case kSoftZoom_24:
+    {
+      break;  // kSoftZoom_24
+    }
+
+    case kSoftZoom_32:
+    {
+      SDL_Rect temp;
+      temp.x = temp.y = temp.w = temp.h = 0;
+      myRectList->add(&temp);
+
+      uInt32* buffer    = (uInt32*)myScreen->pixels;
+      uInt32 bufofsY    = 0;
+      uInt32 screenofsY = 0;
+      for(uInt32 y = 0; y < height; ++y)
+      {
+        uInt32 ystride = myZoomLevel;
+        while(ystride--)
+        {
+          uInt32 pos = screenofsY;
+          for(uInt32 x = 0; x < width; ++x)
+          {
+            const uInt32 bufofs = bufofsY + x;
+            uInt32 xstride = myZoomLevel;
+
+            uInt8 v = currentFrame[bufofs];
+            uInt8 w = previousFrame[bufofs];
+
+            if(v != w || theRedrawTIAIndicator)
+            {
+              while(xstride--)
+              {
+                buffer[pos++] = (uInt32) myDefPalette[v];
+                buffer[pos++] = (uInt32) myDefPalette[v];
+              }
+            }
+            else
+              pos += xstride + xstride;
+          }
+          screenofsY += myPitch;
+        }
+        bufofsY += width;
+      }
+      break;  // kSoftZoom_32
     }
 
     case kPhosphor_16:
@@ -304,13 +383,13 @@ void FrameBufferSoft::drawMediaSource()
       uInt16* buffer    = (uInt16*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y )
+      for(uInt32 y = 0; y < height; ++y)
       {
         uInt32 ystride = myZoomLevel;
         while(ystride--)
         {
           uInt32 pos = screenofsY;
-          for(uInt32 x = 0; x < width; ++x )
+          for(uInt32 x = 0; x < width; ++x)
           {
             const uInt32 bufofs = bufofsY + x;
             uInt32 xstride = myZoomLevel;
@@ -343,13 +422,13 @@ void FrameBufferSoft::drawMediaSource()
       uInt8* buffer     = (uInt8*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y )
+      for(uInt32 y = 0; y < height; ++y)
       {
         uInt32 ystride = myZoomLevel;
         while(ystride--)
         {
           uInt32 pos = screenofsY;
-          for(uInt32 x = 0; x < width; ++x )
+          for(uInt32 x = 0; x < width; ++x)
           {
             const uInt32 bufofs = bufofsY + x;
             uInt32 xstride = myZoomLevel;
@@ -397,13 +476,13 @@ void FrameBufferSoft::drawMediaSource()
       uInt32* buffer    = (uInt32*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
-      for(uInt32 y = 0; y < height; ++y )
+      for(uInt32 y = 0; y < height; ++y)
       {
         uInt32 ystride = myZoomLevel;
         while(ystride--)
         {
           uInt32 pos = screenofsY;
-          for(uInt32 x = 0; x < width; ++x )
+          for(uInt32 x = 0; x < width; ++x)
           {
             const uInt32 bufofs = bufofsY + x;
             uInt32 xstride = myZoomLevel;
@@ -646,29 +725,7 @@ void FrameBufferSoft::enablePhosphor(bool enable, int blend)
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
 
-  if(myUsePhosphor)
-  {
-    switch(myScreen->format->BitsPerPixel)
-    {
-      case 16:
-        myPitch      = myScreen->pitch/2;
-        myRenderType = kPhosphor_16;
-        break;
-      case 24:
-        myPitch      = myScreen->pitch;
-        myRenderType = kPhosphor_24;
-        break;
-      case 32:
-        myPitch      = myScreen->pitch/4;
-        myRenderType = kPhosphor_32;
-        break;
-      default:
-        myRenderType = kSoftZoom; // What else should we do here?
-        break;
-    }
-  }
-  else
-    myRenderType = kSoftZoom;
+  stateChanged(myOSystem->eventHandler().state());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -679,4 +736,61 @@ void FrameBufferSoft::cls()
     SDL_FillRect(myScreen, NULL, 0);
     SDL_UpdateRect(myScreen, 0, 0, 0, 0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::stateChanged(EventHandler::State state)
+{
+  if(!myScreen)
+    return;
+
+  // When in a UI mode, always use dirty rects
+  // Otherwise, check the 'dirtyrects' setting
+  bool emulation = state == EventHandler::S_EMULATE;
+  if(emulation)
+    myUseDirtyRects = myOSystem->settings().getBool("dirtyrects");
+  else
+    myUseDirtyRects = true;
+
+  // Make sure drawMediaSource() knows which renderer to use
+  // Testing for dirty rects takes priority over phosphor mode,
+  // since phosphor mode only exists while emulating a ROM
+  switch(myScreen->format->BitsPerPixel)
+  {
+    case 16:
+      myPitch = myScreen->pitch/2;
+      if(myUsePhosphor && emulation)
+        myRenderType = kPhosphor_16;
+      else if(myUseDirtyRects)
+        myRenderType = kDirtyRect;
+      else
+        myRenderType = kSoftZoom_16;
+      break;
+    case 24:
+      myPitch = myScreen->pitch;
+      if(myUsePhosphor && emulation)
+        myRenderType = kPhosphor_24;
+      else if(myUseDirtyRects)
+        myRenderType = kDirtyRect;
+      else
+        myRenderType = kSoftZoom_24;
+      break;
+    case 32:
+      myPitch = myScreen->pitch/4;
+      if(myUsePhosphor && emulation)
+        myRenderType = kPhosphor_32;
+      else if(myUseDirtyRects)
+        myRenderType = kDirtyRect;
+      else
+        myRenderType = kSoftZoom_32;
+      break;
+    default:
+      myRenderType = kDirtyRect; // What else should we do here?
+      break;
+  }
+
+  // Have the changes take effect
+  myOSystem->eventHandler().refreshDisplay();
+
+//cerr << "Render type: " << myRenderType << endl;
 }

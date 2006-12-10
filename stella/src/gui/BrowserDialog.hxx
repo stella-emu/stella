@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.hxx,v 1.9 2006-12-08 16:49:32 stephena Exp $
+// $Id: BrowserDialog.hxx,v 1.10 2006-12-10 17:04:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@ class GuiObject;
 class ButtonWidget;
 class StaticTextWidget;
 class StringListWidget;
+class GameList;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -38,7 +39,9 @@ class BrowserDialog : public Dialog, public CommandSender
     BrowserDialog(GuiObject* boss, const GUI::Font& font,
                   int x, int y, int w, int h);
 
-    const FilesystemNode& getResult() { return _choice; }
+    virtual ~BrowserDialog();
+
+    const FilesystemNode& getResult() { return _node; }
 
     void setTitle(const string& title) { _title->setLabel(title); }
     void setEmitSignal(int cmd) { _cmd = cmd; }
@@ -48,23 +51,21 @@ class BrowserDialog : public Dialog, public CommandSender
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void updateListing();
 
-  protected:
+  private:
+    enum {
+      kChooseCmd = 'CHOS',
+      kGoUpCmd   = 'GOUP'
+    };
+
+    int	_cmd;
+
     StringListWidget* _fileList;
     StaticTextWidget* _currentPath;
     StaticTextWidget* _title;
     ButtonWidget*     _goUpButton;
 
-    FilesystemNode    _node;
-    FSList            _nodeContent;
-    FilesystemNode    _choice;
-
-  private:
-    int	_cmd;
-
-    enum {
-      kChooseCmd = 'CHOS',
-      kGoUpCmd   = 'GOUP'
-    };
+    FilesystemNode _node;
+    GameList*      _nodeList;
 };
 
 #endif

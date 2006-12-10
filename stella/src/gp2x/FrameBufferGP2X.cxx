@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.10 2006-12-08 16:49:31 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.11 2006-12-10 17:04:34 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -98,10 +98,10 @@ void FrameBufferGP2X::drawMediaSource()
 
   if(!myUsePhosphor)
   {
-    for(uInt32 y = 0; y < height; ++y )
+    for(uInt32 y = 0; y < height; ++y)
     {
       uInt32 pos = screenofsY;
-      for(uInt32 x = 0; x < width; ++x )
+      for(uInt32 x = 0; x < width; ++x)
       {
         const uInt32 bufofs = bufofsY + x;
         uInt8 v = currentFrame[bufofs];
@@ -127,10 +127,10 @@ void FrameBufferGP2X::drawMediaSource()
     // so we don't care about theRedrawTIAIndicator
     myDirtyFlag = true;
 
-    for(uInt32 y = 0; y < height; ++y )
+    for(uInt32 y = 0; y < height; ++y)
     {
       uInt32 pos = screenofsY;
-      for(uInt32 x = 0; x < width; ++x )
+      for(uInt32 x = 0; x < width; ++x)
       {
         const uInt32 bufofs = bufofsY + x;
         uInt8 v = currentFrame[bufofs];

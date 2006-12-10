@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.77 2006-12-08 16:49:26 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.78 2006-12-10 17:04:34 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -24,6 +24,7 @@
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "Event.hxx"
+#include "EventHandler.hxx"
 #include "MediaSrc.hxx"
 #include "Font.hxx"
 #include "GuiUtils.hxx"
@@ -96,7 +97,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.77 2006-12-08 16:49:26 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.78 2006-12-10 17:04:34 stephena Exp $
 */
 class FrameBuffer
 {
@@ -292,6 +293,11 @@ class FrameBuffer
                     int color, TextAlignment align = kTextAlignLeft,
                     int deltax = 0, bool useEllipsis = true);
 
+    /**
+      Informs the Framebuffer of a change in EventHandler state.
+    */
+    virtual void stateChanged(EventHandler::State state) { }
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
@@ -484,9 +490,6 @@ class FrameBuffer
 
     // Indicates if the TIA area should be redrawn
     bool theRedrawTIAIndicator;
-
-    // Use dirty updates (SDL_UpdateRects instead of SDL_UpdateRect)
-    bool myUseDirtyRects;
 
     // Use phosphor effect (aka no flicker on 30Hz screens)
     bool myUsePhosphor;

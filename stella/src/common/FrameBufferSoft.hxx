@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.39 2006-12-08 16:48:56 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.40 2006-12-10 17:04:34 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.39 2006-12-08 16:48:56 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.40 2006-12-10 17:04:34 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -206,17 +206,28 @@ class FrameBufferSoft : public FrameBuffer
     */
     virtual void cls();
 
+    /**
+      Informs the Framebuffer of a change in EventHandler state.
+    */
+    virtual void stateChanged(EventHandler::State state);
+
   private:
     int myZoomLevel;
     int myPitch;
 
     enum RenderType {
-      kSoftZoom,
+      kDirtyRect,
+      kSoftZoom_16,
+      kSoftZoom_24,
+      kSoftZoom_32,
       kPhosphor_16,
       kPhosphor_24,
       kPhosphor_32
     };
     RenderType myRenderType;
+
+    // Use dirty updates (SDL_UpdateRects instead of SDL_UpdateRect)
+    bool myUseDirtyRects;
 
     // Used in the dirty update of the SDL surface
     RectList* myRectList;

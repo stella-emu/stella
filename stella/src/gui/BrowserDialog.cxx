@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.22 2006-12-09 04:02:40 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.23 2006-12-10 17:04:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,7 @@
 #include "FSNode.hxx"
 #include "GuiObject.hxx"
 #include "GuiUtils.hxx"
+#include "GameList.hxx"
 #include "BrowserDialog.hxx"
 
 #include "bspf.hxx"
@@ -43,7 +44,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent(), x, y, w, h),
     CommandSender(boss),
     _fileList(NULL),
-    _currentPath(NULL)
+    _currentPath(NULL),
+    _nodeList(NULL)
 {
   const int lineHeight = font.getLineHeight(),
             bwidth     = font.getStringWidth("Cancel") + 20,
@@ -60,7 +62,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   ypos += lineHeight + 4;
   _currentPath = new StaticTextWidget(this, font, xpos, ypos,
                                        _w - 2 * xpos, lineHeight,
-                                      "DUMMY", kTextAlignLeft);
+                                      "", kTextAlignLeft);
 
   // Add file list
   ypos += lineHeight;
@@ -99,6 +101,15 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 #endif
 
   addFocusWidget(_fileList);
+
+  // Create a list of directory nodes
+  _nodeList = new GameList();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+BrowserDialog::~BrowserDialog()
+{
+  delete _nodeList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,15 +117,63 @@ void BrowserDialog::setStartPath(const string& startpath)
 {
   // If no node has been set, or the last used one is now invalid,
   // go back to the root/default dir.
-  _choice = FilesystemNode(startpath);
+  _node = FilesystemNode(startpath);
 
-  if (_choice.isValid())
-    _node = _choice;
-  else if (!_node.isValid())
+  if(!_node.isValid())
     _node = FilesystemNode();
 
   // Alway refresh file list
   updateListing();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::updateListing()
+{
+  if(!_node.isDirectory())
+    return;
+
+  // Start with empty list
+  _nodeList->clear();
+
+  // Update the path display
+  _currentPath->setLabel(_node.path());
+
+  // Read in the data from the file system
+  FSList content = _node.listDir();
+  content.sort();
+
+  // Add '[..]' to indicate previous folder
+  if(_node.hasParent())
+  {
+    const string& parent = _node.getParent().path();
+    _nodeList->appendGame(" [..]", parent, "", true);
+  }
+
+  // Now add the directory entries
+  for(unsigned int idx = 0; idx < content.size(); idx++)
+  {
+    string name = content[idx].displayName();
+    bool isDir = content[idx].isDirectory();
+    if(isDir)
+      name = " [" + name + "]";
+
+    _nodeList->appendGame(name, content[idx].path(), "", isDir);
+  }
+
+  // Now fill the list widget with the contents of the GameList
+  StringList l;
+  for (int i = 0; i < (int) _nodeList->size(); ++i)
+    l.push_back(_nodeList->name(i));
+
+  _fileList->setList(l);
+  if(_fileList->getList().size() > 0)
+    _fileList->setSelected(0);
+
+  // Only hilite the 'up' button if there's a parent directory
+  _goUpButton->setEnabled(_node.hasParent());
+
+  // Finally, redraw
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,23 +183,11 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kChooseCmd:
-    {
-      // If nothing is selected in the list widget, choose the current dir.
-      // Else, choose the dir that is selected.
-      int selection = _fileList->getSelected();
-      if (selection >= 0 && selection < (int)_nodeContent.size())
-        _choice = _nodeContent[selection];
-      else
-        _choice = _node;
-
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-      if(_cmd)
-        sendCommand(_cmd, 0, 0);
-
+      if(_cmd) sendCommand(_cmd, 0, 0);
       close();
       break;
-    }
 
     case kGoUpCmd:
       _node = _node.getParent();
@@ -149,47 +196,18 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kListItemActivatedCmd:
     case kListItemDoubleClickedCmd:
-      _node = _nodeContent[data];
-      updateListing();
+    {
+      int item = _fileList->getSelected();
+      if(item >= 0)
+      {
+        _node = _nodeList->path(item);
+        updateListing();
+      }
       break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::updateListing()
-{
-  if(!_node.isDirectory())
-    return;
-
-  // Update the path display
-  _currentPath->setLabel(_node.path());
-
-  // Read in the data from the file system
-  _nodeContent = _node.listDir();
-  _nodeContent.sort();
-
-  // Populate the ListWidget
-  StringList list;
-  int size = _nodeContent.size();
-  for (int i = 0; i < size; i++)
-  {
-    if(_nodeContent[i].isDirectory())
-      list.push_back(" [" + _nodeContent[i].displayName() + "]");
-    else
-      list.push_back(_nodeContent[i].displayName());
-  }
-
-  _fileList->setList(list);
-  if(size > 0)
-    _fileList->setSelected(0);
-
-  // Only hilite the 'up' button if there's a parent directory
-  _goUpButton->setEnabled(_node.hasParent());
-
-  // Finally, redraw
-  setDirty(); draw();
 }
