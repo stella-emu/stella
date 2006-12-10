@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.62 2006-12-10 17:04:33 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.63 2006-12-10 18:07:34 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -327,6 +327,47 @@ void FrameBufferSoft::drawMediaSource()
 
     case kSoftZoom_24:
     {
+      SDL_Rect temp;
+      temp.x = temp.y = temp.w = temp.h = 0;
+      myRectList->add(&temp);
+
+      uInt8* buffer     = (uInt8*)myScreen->pixels;
+      uInt32 bufofsY    = 0;
+      uInt32 screenofsY = 0;
+      for(uInt32 y = 0; y < height; ++y)
+      {
+        uInt32 ystride = myZoomLevel;
+        while(ystride--)
+        {
+          uInt32 pos = screenofsY;
+          for(uInt32 x = 0; x < width; ++x)
+          {
+            const uInt32 bufofs = bufofsY + x;
+            uInt32 xstride = myZoomLevel;
+
+            uInt8 v = currentFrame[bufofs];
+            uInt8 w = previousFrame[bufofs];
+
+            if(v != w || theRedrawTIAIndicator)
+            {
+              uInt32 pixel = myDefPalette[v];
+              uInt8 r = pixel & 0xff;
+              uInt8 g = (pixel & 0xff00) >> 8;
+              uInt8 b = (pixel & 0xff0000) >> 16;
+
+              while(xstride--)
+              {
+                buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+                buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+              }
+            }
+            else  // try to eliminate multply whereever possible
+              pos += xstride + xstride + xstride + xstride + xstride + xstride;
+          }
+          screenofsY += myPitch;
+        }
+        bufofsY += width;
+      }
       break;  // kSoftZoom_24
     }
 
@@ -373,9 +414,6 @@ void FrameBufferSoft::drawMediaSource()
 
     case kPhosphor_16:
     {
-      // Since phosphor mode updates the whole screen,
-      // we might as well use SDL_Flip (see postFrameUpdate)
-      myUseDirtyRects = false;
       SDL_Rect temp;
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
@@ -412,9 +450,6 @@ void FrameBufferSoft::drawMediaSource()
 
     case kPhosphor_24:
     {
-      // Since phosphor mode updates the whole screen,
-      // we might as well use SDL_Flip (see postFrameUpdate)
-      myUseDirtyRects = false;
       SDL_Rect temp;
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
@@ -435,21 +470,10 @@ void FrameBufferSoft::drawMediaSource()
 
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
-            uInt8 r, g, b;
-            if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            {
-              uInt32 pixel = myAvgPalette[v][w];
-              b = pixel & 0xff;
-              g = (pixel & 0xff00) >> 8;
-              r = (pixel & 0xff0000) >> 16;
-            }
-            else
-            {
-              uInt32 pixel = myAvgPalette[v][w];
-              r = pixel & 0xff;
-              g = (pixel & 0xff00) >> 8;
-              b = (pixel & 0xff0000) >> 16;
-            }
+            uInt32 pixel = myAvgPalette[v][w];
+            uInt8 r = pixel & 0xff;
+            uInt8 g = (pixel & 0xff00) >> 8;
+            uInt8 b = (pixel & 0xff0000) >> 16;
 
             while(xstride--)
             {
@@ -466,9 +490,6 @@ void FrameBufferSoft::drawMediaSource()
 
     case kPhosphor_32:
     {
-      // Since phosphor mode updates the whole screen,
-      // we might as well use SDL_Flip (see postFrameUpdate)
-      myUseDirtyRects = false;
       SDL_Rect temp;
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
@@ -746,9 +767,15 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
 
   // When in a UI mode, always use dirty rects
   // Otherwise, check the 'dirtyrects' setting
+  // Phosphor mode implies a full update, so turn on dirty rects
   bool emulation = state == EventHandler::S_EMULATE;
   if(emulation)
-    myUseDirtyRects = myOSystem->settings().getBool("dirtyrects");
+  {
+    if(myUsePhosphor)
+      myUseDirtyRects = false;
+    else
+      myUseDirtyRects = myOSystem->settings().getBool("dirtyrects");
+  }
   else
     myUseDirtyRects = true;
 
@@ -790,7 +817,8 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
   }
 
   // Have the changes take effect
+  cls();
   myOSystem->eventHandler().refreshDisplay();
 
-//cerr << "Render type: " << myRenderType << endl;
+//cerr << "Render type = " << myRenderType << ", dirty rects = " << myUseDirtyRects << endl;
 }

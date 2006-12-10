@@ -20958,3 +20958,9 @@
 "Display.Format" "PAL"
 "Display.Height" "250"
 ""
+
+"Cartridge.MD5" "50dd164c77c4df579843baf838327469"
+"Cartridge.Manufacturer" "Champ Games"
+"Cartridge.Name" "Conquest Of Mars"
+"Cartridge.Rarity" "Homebrew"
+""
