@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.cxx,v 1.17 2006-12-09 00:34:18 azaballa Exp $
+// $Id: SettingsGP2X.cxx,v 1.18 2006-12-10 22:11:48 azaballa Exp $
 // Modified on 2006/02/05 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -42,6 +42,7 @@ SettingsGP2X::SettingsGP2X(OSystem* osystem)
   setInternal("p1speed", "35");
   setInternal("p2speed", "35");
   setInternal("p3speed", "35");
+  setInternal("tiadefaults", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
