@@ -73,7 +73,9 @@ The joystick selects item by item in a list. In menu mode, VOL+ and
 VOL- highlight the next and previous GUI elements respectively.
 Pressing B activates the highlighted GUI element. Pressing START
 or X is equivalent to clicking Cancel or Close. Pressing SELECT is
-equivalent to clicking OK. For complete button mapping, check below.
+equivalent to clicking OK. To move to the previous directory without
+the 'Go Up' button, just use the '[..]' item at the top of the ROM
+Browser list. For complete button mapping, check below.
 
 -------------
 GP2X Mapping:
