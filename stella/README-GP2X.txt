@@ -11,9 +11,11 @@ Changes:
 >From 2.2-rv1
 * Moved away from using joymouse emulation, which was frustrating
 	many users, to a more effective GUI button control scheme.
-* Made '/mnt/sd' the default ROM and Snapshot directory this way
-	Stella doesn't look anywhere it shouldn't.
 * PAL ROMs are now playable thanks to Paeryn's scaling libs. ;)
+* Paddle games like 'Tac-scan,' 'Demons to Diamonds,' 'Video 
+	Olympics,' and others are now playable thanks to Steve.
+* Made '/mnt/sd' the default ROM and Snapshot directory this way
+        Stella doesn't look anywhere it shouldn't.
 * Changed button mapping.
 * Various performance tweaks.
 
