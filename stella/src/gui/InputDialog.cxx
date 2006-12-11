@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.19 2006-12-09 00:25:20 stephena Exp $
+// $Id: InputDialog.cxx,v 1.20 2006-12-11 20:43:55 stephena Exp $
 //============================================================================
 
 // FIXME - this whole dialog should be a dialog of buttons instead of
@@ -148,7 +148,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   // Add paddle 0 speed
   xpos = 5;  ypos += lineHeight + 3;
   myPaddleSpeed[0] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 1 speed: ",
+                                      "Paddle 0 speed: ",
                                       lwidth, kP0SpeedID);
   myPaddleSpeed[0]->setMinValue(1); myPaddleSpeed[0]->setMaxValue(100);
   xpos += myPaddleSpeed[0]->getWidth() + 5;
@@ -160,7 +160,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   // Add paddle 1 speed
   xpos = 5;  ypos += lineHeight + 3;
   myPaddleSpeed[1] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 2 speed: ",
+                                      "Paddle 1 speed: ",
                                       lwidth, kP1SpeedID);
   myPaddleSpeed[1]->setMinValue(1); myPaddleSpeed[1]->setMaxValue(100);
   xpos += myPaddleSpeed[1]->getWidth() + 5;
@@ -172,7 +172,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   // Add paddle 2 speed
   xpos = 5;  ypos += lineHeight + 3;
   myPaddleSpeed[2] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 3 speed: ",
+                                      "Paddle 2 speed: ",
                                       lwidth, kP2SpeedID);
   myPaddleSpeed[2]->setMinValue(1); myPaddleSpeed[2]->setMaxValue(100);
   xpos += myPaddleSpeed[2]->getWidth() + 5;
@@ -184,7 +184,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   // Add paddle 3 speed
   xpos = 5;  ypos += lineHeight + 3;
   myPaddleSpeed[3] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 4 speed: ",
+                                      "Paddle 3 speed: ",
                                       lwidth, kP3SpeedID);
   myPaddleSpeed[3]->setMinValue(1); myPaddleSpeed[3]->setMaxValue(100);
   xpos += myPaddleSpeed[3]->getWidth() + 5;

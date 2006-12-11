@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.184 2006-12-10 18:07:39 stephena Exp $
+// $Id: EventHandler.cxx,v 1.185 2006-12-11 20:43:43 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2201,7 +2201,7 @@ void EventHandler::setPaddleSpeed(int num, int speed)
 
   myPaddle[num].amt = (int) (20000 + speed/100.0 * 50000);
   ostringstream buf;
-  buf << "p" << num+1 << "speed";
+  buf << "p" << num << "speed";
   myOSystem->settings().setInt(buf.str(), speed);
 }
 
