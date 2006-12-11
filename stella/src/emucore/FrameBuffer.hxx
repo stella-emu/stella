@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.78 2006-12-10 17:04:34 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.79 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -97,7 +97,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.78 2006-12-10 17:04:34 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.79 2006-12-11 00:15:33 stephena Exp $
 */
 class FrameBuffer
 {
@@ -313,6 +313,11 @@ class FrameBuffer
       This method is called to query the type of the FrameBuffer.
     */
     virtual BufferType type() = 0;
+
+    /**
+      This method is called to provide information about the FrameBuffer.
+    */
+    virtual string about() = 0;
 
     /**
       This method is called to set the aspect ratio of the screen.
@@ -554,6 +559,9 @@ class FrameBuffer
   private:
     // Indicates the current framerate of the system
     uInt32 myFrameRate;
+
+    // Indicates the number of times the framebuffer was initialized
+    uInt32 myInitializedCount;
 
     // Used for onscreen messages
     struct Message {

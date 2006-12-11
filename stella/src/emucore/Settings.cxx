@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.96 2006-12-10 17:04:34 stephena Exp $
+// $Id: Settings.cxx,v 1.97 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -80,7 +80,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("lastrom", "");
   setInternal("modtime", "");  // romdir last modification time
 
-  setInternal("tiadefaults", "false");
+  setInternal("tiadefaults", "true");
   setInternal("autoslot", "false");
   setInternal("fastscbios", "true");
 }

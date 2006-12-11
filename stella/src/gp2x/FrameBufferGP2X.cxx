@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.11 2006-12-10 17:04:34 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.12 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -43,6 +43,13 @@ bool FrameBufferGP2X::initSubsystem()
 {
   // Create the screen
   return createScreen();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBufferGP2X::about()
+{
+  // TODO - add SDL info to this string
+  return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -236,10 +243,9 @@ void FrameBufferGP2X::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGP2X::drawChar(const GUI::Font* FONT, uInt8 chr,
+void FrameBufferGP2X::drawChar(const GUI::Font* font, uInt8 chr,
                                uInt32 xorig, uInt32 yorig, int color)
 {
-  GUI::Font* font = (GUI::Font*)FONT;
   const FontDesc& desc = font->desc();
 
   // If this character is not included in the font, use the default char.

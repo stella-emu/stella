@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.63 2006-12-10 18:07:34 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.64 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -61,14 +61,13 @@ bool FrameBufferSoft::initSubsystem()
   }
 
   // Create the screen
-  if(!createScreen())
-    return false;
+  return createScreen();
+}
 
-  // Show some info
-  if(myOSystem->settings().getBool("showinfo"))
-    cout << "Video rendering: Software mode" << endl << endl;
-
-  return true;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBufferSoft::about()
+{
+  return "Video rendering: Software mode\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -542,13 +541,8 @@ void FrameBufferSoft::preFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::postFrameUpdate()
 {
-  // This is a performance hack until I have more time to work
-  // on the Win32 code.  It seems that SDL_UpdateRects() is very
-  // expensive in Windows, so we force a full screen update instead.
   if(myUseDirtyRects)
-  {
     SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
-  }
   else if(myRectList->numRects() > 0)
   {
     SDL_Flip(myScreen);
@@ -653,13 +647,11 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawChar(const GUI::Font* FONT, uInt8 chr,
+void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
                                uInt32 xorig, uInt32 yorig, int color)
 {
-  GUI::Font* font = (GUI::Font*)FONT;
-  const FontDesc& desc = font->desc();
-
   // If this character is not included in the font, use the default char.
+  const FontDesc& desc = font->desc();
   if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)
   {
     if (chr == ' ')

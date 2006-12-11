@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.106 2006-12-10 17:04:34 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.107 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -44,7 +44,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     theRedrawTIAIndicator(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
-    myFrameRate(0)
+    myFrameRate(0),
+    myInitializedCount(0)
 {
 }
 
@@ -72,6 +73,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
     if(SDL_Init(initflags) < 0)
       return;
   }
+  myInitializedCount++;
 
   // Erase old contents
   cls();
@@ -116,6 +118,11 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 
   // Erase any messages from a previous run
   myMessage.counter = 0;
+
+  // Finally, show some information about the framebuffer,
+  // but only on the first initialization
+  if(myInitializedCount == 1 && myOSystem->settings().getBool("showinfo"))
+    cout << about() << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

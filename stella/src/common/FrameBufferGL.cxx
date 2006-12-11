@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.72 2006-12-08 16:48:55 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.73 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -235,24 +235,23 @@ bool FrameBufferGL::initSubsystem()
   SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, (int*)&myRGB[2] );
   SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, (int*)&myRGB[3] );
 
-  // Show some OpenGL info
-  if(myOSystem->settings().getBool("showinfo"))
-  {
-    cout << "Video rendering: OpenGL mode" << endl;
-
-    ostringstream colormode;
-    colormode << "  Color   : " << myDepth << " bit, " << myRGB[0] << "-"
-              << myRGB[1] << "-" << myRGB[2] << "-" << myRGB[3];
-
-    cout << "  Vendor  : " << p_glGetString(GL_VENDOR) << endl
-         << "  Renderer: " << p_glGetString(GL_RENDERER) << endl
-         << "  Version : " << p_glGetString(GL_VERSION) << endl
-         << colormode.str() << endl
-         << "  Filter  : " << myFilterParamName << endl
-         << endl;
-  }
-
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBufferGL::about()
+{
+  ostringstream out;
+
+  out << "Video rendering: OpenGL mode" << endl
+      << "  Vendor  : " << p_glGetString(GL_VENDOR) << endl
+      << "  Renderer: " << p_glGetString(GL_RENDERER) << endl
+      << "  Version : " << p_glGetString(GL_VERSION) << endl
+      << "  Color   : " << myDepth << " bit, " << myRGB[0] << "-"
+      << myRGB[1] << "-" << myRGB[2] << "-" << myRGB[3] << endl
+      << "  Filter  : " << myFilterParamName << endl;
+
+  return out.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -587,11 +586,9 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawChar(const GUI::Font* FONT, uInt8 chr,
+void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
                              uInt32 tx, uInt32 ty, int color)
 {
-  GUI::Font* font = (GUI::Font*) FONT;
-
   // If this character is not included in the font, use the default char.
   if(chr < font->desc().firstchar ||
      chr >= font->desc().firstchar + font->desc().size)
@@ -664,14 +661,12 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::cls()
 {
-/* FIXME - commented out until I figure out why it crashes in OSX
-  if(myFuncsLoaded)
+  if(myFuncsLoaded && myCurrentTexture)
   {
     p_glClear(GL_COLOR_BUFFER_BIT);
     SDL_GL_SwapBuffers();
     p_glClear(GL_COLOR_BUFFER_BIT);
   }
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

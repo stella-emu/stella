@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.105 2006-12-09 00:25:19 stephena Exp $
+// $Id: Console.cxx,v 1.106 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -111,18 +111,14 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   string right = myProperties.get(Controller_Right);
 
   // Swap the ports if necessary
-  // Note that this doesn't swap the actual controllers,
-  // just the ports that they're attached to
-  Controller::Jack leftjack, rightjack;
+  int leftPort, rightPort;
   if(myProperties.get(Console_SwapPorts) == "NO")
   {
-    leftjack  = Controller::Left;
-    rightjack = Controller::Right;
+    leftPort = 0; rightPort = 1;
   }
   else
   {
-    leftjack  = Controller::Right;
-    rightjack = Controller::Left;
+    leftPort = 1; rightPort = 0;
   }
 
   // Also check if we should swap the paddles plugged into a jack
@@ -131,23 +127,23 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // Construct left controller
   if(left == "BOOSTER-GRIP")
   {
-    myControllers[0] = new BoosterGrip(leftjack, *myEvent);
+    myControllers[leftPort] = new BoosterGrip(Controller::Left, *myEvent);
   }
   else if(left == "DRIVING")
   {
-    myControllers[0] = new Driving(leftjack, *myEvent);
+    myControllers[leftPort] = new Driving(Controller::Left, *myEvent);
   }
   else if((left == "KEYBOARD") || (left == "KEYPAD"))
   {
-    myControllers[0] = new Keyboard(leftjack, *myEvent);
+    myControllers[leftPort] = new Keyboard(Controller::Left, *myEvent);
   }
   else if(left == "PADDLES")
   {
-    myControllers[0] = new Paddles(leftjack, *myEvent, swapPaddles);
+    myControllers[leftPort] = new Paddles(Controller::Left, *myEvent, swapPaddles);
   }
   else
   {
-    myControllers[0] = new Joystick(leftjack, *myEvent);
+    myControllers[leftPort] = new Joystick(Controller::Left, *myEvent);
   }
  
 #ifdef ATARIVOX_SUPPORT 
@@ -157,29 +153,29 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // Construct right controller
   if(right == "BOOSTER-GRIP")
   {
-    myControllers[1] = new BoosterGrip(rightjack, *myEvent);
+    myControllers[rightPort] = new BoosterGrip(Controller::Right, *myEvent);
   }
   else if(right == "DRIVING")
   {
-    myControllers[1] = new Driving(rightjack, *myEvent);
+    myControllers[rightPort] = new Driving(Controller::Right, *myEvent);
   }
   else if((right == "KEYBOARD") || (right == "KEYPAD"))
   {
-    myControllers[1] = new Keyboard(rightjack, *myEvent);
+    myControllers[rightPort] = new Keyboard(Controller::Right, *myEvent);
   }
   else if(right == "PADDLES")
   {
-    myControllers[1] = new Paddles(rightjack, *myEvent, swapPaddles);
+    myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, swapPaddles);
   }
 #ifdef ATARIVOX_SUPPORT 
   else if(right == "ATARIVOX")
   {
-    myControllers[1] = vox = new AtariVox(rightjack, *myEvent);
+    myControllers[rightPort] = vox = new AtariVox(Controller::Right, *myEvent);
   }
 #endif
   else
   {
-    myControllers[1] = new Joystick(rightjack, *myEvent);
+    myControllers[rightPort] = new Joystick(Controller::Right, *myEvent);
   }
 
   // Create switches for the console

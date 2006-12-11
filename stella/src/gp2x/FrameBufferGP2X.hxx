@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.6 2006-12-08 16:49:31 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.7 2006-12-11 00:15:33 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -32,7 +32,7 @@ class GUI::Font;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.6 2006-12-08 16:49:31 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.7 2006-12-11 00:15:33 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -60,6 +60,11 @@ class FrameBufferGP2X : public FrameBuffer
       This method is called to query the type of the FrameBuffer.
     */
     virtual BufferType type() { return kSoftBuffer; }
+
+    /**
+      This method is called to provide information about the FrameBuffer.
+    */
+    virtual string about();
 
     /**
       This method is called to set the aspect ratio of the screen.

@@ -625,9 +625,8 @@ void FrameBufferWinCE::postFrameUpdate()
 	if (legacygapi) GXEndDraw();
 }
 
-void FrameBufferWinCE::drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color)
+void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt32 y, int color)
 {
-  GUI::Font* myfont = (GUI::Font*)font;
   const FontDesc& desc = myfont->desc();
 
   if (!myDstScreen) return;

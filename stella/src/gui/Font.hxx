@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Font.hxx,v 1.5 2006-12-08 16:49:34 stephena Exp $
+// $Id: Font.hxx,v 1.6 2006-12-11 00:15:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,7 +49,7 @@ class Font
   public:
     Font(FontDesc desc);
 	
-    const FontDesc& desc() { return myFontDesc; }
+    const FontDesc& desc() const { return myFontDesc; }
 
     int getFontHeight() const { return myFontDesc.height; }
     int getLineHeight() const { return myFontDesc.height + 2; }
