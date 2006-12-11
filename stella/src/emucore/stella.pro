@@ -17145,6 +17145,7 @@
 "Cartridge.Rarity" "Uncommon"
 "Cartridge.Type" "4K"
 "Console.SwapPorts" "Yes"
+"Controller.Left" "Paddles"
 "Controller.Right" "Paddles"
 "Controller.SwapPaddles" "Yes"
 "Display.Height" "202"

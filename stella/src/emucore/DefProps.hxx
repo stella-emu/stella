@@ -1858,7 +1858,7 @@ static const char* DefProps[][23] = {
   { "d3423d7600879174c038f53e5ebbf9d3", "US Games", "VC 2005", "Piece o' Cake (1982) (US Games) [!]", "Uses the Paddle Controllers", "Extremely Rare", "", "", "", "", "", "", "Paddles", "", "", "", "", "", "", "", "", "", "" }, 
   { "d34b933660e29c0a0a04004f15d7e160", "", "", "Multi-Color Demo 5 (Bob Colbert) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "d39e29b03af3c28641084dd1528aae05", "Goliath-Funvision", "", "Spider Kong (AKA Karate) (Goliath-Funvision) (PAL) [!]", "", "", "", "", "", "", "", "", "", "", "", "PAL", "", "", "54", "", "", "", "" }, 
-  { "d45ebf130ed9070ea8ebd56176e48a38", "Sega", "001-01", "Tac Scan (1983) (Sega) [!]", "Uses the Paddle Controllers (right only)", "Uncommon", "", "4K", "", "", "", "Yes", "", "Paddles", "Yes", "", "8", "152", "44", "202", "Yes", "", "" }, 
+  { "d45ebf130ed9070ea8ebd56176e48a38", "Sega", "001-01", "Tac Scan (1983) (Sega) [!]", "Uses the Paddle Controllers (right only)", "Uncommon", "", "4K", "", "", "", "Yes", "Paddles", "Paddles", "Yes", "", "8", "152", "44", "202", "Yes", "", "" }, 
   { "d483f65468d9a265661917bae1a54f3e", "Joe Grand", "", "SCSIcide Pre-release 3 (Joe Grand)", "", "New Release", "", "", "", "", "", "", "Paddles", "Paddles", "", "", "", "", "", "", "", "", "" }, 
   { "d49aff83f77a1b9041ad7185df3c2277", "", "", "Space Treat (60% complete) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "d4aa89e96d2902692f5c45f36903d336", "", "", "Euchre (NTSC) (Erik Eid) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
