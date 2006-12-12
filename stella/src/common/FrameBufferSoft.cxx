@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.64 2006-12-11 00:15:33 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.65 2006-12-12 19:41:51 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -556,19 +556,16 @@ void FrameBufferSoft::scanline(uInt32 row, uInt8* data)
   // Make sure no pixels are being modified
   SDL_LockSurface(myScreen);
 
-  uInt32 bpp     = myScreen->format->BytesPerPixel;
-  uInt8* start   = (uInt8*) myScreen->pixels;
-  uInt32 yoffset = row * myScreen->pitch;
   uInt32 pixel = 0;
   uInt8 *p, r, g, b;
 
   for(Int32 x = 0; x < myScreen->w; x++)
   {
-    p = (Uint8*) (start    +  // Start at top of RAM
-                 (yoffset) +  // Go down 'row' lines
-                 (x * bpp));  // Go in 'x' pixels
+    p = (Uint8*) ((uInt8*)myScreen->pixels +  // Start at top of RAM
+                 (row * myScreen->pitch) +    // Go down 'row' lines
+                 (x * myBytesPerPixel));      // Go in 'x' pixels
 
-    switch(bpp)
+    switch(myBytesPerPixel)
     {
       case 1:
         pixel = *p;
@@ -664,6 +661,75 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
   chr -= desc.firstchar;
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
+#if 1
+  // Scale the origins to the current zoom
+  xorig *= myZoomLevel;
+  yorig *= myZoomLevel;
+
+  int screenofsY = 0;
+  switch(myBytesPerPixel)
+  {
+    case 2:
+    {
+      // Get buffer position where upper-left pixel of the character will be drawn
+      uInt16* buffer = (uInt16*) myScreen->pixels + yorig * myPitch + xorig;
+      for(int y = h; y; --y)
+      {
+        const uInt16 fontbuf = *tmp++;
+        int ystride = myZoomLevel;
+        while(ystride--)
+        {
+          uInt16 mask = 0x8000;
+          int pos = screenofsY;
+          for(int x = 0; x < w; x++, mask >>= 1)
+          {
+            int xstride = myZoomLevel;
+            if((fontbuf & mask) != 0)
+              while(xstride--)
+                buffer[pos++] = myDefPalette[color];
+            else
+              pos += xstride;
+          }
+          screenofsY += myPitch;
+        }
+      }
+      break;
+    }
+    case 3:
+    {
+      // TODO ...
+      break;
+    }
+    case 4:
+    {
+      // Get buffer position where upper-left pixel of the character will be drawn
+      uInt32* buffer = (uInt32*) myScreen->pixels + yorig * myPitch + xorig;
+      for(int y = h; y; --y)
+      {
+        const uInt16 fontbuf = *tmp++;
+        int ystride = myZoomLevel;
+        while(ystride--)
+        {
+          uInt16 mask = 0x8000;
+          int pos = screenofsY;
+          for(int x = 0; x < w; x++, mask >>= 1)
+          {
+            int xstride = myZoomLevel;
+            if((fontbuf & mask) != 0)
+              while(xstride--)
+                buffer[pos++] = myDefPalette[color];
+            else
+              pos += xstride;
+          }
+          screenofsY += myPitch;
+        }
+      }
+      break;
+    }
+    default:
+      break;
+  }
+#else
   SDL_Rect rect;
   for(int y = 0; y < h; y++)
   {
@@ -681,6 +747,7 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
       }
     }
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -774,9 +841,10 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
   // Make sure drawMediaSource() knows which renderer to use
   // Testing for dirty rects takes priority over phosphor mode,
   // since phosphor mode only exists while emulating a ROM
-  switch(myScreen->format->BitsPerPixel)
+  myBytesPerPixel = myScreen->format->BytesPerPixel;
+  switch(myBytesPerPixel)
   {
-    case 16:
+    case 2:  // 16-bit
       myPitch = myScreen->pitch/2;
       if(myUsePhosphor && emulation)
         myRenderType = kPhosphor_16;
@@ -785,7 +853,7 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
       else
         myRenderType = kSoftZoom_16;
       break;
-    case 24:
+    case 3:  // 24-bit
       myPitch = myScreen->pitch;
       if(myUsePhosphor && emulation)
         myRenderType = kPhosphor_24;
@@ -794,7 +862,7 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
       else
         myRenderType = kSoftZoom_24;
       break;
-    case 32:
+    case 4:  // 32-bit
       myPitch = myScreen->pitch/4;
       if(myUsePhosphor && emulation)
         myRenderType = kPhosphor_32;
