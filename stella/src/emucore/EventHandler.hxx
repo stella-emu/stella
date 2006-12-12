@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.94 2006-12-08 16:49:25 stephena Exp $
+// $Id: EventHandler.hxx,v 1.95 2006-12-12 01:02:12 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.94 2006-12-08 16:49:25 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.95 2006-12-12 01:02:12 stephena Exp $
 */
 class EventHandler
 {
@@ -510,10 +510,7 @@ class EventHandler
     };
     struct JoyMouse {   // Used for joystick to mouse emulation
       bool active;
-      int x, y, x_vel, y_vel, x_max, y_max, x_amt, y_amt, amt,
-          x_down_count, y_down_count;
-      unsigned int last_time, delay_time, x_down_time, y_down_time;
-      int joy_val, old_joy_val;
+      int x, y, x_amt, y_amt, amt, val, old_val;
     };
 
     // Global OSystem object

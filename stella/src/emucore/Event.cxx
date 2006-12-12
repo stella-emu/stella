@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.9 2006-12-08 16:49:24 stephena Exp $
+// $Id: Event.cxx,v 1.10 2006-12-12 01:02:11 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -24,8 +24,15 @@ Event::Event(EventStreamer* ev)
   : myNumberOfTypes(Event::LastType),
     myEventStreamer(ev)
 {
-  // Set all of the events to 0 / false to start with
+  // Set all of the events to 0 / false to start with,
+  // including analog paddle events.  Doing it this way
+  // is a bit of a hack ...
   clear();
+
+  myValues[PaddleZeroResistance]  =
+  myValues[PaddleOneResistance]   =
+  myValues[PaddleTwoResistance]   =
+  myValues[PaddleThreeResistance] = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,5 +62,9 @@ void Event::set(Type type, Int32 value)
 void Event::clear()
 {
   for(int i = 0; i < myNumberOfTypes; ++i)
-    myValues[i] = 0;
+  {
+    if(i != PaddleZeroResistance && i != PaddleOneResistance &&
+       i != PaddleTwoResistance  && i != PaddleThreeResistance)
+      myValues[i] = 0;
+  }
 }

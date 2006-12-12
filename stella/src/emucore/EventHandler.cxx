@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.185 2006-12-11 20:43:43 stephena Exp $
+// $Id: EventHandler.cxx,v 1.186 2006-12-12 01:02:12 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -175,11 +175,13 @@ void EventHandler::reset(State state)
   if(myState == S_LAUNCHER)
     myUseLauncherFlag = true;
 
-  // Start paddle emulation in a known state
+  // Set all paddles to minimum resistance by default
   for(int i = 0; i < 4; ++i)
   {
     memset(&myPaddle[i], 0, sizeof(JoyMouse));
-    myEvent->set(Paddle_Resistance[i], 1000000);
+    myPaddle[i].x = myPaddle[i].y = 1000000;
+    int resistance = (int)(1000000.0 * (1000000.0 - myPaddle[i].x) / 1000000.0);
+    myEvent->set(Paddle_Resistance[i], resistance);
   }
   setPaddleSpeed(0, myOSystem->settings().getInt("p0speed"));
   setPaddleSpeed(1, myOSystem->settings().getInt("p1speed"));
@@ -886,6 +888,9 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 
     int resistance = (int)(1000000.0 * (w - x) / w);
     myEvent->set(Paddle_Resistance[myPaddleMode], resistance);
+
+    // Update the digital paddle emulation so it's consistent
+    myPaddle[myPaddleMode].x = 1000000 - resistance;
   }
   else if(myOverlay)
     myOverlay->handleMouseMotionEvent(x, y, 0);
@@ -2022,8 +2027,8 @@ string EventHandler::keyAtIndex(int idx, EventMode mode)
 inline bool EventHandler::isJitter(int paddle, int value)
 {
   bool jitter = false;
-  bool leftMotion = myPaddle[paddle].joy_val - myPaddle[paddle].old_joy_val > 0;
-  int distance = value - myPaddle[paddle].joy_val;
+  bool leftMotion = myPaddle[paddle].val - myPaddle[paddle].old_val > 0;
+  int distance = value - myPaddle[paddle].val;
 
   // Filter out jitter by not allowing rapid direction changes
   if(distance > 0 && !leftMotion)     // movement switched from left to right
@@ -2031,8 +2036,8 @@ inline bool EventHandler::isJitter(int paddle, int value)
   else if(distance < 0 && leftMotion) // movement switched from right to left
     jitter = distance > -myPaddleThreshold;
 
-  myPaddle[paddle].old_joy_val = myPaddle[paddle].joy_val;
-  myPaddle[paddle].joy_val = value;
+  myPaddle[paddle].old_val = myPaddle[paddle].val;
+  myPaddle[paddle].val = value;
 
   return jitter;
 }
