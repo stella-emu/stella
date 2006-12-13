@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.74 2006-12-13 17:09:09 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.75 2006-12-13 19:13:32 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -366,7 +366,7 @@ void FrameBufferGL::drawMediaSource()
         pos += 2;
       }
       bufofsY    += width;
-      screenofsY += myTexture->w;
+      screenofsY += myBuffer.pitch;
     }
   }
   else
@@ -390,7 +390,7 @@ void FrameBufferGL::drawMediaSource()
         buffer[pos++] = (uInt16) myAvgPalette[v][w];
       }
       bufofsY    += width;
-      screenofsY += myTexture->w;
+      screenofsY += myBuffer.pitch;
     }
   }
 }
@@ -519,7 +519,7 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
   const uInt16* tmp = font->desc().bits + (font->desc().offset ?
                       font->desc().offset[chr] : (chr * h));
 
-  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myBuffer.pitch + tx;
   for(int y = 0; y < h; ++y)
   {
     const uInt16 ptr = *tmp++;
@@ -530,7 +530,7 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
       if(ptr & mask)
         buffer[x] = (uInt16) myDefPalette[color];
     }
-    buffer += myTexture->w;
+    buffer += myBuffer.pitch;
   }
 }
 
@@ -538,7 +538,7 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
 void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
                                int color, Int32 h)
 {
-  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myBuffer.pitch + tx;
 
   for(int y = 0; y < h; ++y)
   {
@@ -548,7 +548,7 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
       if(bitmap[y] & mask)
         buffer[x] = (uInt16) myDefPalette[color];
     }
-    buffer += myTexture->w;
+    buffer += myBuffer.pitch;
   }
 }
 
@@ -642,7 +642,20 @@ bool FrameBufferGL::createTextures()
     return false;
 
   myBuffer.pixels = myTexture->pixels;
-  myBuffer.pitch  = myTexture->pitch;
+  switch(myTexture->format->BytesPerPixel)
+  {
+    case 2:  // 16-bit
+      myBuffer.pitch = myTexture->pitch/2;
+      break;
+    case 3:  // 24-bit
+      myBuffer.pitch = myTexture->pitch;
+      break;
+    case 4:  // 32-bit
+      myBuffer.pitch = myTexture->pitch/4;
+      break;
+    default:
+      break;
+  }
 
   // Create an OpenGL texture from the SDL texture
   const string& filter = myOSystem->settings().getString("gl_filter");
