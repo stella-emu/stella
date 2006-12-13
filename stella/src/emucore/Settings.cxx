@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.98 2006-12-13 00:05:46 stephena Exp $
+// $Id: Settings.cxx,v 1.99 2006-12-13 17:09:10 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -247,12 +247,7 @@ void Settings::validate()
 
   s = getString("scale_tia");
   if(s != "zoom1x" && s != "zoom2x" && s != "zoom3x" &&
-     s != "zoom4x" && s != "zoom5x" && s != "zoom6x"
-  #ifdef SCALER_SUPPORT
-     && s != "scale2x" && s != "scale3x" && s != "scale4x" &&
-     s != "hq2x" && s != "hq3x" && s != "hq4x"
-  #endif
-    )
+     s != "zoom4x" && s != "zoom5x" && s != "zoom6x")
     setInternal("scale_tia", "zoom1x");
 
   i = getInt("paddle");

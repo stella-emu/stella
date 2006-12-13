@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.38 2006-12-11 00:15:33 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.39 2006-12-13 17:09:09 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -32,15 +32,11 @@ class GUI::Font;
 #include "GuiUtils.hxx"
 #include "FrameBuffer.hxx"
 
-#ifdef SCALER_SUPPORT
-  #include "scaler.hxx"
-#endif
-
 /**
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.38 2006-12-11 00:15:33 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.39 2006-12-13 17:09:09 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -139,7 +135,7 @@ class FrameBufferGL : public FrameBuffer
       @param b  The blue component of the color.
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
-      { return SDL_MapRGB(myBaseTexture->format, r, g, b); }
+      { return SDL_MapRGB(myTexture->format, r, g, b); }
 
     /**
       This method is called to draw a horizontal line.
@@ -241,21 +237,31 @@ class FrameBufferGL : public FrameBuffer
     }
 
   private:
-    // The base and scaled texture buffers
-    SDL_Surface* myBaseTexture;
-    SDL_Surface* myScaledTexture;
+    // Points to the current texture data
+    SDL_Surface* myTexture;
 
-    // Points to the current texture data, which is one of
-    // myBaseTexture or myScaledTexture
-    SDL_Surface* myCurrentTexture;
+    struct glBufferType
+    {
+      GLuint  texture;
+      GLsizei texture_width;
+      GLsizei texture_height;
+      GLfloat tex_coord[4];
 
-    SDL_Rect myQuadRect;
+      GLenum  target;
+      GLenum  format;
+      GLenum  type;
+      GLint   filter;          // The texture filtering to use
+
+      void*   pixels;
+      int     width, height;
+      int     pitch;
+    };
+    glBufferType myBuffer;
+
+    bool myUse16Bit;
 
     // The possible OpenGL screenmodes to use
     SDL_Rect** myScreenmode;
-
-    // Scaler currently in use
-    ScalerType myScalerType;
 
     // The number of usable OpenGL screenmodes
     uInt32 myScreenmodeCount;
@@ -266,20 +272,11 @@ class FrameBufferGL : public FrameBuffer
     // The size of color components for OpenGL
     uInt32 myRGB[4];
 
-    // The OpenGL main texture handle
-    GLuint myTextureID;
-
-    // OpenGL texture coordinates for the main surface
-    GLfloat myTexCoord[4];
-
-    // The texture filtering to use
-    GLint myFilterParam;
-
     // The name of the texture filtering to use
     string myFilterParamName;
 
-    // FIXME - used for zooming, still work todo here
-    uInt32 myZoomLevel, myScaleLevel;
+    // Used for zooming/scaling
+    uInt32 myZoomLevel;
 
     // The scaling to use in fullscreen mode
     // This is separate from both zoomlevel and aspect ratio
@@ -288,12 +285,11 @@ class FrameBufferGL : public FrameBuffer
     // TODO - will be removed when textured dirty rect support is added
     bool myDirtyFlag;
 
+    // Optional extensions that may increase performance
+    bool myHaveTexRectEXT, myHaveAppleCStorageEXT, myHaveAppleTexRangeEXT;
+
     // Indicates if the OpenGL functions have been properly loaded
     static bool myFuncsLoaded;
-
-  #ifdef SCALER_SUPPORT
-    ScalerProc *myScalerProc;
-  #endif
 };
 
 #endif  // DISPLAY_OPENGL

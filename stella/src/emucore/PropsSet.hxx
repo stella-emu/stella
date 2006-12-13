@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.16 2006-12-08 16:49:27 stephena Exp $
+// $Id: PropsSet.hxx,v 1.17 2006-12-13 17:09:10 stephena Exp $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -90,7 +90,7 @@ class PropertiesSet
       @param save        Indicates whether to set the 'save' tag for
                          this property
     */
-    void insert(const Properties& properties, bool save = true);
+    void insert(const Properties& properties, bool save);
 
     /**
       Marks the property with the given MD5 as being removed.
@@ -117,6 +117,7 @@ class PropertiesSet
       TreeNode* left;
       TreeNode* right;
       bool save;
+      bool valid;
     };
 
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.37 2006-12-13 00:05:46 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.38 2006-12-13 17:09:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,12 +107,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myScalerPopup->appendEntry("Zoom4x", 4);
   myScalerPopup->appendEntry("Zoom5x", 5);
   myScalerPopup->appendEntry("Zoom6x", 6);
-#ifdef SCALER_SUPPORT
-  myScalerPopup->appendEntry("Scale2x", 7);
-  myScalerPopup->appendEntry("Scale3x", 8);
-  myScalerPopup->appendEntry("HQ2x",    9);
-  myScalerPopup->appendEntry("HQ3x",   10);
-#endif
   wid.push_back(myScalerPopup);
 
   // Move over to the next column
@@ -239,12 +233,6 @@ void VideoDialog::loadConfig()
   else if(s == "zoom4x")  myScalerPopup->setSelectedTag(4);
   else if(s == "zoom5x")  myScalerPopup->setSelectedTag(5);
   else if(s == "zoom6x")  myScalerPopup->setSelectedTag(6);
-#ifdef SCALER_SUPPORT
-  else if(s == "scale2x") myScalerPopup->setSelectedTag(7);
-  else if(s == "scale3x") myScalerPopup->setSelectedTag(8);
-  else if(s == "hq2x")    myScalerPopup->setSelectedTag(9);
-  else if(s == "hq3x")    myScalerPopup->setSelectedTag(10);
-#endif
   else                    myScalerPopup->setSelectedTag(0);
 
   // Fullscreen
@@ -330,12 +318,6 @@ void VideoDialog::saveConfig()
   else if(i == 4)  s = "zoom4x";
   else if(i == 5)  s = "zoom5x";
   else if(i == 6)  s = "zoom6x";
-#ifdef SCALER_SUPPORT
-  else if(i == 7)  s = "scale2x";
-  else if(i == 8)  s = "scale3x";
-  else if(i == 9)  s = "hq2x";
-  else if(i == 10) s = "hq3x";
-#endif
   if(s != instance()->settings().getString("scale_tia"))
   {
     instance()->settings().setString("scale_tia", s);

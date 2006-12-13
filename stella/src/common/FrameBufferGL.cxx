@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.73 2006-12-11 00:15:33 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.74 2006-12-13 17:09:09 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -31,10 +31,6 @@
 #include "Font.hxx"
 #include "GuiUtils.hxx"
 
-#ifdef SCALER_SUPPORT
-  #include "scaler.hxx"
-#endif
-
 // There's probably a cleaner way of doing this
 // These values come from SDL_video.c
 // If they change, this code will break horribly
@@ -45,6 +41,15 @@
   #define SDL_GL_SWAP_CONTROL SDL_GLattr(16)
 #endif
 
+// These are not defined in the current version of SDL_opengl.h
+// Hopefully speed up OpenGL rendering in OSX
+#ifndef GL_TEXTURE_STORAGE_HINT_APPLE
+  #define GL_TEXTURE_STORAGE_HINT_APPLE 0x85BC
+#endif
+#ifndef GL_STORAGE_SHARED_APPLE
+  #define GL_STORAGE_SHARED_APPLE 0x85BF
+#endif
+
 // Maybe this code could be cleaner ...
 static void (APIENTRY* p_glClear)( GLbitfield );
 static void (APIENTRY* p_glEnable)( GLenum );
@@ -52,6 +57,7 @@ static void (APIENTRY* p_glDisable)( GLenum );
 static void (APIENTRY* p_glPushAttrib)( GLbitfield );
 static const GLubyte* (APIENTRY* p_glGetString)( GLenum );
 static void (APIENTRY* p_glHint)( GLenum, GLenum );
+static void (APIENTRY* p_glShadeModel)( GLenum );
 
 // Matrix
 static void (APIENTRY* p_glMatrixMode)( GLenum );
@@ -83,38 +89,26 @@ static void (APIENTRY* p_glTexParameteri)( GLenum, GLenum, GLint );
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
-    myBaseTexture(NULL),
-    myScaledTexture(NULL),
-    myCurrentTexture(NULL),
+    myTexture(NULL),
     myScreenmode(0),
     myScreenmodeCount(0),
-    myTextureID(0),
-    myFilterParam(GL_NEAREST),
     myFilterParamName("GL_NEAREST"),
     myZoomLevel(1),
-    myScaleLevel(1),
     myFSScaleFactor(1.0),
-    myDirtyFlag(true)
+    myDirtyFlag(true),
+    myHaveTexRectEXT(false),
+    myHaveAppleCStorageEXT(false),
+    myHaveAppleTexRangeEXT(false)
 {
-#ifdef SCALER_SUPPORT
-  myScalerProc = 0;
-  InitScalers();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::~FrameBufferGL()
 {
-  if(myBaseTexture)
-    SDL_FreeSurface(myBaseTexture);
-  if(myScaledTexture)
-    SDL_FreeSurface(myScaledTexture);
+  if(myTexture)
+    SDL_FreeSurface(myTexture);
 
-  p_glDeleteTextures(1, &myTextureID);
-
-#ifdef SCALER_SUPPORT
-  FreeScalers();
-#endif
+  p_glDeleteTextures(1, &myBuffer.texture);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,6 +140,8 @@ bool FrameBufferGL::loadFuncs(const string& library)
       SDL_GL_GetProcAddress("glGetString"); if(!p_glGetString) return false;
   p_glHint = (void(APIENTRY*)(GLenum, GLenum))
       SDL_GL_GetProcAddress("glHint"); if(!p_glHint) return false;
+  p_glShadeModel = (void(APIENTRY*)(GLenum))
+      SDL_GL_GetProcAddress("glShadeModel"); if(!p_glShadeModel) return false;
 
   p_glMatrixMode = (void(APIENTRY*)(GLenum))
       SDL_GL_GetProcAddress("glMatrixMode"); if(!p_glMatrixMode) return false;
@@ -199,22 +195,16 @@ bool FrameBufferGL::initSubsystem()
   myDepth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
   switch(myDepth)
   {
-    case 8:
-      myRGB[0] = 3; myRGB[1] = 3; myRGB[2] = 2; myRGB[3] = 0;
-      break;
     case 15:
+    case 16:
       myRGB[0] = 5; myRGB[1] = 5; myRGB[2] = 5; myRGB[3] = 0;
       break;
-    case 16:
-      myRGB[0] = 5; myRGB[1] = 6; myRGB[2] = 5; myRGB[3] = 0;
-      break;
     case 24:
+    case 32:
       myRGB[0] = 8; myRGB[1] = 8; myRGB[2] = 8; myRGB[3] = 0;
       break;
-    case 32:
-      myRGB[0] = 8; myRGB[1] = 8; myRGB[2] = 8; myRGB[3] = 8;
-      break;
     default:  // This should never happen
+      return false;
       break;
   }
 
@@ -241,15 +231,21 @@ bool FrameBufferGL::initSubsystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FrameBufferGL::about()
 {
-  ostringstream out;
+  string extensions;
+  if(myHaveTexRectEXT)       extensions += "GL_TEXTURE_RECTANGLE_ARB  ";
+  if(myHaveAppleCStorageEXT) extensions += "GL_TEXTURE_STORAGE_HINT_APPLE  ";
+  if(myHaveAppleTexRangeEXT) extensions += "GL_TEXTURE_STORAGE_HINT_APPLE  ";
+  if(extensions == "")       extensions = "None";
 
+  ostringstream out;
   out << "Video rendering: OpenGL mode" << endl
-      << "  Vendor  : " << p_glGetString(GL_VENDOR) << endl
-      << "  Renderer: " << p_glGetString(GL_RENDERER) << endl
-      << "  Version : " << p_glGetString(GL_VERSION) << endl
-      << "  Color   : " << myDepth << " bit, " << myRGB[0] << "-"
-      << myRGB[1] << "-" << myRGB[2] << "-" << myRGB[3] << endl
-      << "  Filter  : " << myFilterParamName << endl;
+      << "  Vendor:     " << p_glGetString(GL_VENDOR) << endl
+      << "  Renderer:   " << p_glGetString(GL_RENDERER) << endl
+      << "  Version:    " << p_glGetString(GL_VERSION) << endl
+      << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
+      << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << endl
+      << "  Filter:     " << myFilterParamName << endl
+      << "  Extensions: " << extensions << endl;
 
   return out.str();
 }
@@ -265,61 +261,7 @@ void FrameBufferGL::setAspectRatio()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::setScaler(Scaler scaler)
 {
-  myScalerType = scaler.type;
-  myZoomLevel  = scaler.zoom;
-  myScaleLevel = scaler.scale;
-
-  switch(scaler.type)
-  {
-    case kZOOM1X:
-    case kZOOM2X:
-    case kZOOM3X:
-    case kZOOM4X:
-    case kZOOM5X:
-    case kZOOM6X:
-      myQuadRect.w = myBaseDim.w;
-      myQuadRect.h = myBaseDim.h;
-      break;
-#ifdef SCALER_SUPPORT
-    case kSCALE2X:
-      myQuadRect.w = myBaseDim.w * 2;
-      myQuadRect.h = myBaseDim.h * 2;
-      cerr << "scaler: " << scaler.name << endl;
-      myScalerProc = AdvMame2x;
-      break;
-    case kSCALE3X:
-      myQuadRect.w = myBaseDim.w * 3;
-      myQuadRect.h = myBaseDim.h * 3;
-      cerr << "scaler: " << scaler.name << endl;
-      myScalerProc = AdvMame3x;
-      break;
-    case kSCALE4X:
-      myQuadRect.w = myBaseDim.w * 4;
-      myQuadRect.h = myBaseDim.h * 4;
-      cerr << "scaler: " << scaler.name << endl;
-      break;
-
-    case kHQ2X:
-      myQuadRect.w = myBaseDim.w * 2;
-      myQuadRect.h = myBaseDim.h * 2;
-      cerr << "scaler: " << scaler.name << endl;
-      myScalerProc = HQ2x;
-      break;
-    case kHQ3X:
-      myQuadRect.w = myBaseDim.w * 3;
-      myQuadRect.h = myBaseDim.h * 3;
-      cerr << "scaler: " << scaler.name << endl;
-      myScalerProc = HQ3x;
-      break;
-    case kHQ4X:
-      myQuadRect.w = myBaseDim.w * 4;
-      myQuadRect.h = myBaseDim.h * 4;
-      cerr << "scaler: " << scaler.name << endl;
-      break;
-#endif
-    default:
-      break;
-  }
+  myZoomLevel = scaler.zoom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -342,35 +284,46 @@ bool FrameBufferGL::createScreen()
   GLdouble orthoHeight = 0.0;
   setDimensions(&orthoWidth, &orthoHeight);
 
+  // Create screen containing GL context
   myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 0, mySDLFlags);
   if(myScreen == NULL)
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
+  myUse16Bit = (myDepth == 15 || myDepth == 16);
 
-  p_glPushAttrib(GL_ENABLE_BIT);
+  // Check for some extensions that can potentially speed up operation
+  const char* extensions = (const char *) p_glGetString(GL_EXTENSIONS);
+  myHaveTexRectEXT       = strstr(extensions, "ARB_texture_rectangle") != NULL;
+  myHaveAppleCStorageEXT = strstr(extensions, "APPLE_client_storage") != NULL;
+  myHaveAppleTexRangeEXT = strstr(extensions, "APPLE_texture_range") != NULL;
 
-  // Center the image horizontally and vertically
+  // Initialize GL display
   p_glViewport(myImageDim.x, myImageDim.y, myImageDim.w, myImageDim.h);
+  p_glShadeModel(GL_FLAT);
+  p_glDisable(GL_CULL_FACE);
+  p_glDisable(GL_DEPTH_TEST);
+  p_glDisable(GL_ALPHA_TEST);
+  p_glDisable(GL_LIGHTING);
+  p_glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+
+  if(myHaveTexRectEXT)
+    p_glEnable(GL_TEXTURE_RECTANGLE_ARB);
+  else
+    p_glEnable(GL_TEXTURE_2D);
 
   p_glMatrixMode(GL_PROJECTION);
-  p_glPushMatrix();
   p_glLoadIdentity();
-
-  p_glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
-
+  p_glOrtho(0.0, orthoWidth, orthoHeight, 0, -1.0, 1.0);
   p_glMatrixMode(GL_MODELVIEW);
-  p_glPushMatrix();
   p_glLoadIdentity();
 
+  // Allocate GL textures
   createTextures();
 
   // Make sure any old parts of the screen are erased
-  // Do it for both buffers!
-  p_glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
-  p_glClear(GL_COLOR_BUFFER_BIT);
+  cls();
 
   return true;
 }
@@ -385,7 +338,7 @@ void FrameBufferGL::drawMediaSource()
   uInt8* previousFrame = mediasrc.previousFrameBuffer();
   uInt32 width         = mediasrc.width();
   uInt32 height        = mediasrc.height();
-  uInt16* buffer       = (uInt16*) myBaseTexture->pixels;
+  uInt16* buffer       = (uInt16*) myTexture->pixels;
 
   // TODO - is this fast enough?
   if(!myUsePhosphor)
@@ -413,7 +366,7 @@ void FrameBufferGL::drawMediaSource()
         pos += 2;
       }
       bufofsY    += width;
-      screenofsY += myBaseTexture->w;
+      screenofsY += myTexture->w;
     }
   }
   else
@@ -437,22 +390,9 @@ void FrameBufferGL::drawMediaSource()
         buffer[pos++] = (uInt16) myAvgPalette[v][w];
       }
       bufofsY    += width;
-      screenofsY += myBaseTexture->w;
+      screenofsY += myTexture->w;
     }
   }
-
-#ifdef SCALER_SUPPORT
-  // At this point, myBaseTexture will be filled with a valid TIA image
-  // Now we check if post-processing scalers should be applied
-  // In any event, myCurrentTexture will point to the valid data to be
-  // rendered to the screen
-  if(myDirtyFlag && myScalerProc)
-  {
-    myScalerProc((uInt8*) myBaseTexture->pixels,   myBaseTexture->pitch,
-                 (uInt8*) myScaledTexture->pixels, myScaledTexture->pitch,
-                 myBaseTexture->w, myBaseTexture->h);
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -467,23 +407,16 @@ void FrameBufferGL::postFrameUpdate()
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 
-    uInt32 w = myQuadRect.w, h = myQuadRect.h;
+    uInt32 w = myBuffer.width, h = myBuffer.height;
 
-    p_glBindTexture(GL_TEXTURE_2D, myTextureID);
-    p_glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-                      myCurrentTexture->w, myCurrentTexture->h,
-                      GL_RGB, GL_UNSIGNED_SHORT_5_6_5, myCurrentTexture->pixels);
+    p_glTexSubImage2D(myBuffer.target, 0, 0, 0,
+                      myBuffer.texture_width, myBuffer.texture_height,
+                      myBuffer.format, myBuffer.type, myBuffer.pixels);
     p_glBegin(GL_QUADS);
-/* Upside down !
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[3]); p_glVertex2i(0, 0);
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[3]); p_glVertex2i(w, 0);
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[1]); p_glVertex2i(w, h);
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[1]); p_glVertex2i(0, h);
-*/
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[1]); p_glVertex2i(0, 0);
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[1]); p_glVertex2i(w, 0);
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[3]); p_glVertex2i(w, h);
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[3]); p_glVertex2i(0, h);
+      p_glTexCoord2f(myBuffer.tex_coord[0], myBuffer.tex_coord[1]); p_glVertex2i(0, 0);
+      p_glTexCoord2f(myBuffer.tex_coord[2], myBuffer.tex_coord[1]); p_glVertex2i(w, 0);
+      p_glTexCoord2f(myBuffer.tex_coord[2], myBuffer.tex_coord[3]); p_glVertex2i(w, h);
+      p_glTexCoord2f(myBuffer.tex_coord[0], myBuffer.tex_coord[3]); p_glVertex2i(0, h);
     p_glEnd();
 
     // Now show all changes made to the texture
@@ -507,24 +440,24 @@ void FrameBufferGL::scanline(uInt32 row, uInt8* data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::toggleFilter()
 {
-  if(myFilterParam == GL_NEAREST)
+  if(myBuffer.filter == GL_NEAREST)
   {
-    myFilterParam = GL_LINEAR;
+    myBuffer.filter = GL_LINEAR;
     myOSystem->settings().setString("gl_filter", "linear");
     showMessage("Filtering: GL_LINEAR");
   }
   else
   {
-    myFilterParam = GL_NEAREST;
+    myBuffer.filter = GL_NEAREST;
     myOSystem->settings().setString("gl_filter", "nearest");
     showMessage("Filtering: GL_NEAREST");
   }
 
-  p_glBindTexture(GL_TEXTURE_2D, myTextureID);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
+  p_glBindTexture(myBuffer.target, myBuffer.texture);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_MAG_FILTER, myBuffer.filter);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_MIN_FILTER, myBuffer.filter);
 
   // The filtering has changed, so redraw the entire screen
   theRedrawTIAIndicator = true;
@@ -533,56 +466,38 @@ void FrameBufferGL::toggleFilter()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
-#ifndef SCALER_SUPPORT
-  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + y * myCurrentTexture->w + x;
-  while(x++ <= x2)
-    *buffer++ = (uInt16) myDefPalette[color];
-#else
-  SDL_Rect tmp;
-
   // Horizontal line
-  tmp.x = x * myScaleLevel;
-  tmp.y = y * myScaleLevel;
-  tmp.w = (x2 - x + 1) * myScaleLevel;
-  tmp.h = myScaleLevel;
-  SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
-#endif
+  SDL_Rect tmp;
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = x2 - x + 1;
+  tmp.h = 1;
+  SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
-#ifndef SCALER_SUPPORT
-  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + y * myCurrentTexture->w + x;
-  while(y++ <= y2)
-  {
-    *buffer = (uInt16) myDefPalette[color];
-    buffer += myCurrentTexture->w;
-  }
-#else
-  SDL_Rect tmp;
-
   // Vertical line
-  tmp.x = x * myScaleLevel;
-  tmp.y = y * myScaleLevel;
-  tmp.w = myScaleLevel;
-  tmp.h = (y2 - y + 1) * myScaleLevel;
-  SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
-#endif
+  SDL_Rect tmp;
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = 1;
+  tmp.h = y2 - y + 1;
+  SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                              int color)
 {
-  SDL_Rect tmp;
-
   // Fill the rectangle
-  tmp.x = x * myScaleLevel;
-  tmp.y = y * myScaleLevel;
-  tmp.w = w * myScaleLevel;
-  tmp.h = h * myScaleLevel;
-  SDL_FillRect(myCurrentTexture, &tmp, myDefPalette[color]);
+  SDL_Rect tmp;
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = w;
+  tmp.h = h;
+  SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -604,7 +519,7 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
   const uInt16* tmp = font->desc().bits + (font->desc().offset ?
                       font->desc().offset[chr] : (chr * h));
 
-  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + ty * myCurrentTexture->w + tx;
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
   for(int y = 0; y < h; ++y)
   {
     const uInt16 ptr = *tmp++;
@@ -615,7 +530,7 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
       if(ptr & mask)
         buffer[x] = (uInt16) myDefPalette[color];
     }
-    buffer += myCurrentTexture->w;
+    buffer += myTexture->w;
   }
 }
 
@@ -623,7 +538,7 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
 void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
                                int color, Int32 h)
 {
-  uInt16* buffer = (uInt16*) myCurrentTexture->pixels + ty * myCurrentTexture->w + tx;
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myTexture->w + tx;
 
   for(int y = 0; y < h; ++y)
   {
@@ -633,7 +548,7 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
       if(bitmap[y] & mask)
         buffer[x] = (uInt16) myDefPalette[color];
     }
-    buffer += myCurrentTexture->w;
+    buffer += myTexture->w;
   }
 }
 
@@ -641,8 +556,8 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 void FrameBufferGL::translateCoords(Int32* x, Int32* y)
 {
   // Wow, what a mess :)
-  *x = (Int32) (((*x - myImageDim.x) / (myZoomLevel * myScaleLevel * myFSScaleFactor * theAspectRatio)));
-  *y = (Int32) (((*y - myImageDim.y) / (myZoomLevel * myScaleLevel * myFSScaleFactor)));
+  *x = (Int32) (((*x - myImageDim.x) / (myZoomLevel * myFSScaleFactor * theAspectRatio)));
+  *y = (Int32) (((*y - myImageDim.y) / (myZoomLevel * myFSScaleFactor)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -661,7 +576,7 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::cls()
 {
-  if(myFuncsLoaded && myCurrentTexture)
+  if(myFuncsLoaded && myTexture)
   {
     p_glClear(GL_COLOR_BUFFER_BIT);
     SDL_GL_SwapBuffers();
@@ -672,93 +587,112 @@ void FrameBufferGL::cls()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createTextures()
 {
-  if(myBaseTexture)
-  {
-    SDL_FreeSurface(myBaseTexture);
-    myBaseTexture = NULL;
-  }
-  if(myScaledTexture)
-  {
-    SDL_FreeSurface(myScaledTexture);
-    myScaledTexture = NULL;
-  }
-  myCurrentTexture = NULL;
-  p_glDeleteTextures(1, &myTextureID);
+  if(myTexture)         SDL_FreeSurface(myTexture);
+  if(myBuffer.texture)  p_glDeleteTextures(1, &myBuffer.texture);
+  memset(&myBuffer, 0, sizeof(glBufferType));
+  myBuffer.filter = GL_NEAREST;
 
+  // Fill buffer struct with valid data
+  // This changes depending on the texturing used
+  myBuffer.width  = myBaseDim.w;
+  myBuffer.height = myBaseDim.h;
+  myBuffer.tex_coord[0] = 0.0f;
+  myBuffer.tex_coord[1] = 0.0f;
+  if(myHaveTexRectEXT)
+  {
+    myBuffer.texture_width  = myBuffer.width;
+    myBuffer.texture_height = myBuffer.height;
+    myBuffer.target         = GL_TEXTURE_RECTANGLE_ARB;
+    myBuffer.tex_coord[2]   = (GLfloat) myBuffer.texture_width;
+    myBuffer.tex_coord[3]   = (GLfloat) myBuffer.texture_height;
+  }
+  else
+  {
+    myBuffer.texture_width  = power_of_two(myBuffer.width);
+    myBuffer.texture_height = power_of_two(myBuffer.height);
+    myBuffer.target         = GL_TEXTURE_2D;
+    myBuffer.tex_coord[2] = (GLfloat) myBuffer.width / myBuffer.texture_width;
+    myBuffer.tex_coord[3] = (GLfloat) myBuffer.height / myBuffer.texture_height;
+  }
+
+  // Create a texture that best suits the current display depth and system
+  // This code needs to be Apple-specific, otherwise performance is
+  // terrible on a Mac Mini
+//  if(myUse16Bit)
+  {
+#if defined(MAC_OSX)
+    myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                  myBuffer.texture_width, myBuffer.texture_height, 16,
+                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+#else
+    myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                  myBuffer.texture_width, myBuffer.texture_height, 16,
+                  0x0000f800, 0x000007e0, 0x0000001f, 0x00000000);
+#endif
+  }
 /*
-cerr << "texture dimensions (before power of 2 scaling):" << endl
-     << "myBaseTexture->w = " << myBaseDim.w << endl
-     << "myBaseTexture->h = " << myBaseDim.h << endl
-     << "myScaledTexture->w = " << myQuadRect.w << endl
-     << "myScaledTexture->h = " << myQuadRect.h << endl
-     << endl;
-*/
-
-  uInt32 w1 = power_of_two(myBaseDim.w);
-  uInt32 h1 = power_of_two(myBaseDim.h);
-  uInt32 w2 = power_of_two(myQuadRect.w);
-  uInt32 h2 = power_of_two(myQuadRect.h);
-
-  myTexCoord[0] = 0.0f;
-  myTexCoord[1] = 0.0f;
-  myTexCoord[2] = (GLfloat) myQuadRect.w / w1;
-  myTexCoord[3] = (GLfloat) myQuadRect.h / h1;
-
-  myBaseTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, w1, h1, 16,
-    0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
-  if(myBaseTexture == NULL)
-    return false;
-
-  myScaledTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, w2, h2, 16,
-    0x0000F800, 0x000007E0, 0x0000001F, 0x00000000);
-  if(myScaledTexture == NULL)
-    return false;
-
-  // Set current texture pointer
-  switch(myScalerType)
+  else
   {
-    case kZOOM1X:
-    case kZOOM2X:
-    case kZOOM3X:
-    case kZOOM4X:
-    case kZOOM5X:
-    case kZOOM6X:
-      myCurrentTexture = myBaseTexture;
-      break;
-    default:
-      myCurrentTexture = myScaledTexture;
-      break;
+    myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                  myBuffer.texture_width, myBuffer.texture_height, 32,
+                  0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000);
   }
+*/
+  if(myTexture == NULL)
+    return false;
+
+  myBuffer.pixels = myTexture->pixels;
+  myBuffer.pitch  = myTexture->pitch;
 
   // Create an OpenGL texture from the SDL texture
-  string filter = myOSystem->settings().getString("gl_filter");
+  const string& filter = myOSystem->settings().getString("gl_filter");
   if(filter == "linear")
   {
-    myFilterParam     = GL_LINEAR;
+    myBuffer.filter   = GL_LINEAR;
     myFilterParamName = "GL_LINEAR";
   }
   else if(filter == "nearest")
   {
-    myFilterParam     = GL_NEAREST;
+    myBuffer.filter   = GL_NEAREST;
     myFilterParamName = "GL_NEAREST";
   }
 
-  p_glGenTextures(1, &myTextureID);
-  p_glBindTexture(GL_TEXTURE_2D, myTextureID);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myFilterParam);
-  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myFilterParam);
-  p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-                 myCurrentTexture->w, myCurrentTexture->h, 0,
-                 GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL);
+  p_glGenTextures(1, &myBuffer.texture);
+  p_glBindTexture(myBuffer.target, myBuffer.texture);
+  if(myHaveAppleCStorageEXT)
+    p_glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+  if(myHaveAppleTexRangeEXT)
+    p_glTexParameteri(myBuffer.target, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_SHARED_APPLE);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_MIN_FILTER, myBuffer.filter);
+  p_glTexParameteri(myBuffer.target, GL_TEXTURE_MAG_FILTER, myBuffer.filter);
 
-  p_glDisable(GL_DEPTH_TEST);
-  p_glDisable(GL_CULL_FACE);
-  p_glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  p_glEnable(GL_TEXTURE_2D);
-
-  p_glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+  // Finally, create the texture in the most optimal format
+  GLenum tex_intformat;
+//  if(myUse16Bit)
+  {
+#if defined (MAC_OSX)
+    tex_intformat   = GL_RGB5;
+    myBuffer.format = GL_BGRA;
+    myBuffer.type   = GL_UNSIGNED_SHORT_1_5_5_5_REV;
+#else
+    tex_intformat   = GL_RGB;
+    myBuffer.format = GL_RGB;
+    myBuffer.type   = GL_UNSIGNED_SHORT_5_6_5;
+#endif
+  }
+/*
+  else
+  {
+    tex_intformat   = GL_RGBA8;
+    myBuffer.format = GL_BGRA;
+    myBuffer.type   = GL_UNSIGNED_INT_8_8_8_8_REV;
+  }
+*/
+  p_glTexImage2D(myBuffer.target, 0, tex_intformat,
+                 myBuffer.texture_width, myBuffer.texture_height, 0,
+                 myBuffer.format, myBuffer.type, myBuffer.pixels);
 
   return true;
 }
@@ -770,8 +704,8 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
   // We have to determine final image dimensions as well as screen dimensions
   myImageDim.x = 0;
   myImageDim.y = 0;
-  myImageDim.w = (Uint16) (myBaseDim.w * myZoomLevel * myScaleLevel * theAspectRatio);
-  myImageDim.h = (Uint16) (myBaseDim.h * myZoomLevel * myScaleLevel);
+  myImageDim.w = (Uint16) (myBaseDim.w * myZoomLevel * theAspectRatio);
+  myImageDim.h = (Uint16) (myBaseDim.h * myZoomLevel);
   myScreenDim  = myImageDim;
 
   myFSScaleFactor = 1.0f;

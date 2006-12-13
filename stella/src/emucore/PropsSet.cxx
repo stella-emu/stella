@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.26 2006-12-13 00:32:17 stephena Exp $
+// $Id: PropsSet.cxx,v 1.27 2006-12-13 17:09:10 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -77,12 +77,10 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
       const string& currentMd5 = current->props->get(Cartridge_MD5);
       if(currentMd5 == md5)
       {
-        // We only report a node as found if it's to be saved.
-        // Nodes in the BST that are marked as 'do not save' are
+        // We only report a node as found if it's been marked as valid.
+        // Invalid nodes are those that should be removed, and are
         // essentially treated as if they're not present.
-        // What really should happen is the node should be removed,
-        // and the tree rebalanced ...
-        found = current->save;
+        found = current->valid;
         break;
       }
       else if(md5 < currentMd5)
@@ -122,8 +120,8 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
   if(myOSystem->settings().getBool("tiadefaults"))
   {
 //    properties.set(Display_XStart, Properties::ourDefaultProperties[Display_XStart]);
-    properties.set(Display_Width,  Properties::ourDefaultProperties[Display_Width]);
 //    properties.set(Display_YStart, Properties::ourDefaultProperties[Display_YStart]);
+    properties.set(Display_Width,  Properties::ourDefaultProperties[Display_Width]);
     properties.set(Display_Height, Properties::ourDefaultProperties[Display_Height]);
   }
 }
@@ -146,7 +144,7 @@ void PropertiesSet::removeMD5(const string& md5)
       const string& currentMd5 = current->props->get(Cartridge_MD5);
       if(currentMd5 == md5)
       {
-        current->save = false;  // make sure this node isn't saved
+        current->valid = false;  // Essentially, this node doesn't exist
         break;
       }
       else if(md5 < currentMd5)
@@ -175,6 +173,7 @@ void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties,
       delete t->props;
       t->props = new Properties(properties);
       t->save = save;
+      t->valid = true;
     }
   }
   else
@@ -184,6 +183,7 @@ void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties,
     t->left = 0;
     t->right = 0;
     t->save = save;
+    t->valid = true;
 
     ++mySize;
   }
@@ -249,7 +249,7 @@ void PropertiesSet::saveNode(ostream& out, TreeNode *node) const
 {
   if(node)
   {
-    if(node->save)
+    if(node->valid && node->save)
       node->props->save(out);
     saveNode(out, node->left);
     saveNode(out, node->right);
@@ -261,7 +261,7 @@ void PropertiesSet::printNode(TreeNode *node) const
 {
   if(node)
   {
-    if(node->save)
+    if(node->valid && node->save)
       node->props->print();
     printNode(node->left);
     printNode(node->right);
