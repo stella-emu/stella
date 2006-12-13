@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.106 2006-12-11 00:15:33 stephena Exp $
+// $Id: Console.cxx,v 1.107 2006-12-13 00:05:46 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -704,6 +704,10 @@ void Console::setDeveloperProperties()
     myProperties.set(Controller_Left, s);
     myProperties.set(Controller_Right, s);
   }
+
+  s = settings.getString("cp");
+  if(s != "")
+    myProperties.set(Controller_SwapPaddles, s);
 
   s = settings.getString("format");
   if(s != "")

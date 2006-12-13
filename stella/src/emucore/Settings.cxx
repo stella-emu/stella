@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.97 2006-12-11 00:15:33 stephena Exp $
+// $Id: Settings.cxx,v 1.98 2006-12-13 00:05:46 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -42,8 +42,8 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_lib", "");
   setInternal("gl_vsync", "true");
 
-  setInternal("scale_ui", "Zoom1x");
-  setInternal("scale_tia", "Zoom1x");
+  setInternal("scale_ui", "zoom1x");
+  setInternal("scale_tia", "zoom1x");
   setInternal("fullscreen", "false");
   setInternal("center", "true");
   setInternal("grabmouse", "false");
@@ -76,7 +76,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("sssingle", "false");
 
   setInternal("romdir", "");
-  setInternal("rombrowse", "false");
+  setInternal("rombrowse", "true");
   setInternal("lastrom", "");
   setInternal("modtime", "");  // romdir last modification time
 
@@ -241,16 +241,19 @@ void Settings::validate()
 #endif
 
   s = getString("scale_ui");
-  if(s != "Zoom1x" && s != "Zoom2x" && s != "Zoom3x" &&
-     s != "Zoom4x" && s != "Zoom5x" && s != "Zoom6x")
-    setInternal("scale_ui", "Zoom1x");
+  if(s != "zoom1x" && s != "zoom2x" && s != "zoom3x" &&
+     s != "zoom4x" && s != "zoom5x" && s != "zoom6x")
+    setInternal("scale_ui", "zoom1x");
 
   s = getString("scale_tia");
-  if(s != "Zoom1x" && s != "Zoom2x" && s != "Zoom3x" &&
-     s != "Zoom4x" && s != "Zoom5x" && s != "Zoom6x" &&
-     s != "Scale2x" && s != "Scale3x" && s != "Scale4x" &&
-     s != "HQ2x" && s != "HQ3x" && s != "HQ4x")
-    setInternal("scale_tia", "Zoom1x");
+  if(s != "zoom1x" && s != "zoom2x" && s != "zoom3x" &&
+     s != "zoom4x" && s != "zoom5x" && s != "zoom6x"
+  #ifdef SCALER_SUPPORT
+     && s != "scale2x" && s != "scale3x" && s != "scale4x" &&
+     s != "hq2x" && s != "hq3x" && s != "hq4x"
+  #endif
+    )
+    setInternal("scale_tia", "zoom1x");
 
   i = getInt("paddle");
   if(i < 0 || i > 3)
@@ -284,7 +287,7 @@ void Settings::usage()
   #ifdef DISPLAY_OPENGL
     << "                 gl              SDL OpenGL mode\n"
     << endl
-    << "  -gl_lib       <filename>     Specify the OpenGL library\n"
+    << "  -gl_lib       <name>         Specify the OpenGL library\n"
     << "  -gl_filter    <type>         Type is one of the following:\n"
     << "                 nearest         Normal scaling (GL_NEAREST)\n"
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
@@ -293,7 +296,8 @@ void Settings::usage()
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << endl
   #endif
-    << "  -zoom         <size>         Makes window be 'size' times normal\n"
+    << "  -scale_tia    <scaler>       Use the specified scaler in emulation mode\n"
+    << "  -scale_ui     <scaler>       Use the specified scaler in non-emulation mode (ROM browser/debugger)\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
@@ -324,6 +328,9 @@ void Settings::usage()
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
     << "  -tiadefaults  <1|0>          Use TIA positioning defaults instead of enhanced values\n"
+    << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
+    << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
+    << "  -fastscbios   <1|0>          Speed up loading of SuperCharger ROM BIOS\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #endif
@@ -355,6 +362,7 @@ void Settings::usage()
     << "   -lc          <arg>          Sets the 'Controller.Left' property\n"
     << "   -rc          <arg>          Sets the 'Controller.Right' property\n"
     << "   -bc          <arg>          Same as using both -lc and -rc\n"
+    << "   -cp          <arg>          Sets the 'Controller.SwapPaddles' property\n"
     << "   -format      <arg>          Sets the 'Display.Format' property\n"
     << "   -xstart      <arg>          Sets the 'Display.XStart' property\n"
     << "   -ystart      <arg>          Sets the 'Display.YStart' property\n"

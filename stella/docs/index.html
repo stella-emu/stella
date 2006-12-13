@@ -30,6 +30,7 @@
 		<li><a href="#Debugger">Integrated Debugger</a></li>
 		<li><a href="#Properties">Game Properties</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
+		<li><a href="#Palette">Palette Support</a></li>
 		<li><a href="#Acknowledgments">Acknowledgments</a></li>
 		<li><a href="#License">License and Disclaimer</a></li>
 	</ol>
@@ -218,6 +219,10 @@
 	<h2><b>New in Release 2.3</b></h2>
 
 	<ul>
+<li>Potentially huge speedups in software rendering mode, both in emulation
+and UI modes.  Deactivating 'dirty rects' uses these new modes, which
+can be 2-3 times faster for many configurations.</li>
+
 <li>For UI navigation, changed from using 'joymouse' to the more familiar
 'tabbing' functionality, where you move from object to object by use of
 some tab key.  As a result, completely removed the 'joymouse' commandline
@@ -225,12 +230,6 @@ argument and all associated functionality.</li>
 
 <li>Added event remapping for UI events, separate from events while in emulation
 mode.</li>
-
-<li>Changed naming of snapshots and state files.  These files are now
-named based on the names given in the properties database, and no longer
-use the 'md5sum' name.  As a result, state files from previous versions
-will no longer work unless they're manually renamed.  Related to this,
-removed the '-ssname' commandline argument.</li>
 
 <li>Added support for PAL60 ROMs, which use the PAL palette and resolution
 but run at NTSC timing (60Hz).  Added ROM property for this, and updated
@@ -242,25 +241,31 @@ is supported, but in the future we may have them specified per-ROM.</li>
 <li>Fixed bug in PAL colour-loss emulation, which wasn't actually being done
 for the original Stella and z26 palettes.</li>
 
-<li>Fixed bug where 'Snapshot saved' appeared when taking snapshots in
-succession.</li>
-
 <li>Fixed several TIA-related emulation bugs as reported on AtariAge.  More
 fixes will come with the TIA rewrite, due in the next release.</li>
-
-<li>Added '-gl_vsync' commandline argument and associated UI elements, which
-uses synchronization to vertical blank interrupt in OpenGL on supported
-systems.  This eliminates tearing in OpenGL rendering.</li>
-
-<li>Added a 'Previous directory' entry to the top of each listing while
-in ROM Browse mode, which is equivalent to the 'Go Up' button.  This makes
-it easier to navigate the filesystem, since you never have to 'tab out'
-of the ROM listing.</li>
 
 <li>Added new scaler infrastructure, replacing the '-zoom' commandline argument
 with '-scale_ui' and '-scale_tia'.  This means the UI and emulation can now
 be scaled independently.  In the future, support will be added for advanced
 scalers in TIA mode, such as Scale2x, Scale3x, HQ2x, HQ3x, etc.</li>
+
+<li>Added '-gl_vsync' commandline argument and associated UI elements, which
+uses synchronization to vertical blank interrupt in OpenGL on supported
+systems.  This eliminates tearing in OpenGL rendering.</li>
+
+<li>Changed naming of snapshots and state files.  These files are now
+named based on the names given in the properties database, and no longer
+use the 'md5sum' name.  As a result, state files from previous versions
+will no longer work unless they're manually renamed.  Related to this,
+removed the '-ssname' commandline argument.</li>
+
+<li>Fixed bug where 'Snapshot saved' appeared when taking snapshots in
+succession.</li>
+
+<li>Added a 'Previous directory' entry to the top of each listing while
+in ROM Browse mode, which is equivalent to the 'Go Up' button.  This makes
+it easier to navigate the filesystem, since you never have to 'tab out'
+of the ROM listing.</li>
 
 <li>Added all sound related commandline options to the UI, so you no
 longer have to use the commandline to set those options.</li>
@@ -609,6 +614,13 @@ scaling.</li>
 		</tr>
 
 		<tr>
+			<td><pre>-gl_lib &lt;filename&gt;</pre></td>
+			<td>OpenGL mode only. Specify the OpenGL library to use (only use
+				this if you know what you're doing).  For OSX, this should
+				probably be left blank.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-gl_filter &lt;nearest|linear&gt;</pre></td>
 			<td>OpenGL mode only. Use GL_NEAREST or GL_LINEAR filtering.
 				GL_NEAREST results in a scaled,	pixelated image, while
@@ -631,14 +643,21 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-gl_lib &lt;filename&gt;</pre></td>
-			<td>OpenGL mode only. Specify the OpenGL library to use (only use
-				this if you know what you're doing).</td>
+			<td><pre>-gl_vsync &lt;0|1&gt;</pre></td>
+			<td>OpenGL mode only. Synchronize screen updates to the vertical blank
+				period.  This can result in smoother updates, and eliminate tearing.</td>
 		</tr>
 
 		<tr>
-			<td><pre>-zoom &lt;size&gt;</pre></td>
-			<td>Makes window be 'size' times normal.</td>
+			<td><pre>-scale_tia &lt;scaler&gt;</pre></td>
+			<td>Use the specified scaler while in TIA/emulation mode.  Possible
+				scalers are 'zoom1x, ..., zoom6x'.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-scale_ui &lt;scaler&gt;</pre></td>
+			<td>Use the specified scaler while in UI mode (currently, the ROM
+				launcher and debugger).  Possible scalers are 'zoom1x, ..., zoom6x'.</td>
 		</tr>
 
 		<tr>
@@ -657,21 +676,15 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-palette &lt;original|standard|z26&gt;</pre></td>
-			<td>Set the palette to either pre-Stella 1.4, Stella 1.4 and above
-				or the palette used in the z26 emulator.</td>
+			<td><pre>-palette &lt;original|standard|z26|user&gt;</pre></td>
+			<td>Set the palette to either pre-Stella 1.4, Stella 1.4 and above,
+				the palette used in the z26 emulator, or a user-defined palette.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-framerate &lt;number&gt;</pre></td>
 			<td>Display the given number of frames per second.  Normally, Stella
 				will determine framerate based on ROM format.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-ppblend &lt;number&gt;</pre></td>
-			<td>Set blending for phosphor effect, if enabled (0-100).
-				Default is 77.</td>
 		</tr>
 
 		<tr>
@@ -738,29 +751,23 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-joymouse &lt;0|1&gt;</pre></td>
-			<td>Indicates whether the joystick emulates the mouse in GUI mode
-				(defaults to off).</td>
+			<td><pre>-p0speed &lt;number&gt;</pre></td>
+			<td>Speed of digital emulation for paddle 0 (0-100).</td>
 		</tr>
 
 		<tr>
 			<td><pre>-p1speed &lt;number&gt;</pre></td>
-			<td>Speed of emulated mouse movement for paddle 1 (0-100).</td>
+			<td>Speed of digital emulation for paddle 1 (0-100).</td>
 		</tr>
 
 		<tr>
 			<td><pre>-p2speed &lt;number&gt;</pre></td>
-			<td>Speed of emulated mouse movement for paddle 2 (0-100).</td>
+			<td>Speed of digital emulation for paddle 2 (0-100).</td>
 		</tr>
 
 		<tr>
 			<td><pre>-p3speed &lt;number&gt;</pre></td>
-			<td>Speed of emulated mouse movement for paddle 3 (0-100).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-p4speed &lt;number&gt;</pre></td>
-			<td>Speed of emulated mouse movement for paddle 4 (0-100).</td>
+			<td>Speed of digital emulation for paddle 3 (0-100).</td>
 		</tr>
 
 		<tr>
@@ -776,6 +783,23 @@ scaling.</li>
 		</tr>
 
 		<tr>
+			<td><pre>-rombrowse &lt;1|0&gt;</pre></td>
+			<td>The ROM listing is treated as a filesystem, where one can traverse
+				folders.  As of Stella 2.3, this is the default browsing mode.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-autoslot &lt;1|0&gt;</pre></td>
+			<td>Automatically switch to the next available save state slot after
+				saving a ROM state file.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-fastscbios &lt;1|0&gt;</pre></td>
+			<td>Set loading of Supercharger BIOS bars to maximum speed (8x normal).</td>
+		</tr>
+
+		<tr>
 			<td><pre>-accurate &lt;1|0&gt;</pre></td>
 			<td>Linux only, may be removed in future versions.  Use this when 
 				running under the Linux 2.4 kernel.  Otherwise, this should probably
@@ -788,21 +812,14 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-ssname &lt;romname|md5sum&gt;</pre></td>
-			<td>How to name the snapshot.  Option 'romname' will use the filename
-				provided in stella.pro, while 'md5sum' will use the calculated
-				MD5 sum of the rom.</td>
-		</tr>
-
-		<tr>
 			<td><pre>-sssingle &lt;0|1&gt;</pre></td>
 			<td>Generate single snapshot instead of many.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-listrominfo</pre></td>
-			<td>Prints the contents of the stella.pro file, one ROM per line,
-				and then exit Stella.</td>
+			<td>Prints relevant contents of the Stella ROM database, one ROM per line,
+				and then exit Stella.  This can be used for external frontends.</td>
 		</tr>
 
 		<tr>
@@ -897,6 +914,11 @@ scaling.</li>
 		</tr>
 
 		<tr>
+			<td><pre>-cp &lt;Yes|No&gt;</pre></td>
+			<td>Set "Controller.SwapPaddles" property.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-format &lt;NTSC|PAL&gt;</pre></td>
 			<td>Set "Display.Format" property.</td>
 		</tr>
@@ -924,6 +946,12 @@ scaling.</li>
 		<tr>
 			<td><pre>-pp &lt;Yes|No&gt;</pre></td>
 			<td>Set "Display.Phosphor" property.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-ppblend &lt;number&gt;</pre></td>
+			<td>Set "Display.PPBlend" property, used for phosphor effect (0-100).
+				Default is 77.</td>
 		</tr>
 
 		<tr>
@@ -1000,24 +1028,28 @@ scaling.</li>
 	</table>
 
 	<p>The settings file has a special name/location depending on which version of Stella
-	you use:</p>
+	you use.  Note that if the environment variable 'STELLA_BASEDIR' is set, the
+	location of the settings file will change accordingly:</p>
 
 	<p>
 	<h2><b>Linux/UNIX</b></h2>
 	<p>The Linux and UNIX version of Stella searches for the <i>stellarc</i> file in
-	your $HOME/.stella directory.</p>
+	your $HOME/.stella directory, or in $STELLA_BASEDIR if that environment
+	variable is set.</p>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
 	<p>The Macintosh version does not use an INI file, but stores it
 	preferences in the expected location for application preferences, in
 	the Users home directory, in the Library/Preferences/StellaOSX.plist
-	file.<br>
+	file.  The STELLA_BASEDIR environment variable has no effect for
+	the settings file in OSX.<br>
 
 	<p>
 	<h2><b>Windows</b></h2>
 	<p>The Windows version of Stella looks for the <i>stella.ini</i> file in the same
-	directory containing the application.  Future versions of Stella for Windows may look in
+	directory containing the application, or in $STELLA_BASEDIR if that environment
+	variable is set.  Future versions of Stella for Windows may look in
 	user-specific locations	(C:\Documents and Settings\...).</p>
 
 	<br><br>
@@ -1609,13 +1641,13 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td>Resize window to next <i>larger</i> size</td>
+			<td>Switch to next <i>larger</i> scaler</td>
 			<td>Alt + =</td>
 			<td>Cmd + =</td>
 		</tr>
 
 		<tr>
-			<td>Resize window to next <i>smaller</i> size</td>
+			<td>Switch to next <i>smaller</i> scaler</td>
 			<td>Alt + -</td>
 			<td>Cmd + -</td>
 		</tr>
@@ -1652,7 +1684,7 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td>Toggle display format between <i>NTSC</i> and <i>PAL</i></td>
+			<td>Toggle display format between <i>NTSC, PAL, PAL60</i></td>
 			<td>Control + f</td>
 			<td>Cmd + f</td>
 		</tr>
@@ -1661,12 +1693,6 @@ scaling.</li>
 			<td>Save current properties to a new properties file</td>
 			<td>Control + s</td>
 			<td>Cmd + s</td>
-		</tr>
-
-		<tr>
-			<td>Merge current properties into the properties file</td>
-			<td>Alt + s</td>
-			<td>Shift-Cmd + s</td>
 		</tr>
 
 		<tr>
@@ -1840,24 +1866,28 @@ Ms Pac-Man (Stella extended codes):
 	<p>Stella uses game properties to specify the "best" emulator settings for a
 	game. As of version 2.2 of Stella, a default database of properties are
 	built-in, but you may modify these through the use of a <b>stella.pro</b> file.
-	This per-user file will contain all properties 'merged' by the user
-	(by pressing Alt-s while a game is running).  So this means that when you
-	upgrade Stella, your personal properties settings are preserved.</p>
+	This per-user file will contain all properties modified by the user.  So this
+	means that when you upgrade Stella, your personal properties settings are
+	preserved.</p>
 
 	<p>
 	<h2><b>Linux/Unix</b></h2>
 	<p>The Linux and Unix versions of Stella looks for your personal properties
-	file in	<i>$HOME/.stella/stella.pro</i>.
+	file in	<i>$HOME/.stella/stella.pro</i>, or if the STELLA_BASEDIR environment
+	variable is set, in <i>$STELLA_BASEDIR/stella.pro</i>.
 
 	<p>
 	<h2><b>Macintosh</b></h2>
 	<p>The Mac version of Stella looks for your personal properties	file in
-	<i>$HOME/.stella/stella.pro</i>.
+	<i>$HOME/.stella/stella.pro</i>, or if the STELLA_BASEDIR environment
+	variable is set, in <i>$STELLA_BASEDIR/stella.pro</i>.
 
 	<p>
 	<h2><b>Windows</b></h2>
 	<p>The Windows version of Stella looks for the properties file in the directory
-	containing the application.  Future versions of Stella for Windows may look in
+	containing the application, or if the STELLA_BASEDIR environment
+	variable is set, in <i>$STELLA_BASEDIR/stella.pro</i>.
+	Future versions of Stella for Windows may look in
 	user-specific locations	(C:\Documents and Settings\...).</p>
 
 	<p>
@@ -1967,17 +1997,17 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
+			<td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
+			<td>This property indicates the default television setting for the
+			game.  The value of this property must be Color or BlankAndWhite.</td>
+		</tr>
+
+		<tr>
 			<td VALIGN="TOP"><i>Console.SwapPorts:</i></td>
 			<td>This property indicates that the left and right ports should be
 			swapped internally.  This is used for ROMs like 'Raiders' where the
 			Player 1 joystick is plugged into the right joystick port.
 			The value of this property must be Yes or No.</td>
-		</tr>
-
-		<tr>
-			<td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
-			<td>This property indicates the default television setting for the
-			game.  The value of this property must be Color or BlankAndWhite.</td>
 		</tr>
 
 		<tr>
@@ -1995,9 +2025,19 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
+			<td VALIGN="TOP"><i>Controller.SwapPaddles:</i></td>
+			<td>This property indicates that the left and right paddles in
+			a particular port should be	swapped.  This is used for ROMs like
+			'Demons to Diamonds' where the default paddle is paddle 1, not
+			paddle 0.  Other ROMs such as 'Tac-Scan' default to paddle 3,
+			which can be set using both 'Controller.SwapPaddles' and
+			'Console.SwapPorts'.  The value of this property must be Yes or No.</td>
+		</tr>
+
+		<tr>
 			<td VALIGN="TOP"><i>Display.Format:</i></td>
 			<td>This property indicates the television format the game was
-			designed for.  The value of this property must be NTSC or PAL.</td>
+			designed for.  The value of this property must be NTSC, PAL or PAL60.</td>
 		</tr>
 
 		<tr>
@@ -2032,6 +2072,14 @@ Ms Pac-Man (Stella extended codes):
 			<td VALIGN="TOP"><i>Display.Phosphor:</i></td>
 			<td>This property indicates whether the phosphor effect should be
 			emulated or not.  The value of this property must be Yes or No.</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP"><i>Display.PPBlend:</i></td>
+			<td>This property indicates the amount of blending which will occur
+			while using the phosphor effect.  The value of this property must be
+			<i>n</i> such that 0 &lt;= <i>n</i> &lt;= 100.  The default value
+			is 77.</td>
 		</tr>
 
 		<tr>
@@ -2073,7 +2121,52 @@ Ms Pac-Man (Stella extended codes):
 
 	<br><br>
 	<p><h1>
-	<a name="Acknowledgments">14. Acknowledgments</a></h1>
+	<a name="Palette">14. Palette Support</a></h1>
+	<hr>
+
+	<p>An Atari 2600 palette consists of 128 colours, which are different
+	for the two major television standards (NTSC and PAL/PAL60).  Stella supports
+	three built-in palettes and one user-defined palette for each format.
+	These are set using the '-palette' option, and are described as follows:</p>
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>standard</b></td>
+			<td>The default palette from Stella 1.4 onwards.</td>
+		</tr>
+		<tr>
+			<td><b>original</b></td>
+			<td>The palette used in the original StellaX.</td>
+		</tr>
+		<tr>
+			<td><b>z26</b></td>
+			<td>The palette from the z26 emulator.</td>
+		</tr>
+		<tr>
+			<td><b>user</b></td>
+			<td>An external palette file, supplied by the user.</td>
+		</tr>
+	</table>
+
+	<p>Support for a user-defined palette is a new feature for Stella 2.3, and
+	is further described as follows:
+	<ul>
+		<li>The palette file must be called 'stella.pal', and will be located
+			in the base folder, in the same place as the stella properties file.</li>
+		<li>The palette file must be at least 768 bytes long.  Colours are stored
+			in 24-bit RGB, with the first byte for red, the second for green, the
+			third for blue, for a total of 3 bytes per colour.</li>
+		<li>The first 384 bytes of the file (128 * 3) will be used for the NTSC
+			palette.  The second 384 bytes will be for the PAL/PAL60 palette.
+			Any extra data in the file will be ignored.</li>
+		<li>The PAL colour-loss effect is calculated within Stella.  You do not
+			need to specify those colours in the palette file.
+	</ul>
+	<p>In the future, support may be added for specifying a palette for each ROM.</p>
+
+
+	<br><br>
+	<p><h1>
+	<a name="Acknowledgments">15. Acknowledgments</a></h1>
 	<hr>
 
 	<p>Bradford W. Mott started developing Stella during the fall of 1995 and since
@@ -2322,7 +2415,7 @@ Ms Pac-Man (Stella extended codes):
 
 	<br><br>
 	<p><h1>
-	<a name="License">15. License and Disclaimer</a></h1>
+	<a name="License">16. License and Disclaimer</a></h1>
 	<hr>
 
 	<p>

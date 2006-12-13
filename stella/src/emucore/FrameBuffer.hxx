@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.79 2006-12-11 00:15:33 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.80 2006-12-13 00:05:46 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -84,7 +84,8 @@ enum ScalerType {
 };
 struct Scaler {
   ScalerType type;
-  string name;
+  const char* name;
+  const char* comparitor;
   int zoom;
   int scale;
 };
@@ -97,7 +98,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.79 2006-12-11 00:15:33 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.80 2006-12-13 00:05:46 stephena Exp $
 */
 class FrameBuffer
 {

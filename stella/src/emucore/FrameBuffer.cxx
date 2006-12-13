@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.107 2006-12-11 00:15:33 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.108 2006-12-13 00:05:46 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -394,7 +394,7 @@ bool FrameBuffer::scale(int direction, const string& type)
   getScaler(newScaler, direction, currentScaler);
 
   // Only update the scaler if it's changed from the old one
-  if(currentScaler != newScaler.name)
+  if(currentScaler != string(newScaler.comparitor))
   {
     setScaler(newScaler);
     if(!createScreen())
@@ -409,9 +409,9 @@ bool FrameBuffer::scale(int direction, const string& type)
     showMessage(newScaler.name);
 
     if(inTIAMode)
-      myOSystem->settings().setString("scale_tia", newScaler.name);
+      myOSystem->settings().setString("scale_tia", newScaler.comparitor);
     else
-      myOSystem->settings().setString("scale_ui", newScaler.name);
+      myOSystem->settings().setString("scale_ui", newScaler.comparitor);
   }
   return true;
 }
@@ -759,7 +759,7 @@ void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
   int pos = -1;
   for(unsigned int i = 0; i < myScalerList.size(); ++i)
   {
-    if(myScalerList[i]->name == name)
+    if(STR_CASE_CMP(myScalerList[i]->name, name.c_str()) == 0)
     {
       pos = i;
       break;
@@ -822,26 +822,26 @@ const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Scaler FrameBuffer::ourUIScalers[kUIScalerListSize] = {
-  { kZOOM1X, "Zoom1x",  1, 1 },
-  { kZOOM2X, "Zoom2x",  2, 1 },
-  { kZOOM3X, "Zoom3x",  3, 1 },
-  { kZOOM4X, "Zoom4x",  4, 1 },
-  { kZOOM5X, "Zoom5x",  5, 1 },
-  { kZOOM6X, "Zoom6x",  6, 1 }
+  { kZOOM1X,  "Zoom1x", "zoom1x", 1, 1 },
+  { kZOOM2X,  "Zoom2x", "zoom2x", 2, 1 },
+  { kZOOM3X,  "Zoom3x", "zoom3x", 3, 1 },
+  { kZOOM4X,  "Zoom4x", "zoom4x", 4, 1 },
+  { kZOOM5X,  "Zoom5x", "zoom5x", 5, 1 },
+  { kZOOM6X,  "Zoom6x", "zoom6x", 6, 1 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Scaler FrameBuffer::ourTIAScalers[kTIAScalerListSize] = {
-  { kZOOM1X,  "Zoom1x",  1, 1 },
-  { kZOOM2X,  "Zoom2x",  2, 1 },
-  { kZOOM3X,  "Zoom3x",  3, 1 },
-  { kZOOM4X,  "Zoom4x",  4, 1 },
-  { kZOOM5X,  "Zoom5x",  5, 1 },
-  { kZOOM6X,  "Zoom6x",  6, 1 },
+  { kZOOM1X,  "Zoom1x", "zoom1x",   1, 1 },
+  { kZOOM2X,  "Zoom2x", "zoom2x",   2, 1 },
+  { kZOOM3X,  "Zoom3x", "zoom3x",   3, 1 },
+  { kZOOM4X,  "Zoom4x", "zoom4x",   4, 1 },
+  { kZOOM5X,  "Zoom5x", "zoom5x",   5, 1 },
+  { kZOOM6X,  "Zoom6x", "zoom6x",   6, 1 },
 
-  { kSCALE2X, "Scale2x", 1, 2 },
-  { kSCALE3X, "Scale3x", 1, 3 },
+  { kSCALE2X, "Scale2x", "scale2x", 1, 2 },
+  { kSCALE3X, "Scale3x", "scale3x", 1, 3 },
 
-  { kHQ2X,    "HQ2x",    1, 2 },
-  { kHQ3X,    "HQ3x",    1, 3 },
+  { kHQ2X,    "HQ2x",    "hq2x",    1, 2 },
+  { kHQ3X,    "HQ3x",    "hq3x",    1, 3 },
 };
