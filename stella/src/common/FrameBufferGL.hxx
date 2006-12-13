@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.39 2006-12-13 17:09:09 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.40 2006-12-13 22:46:28 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -36,7 +36,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.39 2006-12-13 17:09:09 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.40 2006-12-13 22:46:28 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -240,6 +240,7 @@ class FrameBufferGL : public FrameBuffer
     // Points to the current texture data
     SDL_Surface* myTexture;
 
+    // Holds all items specifically needed by GL commands
     struct glBufferType
     {
       GLuint  texture;
@@ -250,7 +251,7 @@ class FrameBufferGL : public FrameBuffer
       GLenum  target;
       GLenum  format;
       GLenum  type;
-      GLint   filter;          // The texture filtering to use
+      GLint   filter;
 
       void*   pixels;
       int     width, height;
@@ -258,7 +259,8 @@ class FrameBufferGL : public FrameBuffer
     };
     glBufferType myBuffer;
 
-    bool myUse16Bit;
+    // Optional GL extensions that may increase performance
+    bool myHaveTexRectEXT, myHaveAppleCStorageEXT, myHaveAppleTexRangeEXT;
 
     // The possible OpenGL screenmodes to use
     SDL_Rect** myScreenmode;
@@ -284,9 +286,6 @@ class FrameBufferGL : public FrameBuffer
 
     // TODO - will be removed when textured dirty rect support is added
     bool myDirtyFlag;
-
-    // Optional extensions that may increase performance
-    bool myHaveTexRectEXT, myHaveAppleCStorageEXT, myHaveAppleTexRangeEXT;
 
     // Indicates if the OpenGL functions have been properly loaded
     static bool myFuncsLoaded;

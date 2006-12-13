@@ -27,7 +27,6 @@ _build_cheats=yes
 _build_static=no
 _build_profile=no
 _build_atarivox=no
-_build_scalers=no
 
 # more defaults
 _ranlib=ranlib
@@ -268,8 +267,6 @@ Optional Features:
   --disable-cheats
   --enable-atarivox      enable/disable AtariVox support [disabled]
   --disable-atarivox
-  --enable-scalers       enable/disable video scalers support [disabled]
-  --disable-scalers
   --enable-shared        build shared binary [enabled]
   --enable-static        build static binary (if possible) [disabled]
   --disable-static
@@ -278,7 +275,6 @@ Optional Features:
 
 Optional Libraries:
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
-  --disable-zlib           disable zlib (compression) support [autodetect]
 
   --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
 
@@ -316,10 +312,6 @@ for ac_option in $@; do
       --disable-cheats)         _build_cheats=no     ;;
       --enable-atarivox)        _build_atarivox=yes  ;;
       --disable-atarivox)       _build_atarivox=no   ;;
-      --enable-scalers)         _build_scalers=yes   ;;
-      --disable-scalers)        _build_scalers=no    ;;
-      --enable-zlib)            _zlib=yes            ;;
-      --disable-zlib)           _zlib=no             ;;
       --enable-nasm)            _nasm=yes            ;;
       --disable-nasm)           _nasm=no             ;;
       --enable-shared)          _build_static=no     ;;
@@ -637,7 +629,12 @@ int main(void) { return strcmp(ZLIB_VERSION, zlibVersion()); }
 EOF
 	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS -lz && _zlib=yes
 fi
-echo "$_zlib"
+if test "$_zlib" = yes ; then
+	echo "$_zlib"
+else
+	echo "none found!"
+	exit 1
+fi
 
 #
 # Check for GL
@@ -744,20 +741,6 @@ else
 	echo
 fi
 
-if test "$_build_scalers" = "yes" ; then
-	if test "$_build_gl" = "yes" ; then
-		echo_n "   Scaler support enabled in OpenGL mode"
-		echo
-	else
-		echo_n "   Scaler support disabled (OpenGL not available)"
-		echo
-		_build_scalers=no
-	fi
-else
-	echo_n "   Scaler support disabled"
-	echo
-fi
-
 if test "$_nasm" = yes ; then
 	echo_n "   NASM support enabled for x86 assembly code"
 	echo
@@ -798,7 +781,6 @@ DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
 ATARIVOX="$SRC/emucore/rsynth"
-SCALER="$SRC/common/scaler"
 
 INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
 
@@ -902,12 +884,6 @@ if test "$_build_atarivox" = yes ; then
 	DEFINES="$DEFINES -DATARIVOX_SUPPORT"
 	MODULES="$MODULES $ATARIVOX"
 	INCLUDES="$INCLUDES -I$ATARIVOX"
-fi
-
-if test "$_build_scalers" = yes ; then
-	DEFINES="$DEFINES -DSCALER_SUPPORT"
-	MODULES="$MODULES $SCALER"
-	INCLUDES="$INCLUDES -I$SCALER"
 fi
 
 if test "$_build_profile" = no ; then

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.108 2006-12-13 00:05:46 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.109 2006-12-13 22:46:28 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -698,58 +698,13 @@ void FrameBuffer::setAvailableScalers()
 {
   /** Different emulation modes support different scalers, and the size
       of the current desktop also determines how much a window can be
-      zoomed.  For now, there are two separate scaler lists; one for
-      normal emulation mode (and modes that have the TIA in the background),
-      and one for standard GUI modes (modes that bypass drawMediaSource).
-      For reasons of efficiency, only zooming is supported in GUI mode.  Also,
-      it doesn't really make sense to use high quality scalers on text-only
-      windows. */
-
-  EventHandler::State state = myOSystem->eventHandler().state();
+      zoomed. */
   int maxsize = maxWindowSizeForScreen();
   myScalerList.clear();
 
-  bool inTIAMode = (state == EventHandler::S_EMULATE ||
-                    state == EventHandler::S_MENU    ||
-                    state == EventHandler::S_CMDMENU);
-
-  // Next, determine which mode we're in and update the appropriate scaler list
-  if(type() == kSoftBuffer)
-  {
-    if(inTIAMode)
-    {
-      for(int i = 0; i < kTIAScalerListSize; ++i)
-        if(ourTIAScalers[i].scale == 1 && ourTIAScalers[i].zoom <= maxsize)
-          myScalerList.push_back(&ourTIAScalers[i]);
-    }
-    else  // UI mode
-    {
-      for(int i = 0; i < kUIScalerListSize; ++i)
-        if(ourUIScalers[i].scale == 1 && ourUIScalers[i].zoom <= maxsize)
-          myScalerList.push_back(&ourTIAScalers[i]);
-    }
-  }
-  else if(type() == kGLBuffer)
-  {
-    if(inTIAMode)
-    {
-#ifdef SCALER_SUPPORT
-      for(int i = 0; i < kTIAScalerListSize; ++i)
-        if(ourTIAScalers[i].scale <= maxsize && ourTIAScalers[i].zoom <= maxsize)
-          myScalerList.push_back(&ourTIAScalers[i]);
-#else
-      for(int i = 0; i < kTIAScalerListSize; ++i)
-        if(ourTIAScalers[i].scale == 1 && ourTIAScalers[i].zoom <= maxsize)
-          myScalerList.push_back(&ourTIAScalers[i]);
-#endif
-    }
-    else  // UI mode
-    {
-      for(int i = 0; i < kUIScalerListSize; ++i)
-        if(ourUIScalers[i].scale == 1 && ourUIScalers[i].zoom <= maxsize)
-          myScalerList.push_back(&ourTIAScalers[i]);
-    }
-  }
+  for(int i = 0; i < kScalerListSize; ++i)
+    if(ourScalers[i].zoom <= maxsize)
+      myScalerList.push_back(&ourScalers[i]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -787,7 +742,6 @@ void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
   else
   {
     // Otherwise, get the largest scaler that's available
-    // FIXME - this needs to be fixed for high-quality scalers
     scaler = *(myScalerList[myScalerList.size()-1]);
   }
 }
@@ -821,27 +775,11 @@ const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Scaler FrameBuffer::ourUIScalers[kUIScalerListSize] = {
-  { kZOOM1X,  "Zoom1x", "zoom1x", 1, 1 },
-  { kZOOM2X,  "Zoom2x", "zoom2x", 2, 1 },
-  { kZOOM3X,  "Zoom3x", "zoom3x", 3, 1 },
-  { kZOOM4X,  "Zoom4x", "zoom4x", 4, 1 },
-  { kZOOM5X,  "Zoom5x", "zoom5x", 5, 1 },
-  { kZOOM6X,  "Zoom6x", "zoom6x", 6, 1 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Scaler FrameBuffer::ourTIAScalers[kTIAScalerListSize] = {
-  { kZOOM1X,  "Zoom1x", "zoom1x",   1, 1 },
-  { kZOOM2X,  "Zoom2x", "zoom2x",   2, 1 },
-  { kZOOM3X,  "Zoom3x", "zoom3x",   3, 1 },
-  { kZOOM4X,  "Zoom4x", "zoom4x",   4, 1 },
-  { kZOOM5X,  "Zoom5x", "zoom5x",   5, 1 },
-  { kZOOM6X,  "Zoom6x", "zoom6x",   6, 1 },
-
-  { kSCALE2X, "Scale2x", "scale2x", 1, 2 },
-  { kSCALE3X, "Scale3x", "scale3x", 1, 3 },
-
-  { kHQ2X,    "HQ2x",    "hq2x",    1, 2 },
-  { kHQ3X,    "HQ3x",    "hq3x",    1, 3 },
+Scaler FrameBuffer::ourScalers[kScalerListSize] = {
+  { kZOOM1X,  "Zoom1x", "zoom1x", 1 },
+  { kZOOM2X,  "Zoom2x", "zoom2x", 2 },
+  { kZOOM3X,  "Zoom3x", "zoom3x", 3 },
+  { kZOOM4X,  "Zoom4x", "zoom4x", 4 },
+  { kZOOM5X,  "Zoom5x", "zoom5x", 5 },
+  { kZOOM6X,  "Zoom6x", "zoom6x", 6 }
 };

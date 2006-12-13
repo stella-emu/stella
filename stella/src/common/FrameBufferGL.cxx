@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.75 2006-12-13 19:13:32 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.76 2006-12-13 22:46:28 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -90,15 +90,15 @@ static void (APIENTRY* p_glTexParameteri)( GLenum, GLenum, GLint );
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
     myTexture(NULL),
+    myHaveTexRectEXT(false),
+    myHaveAppleCStorageEXT(false),
+    myHaveAppleTexRangeEXT(false),
     myScreenmode(0),
     myScreenmodeCount(0),
     myFilterParamName("GL_NEAREST"),
     myZoomLevel(1),
     myFSScaleFactor(1.0),
-    myDirtyFlag(true),
-    myHaveTexRectEXT(false),
-    myHaveAppleCStorageEXT(false),
-    myHaveAppleTexRangeEXT(false)
+    myDirtyFlag(true)
 {
 }
 
@@ -291,7 +291,6 @@ bool FrameBufferGL::createScreen()
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
-  myUse16Bit = (myDepth == 15 || myDepth == 16);
 
   // Check for some extensions that can potentially speed up operation
   const char* extensions = (const char *) p_glGetString(GL_EXTENSIONS);
@@ -526,10 +525,9 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
     uInt16 mask = 0x8000;
 
     for(int x = 0; x < w; ++x, mask >>= 1)
-    {
       if(ptr & mask)
         buffer[x] = (uInt16) myDefPalette[color];
-    }
+
     buffer += myBuffer.pitch;
   }
 }
@@ -544,10 +542,9 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
   {
     uInt32 mask = 0xF0000000;
     for(int x = 0; x < 8; ++x, mask >>= 4)
-    {
       if(bitmap[y] & mask)
         buffer[x] = (uInt16) myDefPalette[color];
-    }
+
     buffer += myBuffer.pitch;
   }
 }
@@ -618,26 +615,15 @@ bool FrameBufferGL::createTextures()
   // Create a texture that best suits the current display depth and system
   // This code needs to be Apple-specific, otherwise performance is
   // terrible on a Mac Mini
-//  if(myUse16Bit)
-  {
 #if defined(MAC_OSX)
-    myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                  myBuffer.texture_width, myBuffer.texture_height, 16,
-                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                myBuffer.texture_width, myBuffer.texture_height, 16,
+                0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
 #else
-    myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                  myBuffer.texture_width, myBuffer.texture_height, 16,
-                  0x0000f800, 0x000007e0, 0x0000001f, 0x00000000);
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                myBuffer.texture_width, myBuffer.texture_height, 16,
+                0x0000f800, 0x000007e0, 0x0000001f, 0x00000000);
 #endif
-  }
-/*
-  else
-  {
-    myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                  myBuffer.texture_width, myBuffer.texture_height, 32,
-                  0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000);
-  }
-*/
   if(myTexture == NULL)
     return false;
 
@@ -683,26 +669,15 @@ bool FrameBufferGL::createTextures()
 
   // Finally, create the texture in the most optimal format
   GLenum tex_intformat;
-//  if(myUse16Bit)
-  {
 #if defined (MAC_OSX)
-    tex_intformat   = GL_RGB5;
-    myBuffer.format = GL_BGRA;
-    myBuffer.type   = GL_UNSIGNED_SHORT_1_5_5_5_REV;
+  tex_intformat   = GL_RGB5;
+  myBuffer.format = GL_BGRA;
+  myBuffer.type   = GL_UNSIGNED_SHORT_1_5_5_5_REV;
 #else
-    tex_intformat   = GL_RGB;
-    myBuffer.format = GL_RGB;
-    myBuffer.type   = GL_UNSIGNED_SHORT_5_6_5;
+  tex_intformat   = GL_RGB;
+  myBuffer.format = GL_RGB;
+  myBuffer.type   = GL_UNSIGNED_SHORT_5_6_5;
 #endif
-  }
-/*
-  else
-  {
-    tex_intformat   = GL_RGBA8;
-    myBuffer.format = GL_BGRA;
-    myBuffer.type   = GL_UNSIGNED_INT_8_8_8_8_REV;
-  }
-*/
   p_glTexImage2D(myBuffer.target, 0, tex_intformat,
                  myBuffer.texture_width, myBuffer.texture_height, 0,
                  myBuffer.format, myBuffer.type, myBuffer.pixels);

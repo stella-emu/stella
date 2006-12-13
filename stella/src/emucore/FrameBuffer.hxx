@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.80 2006-12-13 00:05:46 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.81 2006-12-13 22:46:28 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -77,17 +77,12 @@ enum {
 };
 
 // Different types of scalers available
-enum ScalerType {
-  kZOOM1X, kZOOM2X, kZOOM3X, kZOOM4X, kZOOM5X, kZOOM6X,
-  kSCALE2X, kSCALE3X, kSCALE4X,
-  kHQ2X, kHQ3X, kHQ4X
-};
+enum ScalerType { kZOOM1X, kZOOM2X, kZOOM3X, kZOOM4X, kZOOM5X, kZOOM6X };
 struct Scaler {
   ScalerType type;
   const char* name;
   const char* comparitor;
   int zoom;
-  int scale;
 };
 
 /**
@@ -98,7 +93,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.80 2006-12-13 00:05:46 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.81 2006-12-13 22:46:28 stephena Exp $
 */
 class FrameBuffer
 {
@@ -214,7 +209,7 @@ class FrameBuffer
       @param direction  Described above
       @param type       The scaler to use if direction is set to 0
     */
-    bool scale(int direction, const string& type = "Zoom1x");
+    bool scale(int direction, const string& type = "zoom1x");
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -541,7 +536,7 @@ class FrameBuffer
 
     /**
       Returns a scaler based on the current eventhandler mode and the value of direction.
-      If there's any error, default to 'Zoom1x'.
+      If there's any error, default to 'zoom1x'.
       direction = -1 means previous scaler based on value in 'name'
       direction =  0 means actual scaler based on value in 'name'
       direction = +1 means next scaler based on value in 'name'
@@ -576,12 +571,8 @@ class FrameBuffer
     // The various scalers available in TIA vs. non-TIA mode
     // For the foreseeable future, the UI scalers will be restricted
     // from using the more advanced scalers
-    enum {
-      kUIScalerListSize = 6,
-      kTIAScalerListSize = 10
-    };
-    static Scaler ourUIScalers[kUIScalerListSize];
-    static Scaler ourTIAScalers[kTIAScalerListSize];
+    enum { kScalerListSize = 6 };
+    static Scaler ourScalers[kScalerListSize];
 
     // The list of scalers available in the current mode
     Common::Array<Scaler*> myScalerList;
