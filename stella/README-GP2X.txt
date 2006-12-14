@@ -111,6 +111,16 @@ sound and gameplay, let me know and I might incorporate them into the next
 version. Happy tinkering.
 
 -------------
+Other:
+-------------
+For user friendly ROM names, try out Cowering's Good2600. It is a reliable
+and easy to use ROM renamer. It has a nifty Windows frontend and will also
+work under Linux when used with Wine (wineconsole). Check accompanying 
+documentation for further details.
+
+GoodTools is available from Cowering's homepage and at http://archive.gp2x.de/.
+
+-------------
 Compile Info:
 -------------
 Since the GP2X branch was so graciously added to Stella, GP2X compilation is
