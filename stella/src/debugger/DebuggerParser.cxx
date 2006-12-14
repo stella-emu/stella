@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.92 2006-12-08 16:48:59 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.93 2006-12-14 00:07:47 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -939,7 +939,7 @@ void DebuggerParser::executeHelp()
   static char buf[256];
   for(int i = 0; i < kNumCommands; ++i)
   {
-    snprintf(buf, 255, "%13s - %s\n",
+    SNPRINTF(buf, 255, "%13s - %s\n",
       commands[i].cmdString.c_str(),
       commands[i].description.c_str());
 

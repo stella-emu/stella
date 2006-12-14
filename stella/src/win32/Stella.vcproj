@@ -498,6 +498,9 @@ SDLmain.lib
 				RelativePath="..\emucore\Random.cxx">
 			</File>
 			<File
+				RelativePath="..\common\RectList.cxx">
+			</File>
+			<File
 				RelativePath="..\debugger\gui\RomListWidget.cxx">
 			</File>
 			<File
@@ -996,6 +999,9 @@ SDLmain.lib
 			</File>
 			<File
 				RelativePath="..\emucore\Random.hxx">
+			</File>
+			<File
+				RelativePath="..\common\RectList.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\gui\RomListWidget.hxx">
