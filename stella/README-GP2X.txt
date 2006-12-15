@@ -134,8 +134,6 @@ export PATH=<your arm-linux compiler path>:$PATH
 
 This is what my configure line looks like:
 ./configure
-  --prefix=<your destination folder>
-  --enable-zlib
   --enable-cheats
   --disable-developer
   --host=gp2x
