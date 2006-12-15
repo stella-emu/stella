@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.101 2006-12-15 16:42:58 stephena Exp $
+// $Id: Settings.cxx,v 1.102 2006-12-15 17:52:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -24,14 +24,6 @@
 #include "Version.hxx"
 #include "bspf.hxx"
 #include "Settings.hxx"
-
-// Specifies the minimum version of the settings file that's valid
-// for this version of Stella.  If the settings file is too old,
-// the internal defaults are used.
-// For each new release, this should only be bumped if there have been
-// major changes in some settings; changes which could stop Stella from
-// actually working.
-#define MIN_SETTINGS_VERSION "2.3_alpha"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings(OSystem* osystem)

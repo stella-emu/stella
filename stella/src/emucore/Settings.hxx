@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.28 2006-12-08 16:49:28 stephena Exp $
+// $Id: Settings.hxx,v 1.29 2006-12-15 17:52:03 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -24,12 +24,19 @@ class OSystem;
 #include "Array.hxx"
 #include "bspf.hxx"
 
+// Specifies the minimum version of the settings file that's valid
+// for this version of Stella.  If the settings file is too old,
+// the internal defaults are used.
+// For each new release, this should only be bumped if there have been
+// major changes in some settings; changes which could stop Stella from
+// actually working.
+#define MIN_SETTINGS_VERSION "2.3_alpha"
 
 /**
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.28 2006-12-08 16:49:28 stephena Exp $
+  @version $Id: Settings.hxx,v 1.29 2006-12-15 17:52:03 stephena Exp $
 */
 class Settings
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.13 2006-12-08 16:49:37 stephena Exp $
+// $Id: SettingsMACOSX.cxx,v 1.14 2006-12-15 17:52:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -27,6 +27,7 @@
 #include "bspf.hxx"
 #include "Console.hxx"
 #include "EventHandler.hxx"
+#include "Version.hxx"
 
 #include "Settings.hxx"
 #include "SettingsMACOSX.hxx"
@@ -56,7 +57,12 @@ void SettingsMACOSX::loadConfig()
   string key, value;
   char cvalue[2048];
   
-  // Write out each of the key and value pairs
+  // Check if the settings plist file is valid
+  prefsGetString("plist_version", cvalue);
+  if(cvalue[0] == 0 || string(cvalue) < string(MIN_SETTINGS_VERSION))
+    return;
+
+  // Read key/value pairs from the plist file
   const SettingsArray& settings = getInternalSettings();
   for(unsigned int i = 0; i < settings.size(); ++i)
   {
@@ -69,6 +75,9 @@ void SettingsMACOSX::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SettingsMACOSX::saveConfig()
 {
+  // Write out plist version
+  prefsSetString("plist_version", STELLA_VERSION);
+
   // Write out each of the key and value pairs
   const SettingsArray& settings = getInternalSettings();
   for(unsigned int i = 0; i < settings.size(); ++i)
