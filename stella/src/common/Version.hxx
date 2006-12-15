@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Version.hxx,v 1.17 2006-12-08 16:48:56 stephena Exp $
+// $Id: Version.hxx,v 1.18 2006-12-15 20:22:29 stephena Exp $
 //============================================================================
 
 #ifndef VERSION_HXX
@@ -26,5 +26,13 @@
 #else
 #define STELLA_VERSION STELLA_BASE_VERSION
 #endif
+
+// Specifies the minimum version of the settings file that's valid
+// for this version of Stella.  If the settings file is too old,
+// the internal defaults are used.
+// For each new release, this should only be bumped if there have been
+// major changes in some settings; changes which could stop Stella from
+// actually working.
+#define STELLA_SETTINGS_VERSION "2.3_alpha"
 
 #endif

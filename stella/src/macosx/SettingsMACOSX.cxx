@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.14 2006-12-15 17:52:03 stephena Exp $
+// $Id: SettingsMACOSX.cxx,v 1.15 2006-12-15 20:22:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -59,7 +59,7 @@ void SettingsMACOSX::loadConfig()
   
   // Check if the settings plist file is valid
   prefsGetString("plist_version", cvalue);
-  if(cvalue[0] == 0 || string(cvalue) < string(MIN_SETTINGS_VERSION))
+  if(cvalue[0] == 0 || string(cvalue) < string(STELLA_SETTINGS_VERSION))
     return;
 
   // Read key/value pairs from the plist file

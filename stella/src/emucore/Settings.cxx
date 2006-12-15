@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.102 2006-12-15 17:52:03 stephena Exp $
+// $Id: Settings.cxx,v 1.103 2006-12-15 20:22:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -111,7 +111,7 @@ void Settings::loadConfig()
   if(getline(in, line))
   {
     string minVersion = ";  Version ";
-    minVersion += MIN_SETTINGS_VERSION;
+    minVersion += STELLA_SETTINGS_VERSION;
     if(line.find(";  Version") != 0 || line < minVersion)
     {
       cout << "Error: Settings file too old, using internal defaults\n";
